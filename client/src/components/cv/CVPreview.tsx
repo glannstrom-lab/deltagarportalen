@@ -184,7 +184,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
       <div className="p-8 space-y-5" style={{ backgroundColor: '#ffffff' }}>
         {/* Summary */}
         {data.summary && (
-          <section style={{ breakInside: 'avoid' }}>
+          <section className="avoid-break" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1"
               style={styles.sectionTitle}
@@ -199,7 +199,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
 
         {/* Work Experience */}
         {data.workExperience && data.workExperience.length > 0 && (
-          <section>
+          <section className="avoid-break" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1 flex items-center gap-2"
               style={styles.sectionTitle}
@@ -232,7 +232,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
 
         {/* Education */}
         {data.education && data.education.length > 0 && (
-          <section>
+          <section className="avoid-break" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1 flex items-center gap-2"
               style={styles.sectionTitle}
@@ -260,7 +260,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
 
         {/* Skills */}
         {(data.skills?.length || 0) > 0 && (
-          <section>
+          <section className="avoid-break" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1 flex items-center gap-2"
               style={styles.sectionTitle}
@@ -276,7 +276,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
                   {technicalSkills.map((skill) => (
                     <span
                       key={skill.id}
-                      className="px-2 py-1 rounded text-xs font-medium"
+                      className="skill-tag px-2 py-1 rounded text-xs font-medium"
                       style={styles.skillTag}
                     >
                       {skill.name}
@@ -294,7 +294,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
                   {softSkills.map((skill) => (
                     <span
                       key={skill.id}
-                      className="px-2 py-1 rounded text-xs font-medium"
+                      className="skill-tag px-2 py-1 rounded text-xs font-medium"
                       style={styles.skillTag}
                     >
                       {skill.name}
@@ -324,7 +324,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
 
         {/* Languages */}
         {data.languages && data.languages.length > 0 && (
-          <section>
+          <section className="avoid-break" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1 flex items-center gap-2"
               style={styles.sectionTitle}
@@ -345,7 +345,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
 
         {/* Certificates */}
         {data.certificates && data.certificates.length > 0 && (
-          <section>
+          <section className="avoid-break" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1 flex items-center gap-2"
               style={styles.sectionTitle}
@@ -366,7 +366,7 @@ function CVPreviewContent({ data }: CVPreviewProps) {
 
         {/* References */}
         {data.references && data.references.length > 0 && (
-          <section>
+          <section className="avoid-break" style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1 flex items-center gap-2"
               style={styles.sectionTitle}
