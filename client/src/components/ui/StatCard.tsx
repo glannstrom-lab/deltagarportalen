@@ -1,29 +1,35 @@
-import type { LucideIcon } from 'lucide-react'
-import { Card } from './Card'
+import { TrendingUp, TrendingDown } from 'lucide-react'
 
 interface StatCardProps {
   label: string
   value: string
-  icon: LucideIcon
-  color: 'violet' | 'emerald' | 'amber' | 'rose' | 'blue'
+  trend?: 'up' | 'down'
+  trendValue?: string
+  color?: 'purple' | 'orange' | 'blue' | 'pink'
 }
 
-export function StatCard({ label, value, icon: Icon, color }: StatCardProps) {
+export function StatCard({ label, value, trend, trendValue, color = 'purple' }: StatCardProps) {
   const colors = {
-    violet: 'bg-violet-50 text-violet-600',
-    emerald: 'bg-emerald-50 text-emerald-600',
-    amber: 'bg-amber-50 text-amber-600',
-    rose: 'bg-rose-50 text-rose-600',
-    blue: 'bg-blue-50 text-blue-600',
+    purple: 'text-primary',
+    orange: 'text-accent-orange',
+    blue: 'text-accent-blue',
+    pink: 'text-accent-pink',
   }
 
   return (
-    <Card className="p-6">
-      <div className={`w-10 h-10 rounded-xl ${colors[color]} flex items-center justify-center mb-4`}>
-        <Icon size={20} />
+    <div className="card card-hover">
+      <p className="text-slate-500 text-sm mb-2">{label}</p>
+      <div className="flex items-end gap-3">
+        <span className={`text-3xl font-bold ${colors[color]}`}>{value}</span>
+        {trend && trendValue && (
+          <div className={`flex items-center gap-1 text-sm mb-1 ${
+            trend === 'up' ? 'text-accent-green' : 'text-red-500'
+          }`}>
+            {trend === 'up' ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
+            <span>{trendValue}</span>
+          </div>
+        )}
       </div>
-      <div className="text-2xl font-semibold text-slate-900">{value}</div>
-      <div className="text-sm text-slate-500 mt-0.5">{label}</div>
-    </Card>
+    </div>
   )
 }

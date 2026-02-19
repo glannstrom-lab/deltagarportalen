@@ -1,40 +1,24 @@
 import { Link, useLocation } from 'react-router-dom'
-import { navItems, bottomItems } from './navigation'
+import { navItems } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { Briefcase, LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
-import { useState } from 'react'
+import { LogOut, Settings, User } from 'lucide-react'
 
 export function Sidebar() {
   const location = useLocation()
   const { logout } = useAuthStore()
-  const [expanded, setExpanded] = useState(true)
 
   return (
-    <aside className={cn(
-      "bg-white border-r border-slate-100 h-screen sticky top-0 flex flex-col transition-all duration-300",
-      expanded ? "w-64" : "w-20"
-    )}>
-      {/* Logo */}
-      <div className="p-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 overflow-hidden">
-          <div className="w-9 h-9 bg-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Briefcase className="w-5 h-5 text-white" />
-          </div>
-          {expanded && (
-            <span className="font-semibold text-slate-900 whitespace-nowrap">Deltagarportalen</span>
-          )}
-        </Link>
-        <button 
-          onClick={() => setExpanded(!expanded)}
-          className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400"
-        >
-          {expanded ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
-        </button>
+    <aside className="w-20 bg-sidebar h-screen sticky top-0 flex flex-col py-6">
+      {/* User Avatar */}
+      <div className="flex justify-center mb-8">
+        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+          <User size={24} className="text-white" />
+        </div>
       </div>
 
-      {/* Main Navigation */}
-      <nav className="flex-1 px-4 space-y-1">
+      {/* Navigation */}
+      <nav className="flex-1 flex flex-col items-center gap-2">
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = location.pathname === item.path
@@ -44,51 +28,34 @@ export function Sidebar() {
               key={item.path}
               to={item.path}
               className={cn(
-                'flex items-center gap-3 px-4 py-3 rounded-lg text-sm transition-colors',
+                'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200',
                 isActive 
-                  ? 'bg-violet-50 text-violet-700 font-medium' 
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  ? 'bg-white text-sidebar' 
+                  : 'text-white/70 hover:bg-white/10 hover:text-white'
               )}
-              title={!expanded ? item.label : undefined}
+              title={item.label}
             >
-              <Icon size={20} />
-              {expanded && <span>{item.label}</span>}
+              <Icon size={22} />
             </Link>
           )
         })}
       </nav>
 
-      {/* Bottom Navigation */}
-      <div className="p-4 border-t border-slate-100">
-        {bottomItems.map((item) => {
-          const Icon = item.icon
-          const isActive = location.pathname === item.path
-          
-          return (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={cn(
-                'flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm transition-colors mb-1',
-                isActive 
-                  ? 'bg-violet-50 text-violet-700 font-medium' 
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-              )}
-              title={!expanded ? item.label : undefined}
-            >
-              <Icon size={18} />
-              {expanded && <span>{item.label}</span>}
-            </Link>
-          )
-        })}
-        
+      {/* Bottom Actions */}
+      <div className="flex flex-col items-center gap-2 mt-auto">
+        <Link
+          to="/settings"
+          className="w-12 h-12 rounded-xl flex items-center justify-center text-white/70 hover:bg-white/10 hover:text-white transition-all"
+          title="Inställningar"
+        >
+          <Settings size={22} />
+        </Link>
         <button
           onClick={logout}
-          className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors text-sm"
-          title={!expanded ? "Logga ut" : undefined}
+          className="w-12 h-12 rounded-xl flex items-center justify-center text-white/70 hover:bg-red-500/20 hover:text-red-200 transition-all"
+          title="Logga ut"
         >
-          <LogOut size={18} />
-          {expanded && <span>Logga ut</span>}
+          <LogOut size={22} />
         </button>
       </div>
     </aside>

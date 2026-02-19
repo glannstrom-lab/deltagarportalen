@@ -1,22 +1,18 @@
 import { Outlet } from 'react-router-dom'
 import { Sidebar } from './layout/Sidebar'
-import { Header } from './layout/Header'
 import CrisisSupport from './CrisisSupport'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
 
 export default function Layout() {
   return (
-    <div className="min-h-screen bg-slate-50">
-      <div className="flex">
-        <Sidebar />
-        <main className="flex-1 min-h-screen">
-          <Header />
-          <div className="p-6 lg:p-10 max-w-6xl">
-            <Outlet />
-          </div>
-        </main>
-      </div>
+    <div className="min-h-screen bg-page flex">
+      <Sidebar />
+      <main className="flex-1 p-8 overflow-auto">
+        <div className="max-w-7xl mx-auto">
+          <Outlet />
+        </div>
+      </main>
       <CrisisSupport />
       <BreakReminder workDuration={15} />
       <ToastContainer />

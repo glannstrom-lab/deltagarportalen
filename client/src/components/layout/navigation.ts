@@ -5,8 +5,6 @@ import {
   Compass,
   Calendar,
   BookOpen,
-  Settings,
-  User,
 } from 'lucide-react'
 
 export const navItems = [
@@ -16,9 +14,4 @@ export const navItems = [
   { path: '/interest-guide', label: 'Intresseguide', icon: Compass },
   { path: '/calendar', label: 'Kalender', icon: Calendar },
   { path: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
-]
-
-export const bottomItems = [
-  { path: '/settings', label: 'Inställningar', icon: Settings },
-  { path: '/profile', label: 'Profil', icon: User },
 ]
