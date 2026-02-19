@@ -220,36 +220,209 @@ const mockCVHistory: CVVersion[] = [
   },
 ]
 
-// Mock jobbmatchningar
-const mockJobMatches: JobMatch[] = [
+// ===== JOBBTYper =====
+
+export interface Job {
+  id: string
+  title: string
+  company: string
+  location: string
+  description: string
+  requirements: string[]
+  employmentType: 'Heltid' | 'Deltid' | 'Tillsvidare' | 'Projekt' | 'Sommarjobb'
+  experienceLevel: 'Ingen erfarenhet' | 'Erfaren' | 'Mycket erfaren'
+  salaryRange?: string
+  publishedDate: string
+  deadline?: string
+  url: string
+  logo?: string
+  matchPercentage?: number
+  missingKeywords?: string[]
+  matchingSkills?: string[]
+}
+
+export interface JobApplication {
+  id: string
+  jobId: string
+  status: 'saved' | 'applied' | 'interview' | 'offer' | 'rejected' | 'withdrawn'
+  appliedDate?: string
+  notes?: string
+  coverLetter?: string
+}
+
+export interface JobFilters {
+  search?: string
+  location?: string
+  employmentType?: string[]
+  experienceLevel?: string[]
+  publishedWithin?: 'today' | 'week' | 'month' | 'all'
+  minMatchPercentage?: number
+}
+
+// Mock jobbdata (utökad)
+const mockJobs: Job[] = [
   {
     id: 'job1',
     title: 'Butikssäljare',
     company: 'Hemköp',
     location: 'Stockholm',
+    description: 'Vi söker en engagerad butikssäljare som brinner för kundservice och försäljning. Du kommer att arbeta i kassan, plocka varor och hjälpa kunder hitta vad de söker.',
+    requirements: ['Kundservice', 'Försäljning', 'Kassavana', 'Svenska'],
+    employmentType: 'Deltid',
+    experienceLevel: 'Erfaren',
+    salaryRange: '140-160 kr/tim',
+    publishedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job1',
     matchPercentage: 92,
-    missingKeywords: ['Visma', 'Kassasystem'],
-    description: 'Vi söker en engagerad butikssäljare med erfarenhet av kundservice.',
+    missingKeywords: ['Visma'],
+    matchingSkills: ['Kundservice', 'Försäljning'],
   },
   {
     id: 'job2',
     title: 'Kundtjänstmedarbetare',
     company: 'Tele2',
     location: 'Stockholm',
+    description: 'Hjälp våra kunder via telefon och mejl med frågor om mobilabonnemang, bredband och teknisk support.',
+    requirements: ['Kundservice', 'Kommunikation', 'Datorvana', 'Svenska', 'Engelska'],
+    employmentType: 'Heltid',
+    experienceLevel: 'Ingen erfarenhet',
+    salaryRange: '28 000-32 000 kr/mån',
+    publishedDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    deadline: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job2',
     matchPercentage: 78,
     missingKeywords: ['CRM', 'Teknisk support'],
-    description: 'Hjälp våra kunder via telefon och mejl.',
+    matchingSkills: ['Kundservice', 'Datorvana'],
   },
   {
     id: 'job3',
     title: 'Receptionist',
     company: 'Scandic Hotels',
     location: 'Stockholm',
+    description: 'Välkomna gäster, hantera incheckningar och utcheckningar, svara på frågor och se till att gästerna får en fantastisk vistelse.',
+    requirements: ['Kundservice', 'Hotellsystem', 'Svenska', 'Engelska'],
+    employmentType: 'Tillsvidare',
+    experienceLevel: 'Erfaren',
+    salaryRange: '26 000-30 000 kr/mån',
+    publishedDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job3',
     matchPercentage: 65,
     missingKeywords: ['Hotellsystem', 'Bokningar'],
-    description: 'Välkomna gäster och hantera incheckningar.',
+    matchingSkills: ['Kundservice'],
+  },
+  {
+    id: 'job4',
+    title: 'Lagerarbetare',
+    company: 'PostNord',
+    location: 'Stockholm',
+    description: 'Sortera paket, lasta och lossa gods, köra truck. Fysiskt arbete i högt tempo.',
+    requirements: ['Truckkort', 'Fysisk arbetsförmåga', 'Svenska'],
+    employmentType: 'Heltid',
+    experienceLevel: 'Ingen erfarenhet',
+    salaryRange: '145-165 kr/tim',
+    publishedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job4',
+    matchPercentage: 45,
+    missingKeywords: ['Truckkort', 'Lager'],
+    matchingSkills: [],
+  },
+  {
+    id: 'job5',
+    title: 'Vårdbiträde',
+    company: 'Stockholms Stad',
+    location: 'Stockholm',
+    description: 'Hjälpa äldre med dagliga aktiviteter, matservering, social samvaro och promenader.',
+    requirements: ['Omvårdnad', 'Kommunikation', 'Empati', 'Svenska'],
+    employmentType: 'Deltid',
+    experienceLevel: 'Ingen erfarenhet',
+    salaryRange: '135-155 kr/tim',
+    publishedDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job5',
+    matchPercentage: 70,
+    missingKeywords: ['Omvårdnad', 'Vårdutbildning'],
+    matchingSkills: ['Kommunikation', 'Kundservice'],
+  },
+  {
+    id: 'job6',
+    title: 'Kassör',
+    company: 'Willys',
+    location: 'Göteborg',
+    description: 'Arbeta i kassan, hantera betalningar, ge god kundservice.',
+    requirements: ['Kassavana', 'Kundservice', 'Svenska'],
+    employmentType: 'Deltid',
+    experienceLevel: 'Erfaren',
+    salaryRange: '140-155 kr/tim',
+    publishedDate: new Date().toISOString(),
+    deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job6',
+    matchPercentage: 85,
+    missingKeywords: [],
+    matchingSkills: ['Kundservice', 'Försäljning'],
+  },
+  {
+    id: 'job7',
+    title: 'Servitör/Servitris',
+    company: 'Max Hamburgerrestauranger',
+    location: 'Malmö',
+    description: 'Ta emot beställningar, servera mat och dryck, ge förstklassig kundservice.',
+    requirements: ['Kundservice', 'Stresstålig', 'Svenska'],
+    employmentType: 'Deltid',
+    experienceLevel: 'Ingen erfarenhet',
+    salaryRange: '145-160 kr/tim + OB',
+    publishedDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job7',
+    matchPercentage: 80,
+    missingKeywords: ['Matservering'],
+    matchingSkills: ['Kundservice'],
+  },
+  {
+    id: 'job8',
+    title: 'Administratör',
+    company: 'Försäkringskassan',
+    location: 'Stockholm',
+    description: 'Hantera ärenden, registrera uppgifter, kommunicera med kunder via telefon och mejl.',
+    requirements: ['Administration', 'Datorvana', 'Kommunikation', 'Svenska'],
+    employmentType: 'Tillsvidare',
+    experienceLevel: 'Erfaren',
+    salaryRange: '28 000-34 000 kr/mån',
+    publishedDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    url: 'https://example.com/job8',
+    matchPercentage: 75,
+    missingKeywords: ['Administration', 'Myndighetserfarenhet'],
+    matchingSkills: ['Datorvana', 'Kommunikation'],
   },
 ]
+
+// Mock jobbansökningar
+const mockJobApplications: JobApplication[] = [
+  {
+    id: 'app1',
+    jobId: 'job1',
+    status: 'saved',
+    notes: 'Verkar intressant, ska ansöka snart',
+  },
+  {
+    id: 'app2',
+    jobId: 'job3',
+    status: 'applied',
+    appliedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    coverLetter: 'Jag är mycket intresserad av denna tjänst...',
+  },
+]
+
+// Mock jobbmatchningar (för bakåtkompatibilitet)
+const mockJobMatches: JobMatch[] = mockJobs.map(job => ({
+  id: job.id,
+  title: job.title,
+  company: job.company,
+  location: job.location,
+  matchPercentage: job.matchPercentage || 50,
+  missingKeywords: job.missingKeywords || [],
+  description: job.description,
+}))
 
 // Mock intresseguide-resultat
 const mockInterestResult: any = {
@@ -386,6 +559,127 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
   // Jobbmatchning
   if (endpoint === '/cv/job-matches') {
     return mockJobMatches
+  }
+
+  // Jobbsökning - NYA ENDPOINTS
+  if (endpoint === '/jobs') {
+    let jobs = [...mockJobs]
+    
+    // Filter
+    if (body?.filters) {
+      const filters: JobFilters = body.filters
+      
+      if (filters.search) {
+        const search = filters.search.toLowerCase()
+        jobs = jobs.filter(j => 
+          j.title.toLowerCase().includes(search) ||
+          j.company.toLowerCase().includes(search) ||
+          j.description.toLowerCase().includes(search)
+        )
+      }
+      
+      if (filters.location) {
+        jobs = jobs.filter(j => 
+          j.location.toLowerCase().includes(filters.location!.toLowerCase())
+        )
+      }
+      
+      if (filters.employmentType?.length) {
+        jobs = jobs.filter(j => filters.employmentType!.includes(j.employmentType))
+      }
+      
+      if (filters.experienceLevel?.length) {
+        jobs = jobs.filter(j => filters.experienceLevel!.includes(j.experienceLevel))
+      }
+      
+      if (filters.publishedWithin) {
+        const now = Date.now()
+        const days = filters.publishedWithin === 'today' ? 1 : 
+                     filters.publishedWithin === 'week' ? 7 : 
+                     filters.publishedWithin === 'month' ? 30 : 365
+        jobs = jobs.filter(j => {
+          const published = new Date(j.publishedDate).getTime()
+          return (now - published) < (days * 24 * 60 * 60 * 1000)
+        })
+      }
+      
+      if (filters.minMatchPercentage) {
+        jobs = jobs.filter(j => (j.matchPercentage || 0) >= filters.minMatchPercentage!)
+      }
+    }
+    
+    return jobs
+  }
+  
+  if (endpoint.match(/^\/jobs\/[^/]+$/)) {
+    const jobId = endpoint.split('/')[2]
+    const job = mockJobs.find(j => j.id === jobId)
+    if (!job) throw new Error('Jobb hittades inte')
+    return job
+  }
+  
+  // Jobbansökningar
+  if (endpoint === '/job-applications') {
+    if (method === 'GET') {
+      return mockJobApplications.map(app => ({
+        ...app,
+        job: mockJobs.find(j => j.id === app.jobId)
+      }))
+    }
+    
+    if (method === 'POST') {
+      const newApp: JobApplication = {
+        id: 'app-' + Date.now(),
+        ...body,
+        appliedDate: body.status === 'applied' ? new Date().toISOString() : undefined,
+      }
+      mockJobApplications.push(newApp)
+      return newApp
+    }
+  }
+  
+  if (endpoint.match(/^\/job-applications\/[^/]+$/) && method === 'PUT') {
+    const appId = endpoint.split('/')[2]
+    const index = mockJobApplications.findIndex(a => a.id === appId)
+    if (index >= 0) {
+      mockJobApplications[index] = { ...mockJobApplications[index], ...body }
+      return mockJobApplications[index]
+    }
+    throw new Error('Ansökan hittades inte')
+  }
+  
+  if (endpoint.match(/^\/job-applications\/[^/]+$/) && method === 'DELETE') {
+    const appId = endpoint.split('/')[2]
+    const index = mockJobApplications.findIndex(a => a.id === appId)
+    if (index >= 0) {
+      mockJobApplications.splice(index, 1)
+      return { success: true }
+    }
+    throw new Error('Ansökan hittades inte')
+  }
+  
+  // AI-matchning för specifikt jobb
+  if (endpoint === '/jobs/match-cv' && method === 'POST') {
+    const { jobId, cvData } = body
+    const job = mockJobs.find(j => j.id === jobId)
+    if (!job) throw new Error('Jobb hittades inte')
+    
+    const cvSkills = cvData.skills?.map((s: Skill) => s.name.toLowerCase()) || []
+    const matchingSkills = job.requirements.filter(req => 
+      cvSkills.some((skill: string) => skill.includes(req.toLowerCase()))
+    )
+    const missingSkills = job.requirements.filter(req => 
+      !cvSkills.some((skill: string) => skill.includes(req.toLowerCase()))
+    )
+    
+    const matchPercentage = Math.round((matchingSkills.length / job.requirements.length) * 100)
+    
+    return {
+      matchPercentage,
+      matchingSkills,
+      missingSkills,
+      suggestions: missingSkills.map(s => `Lägg till "${s}" i ditt CV`),
+    }
   }
 
   // Jobbannons-analys
@@ -590,6 +884,27 @@ export const mockArticleApi = {
   },
   getById: (id: string) => mockApiRequest(`/articles/${id}`),
   getCategories: () => Promise.resolve(['CV', 'Intervju', 'Nätverkande', 'Karriär']),
+}
+
+export const mockJobsApi = {
+  searchJobs: (filters?: JobFilters) => 
+    mockApiRequest('/jobs', { method: 'POST', body: JSON.stringify({ filters }) }),
+  getJob: (jobId: string) => 
+    mockApiRequest(`/jobs/${jobId}`),
+  matchCV: (jobId: string, cvData: CVData) => 
+    mockApiRequest('/jobs/match-cv', { method: 'POST', body: JSON.stringify({ jobId, cvData }) }),
+  // Applications
+  getApplications: () => 
+    mockApiRequest('/job-applications'),
+  saveJob: (jobId: string, status: JobApplication['status'], notes?: string) => 
+    mockApiRequest('/job-applications', { 
+      method: 'POST', 
+      body: JSON.stringify({ jobId, status, notes }) 
+    }),
+  updateApplication: (appId: string, data: Partial<JobApplication>) => 
+    mockApiRequest(`/job-applications/${appId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteApplication: (appId: string) => 
+    mockApiRequest(`/job-applications/${appId}`, { method: 'DELETE' }),
 }
 
 export const mockUserApi = {

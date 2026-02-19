@@ -5,6 +5,7 @@ import {
   mockCoverLetterApi,
   mockArticleApi,
   mockUserApi,
+  mockJobsApi,
 } from './mockApi'
 
 // Använd mock API för demo-läge (fungerar utan backend)
@@ -150,6 +151,35 @@ export const cvApi = {
     USE_MOCK
       ? mockCvApi.analyzeJob(jobDescription)
       : apiRequest('/cv/analyze-job', { method: 'POST', body: JSON.stringify({ jobDescription }) }),
+}
+
+// Jobs API - NYTT
+export const jobsApi = {
+  searchJobs: (filters?: { search?: string; location?: string; employmentType?: string[]; experienceLevel?: string[]; publishedWithin?: 'today' | 'week' | 'month' | 'all'; minMatchPercentage?: number }) =>
+    USE_MOCK 
+      ? mockJobsApi.searchJobs(filters) 
+      : apiRequest('/jobs', { method: 'POST', body: JSON.stringify({ filters }) }),
+  getJob: (jobId: string) =>
+    USE_MOCK ? mockJobsApi.getJob(jobId) : apiRequest(`/jobs/${jobId}`),
+  matchCV: (jobId: string, cvData: any) =>
+    USE_MOCK
+      ? mockJobsApi.matchCV(jobId, cvData)
+      : apiRequest('/jobs/match-cv', { method: 'POST', body: JSON.stringify({ jobId, cvData }) }),
+  // Applications
+  getApplications: () =>
+    USE_MOCK ? mockJobsApi.getApplications() : apiRequest('/job-applications'),
+  saveJob: (jobId: string, status: string, notes?: string) =>
+    USE_MOCK
+      ? mockJobsApi.saveJob(jobId, status as any, notes)
+      : apiRequest('/job-applications', { method: 'POST', body: JSON.stringify({ jobId, status, notes }) }),
+  updateApplication: (appId: string, data: any) =>
+    USE_MOCK
+      ? mockJobsApi.updateApplication(appId, data)
+      : apiRequest(`/job-applications/${appId}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteApplication: (appId: string) =>
+    USE_MOCK
+      ? mockJobsApi.deleteApplication(appId)
+      : apiRequest(`/job-applications/${appId}`, { method: 'DELETE' }),
 }
 
 // Interest API
