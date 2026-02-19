@@ -9,7 +9,7 @@ export function Sidebar() {
   const { logout } = useAuthStore()
 
   return (
-    <aside className="w-20 bg-sidebar h-screen sticky top-0 flex flex-col py-6">
+    <aside className="w-20 h-screen sticky top-0 flex flex-col py-6" style={{ backgroundColor: '#4f46e5' }}>
       {/* User Avatar */}
       <div className="flex justify-center mb-8">
         <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
