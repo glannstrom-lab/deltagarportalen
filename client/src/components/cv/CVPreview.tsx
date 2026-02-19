@@ -33,6 +33,12 @@ const fonts: Record<string, string> = {
 }
 
 export function CVPreview({ data }: CVPreviewProps) {
+  return (
+    <CVPreviewContent data={data} />
+  )
+}
+
+function CVPreviewContent({ data }: CVPreviewProps) {
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
   const scheme = colorSchemes[data.colorScheme || 'indigo']
   const fontFamily = fonts[data.font || 'inter']
@@ -119,7 +125,12 @@ export function CVPreview({ data }: CVPreviewProps) {
   return (
     <div 
       className="bg-white shadow-lg overflow-hidden"
-      style={{ fontFamily, backgroundColor: '#ffffff' }}
+      style={{ 
+        fontFamily, 
+        backgroundColor: '#ffffff',
+        maxWidth: '210mm',
+        margin: '0 auto',
+      }}
       data-cv-export="true"
     >
       {/* Header - Template specific */}
@@ -173,7 +184,7 @@ export function CVPreview({ data }: CVPreviewProps) {
       <div className="p-8 space-y-5" style={{ backgroundColor: '#ffffff' }}>
         {/* Summary */}
         {data.summary && (
-          <section>
+          <section style={{ breakInside: 'avoid' }}>
             <h2 
               className="text-lg font-semibold mb-3 pb-1"
               style={styles.sectionTitle}

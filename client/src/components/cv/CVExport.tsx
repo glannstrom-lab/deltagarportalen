@@ -25,57 +25,78 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
     setIsExporting(true)
     
     try {
-      // Säkerställ att elementet har rätt storlek innan vi börjar
-      const originalWidth = element.style.width
+      // Sätt explicit A4-storlek för rendering
       element.style.width = '210mm'
       element.style.minHeight = '297mm'
       
-      // Vänta på att DOM ska uppdateras
-      await new Promise(resolve => setTimeout(resolve, 300))
+      // Vänta på att layout ska uppdateras
+      await new Promise(resolve => setTimeout(resolve, 500))
 
-      // Beräkna antal sidor baserat på innehållets höjd
-      const contentHeight = element.scrollHeight
-      const pageHeight = 1123 // A4 höjd i pixlar vid 96 DPI
-      const totalPages = Math.ceil(contentHeight / pageHeight)
+      // Beräkna total höjd
+      const totalHeight = element.scrollHeight
+      const a4HeightPx = 1123 // A4 höjd i pixlar vid 96 DPI
+      const totalPages = Math.max(1, Math.ceil(totalHeight / a4HeightPx))
 
       // Skapa PDF
       const pdf = new jsPDF('p', 'mm', 'a4')
       const pdfWidth = 210
-      // const pdfHeight = 297
+      const pdfHeight = 297
 
+      // Rendera hela CV:t som en stor canvas
+      const fullCanvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: element.scrollWidth,
+        height: totalHeight,
+        windowWidth: 794, // A4 bredd i pixlar
+      })
+
+      // Dela upp i sidor
+      const pageHeightPx = (pdfHeight / pdfWidth) * fullCanvas.width
+      
       for (let page = 0; page < totalPages && page < 5; page++) {
         if (page > 0) {
           pdf.addPage()
         }
 
-        // Skapa canvas för denna sida
-        const canvas = await html2canvas(element, {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          logging: false,
-          backgroundColor: '#ffffff',
-          x: 0,
-          y: page * pageHeight,
-          width: element.scrollWidth,
-          height: Math.min(pageHeight, contentHeight - page * pageHeight),
-          windowWidth: element.scrollWidth,
-        })
-
-        const imgData = canvas.toDataURL('image/png', 1.0)
-        const imgWidth = canvas.width
-        const imgHeight = canvas.height
+        // Skapa en temporär canvas för denna sida
+        const pageCanvas = document.createElement('canvas')
+        pageCanvas.width = fullCanvas.width
+        pageCanvas.height = Math.min(pageHeightPx, fullCanvas.height - page * pageHeightPx)
         
-        // Skala för att passa PDF
-        const scale = pdfWidth / (imgWidth / 2)
-        const scaledWidth = pdfWidth
-        const scaledHeight = (imgHeight / 2) * scale
-
-        pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
+        const ctx = pageCanvas.getContext('2d')
+        if (ctx) {
+          // Rita vit bakgrund
+          ctx.fillStyle = '#ffffff'
+          ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height)
+          
+          // Kopiera delen av bilden som ska vara på denna sida
+          ctx.drawImage(
+            fullCanvas,
+            0, // source x
+            page * pageHeightPx, // source y
+            fullCanvas.width, // source width
+            pageCanvas.height, // source height
+            0, // dest x
+            0, // dest y
+            pageCanvas.width, // dest width
+            pageCanvas.height // dest height
+          )
+          
+          // Konvertera till bild och lägg till i PDF
+          const pageImgData = pageCanvas.toDataURL('image/png', 1.0)
+          const imgProps = pdf.getImageProperties(pageImgData)
+          const pdfImgHeight = (imgProps.height * pdfWidth) / imgProps.width
+          
+          pdf.addImage(pageImgData, 'PNG', 0, 0, pdfWidth, pdfImgHeight)
+        }
       }
 
       // Återställ stilar
-      element.style.width = originalWidth
+      element.style.width = ''
       element.style.minHeight = ''
 
       // Spara PDF
@@ -152,8 +173,8 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
 
       <div className="mt-4 p-3 bg-slate-50 rounded-lg">
         <p className="text-xs text-slate-500">
-          <strong>Tips:</strong> PDF:en anpassas automatiskt till A4-storlek. 
-          Om ditt CV är långt skapas flera sidor automatiskt.
+          <strong>Tips:</strong> För bästa resultat, se till att din förhandsvisning 
+          ser bra ut innan du exporterar. PDF:en skapas utifrån den.
         </p>
       </div>
     </div>
