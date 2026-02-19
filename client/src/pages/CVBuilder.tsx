@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronRight, ChevronLeft, 
@@ -10,6 +10,7 @@ import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
 import { JobMatcher } from '@/components/cv/JobMatcher'
 import { ATSAnalyzer } from '@/components/cv/ATSAnalyzer'
 import { PhraseBank } from '@/components/cv/PhraseBank'
+import { CVExport } from '@/components/cv/CVExport'
 
 interface WorkExperience {
   id: string
@@ -31,6 +32,7 @@ interface Education {
 }
 
 export default function CVBuilder() {
+  const previewRef = useRef<HTMLDivElement>(null)
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
@@ -553,13 +555,19 @@ export default function CVBuilder() {
           {/* Preview */}
           {showPreview && (
             <div className="sticky top-6">
-              <CVPreview data={formData} template={selectedTemplate} />
+              <div ref={previewRef}>
+                <CVPreview data={formData} template={selectedTemplate} />
+              </div>
             </div>
           )}
 
           {/* Tools */}
           {!showPreview && (
             <div className="space-y-6">
+              <CVExport 
+                previewRef={previewRef} 
+                fileName={`${formData.firstName}-${formData.lastName}-CV`.replace(/\s+/g, '-').toLowerCase() || 'mitt-cv'} 
+              />
               <ATSAnalyzer score={atsScore} checks={atsChecks} suggestions={atsSuggestions} />
               <JobMatcher cvSkills={formData.skills} cvSummary={formData.summary} />
             </div>
