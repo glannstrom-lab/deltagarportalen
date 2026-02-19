@@ -34,22 +34,45 @@ interface CVPreviewProps {
   template: Template
 }
 
+// Hex-färger för PDF-export-kompatibilitet (undviker oklch-problem)
+const colors = {
+  slate: {
+    50: '#f8fafc',
+    100: '#f1f5f9',
+    200: '#e2e8f0',
+    300: '#cbd5e1',
+    400: '#94a3b8',
+    500: '#64748b',
+    600: '#475569',
+    700: '#334155',
+    800: '#1e293b',
+    900: '#0f172a',
+  }
+}
+
 export function CVPreview({ data, template }: CVPreviewProps) {
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
   
   return (
     <div 
       className="bg-white rounded-2xl shadow-lg overflow-hidden"
-      style={{ fontFamily: template.font }}
+      style={{ 
+        fontFamily: template.font,
+        backgroundColor: '#ffffff'
+      }}
+      data-cv-export="true"
     >
       {/* Header */}
       <div 
-        className="p-8 text-white"
-        style={{ backgroundColor: template.primaryColor }}
+        className="p-8"
+        style={{ 
+          backgroundColor: template.primaryColor,
+          color: '#ffffff'
+        }}
       >
         <h1 className="text-3xl font-bold">{fullName}</h1>
         {data.title && (
-          <p className="text-xl mt-2 opacity-90">{data.title}</p>
+          <p className="text-xl mt-2" style={{ opacity: 0.9 }}>{data.title}</p>
         )}
         
         <div className="flex flex-wrap gap-4 mt-4 text-sm">
@@ -74,17 +97,22 @@ export function CVPreview({ data, template }: CVPreviewProps) {
         </div>
       </div>
 
-      <div className="p-8 space-y-6">
+      <div className="p-8 space-y-6" style={{ backgroundColor: '#ffffff' }}>
         {/* Summary */}
         {data.summary && (
           <section>
             <h2 
               className="text-lg font-semibold mb-3 pb-2 border-b-2"
-              style={{ borderColor: template.primaryColor, color: template.primaryColor }}
+              style={{ 
+                borderColor: template.primaryColor, 
+                color: template.primaryColor 
+              }}
             >
               Profil
             </h2>
-            <p className="text-slate-700 leading-relaxed">{data.summary}</p>
+            <p className="leading-relaxed" style={{ color: colors.slate[700] }}>
+              {data.summary}
+            </p>
           </section>
         )}
 
@@ -93,7 +121,10 @@ export function CVPreview({ data, template }: CVPreviewProps) {
           <section>
             <h2 
               className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
-              style={{ borderColor: template.primaryColor, color: template.primaryColor }}
+              style={{ 
+                borderColor: template.primaryColor, 
+                color: template.primaryColor 
+              }}
             >
               <Briefcase size={18} />
               Arbetslivserfarenhet
@@ -102,14 +133,18 @@ export function CVPreview({ data, template }: CVPreviewProps) {
               {data.workExperience.map((job) => (
                 <div key={job.id}>
                   <div className="flex justify-between items-start">
-                    <h3 className="font-semibold text-slate-800">{job.title}</h3>
-                    <span className="text-sm text-slate-500">
+                    <h3 className="font-semibold" style={{ color: colors.slate[800] }}>
+                      {job.title}
+                    </h3>
+                    <span className="text-sm" style={{ color: colors.slate[500] }}>
                       {job.startDate} - {job.current ? 'Pågående' : job.endDate}
                     </span>
                   </div>
-                  <p className="text-slate-600">{job.company}</p>
+                  <p style={{ color: colors.slate[600] }}>{job.company}</p>
                   {job.description && (
-                    <p className="text-slate-700 mt-1 text-sm">{job.description}</p>
+                    <p className="mt-1 text-sm" style={{ color: colors.slate[700] }}>
+                      {job.description}
+                    </p>
                   )}
                 </div>
               ))}
@@ -122,7 +157,10 @@ export function CVPreview({ data, template }: CVPreviewProps) {
           <section>
             <h2 
               className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
-              style={{ borderColor: template.primaryColor, color: template.primaryColor }}
+              style={{ 
+                borderColor: template.primaryColor, 
+                color: template.primaryColor 
+              }}
             >
               <GraduationCap size={18} />
               Utbildning
@@ -131,13 +169,19 @@ export function CVPreview({ data, template }: CVPreviewProps) {
               {data.education.map((edu) => (
                 <div key={edu.id}>
                   <div className="flex justify-between items-start">
-                    <h3 className="font-semibold text-slate-800">{edu.degree}</h3>
-                    <span className="text-sm text-slate-500">
+                    <h3 className="font-semibold" style={{ color: colors.slate[800] }}>
+                      {edu.degree}
+                    </h3>
+                    <span className="text-sm" style={{ color: colors.slate[500] }}>
                       {edu.startDate} - {edu.endDate}
                     </span>
                   </div>
-                  <p className="text-slate-600">{edu.school}</p>
-                  {edu.field && <p className="text-slate-700 text-sm">{edu.field}</p>}
+                  <p style={{ color: colors.slate[600] }}>{edu.school}</p>
+                  {edu.field && (
+                    <p className="text-sm" style={{ color: colors.slate[700] }}>
+                      {edu.field}
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -149,7 +193,10 @@ export function CVPreview({ data, template }: CVPreviewProps) {
           <section>
             <h2 
               className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
-              style={{ borderColor: template.primaryColor, color: template.primaryColor }}
+              style={{ 
+                borderColor: template.primaryColor, 
+                color: template.primaryColor 
+              }}
             >
               <Wrench size={18} />
               Kompetenser

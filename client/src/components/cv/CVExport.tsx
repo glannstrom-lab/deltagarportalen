@@ -9,6 +9,43 @@ interface CVExportProps {
   onShowPreview?: () => void
 }
 
+// Konvertera oklch-färger till rgb/hex för html2canvas-kompatibilitet
+function convertColorsForExport(element: HTMLElement): HTMLElement {
+  const clone = element.cloneNode(true) as HTMLElement
+  
+  // Hämta alla element i klonen
+  const allElements = clone.querySelectorAll('*')
+  
+  allElements.forEach((el) => {
+    const htmlEl = el as HTMLElement
+    const computedStyle = window.getComputedStyle(htmlEl)
+    
+    // Kontrollera och konvertera bakgrundsfärg
+    const bgColor = computedStyle.backgroundColor
+    if (bgColor && bgColor.includes('oklch')) {
+      htmlEl.style.backgroundColor = '#ffffff'
+    }
+    
+    // Kontrollera och konvertera textfärg
+    const color = computedStyle.color
+    if (color && color.includes('oklch')) {
+      htmlEl.style.color = '#1e293b' // slate-800
+    }
+    
+    // Kontrollera border-färger
+    const borderColor = computedStyle.borderColor
+    if (borderColor && borderColor.includes('oklch')) {
+      htmlEl.style.borderColor = '#e2e8f0' // slate-200
+    }
+  })
+  
+  // Säkerställ att containern har vit bakgrund
+  clone.style.backgroundColor = '#ffffff'
+  clone.style.color = '#1e293b'
+  
+  return clone
+}
+
 export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: CVExportProps) {
   const [isExporting, setIsExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -31,77 +68,102 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
         throw new Error('CV-elementet har ingen storlek. Kontrollera att förhandsvisningen är synlig.')
       }
 
-      // Skapa canvas från HTML-elementet
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        windowWidth: element.scrollWidth + 100,
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-      })
+      // Konvertera färger för kompatibilitet med html2canvas
+      const exportElement = convertColorsForExport(element)
+      
+      // Temporärt lägg till i DOM för att html2canvas ska fungera
+      exportElement.style.position = 'fixed'
+      exportElement.style.left = '-9999px'
+      exportElement.style.top = '0'
+      exportElement.style.width = element.offsetWidth + 'px'
+      document.body.appendChild(exportElement)
 
-      const imgData = canvas.toDataURL('image/png', 1.0)
-      
-      // Skapa PDF
-      const pdf = new jsPDF('p', 'mm', 'a4')
-      const pdfWidth = 210 // A4 bredd i mm
-      const pdfHeight = 297 // A4 höjd i mm
-      
-      const imgWidth = canvas.width
-      const imgHeight = canvas.height
-      
-      // Beräkna skalning för att passa A4-bredd
-      const scale = pdfWidth / (imgWidth / 2) // Dela med 2 pga scale: 2
-      const scaledWidth = pdfWidth
-      const scaledHeight = (imgHeight / 2) * scale
-      
-      // Om CV:et får plats på en sida
-      if (scaledHeight <= pdfHeight) {
-        pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
-      } else {
-        // Flera sidor - använd enkel paginering
-        let pageCount = 0
-        let remainingHeight = imgHeight
+      // Vänta på att DOM ska uppdateras
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      try {
+        // Skapa canvas från HTML-elementet
+        const canvas = await html2canvas(exportElement, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          logging: false,
+          backgroundColor: '#ffffff',
+          windowWidth: exportElement.scrollWidth + 100,
+          width: exportElement.scrollWidth,
+          height: exportElement.scrollHeight,
+          // Ignorera oklch-färger som kan orsaka fel
+          onclone: (clonedDoc) => {
+            const clonedElement = clonedDoc.body.querySelector('[data-cv-export]') || clonedDoc.body.firstElementChild
+            if (clonedElement) {
+              (clonedElement as HTMLElement).style.backgroundColor = '#ffffff'
+            }
+          }
+        })
+
+        const imgData = canvas.toDataURL('image/png', 1.0)
         
-        while (remainingHeight > 0 && pageCount < 10) {
-          if (pageCount > 0) {
-            pdf.addPage()
-          }
+        // Skapa PDF
+        const pdf = new jsPDF('p', 'mm', 'a4')
+        const pdfWidth = 210 // A4 bredd i mm
+        const pdfHeight = 297 // A4 höjd i mm
+        
+        const imgWidth = canvas.width
+        const imgHeight = canvas.height
+        
+        // Beräkna skalning för att passa A4-bredd
+        const scale = pdfWidth / (imgWidth / 2) // Dela med 2 pga scale: 2
+        const scaledWidth = pdfWidth
+        const scaledHeight = (imgHeight / 2) * scale
+        
+        // Om CV:et får plats på en sida
+        if (scaledHeight <= pdfHeight) {
+          pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
+        } else {
+          // Flera sidor - använd enkel paginering
+          let pageCount = 0
+          let remainingHeight = imgHeight
           
-          // Beräkna vilken del av bilden som ska visas på denna sida
-          const offsetY = pageCount * pdfHeight / scale * 2
-          const drawHeight = Math.min(pdfHeight / scale * 2, remainingHeight)
-          
-          // Skapa en temporär canvas för denna sida
-          const tempCanvas = document.createElement('canvas')
-          tempCanvas.width = imgWidth
-          tempCanvas.height = drawHeight
-          const tempCtx = tempCanvas.getContext('2d')
-          
-          if (tempCtx) {
-            // Kopiera delen av original-canvas till temporär canvas
-            tempCtx.drawImage(
-              canvas,
-              0, offsetY, imgWidth, drawHeight, // source
-              0, 0, imgWidth, drawHeight // dest
-            )
+          while (remainingHeight > 0 && pageCount < 10) {
+            if (pageCount > 0) {
+              pdf.addPage()
+            }
             
-            const pageImgData = tempCanvas.toDataURL('image/png')
-            const pageScaledHeight = (drawHeight / 2) * scale
+            // Beräkna vilken del av bilden som ska visas på denna sida
+            const offsetY = pageCount * pdfHeight / scale * 2
+            const drawHeight = Math.min(pdfHeight / scale * 2, remainingHeight)
             
-            pdf.addImage(pageImgData, 'PNG', 0, 0, scaledWidth, pageScaledHeight)
+            // Skapa en temporär canvas för denna sida
+            const tempCanvas = document.createElement('canvas')
+            tempCanvas.width = imgWidth
+            tempCanvas.height = drawHeight
+            const tempCtx = tempCanvas.getContext('2d')
+            
+            if (tempCtx) {
+              // Kopiera delen av original-canvas till temporär canvas
+              tempCtx.drawImage(
+                canvas,
+                0, offsetY, imgWidth, drawHeight, // source
+                0, 0, imgWidth, drawHeight // dest
+              )
+              
+              const pageImgData = tempCanvas.toDataURL('image/png')
+              const pageScaledHeight = (drawHeight / 2) * scale
+              
+              pdf.addImage(pageImgData, 'PNG', 0, 0, scaledWidth, pageScaledHeight)
+            }
+            
+            remainingHeight -= drawHeight
+            pageCount++
           }
-          
-          remainingHeight -= drawHeight
-          pageCount++
         }
-      }
 
-      // Spara PDF
-      pdf.save(`${fileName}.pdf`)
+        // Spara PDF
+        pdf.save(`${fileName}.pdf`)
+      } finally {
+        // Rensa upp temporärt element
+        document.body.removeChild(exportElement)
+      }
     } catch (err) {
       console.error('Fel vid PDF-export:', err)
       setError(err instanceof Error ? err.message : 'Kunde inte skapa PDF. Försök igen.')
