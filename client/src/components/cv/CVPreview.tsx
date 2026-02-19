@@ -128,8 +128,8 @@ function CVPreviewContent({ data }: CVPreviewProps) {
       style={{ 
         fontFamily, 
         backgroundColor: '#ffffff',
-        maxWidth: '210mm',
-        margin: '0 auto',
+        width: '210mm',
+        maxWidth: '100%',
       }}
       data-cv-export="true"
     >

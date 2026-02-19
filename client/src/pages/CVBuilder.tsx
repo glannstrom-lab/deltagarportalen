@@ -1166,36 +1166,27 @@ export default function CVBuilder() {
 
         {/* Right column - Preview & Tools */}
         <div className="space-y-6">
-          {/* Hidden preview for export */}
+          {/* Preview - always rendered but can be visually hidden */}
           <div 
             ref={previewRef}
-            style={{ 
-              position: 'fixed',
-              left: '-9999px',
+            className={showPreview ? 'sticky top-6' : ''}
+            style={showPreview ? {} : { 
+              position: 'absolute',
+              left: '-10000px',
               top: '0',
-              width: '794px',
-              visibility: 'visible',
+              opacity: '0.01',
               pointerEvents: 'none',
+              width: '794px',
             }}
-            aria-hidden="true"
           >
             <CVPreview data={formData} />
           </div>
 
-          {/* Visible preview */}
-          {showPreview && (
-            <div className="sticky top-6">
-              <CVPreview data={formData} />
-            </div>
-          )}
-
-          {/* Sidebar tools - when preview is hidden */}
+          {/* Sidebar tools */}
           {!showPreview && (
             <div className="space-y-6">
               <CVExport 
-                getCVElement={() => previewRef.current}
                 fileName={`${formData.firstName}-${formData.lastName}-CV`.replace(/\s+/g, '-').toLowerCase() || 'mitt-cv'}
-                onShowPreview={() => setShowPreview(true)}
               />
               
               <CVShare onShare={handleShare} />

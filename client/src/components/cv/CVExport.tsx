@@ -1,129 +1,129 @@
 import { useState } from 'react'
-import { Download, FileText, Loader2, AlertCircle, Eye } from 'lucide-react'
+import { Download, FileText, Loader2, AlertCircle } from 'lucide-react'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 
 interface CVExportProps {
-  getCVElement: () => HTMLElement | null
   fileName?: string
-  onShowPreview?: () => void
 }
 
-export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: CVExportProps) {
+export function CVExport({ fileName = 'mitt-cv' }: CVExportProps) {
   const [isExporting, setIsExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const exportToPDF = async () => {
-    const element = getCVElement()
-    
-    if (!element) {
-      setError('Kunde inte hitta CV-elementet.')
-      return
-    }
-
     setError(null)
     setIsExporting(true)
     
     try {
-      // Dynamiskt importera html2pdf (det är ett stort bibliotek)
-      const html2pdf = (await import('html2pdf.js')).default
-
-      // Gör elementet synligt och sätt rätt storlek
-      const originalPosition = element.style.position
-      const originalLeft = element.style.left
-      const originalVisibility = element.style.visibility
+      // Hämta CV-elementet från den synliga förhandsvisningen
+      // Om ingen preview är synlig, leta efter den dolda containern
+      let element = document.querySelector('[data-cv-export="true"]') as HTMLElement
       
-      element.style.position = 'absolute'
-      element.style.left = '-9999px'
-      element.style.visibility = 'visible'
-      element.style.width = '210mm'
-      element.style.minHeight = '297mm'
+      if (!element) {
+        throw new Error('Kunde inte hitta CV-element. Vänligen aktivera förhandsvisningen först.')
+      }
 
-      // Vänta på att layout ska uppdateras
-      await new Promise(resolve => setTimeout(resolve, 500))
+      // Kontrollera om elementet har dimensioner
+      const rect = element.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) {
+        throw new Error('CV-elementet har ingen storlek. Vänligen aktivera förhandsvisningen.')
+      }
 
-      // Konfiguration för html2pdf
-      const opt = {
-        margin: 0,
-        filename: `${fileName}.pdf`,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: {
-          scale: 2,
-          useCORS: true,
-          allowTaint: true,
-          backgroundColor: '#ffffff',
-          width: 794, // A4 bredd i pixlar
-          height: null, // Automatisk höjd
-          windowWidth: 794,
-        },
-        jsPDF: {
-          unit: 'mm' as const,
-          format: 'a4' as const,
-          orientation: 'portrait' as const
-        },
-        pagebreak: {
-          mode: ['avoid-all', 'css', 'legacy'] as const,
-          before: '.page-break-before',
-          after: '.page-break-after',
-          avoid: 'section, .skill-tag, .avoid-break'
+      // Spara nuvarande stilar
+      const originalOverflow = element.style.overflow
+      const originalHeight = element.style.height
+      
+      // Säkerställ att hela innehållet är synligt
+      element.style.overflow = 'visible'
+      element.style.height = 'auto'
+
+      // Rendera hela elementet
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        width: element.scrollWidth,
+        height: element.scrollHeight,
+      })
+
+      // Återställ stilar
+      element.style.overflow = originalOverflow
+      element.style.height = originalHeight
+
+      const imgData = canvas.toDataURL('image/png', 1.0)
+      
+      // A4 dimensioner i mm
+      const pdfWidth = 210
+      const pdfHeight = 297
+      
+      // Beräkna skalning
+      const imgWidth = canvas.width
+      const imgHeight = canvas.height
+      const ratio = imgWidth / imgHeight
+      
+      const scaledWidth = pdfWidth
+      const scaledHeight = pdfWidth / ratio
+      
+      // Skapa PDF
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      
+      // Om hela CV:t får plats på en sida
+      if (scaledHeight <= pdfHeight) {
+        pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
+      } else {
+        // Flera sidor - beräkna hur många sidor som behövs
+        const totalPages = Math.ceil(scaledHeight / pdfHeight)
+        
+        for (let page = 0; page < totalPages && page < 5; page++) {
+          if (page > 0) {
+            pdf.addPage()
+          }
+          
+          // Beräkna vilken del av bilden som ska visas på denna sida
+          const sourceY = (page * pdfHeight * imgWidth) / pdfWidth
+          const sourceHeight = Math.min(
+            ((pdfHeight * imgWidth) / pdfWidth),
+            imgHeight - sourceY
+          )
+          
+          // Skapa temporär canvas för denna sida
+          const pageCanvas = document.createElement('canvas')
+          pageCanvas.width = imgWidth
+          pageCanvas.height = sourceHeight
+          
+          const ctx = pageCanvas.getContext('2d')
+          if (ctx) {
+            ctx.fillStyle = '#ffffff'
+            ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height)
+            ctx.drawImage(
+              canvas,
+              0, sourceY, imgWidth, sourceHeight,
+              0, 0, imgWidth, sourceHeight
+            )
+            
+            const pageImgData = pageCanvas.toDataURL('image/png')
+            const pageHeightMm = (sourceHeight * pdfWidth) / imgWidth
+            
+            pdf.addImage(pageImgData, 'PNG', 0, 0, pdfWidth, pageHeightMm)
+          }
         }
       }
 
-      // Generera PDF
-      await html2pdf().set(opt).from(element).save()
-
-      // Återställ stilar
-      element.style.position = originalPosition
-      element.style.left = originalLeft
-      element.style.visibility = originalVisibility
-      element.style.width = ''
-      element.style.minHeight = ''
-
+      pdf.save(`${fileName}.pdf`)
     } catch (err) {
-      console.error('Fel vid PDF-export:', err)
-      setError(err instanceof Error ? err.message : 'Kunde inte skapa PDF.')
+      console.error('PDF export error:', err)
+      setError(err instanceof Error ? err.message : 'Kunde inte skapa PDF')
     } finally {
       setIsExporting(false)
     }
   }
 
   const printCV = () => {
-    // Skapa en print-vänlig version
-    const element = getCVElement()
-    if (!element) return
-
-    const printWindow = window.open('', '_blank')
-    if (!printWindow) {
-      alert('Tillåt popup-fönster för att skriva ut')
-      return
-    }
-
-    const styles = `
-      <style>
-        @page { size: A4; margin: 0; }
-        body { margin: 0; padding: 0; }
-        * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-      </style>
-    `
-
-    printWindow.document.write(`
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Mitt CV</title>
-          ${styles}
-        </head>
-        <body>
-          ${element.outerHTML}
-        </body>
-      </html>
-    `)
-    
-    printWindow.document.close()
-    
-    // Vänta på att bilder ska laddas
-    setTimeout(() => {
-      printWindow.focus()
-      printWindow.print()
-    }, 500)
+    // Öppna print-dialog direkt
+    window.print()
   }
 
   return (
@@ -144,15 +144,6 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
             <AlertCircle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
             <p className="text-sm text-red-700">{error}</p>
           </div>
-          {onShowPreview && (
-            <button
-              onClick={onShowPreview}
-              className="mt-2 flex items-center gap-1 text-sm text-[#4f46e5] hover:underline"
-            >
-              <Eye size={14} />
-              Visa förhandsvisning först
-            </button>
-          )}
         </div>
       )}
 
@@ -186,8 +177,8 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
 
       <div className="mt-4 p-3 bg-slate-50 rounded-lg">
         <p className="text-xs text-slate-500">
-          <strong>Tips:</strong> PDF:en skapas med automatiska sidbrytningar som 
-          undviker att dela sektioner mitt i.
+          <strong>Tips:</strong> Om PDF-exporten inte fungerar, använd "Skriv ut" 
+          och välj "Spara som PDF" i print-dialogen för bästa resultat.
         </p>
       </div>
     </div>
