@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // CV-data
+  cv CV?
+
+  // Intresseguide-resultat
+  interestResult InterestResult?
+
+  // Personliga brev
+  coverLetters CoverLetter[]
+
+  // Konsulent-kommentarer
+  notes Note[]
+
+  @@map("users")
+}
+
+model CV {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Personlig information
+  profileImage   String?
+  title          String?
+  email          String?
+  phone          String?
+  location       String?
+  summary        String?
+  
+  // JSON-fält för flexibel data (lagras som JSON-strängar i SQLite)
+  workExperience String?  // Array av jobb (JSON-sträng)
+  education      String?  // Array av utbildningar (JSON-sträng)
+  skills         String?  // Komma-separerad lista
+  languages      String?  // Array av språk (JSON-sträng)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("cvs")
+}
+
+model InterestResult {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // RIASEC-resultat
+  realistic    Int      @default(0)
+  investigative  Int    @default(0)
+  artistic     Int      @default(0)
+  social       Int      @default(0)
+  enterprising Int      @default(0)
+  conventional Int      @default(0)
+  hollandCode  String?
+  
+  // Big Five (simplified)
+  openness     Int      @default(0)
+  conscientiousness Int @default(0)
+  extraversion Int      @default(0)
+  agreeableness Int     @default(0)
+  neuroticism  Int      @default(0)
+  
+  // ICF / Fysiska krav
+  physicalRequirements String?  // JSON-sträng
+
+  // Rekommendationer
+  recommendedJobs String?  // JSON-sträng
+  
+  completedAt  DateTime @default(now())
+
+  @@map("interest_results")
+}
+
+model CoverLetter {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title     String
+  jobAd     String
+  content   String
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cover_letters")
+}
+
+model Note {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  content     String
+  createdBy   String   // Konsulent-ID
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("notes")
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  summary     String?
+  category    String
+  tags        String?  // Komma-separerad
+  published   Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("articles")
+}
+
+// Role values: USER, CONSULTANT, ADMIN (stored as String for SQLite compatibility)

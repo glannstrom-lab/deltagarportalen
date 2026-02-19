@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deltagarportalen - Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #f0fdfa 0%, #f8fafc 100%);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: white;
+            border-radius: 1rem;
+            margin-bottom: 3rem;
+        }
+        
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        header p {
+            font-size: 1.25rem;
+            opacity: 0.9;
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #0f766e 0%, #14b8a6 100%);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: #0f766e;
+        }
+        
+        .feature-card p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+        
+        .tech-stack {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .tech-stack h2 {
+            color: #0f766e;
+            margin-bottom: 1.5rem;
+        }
+        
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        
+        .tech-item {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 0.5rem;
+            border-left: 4px solid #0f766e;
+        }
+        
+        .tech-item strong {
+            display: block;
+            color: #0f766e;
+            margin-bottom: 0.25rem;
+        }
+        
+        .tech-item span {
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        
+        .cta {
+            text-align: center;
+            padding: 3rem;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border-radius: 1rem;
+            color: white;
+        }
+        
+        .cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta p {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: white;
+            color: #d97706;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: transform 0.2s;
+        }
+        
+        .btn:hover {
+            transform: scale(1.05);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+        }
+        
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #dcfce7;
+            color: #166534;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        
+        .status::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #22c55e;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="status">✓ Portalen är byggd och klar</div>
+            <h1>🎯 Deltagarportalen</h1>
+            <p>En modern portal för arbetssökande med CV-generator, intresseguide och kunskapsbank</p>
+        </header>
+
+        <div class="features">
+            <div class="feature-card">
+                <div class="feature-icon">📝</div>
+                <h3>CV-Generator</h3>
+                <p>Bygg ett professionellt CV steg för steg. Inkluderar ATS-analys för att säkerställa att ditt CV kommer förbi rekryteringssystem.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">✉️</div>
+                <h3>Personligt Brev</h3>
+                <p>AI-driven generator som skapar personliga brev baserat på jobbannonser. Spara och återanvänd dina brev.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">🧭</div>
+                <h3>Intresseguide</h3>
+                <p>Omfattande test baserat på RIASEC och Big Five. Hitta yrken som matchar dina intressen och personlighet.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📚</div>
+                <h3>Kunskapsbank</h3>
+                <p>Artiklar och guider om arbetsmarknaden, hälsa och välmående. Sök och filtrera efter ämne.</p>
+            </div>
+        </div>
+
+        <div class="tech-stack">
+            <h2>🛠️ Teknisk Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-item">
+                    <strong>Frontend</strong>
+                    <span>React 18 + TypeScript + Vite + Tailwind CSS</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Backend</strong>
+                    <span>Node.js + Express + TypeScript</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Databas</strong>
+                    <span>SQLite + Prisma ORM</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Autentisering</strong>
+                    <span>JWT med rollbaserad åtkomst</span>
+                </div>
+                <div class="tech-item">
+                    <strong>State Management</strong>
+                    <span>Zustand + React Query</span>
+                </div>
+                <div class="tech-item">
+                    <strong>Ikoner</strong>
+                    <span>Lucide React</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta">
+            <h2>🚀 Portalen är klar!</h2>
+            <p>All kod finns i mappen /root/.openclaw/workspace/deltagarportal/</p>
+            <a href="#" class="btn">Se projektet på GitHub (kommer snart)</a>
+        </div>
+
+        <footer>
+            <p>Utvecklad för arbetssökande och arbetskonsulenter ❤️</p>
+            <p style="margin-top: 0.5rem; font-size: 0.875rem;">Byggd nattetid med fokus på användarvänlighet och effektivisering</p>
+        </footer>
+    </div>
+</body>
+</html>
