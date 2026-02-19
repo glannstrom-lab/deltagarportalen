@@ -129,6 +129,27 @@ export const cvApi = {
       : apiRequest('/cv', { method: 'PUT', body: JSON.stringify(data) }),
   getATSAnalysis: () =>
     USE_MOCK ? mockCvApi.getATSAnalysis() : apiRequest('/cv/ats-analysis'),
+  // Versions
+  getVersions: () =>
+    USE_MOCK ? mockCvApi.getVersions() : apiRequest('/cv/versions'),
+  saveVersion: (name: string, data: any) =>
+    USE_MOCK
+      ? mockCvApi.saveVersion(name, data)
+      : apiRequest('/cv/versions', { method: 'POST', body: JSON.stringify({ name, data }) }),
+  restoreVersion: (versionId: string) =>
+    USE_MOCK
+      ? mockCvApi.restoreVersion(versionId)
+      : apiRequest(`/cv/versions/${versionId}/restore`, { method: 'POST' }),
+  // Sharing
+  shareCV: () =>
+    USE_MOCK ? mockCvApi.shareCV() : apiRequest('/cv/share', { method: 'POST' }),
+  // Job matching
+  getJobMatches: () =>
+    USE_MOCK ? mockCvApi.getJobMatches() : apiRequest('/cv/job-matches'),
+  analyzeJob: (jobDescription: string) =>
+    USE_MOCK
+      ? mockCvApi.analyzeJob(jobDescription)
+      : apiRequest('/cv/analyze-job', { method: 'POST', body: JSON.stringify({ jobDescription }) }),
 }
 
 // Interest API

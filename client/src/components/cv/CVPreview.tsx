@@ -1,40 +1,13 @@
-import { Mail, Phone, MapPin, Briefcase, GraduationCap, Wrench } from 'lucide-react'
+import { Mail, Phone, MapPin, Briefcase, GraduationCap, Wrench, Award, Link2, Users, Languages } from 'lucide-react'
 import type { Template } from './CVTemplateSelector'
-
-interface CVData {
-  firstName: string
-  lastName: string
-  title: string
-  email: string
-  phone: string
-  location: string
-  summary: string
-  skills: string
-  workExperience: Array<{
-    id: string
-    company: string
-    title: string
-    startDate: string
-    endDate: string
-    current: boolean
-    description: string
-  }>
-  education: Array<{
-    id: string
-    school: string
-    degree: string
-    field: string
-    startDate: string
-    endDate: string
-  }>
-}
+import type { CVData } from '@/services/mockApi'
 
 interface CVPreviewProps {
   data: CVData
   template: Template
 }
 
-// Hex-färger för PDF-export-kompatibilitet (undviker oklch-problem)
+// Hex-färger för PDF-export-kompatibilitet
 const colors = {
   slate: {
     50: '#f8fafc',
@@ -50,8 +23,33 @@ const colors = {
   }
 }
 
+// Skill level display component
+function SkillLevel({ level }: { level?: number }) {
+  if (!level) return null
+  
+  return (
+    <div className="flex gap-0.5 mt-1">
+      {[1, 2, 3, 4, 5].map((dot) => (
+        <div
+          key={dot}
+          className="w-2 h-2 rounded-full"
+          style={{
+            backgroundColor: dot <= level ? 'currentColor' : colors.slate[300],
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
 export function CVPreview({ data, template }: CVPreviewProps) {
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
+  
+  // Group skills by category
+  const technicalSkills = data.skills?.filter(s => s.category === 'technical') || []
+  const softSkills = data.skills?.filter(s => s.category === 'soft') || []
+  const toolSkills = data.skills?.filter(s => s.category === 'tool') || []
+  const otherSkills = data.skills?.filter(s => !s.category || s.category === 'language') || []
   
   return (
     <div 
@@ -95,6 +93,22 @@ export function CVPreview({ data, template }: CVPreviewProps) {
             </div>
           )}
         </div>
+
+        {/* Links */}
+        {data.links && data.links.length > 0 && (
+          <div className="flex flex-wrap gap-4 mt-3 text-sm">
+            {data.links.map((link) => (
+              <div key={link.id} className="flex items-center gap-1">
+                <Link2 size={14} />
+                {link.type === 'linkedin' && 'LinkedIn'}
+                {link.type === 'github' && 'GitHub'}
+                {link.type === 'portfolio' && 'Portfolio'}
+                {link.type === 'website' && 'Webbplats'}
+                {link.type === 'other' && link.label || 'Länk'}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="p-8 space-y-6" style={{ backgroundColor: '#ffffff' }}>
@@ -117,7 +131,7 @@ export function CVPreview({ data, template }: CVPreviewProps) {
         )}
 
         {/* Work Experience */}
-        {data.workExperience.length > 0 && (
+        {data.workExperience && data.workExperience.length > 0 && (
           <section>
             <h2 
               className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
@@ -140,7 +154,7 @@ export function CVPreview({ data, template }: CVPreviewProps) {
                       {job.startDate} - {job.current ? 'Pågående' : job.endDate}
                     </span>
                   </div>
-                  <p style={{ color: colors.slate[600] }}>{job.company}</p>
+                  <p style={{ color: colors.slate[600] }}>{job.company}{job.location && `, ${job.location}`}</p>
                   {job.description && (
                     <p className="mt-1 text-sm" style={{ color: colors.slate[700] }}>
                       {job.description}
@@ -153,7 +167,7 @@ export function CVPreview({ data, template }: CVPreviewProps) {
         )}
 
         {/* Education */}
-        {data.education.length > 0 && (
+        {data.education && data.education.length > 0 && (
           <section>
             <h2 
               className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
@@ -176,10 +190,10 @@ export function CVPreview({ data, template }: CVPreviewProps) {
                       {edu.startDate} - {edu.endDate}
                     </span>
                   </div>
-                  <p style={{ color: colors.slate[600] }}>{edu.school}</p>
-                  {edu.field && (
+                  <p style={{ color: colors.slate[600] }}>{edu.school}{edu.field && ` - ${edu.field}`}</p>
+                  {edu.description && (
                     <p className="text-sm" style={{ color: colors.slate[700] }}>
-                      {edu.field}
+                      {edu.description}
                     </p>
                   )}
                 </div>
@@ -188,8 +202,8 @@ export function CVPreview({ data, template }: CVPreviewProps) {
           </section>
         )}
 
-        {/* Skills */}
-        {data.skills && (
+        {/* Skills with categories */}
+        {data.skills && data.skills.length > 0 && (
           <section>
             <h2 
               className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
@@ -201,18 +215,138 @@ export function CVPreview({ data, template }: CVPreviewProps) {
               <Wrench size={18} />
               Kompetenser
             </h2>
-            <div className="flex flex-wrap gap-2">
-              {data.skills.split(',').map((skill, index) => (
-                <span
-                  key={index}
-                  className="px-3 py-1 rounded-full text-sm"
-                  style={{
-                    backgroundColor: `${template.secondaryColor}20`,
-                    color: template.primaryColor,
-                  }}
-                >
-                  {skill.trim()}
-                </span>
+            
+            {technicalSkills.length > 0 && (
+              <div className="mb-3">
+                <h4 className="text-sm font-medium mb-2" style={{ color: colors.slate[600] }}>Tekniska</h4>
+                <div className="flex flex-wrap gap-2">
+                  {technicalSkills.map((skill) => (
+                    <span
+                      key={skill.id}
+                      className="px-3 py-1 rounded-full text-sm flex flex-col items-center"
+                      style={{
+                        backgroundColor: `${template.secondaryColor}20`,
+                        color: template.primaryColor,
+                      }}
+                    >
+                      {skill.name}
+                      <SkillLevel level={skill.level} />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {softSkills.length > 0 && (
+              <div className="mb-3">
+                <h4 className="text-sm font-medium mb-2" style={{ color: colors.slate[600] }}>Mjuka färdigheter</h4>
+                <div className="flex flex-wrap gap-2">
+                  {softSkills.map((skill) => (
+                    <span
+                      key={skill.id}
+                      className="px-3 py-1 rounded-full text-sm flex flex-col items-center"
+                      style={{
+                        backgroundColor: `${template.secondaryColor}20`,
+                        color: template.primaryColor,
+                      }}
+                    >
+                      {skill.name}
+                      <SkillLevel level={skill.level} />
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(toolSkills.length > 0 || otherSkills.length > 0) && (
+              <div className="flex flex-wrap gap-2">
+                {[...toolSkills, ...otherSkills].map((skill) => (
+                  <span
+                    key={skill.id}
+                    className="px-3 py-1 rounded-full text-sm flex flex-col items-center"
+                    style={{
+                      backgroundColor: `${template.secondaryColor}20`,
+                      color: template.primaryColor,
+                    }}
+                  >
+                    {skill.name}
+                    <SkillLevel level={skill.level} />
+                  </span>
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Languages */}
+        {data.languages && data.languages.length > 0 && (
+          <section>
+            <h2 
+              className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
+              style={{ 
+                borderColor: template.primaryColor, 
+                color: template.primaryColor 
+              }}
+            >
+              <Languages size={18} />
+              Språk
+            </h2>
+            <div className="flex flex-wrap gap-4">
+              {data.languages.map((lang) => (
+                <div key={lang.id} className="flex items-center gap-2">
+                  <span className="font-medium" style={{ color: colors.slate[800] }}>{lang.language}</span>
+                  <span className="text-sm" style={{ color: colors.slate[500] }}>({lang.level})</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Certificates */}
+        {data.certificates && data.certificates.length > 0 && (
+          <section>
+            <h2 
+              className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
+              style={{ 
+                borderColor: template.primaryColor, 
+                color: template.primaryColor 
+              }}
+            >
+              <Award size={18} />
+              Certifikat
+            </h2>
+            <div className="space-y-2">
+              {data.certificates.map((cert) => (
+                <div key={cert.id} className="flex justify-between">
+                  <span style={{ color: colors.slate[700] }}>{cert.name}</span>
+                  <span className="text-sm" style={{ color: colors.slate[500] }}>{cert.issuer}, {cert.date}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* References */}
+        {data.references && data.references.length > 0 && (
+          <section>
+            <h2 
+              className="text-lg font-semibold mb-3 pb-2 border-b-2 flex items-center gap-2"
+              style={{ 
+                borderColor: template.primaryColor, 
+                color: template.primaryColor 
+              }}
+            >
+              <Users size={18} />
+              Referenser
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {data.references.map((ref) => (
+                <div key={ref.id}>
+                  <p className="font-medium" style={{ color: colors.slate[800] }}>{ref.name}</p>
+                  <p className="text-sm" style={{ color: colors.slate[600] }}>{ref.title}, {ref.company}</p>
+                  {ref.phone && <p className="text-sm" style={{ color: colors.slate[500] }}>{ref.phone}</p>}
+                  {ref.email && <p className="text-sm" style={{ color: colors.slate[500] }}>{ref.email}</p>}
+                </div>
               ))}
             </div>
           </section>
