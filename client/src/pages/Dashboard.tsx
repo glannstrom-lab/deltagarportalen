@@ -50,13 +50,13 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 px-4 py-2">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-semibold text-slate-900">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-slate-900 mb-2">
           Välkommen tillbaka, {user?.firstName}
         </h1>
-        <p className="text-slate-500 mt-1">
+        <p className="text-slate-500">
           Här är din översikt för idag.
         </p>
       </div>

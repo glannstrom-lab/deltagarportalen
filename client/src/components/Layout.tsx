@@ -12,7 +12,7 @@ export default function Layout() {
         <Sidebar />
         <main className="flex-1 min-h-screen">
           <Header />
-          <div className="p-8 lg:p-12 max-w-6xl">
+          <div className="p-6 lg:p-10 max-w-6xl">
             <Outlet />
           </div>
         </main>

@@ -2,22 +2,35 @@ import { Link, useLocation } from 'react-router-dom'
 import { navItems, bottomItems } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { Briefcase, LogOut } from 'lucide-react'
+import { Briefcase, LogOut, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
 
 export function Sidebar() {
   const location = useLocation()
   const { logout } = useAuthStore()
+  const [expanded, setExpanded] = useState(true)
 
   return (
-    <aside className="w-64 bg-white border-r border-slate-100 h-screen sticky top-0 flex flex-col">
+    <aside className={cn(
+      "bg-white border-r border-slate-100 h-screen sticky top-0 flex flex-col transition-all duration-300",
+      expanded ? "w-64" : "w-20"
+    )}>
       {/* Logo */}
-      <div className="p-6">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-violet-600 rounded-lg flex items-center justify-center">
+      <div className="p-6 flex items-center justify-between">
+        <Link to="/" className="flex items-center gap-3 overflow-hidden">
+          <div className="w-9 h-9 bg-violet-600 rounded-lg flex items-center justify-center flex-shrink-0">
             <Briefcase className="w-5 h-5 text-white" />
           </div>
-          <span className="font-semibold text-slate-900">Deltagarportalen</span>
+          {expanded && (
+            <span className="font-semibold text-slate-900 whitespace-nowrap">Deltagarportalen</span>
+          )}
         </Link>
+        <button 
+          onClick={() => setExpanded(!expanded)}
+          className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400"
+        >
+          {expanded ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
+        </button>
       </div>
 
       {/* Main Navigation */}
@@ -36,9 +49,10 @@ export function Sidebar() {
                   ? 'bg-violet-50 text-violet-700 font-medium' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               )}
+              title={!expanded ? item.label : undefined}
             >
               <Icon size={20} />
-              <span>{item.label}</span>
+              {expanded && <span>{item.label}</span>}
             </Link>
           )
         })}
@@ -60,9 +74,10 @@ export function Sidebar() {
                   ? 'bg-violet-50 text-violet-700 font-medium' 
                   : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
               )}
+              title={!expanded ? item.label : undefined}
             >
               <Icon size={18} />
-              <span>{item.label}</span>
+              {expanded && <span>{item.label}</span>}
             </Link>
           )
         })}
@@ -70,9 +85,10 @@ export function Sidebar() {
         <button
           onClick={logout}
           className="w-full flex items-center gap-3 px-4 py-2.5 text-slate-600 hover:bg-red-50 hover:text-red-600 rounded-lg transition-colors text-sm"
+          title={!expanded ? "Logga ut" : undefined}
         >
           <LogOut size={18} />
-          <span>Logga ut</span>
+          {expanded && <span>Logga ut</span>}
         </button>
       </div>
     </aside>
