@@ -17,7 +17,7 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
     const element = getCVElement()
     
     if (!element) {
-      setError('Kunde inte hitta CV-elementet. Försök uppdatera sidan.')
+      setError('Kunde inte hitta CV-elementet.')
       return
     }
 
@@ -25,111 +25,64 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
     setIsExporting(true)
     
     try {
-      // Scrolla till elementet för att säkerställa att det är korrekt renderat
-      const originalPosition = element.style.position
-      const originalLeft = element.style.left
-      const originalVisibility = element.style.visibility
-      
-      // Gör elementet synligt men fortfarande utanför skärmen
-      element.style.position = 'fixed'
-      element.style.left = '-9999px'
-      element.style.visibility = 'visible'
-      element.style.width = '794px'
+      // Säkerställ att elementet har rätt storlek innan vi börjar
+      const originalWidth = element.style.width
+      element.style.width = '210mm'
+      element.style.minHeight = '297mm'
       
       // Vänta på att DOM ska uppdateras
-      await new Promise(resolve => setTimeout(resolve, 200))
+      await new Promise(resolve => setTimeout(resolve, 300))
 
-      try {
-        // Skapa canvas från HTML-elementet
+      // Beräkna antal sidor baserat på innehållets höjd
+      const contentHeight = element.scrollHeight
+      const pageHeight = 1123 // A4 höjd i pixlar vid 96 DPI
+      const totalPages = Math.ceil(contentHeight / pageHeight)
+
+      // Skapa PDF
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      const pdfWidth = 210
+      // const pdfHeight = 297
+
+      for (let page = 0; page < totalPages && page < 5; page++) {
+        if (page > 0) {
+          pdf.addPage()
+        }
+
+        // Skapa canvas för denna sida
         const canvas = await html2canvas(element, {
           scale: 2,
           useCORS: true,
           allowTaint: true,
-          logging: true, // Tillfälligt för debugging
+          logging: false,
           backgroundColor: '#ffffff',
-          width: 794,
-          height: element.scrollHeight || 1123, // A4 höjd ungefär
-          windowWidth: 794,
           x: 0,
-          y: 0,
+          y: page * pageHeight,
+          width: element.scrollWidth,
+          height: Math.min(pageHeight, contentHeight - page * pageHeight),
+          windowWidth: element.scrollWidth,
         })
 
-        // Kontrollera att canvas har innehåll
-        const ctx = canvas.getContext('2d')
-        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
-        const hasContent = imageData?.data.some((pixel, index) => 
-          index % 4 !== 3 && pixel !== 0 && pixel !== 255
-        )
-        
-        if (!hasContent) {
-          console.warn('Canvas verkar vara tom, försöker igen...')
-        }
-
         const imgData = canvas.toDataURL('image/png', 1.0)
-        
-        // Skapa PDF
-        const pdf = new jsPDF('p', 'mm', 'a4')
-        const pdfWidth = 210 // A4 bredd i mm
-        const pdfHeight = 297 // A4 höjd i mm
-        
         const imgWidth = canvas.width
         const imgHeight = canvas.height
         
-        // Beräkna skalning för att passa A4-bredd
+        // Skala för att passa PDF
         const scale = pdfWidth / (imgWidth / 2)
         const scaledWidth = pdfWidth
         const scaledHeight = (imgHeight / 2) * scale
-        
-        // Om CV:et får plats på en sida
-        if (scaledHeight <= pdfHeight) {
-          pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
-        } else {
-          // Flera sidor
-          let pageCount = 0
-          let remainingHeight = imgHeight
-          
-          while (remainingHeight > 0 && pageCount < 10) {
-            if (pageCount > 0) {
-              pdf.addPage()
-            }
-            
-            const offsetY = pageCount * pdfHeight / scale * 2
-            const drawHeight = Math.min(pdfHeight / scale * 2, remainingHeight)
-            
-            const tempCanvas = document.createElement('canvas')
-            tempCanvas.width = imgWidth
-            tempCanvas.height = drawHeight
-            const tempCtx = tempCanvas.getContext('2d')
-            
-            if (tempCtx) {
-              tempCtx.drawImage(
-                canvas,
-                0, offsetY, imgWidth, drawHeight,
-                0, 0, imgWidth, drawHeight
-              )
-              
-              const pageImgData = tempCanvas.toDataURL('image/png')
-              const pageScaledHeight = (drawHeight / 2) * scale
-              
-              pdf.addImage(pageImgData, 'PNG', 0, 0, scaledWidth, pageScaledHeight)
-            }
-            
-            remainingHeight -= drawHeight
-            pageCount++
-          }
-        }
 
-        pdf.save(`${fileName}.pdf`)
-      } finally {
-        // Återställ stilar
-        element.style.position = originalPosition
-        element.style.left = originalLeft
-        element.style.visibility = originalVisibility
-        element.style.width = '794px'
+        pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
       }
+
+      // Återställ stilar
+      element.style.width = originalWidth
+      element.style.minHeight = ''
+
+      // Spara PDF
+      pdf.save(`${fileName}.pdf`)
     } catch (err) {
       console.error('Fel vid PDF-export:', err)
-      setError(err instanceof Error ? err.message : 'Kunde inte skapa PDF. Försök igen.')
+      setError(err instanceof Error ? err.message : 'Kunde inte skapa PDF.')
     } finally {
       setIsExporting(false)
     }
@@ -193,14 +146,14 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
           className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors"
         >
           <FileText size={18} />
-          Skriv ut / Spara som PDF
+          Skriv ut
         </button>
       </div>
 
       <div className="mt-4 p-3 bg-slate-50 rounded-lg">
         <p className="text-xs text-slate-500">
-          <strong>Tips:</strong> Om PDF:en är tom, prova att visa förhandsvisningen först 
-          och sedan exportera.
+          <strong>Tips:</strong> PDF:en anpassas automatiskt till A4-storlek. 
+          Om ditt CV är långt skapas flera sidor automatiskt.
         </p>
       </div>
     </div>

@@ -114,7 +114,8 @@ export default function CVBuilder() {
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
-  const [selectedTemplate, setSelectedTemplate] = useState<Template>(templates[0])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [_selectedTemplate, _setSelectedTemplate] = useState<Template>(templates[0])
   
   // Versionshantering
   const [versions, setVersions] = useState<CVVersion[]>([])
@@ -175,7 +176,7 @@ export default function CVBuilder() {
 
       // Uppdatera vald mall
       const template = templates.find(t => t.id === cv.template) || templates[0]
-      setSelectedTemplate(template)
+      _setSelectedTemplate(template)
     } catch (error) {
       console.error('Fel vid laddning av CV:', error)
     }
@@ -568,7 +569,7 @@ export default function CVBuilder() {
                 selectedFont={formData.font}
                 onSelect={(id) => {
                   setFormData({ ...formData, template: id })
-                  setSelectedTemplate(templates.find(t => t.id === id) || templates[0])
+                  _setSelectedTemplate(templates.find(t => t.id === id) || templates[0])
                 }}
                 onSelectColorScheme={(scheme) => setFormData({ ...formData, colorScheme: scheme })}
                 onSelectFont={(font) => setFormData({ ...formData, font })}
@@ -1178,13 +1179,13 @@ export default function CVBuilder() {
             }}
             aria-hidden="true"
           >
-            <CVPreview data={formData} template={selectedTemplate} />
+            <CVPreview data={formData} />
           </div>
 
           {/* Visible preview */}
           {showPreview && (
             <div className="sticky top-6">
-              <CVPreview data={formData} template={selectedTemplate} />
+              <CVPreview data={formData} />
             </div>
           )}
 
