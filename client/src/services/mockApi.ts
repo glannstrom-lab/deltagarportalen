@@ -832,7 +832,26 @@ export const mockCvApi = {
 
 export const mockInterestApi = {
   getQuestions: () => mockApiRequest('/interest/questions'),
-  getResult: () => mockApiRequest('/interest/result'),
+  getResult: async () => {
+    // Läs från localStorage för att få riktig data från intresseguiden
+    const saved = localStorage.getItem('interest-guide-result')
+    if (saved) {
+      try {
+        const data = JSON.parse(saved)
+        if (data.profile) {
+          return {
+            id: 'user-result',
+            userId: 'demo-user-id',
+            ...data.profile,
+            createdAt: data.timestamp,
+          }
+        }
+      } catch {
+        // Fallback till mock-data
+      }
+    }
+    return mockApiRequest('/interest/result')
+  },
   saveResult: (data: any) => mockApiRequest('/interest/result', { method: 'POST', body: JSON.stringify(data) }),
   getRecommendations: () => mockApiRequest('/interest/recommendations'),
 }

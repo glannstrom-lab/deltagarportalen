@@ -1,0 +1,3095 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Intresseguide - Hitta ditt framtida yrke</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-gradient-start: #667eea;
+            --bg-gradient-end: #764ba2;
+            --container-bg: white;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --text-muted: #444;
+            --border-color: #e0e0e0;
+            --border-hover: #667eea;
+            --option-bg: #f8f9ff;
+            --option-selected-bg: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+            --card-bg: #f8f9ff;
+            --card-unsuitable-bg: #fff5f5;
+            --card-adaptation-bg: #fffbf0;
+            --info-item-bg: white;
+            --feature-card-bg: #f8f9ff;
+            --education-details-bg: #f0f7ff;
+            --shadow-color: rgba(0,0,0,0.3);
+            --btn-prev-bg: #e0e0e0;
+            --btn-prev-color: #666;
+            --btn-prev-hover: #d0d0d0;
+            --warning-bg: #fff5f5;
+            --warning-border: #e74c3c;
+            --adaptations-border: #f39c12;
+            --progress-bg: #e0e0e0;
+            --related-tag-bg: #e8e8ff;
+            --related-tag-color: #667eea;
+            --chart-grid: rgba(0,0,0,0.1);
+            --chart-text: #666;
+            --icf-bg: #f0fff4;
+            --icf-border: #27ae60;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient-start: #1a1a2e;
+            --bg-gradient-end: #16213e;
+            --container-bg: #1e1e2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #a0a0a0;
+            --border-color: #3a3a4e;
+            --border-hover: #667eea;
+            --option-bg: #2a2a3e;
+            --option-selected-bg: linear-gradient(135deg, rgba(102,126,234,0.2), rgba(118,75,162,0.2));
+            --card-bg: #2a2a3e;
+            --card-unsuitable-bg: #3e2a2a;
+            --card-adaptation-bg: #3e362a;
+            --info-item-bg: #2a2a3e;
+            --feature-card-bg: #2a2a3e;
+            --education-details-bg: #2a3a4e;
+            --shadow-color: rgba(0,0,0,0.5);
+            --btn-prev-bg: #3a3a4e;
+            --btn-prev-color: #b0b0b0;
+            --btn-prev-hover: #4a4a5e;
+            --warning-bg: #3e2a2a;
+            --warning-border: #e74c3c;
+            --adaptations-border: #f39c12;
+            --progress-bg: #3a3a4e;
+            --related-tag-bg: #3a3a5e;
+            --related-tag-color: #a0a0ff;
+            --chart-grid: rgba(255,255,255,0.1);
+            --chart-text: #b0b0b0;
+            --icf-bg: #1a3a2e;
+            --icf-border: #27ae60;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-start) 0%, var(--bg-gradient-end) 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            transition: background 0.3s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--container-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px var(--shadow-color);
+            padding: 40px;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: var(--option-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            cursor: pointer;
+            font-size: 1.3em;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--border-hover);
+            transform: scale(1.1);
+        }
+
+        .saved-data-indicator {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            display: none;
+        }
+
+        .saved-data-indicator.show { display: block; }
+
+        .clear-data-btn {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            color: var(--warning-border);
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            font-size: 2.2em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .section-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .section-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--progress-bg);
+            transition: all 0.3s ease;
+        }
+
+        .section-dot.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scale(1.3);
+        }
+
+        .section-dot.completed {
+            background: #27ae60;
+        }
+
+        .progress-container {
+            background: var(--progress-bg);
+            border-radius: 10px;
+            height: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.4s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            font-size: 0.95em;
+        }
+
+        .section-title {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.4em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 25px;
+            font-size: 0.95em;
+        }
+
+        .question-container { margin-bottom: 30px; }
+
+        .question {
+            font-size: 1.2em;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 35px;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--container-bg);
+        }
+
+        .option:hover {
+            border-color: var(--border-hover);
+            background: var(--option-bg);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: var(--option-selected-bg);
+        }
+
+        .option input { display: none; }
+
+        .option-circle {
+            width: 24px;
+            height: 24px;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-circle {
+            border-color: #667eea;
+            background: #667eea;
+        }
+
+        .option.selected .option-circle::after {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .option-text {
+            font-size: 1em;
+            color: var(--text-muted);
+        }
+
+        .slider-container { padding: 20px 0; }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .slider {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--progress-bg);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(102,126,234,0.4);
+        }
+
+        .slider-value {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .btn-prev {
+            background: var(--btn-prev-bg);
+            color: var(--btn-prev-color);
+        }
+
+        .btn-prev:hover {
+            background: var(--btn-prev-hover);
+        }
+
+        .btn-next, .btn-submit {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            flex-grow: 1;
+        }
+
+        .btn-next:hover, .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .intro-screen { text-align: center; padding: 20px; }
+        .intro-screen p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 20px; }
+
+        .intro-features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .feature-card {
+            background: var(--feature-card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .feature-card .icon { font-size: 2.5em; margin-bottom: 15px; }
+        .feature-card h3 { color: var(--text-primary); margin-bottom: 10px; font-size: 1.1em; }
+        .feature-card p { color: var(--text-secondary); font-size: 0.9em; }
+
+        .start-btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+        }
+
+        .continue-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 15px;
+        }
+
+        .continue-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(39,174,96,0.4);
+        }
+
+        .hidden { display: none !important; }
+
+        /* Results Styles */
+        .results-container { display: none; }
+        .results-container.show { display: block; }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .results-actions {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .action-btn.success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .action-btn.secondary {
+            background: var(--btn-prev-bg);
+            color: var(--btn-prev-color);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Profile Analysis Styles */
+        .profile-analysis {
+            margin-bottom: 40px;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .profile-card h3 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .chart-box {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .chart-box h4 {
+            color: var(--text-primary);
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 280px;
+        }
+
+        .riasec-code {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .riasec-letter {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: white;
+        }
+
+        .riasec-letter.r { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .riasec-letter.i { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .riasec-letter.a { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        .riasec-letter.s { background: linear-gradient(135deg, #27ae60, #2ecc71); }
+        .riasec-letter.e { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .riasec-letter.c { background: linear-gradient(135deg, #1abc9c, #16a085); }
+
+        .interpretation-box {
+            background: var(--option-bg);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 15px 0;
+            line-height: 1.7;
+        }
+
+        .trait-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .trait-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .trait-label {
+            width: 140px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            flex-shrink: 0;
+        }
+
+        .trait-bar {
+            flex-grow: 1;
+            height: 10px;
+            background: var(--progress-bg);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .trait-fill {
+            height: 100%;
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .trait-fill.high { background: linear-gradient(90deg, #27ae60, #2ecc71); }
+        .trait-fill.medium { background: linear-gradient(90deg, #f39c12, #e67e22); }
+        .trait-fill.low { background: linear-gradient(90deg, #e74c3c, #c0392b); }
+
+        .trait-score {
+            width: 45px;
+            text-align: right;
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.9em;
+        }
+
+        /* ICF Styles */
+        .icf-section {
+            background: var(--icf-bg);
+            border: 2px solid var(--icf-border);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .icf-adaptations {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px dashed var(--icf-border);
+        }
+
+        .icf-adaptations h4 {
+            color: var(--icf-border);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .adaptation-category {
+            margin-bottom: 15px;
+        }
+
+        .adaptation-category h5 {
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .adaptation-category ul {
+            margin-left: 20px;
+            color: var(--text-secondary);
+            font-size: 0.9em;
+        }
+
+        .adaptation-category li {
+            margin-bottom: 5px;
+        }
+
+        /* Job Cards */
+        .job-category { margin-bottom: 40px; }
+
+        .job-category h3 {
+            color: var(--text-primary);
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 4px solid #667eea;
+            position: relative;
+        }
+
+        .job-card.unsuitable {
+            background: var(--card-unsuitable-bg);
+            border-left-color: #e74c3c;
+        }
+
+        .job-card.needs-adaptation {
+            background: var(--card-adaptation-bg);
+            border-left-color: #f39c12;
+        }
+
+        .job-compare-checkbox {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-right: 30px;
+        }
+
+        .job-title {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .match-percentage {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .match-percentage.low { color: #e74c3c; }
+        .match-percentage.medium { color: #f39c12; }
+
+        .job-description {
+            color: var(--text-secondary);
+            font-size: 0.95em;
+            margin-bottom: 10px;
+        }
+
+        .match-bar-container {
+            background: var(--progress-bg);
+            border-radius: 5px;
+            height: 8px;
+            overflow: hidden;
+        }
+
+        .match-bar {
+            height: 100%;
+            border-radius: 5px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: width 0.5s ease;
+        }
+
+        .match-bar.low { background: #e74c3c; }
+        .match-bar.medium { background: #f39c12; }
+
+        .job-count {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        .job-count a {
+            color: #2e7d32;
+            text-decoration: none;
+        }
+
+        .job-count a:hover {
+            text-decoration: underline;
+        }
+
+        .job-details-btn {
+            background: none;
+            border: 1px solid #667eea;
+            color: #667eea;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .job-details-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .job-expanded-info {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .job-expanded-info.show { display: block; }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .info-item {
+            background: var(--info-item-bg);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .info-item h5 {
+            color: #667eea;
+            font-size: 0.8em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .info-item p { color: var(--text-primary); font-size: 0.95em; margin: 0; }
+        .info-item .salary { font-weight: bold; color: #27ae60; }
+
+        .prognosis-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .prognosis-badge.growing { background: #d4edda; color: #155724; }
+        .prognosis-badge.stable { background: #fff3cd; color: #856404; }
+        .prognosis-badge.declining { background: #f8d7da; color: #721c24; }
+
+        .related-jobs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .related-job-tag {
+            background: var(--related-tag-bg);
+            color: var(--related-tag-color);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.85em;
+        }
+
+        .career-path {
+            background: linear-gradient(90deg, var(--card-bg), var(--container-bg));
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+
+        .career-path span { color: var(--text-secondary); font-size: 0.9em; }
+        .career-arrow { color: #667eea; margin: 0 8px; }
+
+        .education-details {
+            background: var(--education-details-bg);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+
+        .education-details h5 { color: #2c5aa0; margin-bottom: 8px; }
+        .education-details ul { margin: 0; padding-left: 20px; color: var(--text-muted); font-size: 0.9em; }
+        .education-details li { margin-bottom: 4px; }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            margin: 40px 0;
+        }
+
+        .restart-btn {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 40px auto 0;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102,126,234,0.4);
+        }
+
+        /* Compare Bar */
+        .compare-bar {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border-radius: 12px 12px 0 0;
+            box-shadow: 0 -5px 20px rgba(0,0,0,0.2);
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            z-index: 1000;
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .compare-count {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .compare-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-left: auto;
+        }
+
+        .compare-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 20px;
+        }
+
+        .modal-overlay.show { display: flex; }
+
+        .modal-content {
+            background: var(--container-bg);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: var(--text-secondary);
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .comparison-table th {
+            background: var(--option-bg);
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .comparison-table td {
+            color: var(--text-secondary);
+        }
+
+        /* Expandable Section */
+        .expandable-section { margin-top: 15px; }
+
+        .expand-btn {
+            background: var(--option-bg);
+            border: 1px solid var(--border-color);
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            font-size: 0.95em;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .expand-btn:hover { background: var(--progress-bg); }
+
+        .expand-content {
+            display: none;
+            padding: 15px;
+            background: var(--option-bg);
+            border-radius: 0 0 8px 8px;
+            margin-top: -5px;
+        }
+
+        .expand-content.show { display: block; }
+
+        /* Warning Box */
+        .warning-box {
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-border);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+
+        .warning-box h4 { color: var(--warning-border); margin-bottom: 8px; }
+        .warning-box p { color: var(--text-secondary); font-size: 0.9em; }
+
+        /* Adaptations */
+        .adaptations {
+            margin-top: 15px;
+            padding: 15px;
+            background: var(--container-bg);
+            border-radius: 8px;
+            border: 1px dashed var(--adaptations-border);
+        }
+
+        .adaptations h4 { color: var(--adaptations-border); margin-bottom: 10px; font-size: 0.95em; }
+        .adaptations ul { margin-left: 20px; color: var(--text-secondary); font-size: 0.9em; }
+        .adaptations li { margin-bottom: 5px; }
+
+        @media (max-width: 600px) {
+            .container { padding: 25px; }
+            h1 { font-size: 1.6em; }
+            .question { font-size: 1.05em; }
+            .nav-buttons { flex-direction: column; }
+            .btn { width: 100%; }
+            .chart-grid { grid-template-columns: 1fr; }
+            .header { flex-direction: column; gap: 15px; }
+            .results-actions { flex-direction: column; }
+            .action-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Intro Screen -->
+        <div id="intro-screen" class="intro-screen">
+            <h1>Intresseguide</h1>
+            <p class="subtitle">Hitta yrken som passar dig</p>
+            
+            <p>Välkommen till vår omfattande intresseguide! Genom att svara på <strong>40 optimerade frågor</strong> om dina intressen, personlighet och förutsättningar hjälper vi dig att hitta yrken som passar just dig. Testet bygger på vetenskapliga modeller som RIASEC, Big Five, Strong Interest Inventory, ICF och fysiska arbetskrav.</p>
+            
+            <div class="intro-features">
+                <div class="feature-card">
+                    <div class="icon">🔍</div>
+                    <h3>RIASEC</h3>
+                    <p>Upptäck din Holland-kod och vilka yrkestyper som passar dig</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🧠</div>
+                    <h3>Big Five</h3>
+                    <p>Förstå din personlighet och hur den påverkar yrkesval</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">📊</div>
+                    <h3>ICF & Fysiska krav</h3>
+                    <p>Identifiera dina förutsättningar och vilka anpassningar som kan hjälpa</p>
+                </div>
+                <div class="feature-card">
+                    <div class="icon">🎯</div>
+                    <h3>Personliga matchningar</h3>
+                    <p>Få rekommendationer med lediga jobb från Arbetsförmedlingen</p>
+                </div>
+            </div>
+            
+            <button class="start-btn" onclick="startQuiz()">Starta guiden</button>
+            <button id="continue-btn" class="continue-btn hidden" onclick="continueQuiz()">Fortsätt där du slutade</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden">
+            <div class="header">
+                <h1>Intresseguide</h1>
+                <div class="header-buttons">
+                    <div id="saved-indicator" class="saved-data-indicator">✓ Sparat</div>
+                    <button class="clear-data-btn" onclick="clearSavedData()" title="Rensa sparad data">🗑️</button>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Växla mörkt/ljust läge">
+                        <span id="theme-icon">🌙</span>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="section-dots" id="section-dots"></div>
+            
+            <div class="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Fråga 1 av 40</div>
+            
+            <div class="section-title" id="section-title">Del 1: RIASEC</div>
+            <div class="section-subtitle" id="section-subtitle">Upptäck din arbetsstil enligt Holland-koderna</div>
+            
+            <div class="question-container" id="question-container"></div>
+            
+            <div class="nav-buttons">
+                <button class="btn btn-prev" id="prev-btn" onclick="prevQuestion()">Tillbaka</button>
+                <button class="btn btn-next" id="next-btn" onclick="nextQuestion()">Nästa</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-screen" class="results-container">
+            <div class="header">
+                <h1>Dina resultat</h1>
+                <div class="header-buttons">
+                    <button class="clear-data-btn" onclick="clearSavedData()" title="Rensa sparad data">🗑️ Rensa</button>
+                    <button class="theme-toggle" onclick="toggleTheme()" title="Växla mörkt/ljust läge">
+                        <span id="theme-icon-results">🌙</span>
+                    </button>
+                </div>
+            </div>
+            <div class="results-header">
+                <h2>Baserat på dina svar har vi analyserat din profil</h2>
+            </div>
+            <div class="results-actions">
+                <button class="action-btn primary" onclick="shareResults()">🔗 Dela</button>
+                <button class="action-btn success" onclick="downloadPDF()">📄 PDF</button>
+                <button class="action-btn secondary" onclick="restartQuiz()">🔄 Omstart</button>
+            </div>
+            <div id="profile-analysis"></div>
+            <div id="compare-bar" class="compare-bar hidden">
+                <span class="compare-count"><span id="compare-count">0</span> yrken valda</span>
+                <button class="compare-btn" id="compare-btn" onclick="showComparison()" disabled>Jämför</button>
+            </div>
+            <div id="results-content"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Gör om testet</button>
+        </div>
+    </div>
+
+    <!-- Comparison Modal -->
+    <div id="comparison-modal" class="modal-overlay" onclick="closeModalOnOverlay(event)">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeComparison()">&times;</button>
+            <h2>Jämför yrken</h2>
+            <div id="comparison-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // FRÅGEDATA - ALLA 84 FRÅGOR
+        // ==========================================
+
+        // RIASEC Frågor (6 st - 1 per kategori, optimerade för bredd)
+        const riasecQuestions = [
+            { id: 'r1', question: "Jag gillar att arbeta praktiskt med händerna, maskiner eller utomhus", category: 'R', section: 'riasec' },
+            { id: 'i1', question: "Jag gillar att analysera, forska och förstå komplexa problem", category: 'I', section: 'riasec' },
+            { id: 'a1', question: "Jag älskar att vara kreativ, skapa och uttrycka mig estetiskt", category: 'A', section: 'riasec' },
+            { id: 's1', question: "Jag trivs bäst när jag får hjälpa, undervisa eller stötta andra", category: 'S', section: 'riasec' },
+            { id: 'e1', question: "Jag gillar att leda, påverka, sälja eller driva projekt", category: 'E', section: 'riasec' },
+            { id: 'c1', question: "Jag gillar att organisera, strukturera och arbeta med detaljer/data", category: 'C', section: 'riasec' }
+        ];
+
+        // Big Five Frågor (10 st - 2 per trait, optimerade)
+        const bigFiveQuestions = [
+            // Öppenhet (Openness) - kombinerar fantasi/kreativitet och nyfikenhet
+            { id: 'bf_o1', question: "Jag är nyfiken, kreativ och gillar nya idéer och upplevelser", category: 'openness', section: 'bigfive' },
+            { id: 'bf_o2', question: "Jag uppskattar konst, fantasi och att tänka utanför boxen", category: 'openness', section: 'bigfive' },
+            // Samvetsgrannhet (Conscientiousness) - kombinerar noggrannhet och pålitlighet
+            { id: 'bf_c1', question: "Jag är noggrann, organiserad och gör alltid mitt bästa", category: 'conscientiousness', section: 'bigfive' },
+            { id: 'bf_c2', question: "Jag är pålitlig, planerar mitt arbete och håller deadlines", category: 'conscientiousness', section: 'bigfive' },
+            // Extraversion - kombinerar social och energi
+            { id: 'bf_e1', question: "Jag är utåtriktad, pratsam och trivs med andra människor", category: 'extraversion', section: 'bigfive' },
+            { id: 'bf_e2', question: "Jag blir energisk av sociala sammanhang och tycker om att uttrycka mig", category: 'extraversion', section: 'bigfive' },
+            // Vänlighet (Agreeableness) - kombinerar empati och samarbete
+            { id: 'bf_a1', question: "Jag bryr mig om andra, är empatisk och samarbetsvillig", category: 'agreeableness', section: 'bigfive' },
+            { id: 'bf_a2', question: "Jag litar på människor, undviker konflikter och ser det bästa i andra", category: 'agreeableness', section: 'bigfive' },
+            // Emotionell stabilitet - kombinerar stresshantering och återhämtning
+            { id: 'bf_n1', question: "Jag hanterar stress väl och håller mig lugn under press", category: 'stability', section: 'bigfive' },
+            { id: 'bf_n2', question: "Jag är stabil i humöret och återhämtar mig snabbt från motgångar", category: 'stability', section: 'bigfive' }
+        ];
+
+        // Strong Interest Inventory (10 frågor)
+        const strongInterestQuestions = [
+            { id: 'si1', question: "Teknik, mekanik och att förstå hur maskiner fungerar", category: 'teknik_mekanik', section: 'strong' },
+            { id: 'si2', question: "Naturvetenskap, biologi, kemi och forskning", category: 'natur_vetenskap', section: 'strong' },
+            { id: 'si3', question: "Konst, kultur, design och estetiskt skapande", category: 'konst_kultur', section: 'strong' },
+            { id: 'si4', question: "Socialt arbete, vård och att hjälpa människor i svårigheter", category: 'social_vard', section: 'strong' },
+            { id: 'si5', question: "Affärer, försäljning och entreprenörskap", category: 'affarer_forsaljning', section: 'strong' },
+            { id: 'si6', question: "Administration, kontorsarbete och organisering", category: 'administration_kontor', section: 'strong' },
+            { id: 'si7', question: "Utomhusarbete och arbete i naturen", category: 'utomhusarbete', section: 'strong' },
+            { id: 'si8', question: "Ledarskap, organisation och att styra projekt", category: 'ledarskap_organisation', section: 'strong' },
+            { id: 'si9', question: "Data, IT, programmering och digitala system", category: 'data_it', section: 'strong' },
+            { id: 'si10', question: "Undervisning, pedagogik och att lära ut", category: 'undervisning_pedagogik', section: 'strong' }
+        ];
+
+        // Styrkor tas bort - integreras i Big Five och RIASEC istället
+
+        // ICF-baserad arbetsstilsmodell (6 frågor - 1 per område, optimerade)
+        const icfQuestions = [
+            { id: 'icf_cog', question: "Jag har lätt att komma ihåg, planera, organisera och lösa problem", category: 'kognitiv', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'icf_com', question: "Jag kan uttrycka mig tydligt, förstå sociala koder och samarbeta", category: 'kommunikation', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'icf_con', question: "Jag kan fokusera på uppgifter, växla fokus och ignorera störningar", category: 'koncentration', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'icf_mot', question: "Jag kan röra mig fritt, hantera fysiska uppgifter och variera kroppsställning", category: 'motorik', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'icf_sen', question: "Jag hanterar ljud, ljus och andra sinnesintryck utan att bli överväldigad", category: 'sensorisk', section: 'icf', lowLabel: 'Mycket känslig', highLabel: 'Inte känslig' },
+            { id: 'icf_en', question: "Jag har ork att arbeta hela dagen och återhämtar mig efter ansträngning", category: 'energi', section: 'icf', lowLabel: 'Mycket trött', highLabel: 'Mycket energi' }
+        ];
+
+        // Intressefrågor tas bort - täcks av RIASEC och Strong Interest Inventory
+
+        // Fysiska utmaningar (8 frågor - 4 kategorier)
+        const physicalQuestions = [
+            // Kraft / belastning
+            { id: 'phy_kraft1', question: "Jag klarar av att lyfta och bära tyngre föremål", category: 'kraft', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'phy_kraft2', question: "Jag hanterar fysiskt krävande arbete med hög belastning", category: 'kraft', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            // Uthållighet / kondition
+            { id: 'phy_uth1', question: "Jag orkar med arbete som kräver god kondition under hela dagen", category: 'uthallighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'phy_uth2', question: "Jag klarar av att röra mig mycket utan att bli andfådd eller trött", category: 'uthallighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            // Rörlighet & arbetsställningar
+            { id: 'phy_ror1', question: "Jag kan böja mig, sträcka mig och arbeta i olika positioner", category: 'rorlighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'phy_ror2', question: "Jag klarar av att arbeta i obekväma ställningar (knästående, över huvudet, etc.)", category: 'rorlighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            // Precision & finmotorik
+            { id: 'phy_prec1', question: "Jag har stadiga händer och kan utföra precisionsarbete", category: 'precision', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+            { id: 'phy_prec2', question: "Jag klarar av finmotoriska uppgifter som kräver noggrannhet (skruva, knäppa, etc.)", category: 'precision', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' }
+        ];
+
+        // Kombinera alla frågor (40 st totalt)
+        const allQuestions = [
+            ...riasecQuestions.map(q => ({ ...q, type: 'likert' })),
+            ...bigFiveQuestions.map(q => ({ ...q, type: 'likert' })),
+            ...strongInterestQuestions.map(q => ({ ...q, type: 'likert' })),
+            ...icfQuestions.map(q => ({ ...q, type: 'slider' })),
+            ...physicalQuestions.map(q => ({ ...q, type: 'slider' }))
+        ];
+
+        // Sektionsinformation (40 frågor totalt)
+        const sections = [
+            { id: 'riasec', name: 'RIASEC', subtitle: 'Upptäck din arbetsstil', count: 6 },
+            { id: 'bigfive', name: 'Big Five', subtitle: 'Din personlighetsprofil', count: 10 },
+            { id: 'strong', name: 'Intresseområden', subtitle: 'Vad intresserar dig?', count: 10 },
+            { id: 'icf', name: 'ICF-profil', subtitle: 'Dina funktionsförutsättningar', count: 6 },
+            { id: 'physical', name: 'Fysiska utmaningar', subtitle: 'Dina fysiska förmågor', count: 8 }
+        ];
+
+        // ==========================================
+        // YRKESDATABAS - 92 YRKEN
+        // ==========================================
+
+        const jobs = {
+            hogskola: [
+                {
+                    name: "Läkare",
+                    description: "Diagnostiserar och behandlar sjukdomar, arbetar med patienter",
+                    riasec: { R: 2, I: 5, A: 2, S: 5, E: 3, C: 3 },
+                    bigFive: { openness: 60, conscientiousness: 85, extraversion: 50, agreeableness: 75, stability: 70 },
+                    icf: { kognitiv: 5, kommunikation: 5, koncentration: 5, motorik: 3, sensorisk: 4, energi: 4 },
+                    categories: { vard: 5, forskning: 4, analytisk: 4, social: 4, noggrannhet: 5, kommunikation: 3 },
+                    challenges: { fysisk_rorlighet: 4, social_energi: 4, tidspress: 4, multitasking: 4, koncentration: 5 },
+                    salary: "45 000 - 85 000 kr/mån",
+                    education: { name: "Läkarprogrammet", length: "5,5 år + AT 1,5 år", type: "Universitet" },
+                    prognosis: "growing",
+                    relatedJobs: ["Sjuksköterska", "Fysioterapeut", "Psykolog"],
+                    careerPath: ["AT-läkare", "ST-läkare", "Specialistläkare", "Överläkare"]
+                },
+                {
+                    name: "Civilingenjör",
+                    description: "Utvecklar tekniska lösningar inom olika områden",
+                    riasec: { R: 4, I: 5, A: 2, S: 2, E: 3, C: 3 },
+                    bigFive: { openness: 70, conscientiousness: 80, extraversion: 40, agreeableness: 50, stability: 65 },
+                    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+                    categories: { teknisk: 5, analytisk: 5, it: 4, forskning: 3, noggrannhet: 4 },
+                    challenges: { stillasittande: 4, koncentration: 5, multitasking: 3 },
+                    salary: "38 000 - 65 000 kr/mån",
+                    education: { name: "Civilingenjörsprogram", length: "5 år", type: "Teknisk högskola" },
+                    prognosis: "growing",
+                    relatedJobs: ["Programmerare", "Arkitekt", "Projektledare"],
+                    careerPath: ["Junior ingenjör", "Ingenjör", "Senior ingenjör", "Teknikchef"]
+                },
+                {
+                    name: "Psykolog",
+                    description: "Hjälper människor med psykisk hälsa och beteendeproblem",
+                    riasec: { R: 1, I: 4, A: 2, S: 5, E: 2, C: 2 },
+                    bigFive: { openness: 75, conscientiousness: 75, extraversion: 45, agreeableness: 85, stability: 70 },
+                    icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 3 },
+                    categories: { social: 5, analytisk: 4, kommunikation: 4, pedagogik: 3, vard: 4 },
+                    challenges: { social_energi: 5, koncentration: 4, stillasittande: 4 },
+                    salary: "35 000 - 55 000 kr/mån",
+                    education: { name: "Psykologprogrammet", length: "5 år + PTP 1 år", type: "Universitet" },
+                    prognosis: "growing",
+                    relatedJobs: ["Socionom", "Skolkurator", "Läkare"],
+                    careerPath: ["PTP-psykolog", "Legitimerad psykolog", "Specialist"]
+                },
+                {
+                    name: "Programmerare/Systemutvecklare",
+                    description: "Skapar och underhåller programvara och digitala system",
+                    riasec: { R: 2, I: 5, A: 2, S: 1, E: 2, C: 3 },
+                    bigFive: { openness: 75, conscientiousness: 80, extraversion: 30, agreeableness: 50, stability: 60 },
+                    icf: { kognitiv: 5, kommunikation: 2, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+                    categories: { it: 5, teknisk: 5, analytisk: 4, noggrannhet: 4 },
+                    challenges: { stillasittande: 5, koncentration: 5, social_energi: 2 },
+                    salary: "38 000 - 70 000 kr/mån",
+                    education: { name: "Systemvetenskap/Datateknik", length: "3-5 år", type: "Universitet/YH" },
+                    prognosis: "growing",
+                    relatedJobs: ["Data scientist", "UX-designer", "Cybersäkerhetsanalytiker"],
+                    careerPath: ["Juniorutvecklare", "Utvecklare", "Senior", "Tech Lead"]
+                },
+                {
+                    name: "Arkitekt",
+                    description: "Designar byggnader och stadsplanering",
+                    riasec: { R: 3, I: 3, A: 5, S: 2, E: 3, C: 3 },
+                    bigFive: { openness: 80, conscientiousness: 75, extraversion: 45, agreeableness: 55, stability: 60 },
+                    icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
+                    categories: { kreativ: 5, teknisk: 4, analytisk: 3, kommunikation: 3, noggrannhet: 4 },
+                    challenges: { stillasittande: 4, koncentration: 4, multitasking: 3 },
+                    salary: "35 000 - 55 000 kr/mån",
+                    education: { name: "Arkitektprogrammet", length: "5 år", type: "Konsthögskola" },
+                    prognosis: "stable",
+                    relatedJobs: ["Inredningsarkitekt", "Civilingenjör", "Landskapsarkitekt"],
+                    careerPath: ["Praktikant", "Arkitekt", "Handläggande arkitekt"]
+                },
+                {
+                    name: "Lärare (gymnasie/universitet)",
+                    description: "Undervisar och handleder studenter",
+                    riasec: { R: 1, I: 3, A: 2, S: 5, E: 3, C: 3 },
+                    bigFive: { openness: 70, conscientiousness: 75, extraversion: 65, agreeableness: 75, stability: 60 },
+                    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
+                    categories: { pedagogik: 5, kommunikation: 5, social: 4, forskning: 3 },
+                    challenges: { social_energi: 5, fysisk_rorlighet: 3, tidspress: 3, multitasking: 4 },
+                    salary: "32 000 - 45 000 kr/mån",
+                    education: { name: "Lärarutbildning", length: "4-5,5 år", type: "Universitet" },
+                    prognosis: "growing",
+                    relatedJobs: ["Skolkurator", "Specialpedagog", "Rektor"],
+                    careerPath: ["Lärare", "Förstelärare", "Lektor", "Rektor"]
+                },
+                {
+                    name: "Ekonom/Revisor",
+                    description: "Arbetar med ekonomisk analys, bokföring och revision",
+                    riasec: { R: 1, I: 3, A: 1, S: 2, E: 4, C: 5 },
+                    bigFive: { openness: 50, conscientiousness: 90, extraversion: 40, agreeableness: 55, stability: 65 },
+                    icf: { kognitiv: 4, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+                    categories: { ekonomi: 5, analytisk: 5, noggrannhet: 5 },
+                    challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+                    salary: "35 000 - 60 000 kr/mån",
+                    education: { name: "Ekonomprogrammet", length: "3-4 år", type: "Universitet" },
+                    prognosis: "stable",
+                    relatedJobs: ["Civilekonom", "Controller", "Revisor"],
+                    careerPath: ["Junior ekonom", "Ekonom", "Controller", "Ekonomichef"]
+                },
+                {
+                    name: "Jurist/Advokat",
+                    description: "Arbetar med juridiska frågor och företräder klienter",
+                    riasec: { R: 1, I: 4, A: 1, S: 3, E: 5, C: 4 },
+                    bigFive: { openness: 60, conscientiousness: 85, extraversion: 60, agreeableness: 50, stability: 65 },
+                    icf: { kognitiv: 5, kommunikation: 5, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+                    categories: { analytisk: 5, kommunikation: 5, noggrannhet: 5, ledarskap: 3 },
+                    challenges: { stillasittande: 4, koncentration: 5, tidspress: 5, social_energi: 4 },
+                    salary: "40 000 - 90 000 kr/mån",
+                    education: { name: "Juristprogrammet", length: "4,5 år", type: "Universitet" },
+                    prognosis: "stable",
+                    relatedJobs: ["Åklagare", "Domare", "Bolagsjurist"],
+                    careerPath: ["Biträdande jurist", "Advokat", "Delägare"]
+                },
+                {
+                    name: "Forskare",
+                    description: "Bedriver vetenskaplig forskning inom olika områden",
+                    riasec: { R: 2, I: 5, A: 3, S: 2, E: 2, C: 3 },
+                    bigFive: { openness: 90, conscientiousness: 80, extraversion: 35, agreeableness: 55, stability: 60 },
+                    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+                    categories: { forskning: 5, analytisk: 5, noggrannhet: 4 },
+                    challenges: { stillasittande: 4, koncentration: 5, social_energi: 2 },
+                    salary: "32 000 - 55 000 kr/mån",
+                    education: { name: "Doktorsexamen", length: "8-10 år totalt", type: "Universitet" },
+                    prognosis: "stable",
+                    relatedJobs: ["Universitetslektor", "Data scientist", "Analytiker"],
+                    careerPath: ["Doktorand", "Postdoktor", "Forskare", "Docent", "Professor"]
+                },
+                {
+                    name: "Veterinär",
+                    description: "Vårdar och behandlar djur",
+                    riasec: { R: 3, I: 4, A: 1, S: 4, E: 2, C: 3 },
+                    bigFive: { openness: 65, conscientiousness: 80, extraversion: 50, agreeableness: 80, stability: 60 },
+                    icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 4, energi: 4 },
+                    categories: { natur: 5, vard: 4, analytisk: 4, praktisk: 3 },
+                    challenges: { fysisk_rorlighet: 4, fysisk_styrka: 3, social_energi: 3, tidspress: 3 },
+                    salary: "38 000 - 55 000 kr/mån",
+                    education: { name: "Veterinärprogrammet", length: "5,5 år", type: "SLU" },
+                    prognosis: "growing",
+                    relatedJobs: ["Djursjukskötare", "Djurskötare", "Agronom"],
+                    careerPath: ["Veterinär", "Klinikchef", "Specialistveterinär"]
+                },
+                {
+                    name: "Sjuksköterska",
+                    description: "Vårdar patienter och assisterar läkare",
+                    riasec: { R: 2, I: 3, A: 1, S: 5, E: 2, C: 3 },
+                    bigFive: { openness: 55, conscientiousness: 85, extraversion: 55, agreeableness: 85, stability: 65 },
+                    icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
+                    categories: { vard: 5, social: 5, praktisk: 3, noggrannhet: 4 },
+                    challenges: { fysisk_rorlighet: 5, social_energi: 5, tidspress: 4, multitasking: 5 },
+                    salary: "32 000 - 45 000 kr/mån",
+                    education: { name: "Sjuksköterskeprogrammet", length: "3 år", type: "Universitet" },
+                    prognosis: "growing",
+                    relatedJobs: ["Undersköterska", "Läkare", "Barnmorska"],
+                    careerPath: ["Sjuksköterska", "Specialistsjuksköterska", "Vårdenhetschef"]
+                },
+                {
+                    name: "Marknadsförare/PR",
+                    description: "Utvecklar strategier för att nå och påverka målgrupper",
+                    riasec: { R: 1, I: 2, A: 4, S: 3, E: 5, C: 2 },
+                    bigFive: { openness: 75, conscientiousness: 70, extraversion: 70, agreeableness: 60, stability: 60 },
+                    icf: { kognitiv: 4, kommunikation: 5, koncentration: 3, motorik: 2, sensorisk: 3, energi: 4 },
+                    categories: { kreativ: 4, kommunikation: 5, ekonomi: 3, analytisk: 3 },
+                    challenges: { tidspress: 4, multitasking: 4, social_energi: 4 },
+                    salary: "32 000 - 55 000 kr/mån",
+                    education: { name: "Medie-/Kommunikationsprogram", length: "3-4 år", type: "Universitet" },
+                    prognosis: "stable",
+                    relatedJobs: ["Journalist", "Produktchef", "UX-designer"],
+                    careerPath: ["Marknadsassistent", "Marknadsförare", "Marknadschef"]
+                }
+            ],
+            icke_hogskola: [
+                {
+                    name: "Elektriker",
+                    description: "Installerar och reparerar elektriska system",
+                    riasec: { R: 5, I: 3, A: 2, S: 2, E: 2, C: 3 },
+                    bigFive: { openness: 50, conscientiousness: 75, extraversion: 40, agreeableness: 55, stability: 60 },
+                    icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
+                    categories: { teknisk: 5, praktisk: 5, noggrannhet: 4 },
+                    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, koncentration: 4 },
+                    salary: "28 000 - 42 000 kr/mån",
+                    education: { name: "El- och energiprogrammet", length: "3 år gymn + lärling", type: "Gymnasium" },
+                    prognosis: "growing",
+                    relatedJobs: ["VVS-montör", "Mekaniker", "IT-tekniker"],
+                    careerPath: ["Lärling", "Elektriker", "Förman", "Egen firma"]
+                },
+                {
+                    name: "Snickare/Byggarbetare",
+                    description: "Bygger och renoverar byggnader och strukturer",
+                    riasec: { R: 5, I: 1, A: 2, S: 2, E: 2, C: 2 },
+                    bigFive: { openness: 45, conscientiousness: 70, extraversion: 45, agreeableness: 55, stability: 60 },
+                    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 5 },
+                    categories: { praktisk: 5, teknisk: 3, noggrannhet: 3 },
+                    challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, sensorisk: 3 },
+                    salary: "27 000 - 38 000 kr/mån",
+                    education: { name: "Bygg- och anläggningsprogrammet", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "growing",
+                    relatedJobs: ["Målare", "Plattsättare", "Elektriker"],
+                    careerPath: ["Lärling", "Snickare", "Förman", "Egen firma"]
+                },
+                {
+                    name: "Kock",
+                    description: "Lagar mat i restauranger och storkök",
+                    riasec: { R: 3, I: 1, A: 3, S: 2, E: 3, C: 3 },
+                    bigFive: { openness: 55, conscientiousness: 70, extraversion: 55, agreeableness: 55, stability: 55 },
+                    icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
+                    categories: { kreativ: 4, praktisk: 5, stresshantering: 4 },
+                    challenges: { fysisk_rorlighet: 5, tidspress: 5, sensorisk: 3, multitasking: 5 },
+                    salary: "25 000 - 38 000 kr/mån",
+                    education: { name: "Restaurang- och livsmedelsprogrammet", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "stable",
+                    relatedJobs: ["Bagare", "Bartender", "Restaurangchef"],
+                    careerPath: ["Commis", "Kock", "Souschef", "Kökschef"]
+                },
+                {
+                    name: "Frisör",
+                    description: "Klipper och stylar hår",
+                    riasec: { R: 3, I: 1, A: 3, S: 4, E: 3, C: 2 },
+                    bigFive: { openness: 60, conscientiousness: 70, extraversion: 70, agreeableness: 75, stability: 60 },
+                    icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 3, energi: 3 },
+                    categories: { kreativ: 4, social: 4, praktisk: 4 },
+                    challenges: { fysisk_rorlighet: 5, social_energi: 5, repetitivt: 4 },
+                    salary: "22 000 - 32 000 kr/mån",
+                    education: { name: "Hantverksprogrammet - frisör", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "stable",
+                    relatedJobs: ["Skönhetsterapeut", "Stylist", "Makeupartist"],
+                    careerPath: ["Lärling", "Frisör", "Salongsansvarig", "Egen salong"]
+                },
+                {
+                    name: "Undersköterska",
+                    description: "Ger daglig omsorg och vård till patienter",
+                    riasec: { R: 2, I: 1, A: 1, S: 5, E: 1, C: 2 },
+                    bigFive: { openness: 50, conscientiousness: 80, extraversion: 55, agreeableness: 90, stability: 60 },
+                    icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 4, sensorisk: 4, energi: 4 },
+                    categories: { vard: 5, social: 5, praktisk: 3 },
+                    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, social_energi: 5, tidspress: 4 },
+                    salary: "26 000 - 32 000 kr/mån",
+                    education: { name: "Vård- och omsorgsprogrammet", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "growing",
+                    relatedJobs: ["Sjuksköterska", "Personlig assistent", "Hemtjänst"],
+                    careerPath: ["Undersköterska", "Specialistundersköterska", "Samordnare"]
+                },
+                {
+                    name: "Lastbilschaufför",
+                    description: "Transporterar gods mellan olika platser",
+                    riasec: { R: 3, I: 1, A: 1, S: 1, E: 1, C: 2 },
+                    bigFive: { openness: 40, conscientiousness: 75, extraversion: 35, agreeableness: 55, stability: 65 },
+                    icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
+                    categories: { praktisk: 3, noggrannhet: 3 },
+                    challenges: { stillasittande: 5, koncentration: 4, social_energi: 1, repetitivt: 4 },
+                    salary: "27 000 - 35 000 kr/mån",
+                    education: { name: "Transportprogrammet + CE-körkort", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "stable",
+                    relatedJobs: ["Taxichaufför", "Bussförare", "Logistiker"],
+                    careerPath: ["Chaufför", "Åkare", "Transportledare"]
+                },
+                {
+                    name: "Försäljare/Butiksbiträde",
+                    description: "Hjälper kunder och säljer produkter",
+                    riasec: { R: 1, I: 1, A: 1, S: 4, E: 4, C: 3 },
+                    bigFive: { openness: 50, conscientiousness: 65, extraversion: 70, agreeableness: 70, stability: 60 },
+                    icf: { kognitiv: 2, kommunikation: 4, koncentration: 2, motorik: 3, sensorisk: 3, energi: 3 },
+                    categories: { social: 4, kommunikation: 4, ekonomi: 2 },
+                    challenges: { fysisk_rorlighet: 4, social_energi: 5, repetitivt: 3 },
+                    salary: "23 000 - 30 000 kr/mån",
+                    education: { name: "Handelsprogrammet", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "declining",
+                    relatedJobs: ["Butikschef", "Inköpare", "Visual merchandiser"],
+                    careerPath: ["Säljare", "Avdelningsansvarig", "Butikschef"]
+                },
+                {
+                    name: "Trädgårdsmästare",
+                    description: "Sköter om trädgårdar, parker och grönytor",
+                    riasec: { R: 4, I: 1, A: 2, S: 1, E: 1, C: 2 },
+                    bigFive: { openness: 55, conscientiousness: 70, extraversion: 40, agreeableness: 60, stability: 60 },
+                    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 5, sensorisk: 3, energi: 4 },
+                    categories: { natur: 5, praktisk: 5, kreativ: 3 },
+                    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, social_energi: 2 },
+                    salary: "25 000 - 33 000 kr/mån",
+                    education: { name: "Naturbruksprogrammet", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "stable",
+                    relatedJobs: ["Florist", "Landskapsarkitekt", "Fastighetsskötare"],
+                    careerPath: ["Trädgårdsarbetare", "Trädgårdsmästare", "Förman"]
+                },
+                {
+                    name: "Mekaniker",
+                    description: "Reparerar och underhåller fordon och maskiner",
+                    riasec: { R: 5, I: 3, A: 1, S: 2, E: 1, C: 3 },
+                    bigFive: { openness: 50, conscientiousness: 75, extraversion: 40, agreeableness: 55, stability: 60 },
+                    icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 4 },
+                    categories: { teknisk: 5, praktisk: 5, analytisk: 3, noggrannhet: 4 },
+                    challenges: { fysisk_rorlighet: 4, fysisk_styrka: 4, koncentration: 4 },
+                    salary: "27 000 - 38 000 kr/mån",
+                    education: { name: "Fordon- och transportprogrammet", length: "3 år gymn", type: "Gymnasium" },
+                    prognosis: "stable",
+                    relatedJobs: ["Elektriker", "Lastbilschaufför", "Industrimekaniker"],
+                    careerPath: ["Lärling", "Mekaniker", "Verkstadschef"]
+                },
+                {
+                    name: "Personlig assistent",
+                    description: "Hjälper personer med funktionsnedsättningar i vardagen",
+                    riasec: { R: 2, I: 1, A: 1, S: 5, E: 1, C: 2 },
+                    bigFive: { openness: 55, conscientiousness: 75, extraversion: 50, agreeableness: 90, stability: 60 },
+                    icf: { kognitiv: 2, kommunikation: 4, koncentration: 3, motorik: 3, sensorisk: 4, energi: 3 },
+                    categories: { social: 5, vard: 4, praktisk: 3 },
+                    challenges: { fysisk_rorlighet: 4, fysisk_styrka: 3, social_energi: 5, flexibilitet: 4 },
+                    salary: "24 000 - 30 000 kr/mån",
+                    education: { name: "Ingen formell utbildning krävs", length: "Introduktion", type: "Intern utbildning" },
+                    prognosis: "growing",
+                    relatedJobs: ["Undersköterska", "Hemtjänst", "Stödassistent"],
+                    careerPath: ["Personlig assistent", "Samordnare", "Arbetsledare"]
+                }
+            ]
+        };
+
+        // ==========================================
+        // ICF ANPASSNINGSREKOMMENDATIONER
+        // ==========================================
+
+        const icfAdaptations = {
+            kognitiv: {
+                name: "Kognitiv funktion",
+                description: "Minne, planering, organisering och problemlösning",
+                adaptations: [
+                    "Använd checklistor och påminnelser för dagliga uppgifter",
+                    "Bryt ner komplexa uppgifter i mindre, hanterbara steg",
+                    "Använd digitala verktyg som kalendrar och anteckningsappar",
+                    "Be om skriftliga instruktioner istället för muntliga",
+                    "Skapa tydliga rutiner och fasta strukturer",
+                    "Använd minnesstöd som att sätta lappar på synliga platser",
+                    "Be om extra tid att lära sig nya arbetsuppgifter",
+                    "Använd färgkodning för att organisera information"
+                ]
+            },
+            kommunikation: {
+                name: "Kommunikation och social interaktion",
+                description: "Samtal, samarbete och förståelse av sociala koder",
+                adaptations: [
+                    "Föredra skriftlig kommunikation (mejl, chat) framför telefon/möten",
+                    "Be om tydliga, konkreta instruktioner utom tvetydigheter",
+                    "Använd förberedelsetid inför möten och samtal",
+                    "Be om att få sammanfattningar efter möten",
+                    "Arbeta i mindre team eller enskilt när möjligt",
+                    "Använd skript eller förberedda fraser för vanliga situationer",
+                    "Be om extra tid att formulera svar i samtal",
+                    "Använd kommunikationsverktyg som underlättar asynkront samarbete"
+                ]
+            },
+            koncentration: {
+                name: "Koncentration och uppmärksamhet",
+                description: "Förmåga att fokusera och behålla uppmärksamhet",
+                adaptations: [
+                    "Arbeta i tyst, avskild miljö utan störningar",
+                    "Använd hörlurar med brusreducering eller vit brus",
+                    "Dela upp arbetsdagen i kortare, fokuserade pass",
+                    "Använd tekniker som Pomodoro för strukturerade pauser",
+                    "Stäng av notifieringar från mejl och sociala medier",
+                    "Be om färre, längre möten istället för många korta",
+                    "Använd visuella påminnelser och timers",
+                    "Få arbeta hemifrån delar av veckan för färre störningar"
+                ]
+            },
+            motorik: {
+                name: "Motorik och rörelseförmåga",
+                description: "Grov- och finmotorik, gå, stå, sitta, röra sig",
+                adaptations: [
+                    "Ergonomisk arbetsplats med höj- och sänkbart skrivbord",
+                    "Möjlighet att variera mellan sittande och stående",
+                    "Anpassade hjälpmedel vid behov (tangentbord, mus)",
+                    "Tillgänglig arbetsplats utan trappor och hinder",
+                    "Möjlighet till korta rörelsepauser",
+                    "Anpassade verktyg och utrustning vid behov",
+                    "Parkering nära entrén",
+                    "Handikappanpassade toaletter och utrymmen"
+                ]
+            },
+            sensorisk: {
+                name: "Sensorisk hantering",
+                description: "Hantering av ljud, ljus, temperatur, taktila intryck",
+                adaptations: [
+                    "Eget rum eller avskild arbetsplats med dörr",
+                    "Ljuddämpande åtgärder (matta, gardiner, akustikplattor)",
+                    "Möjlighet att justera belysning (dimmad, dagsljuslampor)",
+                    "Undvika starka dofter (parfymfri zon)",
+                    "Tillåtelse att bära hörlurar för att blockera ljud",
+                    "Neutrala kläder utan skavande material",
+                    "Möjlighet att arbeta hemifrån vid behov",
+                    "Förvarning vid ljudliga aktiviteter (larm, renovering)"
+                ]
+            },
+            energi: {
+                name: "Energi och uthållighet",
+                description: "Ork, återhämtning, hantering av trötthet",
+                adaptations: [
+                    "Flexibla arbetstider som anpassas efter energinivåer",
+                    "Möjlighet till kortare arbetsdagar eller deltid",
+                    "Tillgång till vilorum eller pausutrymme",
+                    "Möjlighet att arbeta hemifrån delar av veckan",
+                    "Färre möten per dag för att spara energi",
+                    "Möjlighet till mikropauser under dagen",
+                    "Tydlig planering för att undvika överraskningar",
+                    "Möjlighet att lägga mer krävande uppgifter på bättre dagar"
+                ]
+            }
+        };
+
+        // ==========================================
+        // GLOBALA VARIABLER
+        // ==========================================
+
+        let currentQuestion = 0;
+        let answers = {};
+        let riasecChart = null;
+        let bigFiveChart = null;
+        let icfChart = null;
+        let physicalChart = null;
+        let interestChart = null;
+        let strengthChart = null;
+        let selectedJobs = new Set();
+
+        const totalQuestions = allQuestions.length;
+
+        // ==========================================
+        // INITIERING OCH EVENT LISTENERS
+        // ==========================================
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initTheme();
+            createSectionDots();
+            checkSavedData();
+            
+            // Kolla om det finns delningslänk
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedResults = urlParams.get('results');
+            if (sharedResults) {
+                loadSharedResults(sharedResults);
+            }
+        });
+
+        // ==========================================
+        // TEMA-FUNKTIONER
+        // ==========================================
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeIcon(savedTheme);
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeIcon(newTheme);
+            
+            // Uppdatera diagram om de finns
+            if (riasecChart) updateChartColors(riasecChart);
+            if (bigFiveChart) updateChartColors(bigFiveChart);
+            if (icfChart) updateChartColors(icfChart);
+        }
+
+        function updateThemeIcon(theme) {
+            const icons = document.querySelectorAll('[id^="theme-icon"]');
+            icons.forEach(icon => {
+                icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+            });
+        }
+
+        function updateChartColors(chart) {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const textColor = isDark ? '#b0b0b0' : '#666';
+            const gridColor = isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
+            
+            chart.options.scales.r.pointLabels.color = textColor;
+            chart.options.scales.r.grid.color = gridColor;
+            chart.options.scales.r.angleLines.color = gridColor;
+            chart.update();
+        }
+
+        // ==========================================
+        // SEKTIONS-DOTS
+        // ==========================================
+
+        function createSectionDots() {
+            const container = document.getElementById('section-dots');
+            if (!container) return;
+            
+            sections.forEach((section, index) => {
+                const dot = document.createElement('div');
+                dot.className = 'section-dot';
+                dot.title = `${section.name} (${section.count} frågor)`;
+                dot.id = `dot-${index}`;
+                container.appendChild(dot);
+            });
+        }
+
+        function updateSectionDots() {
+            let questionCount = 0;
+            
+            sections.forEach((section, index) => {
+                const dot = document.getElementById(`dot-${index}`);
+                if (!dot) return;
+                
+                const sectionStart = questionCount;
+                const sectionEnd = questionCount + section.count;
+                
+                dot.classList.remove('active', 'completed');
+                
+                if (currentQuestion >= sectionStart && currentQuestion < sectionEnd) {
+                    dot.classList.add('active');
+                } else if (currentQuestion >= sectionEnd) {
+                    dot.classList.add('completed');
+                }
+                
+                questionCount += section.count;
+            });
+        }
+
+        // ==========================================
+        // LOCALSTORAGE-FUNKTIONER
+        // ==========================================
+
+        function saveProgress() {
+            const data = {
+                currentQuestion: currentQuestion,
+                answers: answers,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('intresseguide_progress', JSON.stringify(data));
+            
+            // Visa sparad-indikator
+            const indicator = document.getElementById('saved-indicator');
+            if (indicator) {
+                indicator.classList.add('show');
+                setTimeout(() => indicator.classList.remove('show'), 2000);
+            }
+        }
+
+        function loadProgress() {
+            try {
+                const saved = localStorage.getItem('intresseguide_progress');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    currentQuestion = data.currentQuestion || 0;
+                    answers = data.answers || {};
+                    return true;
+                }
+            } catch (e) {
+                console.error('Kunde inte ladda sparad data:', e);
+                localStorage.removeItem('intresseguide_progress');
+            }
+            return false;
+        }
+
+        function hasSavedData() {
+            return localStorage.getItem('intresseguide_progress') !== null;
+        }
+
+        function checkSavedData() {
+            const continueBtn = document.getElementById('continue-btn');
+            if (continueBtn && hasSavedData()) {
+                continueBtn.classList.remove('hidden');
+            }
+        }
+
+        function clearSavedData() {
+            if (confirm('Är du säker på att du vill rensa all sparad data?')) {
+                localStorage.removeItem('intresseguide_progress');
+                localStorage.removeItem('intresseguide_results');
+                currentQuestion = 0;
+                answers = {};
+                selectedJobs.clear();
+                
+                const continueBtn = document.getElementById('continue-btn');
+                if (continueBtn) continueBtn.classList.add('hidden');
+                
+                // Om vi är på resultatsidan, gå tillbaka till intro
+                const resultsScreen = document.getElementById('results-screen');
+                if (resultsScreen && resultsScreen.style.display === 'block') {
+                    restartQuiz();
+                }
+            }
+        }
+
+        function saveResults() {
+            const results = {
+                answers: answers,
+                timestamp: new Date().toISOString()
+            };
+            localStorage.setItem('intresseguide_results', JSON.stringify(results));
+        }
+
+        // ==========================================
+        // QUIZ NAVIGERING
+        // ==========================================
+
+        function startQuiz() {
+            document.getElementById('intro-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function continueQuiz() {
+            if (loadProgress()) {
+                document.getElementById('intro-screen').classList.add('hidden');
+                document.getElementById('quiz-screen').classList.remove('hidden');
+                renderQuestion();
+            }
+        }
+
+        function renderQuestion() {
+            const container = document.getElementById('question-container');
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            const sectionTitle = document.getElementById('section-title');
+            const sectionSubtitle = document.getElementById('section-subtitle');
+            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev-btn');
+
+            // Uppdatera progress
+            const progress = ((currentQuestion + 1) / totalQuestions) * 100;
+            progressBar.style.width = progress + '%';
+            progressText.textContent = `Fråga ${currentQuestion + 1} av ${totalQuestions}`;
+
+            // Uppdatera sektion
+            const currentSection = getCurrentSection();
+            if (currentSection) {
+                sectionTitle.textContent = `Del ${sections.indexOf(currentSection) + 1}: ${currentSection.name}`;
+                sectionSubtitle.textContent = currentSection.subtitle;
+            }
+
+            updateSectionDots();
+
+            // Visa/dölj knappar
+            prevBtn.style.visibility = currentQuestion === 0 ? 'hidden' : 'visible';
+            nextBtn.textContent = currentQuestion === totalQuestions - 1 ? 'Visa resultat' : 'Nästa';
+
+            // Rendera fråga
+            const q = allQuestions[currentQuestion];
+            const currentValue = answers[q.id] || 3;
+
+            if (q.type === 'likert') {
+                container.innerHTML = renderLikertQuestion(q, currentValue);
+            } else {
+                container.innerHTML = renderSliderQuestion(q, currentValue);
+            }
+
+            updateNextButton();
+        }
+
+        function getCurrentSection() {
+            let questionCount = 0;
+            for (const section of sections) {
+                if (currentQuestion >= questionCount && currentQuestion < questionCount + section.count) {
+                    return section;
+                }
+                questionCount += section.count;
+            }
+            return null;
+        }
+
+        function renderLikertQuestion(q, currentValue) {
+            const options = [
+                { value: 1, text: "Stämmer inte alls" },
+                { value: 2, text: "Stämmer inte särskilt väl" },
+                { value: 3, text: "Stämmer delvis" },
+                { value: 4, text: "Stämmer ganska väl" },
+                { value: 5, text: "Stämmer helt och hållet" }
+            ];
+
+            return `
+                <div class="question">
+                    <span class="question-number">${currentQuestion + 1}</span>
+                    ${q.question}
+                </div>
+                <div class="options">
+                    ${options.map(opt => `
+                        <label class="option ${currentValue === opt.value ? 'selected' : ''}" onclick="selectOption('${q.id}', ${opt.value}, this)">
+                            <input type="radio" name="q${q.id}" value="${opt.value}" ${currentValue === opt.value ? 'checked' : ''}>
+                            <span class="option-circle"></span>
+                            <span class="option-text">${opt.text}</span>
+                        </label>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderSliderQuestion(q, currentValue) {
+            return `
+                <div class="question">
+                    <span class="question-number">${currentQuestion + 1}</span>
+                    ${q.question}
+                </div>
+                <div class="slider-container">
+                    <div class="slider-labels">
+                        <span>${q.lowLabel || 'Mycket svårt'}</span>
+                        <span>${q.highLabel || 'Inga problem'}</span>
+                    </div>
+                    <input type="range" min="1" max="5" value="${currentValue}" 
+                        class="slider" id="slider-${q.id}" 
+                        oninput="updateSlider('${q.id}', this.value)">
+                    <div class="slider-value" id="slider-value-${q.id}">${getSliderLabel(currentValue)}</div>
+                </div>
+            `;
+        }
+
+        function getSliderLabel(value) {
+            const labels = ['1 - Mycket svårt', '2 - Svårt', '3 - Varierande', '4 - Går bra', '5 - Inga problem'];
+            return labels[value - 1] || value;
+        }
+
+        function selectOption(questionId, value, element) {
+            answers[questionId] = value;
+            
+            // Uppdatera visuell val
+            const container = element.closest('.options');
+            container.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            updateNextButton();
+            saveProgress();
+        }
+
+        function updateSlider(questionId, value) {
+            answers[questionId] = parseInt(value);
+            document.getElementById(`slider-value-${questionId}`).textContent = getSliderLabel(value);
+            updateNextButton();
+            saveProgress();
+        }
+
+        function updateNextButton() {
+            const nextBtn = document.getElementById('next-btn');
+            const q = allQuestions[currentQuestion];
+            nextBtn.disabled = !answers[q.id];
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < totalQuestions - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            answers = {};
+            selectedJobs.clear();
+            
+            // Dölj alla skärmar förutom intro
+            document.getElementById('results-screen').style.display = 'none';
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('intro-screen').classList.remove('hidden');
+            
+            // Rensa diagram
+            if (riasecChart) { riasecChart.destroy(); riasecChart = null; }
+            if (bigFiveChart) { bigFiveChart.destroy(); bigFiveChart = null; }
+            if (icfChart) { icfChart.destroy(); icfChart = null; }
+            if (physicalChart) { physicalChart.destroy(); physicalChart = null; }
+            if (interestChart) { interestChart.destroy(); interestChart = null; }
+            if (strengthChart) { strengthChart.destroy(); strengthChart = null; }
+            
+            checkSavedData();
+        }
+
+        // ==========================================
+        // RESULTATBERÄKNING
+        // ==========================================
+
+        function calculateResults() {
+            // RIASEC
+            const riasecScores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            const riasecCounts = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            
+            riasecQuestions.forEach(q => {
+                if (answers[q.id]) {
+                    riasecScores[q.category] += answers[q.id];
+                    riasecCounts[q.category]++;
+                }
+            });
+
+            const riasecNormalized = {};
+            for (const code in riasecScores) {
+                riasecNormalized[code] = riasecCounts[code] > 0 
+                    ? (riasecScores[code] / (riasecCounts[code] * 5)) * 100 
+                    : 50;
+            }
+
+            // Big Five
+            const bigFiveScores = { openness: 0, conscientiousness: 0, extraversion: 0, agreeableness: 0, stability: 0 };
+            const bigFiveCounts = { openness: 0, conscientiousness: 0, extraversion: 0, agreeableness: 0, stability: 0 };
+            
+            bigFiveQuestions.forEach(q => {
+                if (answers[q.id]) {
+                    bigFiveScores[q.category] += answers[q.id];
+                    bigFiveCounts[q.category]++;
+                }
+            });
+
+            const bigFiveNormalized = {};
+            for (const trait in bigFiveScores) {
+                bigFiveNormalized[trait] = bigFiveCounts[trait] > 0 
+                    ? (bigFiveScores[trait] / (bigFiveCounts[trait] * 5)) * 100 
+                    : 50;
+            }
+
+            // ICF
+            const icfScores = { kognitiv: 0, kommunikation: 0, koncentration: 0, motorik: 0, sensorisk: 0, energi: 0 };
+            const icfCounts = { kognitiv: 0, kommunikation: 0, koncentration: 0, motorik: 0, sensorisk: 0, energi: 0 };
+            
+            icfQuestions.forEach(q => {
+                if (answers[q.id]) {
+                    icfScores[q.category] += answers[q.id];
+                    icfCounts[q.category]++;
+                }
+            });
+
+            const icfNormalized = {};
+            for (const area in icfScores) {
+                icfNormalized[area] = icfCounts[area] > 0 
+                    ? ((icfScores[area] - icfCounts[area]) / (icfCounts[area] * 4)) * 100 
+                    : 50;
+            }
+
+            // Fysiska utmaningar
+            const physicalScores = { kraft: 0, uthallighet: 0, rorlighet: 0, precision: 0 };
+            const physicalCounts = { kraft: 0, uthallighet: 0, rorlighet: 0, precision: 0 };
+            
+            physicalQuestions.forEach(q => {
+                if (answers[q.id]) {
+                    physicalScores[q.category] += answers[q.id];
+                    physicalCounts[q.category]++;
+                }
+            });
+
+            const physicalNormalized = {};
+            for (const area in physicalScores) {
+                physicalNormalized[area] = physicalCounts[area] > 0 
+                    ? ((physicalScores[area] - physicalCounts[area]) / (physicalCounts[area] * 4)) * 100 
+                    : 50;
+            }
+
+            // Strong Interest
+            const interestScores = {};
+            strongInterestQuestions.forEach(q => {
+                if (answers[q.id]) {
+                    interestScores[q.category] = (answers[q.id] / 5) * 100;
+                }
+            });
+
+            return {
+                riasec: riasecNormalized,
+                bigFive: bigFiveNormalized,
+                icf: icfNormalized,
+                physical: physicalNormalized,
+                interests: interestScores
+            };
+        }
+
+        function calculateMatch(job) {
+            const results = calculateResults();
+            
+            // RIASEC match (25%)
+            let riasecScore = 0;
+            let riasecMax = 0;
+            for (const [code, weight] of Object.entries(job.riasec)) {
+                const userScore = results.riasec[code] || 50;
+                const jobRequirement = (weight / 5) * 100;
+                riasecScore += 100 - Math.abs(userScore - jobRequirement);
+                riasecMax += 100;
+            }
+            const riasecMatch = riasecMax > 0 ? (riasecScore / riasecMax) * 100 : 50;
+
+            // Big Five match (15%)
+            let bigFiveScore = 0;
+            let bigFiveMax = 0;
+            for (const [trait, weight] of Object.entries(job.bigFive)) {
+                const userScore = results.bigFive[trait] || 50;
+                bigFiveScore += 100 - Math.abs(userScore - weight);
+                bigFiveMax += 100;
+            }
+            const bigFiveMatch = bigFiveMax > 0 ? (bigFiveScore / bigFiveMax) * 100 : 50;
+
+            // ICF match (20%) - viktigt för anpassningar
+            let icfScore = 0;
+            let icfMax = 0;
+            const icfIssues = [];
+            
+            for (const [area, required] of Object.entries(job.icf)) {
+                const userScore = results.icf[area] || 50;
+                const requirement = (required / 5) * 100;
+                const diff = userScore - requirement;
+                
+                if (diff < -20) {
+                    icfIssues.push({ area, userScore, required: requirement, severity: 'high' });
+                } else if (diff < -10) {
+                    icfIssues.push({ area, userScore, required: requirement, severity: 'medium' });
+                }
+                
+                icfScore += Math.max(0, 100 - Math.abs(diff) * 2);
+                icfMax += 100;
+            }
+            const icfMatch = icfMax > 0 ? (icfScore / icfMax) * 100 : 50;
+
+            // Fysiska utmaningar match (15%)
+            let physicalScore = 0;
+            let physicalMax = 0;
+            for (const [area, required] of Object.entries(job.physical || { kraft: 3, uthallighet: 3, rorlighet: 3, precision: 3 })) {
+                const userScore = results.physical[area] || 50;
+                const requirement = (required / 5) * 100;
+                physicalScore += 100 - Math.abs(userScore - requirement);
+                physicalMax += 100;
+            }
+            const physicalMatch = physicalMax > 0 ? (physicalScore / physicalMax) * 100 : 50;
+
+            // Kombinerad matchning - vikter som summerar till 100%
+            // RIASEC 30% (primär yrkestyp), Big Five 20% (personlighet), 
+            // ICF 20% (funktionsförutsättningar), Fysiska 15% (fysiska krav), 
+            // Buffert 15% för flexibilitet
+            const totalMatch = (
+                riasecMatch * 0.30 +
+                bigFiveMatch * 0.20 +
+                icfMatch * 0.20 +
+                physicalMatch * 0.15 +
+                50 * 0.15 // Buffert för att inte straffa för hårt
+            );
+
+            return {
+                total: Math.round(totalMatch),
+                riasec: Math.round(riasecMatch),
+                bigFive: Math.round(bigFiveMatch),
+                physical: Math.round(physicalMatch),
+                icf: Math.round(icfMatch),
+                icfIssues: icfIssues
+            };
+        }
+
+        // ==========================================
+        // DIAGRAM-FUNKTIONER
+        // ==========================================
+
+        function createRIASECChart(scores) {
+            const ctx = document.getElementById('riasec-chart');
+            if (!ctx) return;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            if (riasecChart) riasecChart.destroy();
+
+            riasecChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Realistisk (R)', 'Investigativ (I)', 'Artistisk (A)', 'Social (S)', 'Entreprenöriell (E)', 'Konventionell (C)'],
+                    datasets: [{
+                        label: 'Din profil',
+                        data: [scores.R, scores.I, scores.A, scores.S, scores.E, scores.C],
+                        backgroundColor: 'rgba(102, 126, 234, 0.2)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        pointBackgroundColor: 'rgba(102, 126, 234, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(102, 126, 234, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                display: false
+                            },
+                            pointLabels: {
+                                color: isDark ? '#b0b0b0' : '#666',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function createBigFiveChart(scores) {
+            const ctx = document.getElementById('bigfive-chart');
+            if (!ctx) return;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            if (bigFiveChart) bigFiveChart.destroy();
+
+            bigFiveChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Öppenhet', 'Samvetsgrannhet', 'Extraversion', 'Vänlighet', 'Stabilitet'],
+                    datasets: [{
+                        label: 'Din profil',
+                        data: [scores.openness, scores.conscientiousness, scores.extraversion, scores.agreeableness, scores.stability],
+                        backgroundColor: 'rgba(118, 75, 162, 0.2)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        pointBackgroundColor: 'rgba(118, 75, 162, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(118, 75, 162, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { display: false },
+                            pointLabels: {
+                                color: isDark ? '#b0b0b0' : '#666',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function createICFChart(scores) {
+            const ctx = document.getElementById('icf-chart');
+            if (!ctx) return;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            if (icfChart) icfChart.destroy();
+
+            icfChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Kognitiv', 'Kommunikation', 'Koncentration', 'Motorik', 'Sensorisk', 'Energi'],
+                    datasets: [{
+                        label: 'Din profil',
+                        data: [scores.kognitiv, scores.kommunikation, scores.koncentration, scores.motorik, scores.sensorisk, scores.energi],
+                        backgroundColor: 'rgba(39, 174, 96, 0.2)',
+                        borderColor: 'rgba(39, 174, 96, 1)',
+                        pointBackgroundColor: 'rgba(39, 174, 96, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(39, 174, 96, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { display: false },
+                            pointLabels: {
+                                color: isDark ? '#b0b0b0' : '#666',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function createInterestChart(scores) {
+            const ctx = document.getElementById('interest-chart');
+            if (!ctx) return;
+
+            const labels = {
+                teknik_mekanik: 'Teknik',
+                natur_vetenskap: 'Naturvetenskap',
+                konst_kultur: 'Konst/Kultur',
+                social_vard: 'Socialt/Vård',
+                affarer_forsaljning: 'Affärer',
+                administration_kontor: 'Administration',
+                utomhusarbete: 'Utomhus',
+                ledarskap_organisation: 'Ledarskap',
+                data_it: 'Data/IT',
+                undervisning_pedagogik: 'Undervisning'
+            };
+
+            const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+            if (interestChart) interestChart.destroy();
+
+            interestChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(([key]) => labels[key] || key),
+                    datasets: [{
+                        label: 'Intressenivå',
+                        data: sorted.map(([, val]) => val),
+                        backgroundColor: 'rgba(102, 126, 234, 0.6)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#b0b0b0' : '#666' }
+                        },
+                        y: {
+                            ticks: { color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#b0b0b0' : '#666' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function createStrengthChart(scores) {
+            const ctx = document.getElementById('strength-chart');
+            if (!ctx) return;
+
+            const labels = {
+                problemlosning: 'Problemlösning',
+                kreativitet: 'Kreativitet',
+                kommunikation: 'Kommunikation',
+                ledarskap: 'Ledarskap',
+                samarbete: 'Samarbete',
+                organisation: 'Organisation',
+                teknisk_formaga: 'Teknik',
+                empati: 'Empati',
+                analytisk_formaga: 'Analys',
+                praktiskt_handlag: 'Praktiskt'
+            };
+
+            const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]).slice(0, 6);
+
+            if (strengthChart) strengthChart.destroy();
+
+            strengthChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sorted.map(([key]) => labels[key] || key),
+                    datasets: [{
+                        label: 'Styrkenivå',
+                        data: sorted.map(([, val]) => val),
+                        backgroundColor: 'rgba(118, 75, 162, 0.6)',
+                        borderColor: 'rgba(118, 75, 162, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#b0b0b0' : '#666' }
+                        },
+                        y: {
+                            ticks: { color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#b0b0b0' : '#666' }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function createPhysicalChart(scores) {
+            const ctx = document.getElementById('physical-chart');
+            if (!ctx) return;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            
+            if (physicalChart) physicalChart.destroy();
+
+            physicalChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Kraft/Belastning', 'Uthållighet', 'Rörlighet', 'Precision'],
+                    datasets: [{
+                        label: 'Din profil',
+                        data: [scores.kraft, scores.uthallighet, scores.rorlighet, scores.precision],
+                        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                        borderColor: 'rgba(231, 76, 60, 1)',
+                        pointBackgroundColor: 'rgba(231, 76, 60, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(231, 76, 60, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: { display: false },
+                            pointLabels: {
+                                color: isDark ? '#b0b0b0' : '#666',
+                                font: { size: 12 }
+                            },
+                            grid: {
+                                color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'
+                            }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // ==========================================
+        // TOLKNINGS-FUNKTIONER
+        // ==========================================
+
+        function getRIASECInterpretation(top3, scores) {
+            const interpretations = {
+                R: { name: "Realistisk", desc: "Du är praktisk, hands-on och gillar att arbeta med konkreta saker. Du trivs med att bygga, reparera och arbeta utomhus.", careers: "Tekniker, ingenjör, byggarbetare, mekaniker, elektriker" },
+                I: { name: "Investigativ", desc: "Du är analytisk, nyfiken och gillar att lösa problem. Du trivs med forskning, analys och att förstå komplexa system.", careers: "Forskare, läkare, data scientist, ingenjör, psykolog" },
+                A: { name: "Artistisk", desc: "Du är kreativ, originell och uttrycksfull. Du värdesätter estetik och gillar att skapa nya saker.", careers: "Designer, konstnär, journalist, arkitekt, musiker" },
+                S: { name: "Social", desc: "Du är hjälpsam, empatisk och gillar att arbeta med människor. Du trivs med att undervisa, vårda och stödja andra.", careers: "Lärare, sjuksköterska, socionom, psykolog, läkare" },
+                E: { name: "Entreprenöriell", desc: "Du är ledande, påverkande och resultatinriktad. Du gillar att sälja, förhandla och driva projekt.", careers: "Företagsledare, säljare, marknadsförare, projektledare" },
+                C: { name: "Konventionell", desc: "Du är organiserad, noggrann och strukturerad. Du trivs med administration, data och tydliga rutiner.", careers: "Ekonom, revisor, administratör, banktjänsteman" }
+            };
+
+            const [first, second, third] = top3;
+            let text = `<p><strong>Din RIASEC-kod: ${first[0]}-${second[0]}-${third[0]}</strong></p>`;
+            text += `<p>Detta indikerar att du främst är <strong>${interpretations[first[0]].name}</strong>, med inslag av <strong>${interpretations[second[0]].name}</strong> och <strong>${interpretations[third[0]].name}</strong>.</p>`;
+            text += `<p>${interpretations[first[0]].desc}</p>`;
+            text += `<p><strong>Passande yrkesområden:</strong> ${interpretations[first[0]].careers}</p>`;
+            
+            return text;
+        }
+
+        function getBigFiveInterpretation(scores) {
+            let interpretations = [];
+            
+            if (scores.openness > 60) interpretations.push("Du är öppen för nya upplevelser, nyfiken och kreativ.");
+            else if (scores.openness < 40) interpretations.push("Du är mer traditionell och praktisk i ditt tankesätt.");
+            
+            if (scores.conscientiousness > 60) interpretations.push("Du är mycket organiserad, pålitlig och målinriktad.");
+            else if (scores.conscientiousness < 40) interpretations.push("Du är mer spontan och flexibel.");
+            
+            if (scores.extraversion > 60) interpretations.push("Du är utåtriktad och trivs i sociala sammanhang.");
+            else if (scores.extraversion < 40) interpretations.push("Du är mer introvert och föredrar ensamarbete.");
+            
+            if (scores.agreeableness > 60) interpretations.push("Du är samarbetsvillig och empatisk.");
+            else if (scores.agreeableness < 40) interpretations.push("Du är mer självständig och konkurrensinriktad.");
+            
+            if (scores.stability > 60) interpretations.push("Du är emotionellt stabil och hanterar stress bra.");
+            else if (scores.stability < 40) interpretations.push("Du är mer känslosam och reflekterande.");
+            
+            return interpretations.join(" ") || "Du har en balanserad personlighetsprofil.";
+        }
+
+        function getICFInterpretation(scores, issues) {
+            let text = "<p>ICF-profilen visar dina funktionsförutsättningar inom sex områden. Ju högre värde, desto lättare har du inom det området.</p>";
+            
+            if (issues.length > 0) {
+                text += "<p><strong>Områden där anpassningar kan behövas:</strong></p><ul>";
+                issues.forEach(issue => {
+                    const name = icfAdaptations[issue.area]?.name || issue.area;
+                    text += `<li>${name} (${Math.round(issue.userScore)}%)</li>`;
+                });
+                text += "</ul>";
+            } else {
+                text += "<p>Du verkar ha goda förutsättningar inom alla områden!</p>";
+            }
+            
+            return text;
+        }
+
+        function getPhysicalInterpretation(scores) {
+            const labels = {
+                kraft: 'Kraft/Belastning',
+                uthallighet: 'Uthållighet/Kondition',
+                rorlighet: 'Rörlighet/Arbetsställningar',
+                precision: 'Precision/Finmotorik'
+            };
+            
+            let text = "<p>Dina fysiska förmågor mäts inom fyra områden. Höga värden indikerar goda förutsättningar för fysiskt krävande arbete.</p>";
+            
+            // Hitta styrkor och svagheter
+            const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            const strongest = sorted[0];
+            const weakest = sorted[sorted.length - 1];
+            
+            if (strongest[1] >= 70) {
+                text += `<p><strong>Din styrka:</strong> Du har särskilt goda förutsättningar inom <strong>${labels[strongest[0]]}</strong>. Detta är en tillgång i yrken som kräver ${strongest[0] === 'kraft' ? 'fysisk styrka' : strongest[0] === 'uthallighet' ? 'god kondition' : strongest[0] === 'rorlighet' ? 'rörlighet och flexibilitet' : 'precision och finmotorik'}.</p>`;
+            }
+            
+            if (weakest[1] <= 40) {
+                text += `<p><strong>Att tänka på:</strong> Du kan uppleva utmaningar med <strong>${labels[weakest[0]]}</strong>. Vid val av yrke kan det vara bra att överväga arbetsmiljöer där detta inte är en central del av arbetet, eller där anpassningar finns tillgängliga.</p>`;
+            }
+            
+            // Yrkesrekommendationer baserat på fysiska förutsättningar
+            const avg = Object.values(scores).reduce((a, b) => a + b, 0) / 4;
+            if (avg >= 70) {
+                text += "<p><strong>Yrkestips:</strong> Med dina goda fysiska förutsättningar passar du väl inom yrken som bygg, industri, vård (lyft), lantbruk och andra fysiskt aktiva yrken.</p>";
+            } else if (avg <= 40) {
+                text += "<p><strong>Yrkestips:</strong> Du kan ha störst fördel av att söka dig till yrken med lägre fysiska krav, som kontorsarbete, kreativa yrken, eller roller där det mentala arbetet väger tyngre än det fysiska.</p>";
+            } else {
+                text += "<p><strong>Yrkestips:</strong> Du har varierande fysiska förutsättningar. Många yrken kan passa dig, särskilt om de erbjuder möjlighet till anpassning av arbetsmiljön.</p>";
+            }
+            
+            return text;
+        }
+
+        // ==========================================
+        // RESULTATVISNING
+        // ==========================================
+
+        function showResults() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('results-screen').style.display = 'block';
+
+            const results = calculateResults();
+            const profileContainer = document.getElementById('profile-analysis');
+
+            // Sortera RIASEC
+            const riasecTop3 = Object.entries(results.riasec).sort((a, b) => b[1] - a[1]).slice(0, 3);
+
+            // Identifiera ICF-utmaningar (score < 40%)
+            const icfIssues = Object.entries(results.icf)
+                .filter(([area, score]) => score < 40)
+                .map(([area, score]) => ({ area, userScore: score }));
+
+            let profileHTML = `
+                <div class="profile-analysis">
+                    <div class="chart-grid">
+                        <div class="chart-box">
+                            <h4>RIASEC-profil</h4>
+                            <div class="chart-wrapper">
+                                <canvas id="riasec-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-box">
+                            <h4>Big Five-profil</h4>
+                            <div class="chart-wrapper">
+                                <canvas id="bigfive-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="icf-section">
+                        <h3><span class="icon">♿</span> ICF-profil - Dina funktionsförutsättningar</h3>
+                        <div class="chart-wrapper" style="height: 300px; margin-bottom: 20px;">
+                            <canvas id="icf-chart"></canvas>
+                        </div>
+                        <div class="interpretation-box">
+                            ${getICFInterpretation(results.icf, icfIssues)}
+                        </div>
+                        ${generateICFAdaptations(icfIssues)}
+                    </div>
+
+                    <div class="profile-card">
+                        <h3><span class="icon">💪</span> Fysiska utmaningar</h3>
+                        <div class="chart-wrapper" style="height: 280px; margin-bottom: 15px;">
+                            <canvas id="physical-chart"></canvas>
+                        </div>
+                        <div class="interpretation-box">
+                            ${getPhysicalInterpretation(results.physical)}
+                        </div>
+                        <div class="interpretation-box">
+                            ${getICFInterpretation(results.icf, icfIssues)}
+                        </div>
+                        ${generateICFAdaptations(icfIssues)}
+                    </div>
+
+                    <div class="profile-card">
+                        <h3><span class="icon">🔍</span> RIASEC-tolkning</h3>
+                        <div class="riasec-code">
+                            ${riasecTop3.map(([code]) => `<div class="riasec-letter ${code.toLowerCase()}">${code}</div>`).join('')}
+                        </div>
+                        <div class="interpretation-box">
+                            ${getRIASECInterpretation(riasecTop3, results.riasec)}
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <h3><span class="icon">🧠</span> Big Five-tolkning</h3>
+                        <div class="interpretation-box">
+                            <p>${getBigFiveInterpretation(results.bigFive)}</p>
+                        </div>
+                        <div class="trait-list">
+                            ${Object.entries(results.bigFive).map(([trait, score]) => {
+                                const traitNames = {
+                                    openness: 'Öppenhet', conscientiousness: 'Samvetsgrannhet',
+                                    extraversion: 'Extraversion', agreeableness: 'Vänlighet', stability: 'Stabilitet'
+                                };
+                                return `
+                                    <div class="trait-item">
+                                        <span class="trait-label">${traitNames[trait]}</span>
+                                        <div class="trait-bar">
+                                            <div class="trait-fill ${score >= 60 ? 'high' : (score >= 40 ? 'medium' : 'low')}" style="width: ${score}%"></div>
+                                        </div>
+                                        <span class="trait-score">${Math.round(score)}%</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+
+                    <div class="chart-grid">
+                        <div class="chart-box">
+                            <h4>Intresseområden</h4>
+                            <div class="chart-wrapper">
+                                <canvas id="interest-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-box">
+                            <h4>Fysiska förutsättningar</h4>
+                            <div class="chart-wrapper">
+                                <canvas id="physical-chart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            profileContainer.innerHTML = profileHTML;
+
+            // Skapa diagram
+            setTimeout(() => {
+                createRIASECChart(results.riasec);
+                createBigFiveChart(results.bigFive);
+                createICFChart(results.icf);
+                createPhysicalChart(results.physical);
+                createInterestChart(results.interests);
+            }, 100);
+
+            // Visa jobb
+            renderJobResults();
+            saveResults();
+        }
+
+        function generateICFAdaptations(issues) {
+            if (issues.length === 0) return '';
+
+            let html = '<div class="icf-adaptations"><h4>📋 Rekommenderade anpassningar i arbetslivet:</h4>';
+            
+            issues.forEach(issue => {
+                const adaptation = icfAdaptations[issue.area];
+                if (adaptation) {
+                    html += `
+                        <div class="adaptation-category">
+                            <h5>${adaptation.name} (${adaptation.description})</h5>
+                            <ul>
+                                ${adaptation.adaptations.map(a => `<li>${a}</li>`).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+            });
+
+            html += '</div>';
+            return html;
+        }
+
+        function renderJobResults() {
+            const resultsContent = document.getElementById('results-content');
+            
+            const hogskolaResults = jobs.hogskola.map(job => ({
+                ...job,
+                match: calculateMatch(job)
+            })).sort((a, b) => b.match.total - a.match.total).slice(0, 10);
+
+            const ickeHogskolaResults = jobs.icke_hogskola.map(job => ({
+                ...job,
+                match: calculateMatch(job)
+            })).sort((a, b) => b.match.total - a.match.total).slice(0, 10);
+
+            let html = `
+                <div class="job-category">
+                    <h3><span class="icon">🎓</span> Topp 10 yrken som kräver högre utbildning</h3>
+                    ${renderJobList(hogskolaResults)}
+                </div>
+                <div class="section-divider"></div>
+                <div class="job-category">
+                    <h3><span class="icon">🔧</span> Topp 10 yrken utan krav på högskoleutbildning</h3>
+                    ${renderJobList(ickeHogskolaResults)}
+                </div>
+            `;
+
+            resultsContent.innerHTML = html;
+            updateCompareBar();
+        }
+
+        function renderJobList(jobResults) {
+            return jobResults.map((job, index) => {
+                const matchClass = job.match.total >= 70 ? '' : (job.match.total >= 50 ? 'needs-adaptation' : 'unsuitable');
+                const percentClass = job.match.total >= 70 ? '' : (job.match.total >= 50 ? 'medium' : 'low');
+                const jobId = `job-${job.name.replace(/[^a-zA-Z0-9]/g, '-')}-${index}`;
+
+                let adaptationsHtml = '';
+                if (job.match.icfIssues.length > 0) {
+                    adaptationsHtml = `
+                        <div class="adaptations">
+                            <h4>⚠️ ICF-anpassningar som kan behövas:</h4>
+                            <ul>
+                                ${job.match.icfIssues.map(issue => {
+                                    const name = icfAdaptations[issue.area]?.name || issue.area;
+                                    return `<li><strong>${name}:</strong> ${icfAdaptations[issue.area]?.adaptations[0] || 'Anpassning krävs'}</li>`;
+                                }).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+
+                let warningHtml = '';
+                if (job.match.total < 40) {
+                    warningHtml = `
+                        <div class="warning-box">
+                            <h4>⚠️ Yrket kan vara olämpligt</h4>
+                            <p>Baserat på din ICF-profil verkar detta yrke ha utmaningar som kan vara svåra att anpassa.</p>
+                        </div>
+                    `;
+                }
+
+                const prognosisLabels = {
+                    growing: { text: '📈 Växande', class: 'growing' },
+                    stable: { text: '➡️ Stabil', class: 'stable' },
+                    declining: { text: '📉 Minskande', class: 'declining' }
+                };
+                const prognosis = prognosisLabels[job.prognosis] || prognosisLabels.stable;
+
+                const careerPathHtml = job.careerPath ? 
+                    `<div class="career-path">${job.careerPath.map((step, i) => 
+                        `<span>${step}</span>${i < job.careerPath.length - 1 ? '<span class="career-arrow">→</span>' : ''}`
+                    ).join('')}</div>` : '';
+
+                const relatedJobsHtml = job.relatedJobs ? 
+                    `<div class="related-jobs">${job.relatedJobs.map(rj => 
+                        `<span class="related-job-tag">${rj}</span>`
+                    ).join('')}</div>` : '';
+
+                return `
+                    <div class="job-card ${matchClass}">
+                        <input type="checkbox" class="job-compare-checkbox" onchange="toggleJobCompare('${job.name}', this.checked)" title="Lägg till i jämförelse">
+                        <div class="job-header">
+                            <span class="job-title">${job.name}</span>
+                            <span class="match-percentage ${percentClass}">${job.match.total}%</span>
+                        </div>
+                        <p class="job-description">${job.description}</p>
+                        <div class="match-bar-container">
+                            <div class="match-bar ${percentClass}" style="width: ${job.match.total}%"></div>
+                        </div>
+                        <span class="job-count" id="count-${jobId}">Laddar...</span>
+
+                        <button class="job-details-btn" onclick="toggleJobDetails('${jobId}')">Visa mer ▼</button>
+                        
+                        <div class="job-expanded-info" id="${jobId}">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <h5>💰 Lön</h5>
+                                    <p class="salary">${job.salary}</p>
+                                </div>
+                                <div class="info-item">
+                                    <h5>📊 Arbetsmarknad</h5>
+                                    <p><span class="prognosis-badge ${prognosis.class}">${prognosis.text}</span></p>
+                                </div>
+                            </div>
+                            <div class="education-details">
+                                <h5>🎓 Utbildning</h5>
+                                <ul>
+                                    <li><strong>${job.education.name}</strong></li>
+                                    <li>Längd: ${job.education.length}</li>
+                                    <li>Typ: ${job.education.type}</li>
+                                </ul>
+                            </div>
+                            <div class="info-item" style="margin-top: 15px;">
+                                <h5>📈 Karriärväg</h5>
+                                ${careerPathHtml}
+                            </div>
+                            <div class="info-item" style="margin-top: 15px;">
+                                <h5>🔗 Relaterade yrken</h5>
+                                ${relatedJobsHtml}
+                            </div>
+                        </div>
+
+                        ${adaptationsHtml}
+                        ${warningHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleJobDetails(jobId) {
+            const element = document.getElementById(jobId);
+            const button = element.previousElementSibling;
+            if (element.classList.contains('show')) {
+                element.classList.remove('show');
+                button.textContent = 'Visa mer ▼';
+            } else {
+                element.classList.add('show');
+                button.textContent = 'Dölj ▲';
+                loadJobCount(jobId, job.name);
+            }
+        }
+
+        async function loadJobCount(jobId, jobName) {
+            const span = document.getElementById(`count-${jobId}`);
+            if (!span || span.dataset.loaded) return;
+            
+            try {
+                // Anropa Arbetsförmedlingens JobSearch API
+                const searchTerm = encodeURIComponent(jobName);
+                const response = await fetch(`https://jobsearch.api.jobtechdev.se/search?q=${searchTerm}&limit=0`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const totalJobs = data.total?.value || 0;
+                    
+                    if (totalJobs > 0) {
+                        span.innerHTML = `<a href="https://arbetsformedlingen.se/platsbanken/annonser?q=${searchTerm}" target="_blank" style="color: #27ae60; text-decoration: none;">📋 ${totalJobs} lediga jobb</a>`;
+                    } else {
+                        span.innerHTML = `<a href="https://arbetsformedlingen.se/platsbanken/annonser?q=${searchTerm}" target="_blank" style="color: #666; text-decoration: none;">🔍 Sök på Arbetsförmedlingen</a>`;
+                    }
+                } else {
+                    span.innerHTML = `<a href="https://arbetsformedlingen.se/platsbanken/annonser?q=${searchTerm}" target="_blank" style="color: #666; text-decoration: none;">🔍 Sök på Arbetsförmedlingen</a>`;
+                }
+            } catch (error) {
+                console.error('Kunde inte hämta jobbdata:', error);
+                const searchTerm = encodeURIComponent(jobName);
+                span.innerHTML = `<a href="https://arbetsformedlingen.se/platsbanken/annonser?q=${searchTerm}" target="_blank" style="color: #666; text-decoration: none;">🔍 Sök på Arbetsförmedlingen</a>`;
+            }
+            span.dataset.loaded = 'true';
+        }
+
+        // ==========================================
+        // JÄMFÖRELSE-FUNKTIONER
+        // ==========================================
+
+        function toggleJobCompare(jobName, isChecked) {
+            if (isChecked) {
+                selectedJobs.add(jobName);
+            } else {
+                selectedJobs.delete(jobName);
+            }
+            updateCompareBar();
+        }
+
+        function updateCompareBar() {
+            const compareBar = document.getElementById('compare-bar');
+            const compareCount = document.getElementById('compare-count');
+            const compareBtn = document.getElementById('compare-btn');
+            
+            const count = selectedJobs.size;
+            compareCount.textContent = count;
+            
+            if (count >= 2) {
+                compareBar.classList.remove('hidden');
+                compareBtn.disabled = false;
+            } else if (count > 0) {
+                compareBar.classList.remove('hidden');
+                compareBtn.disabled = true;
+            } else {
+                compareBar.classList.add('hidden');
+            }
+        }
+
+        function showComparison() {
+            const modal = document.getElementById('comparison-modal');
+            const content = document.getElementById('comparison-content');
+            
+            // Hitta valda jobb
+            const selectedJobData = [];
+            [...jobs.hogskola, ...jobs.icke_hogskola].forEach(job => {
+                if (selectedJobs.has(job.name)) {
+                    selectedJobData.push({ ...job, match: calculateMatch(job) });
+                }
+            });
+
+            let html = `
+                <table class="comparison-table">
+                    <thead>
+                        <tr>
+                            <th>Egenskap</th>
+                            ${selectedJobData.map(job => `<th>${job.name}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Matchning</strong></td>
+                            ${selectedJobData.map(job => `<td><strong>${job.match.total}%</strong></td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td>Lön</td>
+                            ${selectedJobData.map(job => `<td>${job.salary}</td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td>Utbildning</td>
+                            ${selectedJobData.map(job => `<td>${job.education.name}<br><small>${job.education.length}</small></td>`).join('')}
+                        </tr>
+                        <tr>
+                            <td>Arbetsmarknad</td>
+                            ${selectedJobData.map(job => {
+                                const labels = { growing: '📈 Växande', stable: '➡️ Stabil', declining: '📉 Minskande' };
+                                return `<td>${labels[job.prognosis]}</td>`;
+                            }).join('')}
+                        </tr>
+                        <tr>
+                            <td>Beskrivning</td>
+                            ${selectedJobData.map(job => `<td>${job.description}</td>`).join('')}
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            content.innerHTML = html;
+            modal.classList.add('show');
+        }
+
+        function closeComparison() {
+            document.getElementById('comparison-modal').classList.remove('show');
+        }
+
+        function closeModalOnOverlay(event) {
+            if (event.target.id === 'comparison-modal') {
+                closeComparison();
+            }
+        }
+
+        // ==========================================
+        // DELA RESULTAT
+        // ==========================================
+
+        function shareResults() {
+            const resultsData = encodeURIComponent(btoa(JSON.stringify(answers)));
+            const shareUrl = `${window.location.origin}${window.location.pathname}?results=${resultsData}`;
+            
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Länk kopierad till urklipp! Dela den med vem du vill.');
+            }).catch(() => {
+                prompt('Kopiera denna länk:', shareUrl);
+            });
+        }
+
+        function loadSharedResults(encodedData) {
+            try {
+                const decoded = JSON.parse(atob(decodeURIComponent(encodedData)));
+                if (decoded && typeof decoded === 'object') {
+                    answers = decoded;
+                    showResults();
+                }
+            } catch (e) {
+                console.error('Kunde inte ladda delade resultat:', e);
+                alert('Kunde inte ladda delade resultat. Länken kan vara skadad.');
+            }
+        }
+
+        // ==========================================
+        // PDF-EXPORT
+        // ==========================================
+
+        function downloadPDF() {
+            const element = document.getElementById('results-screen');
+            const opt = {
+                margin: 10,
+                filename: 'intresseguide-resultat.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+
+            // Dölj knappar temporärt
+            const buttons = element.querySelectorAll('.action-btn, .restart-btn, .job-details-btn, .compare-bar');
+            buttons.forEach(btn => btn.style.display = 'none');
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                // Visa knappar igen
+                buttons.forEach(btn => btn.style.display = '');
+            });
+        }
+
+        // ==========================================
+        // EXPANDABLE SEKTIONER
+        // ==========================================
+
+        function toggleExpand(button) {
+            const content = button.nextElementSibling;
+            const span = button.querySelector('span');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                span.textContent = '▼';
+            } else {
+                content.classList.add('show');
+                span.textContent = '▲';
+            }
+        }
+    </script>
+</body>
+</html>
