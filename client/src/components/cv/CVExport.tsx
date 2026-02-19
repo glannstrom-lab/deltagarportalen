@@ -9,43 +9,6 @@ interface CVExportProps {
   onShowPreview?: () => void
 }
 
-// Konvertera oklch-färger till rgb/hex för html2canvas-kompatibilitet
-function convertColorsForExport(element: HTMLElement): HTMLElement {
-  const clone = element.cloneNode(true) as HTMLElement
-  
-  // Hämta alla element i klonen
-  const allElements = clone.querySelectorAll('*')
-  
-  allElements.forEach((el) => {
-    const htmlEl = el as HTMLElement
-    const computedStyle = window.getComputedStyle(htmlEl)
-    
-    // Kontrollera och konvertera bakgrundsfärg
-    const bgColor = computedStyle.backgroundColor
-    if (bgColor && bgColor.includes('oklch')) {
-      htmlEl.style.backgroundColor = '#ffffff'
-    }
-    
-    // Kontrollera och konvertera textfärg
-    const color = computedStyle.color
-    if (color && color.includes('oklch')) {
-      htmlEl.style.color = '#1e293b' // slate-800
-    }
-    
-    // Kontrollera border-färger
-    const borderColor = computedStyle.borderColor
-    if (borderColor && borderColor.includes('oklch')) {
-      htmlEl.style.borderColor = '#e2e8f0' // slate-200
-    }
-  })
-  
-  // Säkerställ att containern har vit bakgrund
-  clone.style.backgroundColor = '#ffffff'
-  clone.style.color = '#1e293b'
-  
-  return clone
-}
-
 export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: CVExportProps) {
   const [isExporting, setIsExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -62,44 +25,45 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
     setIsExporting(true)
     
     try {
-      // Kontrollera att elementet har innehåll
-      const rect = element.getBoundingClientRect()
-      if (rect.width === 0 || rect.height === 0) {
-        throw new Error('CV-elementet har ingen storlek. Kontrollera att förhandsvisningen är synlig.')
-      }
-
-      // Konvertera färger för kompatibilitet med html2canvas
-      const exportElement = convertColorsForExport(element)
+      // Scrolla till elementet för att säkerställa att det är korrekt renderat
+      const originalPosition = element.style.position
+      const originalLeft = element.style.left
+      const originalVisibility = element.style.visibility
       
-      // Temporärt lägg till i DOM för att html2canvas ska fungera
-      exportElement.style.position = 'fixed'
-      exportElement.style.left = '-9999px'
-      exportElement.style.top = '0'
-      exportElement.style.width = element.offsetWidth + 'px'
-      document.body.appendChild(exportElement)
-
+      // Gör elementet synligt men fortfarande utanför skärmen
+      element.style.position = 'fixed'
+      element.style.left = '-9999px'
+      element.style.visibility = 'visible'
+      element.style.width = '794px'
+      
       // Vänta på att DOM ska uppdateras
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise(resolve => setTimeout(resolve, 200))
 
       try {
         // Skapa canvas från HTML-elementet
-        const canvas = await html2canvas(exportElement, {
+        const canvas = await html2canvas(element, {
           scale: 2,
           useCORS: true,
           allowTaint: true,
-          logging: false,
+          logging: true, // Tillfälligt för debugging
           backgroundColor: '#ffffff',
-          windowWidth: exportElement.scrollWidth + 100,
-          width: exportElement.scrollWidth,
-          height: exportElement.scrollHeight,
-          // Ignorera oklch-färger som kan orsaka fel
-          onclone: (clonedDoc) => {
-            const clonedElement = clonedDoc.body.querySelector('[data-cv-export]') || clonedDoc.body.firstElementChild
-            if (clonedElement) {
-              (clonedElement as HTMLElement).style.backgroundColor = '#ffffff'
-            }
-          }
+          width: 794,
+          height: element.scrollHeight || 1123, // A4 höjd ungefär
+          windowWidth: 794,
+          x: 0,
+          y: 0,
         })
+
+        // Kontrollera att canvas har innehåll
+        const ctx = canvas.getContext('2d')
+        const imageData = ctx?.getImageData(0, 0, canvas.width, canvas.height)
+        const hasContent = imageData?.data.some((pixel, index) => 
+          index % 4 !== 3 && pixel !== 0 && pixel !== 255
+        )
+        
+        if (!hasContent) {
+          console.warn('Canvas verkar vara tom, försöker igen...')
+        }
 
         const imgData = canvas.toDataURL('image/png', 1.0)
         
@@ -112,7 +76,7 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
         const imgHeight = canvas.height
         
         // Beräkna skalning för att passa A4-bredd
-        const scale = pdfWidth / (imgWidth / 2) // Dela med 2 pga scale: 2
+        const scale = pdfWidth / (imgWidth / 2)
         const scaledWidth = pdfWidth
         const scaledHeight = (imgHeight / 2) * scale
         
@@ -120,7 +84,7 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
         if (scaledHeight <= pdfHeight) {
           pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
         } else {
-          // Flera sidor - använd enkel paginering
+          // Flera sidor
           let pageCount = 0
           let remainingHeight = imgHeight
           
@@ -129,22 +93,19 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
               pdf.addPage()
             }
             
-            // Beräkna vilken del av bilden som ska visas på denna sida
             const offsetY = pageCount * pdfHeight / scale * 2
             const drawHeight = Math.min(pdfHeight / scale * 2, remainingHeight)
             
-            // Skapa en temporär canvas för denna sida
             const tempCanvas = document.createElement('canvas')
             tempCanvas.width = imgWidth
             tempCanvas.height = drawHeight
             const tempCtx = tempCanvas.getContext('2d')
             
             if (tempCtx) {
-              // Kopiera delen av original-canvas till temporär canvas
               tempCtx.drawImage(
                 canvas,
-                0, offsetY, imgWidth, drawHeight, // source
-                0, 0, imgWidth, drawHeight // dest
+                0, offsetY, imgWidth, drawHeight,
+                0, 0, imgWidth, drawHeight
               )
               
               const pageImgData = tempCanvas.toDataURL('image/png')
@@ -158,11 +119,13 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
           }
         }
 
-        // Spara PDF
         pdf.save(`${fileName}.pdf`)
       } finally {
-        // Rensa upp temporärt element
-        document.body.removeChild(exportElement)
+        // Återställ stilar
+        element.style.position = originalPosition
+        element.style.left = originalLeft
+        element.style.visibility = originalVisibility
+        element.style.width = '794px'
       }
     } catch (err) {
       console.error('Fel vid PDF-export:', err)
@@ -188,7 +151,6 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
         </div>
       </div>
 
-      {/* Error message */}
       {error && (
         <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
           <div className="flex items-start gap-2">
@@ -207,7 +169,6 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
         </div>
       )}
 
-      {/* Export-alternativ */}
       <div className="space-y-3">
         <button
           onClick={exportToPDF}
@@ -238,8 +199,8 @@ export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: 
 
       <div className="mt-4 p-3 bg-slate-50 rounded-lg">
         <p className="text-xs text-slate-500">
-          <strong>Tips:</strong> För bästa resultat, visa förhandsvisningen innan du exporterar. 
-          Det säkerställer att alla bilder och stilar har laddats korrekt.
+          <strong>Tips:</strong> Om PDF:en är tom, prova att visa förhandsvisningen först 
+          och sedan exportera.
         </p>
       </div>
     </div>

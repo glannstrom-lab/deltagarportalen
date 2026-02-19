@@ -552,17 +552,16 @@ export default function CVBuilder() {
 
         {/* Right column - Preview & Tools */}
         <div className="space-y-6">
-          {/* Hidden preview for export - alltid renderad men osynlig */}
+          {/* Hidden preview for export - alltid renderad men utanför skärmen */}
           <div 
             ref={previewRef}
             style={{ 
-              position: 'absolute',
-              left: '-10000px',
+              position: 'fixed',
+              left: '-9999px',
               top: '0',
               width: '794px', // A4 width at 96 DPI
-              opacity: '0',
+              visibility: 'visible',
               pointerEvents: 'none',
-              zIndex: '-1'
             }}
             aria-hidden="true"
           >
