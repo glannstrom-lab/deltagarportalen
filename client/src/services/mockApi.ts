@@ -26,18 +26,16 @@ const mockUsers: Record<string, any> = {
 const mockCV: any = {
   id: 'demo-cv',
   userId: 'demo-user-id',
-  personalInfo: {
+  user: {
     firstName: 'Demo',
     lastName: 'Användare',
-    email: 'demo@demo.se',
-    phone: '070-123 45 67',
-    address: 'Storgatan 1',
-    city: 'Stockholm',
-    zipCode: '123 45',
-    linkedin: '',
-    website: '',
   },
+  title: 'Butiksmedarbetare',
+  email: 'demo@demo.se',
+  phone: '070-123 45 67',
+  location: 'Stockholm',
   summary: 'En driven och engagerad person som söker nya utmaningar. Jag har erfarenhet inom flera områden och älskar att lära mig nya saker.',
+  skills: 'Kundservice, Försäljning, Datorvana, Svenska, Engelska',
   workExperience: [
     {
       id: '1',
@@ -61,12 +59,6 @@ const mockCV: any = {
       description: 'Samhällsvetenskaplig inriktning',
     }
   ],
-  skills: ['Kundservice', 'Försäljning', 'Datorvana', 'Svenska', 'Engelska'],
-  languages: [
-    { language: 'Svenska', level: 'Modersmål' },
-    { language: 'Engelska', level: 'Flytande' },
-  ],
-  certificates: [],
   updatedAt: new Date().toISOString(),
 }
 
@@ -162,6 +154,14 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
   if (endpoint === '/cv/ats-analysis') {
     return {
       score: 72,
+      checks: [
+        { name: 'Kontaktinformation', passed: true },
+        { name: 'Sammanfattning', passed: true },
+        { name: 'Erfarenhet', passed: true },
+        { name: 'Utbildning', passed: true },
+        { name: 'Nyckelord', passed: false },
+        { name: 'Längd', passed: true },
+      ],
       suggestions: [
         'Lägg till fler mätbara resultat',
         'Använd fler nyckelord från jobbannonser',
