@@ -1,301 +1,354 @@
 import { useState } from 'react'
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Calendar as CalendarIcon,
-  Clock,
-  MapPin,
-  Video,
-  Phone,
-  Plus,
-  Users,
-  Briefcase
-} from 'lucide-react'
+import { Plus } from 'lucide-react'
+import { CalendarHeader } from '@/components/calendar/CalendarHeader'
+import { WeekView } from '@/components/calendar/WeekView'
+import { DayView } from '@/components/calendar/DayView'
+import { EventModal } from '@/components/calendar/EventModal'
+import { CalendarStats } from '@/components/calendar/CalendarStats'
+import { MoodTracker } from '@/components/calendar/MoodTracker'
+import type { 
+  CalendarEvent, 
+  CalendarView, 
+  CalendarGoal, 
+  MoodEntry
+} from '@/services/calendarData'
+import { eventTypeConfig } from '@/services/calendarData'
 
-interface CalendarEvent {
-  id: string
-  title: string
-  date: string
-  time: string
-  type: 'interview' | 'meeting' | 'deadline' | 'reminder'
-  location?: string
-  isVideo?: boolean
-  isPhone?: boolean
-  description?: string
-  with?: string
-}
-
+// Mock data - i verkligheten skulle detta komma från API/localStorage
 const mockEvents: CalendarEvent[] = [
   {
     id: '1',
     title: 'Jobbintervju - Tech Solutions',
-    date: '2026-02-25',
+    date: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0], // om 2 dagar
     time: '10:00',
+    endTime: '11:00',
     type: 'interview',
     location: 'Stockholm, Kungsgatan 12',
-    isVideo: false,
-    description: 'Andra intervjun med CTO och teamlead',
-    with: 'Anna Svensson, CTO'
+    with: 'Anna Svensson, CTO',
+    description: 'Andra intervjun med tekniska frågor',
+    tasks: [
+      { id: 't1', eventId: '1', title: 'Uppdatera CV', status: 'done', order: 0 },
+      { id: 't2', eventId: '1', title: 'Förbereda tekniska frågor', status: 'in_progress', order: 1 },
+      { id: 't3', eventId: '1', title: 'Kolla upp företaget', status: 'todo', order: 2 },
+    ],
+    interviewPrep: {
+      commonQuestions: ['Berätta om dig själv', 'Varför vill du jobba här?'],
+      dressCode: 'Smart casual',
+    },
+    travel: {
+      destination: 'Kungsgatan 12, Stockholm',
+      duration: 45,
+      transportMode: 'public',
+      cost: 78,
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
     id: '2',
     title: 'Möte med arbetskonsulent',
-    date: '2026-02-20',
+    date: new Date().toISOString().split('T')[0], // idag
     time: '14:00',
     type: 'meeting',
     isVideo: true,
-    description: 'Veckovis uppföljning',
-    with: 'Maria Karlsson'
+    with: 'Maria Karlsson',
+    description: 'Veckovis uppföljning av jobbsökande',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
   {
     id: '3',
     title: 'Sista ansökningsdag - Digital Agency',
-    date: '2026-02-28',
+    date: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0], // om 5 dagar
     time: '23:59',
     type: 'deadline',
-    description: 'React-utvecklare position'
+    description: 'React-utvecklare position',
+    tasks: [
+      { id: 't4', eventId: '3', title: 'Skriva personligt brev', status: 'todo', order: 0 },
+      { id: 't5', eventId: '3', title: 'Uppdatera portfolio', status: 'todo', order: 1 },
+    ],
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '4',
+    title: 'Förberedelse inför intervju',
+    date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // imorgon
+    time: '09:00',
+    type: 'preparation',
+    description: 'Gå igenom vanliga intervjufrågor',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   },
 ]
 
-const typeConfig = {
-  interview: { label: 'Intervju', color: 'bg-amber-100 text-amber-700 border-amber-200', icon: Briefcase },
-  meeting: { label: 'Möte', color: 'bg-blue-100 text-blue-700 border-blue-200', icon: Users },
-  deadline: { label: 'Deadline', color: 'bg-red-100 text-red-700 border-red-200', icon: Clock },
-  reminder: { label: 'Påminnelse', color: 'bg-slate-100 text-slate-700 border-slate-200', icon: Clock },
-}
+const mockGoals: CalendarGoal[] = [
+  { id: 'g1', type: 'applications', target: 5, period: 'week', startDate: new Date().toISOString() },
+  { id: 'g2', type: 'interviews', target: 2, period: 'week', startDate: new Date().toISOString() },
+  { id: 'g3', type: 'tasks', target: 10, period: 'week', startDate: new Date().toISOString() },
+]
 
-const daysOfWeek = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+const mockMoodEntries: MoodEntry[] = [
+  { date: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0], level: 4, energyLevel: 3, stressLevel: 2 },
+  { date: new Date(Date.now() - 86400000).toISOString().split('T')[0], level: 3, energyLevel: 3, stressLevel: 3 },
+  { date: new Date().toISOString().split('T')[0], level: 4, energyLevel: 4, stressLevel: 2 },
+]
 
 export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date())
-  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const [view, setView] = useState<CalendarView>('month')
+  const [events, setEvents] = useState<CalendarEvent[]>(mockEvents)
+  const [goals] = useState<CalendarGoal[]>(mockGoals)
+  const [moodEntries, setMoodEntries] = useState<MoodEntry[]>(mockMoodEntries)
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const year = currentDate.getFullYear()
-  const month = currentDate.getMonth()
-
-  const firstDayOfMonth = new Date(year, month, 1)
-  const lastDayOfMonth = new Date(year, month + 1, 0)
-  const daysInMonth = lastDayOfMonth.getDate()
-  const startingDay = firstDayOfMonth.getDay() === 0 ? 6 : firstDayOfMonth.getDay() - 1
-
-  const monthNames = [
-    'Januari', 'Februari', 'Mars', 'April', 'Maj', 'Juni',
-    'Juli', 'Augusti', 'September', 'Oktober', 'November', 'December'
-  ]
-
-  const navigateMonth = (direction: 'prev' | 'next') => {
-    setCurrentDate(new Date(year, month + (direction === 'next' ? 1 : -1), 1))
+  const navigate = (direction: 'prev' | 'next' | 'today') => {
+    if (direction === 'today') {
+      setCurrentDate(new Date())
+    } else {
+      const newDate = new Date(currentDate)
+      if (view === 'month') {
+        newDate.setMonth(newDate.getMonth() + (direction === 'next' ? 1 : -1))
+      } else if (view === 'week') {
+        newDate.setDate(newDate.getDate() + (direction === 'next' ? 7 : -7))
+      } else if (view === 'day') {
+        newDate.setDate(newDate.getDate() + (direction === 'next' ? 1 : -1))
+      }
+      setCurrentDate(newDate)
+    }
   }
 
-  const getEventsForDate = (dateStr: string) => {
-    return mockEvents.filter(event => event.date === dateStr)
+  const handleEventClick = (event: CalendarEvent) => {
+    setSelectedEvent(event)
+    setIsModalOpen(true)
   }
 
-  const selectedDateEvents = selectedDate ? getEventsForDate(selectedDate) : []
+  const handleDateClick = (date: Date) => {
+    setCurrentDate(date)
+    setView('day')
+  }
 
-  return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">Kalender</h1>
-          <p className="text-slate-500 mt-1">Håll koll på möten, intervjuer och deadlines</p>
-        </div>
-        <button className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors font-medium">
-          <Plus size={18} />
-          Ny händelse
-        </button>
-      </div>
+  const handleSaveEvent = (event: CalendarEvent) => {
+    if (selectedEvent) {
+      setEvents(events.map(e => e.id === event.id ? event : e))
+    } else {
+      setEvents([...events, event])
+    }
+  }
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Calendar */}
-        <div className="lg:col-span-2 bg-white rounded-xl border border-slate-200 overflow-hidden">
-          {/* Calendar Header */}
-          <div className="flex items-center justify-between p-4 border-b border-slate-200">
-            <h2 className="text-lg font-semibold text-slate-900">
-              {monthNames[month]} {year}
-            </h2>
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => navigateMonth('prev')}
-                className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={() => setCurrentDate(new Date())}
-                className="px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                Idag
-              </button>
-              <button
-                onClick={() => navigateMonth('next')}
-                className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <ChevronRight size={20} />
-              </button>
+  const handleDeleteEvent = (eventId: string) => {
+    setEvents(events.filter(e => e.id !== eventId))
+  }
+
+  const handleAddMood = (entry: MoodEntry) => {
+    // Ta bort befintlig entry för samma dag om den finns
+    const filtered = moodEntries.filter(e => e.date !== entry.date)
+    setMoodEntries([...filtered, entry])
+  }
+
+  // Month view render
+  const renderMonthView = () => {
+    const year = currentDate.getFullYear()
+    const month = currentDate.getMonth()
+    const firstDay = new Date(year, month, 1)
+    const lastDay = new Date(year, month + 1, 0)
+    const daysInMonth = lastDay.getDate()
+    const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1
+
+    const days = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+
+    const getEventsForDate = (dateStr: string) => {
+      return events.filter(event => event.date === dateStr)
+    }
+
+    return (
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        {/* Header */}
+        <div className="grid grid-cols-7 border-b border-slate-200">
+          {days.map((day) => (
+            <div key={day} className="py-2 text-center text-sm font-medium text-slate-500">
+              {day}
             </div>
-          </div>
+          ))}
+        </div>
 
-          {/* Days Header */}
-          <div className="grid grid-cols-7 border-b border-slate-200">
-            {daysOfWeek.map((day) => (
-              <div key={day} className="py-2 text-center text-sm font-medium text-slate-500">
-                {day}
-              </div>
-            ))}
-          </div>
+        {/* Grid */}
+        <div className="grid grid-cols-7">
+          {Array.from({ length: startingDay }).map((_, index) => (
+            <div key={`empty-${index}`} className="h-28 border-b border-r border-slate-100 bg-slate-50/50" />
+          ))}
+          {Array.from({ length: daysInMonth }).map((_, index) => {
+            const day = index + 1
+            const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+            const dayEvents = getEventsForDate(dateStr)
+            const isToday = new Date().toISOString().split('T')[0] === dateStr
 
-          {/* Calendar Grid */}
-          <div className="grid grid-cols-7">
-            {Array.from({ length: startingDay }).map((_, index) => (
-              <div key={`empty-${index}`} className="h-24 border-b border-r border-slate-100" />
-            ))}
-            {Array.from({ length: daysInMonth }).map((_, index) => {
-              const day = index + 1
-              const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-              const dayEvents = getEventsForDate(dateStr)
-              const isToday = new Date().toISOString().split('T')[0] === dateStr
-              const isSelected = selectedDate === dateStr
-
-              return (
-                <button
-                  key={day}
-                  onClick={() => setSelectedDate(dateStr)}
-                  className={`
-                    h-24 border-b border-r border-slate-100 p-2 text-left transition-colors relative
-                    ${isSelected ? 'bg-teal-50' : 'hover:bg-slate-50'}
-                  `}
-                >
-                  <span className={`
-                    inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
-                    ${isToday ? 'bg-teal-600 text-white' : 'text-slate-700'}
-                  `}>
-                    {day}
-                  </span>
-                  {dayEvents.length > 0 && (
-                    <div className="mt-1 space-y-1">
-                      {dayEvents.slice(0, 2).map((event) => (
+            return (
+              <button
+                key={day}
+                onClick={() => handleDateClick(new Date(dateStr))}
+                className="h-28 border-b border-r border-slate-100 p-2 text-left transition-colors relative overflow-hidden hover:bg-slate-50"
+              >
+                <span className={`
+                  inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
+                  ${isToday ? 'bg-teal-600 text-white' : 'text-slate-700'}
+                `}>
+                  {day}
+                </span>
+                {dayEvents.length > 0 && (
+                  <div className="mt-1 space-y-0.5">
+                    {dayEvents.slice(0, 3).map((event) => {
+                      const config = eventTypeConfig[event.type]
+                      return (
                         <div
                           key={event.id}
-                          className={`text-xs px-1.5 py-0.5 rounded truncate ${typeConfig[event.type].color}`}
+                          className={`text-xs px-1.5 py-0.5 rounded truncate ${config.bgColor} ${config.color}`}
                         >
                           {event.time} {event.title}
                         </div>
-                      ))}
-                      {dayEvents.length > 2 && (
-                        <div className="text-xs text-slate-500 px-1.5">
-                          +{dayEvents.length - 2} till
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        </div>
-
-        {/* Events List */}
-        <div className="space-y-4">
-          <div className="bg-white p-4 rounded-xl border border-slate-200">
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-              <CalendarIcon size={18} className="text-teal-600" />
-              {selectedDate 
-                ? `Händelser ${new Date(selectedDate).toLocaleDateString('sv-SE')}`
-                : 'Kommande händelser'
-              }
-            </h3>
-
-            <div className="space-y-3">
-              {(selectedDate ? selectedDateEvents : mockEvents)
-                .sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time))
-                .map((event) => {
-                  const TypeIcon = typeConfig[event.type].icon
-                  return (
-                    <div
-                      key={event.id}
-                      className="p-3 rounded-lg border border-slate-100 hover:border-slate-200 hover:shadow-sm transition-all cursor-pointer"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg ${typeConfig[event.type].color}`}>
-                          <TypeIcon size={16} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-slate-900 text-sm truncate">{event.title}</h4>
-                          <div className="flex items-center gap-2 mt-1 text-xs text-slate-500">
-                            <span className="flex items-center gap-1">
-                              <Clock size={12} />
-                              {event.time}
-                            </span>
-                            {event.isVideo && (
-                              <span className="flex items-center gap-1">
-                                <Video size={12} />
-                                Video
-                              </span>
-                            )}
-                            {event.isPhone && (
-                              <span className="flex items-center gap-1">
-                                <Phone size={12} />
-                                Telefon
-                              </span>
-                            )}
-                          </div>
-                          {event.location && (
-                            <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
-                              <MapPin size={12} />
-                              {event.location}
-                            </p>
-                          )}
-                          {event.with && (
-                            <p className="text-xs text-slate-500 mt-1">
-                              Med: {event.with}
-                            </p>
-                          )}
-                          {event.description && (
-                            <p className="text-xs text-slate-500 mt-1 line-clamp-2">
-                              {event.description}
-                            </p>
-                          )}
-                        </div>
+                      )
+                    })}
+                    {dayEvents.length > 3 && (
+                      <div className="text-xs text-slate-500 px-1.5">
+                        +{dayEvents.length - 3} till
                       </div>
-                    </div>
-                  )
-                })}
-
-              {(selectedDate ? selectedDateEvents : mockEvents).length === 0 && (
-                <div className="text-center py-8 text-slate-400">
-                  <CalendarIcon size={32} className="mx-auto mb-2 opacity-50" />
-                  <p className="text-sm">Inga händelser</p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Quick Stats */}
-          <div className="bg-gradient-to-br from-teal-500 to-teal-600 p-4 rounded-xl text-white">
-            <h3 className="font-semibold mb-3">Denna månad</h3>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-2xl font-bold">{mockEvents.filter(e => e.type === 'interview').length}</p>
-                <p className="text-xs text-teal-100">Intervjuer</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{mockEvents.filter(e => e.type === 'meeting').length}</p>
-                <p className="text-xs text-teal-100">Möten</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{mockEvents.filter(e => e.type === 'deadline').length}</p>
-                <p className="text-xs text-teal-100">Deadlines</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold">{mockEvents.length}</p>
-                <p className="text-xs text-teal-100">Totalt</p>
-              </div>
-            </div>
-          </div>
+                    )}
+                  </div>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
+    )
+  }
+
+  // Agenda view
+  const renderAgendaView = () => {
+    const sortedEvents = [...events].sort((a, b) => 
+      a.date.localeCompare(b.date) || a.time.localeCompare(b.time)
+    )
+
+    return (
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <div className="p-4 border-b border-slate-200">
+          <h3 className="font-semibold text-slate-900">Kommande händelser</h3>
+        </div>
+        <div className="divide-y divide-slate-100">
+          {sortedEvents.map((event) => {
+            const config = eventTypeConfig[event.type]
+            const date = new Date(event.date)
+            const isPast = date < new Date() && date.toDateString() !== new Date().toDateString()
+            
+            return (
+              <button
+                key={event.id}
+                onClick={() => handleEventClick(event)}
+                className={`w-full p-4 text-left hover:bg-slate-50 transition-colors flex items-start gap-4 ${
+                  isPast ? 'opacity-50' : ''
+                }`}
+              >
+                <div className={`p-2 rounded-lg ${config.bgColor}`}>
+                  <div className={`w-5 h-5 ${config.color}`} />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-medium text-slate-900">{event.title}</h4>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${config.bgColor} ${config.color}`}>
+                      {config.label}
+                    </span>
+                  </div>
+                  <p className="text-sm text-slate-500 mt-1">
+                    {date.toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    {' · '}
+                    {event.time}
+                  </p>
+                  {event.location && (
+                    <p className="text-sm text-slate-400 mt-1">{event.location}</p>
+                  )}
+                </div>
+              </button>
+            )
+          })}
+          {sortedEvents.length === 0 && (
+            <div className="p-8 text-center text-slate-400">
+              Inga händelser planerade
+            </div>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <CalendarHeader
+        currentDate={currentDate}
+        view={view}
+        onViewChange={setView}
+        onNavigate={navigate}
+      />
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main calendar area */}
+        <div className="lg:col-span-2 space-y-4">
+          {view === 'month' && renderMonthView()}
+          {view === 'week' && (
+            <WeekView
+              currentDate={currentDate}
+              events={events}
+              onEventClick={handleEventClick}
+              onDateClick={handleDateClick}
+            />
+          )}
+          {view === 'day' && (
+            <DayView
+              date={currentDate}
+              events={events}
+              onEventClick={handleEventClick}
+            />
+          )}
+          {view === 'agenda' && renderAgendaView()}
+        </div>
+
+        {/* Sidebar */}
+        <div className="space-y-4">
+          {/* Add event button */}
+          <button
+            onClick={() => {
+              setSelectedEvent(null)
+              setIsModalOpen(true)
+            }}
+            className="w-full py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium flex items-center justify-center gap-2"
+          >
+            <Plus size={20} />
+            Ny händelse
+          </button>
+
+          {/* Mood Tracker */}
+          <MoodTracker
+            entries={moodEntries}
+            onAddEntry={handleAddMood}
+          />
+
+          {/* Stats */}
+          <CalendarStats
+            events={events}
+            goals={goals}
+            moodEntries={moodEntries}
+          />
+        </div>
+      </div>
+
+      {/* Event Modal */}
+      <EventModal
+        event={selectedEvent}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveEvent}
+        onDelete={handleDeleteEvent}
+      />
     </div>
   )
 }
