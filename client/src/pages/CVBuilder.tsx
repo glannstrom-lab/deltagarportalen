@@ -552,21 +552,37 @@ export default function CVBuilder() {
 
         {/* Right column - Preview & Tools */}
         <div className="space-y-6">
-          {/* Preview - alltid renderad men kan vara dold för export */}
+          {/* Hidden preview for export - alltid renderad men osynlig */}
           <div 
             ref={previewRef}
-            className={showPreview ? 'sticky top-6' : 'absolute -left-[9999px] top-0'}
-            style={{ width: showPreview ? 'auto' : '210mm' }}
+            style={{ 
+              position: 'absolute',
+              left: '-10000px',
+              top: '0',
+              width: '794px', // A4 width at 96 DPI
+              opacity: '0',
+              pointerEvents: 'none',
+              zIndex: '-1'
+            }}
+            aria-hidden="true"
           >
             <CVPreview data={formData} template={selectedTemplate} />
           </div>
 
-          {/* Tools - visas när preview inte är aktiv */}
+          {/* Visible preview */}
+          {showPreview && (
+            <div className="sticky top-6">
+              <CVPreview data={formData} template={selectedTemplate} />
+            </div>
+          )}
+
+          {/* Tools */}
           {!showPreview && (
             <div className="space-y-6">
               <CVExport 
-                previewRef={previewRef} 
-                fileName={`${formData.firstName}-${formData.lastName}-CV`.replace(/\s+/g, '-').toLowerCase() || 'mitt-cv'} 
+                getCVElement={() => previewRef.current}
+                fileName={`${formData.firstName}-${formData.lastName}-CV`.replace(/\s+/g, '-').toLowerCase() || 'mitt-cv'}
+                onShowPreview={() => setShowPreview(true)}
               />
               <ATSAnalyzer score={atsScore} checks={atsChecks} suggestions={atsSuggestions} />
               <JobMatcher cvSkills={formData.skills} cvSummary={formData.summary} />

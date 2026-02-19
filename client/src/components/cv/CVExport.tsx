@@ -1,20 +1,23 @@
 import { useState } from 'react'
-import { Download, FileText, Loader2, AlertCircle } from 'lucide-react'
+import { Download, FileText, Loader2, AlertCircle, Eye } from 'lucide-react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
 interface CVExportProps {
-  previewRef: React.RefObject<HTMLDivElement | null>
+  getCVElement: () => HTMLElement | null
   fileName?: string
+  onShowPreview?: () => void
 }
 
-export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
+export function CVExport({ getCVElement, fileName = 'mitt-cv', onShowPreview }: CVExportProps) {
   const [isExporting, setIsExporting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   const exportToPDF = async () => {
-    if (!previewRef.current) {
-      setError('Kunde inte hitta CV att exportera. Försök uppdatera sidan.')
+    const element = getCVElement()
+    
+    if (!element) {
+      setError('Kunde inte hitta CV-elementet. Försök uppdatera sidan.')
       return
     }
 
@@ -22,28 +25,11 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
     setIsExporting(true)
     
     try {
-      const element = previewRef.current
-      
       // Kontrollera att elementet har innehåll
-      if (element.offsetWidth === 0 || element.offsetHeight === 0) {
-        throw new Error('CV-elementet har ingen storlek')
+      const rect = element.getBoundingClientRect()
+      if (rect.width === 0 || rect.height === 0) {
+        throw new Error('CV-elementet har ingen storlek. Kontrollera att förhandsvisningen är synlig.')
       }
-
-      // Spara nuvarande stilar
-      const originalStyles = {
-        position: element.style.position,
-        left: element.style.left,
-        visibility: element.style.visibility,
-      }
-
-      // Gör elementet synligt för html2canvas men fortfarande utanför skärmen
-      element.style.position = 'absolute'
-      element.style.left = '-9999px'
-      element.style.visibility = 'visible'
-      element.style.width = '210mm' // A4 bredd
-
-      // Vänta på att DOM ska uppdateras
-      await new Promise(resolve => setTimeout(resolve, 100))
 
       // Skapa canvas från HTML-elementet
       const canvas = await html2canvas(element, {
@@ -52,16 +38,10 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
         allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
-        windowWidth: 794, // A4 bredd i pixlar vid 96 DPI
+        windowWidth: element.scrollWidth + 100,
         width: element.scrollWidth,
         height: element.scrollHeight,
       })
-
-      // Återställ stilar
-      element.style.position = originalStyles.position
-      element.style.left = originalStyles.left
-      element.style.visibility = originalStyles.visibility
-      element.style.width = 'auto'
 
       const imgData = canvas.toDataURL('image/png', 1.0)
       
@@ -83,17 +63,16 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
         pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
       } else {
         // Flera sidor - använd enkel paginering
-        let heightLeft = scaledHeight
         let pageCount = 0
+        let remainingHeight = imgHeight
         
-        while (heightLeft > 0 && pageCount < 10) {
+        while (remainingHeight > 0 && pageCount < 10) {
           if (pageCount > 0) {
             pdf.addPage()
           }
           
           // Beräkna vilken del av bilden som ska visas på denna sida
           const offsetY = pageCount * pdfHeight / scale * 2
-          const remainingHeight = imgHeight - offsetY
           const drawHeight = Math.min(pdfHeight / scale * 2, remainingHeight)
           
           // Skapa en temporär canvas för denna sida
@@ -116,7 +95,7 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
             pdf.addImage(pageImgData, 'PNG', 0, 0, scaledWidth, pageScaledHeight)
           }
           
-          heightLeft -= pdfHeight
+          remainingHeight -= drawHeight
           pageCount++
         }
       }
@@ -125,7 +104,7 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
       pdf.save(`${fileName}.pdf`)
     } catch (err) {
       console.error('Fel vid PDF-export:', err)
-      setError('Kunde inte skapa PDF. Kontrollera att CV:et innehåller data och försök igen.')
+      setError(err instanceof Error ? err.message : 'Kunde inte skapa PDF. Försök igen.')
     } finally {
       setIsExporting(false)
     }
@@ -149,9 +128,20 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
 
       {/* Error message */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
-          <AlertCircle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
-          <p className="text-sm text-red-700">{error}</p>
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <div className="flex items-start gap-2">
+            <AlertCircle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">{error}</p>
+          </div>
+          {onShowPreview && (
+            <button
+              onClick={onShowPreview}
+              className="mt-2 flex items-center gap-1 text-sm text-[#4f46e5] hover:underline"
+            >
+              <Eye size={14} />
+              Visa förhandsvisning först
+            </button>
+          )}
         </div>
       )}
 
@@ -186,8 +176,8 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
 
       <div className="mt-4 p-3 bg-slate-50 rounded-lg">
         <p className="text-xs text-slate-500">
-          <strong>Tips:</strong> PDF:en genereras från din förhandsvisning. 
-          Om du vill se hur CV:et ser ut innan du laddar ner, klicka på "Visa förhandsvisning".
+          <strong>Tips:</strong> För bästa resultat, visa förhandsvisningen innan du exporterar. 
+          Det säkerställer att alla bilder och stilar har laddats korrekt.
         </p>
       </div>
     </div>
