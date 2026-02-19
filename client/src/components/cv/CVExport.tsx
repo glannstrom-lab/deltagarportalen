@@ -1,7 +1,5 @@
 import { useState } from 'react'
 import { Download, FileText, Loader2, AlertCircle } from 'lucide-react'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
 
 interface CVExportProps {
   fileName?: string
@@ -16,103 +14,240 @@ export function CVExport({ fileName = 'mitt-cv' }: CVExportProps) {
     setIsExporting(true)
     
     try {
-      // Hämta CV-elementet från den synliga förhandsvisningen
-      // Om ingen preview är synlig, leta efter den dolda containern
-      let element = document.querySelector('[data-cv-export="true"]') as HTMLElement
+      // Hitta CV-elementet
+      const cvElement = document.querySelector('[data-cv-export="true"]') as HTMLElement
       
-      if (!element) {
-        throw new Error('Kunde inte hitta CV-element. Vänligen aktivera förhandsvisningen först.')
+      if (!cvElement) {
+        throw new Error('Kunde inte hitta CV-elementet')
       }
 
-      // Kontrollera om elementet har dimensioner
-      const rect = element.getBoundingClientRect()
-      if (rect.width === 0 || rect.height === 0) {
-        throw new Error('CV-elementet har ingen storlek. Vänligen aktivera förhandsvisningen.')
+      // Klona elementet för manipulation
+      const clone = cvElement.cloneNode(true) as HTMLElement
+      
+      // Skapa ett nytt fönster för utskrift
+      const printWindow = window.open('', '_blank')
+      if (!printWindow) {
+        throw new Error('Kunde inte öppna print-fönster. Kontrollera popup-blockering.')
       }
 
-      // Spara nuvarande stilar
-      const originalOverflow = element.style.overflow
-      const originalHeight = element.style.height
-      
-      // Säkerställ att hela innehållet är synligt
-      element.style.overflow = 'visible'
-      element.style.height = 'auto'
-
-      // Rendera hela elementet
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        logging: false,
-        backgroundColor: '#ffffff',
-        width: element.scrollWidth,
-        height: element.scrollHeight,
-      })
-
-      // Återställ stilar
-      element.style.overflow = originalOverflow
-      element.style.height = originalHeight
-
-      const imgData = canvas.toDataURL('image/png', 1.0)
-      
-      // A4 dimensioner i mm
-      const pdfWidth = 210
-      const pdfHeight = 297
-      
-      // Beräkna skalning
-      const imgWidth = canvas.width
-      const imgHeight = canvas.height
-      const ratio = imgWidth / imgHeight
-      
-      const scaledWidth = pdfWidth
-      const scaledHeight = pdfWidth / ratio
-      
-      // Skapa PDF
-      const pdf = new jsPDF('p', 'mm', 'a4')
-      
-      // Om hela CV:t får plats på en sida
-      if (scaledHeight <= pdfHeight) {
-        pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
-      } else {
-        // Flera sidor - beräkna hur många sidor som behövs
-        const totalPages = Math.ceil(scaledHeight / pdfHeight)
-        
-        for (let page = 0; page < totalPages && page < 5; page++) {
-          if (page > 0) {
-            pdf.addPage()
-          }
-          
-          // Beräkna vilken del av bilden som ska visas på denna sida
-          const sourceY = (page * pdfHeight * imgWidth) / pdfWidth
-          const sourceHeight = Math.min(
-            ((pdfHeight * imgWidth) / pdfWidth),
-            imgHeight - sourceY
-          )
-          
-          // Skapa temporär canvas för denna sida
-          const pageCanvas = document.createElement('canvas')
-          pageCanvas.width = imgWidth
-          pageCanvas.height = sourceHeight
-          
-          const ctx = pageCanvas.getContext('2d')
-          if (ctx) {
-            ctx.fillStyle = '#ffffff'
-            ctx.fillRect(0, 0, pageCanvas.width, pageCanvas.height)
-            ctx.drawImage(
-              canvas,
-              0, sourceY, imgWidth, sourceHeight,
-              0, 0, imgWidth, sourceHeight
-            )
+      // Bygg HTML för utskrift med korrekt A4-styling
+      const printHTML = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>${fileName}</title>
+          <style>
+            @page {
+              size: A4;
+              margin: 15mm;
+            }
             
-            const pageImgData = pageCanvas.toDataURL('image/png')
-            const pageHeightMm = (sourceHeight * pdfWidth) / imgWidth
+            * {
+              box-sizing: border-box;
+            }
             
-            pdf.addImage(pageImgData, 'PNG', 0, 0, pdfWidth, pageHeightMm)
-          }
-        }
-      }
+            body {
+              margin: 0;
+              padding: 0;
+              font-family: ${clone.style.fontFamily || 'Inter, sans-serif'};
+              font-size: 11pt;
+              line-height: 1.4;
+              color: #1e293b;
+              background: white;
+            }
+            
+            /* A4 container */
+            .cv-container {
+              width: 210mm;
+              min-height: 297mm;
+              margin: 0 auto;
+              background: white;
+              padding: 0;
+            }
+            
+            /* Section styling with page break control */
+            section {
+              break-inside: avoid;
+              page-break-inside: avoid;
+              margin-bottom: 16pt;
+            }
+            
+            /* Header */
+            .cv-header {
+              background-color: ${clone.querySelector('[class*="cv-header"]')?.getAttribute('style')?.match(/backgroundColor:\s*([^;]+)/)?.[1] || '#4f46e5'};
+              color: white;
+              padding: 24pt;
+              margin: -15mm -15mm 16pt -15mm;
+              width: calc(100% + 30mm);
+            }
+            
+            .cv-header h1 {
+              margin: 0 0 8pt 0;
+              font-size: 24pt;
+              font-weight: bold;
+            }
+            
+            .cv-header .title {
+              font-size: 14pt;
+              margin-bottom: 12pt;
+              opacity: 0.9;
+            }
+            
+            .cv-header .contact-info {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 12pt;
+              font-size: 10pt;
+            }
+            
+            /* Section titles */
+            h2 {
+              color: ${clone.querySelector('h2')?.style.color || '#4f46e5'};
+              border-bottom: 2px solid ${clone.querySelector('h2')?.style.borderColor || '#4f46e5'};
+              padding-bottom: 4pt;
+              margin: 0 0 12pt 0;
+              font-size: 13pt;
+              font-weight: 600;
+              break-after: avoid;
+              page-break-after: avoid;
+            }
+            
+            /* Job/Education entries */
+            .entry {
+              margin-bottom: 12pt;
+              break-inside: avoid;
+              page-break-inside: avoid;
+            }
+            
+            .entry-header {
+              display: flex;
+              justify-content: space-between;
+              align-items: flex-start;
+              margin-bottom: 2pt;
+            }
+            
+            .entry-title {
+              font-weight: 600;
+              font-size: 11pt;
+              color: #1e293b;
+            }
+            
+            .entry-date {
+              font-size: 9pt;
+              color: #64748b;
+              white-space: nowrap;
+            }
+            
+            .entry-company {
+              font-size: 10pt;
+              color: #475569;
+              margin-bottom: 4pt;
+            }
+            
+            .entry-description {
+              font-size: 10pt;
+              color: #334155;
+              margin: 0;
+            }
+            
+            /* Skills */
+            .skill-category {
+              margin-bottom: 10pt;
+            }
+            
+            .skill-category-title {
+              font-size: 9pt;
+              color: #64748b;
+              text-transform: uppercase;
+              letter-spacing: 0.05em;
+              margin-bottom: 6pt;
+            }
+            
+            .skill-list {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 6pt;
+            }
+            
+            .skill-tag {
+              background-color: ${clone.querySelector('.skill-tag')?.getAttribute('style')?.match(/backgroundColor:\s*([^;]+)/)?.[1] || '#e0e7ff'};
+              color: ${clone.querySelector('.skill-tag')?.getAttribute('style')?.match(/color:\s*([^;]+)/)?.[1] || '#4f46e5'};
+              padding: 4pt 8pt;
+              border-radius: 4pt;
+              font-size: 9pt;
+              break-inside: avoid;
+            }
+            
+            /* Languages */
+            .language-list {
+              display: flex;
+              flex-wrap: wrap;
+              gap: 16pt;
+            }
+            
+            .language-item {
+              display: flex;
+              align-items: center;
+              gap: 4pt;
+            }
+            
+            /* Certificates */
+            .certificate-item {
+              display: flex;
+              justify-content: space-between;
+              margin-bottom: 6pt;
+              font-size: 10pt;
+            }
+            
+            /* References */
+            .reference-grid {
+              display: grid;
+              grid-template-columns: 1fr 1fr;
+              gap: 12pt;
+            }
+            
+            .reference-item {
+              font-size: 10pt;
+            }
+            
+            .reference-name {
+              font-weight: 600;
+              color: #1e293b;
+            }
+            
+            @media print {
+              body {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="cv-container">
+            ${clone.innerHTML}
+          </div>
+          <script>
+            // Vänta på att allt ska laddas, sen skriv ut
+            window.onload = function() {
+              setTimeout(function() {
+                window.print();
+                // Stäng fönstret efter utskrift (om användaren inte avbryter)
+                setTimeout(function() {
+                  window.close();
+                }, 1000);
+              }, 500);
+            };
+          </script>
+        </body>
+        </html>
+      `
 
-      pdf.save(`${fileName}.pdf`)
+      // Skriv HTML till det nya fönstret
+      printWindow.document.write(printHTML)
+      printWindow.document.close()
+      
     } catch (err) {
       console.error('PDF export error:', err)
       setError(err instanceof Error ? err.message : 'Kunde inte skapa PDF')
@@ -122,7 +257,6 @@ export function CVExport({ fileName = 'mitt-cv' }: CVExportProps) {
   }
 
   const printCV = () => {
-    // Öppna print-dialog direkt
     window.print()
   }
 
@@ -156,12 +290,12 @@ export function CVExport({ fileName = 'mitt-cv' }: CVExportProps) {
           {isExporting ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              Skapar PDF...
+              Öppnar för utskrift...
             </>
           ) : (
             <>
               <Download size={18} />
-              Ladda ner PDF
+              Spara som PDF (via utskrift)
             </>
           )}
         </button>
@@ -171,14 +305,14 @@ export function CVExport({ fileName = 'mitt-cv' }: CVExportProps) {
           className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors"
         >
           <FileText size={18} />
-          Skriv ut
+          Skriv ut / Spara som PDF
         </button>
       </div>
 
       <div className="mt-4 p-3 bg-slate-50 rounded-lg">
         <p className="text-xs text-slate-500">
-          <strong>Tips:</strong> Om PDF-exporten inte fungerar, använd "Skriv ut" 
-          och välj "Spara som PDF" i print-dialogen för bästa resultat.
+          <strong>Rekommenderad metod:</strong> Använd "Skriv ut / Spara som PDF" och välj 
+          "Spara som PDF" som skrivare. Detta ger bäst resultat med korrekta sidbrytningar.
         </p>
       </div>
     </div>
