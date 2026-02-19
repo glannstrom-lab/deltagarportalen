@@ -552,16 +552,16 @@ export default function CVBuilder() {
 
         {/* Right column - Preview & Tools */}
         <div className="space-y-6">
-          {/* Preview */}
-          {showPreview && (
-            <div className="sticky top-6">
-              <div ref={previewRef}>
-                <CVPreview data={formData} template={selectedTemplate} />
-              </div>
-            </div>
-          )}
+          {/* Preview - alltid renderad men kan vara dold för export */}
+          <div 
+            ref={previewRef}
+            className={showPreview ? 'sticky top-6' : 'absolute -left-[9999px] top-0'}
+            style={{ width: showPreview ? 'auto' : '210mm' }}
+          >
+            <CVPreview data={formData} template={selectedTemplate} />
+          </div>
 
-          {/* Tools */}
+          {/* Tools - visas när preview inte är aktiv */}
           {!showPreview && (
             <div className="space-y-6">
               <CVExport 

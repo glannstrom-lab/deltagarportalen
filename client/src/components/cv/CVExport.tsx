@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Download, FileText, Loader2 } from 'lucide-react'
+import { Download, FileText, Loader2, AlertCircle } from 'lucide-react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 
@@ -10,60 +10,122 @@ interface CVExportProps {
 
 export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
   const [isExporting, setIsExporting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const exportToPDF = async () => {
-    if (!previewRef.current) return
+    if (!previewRef.current) {
+      setError('Kunde inte hitta CV att exportera. Försök uppdatera sidan.')
+      return
+    }
 
+    setError(null)
     setIsExporting(true)
+    
     try {
       const element = previewRef.current
       
+      // Kontrollera att elementet har innehåll
+      if (element.offsetWidth === 0 || element.offsetHeight === 0) {
+        throw new Error('CV-elementet har ingen storlek')
+      }
+
+      // Spara nuvarande stilar
+      const originalStyles = {
+        position: element.style.position,
+        left: element.style.left,
+        visibility: element.style.visibility,
+      }
+
+      // Gör elementet synligt för html2canvas men fortfarande utanför skärmen
+      element.style.position = 'absolute'
+      element.style.left = '-9999px'
+      element.style.visibility = 'visible'
+      element.style.width = '210mm' // A4 bredd
+
+      // Vänta på att DOM ska uppdateras
+      await new Promise(resolve => setTimeout(resolve, 100))
+
       // Skapa canvas från HTML-elementet
       const canvas = await html2canvas(element, {
-        scale: 2, // Högre upplösning för skarpare text
+        scale: 2,
         useCORS: true,
+        allowTaint: true,
         logging: false,
         backgroundColor: '#ffffff',
+        windowWidth: 794, // A4 bredd i pixlar vid 96 DPI
+        width: element.scrollWidth,
+        height: element.scrollHeight,
       })
 
-      const imgData = canvas.toDataURL('image/png')
+      // Återställ stilar
+      element.style.position = originalStyles.position
+      element.style.left = originalStyles.left
+      element.style.visibility = originalStyles.visibility
+      element.style.width = 'auto'
+
+      const imgData = canvas.toDataURL('image/png', 1.0)
       
-      // Beräkna PDF-dimensioner (A4)
+      // Skapa PDF
       const pdf = new jsPDF('p', 'mm', 'a4')
-      const pdfWidth = pdf.internal.pageSize.getWidth()
-      const pdfHeight = pdf.internal.pageSize.getHeight()
+      const pdfWidth = 210 // A4 bredd i mm
+      const pdfHeight = 297 // A4 höjd i mm
       
       const imgWidth = canvas.width
       const imgHeight = canvas.height
-      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
       
-      const imgX = (pdfWidth - imgWidth * ratio) / 2
-      let imgY = 10 // Lite marginal från toppen
+      // Beräkna skalning för att passa A4-bredd
+      const scale = pdfWidth / (imgWidth / 2) // Dela med 2 pga scale: 2
+      const scaledWidth = pdfWidth
+      const scaledHeight = (imgHeight / 2) * scale
       
-      // Om CV:et är längre än en sida, skapa flera sidor
-      const scaledHeight = imgHeight * ratio
-      const pageHeight = pdfHeight - 20 // Lite marginal
-      
-      let heightLeft = scaledHeight
-      let position = 0
-
-      // Lägg till första sidan
-      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio)
-      heightLeft -= pageHeight
-
-      // Lägg till fler sidor om nödvändigt
-      while (heightLeft > 0) {
-        position = heightLeft - scaledHeight
-        pdf.addPage()
-        pdf.addImage(imgData, 'PNG', imgX, position, imgWidth * ratio, imgHeight * ratio)
-        heightLeft -= pageHeight
+      // Om CV:et får plats på en sida
+      if (scaledHeight <= pdfHeight) {
+        pdf.addImage(imgData, 'PNG', 0, 0, scaledWidth, scaledHeight)
+      } else {
+        // Flera sidor - använd enkel paginering
+        let heightLeft = scaledHeight
+        let pageCount = 0
+        
+        while (heightLeft > 0 && pageCount < 10) {
+          if (pageCount > 0) {
+            pdf.addPage()
+          }
+          
+          // Beräkna vilken del av bilden som ska visas på denna sida
+          const offsetY = pageCount * pdfHeight / scale * 2
+          const remainingHeight = imgHeight - offsetY
+          const drawHeight = Math.min(pdfHeight / scale * 2, remainingHeight)
+          
+          // Skapa en temporär canvas för denna sida
+          const tempCanvas = document.createElement('canvas')
+          tempCanvas.width = imgWidth
+          tempCanvas.height = drawHeight
+          const tempCtx = tempCanvas.getContext('2d')
+          
+          if (tempCtx) {
+            // Kopiera delen av original-canvas till temporär canvas
+            tempCtx.drawImage(
+              canvas,
+              0, offsetY, imgWidth, drawHeight, // source
+              0, 0, imgWidth, drawHeight // dest
+            )
+            
+            const pageImgData = tempCanvas.toDataURL('image/png')
+            const pageScaledHeight = (drawHeight / 2) * scale
+            
+            pdf.addImage(pageImgData, 'PNG', 0, 0, scaledWidth, pageScaledHeight)
+          }
+          
+          heightLeft -= pdfHeight
+          pageCount++
+        }
       }
 
       // Spara PDF
       pdf.save(`${fileName}.pdf`)
-    } catch (error) {
-      console.error('Fel vid PDF-export:', error)
-      alert('Kunde inte exportera PDF. Försök igen.')
+    } catch (err) {
+      console.error('Fel vid PDF-export:', err)
+      setError('Kunde inte skapa PDF. Kontrollera att CV:et innehåller data och försök igen.')
     } finally {
       setIsExporting(false)
     }
@@ -84,6 +146,14 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
           <p className="text-sm text-slate-500">Ladda ner eller skriv ut</p>
         </div>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2">
+          <AlertCircle size={18} className="text-red-500 flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-red-700">{error}</p>
+        </div>
+      )}
 
       {/* Export-alternativ */}
       <div className="space-y-3">
@@ -116,8 +186,8 @@ export function CVExport({ previewRef, fileName = 'mitt-cv' }: CVExportProps) {
 
       <div className="mt-4 p-3 bg-slate-50 rounded-lg">
         <p className="text-xs text-slate-500">
-          <strong>Tips:</strong> Kontrollera att allt innehåll ser bra ut i förhandsvisningen innan du exporterar. 
-          PDF:en genereras exakt som den visas.
+          <strong>Tips:</strong> PDF:en genereras från din förhandsvisning. 
+          Om du vill se hur CV:et ser ut innan du laddar ner, klicka på "Visa förhandsvisning".
         </p>
       </div>
     </div>
