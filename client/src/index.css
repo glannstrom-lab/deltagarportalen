@@ -1,5 +1,32 @@
 @import "tailwindcss";
 
+@theme {
+  /* Custom colors */
+  --color-primary: #6366f1;
+  --color-primary-dark: #4f46e5;
+  --color-primary-light: #818cf8;
+  
+  --color-accent-orange: #f97316;
+  --color-accent-blue: #3b82f6;
+  --color-accent-green: #10b981;
+  --color-accent-pink: #ec4899;
+  
+  --color-sidebar: #4f46e5;
+  --color-sidebar-dark: #4338ca;
+  --color-sidebar-light: #6366f1;
+  
+  --color-page: #eef2ff;
+  --color-page-dark: #e0e7ff;
+  
+  /* Custom shadows */
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.06);
+  --shadow-card-hover: 0 8px 30px rgba(0, 0, 0, 0.1);
+  
+  /* Custom border radius */
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+}
+
 @layer base {
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -16,5 +43,166 @@
   
   .card-hover:hover {
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Button components */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background-color: #6366f1;
+    color: white;
+    padding: 0.625rem 1.25rem;
+  }
+
+  .btn-primary:hover {
+    background-color: #4f46e5;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    background-color: white;
+    color: #334155;
+    padding: 0.625rem 1.25rem;
+  }
+
+  .btn-secondary:hover {
+    background-color: #f8fafc;
+  }
+
+  .btn-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    background-color: transparent;
+    color: #334155;
+    padding: 0.625rem 1.25rem;
+  }
+
+  .btn-outline:hover {
+    background-color: #f8fafc;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.75rem;
+    font-weight: 500;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    color: #475569;
+    padding: 0.625rem 1.25rem;
+  }
+
+  .btn-ghost:hover {
+    background-color: #f1f5f9;
+  }
+
+  /* Input component */
+  .input {
+    width: 100%;
+    padding: 0.625rem 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.75rem;
+    background-color: white;
+    color: #1e293b;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  }
+
+  .input:disabled {
+    background-color: #f1f5f9;
+    cursor: not-allowed;
+  }
+
+  .input::placeholder {
+    color: #94a3b8;
+  }
+}
+
+@layer utilities {
+  /* Accent color background utilities */
+  .bg-accent-orange {
+    background-color: #f97316;
+  }
+
+  .bg-accent-blue {
+    background-color: #3b82f6;
+  }
+
+  .bg-accent-green {
+    background-color: #10b981;
+  }
+
+  .bg-accent-pink {
+    background-color: #ec4899;
+  }
+
+  /* Accent color text utilities */
+  .text-accent-orange {
+    color: #f97316;
+  }
+
+  .text-accent-blue {
+    color: #3b82f6;
+  }
+
+  .text-accent-green {
+    color: #10b981;
+  }
+
+  .text-accent-pink {
+    color: #ec4899;
+  }
+
+  /* Shadow utilities */
+  .shadow-card {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-card-hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Ring utilities - using CSS variable for opacity support */
+  .ring-primary {
+    --tw-ring-color: #6366f1;
   }
 }
