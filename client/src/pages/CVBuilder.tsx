@@ -1186,6 +1186,7 @@ export default function CVBuilder() {
           {!showPreview && (
             <div className="space-y-6">
               <CVExport 
+                data={formData}
                 fileName={`${formData.firstName}-${formData.lastName}-CV`.replace(/\s+/g, '-').toLowerCase() || 'mitt-cv'}
               />
               
