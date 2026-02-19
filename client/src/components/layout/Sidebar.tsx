@@ -9,10 +9,16 @@ export function Sidebar() {
   const { logout } = useAuthStore()
 
   return (
-    <aside className="w-20 h-screen sticky top-0 flex flex-col py-6" style={{ backgroundColor: '#4f46e5' }}>
+    <aside 
+      className="w-20 h-screen sticky top-0 flex flex-col py-6 flex-shrink-0" 
+      style={{ backgroundColor: '#4f46e5' }}
+    >
       {/* User Avatar */}
       <div className="flex justify-center mb-8">
-        <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+        <div 
+          className="w-12 h-12 rounded-full flex items-center justify-center"
+          style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
+        >
           <User size={24} className="text-white" />
         </div>
       </div>
@@ -30,9 +36,10 @@ export function Sidebar() {
               className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200',
                 isActive 
-                  ? 'bg-white text-sidebar' 
+                  ? 'bg-white text-[#4f46e5]' 
                   : 'text-white/70 hover:bg-white/10 hover:text-white'
               )}
+              style={isActive ? { color: '#4f46e5' } : undefined}
               title={item.label}
             >
               <Icon size={22} />
