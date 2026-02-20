@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { cvApi, interestApi, coverLetterApi } from '@/services/api'
 import { LoadingState } from '@/components/LoadingState'
+import { DarkModeToggle } from '@/components/DarkModeToggle'
 import {
   StatCard,
   CalendarWidget,
@@ -12,6 +13,26 @@ import {
   QuickActions,
   SearchBar,
 } from '@/components/ui'
+import { 
+  DailyStep, 
+  CareerRoadmap, 
+  AchievementCelebration,
+  WeeklySummary,
+  EnergyFilter,
+  type EnergyLevel,
+  type Achievement
+} from '@/components/gamification'
+import { MoodCheck } from '@/components/wellbeing'
+
+
+interface WeeklyStats {
+  logins: number
+  timeSpent: number
+  cvProgress: number
+  applications: number
+  articlesRead: number
+  stepsCompleted: number
+}
 
 export default function Dashboard() {
   const { user } = useAuthStore()
@@ -20,22 +41,61 @@ export default function Dashboard() {
   const [hasInterestResult, setHasInterestResult] = useState(false)
   const [coverLetterCount, setCoverLetterCount] = useState(0)
   const [loading, setLoading] = useState(true)
+  
+  // Sprint 3 & 4 states
+  const [currentAchievement, setCurrentAchievement] = useState<Achievement | null>(null)
+  const [showWeeklySummary, setShowWeeklySummary] = useState(false)
+  const [completedDailySteps, setCompletedDailySteps] = useState<string[]>([])
+  const [energyLevel, setEnergyLevel] = useState<EnergyLevel | null>(null)
+  const [weeklyStats, setWeeklyStats] = useState<WeeklyStats>({
+    logins: 5,
+    timeSpent: 120,
+    cvProgress: 0,
+    applications: 3,
+    articlesRead: 2,
+    stepsCompleted: 4
+  })
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const cv = await cvApi.getCV()
-        setHasCV(!!cv.summary || !!(cv.workExperience && cv.workExperience.length))
+        const hasCvData = !!cv.summary || !!(cv.workExperience && cv.workExperience.length)
+        setHasCV(hasCvData)
         const ats = await cvApi.getATSAnalysis()
         setCvScore(ats.score)
+        setWeeklyStats(prev => ({ ...prev, cvProgress: ats.score }))
+        
         try {
           await interestApi.getResult()
           setHasInterestResult(true)
         } catch {
           setHasInterestResult(false)
         }
+        
         const letters = await coverLetterApi.getAll()
         setCoverLetterCount(letters.length)
+        
+        // Ladda sparad data
+        const savedSteps = localStorage.getItem('completedDailySteps')
+        if (savedSteps) {
+          setCompletedDailySteps(JSON.parse(savedSteps))
+        }
+        
+        const savedEnergy = localStorage.getItem('lastEnergyLevel')
+        if (savedEnergy) {
+          setEnergyLevel(parseInt(savedEnergy) as EnergyLevel)
+        }
+        
+        // Kolla om vi ska visa veckosammanfattning (visa på söndagar eller första besöket)
+        const today = new Date().getDay()
+        const lastSummary = localStorage.getItem('lastWeeklySummary')
+        const currentWeek = `${new Date().getFullYear()}-W${getWeekNumber(new Date())}`
+        
+        if ((today === 0 || !lastSummary) && lastSummary !== currentWeek) {
+          setShowWeeklySummary(true)
+          localStorage.setItem('lastWeeklySummary', currentWeek)
+        }
       } catch (err) {
         console.error('Fel vid laddning:', err)
       } finally {
@@ -44,9 +104,81 @@ export default function Dashboard() {
     }
     loadData()
   }, [])
+  
+  // Kolla achievements när data laddas
+  useEffect(() => {
+    if (!loading) {
+      checkAchievements()
+    }
+  }, [loading, cvScore, hasInterestResult, weeklyStats.applications])
+
+  const getWeekNumber = (date: Date) => {
+    const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
+    const dayNum = d.getUTCDay() || 7
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum)
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1))
+    return Math.ceil(((+d - +yearStart) / 86400000 + 1) / 7)
+  }
+
+  const checkAchievements = useCallback(() => {
+    const achievements: Achievement[] = []
+
+    if (cvScore >= 100) {
+      achievements.push({
+        id: 'cv-complete',
+        title: 'CV-mästare!',
+        description: 'Du har skapat ett komplett CV. Du är redo att söka jobb!',
+        icon: '📄'
+      })
+    }
+
+    if (weeklyStats.applications >= 1) {
+      achievements.push({
+        id: 'first-application',
+        title: 'Första steget!',
+        description: 'Du har skickat din första ansökan. Det tar mod att söka jobb!',
+        icon: '🚀'
+      })
+    }
+
+    if (hasInterestResult) {
+      achievements.push({
+        id: 'interest-complete',
+        title: 'Självkännare!',
+        description: 'Du har upptäckt dina intressen. Det är första steget till rätt karriär!',
+        icon: '🎯'
+      })
+    }
+
+    // Visa första achievement som inte visats tidigare
+    const shownAchievements = JSON.parse(localStorage.getItem('shownAchievements') || '[]')
+    const newAchievement = achievements.find(a => !shownAchievements.includes(a.id))
+    
+    if (newAchievement) {
+      setCurrentAchievement(newAchievement)
+      localStorage.setItem('shownAchievements', JSON.stringify([...shownAchievements, newAchievement.id]))
+    }
+  }, [cvScore, hasInterestResult, weeklyStats.applications])
+
+  const handleDailyStepComplete = (taskId: string) => {
+    const updated = [...completedDailySteps, taskId]
+    setCompletedDailySteps(updated)
+    localStorage.setItem('completedDailySteps', JSON.stringify(updated))
+    
+    // Uppdatera veckostatistik
+    setWeeklyStats(prev => ({
+      ...prev,
+      stepsCompleted: prev.stepsCompleted + 1
+    }))
+  }
+
+  const handleMoodSubmit = (mood: number) => {
+    console.log('Mood submitted:', mood)
+    // Här skulle vi kunna spara till backend
+  }
 
   if (loading) {
-    return <LoadingState message="Laddar..." />
+    return <LoadingState message="Laddar din översikt..." />
   }
 
   const progressItems = [
@@ -56,24 +188,62 @@ export default function Dashboard() {
   ]
 
   const barData = [
-    { label: 'Ansökningar', value: 12, color: 'bg-primary' },
+    { label: 'Ansökningar', value: weeklyStats.applications, color: 'bg-primary' },
     { label: 'Sparade jobb', value: 8, color: 'bg-accent-blue' },
     { label: 'Brev skrivna', value: coverLetterCount, color: 'bg-accent-orange' },
-    { label: 'Möten', value: 3, color: 'bg-accent-pink' },
+    { label: 'Steg klara', value: completedDailySteps.length, color: 'bg-accent-green' },
   ]
+
+  // Hälsningsmeddelande baserat på tid på dygnet
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return `God morgon, ${user?.firstName}! ☀️`
+    if (hour < 17) return `Hej, ${user?.firstName}! 👋`
+    return `God kväll, ${user?.firstName}! 🌙`
+  }
 
   return (
     <div className="space-y-6">
-      {/* Header with Search */}
-      <div className="flex items-center justify-between mb-8">
+      {/* Achievement Celebration */}
+      <AchievementCelebration 
+        achievement={currentAchievement}
+        onClose={() => setCurrentAchievement(null)}
+      />
+      
+      {/* Weekly Summary Modal */}
+      <WeeklySummary
+        stats={weeklyStats}
+        isVisible={showWeeklySummary}
+        onClose={() => setShowWeeklySummary(false)}
+      />
+
+      {/* Header with Search and Dark Mode */}
+      <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold text-slate-800">
-            Välkommen, {user?.firstName}
+            {getGreeting()}
           </h1>
-          <p className="text-slate-500 mt-1">Här är din översikt för idag.</p>
+          <p className="text-slate-500 mt-1">
+            {cvScore >= 70 
+              ? 'Du är på god väg! Fortsätt så!' 
+              : 'Låt oss bygga ett starkt CV tillsammans.'}
+          </p>
         </div>
-        <SearchBar />
+        <div className="flex items-center gap-4">
+          <DarkModeToggle />
+          <SearchBar />
+        </div>
       </div>
+
+      {/* Sprint 4: Energy Filter - visas om inte vald idag */}
+      {!energyLevel && (
+        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
+          <EnergyFilter 
+            onEnergySelect={setEnergyLevel}
+            selectedLevel={energyLevel}
+          />
+        </div>
+      )}
 
       {/* Stats Row */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -86,7 +256,7 @@ export default function Dashboard() {
         />
         <StatCard 
           label="Ansökningar" 
-          value="12" 
+          value={weeklyStats.applications.toString()} 
           trend="up" 
           trendValue="+2" 
           color="orange" 
@@ -97,9 +267,9 @@ export default function Dashboard() {
           color="blue" 
         />
         <StatCard 
-          label="Dagar i rad" 
-          value="7" 
-          color="pink" 
+          label="Dagens steg" 
+          value={`${completedDailySteps.length}`} 
+          color="purple" 
         />
       </div>
 
@@ -107,6 +277,18 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - 2/3 */}
         <div className="lg:col-span-2 space-y-6">
+          {/* Sprint 3: Career Roadmap */}
+          <CareerRoadmap 
+            stats={{
+              hasProfile: !!user,
+              cvProgress: cvScore,
+              interestGuideCompleted: hasInterestResult,
+              coverLetterCount,
+              applicationsCount: weeklyStats.applications,
+              hasConsultantContact: false
+            }}
+          />
+          
           <LineChart />
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -117,6 +299,15 @@ export default function Dashboard() {
 
         {/* Right Column - 1/3 */}
         <div className="space-y-6">
+          {/* Sprint 3: Daily Step */}
+          <DailyStep 
+            onTaskComplete={handleDailyStepComplete}
+            completedTasks={completedDailySteps}
+          />
+          
+          {/* Sprint 3 & 4: Mood Check */}
+          <MoodCheck onMoodSubmit={handleMoodSubmit} />
+          
           <CircleChart 
             percentage={cvScore} 
             label="CV-kvalitet" 
