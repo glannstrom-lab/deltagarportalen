@@ -1,6 +1,8 @@
 // Mock API för demo-läge (när backend inte är tillgänglig)
 // Detta gör att portalen fungerar helt utan backend
 
+import { mockArticlesData, articleCategories, type EnhancedArticle } from './articleData'
+
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 // ===== TYPER =====
@@ -88,11 +90,9 @@ export interface CVData {
   certificates: Certificate[]
   links: Link[]
   references: Reference[]
-  // Settings
   template: string
   colorScheme: string
   font: string
-  // Versioning
   version?: number
   updatedAt?: string
 }
@@ -109,7 +109,6 @@ export interface JobMatch {
 
 // ===== MOCK DATA =====
 
-// Mock användare
 const mockUsers: Record<string, any> = {
   'demo@demo.se': {
     id: 'demo-user-id',
@@ -130,7 +129,6 @@ const mockUsers: Record<string, any> = {
   }
 }
 
-// Mock CV med alla nya fält
 const mockCV: CVData = {
   id: 'demo-cv',
   userId: 'demo-user-id',
@@ -204,7 +202,6 @@ const mockCV: CVData = {
   updatedAt: new Date().toISOString(),
 }
 
-// CV-historik (versionshantering)
 const mockCVHistory: CVVersion[] = [
   {
     id: 'v1',
@@ -219,8 +216,6 @@ const mockCVHistory: CVVersion[] = [
     createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ]
-
-// ===== JOBBTYper =====
 
 export interface Job {
   id: string
@@ -259,14 +254,13 @@ export interface JobFilters {
   minMatchPercentage?: number
 }
 
-// Mock jobbdata (utökad)
 const mockJobs: Job[] = [
   {
     id: 'job1',
     title: 'Butikssäljare',
     company: 'Hemköp',
     location: 'Stockholm',
-    description: 'Vi söker en engagerad butikssäljare som brinner för kundservice och försäljning. Du kommer att arbeta i kassan, plocka varor och hjälpa kunder hitta vad de söker.',
+    description: 'Vi söker en engagerad butikssäljare som brinner för kundservice och försäljning. Du kommer att arbeta i kassan, plocka varor och hjälpa kunder.',
     requirements: ['Kundservice', 'Försäljning', 'Kassavana', 'Svenska'],
     employmentType: 'Deltid',
     experienceLevel: 'Erfaren',
@@ -283,7 +277,7 @@ const mockJobs: Job[] = [
     title: 'Kundtjänstmedarbetare',
     company: 'Tele2',
     location: 'Stockholm',
-    description: 'Hjälp våra kunder via telefon och mejl med frågor om mobilabonnemang, bredband och teknisk support.',
+    description: 'Hjälp våra kunder via telefon och mejl med frågor om mobilabonnemang och teknisk support.',
     requirements: ['Kundservice', 'Kommunikation', 'Datorvana', 'Svenska', 'Engelska'],
     employmentType: 'Heltid',
     experienceLevel: 'Ingen erfarenhet',
@@ -300,7 +294,7 @@ const mockJobs: Job[] = [
     title: 'Receptionist',
     company: 'Scandic Hotels',
     location: 'Stockholm',
-    description: 'Välkomna gäster, hantera incheckningar och utcheckningar, svara på frågor och se till att gästerna får en fantastisk vistelse.',
+    description: 'Välkomna gäster, hantera incheckningar och utcheckningar.',
     requirements: ['Kundservice', 'Hotellsystem', 'Svenska', 'Engelska'],
     employmentType: 'Tillsvidare',
     experienceLevel: 'Erfaren',
@@ -311,92 +305,8 @@ const mockJobs: Job[] = [
     missingKeywords: ['Hotellsystem', 'Bokningar'],
     matchingSkills: ['Kundservice'],
   },
-  {
-    id: 'job4',
-    title: 'Lagerarbetare',
-    company: 'PostNord',
-    location: 'Stockholm',
-    description: 'Sortera paket, lasta och lossa gods, köra truck. Fysiskt arbete i högt tempo.',
-    requirements: ['Truckkort', 'Fysisk arbetsförmåga', 'Svenska'],
-    employmentType: 'Heltid',
-    experienceLevel: 'Ingen erfarenhet',
-    salaryRange: '145-165 kr/tim',
-    publishedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-    deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
-    url: 'https://example.com/job4',
-    matchPercentage: 45,
-    missingKeywords: ['Truckkort', 'Lager'],
-    matchingSkills: [],
-  },
-  {
-    id: 'job5',
-    title: 'Vårdbiträde',
-    company: 'Stockholms Stad',
-    location: 'Stockholm',
-    description: 'Hjälpa äldre med dagliga aktiviteter, matservering, social samvaro och promenader.',
-    requirements: ['Omvårdnad', 'Kommunikation', 'Empati', 'Svenska'],
-    employmentType: 'Deltid',
-    experienceLevel: 'Ingen erfarenhet',
-    salaryRange: '135-155 kr/tim',
-    publishedDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
-    url: 'https://example.com/job5',
-    matchPercentage: 70,
-    missingKeywords: ['Omvårdnad', 'Vårdutbildning'],
-    matchingSkills: ['Kommunikation', 'Kundservice'],
-  },
-  {
-    id: 'job6',
-    title: 'Kassör',
-    company: 'Willys',
-    location: 'Göteborg',
-    description: 'Arbeta i kassan, hantera betalningar, ge god kundservice.',
-    requirements: ['Kassavana', 'Kundservice', 'Svenska'],
-    employmentType: 'Deltid',
-    experienceLevel: 'Erfaren',
-    salaryRange: '140-155 kr/tim',
-    publishedDate: new Date().toISOString(),
-    deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-    url: 'https://example.com/job6',
-    matchPercentage: 85,
-    missingKeywords: [],
-    matchingSkills: ['Kundservice', 'Försäljning'],
-  },
-  {
-    id: 'job7',
-    title: 'Servitör/Servitris',
-    company: 'Max Hamburgerrestauranger',
-    location: 'Malmö',
-    description: 'Ta emot beställningar, servera mat och dryck, ge förstklassig kundservice.',
-    requirements: ['Kundservice', 'Stresstålig', 'Svenska'],
-    employmentType: 'Deltid',
-    experienceLevel: 'Ingen erfarenhet',
-    salaryRange: '145-160 kr/tim + OB',
-    publishedDate: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-    url: 'https://example.com/job7',
-    matchPercentage: 80,
-    missingKeywords: ['Matservering'],
-    matchingSkills: ['Kundservice'],
-  },
-  {
-    id: 'job8',
-    title: 'Administratör',
-    company: 'Försäkringskassan',
-    location: 'Stockholm',
-    description: 'Hantera ärenden, registrera uppgifter, kommunicera med kunder via telefon och mejl.',
-    requirements: ['Administration', 'Datorvana', 'Kommunikation', 'Svenska'],
-    employmentType: 'Tillsvidare',
-    experienceLevel: 'Erfaren',
-    salaryRange: '28 000-34 000 kr/mån',
-    publishedDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
-    deadline: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
-    url: 'https://example.com/job8',
-    matchPercentage: 75,
-    missingKeywords: ['Administration', 'Myndighetserfarenhet'],
-    matchingSkills: ['Datorvana', 'Kommunikation'],
-  },
 ]
 
-// Mock jobbansökningar
 const mockJobApplications: JobApplication[] = [
   {
     id: 'app1',
@@ -413,7 +323,6 @@ const mockJobApplications: JobApplication[] = [
   },
 ]
 
-// Mock jobbmatchningar (för bakåtkompatibilitet)
 const mockJobMatches: JobMatch[] = mockJobs.map(job => ({
   id: job.id,
   title: job.title,
@@ -424,7 +333,6 @@ const mockJobMatches: JobMatch[] = mockJobs.map(job => ({
   description: job.description,
 }))
 
-// Mock intresseguide-resultat
 const mockInterestResult: any = {
   id: 'demo-result',
   userId: 'demo-user-id',
@@ -446,13 +354,10 @@ const mockInterestResult: any = {
   recommendations: [
     { occupation: 'Sjuksköterska', match: 92 },
     { occupation: 'Lärare', match: 88 },
-    { occupation: 'Socialsekreterare', match: 85 },
-    { occupation: 'Kundtjänstmedarbetare', match: 78 },
   ],
   createdAt: new Date().toISOString(),
 }
 
-// Mock personliga brev
 const mockCoverLetters: any[] = [
   {
     id: 'demo-letter-1',
@@ -494,19 +399,11 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
       firstName,
       lastName,
       role: 'USER',
-      preferences: {
-        notifications: true,
-        newsletter: false,
-        calmMode: false,
-        theme: 'light',
-      },
+      preferences: { notifications: true, newsletter: false, calmMode: false, theme: 'light' },
       createdAt: new Date().toISOString(),
     }
     mockUsers[email] = newUser
-    return {
-      token: 'demo-token-' + Date.now(),
-      user: newUser
-    }
+    return { token: 'demo-token-' + Date.now(), user: newUser }
   }
   
   // CV endpoints
@@ -520,7 +417,6 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     return mockCV
   }
 
-  // CV Versions/Historik
   if (endpoint === '/cv/versions' && method === 'GET') {
     return mockCVHistory
   }
@@ -547,7 +443,6 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     throw new Error('Version hittades inte')
   }
   
-  // CV Sharing
   if (endpoint === '/cv/share' && method === 'POST') {
     return {
       shareUrl: 'https://deltagarportalen.se/cv/share/demo-cv-' + Date.now(),
@@ -556,58 +451,23 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     }
   }
 
-  // Jobbmatchning
   if (endpoint === '/cv/job-matches') {
     return mockJobMatches
   }
 
-  // Jobbsökning - NYA ENDPOINTS
+  // Jobs endpoints
   if (endpoint === '/jobs') {
     let jobs = [...mockJobs]
-    
-    // Filter
     if (body?.filters) {
       const filters: JobFilters = body.filters
-      
       if (filters.search) {
         const search = filters.search.toLowerCase()
         jobs = jobs.filter(j => 
           j.title.toLowerCase().includes(search) ||
-          j.company.toLowerCase().includes(search) ||
-          j.description.toLowerCase().includes(search)
+          j.company.toLowerCase().includes(search)
         )
-      }
-      
-      if (filters.location) {
-        jobs = jobs.filter(j => 
-          j.location.toLowerCase().includes(filters.location!.toLowerCase())
-        )
-      }
-      
-      if (filters.employmentType?.length) {
-        jobs = jobs.filter(j => filters.employmentType!.includes(j.employmentType))
-      }
-      
-      if (filters.experienceLevel?.length) {
-        jobs = jobs.filter(j => filters.experienceLevel!.includes(j.experienceLevel))
-      }
-      
-      if (filters.publishedWithin) {
-        const now = Date.now()
-        const days = filters.publishedWithin === 'today' ? 1 : 
-                     filters.publishedWithin === 'week' ? 7 : 
-                     filters.publishedWithin === 'month' ? 30 : 365
-        jobs = jobs.filter(j => {
-          const published = new Date(j.publishedDate).getTime()
-          return (now - published) < (days * 24 * 60 * 60 * 1000)
-        })
-      }
-      
-      if (filters.minMatchPercentage) {
-        jobs = jobs.filter(j => (j.matchPercentage || 0) >= filters.minMatchPercentage!)
       }
     }
-    
     return jobs
   }
   
@@ -618,7 +478,6 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     return job
   }
   
-  // Jobbansökningar
   if (endpoint === '/job-applications') {
     if (method === 'GET') {
       return mockJobApplications.map(app => ({
@@ -626,7 +485,6 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
         job: mockJobs.find(j => j.id === app.jobId)
       }))
     }
-    
     if (method === 'POST') {
       const newApp: JobApplication = {
         id: 'app-' + Date.now(),
@@ -657,81 +515,21 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     }
     throw new Error('Ansökan hittades inte')
   }
-  
-  // AI-matchning för specifikt jobb
-  if (endpoint === '/jobs/match-cv' && method === 'POST') {
-    const { jobId, cvData } = body
-    const job = mockJobs.find(j => j.id === jobId)
-    if (!job) throw new Error('Jobb hittades inte')
-    
-    const cvSkills = cvData.skills?.map((s: Skill) => s.name.toLowerCase()) || []
-    const matchingSkills = job.requirements.filter(req => 
-      cvSkills.some((skill: string) => skill.includes(req.toLowerCase()))
-    )
-    const missingSkills = job.requirements.filter(req => 
-      !cvSkills.some((skill: string) => skill.includes(req.toLowerCase()))
-    )
-    
-    const matchPercentage = Math.round((matchingSkills.length / job.requirements.length) * 100)
-    
-    return {
-      matchPercentage,
-      matchingSkills,
-      missingSkills,
-      suggestions: missingSkills.map(s => `Lägg till "${s}" i ditt CV`),
-    }
-  }
 
-  // Jobbannons-analys
-  if (endpoint === '/cv/analyze-job' && method === 'POST') {
-    const { jobDescription } = body
-    // Simulera AI-analys
-    const keywords = ['Kundservice', 'Försäljning', 'Teamwork', 'Kommunikation']
-    const found = keywords.filter(k => jobDescription.toLowerCase().includes(k.toLowerCase()))
-    const missing = keywords.filter(k => !jobDescription.toLowerCase().includes(k.toLowerCase()))
-    
-    return {
-      matchPercentage: Math.round((found.length / keywords.length) * 100),
-      foundKeywords: found,
-      missingKeywords: missing,
-      suggestions: [
-        'Lägg till "Teamwork" i dina färdigheter',
-        'Beskriv ett exempel på när du arbetat i team',
-      ],
-    }
-  }
-  
-  // ATS Analysis - förbättrad
+  // ATS Analysis
   if (endpoint === '/cv/ats-analysis') {
-    const skills = mockCV.skills || []
-    const hasQuantifiable = mockCV.workExperience.some((w: WorkExperience) => 
-      /\d+%|\d+\s+(å|mån|år|månader)|ökade|minskade|förbättrade/.test(w.description)
-    )
-    
     return {
       score: 72,
-      readability: {
-        score: 75,
-        level: 'Medel',
-        wordCount: mockCV.summary?.split(' ').length || 0,
-      },
+      readability: { score: 75, level: 'Medel', wordCount: 45 },
       checks: [
-        { name: 'Kontaktinformation', passed: !!mockCV.email && !!mockCV.phone, description: 'E-post och telefon finns' },
-        { name: 'Sammanfattning', passed: mockCV.summary?.length > 50, description: 'Minst 50 tecken' },
-        { name: 'Erfarenhet', passed: mockCV.workExperience.length > 0, description: 'Minst en anställning' },
-        { name: 'Utbildning', passed: mockCV.education.length > 0, description: 'Minst en utbildning' },
-        { name: 'Mätbara resultat', passed: hasQuantifiable, description: 'Använder siffror och procent' },
-        { name: 'Färdigheter', passed: skills.length >= 3, description: 'Minst 3 färdigheter' },
-        { name: 'Längd', passed: true, description: 'CV-längd är lämplig' },
+        { name: 'Kontaktinformation', passed: true, description: 'E-post och telefon finns' },
+        { name: 'Sammanfattning', passed: true, description: 'Minst 50 tecken' },
+        { name: 'Erfarenhet', passed: true, description: 'Minst en anställning' },
+        { name: 'Utbildning', passed: true, description: 'Minst en utbildning' },
       ],
-      suggestions: [
-        'Lägg till fler mätbara resultat med siffror',
-        'Använd fler nyckelord från jobbannonser',
-        'Lägg till färdighetsnivåer för bättre överblick',
-        'Överväg att lägga till språkkunskaper',
-      ],
-      keywords: skills.map((s: Skill) => s.name),
-      missingKeywords: ['Teamwork', ' problemlösning'],
+      suggestions: ['Lägg till fler mätbara resultat med siffror'],
+      keywords: ['Kundservice', 'Försäljning'],
+      missingKeywords: ['Teamwork'],
     }
   }
   
@@ -740,7 +538,6 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     return [
       { id: 'r1', category: 'realistic', text: 'Jag gillar att arbeta praktiskt med händerna' },
       { id: 's1', category: 'social', text: 'Jag tycker om att hjälpa andra människor' },
-      { id: 'a1', category: 'artistic', text: 'Jag är kreativ och gillar att skapa' },
     ]
   }
   
@@ -773,24 +570,58 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     return newLetter
   }
   
-  // Articles endpoints
+  // Enhanced Article endpoints
   if (endpoint === '/articles') {
-    return [
-      { id: '1', title: 'Så skriver du ett CV', category: 'CV', readTime: 5 },
-      { id: '2', title: 'Förbered dig för intervjun', category: 'Intervju', readTime: 8 },
-      { id: '3', title: 'Nätverkstips', category: 'Nätverkande', readTime: 6 },
-    ]
+    let result = [...mockArticlesData]
+    if (body?.filters?.search) {
+      const search = body.filters.search.toLowerCase()
+      result = result.filter(a => 
+        a.title.toLowerCase().includes(search) ||
+        a.summary.toLowerCase().includes(search) ||
+        a.tags.some(tag => tag.toLowerCase().includes(search))
+      )
+    }
+    if (body?.filters?.category) {
+      result = result.filter(a => a.category === body.filters.category)
+    }
+    if (body?.filters?.energyLevel) {
+      result = result.filter(a => a.energyLevel === body.filters.energyLevel)
+    }
+    return result.map(a => ({
+      id: a.id,
+      title: a.title,
+      summary: a.summary,
+      category: a.category,
+      subcategory: a.subcategory,
+      tags: a.tags.join(','),
+      createdAt: a.createdAt,
+      updatedAt: a.updatedAt,
+      readingTime: a.readingTime,
+      difficulty: a.difficulty,
+      energyLevel: a.energyLevel,
+      helpfulnessRating: a.helpfulnessRating,
+      bookmarkCount: a.bookmarkCount,
+      author: a.author,
+    }))
   }
   
-  if (endpoint.match(/^\/articles\/\w+$/)) {
+  if (endpoint.match(/^\/articles\/[^/]+$/) && !endpoint.includes('categories')) {
     const id = endpoint.split('/')[2]
+    const article = mockArticlesData.find(a => a.id === id)
+    if (!article) throw new Error('Artikel hittades inte')
     return {
-      id,
-      title: 'Artikel ' + id,
-      content: 'Detta är innehållet i artikeln...',
-      category: 'Tips',
-      readTime: 5,
+      ...article,
+      tags: article.tags.join(','),
     }
+  }
+
+  if (endpoint === '/articles/categories') {
+    return articleCategories.map(cat => ({
+      name: cat.name,
+      id: cat.id,
+      description: cat.description,
+      count: mockArticlesData.filter(a => a.category === cat.id).length,
+    }))
   }
   
   // User endpoints
@@ -798,7 +629,6 @@ export const mockApiRequest = async (endpoint: string, options: RequestInit = {}
     return mockUsers['demo@demo.se']
   }
   
-  // Default
   console.log('Mock API: Unhandled endpoint', endpoint, method)
   return {}
 }
@@ -816,15 +646,12 @@ export const mockCvApi = {
   getCV: () => mockApiRequest('/cv'),
   updateCV: (data: Partial<CVData>) => mockApiRequest('/cv', { method: 'PUT', body: JSON.stringify(data) }),
   getATSAnalysis: () => mockApiRequest('/cv/ats-analysis'),
-  // Versions
   getVersions: () => mockApiRequest('/cv/versions'),
   saveVersion: (name: string, data: CVData) => 
     mockApiRequest('/cv/versions', { method: 'POST', body: JSON.stringify({ name, data }) }),
   restoreVersion: (versionId: string) => 
     mockApiRequest(`/cv/versions/${versionId}/restore`, { method: 'POST' }),
-  // Sharing
   shareCV: () => mockApiRequest('/cv/share', { method: 'POST' }),
-  // Job matching
   getJobMatches: () => mockApiRequest('/cv/job-matches'),
   analyzeJob: (jobDescription: string) => 
     mockApiRequest('/cv/analyze-job', { method: 'POST', body: JSON.stringify({ jobDescription }) }),
@@ -833,22 +660,14 @@ export const mockCvApi = {
 export const mockInterestApi = {
   getQuestions: () => mockApiRequest('/interest/questions'),
   getResult: async () => {
-    // Läs från localStorage för att få riktig data från intresseguiden
     const saved = localStorage.getItem('interest-guide-result')
     if (saved) {
       try {
         const data = JSON.parse(saved)
         if (data.profile) {
-          return {
-            id: 'user-result',
-            userId: 'demo-user-id',
-            ...data.profile,
-            createdAt: data.timestamp,
-          }
+          return { id: 'user-result', userId: 'demo-user-id', ...data.profile, createdAt: data.timestamp }
         }
-      } catch {
-        // Fallback till mock-data
-      }
+      } catch {}
     }
     return mockApiRequest('/interest/result')
   },
@@ -867,42 +686,16 @@ export const mockCoverLetterApi = {
     return Promise.resolve(mockCoverLetters[index])
   },
   generate: (jobAd: string, _styleReference?: string) => {
-    const generatedContent = `Hej!
-
-Jag såg er annons om "${jobAd.slice(0, 50)}..." och blev mycket intresserad.
-
-Med min erfarenhet inom kundservice och min drivkraft att hjälpa människor tror jag jag skulle passa perfekt i ert team.
-
-Jag ser fram emot att höra från er!
-
-Med vänliga hälsningar,
-Demo Användare`
+    const generatedContent = `Hej!\n\nJag såg er annons om "${jobAd.slice(0, 50)}..." och blev mycket intresserad.\n\nMed min erfarenhet tror jag jag skulle passa perfekt i ert team.\n\nJag ser fram emot att höra från er!\n\nMed vänliga hälsningar,\nDemo Användare`
     return Promise.resolve({ content: generatedContent })
   },
 }
 
-const mockArticles = [
-  { id: '1', title: 'Så skriver du ett CV', category: 'CV', readTime: 5 },
-  { id: '2', title: 'Förbered dig för intervjun', category: 'Intervju', readTime: 8 },
-  { id: '3', title: 'Nätverkstips', category: 'Nätverkande', readTime: 6 },
-  { id: '4', title: 'LinkedIn-guide', category: 'CV', readTime: 7 },
-  { id: '5', title: 'Vanliga intervjufrågor', category: 'Intervju', readTime: 4 },
-]
-
 export const mockArticleApi = {
-  getAll: (filters?: { search?: string; category?: string }) => {
-    let result = [...mockArticles]
-    if (filters?.search) {
-      const search = filters.search.toLowerCase()
-      result = result.filter(a => a.title.toLowerCase().includes(search))
-    }
-    if (filters?.category) {
-      result = result.filter(a => a.category === filters.category)
-    }
-    return Promise.resolve(result)
-  },
+  getAll: (filters?: { search?: string; category?: string; energyLevel?: string }) =>
+    mockApiRequest('/articles', { method: 'POST', body: JSON.stringify({ filters }) }),
   getById: (id: string) => mockApiRequest(`/articles/${id}`),
-  getCategories: () => Promise.resolve(['CV', 'Intervju', 'Nätverkande', 'Karriär']),
+  getCategories: () => mockApiRequest('/articles/categories'),
 }
 
 export const mockJobsApi = {
@@ -912,14 +705,10 @@ export const mockJobsApi = {
     mockApiRequest(`/jobs/${jobId}`),
   matchCV: (jobId: string, cvData: CVData) => 
     mockApiRequest('/jobs/match-cv', { method: 'POST', body: JSON.stringify({ jobId, cvData }) }),
-  // Applications
   getApplications: () => 
     mockApiRequest('/job-applications'),
   saveJob: (jobId: string, status: JobApplication['status'], notes?: string) => 
-    mockApiRequest('/job-applications', { 
-      method: 'POST', 
-      body: JSON.stringify({ jobId, status, notes }) 
-    }),
+    mockApiRequest('/job-applications', { method: 'POST', body: JSON.stringify({ jobId, status, notes }) }),
   updateApplication: (appId: string, data: Partial<JobApplication>) => 
     mockApiRequest(`/job-applications/${appId}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteApplication: (appId: string) => 
@@ -940,4 +729,5 @@ export const mockUserApi = {
   },
 }
 
-// Types are already exported above
+export type { EnhancedArticle }
+export { mockArticlesData, articleCategories }
