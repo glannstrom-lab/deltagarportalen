@@ -10,8 +10,20 @@ export default function Layout() {
       className="min-h-screen flex"
       style={{ backgroundColor: '#eef2ff' }}
     >
+      {/* Skip to main content - för skärmläsare */}
+      <a 
+        href="#main-content" 
+        className="skip-link"
+      >
+        Hoppa till huvudinnehåll
+      </a>
+      
       <Sidebar />
-      <main className="flex-1 p-8 overflow-auto">
+      <main 
+        id="main-content"
+        className="flex-1 p-8 overflow-auto"
+        tabIndex={-1}
+      >
         <div className="max-w-7xl mx-auto">
           <Outlet />
         </div>

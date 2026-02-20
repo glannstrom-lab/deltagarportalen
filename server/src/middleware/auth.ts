@@ -1,7 +1,15 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
+const JWT_SECRET = process.env.JWT_SECRET;
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET måste vara satt i miljövariabler');
+}
+
+if (JWT_SECRET.length < 32) {
+  throw new Error('JWT_SECRET måste vara minst 32 tecken lång');
+}
 
 export interface AuthRequest extends Request {
   user?: {

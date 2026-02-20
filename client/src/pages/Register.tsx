@@ -1,8 +1,17 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
 import { authApi } from '../services/api'
-import { Eye, EyeOff, Loader2, Mail, Lock, User, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Mail, Lock, User, ArrowRight, Check, X } from 'lucide-react'
+
+// Valideringsregler för lösenord
+const passwordRules = [
+  { id: 'length', label: 'Minst 10 tecken', test: (pwd: string) => pwd.length >= 10 },
+  { id: 'uppercase', label: 'En stor bokstav (A-Z)', test: (pwd: string) => /[A-Z]/.test(pwd) },
+  { id: 'lowercase', label: 'En liten bokstav (a-z)', test: (pwd: string) => /[a-z]/.test(pwd) },
+  { id: 'number', label: 'En siffra (0-9)', test: (pwd: string) => /[0-9]/.test(pwd) },
+  { id: 'special', label: 'Ett specialtecken (!@#$%^&*)', test: (pwd: string) => /[^A-Za-z0-9]/.test(pwd) },
+]
 
 export default function Register() {
   const navigate = useNavigate()
@@ -18,17 +27,28 @@ export default function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Validera lösenordsstyrka i realtid
+  const passwordStrength = useMemo(() => {
+    const passed = passwordRules.filter(rule => rule.test(formData.password))
+    return {
+      passed,
+      score: passed.length,
+      total: passwordRules.length,
+      isValid: passed.length === passwordRules.length,
+    }
+  }, [formData.password])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
     if (formData.password !== formData.confirmPassword) {
-      setError('Lösenorden matchar inte')
+      setError('Lösenorden matchar inte. Kontrollera att du skrivit samma lösenord två gånger.')
       return
     }
 
-    if (formData.password.length < 6) {
-      setError('Lösenordet måste vara minst 6 tecken')
+    if (!passwordStrength.isValid) {
+      setError('Lösenordet uppfyller inte alla krav. Kontrollera listan nedan.')
       return
     }
 
@@ -44,7 +64,7 @@ export default function Register() {
       setAuth(response.token, response.user)
       navigate('/')
     } catch (err: any) {
-      setError(err.message || 'Registreringen misslyckades')
+      setError(err.message || 'Det gick inte att skapa kontot. Försök igen om en stund.')
     } finally {
       setLoading(false)
     }
@@ -59,138 +79,245 @@ export default function Register() {
             <span className="text-teal-700 font-bold text-2xl">D</span>
           </div>
           <h1 className="text-2xl font-bold text-white">Deltagarportalen</h1>
-          <p className="text-teal-200 mt-1">Skapa ditt konto</p>
+          <p className="text-teal-200 mt-1">Din väg till nytt jobb börjar här</p>
         </div>
 
         {/* Register Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Kom igång idag</h2>
-          <p className="text-slate-500 text-center mb-6">Fyll i dina uppgifter nedan</p>
+          <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Skapa ditt konto</h2>
+          <p className="text-slate-500 text-center mb-6">Ta det första steget mot din nya karriär</p>
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+            <div 
+              role="alert" 
+              aria-live="polite"
+              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
+            >
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label 
+                  htmlFor="firstName"
+                  className="block text-sm font-medium text-slate-700 mb-1"
+                >
                   Förnamn
                 </label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                  <User 
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                    size={20} 
+                    aria-hidden="true"
+                  />
                   <input
+                    id="firstName"
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
                     placeholder="Anna"
                     required
+                    aria-required="true"
+                    aria-label="Förnamn"
+                    autoComplete="given-name"
                   />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label 
+                  htmlFor="lastName"
+                  className="block text-sm font-medium text-slate-700 mb-1"
+                >
                   Efternamn
                 </label>
                 <input
+                  id="lastName"
                   type="text"
                   value={formData.lastName}
                   onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
                   placeholder="Andersson"
                   required
+                  aria-required="true"
+                  aria-label="Efternamn"
+                  autoComplete="family-name"
                 />
               </div>
             </div>
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label 
+                htmlFor="email"
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
                 E-postadress
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Mail 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                  size={20} 
+                  aria-hidden="true"
+                />
                 <input
+                  id="email"
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
                   placeholder="namn@exempel.se"
                   required
+                  aria-required="true"
+                  aria-label="E-postadress"
+                  autoComplete="email"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label 
+                htmlFor="password"
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
                 Lösenord
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Lock 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                  size={20} 
+                  aria-hidden="true"
+                />
                 <input
+                  id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  placeholder="Minst 6 tecken"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+                  placeholder="Välj ett säkert lösenord"
                   required
-                  minLength={6}
+                  aria-required="true"
+                  aria-label="Lösenord"
+                  aria-describedby="password-requirements"
+                  autoComplete="new-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded p-1"
+                  aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
+                  aria-pressed={showPassword}
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
                 </button>
+              </div>
+
+              {/* Password Strength Indicator */}
+              <div 
+                id="password-requirements" 
+                className="mt-3 p-3 bg-slate-50 rounded-lg space-y-2"
+                aria-live="polite"
+              >
+                <p className="text-sm font-medium text-slate-700">Ditt lösenord behöver:</p>
+                <ul className="space-y-1">
+                  {passwordRules.map((rule) => {
+                    const isPassed = rule.test(formData.password)
+                    return (
+                      <li 
+                        key={rule.id}
+                        className={`flex items-center gap-2 text-sm transition-colors ${
+                          formData.password === '' 
+                            ? 'text-slate-500' 
+                            : isPassed 
+                              ? 'text-green-600' 
+                              : 'text-slate-400'
+                        }`}
+                        aria-label={`${rule.label} - ${isPassed ? 'uppfyllt' : 'inte uppfyllt'}`}
+                      >
+                        {isPassed ? (
+                          <Check size={16} className="text-green-500" aria-hidden="true" />
+                        ) : (
+                          <X size={16} className="text-slate-300" aria-hidden="true" />
+                        )}
+                        <span>{rule.label}</span>
+                      </li>
+                    )
+                  })}
+                </ul>
+                {passwordStrength.isValid && (
+                  <p className="text-sm text-green-600 font-medium mt-2">
+                    ✨ Perfekt! Ditt lösenord är säkert.
+                  </p>
+                )}
               </div>
             </div>
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label 
+                htmlFor="confirmPassword"
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
                 Bekräfta lösenord
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Lock 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                  size={20} 
+                  aria-hidden="true"
+                />
                 <input
+                  id="confirmPassword"
                   type={showPassword ? 'text' : 'password'}
                   value={formData.confirmPassword}
                   onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
                   placeholder="Upprepa lösenordet"
                   required
+                  aria-required="true"
+                  aria-label="Bekräfta lösenord"
+                  aria-invalid={formData.confirmPassword && formData.password !== formData.confirmPassword ? 'true' : 'false'}
+                  autoComplete="new-password"
                 />
               </div>
               {formData.confirmPassword && formData.password === formData.confirmPassword && (
-                <p className="mt-1 text-sm text-green-600">Lösenorden matchar</p>
+                <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                  <Check size={16} aria-hidden="true" />
+                  Lösenorden matchar
+                </p>
               )}
               {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">Lösenorden matchar inte</p>
+                <p 
+                  className="mt-2 text-sm text-amber-600 flex items-center gap-1"
+                  role="alert"
+                >
+                  <X size={16} aria-hidden="true" />
+                  Lösenorden matchar inte ännu
+                </p>
               )}
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
-              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              disabled={loading || !passwordStrength.isValid}
+              aria-busy={loading}
+              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
-                  <Loader2 className="animate-spin" size={20} />
-                  Skapar konto...
+                  <Loader2 className="animate-spin" size={20} aria-hidden="true" />
+                  <span>Skapar ditt konto...</span>
                 </>
               ) : (
                 <>
-                  Skapa konto
-                  <ArrowRight size={20} />
+                  <span>Skapa konto</span>
+                  <ArrowRight size={20} aria-hidden="true" />
                 </>
               )}
             </button>
@@ -200,11 +327,24 @@ export default function Register() {
           <div className="mt-6 text-center">
             <p className="text-slate-600">
               Har du redan ett konto?{' '}
-              <Link to="/login" className="text-teal-600 hover:text-teal-700 font-semibold">
-                Logga in
+              <Link 
+                to="/login" 
+                className="text-teal-600 hover:text-teal-700 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 rounded px-1"
+              >
+                Logga in här
               </Link>
             </p>
           </div>
+        </div>
+
+        {/* Tillbaka-länk */}
+        <div className="mt-6 text-center">
+          <Link 
+            to="/" 
+            className="text-teal-200 hover:text-white text-sm focus:outline-none focus:ring-2 focus:ring-white rounded px-2 py-1"
+          >
+            ← Tillbaka till startsidan
+          </Link>
         </div>
       </div>
     </div>

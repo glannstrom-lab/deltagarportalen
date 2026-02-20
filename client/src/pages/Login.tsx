@@ -48,51 +48,81 @@ export default function Login() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+            <div 
+              role="alert" 
+              aria-live="polite"
+              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
+            >
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label 
+                htmlFor="email" 
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
                 E-postadress
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Mail 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                  size={20} 
+                  aria-hidden="true"
+                />
                 <input
+                  id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
                   placeholder="namn@exempel.se"
                   required
+                  aria-required="true"
+                  aria-label="E-postadress"
+                  aria-invalid={!email && error ? 'true' : 'false'}
+                  autoComplete="email"
                 />
               </div>
             </div>
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
+              <label 
+                htmlFor="password" 
+                className="block text-sm font-medium text-slate-700 mb-1"
+              >
                 Lösenord
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Lock 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                  size={20} 
+                  aria-hidden="true"
+                />
                 <input
+                  id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
                   placeholder="Ange ditt lösenord"
                   required
+                  aria-required="true"
+                  aria-label="Lösenord"
+                  aria-invalid={!password && error ? 'true' : 'false'}
+                  autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded p-1"
+                  aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
+                  aria-pressed={showPassword}
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
                 </button>
               </div>
             </div>
@@ -101,17 +131,18 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              aria-busy={loading}
+              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
-                  <Loader2 className="animate-spin" size={20} />
-                  Loggar in...
+                  <Loader2 className="animate-spin" size={20} aria-hidden="true" />
+                  <span>Loggar in...</span>
                 </>
               ) : (
                 <>
-                  Logga in
-                  <ArrowRight size={20} />
+                  <span>Logga in</span>
+                  <ArrowRight size={20} aria-hidden="true" />
                 </>
               )}
             </button>
@@ -121,7 +152,10 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-slate-600">
               Har du inget konto?{' '}
-              <Link to="/register" className="text-teal-600 hover:text-teal-700 font-semibold">
+              <Link 
+                to="/register" 
+                className="text-teal-600 hover:text-teal-700 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 rounded px-1"
+              >
                 Skapa ett konto
               </Link>
             </p>
@@ -168,15 +202,25 @@ export default function Login() {
               }
             }}
             disabled={loading}
-            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-amber-500/25"
+            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-500/25"
           >
-            <span className="text-xl">🚀</span>
-            {loading ? 'Skapar demokonto...' : 'Logga in med demokonto'}
+            <span className="text-xl" aria-hidden="true">🚀</span>
+            <span>{loading ? 'Skapar demokonto...' : 'Utforska med demokonto'}</span>
           </button>
           
           <p className="mt-3 text-center text-xs text-slate-400">
-            E-post: demo@demo.se | Lösenord: demo
+            Perfekt för att testa portalen utan att skapa ett konto
           </p>
+        </div>
+
+        {/* Skip Link för inloggad användare som vill komma tillbaka */}
+        <div className="mt-6 text-center">
+          <Link 
+            to="/" 
+            className="text-teal-200 hover:text-white text-sm focus:outline-none focus:ring-2 focus:ring-white rounded px-2 py-1"
+          >
+            ← Tillbaka till startsidan
+          </Link>
         </div>
       </div>
     </div>

@@ -41,6 +41,70 @@
     background-color: #0f172a;
     color: #f8fafc;
   }
+
+  /* === TILLGÄNGLIGHETSFÖRBÄTTRINGAR === */
+  
+  /* Förbättrad focus-indikator för tangentbordsnavigering */
+  *:focus-visible {
+    outline: 3px solid #0d9488;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  
+  /* Ta bort outline för mus-användare (behåll för tangentbord) */
+  *:focus:not(:focus-visible) {
+    outline: none;
+  }
+  
+  /* Skip link för skärmläsare */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #0d9488;
+    color: white;
+    padding: 8px 16px;
+    z-index: 100;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    font-weight: 500;
+  }
+  
+  .skip-link:focus {
+    top: 0;
+  }
+  
+  /* Reduced motion - respektera användarens önskemål */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    
+    .animate-spin {
+      animation: none !important;
+    }
+  }
+  
+  /* Hög kontrast-läge stöd */
+  @media (prefers-contrast: high) {
+    .card,
+    .input,
+    button {
+      border-width: 2px;
+    }
+  }
+  
+  /* Större text-läge stöd */
+  @media (prefers-contrast: more) {
+    body {
+      line-height: 1.6;
+    }
+  }
 }
 
 @layer components {

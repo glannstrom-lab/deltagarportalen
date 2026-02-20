@@ -1,8 +1,50 @@
 import { Router } from 'express';
 import { prisma } from '../index';
 import { authMiddleware, AuthRequest } from '../middleware/auth';
+import { sanitizeHtml, validateLength, MAX_LENGTHS } from '../utils/sanitize';
 
 const router = Router();
+
+// Hjälpfunktion för att sanera CV-fält
+function sanitizeCvData(data: any) {
+  return {
+    profileImage: data.profileImage || null, // URL, saneras separat om nödvändigt
+    title: validateLength(sanitizeHtml(data.title), MAX_LENGTHS.title, 'Titel'),
+    email: validateLength(sanitizeHtml(data.email), MAX_LENGTHS.email, 'E-post'),
+    phone: validateLength(sanitizeHtml(data.phone), MAX_LENGTHS.phone, 'Telefon'),
+    location: validateLength(sanitizeHtml(data.location), MAX_LENGTHS.location, 'Plats'),
+    summary: validateLength(sanitizeHtml(data.summary), MAX_LENGTHS.summary, 'Sammanfattning'),
+    workExperience: Array.isArray(data.workExperience) 
+      ? data.workExperience.map((exp: any) => ({
+          company: validateLength(sanitizeHtml(exp.company), MAX_LENGTHS.company, 'Företag'),
+          position: validateLength(sanitizeHtml(exp.position), MAX_LENGTHS.position, 'Position'),
+          startDate: exp.startDate || null,
+          endDate: exp.endDate || null,
+          current: !!exp.current,
+          description: validateLength(sanitizeHtml(exp.description), MAX_LENGTHS.description, 'Beskrivning'),
+        }))
+      : [],
+    education: Array.isArray(data.education)
+      ? data.education.map((edu: any) => ({
+          school: validateLength(sanitizeHtml(edu.school), MAX_LENGTHS.school, 'Skola'),
+          degree: validateLength(sanitizeHtml(edu.degree), MAX_LENGTHS.degree, 'Examen'),
+          startDate: edu.startDate || null,
+          endDate: edu.endDate || null,
+          current: !!edu.current,
+          description: validateLength(sanitizeHtml(edu.description), MAX_LENGTHS.description, 'Beskrivning'),
+        }))
+      : [],
+    skills: Array.isArray(data.skills)
+      ? data.skills.map((skill: any) => validateLength(sanitizeHtml(skill), MAX_LENGTHS.skill, 'Färdighet')).filter(Boolean)
+      : [],
+    languages: Array.isArray(data.languages)
+      ? data.languages.map((lang: any) => ({
+          name: validateLength(sanitizeHtml(lang.name), MAX_LENGTHS.language, 'Språk'),
+          level: ['grundläggande', 'god', 'mycket god', 'flytande'].includes(lang.level) ? lang.level : 'god',
+        }))
+      : [],
+  };
+}
 
 // Hämta användarens CV
 router.get('/', authMiddleware, async (req: AuthRequest, res) => {
@@ -30,39 +72,20 @@ router.get('/', authMiddleware, async (req: AuthRequest, res) => {
 // Uppdatera CV
 router.put('/', authMiddleware, async (req: AuthRequest, res) => {
   try {
-    const {
-      profileImage,
-      title,
-      email,
-      phone,
-      location,
-      summary,
-      workExperience,
-      education,
-      skills,
-      languages,
-    } = req.body;
+    const sanitizedData = sanitizeCvData(req.body);
     
     const cv = await prisma.cV.update({
       where: { userId: req.user!.id },
-      data: {
-        profileImage,
-        title,
-        email,
-        phone,
-        location,
-        summary,
-        workExperience,
-        education,
-        skills,
-        languages,
-      },
+      data: sanitizedData,
     });
     
     res.json(cv);
-  } catch (error) {
+  } catch (error: any) {
     console.error('Fel vid uppdatering av CV:', error);
-    res.status(500).json({ error: 'Serverfel' });
+    if (error.message && error.message.includes('får inte vara längre än')) {
+      return res.status(400).json({ error: error.message });
+    }
+    res.status(500).json({ error: 'Serverfel vid uppdatering av CV' });
   }
 });
 
