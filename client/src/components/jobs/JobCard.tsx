@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MapPin, Briefcase, Clock, Heart, ChevronRight, Sparkles, CheckCircle, XCircle } from 'lucide-react'
+import { MapPin, Briefcase, Clock, Heart, ChevronRight, Sparkles, CheckCircle, XCircle, Bot } from 'lucide-react'
 import type { Job } from '@/services/mockApi'
 
 interface JobCardProps {
@@ -8,10 +8,11 @@ interface JobCardProps {
   onSave?: (jobId: string) => void
   onApply?: (job: Job) => void
   onClick?: (job: Job) => void
+  onAnalyze?: (job: Job) => void
   showMatch?: boolean
 }
 
-export function JobCard({ job, isSaved, onSave, onApply, onClick, showMatch = true }: JobCardProps) {
+export function JobCard({ job, isSaved, onSave, onApply, onClick, onAnalyze, showMatch = true }: JobCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   const formatDate = (dateString: string) => {
@@ -130,6 +131,19 @@ export function JobCard({ job, isSaved, onSave, onApply, onClick, showMatch = tr
           >
             <Heart size={18} fill={isSaved ? 'currentColor' : 'none'} />
           </button>
+          
+          {onAnalyze && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                onAnalyze?.(job)
+              }}
+              className="flex items-center gap-1 px-3 py-1.5 bg-indigo-100 text-indigo-700 text-sm rounded-lg hover:bg-indigo-200 transition-colors"
+            >
+              <Bot size={14} />
+              Analysera
+            </button>
+          )}
           
           {isHovered && (
             <button
