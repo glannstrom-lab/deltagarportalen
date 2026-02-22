@@ -1,1 +1,5 @@
 export { default as CVOptimizer } from './CVOptimizer'
+export { default as ATSAnalyzer } from './ATSAnalyzer'
+export { default as KeywordMatcher } from './KeywordMatcher'
+export { default as CVPDF } from './CVPDF'
+export { default as CVExport } from './CVExport'

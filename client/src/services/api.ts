@@ -9,9 +9,11 @@ import {
 } from './mockApi'
 
 // Använd mock API för demo-läge (fungerar utan backend)
-const USE_MOCK = true
+// Satt till 'false' för skarp drift med riktig backend
+const USE_MOCK = false
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+console.log('API_URL:', API_URL)
 
 async function realApiRequest(endpoint: string, options: RequestInit = {}): Promise<any> {
   const token = localStorage.getItem('auth-storage')
@@ -200,14 +202,18 @@ export const interestApi = {
 export const coverLetterApi = {
   getAll: () =>
     USE_MOCK ? mockCoverLetterApi.getAll() : apiRequest('/cover-letter'),
-  create: (data: any) =>
+  create: (data: { title: string; jobAd: string; content: string; company?: string; jobTitle?: string; energyLevel?: number }) =>
     USE_MOCK
       ? mockCoverLetterApi.create(data)
       : apiRequest('/cover-letter', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) =>
+  update: (id: string, data: { title?: string; jobAd?: string; content?: string; company?: string; jobTitle?: string; energyLevel?: number }) =>
     USE_MOCK
       ? mockCoverLetterApi.update(id, data)
       : apiRequest(`/cover-letter/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (id: string) =>
+    USE_MOCK
+      ? mockCoverLetterApi.delete(id)
+      : apiRequest(`/cover-letter/${id}`, { method: 'DELETE' }),
   generate: (jobAd: string, styleReference?: string) =>
     USE_MOCK
       ? mockCoverLetterApi.generate(jobAd, styleReference)
@@ -230,4 +236,12 @@ export const userApi = {
     USE_MOCK ? mockUserApi.getMe() : apiRequest('/users/me'),
   updateMe: (data: any) =>
     USE_MOCK ? mockUserApi.updateMe(data) : apiRequest('/users/me', { method: 'PUT', body: JSON.stringify(data) }),
+}
+
+// Export the raw apiRequest for custom endpoints
+export const api = {
+  get: (endpoint: string) => apiRequest(endpoint),
+  post: (endpoint: string, data: any) => apiRequest(endpoint, { method: 'POST', body: JSON.stringify(data) }),
+  put: (endpoint: string, data: any) => apiRequest(endpoint, { method: 'PUT', body: JSON.stringify(data) }),
+  delete: (endpoint: string) => apiRequest(endpoint, { method: 'DELETE' }),
 }

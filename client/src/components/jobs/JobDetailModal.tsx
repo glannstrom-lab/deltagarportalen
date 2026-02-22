@@ -147,7 +147,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           <div className="flex items-center gap-4 text-sm text-slate-500 mb-6">
             <div className="flex items-center gap-1">
               <Calendar size={14} />
-              Publicerad: {new Date(job.publishedDate).toLocaleDateString('sv-SE')}
+              Publicerad: {new Date(job.publishedDate || job.publishedAt || Date.now()).toLocaleDateString('sv-SE')}
             </div>
             {job.deadline && (
               <div className="flex items-center gap-1 text-red-500">

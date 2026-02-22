@@ -1,0 +1,83 @@
+DELTAGARPORTALEN - AI DEPLOY-PAKET
+=====================================
+
+Skapat: 2026-02-21
+Av: Kimi (VD-assistent)
+
+INNEHÅLL
+--------
+
+README.md               - Huvuddokumentation
+QUICKSTART.md           - Snabbstartsguide (10 minuter!)
+INNEHALL.txt            - Denna fil
+
+nodejs-version.zip      - Node.js-version (komplett)
+php-version.zip         - PHP-version (komplett)
+
+nodejs-version/         - Node.js-källfiler (om du vill redigera)
+  ├── server.js         - Backend-server
+  ├── package.json      - Dependencies
+  ├── .env.example      - Exempel-konfiguration
+  ├── .htaccess         - Apache-config
+  ├── README.md         - Installationsguide för Node.js
+  └── public/           - Frontend-filer
+      ├── index.html    - Huvudsidan
+      ├── app.js        - JavaScript
+      └── style.css     - Stilar
+
+php-version/            - PHP-källfiler (om du vill redigera)
+  ├── config.php        - Konfiguration
+  ├── README.md         - Installationsguide för PHP
+  ├── api/              - API-endpoints
+  │   ├── cv-optimering.php
+  │   └── coach-rad.php
+  └── public/
+      └── index.html    - Huvudsidan (med inline JS/CSS)
+
+VAD DU BEHÖVER
+--------------
+1. En server/host med antingen:
+   - Node.js-stöd (VPS, Render, Railway, etc.) ELLER
+   - PHP-stöd (Loopia, One.com, de flesta webbhotell)
+
+2. En OpenRouter API-nyckel:
+   - Gå till https://openrouter.ai
+   - Skapa konto (gratis att starta)
+   - Skapa API-nyckel
+   - Kopiera nyckeln (börjar med "sk-or-v1-")
+
+VAD SOM INGÅR
+-------------
+✅ CV-optimering med AI
+✅ Jobbcoach-råd med AI
+✅ Arbetsanpassnings-förslag (Node.js-version)
+✅ Snygg, responsiv design
+✅ Säker hantering av API-nyckel (server-side)
+
+INSTALLATION - NODE.JS
+----------------------
+1. Packa upp nodejs-version.zip
+2. Redigera .env.example → spara som .env
+3. Fyll i din OPENROUTER_API_KEY
+4. Ladda upp till din server
+5. Kör: npm install && npm start
+
+INSTALLATION - PHP
+------------------
+1. Packa upp php-version.zip
+2. Redigera config.php (fyll i API-nyckel)
+3. Ladda upp till din webbhotells public_html/
+4. Gå till din-domän.com/public/
+
+SÄKERHET
+--------
+⚠️  Lägg ALDRIG din API-nyckel i frontend-kod
+⚠️  Lägg ALDRIG .env eller config.php i git
+✅ API-nyckeln är säker på servern i båda versionerna
+
+HJÄLP
+-----
+Se respektive README.md i varje mapp för detaljerade instruktioner.
+
+LYCKA TILL!
+-----------

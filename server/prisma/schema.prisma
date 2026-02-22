@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -17,17 +17,10 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // CV-data
   cv CV?
-
-  // Intresseguide-resultat
   interestResult InterestResult?
-
-  // Personliga brev
   coverLetters CoverLetter[]
-
-  // Konsulent-kommentarer
-  notes Note[]
+  cvVersions CVVersion[]
 
   @@map("users")
 }
@@ -37,19 +30,19 @@ model CV {
   userId         String   @unique
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  // Personlig information
   profileImage   String?
   title          String?
   email          String?
   phone          String?
   location       String?
   summary        String?
-  
-  // JSON-fält för flexibel data (lagras som JSON-strängar i SQLite)
-  workExperience String?  // Array av jobb (JSON-sträng)
-  education      String?  // Array av utbildningar (JSON-sträng)
-  skills         String?  // Komma-separerad lista
-  languages      String?  // Array av språk (JSON-sträng)
+  workExperience String?
+  education      String?
+  skills         String?
+  languages      String?
+  certificates   String?
+  links          String?
+  references     String?
   
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -57,32 +50,39 @@ model CV {
   @@map("cvs")
 }
 
+model CVVersion {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cv_versions")
+}
+
 model InterestResult {
   id           String   @id @default(uuid())
   userId       String   @unique
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   
-  // RIASEC-resultat
   realistic    Int      @default(0)
-  investigative  Int    @default(0)
+  investigative Int     @default(0)
   artistic     Int      @default(0)
   social       Int      @default(0)
   enterprising Int      @default(0)
   conventional Int      @default(0)
   hollandCode  String?
   
-  // Big Five (simplified)
   openness     Int      @default(0)
   conscientiousness Int @default(0)
   extraversion Int      @default(0)
   agreeableness Int     @default(0)
   neuroticism  Int      @default(0)
   
-  // ICF / Fysiska krav
-  physicalRequirements String?  // JSON-sträng
-
-  // Rekommendationer
-  recommendedJobs String?  // JSON-sträng
+  physicalRequirements String?
+  recommendedJobs String?
   
   completedAt  DateTime @default(now())
 
@@ -97,25 +97,13 @@ model CoverLetter {
   title     String
   jobAd     String
   content   String
+  company   String?
+  jobTitle  String?
   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("cover_letters")
-}
-
-model Note {
-  id          String   @id @default(uuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  content     String
-  createdBy   String   // Konsulent-ID
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  @@map("notes")
 }
 
 model Article {
@@ -124,13 +112,10 @@ model Article {
   content     String
   summary     String?
   category    String
-  tags        String?  // Komma-separerad
+  tags        String?
   published   Boolean  @default(false)
-  
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("articles")
 }
-
-// Role values: USER, CONSULTANT, ADMIN (stored as String for SQLite compatibility)

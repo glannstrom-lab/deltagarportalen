@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deltagarportalen - AI-demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Deltagarportalen</h1>
+            <p class="subtitle">AI-assisterad väg tillbaka till arbete</p>
+        </header>
+
+        <!-- CV-optimering -->
+        <section class="feature-card">
+            <h2>📝 CV-optimering</h2>
+            <p>Få AI-feedback på ditt CV</p>
+            
+            <input type="text" id="cv-yrke" placeholder="Vilket yrke söker du? (valfritt)">
+            <textarea id="cv-text" rows="6" placeholder="Klistra in ditt CV-text här..."></textarea>
+            
+            <button onclick="optimeraCV()" id="cv-btn">
+                ✨ Analysera mitt CV
+            </button>
+            
+            <div id="cv-result" class="result hidden"></div>
+            <div id="cv-loading" class="loading hidden">🤖 Analyserar...</div>
+        </section>
+
+        <!-- Jobbcoach -->
+        <section class="feature-card">
+            <h2>💼 Jobbcoach</h2>
+            <p>Få personliga råd</p>
+            
+            <textarea id="coach-situation" rows="3" placeholder="Beskriv din situation..."></textarea>
+            <input type="text" id="coach-fraga" placeholder="Vad undrar du?">
+            
+            <button onclick="fragaCoach()" id="coach-btn">
+                💬 Få råd
+            </button>
+            
+            <div id="coach-result" class="result hidden"></div>
+            <div id="coach-loading" class="loading hidden">💭 Tänker...</div>
+        </section>
+
+        <!-- Arbetsanpassning -->
+        <section class="feature-card">
+            <h2>🏥 Arbetsanpassning</h2>
+            <p>Förslag på anpassningar</p>
+            
+            <input type="text" id="anpass-begransning" placeholder="Vad behöver du anpassa för?">
+            <textarea id="anpass-uppgifter" rows="3" placeholder="Beskriv dina arbetsuppgifter..."></textarea>
+            
+            <button onclick="foreslaAnpassning()" id="anpass-btn">
+                🔧 Få förslag
+            </button>
+            
+            <div id="anpass-result" class="result hidden"></div>
+            <div id="anpass-loading" class="loading hidden">🔍 Analyserar...</div>
+        </section>
+
+        <footer>
+            <p>🤖 Drivs av OpenRouter AI</p>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

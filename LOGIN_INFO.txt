@@ -1,0 +1,33 @@
+╔════════════════════════════════════════════════════════════╗
+║  INLOGGNING för Deltagarportalen                           ║
+╚════════════════════════════════════════════════════════════╝
+
+Om du får "401 Unauthorized" behöver du logga in:
+
+1. Gå till: http://localhost:3000/deltagarportalen/login
+   (eller klicka på "Logga in" om du ser den)
+
+2. Använd test-användare:
+   E-post: demo@demo.se
+   Lösenord: demo123
+
+3. Efter inloggning ska allt fungera!
+
+────────────────────────────────────────────────────────────
+
+Om det fortfarande inte fungerar, prova detta:
+
+1. Öppna webbläsarens utvecklarverktyg (F12)
+2. Gå till "Application" / "Applikation"
+3. Välj "Local Storage" 
+4. Ta bort allt under "localhost:3000"
+5. Ladda om sidan (F5)
+6. Logga in igen
+
+────────────────────────────────────────────────────────────
+
+Om AI-funktionerna fortfarande inte fungerar efter inloggning,
+är det troligen backend-problem. Kontrollera då:
+
+- AI-servern kör på port 3002
+- Du har lagt in din OpenRouter API-nyckel i server/ai/.env

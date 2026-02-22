@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deltagarportalen - AI-demo (PHP)</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 0;
+        }
+        header h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .subtitle { color: var(--text-light); font-size: 1.2rem; }
+        .feature-card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+        }
+        .feature-card h2 { margin-bottom: 10px; font-size: 1.5rem; }
+        .feature-card > p { color: var(--text-light); margin-bottom: 20px; }
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            font-family: inherit;
+        }
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        textarea { resize: vertical; min-height: 100px; }
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        button:hover { background: var(--primary-dark); }
+        button:disabled { background: var(--text-light); cursor: not-allowed; }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f0f9ff;
+            border-left: 4px solid var(--primary);
+            border-radius: 8px;
+            white-space: pre-wrap;
+        }
+        .loading {
+            margin-top: 15px;
+            padding: 15px;
+            text-align: center;
+            color: var(--text-light);
+            font-style: italic;
+        }
+        .hidden { display: none !important; }
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-light);
+        }
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.8rem; }
+            .feature-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Deltagarportalen</h1>
+            <p class="subtitle">AI-demo (PHP-version)</p>
+        </header>
+
+        <section class="feature-card">
+            <h2>📝 CV-optimering</h2>
+            <p>Få AI-feedback på ditt CV</p>
+            <input type="text" id="cv-yrke" placeholder="Vilket yrke söker du? (valfritt)">
+            <textarea id="cv-text" rows="6" placeholder="Klistra in ditt CV-text här..."></textarea>
+            <button onclick="optimeraCV()" id="cv-btn">✨ Analysera mitt CV</button>
+            <div id="cv-result" class="result hidden"></div>
+            <div id="cv-loading" class="loading hidden">🤖 Analyserar...</div>
+        </section>
+
+        <section class="feature-card">
+            <h2>💼 Jobbcoach</h2>
+            <p>Få personliga råd</p>
+            <textarea id="coach-situation" rows="3" placeholder="Beskriv din situation..."></textarea>
+            <input type="text" id="coach-fraga" placeholder="Vad undrar du?">
+            <button onclick="fragaCoach()" id="coach-btn">💬 Få råd</button>
+            <div id="coach-result" class="result hidden"></div>
+            <div id="coach-loading" class="loading hidden">💭 Tänker...</div>
+        </section>
+
+        <footer>
+            <p>🤖 Drivs av OpenRouter AI via PHP</p>
+        </footer>
+    </div>
+
+    <script>
+        const API_BASE = '../api';
+
+        async function optimeraCV() {
+            const text = document.getElementById('cv-text').value;
+            const yrke = document.getElementById('cv-yrke').value;
+            const resultDiv = document.getElementById('cv-result');
+            const loadingDiv = document.getElementById('cv-loading');
+            const btn = document.getElementById('cv-btn');
+
+            if (text.length < 30) {
+                alert('Skriv minst 30 tecken');
+                return;
+            }
+
+            loadingDiv.classList.remove('hidden');
+            resultDiv.classList.add('hidden');
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/cv-optimering.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cvText: text, yrke })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.textContent = data.feedback;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: #dc2626;">❌ ${error.message}</p>`;
+                resultDiv.classList.remove('hidden');
+            } finally {
+                loadingDiv.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+
+        async function fragaCoach() {
+            const situation = document.getElementById('coach-situation').value;
+            const fråga = document.getElementById('coach-fraga').value;
+            const resultDiv = document.getElementById('coach-result');
+            const loadingDiv = document.getElementById('coach-loading');
+            const btn = document.getElementById('coach-btn');
+
+            if (situation.length < 10) {
+                alert('Beskriv situationen');
+                return;
+            }
+
+            loadingDiv.classList.remove('hidden');
+            resultDiv.classList.add('hidden');
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/coach-rad.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ situation, fråga })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    resultDiv.textContent = data.råd;
+                    resultDiv.classList.remove('hidden');
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `<p style="color: #dc2626;">❌ ${error.message}</p>`;
+                resultDiv.classList.remove('hidden');
+            } finally {
+                loadingDiv.classList.add('hidden');
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

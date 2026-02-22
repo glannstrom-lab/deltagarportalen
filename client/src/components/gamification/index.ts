@@ -2,4 +2,13 @@ export { AchievementCelebration, useAchievements, type Achievement } from './Ach
 export { DailyStep } from './DailyStep'
 export { CareerRoadmap } from './CareerRoadmap'
 export { WeeklySummary } from './WeeklySummary'
-export { EnergyFilter, useEnergyFilter, type EnergyLevel } from './EnergyFilter'
+export { 
+  EnergyFilter, 
+  EnergyBadge,
+  useEnergyFilter, 
+  useDailyEnergy,
+  type EnergyLevel, 
+  type EnergyClassification,
+  type TaskWithEnergy,
+  ENERGY_LABELS
+} from './EnergyFilter'

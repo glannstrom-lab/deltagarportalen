@@ -99,9 +99,12 @@ export default function JobSearch() {
         employmentType: (ad.employment_type?.label as any) || 'Ej angiven',
         experienceLevel: ad.experience_required ? 'Erfaren' : 'Ingen erfarenhet',
         salaryRange: ad.salary_description || undefined,
+        salary: ad.salary_description || undefined,
         publishedDate: ad.publication_date,
+        publishedAt: ad.publication_date,
         deadline: ad.application_deadline || undefined,
         url: ad.application_details?.url || '#',
+        benefits: [],
         matchPercentage: undefined, // Beräknas separat
       }))
       

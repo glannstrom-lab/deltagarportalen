@@ -1,0 +1,116 @@
+DELTAGARPORTALEN - KOMPLETT INSTALLATION
+========================================
+
+Detta paket innehåller HELA Deltagarportalen:
+✅ Intresseguiden
+✅ CV-generatorn
+✅ Admin-panel
+✅ AI-funktioner (CV-optimering, jobbcoach, arbetsanpassning)
+
+
+FÖRBEREDELSER
+=============
+
+1. Ett webbhotell med PHP-stöd (Loopia, One.com, etc.)
+2. En OpenRouter API-nyckel (gratis att skaffa)
+
+
+STEG 1: SKAFFA API-NYCKEL (2 minuter)
+======================================
+
+1. Gå till https://openrouter.ai
+2. Klicka "Sign Up" (skapa konto)
+3. Logga in
+4. Klicka "Keys" i menyn
+5. Klicka "Create Key"
+6. Kopiera nyckeln (börjar med "sk-or-v1-")
+
+SPARA NYCKELN! Du behöver den i steg 3.
+
+
+STEG 2: LADDA UPP FILER (5 minuter)
+====================================
+
+Via cPanel (enklaste):
+----------------------
+1. Logga in på ditt webbhotells kontrollpanel
+2. Klicka "File Manager" (Filhanteraren)
+3. Gå till mappen "public_html" (eller "www")
+4. Klicka "Upload" (Ladda upp)
+5. Välj ALLA filer från denna mapp och ladda upp
+
+Via FTP:
+--------
+1. Anslut till ditt webbhotell med FTP
+2. Gå till mappen "public_html"
+3. Ladda upp ALLA filer från denna mapp
+
+
+STEG 3: KONFIGURERA API-NYCKEL (2 minuter)
+===========================================
+
+1. I filhanteraren, hitta filen "config.php"
+2. Högerklicka och välj "Edit" (Redigera)
+3. Hitta raden:
+   define('OPENROUTER_API_KEY', 'sk-or-v1-din-nyckel-har');
+
+4. Ersätt 'sk-or-v1-din-nyckel-har' med DIN nyckel från steg 1:
+   define('OPENROUTER_API_KEY', 'sk-or-v1-din-riktiga-nyckel-här');
+
+5. Spara filen
+
+
+STEG 4: TESTA! (1 minut)
+=========================
+
+1. Öppna webbläsaren
+2. Gå till: https://din-domain.com/
+   (ersätt din-domain.com med din faktiska domän)
+
+3. Du ska se Deltagarportalen med:
+   - Intresseguiden
+   - CV-generatorn
+   - AI-funktioner
+
+
+FELSÖKNING
+==========
+
+"Sidan hittas inte" (404):
+- Kontrollera att alla filer laddats upp till rätt mapp
+- Vissa hosts använder "www" istället för "public_html"
+
+"API-nyckel ej konfigurerad":
+- Dubbelkolla att du sparade config.php efter ändring
+- Se till att du inte har extra mellanslag runt nyckeln
+
+"Kunde inte kommunicera med AI":
+- Kontakta ditt webbhotells support
+- Be dem aktivera "cURL för PHP"
+- Detta är gratis och tar 2 minuter
+
+"Vit sida":
+- Kontrollera att du har PHP 7.4 eller nyare
+- Kontrollera att alla filer laddats upp korrekt
+
+
+KONTAKT
+=======
+
+Vid problem, kontakta ditt webbhotells support och säg:
+"Jag har laddat upp PHP-filer men får ett fel. Kan ni hjälpa mig?"
+
+
+KLART!
+======
+
+Du har nu hela Deltagarportalen på din egen server!
+
+Funktioner:
+✓ Intresseguiden
+✓ CV-generator med PDF-export
+✓ AI-assisterad CV-optimering
+✓ AI-jobbcoach
+✓ AI-arbetsanpassning
+
+LYCKA TILL!

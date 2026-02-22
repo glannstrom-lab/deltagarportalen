@@ -1,0 +1,10 @@
+# Apache rewrite rules för Node.js (om du kör via Passenger eller proxy)
+# Denna fil kan behövas beroende på din host
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^$ http://localhost:3000/ [P,L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.*)$ http://localhost:3000/$1 [P,L]
+</IfModule>

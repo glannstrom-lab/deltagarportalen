@@ -33,3 +33,6 @@ yarn-error.log*
 
 # Prisma
 server/prisma/migrations/
+
+# AI Server env
+server/ai/.env

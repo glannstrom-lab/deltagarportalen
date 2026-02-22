@@ -1,0 +1,598 @@
+/**
+ * Mobile-first CSS för Deltagarportalen
+ * Advisory Board: Tillgänglighet i sängläge, touch-vänligt
+ */
+
+/* ============================================
+   1. TOUCH-VÄNLIGA KNAPPAR
+   ============================================ */
+
+/* Minst 44x44px för alla klickbara element */
+button, 
+[role="button"],
+a,
+input[type="submit"],
+input[type="button"],
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Större knappar på mobil */
+.mobile-device .btn-touch {
+  padding: 12px 20px;
+  font-size: 1rem;
+  min-height: 48px;
+}
+
+.mobile-device .btn-touch-lg {
+  padding: 16px 24px;
+  font-size: 1.125rem;
+  min-height: 56px;
+}
+
+/* ============================================
+   2. TEXTSTORLEK FÖR MOBIL
+   ============================================ */
+
+.mobile-device {
+  font-size: 16px; /* Förhindra iOS-zoom */
+}
+
+.mobile-device h1 {
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.mobile-device h2 {
+  font-size: 1.25rem;
+  line-height: 1.3;
+}
+
+.mobile-device h3 {
+  font-size: 1.125rem;
+}
+
+.mobile-device p,
+.mobile-device span,
+.mobile-device a {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.mobile-device .text-mobile-lg {
+  font-size: 1.125rem;
+}
+
+.mobile-device .text-mobile-sm {
+  font-size: 0.9375rem;
+}
+
+/* ============================================
+   3. LIGGANDE LÄGE (LANDSCAPE)
+   ============================================ */
+
+.landscape-mode .landscape-two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.landscape-mode .landscape-hide {
+  display: none;
+}
+
+@media (max-height: 500px) and (orientation: landscape) {
+  .hide-short-screen {
+    display: none !important;
+  }
+  
+  .compact-short-screen {
+    padding: 0.5rem !important;
+    margin: 0.25rem 0 !important;
+  }
+}
+
+/* ============================================
+   4. MOBIL NAVIGATION
+   ============================================ */
+
+.mobile-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  color: #64748b;
+  font-size: 0.75rem;
+  text-decoration: none;
+  min-width: 64px;
+}
+
+.mobile-nav-item.active {
+  color: #0d9488;
+}
+
+.mobile-nav-item svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+}
+
+/* Padding för att inte täcka innehåll */
+.has-mobile-nav {
+  padding-bottom: 80px;
+}
+
+/* ============================================
+   5. SVEPGESTER
+   ============================================ */
+
+.swipe-container {
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.swipe-action {
+  position: relative;
+  overflow: hidden;
+}
+
+.swipe-action::before,
+.swipe-action::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: white;
+  transform: translateX(0);
+  transition: transform 0.2s;
+}
+
+/* Pull-to-refresh indikator */
+.pull-refresh {
+  position: relative;
+  overflow: hidden;
+}
+
+.pull-refresh-indicator {
+  position: absolute;
+  top: -50px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 40px;
+  height: 40px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: top 0.2s;
+}
+
+.pull-refresh.pulling .pull-refresh-indicator {
+  top: 10px;
+}
+
+/* ============================================
+   6. RÖSTSTYRNING
+   ============================================ */
+
+.voice-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.voice-input-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.voice-input-btn:hover {
+  background: #e2e8f0;
+}
+
+.voice-input-btn.recording {
+  background: #fecaca;
+  animation: pulse-recording 1.5s infinite;
+}
+
+@keyframes pulse-recording {
+  0%, 100% { transform: translateY(-50%) scale(1); }
+  50% { transform: translateY(-50%) scale(1.1); }
+}
+
+.voice-input-btn svg {
+  width: 18px;
+  height: 18px;
+  color: #475569;
+}
+
+/* Sekretessvarning */
+.voice-privacy-notice {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #1e293b;
+  color: white;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  max-width: 90vw;
+  z-index: 100;
+  animation: slide-up 0.3s ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* ============================================
+   7. EN-HANDSANVÄNDNING
+   ============================================ */
+
+/* Flyttbar FAB för en-handsanvändning */
+.fab-touch-zone-left {
+  position: fixed;
+  bottom: 100px;
+  left: 20px;
+  z-index: 40;
+}
+
+.fab-touch-zone-right {
+  position: fixed;
+  bottom: 100px;
+  right: 20px;
+  z-index: 40;
+}
+
+/* Enkel räckvidd för tummen */
+.thumb-zone {
+  position: relative;
+}
+
+.thumb-zone::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  pointer-events: none;
+}
+
+/* ============================================
+   8. FÖRENKLAD VY (MYCKET SMÅ SKÄRMAR)
+   ============================================ */
+
+.simplified-view .hide-simplified {
+  display: none !important;
+}
+
+.simplified-view .compact-simplified {
+  padding: 0.5rem !important;
+  margin: 0.25rem 0 !important;
+}
+
+.simplified-view .text-simplified {
+  font-size: 0.9375rem !important;
+  line-height: 1.5 !important;
+}
+
+/* ============================================
+   9. TILLGÄNGLIGHET
+   ============================================ */
+
+/* Större touch-targets för ostadiga händer */
+@media (prefers-reduced-motion: reduce) {
+  .mobile-device * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Hög kontrast-läge */
+.high-contrast {
+  --text-color: #000;
+  --bg-color: #fff;
+  --border-color: #000;
+}
+
+.high-contrast * {
+  border-color: var(--border-color) !important;
+}
+
+/* Större text-läge */
+.large-text {
+  font-size: 1.125rem;
+}
+
+.large-text h1 {
+  font-size: 1.75rem;
+}
+
+.large-text h2 {
+  font-size: 1.5rem;
+}
+
+/* ============================================
+   10. SÄKERhetszONER (Notch, Home Indicator)
+   ============================================ */
+
+.safe-area-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-left {
+  padding-left: env(safe-area-inset-left);
+}
+
+.safe-area-right {
+  padding-right: env(safe-area-inset-right);
+}
+
+/* ============================================
+   11. INPUT-FÄLT FÖR MOBIL
+   ============================================ */
+
+.mobile-device input,
+.mobile-device textarea,
+.mobile-device select {
+  font-size: 16px; /* Förhindra zoom på iOS */
+  padding: 12px;
+  min-height: 44px;
+}
+
+.mobile-device input[type="text"],
+.mobile-device input[type="email"],
+.mobile-device input[type="tel"],
+.mobile-device input[type="password"] {
+  border-radius: 8px;
+}
+
+/* Större checkboxes och radio buttons */
+.mobile-device input[type="checkbox"],
+.mobile-device input[type="radio"] {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  min-height: 24px;
+}
+
+/* ============================================
+   12. KORT OCH CONTAINERS
+   ============================================ */
+
+.mobile-device .card {
+  border-radius: 12px;
+  margin: 8px 0;
+}
+
+.mobile-device .card-compact {
+  padding: 12px;
+}
+
+.mobile-device .section-spacing {
+  margin: 16px 0;
+}
+
+/* ============================================
+   13. MODALER OCH OVERLAYS
+   ============================================ */
+
+.mobile-device .modal {
+  margin: 16px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+}
+
+.mobile-device .modal-fullscreen {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  border-radius: 0;
+  max-height: 100vh;
+}
+
+/* ============================================
+   14. SCROLL-BETEENDE
+   ============================================ */
+
+/* Momentum scrolling på iOS */
+.scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Dölj scrollbar men behåll funktionalitet */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* ============================================
+   15. FORMULÄR PÅ MOBIL
+   ============================================ */
+
+.mobile-device form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-device label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.mobile-device fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ============================================
+   16. TABELLER PÅ MOBIL
+   ============================================ */
+
+.mobile-device table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.mobile-device .table-card-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-device .table-card-view tr {
+  display: block;
+  background: white;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.mobile-device .table-card-view td,
+.mobile-device .table-card-view th {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border: none;
+}
+
+.mobile-device .table-card-view td::before {
+  content: attr(data-label);
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* ============================================
+   17. DROPDOWNS OCH MENYER
+   ============================================ */
+
+.mobile-device .dropdown-menu {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  top: auto;
+  border-radius: 12px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.mobile-device .dropdown-item {
+  padding: 16px;
+  font-size: 1rem;
+}
+
+/* ============================================
+   18. LADDNINGstillstånd
+   ============================================ */
+
+.mobile-device .skeleton {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ============================================
+   19. NOTIFICATIONS PÅ MOBIL
+   ============================================ */
+
+.mobile-device .notification {
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  right: 16px;
+  z-index: 100;
+  animation: notification-slide-down 0.3s ease-out;
+}
+
+@keyframes notification-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   20. PRINT STYLES (FÖR PDF-EXPORT)
+   ============================================ */
+
+@media print {
+  .mobile-nav,
+  .voice-input-btn,
+  .fab-touch-zone-left,
+  .fab-touch-zone-right {
+    display: none !important;
+  }
+  
+  body {
+    font-size: 12pt;
+    line-height: 1.5;
+  }
+}

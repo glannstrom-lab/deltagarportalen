@@ -1,0 +1,23 @@
+╔══════════════════════════════════════════════════════════════╗
+║         MANUELL START AV SERVRAR                             ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. Oppna LARAGON TERMINAL (hogerklicka på Laragon -> Terminal)
+
+2. KOR DESSA KOMMANDON I TRE OLIKA FONSTER:
+
+=== Fonster 1: HUVUDSERVER ===
+cd C:\laragon\www\deltagarportal\server
+npm run dev
+
+=== Fonster 2: AI-SERVER ===
+cd C:\laragon\www\deltagarportal\server\ai
+npm run dev
+
+=== Fonster 3: FRONTEND ===
+cd C:\laragon\www\deltagarportal
+npm run dev:client
+
+3. Vanta tills allt startat (ca 10-15 sekunder)
+
+4. Oppna http://localhost:5173 i webblasaren
