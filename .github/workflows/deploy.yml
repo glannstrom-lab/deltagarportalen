@@ -35,13 +35,16 @@ jobs:
         run: cd client && npm ci
 
       - name: Build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: cd client && npm run build
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages@v3
         with:
           path: './client/dist'
 
