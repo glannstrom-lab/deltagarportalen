@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Check, 
   Sparkles, 
@@ -37,7 +38,7 @@ interface DailyTask {
   difficulty: TaskDifficulty
   socialProof?: string
   completionRate?: number
-  action: () => void
+  action: string
 }
 
 interface WeekDay {
@@ -78,7 +79,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'starter',
     socialProof: '89% klarar detta på första försöket',
     completionRate: 89,
-    action: () => {}
+    action: ''
   },
   {
     id: 'read-quote',
@@ -91,7 +92,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'starter',
     socialProof: '95% av användare läser klart',
     completionRate: 95,
-    action: () => window.location.href = '/knowledge'
+    action: '/knowledge-base'
   },
   {
     id: 'write-strength-low',
@@ -104,7 +105,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'starter',
     socialProof: '82% känner sig stolta efteråt',
     completionRate: 82,
-    action: () => window.location.href = '/cv-builder'
+    action: '/cv-builder'
   },
   {
     id: 'view-dashboard',
@@ -117,7 +118,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'starter',
     socialProof: '100% kan göra detta',
     completionRate: 100,
-    action: () => {}
+    action: ''
   },
   
   // === PROGRESSOR UPPGIFTER (Bygg vidare) ===
@@ -133,7 +134,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'progressor',
     socialProof: '76% av användare klarar detta',
     completionRate: 76,
-    action: () => window.location.href = '/cv-builder'
+    action: '/cv-builder'
   },
   {
     id: 'update-contact',
@@ -146,7 +147,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'progressor',
     socialProof: '91% klarar detta snabbt',
     completionRate: 91,
-    action: () => window.location.href = '/cv-builder'
+    action: '/cv-builder'
   },
   {
     id: 'save-job',
@@ -159,7 +160,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'progressor',
     socialProof: '84% hittar något intressant',
     completionRate: 84,
-    action: () => window.location.href = '/jobs'
+    action: '/jobs'
   },
   {
     id: 'read-article',
@@ -172,7 +173,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'progressor',
     socialProof: '79% lär sig något nytt',
     completionRate: 79,
-    action: () => window.location.href = '/knowledge'
+    action: '/knowledge-base'
   },
   {
     id: 'explore-interests',
@@ -185,7 +186,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'progressor',
     socialProof: '87% upptäcker något nytt',
     completionRate: 87,
-    action: () => window.location.href = '/intresseguide'
+    action: '/interest-guide'
   },
   
   // === CHALLENGER UPPGIFTER (Bygg självförtroende) ===
@@ -201,7 +202,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'challenger',
     socialProof: '68% klarar detta - du kan också!',
     completionRate: 68,
-    action: () => window.location.href = '/cv-builder'
+    action: '/cv-builder'
   },
   {
     id: 'write-motivation',
@@ -214,7 +215,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'challenger',
     socialProof: '64% känner sig stolta efteråt',
     completionRate: 64,
-    action: () => window.location.href = '/cv-builder'
+    action: '/cv-builder'
   },
   {
     id: 'complete-cv-section',
@@ -227,7 +228,7 @@ const taskSuggestions: DailyTask[] = [
     difficulty: 'challenger',
     socialProof: '71% avslutar hela sektionen',
     completionRate: 71,
-    action: () => window.location.href = '/cv-builder'
+    action: '/cv-builder'
   }
 ]
 
@@ -528,6 +529,7 @@ export function DailyStep({
   savedTasks = [],
   previousSuccesses = []
 }: DailyStepProps) {
+  const navigate = useNavigate()
   const [energyLevel, setEnergyLevel] = useState<EnergyLevel>('medium')
   const [selectedTask, setSelectedTask] = useState<DailyTask | null>(null)
   const [showCelebration, setShowCelebration] = useState(false)
@@ -543,8 +545,16 @@ export function DailyStep({
   const dailyGoal = 3
   const dailyProgress = Math.min((todayCompletedCount / dailyGoal) * 100, 100)
 
+  // Ref för att spåra föregående completedTasks
+  const previousCompletedTasksForWeekRef = useRef<string>('')
+  
   // Initiera veckodagar
   useEffect(() => {
+    const currentCompletedStr = JSON.stringify(completedTasks)
+    // Bara uppdatera om completedTasks faktiskt har ändrats
+    if (previousCompletedTasksForWeekRef.current === currentCompletedStr) return
+    previousCompletedTasksForWeekRef.current = currentCompletedStr
+    
     const days = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
     const today = new Date().getDay()
     const todayIndex = today === 0 ? 6 : today - 1
@@ -565,8 +575,16 @@ export function DailyStep({
     setWeekDays(weekData)
   }, [completedTasks])
 
+  // Ref för att spåra föregående savedTasks
+  const previousSavedTasksRef = useRef<string>('')
+  
   // Ladda sparade uppgifter
   useEffect(() => {
+    const currentSavedStr = JSON.stringify(savedTasks.map(st => st.task.id))
+    // Bara uppdatera om savedTasks faktiskt har ändrats
+    if (previousSavedTasksRef.current === currentSavedStr) return
+    previousSavedTasksRef.current = currentSavedStr
+    
     const savedIds = new Set(savedTasks.map(st => st.task.id))
     setSavedTaskIds(savedIds)
   }, [savedTasks])
@@ -601,25 +619,49 @@ export function DailyStep({
   // Ref för att spåra om uppgift redan valts
   const hasInitializedTask = useRef(false)
   const previousEnergyLevel = useRef(energyLevel)
+  const previousCompletedTasksRef = useRef<string>('') // JSON-sträng för jämförelse
+  const isSelectingTaskRef = useRef(false) // Förhindra rekursiva anrop
   
   // Välj uppgift vid första render eller när energinivå ändras
   useEffect(() => {
+    // Förhindra rekursiva anrop
+    if (isSelectingTaskRef.current) return
+    
+    // Jämför completedTasks med föregående värde
+    const currentCompletedStr = JSON.stringify([...completedTasks].sort())
+    const hasCompletedTasksChanged = previousCompletedTasksRef.current !== currentCompletedStr
+    
     // Endast välj ny uppgift om:
     // 1. Vi inte redan initialiserat, ELLER
-    // 2. Energinivån har ändrats
+    // 2. Energinivån har ändrats, ELLER
+    // 3. completedTasks faktiskt har ändrats (inte bara referensen)
     const shouldSelectTask = !hasInitializedTask.current || 
-                             previousEnergyLevel.current !== energyLevel
+                             previousEnergyLevel.current !== energyLevel ||
+                             hasCompletedTasksChanged
     
     if (!shouldSelectTask) return
+    
+    isSelectingTaskRef.current = true
     
     const filtered = getFilteredTasks(energyLevel)
     const incompleteTasks = filtered.filter(t => !completedTasks.includes(t.id))
     const tasks = incompleteTasks.length > 0 ? incompleteTasks : filtered
     const randomTask = tasks[Math.floor(Math.random() * tasks.length)]
-    setSelectedTask(randomTask || null)
+    
+    // Bara uppdatera om uppgiften faktiskt är ny
+    setSelectedTask(prev => {
+      if (prev?.id === randomTask?.id) return prev
+      return randomTask || null
+    })
     
     hasInitializedTask.current = true
     previousEnergyLevel.current = energyLevel
+    previousCompletedTasksRef.current = currentCompletedStr
+    
+    // Släpp låset efter en liten fördröjning
+    setTimeout(() => {
+      isSelectingTaskRef.current = false
+    }, 0)
   }, [energyLevel, completedTasks, getFilteredTasks])
 
   // Kolla efter 3 dagars inaktivitet
@@ -981,7 +1023,7 @@ export function DailyStep({
             <TaskCard
               task={selectedTask}
               onComplete={handleComplete}
-              onStart={selectedTask.action}
+              onStart={() => selectedTask.action && navigate(selectedTask.action)}
               onSkip={handleSkipTask}
               onSave={handleSaveTask}
               isSaved={savedTaskIds.has(selectedTask.id)}

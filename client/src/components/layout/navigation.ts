@@ -7,6 +7,7 @@ import {
   BookOpen,
   Dumbbell,
   Mail,
+  Target,
 } from 'lucide-react'
 
 export const navItems = [
@@ -14,6 +15,7 @@ export const navItems = [
   { path: '/cv', label: 'CV', icon: FileText },
   { path: '/cover-letter-generator', label: 'Personligt brev', icon: Mail },
   { path: '/job-search', label: 'Sök jobb', icon: Briefcase },
+  { path: '/career', label: 'Karriär', icon: Target },
   { path: '/interest-guide', label: 'Intresseguide', icon: Compass },
   { path: '/exercises', label: 'Övningar', icon: Dumbbell },
   { path: '/calendar', label: 'Kalender', icon: Calendar },

@@ -12,6 +12,7 @@ import Article from './pages/Article'
 import Profile from './pages/Profile'
 import JobTracker from './pages/JobTracker'
 import JobSearch from './pages/JobSearch'
+import Career from './pages/Career'
 import Calendar from './pages/Calendar'
 import Wellness from './pages/Wellness'
 import Exercises from './pages/Exercises'
@@ -49,6 +50,7 @@ function App() {
         <Route path="job-tracker" element={<JobTracker />} />
         <Route path="job-search" element={<JobSearch />} />
         <Route path="jobs" element={<JobSearch />} />
+        <Route path="career" element={<Career />} />
         <Route path="calendar" element={<Calendar />} />
         <Route path="wellness" element={<Wellness />} />
         <Route path="exercises" element={<Exercises />} />

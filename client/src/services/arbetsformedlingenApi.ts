@@ -1,9 +1,82 @@
 /**
- * Arbetsförmedlingen API Integration
+ * Arbetsförmedlingen JobSearch API Integration
  * Realtidsdata om jobb från Platsbanken
+ * 
+ * ANVÄNDER SUPABASE EDGE FUNCTIONS (ingen CORS!)
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+// Supabase config
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// Cache för kommun-mapping
+let municipalityCache: Map<string, string> | null = null;
+let regionCache: Map<string, string> | null = null;
+
+// Svenska län med koder (NUTS nivå 3)
+const SWEDISH_REGIONS: Record<string, string> = {
+  'stockholms län': 'SE110',
+  'uppsala län': 'SE121',
+  'södermanlands län': 'SE122',
+  'östergötlands län': 'SE123',
+  'jönköpings län': 'SE211',
+  'kronobergs län': 'SE212',
+  'kalmar län': 'SE213',
+  'gotlands län': 'SE214',
+  'blekinge län': 'SE221',
+  'skåne län': 'SE224',
+  'hallands län': 'SE231',
+  'västra götalands län': 'SE232',
+  'värmlands län': 'SE311',
+  'örebro län': 'SE124',
+  'västmanlands län': 'SE125',
+  'dalarnas län': 'SE312',
+  'gävleborgs län': 'SE313',
+  'västernorrlands län': 'SE321',
+  'jämtlands län': 'SE322',
+  'västerbottens län': 'SE331',
+  'norrbottens län': 'SE332',
+};
+
+// Vanliga kommuner (fallback om API inte fungerar)
+const COMMON_MUNICIPALITIES: Record<string, string> = {
+  'stockholm': '0180',
+  'göteborg': '1480',
+  'malmö': '1280',
+  'uppsala': '0380',
+  'linköping': '0580',
+  'västerås': '1980',
+  'örebro': '1880',
+  'helsingborg': '1283',
+  'norrköping': '0581',
+  'jönköping': '0680',
+  'umeå': '2480',
+  'lund': '1281',
+  'borås': '1490',
+  'sundsvall': '2281',
+  'gävle': '2180',
+  'eskilstuna': '0480',
+  'södertälje': '0181',
+  'karlstad': '1780',
+  'täby': '0160',
+  'växjö': '0780',
+  'halmstad': '1380',
+  'sollentuna': '0163',
+  'kalmar': '0880',
+  'solna': '0184',
+  'östersund': '2380',
+  'mölndal': '1481',
+  'trollhättan': '1488',
+  'luleå': '2580',
+  'landskrona': '1282',
+  'falun': '2080',
+  'tyresö': '0138',
+  'haninge': '0136',
+  'huddinge': '0126',
+  'botkyrka': '0127',
+  'nacka': '0182',
+  'sundbyberg': '0183',
+};
 
 // Typer för Platsbanken-respons
 export interface PlatsbankenJob {
@@ -76,8 +149,19 @@ export interface MarketInsights {
 export interface SearchFilters {
   q?: string;
   municipality?: string;
+  region?: string;
   occupation?: string;
   employment_type?: string;
+  experience_required?: boolean;
+  published_after?: string;
+  remote?: boolean;
+  // AF-specific filters
+  occupation_group?: string;  // Yrkesgrupp (SSYK)
+  occupation_field?: string;  // Yrkesområde
+  skills?: string[];          // Kompetenser
+  languages?: string[];       // Språk
+  driving_license?: boolean;  // Kräver körkort
+  unemployment_benefits?: boolean; // A-kassa erbjuds
   offset?: number;
   limit?: number;
 }
@@ -132,21 +216,112 @@ export interface CareerPath {
   demand_trend: 'high' | 'medium' | 'low' | 'increasing' | 'decreasing' | 'stable';
 }
 
-// Hjälpfunktion för API-anrop
-async function fetchFromApi(endpoint: string, params?: Record<string, unknown>) {
-  const queryParams = params ? '?' + new URLSearchParams(Object.entries(params).filter(([,v]) => v !== undefined) as [string, string][]).toString() : '';
-  const response = await fetch(`${API_BASE_URL}${endpoint}${queryParams}`);
-  if (!response.ok) throw new Error('API-fel');
-  return response.json();
+// ============ SUPABASE EDGE FUNCTION ============
+
+import { jobCache } from './cacheService';
+import { withRetry, fetchWithRetry } from './retryService';
+
+async function fetchFromJobSearch(endpoint: string, params?: Record<string, string>) {
+  const cacheKey = `jobsearch:${endpoint}:${JSON.stringify(params)}`;
+  
+  // Kolla cache först (2 minuter för jobb)
+  const cached = jobCache.get(cacheKey);
+  if (cached) {
+    console.log('[JobSearch] Cache hit:', endpoint);
+    return cached;
+  }
+  
+  const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
+  const functionUrl = `${SUPABASE_URL}/functions/v1/af-jobsearch${endpoint}${queryParams}`;
+  
+  console.log('[JobSearch] Fetching:', functionUrl);
+  
+  // Kör med retry-logik
+  const data = await withRetry(async () => {
+    const response = await fetchWithRetry(functionUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+    }, { maxRetries: 3, baseDelay: 1000 });
+    
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('[JobSearch] API error:', response.status, errorText);
+      throw new Error(`JobSearch API error: ${response.status}`);
+    }
+    
+    return response.json();
+  }, { maxRetries: 3 }, `JobSearch ${endpoint}`);
+  
+  // Spara i cache (2 minuter för jobb)
+  jobCache.set(cacheKey, data);
+  
+  return data;
 }
 
 // Sök jobb i Platsbanken
 export async function searchPlatsbanken(params: SearchFilters): Promise<JobSearchResponse> {
   try {
-    return await fetchFromApi('/jobs/platsbanken/search', params);
+    // Mappa våra parametrar till AF:s format
+    const afParams: Record<string, string> = {};
+    if (params.q) afParams['q'] = params.q;
+    if (params.limit) afParams['limit'] = String(params.limit);
+    afParams['offset'] = String(params.offset || 0);
+    
+    // Konvertera kommun-namn till kommun-kod
+    if (params.municipality) {
+      const code = await getMunicipalityCode(params.municipality);
+      if (code) {
+        afParams['municipality'] = code;
+      }
+    }
+    
+    // Konvertera region-namn till region-kod (län)
+    if (params.region) {
+      const code = await getRegionCode(params.region);
+      if (code) {
+        afParams['region'] = code;
+      }
+    }
+    
+    // Anställningstyp - konvertera till AF:s format
+    if (params.employment_type) {
+      afParams['employment-type'] = params.employment_type;
+    }
+    
+    // Yrkesområde (occupation-group)
+    if (params.occupation) {
+      afParams['occupation-group'] = params.occupation;
+    }
+    
+    // Remote-arbete
+    if (params.remote) {
+      afParams['remote'] = 'true';
+    }
+    
+    // Publicerad efter (datum i ISO-format)
+    if (params.published_after) {
+      afParams['published-after'] = params.published_after;
+    }
+    
+    console.log('Sökparametrar till AF:', afParams);
+    
+    const data = await fetchFromJobSearch('/search', afParams);
+    
+    // Returnera i rätt format som matchar JobSearchResponse
+    return {
+      total: { value: data.total?.value || 0 },
+      hits: data.hits || []
+    };
   } catch (error) {
     console.error('Fel vid sökning i Platsbanken:', error);
-    return getMockJobs();
+    // Returnera tomma resultat istället för att krascha
+    return {
+      total: { value: 0 },
+      hits: []
+    };
   }
 }
 
@@ -156,7 +331,19 @@ export const searchJobs = searchPlatsbanken;
 // Hämta jobbdetaljer
 export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> {
   try {
-    return await fetchFromApi(`/jobs/platsbanken/${id}`);
+    const data = await fetchFromJobSearch(`/ad/${id}`);
+    return {
+      id: data.id,
+      headline: data.headline,
+      description: data.description,
+      employer: data.employer,
+      workplace_address: data.workplace_address,
+      employment_type: data.employment_type,
+      occupation: data.occupation,
+      application_details: data.application_details,
+      publication_date: data.publication_date,
+      last_publication_date: data.application_deadline
+    };
   } catch (error) {
     console.error('Fel vid hämtning av jobbdetaljer:', error);
     return null;
@@ -167,7 +354,7 @@ export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> 
 export async function getAutocomplete(query: string): Promise<string[]> {
   if (!query || query.length < 2) return [];
   try {
-    const response = await fetchFromApi('/jobs/platsbanken/complete', { q: query });
+    const response = await fetchFromJobSearch('/complete', { q: query });
     return response?.typeahead || [];
   } catch (error) {
     return [];
@@ -220,25 +407,36 @@ export function analyzeSkillGap(
 
 // Hämta marknadsinsikter
 export async function getMarketInsights(): Promise<MarketInsights> {
-  try {
-    return await fetchFromApi('/jobs/market-insights');
-  } catch (error) {
-    console.error('Fel vid hämtning av marknadsinsikter:', error);
-    return getMockMarketInsights();
-  }
+  // Returnera mock data för nu - kan ersättas med riktigt API
+  return {
+    topOccupations: [
+      { occupation: 'Sjuksköterskor', count: 1250, trend: 'up' },
+      { occupation: 'Lagerarbetare', count: 980, trend: 'stable' },
+      { occupation: 'Systemutvecklare', count: 850, trend: 'up' },
+      { occupation: 'Kundtjänst', count: 720, trend: 'down' },
+      { occupation: 'Lärare', count: 650, trend: 'stable' }
+    ],
+    topRegions: [
+      { region: 'Stockholm', count: 5200 },
+      { region: 'Göteborg', count: 3100 },
+      { region: 'Malmö', count: 2100 },
+      { region: 'Uppsala', count: 890 },
+      { region: 'Linköping', count: 650 }
+    ],
+    salaryRanges: {
+      'IT': { min: 35000, max: 65000, median: 48000 },
+      'Vård': { min: 28000, max: 45000, median: 34000 },
+      'Bygg': { min: 30000, max: 48000, median: 36000 },
+      'Administration': { min: 26000, max: 40000, median: 31000 },
+      'Försäljning': { min: 25000, max: 55000, median: 32000 }
+    },
+    lastUpdated: new Date().toISOString()
+  };
 }
 
 // Bakåtkompatibilitet - marknadsstatistik
 export async function getMarketStats() {
-  try {
-    return await fetchFromApi('/jobs/market-insights');
-  } catch {
-    return {
-      totalJobs: 0,
-      lastUpdated: new Date().toISOString(),
-      status: 'unavailable'
-    };
-  }
+  return getMarketInsights();
 }
 
 // Sök efter query
@@ -286,14 +484,94 @@ export async function getCareerPath(occupation: string): Promise<CareerPath> {
   };
 }
 
-// Hämta kommuner
-export async function getMunicipalities(): Promise<string[]> {
-  return ['Stockholm', 'Göteborg', 'Malmö', 'Uppsala', 'Linköping'];
+// Hämta kommuner från AF API
+export async function getMunicipalities(): Promise<Array<{ id: string; name: string }>> {
+  // Använd Taxonomy Edge Function
+  try {
+    const functionUrl = `${SUPABASE_URL}/functions/v1/af-taxonomy/concepts?type=municipality`;
+    
+    // Timeout efter 10 sekunder
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
+    const response = await fetch(functionUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      signal: controller.signal,
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    
+    const data = await response.json();
+    return (data?.concepts || []).map((m: any) => ({ id: m.id, name: m.name }));
+  } catch (error) {
+    console.error('Error fetching municipalities:', error);
+    // Fallback till vanliga kommuner
+    return Object.entries(COMMON_MUNICIPALITIES).map(([name, id]) => ({ 
+      id, 
+      name: name.charAt(0).toUpperCase() + name.slice(1) 
+    }));
+  }
 }
 
-// Hämta regioner
-export async function getRegions(): Promise<string[]> {
-  return ['Stockholms län', 'Västra Götalands län', 'Skåne län', 'Uppsala län'];
+// Hämta kommun-kod från kommun-namn
+export async function getMunicipalityCode(name: string): Promise<string | null> {
+  if (!name) return null;
+  
+  // Normalisera input (små bokstäver, trimma)
+  const normalized = name.toLowerCase().trim();
+  
+  // Kolla fallback-listan först
+  if (COMMON_MUNICIPALITIES[normalized]) {
+    return COMMON_MUNICIPALITIES[normalized];
+  }
+  
+  // Prova att hämta från API
+  try {
+    const municipalities = await getMunicipalities();
+    const match = municipalities.find(m => 
+      m.name.toLowerCase() === normalized ||
+      m.id === normalized
+    );
+    return match?.id || null;
+  } catch (error) {
+    console.error('Kunde inte hämta kommuner:', error);
+    return null;
+  }
+}
+
+// Hämta regioner (län)
+export async function getRegions(): Promise<Array<{ id: string; name: string }>> {
+  return Object.entries(SWEDISH_REGIONS).map(([name, id]) => ({
+    id,
+    name: name.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+  }));
+}
+
+// Hämta region-kod från region-namn
+export async function getRegionCode(name: string): Promise<string | null> {
+  if (!name) return null;
+  
+  const normalized = name.toLowerCase().trim();
+  
+  // Kolla fallback-listan
+  if (SWEDISH_REGIONS[normalized]) {
+    return SWEDISH_REGIONS[normalized];
+  }
+  
+  // Prova att matcha utan "län"
+  const withoutLan = normalized.replace(' län', '');
+  const withLan = `${withoutLan} län`;
+  if (SWEDISH_REGIONS[withLan]) {
+    return SWEDISH_REGIONS[withLan];
+  }
+  
+  return null;
 }
 
 // Optimera CV
@@ -315,105 +593,12 @@ export async function optimizeCV(cvData: unknown, jobDescription?: string): Prom
 
 // Populära sökningar
 export const POPULAR_QUERIES = [
-  'kundtjänst',
-  'lagerarbetare',
-  'sjuksköterska',
-  'lärare',
-  'programmerare'
+  { label: 'Kundtjänst', query: 'kundtjänst', icon: '💬' },
+  { label: 'Lager', query: 'lagerarbetare', icon: '📦' },
+  { label: 'Vård', query: 'sjuksköterska', icon: '🏥' },
+  { label: 'Lärare', query: 'lärare', icon: '🎓' },
+  { label: 'IT', query: 'programmerare', icon: '💻' },
 ];
-
-// Mock-data vid API-fel
-function getMockJobs(): JobSearchResponse {
-  return {
-    total: { value: 3 },
-    hits: [
-      {
-        id: 'mock-1',
-        headline: 'Kundtjänstmedarbetare',
-        description: {
-          text: 'Vi söker en positiv kundtjänstmedarbetare...',
-          text_formatted: '<p>Vi söker en positiv kundtjänstmedarbetare...</p>'
-        },
-        employer: { name: 'Testföretag AB' },
-        workplace_address: {
-          municipality: 'Stockholm',
-          region: 'Stockholms län',
-          country: 'Sverige'
-        },
-        employment_type: { label: 'Heltid' },
-        occupation: { label: 'Kundtjänst' },
-        publication_date: new Date().toISOString(),
-        last_publication_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        keywords: { enriched: ['kommunikation', 'service', 'data'] }
-      },
-      {
-        id: 'mock-2',
-        headline: 'Lagerarbetare',
-        description: {
-          text: 'Vi söker en noggrann lagerarbetare...',
-          text_formatted: '<p>Vi söker en noggrann lagerarbetare...</p>'
-        },
-        employer: { name: 'Logistikbolaget' },
-        workplace_address: {
-          municipality: 'Göteborg',
-          region: 'Västra Götalands län',
-          country: 'Sverige'
-        },
-        employment_type: { label: 'Deltid' },
-        occupation: { label: 'Lager' },
-        publication_date: new Date().toISOString(),
-        last_publication_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        keywords: { enriched: ['lager', 'truckkort', 'fysisk'] }
-      },
-      {
-        id: 'mock-3',
-        headline: 'Administratör',
-        description: {
-          text: 'Vi söker en strukturerad administratör...',
-          text_formatted: '<p>Vi söker en strukturerad administratör...</p>'
-        },
-        employer: { name: 'Kontor AB' },
-        workplace_address: {
-          municipality: 'Malmö',
-          region: 'Skåne län',
-          country: 'Sverige'
-        },
-        employment_type: { label: 'Heltid' },
-        occupation: { label: 'Administration' },
-        publication_date: new Date().toISOString(),
-        last_publication_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
-        keywords: { enriched: ['administration', 'excel', 'organisering'] }
-      }
-    ]
-  };
-}
-
-function getMockMarketInsights(): MarketInsights {
-  return {
-    topOccupations: [
-      { occupation: 'Sjuksköterskor', count: 1250, trend: 'up' },
-      { occupation: 'Lagerarbetare', count: 980, trend: 'stable' },
-      { occupation: 'Systemutvecklare', count: 850, trend: 'up' },
-      { occupation: 'Kundtjänst', count: 720, trend: 'down' },
-      { occupation: 'Lärare', count: 650, trend: 'stable' }
-    ],
-    topRegions: [
-      { region: 'Stockholm', count: 5200 },
-      { region: 'Göteborg', count: 3100 },
-      { region: 'Malmö', count: 2100 },
-      { region: 'Uppsala', count: 890 },
-      { region: 'Linköping', count: 650 }
-    ],
-    salaryRanges: {
-      'IT': { min: 35000, max: 65000, median: 48000 },
-      'Vård': { min: 28000, max: 45000, median: 34000 },
-      'Bygg': { min: 30000, max: 48000, median: 36000 },
-      'Administration': { min: 26000, max: 40000, median: 31000 },
-      'Försäljning': { min: 25000, max: 55000, median: 32000 }
-    },
-    lastUpdated: new Date().toISOString()
-  };
-}
 
 // Export för bakåtkompatibilitet
 export const afApi = {
@@ -425,7 +610,9 @@ export const afApi = {
   analyzeJobMatch,
   getCareerPath,
   getMunicipalities,
+  getMunicipalityCode,
   getRegions,
+  getRegionCode,
   optimizeCV
 };
 

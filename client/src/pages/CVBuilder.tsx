@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { cvApi } from '@/services/api'
-import { Plus, Trash2, ChevronRight, ChevronLeft, Eye, EyeOff } from 'lucide-react'
+import { Plus, Trash2, ChevronRight, ChevronLeft, Eye, EyeOff, FileDown, Linkedin } from 'lucide-react'
 import { CVTemplateSelector, templates, type Template } from '@/components/cv/CVTemplateSelector'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -12,6 +12,9 @@ import { SpellChecker } from '@/components/cv/SpellChecker'
 import { JobAdAnalyzer } from '@/components/cv/JobAdAnalyzer'
 import { CVShare } from '@/components/cv/CVShare'
 import { CVOnboarding } from '@/components/cv/CVOnboarding'
+import SkillSuggestions from '@/components/cv/SkillSuggestions'
+import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
+import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import type { 
   CVData, WorkExperience, Education, Language, 
   Certificate, Link, Reference, Skill, CVVersion 
@@ -114,6 +117,7 @@ export default function CVBuilder() {
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
+  const [showLinkedInImport, setShowLinkedInImport] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_selectedTemplate, _setSelectedTemplate] = useState<Template>(templates[0])
   
@@ -153,6 +157,12 @@ export default function CVBuilder() {
   const loadCV = async () => {
     try {
       const cv = await cvApi.getCV()
+      
+      // Om cv är null, avbryt och behåll default-värden
+      if (!cv) {
+        console.log('Inget CV hittat, använder tomma värden')
+        return
+      }
       
       setFormData({
         firstName: cv.firstName || cv.user?.firstName || '',
@@ -254,6 +264,82 @@ export default function CVBuilder() {
   const handleShare = async () => {
     const result = await cvApi.shareCV()
     return result
+  }
+
+  // Ladda demo-data
+  const loadDemoData = () => {
+    if (!confirm('Detta kommer att fylla i ditt CV med exempeldata. Vill du fortsätta?')) {
+      return
+    }
+    
+    setFormData({
+      ...formData,
+      firstName: 'Anna',
+      lastName: 'Andersson',
+      title: 'Projektledare',
+      email: 'anna.andersson@example.com',
+      phone: '+46 70 123 45 67',
+      location: 'Stockholm',
+      summary: 'Erfaren projektledare med över 5 års erfarenhet av att leda utvecklingsteam inom IT-sektorn. Stark kommunikativ förmåga och vana att hantera komplexa projekt från start till mål. Brinner för att skapa effektiva arbetsflöden och att utveckla mitt team.',
+      skills: [
+        { id: '1', name: 'Projektledning', level: 5, category: 'technical' },
+        { id: '2', name: 'Agil utveckling', level: 4, category: 'technical' },
+        { id: '3', name: 'Kommunikation', level: 5, category: 'soft' },
+        { id: '4', name: 'Microsoft Office', level: 4, category: 'technical' },
+        { id: '5', name: 'Scrum', level: 4, category: 'technical' },
+        { id: '6', name: 'Ledarskap', level: 4, category: 'soft' },
+      ],
+      workExperience: [
+        {
+          id: '1',
+          company: 'Tech Solutions AB',
+          title: 'Projektledare',
+          location: 'Stockholm',
+          startDate: '2021-03',
+          endDate: '',
+          current: true,
+          description: 'Leder ett team på 8 utvecklare i utvecklingen av en ny e-handelsplattform. Ansvarar för projektplanering, resursallokering och kommunikation med stakeholders.',
+        },
+        {
+          id: '2',
+          company: 'Digital Innovation i Sverige AB',
+          title: 'Junior Projektledare',
+          location: 'Göteborg',
+          startDate: '2019-06',
+          endDate: '2021-02',
+          current: false,
+          description: 'Arbetade med att koordinera mindre projekt inom webbutveckling. Bistod seniora projektledare och lärde mig agila metoder.',
+        },
+      ],
+      education: [
+        {
+          id: '1',
+          school: 'Stockholms Universitet',
+          degree: 'Kandidatexamen',
+          field: 'Informatik',
+          location: 'Stockholm',
+          startDate: '2016-08',
+          endDate: '2019-05',
+          description: 'Fokus på projektledning och systemutveckling.',
+        },
+      ],
+      languages: [
+        { id: '1', name: 'Svenska', level: 'native' },
+        { id: '2', name: 'Engelska', level: 'fluent' },
+        { id: '3', name: 'Tyska', level: 'basic' },
+      ],
+      certificates: [
+        { id: '1', name: 'PMP Project Management Professional', issuer: 'PMI', date: '2022-03' },
+        { id: '2', name: 'Scrum Master Certification', issuer: 'Scrum Alliance', date: '2020-11' },
+      ],
+      links: [
+        { id: '1', title: 'LinkedIn', url: 'https://linkedin.com/in/annaandersson' },
+        { id: '2', title: 'Portfolio', url: 'https://annaandersson.se' },
+      ],
+      references: [
+        { id: '1', name: 'Erik Johansson', title: 'Utvecklingschef', company: 'Tech Solutions AB', email: 'erik@techsolutions.se', phone: '+46 70 987 65 43' },
+      ],
+    })
   }
 
   // Hjälpfunktioner för WorkExperience
@@ -505,7 +591,25 @@ export default function CVBuilder() {
               Bygg ett professionellt CV med AI-hjälp och förhandsvisning i realtid.
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-2 flex-wrap justify-end">
+            <button
+              onClick={loadDemoData}
+              className="flex items-center gap-2 px-4 py-2 border border-amber-300 bg-amber-50 text-amber-700 rounded-xl hover:bg-amber-100"
+              title="Fyll i med exempeldata för att testa"
+            >
+              <span>✨</span>
+              Demo-data
+            </button>
+            
+            {/* LinkedIn Import */}
+            <button
+              onClick={() => setShowLinkedInImport(true)}
+              className="flex items-center gap-2 px-4 py-2 border border-[#0077B5] text-[#0077B5] rounded-xl hover:bg-[#0077B5]/5"
+            >
+              <Linkedin size={18} />
+              Importera LinkedIn
+            </button>
+            
             <button
               onClick={() => setShowPreview(!showPreview)}
               className="flex items-center gap-2 px-4 py-2 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50"
@@ -513,6 +617,51 @@ export default function CVBuilder() {
               {showPreview ? <EyeOff size={18} /> : <Eye size={18} />}
               {showPreview ? 'Dölj förhandsvisning' : 'Visa förhandsvisning'}
             </button>
+            
+            {/* PDF Export */}
+            <PDFExportButton
+              type="cv"
+              data={{
+                personalInfo: {
+                  firstName: formData.firstName,
+                  lastName: formData.lastName,
+                  email: formData.email,
+                  phone: formData.phone,
+                  city: formData.location,
+                },
+                summary: formData.summary,
+                experience: formData.workExperience.map(w => ({
+                  title: w.title,
+                  company: w.company,
+                  location: w.location,
+                  startDate: w.startDate,
+                  endDate: w.endDate,
+                  current: w.current,
+                  description: w.description,
+                })),
+                education: formData.education.map(e => ({
+                  degree: e.degree,
+                  school: e.school,
+                  location: e.location,
+                  startDate: e.startDate,
+                  endDate: e.endDate,
+                  description: e.description,
+                })),
+                skills: formData.skills.map(s => s.name),
+                languages: formData.languages.map(l => ({
+                  language: l.name,
+                  level: l.level,
+                })),
+                certifications: formData.certificates.map(c => ({
+                  name: c.name,
+                  issuer: c.issuer,
+                  date: c.date,
+                })),
+              }}
+              variant="outline"
+              size="md"
+            />
+            
             <button
               onClick={saveCV}
               disabled={saving}
@@ -529,24 +678,25 @@ export default function CVBuilder() {
         <div className="space-y-6">
           {/* Progress */}
           <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between overflow-x-auto pb-2 scrollbar-hide">
               {steps.map((s, index) => (
-                <div key={s.number} className="flex items-center">
+                <div key={s.number} className="flex items-center flex-shrink-0">
                   <button
                     onClick={() => setStep(s.number)}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors flex-shrink-0 ${
                       step === s.number
                         ? 'bg-[#4f46e5] text-white'
                         : step > s.number
                         ? 'bg-[#4f46e5]/10 text-[#4f46e5]'
                         : 'bg-slate-200 text-slate-500'
                     }`}
+                    title={s.title}
                   >
                     {step > s.number ? '✓' : s.number}
                   </button>
                   {index < steps.length - 1 && (
                     <div
-                      className={`w-12 h-1 mx-2 ${
+                      className={`w-8 sm:w-12 h-1 mx-1 sm:mx-2 flex-shrink-0 ${
                         step > s.number ? 'bg-[#4f46e5]' : 'bg-slate-200'
                       }`}
                     />
@@ -847,6 +997,24 @@ export default function CVBuilder() {
           {/* Step 6: Skills */}
           {step === 6 && (
             <div className="space-y-4">
+              {/* Kompetensförslag baserat på yrkestitel */}
+              <SkillSuggestions
+                occupationTitle={formData.title}
+                currentSkills={formData.skills}
+                onAddSkill={(skill) => {
+                  const newSkill: Skill = {
+                    id: Date.now().toString(),
+                    name: skill.name,
+                    level: 3,
+                    category: skill.category
+                  };
+                  setFormData(prev => ({
+                    ...prev,
+                    skills: [...prev.skills, newSkill]
+                  }));
+                }}
+              />
+              
               {formData.skills.map((skill) => (
                 <div key={skill.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
                   <div className="flex justify-between items-start mb-4">
@@ -1185,10 +1353,7 @@ export default function CVBuilder() {
           {/* Sidebar tools */}
           {!showPreview && (
             <div className="space-y-6">
-              <CVExport 
-                data={formData}
-                fileName={`${formData.firstName}-${formData.lastName}-CV`.replace(/\s+/g, '-').toLowerCase() || 'mitt-cv'}
-              />
+              <CVExport cvData={formData} />
               
               <CVShare onShare={handleShare} />
               
@@ -1211,6 +1376,55 @@ export default function CVBuilder() {
           )}
         </div>
       </div>
+
+      {/* LinkedIn Import Modal */}
+      {showLinkedInImport && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+          <div className="max-w-lg w-full">
+            <LinkedInImport
+              onImport={(cvData) => {
+                // Merge LinkedIn data with existing form data
+                setFormData(prev => ({
+                  ...prev,
+                  firstName: cvData.personalInfo?.firstName || prev.firstName,
+                  lastName: cvData.personalInfo?.lastName || prev.lastName,
+                  email: cvData.personalInfo?.email || prev.email,
+                  location: cvData.personalInfo?.city || prev.location,
+                  summary: cvData.summary || prev.summary,
+                  workExperience: cvData.experience?.length > 0 
+                    ? cvData.experience.map((exp: any) => ({
+                        id: Date.now().toString() + Math.random(),
+                        ...exp,
+                      }))
+                    : prev.workExperience,
+                  education: cvData.education?.length > 0
+                    ? cvData.education.map((edu: any) => ({
+                        id: Date.now().toString() + Math.random(),
+                        ...edu,
+                      }))
+                    : prev.education,
+                  skills: cvData.skills?.length > 0
+                    ? cvData.skills.map((skill: string) => ({
+                        id: Date.now().toString() + Math.random(),
+                        name: skill,
+                        level: 'intermediate',
+                      }))
+                    : prev.skills,
+                  languages: cvData.languages?.length > 0
+                    ? cvData.languages.map((lang: any) => ({
+                        id: Date.now().toString() + Math.random(),
+                        name: lang.language,
+                        level: lang.level,
+                      }))
+                    : prev.languages,
+                }));
+                setShowLinkedInImport(false);
+              }}
+              existingData={formData}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }

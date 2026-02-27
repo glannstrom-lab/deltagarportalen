@@ -14,11 +14,6 @@ import {
   Download,
   CheckCircle,
   Loader2,
-  Zap,
-  Battery,
-  BatteryLow,
-  BatteryMedium,
-  BatteryFull,
   Heart,
   Pause,
   AlertCircle,
@@ -33,15 +28,11 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { aiService } from '@/services/aiService'
-import { cvApi, coverLetterApi } from '@/services/api'
+import { cvApi, coverLetterApi, jobsApi } from '@/services/api'
 import { searchPlatsbanken, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
-import { EnergyBadge, type EnergyClassification } from '@/components/gamification/EnergyFilter'
 import { SupportiveLanguage } from '@/components/SupportiveLanguage'
-
-// Energinivå-typ
-export type EnergyLevel = 1 | 2 | 3 | 4 | 5
 
 interface SavedCoverLetter {
   id: string
@@ -52,7 +43,6 @@ interface SavedCoverLetter {
   updatedAt: string
   company?: string
   jobTitle?: string
-  energyLevel?: EnergyLevel
 }
 
 interface CVData {
@@ -76,7 +66,6 @@ interface Template {
   description: string
   promptAddition: string
   icon: React.ReactNode
-  energyLevel: EnergyClassification
 }
 
 const templates: Template[] = [
@@ -86,7 +75,6 @@ const templates: Template[] = [
     description: 'Bra för de flesta situationer',
     promptAddition: '',
     icon: <FileText className="w-4 h-4" />,
-    energyLevel: 'medium'
   },
   {
     id: 'tillbaka',
@@ -94,7 +82,6 @@ const templates: Template[] = [
     description: 'Efter sjukskrivning, föräldraledighet eller annan paus',
     promptAddition: 'Användaren har varit borta från arbetsmarknaden och är nu redo att komma tillbaka. Fokusera på motivation och framåtblick, inte ursäkter.',
     icon: <Heart className="w-4 h-4" />,
-    energyLevel: 'low'
   },
   {
     id: 'karriarbyte',
@@ -102,7 +89,6 @@ const templates: Template[] = [
     description: 'När du söker jobb i en ny bransch',
     promptAddition: 'Användaren byter karriärväg. Fokusera på överförbara färdigheter och motivation för den nya branschen.',
     icon: <ArrowRight className="w-4 h-4" />,
-    energyLevel: 'medium'
   },
   {
     id: 'nyexaminerad',
@@ -110,63 +96,13 @@ const templates: Template[] = [
     description: 'När du saknar arbetslivserfarenhet',
     promptAddition: 'Användaren är nyexaminerad. Fokusera på utbildning, praktik, och potential snarare än erfarenhet.',
     icon: <Award className="w-4 h-4" />,
-    energyLevel: 'medium'
   },
   {
     id: 'kort',
     label: 'Kort & konkret',
     description: 'När du har ont om tid eller energi',
     promptAddition: 'Håll brevet kort och konkret. Max 2-3 korta stycken. Fokusera på det viktigaste.',
-    icon: <Zap className="w-4 h-4" />,
-    energyLevel: 'low'
-  }
-]
-
-const energyOptions = [
-  {
-    level: 1 as EnergyLevel,
-    emoji: '😴',
-    label: 'Väldigt låg',
-    description: 'Jag behöver hålla det enkelt idag',
-    icon: BatteryLow,
-    color: 'bg-rose-50 border-rose-200 text-rose-700',
-    message: 'Vi föreslår mallen "Kort & konkret" för att spara energi.'
-  },
-  {
-    level: 2 as EnergyLevel,
-    emoji: '😌',
-    label: 'Låg',
-    description: 'Jag kan göra det viktigaste',
-    icon: Battery,
-    color: 'bg-orange-50 border-orange-200 text-orange-700',
-    message: 'Ta det i din takt. Ett steg i taget.'
-  },
-  {
-    level: 3 as EnergyLevel,
-    emoji: '😐',
-    label: 'Medel',
-    description: 'Jag har normal energi',
-    icon: BatteryMedium,
-    color: 'bg-amber-50 border-amber-200 text-amber-700',
-    message: 'Bra! Du kan välja vilken mall som passar bäst.'
-  },
-  {
-    level: 4 as EnergyLevel,
-    emoji: '🙂',
-    label: 'God',
-    description: 'Jag känner mig redo',
-    icon: BatteryFull,
-    color: 'bg-teal-50 border-teal-200 text-teal-700',
-    message: 'Perfekt! Du har energi att skräddarsy ditt brev.'
-  },
-  {
-    level: 5 as EnergyLevel,
-    emoji: '💪',
-    label: 'Hög',
-    description: 'Jag är full av energi!',
-    icon: BatteryFull,
-    color: 'bg-green-50 border-green-200 text-green-700',
-    message: 'Underbart! Passa på att skapa något riktigt bra.'
+    icon: <Sparkles className="w-4 h-4" />,
   }
 ]
 
@@ -179,7 +115,6 @@ export default function CoverLetterGenerator() {
   const [company, setCompany] = useState('')
   const [jobTitle, setJobTitle] = useState('')
   const [selectedTemplate, setSelectedTemplate] = useState<string>('standard')
-  const [energyLevel, setEnergyLevel] = useState<EnergyLevel | null>(null)
   
   // === CV DATA ===
   const [cvData, setCvData] = useState<CVData | null>(null)
@@ -205,7 +140,6 @@ export default function CoverLetterGenerator() {
   
   // === SECTIONS EXPANSION ===
   const [expandedSections, setExpandedSections] = useState({
-    energy: true,
     template: false,
     input: true,
     cv: true,
@@ -221,8 +155,7 @@ export default function CoverLetterGenerator() {
     jobTitle,
     selectedTemplate,
     generatedBrev,
-    saveTitle,
-    energyLevel
+    saveTitle
   }
 
   const {
@@ -242,7 +175,6 @@ export default function CoverLetterGenerator() {
       setSelectedTemplate(saved.selectedTemplate || 'standard')
       setGeneratedBrev(saved.generatedBrev || '')
       setSaveTitle(saved.saveTitle || '')
-      setEnergyLevel(saved.energyLevel || null)
     }
   })
 
@@ -251,12 +183,6 @@ export default function CoverLetterGenerator() {
     loadCVData()
     loadSavedLetters()
     loadSavedJobs()
-    
-    // Check for saved energy level from dashboard
-    const savedEnergy = localStorage.getItem('lastEnergyLevel')
-    if (savedEnergy) {
-      setEnergyLevel(parseInt(savedEnergy) as EnergyLevel)
-    }
   }, [])
 
   const loadCVData = async () => {
@@ -289,8 +215,7 @@ export default function CoverLetterGenerator() {
         createdAt: l.createdAt,
         updatedAt: l.updatedAt,
         company: l.company,
-        jobTitle: l.jobTitle,
-        energyLevel: l.energyLevel
+        jobTitle: l.jobTitle
       })))
     } catch (e) {
       console.error('Kunde inte ladda sparade brev:', e)
@@ -298,13 +223,19 @@ export default function CoverLetterGenerator() {
   }
 
   const loadSavedJobs = async () => {
-    // Hämta från localStorage först
-    const saved = localStorage.getItem('savedJobs')
-    if (saved) {
-      try {
-        setSavedJobs(JSON.parse(saved))
-      } catch (e) {
-        console.error('Kunde inte ladda sparade jobb:', e)
+    try {
+      const jobs = await jobsApi.getSavedJobs()
+      setSavedJobs(jobs.map((j: any) => j.job_data))
+    } catch (e) {
+      console.error('Kunde inte ladda sparade jobb:', e)
+      // Fallback till localStorage om API inte fungerar
+      const saved = localStorage.getItem('savedJobs')
+      if (saved) {
+        try {
+          setSavedJobs(JSON.parse(saved))
+        } catch (e) {
+          console.error('Kunde inte ladda sparade jobb från localStorage:', e)
+        }
       }
     }
   }
@@ -336,10 +267,89 @@ export default function CoverLetterGenerator() {
     analyzeCVMatch()
   }, [analyzeCVMatch])
 
+  // === OFFLINE TEMPLATE GENERATOR ===
+  const generateOfflineTemplate = (): string => {
+    const template = templates.find(t => t.id === selectedTemplate)
+    const erfarenheter = cvData?.workExperience?.slice(0, 2) || []
+    const kompetenser = cvData?.skills?.slice(0, 5).map(s => s.name).join(', ') || ''
+    
+    let brev = ''
+    
+    // Datum och adressering
+    brev += `${new Date().toLocaleDateString('sv-SE')}\n\n`
+    brev += company ? `${company}\n` : '[Företag]\n'
+    brev += 'Att: Rekryteringsansvarig\n\n'
+    
+    // Hälsning
+    brev += 'Hej,\n\n'
+    
+    // Inledning baserad på mall
+    if (template?.id === 'tillbaka') {
+      brev += `Jag skriver för att uttrycka mitt intresse för tjänsten som ${jobTitle || 'den aktuella rollen'}. Efter en period borta från arbetsmarknaden är jag nu redo att återvända och bidra med mina erfarenheter.`
+    } else if (template?.id === 'karriarbyte') {
+      brev += `Jag skriver för att söka tjänsten som ${jobTitle || 'den aktuella rollen'}. Jag ser detta som en spännande möjlighet att ta med mig mina erfarenheter in i en ny bransch.`
+    } else if (template?.id === 'nyexaminerad') {
+      brev += `Som nyexaminerad inom ${cvData?.title || 'mitt område'} skriver jag för att söka tjänsten som ${jobTitle || 'den aktuella rollen'}. Jag är entusiastisk över möjligheten att få bidra och utvecklas.`
+    } else {
+      brev += `Jag skriver med stort intresse för tjänsten som ${jobTitle || 'den aktuella rollen'}${company ? ` på ${company}` : ''}.`
+    }
+    
+    // Motivering om angiven
+    if (motivering) {
+      brev += ` ${motivering}`
+    }
+    brev += '\n\n'
+    
+    // Kropp - erfarenheter
+    if (erfarenheter.length > 0) {
+      brev += 'Med min bakgrund '
+      erfarenheter.forEach((exp, idx) => {
+        if (idx === 0) {
+          brev += `som ${exp.title} på ${exp.company}`
+        } else {
+          brev += ` och ${exp.title} på ${exp.company}`
+        }
+      })
+      brev += ' har jag utvecklat värdefulla kompetenser.'
+      
+      if (kompetenser) {
+        brev += ` Bland annat inom ${kompetenser}.`
+      }
+      brev += '\n\n'
+    } else if (cvData?.summary) {
+      brev += `${cvData.summary}\n\n`
+    }
+    
+    // Koppling till jobbannons
+    if (jobbAnnons.length > 50) {
+      brev += 'När jag läste om tjänsten kände jag att mina erfarenheter skulle kunna komma till nytta, särskilt med tanke på de krav och kvalifikationer ni efterfrågar. '
+    }
+    
+    // Avslutning baserad på ton
+    if (ton === 'entusiastisk') {
+      brev += 'Jag ser verkligen fram emot möjligheten att få diskutera hur jag kan bidra till ert team!\n\n'
+    } else if (ton === 'formell') {
+      brev += 'Jag ser fram emot att få diskutera mina kvalifikationer vidare vid ett eventuellt intervjutillfälle.\n\n'
+    } else {
+      brev += 'Jag ser fram emot att höra från er och få möjlighet att berätta mer om hur jag kan bidra.\n\n'
+    }
+    
+    // Signatur
+    brev += 'Med vänliga hälsningar,\n\n'
+    brev += cvData?.firstName && cvData?.lastName 
+      ? `${cvData.firstName} ${cvData.lastName}`
+      : '[Ditt namn]'
+    
+    if (cvData?.phone) brev += `\n${cvData.phone}`
+    if (cvData?.email) brev += `\n${cvData.email}`
+    
+    return brev
+  }
+
   // === GENERATE ===
   const handleGenerate = async () => {
-    if (!jobbAnnons.trim()) {
-      setError('Du kan välja att ange en jobbannons för att få ett mer anpassat brev')
+    if (!jobbAnnons.trim() && !company && !jobTitle) {
+      setError('Fyll i åtminstone företag, jobbtitel eller jobbannons för att komma igång.')
       return
     }
 
@@ -387,8 +397,24 @@ export default function CoverLetterGenerator() {
       }, 100)
     } catch (err) {
       clearInterval(progressInterval)
-      setError('Det gick inte att skapa brevet just nu. Vi försökte, men något gick fel. Du kan prova igen eller skriva själv - det är också bra!')
-      console.error('AI error:', err)
+      
+      // OFFLINE FALLBACK: Generera mall lokalt
+      console.log('AI-tjänsten ej tillgänglig, använder offline-mall')
+      const offlineBrev = generateOfflineTemplate()
+      setGeneratedBrev(offlineBrev)
+      setExpandedSections(prev => ({ ...prev, result: true }))
+      
+      if (!saveTitle && company && jobTitle) {
+        setSaveTitle(`${company} - ${jobTitle}`)
+      }
+      
+      // Visa info om att det är en mall
+      setError('Vi kunde inte ansluta till vår smarta hjälp just nu, så vi har skapat ett förslag baserat på din information istället. Du kan redigera det hur du vill!')
+      
+      // Scroll to result
+      setTimeout(() => {
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
+      }, 100)
     } finally {
       setIsGenerating(false)
     }
@@ -406,8 +432,7 @@ export default function CoverLetterGenerator() {
         jobAd: jobbAnnons,
         content: generatedBrev,
         company: company || undefined,
-        jobTitle: jobTitle || undefined,
-        energyLevel: energyLevel || undefined
+        jobTitle: jobTitle || undefined
       })
       
       await loadSavedLetters()
@@ -438,8 +463,7 @@ export default function CoverLetterGenerator() {
     setCompany(letter.company || '')
     setJobTitle(letter.jobTitle || '')
     setSaveTitle(letter.title)
-    setEnergyLevel(letter.energyLevel || null)
-    setExpandedSections({ energy: false, template: false, input: true, cv: false, result: true })
+    setExpandedSections({ template: false, input: true, cv: false, result: true })
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
@@ -458,7 +482,7 @@ export default function CoverLetterGenerator() {
     setTimeout(() => setCopied(false), 2000)
   }
 
-  const handleDownload = () => {
+  const handleDownloadTXT = () => {
     const blob = new Blob([generatedBrev], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -468,6 +492,87 @@ export default function CoverLetterGenerator() {
     a.click()
     document.body.removeChild(a)
     URL.revokeObjectURL(url)
+  }
+
+  const handleDownloadWord = () => {
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>${saveTitle || 'Personligt brev'}</title>
+        <style>
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 40px auto; padding: 40px; }
+          .header { margin-bottom: 40px; }
+          .date { color: #666; margin-bottom: 20px; }
+          .content { white-space: pre-wrap; }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          ${cvData?.firstName && cvData?.lastName ? `<p><strong>${cvData.firstName} ${cvData.lastName}</strong></p>` : ''}
+          ${cvData?.email ? `<p>${cvData.email}</p>` : ''}
+          ${cvData?.phone ? `<p>${cvData.phone}</p>` : ''}
+        </div>
+        <div class="date">${new Date().toLocaleDateString('sv-SE')}</div>
+        <div class="content">${generatedBrev.replace(/\n/g, '<br>')}</div>
+      </body>
+      </html>
+    `
+    
+    const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `${saveTitle || 'Personligt-brev'}.doc`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const handleDownloadPDF = async () => {
+    const printWindow = window.open('', '_blank')
+    if (!printWindow) {
+      alert('Kunde inte öppna utskriftsfönster. Kontrollera att popup-fönster är tillåtna.')
+      return
+    }
+    
+    printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>${saveTitle || 'Personligt brev'}</title>
+        <style>
+          @page { margin: 2cm; }
+          body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 40px; }
+          .header { margin-bottom: 40px; }
+          .date { color: #666; margin-bottom: 20px; }
+          .content { white-space: pre-wrap; }
+          @media print {
+            body { padding: 0; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          ${cvData?.firstName && cvData?.lastName ? `<p><strong>${cvData.firstName} ${cvData.lastName}</strong></p>` : ''}
+          ${cvData?.email ? `<p>${cvData.email}</p>` : ''}
+          ${cvData?.phone ? `<p>${cvData.phone}</p>` : ''}
+        </div>
+        <div class="date">${new Date().toLocaleDateString('sv-SE')}</div>
+        <div class="content">${generatedBrev.replace(/\n/g, '<br>')}</div>
+        <script>
+          setTimeout(() => {
+            window.print()
+            window.close()
+          }, 500)
+        </script>
+      </body>
+      </html>
+    `)
+    printWindow.document.close()
   }
 
   const handleReset = () => {
@@ -499,7 +604,7 @@ export default function CoverLetterGenerator() {
         </div>
         <h1 className="text-2xl font-bold text-slate-800">Hjälp att formulera ditt personliga brev</h1>
         <p className="text-slate-600 max-w-2xl mx-auto">
-          Dina erfarenheter + vår hjälp med formuleringar = ett brev som känns som du. 
+          Dina erfarenheter + vår hjälp med formuleringar = ett brev som känns som dig. 
           Det är okej att inte vara 100% entusiastisk - ärlighet är bäst.
         </p>
         
@@ -508,81 +613,17 @@ export default function CoverLetterGenerator() {
           <AutoSaveIndicator 
             status={isAutoSaving ? 'saving' : lastSaved ? 'saved' : 'unsaved'}
             lastSaved={lastSaved}
-            energyLevel={energyLevel || undefined}
             compact
           />
         </div>
       </div>
 
       {/* Supportive message */}
-      {energyLevel && energyLevel <= 2 && (
-        <SupportiveLanguage 
-          type="encouragement" 
-          emotionalState="tired"
-          className="max-w-2xl mx-auto"
-        />
-      )}
-
-      {/* Energy Level Selection */}
-      <Card className="overflow-hidden border-teal-100">
-        <button
-          onClick={() => toggleSection('energy')}
-          className="w-full flex items-center justify-between p-4 text-left hover:bg-teal-50/50 transition-colors"
-        >
-          <div className="flex items-center gap-3">
-            <Battery className="w-5 h-5 text-teal-600" />
-            <div>
-              <h2 className="font-semibold text-slate-800">Hur är din energi idag?</h2>
-              <p className="text-sm text-slate-500">
-                {energyLevel 
-                  ? `${energyOptions.find(e => e.level === energyLevel)?.label} - vi anpassar efter det`
-                  : 'Välj så anpassar vi hjälpen efter dig'
-                }
-              </p>
-            </div>
-          </div>
-          {expandedSections.energy ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </button>
-        
-        {expandedSections.energy && (
-          <div className="p-4 pt-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-              {energyOptions.map((option) => {
-                const Icon = option.icon
-                return (
-                  <button
-                    key={option.level}
-                    onClick={() => {
-                      setEnergyLevel(option.level)
-                      // Auto-välj lämplig mall vid låg energi
-                      if (option.level <= 2 && selectedTemplate === 'standard') {
-                        setSelectedTemplate('kort')
-                      }
-                    }}
-                    className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all ${
-                      energyLevel === option.level
-                        ? option.color + ' ring-2 ring-offset-2 ring-teal-500'
-                        : 'bg-white border-slate-200 hover:border-teal-200'
-                    }`}
-                  >
-                    <span className="text-2xl mb-1">{option.emoji}</span>
-                    <Icon className={`w-5 h-5 mb-2 ${energyLevel === option.level ? 'text-current' : 'text-slate-400'}`} />
-                    <span className="font-medium text-sm text-center">{option.label}</span>
-                    <span className="text-xs text-center mt-1 opacity-75">{option.description}</span>
-                  </button>
-                )
-              })}
-            </div>
-            
-            {energyLevel && (
-              <div className="mt-4 p-3 bg-teal-50 rounded-lg text-sm text-teal-800">
-                <span className="font-medium">💡 Tips:</span>{' '}
-                {energyOptions.find(e => e.level === energyLevel)?.message}
-              </div>
-            )}
-          </div>
-        )}
-      </Card>
+      <SupportiveLanguage 
+        type="encouragement" 
+        emotionalState="tired"
+        className="max-w-2xl mx-auto"
+      />
 
       {/* Template Selection */}
       <Card className="overflow-hidden">
@@ -619,10 +660,7 @@ export default function CoverLetterGenerator() {
                     {template.icon}
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-slate-800">{template.label}</span>
-                      <EnergyBadge classification={template.energyLevel} size="sm" />
-                    </div>
+                    <span className="font-medium text-slate-800">{template.label}</span>
                     <p className="text-sm text-slate-500 mt-1">{template.description}</p>
                   </div>
                 </button>
@@ -707,7 +745,7 @@ export default function CoverLetterGenerator() {
               {savedJobs.length === 0 ? (
                 <div className="text-center py-4">
                   <p className="text-slate-500 text-sm mb-2">Inga sparade jobb</p>
-                  <a href="#/jobs" className="text-sm text-teal-600 hover:underline">
+                  <a href="/jobs" className="text-sm text-teal-600 hover:underline">
                     Sök jobb att spara →
                   </a>
                 </div>
@@ -1084,11 +1122,32 @@ export default function CoverLetterGenerator() {
                 
                 <Button
                   variant="outline"
-                  onClick={handleDownload}
+                  onClick={handleDownloadTXT}
                   className="flex items-center gap-2"
+                  title="Ladda ner som textfil"
                 >
                   <Download className="w-4 h-4" />
-                  Ladda ner
+                  TXT
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={handleDownloadWord}
+                  className="flex items-center gap-2"
+                  title="Ladda ner som Word-dokument"
+                >
+                  <FileText className="w-4 h-4" />
+                  Word
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  onClick={handleDownloadPDF}
+                  className="flex items-center gap-2"
+                  title="Öppna för utskrift/PDF"
+                >
+                  <Download className="w-4 h-4" />
+                  PDF
                 </Button>
                 
                 <Button

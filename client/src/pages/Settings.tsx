@@ -14,7 +14,6 @@ import {
   Mail,
   Save,
   Heart,
-  Zap,
   Accessibility,
   Type,
   Contrast
@@ -207,7 +206,7 @@ export default function Settings() {
             <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-6">
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">Tillgänglighet</h2>
-                <p className="text-slate-500 mt-1">Anpassa portalen efter dina behov och energinivå</p>
+                <p className="text-slate-500 mt-1">Anpassa portalen efter dina behov</p>
               </div>
 
               {/* Calm Mode */}
@@ -309,32 +308,6 @@ export default function Settings() {
                     `} />
                   </button>
                 </div>
-              </div>
-
-              {/* Energy Saving Tips */}
-              <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Zap size={18} className="text-amber-600" />
-                  <h3 className="font-medium text-amber-900">Tips för låga energidagar</h3>
-                </div>
-                <ul className="space-y-2 text-sm text-amber-800">
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-500">•</span>
-                    <span>Aktivera "Lugn läge" för ett enklare gränssnitt</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-500">•</span>
-                    <span>Använd mobilen - ofta bekvämare än dator</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-500">•</span>
-                    <span>Allt sparas automatiskt - du kan avbryta när som helst</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="text-amber-500">•</span>
-                    <span>Det är okej att bara logga in och titta - ingen prestation krävs</span>
-                  </li>
-                </ul>
               </div>
 
               {/* Crisis Support Info */}

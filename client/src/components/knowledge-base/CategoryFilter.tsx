@@ -8,8 +8,6 @@ interface CategoryFilterProps {
   onCategoryChange: (category: string, subcategory: string) => void
   searchQuery: string
   onSearchChange: (query: string) => void
-  energyFilter: string
-  onEnergyFilterChange: (energy: string) => void
 }
 
 export default function CategoryFilter({
@@ -17,9 +15,7 @@ export default function CategoryFilter({
   selectedSubcategory,
   onCategoryChange,
   searchQuery,
-  onSearchChange,
-  energyFilter,
-  onEnergyFilterChange,
+  onSearchChange
 }: CategoryFilterProps) {
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
 
@@ -36,10 +32,9 @@ export default function CategoryFilter({
   const clearFilters = () => {
     onCategoryChange('', '')
     onSearchChange('')
-    onEnergyFilterChange('')
   }
 
-  const hasActiveFilters = selectedCategory || searchQuery || energyFilter
+  const hasActiveFilters = selectedCategory || searchQuery
 
   return (
     <div className="space-y-4">
@@ -61,35 +56,6 @@ export default function CategoryFilter({
             <X size={16} />
           </button>
         )}
-      </div>
-
-      {/* Energy filter */}
-      <div className="space-y-2">
-        <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
-          Energinivå
-        </label>
-        <div className="flex flex-wrap gap-2">
-          {[
-            { id: '', label: 'Alla' },
-            { id: 'low', label: '🟢 Låg', color: 'bg-green-100 text-green-700 hover:bg-green-200' },
-            { id: 'medium', label: '🟡 Medel', color: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200' },
-            { id: 'high', label: '🟠 Hög', color: 'bg-orange-100 text-orange-700 hover:bg-orange-200' },
-          ].map((option) => (
-            <button
-              key={option.id}
-              onClick={() => onEnergyFilterChange(option.id)}
-              className={`
-                px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
-                ${energyFilter === option.id 
-                  ? 'bg-teal-600 text-white' 
-                  : option.color || 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-                }
-              `}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
       </div>
 
       {/* Categories */}

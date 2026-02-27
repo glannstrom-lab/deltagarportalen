@@ -1,4 +1,3 @@
-export { default as EnergyLevelBadge } from './EnergyLevelBadge'
 export { default as ReadingTime } from './ReadingTime'
 export { default as DifficultyBadge } from './DifficultyBadge'
 export { default as EnhancedArticleCard } from './EnhancedArticleCard'

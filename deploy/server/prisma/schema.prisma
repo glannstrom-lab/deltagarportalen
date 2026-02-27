@@ -1,0 +1,121 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  firstName String
+  lastName  String
+  role      String   @default("USER")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cv CV?
+  interestResult InterestResult?
+  coverLetters CoverLetter[]
+  cvVersions CVVersion[]
+
+  @@map("users")
+}
+
+model CV {
+  id             String   @id @default(uuid())
+  userId         String   @unique
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  profileImage   String?
+  title          String?
+  email          String?
+  phone          String?
+  location       String?
+  summary        String?
+  workExperience String?
+  education      String?
+  skills         String?
+  languages      String?
+  certificates   String?
+  links          String?
+  references     String?
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("cvs")
+}
+
+model CVVersion {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  data      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cv_versions")
+}
+
+model InterestResult {
+  id           String   @id @default(uuid())
+  userId       String   @unique
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  realistic    Int      @default(0)
+  investigative Int     @default(0)
+  artistic     Int      @default(0)
+  social       Int      @default(0)
+  enterprising Int      @default(0)
+  conventional Int      @default(0)
+  hollandCode  String?
+  
+  openness     Int      @default(0)
+  conscientiousness Int @default(0)
+  extraversion Int      @default(0)
+  agreeableness Int     @default(0)
+  neuroticism  Int      @default(0)
+  
+  physicalRequirements String?
+  recommendedJobs String?
+  
+  completedAt  DateTime @default(now())
+
+  @@map("interest_results")
+}
+
+model CoverLetter {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  title     String
+  jobAd     String
+  content   String
+  company   String?
+  jobTitle  String?
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cover_letters")
+}
+
+model Article {
+  id          String   @id @default(uuid())
+  title       String
+  content     String
+  summary     String?
+  category    String
+  tags        String?
+  published   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("articles")
+}

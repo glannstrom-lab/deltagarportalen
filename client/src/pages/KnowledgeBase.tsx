@@ -7,7 +7,6 @@ import {
 import { 
   BookOpen, 
   Sparkles, 
-  Zap, 
   Bookmark,
   Lightbulb,
   Target,
@@ -24,7 +23,6 @@ interface Article {
   createdAt: string
   readingTime?: number
   difficulty?: 'easy' | 'medium' | 'detailed'
-  energyLevel?: 'low' | 'medium' | 'high'
   helpfulnessRating?: number
   bookmarkCount?: number
   author?: string
@@ -37,7 +35,6 @@ export default function KnowledgeBase() {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedSubcategory, setSelectedSubcategory] = useState('')
-  const [energyFilter, setEnergyFilter] = useState('')
 
   // Load articles
   useEffect(() => {
@@ -82,14 +79,9 @@ export default function KnowledgeBase() {
         return false
       }
 
-      // Energy filter
-      if (energyFilter && article.energyLevel !== energyFilter) {
-        return false
-      }
-
       return true
     })
-  }, [articles, searchQuery, selectedCategory, selectedSubcategory, energyFilter])
+  }, [articles, searchQuery, selectedCategory, selectedSubcategory])
 
   // Get featured articles (highest rated)
   const featuredArticles = useMemo(() => {
@@ -104,11 +96,6 @@ export default function KnowledgeBase() {
       a.category === 'getting-started' || 
       a.tags?.includes('för-nybörjare')
     ).slice(0, 3)
-  }, [articles])
-
-  // Get low energy articles
-  const lowEnergyArticles = useMemo(() => {
-    return articles.filter(a => a.energyLevel === 'low').slice(0, 3)
   }, [articles])
 
   // Get articles in progress
@@ -180,7 +167,7 @@ export default function KnowledgeBase() {
           </div>
           <div>
             <p className="text-sm font-medium text-slate-800">Tips</p>
-            <p className="text-sm text-slate-600">Använd filter för att hitta rätt innehåll för din energinivå</p>
+            <p className="text-sm text-slate-600">Använd filter för att hitta rätt innehåll</p>
           </div>
         </div>
       </div>
@@ -200,8 +187,6 @@ export default function KnowledgeBase() {
               onCategoryChange={handleCategoryChange}
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
-              energyFilter={energyFilter}
-              onEnergyFilterChange={setEnergyFilter}
             />
           </div>
         </div>
@@ -258,27 +243,6 @@ export default function KnowledgeBase() {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {recommendedArticles.map((article) => (
-                  <EnhancedArticleCard 
-                    key={article.id} 
-                    article={article} 
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Low energy articles */}
-          {!searchQuery && !selectedCategory && lowEnergyArticles.length > 0 && (
-            <section>
-              <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Zap size={20} className="text-green-600" />
-                Lätt att ta till sig
-                <span className="text-sm font-normal text-slate-500 ml-2">
-                  (När energin är låg)
-                </span>
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {lowEnergyArticles.map((article) => (
                   <EnhancedArticleCard 
                     key={article.id} 
                     article={article} 

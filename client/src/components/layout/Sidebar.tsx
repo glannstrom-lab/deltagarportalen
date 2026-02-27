@@ -14,14 +14,14 @@ export function Sidebar() {
       style={{ backgroundColor: '#4f46e5' }}
     >
       {/* User Avatar */}
-      <div className="flex justify-center mb-8">
+      <Link to="/profile" className="flex justify-center mb-8">
         <div 
           className="w-12 h-12 rounded-full flex items-center justify-center"
           style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
         >
           <User size={24} className="text-white" />
         </div>
-      </div>
+      </Link>
 
       {/* Navigation */}
       <nav className="flex-1 flex flex-col items-center gap-2">

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
-import { authApi } from '../services/api'
+import { supabase } from '../lib/supabase'
 import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from 'lucide-react'
 
 export default function Login() {
@@ -19,11 +19,86 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const response = await authApi.login(email, password)
-      setAuth(response.token, response.user)
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (signInError) {
+        throw new Error(signInError.message === 'Invalid login credentials' 
+          ? 'Fel e-post eller lösenord' 
+          : signInError.message)
+      }
+
+      if (!data.user || !data.session) {
+        throw new Error('Inloggning misslyckades')
+      }
+
+      // Hämta profilen från vår databas
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', data.user.id)
+        .single()
+
+      // Spara i auth store
+      setAuth(data.session.access_token, {
+        id: data.user.id,
+        email: data.user.email!,
+        firstName: profile?.first_name || '',
+        lastName: profile?.last_name || '',
+        role: profile?.role || 'USER'
+      })
+
       navigate('/')
     } catch (err: any) {
       setError(err.message || 'Inloggningen misslyckades')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleDemoLogin = async () => {
+    const demoEmail = `demo${Date.now()}@example.com`
+    const demoPassword = 'Demo123456!'
+    
+    setEmail(demoEmail)
+    setPassword(demoPassword)
+    setError('')
+    setLoading(true)
+
+    try {
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: demoEmail,
+        password: demoPassword,
+        options: {
+          data: {
+            first_name: 'Demo',
+            last_name: 'Användare',
+            role: 'USER'
+          }
+        }
+      })
+
+      if (signUpError) {
+        throw new Error(signUpError.message)
+      }
+
+      if (signUpData.session && signUpData.user) {
+        // Logga in direkt utan att skapa demo-innehåll (görs via SQL istället)
+        setAuth(signUpData.session.access_token, {
+          id: signUpData.user.id,
+          email: signUpData.user.email!,
+          firstName: 'Demo',
+          lastName: 'Användare',
+          role: 'USER'
+        })
+        navigate('/')
+      } else {
+        setError('Konto skapat men kunde inte loggas in automatiskt. Försök logga in manuellt.')
+      }
+    } catch (err: any) {
+      setError(err.message || 'Kunde inte skapa demokonto')
     } finally {
       setLoading(false)
     }
@@ -46,43 +121,28 @@ export default function Login() {
           <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Välkommen tillbaka!</h2>
           <p className="text-slate-500 text-center mb-6">Logga in för att fortsätta</p>
 
-          {/* Error Message */}
           {error && (
-            <div 
-              role="alert" 
-              aria-live="polite"
-              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
-            >
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Email */}
             <div>
-              <label 
-                htmlFor="email" 
-                className="block text-sm font-medium text-slate-700 mb-1"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
                 E-postadress
               </label>
               <div className="relative">
-                <Mail 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
-                  size={20} 
-                  aria-hidden="true"
-                />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                 <input
                   id="email"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="namn@exempel.se"
                   required
-                  aria-required="true"
-                  aria-label="E-postadress"
-                  aria-invalid={!email && error ? 'true' : 'false'}
                   autoComplete="email"
                 />
               </div>
@@ -90,39 +150,27 @@ export default function Login() {
 
             {/* Password */}
             <div>
-              <label 
-                htmlFor="password" 
-                className="block text-sm font-medium text-slate-700 mb-1"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
                 Lösenord
               </label>
               <div className="relative">
-                <Lock 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
-                  size={20} 
-                  aria-hidden="true"
-                />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                 <input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2"
+                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   placeholder="Ange ditt lösenord"
                   required
-                  aria-required="true"
-                  aria-label="Lösenord"
-                  aria-invalid={!password && error ? 'true' : 'false'}
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500 rounded p-1"
-                  aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
-                  aria-pressed={showPassword}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
-                  {showPassword ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
             </div>
@@ -131,18 +179,17 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              aria-busy={loading}
-              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {loading ? (
                 <>
-                  <Loader2 className="animate-spin" size={20} aria-hidden="true" />
+                  <Loader2 className="animate-spin" size={20} />
                   <span>Loggar in...</span>
                 </>
               ) : (
                 <>
                   <span>Logga in</span>
-                  <ArrowRight size={20} aria-hidden="true" />
+                  <ArrowRight size={20} />
                 </>
               )}
             </button>
@@ -152,10 +199,7 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-slate-600">
               Har du inget konto?{' '}
-              <Link 
-                to="/register" 
-                className="text-teal-600 hover:text-teal-700 font-semibold focus:outline-none focus:ring-2 focus:ring-teal-500 rounded px-1"
-              >
+              <Link to="/register" className="text-teal-600 hover:text-teal-700 font-semibold">
                 Skapa ett konto
               </Link>
             </p>
@@ -171,54 +215,18 @@ export default function Login() {
           {/* Demo Account Button */}
           <button
             type="button"
-            onClick={async () => {
-              setEmail('demo@demo.se')
-              setPassword('demo')
-              setError('')
-              setLoading(true)
-              
-              try {
-                // First try to register
-                try {
-                  await authApi.register({
-                    email: 'demo@demo.se',
-                    password: 'demo',
-                    firstName: 'Demo',
-                    lastName: 'Användare'
-                  })
-                } catch (regErr: any) {
-                  // User might already exist, that's ok
-                  console.log('Registration might have failed, trying login:', regErr.message)
-                }
-                
-                // Then login
-                const response = await authApi.login('demo@demo.se', 'demo')
-                setAuth(response.token, response.user)
-                navigate('/')
-              } catch (err: any) {
-                setError(err.message || 'Kunde inte skapa eller logga in med demokonto')
-              } finally {
-                setLoading(false)
-              }
-            }}
+            onClick={handleDemoLogin}
             disabled={loading}
-            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-amber-500/25"
+            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
-            <span className="text-xl" aria-hidden="true">🚀</span>
-            <span>{loading ? 'Skapar demokonto...' : 'Utforska med demokonto'}</span>
+            <span>🚀</span>
+            <span>{loading ? 'Skapar demo med innehåll...' : 'Utforska med demokonto'}</span>
           </button>
-          
-          <p className="mt-3 text-center text-xs text-slate-400">
-            Perfekt för att testa portalen utan att skapa ett konto
-          </p>
         </div>
 
-        {/* Skip Link för inloggad användare som vill komma tillbaka */}
+        {/* Back Link */}
         <div className="mt-6 text-center">
-          <Link 
-            to="/" 
-            className="text-teal-200 hover:text-white text-sm focus:outline-none focus:ring-2 focus:ring-white rounded px-2 py-1"
-          >
+          <Link to="/" className="text-teal-200 hover:text-white text-sm">
             ← Tillbaka till startsidan
           </Link>
         </div>

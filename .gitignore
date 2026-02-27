@@ -36,3 +36,29 @@ server/prisma/migrations/
 
 # AI Server env
 server/ai/.env
+
+# Backup files and archives
+*.zip
+*.tar.gz
+*.7z
+
+# Images and screenshots
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.gif
+
+# Demo files
+demo*.html
+*DEMO*.sql
+*demo*.sql
+SIMPLE_*.sql
+
+# Deploy packages
+deploy-package/
+deploy-simply/
+complete-deploy/
+
+# Old project copies
+deltagarportalen-*/

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { ChevronRight, Bookmark, Star, Tag } from 'lucide-react'
-import EnergyLevelBadge from './EnergyLevelBadge'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
 
@@ -13,7 +12,6 @@ interface EnhancedArticleCardProps {
     tags?: string | string[]
     readingTime?: number
     difficulty?: 'easy' | 'medium' | 'detailed'
-    energyLevel?: 'low' | 'medium' | 'high'
     helpfulnessRating?: number
     bookmarkCount?: number
     author?: string
@@ -41,9 +39,6 @@ export default function EnhancedArticleCard({ article, variant = 'default' }: En
           <div className="flex items-center gap-2 mt-1">
             {article.readingTime && (
               <ReadingTime minutes={article.readingTime} variant="compact" />
-            )}
-            {article.energyLevel && (
-              <EnergyLevelBadge level={article.energyLevel} showLabel={false} size="sm" />
             )}
           </div>
         </div>
@@ -73,9 +68,6 @@ export default function EnhancedArticleCard({ article, variant = 'default' }: En
               {article.readingTime && (
                 <ReadingTime minutes={article.readingTime} variant="compact" />
               )}
-              {article.energyLevel && (
-                <EnergyLevelBadge level={article.energyLevel} size="sm" />
-              )}
               {article.helpfulnessRating && (
                 <span className="inline-flex items-center gap-1 text-sm text-amber-600">
                   <Star size={14} fill="currentColor" />
@@ -101,9 +93,6 @@ export default function EnhancedArticleCard({ article, variant = 'default' }: En
             <span className="inline-block px-2 py-1 bg-teal-100 text-teal-700 text-xs font-medium rounded-full">
               {article.category}
             </span>
-            {article.energyLevel && (
-              <EnergyLevelBadge level={article.energyLevel} showLabel={false} size="sm" />
-            )}
           </div>
           
           <h3 className="font-semibold text-slate-800 group-hover:text-teal-700 transition-colors mb-2">

@@ -49,7 +49,7 @@ export function MobileNav() {
   const menuItems: NavItem[] = [
     { to: '/', label: 'Översikt', icon: <LayoutDashboard className="w-5 h-5" /> },
     { to: '/cv', label: 'CV-byggare', icon: <FileText className="w-5 h-5" /> },
-    { to: '/cover-letter', label: 'Personligt brev', icon: <FileText className="w-5 h-5" /> },
+    { to: '/cover-letter-generator', label: 'Personligt brev', icon: <FileText className="w-5 h-5" /> },
     { to: '/interest-guide', label: 'Intresseguiden', icon: <Compass className="w-5 h-5" /> },
     { to: '/job-search', label: 'Sök jobb', icon: <Search className="w-5 h-5" /> },
     { to: '/job-tracker', label: 'Ansökningar', icon: <FileText className="w-5 h-5" /> },

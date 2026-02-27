@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { 
   User, FileText, Compass, Mail, Briefcase, 
   MessageSquare, Award, CheckCircle2, Lock
@@ -68,7 +69,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       completed: stats.interestGuideCompleted,
       locked: !stats.hasProfile,
       action: stats.interestGuideCompleted ? 'Guide klar' : 'Starta guiden',
-      href: '/intresseguide'
+      href: '/interest-guide'
     },
     {
       id: 'cover-letter',
@@ -78,7 +79,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       completed: stats.coverLetterCount > 0,
       locked: stats.cvProgress < 50,
       action: stats.coverLetterCount > 0 ? 'Brev skapat' : 'Skapa brev',
-      href: '/cover-letter'
+      href: '/cover-letter-generator'
     },
     {
       id: 'apply',
@@ -98,7 +99,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       completed: stats.hasConsultantContact,
       locked: stats.applicationsCount === 0,
       action: stats.hasConsultantContact ? 'Kontakt etablerad' : 'Boka möte',
-      href: '/consultant'
+      href: '/profile'
     },
     {
       id: 'interview',
@@ -108,7 +109,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       completed: false,
       locked: stats.applicationsCount < 3,
       action: 'Förbered dig',
-      href: '/knowledge'
+      href: '/knowledge-base'
     }
   ]
 
@@ -200,20 +201,26 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
               </div>
 
               {/* Action */}
-              <a
-                href={step.locked ? '#' : step.href}
-                onClick={(e) => step.locked && e.preventDefault()}
-                className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
-                  step.completed
-                    ? 'text-teal-700 bg-teal-100'
-                    : step.locked
-                      ? 'text-slate-400 cursor-not-allowed'
+              {step.locked ? (
+                <span
+                  className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg text-slate-400 cursor-not-allowed ${
+                    step.completed ? 'bg-teal-100 text-teal-700' : 'bg-slate-100'
+                  }`}
+                >
+                  {step.action}
+                </span>
+              ) : (
+                <Link
+                  to={step.href}
+                  className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg transition-colors ${
+                    step.completed
+                      ? 'text-teal-700 bg-teal-100 hover:bg-teal-200'
                       : 'text-teal-600 bg-teal-50 hover:bg-teal-100'
-                }`}
-                aria-disabled={step.locked}
-              >
-                {step.action}
-              </a>
+                  }`}
+                >
+                  {step.action}
+                </Link>
+              )}
             </div>
           )
         })}

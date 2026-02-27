@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { cvApi, interestApi, coverLetterApi } from '@/services/api'
+import { cvApi, interestApi, coverLetterApi, activityApi } from '@/services/api'
 import { searchPlatsbanken, getMarketInsights, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { LoadingState } from '@/components/LoadingState'
 import { DarkModeToggle } from '@/components/DarkModeToggle'
@@ -21,15 +22,12 @@ import {
   CareerRoadmap, 
   AchievementCelebration,
   WeeklySummary,
-  EnergyFilter,
-  EnergyBadge,
-  useDailyEnergy,
-  type EnergyLevel,
   type Achievement
 } from '@/components/gamification'
 import { MoodCheck } from '@/components/wellbeing'
 import { SupportiveLanguage } from '@/components/SupportiveLanguage'
 import { OnboardingReminder } from '@/components/Onboarding'
+import MatchingScoreWidget from '@/components/dashboard/MatchingScoreWidget'
 
 interface WeeklyStats {
   logins: number
@@ -40,20 +38,9 @@ interface WeeklyStats {
   stepsCompleted: number
 }
 
-// Dashboard-uppgifter med energiklassificering
-const dashboardTasks = [
-  { id: 'view-stats', title: 'Se statistik', duration: 2, energy: 'low' as const, classification: 'low' as const },
-  { id: 'check-mood', title: 'Registrera mående', duration: 1, energy: 'low' as const, classification: 'low' as const },
-  { id: 'daily-step', title: 'Dagens lilla steg', duration: 5, energy: 'medium' as const, classification: 'medium' as const },
-  { id: 'update-cv', title: 'Uppdatera CV', duration: 15, energy: 'high' as const, classification: 'high' as const },
-  { id: 'search-jobs', title: 'Söka jobb', duration: 10, energy: 'medium' as const, classification: 'medium' as const },
-  { id: 'write-letter', title: 'Skriva personligt brev', duration: 20, energy: 'high' as const, classification: 'high' as const },
-]
-
 export default function Dashboard() {
   const { user } = useAuthStore()
   const { isMobile, simplifiedView } = useMobileOptimization()
-  const { energyLevel, saveEnergyLevel, clearEnergyLevel, hasSelectedToday } = useDailyEnergy()
   
   const [cvScore, setCvScore] = useState(0)
   const [hasCV, setHasCV] = useState(false)
@@ -67,46 +54,26 @@ export default function Dashboard() {
   const [showWeeklySummary, setShowWeeklySummary] = useState(false)
   const [completedDailySteps, setCompletedDailySteps] = useState<string[]>([])
   const [weeklyStats, setWeeklyStats] = useState<WeeklyStats>({
-    logins: 5,
-    timeSpent: 120,
+    logins: 0,
+    timeSpent: 0,
     cvProgress: 0,
-    applications: 3,
-    articlesRead: 2,
-    stepsCompleted: 4
+    applications: 0,
+    articlesRead: 0,
+    stepsCompleted: 0
   })
-  
-  // Filtrera uppgifter baserat på energinivå
-  const getFilteredTasks = useCallback(() => {
-    if (!energyLevel) return dashboardTasks.filter(t => t.classification === 'low' || t.classification === 'medium')
-    
-    if (energyLevel <= 2) {
-      // Låg energi - visa endast låga och max 20% medium
-      const lowTasks = dashboardTasks.filter(t => t.classification === 'low')
-      const mediumTasks = dashboardTasks.filter(t => t.classification === 'medium').slice(0, 1)
-      return [...lowTasks, ...mediumTasks]
-    } else if (energyLevel <= 3) {
-      // Medel energi - visa låga, medium och max 20% höga
-      const lowTasks = dashboardTasks.filter(t => t.classification === 'low')
-      const mediumTasks = dashboardTasks.filter(t => t.classification === 'medium')
-      const highTasks = dashboardTasks.filter(t => t.classification === 'high').slice(0, 1)
-      return [...lowTasks, ...mediumTasks, ...highTasks]
-    } else {
-      // Hög energi - visa alla
-      return dashboardTasks
-    }
-  }, [energyLevel])
-
-  const filteredTasks = getFilteredTasks()
+  const [activityData, setActivityData] = useState<number[]>([])
+  const [activeDays, setActiveDays] = useState<number[]>([])
+  const [savedJobsCount, setSavedJobsCount] = useState(0)
 
   useEffect(() => {
     const loadData = async () => {
       try {
         const cv = await cvApi.getCV()
-        const hasCvData = !!cv.summary || !!(cv.workExperience && cv.workExperience.length)
+        const hasCvData = cv ? (!!cv.summary || !!(cv.work_experience && cv.work_experience.length)) : false
         setHasCV(hasCvData)
         const ats = await cvApi.getATSAnalysis()
-        setCvScore(ats.score)
-        setWeeklyStats(prev => ({ ...prev, cvProgress: ats.score }))
+        setCvScore(ats?.score || 0)
+        setWeeklyStats(prev => ({ ...prev, cvProgress: ats?.score || 0 }))
         
         try {
           await interestApi.getResult()
@@ -117,6 +84,29 @@ export default function Dashboard() {
         
         const letters = await coverLetterApi.getAll()
         setCoverLetterCount(letters.length)
+        
+        // Hämta riktiga aktivitetsstatistik
+        const activities = await activityApi.getActivities()
+        const applicationCount = await activityApi.getCount('application_sent')
+        const savedJobs = await activityApi.getCount('job_saved')
+        const stepCount = activities.filter(a => a.activity_type === 'step_completed').length
+        
+        setSavedJobsCount(savedJobs)
+        setWeeklyStats(prev => ({
+          ...prev,
+          applications: applicationCount,
+          stepsCompleted: stepCount
+        }))
+        
+        // Hämta data för LineChart
+        const activityCounts = await activityApi.getActivityCounts(10)
+        setActivityData(activityCounts)
+        
+        // Hämta aktiva dagar för kalender
+        const daysWithActivity = activities
+          .filter(a => new Date(a.created_at).getMonth() === new Date().getMonth())
+          .map(a => new Date(a.created_at).getDate())
+        setActiveDays([...new Set(daysWithActivity)])
         
         // Ladda sparad data
         const savedSteps = localStorage.getItem('completedDailySteps')
@@ -205,10 +195,17 @@ export default function Dashboard() {
     }
   }, [cvScore, hasInterestResult, weeklyStats.applications])
 
-  const handleDailyStepComplete = (taskId: string) => {
+  const handleDailyStepComplete = async (taskId: string) => {
     const updated = [...completedDailySteps, taskId]
     setCompletedDailySteps(updated)
     localStorage.setItem('completedDailySteps', JSON.stringify(updated))
+    
+    // Logga till Supabase
+    try {
+      await activityApi.logActivity('step_completed', { taskId, date: new Date().toISOString() })
+    } catch (e) {
+      console.error('Kunde inte logga steg:', e)
+    }
     
     // Uppdatera veckostatistik
     setWeeklyStats(prev => ({
@@ -217,13 +214,12 @@ export default function Dashboard() {
     }))
   }
 
-  const handleMoodSubmit = (mood: number) => {
-    console.log('Mood submitted:', mood)
-    // Här skulle vi kunna spara till backend
-  }
-
-  const handleEnergySelect = (level: EnergyLevel) => {
-    saveEnergyLevel(level)
+  const handleMoodSubmit = async (mood: number) => {
+    try {
+      await activityApi.logActivity('mood_submitted', { mood, date: new Date().toISOString() })
+    } catch (e) {
+      console.error('Kunde inte spara mående:', e)
+    }
   }
 
   if (loading) {
@@ -238,7 +234,7 @@ export default function Dashboard() {
 
   const barData = [
     { label: 'Ansökningar', value: weeklyStats.applications, color: 'bg-primary' },
-    { label: 'Sparade jobb', value: 8, color: 'bg-accent-blue' },
+    { label: 'Sparade jobb', value: savedJobsCount || 0, color: 'bg-accent-blue' },
     { label: 'Brev skrivna', value: coverLetterCount, color: 'bg-accent-orange' },
     { label: 'Steg klara', value: completedDailySteps.length, color: 'bg-accent-green' },
   ]
@@ -295,41 +291,14 @@ export default function Dashboard() {
         <AutoSaveIndicator 
           status="saved"
           lastSaved={new Date()}
-          energyLevel={energyLevel || undefined}
           compact
         />
       </div>
 
-      {/* Energy Filter - visas om inte vald idag */}
-      {!hasSelectedToday && (
-        <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-          <EnergyFilter 
-            onEnergySelect={handleEnergySelect}
-            selectedLevel={energyLevel}
-          />
-        </div>
-      )}
-
-      {/* Energinivå-indikator om redan vald */}
-      {hasSelectedToday && energyLevel && (
-        <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm border border-slate-100">
-          <div className="flex items-center gap-3">
-            <span className="text-sm text-slate-500">Dagens energinivå:</span>
-            <EnergyBadge classification={energyLevel <= 2 ? 'low' : energyLevel <= 3 ? 'medium' : 'high'} showLabel />
-          </div>
-          <button
-            onClick={() => clearEnergyLevel()}
-            className="text-sm text-teal-600 hover:text-teal-700 underline"
-          >
-            Ändra
-          </button>
-        </div>
-      )}
-
       {/* Supportive Language Message */}
       <SupportiveLanguage 
         type="encouragement" 
-        emotionalState={energyLevel && energyLevel <= 2 ? 'tired' : 'confident'}
+        emotionalState="confident"
       />
 
       {/* Stats Row - anpassad för mobil */}
@@ -337,15 +306,11 @@ export default function Dashboard() {
         <StatCard 
           label="CV-poäng" 
           value={`${cvScore}/100`} 
-          trend={!isMobile ? "up" : undefined} 
-          trendValue={!isMobile ? "+12%" : undefined} 
           color="purple" 
         />
         <StatCard 
           label="Ansökningar" 
           value={weeklyStats.applications.toString()} 
-          trend={!isMobile ? "up" : undefined} 
-          trendValue={!isMobile ? "+2" : undefined} 
           color="orange" 
         />
         <StatCard 
@@ -360,6 +325,9 @@ export default function Dashboard() {
         />
       </div>
 
+      {/* Matching Score Widget */}
+      <MatchingScoreWidget />
+
       {/* Platsbanken Jobb - nya jobb från Arbetsförmedlingen */}
       {platsbankenJobs.length > 0 && (
         <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-6 border border-teal-100">
@@ -373,12 +341,12 @@ export default function Dashboard() {
                 Senaste lediga platser i din region
               </p>
             </div>
-            <a 
-              href="/jobs" 
+            <Link 
+              to="/jobs" 
               className="text-sm text-teal-600 hover:text-teal-700 font-medium"
             >
               Se alla →
-            </a>
+            </Link>
           </div>
           
           <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-3'}`}>
@@ -389,10 +357,6 @@ export default function Dashboard() {
               >
                 <div className="flex items-start justify-between mb-2">
                   <h4 className="font-medium text-slate-800 line-clamp-1">{job.headline}</h4>
-                  <EnergyBadge 
-                    classification={job.employment_type?.label === 'Heltid' ? 'medium' : 'low'} 
-                    size="sm"
-                  />
                 </div>
                 <p className="text-sm text-slate-500">{job.employer?.name}</p>
                 <p className="text-xs text-slate-400 mt-1">
@@ -423,11 +387,11 @@ export default function Dashboard() {
           
           {!simplifiedView && (
             <>
-              <LineChart />
+              <LineChart data={activityData} label="Din aktivitet senaste 10 dagarna" />
               
               <div className={`grid gap-6 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'}`}>
                 <BarChart data={barData} />
-                <CalendarWidget />
+                <CalendarWidget activeDays={activeDays} />
               </div>
             </>
           )}
@@ -435,7 +399,7 @@ export default function Dashboard() {
 
         {/* Right Column - 1/3 på desktop */}
         <div className="space-y-6">
-          {/* Daily Step med energifiltrering */}
+          {/* Daily Step */}
           <DailyStep 
             onTaskComplete={handleDailyStepComplete}
             completedTasks={completedDailySteps}
@@ -459,41 +423,6 @@ export default function Dashboard() {
           )}
         </div>
       </div>
-
-      {/* Uppgifter anpassade efter energinivå */}
-      {energyLevel && (
-        <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <span>🎯</span>
-            Uppgifter för din energinivå idag
-          </h3>
-          <div className={`grid gap-3 ${isMobile ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'}`}>
-            {filteredTasks.map((task) => (
-              <div 
-                key={task.id}
-                className="flex items-center gap-3 p-3 rounded-lg border border-slate-100 hover:border-teal-200 hover:bg-teal-50 transition-colors cursor-pointer"
-              >
-                <EnergyBadge classification={task.classification} size="sm" />
-                <div className="flex-1">
-                  <p className="font-medium text-slate-700">{task.title}</p>
-                  <p className="text-xs text-slate-500">~{task.duration} min</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          {energyLevel <= 2 && (
-            <p className="text-sm text-slate-500 mt-4 text-center">
-              💡 Du ser endast energisnåla uppgifter just nu. 
-              <button 
-                onClick={() => clearEnergyLevel()}
-                className="text-teal-600 hover:underline ml-1"
-              >
-                Visa alla uppgifter
-              </button>
-            </p>
-          )}
-        </div>
-      )}
     </div>
   )
 }

@@ -3,7 +3,8 @@ import { Search, MapPin, Sliders, X } from 'lucide-react'
 
 export interface JobFilterState {
   search: string
-  location: string
+  location: string  // Kommun/ort
+  region: string    // Län
   employmentType: string[]
   experienceLevel: string[]
   publishedWithin: 'today' | 'week' | 'month' | 'all'
@@ -46,6 +47,7 @@ export function JobFilters({ filters, onChange }: JobFiltersProps) {
 
   const hasActiveFilters = 
     filters.location || 
+    filters.region ||
     filters.employmentType.length > 0 || 
     filters.experienceLevel.length > 0 ||
     filters.publishedWithin !== 'all' ||
@@ -61,6 +63,7 @@ export function JobFilters({ filters, onChange }: JobFiltersProps) {
             onClick={() => onChange({
               search: filters.search,
               location: '',
+              region: '',
               employmentType: [],
               experienceLevel: [],
               publishedWithin: 'all',
@@ -91,7 +94,7 @@ export function JobFilters({ filters, onChange }: JobFiltersProps) {
 
       {/* Location */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-slate-700 mb-1">Ort</label>
+        <label className="block text-sm font-medium text-slate-700 mb-1">Ort (kommun)</label>
         <div className="relative">
           <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -102,6 +105,40 @@ export function JobFilters({ filters, onChange }: JobFiltersProps) {
             className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
           />
         </div>
+        <p className="text-xs text-slate-500 mt-1">Skriv en kommun för exakt filtrering</p>
+      </div>
+
+      {/* Region */}
+      <div className="mb-4">
+        <label className="block text-sm font-medium text-slate-700 mb-1">Län</label>
+        <select
+          value={filters.region}
+          onChange={(e) => updateFilter('region', e.target.value)}
+          className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+        >
+          <option value="">Alla län</option>
+          <option value="Stockholms län">Stockholms län</option>
+          <option value="Uppsala län">Uppsala län</option>
+          <option value="Södermanlands län">Södermanlands län</option>
+          <option value="Östergötlands län">Östergötlands län</option>
+          <option value="Jönköpings län">Jönköpings län</option>
+          <option value="Kronobergs län">Kronobergs län</option>
+          <option value="Kalmar län">Kalmar län</option>
+          <option value="Gotlands län">Gotlands län</option>
+          <option value="Blekinge län">Blekinge län</option>
+          <option value="Skåne län">Skåne län</option>
+          <option value="Hallands län">Hallands län</option>
+          <option value="Västra Götalands län">Västra Götalands län</option>
+          <option value="Värmlands län">Värmlands län</option>
+          <option value="Örebro län">Örebro län</option>
+          <option value="Västmanlands län">Västmanlands län</option>
+          <option value="Dalarnas län">Dalarnas län</option>
+          <option value="Gävleborgs län">Gävleborgs län</option>
+          <option value="Västernorrlands län">Västernorrlands län</option>
+          <option value="Jämtlands län">Jämtlands län</option>
+          <option value="Västerbottens län">Västerbottens län</option>
+          <option value="Norrbottens län">Norrbottens län</option>
+        </select>
       </div>
 
       {/* Published date */}

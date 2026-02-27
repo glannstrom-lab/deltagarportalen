@@ -5,7 +5,6 @@ import {
   ReadingProgress, 
   ArticleChecklist,
   TextToSpeech,
-  EnergyLevelBadge,
   ReadingTime,
   DifficultyBadge,
   EnhancedArticleCard,
@@ -146,9 +145,6 @@ export default function Article() {
           <span className="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-sm font-medium rounded-full">
             {article.category}
           </span>
-          {article.energyLevel && (
-            <EnergyLevelBadge level={article.energyLevel} size="sm" />
-          )}
         </div>
 
         {/* Title */}
@@ -421,4 +417,3 @@ export default function Article() {
     </div>
   )
 }
-

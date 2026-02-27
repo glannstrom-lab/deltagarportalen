@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Check, Save, AlertCircle, RotateCcw } from 'lucide-react'
-import type { EnergyLevel } from './gamification/EnergyFilter'
 
 export type SaveStatus = 'saved' | 'saving' | 'unsaved' | 'error'
 
@@ -9,7 +8,6 @@ interface AutoSaveIndicatorProps {
   lastSaved?: Date | null
   hasRestoredData?: boolean
   onRestore?: () => void
-  energyLevel?: EnergyLevel
   compact?: boolean
 }
 
@@ -18,28 +16,9 @@ export function AutoSaveIndicator({
   lastSaved,
   hasRestoredData,
   onRestore,
-  energyLevel,
   compact = false
 }: AutoSaveIndicatorProps) {
   const [showRestoreConfirm, setShowRestoreConfirm] = useState(false)
-
-  // Vid låg energi, visa endast enkel ikon
-  if (energyLevel && energyLevel <= 2 && compact) {
-    return (
-      <div 
-        className="flex items-center gap-1 text-slate-400"
-        aria-label={status === 'saved' ? 'Allt sparat' : 'Sparar...'}
-      >
-        {status === 'saving' ? (
-          <Save className="w-4 h-4 animate-pulse" />
-        ) : status === 'saved' ? (
-          <Check className="w-4 h-4 text-green-500" />
-        ) : (
-          <AlertCircle className="w-4 h-4 text-yellow-500" />
-        )}
-      </div>
-    )
-  }
 
   const formatLastSaved = (date: Date) => {
     const now = new Date()

@@ -1,19 +1,14 @@
-# Laragon/Apache konfiguration för React Router
+# React Router konfiguration för undermapp /deltagarportalen/
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /
+    RewriteBase /deltagarportalen/
     
-    # Hantera CORS för API-anrop
-    <IfModule mod_headers.c>
-        SetEnvIf Origin "http(s)?://(localhost|127\.0\.0\.1)(:[0-9]+)?$" AccessControlAllowOrigin=$0
-        Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
-        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-        Header set Access-Control-Allow-Headers "Content-Type, Authorization"
-    </IfModule>
+    # Tillåt direkt åtkomst till befintliga filer och mappar
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
     
-    # Om filen eller mappen inte finns, skicka till index.html
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
+    # Omdirigera allt annat till index.html för React Router
     RewriteRule ^ index.html [QSA,L]
 </IfModule>
 
@@ -32,3 +27,8 @@
     ExpiresByType text/css "access plus 1 week"
     ExpiresByType application/javascript "access plus 1 week"
 </IfModule>
+
+# MIME-typer
+AddType text/css .css
+AddType application/javascript .js
+AddType image/svg+xml .svg

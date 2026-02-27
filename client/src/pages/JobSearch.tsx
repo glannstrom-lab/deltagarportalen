@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Search, Sparkles, TrendingUp, Filter, Briefcase, Bot, Target } from 'lucide-react'
+import { Search, Sparkles, TrendingUp, Filter, Briefcase, Bot, Target, GraduationCap, Map, Mic } from 'lucide-react'
 import { jobsApi } from '@/services/api'
 import { afApi, POPULAR_QUERIES } from '@/services/arbetsformedlingenApi'
 import { JobCard } from '@/components/jobs/JobCard'
@@ -7,7 +7,11 @@ import { JobFilters, type JobFilterState } from '@/components/jobs/JobFilters'
 import { JobDetailModal } from '@/components/jobs/JobDetailModal'
 import { ApplicationsTracker } from '@/components/jobs/ApplicationsTracker'
 import JobMatchAnalyzer from '@/components/jobs/JobMatchAnalyzer'
-import MarketInsights from '@/components/market/MarketInsights'
+import RealMarketInsights from '@/components/market/RealMarketInsights'
+import EducationPathFinder from '@/components/education/EducationPathFinder'
+import { SwedenMap } from '@/components/map/SwedenMap'
+import { LoadingState, SkeletonList, ErrorState } from '@/components/ui/LoadingState'
+import { InterviewPrep } from '@/components/interview/InterviewPrep'
 import type { Job, JobApplication, CVData } from '@/services/mockApi'
 import { cvApi } from '@/services/api'
 
@@ -19,12 +23,12 @@ export default function JobSearch() {
   const [selectedJob, setSelectedJob] = useState<Job | null>(null)
   const [showModal, setShowModal] = useState(false)
   const [showMatchAnalyzer, setShowMatchAnalyzer] = useState(false)
-  const [activeTab, setActiveTab] = useState<'search' | 'applications' | 'insights'>('search')
-  const [usingRealAPI, setUsingRealAPI] = useState(false)
+  const [activeTab, setActiveTab] = useState<'search' | 'applications' | 'insights' | 'education' | 'interview'>('search')
   
   const [filters, setFilters] = useState<JobFilterState>({
     search: '',
     location: '',
+    region: '',
     employmentType: [],
     experienceLevel: [],
     publishedWithin: 'all',
@@ -36,12 +40,8 @@ export default function JobSearch() {
   }, [])
 
   useEffect(() => {
-    if (usingRealAPI) {
-      searchJobsWithAPI()
-    } else {
-      searchJobs()
-    }
-  }, [filters, usingRealAPI])
+    searchJobsWithAPI()
+  }, [filters, cvData])
 
   const loadData = async () => {
     try {
@@ -52,23 +52,10 @@ export default function JobSearch() {
       setApplications(appsResult)
       setCvData(cvResult)
       
-      // Ladda initiala jobb från mock API
-      const jobsResult = await jobsApi.searchJobs()
-      setJobs(jobsResult)
+      // Ladda initiala jobb från Platsbanken
+      await searchJobsWithAPI()
     } catch (error) {
       console.error('Error loading data:', error)
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  const searchJobs = async () => {
-    try {
-      setLoading(true)
-      const result = await jobsApi.searchJobs(filters)
-      setJobs(result)
-    } catch (error) {
-      console.error('Error searching jobs:', error)
     } finally {
       setLoading(false)
     }
@@ -78,23 +65,40 @@ export default function JobSearch() {
     try {
       setLoading(true)
       
+      // Beräkna published-after datum baserat på filter
+      let publishedAfter: string | undefined
+      if (filters.publishedWithin === 'today') {
+        publishedAfter = new Date().toISOString().split('T')[0]
+      } else if (filters.publishedWithin === 'week') {
+        const date = new Date()
+        date.setDate(date.getDate() - 7)
+        publishedAfter = date.toISOString().split('T')[0]
+      } else if (filters.publishedWithin === 'month') {
+        const date = new Date()
+        date.setDate(date.getDate() - 30)
+        publishedAfter = date.toISOString().split('T')[0]
+      }
+      
       // Använd Arbetsförmedlingens API
       const afResult = await afApi.searchJobs({
         q: filters.search,
         municipality: filters.location,
-        limit: 20,
+        region: filters.region,
+        employment_type: filters.employmentType[0], // API stöder en typ åt gången
+        published_after: publishedAfter,
+        limit: 50, // Hämta fler så vi kan filtrera lokalt
       })
       
       // Konvertera AF-format till portalens format
-      const convertedJobs: Job[] = afResult.hits.map(ad => ({
+      let convertedJobs: Job[] = (afResult.hits || []).map(ad => ({
         id: ad.id,
-        title: ad.headline,
+        title: ad.headline || 'Titel ej angiven',
         company: ad.employer?.name || 'Arbetsgivare ej angiven',
         location: ad.workplace_address?.municipality || ad.workplace_address?.city || 'Ort ej angiven',
-        description: ad.description.text.substring(0, 500) + '...',
+        description: ad.description?.text ? ad.description.text.substring(0, 500) + '...' : 'Ingen beskrivning',
         requirements: [
-          ...(ad.must_have?.skills?.map(s => s.label) || []),
-          ...(ad.must_have?.languages?.map(l => l.label) || []),
+          ...(ad.must_have?.skills?.map((s: any) => s.label) || []),
+          ...(ad.must_have?.languages?.map((l: any) => l.label) || []),
         ],
         employmentType: (ad.employment_type?.label as any) || 'Ej angiven',
         experienceLevel: ad.experience_required ? 'Erfaren' : 'Ingen erfarenhet',
@@ -105,15 +109,34 @@ export default function JobSearch() {
         deadline: ad.application_deadline || undefined,
         url: ad.application_details?.url || '#',
         benefits: [],
-        matchPercentage: undefined, // Beräknas separat
+        matchPercentage: undefined,
       }))
+      
+      // Lokal filtrering för erfarenhetsnivå (API stöder inte detta)
+      if (filters.experienceLevel.length > 0) {
+        convertedJobs = convertedJobs.filter(job => 
+          filters.experienceLevel.includes(job.experienceLevel)
+        )
+      }
+      
+      // Lokal filtrering för matchningsprocent (om CV-data finns)
+      if (filters.minMatchPercentage > 0 && cvData) {
+        convertedJobs = convertedJobs.filter(job => 
+          (job.matchPercentage || 0) >= filters.minMatchPercentage
+        )
+      }
+      
+      // Filtrera på flera anställningsformer (om fler än en är vald)
+      if (filters.employmentType.length > 1) {
+        convertedJobs = convertedJobs.filter(job => 
+          filters.employmentType.includes(job.employmentType)
+        )
+      }
       
       setJobs(convertedJobs)
     } catch (error) {
       console.error('Error searching with API:', error)
-      // Fallback till mock
-      setUsingRealAPI(false)
-      searchJobs()
+      setJobs([])
     } finally {
       setLoading(false)
     }
@@ -185,54 +208,17 @@ export default function JobSearch() {
     }
   }
 
-  const isJobSaved = (jobId: string) => {
-    return applications.some(a => a.jobId === jobId && a.status === 'saved')
-  }
-
-  const topMatches = jobs
-    .filter(j => (j.matchPercentage || 0) >= 70)
-    .sort((a, b) => (b.matchPercentage || 0) - (a.matchPercentage || 0))
-    .slice(0, 3)
-
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800">Sök jobb</h1>
-        <p className="text-slate-600 mt-2">
-          Hitta ditt nästa jobb med hjälp av AI-matchning och smarta filter.
+        <h1 className="text-3xl font-bold text-slate-900 mb-2">Sök jobb</h1>
+        <p className="text-slate-600">
+          Hitta lediga jobb från Platsbanken (Arbetsförmedlingen)
         </p>
       </div>
 
-      {/* API Toggle */}
-      <div className="mb-6 bg-slate-50 rounded-xl p-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <Bot size={24} className={usingRealAPI ? 'text-teal-600' : 'text-slate-400'} />
-          <div>
-            <p className="font-medium text-slate-800">
-              {usingRealAPI ? 'Realtidsdata från Platsbanken' : 'Demo-läge med exempeljobb'}
-            </p>
-            <p className="text-sm text-slate-500">
-              {usingRealAPI 
-                ? 'Visar aktuella annonser från Arbetsförmedlingen' 
-                : 'Visar exempeljobb för demonstration'}
-            </p>
-          </div>
-        </div>
-        <button
-          onClick={() => setUsingRealAPI(!usingRealAPI)}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-            usingRealAPI
-              ? 'bg-teal-100 text-teal-700'
-              : 'bg-slate-200 text-slate-700'
-          }`}
-        >
-          {usingRealAPI ? 'Använd demo' : 'Använd Platsbanken'}
-        </button>
-      </div>
-
-      {/* Popular searches - only when no search active */}
-      {!filters.search && usingRealAPI && (
+      {/* Popular searches */}
+      {!filters.search && (
         <div className="mb-6">
           <p className="text-sm text-slate-500 mb-3">Populära sökningar:</p>
           <div className="flex flex-wrap gap-2">
@@ -272,9 +258,9 @@ export default function JobSearch() {
           }`}
         >
           <Briefcase size={18} />
-          Mina ansökningar
+          Sparade jobb
           {applications.length > 0 && (
-            <span className="ml-2 px-2 py-0.5 bg-white/20 rounded-full text-sm">
+            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-sm">
               {applications.length}
             </span>
           )}
@@ -288,214 +274,117 @@ export default function JobSearch() {
           }`}
         >
           <TrendingUp size={18} />
-          Marknadsinsikt
+          Marknadsinsikter
+        </button>
+        
+        <button
+          onClick={() => setActiveTab('interview')}
+          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${
+            activeTab === 'interview'
+              ? 'bg-[#4f46e5] text-white'
+              : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
+          }`}
+        >
+          <Mic size={18} />
+          Intervjuförberedelse
         </button>
       </div>
 
-      {activeTab === 'search' ? (
+      {activeTab === 'search' && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Filters sidebar */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 space-y-6">
             <JobFilters filters={filters} onChange={setFilters} />
             
-            {/* Stats */}
-            <div className="mt-6 bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-              <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <TrendingUp size={18} className="text-[#4f46e5]" />
-                Din statistik
-              </h3>
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Sparade jobb</span>
-                  <span className="font-medium">{applications.filter(a => a.status === 'saved').length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Ansökta jobb</span>
-                  <span className="font-medium">
-                    {applications.filter(a => ['applied', 'interview', 'offer'].includes(a.status)).length}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-600">Intervjuer</span>
-                  <span className="font-medium">
-                    {applications.filter(a => a.status === 'interview').length}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Match Analyzer CTA */}
-            {cvData && (
-              <div className="mt-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Bot size={20} className="text-indigo-600" />
-                  <h3 className="font-semibold text-indigo-900">AI-Matchning</h3>
-                </div>
-                <p className="text-sm text-indigo-700 mb-4">
-                  Analysera hur väl ditt CV matchar specifika jobb med hjälp av AI.
-                </p>
-                <button
-                  onClick={() => {
-                    if (jobs.length > 0) {
-                      setSelectedJob(jobs[0])
-                      setShowMatchAnalyzer(true)
-                    }
-                  }}
-                  className="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-medium hover:bg-indigo-700"
-                >
-                  Testa matchning
-                </button>
-              </div>
-            )}
+            {/* Sweden Map */}
+            <SwedenMap
+              selectedRegion={filters.region || null}
+              onRegionSelect={(region) => setFilters({ ...filters, region: region || '' })}
+              jobData={{
+                'SE110': 2847,  // Stockholm
+                'SE232': 1823,  // Västra Götaland
+                'SE224': 1245,  // Skåne
+                'SE121': 678,   // Uppsala
+                'SE123': 542,   // Östergötland
+                'SE231': 423,   // Halland
+                'SE211': 387,   // Jönköping
+                'SE212': 298,   // Kronoberg
+              }}
+            />
           </div>
 
           {/* Job listings */}
-          <div className="lg:col-span-3 space-y-6">
-            {/* Top matches */}
-            {topMatches.length > 0 && !filters.search && (
-              <div>
-                <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                  <Sparkles size={20} className="text-amber-500" />
-                  Toppmatchningar för dig
-                </h2>
-                <div className="space-y-4">
-                  {topMatches.map((job) => (
-                    <JobCard
-                      key={job.id}
-                      job={job}
-                      isSaved={isJobSaved(job.id)}
-                      onSave={handleSaveJob}
-                      onApply={handleApply}
-                      onClick={() => {
-                        setSelectedJob(job)
-                        setShowModal(true)
-                      }}
-                      showMatch={true}
-                    />
-                  ))}
-                </div>
+          <div className="lg:col-span-3">
+            {loading ? (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12">
+                <LoadingState 
+                  message="Söker jobb från Platsbanken..." 
+                  submessage="Använder Arbetsförmedlingens API"
+                  size="md"
+                />
+              </div>
+            ) : jobs.length > 0 ? (
+              <div className="space-y-4">
+                {jobs.map((job) => (
+                  <JobCard
+                    key={job.id}
+                    job={job}
+                    isSaved={applications.some(a => a.jobId === job.id && a.status === 'saved')}
+                    isApplied={applications.some(a => a.jobId === job.id && a.status === 'applied')}
+                    onSave={() => handleSaveJob(job.id)}
+                    onApply={() => handleApply(job)}
+                    onAnalyzeMatch={() => handleAnalyzeMatch(job)}
+                  />
+                ))}
+              </div>
+            ) : (
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12">
+                <ErrorState
+                  title="Inga jobb hittades"
+                  message="Prova att ändra dina sökkriterier eller sök på något annat."
+                  onRetry={() => searchJobsWithAPI()}
+                />
               </div>
             )}
-
-            {/* All jobs */}
-            <div>
-              <h2 className="text-lg font-semibold text-slate-800 mb-4">
-                {filters.search || filters.location || filters.employmentType.length > 0
-                  ? `Sökresultat (${jobs.length})`
-                  : `Alla jobb (${jobs.length})`}
-                {usingRealAPI && (
-                  <span className="ml-2 text-sm font-normal text-slate-500">
-                    från Platsbanken
-                  </span>
-                )}
-              </h2>
-              
-              {loading ? (
-                <div className="text-center py-12">
-                  <div className="w-8 h-8 border-4 border-[#4f46e5] border-t-transparent rounded-full animate-spin mx-auto" />
-                  <p className="text-slate-500 mt-4">Söker jobb...</p>
-                </div>
-              ) : jobs.length > 0 ? (
-                <div className="space-y-4">
-                  {jobs.map((job) => (
-                    <JobCard
-                      key={job.id}
-                      job={job}
-                      isSaved={isJobSaved(job.id)}
-                      onSave={handleSaveJob}
-                      onApply={handleApply}
-                      onAnalyze={cvData ? () => handleAnalyzeMatch(job) : undefined}
-                      onClick={() => {
-                        setSelectedJob(job)
-                        setShowModal(true)
-                      }}
-                      showMatch={!filters.search}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 bg-white rounded-2xl border border-slate-200">
-                  <Filter size={48} className="mx-auto text-slate-300 mb-4" />
-                  <p className="text-slate-600 font-medium">Inga jobb hittades</p>
-                  <p className="text-slate-400 text-sm mt-1">
-                    Prova att ändra dina filter eller sökord
-                  </p>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : activeTab === 'applications' ? (
-        /* Applications tab */
-        <div className="max-w-3xl">
-          <ApplicationsTracker
-            applications={applications}
-            onUpdateStatus={handleUpdateStatus}
-            onDelete={handleDelete}
-            onAddNote={handleAddNote}
-          />
-        </div>
-      ) : (
-        /* Insights tab */
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <MarketInsights occupation={filters.search} />
-          </div>
-          <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl p-6 shadow-sm border">
-              <h4 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Target size={18} className="text-teal-600" />
-                Tips för jobbsökning
-              </h4>
-              <ul className="space-y-3 text-sm text-slate-600">
-                <li className="flex items-start gap-2">
-                  <span className="text-teal-600">1.</span>
-                  <span>Använd AI-matchningen för att se hur väl du matchar olika jobb</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-teal-600">2.</span>
-                  <span>Spara intressanta jobb och återkom till dem senare</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-teal-600">3.</span>
-                  <span>Anpassa ditt CV med nyckelorden från varje annons</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-teal-600">4.</span>
-                  <span>Följ upp dina ansökningar regelbundet</span>
-                </li>
-              </ul>
-            </div>
           </div>
         </div>
       )}
 
-      {/* Job Detail Modal */}
-      {cvData && (
-        <JobDetailModal
-          job={selectedJob}
-          cvData={cvData}
-          isOpen={showModal}
-          onClose={() => setShowModal(false)}
-          isSaved={selectedJob ? isJobSaved(selectedJob.id) : false}
-          onSave={() => selectedJob && handleSaveJob(selectedJob.id)}
-          onApply={() => {
-            setShowModal(false)
-          }}
+      {activeTab === 'applications' && (
+        <ApplicationsTracker
+          applications={applications}
+          onUpdateStatus={handleUpdateStatus}
+          onDelete={handleDelete}
+          onAddNote={handleAddNote}
         />
       )}
 
-      {/* Match Analyzer Modal */}
-      {showMatchAnalyzer && selectedJob && cvData && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <JobMatchAnalyzer
-              jobId={selectedJob.id}
-              cvData={cvData}
-              onClose={() => setShowMatchAnalyzer(false)}
-            />
-          </div>
-        </div>
+      {activeTab === 'insights' && <RealMarketInsights />}
+      
+      {activeTab === 'education' && <EducationPathFinder />}
+      
+      {activeTab === 'interview' && <InterviewPrep jobTitle={filters.search} />}
+
+      {/* Job Detail Modal */}
+      <JobDetailModal
+        job={selectedJob}
+        cvData={cvData}
+        isOpen={showModal}
+        onClose={() => setShowModal(false)}
+        isSaved={selectedJob ? applications.some(a => a.jobId === selectedJob.id && a.status === 'saved') : false}
+        onSave={() => selectedJob && handleSaveJob(selectedJob.id)}
+        onApply={() => {
+          setShowModal(false)
+        }}
+      />
+
+      {/* Match Analyzer */}
+      {showMatchAnalyzer && selectedJob && (
+        <JobMatchAnalyzer
+          job={selectedJob}
+          cvData={cvData}
+          onClose={() => setShowMatchAnalyzer(false)}
+        />
       )}
     </div>
   )

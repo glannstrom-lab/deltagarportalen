@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
-import { X, MapPin, Briefcase, Clock, DollarSign, Calendar, Heart, Sparkles, Send, Building } from 'lucide-react'
+import { X, MapPin, Briefcase, Clock, DollarSign, Calendar, Heart, Sparkles, Send, Building, Share2, FileDown } from 'lucide-react'
 import type { Job, CVData } from '@/services/mockApi'
 import { jobsApi } from '@/services/api'
+import { ShareJobDialog } from './ShareJobDialog'
+import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 
 interface JobDetailModalProps {
   job: Job | null
@@ -23,6 +25,7 @@ interface MatchResult {
 export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, onApply }: JobDetailModalProps) {
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null)
   const [_loading, setLoading] = useState(false)
+  const [showShareDialog, setShowShareDialog] = useState(false)
 
   useEffect(() => {
     if (job && isOpen) {
@@ -159,7 +162,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
         </div>
 
         {/* Actions */}
-        <div className="sticky bottom-0 bg-white border-t border-slate-200 p-6 flex gap-3">
+        <div className="sticky bottom-0 bg-white border-t border-slate-200 p-6 flex gap-3 flex-wrap">
           <button
             onClick={onSave}
             className={`flex items-center gap-2 px-4 py-3 rounded-xl border-2 transition-colors ${
@@ -171,6 +174,38 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             <Heart size={18} fill={isSaved ? 'currentColor' : 'none'} />
             {isSaved ? 'Sparad' : 'Spara'}
           </button>
+          
+          {/* Dela med konsulent */}
+          <button
+            onClick={() => setShowShareDialog(true)}
+            className="flex items-center gap-2 px-4 py-3 border-2 border-teal-200 text-teal-700 rounded-xl hover:bg-teal-50 transition-colors"
+          >
+            <Share2 size={18} />
+            Dela
+          </button>
+          
+          {/* PDF Export */}
+          {job && (
+            <PDFExportButton
+              type="job"
+              data={{
+                headline: job.title,
+                description: { text: job.description },
+                employer: { name: job.company },
+                workplace_address: {
+                  municipality: job.location,
+                  region: '',
+                },
+                employment_type: { label: job.employmentType },
+                application_details: { url: job.url },
+                publication_date: job.publishedDate || new Date().toISOString(),
+                last_publication_date: job.deadline,
+              }}
+              variant="outline"
+              size="md"
+              showPreview={false}
+            />
+          )}
           
           <button
             onClick={onApply}
@@ -187,10 +222,32 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             className="flex items-center gap-2 px-4 py-3 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors"
           >
             <Send size={18} />
-            Ansök externt
+            Ansök
           </a>
         </div>
       </div>
+
+      {/* Share Job Dialog */}
+      {job && (
+        <ShareJobDialog
+          jobId={job.id}
+          jobData={{
+            headline: job.title,
+            employer: { name: job.company },
+            description: job.description,
+            workplace_address: { 
+              municipality: job.location, 
+              region: '' 
+            },
+            application_details: { url: job.url },
+          }}
+          isOpen={showShareDialog}
+          onClose={() => setShowShareDialog(false)}
+          onShared={() => {
+            setShowShareDialog(false)
+          }}
+        />
+      )}
     </div>
   )
 }
