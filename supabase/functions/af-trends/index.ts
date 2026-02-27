@@ -6,10 +6,21 @@ import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 const TRENDS_API_BASE = 'https://jobsearch-trends-api.jobtechdev.se';
 
 serve(async (req) => {
+  const allowedOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://glannstrom-lab.github.io',
+    'https://glannstrom-lab.github.io/deltagarportalen'
+  ];
+  
+  const origin = req.headers.get('origin') || '';
+  const allowedOrigin = allowedOrigins.find(o => origin.startsWith(o)) || allowedOrigins[0];
+  
   const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Origin': allowedOrigin,
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Max-Age': '86400',
   };
 
   if (req.method === 'OPTIONS') {
