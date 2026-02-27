@@ -2,15 +2,7 @@
 -- Fix: Användarskapande och roller
 -- ============================================
 
--- 1. Uppdatera profiles-tabellen för att stödja alla roller
-ALTER TABLE profiles 
-    DROP CONSTRAINT IF EXISTS profiles_role_check;
-
-ALTER TABLE profiles 
-    ADD CONSTRAINT profiles_role_check 
-    CHECK (role IN ('SUPERADMIN', 'ADMIN', 'CONSULTANT', 'USER'));
-
--- 2. Lägg till status-kolumn om den saknas
+-- 1. Lägg till status-kolumn först (om den saknas)
 DO $$
 BEGIN
     IF NOT EXISTS (
@@ -21,7 +13,26 @@ BEGIN
     END IF;
 END $$;
 
--- 3. Lägg till constraint för status
+-- 2. Lägg till consultant_id-kolumn (om den saknas)
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_name = 'profiles' AND column_name = 'consultant_id'
+    ) THEN
+        ALTER TABLE profiles ADD COLUMN consultant_id UUID REFERENCES profiles(id) ON DELETE SET NULL;
+    END IF;
+END $$;
+
+-- 3. Uppdatera profiles-tabellen för att stödja alla roller
+ALTER TABLE profiles 
+    DROP CONSTRAINT IF EXISTS profiles_role_check;
+
+ALTER TABLE profiles 
+    ADD CONSTRAINT profiles_role_check 
+    CHECK (role IN ('SUPERADMIN', 'ADMIN', 'CONSULTANT', 'USER'));
+
+-- 4. Lägg till constraint för status
 ALTER TABLE profiles 
     DROP CONSTRAINT IF EXISTS profiles_status_check;
 
@@ -29,7 +40,7 @@ ALTER TABLE profiles
     ADD CONSTRAINT profiles_status_check 
     CHECK (status IN ('ACTIVE', 'INACTIVE', 'COMPLETED', 'ON_HOLD'));
 
--- 4. Uppdatera handle_new_user funktionen för att hantera alla fält
+-- 5. Uppdatera handle_new_user funktionen för att hantera alla fält
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 DECLARE
@@ -93,7 +104,7 @@ EXCEPTION WHEN OTHERS THEN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 5. Se till att triggen finns och är korrekt
+-- 6. Se till att triggen finns och är korrekt
 DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
 CREATE TRIGGER on_auth_user_created
@@ -101,28 +112,28 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW 
   EXECUTE FUNCTION public.handle_new_user();
 
--- 6. Se till att RLS är aktiverat men tillåter inserts från trigger
+-- 7. Se till att RLS är aktiverat men tillåter inserts från trigger
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
--- 7. Policy för att tillåta trigger att skapa profiler
+-- 8. Policy för att tillåta trigger att skapa profiler
 DROP POLICY IF EXISTS "Allow trigger to create profiles" ON profiles;
 CREATE POLICY "Allow trigger to create profiles"
   ON profiles FOR INSERT
   WITH CHECK (true);
 
--- 8. Policy för att användare kan se sin egen profil
+-- 9. Policy för att användare kan se sin egen profil
 DROP POLICY IF EXISTS "Users can view own profile" ON profiles;
 CREATE POLICY "Users can view own profile"
   ON profiles FOR SELECT
   USING (auth.uid() = id);
 
--- 9. Policy för att användare kan uppdatera sin egen profil
+-- 10. Policy för att användare kan uppdatera sin egen profil
 DROP POLICY IF EXISTS "Users can update own profile" ON profiles;
 CREATE POLICY "Users can update own profile"
   ON profiles FOR UPDATE
   USING (auth.uid() = id);
 
--- 10. Policy för att konsulenter kan se sina deltagare
+-- 11. Policy för att konsulenter kan se sina deltagare
 DROP POLICY IF EXISTS "Consultants can view their participants" ON profiles;
 CREATE POLICY "Consultants can view their participants"
   ON profiles FOR SELECT
@@ -135,7 +146,7 @@ CREATE POLICY "Consultants can view their participants"
     )
   );
 
--- 11. Policy för att admins kan se alla profiler
+-- 12. Policy för att admins kan se alla profiler
 DROP POLICY IF EXISTS "Admins can view all profiles" ON profiles;
 CREATE POLICY "Admins can view all profiles"
   ON profiles FOR ALL
@@ -146,7 +157,7 @@ CREATE POLICY "Admins can view all profiles"
     )
   );
 
--- 12. Fyll på saknade profiler för befintliga användare
+-- 13. Fyll på saknande profiler för befintliga användare
 INSERT INTO profiles (id, email, role, status, created_at, updated_at)
 SELECT 
   au.id,
@@ -157,9 +168,10 @@ SELECT
   NOW()
 FROM auth.users au
 LEFT JOIN profiles p ON au.id = p.id
-WHERE p.id IS NULL;
+WHERE p.id IS NULL
+ON CONFLICT (id) DO NOTHING;
 
--- 13. Verifiera att funktionen fungerar
+-- 14. Verifiera att funktionen fungerar
 DO $$
 DECLARE
   test_count INTEGER;
