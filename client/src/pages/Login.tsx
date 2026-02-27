@@ -19,15 +19,33 @@ export default function Login() {
     setLoading(true)
 
     try {
+      console.log('Attempting login with:', { email, hasPassword: !!password })
+      
       const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password
       })
+      
+      console.log('Login response:', { 
+        hasUser: !!data.user, 
+        hasSession: !!data.session,
+        error: signInError?.message 
+      })
 
       if (signInError) {
-        throw new Error(signInError.message === 'Invalid login credentials' 
-          ? 'Fel e-post eller lösenord' 
-          : signInError.message)
+        console.error('Sign in error:', signInError)
+        
+        // Tydligare felmeddelanden
+        let errorMessage = signInError.message
+        if (signInError.message === 'Invalid login credentials') {
+          errorMessage = 'Fel e-post eller lösenord'
+        } else if (signInError.message.includes('Email not confirmed')) {
+          errorMessage = 'E-postadressen är inte bekräftad. Kolla din inkorg eller kontakta support.'
+        } else if (signInError.message.includes('User not found')) {
+          errorMessage = 'Användaren finns inte. Har du registrerat dig?'
+        }
+        
+        throw new Error(errorMessage)
       }
 
       if (!data.user || !data.session) {
