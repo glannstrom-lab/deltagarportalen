@@ -5,7 +5,10 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
 if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables')
+  console.error('❌ Missing Supabase environment variables!')
+  console.error('VITE_SUPABASE_URL:', supabaseUrl ? '✓ set' : '✗ missing')
+  console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? '✓ set' : '✗ missing')
+  console.error('Please check GITHUB_SECRETS_FIX.md for instructions')
 }
 
 // Create Supabase client
