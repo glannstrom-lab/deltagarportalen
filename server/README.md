@@ -1,4 +1,4 @@
-# ⚠️ INAKTIV - Gammal PHP Backend
+# ⚠️ INAKTIV - Gammal Node.js Backend
 
 **Denna mapp används INTE i produktion!**
 
@@ -13,8 +13,9 @@ All backend körs via **Supabase**:
 
 ## Varför finns denna mapp kvar?
 
-- Skapad som alternativ för hosting på PHP-servrar
-- Kan användas om ni behöver flytta från Supabase till egen server
+- Historisk referens
+- Potentiell framtida användning om ni flyttar från Supabase
+- Innehåller viss logik som kan vara referens för Edge Functions
 
 ## Användning
 
@@ -27,4 +28,4 @@ Se istället:
 
 ---
 
-*Denna backend skapades som ett alternativ men används inte aktivt.*
+*Denna backend var aktiv under tidig utveckling men har ersatts av Supabase.*
