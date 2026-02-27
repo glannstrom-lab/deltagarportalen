@@ -17,17 +17,34 @@ import Calendar from './pages/Calendar'
 import Wellness from './pages/Wellness'
 import Exercises from './pages/Exercises'
 import Settings from './pages/Settings'
+import { ConsultantDashboard } from './components/consultant/ConsultantDashboard'
+import { SuperAdminPanel } from './components/admin/SuperAdminPanel'
+import { InviteHandler } from './components/auth/InviteHandler'
 
-function PrivateRoute({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated } = useAuthStore()
-  return isAuthenticated ? <>{children}</> : <Navigate to="/login" />
+// Roll-baserad route-guard
+function PrivateRoute({ children, allowedRoles }: { children: React.ReactNode; allowedRoles?: string[] }) {
+  const { isAuthenticated, user } = useAuthStore()
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />
+  }
+  
+  if (allowedRoles && user?.role && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/" />
+  }
+  
+  return <>{children}</>
 }
 
 function App() {
   return (
     <Routes>
+      {/* Publika routes */}
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/invite/:token" element={<InviteHandler />} />
+      
+      {/* Huvudapplikationen */}
       <Route
         path="/"
         element={
@@ -39,7 +56,6 @@ function App() {
         <Route index element={<Dashboard />} />
         <Route path="cv" element={<CVBuilder />} />
         <Route path="cv-builder" element={<CVBuilder />} />
-        {/* Personligt Brev - slått ihop till en sida */}
         <Route path="cover-letter" element={<CoverLetterGenerator />} />
         <Route path="cover-letter-generator" element={<CoverLetterGenerator />} />
         <Route path="brev" element={<CoverLetterGenerator />} />
@@ -56,6 +72,26 @@ function App() {
         <Route path="exercises" element={<Exercises />} />
         <Route path="settings" element={<Settings />} />
       </Route>
+      
+      {/* Konsulent Dashboard - separat layout */}
+      <Route
+        path="/consultant/*"
+        element={
+          <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
+            <ConsultantDashboard />
+          </PrivateRoute>
+        }
+      />
+      
+      {/* Superadmin Panel - separat layout */}
+      <Route
+        path="/admin/*"
+        element={
+          <PrivateRoute allowedRoles={['SUPERADMIN', 'ADMIN']}>
+            <SuperAdminPanel />
+          </PrivateRoute>
+        }
+      />
     </Routes>
   )
 }
