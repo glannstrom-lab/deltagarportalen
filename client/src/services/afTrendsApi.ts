@@ -12,6 +12,7 @@ const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 import { trendsCache } from './cacheService';
 import { withRetry, fetchWithRetry } from './retryService';
+import { supabase } from '@/lib/supabase';
 
 async function fetchFromTrends(endpoint: string, params?: Record<string, string>) {
   const cacheKey = `trends:${endpoint}:${JSON.stringify(params)}`;
@@ -28,12 +29,16 @@ async function fetchFromTrends(endpoint: string, params?: Record<string, string>
   
   console.log('[Trends] Fetching:', functionUrl);
   
+  // Hämta aktuell session (kan vara anon eller user)
+  const { data: { session } } = await supabase.auth.getSession();
+  const token = session?.access_token || SUPABASE_ANON_KEY;
+  
   // Kör med retry-logik
   const data = await withRetry(async () => {
     const response = await fetchWithRetry(functionUrl, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     }, { maxRetries: 2, baseDelay: 1000 });
