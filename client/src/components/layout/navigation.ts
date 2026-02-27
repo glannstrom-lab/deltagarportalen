@@ -8,8 +8,11 @@ import {
   Dumbbell,
   Mail,
   Target,
+  Shield,
+  Users,
 } from 'lucide-react'
 
+// Standard navigation för deltagare
 export const navItems = [
   { path: '/', label: 'Översikt', icon: LayoutDashboard },
   { path: '/cv', label: 'CV', icon: FileText },
@@ -20,4 +23,14 @@ export const navItems = [
   { path: '/exercises', label: 'Övningar', icon: Dumbbell },
   { path: '/calendar', label: 'Kalender', icon: Calendar },
   { path: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
+]
+
+// Admin navigation (visas för SUPERADMIN och ADMIN)
+export const adminNavItems = [
+  { path: '/admin', label: 'Admin Panel', icon: Shield },
+]
+
+// Konsulent navigation (visas för CONSULTANT)
+export const consultantNavItems = [
+  { path: '/consultant', label: 'Mina Deltagare', icon: Users },
 ]

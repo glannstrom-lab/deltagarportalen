@@ -1,12 +1,17 @@
 import { Link, useLocation } from 'react-router-dom'
-import { navItems } from './navigation'
+import { navItems, adminNavItems, consultantNavItems } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { LogOut, Settings, User } from 'lucide-react'
 
 export function Sidebar() {
   const location = useLocation()
-  const { logout } = useAuthStore()
+  const { logout, user } = useAuthStore()
+  
+  // Kontrollera användarens roll
+  const isSuperAdmin = user?.role === 'SUPERADMIN'
+  const isAdmin = user?.role === 'ADMIN' || isSuperAdmin
+  const isConsultant = user?.role === 'CONSULTANT' || isAdmin
 
   return (
     <aside 
@@ -24,7 +29,8 @@ export function Sidebar() {
       </Link>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col items-center gap-2">
+      <nav className="flex-1 flex flex-col items-center gap-2 overflow-y-auto">
+        {/* Standard navigation */}
         {navItems.map((item) => {
           const Icon = item.icon
           const isActive = location.pathname === item.path
@@ -46,6 +52,60 @@ export function Sidebar() {
             </Link>
           )
         })}
+        
+        {/* Admin-länkar */}
+        {isAdmin && (
+          <>
+            <div className="w-8 h-px bg-white/20 my-2" />
+            {adminNavItems.map((item) => {
+              const Icon = item.icon
+              const isActive = location.pathname.startsWith(item.path)
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200',
+                    isActive 
+                      ? 'bg-amber-400 text-[#4f46e5]' 
+                      : 'text-amber-300 hover:bg-white/10 hover:text-white'
+                  )}
+                  title={item.label}
+                >
+                  <Icon size={22} />
+                </Link>
+              )
+            })}
+          </>
+        )}
+        
+        {/* Konsulent-länkar */}
+        {isConsultant && !isAdmin && (
+          <>
+            <div className="w-8 h-px bg-white/20 my-2" />
+            {consultantNavItems.map((item) => {
+              const Icon = item.icon
+              const isActive = location.pathname.startsWith(item.path)
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={cn(
+                    'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-200',
+                    isActive 
+                      ? 'bg-teal-400 text-[#4f46e5]' 
+                      : 'text-teal-300 hover:bg-white/10 hover:text-white'
+                  )}
+                  title={item.label}
+                >
+                  <Icon size={22} />
+                </Link>
+              )
+            })}
+          </>
+        )}
       </nav>
 
       {/* Bottom Actions */}
