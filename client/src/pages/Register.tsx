@@ -79,18 +79,28 @@ export default function Register() {
         throw new Error('Kunde inte skapa konto. Försök igen.')
       }
 
-      // Vänta på att profilen skapas (trigger körs)
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      // Vänta på att profilen skapas (trigger körs) - försök flera gånger
+      let profile = null
+      let profileError = null
+      
+      for (let i = 0; i < 5; i++) {
+        await new Promise(resolve => setTimeout(resolve, 500))
+        
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', signUpData.user.id)
+          .single()
+        
+        if (data) {
+          profile = data
+          break
+        }
+        profileError = error
+      }
 
-      // Hämta profilen
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', signUpData.user.id)
-        .single()
-
-      if (profileError) {
-        console.warn('Kunde inte hämta profil:', profileError)
+      if (!profile && profileError) {
+        console.warn('Kunde inte hämta profil efter 5 försök:', profileError)
       }
 
       // Om användaren behöver bekräfta e-post
