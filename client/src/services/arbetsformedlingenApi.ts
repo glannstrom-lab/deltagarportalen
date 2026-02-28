@@ -221,7 +221,7 @@ export interface CareerPath {
 import { jobCache } from './cacheService';
 import { withRetry, fetchWithRetry } from './retryService';
 
-async function fetchFromJobSearch(endpoint: string, params?: Record<string, string>) {
+async function fetchFromJobSearch(endpoint: string, params?: Record<string, string>): Promise<any> {
   const cacheKey = `jobsearch:${endpoint}:${JSON.stringify(params)}`;
   
   // Kolla cache först (2 minuter för jobb)
@@ -236,29 +236,37 @@ async function fetchFromJobSearch(endpoint: string, params?: Record<string, stri
   
   console.log('[JobSearch] Fetching:', functionUrl);
   
-  // Kör med retry-logik
-  const data = await withRetry(async () => {
-    const response = await fetchWithRetry(functionUrl, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Content-Type': 'application/json',
-      },
-    }, { maxRetries: 3, baseDelay: 1000 });
+  try {
+    // Kör med retry-logik
+    const data = await withRetry(async () => {
+      const response = await fetchWithRetry(functionUrl, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+          'Content-Type': 'application/json',
+        },
+      }, { maxRetries: 2, baseDelay: 500 });
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('[JobSearch] API error:', response.status, errorText);
+        throw new Error(`JobSearch API error: ${response.status}`);
+      }
+      
+      return response.json();
+    }, { maxRetries: 2, baseDelay: 500 }, `JobSearch ${endpoint}`);
     
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('[JobSearch] API error:', response.status, errorText);
-      throw new Error(`JobSearch API error: ${response.status}`);
+    // Spara i cache (2 minuter för jobb)
+    if (data) {
+      jobCache.set(cacheKey, data);
     }
     
-    return response.json();
-  }, { maxRetries: 3 }, `JobSearch ${endpoint}`);
-  
-  // Spara i cache (2 minuter för jobb)
-  jobCache.set(cacheKey, data);
-  
-  return data;
+    return data;
+  } catch (error) {
+    console.error('[JobSearch] All retries failed:', error);
+    // Returnera null istället för att krascha
+    return null;
+  }
 }
 
 // Sök jobb i Platsbanken
@@ -310,6 +318,15 @@ export async function searchPlatsbanken(params: SearchFilters): Promise<JobSearc
     
     const data = await fetchFromJobSearch('/search', afParams);
     
+    // Hantera null/undefined fallback
+    if (!data) {
+      console.warn('[JobSearch] No data received, returning empty results');
+      return {
+        total: { value: 0 },
+        hits: []
+      };
+    }
+    
     // Returnera i rätt format som matchar JobSearchResponse
     return {
       total: { value: data.total?.value || 0 },
@@ -332,6 +349,10 @@ export const searchJobs = searchPlatsbanken;
 export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> {
   try {
     const data = await fetchFromJobSearch(`/ad/${id}`);
+    if (!data) {
+      console.warn('[JobSearch] No data for job details:', id);
+      return null;
+    }
     return {
       id: data.id,
       headline: data.headline,
@@ -355,7 +376,11 @@ export async function getAutocomplete(query: string): Promise<string[]> {
   if (!query || query.length < 2) return [];
   try {
     const response = await fetchFromJobSearch('/complete', { q: query });
-    return response?.typeahead || [];
+    if (!response) {
+      console.warn('[JobSearch] No autocomplete data received');
+      return [];
+    }
+    return response.typeahead || [];
   } catch (error) {
     return [];
   }

@@ -17,6 +17,7 @@ Kör följande kommandon i terminalen:
 cd C:\Users\Mikael\Desktop\SKARP AI\deltagarportal
 
 # Deploy alla Edge Functions
+supabase functions deploy af-jobsearch
 supabase functions deploy af-taxonomy
 supabase functions deploy af-jobed
 supabase functions deploy af-enrichments
@@ -28,6 +29,9 @@ supabase functions deploy af-trends
 Testa med curl eller besök URL:erna i webbläsaren:
 
 ```bash
+# Testa JobSearch API
+curl "https://<ditt-project-ref>.supabase.co/functions/v1/af-jobsearch/search?limit=3&q=utvecklare"
+
 # Testa Taxonomy API
 curl https://<ditt-project-ref>.supabase.co/functions/v1/af-taxonomy/concept-types
 

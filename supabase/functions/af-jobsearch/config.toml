@@ -1,0 +1,2 @@
+[functions.af-jobsearch]
+verify_jwt = false

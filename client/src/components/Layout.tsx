@@ -1,5 +1,7 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import { Sidebar } from './layout/Sidebar'
+import { TopBar } from './layout/TopBar'
+import { BottomBar } from './layout/BottomBar'
 import { MobileNav, MobileNavSimplified } from './MobileNav'
 import CrisisSupport from './CrisisSupport'
 import BreakReminder from './BreakReminder'
@@ -9,6 +11,10 @@ import { useMobileOptimizer } from './MobileOptimizer'
 
 export default function Layout() {
   const { isMobile } = useMobileOptimizer()
+  const location = useLocation()
+  
+  // Visa TopBar och BottomBar på alla sidor förutom login/register
+  const showBars = !['/login', '/register'].includes(location.pathname)
 
   return (
     <div 
@@ -35,21 +41,30 @@ export default function Layout() {
       </div>
       
       {/* Huvudinnehåll */}
-      <main 
-        id="main-content"
-        className={cn(
-          'flex-1 overflow-auto',
-          isMobile ? 'p-4' : 'p-8'
-        )}
-        tabIndex={-1}
-      >
-        <div className={cn(
-          'mx-auto',
-          isMobile ? 'max-w-full' : 'max-w-7xl'
-        )}>
-          <Outlet />
-        </div>
-      </main>
+      <div className="flex-1 flex flex-col min-h-screen">
+        {/* TopBar - sticky header */}
+        {showBars && <TopBar />}
+        
+        {/* Main content */}
+        <main 
+          id="main-content"
+          className={cn(
+            'flex-1 overflow-auto',
+            isMobile ? 'p-4' : 'p-6'
+          )}
+          tabIndex={-1}
+        >
+          <div className={cn(
+            'mx-auto pb-20',
+            isMobile ? 'max-w-full' : 'max-w-7xl'
+          )}>
+            <Outlet />
+          </div>
+        </main>
+        
+        {/* BottomBar - fixed footer */}
+        {showBars && <BottomBar />}
+      </div>
       
       {/* Mobila navigeringskomponenter */}
       <MobileNav />

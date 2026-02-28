@@ -1,3 +1,5 @@
 export { Sidebar } from './Sidebar'
 export { Header } from './Header'
+export { TopBar } from './TopBar'
+export { BottomBar } from './BottomBar'
 export { navItems } from './navigation'
