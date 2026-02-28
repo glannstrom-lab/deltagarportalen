@@ -1,5 +1,11 @@
-export { DashboardGrid } from './DashboardGrid'
+export { DashboardGrid, getWidgetGridClasses } from './DashboardGrid'
 export { DashboardWidget } from './DashboardWidget'
+export { WidgetFilter, availableWidgets } from './WidgetFilter'
+export { WidgetSizeSelector } from './WidgetSizeSelector'
+
+// Types
+export type { WidgetType, WidgetFilterItem } from './WidgetFilter'
+export type { WidgetSize } from './WidgetSizeSelector'
 
 // Widgets
 export { CVWidget } from './widgets/CVWidget'

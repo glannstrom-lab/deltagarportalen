@@ -68,6 +68,7 @@ export function DashboardWidget({
   primaryAction,
   secondaryAction,
   onRetry,
+  sizeSelector,
 }: DashboardWidgetProps) {
   if (loading) {
     return (
@@ -113,13 +114,17 @@ export function DashboardWidget({
             {title}
           </h3>
         </Link>
-        <Link
-          to={to}
-          className="text-slate-400 hover:text-slate-600 transition-colors"
-          aria-label={`Gå till ${title}`}
-        >
-          →
-        </Link>
+        <div className="flex items-center gap-1">
+          {sizeSelector}
+          <Link
+            to={to}
+            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            aria-label={`Gå till ${title}`}
+            title={`Gå till ${title}`}
+          >
+            <ArrowRight size={16} />
+          </Link>
+        </div>
       </div>
 
       {/* Progress bar - dold om complete eller empty med 0% */}

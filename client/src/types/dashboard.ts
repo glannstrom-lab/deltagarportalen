@@ -136,4 +136,5 @@ export interface DashboardWidgetProps {
     onClick?: () => void
   }
   onRetry?: () => void
+  sizeSelector?: React.ReactNode
 }
