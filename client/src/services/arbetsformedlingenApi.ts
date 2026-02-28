@@ -221,6 +221,11 @@ export interface CareerPath {
 import { jobCache } from './cacheService';
 import { withRetry, fetchWithRetry } from './retryService';
 
+const AF_JOBSEARCH_BASE = 'https://jobsearch.api.jobtechdev.se';
+
+// Testa om Edge Function är tillgänglig
+let edgeFunctionAvailable: boolean | null = null;
+
 async function fetchFromJobSearch(endpoint: string, params?: Record<string, string>): Promise<any> {
   const cacheKey = `jobsearch:${endpoint}:${JSON.stringify(params)}`;
   
@@ -232,39 +237,87 @@ async function fetchFromJobSearch(endpoint: string, params?: Record<string, stri
   }
   
   const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
-  const functionUrl = `${SUPABASE_URL}/functions/v1/af-jobsearch${endpoint}${queryParams}`;
   
-  console.log('[JobSearch] Fetching:', functionUrl);
+  // Om vi vet att Edge Function inte fungerar, använd direkt API
+  if (edgeFunctionAvailable === false) {
+    return fetchDirectFromAF(endpoint, params);
+  }
+  
+  // Försök med Edge Function först
+  const functionUrl = `${SUPABASE_URL}/functions/v1/af-jobsearch${endpoint}${queryParams}`;
+  console.log('[JobSearch] Trying Edge Function:', functionUrl);
   
   try {
-    // Kör med retry-logik
-    const data = await withRetry(async () => {
-      const response = await fetchWithRetry(functionUrl, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      }, { maxRetries: 2, baseDelay: 500 });
-      
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error('[JobSearch] API error:', response.status, errorText);
-        throw new Error(`JobSearch API error: ${response.status}`);
-      }
-      
-      return response.json();
-    }, { maxRetries: 2, baseDelay: 500 }, `JobSearch ${endpoint}`);
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5s timeout
     
-    // Spara i cache (2 minuter för jobb)
+    const response = await fetch(functionUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      signal: controller.signal,
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (response.ok) {
+      edgeFunctionAvailable = true;
+      const data = await response.json();
+      if (data) {
+        jobCache.set(cacheKey, data);
+      }
+      return data;
+    }
+    
+    // Om Edge Function returnerar fel, markera som otillgänglig
+    edgeFunctionAvailable = false;
+    throw new Error(`Edge Function error: ${response.status}`);
+    
+  } catch (error) {
+    console.warn('[JobSearch] Edge Function failed, trying direct API:', error);
+    edgeFunctionAvailable = false;
+    return fetchDirectFromAF(endpoint, params);
+  }
+}
+
+// Fallback: Anropa Arbetsförmedlingens API direkt
+async function fetchDirectFromAF(endpoint: string, params?: Record<string, string>): Promise<any> {
+  const cacheKey = `jobsearch:direct:${endpoint}:${JSON.stringify(params)}`;
+  
+  // Kolla cache
+  const cached = jobCache.get(cacheKey);
+  if (cached) {
+    return cached;
+  }
+  
+  const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
+  const url = `${AF_JOBSEARCH_BASE}${endpoint}${queryParams}`;
+  
+  console.log('[JobSearch] Fetching directly from AF:', url);
+  
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      console.error('[JobSearch] Direct AF API error:', response.status);
+      return null;
+    }
+    
+    const data = await response.json();
     if (data) {
       jobCache.set(cacheKey, data);
     }
-    
     return data;
   } catch (error) {
-    console.error('[JobSearch] All retries failed:', error);
-    // Returnera null istället för att krascha
+    console.error('[JobSearch] Direct API failed:', error);
     return null;
   }
 }
