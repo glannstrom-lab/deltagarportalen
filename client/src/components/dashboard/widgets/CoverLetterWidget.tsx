@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Mail, FileText, Clock, Plus, Edit3, Copy } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
+import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface CoverLetterWidgetProps {
   count: number
@@ -9,6 +10,7 @@ interface CoverLetterWidgetProps {
   loading?: boolean
   error?: string | null
   onRetry?: () => void
+  size?: WidgetSize
 }
 
 export const CoverLetterWidget = memo(function CoverLetterWidget({
@@ -17,7 +19,9 @@ export const CoverLetterWidget = memo(function CoverLetterWidget({
   loading,
   error,
   onRetry,
+  size,
 }: CoverLetterWidgetProps) {
+  // TODO: Implement different layouts based on size
   const getStatus = (): WidgetStatus => {
     if (count === 0) return 'empty'
     return 'complete'

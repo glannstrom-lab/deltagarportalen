@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { BookOpen, Bookmark, Eye, Star, TrendingUp, Lightbulb, Clock, ArrowUpRight } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
+import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface KnowledgeWidgetProps {
   readCount?: number
@@ -12,6 +13,7 @@ interface KnowledgeWidgetProps {
   loading?: boolean
   error?: string | null
   onRetry?: () => void
+  size?: WidgetSize
 }
 
 export const KnowledgeWidget = memo(function KnowledgeWidget({
@@ -23,7 +25,9 @@ export const KnowledgeWidget = memo(function KnowledgeWidget({
   loading,
   error,
   onRetry,
+  size,
 }: KnowledgeWidgetProps) {
+  // TODO: Implement different layouts based on size
   const getStatus = (): WidgetStatus => {
     if (readCount === 0) return 'empty'
     return 'complete'

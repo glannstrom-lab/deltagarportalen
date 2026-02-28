@@ -3,6 +3,8 @@ import { Briefcase, Bookmark, MapPin, Building2, ExternalLink, Bell } from 'luci
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 
+import type { WidgetSize } from '../WidgetSizeSelector'
+
 interface JobSearchWidgetProps {
   savedCount: number
   newMatches?: number
@@ -10,6 +12,7 @@ interface JobSearchWidgetProps {
   loading?: boolean
   error?: string | null
   onRetry?: () => void
+  size?: WidgetSize
 }
 
 export const JobSearchWidget = memo(function JobSearchWidget({
@@ -19,7 +22,10 @@ export const JobSearchWidget = memo(function JobSearchWidget({
   loading,
   error,
   onRetry,
+  size,
 }: JobSearchWidgetProps) {
+  // TODO: Implement different layouts based on size
+  const _widgetSize = size || 'small'
   const getStatus = (): WidgetStatus => {
     if (savedCount === 0) return 'empty'
     return 'complete'

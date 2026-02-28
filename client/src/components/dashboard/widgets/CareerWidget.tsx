@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Route, Building2, TrendingUp, Lightbulb, Target, Compass, GraduationCap } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
+import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface CareerWidgetProps {
   exploredCount?: number
@@ -10,6 +11,7 @@ interface CareerWidgetProps {
   loading?: boolean
   error?: string | null
   onRetry?: () => void
+  size?: WidgetSize
 }
 
 export const CareerWidget = memo(function CareerWidget({
@@ -19,7 +21,9 @@ export const CareerWidget = memo(function CareerWidget({
   loading,
   error,
   onRetry,
+  size,
 }: CareerWidgetProps) {
+  // TODO: Implement different layouts based on size
   const getStatus = (): WidgetStatus => {
     if (exploredCount === 0) return 'empty'
     return 'complete'

@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Dumbbell, CheckCircle2, Clock, Trophy, Flame, Zap, Target, TrendingUp } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
+import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface ExercisesWidgetProps {
   completedCount?: number
@@ -11,6 +12,7 @@ interface ExercisesWidgetProps {
   loading?: boolean
   error?: string | null
   onRetry?: () => void
+  size?: WidgetSize
 }
 
 export const ExercisesWidget = memo(function ExercisesWidget({
@@ -21,7 +23,9 @@ export const ExercisesWidget = memo(function ExercisesWidget({
   loading,
   error,
   onRetry,
+  size,
 }: ExercisesWidgetProps) {
+  // TODO: Implement different layouts based on size
   const getStatus = (): WidgetStatus => {
     if (completedCount === 0) return 'empty'
     return 'complete'

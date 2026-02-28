@@ -8,28 +8,25 @@ import type { DashboardWidgetProps, WidgetStat, WidgetStatus, WidgetColor } from
 // Sidebar-färgen #4f46e5
 const SIDEBAR_COLOR = '#4f46e5'
 
-// Förenklad färgpalett: 3 färger istället för 8
-// primary = kärnfunktioner (CV, Profil)
-// secondary = utforskning (Intressen, Karriär)  
-// neutral = stödfunktioner (övriga)
+// Full färgpalett - varje widget har sin egen karaktärsfärg
 const colorStyles: Record<WidgetColor, string> = {
-  violet: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+  violet: 'bg-violet-50 text-violet-600 border-violet-100',
   teal: 'bg-teal-50 text-teal-600 border-teal-100',
-  blue: 'bg-slate-50 text-slate-600 border-slate-100',
-  orange: 'bg-slate-50 text-slate-600 border-slate-100',
-  green: 'bg-teal-50 text-teal-600 border-teal-100',
-  rose: 'bg-slate-50 text-slate-600 border-slate-100',
+  blue: 'bg-blue-50 text-blue-600 border-blue-100',
+  orange: 'bg-orange-50 text-orange-600 border-orange-100',
+  green: 'bg-emerald-50 text-emerald-600 border-emerald-100',
+  rose: 'bg-rose-50 text-rose-600 border-rose-100',
   amber: 'bg-amber-50 text-amber-600 border-amber-100',
   indigo: 'bg-indigo-50 text-indigo-600 border-indigo-100',
 }
 
 const colorBgStyles: Record<WidgetColor, string> = {
-  violet: 'bg-indigo-500',
+  violet: 'bg-violet-500',
   teal: 'bg-teal-500',
-  blue: 'bg-slate-500',
-  orange: 'bg-slate-500',
-  green: 'bg-teal-500',
-  rose: 'bg-slate-500',
+  blue: 'bg-blue-500',
+  orange: 'bg-orange-500',
+  green: 'bg-emerald-500',
+  rose: 'bg-rose-500',
   amber: 'bg-amber-500',
   indigo: 'bg-indigo-500',
 }
@@ -98,7 +95,7 @@ export function DashboardWidget({
   }
 
   return (
-    <Card className="min-h-[200px] h-auto p-5 flex flex-col hover:shadow-md transition-shadow">
+    <Card className="min-h-[200px] h-full p-5 flex flex-col hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <Link to={to} className="flex items-center gap-3 group">

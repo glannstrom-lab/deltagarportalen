@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { Send, Clock, CheckCircle2, XCircle, Trophy, Building2, Calendar, AlertCircle, TrendingUp } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
+import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface ApplicationsWidgetProps {
   total: number
@@ -19,6 +20,7 @@ interface ApplicationsWidgetProps {
   loading?: boolean
   error?: string | null
   onRetry?: () => void
+  size?: WidgetSize
 }
 
 export const ApplicationsWidget = memo(function ApplicationsWidget({
@@ -28,7 +30,9 @@ export const ApplicationsWidget = memo(function ApplicationsWidget({
   loading,
   error,
   onRetry,
+  size,
 }: ApplicationsWidgetProps) {
+  // TODO: Implement different layouts based on size
   const getStatus = (): WidgetStatus => {
     if (total === 0) return 'empty'
     return 'complete'

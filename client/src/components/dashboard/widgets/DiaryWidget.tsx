@@ -2,6 +2,7 @@ import { memo } from 'react'
 import { BookHeart, Calendar, PenLine, Smile, Meh, Frown, Sparkles, Edit3, History, CheckCircle2 } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
+import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface DiaryWidgetProps {
   entriesCount?: number
@@ -11,6 +12,7 @@ interface DiaryWidgetProps {
   loading?: boolean
   error?: string | null
   onRetry?: () => void
+  size?: WidgetSize
 }
 
 export const DiaryWidget = memo(function DiaryWidget({
@@ -21,7 +23,9 @@ export const DiaryWidget = memo(function DiaryWidget({
   loading,
   error,
   onRetry,
+  size,
 }: DiaryWidgetProps) {
+  // TODO: Implement different layouts based on size
   const getStatus = (): WidgetStatus => {
     if (entriesCount === 0) return 'empty'
     return 'complete'

@@ -189,6 +189,7 @@ export default function Dashboard() {
               loading={loading}
               error={error}
               onRetry={refetch}
+              size={widgetSizes['cv']}
             />
           )}
 
@@ -200,6 +201,7 @@ export default function Dashboard() {
               count={data?.coverLetters.count ?? 0}
               recentLetters={data?.coverLetters.recentLetters}
               loading={loading}
+              size={widgetSizes['coverLetter']}
             />
           )}
 
@@ -212,6 +214,7 @@ export default function Dashboard() {
               newMatches={data?.jobs.newMatches}
               recentJobs={data?.jobs.recentSavedJobs}
               loading={loading}
+              size={widgetSizes['jobSearch']}
             />
           )}
 
@@ -224,6 +227,7 @@ export default function Dashboard() {
               statusBreakdown={data?.applications.statusBreakdown}
               nextFollowUp={data?.applications.nextFollowUp}
               loading={loading}
+              size={widgetSizes['applications']}
             />
           )}
 
@@ -235,6 +239,7 @@ export default function Dashboard() {
               exploredCount={data?.interest.hasResult ? 1 : 0}
               recommendedOccupations={data?.interest.topRecommendations}
               loading={loading}
+              size={widgetSizes['career']}
             />
           )}
 
@@ -247,6 +252,7 @@ export default function Dashboard() {
               topRecommendations={data?.interest.topRecommendations}
               completedAt={data?.interest.completedAt}
               loading={loading}
+              size={widgetSizes['interests']}
             />
           )}
 
@@ -258,6 +264,7 @@ export default function Dashboard() {
               completedCount={0}
               streakDays={0}
               loading={loading}
+              size={widgetSizes['exercises']}
             />
           )}
 
@@ -270,6 +277,7 @@ export default function Dashboard() {
               streakDays={0}
               hasEntryToday={false}
               loading={loading}
+              size={widgetSizes['diary']}
             />
           )}
 
@@ -282,6 +290,7 @@ export default function Dashboard() {
               savedCount={0}
               totalArticles={0}
               loading={loading}
+              size={widgetSizes['knowledge']}
             />
           )}
       </DashboardGrid>
