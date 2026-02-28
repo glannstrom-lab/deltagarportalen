@@ -67,7 +67,11 @@ const selfHelpResources = [
   },
 ]
 
-export default function CrisisSupport() {
+interface CrisisSupportProps {
+  variant?: 'fixed' | 'inline'
+}
+
+export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps) {
   const [isOpen, setIsOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
@@ -126,18 +130,28 @@ export default function CrisisSupport() {
 
   return (
     <>
-      {/* Support Button - mer prominent men fortfarande diskret */}
+      {/* Support Button */}
       <button
         ref={openButtonRef}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 transition-all text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2"
+        className={`
+          flex items-center gap-2 transition-all text-sm focus:outline-none focus:ring-2 focus:ring-rose-500
+          ${variant === 'fixed' 
+            ? 'fixed bottom-6 right-6 z-40 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus:ring-offset-2' 
+            : 'px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl'
+          }
+        `}
         aria-label="Öppna stöd och hjälp - för dig som mår dåligt eller behöver någon att prata med"
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
-        <Heart size={18} className="text-rose-500" aria-hidden="true" />
-        <span className="hidden sm:inline font-medium">Behöver du prata med någon?</span>
-        <span className="sm:hidden">Stöd</span>
+        <Heart size={variant === 'fixed' ? 18 : 20} className="text-rose-500" aria-hidden="true" />
+        {variant === 'fixed' && (
+          <>
+            <span className="hidden sm:inline font-medium">Behöver du prata med någon?</span>
+            <span className="sm:hidden">Stöd</span>
+          </>
+        )}
       </button>
 
       {/* Modal */}

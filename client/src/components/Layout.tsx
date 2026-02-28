@@ -3,7 +3,6 @@ import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
 import { BottomBar } from './layout/BottomBar'
 import { MobileNav, MobileNavSimplified } from './MobileNav'
-import CrisisSupport from './CrisisSupport'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
 import { cn } from '@/lib/utils'
@@ -71,7 +70,6 @@ export default function Layout() {
       <MobileNavSimplified />
       
       {/* Övriga komponenter */}
-      <CrisisSupport />
       <BreakReminder workDuration={15} />
       <ToastContainer />
     </div>

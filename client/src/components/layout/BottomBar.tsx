@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from 'react'
 import { cvApi, coverLetterApi } from '@/services/api'
 import { activityApi } from '@/services/api'
+import CrisisSupport from '@/components/CrisisSupport'
 
 interface BottomBarStats {
   cvScore: number
@@ -159,8 +160,18 @@ export function BottomBar() {
             </Link>
           </div>
 
+          {/* Mitten-sektion - Stöd */}
+          <div className="hidden sm:flex items-center">
+            <CrisisSupport variant="inline" />
+          </div>
+
           {/* Snabbåtgärder - höger sida */}
-          <div className="relative">
+          <div className="relative flex items-center gap-2">
+            {/* Mobil: Visa CrisisSupport som ikon */}
+            <div className="sm:hidden">
+              <CrisisSupport variant="inline" />
+            </div>
+            
             <button
               onClick={() => setShowQuickActions(!showQuickActions)}
               className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-xl hover:bg-primary/90 transition-colors"
