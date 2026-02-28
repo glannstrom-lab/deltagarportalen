@@ -27,7 +27,7 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
 
   return (
     <DashboardWidget
-      title="Din profil"
+      title="Ditt CV"
       icon={<FileText size={20} />}
       to="/cv"
       color="violet"
@@ -71,7 +71,7 @@ function CVWidgetMedium({ hasCV, progress, atsScore, missingSections = [], loadi
 
   return (
     <DashboardWidget
-      title="Din profil"
+      title="Ditt CV"
       icon={<FileText size={22} />}
       to="/cv"
       color="violet"
@@ -164,7 +164,7 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
 
   return (
     <DashboardWidget
-      title="Din profil"
+      title="Ditt CV"
       icon={<FileText size={24} />}
       to="/cv"
       color="violet"

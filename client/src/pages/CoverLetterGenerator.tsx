@@ -23,7 +23,9 @@ import {
   User,
   Building2,
   Target,
-  Award
+  Award,
+  Send,
+  Calendar
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -137,6 +139,16 @@ export default function CoverLetterGenerator() {
   // === SAVED JOBS ===
   const [savedJobs, setSavedJobs] = useState<PlatsbankenJob[]>([])
   const [showSavedJobs, setShowSavedJobs] = useState(false)
+  
+  // === APPLICATIONS ===
+  const [applications, setApplications] = useState<Array<{
+    id: string
+    company: string
+    jobTitle: string
+    status: 'applied' | 'interview' | 'rejected' | 'offer'
+    appliedDate: string
+  }>>([])
+  const [showApplications, setShowApplications] = useState(false)
   
   // === SECTIONS EXPANSION ===
   const [expandedSections, setExpandedSections] = useState({
@@ -770,6 +782,100 @@ export default function CoverLetterGenerator() {
                     </button>
                   </div>
                 ))
+              )}
+            </div>
+          )}
+        </Card>
+
+        {/* Applications Section */}
+        <Card className="p-4">
+          <button
+            onClick={() => setShowApplications(!showApplications)}
+            className="w-full flex items-center justify-between text-left"
+          >
+            <div className="flex items-center gap-3">
+              <Send className="w-5 h-5 text-orange-500" />
+              <div>
+                <h3 className="font-medium text-slate-800">Dina ansökningar</h3>
+                <p className="text-sm text-slate-500">{applications.length} registrerade</p>
+              </div>
+            </div>
+            {showApplications ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          </button>
+          
+          {showApplications && (
+            <div className="mt-4 space-y-3 border-t pt-4 max-h-64 overflow-y-auto">
+              {applications.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-slate-500 text-sm mb-3">Inga ansökningar registrerade än</p>
+                  <p className="text-xs text-slate-400 mb-3">
+                    Håll koll på dina ansökningar för att följa upp och se vilka som ger svar
+                  </p>
+                  <button
+                    onClick={() => {
+                      const newApplication = {
+                        id: Date.now().toString(),
+                        company: company || 'Nytt företag',
+                        jobTitle: jobTitle || 'Nytt jobb',
+                        status: 'applied' as const,
+                        appliedDate: new Date().toISOString()
+                      }
+                      setApplications([newApplication, ...applications])
+                    }}
+                    className="px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors"
+                  >
+                    + Registrera ansökan
+                  </button>
+                </div>
+              ) : (
+                <>
+                  {applications.map((app) => (
+                    <div
+                      key={app.id}
+                      className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium text-slate-900 truncate">{app.jobTitle}</p>
+                        <p className="text-sm text-slate-500">
+                          {app.company} • {new Date(app.appliedDate).toLocaleDateString('sv-SE')}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2 ml-2">
+                        <span className={`px-2 py-1 text-xs rounded-full ${
+                          app.status === 'applied' ? 'bg-blue-100 text-blue-700' :
+                          app.status === 'interview' ? 'bg-amber-100 text-amber-700' :
+                          app.status === 'offer' ? 'bg-emerald-100 text-emerald-700' :
+                          'bg-slate-100 text-slate-700'
+                        }`}>
+                          {app.status === 'applied' ? 'Skickad' :
+                           app.status === 'interview' ? 'Intervju' :
+                           app.status === 'offer' ? 'Erbjudande' : 'Avslag'}
+                        </span>
+                        <button
+                          onClick={() => setApplications(applications.filter(a => a.id !== app.id))}
+                          className="p-1 text-slate-400 hover:text-red-500 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => {
+                      const newApplication = {
+                        id: Date.now().toString(),
+                        company: company || 'Nytt företag',
+                        jobTitle: jobTitle || 'Nytt jobb',
+                        status: 'applied' as const,
+                        appliedDate: new Date().toISOString()
+                      }
+                      setApplications([newApplication, ...applications])
+                    }}
+                    className="w-full py-2 border-2 border-dashed border-orange-200 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors text-sm"
+                  >
+                    + Registrera ny ansökan
+                  </button>
+                </>
               )}
             </div>
           )}
