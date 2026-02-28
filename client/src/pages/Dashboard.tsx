@@ -3,7 +3,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { MobileOptimizer } from '@/components/MobileOptimizer'
 import { DashboardGrid, getWidgetGridClasses } from '@/components/dashboard/DashboardGrid'
-import { WidgetFilter, type WidgetType, availableWidgets } from '@/components/dashboard/WidgetFilter'
+import { WidgetFilter, type WidgetType } from '@/components/dashboard/WidgetFilter'
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
 import {
   CVWidget,
@@ -109,7 +109,6 @@ export default function Dashboard() {
   // Render widget with size selector wrapper
   const renderWidget = (widgetId: WidgetType, content: React.ReactNode) => {
     const size = widgetSizes[widgetId] || 'small'
-    const widgetInfo = availableWidgets.find((w) => w.id === widgetId)
 
     return (
       <div
@@ -236,9 +235,8 @@ export default function Dashboard() {
           renderWidget(
             'exercises',
             <ExercisesWidget
-              completedCount={data?.exercises.completedCount ?? 0}
-              lastCompleted={data?.exercises.lastCompleted}
-              recommendedExercise={data?.exercises.recommendedExercise}
+              completedCount={0}
+              streakDays={0}
               loading={loading}
             />
           )}
@@ -248,10 +246,9 @@ export default function Dashboard() {
           renderWidget(
             'diary',
             <DiaryWidget
-              entriesCount={data?.diary.entriesCount ?? 0}
-              lastEntry={data?.diary.lastEntry}
-              streakDays={data?.diary.streakDays}
-              hasEntryToday={data?.diary.hasEntryToday}
+              entriesCount={0}
+              streakDays={0}
+              hasEntryToday={false}
               loading={loading}
             />
           )}
@@ -261,11 +258,9 @@ export default function Dashboard() {
           renderWidget(
             'knowledge',
             <KnowledgeWidget
-              readCount={data?.knowledge.readCount ?? 0}
-              savedCount={data?.knowledge.savedCount ?? 0}
-              totalArticles={data?.knowledge.totalArticles}
-              recentlyRead={data?.knowledge.recentlyRead}
-              recommendedArticle={data?.knowledge.recommendedArticle}
+              readCount={0}
+              savedCount={0}
+              totalArticles={0}
               loading={loading}
             />
           )}
