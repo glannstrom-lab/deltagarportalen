@@ -1,4 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '@/stores/authStore'
 import { 
   X, 
   ChevronRight, 
@@ -9,14 +11,19 @@ import {
   Mail,
   Upload,
   Award,
-  Clock,
   RotateCcw,
   Play,
   CheckCircle,
   ArrowRight,
   SkipForward,
   PartyPopper,
-  Target
+  Target,
+  Compass,
+  FileText,
+  Briefcase,
+  Turtle,
+  Walk,
+  Running
 } from 'lucide-react'
 
 type EnergyLevel = 'high' | 'medium' | 'low' | null
@@ -32,28 +39,26 @@ interface StepInfo {
 const STEPS: StepInfo[] = [
   {
     id: 'welcome-energy',
-    title: 'Välkommen! Hur mår du idag?',
-    description: 'Vi anpassar upplevelsen efter din energinivå. Allt sparas automatiskt.',
-    estimatedMinutes: 3,
+    title: 'Vilket tempo passar dig idag?',
+    description: 'Vi anpassar upplevelsen efter ditt val. Allt sparas automatiskt och du kan pausa när du vill.',
+    estimatedMinutes: 2,
     icon: <Sparkles className="w-10 h-10 text-amber-500" />
   },
   {
-    id: 'quick-profile',
-    title: 'Skapa din profil',
-    description: 'Bara det viktigaste för att komma igång. Du kan fylla på mer senare.',
-    estimatedMinutes: 5,
-    icon: <User className="w-10 h-10 text-teal-600" />
+    id: 'choose-path',
+    title: 'Välj din väg',
+    description: 'Vad vill du börja med? Du kan alltid byta senare.',
+    estimatedMinutes: 1,
+    icon: <Compass className="w-10 h-10 text-teal-600" />
   },
   {
     id: 'first-win',
-    title: 'Ditt första steg',
-    description: 'Du är nästan klar! Här är en liten vinst att börja med.',
-    estimatedMinutes: 2,
+    title: 'Du är redo!',
+    description: 'Bra start! Här är ditt första steg.',
+    estimatedMinutes: 1,
     icon: <Award className="w-10 h-10 text-purple-600" />
   }
 ]
-
-const TOTAL_MINUTES = 10
 
 export default function Onboarding() {
   const [isOpen, setIsOpen] = useState(false)
@@ -68,6 +73,7 @@ export default function Onboarding() {
   const [showCelebration, setShowCelebration] = useState(false)
   const [stepCompleted, setStepCompleted] = useState<boolean[]>([false, false, false])
   const [cvFile, setCvFile] = useState<File | null>(null)
+  const [selectedPath, setSelectedPath] = useState<'interest' | 'cv' | 'jobs' | null>(null)
 
   // Load saved progress
   useEffect(() => {
@@ -181,10 +187,13 @@ export default function Onboarding() {
     handleClose()
   }
 
+  const navigate = useNavigate()
+  const { user } = useAuthStore()
+
   const handleQuickStart = () => {
     localStorage.setItem('has-seen-onboarding-v2', 'true')
     localStorage.removeItem('onboarding-progress-v2')
-    window.location.href = '/cv'
+    navigate('/cv')
   }
 
   const handleEnergySelect = (level: EnergyLevel) => {
@@ -205,7 +214,7 @@ export default function Onboarding() {
       case 0:
         return energyLevel !== null
       case 1:
-        return userName.trim().length > 0 && userEmail.trim().length > 0
+        return selectedPath !== null
       case 2:
         return true
       default:
@@ -243,8 +252,7 @@ export default function Onboarding() {
               )}
             </div>
             <div className="flex items-center gap-2 text-sm opacity-90">
-              <Clock className="w-4 h-4" />
-              <span>{getRemainingMinutes()} min kvar</span>
+              <span>Du kan pausa när du vill</span>
             </div>
           </div>
 
@@ -266,8 +274,8 @@ export default function Onboarding() {
               ))}
             </div>
             <div className="flex justify-between text-xs opacity-75">
-              <span>{getTotalProgress()} min gjort</span>
-              <span>Totalt {TOTAL_MINUTES} min</span>
+              <span>Steg {currentStep + 1} av {STEPS.length}</span>
+              <span>Allt sparas automatiskt</span>
             </div>
           </div>
         </div>
@@ -304,175 +312,198 @@ export default function Onboarding() {
           {/* Step 1: Welcome + Energy selector */}
           {currentStep === 0 && (
             <div className="space-y-6">
-              <div className="grid grid-cols-3 gap-3 max-w-sm mx-auto">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-lg mx-auto">
                 <button
-                  onClick={() => handleEnergySelect('high')}
+                  onClick={() => handleEnergySelect('low')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
-                    energyLevel === 'high' 
-                      ? 'border-green-500 bg-green-50 shadow-md' 
-                      : 'border-slate-200 hover:border-green-300 hover:bg-slate-50'
+                    energyLevel === 'low' 
+                      ? 'border-teal-500 bg-teal-50 shadow-md' 
+                      : 'border-slate-200 hover:border-teal-300 hover:bg-slate-50'
                   }`}
                 >
-                  <div className="text-3xl mb-2">🟢</div>
-                  <div className="font-semibold text-slate-700 text-sm">Bra</div>
-                  <div className="text-xs text-slate-500">Mycket energi</div>
+                  <div className="flex justify-center mb-2">
+                    <Turtle className="w-8 h-8 text-teal-600" />
+                  </div>
+                  <div className="font-semibold text-slate-700 text-sm">Utforska lugnt</div>
+                  <div className="text-xs text-slate-500 mt-1">Visa mig bara det viktigaste</div>
                 </button>
                 <button
                   onClick={() => handleEnergySelect('medium')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
                     energyLevel === 'medium' 
-                      ? 'border-yellow-500 bg-yellow-50 shadow-md' 
-                      : 'border-slate-200 hover:border-yellow-300 hover:bg-slate-50'
+                      ? 'border-blue-500 bg-blue-50 shadow-md' 
+                      : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
                   }`}
                 >
-                  <div className="text-3xl mb-2">🟡</div>
-                  <div className="font-semibold text-slate-700 text-sm">Okej</div>
-                  <div className="text-xs text-slate-500">Lagom</div>
+                  <div className="flex justify-center mb-2">
+                    <Walk className="w-8 h-8 text-blue-600" />
+                  </div>
+                  <div className="font-semibold text-slate-700 text-sm">Steg för steg</div>
+                  <div className="text-xs text-slate-500 mt-1">Jag vill ha guidad hjälp</div>
                 </button>
                 <button
-                  onClick={() => handleEnergySelect('low')}
+                  onClick={() => handleEnergySelect('high')}
                   className={`p-4 rounded-xl border-2 transition-all text-center ${
-                    energyLevel === 'low' 
+                    energyLevel === 'high' 
                       ? 'border-orange-500 bg-orange-50 shadow-md' 
                       : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50'
                   }`}
                 >
-                  <div className="text-3xl mb-2">🟠</div>
-                  <div className="font-semibold text-slate-700 text-sm">Låg</div>
-                  <div className="text-xs text-slate-500">Behöver vila</div>
-                </button>
-              </div>
-
-              {/* Quick start option */}
-              <div className="text-center pt-4 border-t border-slate-100">
-                <p className="text-sm text-slate-500 mb-3">Vill du komma igång direkt?</p>
-                <button
-                  onClick={handleQuickStart}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-amber-100 text-amber-700 rounded-xl font-medium hover:bg-amber-200 transition-colors"
-                >
-                  <Zap className="w-4 h-4" />
-                  Snabbstart - hoppa till CV
+                  <div className="flex justify-center mb-2">
+                    <Running className="w-8 h-8 text-orange-600" />
+                  </div>
+                  <div className="font-semibold text-slate-700 text-sm">Kom igång snabbt</div>
+                  <div className="text-xs text-slate-500 mt-1">Jag vet vad jag vill</div>
                 </button>
               </div>
 
               <p className="text-xs text-center text-slate-400">
-                Allt du gör sparas automatiskt. Du kan alltid återkomma senare.
+                Du kan alltid ändra tempo senare. Allt sparas automatiskt.
               </p>
             </div>
           )}
 
-          {/* Step 2: Quick Profile */}
+          {/* Step 2: Choose Your Path */}
           {currentStep === 1 && (
-            <div className="space-y-5 max-w-sm mx-auto">
-              {/* Name input */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-                  <User className="w-4 h-4 text-slate-400" />
-                  Ditt namn
-                </label>
-                <input
-                  type="text"
-                  value={userName}
-                  onChange={(e) => setUserName(e.target.value)}
-                  placeholder="För- och efternamn"
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors"
-                />
+            <div className="space-y-5 max-w-lg mx-auto">
+              {/* Welcome message with user's name */}
+              {user?.firstName && (
+                <div className="bg-teal-50 rounded-xl p-4 text-center">
+                  <p className="text-sm text-teal-700">
+                    Hej <strong>{user.firstName}</strong>! Din profil är redo.
+                  </p>
+                </div>
+              )}
+
+              <p className="text-sm text-slate-600 text-center">
+                Var befinner du dig i din jobbsökarresa? Välj det som passar dig bäst:
+              </p>
+
+              <div className="space-y-3">
+                {/* Path 1: Interest Guide */}
+                <button
+                  onClick={() => setSelectedPath('interest')}
+                  className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${
+                    selectedPath === 'interest'
+                      ? 'border-purple-500 bg-purple-50 shadow-md'
+                      : 'border-slate-200 hover:border-purple-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                    selectedPath === 'interest' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-600'
+                  }`}>
+                    <Compass className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-slate-800">Jag vet inte vad jag vill jobba med</div>
+                    <div className="text-sm text-slate-500">Gör intresseguiden för att upptäcka yrken som passar dig</div>
+                  </div>
+                  {selectedPath === 'interest' && <CheckCircle className="w-5 h-5 text-purple-500" />}
+                </button>
+
+                {/* Path 2: CV Builder */}
+                <button
+                  onClick={() => setSelectedPath('cv')}
+                  className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${
+                    selectedPath === 'cv'
+                      ? 'border-teal-500 bg-teal-50 shadow-md'
+                      : 'border-slate-200 hover:border-teal-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                    selectedPath === 'cv' ? 'bg-teal-500 text-white' : 'bg-teal-100 text-teal-600'
+                  }`}>
+                    <FileText className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-slate-800">Jag vet vad jag vill men behöver CV</div>
+                    <div className="text-sm text-slate-500">Använd vår CV-byggare för att skapa ett professionellt CV</div>
+                  </div>
+                  {selectedPath === 'cv' && <CheckCircle className="w-5 h-5 text-teal-500" />}
+                </button>
+
+                {/* Path 3: Job Search */}
+                <button
+                  onClick={() => setSelectedPath('jobs')}
+                  className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${
+                    selectedPath === 'jobs'
+                      ? 'border-blue-500 bg-blue-50 shadow-md'
+                      : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                    selectedPath === 'jobs' ? 'bg-blue-500 text-white' : 'bg-blue-100 text-blue-600'
+                  }`}>
+                    <Briefcase className="w-6 h-6" />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-slate-800">Jag är redo att börja söka jobb</div>
+                    <div className="text-sm text-slate-500">Hoppa direkt till jobbsökningen om du redan har CV</div>
+                  </div>
+                  {selectedPath === 'jobs' && <CheckCircle className="w-5 h-5 text-blue-500" />}
+                </button>
               </div>
 
-              {/* Email input */}
-              <div className="space-y-2">
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-slate-400" />
-                  E-postadress
-                </label>
-                <input
-                  type="email"
-                  value={userEmail}
-                  onChange={(e) => setUserEmail(e.target.value)}
-                  placeholder="din@email.se"
-                  className="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-teal-500 focus:outline-none transition-colors"
-                />
-              </div>
-
-              {/* Optional CV upload */}
-              <div className="pt-4 border-t border-slate-100">
-                <p className="text-sm text-slate-600 mb-3 flex items-center gap-2">
-                  <Upload className="w-4 h-4 text-slate-400" />
-                  Har du redan ett CV? (valfritt)
-                </p>
-                <label className="flex items-center justify-center gap-2 px-4 py-3 border-2 border-dashed border-slate-300 rounded-xl cursor-pointer hover:border-teal-400 hover:bg-teal-50 transition-colors">
-                  <input
-                    type="file"
-                    accept=".pdf,.doc,.docx"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                  />
-                  {cvFile ? (
-                    <>
-                      <CheckCircle className="w-5 h-5 text-green-500" />
-                      <span className="text-sm text-green-600">{cvFile.name}</span>
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="w-5 h-5 text-slate-400" />
-                      <span className="text-sm text-slate-500">Ladda upp befintligt CV</span>
-                    </>
-                  )}
-                </label>
-                <p className="text-xs text-slate-400 mt-2 text-center">
-                  Vi kan importera informationen automatiskt
-                </p>
-              </div>
+              <p className="text-xs text-slate-400 text-center">
+                Du kan alltid byta väg senare. Alla verktyg finns tillgängliga i din dashboard.
+              </p>
             </div>
           )}
 
-          {/* Step 3: First Win */}
+          {/* Step 3: First Win - Based on selected path */}
           {currentStep === 2 && (
             <div className="space-y-6">
               <div className="bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl p-6 border border-teal-100">
                 <div className="flex items-start gap-4">
                   <div className="p-3 bg-teal-100 rounded-xl">
-                    <Target className="w-6 h-6 text-teal-600" />
+                    <PartyPopper className="w-6 h-6 text-teal-600" />
                   </div>
                   <div>
                     <h3 className="font-bold text-teal-900 mb-1">
-                      Dagens lilla steg
+                      {selectedPath === 'interest' && 'Bra val att börja med intressen!'}
+                      {selectedPath === 'cv' && 'Dags att skapa ett CV som sticker ut!'}
+                      {selectedPath === 'jobs' && 'Redo att hitta ditt nya jobb!'}
                     </h3>
                     <p className="text-teal-700 text-sm">
                       {energyLevel === 'low' 
-                        ? 'Ta en titt på ditt nya CV. Du har redan kommit långt!'
+                        ? 'Ta det i din takt. Du kan alltid pausa och fortsätta senare.'
                         : energyLevel === 'medium'
-                        ? 'Utforska ditt nya CV och lägg till en sak du är bra på.'
-                        : 'Perfekt! Utforska ditt nya CV och börja bygga din profil.'}
+                        ? 'Vi guidar dig steg för steg. Du gör det i din takt.'
+                        : 'Perfekt! Du kan komma igång direkt.'}
                     </p>
                   </div>
                 </div>
               </div>
 
-              {/* Progress summary */}
+              {/* Selected path summary */}
               <div className="bg-slate-50 rounded-xl p-5">
-                <h4 className="font-semibold text-slate-700 mb-4 text-center">Din progress</h4>
+                <h4 className="font-semibold text-slate-700 mb-4 text-center">Dina val</h4>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-sm">
                     <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-slate-600">Valt energinivå: <span className="font-medium text-slate-800">
-                      {energyLevel === 'high' ? 'Bra' : energyLevel === 'medium' ? 'Okej' : 'Låg'}
+                    <span className="text-slate-600">Tempo: <span className="font-medium text-slate-800">
+                      {energyLevel === 'high' ? 'Kom igång snabbt' : energyLevel === 'medium' ? 'Steg för steg' : 'Utforska lugnt'}
                     </span></span>
                   </div>
                   <div className="flex items-center gap-3 text-sm">
                     <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-slate-600">Skapat profil: <span className="font-medium text-slate-800">{userName}</span></span>
+                    <span className="text-slate-600">Din väg: <span className="font-medium text-slate-800">
+                      {selectedPath === 'interest' && 'Upptäcka yrken med intresseguiden'}
+                      {selectedPath === 'cv' && 'Skapa professionellt CV'}
+                      {selectedPath === 'jobs' && 'Söka jobb direkt'}
+                    </span></span>
                   </div>
-                  <div className="flex items-center gap-3 text-sm">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
-                    <span className="text-slate-600">Tid till första resultat: <span className="font-medium text-slate-800">{formatTime(elapsedTime)}</span></span>
-                  </div>
+                  {user?.firstName && (
+                    <div className="flex items-center gap-3 text-sm">
+                      <CheckCircle className="w-5 h-5 text-green-500" />
+                      <span className="text-slate-600">Profil: <span className="font-medium text-slate-800">{user.firstName}</span></span>
+                    </div>
+                  )}
                 </div>
               </div>
 
               <p className="text-center text-sm text-slate-500">
-                Du kan alltid återkomma och fortsätta bygga din profil. 
-                Allt sparas automatiskt.
+                Kom ihåg: Du kan alltid byta väg eller pausa. Allt sparas automatiskt.
               </p>
             </div>
           )}
@@ -501,15 +532,23 @@ export default function Onboarding() {
                 <ChevronRight className="w-5 h-5" />
               </button>
             ) : (
-              <a
-                href="/cv"
-                onClick={handleComplete}
+              <button
+                onClick={() => {
+                  handleComplete()
+                  if (selectedPath === 'interest') navigate('/interest-guide')
+                  else if (selectedPath === 'cv') navigate('/cv')
+                  else if (selectedPath === 'jobs') navigate('/job-search')
+                  else navigate('/')
+                }}
                 className="flex items-center gap-2 px-6 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
               >
                 <CheckCircle className="w-5 h-5" />
-                Se mitt CV
+                {selectedPath === 'interest' && 'Starta intresseguiden'}
+                {selectedPath === 'cv' && 'Skapa mitt CV'}
+                {selectedPath === 'jobs' && 'Sök jobb'}
+                {!selectedPath && 'Kom igång'}
                 <ArrowRight className="w-5 h-5" />
-              </a>
+              </button>
             )}
           </div>
 
@@ -577,10 +616,10 @@ export function OnboardingReminder() {
           <p className="text-sm font-medium text-teal-900">
             {hasProgress 
               ? `Fortsätt där du slutade (steg ${progressStep} av 3)` 
-              : 'Välkommen! Vill du se en snabb introduktion?'}
+              : 'Välkommen! Vill du komma igång med din jobbsökarresa?'}
           </p>
           <p className="text-xs text-teal-700/70 mt-0.5">
-            Tar bara 10 minuter - du kan hoppa av när som helst
+            Välj ditt tempo och kom igång med din jobbsökarresa
           </p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
