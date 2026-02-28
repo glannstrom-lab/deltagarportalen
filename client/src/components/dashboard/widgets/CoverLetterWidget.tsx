@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Mail, FileText, Clock, Plus, Copy, ArrowRight } from 'lucide-react'
+import { Mail, FileText, Clock, Plus, Copy, ArrowRight, Send, CheckCircle2 } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
@@ -7,16 +7,22 @@ import type { WidgetSize } from '../WidgetSizeSelector'
 interface CoverLetterWidgetProps {
   count: number
   recentLetters?: { id: string; title: string; company: string; createdAt: string }[]
+  applicationsCount?: number
+  applicationsStatus?: {
+    applied: number
+    interview: number
+    offer: number
+  }
   loading?: boolean
   error?: string | null
   onRetry?: () => void
   size?: WidgetSize
 }
 
-// SMALL - Enkelt räknare
-function CoverLetterWidgetSmall({ count, loading, error, onRetry }: Omit<CoverLetterWidgetProps, 'size' | 'recentLetters'>) {
+// SMALL - Enkelt räknare med ansökningar
+function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, onRetry }: Omit<CoverLetterWidgetProps, 'size' | 'recentLetters' | 'applicationsStatus'>) {
   const getStatus = (): WidgetStatus => {
-    if (count === 0) return 'empty'
+    if (count === 0 && applicationsCount === 0) return 'empty'
     return 'complete'
   }
 
@@ -24,34 +30,45 @@ function CoverLetterWidgetSmall({ count, loading, error, onRetry }: Omit<CoverLe
 
   return (
     <DashboardWidget
-      title="Personliga brev"
+      title="Brev & ansökningar"
       icon={<Mail size={20} />}
       to="/cover-letter-generator"
       color="rose"
       status={status}
-      progress={count > 0 ? 100 : 0}
+      progress={count > 0 || applicationsCount > 0 ? 100 : 0}
       loading={loading}
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: count > 0 ? 'Skapa nytt' : 'Skriv brev',
+        label: count > 0 ? 'Skapa nytt' : 'Kom igång',
       }}
     >
       <div className="flex flex-col items-center justify-center py-2 text-center">
         <Mail size={28} className="text-rose-500 mb-2" />
-        <p className="text-3xl font-bold text-slate-800">{count}</p>
-        <p className="text-sm text-slate-500">
-          {count === 0 ? 'Inga brev' : count === 1 ? 'sparat brev' : 'sparade brev'}
-        </p>
+        <div className="flex items-baseline gap-3">
+          <div>
+            <p className="text-2xl font-bold text-slate-800">{count}</p>
+            <p className="text-xs text-slate-500">brev</p>
+          </div>
+          {applicationsCount > 0 && (
+            <>
+              <span className="text-slate-300">|</span>
+              <div>
+                <p className="text-2xl font-bold text-orange-600">{applicationsCount}</p>
+                <p className="text-xs text-slate-500">ansökningar</p>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </DashboardWidget>
   )
 }
 
-// MEDIUM - Lista över senaste brev
-function CoverLetterWidgetMedium({ count, recentLetters = [], loading, error, onRetry }: CoverLetterWidgetProps) {
+// MEDIUM - Lista över senaste brev + ansökningar
+function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount = 0, applicationsStatus, loading, error, onRetry }: CoverLetterWidgetProps) {
   const getStatus = (): WidgetStatus => {
-    if (count === 0) return 'empty'
+    if (count === 0 && applicationsCount === 0) return 'empty'
     return 'complete'
   }
 
@@ -70,12 +87,12 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], loading, error, on
 
   return (
     <DashboardWidget
-      title="Personliga brev"
+      title="Personliga brev & ansökningar"
       icon={<Mail size={22} />}
       to="/cover-letter-generator"
       color="rose"
       status={status}
-      progress={count > 0 ? 100 : 0}
+      progress={count > 0 || applicationsCount > 0 ? 100 : 0}
       loading={loading}
       error={error}
       onRetry={onRetry}
@@ -84,16 +101,51 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], loading, error, on
       }}
     >
       <div className="space-y-3">
-        {/* Antal */}
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
-            <Mail size={24} className="text-rose-600" />
+        {/* Stats: Brev + Ansökningar */}
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
+              <Mail size={20} className="text-rose-600" />
+            </div>
+            <div>
+              <p className="text-xl font-bold text-slate-800">{count}</p>
+              <p className="text-xs text-slate-500">brev</p>
+            </div>
           </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-800">{count}</p>
-            <p className="text-xs text-slate-500">{count === 1 ? 'sparat brev' : 'sparade brev'}</p>
-          </div>
+          
+          {applicationsCount > 0 && (
+            <div className="flex items-center gap-2">
+              <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                <Send size={20} className="text-orange-600" />
+              </div>
+              <div>
+                <p className="text-xl font-bold text-slate-800">{applicationsCount}</p>
+                <p className="text-xs text-slate-500">ansökningar</p>
+              </div>
+            </div>
+          )}
         </div>
+
+        {/* Ansöknings-status */}
+        {applicationsStatus && applicationsCount > 0 && (
+          <div className="flex flex-wrap gap-2">
+            {applicationsStatus.applied > 0 && (
+              <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-lg">
+                {applicationsStatus.applied} skickade
+              </span>
+            )}
+            {applicationsStatus.interview > 0 && (
+              <span className="px-2 py-1 bg-amber-50 text-amber-700 text-xs rounded-lg">
+                {applicationsStatus.interview} intervjuer
+              </span>
+            )}
+            {applicationsStatus.offer > 0 && (
+              <span className="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs rounded-lg">
+                {applicationsStatus.offer} erbjudanden
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Senaste brev */}
         {recentLetters.length > 0 && (
@@ -118,10 +170,10 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], loading, error, on
         )}
 
         {/* Empty state */}
-        {count === 0 && (
+        {count === 0 && applicationsCount === 0 && (
           <div className="p-3 bg-rose-50 rounded-lg">
             <p className="text-sm text-rose-700">Skapa personliga brev</p>
-            <p className="text-xs text-rose-600 mt-1">Anpassa för varje jobbansökan</p>
+            <p className="text-xs text-rose-600 mt-1">Och håll koll på dina ansökningar</p>
           </div>
         )}
       </div>
@@ -129,10 +181,10 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], loading, error, on
   )
 }
 
-// LARGE - Full brev-hantering
-function CoverLetterWidgetLarge({ count, recentLetters = [], loading, error, onRetry }: CoverLetterWidgetProps) {
+// LARGE - Full brev-hantering med ansökningar
+function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount = 0, applicationsStatus, loading, error, onRetry }: CoverLetterWidgetProps) {
   const getStatus = (): WidgetStatus => {
-    if (count === 0) return 'empty'
+    if (count === 0 && applicationsCount === 0) return 'empty'
     return 'complete'
   }
 
@@ -151,12 +203,12 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], loading, error, onR
 
   return (
     <DashboardWidget
-      title="Personliga brev"
+      title="Personliga brev & ansökningar"
       icon={<Mail size={24} />}
       to="/cover-letter-generator"
       color="rose"
       status={status}
-      progress={count > 0 ? 100 : 0}
+      progress={count > 0 || applicationsCount > 0 ? 100 : 0}
       loading={loading}
       error={error}
       onRetry={onRetry}
@@ -169,16 +221,49 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], loading, error, onR
       } : undefined}
     >
       <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-4 p-4 bg-rose-50 rounded-xl">
-          <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
-            <Mail size={28} className="text-rose-600" />
+        {/* Header med två kolumner: Brev + Ansökningar */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex items-center gap-4 p-4 bg-rose-50 rounded-xl">
+            <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
+              <Mail size={28} className="text-rose-600" />
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-rose-700">{count}</p>
+              <p className="text-sm text-rose-600">{count === 1 ? 'sparat brev' : 'sparade brev'}</p>
+            </div>
           </div>
-          <div>
-            <p className="text-3xl font-bold text-rose-700">{count}</p>
-            <p className="text-sm text-rose-600">{count === 1 ? 'sparat brev' : 'sparade brev'}</p>
+          
+          <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-xl">
+            <div className="w-14 h-14 bg-white rounded-xl flex items-center justify-center shadow-sm">
+              <Send size={28} className="text-orange-600" />
+            </div>
+            <div>
+              <p className="text-3xl font-bold text-orange-700">{applicationsCount}</p>
+              <p className="text-sm text-orange-600">{applicationsCount === 1 ? 'registrerad ansökan' : 'registrerade ansökningar'}</p>
+            </div>
           </div>
         </div>
+
+        {/* Ansöknings-pipeline */}
+        {applicationsCount > 0 && applicationsStatus && (
+          <div className="p-4 bg-slate-50 rounded-xl">
+            <p className="text-sm font-medium text-slate-700 mb-3">Dina ansöknings-status:</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 bg-blue-50 rounded-xl text-center">
+                <p className="text-2xl font-bold text-blue-700">{applicationsStatus.applied}</p>
+                <p className="text-xs text-blue-600">Skickade</p>
+              </div>
+              <div className="p-3 bg-amber-50 rounded-xl text-center">
+                <p className="text-2xl font-bold text-amber-700">{applicationsStatus.interview}</p>
+                <p className="text-xs text-amber-600">Intervjuer</p>
+              </div>
+              <div className="p-3 bg-emerald-50 rounded-xl text-center">
+                <p className="text-2xl font-bold text-emerald-700">{applicationsStatus.offer}</p>
+                <p className="text-xs text-emerald-600">Erbjudanden</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Lista över brev */}
         {recentLetters.length > 0 ? (
@@ -238,7 +323,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], loading, error, onR
         {/* Tips */}
         {count > 0 && (
           <div className="flex items-start gap-3 p-3 bg-amber-50 rounded-xl">
-            <FileText size={18} className="text-amber-500 mt-0.5" />
+            <CheckCircle2 size={18} className="text-amber-500 mt-0.5" />
             <p className="text-sm text-slate-600">
               Tips: Anpassa alltid ditt personliga brev för varje jobb. 
               Nämn specifika detaljer från annonsen som visar att du läst den noggrant.

@@ -14,7 +14,6 @@ import {
   ExercisesWidget,
   DiaryWidget,
   KnowledgeWidget,
-  ApplicationsWidget,
 } from '@/components/dashboard'
 import { cn } from '@/lib/utils'
 
@@ -23,7 +22,6 @@ const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   cv: 'small',
   coverLetter: 'small',
   jobSearch: 'small',
-  applications: 'small',
   career: 'small',
   interests: 'small',
   exercises: 'small',
@@ -36,7 +34,6 @@ const defaultVisibleWidgets: WidgetType[] = [
   'cv',
   'coverLetter',
   'jobSearch',
-  'applications',
   'career',
   'interests',
   'exercises',
@@ -193,13 +190,15 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Cover Letter Widget */}
+        {/* Cover Letter Widget - nu med ansökningar */}
         {visibleWidgets.includes('coverLetter') &&
           renderWidget(
             'coverLetter',
             <CoverLetterWidget
               count={data?.coverLetters.count ?? 0}
               recentLetters={data?.coverLetters.recentLetters}
+              applicationsCount={data?.applications.total ?? 0}
+              applicationsStatus={data?.applications.statusBreakdown}
               loading={loading}
               size={widgetSizes['coverLetter']}
             />
@@ -215,19 +214,6 @@ export default function Dashboard() {
               recentJobs={data?.jobs.recentSavedJobs}
               loading={loading}
               size={widgetSizes['jobSearch']}
-            />
-          )}
-
-        {/* Applications Widget */}
-        {visibleWidgets.includes('applications') &&
-          renderWidget(
-            'applications',
-            <ApplicationsWidget
-              total={data?.applications.total ?? 0}
-              statusBreakdown={data?.applications.statusBreakdown}
-              nextFollowUp={data?.applications.nextFollowUp}
-              loading={loading}
-              size={widgetSizes['applications']}
             />
           )}
 

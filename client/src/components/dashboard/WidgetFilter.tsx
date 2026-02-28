@@ -4,7 +4,6 @@ import {
   FileText,
   Mail,
   Briefcase,
-  Send,
   Target,
   Compass,
   Dumbbell,
@@ -17,7 +16,6 @@ export type WidgetType =
   | 'cv'
   | 'coverLetter'
   | 'jobSearch'
-  | 'applications'
   | 'career'
   | 'interests'
   | 'exercises'
@@ -33,10 +31,9 @@ export interface WidgetFilterItem {
 
 // Widget-färger - varje widget har sin egen distinkta färg för enkel igenkänning
 export const availableWidgets: WidgetFilterItem[] = [
-  { id: 'cv', label: 'Profil', icon: FileText, color: 'text-violet-600 bg-violet-50 border-violet-200' },
+  { id: 'cv', label: 'Ditt CV', icon: FileText, color: 'text-violet-600 bg-violet-50 border-violet-200' },
   { id: 'coverLetter', label: 'Brev', icon: Mail, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'jobSearch', label: 'Jobb', icon: Briefcase, color: 'text-blue-600 bg-blue-50 border-blue-200' },
-  { id: 'applications', label: 'Ansökningar', icon: Send, color: 'text-orange-600 bg-orange-50 border-orange-200' },
   { id: 'career', label: 'Karriär', icon: Target, color: 'text-indigo-600 bg-indigo-50 border-indigo-200' },
   { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-teal-600 bg-teal-50 border-teal-200' },
   { id: 'exercises', label: 'Övningar', icon: Dumbbell, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
