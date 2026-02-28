@@ -56,7 +56,7 @@ export const InterestWidget = memo(function InterestWidget({
       stats={[
         { 
           label: 'Status', 
-          value: hasResult ? 'Test genomfört' : 'Ej påbörjat' 
+          value: hasResult ? 'Du har gjort testet!' : 'Nyfiken på dina intressen?' 
         },
         ...(completedAt ? [{ 
           label: 'Genomfört', 
@@ -89,8 +89,8 @@ export const InterestWidget = memo(function InterestWidget({
               </>
             ) : (
               <>
-                <p className="text-lg font-bold text-slate-800">Inte gjort testet?</p>
-                <p className="text-sm text-slate-500">Ta reda på vad som passar dig</p>
+                <p className="text-lg font-bold text-slate-800">Nyfiken på vad som passar dig?</p>
+                <p className="text-sm text-slate-500">Testet tar bara några minuter</p>
               </>
             )}
           </div>

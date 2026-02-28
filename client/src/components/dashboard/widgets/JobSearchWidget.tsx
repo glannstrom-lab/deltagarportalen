@@ -79,10 +79,10 @@ export const JobSearchWidget = memo(function JobSearchWidget({
             </div>
             <div>
               <p className="text-sm font-medium text-blue-900">
-                {newMatches} nya jobb matchar din profil!
+                {newMatches} nya jobb matchar din profil
               </p>
               <p className="text-xs text-blue-600">
-                Kolla in dem innan de försvinner
+                Ta en titt när du har tid
               </p>
             </div>
           </div>

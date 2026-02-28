@@ -46,7 +46,7 @@ export const ExercisesWidget = memo(function ExercisesWidget({
       title="Övningar"
       icon={<Dumbbell size={22} />}
       to="/exercises"
-      color="cyan"
+      color="teal"
       status={status}
       progress={Math.min(100, (completedCount / 10) * 100)}
       loading={loading}
@@ -54,14 +54,9 @@ export const ExercisesWidget = memo(function ExercisesWidget({
       onRetry={onRetry}
       stats={[
         { label: 'Genomförda', value: completedCount },
-        ...(streakDays > 0 ? [{ 
-          label: 'Streak', 
-          value: `${streakDays} dagar`,
-          trend: 'up' as const
-        }] : []),
       ]}
       primaryAction={{
-        label: completedCount > 0 ? 'Fortsätt öva' : 'Börja öva',
+        label: completedCount > 0 ? 'Öva när du vill' : 'Prova en övning',
       }}
     >
       <div className="mt-3 space-y-3">
@@ -78,16 +73,15 @@ export const ExercisesWidget = memo(function ExercisesWidget({
           </div>
         </div>
         
-        {/* Streak-indikator */}
-        {streakDays > 0 && (
-          <div className="flex items-center gap-3 p-3 bg-gradient-to-r from-orange-50 to-red-50 rounded-xl border border-orange-100">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-              <Flame size={20} className="text-orange-500" />
+        {/* Senaste aktivitet istället för streak */}
+        {lastCompleted && (
+          <div className="p-3 bg-slate-50 rounded-xl">
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle2 size={14} className="text-emerald-500" />
+              <span className="text-xs text-slate-500">Senaste övningen:</span>
             </div>
-            <div>
-              <p className="text-lg font-bold text-orange-700">{streakDays} dagar</p>
-              <p className="text-sm text-orange-600">i rad - fortsätt så!</p>
-            </div>
+            <p className="text-sm font-medium text-slate-700">{lastCompleted.title}</p>
+            <p className="text-xs text-slate-500 mt-1">{getTimeAgo(lastCompleted.completedAt)}</p>
           </div>
         )}
         
@@ -138,11 +132,11 @@ export const ExercisesWidget = memo(function ExercisesWidget({
           </div>
         )}
         
-        {/* Motivation för aktiva användare */}
-        {completedCount > 0 && !streakDays && (
+        {/* Uppmuntran utan krav */}
+        {completedCount > 0 && (
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <TrendingUp size={14} className="text-emerald-500" />
-            <span>Fortsätt öva för att bygga en streak!</span>
+            <span>Bra jobbat! Öva när du känner för det.</span>
           </div>
         )}
       </div>

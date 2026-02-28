@@ -53,7 +53,7 @@ export const CVWidget = memo(function CVWidget({
       stats={[
         { 
           label: 'Status', 
-          value: hasCV ? 'Påbörjad' : 'Ej påbörjad',
+          value: hasCV ? 'Du är igång!' : 'Redo att börja',
         },
         ...(atsScore > 0 ? [{ 
           label: 'CV-kvalitet', 
@@ -61,7 +61,7 @@ export const CVWidget = memo(function CVWidget({
         }] : []),
       ]}
       primaryAction={{
-        label: hasCV ? 'Fortsätt bygga' : 'Skapa profil',
+        label: hasCV ? 'Fortsätt i din takt' : 'Bygg din profil',
       }}
     >
       <div className="mt-3 space-y-3">
@@ -74,10 +74,10 @@ export const CVWidget = memo(function CVWidget({
             <div>
               <p className="text-2xl font-bold text-violet-700">{progress}%</p>
               <p className="text-sm text-violet-600">
-                {progress < 25 && 'Bra start!'}
-                {progress >= 25 && progress < 50 && 'Kommer framåt!'}
-                {progress >= 50 && progress < 75 && 'Nästan klart!'}
-                {progress >= 75 && ' nästan klart!'}
+                {progress < 25 && 'Bra början!'}
+                {progress >= 25 && progress < 50 && 'Du gör framsteg!'}
+                {progress >= 50 && progress < 75 && 'Så bra det blir!'}
+                {progress >= 75 && 'Ser jättebra ut!'}
               </p>
             </div>
           </div>
@@ -123,10 +123,10 @@ export const CVWidget = memo(function CVWidget({
             <div className="flex items-start gap-3">
               <Sparkles size={20} className="text-violet-500 mt-0.5" />
               <div>
-                <p className="text-sm font-medium text-violet-900">Börja bygga din profil</p>
+                <p className="text-sm font-medium text-violet-900">Din profil väntar på dig</p>
                 <p className="text-xs text-violet-700 mt-1">
-                  Ett bra CV är nyckeln till jobbintervjuer. 
-                  Vi hjälper dig steg för steg.
+                  När du är redo hjälper vi dig att bygga en profil 
+                  som visar dina styrkor. Ta den tid du behöver.
                 </p>
               </div>
             </div>

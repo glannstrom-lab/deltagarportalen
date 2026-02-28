@@ -66,14 +66,9 @@ export const DiaryWidget = memo(function DiaryWidget({
       onRetry={onRetry}
       stats={[
         { label: 'Antal inlägg', value: entriesCount },
-        ...(streakDays > 0 ? [{ 
-          label: 'Dagar i rad', 
-          value: streakDays,
-          trend: 'up' as const
-        }] : []),
       ]}
       primaryAction={{
-        label: hasEntryToday ? 'Läs dagbok' : 'Skriv idag',
+        label: hasEntryToday ? 'Läs dagbok' : 'Skriv en rad',
       }}
     >
       <div className="mt-3 space-y-3">
@@ -96,13 +91,13 @@ export const DiaryWidget = memo(function DiaryWidget({
         
         {/* Status för idag */}
         {!hasEntryToday && entriesCount > 0 && (
-          <div className="p-3 bg-rose-50 rounded-xl flex items-center gap-3">
+          <div className="p-3 bg-slate-50 rounded-xl flex items-center gap-3">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm">
-              <PenLine size={18} className="text-rose-500" />
+              <PenLine size={18} className="text-slate-500" />
             </div>
             <div>
-              <p className="text-sm font-medium text-rose-900">Du har inte skrivit idag</p>
-              <p className="text-xs text-rose-600">Ta några minuter för att reflektera</p>
+              <p className="text-sm font-medium text-slate-700">Vill du skriva en rad?</p>
+              <p className="text-xs text-slate-500">Det är okej att ta det lugnt idag</p>
             </div>
           </div>
         )}
@@ -145,13 +140,11 @@ export const DiaryWidget = memo(function DiaryWidget({
           </div>
         )}
         
-        {/* Streak-indikator */}
-        {streakDays > 0 && (
-          <div className="flex items-center gap-2 text-sm">
-            <span className="text-2xl">🔥</span>
-            <span className="font-medium text-slate-700">
-              {streakDays} dagars streak
-            </span>
+        {/* Senaste aktivitet istället för streak */}
+        {lastEntry && (
+          <div className="flex items-center gap-2 text-sm text-slate-500">
+            <History size={16} />
+            <span>Senaste inlägget: {getTimeAgo(lastEntry.date)}</span>
           </div>
         )}
         

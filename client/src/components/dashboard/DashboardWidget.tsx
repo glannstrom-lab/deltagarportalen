@@ -8,33 +8,37 @@ import type { DashboardWidgetProps, WidgetStat, WidgetStatus, WidgetColor } from
 // Sidebar-färgen #4f46e5
 const SIDEBAR_COLOR = '#4f46e5'
 
+// Förenklad färgpalett: 3 färger istället för 8
+// primary = kärnfunktioner (CV, Profil)
+// secondary = utforskning (Intressen, Karriär)  
+// neutral = stödfunktioner (övriga)
 const colorStyles: Record<WidgetColor, string> = {
-  violet: 'bg-violet-50 text-violet-600 border-violet-100',
+  violet: 'bg-indigo-50 text-indigo-600 border-indigo-100',
   teal: 'bg-teal-50 text-teal-600 border-teal-100',
-  blue: 'bg-blue-50 text-blue-600 border-blue-100',
-  orange: 'bg-orange-50 text-orange-600 border-orange-100',
-  green: 'bg-green-50 text-green-600 border-green-100',
-  rose: 'bg-rose-50 text-rose-600 border-rose-100',
+  blue: 'bg-slate-50 text-slate-600 border-slate-100',
+  orange: 'bg-slate-50 text-slate-600 border-slate-100',
+  green: 'bg-teal-50 text-teal-600 border-teal-100',
+  rose: 'bg-slate-50 text-slate-600 border-slate-100',
   amber: 'bg-amber-50 text-amber-600 border-amber-100',
   indigo: 'bg-indigo-50 text-indigo-600 border-indigo-100',
 }
 
 const colorBgStyles: Record<WidgetColor, string> = {
-  violet: 'bg-violet-500',
+  violet: 'bg-indigo-500',
   teal: 'bg-teal-500',
-  blue: 'bg-blue-500',
-  orange: 'bg-orange-500',
-  green: 'bg-green-500',
-  rose: 'bg-rose-500',
+  blue: 'bg-slate-500',
+  orange: 'bg-slate-500',
+  green: 'bg-teal-500',
+  rose: 'bg-slate-500',
   amber: 'bg-amber-500',
   indigo: 'bg-indigo-500',
 }
 
 const statusConfig: Record<WidgetStatus, { label: string; barColor: string }> = {
-  empty: { label: 'Kom igång', barColor: 'bg-slate-200' },
-  'in-progress': { label: 'Påbörjad', barColor: 'bg-amber-400' },
-  complete: { label: 'Redo', barColor: 'bg-emerald-500' },
-  error: { label: 'Fel', barColor: 'bg-rose-500' },
+  empty: { label: 'Redo att börja', barColor: 'bg-slate-200' },
+  'in-progress': { label: 'Du är igång!', barColor: 'bg-amber-400' },
+  complete: { label: 'Bra jobbat!', barColor: 'bg-emerald-500' },
+  error: { label: 'Något gick fel', barColor: 'bg-rose-500' },
 }
 
 function StatRow({ stat }: { stat: WidgetStat }) {
@@ -67,7 +71,7 @@ export function DashboardWidget({
 }: DashboardWidgetProps) {
   if (loading) {
     return (
-      <Card className="h-[280px] p-5 flex items-center justify-center">
+      <Card className="min-h-[200px] h-auto p-5 flex items-center justify-center">
         <LoadingState size="sm" message="Laddar..." />
       </Card>
     )
@@ -75,7 +79,7 @@ export function DashboardWidget({
 
   if (error) {
     return (
-      <Card className="h-[280px] p-5 flex flex-col items-center justify-center text-center">
+      <Card className="min-h-[200px] h-auto p-5 flex flex-col items-center justify-center text-center">
         <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center mb-3">
           <AlertCircle className="w-6 h-6 text-rose-500" />
         </div>
@@ -93,7 +97,7 @@ export function DashboardWidget({
   }
 
   return (
-    <Card className="h-[280px] p-5 flex flex-col hover:shadow-md transition-shadow">
+    <Card className="min-h-[200px] h-auto p-5 flex flex-col hover:shadow-md transition-shadow">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <Link to={to} className="flex items-center gap-3 group">
