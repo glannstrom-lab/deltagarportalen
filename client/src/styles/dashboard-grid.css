@@ -1,0 +1,176 @@
+/**
+ * Dashboard Grid Styles
+ * 
+ * Säkerställer likstora widget-kort över alla skärmstorlekar
+ * med korrekt responsivt beteende.
+ */
+
+/* ============================================
+   DASHBOARD GRID
+   ============================================ */
+
+.dashboard-widget-grid {
+  display: grid;
+  gap: 1rem; /* 16px */
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* Tablet: 3 kolumner */
+@media (min-width: 640px) {
+  .dashboard-widget-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem; /* 20px */
+  }
+}
+
+/* Desktop: 4 kolumner */
+@media (min-width: 1024px) {
+  .dashboard-widget-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Large desktop: 4 kolumner med max-bredd */
+@media (min-width: 1280px) {
+  .dashboard-widget-grid {
+    grid-template-columns: repeat(4, minmax(260px, 1fr));
+    max-width: 1200px;
+  }
+}
+
+/* ============================================
+   WIDGET-KORT
+   ============================================ */
+
+.dashboard-widget {
+  /* Fast höjd för konsistens */
+  min-height: 180px;
+  height: 100%;
+  
+  /* Layout */
+  display: flex;
+  flex-direction: column;
+  
+  /* Visuellt */
+  border-radius: 1rem; /* 16px */
+  padding: 1rem; /* 16px */
+  
+  /* Animation */
+  transition: all 0.2s ease-out;
+}
+
+/* Större skärmar = mer padding och höjd */
+@media (min-width: 640px) {
+  .dashboard-widget {
+    min-height: 200px;
+    padding: 1.25rem; /* 20px */
+    border-radius: 1.25rem; /* 20px */
+  }
+}
+
+@media (min-width: 1024px) {
+  .dashboard-widget {
+    min-height: 220px;
+  }
+}
+
+/* Hover-effekt - endast på enheter som stöder hover */
+@media (hover: hover) {
+  .dashboard-widget:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Aktivt tillstånd (vid klick) */
+.dashboard-widget:active {
+  transform: scale(0.98);
+}
+
+/* Fokus-tillstånd (tangentbord) */
+.dashboard-widget:focus-visible {
+  outline: 3px solid #0d9488;
+  outline-offset: 2px;
+}
+
+/* ============================================
+   PROGRESS BAR
+   ============================================ */
+
+.dashboard-widget-progress {
+  height: 6px;
+  background-color: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.dashboard-widget-progress-bar {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.5s ease-out;
+}
+
+/* ============================================
+   TILLGÄNGLIGHET
+   ============================================ */
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-widget,
+  .dashboard-widget-progress-bar {
+    transition: none;
+  }
+  
+  .dashboard-widget:hover {
+    transform: none;
+  }
+}
+
+/* Hög kontrast */
+@media (prefers-contrast: high) {
+  .dashboard-widget {
+    border-width: 2px;
+  }
+}
+
+/* Mörkt läge - justeringar */
+@media (prefers-color-scheme: dark) {
+  .dashboard-widget-progress {
+    background-color: #334155;
+  }
+}
+
+/* ============================================
+   MOBILANPASSNING
+   ============================================ */
+
+/* Touch-enheter - större klick-ytor */
+@media (pointer: coarse) {
+  .dashboard-widget {
+    min-height: 190px; /* Något högre för touch */
+  }
+  
+  .dashboard-widget [role="button"],
+  .dashboard-widget button {
+    min-height: 44px; /* WCAG 2.5.5 */
+  }
+}
+
+/* Mindre mobiler */
+@media (max-width: 360px) {
+  .dashboard-widget-grid {
+    gap: 0.75rem; /* 12px */
+  }
+  
+  .dashboard-widget {
+    padding: 0.875rem; /* 14px */
+    min-height: 170px;
+  }
+}
+
+/* Landskapsläge på mobil */
+@media (max-height: 500px) and (orientation: landscape) {
+  .dashboard-widget {
+    min-height: 160px;
+  }
+}
