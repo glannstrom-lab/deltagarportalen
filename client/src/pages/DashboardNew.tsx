@@ -337,7 +337,7 @@ export default function DashboardNew() {
           title="Kalender"
           icon={Calendar}
           color="purple"
-          to="/calendar"
+          to="/diary"
           statusText="Schema och påminnelser"
           statusDescription="Håll koll på möten och deadlines"
           ctaText="Öppna kalender"

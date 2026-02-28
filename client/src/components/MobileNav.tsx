@@ -13,6 +13,7 @@ import {
   User,
   Menu,
   X,
+  BookHeart,
 } from 'lucide-react'
 
 interface NavItem {
@@ -54,7 +55,7 @@ export function MobileNav() {
     { to: '/job-search', label: 'Sök jobb', icon: <Search className="w-5 h-5" /> },
     { to: '/job-tracker', label: 'Ansökningar', icon: <FileText className="w-5 h-5" /> },
     { to: '/knowledge-base', label: 'Kunskapsbank', icon: <BookOpen className="w-5 h-5" /> },
-    { to: '/calendar', label: 'Kalender', icon: <Calendar className="w-5 h-5" /> },
+    { to: '/diary', label: 'Dagbok', icon: <BookHeart className="w-5 h-5" /> },
     { to: '/wellness', label: 'Mående', icon: <Heart className="w-5 h-5" /> },
     { to: '/profile', label: 'Profil', icon: <User className="w-5 h-5" /> },
   ]

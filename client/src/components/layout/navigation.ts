@@ -10,6 +10,7 @@ import {
   Target,
   Shield,
   Users,
+  BookHeart,
 } from 'lucide-react'
 
 // Standard navigation för deltagare
@@ -21,7 +22,7 @@ export const navItems = [
   { path: '/career', label: 'Karriär', icon: Target },
   { path: '/interest-guide', label: 'Intresseguide', icon: Compass },
   { path: '/exercises', label: 'Övningar', icon: Dumbbell },
-  { path: '/calendar', label: 'Kalender', icon: Calendar },
+  { path: '/diary', label: 'Dagbok', icon: BookHeart },
   { path: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
 ]
 

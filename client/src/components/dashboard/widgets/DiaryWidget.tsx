@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { BookHeart, Calendar, PenLine, Smile, Meh, Frown, Sparkles, Edit3, History } from 'lucide-react'
+import { BookHeart, Calendar, PenLine, Smile, Meh, Frown, Sparkles, Edit3, History, CheckCircle2 } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 
@@ -57,7 +57,7 @@ export const DiaryWidget = memo(function DiaryWidget({
     <DashboardWidget
       title="Dagbok"
       icon={<BookHeart size={22} />}
-      to="/calendar"
+      to="/diary"
       color="rose"
       status={status}
       progress={Math.min(100, (entriesCount / 7) * 100)}

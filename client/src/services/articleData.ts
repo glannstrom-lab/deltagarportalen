@@ -767,7 +767,7 @@ Det är okej att känna besvikelse, frustration eller oro. Tillåt dig att känn
     bookmarkCount: 312,
     relatedArticles: ['motivation-langsiktig', 'stresshantering', 'krisstod'],
     actions: [
-      { label: '📅 Boka stödsamtal', href: '/calendar', type: 'primary' },
+      { label: '📅 Boka stödsamtal', href: '/diary', type: 'primary' },
     ],
     author: 'Lisa Bergström',
     authorTitle: 'Beteendevetare',

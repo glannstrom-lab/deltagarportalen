@@ -13,7 +13,7 @@ import Profile from './pages/Profile'
 import JobTracker from './pages/JobTracker'
 import JobSearch from './pages/JobSearch'
 import Career from './pages/Career'
-import Calendar from './pages/Calendar'
+import Diary from './pages/Diary'
 import Wellness from './pages/Wellness'
 import Exercises from './pages/Exercises'
 import Settings from './pages/Settings'
@@ -67,7 +67,8 @@ function App() {
         <Route path="job-search" element={<JobSearch />} />
         <Route path="jobs" element={<JobSearch />} />
         <Route path="career" element={<Career />} />
-        <Route path="calendar" element={<Calendar />} />
+        <Route path="diary" element={<Diary />} />
+        <Route path="calendar" element={<Navigate to="/diary" replace />} />
         <Route path="wellness" element={<Wellness />} />
         <Route path="exercises" element={<Exercises />} />
         <Route path="settings" element={<Settings />} />
