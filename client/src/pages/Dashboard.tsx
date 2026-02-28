@@ -54,18 +54,38 @@ export default function Dashboard() {
 
   // State for visible widgets
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(STORAGE_KEY_VISIBLE)
-      return saved ? JSON.parse(saved) : defaultVisibleWidgets
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem(STORAGE_KEY_VISIBLE)
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          // Validate that it's an array
+          if (Array.isArray(parsed)) {
+            return parsed
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error loading visible widgets from localStorage:', e)
     }
     return defaultVisibleWidgets
   })
 
   // State for widget sizes
   const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(() => {
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem(STORAGE_KEY_SIZES)
-      return saved ? JSON.parse(saved) : defaultWidgetSizes
+    try {
+      if (typeof window !== 'undefined') {
+        const saved = localStorage.getItem(STORAGE_KEY_SIZES)
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          // Validate that it's an object
+          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+            return parsed
+          }
+        }
+      }
+    } catch (e) {
+      console.error('Error loading widget sizes from localStorage:', e)
     }
     return defaultWidgetSizes
   })
