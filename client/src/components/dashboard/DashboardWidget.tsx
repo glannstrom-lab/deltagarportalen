@@ -2,8 +2,11 @@ import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
 import { LoadingState } from '@/components/ui/LoadingState'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, ArrowRight } from 'lucide-react'
 import type { DashboardWidgetProps, WidgetStat, WidgetStatus, WidgetColor } from '@/types/dashboard'
+
+// Sidebar-färgen #4f46e5
+const SIDEBAR_COLOR = '#4f46e5'
 
 const colorStyles: Record<WidgetColor, string> = {
   violet: 'bg-violet-50 text-violet-600 border-violet-100',
@@ -14,6 +17,17 @@ const colorStyles: Record<WidgetColor, string> = {
   rose: 'bg-rose-50 text-rose-600 border-rose-100',
   amber: 'bg-amber-50 text-amber-600 border-amber-100',
   indigo: 'bg-indigo-50 text-indigo-600 border-indigo-100',
+}
+
+const colorBgStyles: Record<WidgetColor, string> = {
+  violet: 'bg-violet-500',
+  teal: 'bg-teal-500',
+  blue: 'bg-blue-500',
+  orange: 'bg-orange-500',
+  green: 'bg-green-500',
+  rose: 'bg-rose-500',
+  amber: 'bg-amber-500',
+  indigo: 'bg-indigo-500',
 }
 
 const statusConfig: Record<WidgetStatus, { label: string; barColor: string }> = {
@@ -137,9 +151,14 @@ export function DashboardWidget({
           <Link
             to={to}
             onClick={primaryAction.onClick}
-            className="flex-1 py-2 px-3 bg-violet-600 text-white text-sm font-medium rounded-lg text-center hover:bg-violet-700 transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
+            className="flex-1 py-2.5 px-4 text-white text-sm font-medium rounded-xl text-center transition-all duration-200 hover:opacity-90 hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2"
+            style={{ 
+              backgroundColor: SIDEBAR_COLOR,
+              boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)'
+            }}
           >
             {primaryAction.label}
+            <ArrowRight size={16} />
           </Link>
         )}
         {secondaryAction && (
