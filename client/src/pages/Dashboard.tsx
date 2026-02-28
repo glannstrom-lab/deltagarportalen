@@ -4,11 +4,13 @@ import { MobileOptimizer } from '@/components/MobileOptimizer'
 import { DashboardGrid } from '@/components/dashboard/DashboardGrid'
 import {
   CVWidget,
-  JobSearchWidget,
-  ApplicationsWidget,
-  InterestWidget,
   CoverLetterWidget,
-  ActivityWidget,
+  JobSearchWidget,
+  CareerWidget,
+  InterestWidget,
+  ExercisesWidget,
+  DiaryWidget,
+  KnowledgeWidget,
 } from '@/components/dashboard'
 
 export default function Dashboard() {
@@ -30,8 +32,9 @@ export default function Dashboard() {
         </p>
       </div>
 
-      {/* Widget Grid */}
+      {/* Widget Grid - 8 widgets */}
       <DashboardGrid>
+        {/* Rad 1 */}
         <CVWidget
           hasCV={data?.cv.hasCV ?? false}
           progress={data?.cv.progress ?? 0}
@@ -42,6 +45,12 @@ export default function Dashboard() {
           onRetry={refetch}
         />
 
+        <CoverLetterWidget
+          count={data?.coverLetters.count ?? 0}
+          recentLetters={data?.coverLetters.recentLetters}
+          loading={loading}
+        />
+
         <JobSearchWidget
           savedCount={data?.jobs.savedCount ?? 0}
           newMatches={data?.jobs.newMatches}
@@ -49,13 +58,13 @@ export default function Dashboard() {
           loading={loading}
         />
 
-        <ApplicationsWidget
-          total={data?.applications.total ?? 0}
-          statusBreakdown={data?.applications.statusBreakdown}
-          nextFollowUp={data?.applications.nextFollowUp}
+        <CareerWidget
+          exploredCount={data?.interest.hasResult ? 1 : 0}
+          recommendedOccupations={data?.interest.topRecommendations}
           loading={loading}
         />
 
+        {/* Rad 2 */}
         <InterestWidget
           hasResult={data?.interest.hasResult ?? false}
           topRecommendations={data?.interest.topRecommendations}
@@ -63,15 +72,22 @@ export default function Dashboard() {
           loading={loading}
         />
 
-        <CoverLetterWidget
-          count={data?.coverLetters.count ?? 0}
-          recentLetters={data?.coverLetters.recentLetters}
+        <ExercisesWidget
+          completedCount={data?.activity.streakDays}
+          streakDays={data?.activity.streakDays}
           loading={loading}
         />
 
-        <ActivityWidget
-          weeklyApplications={data?.activity.weeklyApplications ?? 0}
-          streakDays={data?.activity.streakDays ?? 0}
+        <DiaryWidget
+          entriesCount={data?.activity.streakDays}
+          streakDays={data?.activity.streakDays}
+          hasEntryToday={false}
+          loading={loading}
+        />
+
+        <KnowledgeWidget
+          readCount={0}
+          totalArticles={0}
           loading={loading}
         />
       </DashboardGrid>

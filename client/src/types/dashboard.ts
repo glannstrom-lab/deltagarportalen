@@ -60,22 +60,53 @@ export interface DashboardWidgetData {
     }[]
   }
   
-  // Kalender
-  calendar: {
-    upcomingEvents: {
-      id: string
-      title: string
+  // Dagbok
+  diary: {
+    entriesCount: number
+    lastEntry: {
       date: string
-      type: 'meeting' | 'reminder' | 'deadline'
-    }[]
-    eventsThisWeek: number
-    hasConsultantMeeting: boolean
+      mood: 1 | 2 | 3 | 4 | 5
+      preview: string
+    } | null
+    streakDays: number
+    hasEntryToday: boolean
   }
   
   // Aktivitet
   activity: {
     weeklyApplications: number
     streakDays: number
+  }
+  
+  // Övningar
+  exercises: {
+    completedCount: number
+    lastCompleted: {
+      title: string
+      completedAt: string
+    } | null
+    recommendedExercise: {
+      title: string
+      duration: number
+      category: string
+    } | null
+  }
+  
+  // Kunskapsbank
+  knowledge: {
+    readCount: number
+    savedCount: number
+    totalArticles: number
+    recentlyRead: {
+      id: string
+      title: string
+      category: string
+    }[]
+    recommendedArticle: {
+      title: string
+      readTime: number
+      category: string
+    } | null
   }
 }
 

@@ -13,10 +13,8 @@ export function DashboardGrid({ children, className }: DashboardGridProps) {
         'grid grid-cols-1 gap-4',
         // Tablet: 2 kolumner
         'sm:grid-cols-2',
-        // Desktop: 3 kolumner
-        'lg:grid-cols-3',
-        // Large desktop: 3 kolumner (6 widgets = 2 rader)
-        'xl:grid-cols-3',
+        // Desktop: 4 kolumner (8 widgets = 2 rader)
+        'lg:grid-cols-4',
         className
       )}
     >
