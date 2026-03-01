@@ -307,7 +307,7 @@ Engelska - Goda kunskaper`
           skills: data.cvData?.skills || []
         },
         jobDescription: jobDesc,
-        companyName: data.companyName || data.extraContext || 'Företaget',
+        companyName: data.companyName || 'Företaget',
         jobTitle: data.jobTitle || 'Tjänsten',
         tone: data.ton === 'professionell' ? 'formal' : 
               data.ton === 'entusiastisk' ? 'enthusiastic' : 'friendly',
@@ -315,31 +315,61 @@ Engelska - Goda kunskaper`
       }
 
       // Call Supabase Edge Function via coverLetterApi
-      const result = await coverLetterApi.generate(params)
+      console.log('🚀 Anropar AI Cover Letter med params:', JSON.stringify(params, null, 2))
+      
+      let result
+      try {
+        result = await coverLetterApi.generate(params)
+      } catch (apiError: any) {
+        console.error('❌ coverLetterApi.generate kastade fel:', apiError)
+        console.error('   Status:', apiError.status)
+        console.error('   Message:', apiError.message)
+        console.error('   Code:', apiError.code)
+        throw apiError  // Kasta vidare för att hanteras nedan
+      }
+
+      console.log('✅ Resultat från Edge Function:', result)
 
       // Edge Function returns 'letter' field
+      const brevText = result.letter || result.coverLetter || result.brev
+      
+      if (!brevText) {
+        console.error('⚠️  Ingen brevtext i resultatet! Fält som finns:', Object.keys(result))
+        throw new Error('Tomt svar från AI-tjänsten')
+      }
+
       return {
         success: true,
-        brev: result.letter || result.coverLetter || result.brev,
+        brev: brevText,
         ton: data.ton || 'professionell'
       }
     } catch (error: any) {
-      console.warn('AI-brev generering misslyckades:', error)
+      console.error('❌ AI-brev generering misslyckades:', error)
+      console.error('   Fel-objekt:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
       
       // Check if it's an authentication error
-      if (error.status === 401 || error.message?.includes('Inte inloggad')) {
+      if (error.status === 401 || error.message?.includes('Inte inloggad') || error.message?.includes('401')) {
         return {
           success: false,
-          brev: 'Du verkar ha blivit utloggad. Vänligen logga in igen för att använda AI-funktionen.',
+          brev: '🔐 Du verkar ha blivit utloggad. Vänligen logga in igen för att använda AI-funktionen.',
           ton: data.ton || 'professionell'
         }
       }
       
       // Check if it's an OpenAI configuration error
-      if (error.message?.includes('OpenAI API key not configured')) {
+      if (error.message?.includes('OpenAI API key not configured') || error.message?.includes('500')) {
         return {
           success: false,
-          brev: 'AI-tjänsten är inte korrekt konfigurerad. Kontakta support.',
+          brev: '⚙️ AI-tjänsten är inte korrekt konfigurerad. Kontakta support.',
+          ton: data.ton || 'professionell'
+        }
+      }
+      
+      // Check if data is missing
+      if (error.message?.includes('Missing required fields') || error.status === 400) {
+        return {
+          success: false,
+          brev: '❌ Vänligen fyll i alla obligatoriska fält (jobbannons, företag, tjänst).',
           ton: data.ton || 'professionell'
         }
       }

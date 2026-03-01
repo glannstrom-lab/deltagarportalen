@@ -382,6 +382,8 @@ export default function CoverLetterGenerator() {
 
       const response = await aiService.generateCoverLetter({
         jobbAnnons,
+        companyName: company,
+        jobTitle: jobTitle,
         erfarenhet: erfarenhet || cvData?.summary || tidigareBrev,
         motivering: motivering || undefined,
         namn: cvData ? `${cvData.firstName} ${cvData.lastName}` : undefined,
