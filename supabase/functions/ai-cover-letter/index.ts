@@ -40,30 +40,58 @@ serve(async (req) => {
     // Verifiera JWT token
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
+      console.error('❌ Missing authorization header')
       return new Response(
         JSON.stringify({ error: 'Missing authorization header' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
+    // Hämta miljövariabler
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error('❌ Missing environment variables:', { 
+        hasUrl: !!supabaseUrl, 
+        hasKey: !!serviceRoleKey 
+      })
+      return new Response(
+        JSON.stringify({ error: 'Server configuration error - missing environment variables' }),
+        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
     // Skapa Supabase client med service role
     const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
+      supabaseUrl,
+      serviceRoleKey,
       { auth: { persistSession: false } }
     )
 
     // Hämta användaren från token
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(
-      authHeader.replace('Bearer ', '')
-    )
+    const token = authHeader.replace('Bearer ', '')
+    console.log('🔑 Validating token...', token.substring(0, 20) + '...')
+    
+    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token)
 
-    if (userError || !user) {
+    if (userError) {
+      console.error('❌ Token validation error:', userError)
       return new Response(
-        JSON.stringify({ error: 'Invalid token' }),
+        JSON.stringify({ error: `Invalid token: ${userError.message}` }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
+    
+    if (!user) {
+      console.error('❌ No user found for token')
+      return new Response(
+        JSON.stringify({ error: 'Invalid token - user not found' }),
+        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+    
+    console.log('✅ User authenticated:', user.id)
 
     // Parse request body
     const { cvData, jobDescription, companyName, jobTitle, tone = 'friendly', focus = 'experience' }: CoverLetterRequest = await req.json()
