@@ -380,15 +380,28 @@ export default function CoverLetterGenerator() {
         ?.map(w => `${w.title} på ${w.company}`)
         .join(', ')
 
+      // Bygg cvData för AI-tjänsten
+      const aiCvData = cvData ? {
+        firstName: cvData.firstName || '',
+        lastName: cvData.lastName || '',
+        title: cvData.title || '',
+        summary: cvData.summary || '',
+        workExperience: cvData.workExperience || [],
+        skills: cvData.skills || []
+      } : undefined
+
       const response = await aiService.generateCoverLetter({
         jobbAnnons,
         companyName: company,
         jobTitle: jobTitle,
         erfarenhet: erfarenhet || cvData?.summary || tidigareBrev,
         motivering: motivering || undefined,
-        namn: cvData ? `${cvData.firstName} ${cvData.lastName}` : undefined,
+        namn: cvData?.firstName && cvData?.lastName 
+          ? `${cvData.firstName} ${cvData.lastName}` 
+          : undefined,
         ton,
-        extraContext: template?.promptAddition
+        extraContext: template?.promptAddition,
+        cvData: aiCvData
       })
 
       clearInterval(progressInterval)

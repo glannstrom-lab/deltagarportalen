@@ -287,10 +287,10 @@ Engelska - Goda kunskaper`
       let firstName = 'Jag'
       let lastName = ''
       
-      if (data.cvData?.firstName) {
+      if (data.cvData?.firstName && data.cvData.firstName !== 'undefined') {
         firstName = data.cvData.firstName
         lastName = data.cvData.lastName || ''
-      } else if (data.namn) {
+      } else if (data.namn && data.namn !== 'undefined undefined') {
         const nameParts = data.namn.split(' ')
         firstName = nameParts[0]
         lastName = nameParts.slice(1).join(' ')

@@ -527,8 +527,17 @@ export const coverLetterApi = {
     tone?: 'formal' | 'friendly' | 'enthusiastic'
     focus?: 'experience' | 'skills' | 'motivation'
   }) {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    // Försök hämta session, om den saknas försök refresha
+    let { data: { session } } = await supabase.auth.getSession()
+    
+    if (!session) {
+      // Försök refresha sessionen
+      const { data: refreshData, error: refreshError } = await supabase.auth.refreshSession()
+      if (refreshError || !refreshData.session) {
+        throw new APIError('Du har blivit utloggad. Vänligen logga in igen.', 'UNAUTHORIZED', 401)
+      }
+      session = refreshData.session
+    }
     
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
     const response = await fetch(
