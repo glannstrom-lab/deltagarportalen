@@ -1,10 +1,119 @@
 /**
- * Supabase API Service
- * Ersätter den gamla backenden för skarp drift
- * All data sparas i Supabase (PostgreSQL)
+ * Supabase API Service - Deltagarportalen
+ * All datahantering sker via Supabase (PostgreSQL + Auth + Edge Functions)
  */
 
 import { supabase } from '../lib/supabase'
+import type { Tables } from '../lib/supabase'
+
+// ============================================
+// TYPES
+// ============================================
+export interface CVData {
+  id?: string
+  user_id?: string
+  profile_image?: string | null
+  title?: string | null
+  email?: string | null
+  phone?: string | null
+  location?: string | null
+  summary?: string | null
+  work_experience?: Array<{
+    id?: string
+    title: string
+    company: string
+    description?: string
+    startDate?: string
+    endDate?: string
+    current?: boolean
+  }>
+  education?: Array<{
+    id?: string
+    degree: string
+    school: string
+    startDate?: string
+    endDate?: string
+  }>
+  skills?: string[]
+  languages?: Array<{
+    language: string
+    level: string
+  }>
+  certificates?: Array<{
+    name: string
+    issuer?: string
+    date?: string
+  }>
+  links?: Array<{
+    type: string
+    url: string
+  }>
+  references?: Array<{
+    name: string
+    relation: string
+    contact?: string
+  }>
+  template?: string
+  color_scheme?: string
+  font?: string
+  ats_score?: number | null
+  ats_feedback?: any
+}
+
+export interface CoverLetter {
+  id: string
+  user_id: string
+  title: string
+  job_ad?: string | null
+  content: string
+  company?: string | null
+  job_title?: string | null
+  ai_generated: boolean
+  created_at: string
+  updated_at: string
+}
+
+export interface SavedJob {
+  id: string
+  user_id: string
+  job_id: string
+  job_data: any
+  status: 'SAVED' | 'APPLIED' | 'INTERVIEW' | 'REJECTED' | 'ACCEPTED'
+  notes?: string | null
+  applied_at?: string | null
+  created_at: string
+}
+
+// ============================================
+// ERROR HANDLING
+// ============================================
+class APIError extends Error {
+  constructor(
+    message: string,
+    public code?: string,
+    public status?: number
+  ) {
+    super(message)
+    this.name = 'APIError'
+  }
+}
+
+function handleError(error: any): never {
+  if (error.code === 'PGRST116') {
+    throw new APIError('Resursen hittades inte', 'NOT_FOUND', 404)
+  }
+  if (error.code === '42501') {
+    throw new APIError('Åtkomst nekad', 'FORBIDDEN', 403)
+  }
+  if (error.code === '23505') {
+    throw new APIError('Resursen finns redan', 'CONFLICT', 409)
+  }
+  throw new APIError(
+    error.message || 'Ett fel uppstod',
+    error.code,
+    error.status
+  )
+}
 
 // ============================================
 // AUTH API
@@ -16,9 +125,9 @@ export const authApi = {
       password
     })
     
-    if (error) throw new Error(error.message)
+    if (error) throw new APIError(error.message, error.code)
     
-    // Hämta profilen
+    // Get profile
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
@@ -29,7 +138,7 @@ export const authApi = {
       token: data.session.access_token,
       user: {
         id: data.user.id,
-        email: data.user.email,
+        email: data.user.email!,
         firstName: profile?.first_name || '',
         lastName: profile?.last_name || '',
         role: profile?.role || 'USER'
@@ -42,6 +151,7 @@ export const authApi = {
     password: string
     firstName: string
     lastName: string
+    role?: 'USER' | 'CONSULTANT'
   }) {
     const { data, error } = await supabase.auth.signUp({
       email: userData.email,
@@ -50,46 +160,51 @@ export const authApi = {
         data: {
           first_name: userData.firstName,
           last_name: userData.lastName,
-          role: 'USER'
+          role: userData.role || 'USER'
         }
       }
     })
     
-    if (error) throw new Error(error.message)
+    if (error) throw new APIError(error.message, error.code)
     
     if (!data.session) {
-      throw new Error('Konto skapat men kräver e-postbekräftelse. Kontakta administratör.')
+      throw new APIError('Konto skapat men kräver e-postbekräftelse', 'EMAIL_NOT_CONFIRMED')
     }
     
     return {
       token: data.session.access_token,
       user: {
-        id: data.user.id,
-        email: data.user.email,
+        id: data.user!.id,
+        email: data.user!.email!,
         firstName: userData.firstName,
         lastName: userData.lastName,
-        role: 'USER'
+        role: userData.role || 'USER'
       }
     }
   },
 
   async getCurrentUser() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return null
+    const { data: { user }, error } = await supabase.auth.getUser()
+    if (error || !user) return null
     
     const { data: profile } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', user.id)
-      .single()
+      .maybeSingle()
     
     return {
       id: user.id,
-      email: user.email,
+      email: user.email!,
       firstName: profile?.first_name || '',
       lastName: profile?.last_name || '',
       role: profile?.role || 'USER'
     }
+  },
+
+  async signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) throw new APIError(error.message, error.code)
   }
 }
 
@@ -97,9 +212,9 @@ export const authApi = {
 // CV API
 // ============================================
 export const cvApi = {
-  async getCV() {
+  async getCV(): Promise<CVData | null> {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('cvs')
@@ -107,27 +222,25 @@ export const cvApi = {
       .eq('user_id', user.id)
       .maybeSingle()
     
-    if (error) throw error
+    if (error) handleError(error)
     
-    // Konvertera snake_case till camelCase för frontend
-    if (data) {
-      return {
-        ...data,
-        colorScheme: data.color_scheme,
-        font: data.font,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        workExperience: data.work_experience,
-      }
+    if (!data) return null
+    
+    // Transform snake_case to camelCase
+    return {
+      ...data,
+      workExperience: data.work_experience || [],
+      colorScheme: data.color_scheme,
+      firstName: data.first_name,
+      lastName: data.last_name,
     }
-    return data
   },
 
-  async updateCV(cvData: any) {
+  async updateCV(cvData: Partial<CVData>) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
-    // Konvertera camelCase till snake_case för databasen
+    // Transform camelCase to snake_case
     const dbData: any = {
       user_id: user.id,
       updated_at: new Date().toISOString(),
@@ -136,7 +249,7 @@ export const cvApi = {
       phone: cvData.phone,
       location: cvData.location,
       summary: cvData.summary,
-      work_experience: cvData.workExperience,
+      work_experience: cvData.work_experience || cvData.workExperience,
       education: cvData.education,
       skills: cvData.skills,
       languages: cvData.languages,
@@ -144,9 +257,14 @@ export const cvApi = {
       links: cvData.links,
       "references": cvData.references,
       template: cvData.template,
-      color_scheme: cvData.colorScheme,
+      color_scheme: cvData.color_scheme || cvData.colorScheme,
       font: cvData.font,
     }
+    
+    // Remove undefined values
+    Object.keys(dbData).forEach(key => {
+      if (dbData[key] === undefined) delete dbData[key]
+    })
     
     const { data, error } = await supabase
       .from('cvs')
@@ -154,7 +272,7 @@ export const cvApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
@@ -170,7 +288,7 @@ export const cvApi = {
 
   async getVersions() {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('cv_versions')
@@ -178,13 +296,13 @@ export const cvApi = {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
     
-    if (error) throw error
+    if (error) handleError(error)
     return data || []
   },
 
-  async saveVersion(name: string, cvData: any) {
+  async saveVersion(name: string, cvData: CVData) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('cv_versions')
@@ -196,13 +314,13 @@ export const cvApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
   async restoreVersion(versionId: string) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('cv_versions')
@@ -211,18 +329,19 @@ export const cvApi = {
       .eq('user_id', user.id)
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data?.data
   },
 
   async shareCV() {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
-    // Generera en unik delningskod
-    const shareCode = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    // Generate unique share code
+    const shareCode = Math.random().toString(36).substring(2, 15) + 
+                      Math.random().toString(36).substring(2, 15)
     const expiresAt = new Date()
-    expiresAt.setDate(expiresAt.getDate() + 30) // Giltig i 30 dagar
+    expiresAt.setDate(expiresAt.getDate() + 30)
     
     const { data, error } = await supabase
       .from('cv_shares')
@@ -234,12 +353,9 @@ export const cvApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     
-    // Bygg delnings-URL
     const shareUrl = `${window.location.origin}/cv/shared/${shareCode}`
-    
-    // Generera QR-kod URL (vi kan använda en extern tjänst)
     const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shareUrl)}`
     
     return {
@@ -261,7 +377,7 @@ export const cvApi = {
       .gt('expires_at', new Date().toISOString())
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   }
 }
@@ -271,13 +387,13 @@ export const cvApi = {
 // ============================================
 export const interestApi = {
   async getQuestions() {
-    // Frågor är statiska i appen, men kan hämtas från DB om vi vill
+    // Questions are static in the app
     return { questions: [] }
   },
 
   async getResult() {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('interest_results')
@@ -285,24 +401,25 @@ export const interestApi = {
       .eq('user_id', user.id)
       .maybeSingle()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
   async saveResult(resultData: any) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('interest_results')
       .upsert({
         ...resultData,
-        user_id: user.id
+        user_id: user.id,
+        completed_at: new Date().toISOString()
       })
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
@@ -320,9 +437,9 @@ export const interestApi = {
 // COVER LETTER API
 // ============================================
 export const coverLetterApi = {
-  async getAll() {
+  async getAll(): Promise<CoverLetter[]> {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('cover_letters')
@@ -330,13 +447,31 @@ export const coverLetterApi = {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
     
-    if (error) throw error
+    if (error) handleError(error)
     return data || []
   },
 
-  async create(letterData: any) {
+  async getById(id: string): Promise<CoverLetter | null> {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    
+    const { data, error } = await supabase
+      .from('cover_letters')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single()
+    
+    if (error) {
+      if (error.code === 'PGRST116') return null
+      handleError(error)
+    }
+    return data
+  },
+
+  async create(letterData: Partial<CoverLetter>) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('cover_letters')
@@ -347,8 +482,41 @@ export const coverLetterApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
+  },
+
+  async update(id: string, letterData: Partial<CoverLetter>) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    
+    const { data, error } = await supabase
+      .from('cover_letters')
+      .update({
+        ...letterData,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
+    
+    if (error) handleError(error)
+    return data
+  },
+
+  async delete(id: string) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    
+    const { error } = await supabase
+      .from('cover_letters')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+    
+    if (error) handleError(error)
+    return true
   },
 
   async generate(params: {
@@ -357,13 +525,14 @@ export const coverLetterApi = {
     companyName: string
     jobTitle: string
     tone?: 'formal' | 'friendly' | 'enthusiastic'
+    focus?: 'experience' | 'skills' | 'motivation'
   }) {
-    // Anropa Edge Function för AI-generering
     const { data: { session } } = await supabase.auth.getSession()
-    if (!session) throw new Error('Inte inloggad')
+    if (!session) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
     const response = await fetch(
-      `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-cover-letter`,
+      `${supabaseUrl}/functions/v1/ai-cover-letter`,
       {
         method: 'POST',
         headers: {
@@ -376,7 +545,7 @@ export const coverLetterApi = {
     
     if (!response.ok) {
       const err = await response.json()
-      throw new Error(err.error || 'Kunde inte generera brev')
+      throw new APIError(err.error || 'Kunde inte generera brev', 'GENERATION_ERROR')
     }
     
     return response.json()
@@ -394,7 +563,7 @@ export const articleApi = {
       .eq('published', true)
       .order('created_at', { ascending: false })
     
-    if (error) throw error
+    if (error) handleError(error)
     return data || []
   },
 
@@ -405,13 +574,57 @@ export const articleApi = {
       .eq('id', id)
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
+  },
+
+  async getByCategory(category: string) {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .eq('published', true)
+      .eq('category', category)
+      .order('created_at', { ascending: false })
+    
+    if (error) handleError(error)
+    return data || []
+  },
+
+  async getCategories() {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('category, subcategory')
+      .eq('published', true)
+    
+    if (error) handleError(error)
+    
+    // Extract unique categories with their subcategories
+    const categoryMap = new Map()
+    
+    data?.forEach((article: any) => {
+      const cat = article.category || 'Övrigt'
+      const sub = article.subcategory
+      
+      if (!categoryMap.has(cat)) {
+        categoryMap.set(cat, { name: cat, subcategories: new Set() })
+      }
+      
+      if (sub) {
+        categoryMap.get(cat).subcategories.add(sub)
+      }
+    })
+    
+    // Convert to array format expected by components
+    return Array.from(categoryMap.values()).map((cat: any) => ({
+      name: cat.name,
+      slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
+      subcategories: Array.from(cat.subcategories)
+    }))
   }
 }
 
 // ============================================
-// JOBS API (kopplat till Arbetsförmedlingen)
+// JOBS API (Arbetsförmedlingen)
 // ============================================
 export const jobsApi = {
   async search(params: {
@@ -419,8 +632,8 @@ export const jobsApi = {
     location?: string
     employmentType?: string
     remote?: boolean
+    limit?: number
   }) {
-    // Bygg query till Arbetsförmedlingen
     const queryParams = new URLSearchParams()
     if (params.search) queryParams.set('q', params.search)
     if (params.location) queryParams.set('municipality', params.location)
@@ -428,16 +641,15 @@ export const jobsApi = {
     if (params.remote) queryParams.set('remote', 'true')
     
     const response = await fetch(
-      `https://jobsearch.api.jobtechdev.se/search?${queryParams}&limit=20`
+      `https://jobsearch.api.jobtechdev.se/search?${queryParams}&limit=${params.limit || 20}`
     )
     
-    if (!response.ok) throw new Error('Kunde inte söka jobb')
+    if (!response.ok) throw new APIError('Kunde inte söka jobb', 'SEARCH_ERROR')
     
     const data = await response.json()
     return data.hits || []
   },
 
-  // Alias för kompatibilitet
   async searchJobs(params?: any) {
     return this.search(params || {})
   },
@@ -447,16 +659,16 @@ export const jobsApi = {
       `https://jobsearch.api.jobtechdev.se/ad/${id}`
     )
     
-    if (!response.ok) throw new Error('Kunde inte hämta jobb')
+    if (!response.ok) throw new APIError('Kunde inte hämta jobb', 'NOT_FOUND', 404)
     
     return response.json()
   },
 
   async saveJob(jobId: string, status: string = 'SAVED', jobData?: any) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
-    // Hämta jobbdata om den inte skickades med
+    // Get job data if not provided
     let dataToSave = jobData
     if (!dataToSave) {
       try {
@@ -479,13 +691,13 @@ export const jobsApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
-  async getSavedJobs() {
+  async getSavedJobs(): Promise<SavedJob[]> {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('saved_jobs')
@@ -493,18 +705,17 @@ export const jobsApi = {
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
     
-    if (error) throw error
+    if (error) handleError(error)
     return data || []
   },
 
-  // Alias för kompatibilitet med JobSearch.tsx
-  async getApplications() {
+  async getApplications(): Promise<SavedJob[]> {
     return this.getSavedJobs()
   },
 
   async updateApplication(id: string, updates: { status?: string, notes?: string }) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const dbUpdates: any = {}
     if (updates.status) dbUpdates.status = updates.status.toUpperCase()
@@ -518,13 +729,13 @@ export const jobsApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
   async deleteApplication(id: string) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { error } = await supabase
       .from('saved_jobs')
@@ -532,36 +743,32 @@ export const jobsApi = {
       .eq('id', id)
       .eq('user_id', user.id)
     
-    if (error) throw error
+    if (error) handleError(error)
     return true
   },
 
-  async matchCV(jobId: string, cvData: any) {
-    // Hämta jobbdata
+  async matchCV(jobId: string, cvData: CVData) {
     const job = await this.getById(jobId)
     
-    // Enkel matchningsalgoritm baserad på nyckelord
     const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
     const skills = cvData.skills || []
-    const experiences = cvData.workExperience || []
+    const experiences = cvData.work_experience || []
     
     let matchScore = 0
     let maxScore = 0
     const matchingSkills: string[] = []
     const missingSkills: string[] = []
     
-    // Kontrollera kompetenser
     skills.forEach((skill: any) => {
-      maxScore += skill.level || 3
-      if (jobText.includes((skill.name || '').toLowerCase())) {
-        matchScore += skill.level || 3
-        matchingSkills.push(skill.name)
+      maxScore += 3
+      if (jobText.includes((skill.name || skill).toLowerCase())) {
+        matchScore += 3
+        matchingSkills.push(skill.name || skill)
       } else {
-        missingSkills.push(skill.name)
+        missingSkills.push(skill.name || skill)
       }
     })
     
-    // Kontrollera erfarenheter
     experiences.forEach((exp: any) => {
       const expTitle = (exp.title || '').toLowerCase()
       if (jobText.includes(expTitle)) {
@@ -591,7 +798,7 @@ export const jobsApi = {
 export const userApi = {
   async getProfile() {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('profiles')
@@ -599,13 +806,13 @@ export const userApi = {
       .eq('id', user.id)
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
-  async updateProfile(updates: any) {
+  async updateProfile(updates: Partial<Tables['profiles']>) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('profiles')
@@ -614,80 +821,68 @@ export const userApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
+    return data
+  },
+
+  async updateSettings(settings: {
+    calmMode?: boolean
+    highContrast?: boolean
+    largeText?: boolean
+    reduceMotion?: boolean
+    emailNotifications?: boolean
+    jobAlerts?: boolean
+    preferredLanguage?: string
+  }) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    
+    const { data, error } = await supabase
+      .from('user_settings')
+      .upsert({
+        user_id: user.id,
+        calm_mode: settings.calmMode,
+        high_contrast: settings.highContrast,
+        large_text: settings.largeText,
+        reduce_motion: settings.reduceMotion,
+        email_notifications: settings.emailNotifications,
+        job_alerts: settings.jobAlerts,
+        preferred_language: settings.preferredLanguage,
+      }, {
+        onConflict: 'user_id'
+      })
+      .select()
+      .single()
+    
+    if (error) handleError(error)
     return data
   }
 }
 
 // ============================================
-// SAVED JOBS API
+// SAVED JOBS API (Alias för kompatibilitet)
 // ============================================
 export const savedJobsApi = {
-  async getAll() {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
-    
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-    
-    if (error) throw error
-    return data || []
+  async getAll(): Promise<SavedJob[]> {
+    return jobsApi.getSavedJobs()
   },
 
   async save(jobId: string, jobData: any) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
-    
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .upsert({
-        user_id: user.id,
-        job_id: jobId,
-        job_data: jobData,
-        status: 'SAVED'
-      }, {
-        onConflict: 'user_id,job_id'
-      })
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
+    return jobsApi.saveJob(jobId, 'SAVED', jobData)
   },
 
   async updateStatus(jobId: string, status: string) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
-    
-    const { data, error } = await supabase
-      .from('saved_jobs')
-      .update({ 
-        status,
-        applied_at: status === 'APPLIED' ? new Date().toISOString() : null
-      })
-      .eq('user_id', user.id)
-      .eq('job_id', jobId)
-      .select()
-      .single()
-    
-    if (error) throw error
-    return data
+    const saved = await jobsApi.getSavedJobs()
+    const job = saved.find(j => j.job_id === jobId)
+    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
+    return jobsApi.updateApplication(job.id, { status })
   },
 
   async delete(jobId: string) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
-    
-    const { error } = await supabase
-      .from('saved_jobs')
-      .delete()
-      .eq('user_id', user.id)
-      .eq('job_id', jobId)
-    
-    if (error) throw error
+    const saved = await jobsApi.getSavedJobs()
+    const job = saved.find(j => j.job_id === jobId)
+    if (!job) return true
+    return jobsApi.deleteApplication(job.id)
   }
 }
 
@@ -695,10 +890,9 @@ export const savedJobsApi = {
 // ACTIVITY API
 // ============================================
 export const activityApi = {
-  // Logga en aktivitet
   async logActivity(activityType: string, activityData?: any) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { data, error } = await supabase
       .from('user_activities')
@@ -710,14 +904,13 @@ export const activityApi = {
       .select()
       .single()
     
-    if (error) throw error
+    if (error) handleError(error)
     return data
   },
 
-  // Hämta aktiviteter för en viss typ
   async getActivities(activityType?: string, limit: number = 30) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     let query = supabase
       .from('user_activities')
@@ -732,14 +925,13 @@ export const activityApi = {
     
     const { data, error } = await query
     
-    if (error) throw error
+    if (error) handleError(error)
     return data || []
   },
 
-  // Hämta aktiviteter från senaste X dagarna för diagram
   async getActivityCounts(days: number = 10) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const startDate = new Date()
     startDate.setDate(startDate.getDate() - days)
@@ -751,9 +943,8 @@ export const activityApi = {
       .gte('created_at', startDate.toISOString())
       .order('created_at', { ascending: true })
     
-    if (error) throw error
+    if (error) handleError(error)
     
-    // Gruppera per dag och räkna
     const counts = new Array(days).fill(0)
     data?.forEach(activity => {
       const date = new Date(activity.created_at)
@@ -766,10 +957,9 @@ export const activityApi = {
     return counts
   },
 
-  // Hämta antal för en specifik aktivitetstyp
   async getCount(activityType: string) {
     const { data: { user } } = await supabase.auth.getUser()
-    if (!user) throw new Error('Inte inloggad')
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
     const { count, error } = await supabase
       .from('user_activities')
@@ -777,7 +967,7 @@ export const activityApi = {
       .eq('user_id', user.id)
       .eq('activity_type', activityType)
     
-    if (error) throw error
+    if (error) handleError(error)
     return count || 0
   }
 }

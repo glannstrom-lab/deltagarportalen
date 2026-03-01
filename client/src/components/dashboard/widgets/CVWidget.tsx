@@ -1,8 +1,11 @@
-import { memo } from 'react'
-import { FileText, CheckCircle2, AlertCircle, Sparkles, TrendingUp, Award } from 'lucide-react'
+import { memo, useState } from 'react'
+import { FileText, CheckCircle2, AlertCircle, Sparkles, TrendingUp, Award, Download, Loader2, Check } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
+import { cvApi, type CVData } from '@/services/supabaseApi'
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 
 interface CVWidgetProps {
   hasCV: boolean
@@ -161,6 +164,137 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
   }
 
   const status = getStatus()
+  const [isExporting, setIsExporting] = useState(false)
+  const [exportSuccess, setExportSuccess] = useState(false)
+
+  const handleExportPDF = async () => {
+    setIsExporting(true)
+    setExportSuccess(false)
+    
+    try {
+      // Hämta CV-data
+      const cvData = await cvApi.getCV()
+      if (!cvData) {
+        alert('Inget CV att exportera')
+        return
+      }
+
+      // Skapa ett temporärt element för rendering
+      const tempDiv = document.createElement('div')
+      tempDiv.style.cssText = `
+        position: fixed;
+        left: -10000px;
+        top: 0;
+        width: 794px;
+        background: white;
+        padding: 40px;
+        font-family: Arial, sans-serif;
+        color: #333;
+        line-height: 1.6;
+        z-index: -9999;
+      `
+      
+      // Bygg CV HTML
+      const fullName = `${cvData.firstName || ''} ${cvData.lastName || ''}`.trim() || 'Ditt Namn'
+      const scheme = { primary: '#4f46e5', secondary: '#6366f1', accent: '#818cf8' }
+      
+      tempDiv.innerHTML = `
+        <div style="background: ${scheme.primary}; color: white; padding: 30px 40px; margin: -40px -40px 30px -40px;">
+          <h1 style="font-size: 36px; margin: 0; font-weight: bold;">${fullName}</h1>
+          ${cvData.title ? `<p style="font-size: 18px; margin: 8px 0 0 0; opacity: 0.9;">${cvData.title}</p>` : ''}
+          <div style="display: flex; gap: 20px; margin-top: 15px; font-size: 14px; flex-wrap: wrap;">
+            ${cvData.email ? `<span>${cvData.email}</span>` : ''}
+            ${cvData.phone ? `<span>${cvData.phone}</span>` : ''}
+            ${cvData.location ? `<span>${cvData.location}</span>` : ''}
+          </div>
+        </div>
+        ${cvData.summary ? `<div style="margin-bottom: 30px; padding: 20px; background: #f8fafc; border-radius: 8px;"><p style="margin: 0; font-style: italic;">${cvData.summary}</p></div>` : ''}
+        ${cvData.work_experience?.length ? `
+          <div style="margin-bottom: 30px;">
+            <h2 style="color: ${scheme.primary}; border-bottom: 2px solid ${scheme.primary}; padding-bottom: 8px; font-size: 20px; margin-bottom: 15px;">Arbetslivserfarenhet</h2>
+            ${cvData.work_experience.map((exp: any) => `
+              <div style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <h3 style="margin: 0; color: #334155; font-size: 16px;">${exp.title}</h3>
+                  <span style="color: #64748b; font-size: 14px;">${exp.startDate || ''} - ${exp.current ? 'Pågående' : (exp.endDate || '')}</span>
+                </div>
+                <p style="margin: 4px 0; color: #64748b; font-size: 14px;">${exp.company}${exp.location ? `, ${exp.location}` : ''}</p>
+                ${exp.description ? `<p style="margin: 8px 0 0 0;">${exp.description}</p>` : ''}
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+        ${cvData.education?.length ? `
+          <div style="margin-bottom: 30px;">
+            <h2 style="color: ${scheme.primary}; border-bottom: 2px solid ${scheme.primary}; padding-bottom: 8px; font-size: 20px; margin-bottom: 15px;">Utbildning</h2>
+            ${cvData.education.map((edu: any) => `
+              <div style="margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <h3 style="margin: 0; color: #334155; font-size: 16px;">${edu.degree}${edu.field ? ` i ${edu.field}` : ''}</h3>
+                  <span style="color: #64748b; font-size: 14px;">${edu.startDate || ''} - ${edu.endDate || ''}</span>
+                </div>
+                <p style="margin: 4px 0; color: #64748b; font-size: 14px;">${edu.school}${edu.location ? `, ${edu.location}` : ''}</p>
+              </div>
+            `).join('')}
+          </div>
+        ` : ''}
+        ${cvData.skills?.length ? `
+          <div style="margin-bottom: 30px;">
+            <h2 style="color: ${scheme.primary}; border-bottom: 2px solid ${scheme.primary}; padding-bottom: 8px; font-size: 20px; margin-bottom: 15px;">Kompetenser</h2>
+            <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+              ${cvData.skills.map((skill: any) => `
+                <span style="background: #e0e7ff; color: ${scheme.primary}; padding: 6px 14px; border-radius: 16px; font-size: 14px;">${typeof skill === 'string' ? skill : skill.name}</span>
+              `).join('')}
+            </div>
+          </div>
+        ` : ''}
+      `
+      
+      document.body.appendChild(tempDiv)
+      
+      // Vänta på rendering
+      await new Promise(resolve => setTimeout(resolve, 100))
+      
+      // Skapa PDF
+      const canvas = await html2canvas(tempDiv, {
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: '#ffffff',
+        windowWidth: 794,
+        width: 794
+      })
+      
+      const imgData = canvas.toDataURL('image/png')
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      })
+      
+      const pdfWidth = pdf.internal.pageSize.getWidth()
+      const pdfHeight = pdf.internal.pageSize.getHeight()
+      const imgWidth = canvas.width
+      const imgHeight = canvas.height
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
+      
+      pdf.addImage(imgData, 'PNG', 0, 0, imgWidth * ratio, imgHeight * ratio)
+      
+      const fileName = `${cvData.firstName || 'cv'}-${cvData.lastName || 'export'}.pdf`.toLowerCase().replace(/\s+/g, '-')
+      pdf.save(fileName)
+      
+      setExportSuccess(true)
+      setTimeout(() => setExportSuccess(false), 3000)
+    } catch (error) {
+      console.error('PDF-exportfel:', error)
+      alert('Kunde inte exportera PDF. Försök igen.')
+    } finally {
+      setIsExporting(false)
+      // Städa upp
+      const tempDivs = document.querySelectorAll('[style*="left: -10000px"]')
+      tempDivs.forEach(el => el.remove())
+    }
+  }
 
   return (
     <DashboardWidget
@@ -177,8 +311,10 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
         label: hasCV ? 'Redigera CV' : 'Skapa profil',
       }}
       secondaryAction={hasCV ? {
-        label: 'Ladda ner PDF',
-        onClick: () => {}, // TODO: Implement PDF download
+        label: exportSuccess ? 'PDF Sparad!' : (isExporting ? 'Skapar PDF...' : 'Ladda ner PDF'),
+        onClick: handleExportPDF,
+        disabled: isExporting,
+        icon: exportSuccess ? <Check size={16} /> : (isExporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />)
       } : undefined}
     >
       <div className="space-y-4">

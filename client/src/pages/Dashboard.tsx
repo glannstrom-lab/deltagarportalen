@@ -56,14 +56,13 @@ export default function Dashboard() {
         const saved = localStorage.getItem(STORAGE_KEY_VISIBLE)
         if (saved) {
           const parsed = JSON.parse(saved)
-          // Validate that it's an array
           if (Array.isArray(parsed)) {
             return parsed
           }
         }
       }
-    } catch (e) {
-      console.error('Error loading visible widgets from localStorage:', e)
+    } catch {
+      // Ignorera localStorage-fel
     }
     return defaultVisibleWidgets
   })
@@ -75,25 +74,32 @@ export default function Dashboard() {
         const saved = localStorage.getItem(STORAGE_KEY_SIZES)
         if (saved) {
           const parsed = JSON.parse(saved)
-          // Validate that it's an object
           if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
             return parsed
           }
         }
       }
-    } catch (e) {
-      console.error('Error loading widget sizes from localStorage:', e)
+    } catch {
+      // Ignorera localStorage-fel
     }
     return defaultWidgetSizes
   })
 
   // Persist changes to localStorage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_VISIBLE, JSON.stringify(visibleWidgets))
+    try {
+      localStorage.setItem(STORAGE_KEY_VISIBLE, JSON.stringify(visibleWidgets))
+    } catch {
+      // Ignorera localStorage-fel
+    }
   }, [visibleWidgets])
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_SIZES, JSON.stringify(widgetSizes))
+    try {
+      localStorage.setItem(STORAGE_KEY_SIZES, JSON.stringify(widgetSizes))
+    } catch {
+      // Ignorera localStorage-fel
+    }
   }, [widgetSizes])
 
   // Toggle widget visibility
@@ -136,7 +142,6 @@ export default function Dashboard() {
         )}
       >
         <div className="relative h-full">
-          {/* Size selector - absolutely positioned */}
           <div className="absolute top-2 right-2 z-10">
             <WidgetSizeSelector
               currentSize={size}
@@ -151,7 +156,6 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Mobile Optimizer */}
       <MobileOptimizer />
 
       {/* Välkomstmeddelande */}
@@ -172,9 +176,8 @@ export default function Dashboard() {
         onHideAll={handleHideAll}
       />
 
-      {/* Widget Grid with dynamic sizing */}
+      {/* Widget Grid */}
       <DashboardGrid>
-        {/* CV Widget */}
         {visibleWidgets.includes('cv') &&
           renderWidget(
             'cv',
@@ -190,7 +193,6 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Cover Letter Widget - nu med ansökningar */}
         {visibleWidgets.includes('coverLetter') &&
           renderWidget(
             'coverLetter',
@@ -204,7 +206,6 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Job Search Widget */}
         {visibleWidgets.includes('jobSearch') &&
           renderWidget(
             'jobSearch',
@@ -217,7 +218,6 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Career Widget */}
         {visibleWidgets.includes('career') &&
           renderWidget(
             'career',
@@ -229,7 +229,6 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Interest Widget */}
         {visibleWidgets.includes('interests') &&
           renderWidget(
             'interests',
@@ -242,7 +241,6 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Exercises Widget */}
         {visibleWidgets.includes('exercises') &&
           renderWidget(
             'exercises',
@@ -254,7 +252,6 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Diary Widget */}
         {visibleWidgets.includes('diary') &&
           renderWidget(
             'diary',
@@ -267,7 +264,6 @@ export default function Dashboard() {
             />
           )}
 
-        {/* Knowledge Widget */}
         {visibleWidgets.includes('knowledge') &&
           renderWidget(
             'knowledge',
@@ -281,7 +277,7 @@ export default function Dashboard() {
           )}
       </DashboardGrid>
 
-      {/* Empty state when no widgets visible */}
+      {/* Empty state */}
       {visibleWidgets.length === 0 && (
         <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
           <p className="text-slate-500 mb-2">Inga moduler synliga</p>

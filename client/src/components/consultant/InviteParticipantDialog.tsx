@@ -65,8 +65,27 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
 
       if (inviteError) throw inviteError;
 
-      // Skicka email (via Edge Function eller external service)
-      // TODO: Implementera email-skick
+      // Skicka email via Edge Function
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        if (session) {
+          const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+          await fetch(
+            `${supabaseUrl}/functions/v1/send-invite-email`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${session.access_token}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ invitationId: data.id })
+            }
+          )
+        }
+      } catch (emailErr) {
+        console.warn('Could not send email automatically:', emailErr)
+        // Email-fel ska inte blockera - inbjudan är skapad
+      }
 
       setSuccess(true);
       setTimeout(() => {

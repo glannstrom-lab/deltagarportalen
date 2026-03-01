@@ -1,125 +1,95 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
-import { supabase } from '../lib/supabase'
 import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from 'lucide-react'
 
 export default function Login() {
   const navigate = useNavigate()
-  const { setAuth } = useAuthStore()
+  const { signIn, isAuthenticated, isLoading: authLoading, error: authError, clearError } = useAuthStore()
+  
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
 
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/')
+    }
+  }, [isAuthenticated, navigate])
+
+  // Sync auth error from store
+  useEffect(() => {
+    if (authError) {
+      setError(authError)
+    }
+  }, [authError])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+    clearError()
     setLoading(true)
 
-    try {
-      console.log('Attempting login with:', { email, hasPassword: !!password })
-      
-      const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      })
-      
-      console.log('Login response:', { 
-        hasUser: !!data.user, 
-        hasSession: !!data.session,
-        error: signInError?.message 
-      })
-
-      if (signInError) {
-        console.error('Sign in error:', signInError)
-        
-        // Tydligare felmeddelanden
-        let errorMessage = signInError.message
-        if (signInError.message === 'Invalid login credentials') {
-          errorMessage = 'Fel e-post eller lösenord'
-        } else if (signInError.message.includes('Email not confirmed')) {
-          errorMessage = 'E-postadressen är inte bekräftad. Kolla din inkorg eller kontakta support.'
-        } else if (signInError.message.includes('User not found')) {
-          errorMessage = 'Användaren finns inte. Har du registrerat dig?'
-        }
-        
-        throw new Error(errorMessage)
-      }
-
-      if (!data.user || !data.session) {
-        throw new Error('Inloggning misslyckades')
-      }
-
-      // Hämta profilen från vår databas
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single()
-
-      // Spara i auth store
-      setAuth(data.session.access_token, {
-        id: data.user.id,
-        email: data.user.email!,
-        firstName: profile?.first_name || '',
-        lastName: profile?.last_name || '',
-        role: profile?.role || 'USER'
-      })
-
-      navigate('/')
-    } catch (err: any) {
-      setError(err.message || 'Inloggningen misslyckades')
-    } finally {
-      setLoading(false)
+    const { error: signInError } = await signIn(email, password)
+    
+    if (signInError) {
+      setError(signInError)
     }
+    // Navigation happens automatically via useEffect when isAuthenticated changes
+    
+    setLoading(false)
   }
 
   const handleDemoLogin = async () => {
+    setError('')
+    clearError()
+    setLoading(true)
+    
     const demoEmail = `demo${Date.now()}@example.com`
     const demoPassword = 'Demo123456!'
     
     setEmail(demoEmail)
     setPassword(demoPassword)
-    setError('')
-    setLoading(true)
 
-    try {
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+    const { error: signInError } = await signIn(demoEmail, demoPassword)
+    
+    if (signInError) {
+      // If login fails, try to register first
+      const { useAuthStore } = await import('../stores/authStore')
+      const { signUp } = useAuthStore.getState()
+      
+      const { error: signUpError } = await signUp({
         email: demoEmail,
         password: demoPassword,
-        options: {
-          data: {
-            first_name: 'Demo',
-            last_name: 'Användare',
-            role: 'USER'
-          }
-        }
+        firstName: 'Demo',
+        lastName: 'Användare',
+        role: 'USER',
       })
-
-      if (signUpError) {
-        throw new Error(signUpError.message)
-      }
-
-      if (signUpData.session && signUpData.user) {
-        // Logga in direkt utan att skapa demo-innehåll (görs via SQL istället)
-        setAuth(signUpData.session.access_token, {
-          id: signUpData.user.id,
-          email: signUpData.user.email!,
-          firstName: 'Demo',
-          lastName: 'Användare',
-          role: 'USER'
-        })
-        navigate('/')
+      
+      if (signUpError && !signUpError.includes('begränsad')) {
+        setError(signUpError)
       } else {
-        setError('Konto skapat men kunde inte loggas in automatiskt. Försök logga in manuellt.')
+        // Try login again after registration
+        const { error: retryError } = await signIn(demoEmail, demoPassword)
+        if (retryError) {
+          setError(retryError)
+        }
       }
-    } catch (err: any) {
-      setError(err.message || 'Kunde inte skapa demokonto')
-    } finally {
-      setLoading(false)
     }
+    
+    setLoading(false)
+  }
+
+  // Show loading while checking auth state
+  if (authLoading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-teal-600 to-slate-800 flex items-center justify-center">
+        <Loader2 className="animate-spin text-white" size={48} />
+      </div>
+    )
   }
 
   return (
@@ -238,7 +208,7 @@ export default function Login() {
             className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <span>🚀</span>
-            <span>{loading ? 'Skapar demo med innehåll...' : 'Utforska med demokonto'}</span>
+            <span>{loading ? 'Skapar demo...' : 'Utforska med demokonto'}</span>
           </button>
         </div>
 

@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
-import { supabase } from '../lib/supabase'
 import { Eye, EyeOff, Loader2, Mail, Lock, User, ArrowRight, Check, X } from 'lucide-react'
 
 // Valideringsregler för lösenord
@@ -15,7 +14,7 @@ const passwordRules = [
 
 export default function Register() {
   const navigate = useNavigate()
-  const { setAuth } = useAuthStore()
+  const { signUp } = useAuthStore()
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -55,75 +54,25 @@ export default function Register() {
     setLoading(true)
 
     try {
-      // 🆕 NYTT: Använd Supabase för registrering
-      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+      const { error: signUpError } = await signUp({
         email: formData.email,
         password: formData.password,
-        options: {
-          data: {
-            first_name: formData.firstName,
-            last_name: formData.lastName,
-            role: 'USER'
-          }
-        }
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        role: 'USER'
       })
 
       if (signUpError) {
-        if (signUpError.message.includes('User already registered')) {
+        if (signUpError.includes('finns redan')) {
           throw new Error('En användare med denna e-postadress finns redan. Logga in istället.')
         }
-        throw new Error(signUpError.message)
+        throw new Error(signUpError)
       }
 
-      if (!signUpData.user) {
-        throw new Error('Kunde inte skapa konto. Försök igen.')
-      }
-
-      // Vänta på att profilen skapas (trigger körs) - försök flera gånger
-      let profile = null
-      let profileError = null
-      
-      for (let i = 0; i < 5; i++) {
-        await new Promise(resolve => setTimeout(resolve, 500))
-        
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', signUpData.user.id)
-          .single()
-        
-        if (data) {
-          profile = data
-          break
-        }
-        profileError = error
-      }
-
-      if (!profile && profileError) {
-        console.warn('Kunde inte hämta profil efter 5 försök:', profileError)
-      }
-
-      // Om användaren behöver bekräfta e-post
-      if (!signUpData.session) {
-        setError('')
-        alert('Ett bekräftelsemejl har skickats till din e-postadress. Klicka på länken i mejlet för att aktivera ditt konto.')
-        navigate('/login')
-        return
-      }
-
-      // Spara i auth store
-      setAuth(signUpData.session.access_token, {
-        id: signUpData.user.id,
-        email: signUpData.user.email!,
-        firstName: profile?.first_name || formData.firstName,
-        lastName: profile?.last_name || formData.lastName,
-        role: profile?.role || 'USER'
-      })
-
+      // Navigera till dashboard (auth store hanterar automatiskt)
       navigate('/')
     } catch (err: any) {
       setError(err.message || 'Det gick inte att skapa kontot. Försök igen om en stund.')
-      console.error('Registration error:', err)
     } finally {
       setLoading(false)
     }

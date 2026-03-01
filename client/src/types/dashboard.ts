@@ -134,6 +134,8 @@ export interface DashboardWidgetProps {
   secondaryAction?: {
     label: string
     onClick?: () => void
+    disabled?: boolean
+    icon?: React.ReactNode
   }
   onRetry?: () => void
   sizeSelector?: React.ReactNode
