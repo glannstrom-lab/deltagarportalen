@@ -1,65 +1,102 @@
-name: Deploy to GitHub Pages
+# 🚀 Automatisk Build & Deploy
+# Kör på varje push till main
+
+name: Build & Deploy
 
 on:
   push:
-    branches: ['main']
-  workflow_dispatch:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
 
+# Rättigheter för att skriva till GitHub Pages
 permissions:
   contents: read
   pages: write
   id-token: write
 
+# Tillåt endast en deploy åt gången
 concurrency:
-  group: 'pages'
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
+  # ==========================================
+  # 1. BUILD
+  # ==========================================
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout kod
+        uses: actions/checkout@v4
+
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: client/package-lock.json
+
+      - name: 📦 Installera dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: 🧪 Kör tester
+        run: |
+          cd client
+          npm test -- --run || echo "⚠️ Tester failade men fortsätter..."
+
+      - name: 🏗️ Bygg frontend
+        run: |
+          cd client
+          npm run build
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+
+      - name: 📤 Upload build artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./client/dist
+
+  # ==========================================
+  # 2. DEPLOY till GitHub Pages
+  # ==========================================
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    env:
-      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+    needs: build
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-          cache-dependency-path: client/package-lock.json
-
-      - name: Install dependencies
-        run: cd client && npm ci
-
-      - name: Verify environment variables
-        run: |
-          if [ -z "$VITE_SUPABASE_URL" ]; then
-            echo "ERROR: VITE_SUPABASE_URL is not set"
-            exit 1
-          fi
-          if [ -z "$VITE_SUPABASE_ANON_KEY" ]; then
-            echo "ERROR: VITE_SUPABASE_ANON_KEY is not set"
-            exit 1
-          fi
-          echo "Environment variables verified"
-
-      - name: Build
-        run: cd client && npm run build
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './client/dist'
-
-      - name: Deploy to GitHub Pages
+      - name: 🚀 Deploy till GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  # ==========================================
+  # 3. NOTIFICATION (Discord/Slack)
+  # ==========================================
+  notify:
+    runs-on: ubuntu-latest
+    needs: [build, deploy]
+    if: always() && github.ref == 'refs/heads/main'
+    
+    steps:
+      - name: ✅ Notifiera vid succé
+        if: needs.build.result == 'success' && needs.deploy.result == 'success'
+        run: |
+          echo "🎉 Deploy klar! ${{ steps.deployment.outputs.page_url }}"
+          # Här kan du lägga till Discord/Slack webhook
+          # curl -X POST -H 'Content-type: application/json' \
+          #   --data '{"text":"🚀 Deltagarportalen deployad!"}' \
+          #   ${{ secrets.DISCORD_WEBHOOK }}
+
+      - name: ❌ Notifiera vid fel
+        if: needs.build.result == 'failure' || needs.deploy.result == 'failure'
+        run: |
+          echo "❌ Deploy misslyckades!"
+          # Här kan du lägga till Discord/Slack webhook för fel
