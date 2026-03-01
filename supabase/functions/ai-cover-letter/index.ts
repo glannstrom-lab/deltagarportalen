@@ -1,5 +1,5 @@
 // Edge Function: AI-generering av personligt brev
-// Anropas från frontend när användare vill generera brev
+// Anropas fran frontend nar anvandare vill generera brev
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
@@ -40,24 +40,20 @@ serve(async (req) => {
     // Verifiera JWT token
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      console.error('❌ Missing authorization header')
       return new Response(
         JSON.stringify({ error: 'Missing authorization header' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    // Hämta miljövariabler
+    // Hamta miljovariabler
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
     
     if (!supabaseUrl || !serviceRoleKey) {
-      console.error('❌ Missing environment variables:', { 
-        hasUrl: !!supabaseUrl, 
-        hasKey: !!serviceRoleKey 
-      })
+      console.error('Missing environment variables')
       return new Response(
-        JSON.stringify({ error: 'Server configuration error - missing environment variables' }),
+        JSON.stringify({ error: 'Server configuration error' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
@@ -69,32 +65,21 @@ serve(async (req) => {
       { auth: { persistSession: false } }
     )
 
-    // Hämta användaren från token
+    // Hamta anvandaren fran token
     const token = authHeader.replace('Bearer ', '')
-    console.log('🔑 Validating token...', token.substring(0, 20) + '...')
-    
     const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token)
 
-    if (userError) {
-      console.error('❌ Token validation error:', userError)
+    if (userError || !user) {
+      console.error('Auth error:', userError)
       return new Response(
-        JSON.stringify({ error: `Invalid token: ${userError.message}` }),
+        JSON.stringify({ error: 'Invalid token' }),
         { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
-    
-    if (!user) {
-      console.error('❌ No user found for token')
-      return new Response(
-        JSON.stringify({ error: 'Invalid token - user not found' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-    
-    console.log('✅ User authenticated:', user.id)
 
     // Parse request body
-    const { cvData, jobDescription, companyName, jobTitle, tone = 'friendly', focus = 'experience' }: CoverLetterRequest = await req.json()
+    const body = await req.json()
+    const { cvData, jobDescription, companyName, jobTitle, tone = 'friendly', focus = 'experience' } = body as CoverLetterRequest
 
     // Validera input
     if (!jobDescription || !companyName || !jobTitle) {
@@ -104,7 +89,7 @@ serve(async (req) => {
       )
     }
 
-    // Hämta OpenAI API key
+    // Hamta OpenAI API key
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
     if (!openAIApiKey) {
       return new Response(
@@ -113,26 +98,34 @@ serve(async (req) => {
       )
     }
 
-    // Bygg prompt baserat på tonläge
-    const toneInstructions = {
-      formal: 'ett formellt och professionellt tonläge',
-      friendly: 'ett vänligt men professionellt tonläge',
-      enthusiastic: 'ett entusiastiskt och energiskt tonläge'
+    // Bygg prompt baserat pa tonlage
+    const toneInstructions: Record<string, string> = {
+      formal: 'ett formellt och professionellt tonlage',
+      friendly: 'ett vanligt men professionellt tonlage',
+      enthusiastic: 'ett entusiastiskt och energiskt tonlage'
     }
 
-    const focusInstructions = {
+    const focusInstructions: Record<string, string> = {
       experience: 'lyft fram relevant arbetslivserfarenhet och konkreta resultat',
-      skills: 'fokusera på specifika kompetenser och hur de matchar jobbet',
-      motivation: 'betona motivation och varför du vill jobba just hos detta företag'
+      skills: 'fokusera pa specifika kompetenser och hur de matchar jobbet',
+      motivation: 'betona motivation och varfor du vill jobba just hos detta foretag'
     }
 
     // Bygg CV-sammanfattning
+    const workExpText = cvData.workExperience?.length 
+      ? `Erfarenhet: ${cvData.workExperience.map(e => `${e.title} pa ${e.company}`).join(', ')}`
+      : ''
+    
+    const skillsText = cvData.skills?.length
+      ? `Kompetenser: ${cvData.skills.join(', ')}`
+      : ''
+
     const cvSummary = `
 Namn: ${cvData.firstName} ${cvData.lastName}
 ${cvData.title ? `Yrkestitel: ${cvData.title}` : ''}
 ${cvData.summary ? `Sammanfattning: ${cvData.summary}` : ''}
-${cvData.workExperience?.length ? `Erfarenhet: ${cvData.workExperience.map(e => `${e.title} på ${e.company}`).join(', ')}` : ''}
-${cvData.skills?.length ? `Kompetenser: ${cvData.skills.join(', ')}` : ''}
+${workExpText}
+${skillsText}
     `.trim()
 
     // Anropa OpenAI
@@ -147,25 +140,25 @@ ${cvData.skills?.length ? `Kompetenser: ${cvData.skills.join(', ')}` : ''}
         messages: [
           {
             role: 'system',
-            content: `Du är en erfaren svensk karriärcoach som hjälper arbetssökande att skriva personliga brev. 
-Skriv på svenska med ${toneInstructions[tone]}.
+            content: `Du ar en erfaren svensk karriarcoach som hjalper arbetssokande att skriva personliga brev. 
+Skriv pa svenska med ${toneInstructions[tone]}.
 Brevet ska vara max 300 ord och ${focusInstructions[focus]}.
-Var personlig men professionell. Undvik klichéer som "jag är en social person".
-Fokusera på konkreta exempel och vad kandidaten kan tillföra företaget.`
+Var personlig men professionell. Undvik klicheer.
+Fokusera pa konkreta exempel och vad kandidaten kan tillfora foretaget.`
           },
           {
             role: 'user',
-            content: `Skriv ett personligt brev för följande kandidat:
+            content: `Skriv ett personligt brev for foljande kandidat:
 
 ${cvSummary}
 
-Jobb de söker: ${jobTitle}
-Företag: ${companyName}
+Jobb de soker: ${jobTitle}
+Foretag: ${companyName}
 
 Jobbeskrivning:
 ${jobDescription}
 
-Skriv brevet så att det känns personligt och visar att kandidaten har läst jobbeskrivningen noggrant.`
+Skriv brevet sa att det kanns personligt och visar att kandidaten har last jobbeskrivningen noggrant.`
           }
         ],
         temperature: 0.7,
@@ -192,13 +185,18 @@ Skriv brevet så att det känns personligt och visar att kandidaten har läst jo
       )
     }
 
-    // Logga användning (för statistik)
-    await supabaseClient.from('ai_usage_logs').insert({
-      user_id: user.id,
-      function_name: 'ai-cover-letter',
-      tokens_used: openAIData.usage?.total_tokens || 0,
-      created_at: new Date().toISOString()
-    })
+    // Logga anvandning (for statistik) - ignorerar fel har
+    try {
+      await supabaseClient.from('ai_usage_logs').insert({
+        user_id: user.id,
+        function_name: 'ai-cover-letter',
+        tokens_used: openAIData.usage?.total_tokens || 0,
+        created_at: new Date().toISOString()
+      })
+    } catch (logError) {
+      // Ignorera loggningsfel
+      console.log('Logging error (non-critical):', logError)
+    }
 
     // Returnera genererat brev
     return new Response(
