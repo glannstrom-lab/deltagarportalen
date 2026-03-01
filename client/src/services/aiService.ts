@@ -276,30 +276,73 @@ Engelska - Goda kunskaper`
    */
   async generateCoverLetter(data: CoverLetterRequest): Promise<CoverLetterResponse> {
     try {
-      // Map old format to new format
+      // Validate required fields
+      const jobDesc = data.jobDescription || data.jobbAnnons
+      if (!jobDesc) {
+        throw new Error('Jobbeskrivning saknas')
+      }
+
+      // Map old format to Edge Function format
+      // Extract firstName/lastName from namn or cvData
+      let firstName = 'Jag'
+      let lastName = ''
+      
+      if (data.cvData?.firstName) {
+        firstName = data.cvData.firstName
+        lastName = data.cvData.lastName || ''
+      } else if (data.namn) {
+        const nameParts = data.namn.split(' ')
+        firstName = nameParts[0]
+        lastName = nameParts.slice(1).join(' ')
+      }
+
       const params = {
-        cvData: data.cvData || { 
-          workExperience: [{ title: data.erfarenhet || 'Tidigare erfarenhet', company: '' }],
-          skills: []
+        cvData: {
+          firstName,
+          lastName,
+          title: data.cvData?.title || '',
+          summary: data.cvData?.summary || data.motivering || '',
+          workExperience: data.cvData?.workExperience || 
+                         (data.erfarenhet ? [{ title: data.erfarenhet, company: '' }] : []),
+          skills: data.cvData?.skills || []
         },
-        jobDescription: data.jobDescription || data.jobbAnnons || '',
-        companyName: data.companyName || 'Företaget',
+        jobDescription: jobDesc,
+        companyName: data.companyName || data.extraContext || 'Företaget',
         jobTitle: data.jobTitle || 'Tjänsten',
         tone: data.ton === 'professionell' ? 'formal' : 
-              data.ton === 'entusiastisk' ? 'enthusiastic' : 'formal',
+              data.ton === 'entusiastisk' ? 'enthusiastic' : 'friendly',
         focus: 'experience'
       }
 
       // Call Supabase Edge Function via coverLetterApi
       const result = await coverLetterApi.generate(params)
 
+      // Edge Function returns 'letter' field
       return {
         success: true,
-        brev: result.coverLetter || result.brev,
+        brev: result.letter || result.coverLetter || result.brev,
         ton: data.ton || 'professionell'
       }
-    } catch (error) {
+    } catch (error: any) {
       console.warn('AI-brev generering misslyckades:', error)
+      
+      // Check if it's an authentication error
+      if (error.status === 401 || error.message?.includes('Inte inloggad')) {
+        return {
+          success: false,
+          brev: 'Du verkar ha blivit utloggad. Vänligen logga in igen för att använda AI-funktionen.',
+          ton: data.ton || 'professionell'
+        }
+      }
+      
+      // Check if it's an OpenAI configuration error
+      if (error.message?.includes('OpenAI API key not configured')) {
+        return {
+          success: false,
+          brev: 'AI-tjänsten är inte korrekt konfigurerad. Kontakta support.',
+          ton: data.ton || 'professionell'
+        }
+      }
       
       // Use offline template as fallback
       const template = coverLetterTemplates[data.ton || 'professionell']
