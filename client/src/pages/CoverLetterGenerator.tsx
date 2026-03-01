@@ -201,16 +201,25 @@ export default function CoverLetterGenerator() {
     setCvLoading(true)
     try {
       const cv = await cvApi.getCV()
+      console.log('📄 Laddade CV:', cv)
+      
+      if (!cv) {
+        console.warn('⚠️ Inget CV hittades')
+        setCvData(null)
+        return
+      }
+      
       setCvData({
-        firstName: cv.firstName || cv.user?.firstName,
-        lastName: cv.lastName || cv.user?.lastName,
-        title: cv.title,
-        summary: cv.summary,
+        firstName: cv.firstName || cv.user?.firstName || '',
+        lastName: cv.lastName || cv.user?.lastName || '',
+        title: cv.title || '',
+        summary: cv.summary || '',
         workExperience: cv.workExperience || [],
         skills: cv.skills || []
       })
     } catch (err) {
-      console.error('Kunde inte ladda CV:', err)
+      console.error('❌ Kunde inte ladda CV:', err)
+      setCvData(null)
     } finally {
       setCvLoading(false)
     }
