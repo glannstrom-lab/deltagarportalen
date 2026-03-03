@@ -1,29 +1,141 @@
-// Supabase Edge Function: Proxy för Arbetsförmedlingens Taxonomi API
+// Supabase Edge Function: Hämtar RIKTIGA yrken från Arbetsförmedlingens Taxonomy API
 // URL: https://<project>.supabase.co/functions/v1/af-taxonomy
-// OBS: Taxonomy API är ofta långsamt, så vi använder mock-data som fallback
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 const TAXONOMY_API_BASE = 'https://taxonomy.api.jobtechdev.se/v1/taxonomy';
+const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
 
-// Mock-data för populära yrken (fallback när API är nere)
-const POPULAR_OCCUPATIONS = [
-  { id: 'occupation_1', preferred_label: 'Systemutvecklare', type: 'occupation-name' },
-  { id: 'occupation_2', preferred_label: 'Sjuksköterska', type: 'occupation-name' },
-  { id: 'occupation_3', preferred_label: 'Lärare', type: 'occupation-name' },
-  { id: 'occupation_4', preferred_label: 'Ekonomiassistent', type: 'occupation-name' },
-  { id: 'occupation_5', preferred_label: 'Lagerarbetare', type: 'occupation-name' },
-  { id: 'occupation_6', preferred_label: 'Kundtjänstmedarbetare', type: 'occupation-name' },
-  { id: 'occupation_7', preferred_label: 'Byggarbetare', type: 'occupation-name' },
-  { id: 'occupation_8', preferred_label: 'Kock', type: 'occupation-name' },
-  { id: 'occupation_9', preferred_label: 'Lastbilschaufför', type: 'occupation-name' },
-  { id: 'occupation_10', preferred_label: 'Vårdbiträde', type: 'occupation-name' },
-  { id: 'occupation_11', preferred_label: 'Programmerare', type: 'occupation-name' },
-  { id: 'occupation_12', preferred_label: 'Väktare', type: 'occupation-name' },
-  { id: 'occupation_13', preferred_label: 'Städare', type: 'occupation-name' },
-  { id: 'occupation_14', preferred_label: 'Personlig assistent', type: 'occupation-name' },
-  { id: 'occupation_15', preferred_label: 'Undersköterska', type: 'occupation-name' },
-];
+interface Concept {
+  id: string;
+  preferred_label: string;
+  type: string;
+  definition?: string;
+}
+
+// Hämta yrken från Taxonomy API
+async function fetchOccupations(query: string, limit: number = 10): Promise<Concept[]> {
+  // Taxonomy API har ett GraphQL-liknande gränssnitt
+  // Vi använder /concepts med sökparameter
+  const url = `${TAXONOMY_API_BASE}/concepts?query=${encodeURIComponent(query)}&type=occupation-name&limit=${limit}`;
+  
+  console.log(`[af-taxonomy] Fetching: ${url}`);
+  
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    if (!response.ok) {
+      throw new Error(`Taxonomy API error: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    
+    // Transformera till vårt format
+    if (Array.isArray(data)) {
+      return data.map((item: any) => ({
+        id: item.id || item.concept_id,
+        preferred_label: item.preferred_label || item.term,
+        type: item.type || 'occupation-name',
+        definition: item.definition || item.description
+      }));
+    }
+    
+    if (data.concepts) {
+      return data.concepts.map((item: any) => ({
+        id: item.id || item.concept_id,
+        preferred_label: item.preferred_label || item.term,
+        type: item.type || 'occupation-name',
+        definition: item.definition || item.description
+      }));
+    }
+    
+    return [];
+  } catch (error) {
+    console.error('[af-taxonomy] Error fetching from Taxonomy:', error);
+    throw error;
+  }
+}
+
+// Fallback: Hämta från JobSearch /complete endpoint (mer tillförlitlig)
+async function fetchFromJobSearchComplete(query: string, limit: number = 10): Promise<Concept[]> {
+  const url = `${JOBSEARCH_API_BASE}/complete?q=${encodeURIComponent(query)}&limit=${limit}`;
+  
+  console.log(`[af-taxonomy] Trying JobSearch complete: ${url}`);
+  
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error(`JobSearch API error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  
+  // JobSearch /complete returnerar förslag i olika kategorier
+  const results: Concept[] = [];
+  
+  // Leta efter yrkesförslag
+  if (data.occupations) {
+    for (const occ of data.occupations.slice(0, limit)) {
+      results.push({
+        id: occ.id || `occ_${occ.term}`,
+        preferred_label: occ.term,
+        type: 'occupation',
+        definition: ''
+      });
+    }
+  }
+  
+  // Alternativt format
+  if (data.typeahead) {
+    for (const item of data.typeahead.slice(0, limit)) {
+      if (item.occupation) {
+        results.push({
+          id: item.occupation.id || `occ_${item.occupation.term}`,
+          preferred_label: item.occupation.term,
+          type: 'occupation',
+          definition: ''
+        });
+      }
+    }
+  }
+  
+  return results;
+}
+
+// Huvudfunktion för att hämta yrkesförslag
+async function getOccupationSuggestions(query: string, limit: number = 10): Promise<{ concepts: Concept[]; source: string }> {
+  // Försök först med Taxonomy API
+  try {
+    const occupations = await fetchOccupations(query, limit);
+    if (occupations.length > 0) {
+      return { concepts: occupations, source: 'taxonomy-api' };
+    }
+  } catch (error) {
+    console.log('[af-taxonomy] Taxonomy API failed, trying JobSearch');
+  }
+  
+  // Fallback till JobSearch /complete
+  try {
+    const occupations = await fetchFromJobSearchComplete(query, limit);
+    if (occupations.length > 0) {
+      return { concepts: occupations, source: 'jobsearch-complete' };
+    }
+  } catch (error) {
+    console.log('[af-taxonomy] JobSearch API also failed');
+  }
+  
+  // Om inget fungerar, returnera tom lista
+  return { concepts: [], source: 'none' };
+}
 
 serve(async (req) => {
   const allowedOrigins = [
@@ -50,106 +162,63 @@ serve(async (req) => {
   try {
     const url = new URL(req.url);
     const path = url.pathname.replace('/af-taxonomy', '').replace('//', '/');
-    const queryString = url.search;
-    const params = new URLSearchParams(queryString);
+    const params = new URLSearchParams(url.search);
     
-    // Hantera autocomplete för yrken
+    // Hantera concepts endpoint (autocomplete)
     if (path === '/concepts' || path === '') {
-      const query = (params.get('q') || '').toLowerCase();
-      const type = params.get('type') || 'occupation-name';
+      const query = params.get('q') || '';
+      const limit = parseInt(params.get('limit') || '10');
       
-      // Filtrera mock-data på query
-      const filtered = POPULAR_OCCUPATIONS.filter(o => 
-        o.preferred_label.toLowerCase().includes(query)
-      );
-      
-      // Om vi har matchande mock-data, returnera det
-      if (filtered.length > 0) {
+      if (query.length < 2) {
         return new Response(
-          JSON.stringify({
-            concepts: filtered,
-            total: filtered.length,
-            source: 'mock'
-          }),
-          {
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-          }
+          JSON.stringify({ concepts: [], total: 0 }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
       
-      // Om ingen match i mock-data, returnera tom lista
+      const { concepts, source } = await getOccupationSuggestions(query, limit);
+      
       return new Response(
         JSON.stringify({
-          concepts: [],
-          total: 0,
-          source: 'mock'
+          concepts,
+          total: concepts.length,
+          source
         }),
-        {
-          headers: { ...corsHeaders, 'Type': 'application/json' },
-        }
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
-    // För andra endpoints, försök med riktiga API:et
-    const targetUrl = `${TAXONOMY_API_BASE}${path}${queryString}`;
+    // För andra endpoints, proxy till Taxonomy API
+    const targetUrl = `${TAXONOMY_API_BASE}${path}${url.search}`;
     
-    console.log(`[af-taxonomy] Proxying: ${targetUrl}`);
-
-    // Använd AbortController för timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 sekunder timeout
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
     
-    try {
-      const response = await fetch(targetUrl, {
-        method: req.method,
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-        },
-        signal: controller.signal,
-      });
-      
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error(`API error: ${response.status}`);
-      }
-
-      const data = await response.json();
-
-      return new Response(JSON.stringify(data), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    } catch (fetchError) {
-      clearTimeout(timeoutId);
-      console.error('[af-taxonomy] Fetch error:', fetchError);
-      
-      // Returnera mock-data vid timeout/fel
-      return new Response(
-        JSON.stringify({
-          concepts: POPULAR_OCCUPATIONS.slice(0, 5),
-          total: 5,
-          source: 'mock-fallback',
-          error: fetchError.message
-        }),
-        {
-          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-        }
-      );
+    if (!response.ok) {
+      throw new Error(`Taxonomy API error: ${response.status}`);
     }
+    
+    const data = await response.json();
+    
+    return new Response(
+      JSON.stringify(data),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
+    
   } catch (error) {
     console.error('[af-taxonomy] Error:', error);
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        concepts: POPULAR_OCCUPATIONS.slice(0, 5),
-        total: 5,
-        source: 'mock-error'
+        concepts: [],
+        total: 0
       }),
-      {
-        status: 200,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      }
+      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

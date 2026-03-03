@@ -23,6 +23,8 @@ interface SalaryData {
     jobCount: number;
     competition: number;
   };
+  source?: string;
+  sampleSize?: number;
 }
 
 const SWEDISH_REGIONS = [
@@ -63,7 +65,7 @@ export default function SalaryInsights() {
           byRegion: stats.by_region.map(r => ({
             region: r.region,
             median: r.median_salary,
-            jobCount: Math.floor(Math.random() * 500) + 50, // Mock-data
+            jobCount: 0,
           })),
           byExperience: stats.by_experience.map(e => ({
             years: e.experience_years,
@@ -71,13 +73,18 @@ export default function SalaryInsights() {
           })),
           trends: {
             growth: 8,
-            jobCount: 850,
+            jobCount: stats.sampleSize || 0,
             competition: 8.5,
           },
+          source: stats.source,
+          sampleSize: stats.sampleSize,
         });
+      } else {
+        setSalaryData(null);
       }
     } catch (error) {
       console.error('Fel vid hämtning av lönedata:', error);
+      setSalaryData(null);
     } finally {
       setLoading(false);
     }
@@ -335,17 +342,37 @@ export default function SalaryInsights() {
           </div>
 
           {/* Datakälla */}
-          <p className="text-xs text-slate-400 text-center">
-            Lönestatistik från Arbetsförmedlingen • Data uppdateras löpande
-          </p>
+          <div className="text-center">
+            {salaryData.source && (
+              <p className="text-xs text-green-600 font-medium mb-1">
+                ✓ Data från: {salaryData.source}
+              </p>
+            )}
+            <p className="text-xs text-slate-400">
+              Lönestatistik baserat på aktuella jobbannonser från Arbetsförmedlingen
+            </p>
+          </div>
         </>
+      )}
+
+      {!loading && !salaryData && selectedOccupation && (
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
+          <Info size={48} className="text-amber-400 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-slate-800 mb-2">Ingen lönedata tillgänglig</h3>
+          <p className="text-slate-500 mb-4">
+            Vi kunde inte hitta tillräckligt med löneinformation för <strong>{selectedOccupation.label}</strong> i aktuella jobbannonser.
+          </p>
+          <p className="text-sm text-slate-400">
+            Detta kan bero på att få arbetsgivare anger lön i sina annonser, eller att yrkestiteln är ovanlig.
+          </p>
+        </div>
       )}
 
       {!loading && !salaryData && !selectedOccupation && (
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Search size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Sök ett yrke för att se lönestatistik</h3>
-          <p className="text-slate-500">Vi visar medianlön, lönespridning och regionala skillnader</p>
+          <p className="text-slate-500">Vi visar medianlön, lönespridning och regionala skillnader baserat på riktiga jobbannonser</p>
         </div>
       )}
     </div>

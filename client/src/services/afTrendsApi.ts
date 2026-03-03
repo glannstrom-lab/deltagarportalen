@@ -148,6 +148,8 @@ export interface SalaryStats {
     experience_years: string;
     median_salary: number;
   }>;
+  source?: string;
+  sampleSize?: number;
 }
 
 export async function getSalaryStats(occupation: string): Promise<SalaryStats | null> {
@@ -164,15 +166,17 @@ export async function getSalaryStats(occupation: string): Promise<SalaryStats | 
         percentile_25: result.p25,
         percentile_75: result.p75,
         by_region: result.byRegion || [],
-        by_experience: result.byExperience || []
+        by_experience: result.byExperience || [],
+        source: result.source,
+        sampleSize: result.sampleSize
       };
     }
   } catch (error) {
-    console.log('[Historical] API error, using fallback:', error);
+    console.log('[Historical] API error:', error);
   }
   
-  // Fallback till mock-data
-  return getMockSalaryStats(occupation);
+  // Ingen fallback - returnera null om ingen data finns
+  return null;
 }
 
 // ============== MOCK DATA (endast för testning) ==============
