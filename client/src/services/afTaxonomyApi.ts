@@ -240,7 +240,15 @@ export async function autocompleteOccupations(query: string): Promise<Autocomple
       type: 'occupation'
     }));
   } catch (error) {
-    return [];
+    console.log('[Taxonomy] API failed, using mock suggestions');
+    // Fallback till mock-data filtrerat på query
+    return POPULAR_OCCUPATIONS
+      .filter(o => o.label.toLowerCase().includes(query.toLowerCase()))
+      .map(o => ({
+        id: o.id,
+        label: o.label,
+        type: 'occupation'
+      }));
   }
 }
 
