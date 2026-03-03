@@ -1124,6 +1124,668 @@ Lycka till! 🍀`,
       { id: '6', text: 'Spara som PDF' },
     ],
   },
+
+  // === NYA ARTIKLAR 2024 ===
+  {
+    id: 'nystartsjobb-guide',
+    title: 'Nystartsjobb – ditt extra stöd in i arbetslivet',
+    summary: 'Allt om nystartsjobb: vem som kan få det, hur det fungerar och hur du använder det som en dörröppnare.',
+    content: `Nystartsjobb är en subventionerad anställning som ger dig extra stöd när du etablerar dig på arbetsmarknaden. Här är allt du behöver veta.
+
+## Vad är nystartsjobb?
+
+Ett nystartsjobb innebär att arbetsgivaren får ekonomiskt stöd för att anställa dig. Detta gör det lättare för dig att få ett jobb, även om du saknar lång erfarenhet.
+
+## Vem kan få nystartsjobb?
+
+Du kan vara aktuell om du:
+- Är 20 år eller äldre och har varit utanför arbetsmarknaden i minst 12 månader
+- Är 25 år eller äldre och har varit utanför arbetsmarknaden i minst 6 månader
+- Har en funktionsnedsättning som medför nedsatt arbetsförmåga
+- Är nyanländ (upp till 3 år efter uppehållstillstånd)
+
+## Hur fungerar det?
+
+**Stödet betalas till arbetsgivaren**, inte till dig. Det innebär:
+- Din lön påverkas inte
+- Du har samma villkor som andra anställda
+- Arbetsgivaren får bidrag för att täcka en del av lönekostnaden
+
+## Fördelar för dig
+
+✅ **Ökade chanser att få jobb**
+Arbetsgivaren tar mindre risk
+
+✅ **Samma villkor**
+Du har samma lön och förmåner som andra
+
+✅ **Möjlighet att visa vad du kan**
+Bevisa ditt värde på jobbet
+
+## Så här går du tillväga
+
+1. **Kontrollera med Arbetsförmedlingen** om du uppfyller kraven
+2. **Sök jobb som vanligt**
+3. **Nämn nystartsjobb i ansökan eller intervjun** – visa att du vet om stödet
+4. **Arbetsgivaren ansöker** om stödet
+
+## Tips för att lyckas
+
+- Var öppen med att du är berättigad nystartsjobb
+- Förklara att det inte kostar arbetsgivaren mer
+- Fokusera på vad du kan bidra med
+- Visa entusiasm och vilja att lära
+
+## Vanliga frågor
+
+**Måste jag berätta att jag har nystartsjobb?**
+Nej, det är valfritt. Men det kan öka dina chanser.
+
+**Påverkar det min lön?**
+Nej, du får samma lön som kollegor i liknande roller.
+
+**Hur länge varar stödet?**
+Vanligtvis 12 månader, men kan variera.
+
+## Kom ihåg
+
+Nystartsjobb är ett **trampolin**, inte en livboj. Det är en chans att visa vad du går för och bygga en karriär!`,
+    category: 'accessibility',
+    subcategory: 'support',
+    tags: ['nystartsjobb', 'stöd', 'subventionerad anställning', ' Arbetsförmedlingen'],
+    createdAt: '2024-03-01T10:00:00Z',
+    updatedAt: '2024-03-01T10:00:00Z',
+    readingTime: 12,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 178,
+    relatedArticles: ['rattigheter-stod', 'anpassningar-arbetsplats'],
+    actions: [
+      { label: '📞 Kontakta Arbetsförmedlingen', href: 'tel:0771-416416', type: 'primary' },
+    ],
+    author: 'Katarina Holm',
+    authorTitle: 'Handläggare Arbetsförmedlingen',
+  },
+
+  {
+    id: 'loneforhandling-guide',
+    title: 'Löneförhandling – så får du den lön du förtjänar',
+    summary: 'Praktiska strategier för att förbereda, genomföra och avsluta en lyckad löneförhandling.',
+    content: `Att prata om lön kan kännas obekvämt, men det är en viktig del av arbetslivet. Här lär du dig hur du förhandlar på ett professionellt sätt.
+
+## Förbered dig innan
+
+### 1. Gör din research
+- Vad tjänar andra i liknande roller?
+- Kolla lönestatistik på SCB, Unionen, Akavia
+- Fråga i nätverket (försiktigt)
+
+### 2. Definiera ditt lönespann
+- **Minimum:** Vad behöver du för att klara dig?
+- **Mål:** Vad vore rimligt och rättvist?
+- **Drömlön:** Vad vore fantastiskt?
+
+### 3. Förbered dina argument
+- Vilka resultat har du uppnått?
+- Vilka extra ansvar har du tagit?
+- Vilka kompetenser har du tillfört?
+
+## Under förhandlingen
+
+### Börja positivt
+"Jag trivs jättebra här och uppskattar förtroendet..."
+
+### Var konkret
+- Använd siffror och exempel
+- Koppla till affärsnytta
+- Var specifik om vad du vill ha
+
+### Ligg inte för högt
+Begäran om 20% upprördhet kan stänga dörren. 5-10% är mer realistiskt.
+
+### Var beredd på motargument
+- "Det finns inte i budgeten" → Fråga när det kan bli aktuellt
+- "Alla har samma lön" → Förklara varför du är exceptionell
+
+## Vanliga misstag
+
+❌ **Att ta det personligt**
+Det är affärer, inte en bedömning av ditt värde som människa
+
+❌ **Att jämföra med kollegor**
+Fokusera på ditt bidrag, inte vad andra tjänar
+
+❌ **Att hota med att sluta**
+Det kan lätt slå tillbaka
+
+❌ **Att ge upp vid första nej**
+Fråga när ni kan återkomma till frågan
+
+## Efter förhandlingen
+
+Om du fick ja: **Fira!** 🎉
+
+Om du fick nej:
+- Be om en tidsplan för nästa förhandling
+- Fråga vad du behöver uppnå för att få högre lön
+- Överväg om andra förmåner kan kompensera (flextid, utbildning)
+
+## Kom ihåg
+
+Du förtjänar att få betalt för ditt värde. Var professionell, förberedd och bestämd!`,
+    category: 'interview',
+    subcategory: 'salary',
+    tags: ['lön', 'förhandling', 'lönesamtal', 'löneanspråk', 'värdera sig själv'],
+    createdAt: '2024-03-02T10:00:00Z',
+    updatedAt: '2024-03-02T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 267,
+    relatedArticles: ['anstallningsformer', 'forsta-dagen-jobbet'],
+    checklist: [
+      { id: '1', text: 'Researcha marknadslöner' },
+      { id: '2', text: 'Definiera ditt lönespann' },
+      { id: '3', text: 'Förbered konkreta argument' },
+      { id: '4', text: 'Öva på att formulera begäran' },
+      { id: '5', text: 'Förbered svar på motargument' },
+    ],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
+  {
+    id: 'linkedin-optimering',
+    title: 'Optimera din LinkedIn-profil för jobbsökning',
+    summary: 'Så gör du din LinkedIn-profil synlig för rekryterare och användbar för nätverkande.',
+    content: `LinkedIn är världens största professionella nätverk – och ett oumbärligt verktyg för jobbsökare. Så här optimerar du din profil.
+
+## Profilbild
+
+✅ **Gör så här:**
+- Professionell bild med neutral bakgrund
+- Se in i kameran och le
+- Ha på dig kläder som passar din bransch
+- Använd en bild från axlarna och uppåt
+
+❌ **Undvik:**
+- Partybilder
+- Självisar
+- Bilder med andra människor
+- Oskarpa eller mörka bilder
+
+## Rubrik (Headline)
+
+Din rubrik visas överallt – gör den räknas!
+
+**Dålig:** "Söker jobb"
+**Bättre:** "Erfaren kundtjänstmedarbetare | Fokus på kundnöjdhet"
+**Bäst:** "Projektledare | 5 års erfarenhet av IT-projekt | Certifierad Scrum Master"
+
+**Tips:** Använd nyckelord som rekryterare söker efter
+
+## Om-sektionen (Summary)
+
+Skriv i första person och berätta:
+- Vem du är (professionellt)
+- Vad du kan (kompetenser)
+- Vad du söker (mål)
+
+**Struktur:**
+1. Stark inledning som väcker intresse
+2. 2-3 meningar om din bakgrund
+3. Dina styrkor och vad du brinner för
+4. Call-to-action ("Jag söker nya möjligheter inom...")
+
+## Erfarenhet
+
+- Lista alla relevanta jobb
+- Beskriv resultat, inte bara arbetsuppgifter
+- Använd siffror när du kan
+- Be om rekommendationer från tidigare chefer
+
+## Kompetenser (Skills)
+
+- Lista 50 av dina kompetenser (max tillåtet)
+- Prioritera de mest relevanta först
+- Be kollegor att " endorsa" (bekräfta) dina kompetenser
+
+## Aktivitet
+
+**Synlighet = Möjligheter**
+
+- Dela intressanta artiklar med en personlig kommentar
+- Gratulera kontakter till nya jobb
+- Kommentera inlägg i din bransch
+- Skriv egna inlägg om du vågar
+
+## Nätverka strategiskt
+
+- Skicka personliga förfrågningar (inte standardtexten)
+- Följ företag du vill jobba på
+- Kontakta rekryterare i din bransch
+
+## Sök jobb på LinkedIn
+
+- Använd filter för att hitta rätt jobb
+- Spara jobbsökningar
+- Aktivera "Open to work"-funktionen
+- Ansök via "Easy Apply" men skicka alltid personligt brev separat
+
+## Kom ihåg
+
+LinkedIn är inte Facebook – håll det professionellt men personligt. Visa att du är en människa, inte bara en lista med kompetenser!`,
+    category: 'job-market',
+    subcategory: 'digital-presence',
+    tags: ['LinkedIn', 'digital närvaro', 'nätverkande', 'online-profil', 'rekrytering'],
+    createdAt: '2024-03-03T10:00:00Z',
+    updatedAt: '2024-03-03T10:00:00Z',
+    readingTime: 16,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.7,
+    bookmarkCount: 223,
+    relatedArticles: ['personligt-varumarke', 'natverka-for-jobb'],
+    actions: [
+      { label: '🔗 Gå till LinkedIn', href: 'https://www.linkedin.com', type: 'primary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'tackbrev-intervju',
+    title: 'Skriv ett tackbrev efter intervjun',
+    summary: 'Ett tackbrev kan vara det som skiljer dig från andra kandidater. Så här skriver du ett effektivt sådant.',
+    content: `Ett tackbrev efter intervjun är en enkel men kraftfull gest som kan ge dig fördelar. Här är guiden till ett perfekt tackbrev.
+
+## Varför skicka tackbrev?
+
+✅ **Visar engagemang**
+Du tar initiativ och visar intresse
+
+✅ **Påminner om dig**
+Rekryteraren har kanske träffat många kandidater
+
+✅ **Chans att förstärka ett budskap**
+Påminn om något du glömde nämna
+
+✅ **Visar professionalism**
+Det är gott affärsskick
+
+## När ska du skicka det?
+
+**Inom 24 timmar** efter intervjun. Helst samma dag.
+
+## Hur ska du skicka det?
+
+- **E-post** är vanligast och acceptabelt
+- **LinkedIn-meddelande** om ni har kontakt där
+- **Handskrivet brev** kan vara effektfullt för vissa roller
+
+## Struktur på tackbrevet
+
+### 1. Tydlig rubrik
+"Tack för intervjun" eller "Tack för igår"
+
+### 2. Personlig hälsning
+"Hej [Namn],"
+
+### 3. Tack för tiden
+"Tack för att du tog dig tid att träffa mig idag."
+
+### 4. Specificera något från intervjun
+"Det var särskilt intressant att höra om ert arbete med..."
+
+### 5. Bekräfta ditt intresse
+"Efter vårt samtal är jag ännu mer övertygad om att..."
+
+### 6. Avsluta positivt
+"Jag ser fram emot att höra från er."
+
+### 7. Vänlig hälsning
+"Med vänliga hälsningar, [Ditt namn]"
+
+## Exempel på ett bra tackbrev
+
+*Hej Anna,*
+
+*Tack för att du tog dig tid att träffa mig idag och berätta mer om rollen som kundtjänstmedarbetare på Företag AB.*
+
+*Det var särskilt intressant att höra om hur ni arbetar med kundnöjdhet och de nya initiativen för att förbättra kundupplevelsen. Jag blev verkligen inspirerad av er kundcentrerade approach.*
+
+*Efter vårt samtal är jag ännu mer övertygad om att min erfarenhet av kundservice och min passion för att hjälpa människor skulle passa perfekt in i ert team.*
+
+*Jag ser fram emot att höra från er.*
+
+*Med vänliga hälsningar,*
+*Maria Svensson*
+
+## Vanliga misstag
+
+❌ **Generiskt brev** som kunde skickats till vem som helst
+❌ **För långt** – max 5-6 meningar
+❌ **Att be om jobbet** igen – det har du redan gjort
+❌ **Att påminna om svagheter** – fokusera på det positiva
+
+## När du inte har kontaktinfo
+
+Skicka till den som bokade intervjun och be dem vidarebefordra, eller skicka via LinkedIn.
+
+## Kom ihåg
+
+Ett tackbrev tar 10 minuter att skriva men kan göra skillnaden mellan att få jobbet eller inte!`,
+    category: 'interview',
+    subcategory: 'after-interview',
+    tags: ['tackbrev', 'intervju', 'follow-up', 'etikett', 'kommunikation'],
+    createdAt: '2024-03-04T10:00:00Z',
+    updatedAt: '2024-03-04T10:00:00Z',
+    readingTime: 10,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 312,
+    relatedArticles: ['intervju-forberedelser', 'digital-intervju'],
+    author: 'Sara Ekström',
+    authorTitle: 'Rekryterare',
+  },
+
+  {
+    id: 'praktik-som-vag-in',
+    title: 'Praktik som väg in i arbetslivet',
+    summary: 'Hur du hittar, söker och maximerar praktik för att få foten innanför dörren.',
+    content: `Praktik är ett av de mest effektiva sätten att få erfarenhet, bygga nätverk och ofta leder det till anställning. Så här gör du.
+
+## Typer av praktik
+
+### Arbetsprövning
+- Från Arbetsförmedlingen
+- Du behåller din ersättning
+- Syfte: testa om jobbet passar
+
+### Praktik via skola/utbildning
+- OFta en del av utbildningen
+- Ger studiepoäng
+- LIA (Lärande i arbete)
+
+### Volontärpraktik
+- Ideella organisationer
+- Ger erfarenhet och referenser
+- Ofta mer flexibel
+
+### Egen praktik
+- Du tar initiativ själv
+- Kontakta företag direkt
+- Kan vara kortare perioder
+
+## Fördelar med praktik
+
+✅ **Få erfarenhet att skriva i CV:t**
+✅ **Bygga nätverk**
+✅ **Testa om yrket passar dig**
+✅ **Visa vad du kan på riktigt**
+✅ **Potentiell väg till anställning**
+
+## Så hittar du praktikplatser
+
+1. **Arbetsförmedlingen** – be om arbetsprövning
+2. **Skolan** – prata med studievägledare
+3. **Kontakta företag direkt** – skicka spontanansökan
+4. **Praktikplatser.se** och liknande sajter
+5. **Ditt nätverk** – fråga vänner och familj
+
+## Så söker du praktik
+
+### I din ansökan, betona:
+- Din motivation att lära
+- Vad du vill uppnå
+- Vad du kan erbjuda (även om det är grundläggande)
+- Att du är pålitlig och engagerad
+
+### Under praktiken:
+- **Var nyfiken och ställ frågor**
+- **Ta initiativ** – fråga "kan jag hjälpa till med...?"
+- **Var punktlig och pålitlig**
+- **Nätverka** – lär känna människor
+- **Dokumentera** vad du gör för CV:t
+
+## Få praktiken att leda till jobb
+
+1. **Be om ett avslutningssamtal** med handledaren
+2. **Be om referens** eller rekommendationsbrev
+3. **Fråga om det finns möjlighet till anställning**
+4. **Håll kontakten** efter praktiken
+
+## Om praktiken inte är som du tänkt dig
+
+Det är okej att avbryta om:
+- Du inte lär dig något
+- Miljön är skadlig
+- Du blir utnyttjad
+
+Prata med din handledare eller Arbetsförmedlingen.
+
+## Kom ihåg
+
+Praktik är en investering i dig själv. Även om det inte leder till jobb direkt, får du ovärderlig erfarenhet och kontakter!`,
+    category: 'job-market',
+    subcategory: 'career-change',
+    tags: ['praktik', 'arbetsprövning', 'erfarenhet', 'nätverkande', 'väg in'],
+    createdAt: '2024-03-05T10:00:00Z',
+    updatedAt: '2024-03-05T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 189,
+    relatedArticles: ['nystartsjobb-guide', 'branscher-brist'],
+    actions: [
+      { label: '📅 Boka möte för praktik', href: '/diary', type: 'primary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'arbetsmiljo-guide',
+    title: 'Förstå din framtida arbetsmiljö',
+    summary: 'Vikten av att välja rätt arbetsmiljö och vad du ska leta efter innan du accepterar ett jobb.',
+    content: `Arbetsmiljön påverkar din hälsa, trivsel och prestation mer än du kanske tror. Så här utvärderar du en arbetsmiljö innan du säger ja.
+
+## Olika typer av arbetsmiljöer
+
+### Fysisk arbetsmiljö
+- Kontor, lager, ute, kundlokal
+- Ljus, luft, ljudnivå
+- Ergonomi och utrustning
+
+### Psykosocial arbetsmiljö
+- Stämning och kultur
+- Ledarskap och kommunikation
+- Krav och kontroll
+- Socialt stöd från kollegor
+
+### Digital arbetsmiljö
+- Verktyg och system
+- Distansarbete vs på plats
+- Flexibilitet
+
+## Röda flaggor att se upp för
+
+⚠️ **Under intervjun:**
+- Chefen pratar illa om tidigare anställda
+- Hög omsättning av personal
+- Otydliga arbetsuppgifter
+- "Vi är som en familj" (kan betyda gränser suddas ut)
+- Ingen möjlighet att träffa framtida kollegor
+
+⚠️ **I fysiska miljön:**
+- Stökigt och oorganiserat
+- Ingen plats för pauser
+- Dålig belysning eller ventilation
+
+## Gröna flaggor – bra tecken
+
+✅ **Öppen kommunikation**
+✅ **Tydliga förväntningar**
+✅ **Möjlighet till utveckling**
+✅ **Bra arbetsplatskultur**
+✅ **Hänsyn till work-life balance**
+
+## Frågor att ställa i intervjun
+
+**Om arbetsmiljön:**
+- "Hur skulle ni beskriva arbetsplatskulturen?"
+- "Vad uppskattar ni mest med att jobba här?"
+
+**Om stöd:**
+- "Vilken introduktion får nya medarbetare?"
+- "Hur fungerar samarbetet i teamet?"
+
+**Om förväntningar:**
+- "Hur ser en typisk arbetsvecka ut?"
+- "Hur hanteras övertid?"
+
+## Testa arbetsplatsen
+
+Om möjligt:
+- Be om en prova-på-dag
+- Fråga om du kan prata med en blivande kollega
+- Läs på Google Reviews eller LinkedIn
+
+## Dina rättigheter
+
+Arbetsgivaren är skyldig att:
+- Bedöma risker i arbetsmiljön
+- Vidta åtgärder för att undvika ohälsa
+- Ge information om arbetsmiljön
+
+## Kom ihåg
+
+Du ska inte bara sälja dig själv – du ska också utvärdera om arbetsplatsen passar dig. Det är en dubbelriktad process!
+
+En bra arbetsmiljö är inte lyx – det är en förutsättning för att du ska må bra och prestera.`,
+    category: 'job-market',
+    subcategory: 'work-environment',
+    tags: ['arbetsmiljö', 'trivsel', 'hälsa', 'val av arbete', 'röda flaggor'],
+    createdAt: '2024-03-06T10:00:00Z',
+    updatedAt: '2024-03-06T10:00:00Z',
+    readingTime: 12,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 245,
+    relatedArticles: ['rattigheter-stod', 'anstallningsformer'],
+    author: 'Lisa Bergström',
+    authorTitle: 'Beteendevetare',
+  },
+
+  {
+    id: 'kompetensportfolj',
+    title: 'Bygg en kompetensportfölj som imponerar',
+    summary: 'Gå utöver CV:t och skapa en visuell portfölj som visar vad du kan på riktigt.',
+    content: `Ett CV berättar vad du kan. En kompetensportfölj visar det. I dagens konkurrensutsatta arbetsmarknad kan en portfölj ge dig avgörande fördelar.
+
+## Vad är en kompetensportfölj?
+
+En samling som visar konkreta bevis på vad du kan:
+- Arbetsprover
+- Projektbeskrivningar
+- Certifikat och betyg
+- Rekommendationer
+- Reflektioner
+
+## För vem passar en portfölj?
+
+**Särskilt användbart för:**
+- Kreativa yrken (design, skrivande, foto)
+- Praktiska yrken (bygg, hantverk)
+- Projektledare
+- Utvecklare
+- Marknadsförare
+
+**Men alla kan ha nytta av det!**
+
+## Så bygger du din portfölj
+
+### 1. Välj format
+- **Digital:** Behance, LinkedIn, egen hemsida, PDF
+- **Fysisk:** Mapp med prover (vissa branscher)
+
+### 2. Välj innehåll
+
+**Arbetsprover:**
+- Välj 3-5 starka exempel
+- Variera för att visa bredd
+- Inkludera kontext (vad, när, hur)
+
+**Projektbeskrivningar:**
+- Vad var uppdraget?
+- Vad gjorde du?
+- Vad blev resultatet?
+- Vad lärde du dig?
+
+**Certifikat och utbildning:**
+- Skanna in viktiga dokument
+- Inkludera kursinnehåll om relevant
+
+**Rekommendationer:**
+- Be om skriftliga rekommendationer
+- Lägg till LinkedIn-rekommendationer
+
+### 3. Strukturera tydligt
+
+- Tydlig navigering
+- Kategorisera efter kompetens eller projekt
+- Kort beskrivning till varje exempel
+- Kontaktinformation synlig
+
+## Exempel på innehåll efter yrke
+
+**Kundtjänst:**
+- Exempel på kundlösningar (anonymiserade)
+- Utbildningscertifikat
+- Feedback från kunder
+
+**Projektledare:**
+- Projektplaner
+- Resultat och mätningar
+- Rekommendationer från team
+
+**Utvecklare:**
+- Länkar till projekt på GitHub
+- Kodexempel
+- Teknisk dokumentation
+
+**Säljare:**
+- Siffror på försäljningsresultat
+- Utmärkelser
+- Kundcase
+
+## Tips för framgång
+
+✅ **Kvalitet före kvantitet** – hellre få starka exempel
+✅ **Håll det uppdaterat** – ta bort gamla projekt
+✅ **Be om feedback** – låt någon granska innan du skickar
+✅ **Anpassa för varje ansökan** – välj relevanta exempel
+
+## Kom ihåg
+
+En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa konkreta bevis på sina färdigheter. Det särskiljer dig från andra kandidater!`,
+    category: 'cv-application',
+    subcategory: 'portfolio',
+    tags: ['portfölj', 'kompetens', 'arbetsprover', 'bevis', 'kreativt CV'],
+    createdAt: '2024-03-07T10:00:00Z',
+    updatedAt: '2024-03-07T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.7,
+    bookmarkCount: 198,
+    relatedArticles: ['cv-grunder', 'linkedin-optimering'],
+  },
 ]
 
 // Helper function to get related articles
