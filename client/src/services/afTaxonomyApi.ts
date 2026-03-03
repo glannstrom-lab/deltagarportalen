@@ -35,6 +35,7 @@ async function fetchFromTaxonomy(endpoint: string, params?: Record<string, strin
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        'apikey': SUPABASE_ANON_KEY,
         'Content-Type': 'application/json',
       },
     }, { maxRetries: 2, baseDelay: 1000 });

@@ -1,26 +1,12 @@
 // Supabase Edge Function: Hämtar lönestatistik från Arbetsförmedlingens JobSearch API
 // URL: https://<project>.supabase.co/functions/v1/af-historical
-// Dokumentation: https://jobsearch.api.jobtechdev.se/
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
 const JOBSEARCH_API_BASE = 'https://jobsearch.api.jobtechdev.se';
 
-interface SalaryData {
-  occupation: string;
-  median: number;
-  p25: number;
-  p75: number;
-  byRegion: Array<{ region: string; median: number }>;
-  byExperience: Array<{ experience_years: string; median: number }>;
-  source: string;
-  sampleSize: number;
-}
-
-// Extrahera lön från text
 function extractSalary(text: string): number | null {
   if (!text) return null;
-  
   const patterns = [
     /(\d{2})\s?[\.\s]?(\d{3})\s?kr/i,
     /(\d{2})(\d{3})\s?kr/i,
@@ -32,16 +18,12 @@ function extractSalary(text: string): number | null {
     const match = text.match(pattern);
     if (match) {
       const salary = match[2] ? parseInt(match[1] + match[2]) : parseInt(match[1]);
-      if (salary >= 15000 && salary <= 150000) {
-        return salary;
-      }
+      if (salary >= 15000 && salary <= 150000) return salary;
     }
   }
-  
   return null;
 }
 
-// Beräkna median
 function calculateMedian(values: number[]): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
@@ -49,7 +31,6 @@ function calculateMedian(values: number[]): number {
   return sorted.length % 2 ? sorted[mid] : Math.round((sorted[mid - 1] + sorted[mid]) / 2);
 }
 
-// Beräkna percentil
 function calculatePercentile(values: number[], percentile: number): number {
   if (values.length === 0) return 0;
   const sorted = [...values].sort((a, b) => a - b);
@@ -57,33 +38,19 @@ function calculatePercentile(values: number[], percentile: number): number {
   return sorted[Math.min(index, sorted.length - 1)];
 }
 
-// Hämta jobbannonser från JobSearch API
 async function fetchJobs(occupation: string, limit: number = 100): Promise<any[]> {
-  // Enligt dokumentation: /search?q=xxx&limit=xxx
   const url = `${JOBSEARCH_API_BASE}/search?q=${encodeURIComponent(occupation)}&limit=${limit}`;
-  
   console.log(`[af-historical] Fetching: ${url}`);
   
-  const response = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-    },
-  });
-  
-  if (!response.ok) {
-    throw new Error(`JobSearch API error: ${response.status}`);
-  }
+  const response = await fetch(url, { headers: { 'Accept': 'application/json' }});
+  if (!response.ok) throw new Error(`JobSearch API error: ${response.status}`);
   
   const data = await response.json();
-  
-  // Svarformat enligt dokumentation: { hits: [...], total: { value: n } }
   return data.hits || [];
 }
 
-// Hämta och beräkna lönestatistik
-async function getSalaryStatistics(occupation: string): Promise<SalaryData> {
+async function getSalaryStatistics(occupation: string) {
   const jobs = await fetchJobs(occupation, 100);
-  
   console.log(`[af-historical] Got ${jobs.length} jobs`);
   
   const salaries: number[] = [];
@@ -92,30 +59,22 @@ async function getSalaryStatistics(occupation: string): Promise<SalaryData> {
   for (const job of jobs) {
     let salaryText = '';
     
-    // Lön kan finnas i flera fält
     if (job.salary_description?.text) {
       salaryText = Array.isArray(job.salary_description.text) 
         ? job.salary_description.text.join(' ')
         : job.salary_description.text;
     } else if (job.description?.text) {
-      const text = typeof job.description.text === 'string' 
-        ? job.description.text 
-        : job.description.text.join(' ');
+      const text = typeof job.description.text === 'string' ? job.description.text : job.description.text.join(' ');
       const salaryMatch = text.match(/lön[:\s]+([^\n\.]{5,50})/i);
-      if (salaryMatch) {
-        salaryText = salaryMatch[1];
-      }
+      if (salaryMatch) salaryText = salaryMatch[1];
     }
     
     if (salaryText) {
       const salary = extractSalary(salaryText);
       if (salary) {
         salaries.push(salary);
-        
         const region = job.workplace_address?.region || 'Okänd';
-        if (!regionSalaries[region]) {
-          regionSalaries[region] = [];
-        }
+        if (!regionSalaries[region]) regionSalaries[region] = [];
         regionSalaries[region].push(salary);
       }
     }
@@ -123,19 +82,14 @@ async function getSalaryStatistics(occupation: string): Promise<SalaryData> {
   
   console.log(`[af-historical] Found ${salaries.length} salaries`);
   
-  if (salaries.length === 0) {
-    throw new Error('No salary data found');
-  }
+  if (salaries.length === 0) throw new Error('No salary data found');
   
   const median = calculateMedian(salaries);
   const p25 = calculatePercentile(salaries, 0.25);
   const p75 = calculatePercentile(salaries, 0.75);
   
   const byRegion = Object.entries(regionSalaries)
-    .map(([region, vals]) => ({
-      region,
-      median: calculateMedian(vals)
-    }))
+    .map(([region, vals]) => ({ region, median: calculateMedian(vals) }))
     .sort((a, b) => b.median - a.median)
     .slice(0, 5);
   
@@ -159,18 +113,9 @@ async function getSalaryStatistics(occupation: string): Promise<SalaryData> {
 }
 
 serve(async (req) => {
-  const allowedOrigins = [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://glannstrom-lab.github.io',
-    'https://glannstrom-lab.github.io/deltagarportalen'
-  ];
-  
-  const origin = req.headers.get('origin') || '';
-  const allowedOrigin = allowedOrigins.find(o => origin.startsWith(o)) || allowedOrigins[0];
-  
+  // CORS headers - tillåt alla origins
   const corsHeaders = {
-    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Max-Age': '86400',
@@ -187,7 +132,6 @@ serve(async (req) => {
     
     if (path === '/salary-stats' || path === '/') {
       const occupation = params.get('occupation');
-      
       if (!occupation) {
         return new Response(
           JSON.stringify({ error: 'Missing occupation parameter' }),
@@ -196,7 +140,6 @@ serve(async (req) => {
       }
       
       const stats = await getSalaryStatistics(occupation);
-      
       return new Response(
         JSON.stringify(stats),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
@@ -211,11 +154,8 @@ serve(async (req) => {
   } catch (error) {
     console.error('[af-historical] Error:', error);
     return new Response(
-      JSON.stringify({ 
-        error: error.message,
-        note: 'No salary data available'
-      }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      JSON.stringify({ error: error.message, note: 'No salary data available' }),
+      { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }
 });

@@ -39,6 +39,7 @@ async function fetchFromFunction(functionName: string, endpoint: string, params?
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,
+        'apikey': SUPABASE_ANON_KEY,
         'Content-Type': 'application/json',
       },
     }, { maxRetries: 2, baseDelay: 1000 });
