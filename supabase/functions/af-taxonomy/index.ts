@@ -1,5 +1,6 @@
-// Supabase Edge Function: Hämtar RIKTIGA yrken från Arbetsförmedlingens Taxonomy API
+// Supabase Edge Function: Hämtar yrken från Arbetsförmedlingens Taxonomy API
 // URL: https://<project>.supabase.co/functions/v1/af-taxonomy
+// Dokumentation: https://data.arbetsformedlingen.se/
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
@@ -14,58 +15,12 @@ interface Concept {
 }
 
 // Hämta yrken från Taxonomy API
-async function fetchOccupations(query: string, limit: number = 10): Promise<Concept[]> {
-  // Taxonomy API har ett GraphQL-liknande gränssnitt
-  // Vi använder /concepts med sökparameter
-  const url = `${TAXONOMY_API_BASE}/concepts?query=${encodeURIComponent(query)}&type=occupation-name&limit=${limit}`;
+// Endpoint: /main/concepts?type=occupation-name&version=16&query=xxx
+async function fetchFromTaxonomy(query: string, limit: number = 10): Promise<Concept[]> {
+  // Rätt endpoint enligt dokumentation
+  const url = `${TAXONOMY_API_BASE}/main/concepts?type=occupation-name&version=16&query=${encodeURIComponent(query)}&limit=${limit}`;
   
   console.log(`[af-taxonomy] Fetching: ${url}`);
-  
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-    });
-    
-    if (!response.ok) {
-      throw new Error(`Taxonomy API error: ${response.status}`);
-    }
-    
-    const data = await response.json();
-    
-    // Transformera till vårt format
-    if (Array.isArray(data)) {
-      return data.map((item: any) => ({
-        id: item.id || item.concept_id,
-        preferred_label: item.preferred_label || item.term,
-        type: item.type || 'occupation-name',
-        definition: item.definition || item.description
-      }));
-    }
-    
-    if (data.concepts) {
-      return data.concepts.map((item: any) => ({
-        id: item.id || item.concept_id,
-        preferred_label: item.preferred_label || item.term,
-        type: item.type || 'occupation-name',
-        definition: item.definition || item.description
-      }));
-    }
-    
-    return [];
-  } catch (error) {
-    console.error('[af-taxonomy] Error fetching from Taxonomy:', error);
-    throw error;
-  }
-}
-
-// Fallback: Hämta från JobSearch /complete endpoint (mer tillförlitlig)
-async function fetchFromJobSearchComplete(query: string, limit: number = 10): Promise<Concept[]> {
-  const url = `${JOBSEARCH_API_BASE}/complete?q=${encodeURIComponent(query)}&limit=${limit}`;
-  
-  console.log(`[af-taxonomy] Trying JobSearch complete: ${url}`);
   
   const response = await fetch(url, {
     headers: {
@@ -74,16 +29,49 @@ async function fetchFromJobSearchComplete(query: string, limit: number = 10): Pr
   });
   
   if (!response.ok) {
-    throw new Error(`JobSearch API error: ${response.status}`);
+    console.error(`[af-taxonomy] Taxonomy error: ${response.status}`);
+    throw new Error(`Taxonomy API error: ${response.status}`);
   }
   
   const data = await response.json();
+  console.log(`[af-taxonomy] Got ${data.length || 0} results`);
   
-  // JobSearch /complete returnerar förslag i olika kategorier
+  // Transformera till vårt format
+  if (Array.isArray(data)) {
+    return data.map((item: any) => ({
+      id: item.id || item.concept_id || item.term_id,
+      preferred_label: item.preferred_label || item.term || item.label,
+      type: item.type || 'occupation-name',
+      definition: item.definition || item.description
+    }));
+  }
+  
+  return [];
+}
+
+// Fallback: Hämta från JobSearch /complete
+async function fetchFromJobSearchComplete(query: string, limit: number = 10): Promise<Concept[]> {
+  const url = `${JOBSEARCH_API_BASE}/complete?q=${encodeURIComponent(query)}&limit=${limit}`;
+  
+  console.log(`[af-taxonomy] Trying JobSearch: ${url}`);
+  
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error(`JobSearch error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  console.log(`[af-taxonomy] JobSearch response:`, JSON.stringify(data).substring(0, 200));
+  
   const results: Concept[] = [];
   
-  // Leta efter yrkesförslag
-  if (data.occupations) {
+  // Hantera olika svarsformat
+  if (data.occupations && Array.isArray(data.occupations)) {
     for (const occ of data.occupations.slice(0, limit)) {
       results.push({
         id: occ.id || `occ_${occ.term}`,
@@ -94,8 +82,7 @@ async function fetchFromJobSearchComplete(query: string, limit: number = 10): Pr
     }
   }
   
-  // Alternativt format
-  if (data.typeahead) {
+  if (data.typeahead && Array.isArray(data.typeahead)) {
     for (const item of data.typeahead.slice(0, limit)) {
       if (item.occupation) {
         results.push({
@@ -108,32 +95,56 @@ async function fetchFromJobSearchComplete(query: string, limit: number = 10): Pr
     }
   }
   
+  // Om inget annat fungerar, returnera typeahead som är
+  if (results.length === 0 && Array.isArray(data)) {
+    for (const item of data.slice(0, limit)) {
+      if (typeof item === 'string') {
+        results.push({
+          id: `term_${item}`,
+          preferred_label: item,
+          type: 'occupation',
+          definition: ''
+        });
+      } else if (item.term) {
+        results.push({
+          id: item.id || `term_${item.term}`,
+          preferred_label: item.term,
+          type: item.type || 'occupation',
+          definition: ''
+        });
+      }
+    }
+  }
+  
   return results;
 }
 
-// Huvudfunktion för att hämta yrkesförslag
-async function getOccupationSuggestions(query: string, limit: number = 10): Promise<{ concepts: Concept[]; source: string }> {
+// Huvudfunktion
+async function getOccupations(query: string, limit: number = 10): Promise<{ concepts: Concept[]; source: string }> {
+  if (!query || query.length < 2) {
+    return { concepts: [], source: 'none' };
+  }
+  
   // Försök först med Taxonomy API
   try {
-    const occupations = await fetchOccupations(query, limit);
-    if (occupations.length > 0) {
-      return { concepts: occupations, source: 'taxonomy-api' };
+    const concepts = await fetchFromTaxonomy(query, limit);
+    if (concepts.length > 0) {
+      return { concepts, source: 'taxonomy-api' };
     }
   } catch (error) {
-    console.log('[af-taxonomy] Taxonomy API failed, trying JobSearch');
+    console.log(`[af-taxonomy] Taxonomy failed: ${error.message}`);
   }
   
   // Fallback till JobSearch /complete
   try {
-    const occupations = await fetchFromJobSearchComplete(query, limit);
-    if (occupations.length > 0) {
-      return { concepts: occupations, source: 'jobsearch-complete' };
+    const concepts = await fetchFromJobSearchComplete(query, limit);
+    if (concepts.length > 0) {
+      return { concepts, source: 'jobsearch-complete' };
     }
   } catch (error) {
-    console.log('[af-taxonomy] JobSearch API also failed');
+    console.log(`[af-taxonomy] JobSearch failed: ${error.message}`);
   }
   
-  // Om inget fungerar, returnera tom lista
   return { concepts: [], source: 'none' };
 }
 
@@ -164,19 +175,14 @@ serve(async (req) => {
     const path = url.pathname.replace('/af-taxonomy', '').replace('//', '/');
     const params = new URLSearchParams(url.search);
     
-    // Hantera concepts endpoint (autocomplete)
+    // /concepts endpoint för autocomplete
     if (path === '/concepts' || path === '') {
       const query = params.get('q') || '';
       const limit = parseInt(params.get('limit') || '10');
       
-      if (query.length < 2) {
-        return new Response(
-          JSON.stringify({ concepts: [], total: 0 }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
+      const { concepts, source } = await getOccupations(query, limit);
       
-      const { concepts, source } = await getOccupationSuggestions(query, limit);
+      console.log(`[af-taxonomy] Returning ${concepts.length} results from ${source}`);
       
       return new Response(
         JSON.stringify({
@@ -188,20 +194,15 @@ serve(async (req) => {
       );
     }
     
-    // För andra endpoints, proxy till Taxonomy API
+    // Övriga endpoints - proxy till Taxonomy
     const targetUrl = `${TAXONOMY_API_BASE}${path}${url.search}`;
     
     const response = await fetch(targetUrl, {
       method: req.method,
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json',
       },
     });
-    
-    if (!response.ok) {
-      throw new Error(`Taxonomy API error: ${response.status}`);
-    }
     
     const data = await response.json();
     

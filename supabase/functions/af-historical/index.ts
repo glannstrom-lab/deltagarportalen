@@ -1,6 +1,6 @@
-// Supabase Edge Function: Hämtar RIKTIG lönestatistik från Arbetsförmedlingens JobSearch API
+// Supabase Edge Function: Hämtar lönestatistik från Arbetsförmedlingens JobSearch API
 // URL: https://<project>.supabase.co/functions/v1/af-historical
-// Hämtar aktuella jobbannonser med löneinfo och beräknar statistik
+// Dokumentation: https://jobsearch.api.jobtechdev.se/
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
@@ -17,59 +17,28 @@ interface SalaryData {
   sampleSize: number;
 }
 
-// Extrahera lön från text (t.ex. "45 000 kr/mån" -> 45000)
+// Extrahera lön från text
 function extractSalary(text: string): number | null {
   if (!text) return null;
   
-  // Matcha mönster: "45 000 kr", "45000kr", "45.000", "45,000" etc.
   const patterns = [
-    /(\d{2})\s?[\.\s]?(\d{3})\s?kr/i,      // "45 000 kr", "45.000 kr"
-    /(\d{2})(\d{3})\s?kr/i,                 // "45000 kr"
-    /(\d{2})\s(\d{3})/,                     // "45 000"
-    /(\d{5})/,                              // "45000"
+    /(\d{2})\s?[\.\s]?(\d{3})\s?kr/i,
+    /(\d{2})(\d{3})\s?kr/i,
+    /(\d{2})\s(\d{3})/,
+    /(\d{5})/,
   ];
   
   for (const pattern of patterns) {
     const match = text.match(pattern);
     if (match) {
-      // Om vi har två capture groups, slå ihop dem
-      if (match[2]) {
-        const salary = parseInt(match[1] + match[2]);
-        // Sanity check: rimlig månadslön är 15k-150k
-        if (salary >= 15000 && salary <= 150000) {
-          return salary;
-        }
-      } else {
-        const salary = parseInt(match[1]);
-        if (salary >= 15000 && salary <= 150000) {
-          return salary;
-        }
+      const salary = match[2] ? parseInt(match[1] + match[2]) : parseInt(match[1]);
+      if (salary >= 15000 && salary <= 150000) {
+        return salary;
       }
     }
   }
   
   return null;
-}
-
-// Hämta jobbannonser från JobSearch API
-async function fetchJobs(occupation: string, limit: number = 100): Promise<any[]> {
-  const url = `${JOBSEARCH_API_BASE}/search?q=${encodeURIComponent(occupation)}&limit=${limit}`;
-  
-  console.log(`[af-historical] Fetching jobs: ${url}`);
-  
-  const response = await fetch(url, {
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    },
-  });
-  
-  if (!response.ok) {
-    throw new Error(`JobSearch API error: ${response.status}`);
-  }
-  
-  const data = await response.json();
-  return data.hits || [];
 }
 
 // Beräkna median
@@ -88,92 +57,105 @@ function calculatePercentile(values: number[], percentile: number): number {
   return sorted[Math.min(index, sorted.length - 1)];
 }
 
+// Hämta jobbannonser från JobSearch API
+async function fetchJobs(occupation: string, limit: number = 100): Promise<any[]> {
+  // Enligt dokumentation: /search?q=xxx&limit=xxx
+  const url = `${JOBSEARCH_API_BASE}/search?q=${encodeURIComponent(occupation)}&limit=${limit}`;
+  
+  console.log(`[af-historical] Fetching: ${url}`);
+  
+  const response = await fetch(url, {
+    headers: {
+      'Accept': 'application/json',
+    },
+  });
+  
+  if (!response.ok) {
+    throw new Error(`JobSearch API error: ${response.status}`);
+  }
+  
+  const data = await response.json();
+  
+  // Svarformat enligt dokumentation: { hits: [...], total: { value: n } }
+  return data.hits || [];
+}
+
 // Hämta och beräkna lönestatistik
 async function getSalaryStatistics(occupation: string): Promise<SalaryData> {
-  try {
-    // Hämta jobbannonser
-    const jobs = await fetchJobs(occupation, 100);
+  const jobs = await fetchJobs(occupation, 100);
+  
+  console.log(`[af-historical] Got ${jobs.length} jobs`);
+  
+  const salaries: number[] = [];
+  const regionSalaries: Record<string, number[]> = {};
+  
+  for (const job of jobs) {
+    let salaryText = '';
     
-    // Extrahera löner från annonserna
-    const salaries: number[] = [];
-    const regionSalaries: Record<string, number[]> = {};
-    
-    for (const job of jobs) {
-      // Försök hitta lön i olika fält
-      let salaryText = '';
-      
-      if (job.salary_description?.text) {
-        salaryText = Array.isArray(job.salary_description.text) 
-          ? job.salary_description.text.join(' ')
-          : job.salary_description.text;
-      } else if (job.description?.text) {
-        // Sök efter löneinformation i beskrivningen
-        const text = job.description.text;
-        // Leta efter mönster som "lön: 45 000 kr"
-        const salaryMatch = text.match(/lön[:\s]+([^\n\.]{5,50})/i);
-        if (salaryMatch) {
-          salaryText = salaryMatch[1];
-        }
-      }
-      
-      if (salaryText) {
-        const salary = extractSalary(salaryText);
-        if (salary) {
-          salaries.push(salary);
-          
-          // Gruppera per region
-          const region = job.workplace_address?.region || 'Okänd';
-          if (!regionSalaries[region]) {
-            regionSalaries[region] = [];
-          }
-          regionSalaries[region].push(salary);
-        }
+    // Lön kan finnas i flera fält
+    if (job.salary_description?.text) {
+      salaryText = Array.isArray(job.salary_description.text) 
+        ? job.salary_description.text.join(' ')
+        : job.salary_description.text;
+    } else if (job.description?.text) {
+      const text = typeof job.description.text === 'string' 
+        ? job.description.text 
+        : job.description.text.join(' ');
+      const salaryMatch = text.match(/lön[:\s]+([^\n\.]{5,50})/i);
+      if (salaryMatch) {
+        salaryText = salaryMatch[1];
       }
     }
     
-    console.log(`[af-historical] Found ${salaries.length} salaries for ${occupation}`);
-    
-    if (salaries.length === 0) {
-      throw new Error('No salary data found in job ads');
+    if (salaryText) {
+      const salary = extractSalary(salaryText);
+      if (salary) {
+        salaries.push(salary);
+        
+        const region = job.workplace_address?.region || 'Okänd';
+        if (!regionSalaries[region]) {
+          regionSalaries[region] = [];
+        }
+        regionSalaries[region].push(salary);
+      }
     }
-    
-    // Beräkna statistik
-    const median = calculateMedian(salaries);
-    const p25 = calculatePercentile(salaries, 0.25);
-    const p75 = calculatePercentile(salaries, 0.75);
-    
-    // Beräkna per region
-    const byRegion = Object.entries(regionSalaries)
-      .map(([region, vals]) => ({
-        region,
-        median: calculateMedian(vals)
-      }))
-      .sort((a, b) => b.median - a.median)
-      .slice(0, 5);
-    
-    // Uppskatta erfarenhetsnivåer baserat på percentiler
-    const byExperience = [
-      { experience_years: '0-2', median: p25 },
-      { experience_years: '3-5', median: Math.round(median * 0.95) },
-      { experience_years: '6-10', median: Math.round(median * 1.1) },
-      { experience_years: '10+', median: p75 },
-    ];
-    
-    return {
-      occupation,
-      median,
-      p25,
-      p75,
-      byRegion,
-      byExperience,
-      source: `JobSearch API (${salaries.length} annonser)`,
-      sampleSize: salaries.length
-    };
-    
-  } catch (error) {
-    console.error('[af-historical] Error:', error);
-    throw error;
   }
+  
+  console.log(`[af-historical] Found ${salaries.length} salaries`);
+  
+  if (salaries.length === 0) {
+    throw new Error('No salary data found');
+  }
+  
+  const median = calculateMedian(salaries);
+  const p25 = calculatePercentile(salaries, 0.25);
+  const p75 = calculatePercentile(salaries, 0.75);
+  
+  const byRegion = Object.entries(regionSalaries)
+    .map(([region, vals]) => ({
+      region,
+      median: calculateMedian(vals)
+    }))
+    .sort((a, b) => b.median - a.median)
+    .slice(0, 5);
+  
+  const byExperience = [
+    { experience_years: '0-2', median: p25 },
+    { experience_years: '3-5', median: Math.round(median * 0.95) },
+    { experience_years: '6-10', median: Math.round(median * 1.1) },
+    { experience_years: '10+', median: p75 },
+  ];
+  
+  return {
+    occupation,
+    median,
+    p25,
+    p75,
+    byRegion,
+    byExperience,
+    source: `JobSearch API (${salaries.length} annonser)`,
+    sampleSize: salaries.length
+  };
 }
 
 serve(async (req) => {
@@ -203,7 +185,6 @@ serve(async (req) => {
     const path = url.pathname.replace('/af-historical', '').replace('//', '/');
     const params = new URLSearchParams(url.search);
     
-    // Endast salary-stats endpoint stöds
     if (path === '/salary-stats' || path === '/') {
       const occupation = params.get('occupation');
       
@@ -232,7 +213,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        note: 'No salary data available from job ads'
+        note: 'No salary data available'
       }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
