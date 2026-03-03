@@ -153,8 +153,25 @@ export interface SalaryStats {
 export async function getSalaryStats(occupation: string): Promise<SalaryStats | null> {
   console.log('[SalaryStats] Getting stats for:', occupation);
   
-  // För nu, använd alltid mock-data för att garantera att det fungerar
-  // TODO: Integrera med Historical Ads API när vi har testat det ordentligt
+  try {
+    // Använd af-historical för lönestatistik
+    const result = await fetchFromHistorical('/salary-stats', { occupation });
+    
+    if (result && !result.error) {
+      return {
+        occupation: result.occupation,
+        median_salary: result.median,
+        percentile_25: result.p25,
+        percentile_75: result.p75,
+        by_region: result.byRegion || [],
+        by_experience: result.byExperience || []
+      };
+    }
+  } catch (error) {
+    console.log('[Historical] API error, using fallback:', error);
+  }
+  
+  // Fallback till mock-data
   return getMockSalaryStats(occupation);
 }
 
