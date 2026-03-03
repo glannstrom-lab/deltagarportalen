@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Check } from 'lucide-react'
+import { Check, Loader2 } from 'lucide-react'
+import { articleChecklistApi } from '@/services/cloudStorage'
 
 interface ChecklistItem {
   id: string
@@ -12,14 +13,52 @@ interface ArticleChecklistProps {
 }
 
 export default function ArticleChecklist({ articleId, items }: ArticleChecklistProps) {
-  const [checkedItems, setCheckedItems] = useState<Set<string>>(() => {
-    const saved = localStorage.getItem(`checklist-${articleId}`)
-    return saved ? new Set(JSON.parse(saved)) : new Set()
-  })
+  const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set())
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
+  // Ladda från molnet vid mount
   useEffect(() => {
-    localStorage.setItem(`checklist-${articleId}`, JSON.stringify([...checkedItems]))
-  }, [checkedItems, articleId])
+    const loadChecklist = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const saved = await articleChecklistApi.get(articleId)
+        if (saved && Array.isArray(saved)) {
+          setCheckedItems(new Set(saved))
+        }
+      } catch (err) {
+        console.error('Failed to load checklist:', err)
+        setError('Kunde inte ladda checklistan')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadChecklist()
+  }, [articleId])
+
+  // Spara till molnet när checkedItems ändras
+  useEffect(() => {
+    // Hoppa över första renderingen när vi laddar
+    if (isLoading) return
+
+    const saveChecklist = async () => {
+      try {
+        setIsSaving(true)
+        setError(null)
+        await articleChecklistApi.update(articleId, [...checkedItems])
+      } catch (err) {
+        console.error('Failed to save checklist:', err)
+        setError('Kunde inte spara checklistan')
+      } finally {
+        setIsSaving(false)
+      }
+    }
+
+    saveChecklist()
+  }, [checkedItems, articleId, isLoading])
 
   const toggleItem = (itemId: string) => {
     const newChecked = new Set(checkedItems)
@@ -33,12 +72,32 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
 
   const progress = Math.round((checkedItems.size / items.length) * 100)
 
+  if (isLoading) {
+    return (
+      <div className="bg-slate-50 rounded-xl p-5 my-6 flex items-center justify-center">
+        <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
+        <span className="ml-2 text-sm text-slate-500">Laddar checklista...</span>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-slate-50 rounded-xl p-5 my-6">
       <div className="flex items-center justify-between mb-4">
         <h4 className="font-semibold text-slate-800">Din checklista</h4>
-        <span className="text-sm text-slate-600">{progress}%</span>
+        <div className="flex items-center gap-2">
+          {isSaving && (
+            <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+          )}
+          <span className="text-sm text-slate-600">{progress}%</span>
+        </div>
       </div>
+      
+      {error && (
+        <div className="mb-4 p-2 bg-red-50 text-red-600 text-sm rounded-lg">
+          {error}
+        </div>
+      )}
       
       <div className="w-full bg-slate-200 rounded-full h-2 mb-4">
         <div 

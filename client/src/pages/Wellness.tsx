@@ -15,8 +15,11 @@ import {
   PenLine,
   Lock,
   Download,
-  Quote
+  Quote,
+  Loader2,
+  Trash2
 } from 'lucide-react'
+import { journalApi } from '@/services/cloudStorage'
 
 interface WellnessTip {
   id: string
@@ -139,24 +142,81 @@ export default function Wellness() {
   const [currentPrompt, setCurrentPrompt] = useState(0)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [currentAffirmation, setCurrentAffirmation] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // Load journal entries from localStorage
+  // Ladda dagboksanteckningar från molnet vid mount
   useEffect(() => {
-    const saved = localStorage.getItem('wellness-journal')
-    if (saved) {
-      setJournalEntries(JSON.parse(saved))
+    const loadJournalEntries = async () => {
+      try {
+        setIsLoading(true)
+        setError(null)
+        const data = await journalApi.getAll()
+        
+        // Konvertera från databasformat till komponentformat
+        const entries: JournalEntry[] = data.map((item: any) => ({
+          id: item.id,
+          date: item.created_at,
+          content: item.content,
+          mood: item.mood ?? 2
+        }))
+        
+        setJournalEntries(entries)
+      } catch (err) {
+        console.error('Failed to load journal entries:', err)
+        setError('Kunde inte ladda dagboksanteckningar')
+      } finally {
+        setIsLoading(false)
+      }
     }
-  }, [])
 
-  // Save journal entries
-  useEffect(() => {
-    localStorage.setItem('wellness-journal', JSON.stringify(journalEntries))
-  }, [journalEntries])
+    loadJournalEntries()
+  }, [])
 
   const toggleActivity = (id: string) => {
     setActivities(prev => prev.map(a => 
       a.id === id ? { ...a, completed: !a.completed } : a
     ))
+  }
+
+  const handleSaveEntry = async () => {
+    if (!currentEntry.trim()) return
+
+    try {
+      setIsSaving(true)
+      setError(null)
+      
+      // Spara till molnet
+      await journalApi.add(currentEntry, mood ?? undefined)
+      
+      // Ladda om alla entries för att få det nya med ID
+      const data = await journalApi.getAll()
+      const entries: JournalEntry[] = data.map((item: any) => ({
+        id: item.id,
+        date: item.created_at,
+        content: item.content,
+        mood: item.mood ?? 2
+      }))
+      
+      setJournalEntries(entries)
+      setCurrentEntry('')
+    } catch (err) {
+      console.error('Failed to save journal entry:', err)
+      setError('Kunde inte spara anteckningen. Försök igen.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
+  const handleDeleteEntry = async (id: string) => {
+    try {
+      await journalApi.delete(id)
+      setJournalEntries(prev => prev.filter(e => e.id !== id))
+    } catch (err) {
+      console.error('Failed to delete journal entry:', err)
+      setError('Kunde inte ta bort anteckningen')
+    }
   }
 
   const completedCount = activities.filter(a => a.completed).length
@@ -181,6 +241,13 @@ export default function Wellness() {
         <h1 className="text-2xl font-bold text-slate-900">Välmående</h1>
         <p className="text-slate-500 mt-1">Ta hand om dig själv under jobbsökandet</p>
       </div>
+
+      {/* Error message */}
+      {error && (
+        <div className="p-4 bg-red-50 text-red-600 rounded-lg">
+          {error}
+        </div>
+      )}
 
       {/* Mood Tracker */}
       <div className="bg-white p-6 rounded-xl border border-slate-200">
@@ -372,7 +439,8 @@ export default function Wellness() {
             onChange={(e) => setCurrentEntry(e.target.value)}
             placeholder="Skriv dina tankar här... (valfritt)"
             rows={4}
-            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
+            disabled={isSaving}
+            className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none disabled:bg-slate-50"
           />
 
           {/* Save button */}
@@ -381,37 +449,44 @@ export default function Wellness() {
               {currentEntry.length} tecken
             </p>
             <button
-              onClick={() => {
-                if (currentEntry.trim()) {
-                  const newEntry: JournalEntry = {
-                    id: Date.now().toString(),
-                    date: new Date().toISOString(),
-                    content: currentEntry,
-                    mood: mood ?? 2,
-                  }
-                  setJournalEntries([newEntry, ...journalEntries])
-                  setCurrentEntry('')
-                }
-              }}
-              disabled={!currentEntry.trim()}
-              className="px-4 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleSaveEntry}
+              disabled={!currentEntry.trim() || isSaving}
+              className="px-4 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
             >
-              Spara tankar
+              {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+              {isSaving ? 'Sparar...' : 'Spara tankar'}
             </button>
           </div>
 
+          {/* Loading state */}
+          {isLoading && (
+            <div className="mt-6 flex items-center justify-center text-slate-500">
+              <Loader2 className="w-5 h-5 animate-spin mr-2" />
+              Laddar anteckningar...
+            </div>
+          )}
+
           {/* Previous entries */}
-          {journalEntries.length > 0 && (
+          {!isLoading && journalEntries.length > 0 && (
             <div className="mt-6 pt-6 border-t border-slate-200">
               <h3 className="font-medium text-slate-900 mb-3">Tidigare inlägg</h3>
               <div className="space-y-3 max-h-60 overflow-y-auto">
                 {journalEntries.slice(0, 5).map((entry) => (
-                  <div key={entry.id} className="p-3 bg-slate-50 rounded-lg">
+                  <div key={entry.id} className="p-3 bg-slate-50 rounded-lg group">
                     <div className="flex items-center justify-between mb-1">
                       <span className="text-xs text-slate-500">
                         {new Date(entry.date).toLocaleDateString('sv-SE')}
                       </span>
-                      <span className="text-lg">{moodEmojis[entry.mood]?.emoji}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{moodEmojis[entry.mood]?.emoji}</span>
+                        <button
+                          onClick={() => handleDeleteEntry(entry.id)}
+                          className="opacity-0 group-hover:opacity-100 p-1 text-red-400 hover:text-red-600 transition-opacity"
+                          title="Ta bort"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </div>
                     </div>
                     <p className="text-sm text-slate-700 line-clamp-3">{entry.content}</p>
                   </div>

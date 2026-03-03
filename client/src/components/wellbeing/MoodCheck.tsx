@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { AlertCircle, Heart, TrendingUp } from 'lucide-react'
+import { AlertCircle, Heart, TrendingUp, Loader2 } from 'lucide-react'
+import { moodHistoryApi } from '@/services/cloudStorage'
 
 interface MoodEntry {
   date: string
@@ -27,26 +28,43 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
   const [submitted, setSubmitted] = useState(false)
   const [moodHistory, setMoodHistory] = useState<MoodEntry[]>([])
   const [showSupport, setShowSupport] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // Ladda historik från localStorage
+  // Ladda historik från molnet vid mount
   useEffect(() => {
-    const saved = localStorage.getItem('moodHistory')
-    if (saved) {
+    const loadMoodHistory = async () => {
       try {
-        const parsed = JSON.parse(saved)
-        setMoodHistory(parsed)
+        setIsLoading(true)
+        setError(null)
+        const data = await moodHistoryApi.getAll()
+        
+        // Konvertera från databasformat till komponentformat
+        const entries: MoodEntry[] = data.map((item: any) => ({
+          date: item.recorded_at?.split('T')[0] || new Date().toISOString().split('T')[0],
+          mood: item.mood as 1 | 2 | 3 | 4 | 5,
+          note: item.note
+        }))
+        
+        setMoodHistory(entries)
         
         // Kolla om användaren redan registrerat idag
         const today = new Date().toISOString().split('T')[0]
-        const todayEntry = parsed.find((entry: MoodEntry) => entry.date === today)
+        const todayEntry = entries.find((entry: MoodEntry) => entry.date === today)
         if (todayEntry) {
           setSelectedMood(todayEntry.mood)
           setSubmitted(true)
         }
-      } catch {
-        // Ignorera fel
+      } catch (err) {
+        console.error('Failed to load mood history:', err)
+        setError('Kunde inte ladda humörhistorik')
+      } finally {
+        setIsLoading(false)
       }
     }
+
+    loadMoodHistory()
   }, [])
 
   const handleMoodSelect = (mood: number) => {
@@ -59,22 +77,34 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
     }
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (selectedMood === null) return
 
-    const today = new Date().toISOString().split('T')[0]
-    const newEntry: MoodEntry = {
-      date: today,
-      mood: selectedMood as 1 | 2 | 3 | 4 | 5,
-      note: note || undefined
-    }
+    try {
+      setIsSaving(true)
+      setError(null)
+      
+      // Spara till molnet
+      await moodHistoryApi.add(selectedMood, note || undefined)
+      
+      const today = new Date().toISOString().split('T')[0]
+      const newEntry: MoodEntry = {
+        date: today,
+        mood: selectedMood as 1 | 2 | 3 | 4 | 5,
+        note: note || undefined
+      }
 
-    const updatedHistory = [...moodHistory.filter(h => h.date !== today), newEntry]
-    setMoodHistory(updatedHistory)
-    localStorage.setItem('moodHistory', JSON.stringify(updatedHistory))
-    
-    onMoodSubmit?.(selectedMood)
-    setSubmitted(true)
+      const updatedHistory = [...moodHistory.filter(h => h.date !== today), newEntry]
+      setMoodHistory(updatedHistory)
+      
+      onMoodSubmit?.(selectedMood)
+      setSubmitted(true)
+    } catch (err) {
+      console.error('Failed to save mood:', err)
+      setError('Kunde inte spara humör. Försök igen.')
+    } finally {
+      setIsSaving(false)
+    }
   }
 
   const getAverageMood = () => {
@@ -95,6 +125,15 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
     if (secondAvg > firstAvg) return 'improving'
     if (secondAvg < firstAvg) return 'declining'
     return 'stable'
+  }
+
+  if (isLoading) {
+    return (
+      <div className="bg-white rounded-2xl shadow-card border border-slate-100 p-6 flex items-center justify-center">
+        <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
+        <span className="ml-2 text-sm text-slate-500">Laddar...</span>
+      </div>
+    )
   }
 
   if (submitted && selectedMood) {
@@ -146,16 +185,23 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
         Din hälsa är viktigare än något jobb. Det är okej att må dåligt ibland.
       </p>
 
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 text-red-600 text-sm rounded-lg">
+          {error}
+        </div>
+      )}
+
       <div className="flex justify-center gap-2 mb-4">
         {moodOptions.map((option) => (
           <button
             key={option.value}
             onClick={() => handleMoodSelect(option.value)}
+            disabled={isSaving}
             className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
               selectedMood === option.value
                 ? `${option.bg} ${option.border} ring-2 ring-offset-2 ring-teal-500`
                 : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50'
-            }`}
+            } ${isSaving ? 'opacity-50 cursor-not-allowed' : ''}`}
             aria-label={`Mood: ${option.label}`}
             aria-pressed={selectedMood === option.value}
           >
@@ -208,6 +254,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
             className="w-full p-3 border border-slate-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent"
             rows={3}
             maxLength={200}
+            disabled={isSaving}
           />
           <div className="text-xs text-slate-400 text-right mt-1">
             {note.length}/200
@@ -215,9 +262,11 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
           
           <button
             onClick={handleSubmit}
-            className="w-full mt-3 bg-teal-600 text-white py-3 rounded-xl font-medium hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+            disabled={isSaving}
+            className="w-full mt-3 bg-teal-600 text-white py-3 rounded-xl font-medium hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
-            Spara
+            {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+            {isSaving ? 'Sparar...' : 'Spara'}
           </button>
         </div>
       )}

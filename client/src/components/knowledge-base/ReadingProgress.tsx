@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
+import { articleProgressApi } from '@/services/cloudStorage'
 
 interface ReadingProgressProps {
   articleId: string
@@ -7,33 +8,81 @@ interface ReadingProgressProps {
 export default function ReadingProgress({ articleId }: ReadingProgressProps) {
   const [progress, setProgress] = useState(0)
   const [showReminder, setShowReminder] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Ladda sparad progress från molnet vid mount
+  useEffect(() => {
+    const loadProgress = async () => {
+      try {
+        setIsLoading(true)
+        const saved = await articleProgressApi.get(articleId)
+        if (saved?.progress_percent) {
+          setProgress(saved.progress_percent)
+        }
+      } catch (err) {
+        console.error('Failed to load reading progress:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadProgress()
+  }, [articleId])
+
+  // Debounced save function
+  const saveProgress = useCallback(async (newProgress: number) => {
+    try {
+      await articleProgressApi.update(articleId, newProgress, newProgress >= 100)
+    } catch (err) {
+      console.error('Failed to save reading progress:', err)
+    }
+  }, [articleId])
 
   useEffect(() => {
-    // Load saved progress
-    const saved = localStorage.getItem(`article-progress-${articleId}`)
-    if (saved) {
-      setProgress(parseInt(saved, 10))
-    }
+    if (isLoading) return
+
+    let reminderTimeout: NodeJS.Timeout | null = null
+    let saveTimeout: NodeJS.Timeout | null = null
 
     const handleScroll = () => {
       const scrollTop = window.scrollY
       const docHeight = document.documentElement.scrollHeight - window.innerHeight
       const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
       
-      setProgress(Math.min(Math.round(scrollPercent), 100))
-      localStorage.setItem(`article-progress-${articleId}`, String(Math.round(scrollPercent)))
+      const newProgress = Math.min(Math.round(scrollPercent), 100)
+      setProgress(newProgress)
+
+      // Debounce save to avoid too many API calls
+      if (saveTimeout) clearTimeout(saveTimeout)
+      saveTimeout = setTimeout(() => {
+        saveProgress(newProgress)
+      }, 1000)
 
       // Show reminder after 10 minutes
       if (scrollPercent < 100 && scrollPercent > 0) {
-        setTimeout(() => setShowReminder(true), 10 * 60 * 1000)
+        if (reminderTimeout) clearTimeout(reminderTimeout)
+        reminderTimeout = setTimeout(() => setShowReminder(true), 10 * 60 * 1000)
       }
     }
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     handleScroll()
 
-    return () => window.removeEventListener('scroll', handleScroll)
-  }, [articleId])
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (reminderTimeout) clearTimeout(reminderTimeout)
+      if (saveTimeout) clearTimeout(saveTimeout)
+    }
+  }, [articleId, isLoading, saveProgress])
+
+  const handlePause = async () => {
+    setShowReminder(false)
+    try {
+      await articleProgressApi.pause(articleId)
+    } catch (err) {
+      console.error('Failed to save pause state:', err)
+    }
+  }
 
   if (progress === 0) return null
 
@@ -61,10 +110,7 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
               Fortsätt läsa
             </button>
             <button 
-              onClick={() => {
-                setShowReminder(false)
-                localStorage.setItem(`article-pause-${articleId}`, new Date().toISOString())
-              }}
+              onClick={handlePause}
               className="px-3 py-1.5 bg-slate-100 text-slate-700 text-sm rounded-lg hover:bg-slate-200"
             >
               Pausa
