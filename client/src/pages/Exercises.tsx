@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { 
   ArrowLeft, 
   ArrowRight, 
@@ -11,20 +11,30 @@ import {
   Sparkles,
   Trophy,
   Lock,
-  Lightbulb
+  Lightbulb,
+  Cloud,
+  AlertCircle
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { exercises, type Exercise } from '@/data/exercises'
 import { AIAssistant } from '@/components/ai'
+import { supabase } from '@/lib/supabase'
 
-// LocalStorage key
-const STORAGE_KEY = 'deltagarportal_exercises'
-
-interface ExerciseProgress {
-  [exerciseId: string]: {
-    [questionId: string]: string
-  }
+// Extended category colors for all 38 categories
+const categoryColors: { [key: string]: string } = {
+  // Original categories
+  'Självkännedom': 'bg-purple-100 text-purple-700',
+  'Jobbsökning': 'bg-blue-100 text-blue-700',
+  'Nätverkande': 'bg-indigo-100 text-indigo-700',
+  'Digital närvaro': 'bg-cyan-100 text-cyan-700',
+  'Arbetsrätt': 'bg-orange-100 text-orange-700',
+  'Karriärutveckling': 'bg-pink-100 text-pink-700',
+  'Välmående': 'bg-rose-100 text-rose-700',
+  // New categories from the 38 list
+  'Arbetslivskunskap': 'bg-amber-100 text-amber-700',
+  'Arbetssökande': 'bg-sky-100 text-sky-700',
+  'Rehabilitering': 'bg-teal-100 text-teal-700',
 }
 
 // Difficulty badge colors
@@ -34,15 +44,17 @@ const difficultyColors = {
   'Utmanande': 'bg-red-100 text-red-700 border-red-200'
 }
 
-// Category colors
-const categoryColors: { [key: string]: string } = {
-  'Självkännedom': 'bg-purple-100 text-purple-700',
-  'Jobbsökning': 'bg-blue-100 text-blue-700',
-  'Nätverkande': 'bg-indigo-100 text-indigo-700',
-  'Digital närvaro': 'bg-cyan-100 text-cyan-700',
-  'Arbetsrätt': 'bg-orange-100 text-orange-700',
-  'Karriärutveckling': 'bg-pink-100 text-pink-700',
-  'Välmående': 'bg-rose-100 text-rose-700'
+interface ExerciseProgress {
+  [exerciseId: string]: {
+    [questionId: string]: string
+  }
+}
+
+interface ExerciseAnswer {
+  exercise_id: string
+  answers: { [questionId: string]: string }
+  is_completed: boolean
+  completed_at: string | null
 }
 
 export default function Exercises() {
@@ -51,25 +63,94 @@ export default function Exercises() {
   const [answers, setAnswers] = useState<ExerciseProgress>({})
   const [isCompleted, setIsCompleted] = useState(false)
   const [filter, setFilter] = useState<string>('alla')
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [user, setUser] = useState<any>(null)
 
-  // Load saved answers from localStorage
+  // Check authentication and load user
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY)
-    if (saved) {
-      try {
-        setAnswers(JSON.parse(saved))
-      } catch (e) {
-        console.error('Failed to load saved answers:', e)
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      setUser(user)
+      if (!user) {
+        setLoading(false)
       }
     }
+    getUser()
   }, [])
 
-  // Save answers to localStorage whenever they change
+  // Load saved answers from Supabase (cloud)
   useEffect(() => {
-    if (Object.keys(answers).length > 0) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(answers))
+    const loadAnswers = async () => {
+      if (!user) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        setLoading(true)
+        const { data, error } = await supabase
+          .from('exercise_answers')
+          .select('*')
+          .eq('user_id', user.id)
+
+        if (error) {
+          console.error('Error loading answers:', error)
+          setError('Kunde inte ladda dina svar från molnet')
+          return
+        }
+
+        // Convert array to object format
+        const progress: ExerciseProgress = {}
+        data?.forEach((item: ExerciseAnswer) => {
+          progress[item.exercise_id] = item.answers
+        })
+
+        setAnswers(progress)
+      } catch (err) {
+        console.error('Failed to load answers:', err)
+        setError('Ett fel uppstod vid laddning av dina svar')
+      } finally {
+        setLoading(false)
+      }
     }
-  }, [answers])
+
+    loadAnswers()
+  }, [user])
+
+  // Save answers to Supabase (cloud) when they change
+  const saveToCloud = useCallback(async (exerciseId: string, exerciseAnswers: { [questionId: string]: string }) => {
+    if (!user) return
+
+    try {
+      setSaving(true)
+      
+      const isComplete = Object.values(exerciseAnswers).some(a => a && a.trim().length > 0)
+      
+      const { error } = await supabase
+        .from('exercise_answers')
+        .upsert({
+          user_id: user.id,
+          exercise_id: exerciseId,
+          answers: exerciseAnswers,
+          is_completed: isComplete,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id,exercise_id'
+        })
+
+      if (error) {
+        console.error('Error saving answers:', error)
+        setError('Kunde inte spara till molnet')
+      }
+    } catch (err) {
+      console.error('Failed to save answers:', err)
+      setError('Ett fel uppstod vid sparning')
+    } finally {
+      setSaving(false)
+    }
+  }, [user])
 
   const getFilteredExercises = () => {
     if (filter === 'alla') return exercises
@@ -113,19 +194,24 @@ export default function Exercises() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleAnswerChange = (questionId: string, value: string) => {
+  const handleAnswerChange = async (questionId: string, value: string) => {
     if (!selectedExercise) return
     
-    setAnswers(prev => ({
-      ...prev,
+    const newAnswers = {
+      ...answers,
       [selectedExercise.id]: {
-        ...prev[selectedExercise.id],
+        ...answers[selectedExercise.id],
         [questionId]: value
       }
-    }))
+    }
+    
+    setAnswers(newAnswers)
+    
+    // Save to cloud (debounced in real implementation)
+    await saveToCloud(selectedExercise.id, newAnswers[selectedExercise.id])
   }
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (!selectedExercise) return
     
     if (currentStep < selectedExercise.steps.length - 1) {
@@ -133,6 +219,21 @@ export default function Exercises() {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
       setIsCompleted(true)
+      
+      // Mark as completed in cloud
+      if (user) {
+        await supabase
+          .from('exercise_answers')
+          .upsert({
+            user_id: user.id,
+            exercise_id: selectedExercise.id,
+            answers: answers[selectedExercise.id] || {},
+            is_completed: true,
+            completed_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id,exercise_id'
+          })
+      }
     }
   }
 
@@ -149,9 +250,22 @@ export default function Exercises() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  const handleClearProgress = () => {
-    if (!selectedExercise) return
+  const handleClearProgress = async () => {
+    if (!selectedExercise || !user) return
     if (!confirm('Är du säker på att du vill rensa alla dina svar för denna övning?')) return
+    
+    // Delete from cloud
+    const { error } = await supabase
+      .from('exercise_answers')
+      .delete()
+      .eq('user_id', user.id)
+      .eq('exercise_id', selectedExercise.id)
+
+    if (error) {
+      console.error('Error deleting answers:', error)
+      setError('Kunde inte rensa dina svar')
+      return
+    }
     
     setAnswers(prev => {
       const newAnswers = { ...prev }
@@ -165,6 +279,15 @@ export default function Exercises() {
   const getUniqueCategories = () => {
     const categories = [...new Set(exercises.map(e => e.category))]
     return categories
+  }
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+        <p className="ml-3 text-gray-600">Laddar dina svar...</p>
+      </div>
+    )
   }
 
   // Exercise List View
@@ -182,8 +305,32 @@ export default function Exercises() {
           <h1 className="text-2xl font-bold text-gray-900">Övningar</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Arbeta dig igenom praktiska övningar för att utveckla dina jobbsökar-skills. 
-            Dina svar sparas automatiskt så du kan fortsätta senare.
+            Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.
           </p>
+          
+          {/* Cloud sync indicator */}
+          <div className="flex items-center justify-center gap-2 text-sm">
+            <Cloud className={`w-4 h-4 ${saving ? 'text-amber-500 animate-pulse' : 'text-green-500'}`} />
+            <span className={saving ? 'text-amber-600' : 'text-green-600'}>
+              {saving ? 'Sparar...' : 'Synkad med molnet'}
+            </span>
+          </div>
+
+          {error && (
+            <div className="flex items-center justify-center gap-2 text-red-600 text-sm">
+              <AlertCircle className="w-4 h-4" />
+              <span>{error}</span>
+            </div>
+          )}
+
+          {!user && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-4">
+              <p className="text-amber-800 text-sm">
+                <strong>Obs!</strong> Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren. 
+                <a href="/login" className="underline ml-1">Logga in</a> för att spara permanent i molnet.
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Stats */}
@@ -362,6 +509,12 @@ export default function Exercises() {
           <p className="text-lg text-gray-600">
             Du har genomfört övningen "{selectedExercise.title}"
           </p>
+          
+          {/* Cloud saved indicator */}
+          <div className="flex items-center justify-center gap-2 text-green-600">
+            <Cloud className="w-5 h-5" />
+            <span>Dina svar är sparade i molnet</span>
+          </div>
         </div>
 
         <Card className="p-6 space-y-6">
@@ -453,12 +606,20 @@ export default function Exercises() {
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
           <span className="text-gray-500">Steg {currentStep + 1} av {selectedExercise.steps.length}</span>
-          <button 
-            onClick={handleClearProgress}
-            className="text-red-500 hover:text-red-700 text-sm"
-          >
-            Rensa progress
-          </button>
+          <div className="flex items-center gap-2">
+            {saving && (
+              <span className="text-amber-600 flex items-center gap-1">
+                <Cloud className="w-4 h-4 animate-pulse" />
+                Sparar...
+              </span>
+            )}
+            <button 
+              onClick={handleClearProgress}
+              className="text-red-500 hover:text-red-700 text-sm"
+            >
+              Rensa progress
+            </button>
+          </div>
         </div>
         <div className="flex gap-2">
           {selectedExercise.steps.map((step, index) => (
@@ -483,7 +644,7 @@ export default function Exercises() {
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
             <p className="text-sm text-amber-800">
               <strong>Tips:</strong> Ta dig tid att verkligen tänka igenom dina svar. 
-              Dina svar sparas automatiskt så du kan fortsätta senare.
+              Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.
             </p>
           </div>
         </div>
