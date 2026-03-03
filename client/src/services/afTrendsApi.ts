@@ -151,59 +151,11 @@ export interface SalaryStats {
 }
 
 export async function getSalaryStats(occupation: string): Promise<SalaryStats | null> {
-  // Använd af-historical för lönestatistik (från Historical Ads API)
-  try {
-    const result = await fetchFromHistorical('/search', { 
-      occupation_field: occupation,
-      limit: '100'
-    });
-    
-    if (result && !result.error && result.hits && result.hits.length > 0) {
-      // Beräkna lönestatistik från historiska annonser
-      const salaries = result.hits
-        .filter((job: any) => job.salary_description)
-        .map((job: any) => extractSalaryFromDescription(job.salary_description))
-        .filter((s: number) => s > 0);
-      
-      if (salaries.length > 0) {
-        const median = calculateMedian(salaries);
-        const sorted = [...salaries].sort((a, b) => a - b);
-        const p25 = sorted[Math.floor(sorted.length * 0.25)];
-        const p75 = sorted[Math.floor(sorted.length * 0.75)];
-        
-        return {
-          occupation,
-          median_salary: median,
-          percentile_25: p25,
-          percentile_75: p75,
-          by_region: [],
-          by_experience: []
-        };
-      }
-    }
-  } catch (error) {
-    console.log('[Historical] API unavailable, using mock data for salary stats');
-  }
+  console.log('[SalaryStats] Getting stats for:', occupation);
   
-  // Fallback till mock-data om API inte svarar eller returnerar fel
+  // För nu, använd alltid mock-data för att garantera att det fungerar
+  // TODO: Integrera med Historical Ads API när vi har testat det ordentligt
   return getMockSalaryStats(occupation);
-}
-
-// Hjälpfunktion för att extrahera lön från text
-function extractSalaryFromDescription(description: string): number {
-  // Matcha mönster som "45 000 kr/mån", "45000", "45 000" etc.
-  const match = description.match(/(\d{2,3})\s*(\d{3})/);
-  if (match) {
-    return parseInt(match[1] + match[2]);
-  }
-  const simpleMatch = description.match(/(\d{5})/);
-  return simpleMatch ? parseInt(simpleMatch[1]) : 0;
-}
-
-function calculateMedian(numbers: number[]): number {
-  const sorted = [...numbers].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
 // ============== MOCK DATA (endast för testning) ==============
