@@ -352,12 +352,12 @@ export default function Article() {
           <footer className="mt-8 pt-6 border-t border-slate-200">
             <div className="flex items-center gap-2 flex-wrap">
               <Tag size={16} className="text-slate-400" />
-              {article.tags.split(',').map((tag: string) => (
+              {(Array.isArray(article.tags) ? article.tags : article.tags.split(',')).map((tag: string) => (
                 <span
                   key={tag}
                   className="px-2 py-1 bg-slate-100 text-slate-600 text-sm rounded"
                 >
-                  {tag.trim()}
+                  {typeof tag === 'string' ? tag.trim() : tag}
                 </span>
               ))}
             </div>

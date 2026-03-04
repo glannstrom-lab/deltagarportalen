@@ -19,7 +19,7 @@ interface Article {
   summary: string
   category: string
   subcategory?: string
-  tags?: string
+  tags?: string | string[]
   createdAt: string
   readingTime?: number
   difficulty?: 'easy' | 'medium' | 'detailed'
@@ -65,7 +65,9 @@ export default function KnowledgeBase() {
         const matchesSearch = 
           article.title.toLowerCase().includes(search) ||
           article.summary.toLowerCase().includes(search) ||
-          (article.tags && article.tags.toLowerCase().includes(search))
+          (article.tags && (Array.isArray(article.tags) 
+            ? article.tags.some(t => t.toLowerCase().includes(search))
+            : article.tags.toLowerCase().includes(search)))
         if (!matchesSearch) return false
       }
 
@@ -94,7 +96,9 @@ export default function KnowledgeBase() {
   const recommendedArticles = useMemo(() => {
     return articles.filter(a => 
       a.category === 'getting-started' || 
-      a.tags?.includes('för-nybörjare')
+      (Array.isArray(a.tags) 
+        ? a.tags.includes('för-nybörjare') 
+        : a.tags?.includes('för-nybörjare'))
     ).slice(0, 3)
   }, [articles])
 
