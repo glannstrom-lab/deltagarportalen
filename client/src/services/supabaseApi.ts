@@ -4,6 +4,7 @@
  */
 
 import { supabase } from '../lib/supabase'
+import { mockArticlesData, articleCategories } from './articleData'
 import type { Tables } from '../lib/supabase'
 
 // ============================================
@@ -572,8 +573,12 @@ export const articleApi = {
       .eq('published', true)
       .order('created_at', { ascending: false })
     
-    if (error) handleError(error)
-    return data || []
+    // Fallback to mock data if no data in database or error
+    if (error || !data || data.length === 0) {
+      console.log('Using mock articles data')
+      return mockArticlesData
+    }
+    return data
   },
 
   async getById(id: string) {
@@ -583,7 +588,13 @@ export const articleApi = {
       .eq('id', id)
       .single()
     
-    if (error) handleError(error)
+    // Fallback to mock data if not found in database
+    if (error || !data) {
+      const mockArticle = mockArticlesData.find(a => a.id === id)
+      if (mockArticle) return mockArticle
+      if (error) handleError(error)
+      return null
+    }
     return data
   },
 
@@ -595,8 +606,11 @@ export const articleApi = {
       .eq('category', category)
       .order('created_at', { ascending: false })
     
-    if (error) handleError(error)
-    return data || []
+    // Fallback to mock data if no data in database or error
+    if (error || !data || data.length === 0) {
+      return mockArticlesData.filter(a => a.category === category)
+    }
+    return data
   },
 
   async getCategories() {
@@ -605,7 +619,16 @@ export const articleApi = {
       .select('category, subcategory')
       .eq('published', true)
     
-    if (error) handleError(error)
+    // Fallback to mock categories if no data in database or error
+    if (error || !data || data.length === 0) {
+      return articleCategories.map(cat => ({
+        id: cat.id,
+        name: cat.name,
+        slug: cat.id,
+        description: cat.description,
+        subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
+      }))
+    }
     
     // Extract unique categories with their subcategories
     const categoryMap = new Map()
