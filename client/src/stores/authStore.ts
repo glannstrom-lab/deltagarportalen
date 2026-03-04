@@ -24,6 +24,7 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
+  isSigningOut: boolean // Flag to prevent double signout
   
   // Actions
   initialize: () => Promise<void>
@@ -38,6 +39,7 @@ interface AuthState {
   signOut: () => Promise<void>
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: string | null }>
   clearError: () => void
+  setSigningOut: (value: boolean) => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -50,9 +52,15 @@ export const useAuthStore = create<AuthState>()(
       isAuthenticated: false,
       isLoading: true,
       error: null,
+      isSigningOut: false,
 
       // Initialize auth state from Supabase session
       initialize: async () => {
+        // Don't initialize if we're in the middle of signing out
+        if (get().isSigningOut) {
+          return
+        }
+
         try {
           set({ isLoading: true, error: null })
           
@@ -114,7 +122,7 @@ export const useAuthStore = create<AuthState>()(
       // Sign in with email and password
       signIn: async (email: string, password: string) => {
         try {
-          set({ isLoading: true, error: null })
+          set({ isLoading: true, error: null, isSigningOut: false })
           
           const { data, error } = await supabase.auth.signInWithPassword({
             email,
@@ -213,8 +221,15 @@ export const useAuthStore = create<AuthState>()(
 
       // Sign out
       signOut: async () => {
+        const { isSigningOut } = get()
+        
+        // Prevent double signout
+        if (isSigningOut) {
+          return
+        }
+
         try {
-          set({ isLoading: true })
+          set({ isSigningOut: true, isLoading: true })
           
           const { error } = await supabase.auth.signOut()
           
@@ -234,6 +249,11 @@ export const useAuthStore = create<AuthState>()(
         } catch (error: any) {
           console.error('Sign out error:', error)
           set({ isLoading: false, error: error.message })
+        } finally {
+          // Reset signing out flag after a delay to prevent race conditions
+          setTimeout(() => {
+            set({ isSigningOut: false })
+          }, 500)
         }
       },
 
@@ -267,6 +287,9 @@ export const useAuthStore = create<AuthState>()(
 
       // Clear error
       clearError: () => set({ error: null }),
+
+      // Set signing out flag
+      setSigningOut: (value: boolean) => set({ isSigningOut: value }),
     }),
     {
       name: 'auth-storage',
@@ -282,13 +305,33 @@ export const useAuthStore = create<AuthState>()(
 // Listen for auth state changes
 supabase.auth.onAuthStateChange((event, session) => {
   const store = useAuthStore.getState()
+  const { isSigningOut } = store
   
   if (event === 'SIGNED_IN' && session) {
-    // Refresh user data
-    store.initialize()
+    // Only initialize if not currently signing out
+    if (!isSigningOut) {
+      store.initialize()
+    }
   } else if (event === 'SIGNED_OUT') {
-    store.signOut()
+    // Don't call signOut again if we're already signing out
+    if (!isSigningOut) {
+      // Just clear the state without calling supabase again
+      store.setSigningOut(true)
+      useAuthStore.setState({
+        user: null,
+        profile: null,
+        session: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      })
+      setTimeout(() => {
+        store.setSigningOut(false)
+      }, 500)
+    }
   } else if (event === 'USER_UPDATED' && session) {
-    store.initialize()
+    if (!isSigningOut) {
+      store.initialize()
+    }
   }
 })
