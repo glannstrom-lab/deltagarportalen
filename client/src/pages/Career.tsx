@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Target, DollarSign, TrendingUp, Briefcase, GraduationCap, ArrowRight, Award, MapPin } from 'lucide-react';
+import { Target, DollarSign, TrendingUp, Briefcase, GraduationCap, Users, Award, MapPin } from 'lucide-react';
 import CareerCoach from '@/components/career/CareerCoach';
 import SalaryInsights from '@/components/career/SalaryInsights';
+import { NetworkingGuide } from '@/components/career/NetworkingGuide';
 
-type CareerTab = 'coach' | 'salary' | 'skills' | 'education';
+type CareerTab = 'coach' | 'salary' | 'skills' | 'education' | 'networking';
 
 export default function Career() {
   const [activeTab, setActiveTab] = useState<CareerTab>('coach');
@@ -87,6 +88,23 @@ export default function Career() {
           <h3 className="font-semibold text-slate-800 mb-1">Utbildningsvägar</h3>
           <p className="text-sm text-slate-500">Hitta utbildningar för ditt drömjobb</p>
         </button>
+
+        <button
+          onClick={() => setActiveTab('networking')}
+          className={`p-6 rounded-2xl border-2 text-left transition-all ${
+            activeTab === 'networking'
+              ? 'border-rose-500 bg-rose-50'
+              : 'border-slate-200 bg-white hover:border-rose-300'
+          }`}
+        >
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${
+            activeTab === 'networking' ? 'bg-rose-500 text-white' : 'bg-rose-100 text-rose-600'
+          }`}>
+            <Users size={24} />
+          </div>
+          <h3 className="font-semibold text-slate-800 mb-1">Nätverkande</h3>
+          <p className="text-sm text-slate-500">Bygg relationer som leder till jobb</p>
+        </button>
       </div>
 
       {/* Content */}
@@ -95,6 +113,7 @@ export default function Career() {
         {activeTab === 'salary' && <SalaryInsights />}
         {activeTab === 'skills' && <SkillsDevelopment />}
         {activeTab === 'education' && <EducationOverview />}
+        {activeTab === 'networking' && <NetworkingGuide />}
       </div>
     </div>
   );

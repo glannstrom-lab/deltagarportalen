@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Plus, BookHeart, Calendar as CalendarIcon, TrendingUp, Sparkles } from 'lucide-react'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
+import { DailyTask } from '@/components/diary/DailyTask'
 import { WeekView } from '@/components/calendar/WeekView'
 import { DayView } from '@/components/calendar/DayView'
 import { EventModal } from '@/components/calendar/EventModal'
@@ -540,6 +541,9 @@ export default function Diary() {
 
         {/* Sidebar */}
         <div className="space-y-4">
+          {/* Daily Task */}
+          <DailyTask />
+
           {/* Add event button */}
           <button
             onClick={() => {
