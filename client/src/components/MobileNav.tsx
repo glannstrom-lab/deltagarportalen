@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
+import { useAuthStore } from '@/stores/authStore'
 import {
   LayoutDashboard,
   FileText,
@@ -14,6 +15,8 @@ import {
   Menu,
   X,
   BookHeart,
+  LogOut,
+  Settings,
 } from 'lucide-react'
 
 interface NavItem {
@@ -37,6 +40,14 @@ export function MobileNav() {
   const { isMobile } = useMobileOptimizer()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { signOut } = useAuthStore()
+
+  const handleLogout = async () => {
+    await signOut()
+    setIsMenuOpen(false)
+    navigate('/login')
+  }
 
   if (!isMobile) return null
 
@@ -137,9 +148,31 @@ export function MobileNav() {
           </ul>
         </nav>
 
-        {/* Footer */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800">
-          <p className="text-xs text-slate-500 dark:text-slate-400 text-center">
+        {/* Footer med Logout */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 space-y-2">
+          <NavLink
+            to="/settings"
+            onClick={() => setIsMenuOpen(false)}
+            className={({ isActive }) => cn(
+              'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[48px]',
+              isActive
+                ? 'bg-slate-100 dark:bg-slate-700 text-slate-900 dark:text-slate-100'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50'
+            )}
+          >
+            <Settings className="w-5 h-5 text-slate-500 dark:text-slate-400" />
+            <span className="font-medium">Inställningar</span>
+          </NavLink>
+          
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[48px] text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20"
+          >
+            <LogOut className="w-5 h-5" />
+            <span className="font-medium">Logga ut</span>
+          </button>
+          
+          <p className="text-xs text-slate-500 dark:text-slate-400 text-center pt-2">
             Deltagarportalen
           </p>
         </div>

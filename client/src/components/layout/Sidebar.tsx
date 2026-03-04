@@ -6,7 +6,7 @@ import { LogOut, Settings, User } from 'lucide-react'
 
 export function Sidebar() {
   const location = useLocation()
-  const { logout, user } = useAuthStore()
+  const { signOut, user } = useAuthStore()
   
   // Kontrollera användarens roll
   const isSuperAdmin = user?.role === 'SUPERADMIN'
@@ -118,7 +118,7 @@ export function Sidebar() {
           <Settings size={22} />
         </Link>
         <button
-          onClick={logout}
+          onClick={signOut}
           className="w-12 h-12 rounded-xl flex items-center justify-center text-white/70 hover:bg-red-500/20 hover:text-red-200 transition-all"
           title="Logga ut"
         >
