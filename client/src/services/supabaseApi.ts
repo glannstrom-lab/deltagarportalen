@@ -567,60 +567,127 @@ export const coverLetterApi = {
 // ============================================
 export const articleApi = {
   async getAll() {
-    const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .eq('published', true)
-      .order('created_at', { ascending: false })
-    
-    // Fallback to mock data if no data in database or error
-    if (error || !data || data.length === 0) {
-      console.log('Using mock articles data')
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('published', true)
+        .order('created_at', { ascending: false })
+      
+      // Fallback to mock data if no data in database or error
+      if (error) {
+        console.log('Supabase articles error, using mock data:', error.message)
+        return mockArticlesData
+      }
+      
+      if (!data || data.length === 0) {
+        console.log('No articles in database, using mock data')
+        return mockArticlesData
+      }
+      
+      return data
+    } catch (err) {
+      console.log('Exception loading articles, using mock data:', err)
       return mockArticlesData
     }
-    return data
   },
 
   async getById(id: string) {
-    const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .eq('id', id)
-      .single()
-    
-    // Fallback to mock data if not found in database
-    if (error || !data) {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('id', id)
+        .single()
+      
+      // Fallback to mock data if not found in database
+      if (error || !data) {
+        const mockArticle = mockArticlesData.find(a => a.id === id)
+        if (mockArticle) return mockArticle
+        if (error && error.code !== 'PGRST116') handleError(error)
+        return null
+      }
+      return data
+    } catch (err) {
       const mockArticle = mockArticlesData.find(a => a.id === id)
       if (mockArticle) return mockArticle
-      if (error) handleError(error)
       return null
     }
-    return data
   },
 
   async getByCategory(category: string) {
-    const { data, error } = await supabase
-      .from('articles')
-      .select('*')
-      .eq('published', true)
-      .eq('category', category)
-      .order('created_at', { ascending: false })
-    
-    // Fallback to mock data if no data in database or error
-    if (error || !data || data.length === 0) {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('published', true)
+        .eq('category', category)
+        .order('created_at', { ascending: false })
+      
+      // Fallback to mock data if no data in database or error
+      if (error || !data || data.length === 0) {
+        return mockArticlesData.filter(a => a.category === category)
+      }
+      return data
+    } catch (err) {
       return mockArticlesData.filter(a => a.category === category)
     }
-    return data
   },
 
   async getCategories() {
-    const { data, error } = await supabase
-      .from('articles')
-      .select('category, subcategory')
-      .eq('published', true)
-    
-    // Fallback to mock categories if no data in database or error
-    if (error || !data || data.length === 0) {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('category, subcategory')
+        .eq('published', true)
+      
+      // Fallback to mock categories if no data in database or error
+      if (error) {
+        console.log('Supabase categories error, using mock data:', error.message)
+        return articleCategories.map(cat => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.id,
+          description: cat.description,
+          subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
+        }))
+      }
+      
+      if (!data || data.length === 0) {
+        console.log('No categories in database, using mock data')
+        return articleCategories.map(cat => ({
+          id: cat.id,
+          name: cat.name,
+          slug: cat.id,
+          description: cat.description,
+          subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
+        }))
+      }
+      
+      // Extract unique categories with their subcategories
+      const categoryMap = new Map()
+      
+      data?.forEach((article: any) => {
+        const cat = article.category || 'Övrigt'
+        const sub = article.subcategory
+        
+        if (!categoryMap.has(cat)) {
+          categoryMap.set(cat, { name: cat, subcategories: new Set() })
+        }
+        
+        if (sub) {
+          categoryMap.get(cat).subcategories.add(sub)
+        }
+      })
+      
+      // Convert to array format expected by components
+      return Array.from(categoryMap.values()).map((cat: any) => ({
+        name: cat.name,
+        slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
+        subcategories: Array.from(cat.subcategories)
+      }))
+    } catch (err) {
+      console.log('Exception loading categories, using mock data:', err)
       return articleCategories.map(cat => ({
         id: cat.id,
         name: cat.name,
@@ -629,29 +696,6 @@ export const articleApi = {
         subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
       }))
     }
-    
-    // Extract unique categories with their subcategories
-    const categoryMap = new Map()
-    
-    data?.forEach((article: any) => {
-      const cat = article.category || 'Övrigt'
-      const sub = article.subcategory
-      
-      if (!categoryMap.has(cat)) {
-        categoryMap.set(cat, { name: cat, subcategories: new Set() })
-      }
-      
-      if (sub) {
-        categoryMap.get(cat).subcategories.add(sub)
-      }
-    })
-    
-    // Convert to array format expected by components
-    return Array.from(categoryMap.values()).map((cat: any) => ({
-      name: cat.name,
-      slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
-      subcategories: Array.from(cat.subcategories)
-    }))
   }
 }
 
