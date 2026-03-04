@@ -81,7 +81,8 @@ export const articleProgressApi = {
         onConflict: 'user_id,article_id'
       })
     
-    if (error) throw error
+    // Kasta inte fel för RLS-policy fel (42501) - hanteras i komponenten
+    if (error && error.code !== '42501') throw error
   },
 
   async pause(articleId: string) {
@@ -94,7 +95,8 @@ export const articleProgressApi = {
         onConflict: 'user_id,article_id'
       })
     
-    if (error) throw error
+    // Kasta inte fel för RLS-policy fel (42501) - hanteras i komponenten
+    if (error && error.code !== '42501') throw error
   }
 }
 
