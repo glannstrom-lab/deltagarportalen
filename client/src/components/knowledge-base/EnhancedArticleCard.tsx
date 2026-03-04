@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ChevronRight, Bookmark, Star, Tag } from 'lucide-react'
+import { ChevronRight, Bookmark, Star, Tag, Dumbbell } from 'lucide-react'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
 
@@ -15,6 +15,7 @@ interface EnhancedArticleCardProps {
     helpfulnessRating?: number
     bookmarkCount?: number
     author?: string
+    relatedExercises?: string[]
   }
   variant?: 'default' | 'compact' | 'featured'
 }
@@ -102,6 +103,16 @@ export default function EnhancedArticleCard({ article, variant = 'default' }: En
           <p className="text-sm text-slate-600 line-clamp-2 mb-3">
             {article.summary}
           </p>
+          
+          {/* Relaterade övningar */}
+          {article.relatedExercises && article.relatedExercises.length > 0 && (
+            <div className="flex items-center gap-2 mb-3">
+              <Dumbbell size={14} className="text-indigo-500" />
+              <span className="text-xs text-indigo-600 font-medium">
+                {article.relatedExercises.length} relaterad{article.relatedExercises.length > 1 ? 'a' : ''} övning{article.relatedExercises.length > 1 ? 'ar' : ''}
+              </span>
+            </div>
+          )}
           
           <div className="flex items-center gap-3 flex-wrap">
             {article.readingTime && (

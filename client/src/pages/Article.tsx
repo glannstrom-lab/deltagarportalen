@@ -18,8 +18,10 @@ import {
   Bookmark,
   ExternalLink,
   Lightbulb,
+  Dumbbell,
 } from 'lucide-react'
 import { getRelatedArticles } from '../services/articleData'
+import { exercises } from '../data/exercises'
 
 export default function Article() {
   const { id } = useParams()
@@ -94,6 +96,11 @@ export default function Article() {
   // Get related articles
   const relatedArticles = article?.relatedArticles 
     ? getRelatedArticles(article.relatedArticles).filter(a => a.id !== id).slice(0, 3)
+    : []
+
+  // Get related exercises
+  const relatedExercises = article?.relatedExercises
+    ? exercises.filter(e => article.relatedExercises.includes(e.id))
     : []
 
   if (loading) {
@@ -376,6 +383,51 @@ export default function Article() {
           )}
         </div>
       </article>
+
+      {/* Related exercises */}
+      {relatedExercises.length > 0 && (
+        <section className="mb-8">
+          <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
+            <Dumbbell className="text-indigo-600" size={24} />
+            Relaterade övningar
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {relatedExercises.map((exercise) => {
+              const Icon = exercise.icon
+              return (
+                <Link
+                  key={exercise.id}
+                  to={`/exercises`}
+                  className="group block card hover:shadow-md transition-all border-l-4 border-l-indigo-500"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-6 h-6 text-indigo-600" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-semibold text-slate-800 group-hover:text-indigo-700 transition-colors mb-1">
+                        {exercise.title}
+                      </h3>
+                      <p className="text-sm text-slate-600 line-clamp-2 mb-2">
+                        {exercise.description}
+                      </p>
+                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-full">
+                          {exercise.category}
+                        </span>
+                        <span>•</span>
+                        <span>{exercise.duration}</span>
+                        <span>•</span>
+                        <span>{exercise.difficulty}</span>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
+        </section>
+      )}
 
       {/* Related articles */}
       {relatedArticles.length > 0 && (

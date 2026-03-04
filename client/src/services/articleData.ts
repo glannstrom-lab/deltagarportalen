@@ -29,10 +29,22 @@ export interface EnhancedArticle {
   bookmarkCount?: number
   relatedArticles: string[]
   relatedTools?: string[]
+  relatedExercises?: string[]
   checklist?: ArticleChecklistItem[]
   actions?: ArticleAction[]
   author?: string
   authorTitle?: string
+}
+
+// Mappning från övningskategorier till artikelkategorier
+export const exerciseToArticleCategoryMap: { [key: string]: string } = {
+  'Självkännedom': 'self-awareness',
+  'Jobbsökning': 'job-search',
+  'Nätverkande': 'networking',
+  'Digital närvaro': 'digital-presence',
+  'Arbetsrätt': 'employment-law',
+  'Karriärutveckling': 'career-development',
+  'Välmående': 'wellness',
 }
 
 export const articleCategories = [
@@ -47,14 +59,28 @@ export const articleCategories = [
     ]
   },
   {
-    id: 'cv-application',
-    name: '📝 CV & Ansökan',
-    description: 'Allt om att skriva CV, personligt brev och ansöka',
-    icon: 'FileText',
+    id: 'self-awareness',
+    name: '🔍 Självkännedom',
+    description: 'Förstå dina styrkor, intressen och personlighet för att hitta rätt yrke',
+    icon: 'UserCircle',
+    subcategories: [
+      { id: 'strengths', name: 'Dina styrkor' },
+      { id: 'personality', name: 'Personlighetstyper' },
+      { id: 'interests', name: 'Intressen & värderingar' },
+      { id: 'competencies', name: 'Kompetensinventering' },
+    ]
+  },
+  {
+    id: 'job-search',
+    name: '🔎 Jobbsökning',
+    description: 'Strategier och tekniker för att hitta och söka jobb effektivt',
+    icon: 'Search',
     subcategories: [
       { id: 'cv-writing', name: 'CV-skrivning' },
       { id: 'cover-letter', name: 'Personligt brev' },
       { id: 'ats', name: 'ATS & digitala system' },
+      { id: 'application-strategy', name: 'Ansökningsstrategi' },
+      { id: 'interview-prep', name: 'Intervjuförberedelser' },
     ]
   },
   {
@@ -69,6 +95,51 @@ export const articleCategories = [
     ]
   },
   {
+    id: 'networking',
+    name: '🤝 Nätverkande',
+    description: 'Bygg och underhåll ett professionellt nätverk som öppnar dörrar',
+    icon: 'Network',
+    subcategories: [
+      { id: 'building-network', name: 'Bygga nätverk' },
+      { id: 'maintaining-contacts', name: 'Underhålla kontakter' },
+      { id: 'informational-interviews', name: 'Informationsmöten' },
+    ]
+  },
+  {
+    id: 'digital-presence',
+    name: '💻 Digital närvaro',
+    description: 'Optimera din online-profil och synlighet för rekryterare',
+    icon: 'Monitor',
+    subcategories: [
+      { id: 'linkedin', name: 'LinkedIn' },
+      { id: 'personal-brand', name: 'Personligt varumärke' },
+      { id: 'social-media', name: 'Sociala medier' },
+    ]
+  },
+  {
+    id: 'employment-law',
+    name: '⚖️ Arbetsrätt & Anställning',
+    description: 'Dina rättigheter, skyldigheter och vad du behöver veta om anställning',
+    icon: 'Scale',
+    subcategories: [
+      { id: 'employment-types', name: 'Anställningsformer' },
+      { id: 'rights', name: 'Dina rättigheter' },
+      { id: 'salary-benefits', name: 'Lön & förmåner' },
+    ]
+  },
+  {
+    id: 'career-development',
+    name: '📈 Karriärutveckling',
+    description: 'Planera och utveckla din karriär på lång sikt',
+    icon: 'TrendingUp',
+    subcategories: [
+      { id: 'career-planning', name: 'Karriärplanering' },
+      { id: 'skills-development', name: 'Kompetensutveckling' },
+      { id: 'career-change', name: 'Karriärväxling' },
+      { id: 'new-job', name: 'Nytt jobb' },
+    ]
+  },
+  {
     id: 'wellness',
     name: '🧠 Välmående & Motivation',
     description: 'Stöd för mental hälsa och motivation i jobbsökningen',
@@ -77,6 +148,7 @@ export const articleCategories = [
       { id: 'rejection', name: 'Hantera avslag' },
       { id: 'motivation', name: 'Motivation' },
       { id: 'stress', name: 'Stresshantering' },
+      { id: 'mental-health', name: 'Mental hälsa' },
     ]
   },
   {
@@ -98,7 +170,7 @@ export const articleCategories = [
     subcategories: [
       { id: 'trends', name: 'Trender' },
       { id: 'industries', name: 'Branscher' },
-      { id: 'career-change', name: 'Karriärväxling' },
+      { id: 'work-environment', name: 'Arbetsmiljö' },
     ]
   },
   {
@@ -408,6 +480,7 @@ Kom ihåg: AI:n är ett verktyg, inte en ersättning för din egen röst!`,
     bookmarkCount: 178,
     relatedArticles: ['cv-grunder', 'intervju-forberedelser'],
     relatedTools: ['/cover-letter'],
+    relatedExercises: ['application', 'coverletter'],
   },
 
   {
@@ -473,6 +546,7 @@ Din brist på erfarenhet kan vara en styrka – du har inga "dåliga vanor" att 
     bookmarkCount: 234,
     relatedArticles: ['cv-grunder', 'personligt-brev'],
     relatedTools: ['/cv-builder'],
+    relatedExercises: ['cv-masterclass'],
   },
 
   // === INTERVJU ===
@@ -636,6 +710,7 @@ Visa ambition men var realistisk. Fokusera på utveckling inom företaget.
     helpfulnessRating: 4.9,
     bookmarkCount: 267,
     relatedArticles: ['intervju-forberedelser', 'digital-intervju'],
+    relatedExercises: ['interview', 'intervju-traning'],
   },
 
   {
@@ -1785,6 +1860,274 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     helpfulnessRating: 4.7,
     bookmarkCount: 198,
     relatedArticles: ['cv-grunder', 'linkedin-optimering'],
+    relatedExercises: ['cv-masterclass'],
+  },
+
+  // === SJÄLVKÄNNEDOM (nya artiklar) ===
+  {
+    id: 'upptack-dina-styrkor',
+    title: 'Upptäck och använd dina styrkor',
+    summary: 'Lär dig identifiera dina naturliga talanger och hur du kan använda dem i arbetslivet.',
+    content: `Att känna till sina styrkor är grunden för en framgångsrik karriär. När du vet vad du är bra på kan du göra medvetna val som leder till större trivsel och framgång.\n\n## Vad är styrkor?\n\nStyrkor är inte bara saker du kan göra – de är saker du gör bra OCH som ger dig energi. Det som gör dig stark!\n\n## Hur hittar du dina styrkor?\n\n### 1. Se tillbaka på framgångar\nTänk på situationer där du:\n- Kände dig engagerad och i flow\n- Fick beröm från andra\n- Åstadkom resultat med mindre ansträngning än andra\n\n### 2. Fråga andra\nBe 3-5 personer som känner dig att svara på vad de tycker du är bra på.\n\n### 3. Gör övningen\nI övningsmodulen hittar du en strukturerad övning för att kartlägga dina styrkor.\n\n## Vanliga styrkeområden\n\n**Sociala styrkor:** Att bygga relationer, kommunicera, samarbeta\n\n**Intellectuella styrkor:** Att analysera, tänka strategiskt, lära sig snabbt\n\n**Praktiska styrkor:** Att organisera, skapa ordning, planera\n\n**Kreativa styrkor:** Att hitta nya lösningar, tänka utanför boxen\n\n## Använd dina styrkor i jobbsökningen\n\n- Lyft fram styrkor som är relevanta för jobbet i CV:t\n- Berätta om situationer där dina styrkor gjort skillnad i intervjun\n- Sök roller där du får använda dina styrkor dagligen\n\n## Kom ihåg\n\nDina styrkor är unika för dig. När du jobbar med dem känns det inte som jobb – det känns som att vara dig själv!`,
+    category: 'self-awareness',
+    subcategory: 'strengths',
+    tags: ['styrkor', 'självkännedom', 'talanger', 'personlig utveckling'],
+    createdAt: '2024-03-10T10:00:00Z',
+    updatedAt: '2024-03-10T10:00:00Z',
+    readingTime: 12,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 156,
+    relatedArticles: ['kompetensinventering-guide', 'hitta-ratt-yrke'],
+    relatedExercises: ['strengths', 'kompetensinventering'],
+    actions: [
+      { label: '💪 Gör övningen: Dina starkaste egenskaper', href: '/exercises', type: 'primary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'personlighetstyper-i-arbetslivet',
+    title: 'Personlighetstyper i arbetslivet – hitta din profil',
+    summary: 'Lär dig om olika personlighetstyper och vilka yrken som passar bäst för varje typ.',
+    content: `Att förstå sin personlighetstyp kan ge ovärderliga insikter om vilka yrken och arbetsmiljöer som passar dig bäst.\n\n## De fyra personlighetstyperna\n\nBaserat på Arbetsförmedlingens modell finns det fyra grundläggande personlighetstyper:\n\n### 1. Den praktiska (Realistisk)\n**Kännetecken:**\n- Gillar att arbeta med händerna\n- Tycker om konkreta resultat\n- Föredrar praktiska uppgifter framför teoretiska\n\n**Passande yrken:** Byggarbetare, elektriker, lastbilschaufför, kock\n\n### 2. Den analytiska (Investigativ)\n**Kännetecken:**\n- Gillar att lösa problem\n- Tycker om att analysera och fördjupa sig\n- Föredrar intellektuella utmaningar\n\n**Passande yrken:** Programmerare, civilingenjör, forskar, ekonom\n\n### 3. Den sociala (Social)\n**Kännetecken:**\n- Gillar att hjälpa och samarbeta med andra\n- Tycker om att kommunicera och undervisa\n- Föredrar meningsfullt arbete med människor\n\n**Passande yrken:** Sjuksköterska, lärare, kundtjänstmedarbetare, kurator\n\n### 4. Den kreativa (Konstnärlig)\n**Kännetecken:**\n- Gillar att skapa och uttrycka sig\n- Tycker om att tänka nytt och se möjligheter\n- Föredrar varierande och inspirerande arbete\n\n**Passande yrken:** Designer, skribent, musiker, marknadsförare\n\n## Kombinationer av typer\n\nDe flesta av oss är en blandning av flera typer. Din primära och sekundära typ tillsammans ger en ännu tydligare bild.\n\n## Gör övningen\n\nI våra övningar finns en strukturerad guide som hjälper dig identifiera din personlighetstyp och hitta passande yrken.\n\n## Kom ihåg\n\nIngen typ är bättre än en annan. Arbetslivet behöver alla typer för att fungera!`,
+    category: 'self-awareness',
+    subcategory: 'personality',
+    tags: ['personlighetstyper', 'yrkesval', 'jobb-jag', 'realistisk', 'analytisk', 'social', 'kreativ'],
+    createdAt: '2024-03-11T10:00:00Z',
+    updatedAt: '2024-03-11T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'easy',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 234,
+    relatedArticles: ['upptack-dina-styrkor', 'intresseguide-intro'],
+    relatedExercises: ['jobb-jag'],
+    actions: [
+      { label: '🎯 Gör övningen: Hitta ditt jobb-jag', href: '/exercises', type: 'primary' },
+      { label: '🔍 Gör intresseguiden', href: '/interest-guide', type: 'secondary' },
+    ],
+    author: 'Lisa Bergström',
+    authorTitle: 'Beteendevetare',
+  },
+
+  {
+    id: 'kompetensinventering-guide',
+    title: 'Kompetensinventering – kartlägg allt du kan',
+    summary: 'En guide för att identifiera alla dina kompetenser – formella, praktiska och personliga.',
+    content: `Många underskattar vad de kan. Denna guide hjälper dig att kartlägga alla dina kompetenser så du kan visa ditt fulla värde för arbetsgivare.\n\n## Tre typer av kompetenser\n\n### 1. Formella kompetenser\nDina papper – utbildning, certifikat, behörigheter.\n\n### 2. Praktiska kompetenser\nDet du kan göra baserat på erfarenhet – oavsett om den är formell eller informell.\n\n### 3. Personliga kompetenser\nDina egenskaper och sätt att vara.\n\n## Hur gör du en inventering?\n\n### Steg 1: Lista all formell utbildning\nGå igenom alla år sedan grundskolan.\n\n### Steg 2: Dokumentera all arbetslivserfarenhet\nTänk brett – anställningar, praktik, sommarjobb, ideellt arbete.\n\n### Steg 3: Identifiera dolda erfarenheter\nMånga saker vi gör i vardagen är relevanta.\n\n### Steg 4: Definiera dina personliga styrkor\nFråga dig själv vad du är bra på utan att anstränga dig.\n\n## Gör övningen\n\nÖvningen Kompetensinventering tar dig igenom processen steg för steg och hjälper dig dokumentera allt du kan!`,
+    category: 'self-awareness',
+    subcategory: 'competencies',
+    tags: ['kompetenser', 'kompetensinventering', 'CV', 'erfarenheter'],
+    createdAt: '2024-03-12T10:00:00Z',
+    updatedAt: '2024-03-12T10:00:00Z',
+    readingTime: 11,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.7,
+    bookmarkCount: 189,
+    relatedArticles: ['upptack-dina-styrkor', 'cv-grunder'],
+    relatedExercises: ['kompetensinventering'],
+    actions: [
+      { label: '📋 Gör övningen: Kompetensinventering', href: '/exercises', type: 'primary' },
+    ],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
+  // === NÄTVERKANDE (nya artiklar) ===
+  {
+    id: 'natverka-for-jobb',
+    title: 'Nätverkande – din dolda jobbmarknad',
+    summary: 'Lär dig hur du bygger och använder ett professionellt nätverk för att hitta dolda jobbmöjligheter.',
+    content: `Upp till 70% av alla jobb tillsätts via nätverk. Att bygga relationer är inte bara bra – det är avgörande för din karriär.\n\n## Vad är nätverkande?\n\nNätverkande är att bygga och underhålla relationer som kan vara ömsesidigt fördelaktiga. Det handlar inte om att använda människor, utan om att skapa genuina kontakter.\n\n## Din nätverksposition idag\n\nDu har redan ett nätverk! Börja med att kartlägga:\n\n### Nära nätverk\n- Familj och vänner\n- Grannar\n- Tidigare klasskamrater\n- Tidigare kollegor\n\n### Professionellt nätverk\n- Arbetskonsulenter\n- Lärare/mentorer\n- Personer du träffat på praktik\n\n### Utvidgat nätverk\n- Vänners vänner\n- Kontakter på LinkedIn\n- Medlemmar i föreningar\n\n## Så börjar du nätverka\n\n### 1. Definiera vad du söker\nVar tydlig med vilken typ av jobb du söker och vilken information eller hjälp du behöver.\n\n### 2. Skapa en lista\nSkriv ner 20 personer du skulle kunna kontakta. Tänk brett!\n\n### 3. Nå ut\nKontakta personer med ett personligt meddelande.\n\n## Informationsmöten\n\nAtt be om ett informationsmöte är mindre hotande än att be om jobb:\n- Be om 20-30 minuter\n- Förbered frågor om personens yrke och företag\n- Be om tips på andra att kontakta\n- Skicka ett tackbrev efteråt\n\n## Gör övningen\n\nÖvningen Nätverka för att hitta jobb tar dig igenom hela processen – från att kartlägga ditt nätverk till att göra första kontakten.`,
+    category: 'networking',
+    subcategory: 'building-network',
+    tags: ['nätverkande', 'nätverk', 'dolda jobbmarknaden', 'kontakter', 'informationsmöten'],
+    createdAt: '2024-03-13T10:00:00Z',
+    updatedAt: '2024-03-13T10:00:00Z',
+    readingTime: 13,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 212,
+    relatedArticles: ['linkedin-optimering', 'tackbrev-intervju'],
+    relatedExercises: ['networking'],
+    actions: [
+      { label: '🤝 Gör övningen: Nätverka för att hitta jobb', href: '/exercises', type: 'primary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  // === DIGITAL NÄRVARO (nya artiklar) ===
+  {
+    id: 'bygg-ditt-personliga-varumarke',
+    title: 'Bygg ditt personliga varumärke online',
+    summary: 'Skapa en konsekvent och professionell digital närvaro som attraherar rätt möjligheter.',
+    content: `Ditt personliga varumärke är vad folk säger om dig när du inte är i rummet. I dagens digitala värld är det avgörande för din karriär.\n\n## Vad är ett personligt varumärke?\n\nDitt personliga varumärke är:\n- Den bild andra har av dig\n- Det du är känd för\n- Din unika kombination av kompetenser och personlighet\n\n## Steg 1: Definiera ditt varumärke\n\n### Vilka är du?\n- Vilka är dina kärnkompetenser?\n- Vilka värderingar driver dig?\n- Vad vill du bli känd för?\n\n### Din unika vinkel\nVad skiljer dig från andra med liknande bakgrund?\n\n## Steg 2: Optimera dina profiler\n\n### LinkedIn\n- Professionell bild\n- Tydlig rubrik med nyckelord\n- Sammanfattning som berättar din historia\n\n## Steg 3: Skapa innehåll\n\n### Dela vad du lär dig\n### Visa ditt arbete\n### Engagera dig\n\n## Gör övningen\n\nÖvningen Ditt personliga varumärke hjälper dig definiera och kommunicera vad du vill vara känd för!`,
+    category: 'digital-presence',
+    subcategory: 'personal-brand',
+    tags: ['personligt varumärke', 'digital närvaro', 'LinkedIn', 'online-profil'],
+    createdAt: '2024-03-15T10:00:00Z',
+    updatedAt: '2024-03-15T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.7,
+    bookmarkCount: 178,
+    relatedArticles: ['linkedin-optimering', 'natverka-for-jobb'],
+    relatedExercises: ['personligt-varumarke', 'linkedin'],
+    actions: [
+      { label: '👤 Gör övningen: Ditt personliga varumärke', href: '/exercises', type: 'primary' },
+      { label: '💼 Gör övningen: LinkedIn som jobbsökarverktyg', href: '/exercises', type: 'secondary' },
+    ],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
+  // === ARBETSRÄTT (nya artiklar) ===
+  {
+    id: 'anstallningsformer-guide',
+    title: 'Anställningsformer – vad är skillnaden?',
+    summary: 'En guide till olika anställningsformer, deras fördelar och vad du behöver tänka på.',
+    content: `Att förstå olika anställningsformer hjälper dig göra medvetna val och veta vad du har rätt till.\n\n## Vanliga anställningsformer\n\n### Tillsvidareanställning (fast anställning)\n**Vad är det?\n- En anställning utan tidsbegränsning\n- Gäller tills du eller arbetsgivaren säger upp den\n- Starkast anställningsskydd\n\n**Fördelar:**\n- Trygghet och stabilitet\n- Försäkringar och förmåner\n- Lättare att få lån\n\n### Visstidsanställning (tidsbegränsad)\n**Vad är det?\n- Anställning för en specifik period\n- Slutar automatiskt vid periodens slut\n\n**Varianter:**\n- Allmän visstidsanställning\n- Vikariat\n- Säsongsanställning\n- Projektanställning\n\n### Timanställning\n- Anställning där du arbetar vid behov\n- Ingen garanterad arbetstid\n\n### Provanställning\n- En prövoperiod (vanligtvis 6 månader)\n- Båda parter kan avsluta utan uppsägningstid\n\n## Viktiga rättigheter\n\nOavsett anställningsform har du rätt till:\n- Lön enligt avtal\n- Semester\n- Arbetsmiljöskydd\n\n## Kom ihåg\n\n- Ingen anställningsform är sämre – de passar olika situationer\n- En visstidsanställning kan leda till fast jobb\n- Ställ frågor om något är oklart!`,
+    category: 'employment-law',
+    subcategory: 'employment-types',
+    tags: ['anställningsformer', 'tillsvidare', 'visstid', 'provanställning', 'rättigheter'],
+    createdAt: '2024-03-16T10:00:00Z',
+    updatedAt: '2024-03-16T10:00:00Z',
+    readingTime: 15,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 234,
+    relatedArticles: ['nystartsjobb-guide', 'rattigheter-stod', 'loneforhandling-guide'],
+    relatedExercises: ['salary'],
+    author: 'Katarina Holm',
+    authorTitle: 'Handläggare Arbetsförmedlingen',
+  },
+
+  {
+    id: 'lon-och-formaner-guide',
+    title: 'Lön och förmåner – mer än bara kontant lön',
+    summary: 'Förstå hela ersättningspaketet och lär dig förhandla om både lön och förmåner.',
+    content: `När du utvärderar ett jobberbjudande är det viktigt att se hela paketet – inte bara grundlönen.\n\n## Delar av ersättningspaketet\n\n### Kontant lön\nDet du får utbetalt varje månad före skatt.\n\n### Pension\n- Tjänstepension: Arbetsgivarens pensionssparande\n- Premiepension: En del av den allmänna pensionen\n\n### Semester\n- 25 dagar är lagstadgat\n- Många har 30 dagar eller mer\n\n### Försäkringar\n- Sjukförsäkring\n- Tjänstegrupplivförsäkring\n- Arbetsskadeförsäkring\n\n### Övriga förmåner\n- Friskvårdsbidrag\n- Flextid\n- Distansarbete\n- Kompetensutveckling\n\n## Att förhandla om förmåner\n\nIbland kan förmåner vara lika värdefulla som högre lön:\n- Flextid ger lättare att kombinera arbete och privatliv\n- Distansarbete sparar tid och pengar på resor\n- Kompetensutveckling ökar ditt framtida värde\n\n## Gör övningen\n\nÖvningen Förstå lön och förmåner hjälper dig göra marknadsundersökningar och förbereda löneförhandlingen.`,
+    category: 'employment-law',
+    subcategory: 'salary-benefits',
+    tags: ['lön', 'förmåner', 'pension', 'semester', 'förhandling', 'ersättning'],
+    createdAt: '2024-03-17T10:00:00Z',
+    updatedAt: '2024-03-17T10:00:00Z',
+    readingTime: 12,
+    difficulty: 'easy',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 289,
+    relatedArticles: ['loneforhandling-guide', 'anstallningsformer-guide'],
+    relatedExercises: ['salary'],
+    actions: [
+      { label: '💰 Gör övningen: Förstå lön och förmåner', href: '/exercises', type: 'primary' },
+    ],
+    author: 'Katarina Holm',
+    authorTitle: 'Handläggare Arbetsförmedlingen',
+  },
+
+  // === KARRIÄRUTVECKLING (nya artiklar) ===
+  {
+    id: 'karriarplanering-guide',
+    title: 'Karriärplanering – från vision till verklighet',
+    summary: 'Skapa en strukturerad plan för din karriär med kortsiktiga och långsiktiga mål.',
+    content: `En karriärplan är som en karta – den hjälper dig navigera från där du är idag till dit du vill vara.\n\n## Varför karriärplanera?\n\n- Riktning: Du vet vart du är på väg\n- Motivation: Tydliga mål ger drivkraft\n- Kontroll: Du styr din utveckling\n\n## Steg 1: Din nuvarande position\n\nBörja med att analysera var du är idag:\n- Vad har du?\n- Vad saknar du?\n\n## Steg 2: Din vision\n\nVar vill du vara om 3 månader? 1 år? 5 år?\n\n## Steg 3: Sätt SMARTA mål\n\nGör dina mål:\n- Specifika – tydligt vad du ska uppnå\n- Mätbara – så du vet när du nått dem\n- Atkomliga – realistiska men utmanande\n- Relevanta – kopplade till din vision\n- Tidsbundna – med deadline\n\n## Steg 4: Gör en handlingsplan\n\nBryt ner dina mål i konkreta steg:\n- Veckovis\n- Månadsvis\n- Kvartalsvis\n\n## Gör övningarna\n\n- Planera din karriärväg – långsiktig planering\n- Drömjobbsanalys – från vision till verklighet\n- Planera vidareutbildning – kompetensutveckling`,
+    category: 'career-development',
+    subcategory: 'career-planning',
+    tags: ['karriärplanering', 'mål', 'vision', 'handlingsplan', 'utveckling'],
+    createdAt: '2024-03-18T10:00:00Z',
+    updatedAt: '2024-03-18T10:00:00Z',
+    readingTime: 16,
+    difficulty: 'medium',
+    energyLevel: 'high',
+    helpfulnessRating: 4.7,
+    bookmarkCount: 198,
+    relatedArticles: ['dromjobbsanalys', 'kompetensportfolj'],
+    relatedExercises: ['careerpath', 'dromjobb', 'vidareutbildning', 'forsta-dagen'],
+    actions: [
+      { label: '📈 Gör övningen: Planera din karriärväg', href: '/exercises', type: 'primary' },
+      { label: '🎯 Gör övningen: Drömjobbsanalys', href: '/exercises', type: 'secondary' },
+    ],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
+  {
+    id: 'dromjobbsanalys',
+    title: 'Drömjobbsanalys – från vision till handling',
+    summary: 'Definiera ditt drömjobb och skapa en konkret plan för att nå dit.',
+    content: `Att ha en tydlig bild av vad du vill åstadkomma är första steget mot att nå dit. Denna guide hjälper dig definiera ditt drömjobb och göra en plan.\n\n## Definiera ditt drömjobb\n\n### Dröm stort – utan begränsningar\nOm du kunde välja helt fritt:\n- Vilken typ av arbete skulle du göra?\n- Vilken bransch?\n- Vilken roll?\n\n### Visualisera din perfekta arbetsdag\nBeskriv en typisk dag i ditt drömjobb.\n\n### Identifiera dina värderingar\nVad är viktigast för dig i ett jobb?\n\n## Gap-analys\n\n### Vad krävs för drömjobbet?\n### Vad har du redan?\n### Vad saknas?\n\n## Bryt ner till konkreta steg\n\n### Denna veckan\n### Kommande 3 månaderna\n### Kommande året\n\n## Gör övningen\n\nDrömjobbsanalys tar dig igenom hela processen med strukturerade frågor och hjälper dig skapa en konkret handlingsplan.`,
+    category: 'career-development',
+    subcategory: 'career-planning',
+    tags: ['drömjobb', 'karriär', 'vision', 'mål', 'planering'],
+    createdAt: '2024-03-20T10:00:00Z',
+    updatedAt: '2024-03-20T10:00:00Z',
+    readingTime: 13,
+    difficulty: 'medium',
+    energyLevel: 'high',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 245,
+    relatedArticles: ['karriarplanering-guide', 'upptack-dina-styrkor'],
+    relatedExercises: ['dromjobb'],
+    actions: [
+      { label: '🎯 Gör övningen: Drömjobbsanalys', href: '/exercises', type: 'primary' },
+    ],
+    author: 'Lisa Bergström',
+    authorTitle: 'Beteendevetare',
+  },
+
+  // === VÄLMÅENDE (nya artiklar) ===
+  {
+    id: 'hantera-avslag-guide',
+    title: 'Hantera avslag – väx genom motgångar',
+    summary: 'Lär dig att hantera avslag på ett sätt som stärker dig och håller motivationen uppe.',
+    content: `Att få avslag är en del av jobbsökningen. Det är inte ett misslyckande – det är en möjlighet att växa.\n\n## Avslag är normalt\n\n- De flesta ansökningar leder till avslag\n- Det är en sifferspel – ju fler du söker, desto fler avslag får du\n- Det säger inget om ditt värde som människa\n\n## Varför får man avslag?\n\nVanliga orsaker (som inte handlar om dig):\n- 200+ personer sökte samma jobb\n- En intern kandidat fick jobbet\n- De omorganiserade och lade ner tjänsten\n\n## Hantera känslorna\n\n### Tillåt dig att känna\nDet är okej att känna besvikelse och frustration.\n\n### Omsvängningsteknik\nFråga dig själv vad du kan lära dig av detta.\n\n## Be om feedback\n\nEtt avslag kan bli en möjlighet – be om feedback och använd informationen för att förbättra dig.\n\n## Bygg motståndskraft\n\n- Ett avslag är ett steg närmare JA\n- Varje ansökan är träning\n- Fira ansträngningen, inte bara resultatet\n\n## Gör övningen\n\nHantera avslag och motgångar hjälper dig omvärdera vad avslag betyder och bygga mental styrka.`,
+    category: 'wellness',
+    subcategory: 'rejection',
+    tags: ['avslag', 'hantera', 'motgångar', 'motståndskraft', 'mental styrka'],
+    createdAt: '2024-03-21T10:00:00Z',
+    updatedAt: '2024-03-21T10:00:00Z',
+    readingTime: 11,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 312,
+    relatedArticles: ['motivation-langsiktig', 'stresshantering'],
+    relatedExercises: ['hantera-avslag'],
+    actions: [
+      { label: '🛡️ Gör övningen: Hantera avslag', href: '/exercises', type: 'primary' },
+    ],
+    author: 'Lisa Bergström',
+    authorTitle: 'Beteendevetare',
+  },
+
+  {
+    id: 'motivation-i-jobb-sokning',
+    title: 'Behåll motivationen under långtidssökande',
+    summary: 'Strategier för att orka fortsätta när jobbsökningen tar längre tid än väntat.',
+    content: `Jobbsökning är ett maraton, inte en sprint. Här är strategier för att hålla motivationen uppe under lång tid.\n\n## Varför tappar vi motivation?\n\n- Den emotionella berg-och-dalbanan\n- Brist på kontroll\n- Isolering\n\n## Strategier för långsiktig motivation\n\n### 1. Sätt upp ett system, inte bara mål\nFokusera på processen: Söka 3 jobb i veckan istället för Få ett jobb.\n\n### 2. Dela upp dagen\n- Morgon: Energikrävande uppgifter\n- Eftermiddag: Lättare uppgifter\n- Kväll: Vila och återhämtning\n\n### 3. Fira små segrar\nVarje steg är värt att fira!\n\n### 4. Skapa rutiner\nFasta rutiner minskar beslutsutmatning.\n\n### 5. Var social\nMotverka isolering genom att träffa vänner och gå på nätverksevent.\n\n### 6. Ta hand om dig själv\n- Prioritera sömn (7-9 timmar)\n- Rör på dig regelbundet\n- Gör saker du tycker om\n\n## Gör övningarna\n\n- Hantera stress i jobbsökning\n- Motivationsboost för jobbsökaren\n- Strukturera din jobbsökarvecka`,
+    category: 'wellness',
+    subcategory: 'motivation',
+    tags: ['motivation', 'långtidssökande', 'uthållighet', 'strategier', 'välmående'],
+    createdAt: '2024-03-22T10:00:00Z',
+    updatedAt: '2024-03-22T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 278,
+    relatedArticles: ['hantera-avslag-guide', 'stresshantering'],
+    relatedExercises: ['wellbeing', 'motivationsboost', 'tidsplanering'],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
   },
 ]
 

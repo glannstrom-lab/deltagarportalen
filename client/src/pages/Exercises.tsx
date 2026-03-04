@@ -20,6 +20,8 @@ import { Card } from '@/components/ui/Card'
 import { exercises, type Exercise } from '@/data/exercises'
 import { AIAssistant } from '@/components/ai'
 import { supabase } from '@/lib/supabase'
+import { mockArticlesData, exerciseToArticleCategoryMap } from '@/services/articleData'
+import { Link } from 'react-router-dom'
 
 // Extended category colors for all 38 categories
 const categoryColors: { [key: string]: string } = {
@@ -743,6 +745,49 @@ export default function Exercises() {
           </div>
         </div>
       </Card>
+
+      {/* Related Articles */}
+      {(() => {
+        const articleCategory = exerciseToArticleCategoryMap[selectedExercise.category]
+        const relatedArticles = articleCategory 
+          ? mockArticlesData.filter(a => a.category === articleCategory).slice(0, 2)
+          : []
+        
+        if (relatedArticles.length === 0) return null
+        
+        return (
+          <Card className="p-4 bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
+            <div className="flex items-start gap-3">
+              <BookOpen className="w-5 h-5 text-teal-600 mt-0.5" />
+              <div className="flex-1">
+                <h3 className="font-medium text-teal-900">Relaterade artiklar</h3>
+                <p className="text-sm text-teal-700 mt-1 mb-3">
+                  Läs mer om {selectedExercise.category.toLowerCase()} i kunskapsbanken.
+                </p>
+                <div className="space-y-2">
+                  {relatedArticles.map((article) => (
+                    <Link
+                      key={article.id}
+                      to={`/knowledge-base/${article.id}`}
+                      className="block p-3 bg-white rounded-lg hover:shadow-sm transition-shadow border border-teal-100"
+                    >
+                      <h4 className="font-medium text-slate-800 text-sm">{article.title}</h4>
+                      <p className="text-xs text-slate-600 mt-1 line-clamp-2">{article.summary}</p>
+                    </Link>
+                  ))}
+                </div>
+                <Link
+                  to="/knowledge-base"
+                  className="inline-flex items-center gap-1 text-sm text-teal-700 hover:text-teal-800 mt-3 font-medium"
+                >
+                  Se alla artiklar
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </Card>
+        )
+      })()}
     </div>
   )
 }

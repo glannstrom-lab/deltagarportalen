@@ -1,5 +1,5 @@
 // Supabase Edge Function: Hämtar yrken från Arbetsförmedlingens Taxonomy API
-// URL: https://<project>.supabase.co/functions/v1/af-taxonomy
+// ANONYM TILLGÅNG - ingen auth krävs
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
@@ -13,7 +13,6 @@ interface Concept {
   definition?: string;
 }
 
-// Hämta yrken från Taxonomy API
 async function fetchFromTaxonomy(query: string, limit: number = 10): Promise<Concept[]> {
   const url = `${TAXONOMY_API_BASE}/main/concepts?type=occupation-name&version=16&query=${encodeURIComponent(query)}&limit=${limit}`;
   
@@ -24,16 +23,14 @@ async function fetchFromTaxonomy(query: string, limit: number = 10): Promise<Con
   });
   
   if (!response.ok) {
-    console.error(`[af-taxonomy] Taxonomy error: ${response.status}`);
     throw new Error(`Taxonomy API error: ${response.status}`);
   }
   
   const data = await response.json();
-  console.log(`[af-taxonomy] Got ${data.length || 0} results`);
   
   if (Array.isArray(data)) {
     return data.map((item: any) => ({
-      id: item.id || item.concept_id || item.term_id,
+      id: item.id || item.concept_id || `concept_${Math.random().toString(36).substr(2, 9)}`,
       preferred_label: item.preferred_label || item.term || item.label,
       type: item.type || 'occupation-name',
       definition: item.definition || item.description
@@ -43,7 +40,6 @@ async function fetchFromTaxonomy(query: string, limit: number = 10): Promise<Con
   return [];
 }
 
-// Fallback: Hämta från JobSearch /complete
 async function fetchFromJobSearchComplete(query: string, limit: number = 10): Promise<Concept[]> {
   const url = `${JOBSEARCH_API_BASE}/complete?q=${encodeURIComponent(query)}&limit=${limit}`;
   
@@ -82,7 +78,6 @@ async function fetchFromJobSearchComplete(query: string, limit: number = 10): Pr
   return results;
 }
 
-// Huvudfunktion
 async function getOccupations(query: string, limit: number = 10): Promise<{ concepts: Concept[]; source: string }> {
   if (!query || query.length < 2) {
     return { concepts: [], source: 'none' };
@@ -110,12 +105,11 @@ async function getOccupations(query: string, limit: number = 10): Promise<{ conc
 }
 
 serve(async (req) => {
-  // CORS headers - tillåt alla origins
+  // CORS - tillåt alla
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Headers': '*',
     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Max-Age': '86400',
   };
 
   if (req.method === 'OPTIONS') {
@@ -127,7 +121,6 @@ serve(async (req) => {
     const path = url.pathname.replace('/af-taxonomy', '').replace('//', '/');
     const params = new URLSearchParams(url.search);
     
-    // /concepts endpoint för autocomplete
     if (path === '/concepts' || path === '') {
       const query = params.get('q') || '';
       const limit = parseInt(params.get('limit') || '10');
@@ -136,20 +129,25 @@ serve(async (req) => {
       
       const { concepts, source } = await getOccupations(query, limit);
       
-      console.log(`[af-taxonomy] Returning ${concepts.length} results from ${source}`);
-      
       return new Response(
         JSON.stringify({ concepts, total: concepts.length, source }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
     
-    // Övriga endpoints - proxy till Taxonomy
+    // Proxy övriga anrop
     const targetUrl = `${TAXONOMY_API_BASE}${path}${url.search}`;
-    const response = await fetch(targetUrl, { method: req.method, headers: { 'Accept': 'application/json' }});
+    const response = await fetch(targetUrl, { 
+      method: req.method, 
+      headers: { 'Accept': 'application/json' }
+    });
+    
     const data = await response.json();
     
-    return new Response(JSON.stringify(data), { headers: { ...corsHeaders, 'Content-Type': 'application/json' }});
+    return new Response(
+      JSON.stringify(data),
+      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+    );
     
   } catch (error) {
     console.error('[af-taxonomy] Error:', error);
