@@ -574,7 +574,7 @@ export const articleApi = {
         .eq('published', true)
         .order('created_at', { ascending: false })
       
-      // Fallback to mock data if no data in database or error
+      // If error or no data, return mock data
       if (error) {
         console.log('Supabase articles error, using mock data:', error.message)
         return mockArticlesData
@@ -585,7 +585,13 @@ export const articleApi = {
         return mockArticlesData
       }
       
-      return data
+      // Merge database articles with mock articles, avoiding duplicates
+      const dbIds = new Set(data.map(a => a.id))
+      const uniqueMockArticles = mockArticlesData.filter(a => !dbIds.has(a.id))
+      
+      console.log(`Loaded ${data.length} from DB + ${uniqueMockArticles.length} from mock = ${data.length + uniqueMockArticles.length} total`)
+      
+      return [...data, ...uniqueMockArticles]
     } catch (err) {
       console.log('Exception loading articles, using mock data:', err)
       return mockArticlesData
