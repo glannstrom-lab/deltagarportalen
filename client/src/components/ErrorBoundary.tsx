@@ -13,35 +13,41 @@ interface State {
   errorInfo: ErrorInfo | null
 }
 
-export class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
-    hasError: false,
-    error: null,
-    errorInfo: null
+/**
+ * Global Error Boundary
+ * Fångar JavaScript-fel i child-komponenter och visar ett vänligt felmeddelande
+ * istället för att krascha hela applikationen
+ */
+export default class ErrorBoundary extends Component<Props, State> {
+  constructor(props: Props) {
+    super(props)
+    this.state = { hasError: false, error: null, errorInfo: null }
   }
 
-  public static getDerivedStateFromError(error: Error): State {
+  static getDerivedStateFromError(error: Error): State {
     return { hasError: true, error, errorInfo: null }
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo)
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error('[ErrorBoundary] Fel fångat:', error)
+    console.error('[ErrorBoundary] Stack trace:', errorInfo.componentStack)
     this.setState({ error, errorInfo })
-    
-    // Log to error tracking service
-    // TODO: Send to Sentry/LogRocket in production
+
+    // Här skulle vi kunna skicka fel till en loggningstjänst som Sentry
+    // logErrorToService(error, errorInfo)
   }
 
-  private handleReload = () => {
+  handleReload = () => {
     window.location.reload()
   }
 
-  private handleReset = () => {
+  handleReset = () => {
     this.setState({ hasError: false, error: null, errorInfo: null })
   }
 
-  public render() {
+  render() {
     if (this.state.hasError) {
+      // Använd custom fallback om det finns, annars default
       if (this.props.fallback) {
         return this.props.fallback
       }
@@ -49,48 +55,79 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-lg p-8 text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="text-red-600" size={32} />
+            {/* Ikon */}
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <AlertTriangle size={40} className="text-red-600" />
             </div>
-            
-            <h1 className="text-xl font-bold text-slate-800 mb-2">
-              Oj, något gick fel!
+
+            {/* Titel */}
+            <h1 className="text-2xl font-bold text-slate-800 mb-3">
+              Något gick fel
             </h1>
-            
+
+            {/* Beskrivning */}
             <p className="text-slate-600 mb-6">
-              Vi är ledsna, men något gick fel när sidan skulle visas. 
-              Prova att ladda om sidan eller gå tillbaka till startsidan.
+              Vi ber om ursäkt, men något gick fel när sidan skulle visas. 
+              Du kan prova att ladda om sidan eller gå tillbaka till startsidan.
             </p>
 
+            {/* Felmeddelande (i utvecklingsläge) */}
             {process.env.NODE_ENV === 'development' && this.state.error && (
-              <div className="bg-slate-100 rounded-lg p-4 mb-6 text-left overflow-auto">
-                <p className="text-red-600 font-mono text-sm mb-2">
-                  {this.state.error.toString()}
-                </p>
-                {this.state.errorInfo && (
-                  <pre className="text-xs text-slate-600 font-mono whitespace-pre-wrap">
-                    {this.state.errorInfo.componentStack}
-                  </pre>
-                )}
+              <div className="mb-6 text-left">
+                <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <p className="text-red-800 font-mono text-sm mb-2">
+                    {this.state.error.toString()}
+                  </p>
+                  {this.state.errorInfo && (
+                    <pre className="text-red-700 text-xs overflow-auto max-h-32">
+                      {this.state.errorInfo.componentStack}
+                    </pre>
+                  )}
+                </div>
               </div>
             )}
 
+            {/* Knappar */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center">
               <button
                 onClick={this.handleReload}
-                className="btn btn-primary flex items-center justify-center gap-2"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
               >
-                <RefreshCw size={18} />
+                <RefreshCw size={20} />
                 Ladda om sidan
               </button>
-              
+
               <Link
                 to="/"
-                className="btn btn-secondary flex items-center justify-center gap-2"
+                onClick={this.handleReset}
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
               >
-                <Home size={18} />
-                Till startsidan
+                <Home size={20} />
+                Gå till startsidan
               </Link>
+            </div>
+
+            {/* Hjälplänkar */}
+            <div className="mt-8 pt-6 border-t border-slate-200">
+              <p className="text-sm text-slate-500 mb-3">
+                Behöver du hjälp?
+              </p>
+              <div className="flex justify-center gap-4 text-sm">
+                <Link 
+                  to="/diary" 
+                  className="text-teal-600 hover:underline"
+                  onClick={this.handleReset}
+                >
+                  Kontakta arbetskonsulent
+                </Link>
+                <span className="text-slate-300">|</span>
+                <a 
+                  href="mailto:support@deltagarportalen.se" 
+                  className="text-teal-600 hover:underline"
+                >
+                  Mejla support
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -101,21 +138,42 @@ export class ErrorBoundary extends Component<Props, State> {
   }
 }
 
-// Hook for functional components
-import { useState, useCallback } from 'react'
-
-export function useErrorHandler() {
-  const [error, setError] = useState<Error | null>(null)
-
-  const handleError = useCallback((error: Error) => {
-    console.error('Caught error:', error)
-    setError(error)
-    // TODO: Send to error tracking service
-  }, [])
-
-  const clearError = useCallback(() => {
-    setError(null)
-  }, [])
-
-  return { error, handleError, clearError }
+/**
+ * Sektionsspecifik Error Boundary
+ * Används för att isolera fel till specifika delar av appen
+ */
+export function SectionErrorBoundary({ 
+  children, 
+  sectionName = 'innehåll' 
+}: { 
+  children: ReactNode
+  sectionName?: string 
+}) {
+  return (
+    <ErrorBoundary
+      fallback={
+        <div className="p-6 bg-red-50 border border-red-200 rounded-xl">
+          <div className="flex items-center gap-3 mb-3">
+            <AlertTriangle size={24} className="text-red-600" />
+            <h3 className="font-semibold text-red-800">
+              Kunde inte ladda {sectionName}
+            </h3>
+          </div>
+          <p className="text-red-700 text-sm mb-4">
+            Något gick fel när {sectionName} skulle visas. 
+            Du kan försöka ladda om sidan.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors"
+          >
+            <RefreshCw size={16} />
+            Ladda om
+          </button>
+        </div>
+      }
+    >
+      {children}
+    </ErrorBoundary>
+  )
 }

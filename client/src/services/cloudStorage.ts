@@ -2,9 +2,27 @@
  * Cloud Storage Service
  * Centraliserad hantering av all datalagring i molnet (Supabase)
  * Ersätter all localStorage-användning
+ * 
+ * OBS: Alla funktioner hanterar RLS-fel (42501) genom att falla tillbaka på localStorage
  */
 
 import { supabase } from '@/lib/supabase'
+
+// Hjälpfunktion för att hantera fel
+function handleStorageError(error: any, context: string): void {
+  // RLS-policy fel (42501) - logga tyst
+  if (error?.code === '42501') {
+    console.log(`[CloudStorage] RLS policy förhindrar ${context} - använder fallback`)
+    return
+  }
+  // Användaren inte inloggad
+  if (error?.code === 'PGRST116' || error?.status === 401) {
+    console.log(`[CloudStorage] Användare inte inloggad för ${context} - använder fallback`)
+    return
+  }
+  // Andra fel - logga för debugging
+  console.error(`[CloudStorage] Fel vid ${context}:`, error)
+}
 
 // ============================================
 // ARTIKLAR
@@ -16,7 +34,11 @@ export const articleBookmarksApi = {
       .select('*')
       .order('bookmarked_at', { ascending: false })
     
-    if (error) throw error
+    if (error) {
+      handleStorageError(error, 'hämta bokmärken')
+      // Fallback till localStorage
+      return JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
+    }
     return data?.map(d => d.article_id) || []
   },
 
@@ -25,7 +47,16 @@ export const articleBookmarksApi = {
       .from('article_bookmarks')
       .insert({ article_id: articleId })
     
-    if (error) throw error
+    if (error) {
+      handleStorageError(error, 'lägga till bokmärke')
+      // Fallback till localStorage
+      const bookmarks = JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
+      if (!bookmarks.includes(articleId)) {
+        bookmarks.push(articleId)
+        localStorage.setItem('article_bookmarks', JSON.stringify(bookmarks))
+      }
+      return
+    }
   },
 
   async remove(articleId: string) {
@@ -34,7 +65,14 @@ export const articleBookmarksApi = {
       .delete()
       .eq('article_id', articleId)
     
-    if (error) throw error
+    if (error) {
+      handleStorageError(error, 'ta bort bokmärke')
+      // Fallback till localStorage
+      const bookmarks = JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
+      const filtered = bookmarks.filter((id: string) => id !== articleId)
+      localStorage.setItem('article_bookmarks', JSON.stringify(filtered))
+      return
+    }
   },
 
   async isBookmarked(articleId: string) {
@@ -44,7 +82,12 @@ export const articleBookmarksApi = {
       .eq('article_id', articleId)
       .single()
     
-    if (error && error.code !== 'PGRST116') throw error
+    if (error) {
+      handleStorageError(error, 'kolla bokmärke')
+      // Fallback till localStorage
+      const bookmarks = JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
+      return bookmarks.includes(articleId)
+    }
     return !!data
   }
 }
@@ -108,7 +151,12 @@ export const articleChecklistApi = {
       .eq('article_id', articleId)
       .single()
     
-    if (error && error.code !== 'PGRST116') throw error
+    if (error) {
+      handleStorageError(error, 'hämta checklista')
+      // Fallback till localStorage
+      const checklists = JSON.parse(localStorage.getItem('article_checklists') || '{}')
+      return checklists[articleId] || []
+    }
     return data?.checked_items || []
   },
 
@@ -122,7 +170,14 @@ export const articleChecklistApi = {
         onConflict: 'user_id,article_id'
       })
     
-    if (error) throw error
+    if (error) {
+      handleStorageError(error, 'uppdatera checklista')
+      // Fallback till localStorage
+      const checklists = JSON.parse(localStorage.getItem('article_checklists') || '{}')
+      checklists[articleId] = checkedItems
+      localStorage.setItem('article_checklists', JSON.stringify(checklists))
+      return
+    }
   }
 }
 
@@ -136,7 +191,11 @@ export const dashboardPreferencesApi = {
       .select('*')
       .single()
     
-    if (error && error.code !== 'PGRST116') throw error
+    if (error) {
+      handleStorageError(error, 'hämta dashboard-inställningar')
+      // Fallback till localStorage
+      return JSON.parse(localStorage.getItem('dashboard_preferences') || 'null')
+    }
     return data
   },
 
@@ -151,7 +210,12 @@ export const dashboardPreferencesApi = {
         onConflict: 'user_id'
       })
     
-    if (error) throw error
+    if (error) {
+      handleStorageError(error, 'uppdatera dashboard-inställningar')
+      // Fallback till localStorage
+      localStorage.setItem('dashboard_preferences', JSON.stringify(preferences))
+      return
+    }
   }
 }
 
@@ -165,7 +229,11 @@ export const userPreferencesApi = {
       .select('*')
       .single()
     
-    if (error && error.code !== 'PGRST116') throw error
+    if (error) {
+      handleStorageError(error, 'hämta användarinställningar')
+      // Fallback till localStorage
+      return JSON.parse(localStorage.getItem('user_preferences') || 'null')
+    }
     return data
   },
 
