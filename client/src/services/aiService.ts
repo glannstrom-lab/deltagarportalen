@@ -104,14 +104,7 @@ export interface AIHealthResponse {
   status: string
   enabled: boolean
   url: string
-  aiServer?: {
-    status: string
-    timestamp: string
-    version: string
-    model?: string
-    modelConfigured?: boolean
-    endpoints?: string[]
-  }
+  model?: string
   message?: string
 }
 
@@ -127,6 +120,19 @@ export interface AIModelsResponse {
   currentModel: string
   models: AIModel[]
   note: string
+}
+
+export interface AIFunctionResponse {
+  success: boolean
+  content: string
+  function: string
+  model: string
+  metadata?: {
+    tokensUsed?: number
+    promptTokens?: number
+    completionTokens?: number
+    generatedAt?: string
+  }
 }
 
 // Fallback templates when AI is not available
@@ -168,6 +174,42 @@ Med högaktning,
 }
 
 /**
+ * Anropa AI Assistant Edge Function
+ */
+async function callAIAssistant(
+  functionName: string, 
+  data: Record<string, any>,
+  model?: string
+): Promise<AIFunctionResponse> {
+  const { data: { session } } = await supabase.auth.getSession()
+  if (!session) throw new Error('Inte inloggad')
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+  const response = await fetch(
+    `${supabaseUrl}/functions/v1/ai-assistant`,
+    {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        function: functionName,
+        data,
+        model
+      })
+    }
+  )
+
+  if (!response.ok) {
+    const error = await response.json()
+    throw new Error(error.error || 'AI-anrop misslyckades')
+  }
+
+  return response.json()
+}
+
+/**
  * Tjänst för AI-funktioner via Supabase Edge Functions
  */
 export const aiService = {
@@ -175,14 +217,58 @@ export const aiService = {
    * Kolla om AI-servern är tillgänglig
    */
   async checkHealth(): Promise<AIHealthResponse> {
-    // Check if we can reach Supabase
     try {
       const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        return {
+          status: 'NO_SESSION',
+          enabled: false,
+          url: import.meta.env.VITE_SUPABASE_URL || '',
+          message: 'Du måste vara inloggad för att använda AI-funktioner'
+        }
+      }
+
+      // Testa ai-assistant endpoint
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+      const response = await fetch(
+        `${supabaseUrl}/functions/v1/ai-assistant`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            function: 'jobbtips',
+            data: { intressen: 'test', hinder: 'test' }
+          })
+        }
+      )
+
+      if (response.ok) {
+        return {
+          status: 'OK',
+          enabled: true,
+          url: supabaseUrl,
+          message: 'AI-tjänster tillgängliga'
+        }
+      }
+
+      // Om 503 = AI inte konfigurerad ännu
+      if (response.status === 503) {
+        return {
+          status: 'NOT_CONFIGURED',
+          enabled: false,
+          url: supabaseUrl,
+          message: 'AI-tjänsten är inte konfigurerad ännu. Kontakta administratören.'
+        }
+      }
+
       return {
-        status: session ? 'OK' : 'NO_SESSION',
-        enabled: true,
-        url: import.meta.env.VITE_SUPABASE_URL || '',
-        message: 'Supabase AI-tjänster tillgängliga'
+        status: 'ERROR',
+        enabled: false,
+        url: supabaseUrl,
+        message: 'AI-tjänsten är för tillfället inte tillgänglig'
       }
     } catch (error) {
       return {
@@ -195,35 +281,18 @@ export const aiService = {
   },
 
   /**
-   * Få AI-feedback på CV via cv-analysis Edge Function
+   * Få AI-feedback på CV
    */
   async optimizeCV(data: CVOptimizationRequest): Promise<CVOptimizationResponse> {
     try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) throw new Error('Inte inloggad')
+      const result = await callAIAssistant('cv-optimering', {
+        cvText: data.cvText,
+        yrke: data.yrke
+      })
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-      const response = await fetch(
-        `${supabaseUrl}/functions/v1/cv-analysis`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            cvText: data.cvText,
-            targetRole: data.yrke
-          })
-        }
-      )
-
-      if (!response.ok) throw new Error('CV-analys misslyckades')
-
-      const result = await response.json()
       return {
         success: true,
-        feedback: result.suggestions?.join('\n') || 'Bra CV! Inga större förbättringsförslag.',
+        feedback: result.content,
         yrke: data.yrke || null
       }
     } catch (error) {
@@ -247,8 +316,23 @@ export const aiService = {
    * Generera CV-text med AI
    */
   async generateCVText(data: GenerateCVRequest): Promise<GenerateCVResponse> {
-    // Fallback template since we don't have this Edge Function yet
-    const cvText = `PROFIL
+    try {
+      const result = await callAIAssistant('generera-cv-text', {
+        yrke: data.yrke,
+        erfarenhet: data.erfarenhet,
+        utbildning: data.utbildning,
+        styrkor: data.styrkor
+      })
+
+      return {
+        success: true,
+        cvText: result.content,
+        yrke: data.yrke
+      }
+    } catch (error) {
+      console.warn('CV-textgenerering ej tillgänglig:', error)
+      // Fallback template
+      const cvText = `PROFIL
 Erfaren ${data.yrke} med bred kompetens inom området. Strukturerad och resultatorienterad med god förmåga att samarbeta i team.
 
 ARBETSLIVSERFARENHET
@@ -264,15 +348,16 @@ SPRÅK
 Svenska - Modersmål
 Engelska - Goda kunskaper`
 
-    return {
-      success: true,
-      cvText,
-      yrke: data.yrke
+      return {
+        success: true,
+        cvText,
+        yrke: data.yrke
+      }
     }
   },
 
   /**
-   * Generera personligt brev via Supabase Edge Function
+   * Generera personligt brev via AI
    */
   async generateCoverLetter(data: CoverLetterRequest): Promise<CoverLetterResponse> {
     try {
@@ -282,73 +367,25 @@ Engelska - Goda kunskaper`
         throw new Error('Jobbeskrivning saknas')
       }
 
-      // Map old format to Edge Function format
-      // Extract firstName/lastName from namn or cvData
-      let firstName = 'Jag'
-      let lastName = ''
-      
-      if (data.cvData?.firstName && data.cvData.firstName !== 'undefined') {
-        firstName = data.cvData.firstName
-        lastName = data.cvData.lastName || ''
-      } else if (data.namn && data.namn !== 'undefined undefined') {
-        const nameParts = data.namn.split(' ')
-        firstName = nameParts[0]
-        lastName = nameParts.slice(1).join(' ')
-      }
-
-      const params = {
-        cvData: {
-          firstName,
-          lastName,
-          title: data.cvData?.title || '',
-          summary: data.cvData?.summary || data.motivering || '',
-          workExperience: data.cvData?.workExperience || 
-                         (data.erfarenhet ? [{ title: data.erfarenhet, company: '' }] : []),
-          skills: data.cvData?.skills || []
-        },
-        jobDescription: jobDesc,
-        companyName: data.companyName || 'Företaget',
-        jobTitle: data.jobTitle || 'Tjänsten',
-        tone: data.ton === 'professionell' ? 'formal' : 
-              data.ton === 'entusiastisk' ? 'enthusiastic' : 'friendly',
-        focus: 'experience'
-      }
-
-      // Call Supabase Edge Function via coverLetterApi
-      console.log('🚀 Anropar AI Cover Letter med params:', JSON.stringify(params, null, 2))
-      
-      let result
-      try {
-        result = await coverLetterApi.generate(params)
-      } catch (apiError: any) {
-        console.error('❌ coverLetterApi.generate kastade fel:', apiError)
-        console.error('   Status:', apiError.status)
-        console.error('   Message:', apiError.message)
-        console.error('   Code:', apiError.code)
-        throw apiError  // Kasta vidare för att hanteras nedan
-      }
-
-      console.log('✅ Resultat från Edge Function:', result)
-
-      // Edge Function returns 'letter' field
-      const brevText = result.letter || result.coverLetter || result.brev
-      
-      if (!brevText) {
-        console.error('⚠️  Ingen brevtext i resultatet! Fält som finns:', Object.keys(result))
-        throw new Error('Tomt svar från AI-tjänsten')
-      }
+      // Använd ai-assistant för personligt brev
+      const result = await callAIAssistant('personligt-brev', {
+        jobbAnnons: jobDesc,
+        erfarenhet: data.erfarenhet || data.cvData?.summary,
+        motivering: data.motivering,
+        namn: data.namn || `${data.cvData?.firstName || ''} ${data.cvData?.lastName || ''}`.trim(),
+        ton: data.ton || 'professionell'
+      })
 
       return {
         success: true,
-        brev: brevText,
+        brev: result.content,
         ton: data.ton || 'professionell'
       }
     } catch (error: any) {
-      console.error('❌ AI-brev generering misslyckades:', error)
-      console.error('   Fel-objekt:', JSON.stringify(error, Object.getOwnPropertyNames(error), 2))
+      console.error('AI-brev generering misslyckades:', error)
       
       // Check if it's an authentication error
-      if (error.status === 401 || error.message?.includes('Inte inloggad') || error.message?.includes('401')) {
+      if (error.message?.includes('Inte inloggad') || error.message?.includes('401')) {
         return {
           success: false,
           brev: '🔐 Du verkar ha blivit utloggad. Vänligen logga in igen för att använda AI-funktionen.',
@@ -356,20 +393,11 @@ Engelska - Goda kunskaper`
         }
       }
       
-      // Check if it's an OpenAI configuration error
-      if (error.message?.includes('OpenAI API key not configured') || error.message?.includes('500')) {
+      // Check if it's an configuration error
+      if (error.message?.includes('not configured') || error.message?.includes('503')) {
         return {
           success: false,
           brev: '⚙️ AI-tjänsten är inte korrekt konfigurerad. Kontakta support.',
-          ton: data.ton || 'professionell'
-        }
-      }
-      
-      // Check if data is missing
-      if (error.message?.includes('Missing required fields') || error.status === 400) {
-        return {
-          success: false,
-          brev: '❌ Vänligen fyll i alla obligatoriska fält (jobbannons, företag, tjänst).',
           ton: data.ton || 'professionell'
         }
       }
@@ -396,10 +424,26 @@ Engelska - Goda kunskaper`
    * Förberedelser inför intervju
    */
   async prepareInterview(data: InterviewPrepRequest): Promise<InterviewPrepResponse> {
-    // Fallback since we don't have this Edge Function yet
-    return {
-      success: true,
-      forberedelser: `Förberedelser inför intervjun för ${data.jobbTitel} på ${data.foretag || 'företaget'}:
+    try {
+      const result = await callAIAssistant('intervju-forberedelser', {
+        jobbTitel: data.jobbTitel,
+        foretag: data.foretag,
+        erfarenhet: data.erfarenhet,
+        egenskaper: data.egenskaper
+      })
+
+      return {
+        success: true,
+        forberedelser: result.content,
+        jobbTitel: data.jobbTitel,
+        foretag: data.foretag
+      }
+    } catch (error) {
+      console.warn('Intervjuförberedelser ej tillgänglig:', error)
+      // Fallback
+      return {
+        success: true,
+        forberedelser: `Förberedelser inför intervjun för ${data.jobbTitel} på ${data.foretag || 'företaget'}:
 
 1. **Forskning**
    - Läs på om företagets historia, värderingar och kultur
@@ -423,8 +467,9 @@ Engelska - Goda kunskaper`
    - Ta med CV och anteckningsblock
 
 Lycka till!`,
-      jobbTitel: data.jobbTitel,
-      foretag: data.foretag
+        jobbTitel: data.jobbTitel,
+        foretag: data.foretag
+      }
     }
   },
 
@@ -432,10 +477,24 @@ Lycka till!`,
    * Få personliga jobbsökartips
    */
   async getJobTips(data: JobTipsRequest): Promise<JobTipsResponse> {
-    // Fallback since we don't have this Edge Function yet
-    return {
-      success: true,
-      tips: `Personliga jobbsökartips:
+    try {
+      const result = await callAIAssistant('jobbtips', {
+        intressen: data.intressen,
+        tidigareErfarenhet: data.tidigareErfarenhet,
+        hinder: data.hinder,
+        mal: data.mal
+      })
+
+      return {
+        success: true,
+        tips: result.content
+      }
+    } catch (error) {
+      console.warn('Jobbtips ej tillgänglig:', error)
+      // Fallback
+      return {
+        success: true,
+        tips: `Personliga jobbsökartips:
 
 **Baserat på dina intressen (${data.intressen || 'varierade'}):**
 - Sök roller som matchar vad du brinner för
@@ -454,6 +513,7 @@ Lycka till!`,
 - Sätt upp konkreta delmål
 - Ha en strukturerad ansökningsprocess
 - Följ upp och utvärdera regelbundet`
+      }
     }
   },
 
@@ -461,10 +521,26 @@ Lycka till!`,
    * Hjälp med övningar
    */
   async getExerciseHelp(data: ExerciseHelpRequest): Promise<ExerciseHelpResponse> {
-    // Fallback since we don't have this Edge Function yet
-    return {
-      success: true,
-      hjalp: `Hjälp för övning ${data.ovningId}, steg ${data.steg}:
+    try {
+      const result = await callAIAssistant('ovningshjalp', {
+        ovningId: data.ovningId,
+        steg: data.steg,
+        fraga: data.fraga,
+        anvandarSvar: data.anvandarSvar
+      })
+
+      return {
+        success: true,
+        hjalp: result.content,
+        ovningId: data.ovningId,
+        steg: data.steg
+      }
+    } catch (error) {
+      console.warn('Övningshjälp ej tillgänglig:', error)
+      // Fallback
+      return {
+        success: true,
+        hjalp: `Hjälp för övning ${data.ovningId}, steg ${data.steg}:
 
 Du frågade: "${data.fraga}"
 
@@ -477,8 +553,9 @@ ${data.anvandarSvar ? `Du svarade: "${data.anvandarSvar}"` : ''}
 - Kom ihåg att du kan spara och fortsätta senare
 
 Behöver du mer vägledning? Kontakta din arbetskonsulent.`,
-      ovningId: data.ovningId,
-      steg: data.steg
+        ovningId: data.ovningId,
+        steg: data.steg
+      }
     }
   },
 
@@ -486,13 +563,29 @@ Behöver du mer vägledning? Kontakta din arbetskonsulent.`,
    * Löneförhandlingsrådgivning
    */
   async getSalaryAdvice(data: SalaryNegotiationRequest): Promise<SalaryNegotiationResponse> {
-    // Fallback since we don't have this Edge Function yet
-    const lonSpan = data.erfarenhetAr && data.erfarenhetAr > 5 ? '45 000 - 60 000' : 
-                    data.erfarenhetAr && data.erfarenhetAr > 2 ? '35 000 - 50 000' : '30 000 - 40 000'
-    
-    return {
-      success: true,
-      radgivning: `Löneförhandlingsrådgivning för ${data.roll}:
+    try {
+      const result = await callAIAssistant('loneforhandling', {
+        roll: data.roll,
+        erfarenhetAr: data.erfarenhetAr,
+        nuvarandeLon: data.nuvarandeLon,
+        foretagsStorlek: data.foretagsStorlek,
+        ort: data.ort
+      })
+
+      return {
+        success: true,
+        radgivning: result.content,
+        roll: data.roll
+      }
+    } catch (error) {
+      console.warn('Lönerådgivning ej tillgänglig:', error)
+      // Fallback
+      const lonSpan = data.erfarenhetAr && data.erfarenhetAr > 5 ? '45 000 - 60 000' : 
+                      data.erfarenhetAr && data.erfarenhetAr > 2 ? '35 000 - 50 000' : '30 000 - 40 000'
+      
+      return {
+        success: true,
+        radgivning: `Löneförhandlingsrådgivning för ${data.roll}:
 
 **Marknadslön:** ${lonSpan} kr/mån
 (baserat på ${data.erfarenhetAr || 0} års erfarenhet i ${data.ort || 'Sverige'})
@@ -510,8 +603,27 @@ Behöver du mer vägledning? Kontakta din arbetskonsulent.`,
 - Få det skriftligt
 
 **Kom ihåg:** Lön är inte allt - förmåner, utvecklingsmöjligheter och arbetsmiljö är också viktigt!`,
-      roll: data.roll
+        roll: data.roll
+      }
     }
+  },
+
+  /**
+   * Generell AI-funktion (för custom användning)
+   */
+  async generate(
+    systemPrompt: string,
+    userPrompt: string,
+    maxTokens?: number,
+    model?: string
+  ): Promise<string> {
+    const result = await callAIAssistant('generell', {
+      systemPrompt,
+      prompt: userPrompt,
+      maxTokens
+    }, model)
+
+    return result.content
   },
 
   /**
@@ -530,7 +642,7 @@ Behöver du mer vägledning? Kontakta din arbetskonsulent.`,
    * Hämta nuvarande AI-modell
    */
   async getCurrentModel(): Promise<string | null> {
-    // Return a generic message since we don't have model selection yet
-    return 'OpenAI GPT-4 (via Supabase Edge Functions)'
+    // Return a generic message since we get model info from responses
+    return 'OpenRouter (via Supabase Edge Functions)'
   }
 }
