@@ -561,6 +561,287 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+/**
+ * POST /api/ai/linkedin-optimering
+ * Hjälp med LinkedIn-profil
+ */
+app.post('/api/ai/linkedin-optimering', async (req, res) => {
+  try {
+    const { typ, data } = req.body;
+    // typ: 'headline', 'about', 'post', 'connection'
+    
+    let prompt = '';
+    switch(typ) {
+      case 'headline':
+        prompt = `Skriv en catchy LinkedIn-headline (max 220 tecken) för: ${data.yrke}. Erfarenhet: ${data.erfarenhet}.`;
+        break;
+      case 'about':
+        prompt = `Skriv en "About"-sektion för LinkedIn (max 2000 tecken). Bakgrund: ${data.bakgrund}. Styrkor: ${data.styrkor}.`;
+        break;
+      case 'post':
+        prompt = `Skriv ett LinkedIn-inlägg om ${data.amne}. Ton: ${data.ton || 'professionell'}. Max 1300 tecken.`;
+        break;
+      case 'connection':
+        prompt = `Skriv ett meddelande till en ny LinkedIn-kontakt. Person: ${data.namn}. Syfte: ${data.syfte}.`;
+        break;
+      default:
+        return res.status(400).json({ error: 'Ogiltig typ' });
+    }
+
+    const messages = [
+      { role: 'system', content: 'Du är en expert på LinkedIn och personlig branding. Skriv på svenska.' },
+      { role: 'user', content: prompt }
+    ];
+
+    const text = await callOpenRouter(messages, { max_tokens: 800 });
+    res.json({ success: true, text, typ });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte generera LinkedIn-text' });
+  }
+});
+
+/**
+ * POST /api/ai/karriarplan
+ * Skapa karriärplan med AI
+ */
+app.post('/api/ai/karriarplan', async (req, res) => {
+  try {
+    const { nuvarande, mal, tidsram, hinder } = req.body;
+    
+    const messages = [
+      { role: 'system', content: `Du är en karriärcoach som hjälper till att skapa strukturerade karriärplaner.
+Svara på svenska med tydliga steg och tidslinjer.` },
+      { role: 'user', content: `Skapa en karriärplan:
+
+NUVARANDE SITUATION:
+${nuvarande}
+
+MÅL:
+${mal}
+
+TIDSPLAN: ${tidsram || '6-12 månader'}
+HINDER: ${hinder || 'Inga specifika'}
+
+Ge:
+1. ÖVERBLICK - Sammanfattning av vägen från A till B
+2. DELMÅL - 3-5 konkreta delmål med tidsram
+3. HANDLINGAR - Vad behöver göras för varje delmål
+4. RESURSER - Vilka verktyg/utbildningar kan hjälpa
+5. BEMÖTA HINDER - Strategier för eventuella hinder` }
+    ];
+
+    const plan = await callOpenRouter(messages, { max_tokens: 2000 });
+    res.json({ success: true, plan });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte skapa karriärplan' });
+  }
+});
+
+/**
+ * POST /api/ai/kompetensgap
+ * Analysera kompetensgap
+ */
+app.post('/api/ai/kompetensgap', async (req, res) => {
+  try {
+    const { cvText, drömjobb } = req.body;
+    
+    const messages = [
+      { role: 'system', content: `Du är en rekryteringsexpert som analyserar kompetensgap.
+Svara på svenska med konstruktiv feedback.` },
+      { role: 'user', content: `Analysera kompetensgap:
+
+DRÖMJOBB:
+${drömjobb}
+
+NUVARANDE CV:
+${cvText}
+
+Ge:
+1. MATCHNING - Procentuell match (0-100%)
+2. SAKNADE KOMPETENSER - Vad saknas för rollen?
+3. STYRKOR - Vad har användaren redan?
+4. UTVECKLINGSOMRÅDEN - Prioriterad lista på vad som behöver utvecklas
+5. REKOMMENDATIONER - Konkreta nästa steg för att täcka gapen` }
+    ];
+
+    const analys = await callOpenRouter(messages, { max_tokens: 1500 });
+    res.json({ success: true, analys });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte analysera kompetensgap' });
+  }
+});
+
+/**
+ * POST /api/ai/ansokningscoach
+ * Hjälp med ansökning i realtid
+ */
+app.post('/api/ai/ansokningscoach', async (req, res) => {
+  try {
+    const { text, jobbannons, typ } = req.body;
+    // typ: 'feedback', 'forbattra', 'kontrollera'
+    
+    let prompt = '';
+    switch(typ) {
+      case 'feedback':
+        prompt = `Ge feedback på denna ansökningstext för jobbet:\n\nJOBB:\n${jobbannons}\n\nTEXT:\n${text}\n\nVad är bra? Vad kan förbättras?`;
+        break;
+      case 'forbattra':
+        prompt = `Förbättra denna ansökningstext:\n\n${text}\n\nGör den mer övertygande och personlig.`;
+        break;
+      case 'kontrollera':
+        prompt = `Kontrollera denna ansökning:\n\n${text}\n\nLista stavfel, grammatikfel och förbättringsförslag.`;
+        break;
+    }
+
+    const messages = [
+      { role: 'system', content: 'Du är en erfaren rekryterare som hjälper till med ansökningar. Svara på svenska.' },
+      { role: 'user', content: prompt }
+    ];
+
+    const resultat = await callOpenRouter(messages, { max_tokens: 1000 });
+    res.json({ success: true, resultat, typ });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte ge coachning' });
+  }
+});
+
+/**
+ * POST /api/ai/intervju-simulator
+ * Simulerad intervju med AI
+ */
+app.post('/api/ai/intervju-simulator', async (req, res) => {
+  try {
+    const { roll, foretag, anvandarSvar, tidigareFragor = [] } = req.body;
+    
+    const messages = [
+      { role: 'system', content: `Du är en intervjuare för ${roll} på ${foretag}.
+Du ska ställa realistiska intervjufrågor och ge feedback på svaren.
+Svara på svenska.` },
+      { role: 'user', content: tidigareFragor.length === 0 
+        ? `Starta intervjun för ${roll}. Ställ din första fråga.`
+        : `Tidigare frågor och svar:\n${tidigareFragor.map(f => `F: ${f.frag}\nS: ${f.svar}`).join('\n\n')}\n\nAnvändaren svarade: "${anvandarSvar}"\n\nGe kort feedback på svaret och ställ nästa fråga.` 
+      }
+    ];
+
+    const resultat = await callOpenRouter(messages, { max_tokens: 800 });
+    res.json({ success: true, resultat });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte simulera intervju' });
+  }
+});
+
+/**
+ * POST /api/ai/mentalt-stod
+ * Motivationsboost och stöd
+ */
+app.post('/api/ai/mentalt-stod', async (req, res) => {
+  try {
+    const { situation, kansla } = req.body;
+    
+    const messages = [
+      { role: 'system', content: `Du är en empatisk jobbcoach som ger mentalt stöd.
+Var vänlig, uppmuntrande och konkret. Svara på svenska.` },
+      { role: 'user', content: `Ge mentalt stöd:
+
+SITUATION: ${situation}
+KÄNSLA: ${kansla}
+
+Ge:
+1. VALIDERING - Bekräfta känslan
+2. PERSPEKTIV - Hjälp att se situationen annorlunda
+3. HANDLING - Ett konkret nästa steg
+4. PPMUNTRAN - Avsluta med något positivt` }
+    ];
+
+    const stod = await callOpenRouter(messages, { max_tokens: 800 });
+    res.json({ success: true, stod });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte generera stöd' });
+  }
+});
+
+/**
+ * POST /api/ai/natverkande
+ * Hjälp med nätverkande
+ */
+app.post('/api/ai/natverkande', async (req, res) => {
+  try {
+    const { typ, data } = req.body;
+    // typ: 'kontakt', 'foljupp', 'informational', 'tack'
+    
+    let prompt = '';
+    switch(typ) {
+      case 'kontakt':
+        prompt = `Skriv ett LinkedIn-meddelande till ${data.namn} (${data.roll}). Syfte: ${data.syfte}.`;
+        break;
+      case 'foljupp':
+        prompt = `Skriv ett uppföljningsmail efter ansökan till ${data.foretag}. Det har gått ${data.tid}.`;
+        break;
+      case 'informational':
+        prompt = `Be om ett informational interview med ${data.namn}. Jag är intresserad av deras roll som ${data.roll}.`;
+        break;
+      case 'tack':
+        prompt = `Skriv ett tackmail efter intervju på ${data.foretag} för rollen ${data.roll}.`;
+        break;
+    }
+
+    const messages = [
+      { role: 'system', content: 'Du är expert på professionellt nätverkande. Skriv kortfattat på svenska.' },
+      { role: 'user', content: prompt }
+    ];
+
+    const text = await callOpenRouter(messages, { max_tokens: 600 });
+    res.json({ success: true, text, typ });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte generera nätverkstext' });
+  }
+});
+
+/**
+ * POST /api/ai/chatbot
+ * Allmän karriär-chatbot
+ */
+app.post('/api/ai/chatbot', async (req, res) => {
+  try {
+    const { meddelande, historik = [] } = req.body;
+    
+    const messages = [
+      { 
+        role: 'system', 
+        content: `Du är Deltagarportalens AI-karriärcoach.
+Du hjälper arbetssökande med allt från CV och ansökningar till motivation och strategi.
+Var empatisk, konkret och uppmuntrande. Svara på svenska.
+
+Du kan hjälpa med:
+- CV-skrivning och optimering
+- Personliga brev
+- Intervjuförberedelser
+- Löneförhandling
+- LinkedIn-profiler
+- Jobbsökningsstrategi
+- Motivation och mentalt stöd
+
+Håll svaren korta (max 3-4 meningar) om inte användaren ber om mer detaljer.` 
+      },
+      ...historik.map(h => ({ role: h.roll, content: h.innehall })),
+      { role: 'user', content: meddelande }
+    ];
+
+    const svar = await callOpenRouter(messages, { max_tokens: 800 });
+    res.json({ success: true, svar });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'Kunde inte generera svar' });
+  }
+});
+
 // Starta servern
 app.listen(PORT, () => {
   console.log(`🚀 AI-servern kör på port ${PORT}`);
