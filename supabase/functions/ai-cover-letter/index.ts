@@ -1,4 +1,4 @@
-// Edge Function: AI-generering av personligt brev
+// Edge Function: AI-generering av personligt brev (Uppdaterad för OpenRouter)
 // Anropas fran frontend nar anvandare vill generera brev
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
@@ -9,6 +9,9 @@ const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
+
+// OpenRouter API URL
+const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
 interface CoverLetterRequest {
   cvData: {
@@ -28,6 +31,7 @@ interface CoverLetterRequest {
   jobTitle: string
   tone?: 'formal' | 'friendly' | 'enthusiastic'
   focus?: 'experience' | 'skills' | 'motivation'
+  model?: string // Optional: override default model
 }
 
 serve(async (req) => {
@@ -49,12 +53,21 @@ serve(async (req) => {
     // Hamta miljovariabler
     const supabaseUrl = Deno.env.get('SUPABASE_URL')
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+    const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY')
     
     if (!supabaseUrl || !serviceRoleKey) {
-      console.error('Missing environment variables')
+      console.error('Missing Supabase environment variables')
       return new Response(
         JSON.stringify({ error: 'Server configuration error' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
+
+    if (!openRouterApiKey) {
+      console.error('Missing OPENROUTER_API_KEY')
+      return new Response(
+        JSON.stringify({ error: 'AI service not configured. Please set OPENROUTER_API_KEY secret.' }),
+        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
@@ -79,22 +92,21 @@ serve(async (req) => {
 
     // Parse request body
     const body = await req.json()
-    const { cvData, jobDescription, companyName, jobTitle, tone = 'friendly', focus = 'experience' } = body as CoverLetterRequest
+    const { 
+      cvData, 
+      jobDescription, 
+      companyName, 
+      jobTitle, 
+      tone = 'friendly', 
+      focus = 'experience',
+      model: overrideModel
+    } = body as CoverLetterRequest
 
     // Validera input
     if (!jobDescription || !companyName || !jobTitle) {
       return new Response(
         JSON.stringify({ error: 'Missing required fields' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
-    }
-
-    // Hamta OpenAI API key
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
-    if (!openAIApiKey) {
-      return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
@@ -128,15 +140,21 @@ ${workExpText}
 ${skillsText}
     `.trim()
 
-    // Anropa OpenAI
-    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Bestäm modell
+    const defaultModel = Deno.env.get('AI_MODEL') || 'anthropic/claude-3.5-sonnet'
+    const model = overrideModel || defaultModel
+
+    // Anropa OpenRouter
+    const openRouterResponse = await fetch(OPENROUTER_API_URL, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
+        'Authorization': `Bearer ${openRouterApiKey}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://deltagarportalen.se',
+        'X-Title': 'Deltagarportalen'
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: model,
         messages: [
           {
             role: 'system',
@@ -166,17 +184,32 @@ Skriv brevet sa att det kanns personligt och visar att kandidaten har last jobbe
       })
     })
 
-    if (!openAIResponse.ok) {
-      const error = await openAIResponse.text()
-      console.error('OpenAI error:', error)
+    if (!openRouterResponse.ok) {
+      const errorText = await openRouterResponse.text()
+      console.error('OpenRouter error:', openRouterResponse.status, errorText)
+      
+      if (openRouterResponse.status === 401) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid API key configuration' }),
+          { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+      
+      if (openRouterResponse.status === 429) {
+        return new Response(
+          JSON.stringify({ error: 'AI service rate limit exceeded' }),
+          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
+      
       return new Response(
         JSON.stringify({ error: 'Failed to generate cover letter' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       )
     }
 
-    const openAIData = await openAIResponse.json()
-    const generatedLetter = openAIData.choices[0]?.message?.content
+    const openRouterData = await openRouterResponse.json()
+    const generatedLetter = openRouterData.choices[0]?.message?.content
 
     if (!generatedLetter) {
       return new Response(
@@ -190,7 +223,8 @@ Skriv brevet sa att det kanns personligt och visar att kandidaten har last jobbe
       await supabaseClient.from('ai_usage_logs').insert({
         user_id: user.id,
         function_name: 'ai-cover-letter',
-        tokens_used: openAIData.usage?.total_tokens || 0,
+        model: model,
+        tokens_used: openRouterData.usage?.total_tokens || 0,
         created_at: new Date().toISOString()
       })
     } catch (logError) {
@@ -205,7 +239,8 @@ Skriv brevet sa att det kanns personligt och visar att kandidaten har last jobbe
         metadata: {
           tone,
           focus,
-          tokensUsed: openAIData.usage?.total_tokens,
+          model,
+          tokensUsed: openRouterData.usage?.total_tokens,
           generatedAt: new Date().toISOString()
         }
       }),
