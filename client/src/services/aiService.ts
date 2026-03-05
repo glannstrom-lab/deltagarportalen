@@ -1,11 +1,7 @@
 import { supabase } from '../lib/supabase'
 
-// Konfiguration för AI-tjänsten
-// Ändra denna URL om du hostar AI-servern någon annanstans
-const AI_SERVER_URL = import.meta.env.VITE_AI_SERVER_URL || 'https://ditt-ai-server-url.com'
-
-// Om AI-servern inte är tillgänglig, använd fallback-mallar
-const USE_FALLBACK = true // Sätt till false när AI-servern är igång
+// AI Server URL - ändra om du deployar till produktion
+const AI_SERVER_URL = import.meta.env.VITE_AI_SERVER_URL || 'http://localhost:3002'
 
 export interface CoverLetterRequest {
   jobbAnnons: string
@@ -24,7 +20,7 @@ export interface CoverLetterResponse {
   ton: string
 }
 
-// Fallback-mallar
+// Fallback-mallar om AI-server inte är tillgänglig
 const templates: Record<string, string> = {
   professionell: `Hej,
 
@@ -63,51 +59,50 @@ Med högaktning,
 }
 
 /**
- * AI Service - just nu med fallback-mallar
+ * AI Service - Använder lokal AI-server (server/ai)
  * 
- * För att aktivera riktig AI:
- * 1. Starta AI-servern: cd server/ai && npm install && npm start
- * 2. Uppdatera VITE_AI_SERVER_URL i .env
- * 3. Sätt USE_FALLBACK = false nedan
+ * För att starta AI-servern:
+ * cd server/ai
+ * npm install
+ * npm start
+ * 
+ * Servern körs på http://localhost:3002
  */
 export const aiService = {
   async generateCoverLetter(data: CoverLetterRequest): Promise<CoverLetterResponse> {
-    // Om AI-server inte är konfigurerad, använd fallback
-    if (USE_FALLBACK || AI_SERVER_URL.includes('ditt-ai-server')) {
-      return this.generateFallbackLetter(data)
-    }
-
     try {
-      // Försök anropa AI-server
-      const { data: { session } } = await supabase.auth.getSession()
-      
+      // Försök anropa lokal AI-server
       const response = await fetch(`${AI_SERVER_URL}/api/ai/personligt-brev`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           jobbAnnons: data.jobbAnnons,
-          erfarenhet: data.erfarenhet,
+          erfarenhet: data.erfarenhet || data.cvData?.summary,
           motivering: data.motivering,
-          namn: data.namn,
+          namn: data.namn || `${data.cvData?.firstName || ''} ${data.cvData?.lastName || ''}`.trim(),
           ton: data.ton || 'professionell'
         })
       })
 
       if (!response.ok) {
-        throw new Error('AI server error')
+        const error = await response.json().catch(() => ({ error: 'Unknown error' }))
+        console.warn('AI server error:', error)
+        throw new Error(error.error || 'AI server error')
       }
 
       const result = await response.json()
+      
       return {
         success: true,
         brev: result.brev,
         ton: data.ton || 'professionell'
       }
+
     } catch (error) {
-      console.warn('AI server not available, using fallback')
+      console.warn('AI server not available, using fallback:', error)
+      // Fallback till mallar
       return this.generateFallbackLetter(data)
     }
   },
@@ -128,40 +123,77 @@ export const aiService = {
 
     return {
       success: true,
-      brev: brev + '\n\n(PS. Detta är en mall - anpassa den gärna efter din stil!)',
+      brev: brev + '\n\n(PS. Detta är en mall - starta AI-servern för smartare förslag!)',
       ton
     }
   },
 
-  // Övriga AI-funktioner (med fallback)
-  async optimizeCV(data: { cvText: string; yrke?: string }) {
-    return {
-      success: true,
-      feedback: `Tips för CV:t:
+  // Kolla om AI-servern är tillgänglig
+  async checkHealth(): Promise<{ ok: boolean; message: string }> {
+    try {
+      const response = await fetch(`${AI_SERVER_URL}/api/health`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+      
+      if (response.ok) {
+        const data = await response.json()
+        return { 
+          ok: true, 
+          message: `AI-server igång (${data.model || 'ok'})` 
+        }
+      }
+      return { 
+        ok: false, 
+        message: 'AI-server svarar inte korrekt' 
+      }
+    } catch {
+      return { 
+        ok: false, 
+        message: 'Starta AI-servern: cd server/ai && npm start' 
+      }
+    }
+  },
 
-1. Anpassa för ${data.yrke || 'rollen du söker'}
-2. Använd konkreta exempel
-3. Max 2 sidor
-4. Kontrollera stavning`,
-      yrke: data.yrke || null
+  // Övriga AI-funktioner
+  async optimizeCV(data: { cvText: string; yrke?: string }) {
+    try {
+      const response = await fetch(`${AI_SERVER_URL}/api/ai/cv-optimering`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      if (!response.ok) throw new Error('CV optimization failed')
+      return response.json()
+    } catch {
+      return {
+        success: true,
+        feedback: `Tips för CV:t:\n\n1. Anpassa för ${data.yrke || 'rollen'}\n2. Använd konkreta exempel\n3. Max 2 sidor`,
+        yrke: data.yrke
+      }
     }
   },
 
   async prepareInterview(data: { jobbTitel: string; foretag?: string }) {
-    return {
-      success: true,
-      forberedelser: `Förberedelser för ${data.jobbTitel}:
-
-1. Läs på om företaget
-2. Öva på vanliga frågor
-3. Förbered egna frågor
-4. Var punktlig`,
-      jobbTitel: data.jobbTitel,
-      foretag: data.foretag
+    try {
+      const response = await fetch(`${AI_SERVER_URL}/api/ai/intervju-forberedelser`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      })
+      if (!response.ok) throw new Error('Interview prep failed')
+      return response.json()
+    } catch {
+      return {
+        success: true,
+        forberedelser: `Förberedelser för ${data.jobbTitel}:\n\n1. Läs på om företaget\n2. Öva på vanliga frågor\n3. Förbered egna frågor`,
+        jobbTitel: data.jobbTitel
+      }
     }
   },
 
-  async isEnabled() {
-    return !USE_FALLBACK
+  async isEnabled(): Promise<boolean> {
+    const health = await this.checkHealth()
+    return health.ok
   }
 }
