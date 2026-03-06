@@ -3,8 +3,6 @@ import { Target, Search, TrendingUp, AlertCircle, CheckCircle, BookOpen, Sparkle
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
-const AI_SERVER_URL = import.meta.env.VITE_AI_SERVER_URL || 'http://localhost:3002'
-
 export default function SkillsGapAnalysis() {
   const [cvText, setCvText] = useState('')
   const [dromjobb, setDromjobb] = useState('')
@@ -16,7 +14,7 @@ export default function SkillsGapAnalysis() {
     
     setIsLoading(true)
     try {
-      const response = await fetch(`${AI_SERVER_URL}/api/ai/kompetensgap`, {
+      const response = await fetch('/api/ai/kompetensgap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ cvText, dromjobb })

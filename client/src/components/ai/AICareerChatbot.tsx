@@ -43,8 +43,7 @@ export function AICareerChatbot() {
     setIsLoading(true)
 
     try {
-      const AI_SERVER_URL = import.meta.env.VITE_AI_SERVER_URL || 'http://localhost:3002'
-      const response = await fetch(`${AI_SERVER_URL}/api/ai/chatbot`, {
+      const response = await fetch('/api/ai/chatbot', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -3,8 +3,6 @@ import { MapPin, Flag, Calendar, Target, Sparkles, RefreshCw, CheckCircle, Clock
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
-const AI_SERVER_URL = import.meta.env.VITE_AI_SERVER_URL || 'http://localhost:3002'
-
 export default function CareerPlan() {
   const [nuvarande, setNuvarande] = useState('')
   const [mal, setMal] = useState('')
@@ -18,7 +16,7 @@ export default function CareerPlan() {
     
     setIsLoading(true)
     try {
-      const response = await fetch(`${AI_SERVER_URL}/api/ai/karriarplan`, {
+      const response = await fetch('/api/ai/karriarplan', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nuvarande, mal, tidsram, hinder })

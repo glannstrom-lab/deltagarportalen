@@ -3,8 +3,6 @@ import { MessageCircle, Send, User, Bot, RefreshCw, Mic, MicOff, ThumbsUp, Thumb
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
-const AI_SERVER_URL = import.meta.env.VITE_AI_SERVER_URL || 'http://localhost:3002'
-
 interface FragaSvar {
   fraga: string
   svar: string
@@ -27,7 +25,7 @@ export default function InterviewSimulator() {
     setIsLoading(true)
     
     try {
-      const response = await fetch(`${AI_SERVER_URL}/api/ai/intervju-simulator`, {
+      const response = await fetch('/api/ai/intervju-simulator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roll, foretag, tidigareFragor: [] })
@@ -53,7 +51,7 @@ export default function InterviewSimulator() {
     }
     
     try {
-      const response = await fetch(`${AI_SERVER_URL}/api/ai/intervju-simulator`, {
+      const response = await fetch('/api/ai/intervju-simulator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

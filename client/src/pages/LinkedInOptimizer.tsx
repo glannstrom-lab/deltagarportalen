@@ -3,8 +3,6 @@ import { Linkedin, Copy, Check, Sparkles, RefreshCw, User, FileText, Share2, Mes
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
-const AI_SERVER_URL = import.meta.env.VITE_AI_SERVER_URL || 'http://localhost:3002'
-
 export default function LinkedInOptimizer() {
   const [aktivTab, setAktivTab] = useState<'headline' | 'about' | 'post' | 'connection'>('headline')
   const [formData, setFormData] = useState({
@@ -20,7 +18,7 @@ export default function LinkedInOptimizer() {
   const generera = async () => {
     setIsLoading(true)
     try {
-      const response = await fetch(`${AI_SERVER_URL}/api/ai/linkedin-optimering`, {
+      const response = await fetch('/api/ai/linkedin-optimering', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -533,7 +533,7 @@ Anna Andersson`
     return {
       status: 'OK',
       enabled: true,
-      url: 'http://localhost:3002',
+      url: '/api',
       aiServer: {
         status: 'OK',
         timestamp: new Date().toISOString(),
