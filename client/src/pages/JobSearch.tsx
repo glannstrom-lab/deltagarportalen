@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, MapPin, Briefcase, Calendar, X, Building2, ExternalLink, Filter } from 'lucide-react';
 import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
-import { SwedenMap } from '@/components/map/SwedenMap';
+
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
 import { cn } from '@/lib/utils';
 
@@ -294,9 +294,8 @@ export default function JobSearch() {
       )}
 
       {/* Resultat */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div>
         {/* Jobblista */}
-        <div className="lg:col-span-2">
           {loading ? (
             <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12">
               <LoadingState message="Söker jobb..." submessage="Hämtar från Arbetsförmedlingen" size="md" />
@@ -365,22 +364,6 @@ export default function JobSearch() {
             </div>
           )}
         </div>
-
-        {/* Sidebar - Karta */}
-        <div className="lg:col-span-1">
-          <SwedenMap
-            selectedRegion={filters.region || null}
-            onRegionSelect={(region) => setFilters({ ...filters, region: region || '' })}
-            jobData={{
-              SE110: totalJobs > 0 ? Math.floor(totalJobs * 0.35) : 0,
-              SE232: totalJobs > 0 ? Math.floor(totalJobs * 0.20) : 0,
-              SE224: totalJobs > 0 ? Math.floor(totalJobs * 0.15) : 0,
-              SE121: totalJobs > 0 ? Math.floor(totalJobs * 0.08) : 0,
-              SE123: totalJobs > 0 ? Math.floor(totalJobs * 0.06) : 0,
-            }}
-          />
-        </div>
-      </div>
 
       {/* Jobbdetaljer Modal */}
       {selectedJob && (
