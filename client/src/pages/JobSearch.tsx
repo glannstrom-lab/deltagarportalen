@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, MapPin, Briefcase, Calendar, X, Building2, ExternalLink, Filter } from 'lucide-react';
-import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, PlatsbankenJob } from '@/services/arbetsformedlingenApi';
+import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { SwedenMap } from '@/components/map/SwedenMap';
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
 import { cn } from '@/lib/utils';

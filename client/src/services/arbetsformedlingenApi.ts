@@ -397,9 +397,13 @@ export function analyzeSkillGap(userSkills: string[], jobRequirements: string[])
   };
 }
 
+// Alias för bakåtkompatibilitet
+export const searchPlatsbanken = searchJobs;
+
 // Exportera allt
 export const afApi = {
   searchJobs,
+  searchPlatsbanken,
   getJobDetails,
   getAutocomplete,
   getMarketStats: getMarketInsights,
@@ -408,6 +412,7 @@ export const afApi = {
 
 export default {
   searchJobs,
+  searchPlatsbanken,
   getJobDetails,
   getAutocomplete,
   getMarketInsights,
