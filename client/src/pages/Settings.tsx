@@ -148,7 +148,7 @@ export default function Settings() {
             </div>
 
             <div className="flex justify-end pt-4">
-              <button className="flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors min-h-[48px]">
+              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors min-h-[48px]">
                 <Save size={18} />
                 Spara ändringar
               </button>
@@ -506,7 +506,7 @@ export default function Settings() {
 
         {/* Settings Content */}
         <div className="lg:col-span-2">
-          <div className="bg-white p-4 sm:p-6 rounded-xl border border-slate-200">
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
             {renderSectionContent()}
           </div>
         </div>
