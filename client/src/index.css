@@ -91,6 +91,53 @@
 }
 
 @layer components {
+  /* Header styles */
+  .header-glass {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+  }
+  
+  .dark .header-glass {
+    background: rgba(15, 23, 42, 0.85);
+    border-bottom-color: rgba(51, 65, 85, 0.8);
+  }
+
+  /* Bottom bar styles */
+  .bottom-bar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(226, 232, 240, 0.8);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .bottom-bar {
+    background: rgba(15, 23, 42, 0.95);
+    border-top-color: rgba(51, 65, 85, 0.8);
+  }
+  
+  /* Primary action button */
+  .btn-primary-action {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    font-weight: 500;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.875rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  }
+  
+  .btn-primary-action:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+  }
+  
+  .btn-primary-action:active {
+    transform: translateY(0);
+  }
+
   .card {
     background-color: white;
     border-radius: 1.5rem;
