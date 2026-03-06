@@ -22,6 +22,7 @@ import {
 } from 'lucide-react'
 import { getRelatedArticles } from '../services/articleData'
 import { exercises } from '../data/exercises'
+import { articleBookmarksApi } from '../services/cloudStorage'
 
 export default function Article() {
   const { id } = useParams()
@@ -36,7 +37,7 @@ export default function Article() {
     if (id) {
       loadArticle()
       checkBookmark()
-      // Load saved font size preference
+      // Load saved font size preference (UI-preference, kan vara kvar i localStorage)
       const savedFontSize = localStorage.getItem('article-font-size') as 'normal' | 'large' | 'xlarge'
       if (savedFontSize) setFontSize(savedFontSize)
     }
@@ -53,21 +54,39 @@ export default function Article() {
     }
   }
 
-  const checkBookmark = () => {
-    const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
-    setIsBookmarked(bookmarks.includes(id))
+  const checkBookmark = async () => {
+    try {
+      const isSaved = await articleBookmarksApi.isBookmarked(id!)
+      setIsBookmarked(isSaved)
+    } catch (error) {
+      console.error('Fel vid koll av bokmärke:', error)
+      // Fallback till localStorage om molnet inte fungerar
+      const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
+      setIsBookmarked(bookmarks.includes(id))
+    }
   }
 
-  const toggleBookmark = () => {
-    const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
-    let newBookmarks
-    if (bookmarks.includes(id)) {
-      newBookmarks = bookmarks.filter((b: string) => b !== id)
-    } else {
-      newBookmarks = [...bookmarks, id]
+  const toggleBookmark = async () => {
+    try {
+      if (isBookmarked) {
+        await articleBookmarksApi.remove(id!)
+      } else {
+        await articleBookmarksApi.add(id!)
+      }
+      setIsBookmarked(!isBookmarked)
+    } catch (error) {
+      console.error('Fel vid toggle av bokmärke:', error)
+      // Fallback till localStorage
+      const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
+      let newBookmarks
+      if (bookmarks.includes(id)) {
+        newBookmarks = bookmarks.filter((b: string) => b !== id)
+      } else {
+        newBookmarks = [...bookmarks, id]
+      }
+      localStorage.setItem('article-bookmarks', JSON.stringify(newBookmarks))
+      setIsBookmarked(!isBookmarked)
     }
-    localStorage.setItem('article-bookmarks', JSON.stringify(newBookmarks))
-    setIsBookmarked(!isBookmarked)
   }
 
   const shareArticle = async () => {

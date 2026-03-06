@@ -16,6 +16,7 @@ import {
   KnowledgeWidget,
 } from '@/components/dashboard'
 import { cn } from '@/lib/utils'
+import { dashboardPreferencesApi } from '@/services/cloudStorage'
 
 // Default widget sizes - all small (1/4) as standard
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
@@ -41,7 +42,7 @@ const defaultVisibleWidgets: WidgetType[] = [
   'knowledge',
 ]
 
-// Storage keys
+// Storage keys (fallback)
 const STORAGE_KEY_VISIBLE = 'dashboard_visible_widgets'
 const STORAGE_KEY_SIZES = 'dashboard_widget_sizes'
 
@@ -50,57 +51,86 @@ export default function Dashboard() {
   const { data, loading, error, refetch } = useDashboardData()
 
   // State for visible widgets
-  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem(STORAGE_KEY_VISIBLE)
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          if (Array.isArray(parsed)) {
-            return parsed
-          }
-        }
-      }
-    } catch {
-      // Ignorera localStorage-fel
-    }
-    return defaultVisibleWidgets
-  })
-
+  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
+  
   // State for widget sizes
-  const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(() => {
-    try {
-      if (typeof window !== 'undefined') {
-        const saved = localStorage.getItem(STORAGE_KEY_SIZES)
-        if (saved) {
-          const parsed = JSON.parse(saved)
-          if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-            return parsed
+  const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(defaultWidgetSizes)
+  
+  // Loading state for preferences
+  const [prefsLoading, setPrefsLoading] = useState(true)
+
+  // Load preferences from cloud on mount
+  useEffect(() => {
+    const loadPreferences = async () => {
+      try {
+        setPrefsLoading(true)
+        const prefs = await dashboardPreferencesApi.get()
+        
+        if (prefs) {
+          // Load from cloud
+          if (prefs.visible_widgets && Array.isArray(prefs.visible_widgets)) {
+            setVisibleWidgets(prefs.visible_widgets)
+          }
+          if (prefs.widget_sizes && typeof prefs.widget_sizes === 'object') {
+            setWidgetSizes(prev => ({ ...prev, ...prefs.widget_sizes }))
+          }
+        } else {
+          // Try loading from localStorage as fallback
+          try {
+            const savedVisible = localStorage.getItem(STORAGE_KEY_VISIBLE)
+            const savedSizes = localStorage.getItem(STORAGE_KEY_SIZES)
+            
+            if (savedVisible) {
+              const parsed = JSON.parse(savedVisible)
+              if (Array.isArray(parsed)) {
+                setVisibleWidgets(parsed)
+              }
+            }
+            if (savedSizes) {
+              const parsed = JSON.parse(savedSizes)
+              if (parsed && typeof parsed === 'object') {
+                setWidgetSizes(prev => ({ ...prev, ...parsed }))
+              }
+            }
+          } catch {
+            // Ignore localStorage errors
           }
         }
+      } catch (error) {
+        console.error('Fel vid laddning av dashboard-inställningar:', error)
+        // Fallback to defaults
+      } finally {
+        setPrefsLoading(false)
       }
-    } catch {
-      // Ignorera localStorage-fel
     }
-    return defaultWidgetSizes
-  })
 
-  // Persist changes to localStorage
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_VISIBLE, JSON.stringify(visibleWidgets))
-    } catch {
-      // Ignorera localStorage-fel
-    }
-  }, [visibleWidgets])
+    loadPreferences()
+  }, [])
 
+  // Persist changes to cloud (debounced)
   useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEY_SIZES, JSON.stringify(widgetSizes))
-    } catch {
-      // Ignorera localStorage-fel
-    }
-  }, [widgetSizes])
+    if (prefsLoading) return
+    
+    const timeoutId = setTimeout(async () => {
+      try {
+        await dashboardPreferencesApi.update({
+          visible_widgets: visibleWidgets,
+          widget_sizes: widgetSizes
+        })
+      } catch (error) {
+        console.error('Fel vid sparande av dashboard-inställningar:', error)
+        // Fallback to localStorage
+        try {
+          localStorage.setItem(STORAGE_KEY_VISIBLE, JSON.stringify(visibleWidgets))
+          localStorage.setItem(STORAGE_KEY_SIZES, JSON.stringify(widgetSizes))
+        } catch {
+          // Ignore localStorage errors
+        }
+      }
+    }, 500) // Debounce 500ms
+
+    return () => clearTimeout(timeoutId)
+  }, [visibleWidgets, widgetSizes, prefsLoading])
 
   // Toggle widget visibility
   const handleToggleWidget = useCallback((widgetId: WidgetType) => {
