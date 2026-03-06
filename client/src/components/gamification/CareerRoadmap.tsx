@@ -79,7 +79,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       completed: stats.coverLetterCount > 0,
       locked: stats.cvProgress < 50,
       action: stats.coverLetterCount > 0 ? 'Brev skapat' : 'Skapa brev',
-      href: '/cover-letter-generator'
+      href: '/cover-letter'
     },
     {
       id: 'apply',

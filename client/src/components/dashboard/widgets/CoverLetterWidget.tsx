@@ -32,7 +32,7 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
     <DashboardWidget
       title="Brev & ansökningar"
       icon={<Mail size={20} />}
-      to="/cover-letter-generator"
+      to="/cover-letter"
       color="rose"
       status={status}
       progress={count > 0 || applicationsCount > 0 ? 100 : 0}
@@ -89,7 +89,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
     <DashboardWidget
       title="Personliga brev & ansökningar"
       icon={<Mail size={22} />}
-      to="/cover-letter-generator"
+      to="/cover-letter"
       color="rose"
       status={status}
       progress={count > 0 || applicationsCount > 0 ? 100 : 0}
@@ -205,7 +205,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
     <DashboardWidget
       title="Personliga brev & ansökningar"
       icon={<Mail size={24} />}
-      to="/cover-letter-generator"
+      to="/cover-letter"
       color="rose"
       status={status}
       progress={count > 0 || applicationsCount > 0 ? 100 : 0}

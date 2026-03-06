@@ -17,7 +17,7 @@ import {
 export const navItems = [
   { path: '/', label: 'Översikt', icon: LayoutDashboard },
   { path: '/cv', label: 'CV', icon: FileText },
-  { path: '/cover-letter-generator', label: 'Personligt brev', icon: Mail },
+  { path: '/cover-letter', label: 'Personligt brev', icon: Mail },
   { path: '/job-search', label: 'Sök jobb', icon: Briefcase },
   { path: '/career', label: 'Karriär', icon: Target },
   { path: '/interest-guide', label: 'Intresseguide', icon: Compass },
