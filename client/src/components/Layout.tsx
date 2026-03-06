@@ -23,14 +23,6 @@ export default function Layout() {
       )}
       style={{ backgroundColor: '#eef2ff' }}
     >
-      {/* Skip to main content - för skärmläsare */}
-      <a 
-        href="#main-content" 
-        className="skip-link"
-      >
-        Hoppa till huvudinnehåll
-      </a>
-      
       {/* Sidebar - döljs på mobil */}
       <div className={cn(
         'hidden lg:block',
