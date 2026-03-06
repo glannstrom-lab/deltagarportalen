@@ -39,11 +39,20 @@ export default function EducationOverview() {
 
   // Filtrera kurser när filter eller kurser ändras
   useEffect(() => {
+    if (!Array.isArray(courses)) {
+      setFilteredCourses([]);
+      return;
+    }
+    
     let filtered = courses;
     
     if (filter.type !== 'all') {
-      filtered = filtered.filter(c => c.type?.toLowerCase().includes(filter.type) || 
-        c.title?.toLowerCase().includes(filter.type));
+      const filterValue = filter.type.toLowerCase();
+      filtered = filtered.filter(c => {
+        const typeMatch = c.type?.toLowerCase().includes(filterValue);
+        const titleMatch = c.title?.toLowerCase().includes(filterValue);
+        return typeMatch || titleMatch;
+      });
     }
     
     if (filter.duration !== 'all') {

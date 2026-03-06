@@ -135,7 +135,7 @@ export function ATSAnalyzer({
       if (e.description) parts.push(e.description)
       if (e.degree) parts.push(e.degree)
     })
-    if (cvData.skills) parts.push(cvData.skills.map((s: Skill) => s.name).join(' '))
+    if (cvData.skills) parts.push(cvData.skills.map((s: Skill) => s.name).filter(Boolean).join(' '))
     return parts.join(' ').toLowerCase()
   }, [cvData])
 

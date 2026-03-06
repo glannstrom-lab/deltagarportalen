@@ -68,8 +68,9 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
   const [activeFeature, setActiveFeature] = useState<'improve' | 'quantify' | 'translate' | null>(null)
 
   const analyzeText = () => {
+    if (!text) return [];
     const foundWeakWords = powerWords.filter(pw => 
-      text.toLowerCase().includes(pw.weak.toLowerCase())
+      text.toLowerCase().includes(pw.weak?.toLowerCase())
     )
     return foundWeakWords
   }

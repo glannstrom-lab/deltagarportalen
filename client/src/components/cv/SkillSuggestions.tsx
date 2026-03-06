@@ -45,10 +45,10 @@ export default function SkillSuggestions({
         const skills = await taxonomyApi.getSkillsForOccupation(occupations[0].id);
         
         // Markera vilka som redan finns
-        const currentSkillNames = currentSkills.map(s => s.name.toLowerCase());
+        const currentSkillNames = currentSkills.map(s => s.name?.toLowerCase()).filter(Boolean);
         const enrichedSkills = skills.map(skill => ({
           ...skill,
-          isAdded: currentSkillNames.includes(skill.preferred_label.toLowerCase())
+          isAdded: currentSkillNames.includes(skill.preferred_label?.toLowerCase())
         }));
         
         setSuggestions(enrichedSkills.slice(0, 10));
