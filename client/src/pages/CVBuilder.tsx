@@ -1,12 +1,13 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
-  Linkedin, Wand2, Sparkles, Layout, Briefcase, GraduationCap, 
-  Award, Link2, CheckCircle2, Share2, FileText, Lightbulb
+  Linkedin, Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
+  Lightbulb, Target
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
+import { ATSAnalyzer } from '@/components/cv/ATSAnalyzer'
 import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVShare } from '@/components/cv/CVShare'
@@ -59,14 +60,14 @@ const FONTS = [
 // KOMPONENTER
 // ============================================
 
-function StepDots({ currentStep, totalSteps, onStepClick, completedSteps }: { 
+function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }: { 
   currentStep: number
   totalSteps: number
   onStepClick: (step: number) => void
   completedSteps: number[]
 }) {
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-2 sm:gap-4">
       {Array.from({ length: totalSteps }).map((_, i) => {
         const stepNum = i + 1
         const isActive = stepNum === currentStep
@@ -76,63 +77,32 @@ function StepDots({ currentStep, totalSteps, onStepClick, completedSteps }: {
           <button
             key={stepNum}
             onClick={() => onStepClick(stepNum)}
-            className={cn(
-              "h-2 rounded-full transition-all",
-              isActive ? "w-6 bg-[#4f46e5]" : isCompleted ? "w-2 bg-green-500" : "w-2 bg-slate-300"
+            className="flex items-center gap-2 group"
+          >
+            <div className={cn(
+              "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all",
+              isActive 
+                ? "bg-[#4f46e5] text-white shadow-lg" 
+                : isCompleted 
+                  ? "bg-green-500 text-white"
+                  : "bg-slate-200 text-slate-500 group-hover:bg-slate-300"
+            )}>
+              {isCompleted && !isActive ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : stepNum}
+            </div>
+            <span className={cn(
+              "hidden sm:block text-sm font-medium",
+              isActive ? "text-[#4f46e5]" : isCompleted ? "text-green-600" : "text-slate-500"
+            )}>
+              {STEPS[i].title}
+            </span>
+            {i < totalSteps - 1 && (
+              <div className="hidden sm:block w-8 h-0.5 mx-1 bg-slate-200">
+                <div className={cn("h-full transition-all", isCompleted ? "bg-green-500 w-full" : "w-0")} />
+              </div>
             )}
-          />
+          </button>
         )
       })}
-    </div>
-  )
-}
-
-function DesktopSidebar({ 
-  currentStep, 
-  onStepClick, 
-  completedSteps 
-}: { 
-  currentStep: number
-  onStepClick: (step: number) => void
-  completedSteps: number[]
-}) {
-  return (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-      <h3 className="font-semibold text-slate-800 mb-4 px-2">Ditt CV</h3>
-      <nav className="space-y-1">
-        {STEPS.map((step) => {
-          const isActive = step.id === currentStep
-          const isCompleted = completedSteps.includes(step.id)
-          
-          return (
-            <button
-              key={step.id}
-              onClick={() => onStepClick(step.id)}
-              className={cn(
-                "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-left",
-                isActive 
-                  ? "bg-[#4f46e5] text-white shadow-md" 
-                  : isCompleted ? "text-slate-700 hover:bg-slate-50" : "text-slate-500 hover:bg-slate-50"
-              )}
-            >
-              <div className={cn(
-                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-sm font-semibold",
-                isActive ? "bg-white/20" : isCompleted ? "bg-green-100 text-green-600" : "bg-slate-100"
-              )}>
-                {isCompleted && !isActive ? <CheckCircle2 className="w-4 h-4" /> : step.id}
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className={cn("font-medium text-sm truncate", isActive ? "text-white" : "text-slate-800")}>
-                  {step.title}
-                </p>
-                <p className={cn("text-xs truncate", isActive ? "text-white/70" : "text-slate-500")}>
-                  {step.description}
-                </p>
-              </div>
-            </button>
-          )
-        })}
-      </nav>
     </div>
   )
 }
@@ -174,7 +144,6 @@ export default function CVBuilder() {
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [showLinkedInImport, setShowLinkedInImport] = useState(false)
-  const [showVersions, setShowVersions] = useState(false)
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
   const [versionName, setVersionName] = useState('')
@@ -273,7 +242,7 @@ export default function CVBuilder() {
   // STEG 1: DESIGN
   const renderStep1 = () => (
     <div className="space-y-6">
-      {/* Mallar */}
+
       <Card>
         <h3 className="font-semibold text-slate-800 mb-4">Välj mall</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -307,7 +276,6 @@ export default function CVBuilder() {
         </div>
       </Card>
 
-      {/* Färger */}
       <Card>
         <h3 className="font-semibold text-slate-800 mb-4">Färg</h3>
         <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
@@ -330,7 +298,6 @@ export default function CVBuilder() {
         </div>
       </Card>
 
-      {/* Typsnitt */}
       <Card>
         <h3 className="font-semibold text-slate-800 mb-4">Typsnitt</h3>
         <div className="space-y-2">
@@ -599,104 +566,23 @@ export default function CVBuilder() {
     }
   }
 
-  // AI Panel (desktop sidebar)
-  const AIPanel = () => (
-    step === 3 && (
-      <div className="bg-gradient-to-br from-violet-50 to-indigo-50 rounded-2xl shadow-sm border border-violet-200 p-4">
-        <div className="flex items-center gap-2 mb-3">
-          <div className="w-8 h-8 bg-violet-500 rounded-lg flex items-center justify-center">
-            <Lightbulb className="w-4 h-4 text-white" />
-          </div>
-          <h3 className="font-semibold text-violet-900">AI-hjälp</h3>
-        </div>
-        <p className="text-sm text-violet-700 mb-3">
-          Få hjälp att skriva en bättre sammanfattning
-        </p>
-        <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
-      </div>
-    )
-  )
-
-  // Versions Panel
-  const VersionsPanel = () => (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-      <h3 className="font-semibold text-slate-800 mb-4">Versioner</h3>
-      
-      {showSaveVersion ? (
-        <div className="space-y-2 mb-4">
-          <input 
-            type="text" 
-            value={versionName} 
-            onChange={(e) => setVersionName(e.target.value)}
-            placeholder="Namn på version..."
-            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
-          />
-          <div className="flex gap-2">
-            <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-[#4f46e5] text-white text-sm rounded-lg">Spara</button>
-            <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-slate-300 text-sm rounded-lg">Avbryt</button>
-          </div>
-        </div>
-      ) : (
-        <button 
-          onClick={() => setShowSaveVersion(true)}
-          className="w-full mb-4 px-4 py-2 border border-[#4f46e5] text-[#4f46e5] rounded-lg text-sm hover:bg-[#4f46e5]/5"
-        >
-          + Spara nuvarande version
-        </button>
-      )}
-
-      <div className="space-y-2 max-h-48 overflow-y-auto">
-        {versions.length === 0 ? (
-          <p className="text-sm text-slate-400 text-center py-4">Inga sparade versioner</p>
-        ) : (
-          versions.map((v) => (
-            <div key={v.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
-              <div>
-                <p className="text-sm font-medium text-slate-800">{v.name}</p>
-                <p className="text-xs text-slate-500">{new Date(v.createdAt).toLocaleDateString('sv-SE')}</p>
-              </div>
-              <button 
-                onClick={() => restoreVersion(v.id)}
-                className="text-xs text-[#4f46e5] hover:bg-[#4f46e5]/10 px-2 py-1 rounded"
-              >
-                Återställ
-              </button>
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  )
-
   const currentStep = STEPS.find(s => s.id === step)!
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header med alla knappar */}
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Skapa CV</h1>
-          <p className="text-slate-600 text-sm">Steg {step} av {STEPS.length}: {currentStep.title}</p>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          {/* Demo-data knapp - alltid synlig */}
-          <button
-            onClick={loadDemoData}
-            className="flex items-center gap-2 px-3 py-2 text-sm text-amber-600 hover:bg-amber-50 border border-amber-200 rounded-lg transition-colors"
-          >
+          <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-amber-600 hover:bg-amber-50 border border-amber-200 rounded-lg transition-colors">
             <Sparkles className="w-4 h-4" />
             <span className="hidden sm:inline">Exempeldata</span>
           </button>
-          
           <button onClick={() => setShowLinkedInImport(true)} className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm border border-[#0077B5] text-[#0077B5] rounded-lg hover:bg-[#0077B5]/5">
             <Linkedin className="w-4 h-4" /> Importera
           </button>
-          
-          {/* Dela CV - synlig på desktop */}
-          <div className="hidden sm:block">
-            <CVShare onShare={async () => await cvApi.shareCV()} />
-          </div>
-          
           <PDFExportButton type="cv" data={{
             personalInfo: { firstName: data.firstName, lastName: data.lastName, email: data.email, phone: data.phone, city: data.location },
             summary: data.summary,
@@ -706,12 +592,16 @@ export default function CVBuilder() {
             languages: data.languages.map(l => ({ language: l.name, level: l.level })),
             certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
           }} variant="outline" size="md" />
-          
           <button onClick={save} disabled={saving} className="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] disabled:opacity-50 text-sm font-medium">
             <Save className="w-4 h-4" />
             {saving ? 'Sparar...' : 'Spara'}
           </button>
         </div>
+      </div>
+
+      {/* Steg-indikator - ovanför allt */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
+        <StepIndicator currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
       </div>
 
       {/* Mobile Preview Modal */}
@@ -729,25 +619,10 @@ export default function CVBuilder() {
         </div>
       )}
 
-      {/* Main Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Sidebar (desktop) */}
-        <div className="hidden lg:block lg:col-span-3">
-          <div className="sticky top-4 space-y-4">
-            <DesktopSidebar currentStep={step} onStepClick={setStep} completedSteps={completedSteps} />
-            {step === 3 && <AIPanel />}
-            <VersionsPanel />
-          </div>
-        </div>
-
-        {/* Center: Editor */}
-        <div className="lg:col-span-5">
-          {/* Mobile Step Indicator */}
-          <div className="lg:hidden mb-4">
-            <StepDots currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
-          </div>
-
-          {/* Form */}
+      {/* Main Content - 50/50 på desktop */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Left: Editor */}
+        <div>
           <div className="min-h-[400px]">
             {renderContent()}
           </div>
@@ -768,18 +643,93 @@ export default function CVBuilder() {
           </div>
         </div>
 
-        {/* Right: Preview (desktop) */}
-        <div className="hidden lg:block lg:col-span-4">
-          <div className="sticky top-4 bg-slate-100 rounded-2xl p-4 border border-slate-200">
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-                <h3 className="font-medium text-slate-700 text-sm">Förhandsvisning</h3>
-                {/* Dela-knapp även här */}
-                <CVShare onShare={async () => await cvApi.shareCV()} />
+        {/* Right: Preview + Tools (desktop) */}
+        <div className="hidden lg:block space-y-6">
+          {/* Preview */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+              <h3 className="font-semibold text-slate-700">Förhandsvisning</h3>
+              <CVShare onShare={async () => await cvApi.shareCV()} />
+            </div>
+            <div className="max-h-[600px] overflow-y-auto p-6">
+              <CVPreview data={data} />
+            </div>
+          </div>
+
+          {/* AI Tools */}
+          {step === 3 && (
+            <div className="bg-gradient-to-br from-violet-50 to-indigo-50 rounded-2xl shadow-sm border border-violet-200 p-5">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="w-8 h-8 bg-violet-500 rounded-lg flex items-center justify-center">
+                  <Lightbulb className="w-4 h-4 text-white" />
+                </div>
+                <h3 className="font-semibold text-violet-900">AI-skrivhjälp</h3>
               </div>
-              <div className="max-h-[calc(100vh-250px)] overflow-y-auto">
-                <CVPreview data={data} />
+              <p className="text-sm text-violet-700 mb-3">
+                Få hjälp att förbättra din sammanfattning
+              </p>
+              <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
+            </div>
+          )}
+
+          {/* ATS Analys */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                <Target className="w-4 h-4 text-white" />
               </div>
+              <h3 className="font-semibold text-slate-800">ATS-analys</h3>
+            </div>
+            <p className="text-sm text-slate-500 mb-3">
+              Se hur väl ditt CV klarar automatisk screening
+            </p>
+            <ATSAnalyzer cvData={data} />
+          </div>
+
+          {/* Versions */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+            <h3 className="font-semibold text-slate-800 mb-3">Versioner</h3>
+            {showSaveVersion ? (
+              <div className="space-y-2 mb-3">
+                <input 
+                  type="text" 
+                  value={versionName} 
+                  onChange={(e) => setVersionName(e.target.value)}
+                  placeholder="Namn på version..."
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                />
+                <div className="flex gap-2">
+                  <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-[#4f46e5] text-white text-sm rounded-lg">Spara</button>
+                  <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-slate-300 text-sm rounded-lg">Avbryt</button>
+                </div>
+              </div>
+            ) : (
+              <button 
+                onClick={() => setShowSaveVersion(true)}
+                className="w-full mb-3 px-4 py-2 border border-[#4f46e5] text-[#4f46e5] rounded-lg text-sm hover:bg-[#4f46e5]/5"
+              >
+                + Spara nuvarande version
+              </button>
+            )}
+            <div className="space-y-2 max-h-32 overflow-y-auto">
+              {versions.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-2">Inga sparade versioner</p>
+              ) : (
+                versions.map((v) => (
+                  <div key={v.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                    <div>
+                      <p className="text-sm font-medium text-slate-800">{v.name}</p>
+                      <p className="text-xs text-slate-500">{new Date(v.createdAt).toLocaleDateString('sv-SE')}</p>
+                    </div>
+                    <button 
+                      onClick={() => restoreVersion(v.id)}
+                      className="text-xs text-[#4f46e5] hover:bg-[#4f46e5]/10 px-2 py-1 rounded"
+                    >
+                      Återställ
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
