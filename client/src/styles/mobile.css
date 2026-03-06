@@ -1,21 +1,22 @@
 /**
  * Mobile-first CSS för Deltagarportalen
  * Advisory Board: Tillgänglighet i sängläge, touch-vänligt
+ * Uppdaterad: 48px touch-targets, safe areas, iOS-zoom fix
  */
 
 /* ============================================
-   1. TOUCH-VÄNLIGA KNAPPAR
+   1. TOUCH-VÄNLIGA KNAPPAR (48px minimum)
    ============================================ */
 
-/* Minst 44x44px för alla klickbara element */
+/* UPPGRADERAT: 48x48px för bättre tillgänglighet (var 44px) */
 button, 
 [role="button"],
 a,
 input[type="submit"],
 input[type="button"],
 .touch-target {
-  min-height: 44px;
-  min-width: 44px;
+  min-height: 48px;
+  min-width: 48px;
 }
 
 /* Större knappar på mobil */
@@ -31,8 +32,32 @@ input[type="button"],
   min-height: 56px;
 }
 
+/* Touch-spacing mellan element */
+.touch-gap {
+  gap: 8px;
+}
+
+.touch-gap-large {
+  gap: 12px;
+}
+
+/* Förhindra touch-felaktigheter */
+.touch-no-shrink {
+  flex-shrink: 0;
+}
+
+/* Tryck-feedback */
+.press-feedback {
+  transition: transform 0.1s, background-color 0.1s;
+}
+
+.press-feedback:active {
+  transform: scale(0.97);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
 /* ============================================
-   2. TEXTSTORLEK FÖR MOBIL
+   2. TEXTSTORLEK FÖR MOBIL (iOS-zoom fix)
    ============================================ */
 
 .mobile-device {
@@ -69,7 +94,131 @@ input[type="button"],
 }
 
 /* ============================================
-   3. LIGGANDE LÄGE (LANDSCAPE)
+   3. INPUT-FÄLT FÖR MOBIL (iOS-zoom fix)
+   ============================================ */
+
+.mobile-device input,
+.mobile-device textarea,
+.mobile-device select {
+  font-size: 16px; /* Förhindra zoom på iOS */
+  padding: 16px;
+  min-height: 48px;
+  border-radius: 12px; /* Rundare = touch-vänligare */
+}
+
+.mobile-device input[type="text"],
+.mobile-device input[type="email"],
+.mobile-device input[type="tel"],
+.mobile-device input[type="password"],
+.mobile-device input[type="search"] {
+  border-radius: 12px;
+}
+
+/* Större checkboxes och radio buttons */
+.mobile-device input[type="checkbox"],
+.mobile-device input[type="radio"] {
+  width: 28px;
+  height: 28px;
+  min-width: 28px;
+  min-height: 28px;
+  border-radius: 8px; /* Runda hörn */
+}
+
+/* ============================================
+   4. SÄKERHETSZONER (Notch, Home Indicator)
+   ============================================ */
+
+@supports (padding: max(0px)) {
+  /* iPhone X+ notch och home indicator */
+  .safe-area-inset {
+    padding-top: max(env(safe-area-inset-top), 16px);
+    padding-bottom: max(env(safe-area-inset-bottom), 16px);
+    padding-left: max(env(safe-area-inset-left), 16px);
+    padding-right: max(env(safe-area-inset-right), 16px);
+  }
+  
+  /* Specifika kanter */
+  .safe-top { 
+    padding-top: max(env(safe-area-inset-top), 0px); 
+  }
+  .safe-bottom { 
+    padding-bottom: max(env(safe-area-inset-bottom), 16px); 
+  }
+  .safe-left { 
+    padding-left: max(env(safe-area-inset-left), 0px); 
+  }
+  .safe-right { 
+    padding-right: max(env(safe-area-inset-right), 0px); 
+  }
+  
+  /* För fixed element som navbars */
+  .fixed-safe-bottom {
+    bottom: max(env(safe-area-inset-bottom), 0px);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Landscape-läge: hantera notch på sidan */
+  @media (orientation: landscape) {
+    .safe-landscape {
+      padding-left: max(env(safe-area-inset-left), 44px);
+      padding-right: max(env(safe-area-inset-right), 44px);
+    }
+  }
+}
+
+/* Mobile bottom navigation med safe area */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1px solid #e2e8f0;
+  padding: 8px 0 calc(12px + env(safe-area-inset-bottom));
+  z-index: 50;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.mobile-bottom-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.mobile-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 12px;
+  color: #64748b;
+  font-size: 0.75rem;
+  text-decoration: none;
+  min-width: 64px;
+  min-height: 48px;
+  flex-shrink: 0;
+}
+
+.mobile-bottom-nav-item.active {
+  color: #0d9488;
+}
+
+.mobile-bottom-nav-item svg {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 4px;
+}
+
+/* Padding för att inte täcka innehåll */
+.has-mobile-nav {
+  padding-bottom: calc(80px + env(safe-area-inset-bottom));
+}
+
+/* ============================================
+   5. LIGGANDE LÄGE (LANDSCAPE)
    ============================================ */
 
 .landscape-mode .landscape-two-col {
@@ -94,7 +243,7 @@ input[type="button"],
 }
 
 /* ============================================
-   4. MOBIL NAVIGATION
+   6. MOBIL NAVIGATION (UPPDATERAD)
    ============================================ */
 
 .mobile-nav {
@@ -120,6 +269,7 @@ input[type="button"],
   font-size: 0.75rem;
   text-decoration: none;
   min-width: 64px;
+  min-height: 48px;
 }
 
 .mobile-nav-item.active {
@@ -132,69 +282,224 @@ input[type="button"],
   margin-bottom: 4px;
 }
 
-/* Padding för att inte täcka innehåll */
-.has-mobile-nav {
-  padding-bottom: 80px;
+/* Mobil sidomeny */
+.mobile-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  max-width: 75vw;
+  background: white;
+  z-index: 50;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-out;
+  overflow-y: auto;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom));
+}
+
+.mobile-sidebar.open {
+  transform: translateX(0);
 }
 
 /* ============================================
-   5. SVEPGESTER
+   7. KORT OCH CONTAINERS
    ============================================ */
 
-.swipe-container {
-  touch-action: pan-y;
-  user-select: none;
+.mobile-device .card {
+  border-radius: 16px;
+  margin: 8px 0;
 }
 
-.swipe-action {
-  position: relative;
-  overflow: hidden;
+.mobile-device .card-compact {
+  padding: 16px;
 }
 
-.swipe-action::before,
-.swipe-action::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  color: white;
-  transform: translateX(0);
-  transition: transform 0.2s;
+.mobile-device .section-spacing {
+  margin: 16px 0;
 }
 
-/* Pull-to-refresh indikator */
-.pull-refresh {
-  position: relative;
-  overflow: hidden;
+/* Fullbredd kort på mobil */
+.mobile-full-width {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%);
 }
 
-.pull-refresh-indicator {
-  position: absolute;
-  top: -50px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 40px;
-  height: 40px;
-  background: white;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: top 0.2s;
-}
-
-.pull-refresh.pulling .pull-refresh-indicator {
-  top: 10px;
+.mobile-stretch {
+  margin-left: -1rem;
+  margin-right: -1rem;
 }
 
 /* ============================================
-   6. RÖSTSTYRNING
+   8. FORMULÄR PÅ MOBIL
+   ============================================ */
+
+.mobile-device form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.mobile-device label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.mobile-device fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* ============================================
+   9. TABELLER PÅ MOBIL
+   ============================================ */
+
+.mobile-device table {
+  display: block;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.mobile-device .table-card-view {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mobile-device .table-card-view tr {
+  display: block;
+  background: white;
+  border-radius: 12px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.mobile-device .table-card-view td,
+.mobile-device .table-card-view th {
+  display: flex;
+  justify-content: space-between;
+  padding: 4px 0;
+  border: none;
+}
+
+.mobile-device .table-card-view td::before {
+  content: attr(data-label);
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* ============================================
+   10. MODALER OCH OVERLAYS
+   ============================================ */
+
+.mobile-device .modal {
+  margin: 16px;
+  max-height: 90vh;
+  overflow-y: auto;
+  border-radius: 16px;
+}
+
+.mobile-device .modal-fullscreen {
+  position: fixed;
+  inset: 0;
+  margin: 0;
+  border-radius: 0;
+  max-height: 100vh;
+}
+
+/* ============================================
+   11. SCROLL-BETEENDE
+   ============================================ */
+
+/* Momentum scrolling på iOS */
+.scroll-momentum {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Dölj scrollbar men behåll funktionalitet */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Snap scrolling för karuseller */
+.scroll-snap-x {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.scroll-snap-x::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-snap-item {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+}
+
+/* Pull-to-refresh stöd */
+.scroll-refresh {
+  overscroll-behavior-y: contain;
+}
+
+/* Förhindra body-scroll när modal är öppen */
+body.modal-open {
+  overflow: hidden;
+  touch-action: none;
+}
+
+/* Smooth scroll för ankare */
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Sticky headers med safe area */
+.sticky-safe {
+  position: sticky;
+  top: max(env(safe-area-inset-top), 0px);
+  z-index: 40;
+}
+
+/* ============================================
+   12. DROPDOWNS OCH MENYER
+   ============================================ */
+
+.mobile-device .dropdown-menu {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  top: auto;
+  border-radius: 16px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.mobile-device .dropdown-item {
+  padding: 16px;
+  font-size: 1rem;
+  min-height: 48px;
+}
+
+/* ============================================
+   13. RÖSTSTYRNING
    ============================================ */
 
 .voice-input-container {
@@ -208,8 +513,8 @@ input[type="button"],
   right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #f1f5f9;
   border: none;
@@ -235,40 +540,13 @@ input[type="button"],
 }
 
 .voice-input-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   color: #475569;
 }
 
-/* Sekretessvarning */
-.voice-privacy-notice {
-  position: fixed;
-  bottom: 100px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #1e293b;
-  color: white;
-  padding: 12px 16px;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  max-width: 90vw;
-  z-index: 100;
-  animation: slide-up 0.3s ease-out;
-}
-
-@keyframes slide-up {
-  from {
-    opacity: 0;
-    transform: translateX(-50%) translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-  }
-}
-
 /* ============================================
-   7. EN-HANDSANVÄNDNING
+   14. EN-HANDSANVÄNDNING
    ============================================ */
 
 /* Flyttbar FAB för en-handsanvändning */
@@ -286,23 +564,31 @@ input[type="button"],
   z-index: 40;
 }
 
-/* Enkel räckvidd för tummen */
-.thumb-zone {
-  position: relative;
+/* Tillbaka-knapp för mobil */
+.mobile-back-button {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  left: 16px;
+  z-index: 45;
+  width: 44px;
+  height: 44px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.thumb-zone::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 50%;
-  pointer-events: none;
+.mobile-back-button:active {
+  transform: scale(0.95);
 }
 
 /* ============================================
-   8. FÖRENKLAD VY (MYCKET SMÅ SKÄRMAR)
+   15. FÖRENKLAD VY (MYCKET SMÅ SKÄRMAR)
    ============================================ */
 
 .simplified-view .hide-simplified {
@@ -320,10 +606,28 @@ input[type="button"],
 }
 
 /* ============================================
-   9. TILLGÄNGLIGHET
+   16. MIKRO-BREAKPOINTS (Extra små skärmar)
    ============================================ */
 
-/* Större touch-targets för ostadiga händer */
+/* 320px-360px: Extra små phones (iPhone SE, gamla Android) */
+@media (max-width: 359px) {
+  .micro-text { font-size: 0.875rem; }
+  .micro-compact { padding: 0.5rem; }
+  .micro-hide { display: none; }
+  .micro-stack { flex-direction: column; }
+}
+
+/* 360px-375px: Små moderna phones */
+@media (min-width: 360px) and (max-width: 374px) {
+  .small-phone-text { font-size: 0.9375rem; }
+  .small-phone-comfortable { padding: 0.75rem; }
+}
+
+/* ============================================
+   17. TILLGÄNGLIGHET
+   ============================================ */
+
+/* Reduced motion - respektera användarens önskemål */
 @media (prefers-reduced-motion: reduce) {
   .mobile-device * {
     animation-duration: 0.01ms !important;
@@ -356,192 +660,14 @@ input[type="button"],
   font-size: 1.5rem;
 }
 
-/* ============================================
-   10. SÄKERhetszONER (Notch, Home Indicator)
-   ============================================ */
-
-.safe-area-top {
-  padding-top: env(safe-area-inset-top);
-}
-
-.safe-area-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
-
-.safe-area-left {
-  padding-left: env(safe-area-inset-left);
-}
-
-.safe-area-right {
-  padding-right: env(safe-area-inset-right);
+/* Focus ring för touch */
+.mobile-device *:focus-visible {
+  outline: 3px solid #8b5cf6;
+  outline-offset: 2px;
 }
 
 /* ============================================
-   11. INPUT-FÄLT FÖR MOBIL
-   ============================================ */
-
-.mobile-device input,
-.mobile-device textarea,
-.mobile-device select {
-  font-size: 16px; /* Förhindra zoom på iOS */
-  padding: 12px;
-  min-height: 44px;
-}
-
-.mobile-device input[type="text"],
-.mobile-device input[type="email"],
-.mobile-device input[type="tel"],
-.mobile-device input[type="password"] {
-  border-radius: 8px;
-}
-
-/* Större checkboxes och radio buttons */
-.mobile-device input[type="checkbox"],
-.mobile-device input[type="radio"] {
-  width: 24px;
-  height: 24px;
-  min-width: 24px;
-  min-height: 24px;
-}
-
-/* ============================================
-   12. KORT OCH CONTAINERS
-   ============================================ */
-
-.mobile-device .card {
-  border-radius: 12px;
-  margin: 8px 0;
-}
-
-.mobile-device .card-compact {
-  padding: 12px;
-}
-
-.mobile-device .section-spacing {
-  margin: 16px 0;
-}
-
-/* ============================================
-   13. MODALER OCH OVERLAYS
-   ============================================ */
-
-.mobile-device .modal {
-  margin: 16px;
-  max-height: 90vh;
-  overflow-y: auto;
-  border-radius: 16px;
-}
-
-.mobile-device .modal-fullscreen {
-  position: fixed;
-  inset: 0;
-  margin: 0;
-  border-radius: 0;
-  max-height: 100vh;
-}
-
-/* ============================================
-   14. SCROLL-BETEENDE
-   ============================================ */
-
-/* Momentum scrolling på iOS */
-.scroll-momentum {
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Dölj scrollbar men behåll funktionalitet */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-/* ============================================
-   15. FORMULÄR PÅ MOBIL
-   ============================================ */
-
-.mobile-device form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.mobile-device label {
-  font-size: 0.9375rem;
-  font-weight: 500;
-  margin-bottom: 4px;
-  display: block;
-}
-
-.mobile-device fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
-}
-
-/* ============================================
-   16. TABELLER PÅ MOBIL
-   ============================================ */
-
-.mobile-device table {
-  display: block;
-  overflow-x: auto;
-  white-space: nowrap;
-}
-
-.mobile-device .table-card-view {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.mobile-device .table-card-view tr {
-  display: block;
-  background: white;
-  border-radius: 8px;
-  padding: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-
-.mobile-device .table-card-view td,
-.mobile-device .table-card-view th {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-  border: none;
-}
-
-.mobile-device .table-card-view td::before {
-  content: attr(data-label);
-  font-weight: 500;
-  color: #64748b;
-}
-
-/* ============================================
-   17. DROPDOWNS OCH MENYER
-   ============================================ */
-
-.mobile-device .dropdown-menu {
-  position: fixed;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  top: auto;
-  border-radius: 12px;
-  max-height: 70vh;
-  overflow-y: auto;
-}
-
-.mobile-device .dropdown-item {
-  padding: 16px;
-  font-size: 1rem;
-}
-
-/* ============================================
-   18. LADDNINGstillstånd
+   18. LADDNINGSTILLSTÅND
    ============================================ */
 
 .mobile-device .skeleton {
@@ -561,7 +687,7 @@ input[type="button"],
 
 .mobile-device .notification {
   position: fixed;
-  top: 16px;
+  top: max(16px, env(safe-area-inset-top));
   left: 16px;
   right: 16px;
   z-index: 100;
@@ -580,14 +706,16 @@ input[type="button"],
 }
 
 /* ============================================
-   20. PRINT STYLES (FÖR PDF-EXPORT)
+   20. PRINT STYLES
    ============================================ */
 
 @media print {
   .mobile-nav,
+  .mobile-bottom-nav,
   .voice-input-btn,
   .fab-touch-zone-left,
-  .fab-touch-zone-right {
+  .fab-touch-zone-right,
+  .mobile-back-button {
     display: none !important;
   }
   

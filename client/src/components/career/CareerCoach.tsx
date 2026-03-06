@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign } from 'lucide-react';
+import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign, Loader2 } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { taxonomyApi, trendsApi, jobEdApi } from '@/services/api';
+import { taxonomyApi } from '@/services/api';
+import { afDirectApi } from '@/services/afDirectApi';
+import { searchJobs } from '@/services/arbetsformedlingenApi';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
 interface CareerStep {
@@ -23,6 +25,7 @@ interface CareerPath {
     occupation: string;
     salary: number;
     demand: 'high' | 'medium' | 'low';
+    jobCount: number;
   };
   steps: CareerStep[];
   timeline: string;
@@ -45,84 +48,128 @@ export default function CareerCoach() {
     
     setLoading(true);
     
-    // Simulera AI-genererad karriärväg (i verkligheten skulle detta vara mer komplext)
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const mockPath: CareerPath = {
-      current: {
-        occupation: currentOccupation.label,
-        experience: `${currentExperience} år`,
-        salary: 42000,
+    try {
+      // Hämta lönedata för båda yrkena DIREKT från AF API (CORS tillåtet)
+      const [currentSalary, targetSalary] = await Promise.all([
+        afDirectApi.getSalaryStats(currentOccupation.label),
+        afDirectApi.getSalaryStats(targetOccupation.label)
+      ]);
+
+      // Hämta antal lediga jobb för målyrket
+      const jobSearch = await searchJobs({
+        query: targetOccupation.label,
+        limit: 1
+      });
+
+      const currentSalaryValue = currentSalary?.median_salary || 35000;
+      const targetSalaryValue = targetSalary?.median_salary || 45000;
+      const jobCount = jobSearch.total?.value || 0;
+      
+      // Bestäm efterfrågan baserat på jobbantal
+      let demand: 'high' | 'medium' | 'low' = 'medium';
+      if (jobCount > 100) demand = 'high';
+      else if (jobCount < 10) demand = 'low';
+
+      // Beräkna tidslinje baserat på erfarenhet och löneskillnad
+      const expYears = parseInt(currentExperience);
+      const salaryDiff = targetSalaryValue - currentSalaryValue;
+      const estimatedYears = Math.max(1, Math.min(4, Math.ceil(salaryDiff / 10000) - Math.floor(expYears / 3)));
+      
+      const path: CareerPath = {
+        current: {
+          occupation: currentOccupation.label,
+          experience: `${currentExperience} år`,
+          salary: currentSalaryValue,
+        },
+        target: {
+          occupation: targetOccupation.label,
+          salary: targetSalaryValue,
+          demand,
+          jobCount,
+        },
+        timeline: `${estimatedYears}-${estimatedYears + 1} år`,
+        salaryIncrease: targetSalaryValue - currentSalaryValue,
+        steps: generateSteps(currentOccupation.label, targetOccupation.label, expYears, estimatedYears),
+      };
+      
+      setCareerPath(path);
+    } catch (error) {
+      console.error('Fel vid generering av karriärväg:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Generera karriärsteg baserat på yrken och erfarenhet
+  function generateSteps(current: string, target: string, expYears: number, timelineYears: number): CareerStep[] {
+    const steps: CareerStep[] = [
+      {
+        order: 1,
+        title: 'Stärk din bas',
+        description: `Utveckla djup kompetens inom ${current} för att bli en erkänd expert innan du byter fokus.`,
+        timeframe: `${Math.ceil(timelineYears * 0.3)}-6 månader`,
+        actions: [
+          'Ta lead på ett komplext projekt inom ditt nuvarande område',
+          'Dokumentera dina resultat med konkreta siffror',
+          'Bygg en portfolio som visar din expertis',
+          'Nätverka inom branschen på LinkedIn'
+        ],
+        education: [
+          'Avancerad certifiering inom din specialisering',
+          'Workshop i personligt varumärke'
+        ],
       },
-      target: {
-        occupation: targetOccupation.label,
-        salary: 58000,
-        demand: 'high',
+      {
+        order: 2,
+        title: 'Brobyggande kompetens',
+        description: `Börja utveckla färdigheter som är relevanta för ${target} samtidigt som du utnyttjar din ${current}-bakgrund.`,
+        timeframe: `${Math.ceil(timelineYears * 0.3)}-6 månader`,
+        actions: [
+          'Identifiera överförbara färdigheter mellan yrkena',
+          'Ta ett sidoprojekt eller konsultuppdrag inom målområdet',
+          'Hitta en mentor som jobbar med ${target}',
+          'Delta i branschträffar och webinarier'
+        ],
+        education: [
+          'Online-kurs inom målområdet',
+          'Kurs i projektledning eller ledarskap'
+        ],
       },
-      timeline: '2-3 år',
-      salaryIncrease: 16000,
-      steps: [
-        {
-          order: 1,
-          title: 'Bygg specialistkompetens',
-          description: 'Utveckla djup kompetens inom ditt nuvarande område för att bli en uppskattad expert.',
-          timeframe: '6-12 månader',
-          actions: [
-            'Ta lead på ett komplext projekt',
-            'Mentorera juniora kollegor',
-            'Bygg en stark portfolio',
-          ],
-          education: [
-            'Avancerad kurs inom din specialisering',
-            'Certifiering inom aktuellt område',
-          ],
-        },
-        {
-          order: 2,
-          title: 'Utveckla ledarskapsförmåga',
-          description: 'Börja ta mer ansvar och utveckla färdigheter för att leda andra.',
-          timeframe: '6-12 månader',
-          actions: [
-            'Bli projektledare för mindre projekt',
-            'Delta i interna ledarskapsprogram',
-            'Bygg nätverk inom organisationen',
-          ],
-          education: [
-            'Ledarskapsutbildning (YH eller motsvarande)',
-            'Kurs i projektledning',
-          ],
-        },
-        {
-          order: 3,
-          title: 'Strategisk kompetens',
-          description: 'Utveckla förmågan att se helheten och arbeta strategiskt.',
-          timeframe: '6-12 månader',
-          actions: [
-            'Delta i strategiska beslut',
-            'Bygg relationer med nyckelpersoner',
-            'Visa resultat och påverkan',
-          ],
-          education: [
-            'Kurs i affärsstrategi',
-            'Nätverkande och relationsskapande',
-          ],
-        },
-        {
-          order: 4,
-          title: 'Sök ledarroller',
-          description: 'Nu är du redo att ta nästa steg och söka din måltitel.',
-          timeframe: '3-6 månader',
-          actions: [
-            'Uppdatera CV med ny kompetens',
-            'Aktivt nätverka i branschen',
-            'Sök ledarroller internt och externt',
-          ],
-        },
-      ],
-    };
-    
-    setCareerPath(mockPath);
-    setLoading(false);
+      {
+        order: 3,
+        title: 'Praktisk erfarenhet',
+        description: 'Skaffa konkret erfarenhet av målyrket genom praktiska projekt.',
+        timeframe: `${Math.ceil(timelineYears * 0.2)}-4 månader`,
+        actions: [
+          'Sök volontäruppdrag eller praktik inom målområdet',
+          'Erbjud hjälp med ett projekt för att bygga portfolio',
+          'Dokumentera allt du lär dig',
+          'Be om referenser och rekommendationer'
+        ],
+        education: [
+          'Yrkeshögskoleutbildning eller motsvarande',
+          'Branschspecifik certifiering'
+        ],
+      },
+      {
+        order: 4,
+        title: 'Positionering för bytet',
+        description: `Gör dig redo att söka ${target}-roller med en stark pitch som kopplar din bakgrund till det nya.`,
+        timeframe: '2-4 månader',
+        actions: [
+          'Uppdatera CV och LinkedIn med ny kompetens',
+          'Skriv ett personligt brev som berättar din övergångsberättelse',
+          'Aktivt nätverka med rekryterare i målbranschen',
+          'Sök roller internt eller externt'
+        ],
+      },
+    ];
+
+    return steps;
+  }
+
+  const formatSalary = (amount: number) => {
+    return `${amount.toLocaleString()} kr`;
   };
 
   return (
@@ -135,14 +182,13 @@ export default function CareerCoach() {
           </div>
           <div>
             <h2 className="text-2xl font-bold">Karriärcoachen</h2>
-            <p className="text-white/80">Planera din väg framåt i karriären</p>
+            <p className="text-white/80">Planera din väg framåt med data från Arbetsförmedlingen</p>
           </div>
         </div>
         
         <p className="text-white/90 max-w-2xl">
-          Berätta var du är idag och vart du vill komma. Vi analyserar din väg 
-          och ger dig en konkret handlingsplan med tidslinje, kompetensutveckling 
-          och löneprognoser.
+          Berätta var du är idag och vart du vill komma. Vi analyserar marknadslön, 
+          efterfrågan och ger dig en konkret handlingsplan baserat på riktiga data.
         </p>
       </div>
 
@@ -204,7 +250,12 @@ export default function CareerCoach() {
               disabled={!currentOccupation || !targetOccupation || loading}
               className="w-full py-2.5 bg-[#4f46e5] text-white rounded-xl font-medium hover:bg-[#4338ca] disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
             >
-              {loading ? 'Analyserar...' : 'Generera karriärväg'}
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <Loader2 size={18} className="animate-spin" />
+                  Analyserar...
+                </span>
+              ) : 'Generera karriärväg'}
             </button>
           </div>
         </div>
@@ -215,7 +266,7 @@ export default function CareerCoach() {
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
           <div className="animate-spin w-10 h-10 border-3 border-[#4f46e5] border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-slate-600">Analyserar din karriärväg...</p>
-          <p className="text-sm text-slate-400 mt-2">Vi tittar på marknadstrender, lönestatistik och kompetenskrav</p>
+          <p className="text-sm text-slate-400 mt-2">Hämtar lönestatistik och marknadsdata från Arbetsförmedlingen</p>
         </div>
       )}
 
@@ -228,7 +279,7 @@ export default function CareerCoach() {
                 <div className="text-center">
                   <p className="text-sm text-slate-500">Nu</p>
                   <p className="font-semibold text-slate-800">{careerPath.current.occupation}</p>
-                  <p className="text-sm text-slate-600">{careerPath.current.salary.toLocaleString()} kr/mån</p>
+                  <p className="text-sm text-slate-600">{formatSalary(careerPath.current.salary)}/mån</p>
                 </div>
                 
                 <ArrowRight className="text-slate-400" size={24} />
@@ -236,14 +287,14 @@ export default function CareerCoach() {
                 <div className="text-center">
                   <p className="text-sm text-slate-500">Mål</p>
                   <p className="font-semibold text-slate-800">{careerPath.target.occupation}</p>
-                  <p className="text-sm text-slate-600">{careerPath.target.salary.toLocaleString()} kr/mån</p>
+                  <p className="text-sm text-slate-600">{formatSalary(careerPath.target.salary)}/mån</p>
                 </div>
               </div>
               
               <div className="flex items-center gap-6">
                 <div className="text-center px-4 py-2 bg-green-50 rounded-xl">
                   <p className="text-xs text-slate-500">Löneökning</p>
-                  <p className="text-lg font-bold text-green-600">+{careerPath.salaryIncrease.toLocaleString()} kr</p>
+                  <p className="text-lg font-bold text-green-600">+{formatSalary(careerPath.salaryIncrease)}</p>
                 </div>
                 <div className="text-center px-4 py-2 bg-blue-50 rounded-xl">
                   <p className="text-xs text-slate-500">Tidslinje</p>
@@ -254,6 +305,7 @@ export default function CareerCoach() {
                   <p className="text-lg font-bold text-purple-600">
                     {careerPath.target.demand === 'high' ? 'Hög' : careerPath.target.demand === 'medium' ? 'Medel' : 'Låg'}
                   </p>
+                  <p className="text-xs text-slate-400">{careerPath.target.jobCount} lediga jobb</p>
                 </div>
               </div>
             </div>
@@ -263,7 +315,7 @@ export default function CareerCoach() {
           <div className="space-y-4">
             <h3 className="font-semibold text-slate-800">Din väg framåt</h3>
             
-            {careerPath.steps.map((step, index) => (
+            {careerPath.steps.map((step) => (
               <div
                 key={step.order}
                 className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200"
@@ -286,7 +338,7 @@ export default function CareerCoach() {
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
-                        <p className="text-sm font-medium text-slate-700 mb-2"> konkreta åtgärder:</p>
+                        <p className="text-sm font-medium text-slate-700 mb-2">Konkreta åtgärder:</p>
                         <ul className="space-y-1">
                           {step.actions.map((action, i) => (
                             <li key={i} className="text-sm text-slate-600 flex items-center gap-2">
@@ -319,14 +371,31 @@ export default function CareerCoach() {
 
           {/* CTA */}
           <div className="flex gap-4">
-            <button className="flex-1 py-3 bg-[#4f46e5] text-white rounded-xl font-medium hover:bg-[#4338ca] transition-colors">
-              Spara min karriärväg
+            <button 
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="flex-1 py-3 bg-[#4f46e5] text-white rounded-xl font-medium hover:bg-[#4338ca] transition-colors"
+            >
+              Justera min plan
             </button>
-            <button className="flex-1 py-3 bg-white border-2 border-[#4f46e5] text-[#4f46e5] rounded-xl font-medium hover:bg-[#4f46e5]/5 transition-colors">
-              Hitta utbildningar
-            </button>
+            <a
+              href="/job-search"
+              className="flex-1 py-3 bg-white border-2 border-[#4f46e5] text-[#4f46e5] rounded-xl font-medium hover:bg-[#4f46e5]/5 transition-colors text-center"
+            >
+              Sök jobb inom {careerPath.target.occupation}
+            </a>
           </div>
         </>
+      )}
+
+      {!loading && !careerPath && (
+        <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
+          <Target size={48} className="text-slate-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-slate-800 mb-2">Planera din karriär</h3>
+          <p className="text-slate-500 max-w-md mx-auto">
+            Fyll i ditt nuvarande yrke och vart du vill komma så analyserar vi marknadslön, 
+            efterfrågan och skapar en personlig handlingsplan.
+          </p>
+        </div>
       )}
     </div>
   );

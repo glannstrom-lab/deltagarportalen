@@ -1,8 +1,12 @@
 import { useState } from 'react';
 import { Target, DollarSign, TrendingUp, Briefcase, GraduationCap, Users, Award, MapPin } from 'lucide-react';
-import CareerCoach from '@/components/career/CareerCoach';
-import SalaryInsights from '@/components/career/SalaryInsights';
-import { NetworkingGuide } from '@/components/career/NetworkingGuide';
+import { 
+  CareerCoach, 
+  SalaryInsights, 
+  SkillsDevelopment, 
+  EducationOverview, 
+  NetworkingGuide 
+} from '@/components/career';
 
 type CareerTab = 'coach' | 'salary' | 'skills' | 'education' | 'networking';
 
@@ -114,47 +118,7 @@ export default function Career() {
         {activeTab === 'skills' && <SkillsDevelopment />}
         {activeTab === 'education' && <EducationOverview />}
         {activeTab === 'networking' && <NetworkingGuide />}
-      </div>
-    </div>
-  );
-}
-
-// Placeholder för Kompetensutveckling
-function SkillsDevelopment() {
-  return (
-    <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
-      <div className="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-        <TrendingUp className="text-purple-600" size={32} />
-      </div>
-      <h2 className="text-xl font-bold text-slate-800 mb-2">Kompetensutveckling</h2>
-      <p className="text-slate-600 mb-6 max-w-md mx-auto">
-        Analysera vilka kompetenser som efterfrågas på arbetsmarknaden och 
-        skapa en personlig utvecklingsplan.
-      </p>
-      <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg text-sm">
-        <Award size={16} />
-        Kommer snart
-      </div>
-    </div>
-  );
-}
-
-// Placeholder för Utbildningsvägar
-function EducationOverview() {
-  return (
-    <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
-      <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-        <GraduationCap className="text-amber-600" size={32} />
-      </div>
-      <h2 className="text-xl font-bold text-slate-800 mb-2">Utbildningsvägar</h2>
-      <p className="text-slate-600 mb-6 max-w-md mx-auto">
-        Utforska olika utbildningsvägar som leder till ditt drömjobb. 
-        Jämför längd, kostnad och jobbmöjligheter.
-      </p>
-      <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 rounded-lg text-sm">
-        <MapPin size={16} />
-        Kommer snart
-      </div>
+              </div>
     </div>
   );
 }

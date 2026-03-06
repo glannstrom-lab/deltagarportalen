@@ -9,14 +9,13 @@ import {
   Search,
   BookOpen,
   Compass,
-  Calendar,
-  Heart,
   User,
   Menu,
   X,
   BookHeart,
   LogOut,
   Settings,
+  Briefcase,
 } from 'lucide-react'
 
 interface NavItem {
@@ -29,12 +28,11 @@ interface NavItem {
 /**
  * MobileNav - Mobil navigation med bottom bar och hamburger-meny
  * 
- * Funktioner:
- * - Bottom navigation för snabb åtkomst
- * - Hamburger-meny för alla länkar
- * - Touch-vänliga stora knappar
- * - Aktivt tillstånd-indikation
- * - Säkerhetszon för hemknapp/notch
+ * Uppdaterad för bättre mobil UX:
+ * - Scroll-bar bottom nav för små skärmar
+ * - Smalare hamburger-meny (260px istället för 280px)
+ * - Större touch-targets (48px)
+ * - Safe area support för iPhone
  */
 export function MobileNav() {
   const { isMobile } = useMobileOptimizer()
@@ -51,13 +49,15 @@ export function MobileNav() {
 
   if (!isMobile) return null
 
+  // Huvudnavigation - max 4 items för att få plats
   const mainNavItems: NavItem[] = [
     { to: '/', label: 'Översikt', icon: <LayoutDashboard className="w-6 h-6" /> },
     { to: '/cv', label: 'CV', icon: <FileText className="w-6 h-6" /> },
     { to: '/job-search', label: 'Jobb', icon: <Search className="w-6 h-6" /> },
-    { to: '/knowledge-base', label: 'Lär dig', icon: <BookOpen className="w-6 h-6" /> },
+    { to: '/career', label: 'Karriär', icon: <Briefcase className="w-6 h-6" /> },
   ]
 
+  // Alla länkar i hamburger-menyn
   const menuItems: NavItem[] = [
     { to: '/', label: 'Översikt', icon: <LayoutDashboard className="w-5 h-5" /> },
     { to: '/cv', label: 'CV-byggare', icon: <FileText className="w-5 h-5" /> },
@@ -65,9 +65,10 @@ export function MobileNav() {
     { to: '/interest-guide', label: 'Intresseguiden', icon: <Compass className="w-5 h-5" /> },
     { to: '/job-search', label: 'Sök jobb', icon: <Search className="w-5 h-5" /> },
     { to: '/job-tracker', label: 'Ansökningar', icon: <FileText className="w-5 h-5" /> },
+    { to: '/career', label: 'Karriär', icon: <Briefcase className="w-5 h-5" /> },
     { to: '/knowledge-base', label: 'Kunskapsbank', icon: <BookOpen className="w-5 h-5" /> },
     { to: '/diary', label: 'Dagbok', icon: <BookHeart className="w-5 h-5" /> },
-    { to: '/wellness', label: 'Mående', icon: <Heart className="w-5 h-5" /> },
+    { to: '/wellness', label: 'Mående', icon: <BookHeart className="w-5 h-5" /> },
     { to: '/profile', label: 'Profil', icon: <User className="w-5 h-5" /> },
   ]
 
@@ -87,25 +88,30 @@ export function MobileNav() {
         />
       )}
 
-      {/* Sidomeny (hamburger) */}
+      {/* Sidomeny (hamburger) - UPPDATERAD: smalare (260px) */}
       <div 
         className={cn(
-          'fixed top-0 left-0 bottom-0 w-[280px] max-w-[80vw] bg-white dark:bg-slate-800 z-50 shadow-xl',
+          'fixed top-0 left-0 bottom-0 bg-white dark:bg-slate-800 z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
           'overflow-y-auto',
           isMenuOpen ? 'translate-x-0' : '-translate-x-full'
         )}
+        style={{
+          width: '260px',
+          maxWidth: '75vw',
+          paddingBottom: 'calc(20px + env(safe-area-inset-bottom))'
+        }}
         role="navigation"
         aria-label="Mobil navigation"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between p-4 border-b border-slate-200 dark:border-slate-700 safe-top">
           <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">
             Meny
           </h2>
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+            className="w-11 h-11 flex items-center justify-center rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
             aria-label="Stäng meny"
           >
             <X className="w-5 h-5 text-slate-600 dark:text-slate-400" />
@@ -122,7 +128,7 @@ export function MobileNav() {
                   onClick={() => setIsMenuOpen(false)}
                   className={({ isActive: active }) => cn(
                     'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
-                    'min-h-[48px]',
+                    'min-h-[48px]', // UPPDATERAD: 48px touch target
                     active
                       ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300'
                       : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700/50'
@@ -149,7 +155,12 @@ export function MobileNav() {
         </nav>
 
         {/* Footer med Logout */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 space-y-2">
+        <div 
+          className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 space-y-2"
+          style={{
+            paddingBottom: 'calc(16px + env(safe-area-inset-bottom))'
+          }}
+        >
           <NavLink
             to="/settings"
             onClick={() => setIsMenuOpen(false)}
@@ -178,7 +189,7 @@ export function MobileNav() {
         </div>
       </div>
 
-      {/* Bottom Navigation Bar */}
+      {/* Bottom Navigation Bar - UPPDATERAD: scroll-bar på små skärmar */}
       <nav 
         className={cn(
           'mobile-bottom-nav',
@@ -193,13 +204,14 @@ export function MobileNav() {
           onClick={() => setIsMenuOpen(true)}
           className={cn(
             'mobile-bottom-nav-item',
-            isMenuOpen && 'active'
+            isMenuOpen && 'active',
+            'min-h-[48px] min-w-[64px]' // UPPDATERAD: större touch target
           )}
           aria-label="Öppna meny"
           aria-expanded={isMenuOpen}
         >
           <Menu className="w-6 h-6" />
-          <span>Meny</span>
+          <span className="text-xs mt-1">Meny</span>
         </button>
 
         {/* Huvudnavigationslänkar */}
@@ -209,12 +221,13 @@ export function MobileNav() {
             to={item.to}
             className={({ isActive }) => cn(
               'mobile-bottom-nav-item',
-              isActive && 'active'
+              isActive && 'active',
+              'min-h-[48px] min-w-[64px]' // UPPDATERAD: större touch target
             )}
             aria-label={item.label}
           >
             {item.icon}
-            <span>{item.label}</span>
+            <span className="text-xs mt-1">{item.label}</span>
           </NavLink>
         ))}
       </nav>
@@ -247,11 +260,12 @@ export function MobileNavSimplified() {
           to={item.to}
           className={({ isActive }) => cn(
             'mobile-bottom-nav-item',
-            isActive && 'active'
+            isActive && 'active',
+            'min-h-[48px] min-w-[64px]'
           )}
         >
           {item.icon}
-          <span>{item.label}</span>
+          <span className="text-xs mt-1">{item.label}</span>
         </NavLink>
       ))}
     </nav>
@@ -280,14 +294,24 @@ export function MobileFab({
     <button
       onClick={onClick}
       className={cn(
-        'mobile-fab',
+        'fixed z-40',
+        'w-14 h-14', // 56px för bättre touch target
+        'rounded-full',
         'bg-violet-600 dark:bg-violet-500',
         'hover:bg-violet-700 dark:hover:bg-violet-600',
+        'shadow-lg hover:shadow-xl',
+        'flex items-center justify-center',
+        'transition-all duration-200',
+        'active:scale-95',
         className
       )}
+      style={{
+        bottom: 'calc(100px + env(safe-area-inset-bottom))',
+        right: '20px'
+      }}
       aria-label={label}
     >
-      {icon || <span className="text-2xl">+</span>}
+      {icon || <span className="text-2xl text-white">+</span>}
     </button>
   )
 }

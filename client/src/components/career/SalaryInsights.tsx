@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { taxonomyApi, trendsApi } from '@/services/api';
+import { taxonomyApi } from '@/services/api';
+import { afDirectApi } from '@/services/afDirectApi';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
 interface SalaryData {
@@ -53,8 +54,8 @@ export default function SalaryInsights() {
     setLoading(true);
     
     try {
-      // Hämta lönestatistik
-      const stats = await trendsApi.getSalaryStats(occupation.label);
+      // Hämta lönestatistik direkt från AF API (CORS tillåtet)
+      const stats = await afDirectApi.getSalaryStats(occupation.label);
       
       if (stats) {
         setSalaryData({
@@ -65,7 +66,7 @@ export default function SalaryInsights() {
           byRegion: stats.by_region.map(r => ({
             region: r.region,
             median: r.median_salary,
-            jobCount: 0,
+            jobCount: r.job_count,
           })),
           byExperience: stats.by_experience.map(e => ({
             years: e.experience_years,
@@ -73,11 +74,11 @@ export default function SalaryInsights() {
           })),
           trends: {
             growth: 8,
-            jobCount: stats.sampleSize || 0,
+            jobCount: stats.sample_size,
             competition: 8.5,
           },
           source: stats.source,
-          sampleSize: stats.sampleSize,
+          sampleSize: stats.sample_size,
         });
       } else {
         setSalaryData(null);
