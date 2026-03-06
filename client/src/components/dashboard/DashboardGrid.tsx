@@ -17,11 +17,11 @@ export function DashboardGrid({ children, className }: DashboardGridProps) {
     <div
       className={cn(
         // Mobile: 1 kolumn (alltid full bredd för bättre UX)
-        'grid grid-cols-1 gap-3',
+        'grid grid-cols-1 gap-2',
         // Tablet: 2 kolumner  
-        'sm:grid-cols-2 sm:gap-4',
+        'sm:grid-cols-2 sm:gap-3',
         // Desktop: 4 kolumner för att stödja 1/4-storlek
-        'lg:grid-cols-4 lg:gap-5',
+        'lg:grid-cols-4 lg:gap-4',
         className
       )}
     >

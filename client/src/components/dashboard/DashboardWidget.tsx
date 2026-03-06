@@ -69,7 +69,7 @@ export function DashboardWidget({
 }: DashboardWidgetProps) {
   if (loading) {
     return (
-      <Card className="min-h-[200px] h-auto p-5 flex items-center justify-center">
+      <Card className="min-h-[160px] sm:min-h-[200px] h-auto p-4 sm:p-5 flex items-center justify-center">
         <LoadingState size="sm" message="Laddar..." />
       </Card>
     )
@@ -77,11 +77,11 @@ export function DashboardWidget({
 
   if (error) {
     return (
-      <Card className="min-h-[200px] h-auto p-5 flex flex-col items-center justify-center text-center">
-        <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center mb-3">
-          <AlertCircle className="w-6 h-6 text-rose-500" />
+      <Card className="min-h-[160px] sm:min-h-[200px] h-auto p-4 sm:p-5 flex flex-col items-center justify-center text-center">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-rose-50 rounded-full flex items-center justify-center mb-2 sm:mb-3">
+          <AlertCircle className="w-5 h-5 sm:w-6 sm:h-6 text-rose-500" />
         </div>
-        <p className="text-sm text-slate-600 mb-3">{error}</p>
+        <p className="text-sm text-slate-600 mb-2 sm:mb-3">{error}</p>
         {onRetry && (
           <button
             onClick={onRetry}
@@ -95,23 +95,23 @@ export function DashboardWidget({
   }
 
   return (
-    <Card className="min-h-[200px] h-full p-5 flex flex-col hover:shadow-md transition-shadow">
+    <Card className="min-h-[160px] sm:min-h-[200px] h-full p-4 sm:p-5 flex flex-col hover:shadow-md transition-shadow">
       {/* Header */}
-      <div className="flex items-start justify-between mb-4">
-        <Link to={to} className="flex items-center gap-3 group">
+      <div className="flex items-start justify-between mb-3 sm:mb-4">
+        <Link to={to} className="flex items-center gap-2 sm:gap-3 group min-w-0 flex-1">
           <div
             className={cn(
-              'w-10 h-10 rounded-xl flex items-center justify-center border',
+              'w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center border shrink-0',
               colorStyles[color]
             )}
           >
-            {icon}
+            <span className="scale-90 sm:scale-100">{icon}</span>
           </div>
-          <h3 className="font-semibold text-slate-800 group-hover:text-violet-600 transition-colors">
+          <h3 className="font-semibold text-slate-800 group-hover:text-violet-600 transition-colors text-sm sm:text-base truncate">
             {title}
           </h3>
         </Link>
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 shrink-0 ml-2">
           {sizeSelector}
           <Link
             to={to}
@@ -126,12 +126,12 @@ export function DashboardWidget({
 
       {/* Progress bar - dold om complete eller empty med 0% */}
       {(status !== 'complete' || progress > 0) && (
-        <div className="mb-4">
-          <div className="flex items-center justify-between text-xs mb-1.5">
+        <div className="mb-3 sm:mb-4">
+          <div className="flex items-center justify-between text-xs mb-1">
             <span className="text-slate-500">{statusConfig[status].label}</span>
             {progress > 0 && <span className="font-medium text-slate-700">{progress}%</span>}
           </div>
-          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+          <div className="h-1.5 sm:h-2 bg-slate-100 rounded-full overflow-hidden">
             <div
               className={cn('h-full rounded-full transition-all duration-500', statusConfig[status].barColor)}
               style={{ width: `${progress}%` }}
@@ -152,29 +152,29 @@ export function DashboardWidget({
       </div>
 
       {/* Actions */}
-      <div className="pt-4 mt-auto border-t border-slate-100 flex gap-2">
+      <div className="pt-3 sm:pt-4 mt-auto border-t border-slate-100 flex gap-2">
         {primaryAction && (
           <Link
             to={to}
             onClick={primaryAction.onClick}
-            className="flex-1 py-2.5 px-4 text-white text-sm font-medium rounded-xl text-center transition-all duration-200 hover:opacity-90 hover:shadow-md hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-2"
+            className="flex-1 py-2 sm:py-2.5 px-3 sm:px-4 text-white text-sm font-medium rounded-lg sm:rounded-xl text-center transition-all duration-200 hover:opacity-90 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 flex items-center justify-center gap-1.5 sm:gap-2"
             style={{ 
               backgroundColor: SIDEBAR_COLOR,
               boxShadow: '0 2px 8px rgba(79, 70, 229, 0.25)'
             }}
           >
-            {primaryAction.label}
-            <ArrowRight size={16} />
+            <span className="truncate">{primaryAction.label}</span>
+            <ArrowRight size={14} className="shrink-0" />
           </Link>
         )}
         {secondaryAction && (
           <button
             onClick={secondaryAction.onClick}
             disabled={secondaryAction.disabled}
-            className="flex-1 py-2 px-3 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 flex items-center justify-center gap-2"
+            className="flex-1 py-2 px-3 border border-slate-200 text-slate-700 text-sm font-medium rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent transition-colors focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 flex items-center justify-center gap-1.5 truncate"
           >
             {secondaryAction.icon}
-            {secondaryAction.label}
+            <span className="truncate">{secondaryAction.label}</span>
           </button>
         )}
       </div>

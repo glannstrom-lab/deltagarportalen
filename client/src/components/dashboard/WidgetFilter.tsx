@@ -58,11 +58,11 @@ export const WidgetFilter = memo(function WidgetFilter({
   const totalCount = availableWidgets.length
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
+    <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 mb-4 sm:mb-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2">
-          <LayoutGrid size={18} className="text-slate-500" />
+          <LayoutGrid size={16} className="text-slate-500 sm:w-[18px] sm:h-[18px]" />
           <h3 className="text-sm font-medium text-slate-700">
             Visa moduler
           </h3>
@@ -70,25 +70,25 @@ export const WidgetFilter = memo(function WidgetFilter({
             ({visibleCount}/{totalCount})
           </span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <button
             onClick={onShowAll}
             className="text-xs text-indigo-600 hover:text-indigo-700 font-medium px-2 py-1 hover:bg-indigo-50 rounded transition-colors"
           >
-            Visa alla
+            Alla
           </button>
           <span className="text-slate-300">|</span>
           <button
             onClick={onHideAll}
             className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
           >
-            Dölj alla
+            Dölj
           </button>
         </div>
       </div>
 
-      {/* Filter buttons */}
-      <div className="flex flex-wrap gap-2">
+      {/* Filter buttons - horisontell scroll på mobil */}
+      <div className="flex gap-2 overflow-x-auto pb-2 -mx-3 px-3 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible sm:pb-0 scrollbar-hide">
         {availableWidgets.map((widget) => {
           const Icon = widget.icon
           const isVisible = visibleWidgets.includes(widget.id)
@@ -98,14 +98,14 @@ export const WidgetFilter = memo(function WidgetFilter({
               key={widget.id}
               onClick={() => onToggleWidget(widget.id)}
               className={cn(
-                'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200',
+                'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shrink-0',
                 isVisible
                   ? `${widget.color} border border-current opacity-100`
                   : 'bg-slate-100 text-slate-400 border border-transparent opacity-60 hover:opacity-80'
               )}
               title={isVisible ? 'Klicka för att dölja' : 'Klicka för att visa'}
             >
-              <Icon size={14} />
+              <Icon size={12} className="sm:w-[14px] sm:h-[14px]" />
               <span>{widget.label}</span>
               {isVisible && (
                 <span className="ml-0.5 w-1.5 h-1.5 rounded-full bg-current opacity-60" />
@@ -115,8 +115,8 @@ export const WidgetFilter = memo(function WidgetFilter({
         })}
       </div>
 
-      {/* Hint */}
-      <p className="text-xs text-slate-400 mt-3">
+      {/* Hint - endast desktop */}
+      <p className="hidden sm:block text-xs text-slate-400 mt-3">
         Klicka på en modul för att visa eller dölja den. Ändra storlek på varje widget med ikonen uppe till höger.
       </p>
     </div>

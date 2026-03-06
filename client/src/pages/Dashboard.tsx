@@ -189,11 +189,11 @@ export default function Dashboard() {
       <MobileOptimizer />
 
       {/* Välkomstmeddelande */}
-      <div className="mb-6">
-        <h1 className="text-xl font-semibold text-slate-800">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-lg sm:text-xl font-semibold text-slate-800">
           Hej{user?.firstName ? `, ${user.firstName}` : ''}! 👋
         </h1>
-        <p className="text-slate-500 text-sm mt-1">
+        <p className="text-slate-500 text-sm mt-0.5 sm:mt-1">
           Här är din översikt för idag.
         </p>
       </div>
