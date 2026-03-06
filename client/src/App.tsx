@@ -173,7 +173,7 @@ function App() {
           </RouteErrorBoundary>
         } />
         <Route path="jobs" element={<Navigate to="/job-search" replace />} />
-        <Route path="job-tracker" element=
+        <Route path="job-tracker" element={
           <RouteErrorBoundary>
             <JobTracker />
           </RouteErrorBoundary>
