@@ -2,8 +2,8 @@ import { useState } from 'react'
 import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap } from 'lucide-react'
 
 interface AIWritingAssistantProps {
-  text: string
-  onApply: (newText: string) => void
+  content: string
+  onChange: (newText: string) => void
   type: 'summary' | 'experience' | 'skills'
 }
 
@@ -60,7 +60,7 @@ async function callOpenRouter(prompt: string): Promise<string> {
   return data.choices?.[0]?.message?.content?.trim() || ''
 }
 
-export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantProps) {
+export function AIWritingAssistant({ content, onChange, type }: AIWritingAssistantProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -68,15 +68,15 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
   const [activeFeature, setActiveFeature] = useState<'improve' | 'quantify' | 'translate' | null>(null)
 
   const analyzeText = () => {
-    if (!text) return [];
+    if (!content) return [];
     const foundWeakWords = powerWords.filter(pw => 
-      text.toLowerCase().includes(pw.weak?.toLowerCase())
+      content.toLowerCase().includes(pw.weak?.toLowerCase())
     )
     return foundWeakWords
   }
 
   const improveWithAI = async () => {
-    if (!text.trim()) {
+    if (!content?.trim()) {
       setError('Skriv något först innan du använder AI-förbättring.')
       return
     }
@@ -86,7 +86,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
     setActiveFeature('improve')
 
     try {
-      const prompt = `Förbättra följande CV-text för att göra den mer professionell och slagkraftig. Använd starka action-verb och konkreta formuleringar. Behåll samma betydelse men gör den mer övertygande:\n\n"${text}"\n\nGe bara den förbättrade texten, inga förklaringar. Max 3-4 meningar.`
+      const prompt = `Förbättra följande CV-text för att göra den mer professionell och slagkraftig. Använd starka action-verb och konkreta formuleringar. Behåll samma betydelse men gör den mer övertygande:\n\n"${content}"\n\nGe bara den förbättrade texten, inga förklaringar. Max 3-4 meningar.`
       
       const improved = await callOpenRouter(prompt)
       setSuggestion(improved)
@@ -99,7 +99,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
   }
 
   const quantifyWithAI = async () => {
-    if (!text.trim()) {
+    if (!content?.trim()) {
       setError('Skriv något först innan du använder AI-förbättring.')
       return
     }
@@ -109,7 +109,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
     setActiveFeature('quantify')
 
     try {
-      const prompt = `Omskriv följande CV-text för att inkludera mätbara resultat och konkreta siffror där det är möjligt. Gör den mer resultatorienterad:\n\n"${text}"\n\nGe bara den förbättrade texten, inga förklaringar.`
+      const prompt = `Omskriv följande CV-text för att inkludera mätbara resultat och konkreta siffror där det är möjligt. Gör den mer resultatorienterad:\n\n"${content}"\n\nGe bara den förbättrade texten, inga förklaringar.`
       
       const quantified = await callOpenRouter(prompt)
       setSuggestion(quantified)
@@ -122,7 +122,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
   }
 
   const translateToEnglish = async () => {
-    if (!text.trim()) {
+    if (!content?.trim()) {
       setError('Skriv något först innan du översätter.')
       return
     }
@@ -132,7 +132,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
     setActiveFeature('translate')
 
     try {
-      const prompt = `Översätt följande CV-text från svenska till engelska. Använd professionell CV-terminologi:\n\n"${text}"\n\nGe bara den översatta texten, inga förklaringar.`
+      const prompt = `Översätt följande CV-text från svenska till engelska. Använd professionell CV-terminologi:\n\n"${content}"\n\nGe bara den översatta texten, inga förklaringar.`
       
       const translated = await callOpenRouter(prompt)
       setSuggestion(translated)
@@ -153,11 +153,11 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
       let prompt = ''
       
       if (type === 'summary') {
-        prompt = `Skriv en professionell sammanfattning för ett CV baserat på följande information. Gör den slagkraftig och resultatorienterad:\n\n"${text}"\n\nGe bara texten, max 3-4 meningar.`
+        prompt = `Skriv en professionell sammanfattning för ett CV baserat på följande information. Gör den slagkraftig och resultatorienterad:\n\n"${content}"\n\nGe bara texten, max 3-4 meningar.`
       } else if (type === 'experience') {
-        prompt = `Skriv en professionell arbetsbeskrivning för ett CV baserat på följande. Använd starka verb och mätbara resultat:\n\n"${text}"\n\nGe bara texten, max 3-4 meningar.`
+        prompt = `Skriv en professionell arbetsbeskrivning för ett CV baserat på följande. Använd starka verb och mätbara resultat:\n\n"${content}"\n\nGe bara texten, max 3-4 meningar.`
       } else if (type === 'skills') {
-        prompt = `Formulera om följande kompetenser för ett CV. Gör dem mer professionella och CV-anpassade:\n\n"${text}"\n\nGe bara en komma-separerad lista.`
+        prompt = `Formulera om följande kompetenser för ett CV. Gör dem mer professionella och CV-anpassade:\n\n"${content}"\n\nGe bara en komma-separerad lista.`
       }
 
       const result = await callOpenRouter(prompt)
@@ -171,11 +171,11 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
   }
 
   const applyPowerWords = () => {
-    let improved = text
+    let improved = content || ''
     powerWords.forEach(({ weak, strong }) => {
       improved = improved.replace(new RegExp(weak, 'gi'), strong)
     })
-    onApply(improved)
+    onChange(improved)
   }
 
   const weakWords = analyzeText()
@@ -267,7 +267,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
                 <div className="flex gap-2 mt-2">
                   <button
                     onClick={() => {
-                      onApply(suggestion)
+                      onChange(suggestion)
                       setSuggestion('')
                       setActiveFeature(null)
                     }}
@@ -289,7 +289,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
             ) : (
               <button
                 onClick={generateSuggestion}
-                disabled={loading || !text.trim()}
+                disabled={loading || !content?.trim()}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 disabled:opacity-50"
               >
                 {loading ? (
@@ -300,7 +300,7 @@ export function AIWritingAssistant({ text, onApply, type }: AIWritingAssistantPr
                 ) : (
                   <>
                     <Sparkles size={16} />
-                    {text.trim() ? 'Generera nytt förslag' : 'Skriv något först'}
+                    {content?.trim() ? 'Generera nytt förslag' : 'Skriv något först'}
                   </>
                 )}
               </button>
