@@ -252,7 +252,7 @@ CREATE POLICY "Users can CRUD own saved jobs" ON saved_jobs
   FOR ALL
   TO authenticated
   USING (auth.uid() = user_id)
-  WITH CHECK (auth.uid() = user.id);
+  WITH CHECK (auth.uid() = user_id);
 
 -- ============================================
 -- INDEXES
