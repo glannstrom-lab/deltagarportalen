@@ -3,7 +3,7 @@ import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
   Linkedin, Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
-  Lightbulb, Target
+  Lightbulb, Target, Share2
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -583,15 +583,6 @@ export default function CVBuilder() {
           <button onClick={() => setShowLinkedInImport(true)} className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm border border-[#0077B5] text-[#0077B5] rounded-lg hover:bg-[#0077B5]/5">
             <Linkedin className="w-4 h-4" /> Importera
           </button>
-          <PDFExportButton type="cv" data={{
-            personalInfo: { firstName: data.firstName, lastName: data.lastName, email: data.email, phone: data.phone, city: data.location },
-            summary: data.summary,
-            experience: data.workExperience.map(w => ({ title: w.title, company: w.company, location: w.location, startDate: w.startDate, endDate: w.endDate, current: w.current, description: w.description })),
-            education: data.education.map(e => ({ degree: e.degree, school: e.school, location: e.location, startDate: e.startDate, endDate: e.endDate, description: e.description })),
-            skills: data.skills.map(s => s.name),
-            languages: data.languages.map(l => ({ language: l.name, level: l.level })),
-            certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
-          }} variant="outline" size="md" />
           <button onClick={save} disabled={saving} className="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] disabled:opacity-50 text-sm font-medium">
             <Save className="w-4 h-4" />
             {saving ? 'Sparar...' : 'Spara'}
@@ -645,14 +636,36 @@ export default function CVBuilder() {
 
         {/* Right: Preview + Tools (desktop) */}
         <div className="hidden lg:block space-y-6">
-          {/* Preview */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-            <div className="p-4 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
-              <h3 className="font-semibold text-slate-700">Förhandsvisning</h3>
-              <CVShare onShare={async () => await cvApi.shareCV()} />
-            </div>
-            <div className="max-h-[600px] overflow-y-auto p-6">
+          {/* Preview - Clean A4 look */}
+          <div className="bg-slate-100 rounded-2xl p-6">
+            <div className="bg-white shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
               <CVPreview data={data} />
+            </div>
+          </div>
+
+          {/* Share & Export */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+            <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+              <Share2 className="w-5 h-5 text-[#4f46e5]" />
+              Dela & Exportera
+            </h3>
+            <div className="space-y-3">
+              <CVShare onShare={async () => await cvApi.shareCV()} />
+              <PDFExportButton 
+                type="cv" 
+                data={{
+                  personalInfo: { firstName: data.firstName, lastName: data.lastName, email: data.email, phone: data.phone, city: data.location },
+                  summary: data.summary,
+                  experience: data.workExperience.map(w => ({ title: w.title, company: w.company, location: w.location, startDate: w.startDate, endDate: w.endDate, current: w.current, description: w.description })),
+                  education: data.education.map(e => ({ degree: e.degree, school: e.school, location: e.location, startDate: e.startDate, endDate: e.endDate, description: e.description })),
+                  skills: data.skills.map(s => s.name),
+                  languages: data.languages.map(l => ({ language: l.name, level: l.level })),
+                  certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
+                }} 
+                variant="primary" 
+                size="md" 
+                className="w-full"
+              />
             </div>
           </div>
 
