@@ -1,37 +1,40 @@
 import { useState, useEffect, useRef } from 'react'
 import { cvApi } from '@/services/api'
 import { 
-  Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, 
-  Linkedin, Save, Check, Layout, Type, Palette, Sparkles, 
-  Briefcase, GraduationCap, Code, Building2
+  Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
+  Linkedin, Wand2, FileDown, Share2, Sparkles, Layout, Type, Palette,
+  Briefcase, GraduationCap, Award, Link2, Users, Loader2, CheckCircle2
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
 import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
+import { CVShare } from '@/components/cv/CVShare'
 import { cn } from '@/lib/utils'
-import type { CVData } from '@/services/mockApi'
+import type { CVData, CVVersion } from '@/services/mockApi'
 
 // ============================================
-// FÖRENKLADE STEG (5 steg)
+// STEG
 // ============================================
 const STEPS = [
-  { id: 1, title: 'Design', description: 'Välj mall och färger' },
-  { id: 2, title: 'Om dig', description: 'Dina uppgifter' },
+  { id: 1, title: 'Design', description: 'Mall och färger' },
+  { id: 2, title: 'Om dig', description: 'Kontaktuppgifter' },
   { id: 3, title: 'Profil', description: 'Sammanfattning' },
   { id: 4, title: 'Erfarenhet', description: 'Jobb & utbildning' },
-  { id: 5, title: 'Färdigheter', description: 'Kompetenser' },
+  { id: 5, title: 'Kompetenser', description: 'Skills & övrigt' },
 ] as const
 
-// Mallar - förenklat
+// Mallar
 const TEMPLATES = [
-  { id: 'modern', name: 'Modern', icon: Layout, color: '#4f46e5', desc: 'Clean & professionell' },
-  { id: 'classic', name: 'Klassisk', icon: Type, color: '#1e293b', desc: 'Traditionell' },
-  { id: 'creative', name: 'Kreativ', icon: Palette, color: '#ec4899', desc: 'Unik design' },
-  { id: 'minimal', name: 'Minimal', icon: Sparkles, color: '#0f172a', desc: 'Enkel & luftig' },
+  { id: 'modern', name: 'Modern', desc: 'Clean & professionell', color: '#4f46e5' },
+  { id: 'classic', name: 'Klassisk', desc: 'Traditionell', color: '#1e293b' },
+  { id: 'creative', name: 'Kreativ', desc: 'Unik design', color: '#ec4899' },
+  { id: 'minimal', name: 'Minimal', desc: 'Enkel & luftig', color: '#0f172a' },
+  { id: 'tech', name: 'Tech', desc: 'För IT & utvecklare', color: '#0891b2' },
+  { id: 'executive', name: 'Executive', desc: 'För ledare', color: '#1e3a5f' },
 ]
 
-// Färger - förenklat
+// Färger
 const COLORS = [
   { id: 'indigo', name: 'Indigo', hex: '#4f46e5' },
   { id: 'ocean', name: 'Blå', hex: '#0ea5e9' },
@@ -39,30 +42,35 @@ const COLORS = [
   { id: 'berry', name: 'Rosa', hex: '#ec4899' },
   { id: 'slate', name: 'Mörk', hex: '#1e293b' },
   { id: 'ruby', name: 'Röd', hex: '#ef4444' },
+  { id: 'amber', name: 'Orange', hex: '#f59e0b' },
+  { id: 'violet', name: 'Lila', hex: '#8b5cf6' },
 ]
 
 // Typsnitt
 const FONTS = [
-  { id: 'inter', name: 'Inter', desc: 'Modern' },
-  { id: 'georgia', name: 'Georgia', desc: 'Klassisk' },
-  { id: 'playfair', name: 'Playfair', desc: 'Elegant' },
+  { id: 'inter', name: 'Inter', desc: 'Modern sans-serif' },
+  { id: 'georgia', name: 'Georgia', desc: 'Klassisk serif' },
+  { id: 'playfair', name: 'Playfair', desc: 'Elegant serif' },
+  { id: 'roboto', name: 'Roboto', desc: 'Clean sans-serif' },
+  { id: 'montserrat', name: 'Montserrat', desc: 'Modern geometric' },
 ]
 
 // ============================================
 // KOMPONENTER
 // ============================================
 
-function StepDots({ currentStep, totalSteps, onStepClick }: { 
+function StepDots({ currentStep, totalSteps, onStepClick, completedSteps }: { 
   currentStep: number
   totalSteps: number
-  onStepClick: (step: number) => void 
+  onStepClick: (step: number) => void
+  completedSteps: number[]
 }) {
   return (
     <div className="flex items-center justify-center gap-2">
       {Array.from({ length: totalSteps }).map((_, i) => {
         const stepNum = i + 1
         const isActive = stepNum === currentStep
-        const isCompleted = stepNum < currentStep
+        const isCompleted = completedSteps.includes(stepNum)
         
         return (
           <button
@@ -73,12 +81,112 @@ function StepDots({ currentStep, totalSteps, onStepClick }: {
               isActive 
                 ? "w-6 bg-[#4f46e5]" 
                 : isCompleted 
-                  ? "w-2 bg-[#4f46e5]"
+                  ? "w-2 bg-green-500"
                   : "w-2 bg-slate-300"
             )}
           />
         )
       })}
+    </div>
+  )
+}
+
+function DesktopSidebar({ 
+  currentStep, 
+  onStepClick, 
+  completedSteps,
+  onShowTools,
+  onShowVersions
+}: { 
+  currentStep: number
+  onStepClick: (step: number) => void
+  completedSteps: number[]
+  onShowTools: () => void
+  onShowVersions: () => void
+}) {
+  return (
+    <div className="space-y-4">
+      {/* Steg */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+        <h3 className="font-semibold text-slate-800 mb-4 px-2">Ditt CV</h3>
+        <nav className="space-y-1">
+          {STEPS.map((step) => {
+            const isActive = step.id === currentStep
+            const isCompleted = completedSteps.includes(step.id)
+            
+            return (
+              <button
+                key={step.id}
+                onClick={() => onStepClick(step.id)}
+                className={cn(
+                  "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-left",
+                  isActive 
+                    ? "bg-[#4f46e5] text-white shadow-md" 
+                    : isCompleted
+                      ? "text-slate-700 hover:bg-slate-50"
+                      : "text-slate-500 hover:bg-slate-50"
+                )}
+              >
+                <div className={cn(
+                  "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-sm font-semibold",
+                  isActive 
+                    ? "bg-white/20" 
+                    : isCompleted
+                      ? "bg-green-100 text-green-600"
+                      : "bg-slate-100"
+                )}>
+                  {isCompleted && !isActive ? (
+                    <CheckCircle2 className="w-4 h-4" />
+                  ) : (
+                    step.id
+                  )}
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className={cn("font-medium text-sm truncate", isActive ? "text-white" : "text-slate-800")}>
+                    {step.title}
+                  </p>
+                  <p className={cn("text-xs truncate", isActive ? "text-white/70" : "text-slate-500")}>
+                    {step.description}
+                  </p>
+                </div>
+              </button>
+            )
+          })}
+        </nav>
+      </div>
+
+      {/* Tools */}
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+        <h3 className="font-semibold text-slate-800 mb-3 px-2">Verktyg</h3>
+        <div className="space-y-2">
+          <button 
+            onClick={onShowTools}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-left"
+          >
+            <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center text-violet-600">
+              <Wand2 className="w-4 h-4" />
+            </div>
+            <span className="text-sm font-medium text-slate-700">AI-hjälp</span>
+          </button>
+          <button 
+            onClick={onShowVersions}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-left"
+          >
+            <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
+              <Save className="w-4 h-4" />
+            </div>
+            <span className="text-sm font-medium text-slate-700">Versioner</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Card({ children, className }: { children: React.ReactNode; className?: string }) {
+  return (
+    <div className={cn("bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6", className)}>
+      {children}
     </div>
   )
 }
@@ -104,14 +212,6 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
   )
 }
 
-function Card({ children, className }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={cn("bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-6", className)}>
-      {children}
-    </div>
-  )
-}
-
 // ============================================
 // HUVUDKOMPONENT
 // ============================================
@@ -120,6 +220,11 @@ export default function CVBuilder() {
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [showLinkedInImport, setShowLinkedInImport] = useState(false)
+  const [showTools, setShowTools] = useState(false)
+  const [showVersions, setShowVersions] = useState(false)
+  const [versions, setVersions] = useState<CVVersion[]>([])
+  const [showSaveVersion, setShowSaveVersion] = useState(false)
+  const [versionName, setVersionName] = useState('')
   
   const [data, setData] = useState<CVData>({
     firstName: '', lastName: '', title: '', email: '', phone: '', location: '',
@@ -128,12 +233,28 @@ export default function CVBuilder() {
     template: 'modern', colorScheme: 'indigo', font: 'inter',
   })
 
-  useEffect(() => { loadCV() }, [])
+  // Beräkna klara steg
+  const completedSteps = [
+    1, // Design alltid klar
+    !!(data.firstName && data.lastName) && 2,
+    !!data.summary && 3,
+    (data.workExperience.length > 0 || data.education.length > 0) && 4,
+    data.skills.length > 0 && 5,
+  ].filter(Boolean) as number[]
+
+  useEffect(() => { loadCV(); loadVersions() }, [])
 
   const loadCV = async () => {
     try {
       const cv = await cvApi.getCV()
-      if (cv) setData({ ...data, ...cv })
+      if (cv) setData(prev => ({ ...prev, ...cv }))
+    } catch (e) { console.error(e) }
+  }
+
+  const loadVersions = async () => {
+    try {
+      const v = await cvApi.getVersions()
+      setVersions(v || [])
     } catch (e) { console.error(e) }
   }
 
@@ -144,6 +265,47 @@ export default function CVBuilder() {
       alert('Sparat!')
     } catch { alert('Kunde inte spara') }
     finally { setSaving(false) }
+  }
+
+  const saveVersion = async () => {
+    if (!versionName.trim()) return
+    try {
+      await cvApi.saveVersion(versionName.trim(), data)
+      await loadVersions()
+      setVersionName('')
+      setShowSaveVersion(false)
+      alert('Version sparad!')
+    } catch { alert('Kunde inte spara version') }
+  }
+
+  const restoreVersion = async (versionId: string) => {
+    if (!confirm('Detta ersätter ditt nuvarande CV. Fortsätta?')) return
+    try {
+      const restored = await cvApi.restoreVersion(versionId)
+      setData(prev => ({ ...prev, ...restored }))
+      alert('Version återställd!')
+    } catch { alert('Kunde inte återställa') }
+  }
+
+  const loadDemoData = () => {
+    if (!confirm('Fylla i med exempeldata?')) return
+    setData({
+      ...data,
+      firstName: 'Anna', lastName: 'Andersson', title: 'Projektledare',
+      email: 'anna@example.com', phone: '070-123 45 67', location: 'Stockholm',
+      summary: 'Erfaren projektledare med passion för att skapa effektiva team.',
+      skills: [
+        { id: '1', name: 'Projektledning', level: 5, category: 'technical' },
+        { id: '2', name: 'Agila metoder', level: 4, category: 'technical' },
+        { id: '3', name: 'Kommunikation', level: 5, category: 'soft' },
+      ],
+      workExperience: [
+        { id: '1', company: 'Tech AB', title: 'Projektledare', location: 'Stockholm', startDate: '2021-01', endDate: '', current: true, description: 'Leder utvecklingsteam' },
+      ],
+      education: [
+        { id: '1', school: 'Stockholms Universitet', degree: 'Kandidatexamen', field: 'Informatik', location: 'Stockholm', startDate: '2015-08', endDate: '2018-05', description: '' },
+      ],
+    })
   }
 
   // Array helpers
@@ -160,12 +322,22 @@ export default function CVBuilder() {
   // STEG 1: DESIGN
   const renderStep1 = () => (
     <div className="space-y-6">
-      {/* Mallar - en per rad på mobil */}
+      {/* Demo-knapp */}
+      <div className="flex justify-end">
+        <button
+          onClick={loadDemoData}
+          className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
+        >
+          <Sparkles className="w-4 h-4" />
+          Fyll med exempeldata
+        </button>
+      </div>
+
+      {/* Mallar */}
       <Card>
         <h3 className="font-semibold text-slate-800 mb-4">Välj mall</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {TEMPLATES.map((t) => {
-            const Icon = t.icon
             const selected = data.template === t.id
             return (
               <button
@@ -173,21 +345,19 @@ export default function CVBuilder() {
                 onClick={() => setData({ ...data, template: t.id })}
                 className={cn(
                   "flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all",
-                  selected 
-                    ? "border-[#4f46e5] bg-[#eef2ff]" 
-                    : "border-slate-200 hover:border-slate-300"
+                  selected ? "border-[#4f46e5] bg-[#eef2ff]" : "border-slate-200 hover:border-slate-300"
                 )}
               >
                 <div 
                   className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
                   style={{ backgroundColor: selected ? t.color : '#f1f5f9', color: selected ? 'white' : '#64748b' }}
                 >
-                  <Icon size={24} />
+                  <Layout className="w-6 h-6" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <h4 className="font-semibold text-slate-800">{t.name}</h4>
-                    {selected && <Check size={16} className="text-[#4f46e5]" />}
+                    {selected && <Check className="w-4 h-4 text-[#4f46e5]" />}
                   </div>
                   <p className="text-sm text-slate-500">{t.desc}</p>
                 </div>
@@ -197,10 +367,10 @@ export default function CVBuilder() {
         </div>
       </Card>
 
-      {/* Färger - 3 per rad på mobil */}
+      {/* Färger */}
       <Card>
         <h3 className="font-semibold text-slate-800 mb-4">Färg</h3>
-        <div className="grid grid-cols-3 sm:grid-cols-6 gap-3">
+        <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
           {COLORS.map((c) => {
             const selected = data.colorScheme === c.id
             return (
@@ -208,7 +378,7 @@ export default function CVBuilder() {
                 key={c.id}
                 onClick={() => setData({ ...data, colorScheme: c.id })}
                 className={cn(
-                  "flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all",
+                  "flex flex-col items-center gap-2 p-2 rounded-xl border-2 transition-all",
                   selected ? "border-[#4f46e5] bg-[#eef2ff]" : "border-slate-200 hover:border-slate-300"
                 )}
               >
@@ -223,7 +393,7 @@ export default function CVBuilder() {
         </div>
       </Card>
 
-      {/* Typsnitt - en per rad */}
+      {/* Typsnitt */}
       <Card>
         <h3 className="font-semibold text-slate-800 mb-4">Typsnitt</h3>
         <div className="space-y-2">
@@ -235,18 +405,16 @@ export default function CVBuilder() {
                 onClick={() => setData({ ...data, font: f.id })}
                 className={cn(
                   "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all",
-                  selected 
-                    ? "border-[#4f46e5] bg-[#eef2ff]" 
-                    : "border-slate-200 hover:border-slate-300"
+                  selected ? "border-[#4f46e5] bg-[#eef2ff]" : "border-slate-200 hover:border-slate-300"
                 )}
               >
                 <div className="text-left">
-                  <h4 className="font-semibold text-slate-800" style={{ fontFamily: f.id === 'playfair' ? 'serif' : 'sans-serif' }}>
+                  <h4 className="font-semibold text-slate-800" style={{ fontFamily: f.id === 'playfair' || f.id === 'georgia' ? 'serif' : 'sans-serif' }}>
                     {f.name}
                   </h4>
                   <p className="text-sm text-slate-500">{f.desc}</p>
                 </div>
-                {selected && <Check size={20} className="text-[#4f46e5]" />}
+                {selected && <Check className="w-5 h-5 text-[#4f46e5]" />}
               </button>
             )
           })}
@@ -260,8 +428,8 @@ export default function CVBuilder() {
     <div className="space-y-4">
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="Förnamn" value={data.firstName} onChange={(v) => setData({ ...data, firstName: v })} placeholder="Anna" />
-          <Input label="Efternamn" value={data.lastName} onChange={(v) => setData({ ...data, lastName: v })} placeholder="Andersson" />
+          <Input label="Förnamn *" value={data.firstName} onChange={(v) => setData({ ...data, firstName: v })} placeholder="Anna" />
+          <Input label="Efternamn *" value={data.lastName} onChange={(v) => setData({ ...data, lastName: v })} placeholder="Andersson" />
         </div>
       </Card>
       <Card>
@@ -308,36 +476,42 @@ export default function CVBuilder() {
           <h3 className="font-semibold text-slate-800">Arbetslivserfarenhet</h3>
           <button
             onClick={() => add(data.workExperience, { id: Date.now().toString(), company: '', title: '', location: '', startDate: '', endDate: '', current: false, description: '' }, 'workExperience')}
-            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg"
+            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"
           >
-            <Plus size={16} /> Lägg till
+            <Plus className="w-4 h-4" /> Lägg till
           </button>
         </div>
         {data.workExperience.length === 0 ? (
-          <p className="text-slate-500 text-sm py-4 text-center">Inga jobb tillagda ännu</p>
+          <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
+            <Briefcase className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+            <p className="text-slate-500 text-sm">Inga jobb tillagda ännu</p>
+            <button
+              onClick={() => add(data.workExperience, { id: Date.now().toString(), company: '', title: '', location: '', startDate: '', endDate: '', current: false, description: '' }, 'workExperience')}
+              className="mt-2 text-[#4f46e5] text-sm font-medium hover:underline"
+            >
+              + Lägg till första jobbet
+            </button>
+          </div>
         ) : (
           <div className="space-y-3">
             {data.workExperience.map((exp, i) => (
-              <div key={exp.id} className="p-4 bg-slate-50 rounded-xl">
-                <div className="flex items-center justify-between mb-2">
+              <div key={exp.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-slate-500">Jobb {i + 1}</span>
                   <button onClick={() => remove(data.workExperience, exp.id, 'workExperience')} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg">
-                    <Trash2 size={16} />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input 
-                    value={exp.company} 
-                    onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'company', e.target.value)}
-                    placeholder="Företag"
-                    className="px-3 py-2 border border-slate-200 rounded-lg text-sm"
-                  />
-                  <input 
-                    value={exp.title} 
-                    onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'title', e.target.value)}
-                    placeholder="Titel"
-                    className="px-3 py-2 border border-slate-200 rounded-lg text-sm"
-                  />
+                <div className="space-y-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <input value={exp.company} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'company', e.target.value)} placeholder="Företag" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                    <input value={exp.title} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'title', e.target.value)} placeholder="Titel/roll" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <input value={exp.startDate} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'startDate', e.target.value)} placeholder="Start (t.ex. 2021-01)" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                    <input value={exp.endDate} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'endDate', e.target.value)} placeholder="Slut (eller 'Nuvarande')" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                  </div>
+                  <textarea value={exp.description} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'description', e.target.value)} placeholder="Beskriv dina arbetsuppgifter..." rows={3} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none" />
                 </div>
               </div>
             ))}
@@ -351,36 +525,29 @@ export default function CVBuilder() {
           <h3 className="font-semibold text-slate-800">Utbildning</h3>
           <button
             onClick={() => add(data.education, { id: Date.now().toString(), school: '', degree: '', field: '', location: '', startDate: '', endDate: '', description: '' }, 'education')}
-            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg"
+            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"
           >
-            <Plus size={16} /> Lägg till
+            <Plus className="w-4 h-4" /> Lägg till
           </button>
         </div>
         {data.education.length === 0 ? (
-          <p className="text-slate-500 text-sm py-4 text-center">Inga utbildningar tillagda ännu</p>
+          <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
+            <GraduationCap className="w-10 h-10 text-slate-300 mx-auto mb-2" />
+            <p className="text-slate-500 text-sm">Inga utbildningar tillagda ännu</p>
+          </div>
         ) : (
           <div className="space-y-3">
             {data.education.map((edu, i) => (
-              <div key={edu.id} className="p-4 bg-slate-50 rounded-xl">
-                <div className="flex items-center justify-between mb-2">
+              <div key={edu.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100">
+                <div className="flex items-center justify-between mb-3">
                   <span className="text-sm font-medium text-slate-500">Utbildning {i + 1}</span>
                   <button onClick={() => remove(data.education, edu.id, 'education')} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg">
-                    <Trash2 size={16} />
+                    <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input 
-                    value={edu.school} 
-                    onChange={(e) => update(data.education, edu.id, 'education', 'school', e.target.value)}
-                    placeholder="Skola"
-                    className="px-3 py-2 border border-slate-200 rounded-lg text-sm"
-                  />
-                  <input 
-                    value={edu.degree} 
-                    onChange={(e) => update(data.education, edu.id, 'education', 'degree', e.target.value)}
-                    placeholder="Examen"
-                    className="px-3 py-2 border border-slate-200 rounded-lg text-sm"
-                  />
+                  <input value={edu.school} onChange={(e) => update(data.education, edu.id, 'education', 'school', e.target.value)} placeholder="Skola/Universitet" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                  <input value={edu.degree} onChange={(e) => update(data.education, edu.id, 'education', 'degree', e.target.value)} placeholder="Examen (t.ex. Kandidatexamen)" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 </div>
               </div>
             ))}
@@ -390,46 +557,37 @@ export default function CVBuilder() {
     </div>
   )
 
-  // STEG 5: FÄRDIGHETER
+  // STEG 5: KOMPETENSER
   const renderStep5 = () => (
     <div className="space-y-4">
+      {/* Skills */}
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Kompetenser</h3>
           <button
             onClick={() => add(data.skills, { id: Date.now().toString(), name: '', level: 3, category: 'technical' }, 'skills')}
-            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg"
+            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"
           >
-            <Plus size={16} /> Lägg till
+            <Plus className="w-4 h-4" /> Lägg till
           </button>
         </div>
         {data.skills.length === 0 ? (
-          <p className="text-slate-500 text-sm py-4 text-center">Inga kompetenser tillagda ännu</p>
+          <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
+            <p className="text-slate-500 text-sm">Inga kompetenser tillagda</p>
+          </div>
         ) : (
           <div className="space-y-2">
             {data.skills.map((skill) => (
               <div key={skill.id} className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={skill.name}
-                  onChange={(e) => update(data.skills, skill.id, 'skills', 'name', e.target.value)}
-                  placeholder="Kompetens"
-                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
-                />
-                <select
-                  value={skill.level}
-                  onChange={(e) => update(data.skills, skill.id, 'skills', 'level', parseInt(e.target.value))}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-20"
-                >
-                  <option value={1}>1</option>
-                  <option value={2}>2</option>
-                  <option value={3}>3</option>
-                  <option value={4}>4</option>
-                  <option value={5}>5</option>
+                <input type="text" value={skill.name} onChange={(e) => update(data.skills, skill.id, 'skills', 'name', e.target.value)} placeholder="Kompetens" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <select value={skill.level} onChange={(e) => update(data.skills, skill.id, 'skills', 'level', parseInt(e.target.value))} className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-24">
+                  <option value={1}>1/5</option>
+                  <option value={2}>2/5</option>
+                  <option value={3}>3/5</option>
+                  <option value={4}>4/5</option>
+                  <option value={5}>5/5</option>
                 </select>
-                <button onClick={() => remove(data.skills, skill.id, 'skills')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
-                  <Trash2 size={16} />
-                </button>
+                <button onClick={() => remove(data.skills, skill.id, 'skills')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
           </div>
@@ -440,37 +598,57 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Språk</h3>
-          <button
-            onClick={() => add(data.languages, { id: Date.now().toString(), name: '', level: 'God' }, 'languages')}
-            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg"
-          >
-            <Plus size={16} /> Lägg till
-          </button>
+          <button onClick={() => add(data.languages, { id: Date.now().toString(), name: '', level: 'God' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
             {data.languages.map((lang) => (
               <div key={lang.id} className="flex items-center gap-3">
-                <input
-                  type="text"
-                  value={lang.name}
-                  onChange={(e) => update(data.languages, lang.id, 'languages', 'name', e.target.value)}
-                  placeholder="Språk"
-                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
-                />
-                <select
-                  value={lang.level}
-                  onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)}
-                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-32"
-                >
+                <input type="text" value={lang.name} onChange={(e) => update(data.languages, lang.id, 'languages', 'name', e.target.value)} placeholder="Språk" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <select value={lang.level} onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)} className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-32">
                   <option value="Grundläggande">Grundläggande</option>
                   <option value="God">God</option>
                   <option value="Flytande">Flytande</option>
                   <option value="Modersmål">Modersmål</option>
                 </select>
-                <button onClick={() => remove(data.languages, lang.id, 'languages')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg">
-                  <Trash2 size={16} />
-                </button>
+                <button onClick={() => remove(data.languages, lang.id, 'languages')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Certifikat */}
+      <Card>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-slate-800">Certifikat</h3>
+          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
+        </div>
+        {data.certificates.length > 0 && (
+          <div className="space-y-2">
+            {data.certificates.map((cert) => (
+              <div key={cert.id} className="flex items-center gap-3">
+                <input type="text" value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder="Certifikatnamn" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <button onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+              </div>
+            ))}
+          </div>
+        )}
+      </Card>
+
+      {/* Länkar */}
+      <Card>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold text-slate-800">Länkar</h3>
+          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
+        </div>
+        {data.links.length > 0 && (
+          <div className="space-y-2">
+            {data.links.map((link) => (
+              <div key={link.id} className="flex items-center gap-3">
+                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder="Titel (t.ex. LinkedIn)" className="w-1/3 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <input type="url" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <button onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
           </div>
@@ -490,19 +668,80 @@ export default function CVBuilder() {
     }
   }
 
+  // Tools Panel (desktop sidebar)
+  const ToolsPanel = () => (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+      <h3 className="font-semibold text-slate-800 mb-4">AI & Verktyg</h3>
+      <div className="space-y-3">
+        <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
+      </div>
+    </div>
+  )
+
+  // Versions Panel
+  const VersionsPanel = () => (
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+      <h3 className="font-semibold text-slate-800 mb-4">Versioner</h3>
+      
+      {showSaveVersion ? (
+        <div className="space-y-2 mb-4">
+          <input 
+            type="text" 
+            value={versionName} 
+            onChange={(e) => setVersionName(e.target.value)}
+            placeholder="Namn på version..."
+            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+          />
+          <div className="flex gap-2">
+            <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-[#4f46e5] text-white text-sm rounded-lg">Spara</button>
+            <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-slate-300 text-sm rounded-lg">Avbryt</button>
+          </div>
+        </div>
+      ) : (
+        <button 
+          onClick={() => setShowSaveVersion(true)}
+          className="w-full mb-4 px-4 py-2 border border-[#4f46e5] text-[#4f46e5] rounded-lg text-sm hover:bg-[#4f46e5]/5"
+        >
+          + Spara nuvarande version
+        </button>
+      )}
+
+      <div className="space-y-2 max-h-48 overflow-y-auto">
+        {versions.length === 0 ? (
+          <p className="text-sm text-slate-400 text-center py-4">Inga sparade versioner</p>
+        ) : (
+          versions.map((v) => (
+            <div key={v.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+              <div>
+                <p className="text-sm font-medium text-slate-800">{v.name}</p>
+                <p className="text-xs text-slate-500">{new Date(v.createdAt).toLocaleDateString('sv-SE')}</p>
+              </div>
+              <button 
+                onClick={() => restoreVersion(v.id)}
+                className="text-xs text-[#4f46e5] hover:bg-[#4f46e5]/10 px-2 py-1 rounded"
+              >
+                Återställ
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  )
+
   const currentStep = STEPS.find(s => s.id === step)!
 
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Skapa CV</h1>
           <p className="text-slate-600 text-sm">Steg {step} av {STEPS.length}: {currentStep.title}</p>
         </div>
-        <div className="hidden sm:flex items-center gap-2">
-          <button onClick={() => setShowLinkedInImport(true)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
-            <Linkedin size={20} />
+        <div className="flex items-center gap-2">
+          <button onClick={() => setShowLinkedInImport(true)} className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm border border-[#0077B5] text-[#0077B5] rounded-lg hover:bg-[#0077B5]/5">
+            <Linkedin className="w-4 h-4" /> Importera
           </button>
           <PDFExportButton type="cv" data={{
             personalInfo: { firstName: data.firstName, lastName: data.lastName, email: data.email, phone: data.phone, city: data.location },
@@ -514,7 +753,7 @@ export default function CVBuilder() {
             certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
           }} variant="outline" size="md" />
           <button onClick={save} disabled={saving} className="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] disabled:opacity-50 text-sm font-medium">
-            <Save size={16} />
+            <Save className="w-4 h-4" />
             {saving ? 'Sparar...' : 'Spara'}
           </button>
         </div>
@@ -526,9 +765,7 @@ export default function CVBuilder() {
           <div className="absolute inset-x-0 bottom-0 top-16 bg-slate-100 rounded-t-3xl overflow-hidden flex flex-col">
             <div className="flex items-center justify-between p-4 bg-white border-b">
               <h2 className="font-semibold">Förhandsvisning</h2>
-              <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-slate-100 rounded-full">
-                <X size={24} />
-              </button>
+              <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-slate-100 rounded-full"><X className="w-6 h-6" /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
               <CVPreview data={data} />
@@ -537,13 +774,28 @@ export default function CVBuilder() {
         </div>
       )}
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left: Editor */}
-        <div>
+      {/* Main Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Left Sidebar (desktop) */}
+        <div className="hidden lg:block lg:col-span-3">
+          <div className="sticky top-4 space-y-4">
+            <DesktopSidebar 
+              currentStep={step} 
+              onStepClick={setStep} 
+              completedSteps={completedSteps}
+              onShowTools={() => setShowTools(!showTools)}
+              onShowVersions={() => setShowVersions(!showVersions)}
+            />
+            {showTools && <ToolsPanel />}
+            {showVersions && <VersionsPanel />}
+          </div>
+        </div>
+
+        {/* Center: Editor */}
+        <div className="lg:col-span-5">
           {/* Mobile Step Indicator */}
           <div className="lg:hidden mb-4">
-            <StepDots currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} />
+            <StepDots currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
           </div>
 
           {/* Form */}
@@ -553,42 +805,29 @@ export default function CVBuilder() {
 
           {/* Navigation */}
           <div className="flex items-center justify-between mt-6">
-            <button
-              onClick={() => setStep(Math.max(1, step - 1))}
-              disabled={step === 1}
-              className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 font-medium"
-            >
-              <ChevronLeft size={20} />
+            <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 font-medium">
+              <ChevronLeft className="w-5 h-5" />
               <span className="hidden sm:inline">Föregående</span>
             </button>
-            
-            <button
-              onClick={() => setShowPreview(true)}
-              className="lg:hidden flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 font-medium"
-            >
-              <Eye size={18} />
-              Visa CV
+            <button onClick={() => setShowPreview(true)} className="lg:hidden flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 font-medium">
+              <Eye className="w-4 h-4" /> Visa CV
             </button>
-            
-            <button
-              onClick={() => setStep(Math.min(STEPS.length, step + 1))}
-              disabled={step === STEPS.length}
-              className="flex items-center gap-2 px-4 py-2.5 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 font-medium"
-            >
+            <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 font-medium">
               <span className="hidden sm:inline">Nästa</span>
-              <ChevronRight size={20} />
+              <ChevronRight className="w-5 h-5" />
             </button>
           </div>
         </div>
 
-        {/* Right: Preview (Desktop only) */}
-        <div className="hidden lg:block">
+        {/* Right: Preview (desktop) */}
+        <div className="hidden lg:block lg:col-span-4">
           <div className="sticky top-4 bg-slate-100 rounded-2xl p-4 border border-slate-200">
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="p-3 border-b border-slate-100 bg-slate-50">
+              <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
                 <h3 className="font-medium text-slate-700 text-sm">Förhandsvisning</h3>
+                <CVShare onShare={async () => await cvApi.shareCV()} />
               </div>
-              <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+              <div className="max-h-[calc(100vh-250px)] overflow-y-auto">
                 <CVPreview data={data} />
               </div>
             </div>
