@@ -1,5 +1,9 @@
-import { useState, useEffect } from 'react'
-import { Search, Sparkles, TrendingUp, Filter, Briefcase, Bot, Target, GraduationCap, Map, Mic } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react'
+import { 
+  Search, Sparkles, TrendingUp, Filter, Briefcase, Bot, 
+  Target, GraduationCap, Map, Mic, Bookmark, History,
+  SlidersHorizontal, X, RotateCcw, ChevronDown
+} from 'lucide-react'
 import { jobsApi } from '@/services/api'
 import { afApi, POPULAR_QUERIES } from '@/services/arbetsformedlingenApi'
 import { JobCard } from '@/components/jobs/JobCard'
@@ -14,6 +18,32 @@ import { LoadingState, SkeletonList, ErrorState } from '@/components/ui/LoadingS
 import { InterviewPrep } from '@/components/interview/InterviewPrep'
 import type { Job, JobApplication, CVData } from '@/services/mockApi'
 import { cvApi } from '@/services/api'
+import { supabase } from '@/lib/utils'
+import { cn } from '@/lib/utils'
+
+// Sökfilter för avancerad filtrering
+const defaultFilters: JobFilterState = {
+  search: '',
+  location: '',
+  region: '',
+  employmentType: [],
+  experienceLevel: [],
+  publishedWithin: 'all',
+  minMatchPercentage: 0,
+  workArrangement: [],
+  salaryMin: 0,
+  salaryMax: 0,
+  drivingLicense: false,
+  distanceKm: 50,
+  language: [],
+}
+
+interface SavedSearch {
+  id: string
+  name: string
+  filters: JobFilterState
+  createdAt: string
+}
 
 export default function JobSearch() {
   const [jobs, setJobs] = useState<Job[]>([])
@@ -24,24 +54,28 @@ export default function JobSearch() {
   const [showModal, setShowModal] = useState(false)
   const [showMatchAnalyzer, setShowMatchAnalyzer] = useState(false)
   const [activeTab, setActiveTab] = useState<'search' | 'applications' | 'insights' | 'education' | 'interview'>('search')
+  const [showFilterPanel, setShowFilterPanel] = useState(true)
   
-  const [filters, setFilters] = useState<JobFilterState>({
-    search: '',
-    location: '',
-    region: '',
-    employmentType: [],
-    experienceLevel: [],
-    publishedWithin: 'all',
-    minMatchPercentage: 0,
-  })
+  const [filters, setFilters] = useState<JobFilterState>(defaultFilters)
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([])
+  const [recentSearches, setRecentSearches] = useState<string[]>([])
+  const [jobCountByRegion, setJobCountByRegion] = useState<Record<string, number>>({})
+  const [totalJobCount, setTotalJobCount] = useState(0)
 
+  // Ladda data vid start
   useEffect(() => {
     loadData()
+    loadSavedSearches()
+    loadRecentSearches()
   }, [])
 
+  // Sök jobb när filter ändras
   useEffect(() => {
-    searchJobsWithAPI()
-  }, [filters, cvData])
+    const timeout = setTimeout(() => {
+      searchJobsWithAPI()
+    }, 300) // Debounce 300ms
+    return () => clearTimeout(timeout)
+  }, [filters])
 
   const loadData = async () => {
     try {
@@ -51,21 +85,68 @@ export default function JobSearch() {
       ])
       setApplications(appsResult)
       setCvData(cvResult)
-      
-      // Ladda initiala jobb från Platsbanken
-      await searchJobsWithAPI()
     } catch (error) {
       console.error('Error loading data:', error)
-    } finally {
-      setLoading(false)
     }
+  }
+
+  const loadSavedSearches = () => {
+    const saved = localStorage.getItem('savedJobSearches')
+    if (saved) {
+      setSavedSearches(JSON.parse(saved))
+    }
+  }
+
+  const loadRecentSearches = () => {
+    const recent = localStorage.getItem('recentJobSearches')
+    if (recent) {
+      setRecentSearches(JSON.parse(recent))
+    }
+  }
+
+  const saveSearch = () => {
+    const name = prompt('Namnge din sökning:')
+    if (!name) return
+
+    const newSearch: SavedSearch = {
+      id: Date.now().toString(),
+      name,
+      filters: { ...filters },
+      createdAt: new Date().toISOString(),
+    }
+
+    const updated = [...savedSearches, newSearch]
+    setSavedSearches(updated)
+    localStorage.setItem('savedJobSearches', JSON.stringify(updated))
+  }
+
+  const deleteSavedSearch = (id: string) => {
+    const updated = savedSearches.filter(s => s.id !== id)
+    setSavedSearches(updated)
+    localStorage.setItem('savedJobSearches', JSON.stringify(updated))
+  }
+
+  const applySavedSearch = (savedFilters: JobFilterState) => {
+    setFilters(savedFilters)
+  }
+
+  const addToRecentSearches = (query: string) => {
+    if (!query.trim()) return
+    const updated = [query, ...recentSearches.filter(s => s !== query)].slice(0, 5)
+    setRecentSearches(updated)
+    localStorage.setItem('recentJobSearches', JSON.stringify(updated))
   }
 
   const searchJobsWithAPI = async () => {
     try {
       setLoading(true)
       
-      // Beräkna published-after datum baserat på filter
+      // Spara i recent searches om det är en ny sökning
+      if (filters.search && !recentSearches.includes(filters.search)) {
+        addToRecentSearches(filters.search)
+      }
+      
+      // Beräkna published-after datum
       let publishedAfter: string | undefined
       if (filters.publishedWithin === 'today') {
         publishedAfter = new Date().toISOString().split('T')[0]
@@ -79,17 +160,17 @@ export default function JobSearch() {
         publishedAfter = date.toISOString().split('T')[0]
       }
       
-      // Använd Arbetsförmedlingens API
+      // Hämta jobb från Arbetsförmedlingen
       const afResult = await afApi.searchJobs({
         q: filters.search,
         municipality: filters.location,
         region: filters.region,
-        employment_type: filters.employmentType[0], // API stöder en typ åt gången
+        employment_type: filters.employmentType[0],
         published_after: publishedAfter,
-        limit: 50, // Hämta fler så vi kan filtrera lokalt
+        limit: 100,
       })
       
-      // Konvertera AF-format till portalens format
+      // Konvertera till portalens format
       let convertedJobs: Job[] = (afResult.hits || []).map(ad => ({
         id: ad.id,
         title: ad.headline || 'Titel ej angiven',
@@ -108,35 +189,53 @@ export default function JobSearch() {
         publishedAt: ad.publication_date,
         deadline: ad.application_deadline || undefined,
         url: ad.application_details?.url || '#',
-        benefits: [],
+        benefits: ad.employer?.benefits || [],
         matchPercentage: undefined,
+        // Nya fält
+        workArrangement: ad.remote_work?.options || 'onsite',
+        drivingLicense: ad.must_have?.driving_license?.required || false,
       }))
       
-      // Lokal filtrering för erfarenhetsnivå (API stöder inte detta)
+      // Lokal filtrering för avancerade filter
       if (filters.experienceLevel.length > 0) {
         convertedJobs = convertedJobs.filter(job => 
           filters.experienceLevel.includes(job.experienceLevel)
         )
       }
       
-      // Lokal filtrering för matchningsprocent (om CV-data finns)
-      if (filters.minMatchPercentage > 0 && cvData) {
+      if (filters.workArrangement.length > 0) {
         convertedJobs = convertedJobs.filter(job => 
-          (job.matchPercentage || 0) >= filters.minMatchPercentage
+          filters.workArrangement.includes(job.workArrangement as any)
         )
       }
       
-      // Filtrera på flera anställningsformer (om fler än en är vald)
-      if (filters.employmentType.length > 1) {
+      if (filters.drivingLicense) {
+        convertedJobs = convertedJobs.filter(job => job.drivingLicense)
+      }
+      
+      if (filters.language.length > 0) {
         convertedJobs = convertedJobs.filter(job => 
-          filters.employmentType.includes(job.employmentType)
+          filters.language.some(lang => 
+            job.requirements.some(req => req.toLowerCase().includes(lang))
+          )
         )
       }
       
       setJobs(convertedJobs)
+      setTotalJobCount(convertedJobs.length)
+      
+      // Uppdatera jobb per region för kartan
+      const regionCount: Record<string, number> = {}
+      convertedJobs.forEach(job => {
+        const region = job.location
+        regionCount[region] = (regionCount[region] || 0) + 1
+      })
+      setJobCountByRegion(regionCount)
+      
     } catch (error) {
       console.error('Error searching with API:', error)
       setJobs([])
+      setTotalJobCount(0)
     } finally {
       setLoading(false)
     }
@@ -208,13 +307,107 @@ export default function JobSearch() {
     }
   }
 
+  const handleRegionSelect = (regionId: string) => {
+    if (regionId) {
+      const regionNames: Record<string, string> = {
+        'SE110': 'Stockholms län',
+        'SE121': 'Uppsala län',
+        'SE122': 'Södermanlands län',
+        'SE123': 'Östergötlands län',
+        'SE124': 'Örebro län',
+        'SE125': 'Västmanlands län',
+        'SE211': 'Jönköpings län',
+        'SE212': 'Kronobergs län',
+        'SE213': 'Kalmar län',
+        'SE214': 'Gotlands län',
+        'SE221': 'Blekinge län',
+        'SE224': 'Skåne län',
+        'SE231': 'Hallands län',
+        'SE232': 'Västra Götalands län',
+        'SE311': 'Värmlands län',
+        'SE312': 'Dalarnas län',
+        'SE313': 'Gävleborgs län',
+        'SE321': 'Västernorrlands län',
+        'SE322': 'Jämtlands län',
+        'SE331': 'Västerbottens län',
+        'SE332': 'Norrbottens län',
+      }
+      setFilters(prev => ({ 
+        ...prev, 
+        region: regionId,
+        regionName: regionNames[regionId] || regionId
+      }))
+    } else {
+      setFilters(prev => ({ ...prev, region: '', regionName: '' }))
+    }
+  }
+
   return (
     <div className="max-w-7xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900 mb-2">Sök jobb</h1>
-        <p className="text-slate-600">
-          Hitta lediga jobb från Platsbanken (Arbetsförmedlingen)
-        </p>
+      {/* Header */}
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Sök jobb</h1>
+            <p className="text-slate-600 mt-1">
+              Hitta lediga jobb från Platsbanken (Arbetsförmedlingen)
+              {totalJobCount > 0 && (
+                <span className="ml-2 text-violet-600 font-medium">
+                  • {totalJobCount} jobb hittade
+                </span>
+              )}
+            </p>
+          </div>
+          
+          {/* Filter toggle (mobile) */}
+          <button
+            onClick={() => setShowFilterPanel(!showFilterPanel)}
+            className="lg:hidden flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl text-slate-700 font-medium"
+          >
+            <SlidersHorizontal size={18} />
+            Filter
+          </button>
+        </div>
+
+        {/* Recent & Saved Searches */}
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          {/* Recent searches */}
+          {recentSearches.length > 0 && (
+            <div className="flex items-center gap-2">
+              <History size={14} className="text-slate-400" />
+              <span className="text-sm text-slate-500">Senast:</span>
+              {recentSearches.slice(0, 3).map((query) => (
+                <button
+                  key={query}
+                  onClick={() => setFilters({ ...filters, search: query })}
+                  className="text-sm text-violet-600 hover:text-violet-700 hover:underline"
+                >
+                  {query}
+                </button>
+              ))}
+            </div>
+          )}
+          
+          {/* Saved searches */}
+          {savedSearches.length > 0 && (
+            <div className="flex items-center gap-2 ml-4">
+              <Bookmark size={14} className="text-slate-400" />
+              <span className="text-sm text-slate-500">Sparade:</span>
+              <select
+                onChange={(e) => {
+                  const search = savedSearches.find(s => s.id === e.target.value)
+                  if (search) applySavedSearch(search.filters)
+                }}
+                className="text-sm border border-slate-200 rounded-lg px-2 py-1"
+              >
+                <option value="">Välj sökning...</option>
+                {savedSearches.map(s => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Popular searches */}
@@ -226,7 +419,7 @@ export default function JobSearch() {
               <button
                 key={query.label}
                 onClick={() => setFilters({ ...filters, search: query.query })}
-                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-700 hover:border-teal-400 hover:text-teal-700 transition-colors"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 rounded-full text-sm text-slate-700 hover:border-violet-400 hover:text-violet-700 transition-colors"
               >
                 <span>{query.icon}</span>
                 {query.label}
@@ -237,84 +430,109 @@ export default function JobSearch() {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-4 mb-6">
-        <button
-          onClick={() => setActiveTab('search')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${
-            activeTab === 'search'
-              ? 'bg-[#4f46e5] text-white'
-              : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-          }`}
-        >
-          <Search size={18} />
-          Sök jobb
-        </button>
-        <button
-          onClick={() => setActiveTab('applications')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${
-            activeTab === 'applications'
-              ? 'bg-[#4f46e5] text-white'
-              : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-          }`}
-        >
-          <Briefcase size={18} />
-          Sparade jobb
-          {applications.length > 0 && (
-            <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-sm">
-              {applications.length}
-            </span>
-          )}
-        </button>
-        <button
-          onClick={() => setActiveTab('insights')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${
-            activeTab === 'insights'
-              ? 'bg-[#4f46e5] text-white'
-              : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-          }`}
-        >
-          <TrendingUp size={18} />
-          Marknadsinsikter
-        </button>
-        
-        <button
-          onClick={() => setActiveTab('interview')}
-          className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors ${
-            activeTab === 'interview'
-              ? 'bg-[#4f46e5] text-white'
-              : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
-          }`}
-        >
-          <Mic size={18} />
-          Intervjuförberedelse
-        </button>
+      <div className="flex flex-wrap gap-2 mb-6">
+        {[
+          { id: 'search', label: 'Sök jobb', icon: Search },
+          { id: 'applications', label: 'Sparade jobb', icon: Briefcase, count: applications.length },
+          { id: 'insights', label: 'Marknadsinsikter', icon: TrendingUp },
+          { id: 'interview', label: 'Intervjuförberedelse', icon: Mic },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id as any)}
+            className={cn(
+              "flex items-center gap-2 px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl font-medium transition-colors text-sm sm:text-base",
+              activeTab === tab.id
+                ? 'bg-violet-600 text-white shadow-lg shadow-violet-200'
+                : 'bg-white text-slate-700 hover:bg-slate-50 border border-slate-200'
+            )}
+          >
+            <tab.icon size={18} />
+            <span className="hidden sm:inline">{tab.label}</span>
+            <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+            {'count' in tab && tab.count > 0 && (
+              <span className="ml-1 px-2 py-0.5 bg-white/20 rounded-full text-xs">
+                {tab.count}
+              </span>
+            )}
+          </button>
+        ))}
       </div>
 
       {activeTab === 'search' && (
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           {/* Filters sidebar */}
-          <div className="lg:col-span-1 space-y-6">
-            <JobFilters filters={filters} onChange={setFilters} />
+          <div className={cn(
+            "lg:col-span-1 space-y-4",
+            !showFilterPanel && "hidden lg:block"
+          )}>
+            <JobFilters 
+              filters={filters} 
+              onChange={setFilters}
+              jobCount={jobs.length}
+              totalJobs={totalJobCount}
+            />
+            
+            {/* Save search button */}
+            <button
+              onClick={saveSearch}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-slate-200 rounded-xl text-slate-700 font-medium hover:bg-slate-50 transition-colors"
+            >
+              <Bookmark size={18} />
+              Spara sökning
+            </button>
             
             {/* Sweden Map */}
             <SwedenMap
               selectedRegion={filters.region || null}
-              onRegionSelect={(region) => setFilters({ ...filters, region: region || '' })}
-              jobData={{
-                'SE110': 2847,  // Stockholm
-                'SE232': 1823,  // Västra Götaland
-                'SE224': 1245,  // Skåne
-                'SE121': 678,   // Uppsala
-                'SE123': 542,   // Östergötland
-                'SE231': 423,   // Halland
-                'SE211': 387,   // Jönköping
-                'SE212': 298,   // Kronoberg
-              }}
+              onRegionSelect={handleRegionSelect}
+              jobData={jobCountByRegion}
             />
           </div>
 
           {/* Job listings */}
           <div className="lg:col-span-3">
+            {/* Active filters display */}
+            {(filters.location || filters.region || filters.employmentType.length > 0) && (
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="text-sm text-slate-500">Aktiva filter:</span>
+                {filters.location && (
+                  <span className="px-2 py-1 bg-violet-100 text-violet-700 text-xs rounded-lg flex items-center gap-1">
+                    📍 {filters.location}
+                    <button onClick={() => setFilters({ ...filters, location: '' })}>
+                      <X size={12} />
+                    </button>
+                  </span>
+                )}
+                {filters.region && (
+                  <span className="px-2 py-1 bg-violet-100 text-violet-700 text-xs rounded-lg flex items-center gap-1">
+                    🗺️ {filters.region}
+                    <button onClick={() => setFilters({ ...filters, region: '' })}>
+                      <X size={12} />
+                    </button>
+                  </span>
+                )}
+                {filters.employmentType.map(type => (
+                  <span key={type} className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-lg flex items-center gap-1">
+                    💼 {type}
+                    <button onClick={() => setFilters({ 
+                      ...filters, 
+                      employmentType: filters.employmentType.filter(t => t !== type)
+                    })}>
+                      <X size={12} />
+                    </button>
+                  </span>
+                ))}
+                <button
+                  onClick={() => setFilters(defaultFilters)}
+                  className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1"
+                >
+                  <RotateCcw size={12} />
+                  Rensa alla
+                </button>
+              </div>
+            )}
+
             {loading ? (
               <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12">
                 <LoadingState 
@@ -338,12 +556,18 @@ export default function JobSearch() {
                 ))}
               </div>
             ) : (
-              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12">
-                <ErrorState
-                  title="Inga jobb hittades"
-                  message="Prova att ändra dina sökkriterier eller sök på något annat."
-                  onRetry={() => searchJobsWithAPI()}
-                />
+              <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-12 text-center">
+                <Search className="w-16 h-16 mx-auto mb-4 text-slate-300" />
+                <h3 className="text-xl font-semibold text-slate-800 mb-2">Inga jobb hittades</h3>
+                <p className="text-slate-600 mb-6">
+                  Prova att ändra dina sökkriterier eller sök på något annat.
+                </p>
+                <button
+                  onClick={() => setFilters(defaultFilters)}
+                  className="px-6 py-3 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-700 transition-colors"
+                >
+                  Rensa alla filter
+                </button>
               </div>
             )}
           </div>
