@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { CheckCircle2, Circle, Sparkles, ChevronRight, RefreshCw } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { userPreferencesApi } from '@/services/cloudStorage'
 
 interface Task {
   id: string
@@ -71,12 +72,53 @@ const typeConfig = {
   reflection: { color: 'bg-rose-100 text-rose-700 border-rose-200', icon: Sparkles }
 }
 
+interface DailyTaskState {
+  date: string
+  taskIndex: number
+  completed: boolean
+}
+
 export function DailyTask() {
   const [completed, setCompleted] = useState(false)
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0)
+  const [loading, setLoading] = useState(true)
 
-  // Ladda sparad status från localStorage
+  // Ladda sparad status från molnet
   useEffect(() => {
+    const loadTaskState = async () => {
+      try {
+        setLoading(true)
+        const today = new Date().toISOString().split('T')[0]
+        
+        // Försök ladda från molnet
+        const prefs = await userPreferencesApi.get()
+        const dailyTaskState = prefs?.daily_task_state as DailyTaskState | undefined
+        
+        if (dailyTaskState?.date === today) {
+          setCurrentTaskIndex(dailyTaskState.taskIndex)
+          setCompleted(dailyTaskState.completed)
+        } else {
+          // Ny dag - slumpa ny uppgift
+          const newIndex = Math.floor(Math.random() * dailyTasks.length)
+          setCurrentTaskIndex(newIndex)
+          setCompleted(false)
+          
+          // Spara till molnet
+          await saveTaskState(newIndex, false)
+        }
+      } catch (error) {
+        console.error('Fel vid laddning av daglig uppgift:', error)
+        // Fallback till localStorage
+        loadFromLocalStorage()
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadTaskState()
+  }, [])
+
+  const loadFromLocalStorage = () => {
     const savedDate = localStorage.getItem('dailyTaskDate')
     const savedIndex = localStorage.getItem('dailyTaskIndex')
     const savedCompleted = localStorage.getItem('dailyTaskCompleted')
@@ -86,7 +128,6 @@ export function DailyTask() {
       setCurrentTaskIndex(parseInt(savedIndex))
       setCompleted(savedCompleted === 'true')
     } else {
-      // Ny dag - slumpa ny uppgift
       const newIndex = Math.floor(Math.random() * dailyTasks.length)
       setCurrentTaskIndex(newIndex)
       setCompleted(false)
@@ -94,24 +135,58 @@ export function DailyTask() {
       localStorage.setItem('dailyTaskIndex', newIndex.toString())
       localStorage.setItem('dailyTaskCompleted', 'false')
     }
-  }, [])
+  }
+
+  const saveTaskState = async (taskIndex: number, isCompleted: boolean) => {
+    const today = new Date().toISOString().split('T')[0]
+    const state: DailyTaskState = {
+      date: today,
+      taskIndex,
+      completed: isCompleted
+    }
+
+    try {
+      await userPreferencesApi.update({
+        daily_task_state: state
+      })
+    } catch (error) {
+      console.error('Fel vid sparande av daglig uppgift:', error)
+      // Fallback till localStorage
+      localStorage.setItem('dailyTaskDate', today)
+      localStorage.setItem('dailyTaskIndex', taskIndex.toString())
+      localStorage.setItem('dailyTaskCompleted', isCompleted.toString())
+    }
+  }
+
+  const handleComplete = async () => {
+    const newCompleted = !completed
+    setCompleted(newCompleted)
+    await saveTaskState(currentTaskIndex, newCompleted)
+  }
+
+  const handleRefresh = async () => {
+    const newIndex = Math.floor(Math.random() * dailyTasks.length)
+    setCurrentTaskIndex(newIndex)
+    setCompleted(false)
+    await saveTaskState(newIndex, false)
+  }
 
   const currentTask = dailyTasks[currentTaskIndex]
   const config = typeConfig[currentTask.type]
   const Icon = completed ? CheckCircle2 : config.icon
 
-  const handleComplete = () => {
-    const newCompleted = !completed
-    setCompleted(newCompleted)
-    localStorage.setItem('dailyTaskCompleted', newCompleted.toString())
-  }
-
-  const handleRefresh = () => {
-    const newIndex = Math.floor(Math.random() * dailyTasks.length)
-    setCurrentTaskIndex(newIndex)
-    setCompleted(false)
-    localStorage.setItem('dailyTaskIndex', newIndex.toString())
-    localStorage.setItem('dailyTaskCompleted', 'false')
+  if (loading) {
+    return (
+      <div className="rounded-2xl border-2 border-slate-200 p-5 bg-white">
+        <div className="animate-pulse flex space-x-4">
+          <div className="w-12 h-12 bg-slate-200 rounded-xl"></div>
+          <div className="flex-1 space-y-2 py-1">
+            <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+            <div className="h-3 bg-slate-200 rounded w-1/2"></div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

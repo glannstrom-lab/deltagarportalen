@@ -1,7 +1,10 @@
-// Automatisk ansökningshantering
+// Automatisk ansökningshantering - NU I MOLNET!
 import { type JobAd } from './arbetsformedlingenApi'
+import { jobApplicationsApi } from './cloudStorage'
+import { supabase } from '@/lib/supabase'
 
 export interface ApplicationData {
+  id?: string
   jobId: string
   jobTitle: string
   employer: string
@@ -21,61 +24,191 @@ export interface ApplicationTemplate {
   isDefault: boolean
 }
 
+// Konvertera mellan API-format och internt format
+const toApiFormat = (app: ApplicationData) => ({
+  job_id: app.jobId,
+  job_title: app.jobTitle,
+  employer: app.employer,
+  application_date: app.applicationDate,
+  status: app.status,
+  cover_letter: app.coverLetter,
+  notes: app.notes,
+  contact_person: app.contactPerson,
+  follow_up_date: app.followUpDate,
+})
+
+const fromApiFormat = (data: any): ApplicationData => ({
+  id: data.id,
+  jobId: data.job_id,
+  jobTitle: data.job_title,
+  employer: data.employer,
+  applicationDate: data.application_date,
+  status: data.status,
+  coverLetter: data.cover_letter,
+  notes: data.notes,
+  contactPerson: data.contact_person,
+  followUpDate: data.follow_up_date,
+})
+
 class ApplicationService {
-  private readonly APPLICATIONS_KEY = 'job-applications'
   private readonly TEMPLATES_KEY = 'application-templates'
+  private localCache: ApplicationData[] | null = null
 
-  // Hämta alla ansökningar
-  getApplications(): ApplicationData[] {
-    const stored = localStorage.getItem(this.APPLICATIONS_KEY)
-    return stored ? JSON.parse(stored) : []
+  // Hämta alla ansökningar (från molnet!)
+  async getApplications(): Promise<ApplicationData[]> {
+    try {
+      const data = await jobApplicationsApi.getAll()
+      const apps = data.map(fromApiFormat)
+      this.localCache = apps
+      return apps
+    } catch (error) {
+      console.error('Fel vid hämtning av ansökningar:', error)
+      // Fallback till cache om vi har den
+      if (this.localCache) return this.localCache
+      // Fallback till localStorage (legacy)
+      const stored = localStorage.getItem('job-applications')
+      return stored ? JSON.parse(stored) : []
+    }
   }
 
-  // Spara ansökningar
-  private saveApplications(applications: ApplicationData[]): void {
-    localStorage.setItem(this.APPLICATIONS_KEY, JSON.stringify(applications))
+  // Spara ansökningar (lokalt för cache)
+  private saveToLocalStorage(applications: ApplicationData[]): void {
+    // Behåll som backup/fallback
+    try {
+      localStorage.setItem('job-applications', JSON.stringify(applications))
+    } catch {
+      // Ignorera fel
+    }
   }
 
-  // Skapa ny ansökan
-  createApplication(data: Omit<ApplicationData, 'applicationDate'>): ApplicationData {
+  // Skapa ny ansökan (i molnet!)
+  async createApplication(data: Omit<ApplicationData, 'applicationDate'>): Promise<ApplicationData> {
     const application: ApplicationData = {
       ...data,
       applicationDate: new Date().toISOString(),
     }
 
-    const applications = this.getApplications()
-    applications.push(application)
-    this.saveApplications(applications)
-
-    return application
+    try {
+      const result = await jobApplicationsApi.add(toApiFormat(application))
+      const createdApp = fromApiFormat(result)
+      
+      // Uppdatera cache
+      if (this.localCache) {
+        this.localCache.push(createdApp)
+        this.saveToLocalStorage(this.localCache)
+      }
+      
+      return createdApp
+    } catch (error) {
+      console.error('Fel vid skapande av ansökan:', error)
+      // Fallback: spara lokalt
+      const applications = await this.getApplications()
+      applications.push(application)
+      this.saveToLocalStorage(applications)
+      this.localCache = applications
+      return application
+    }
   }
 
-  // Uppdatera ansökan
-  updateApplication(jobId: string, updates: Partial<ApplicationData>): void {
-    const applications = this.getApplications().map(app =>
-      app.jobId === jobId ? { ...app, ...updates } : app
-    )
-    this.saveApplications(applications)
+  // Uppdatera ansökan (i molnet!)
+  async updateApplication(jobId: string, updates: Partial<ApplicationData>): Promise<void> {
+    try {
+      // Hitta ansökan först
+      const apps = await this.getApplications()
+      const app = apps.find(a => a.jobId === jobId)
+      
+      if (app?.id) {
+        await jobApplicationsApi.update(app.id, {
+          ...updates,
+          job_id: updates.jobId,
+          job_title: updates.jobTitle,
+          employer: updates.employer,
+          application_date: updates.applicationDate,
+          cover_letter: updates.coverLetter,
+          contact_person: updates.contactPerson,
+          follow_up_date: updates.followUpDate,
+        })
+      }
+      
+      // Uppdatera cache
+      if (this.localCache) {
+        this.localCache = this.localCache.map(a =>
+          a.jobId === jobId ? { ...a, ...updates } : a
+        )
+        this.saveToLocalStorage(this.localCache)
+      }
+    } catch (error) {
+      console.error('Fel vid uppdatering av ansökan:', error)
+      // Fallback: uppdatera lokalt
+      const applications = await this.getApplications()
+      const updated = applications.map(app =>
+        app.jobId === jobId ? { ...app, ...updates } : app
+      )
+      this.saveToLocalStorage(updated)
+      this.localCache = updated
+    }
   }
 
-  // Ta bort ansökan
-  deleteApplication(jobId: string): void {
-    const applications = this.getApplications().filter(app => app.jobId !== jobId)
-    this.saveApplications(applications)
+  // Ta bort ansökan (från molnet!)
+  async deleteApplication(jobId: string): Promise<void> {
+    try {
+      const apps = await this.getApplications()
+      const app = apps.find(a => a.jobId === jobId)
+      
+      if (app?.id) {
+        await jobApplicationsApi.delete(app.id)
+      }
+      
+      // Uppdatera cache
+      if (this.localCache) {
+        this.localCache = this.localCache.filter(a => a.jobId !== jobId)
+        this.saveToLocalStorage(this.localCache)
+      }
+    } catch (error) {
+      console.error('Fel vid borttagning av ansökan:', error)
+      // Fallback: ta bort lokalt
+      const applications = await this.getApplications()
+      const filtered = applications.filter(app => app.jobId !== jobId)
+      this.saveToLocalStorage(filtered)
+      this.localCache = filtered
+    }
   }
 
   // Hämta ansökan för specifikt jobb
-  getApplicationByJobId(jobId: string): ApplicationData | undefined {
-    return this.getApplications().find(app => app.jobId === jobId)
+  async getApplicationByJobId(jobId: string): Promise<ApplicationData | undefined> {
+    const apps = await this.getApplications()
+    return apps.find(app => app.jobId === jobId)
   }
 
   // Kolla om redan ansökt
-  hasApplied(jobId: string): boolean {
-    return this.getApplications().some(app => app.jobId === jobId)
+  async hasApplied(jobId: string): Promise<boolean> {
+    const apps = await this.getApplications()
+    return apps.some(app => app.jobId === jobId)
   }
 
-  // Hämta mallar
-  getTemplates(): ApplicationTemplate[] {
+  // Hämta mallar (dessa är personliga, sparar i Supabase)
+  async getTemplates(): Promise<ApplicationTemplate[]> {
+    try {
+      const { data, error } = await supabase
+        .from('application_templates')
+        .select('*')
+        .order('created_at', { ascending: false })
+      
+      if (error) throw error
+      if (data && data.length > 0) {
+        return data.map(t => ({
+          id: t.id,
+          name: t.name,
+          subject: t.subject,
+          body: t.body,
+          isDefault: t.is_default,
+        }))
+      }
+    } catch (error) {
+      console.log('Använder localStorage för mallar:', error)
+    }
+
+    // Fallback till localStorage
     const stored = localStorage.getItem(this.TEMPLATES_KEY)
     if (stored) return JSON.parse(stored)
 
@@ -146,21 +279,40 @@ Med vänliga hälsningar,
     return defaults
   }
 
-  // Spara mallar
-  private saveTemplates(templates: ApplicationTemplate[]): void {
-    localStorage.setItem(this.TEMPLATES_KEY, JSON.stringify(templates))
+  // Spara mallar (till molnet!)
+  private async saveTemplates(templates: ApplicationTemplate[]): Promise<void> {
+    try {
+      // Spara till Supabase
+      const { error } = await supabase
+        .from('application_templates')
+        .upsert(
+          templates.map(t => ({
+            id: t.id,
+            name: t.name,
+            subject: t.subject,
+            body: t.body,
+            is_default: t.isDefault,
+          })),
+          { onConflict: 'id' }
+        )
+      
+      if (error) throw error
+    } catch (error) {
+      // Fallback till localStorage
+      localStorage.setItem(this.TEMPLATES_KEY, JSON.stringify(templates))
+    }
   }
 
-  // Skapa mall
-  createTemplate(template: Omit<ApplicationTemplate, 'id'>): ApplicationTemplate {
+  // Skapa mall (i molnet!)
+  async createTemplate(template: Omit<ApplicationTemplate, 'id'>): Promise<ApplicationTemplate> {
     const newTemplate: ApplicationTemplate = {
       ...template,
       id: `template-${Date.now()}`,
     }
 
-    const templates = this.getTemplates()
+    const templates = await this.getTemplates()
     templates.push(newTemplate)
-    this.saveTemplates(templates)
+    await this.saveTemplates(templates)
 
     return newTemplate
   }
@@ -246,19 +398,20 @@ Med vänliga hälsningar,
   }
 
   // Schemalägg påminnelse om uppföljning
-  scheduleFollowUp(jobId: string, daysFromNow: number = 7): void {
+  async scheduleFollowUp(jobId: string, daysFromNow: number = 7): Promise<void> {
     const followUpDate = new Date()
     followUpDate.setDate(followUpDate.getDate() + daysFromNow)
 
-    this.updateApplication(jobId, {
+    await this.updateApplication(jobId, {
       followUpDate: followUpDate.toISOString(),
     })
   }
 
   // Hämta kommande uppföljningar
-  getUpcomingFollowUps(): ApplicationData[] {
+  async getUpcomingFollowUps(): Promise<ApplicationData[]> {
     const now = new Date().toISOString()
-    return this.getApplications()
+    const apps = await this.getApplications()
+    return apps
       .filter(app => 
         app.followUpDate && 
         app.followUpDate > now &&
@@ -271,13 +424,13 @@ Med vänliga hälsningar,
   }
 
   // Statistik över ansökningar
-  getStatistics(): {
+  async getStatistics(): Promise<{
     total: number
     byStatus: Record<string, number>
     responseRate: number
     interviewRate: number
-  } {
-    const applications = this.getApplications()
+  }> {
+    const applications = await this.getApplications()
     
     const byStatus: Record<string, number> = {}
     applications.forEach(app => {

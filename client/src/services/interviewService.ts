@@ -6,7 +6,11 @@
  * - Behavioral Interviewing (STAR-metoden)
  * - Mastery experiences (Bandura's Self-Efficacy Theory)
  * - Spaced repetition för inlärning
+ * 
+ * NU I MOLNET! Alla sessioner sparas i Supabase.
  */
+
+import { interviewSessionsApi } from './cloudStorage'
 
 export interface InterviewQuestion {
   id: string;
@@ -343,31 +347,56 @@ export function createInterviewPlan(
 }
 
 /**
- * Spara intervjusession
+ * Spara intervjusession (i molnet!)
  */
-export function saveInterviewSession(session: InterviewSession): void {
-  const sessions = getInterviewSessions();
-  sessions.push(session);
-  localStorage.setItem('interview_sessions', JSON.stringify(sessions));
+export async function saveInterviewSession(session: InterviewSession): Promise<void> {
+  try {
+    await interviewSessionsApi.create({
+      mock_interview_id: session.mockInterviewId,
+      start_time: session.startTime,
+      end_time: session.endTime,
+      answers: session.answers,
+      completed: session.completed,
+    });
+  } catch (error) {
+    console.error('Fel vid sparande av intervjusession:', error);
+    // Fallback till localStorage
+    const sessions = await getInterviewSessions();
+    sessions.push(session);
+    localStorage.setItem('interview_sessions', JSON.stringify(sessions));
+  }
 }
 
 /**
- * Hämta alla intervjusessioner
+ * Hämta alla intervjusessioner (från molnet!)
  */
-export function getInterviewSessions(): InterviewSession[] {
-  const stored = localStorage.getItem('interview_sessions');
-  return stored ? JSON.parse(stored) : [];
+export async function getInterviewSessions(): Promise<InterviewSession[]> {
+  try {
+    const data = await interviewSessionsApi.getAll();
+    return data.map((s: any) => ({
+      mockInterviewId: s.mock_interview_id,
+      startTime: s.start_time,
+      endTime: s.end_time,
+      answers: s.answers,
+      completed: s.completed,
+    }));
+  } catch (error) {
+    console.error('Fel vid hämtning av intervjusessioner:', error);
+    // Fallback till localStorage
+    const stored = localStorage.getItem('interview_sessions');
+    return stored ? JSON.parse(stored) : [];
+  }
 }
 
 /**
  * Beräkna framsteg över tid
  */
-export function calculateProgress(): {
+export async function calculateProgress(): Promise<{
   totalSessions: number;
   averageConfidence: number;
   improvement: number;
-} {
-  const sessions = getInterviewSessions();
+}> {
+  const sessions = await getInterviewSessions();
   
   if (sessions.length === 0) {
     return { totalSessions: 0, averageConfidence: 0, improvement: 0 };
