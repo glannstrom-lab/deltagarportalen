@@ -167,12 +167,13 @@ function App() {
             <Profile />
           </RouteErrorBoundary>
         } />
-        <Route path="jobs" element={
+        <Route path="job-search" element={
           <RouteErrorBoundary>
             <JobSearch />
           </RouteErrorBoundary>
         } />
-        <Route path="job-tracker" element={
+        <Route path="jobs" element={<Navigate to="/job-search" replace />} />
+        <Route path="job-tracker" element=
           <RouteErrorBoundary>
             <JobTracker />
           </RouteErrorBoundary>
