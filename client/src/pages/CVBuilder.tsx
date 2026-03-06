@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { cvApi } from '@/services/api'
-import { Plus, Trash2, ChevronRight, ChevronLeft, Eye, EyeOff, FileDown, Linkedin } from 'lucide-react'
+import { Plus, Trash2, ChevronRight, ChevronLeft, Eye, EyeOff, FileDown, Linkedin, Menu, X } from 'lucide-react'
 import { CVTemplateSelector, templates, type Template } from '@/components/cv/CVTemplateSelector'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -15,6 +15,7 @@ import { CVOnboarding } from '@/components/cv/CVOnboarding'
 import SkillSuggestions from '@/components/cv/SkillSuggestions'
 import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
+import { cn } from '@/lib/utils'
 import type { 
   CVData, WorkExperience, Education, Language, 
   Certificate, Link, Reference, Skill, CVVersion 
@@ -41,11 +42,11 @@ function CVVersionHistory({ versions, onSaveVersion, onRestoreVersion }: CVVersi
   }
 
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+    <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-semibold text-slate-800">Versionshistorik</h3>
-          <p className="text-sm text-slate-500">Spara och återställ versioner</p>
+          <h3 className="font-semibold text-slate-800 text-sm sm:text-base">Versionshistorik</h3>
+          <p className="text-xs sm:text-sm text-slate-500">Spara och återställ versioner</p>
         </div>
       </div>
 
@@ -61,13 +62,13 @@ function CVVersionHistory({ versions, onSaveVersion, onRestoreVersion }: CVVersi
           <div className="flex gap-2">
             <button
               onClick={handleSave}
-              className="flex-1 px-3 py-2 bg-[#4f46e5] text-white text-sm rounded-lg hover:bg-[#4338ca]"
+              className="flex-1 px-3 py-2 bg-[#4f46e5] text-white text-sm rounded-lg hover:bg-[#4338ca] min-h-[44px]"
             >
               Spara
             </button>
             <button
               onClick={() => setShowSaveDialog(false)}
-              className="flex-1 px-3 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50"
+              className="flex-1 px-3 py-2 border border-slate-300 text-slate-700 text-sm rounded-lg hover:bg-slate-50 min-h-[44px]"
             >
               Avbryt
             </button>
@@ -76,7 +77,7 @@ function CVVersionHistory({ versions, onSaveVersion, onRestoreVersion }: CVVersi
       ) : (
         <button
           onClick={() => setShowSaveDialog(true)}
-          className="w-full mb-4 px-4 py-2 border border-[#4f46e5] text-[#4f46e5] rounded-lg text-sm hover:bg-[#4f46e5]/5 transition-colors"
+          className="w-full mb-4 px-4 py-3 border border-[#4f46e5] text-[#4f46e5] rounded-lg text-sm hover:bg-[#4f46e5]/5 transition-colors min-h-[44px]"
         >
           + Spara nuvarande version
         </button>
@@ -91,7 +92,7 @@ function CVVersionHistory({ versions, onSaveVersion, onRestoreVersion }: CVVersi
               key={version.id}
               className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
             >
-              <div className="min-w-0">
+              <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium text-slate-800 truncate">{version.name}</p>
                 <p className="text-xs text-slate-500">
                   {new Date(version.createdAt).toLocaleDateString('sv-SE')}
@@ -99,7 +100,7 @@ function CVVersionHistory({ versions, onSaveVersion, onRestoreVersion }: CVVersi
               </div>
               <button
                 onClick={() => onRestoreVersion(version.id)}
-                className="px-3 py-1 text-xs text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors flex-shrink-0"
+                className="px-3 py-2 text-xs text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors flex-shrink-0 min-h-[36px]"
               >
                 Återställ
               </button>
@@ -118,6 +119,7 @@ export default function CVBuilder() {
   const [showPreview, setShowPreview] = useState(false)
   const [showOnboarding, setShowOnboarding] = useState(false)
   const [showLinkedInImport, setShowLinkedInImport] = useState(false)
+  const [showToolsMenu, setShowToolsMenu] = useState(false)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [_selectedTemplate, _setSelectedTemplate] = useState<Template>(templates[0])
   
@@ -444,7 +446,7 @@ export default function CVBuilder() {
   const addLanguage = () => {
     const newLanguage: Language = {
       id: Date.now().toString(),
-      language: '',
+      name: '',
       level: 'Medel',
     }
     setFormData({
@@ -582,16 +584,18 @@ export default function CVBuilder() {
         />
       )}
 
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      {/* Header - Mobilanpassad */}
+      <div className="mb-4 sm:mb-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-slate-800">CV-generator</h1>
-            <p className="text-slate-600 mt-2">
+            <h1 className="text-xl sm:text-3xl font-bold text-slate-800">CV-generator</h1>
+            <p className="text-sm sm:text-base text-slate-600 mt-1 sm:mt-2">
               Bygg ett professionellt CV med AI-hjälp och förhandsvisning i realtid.
             </p>
           </div>
-          <div className="flex gap-2 flex-wrap justify-end">
+          
+          {/* Desktop knappar */}
+          <div className="hidden sm:flex gap-2 flex-wrap justify-end">
             <button
               onClick={loadDemoData}
               className="flex items-center gap-2 px-4 py-2 border border-amber-300 bg-amber-50 text-amber-700 rounded-xl hover:bg-amber-100"
@@ -601,7 +605,6 @@ export default function CVBuilder() {
               Demo-data
             </button>
             
-            {/* LinkedIn Import */}
             <button
               onClick={() => setShowLinkedInImport(true)}
               className="flex items-center gap-2 px-4 py-2 border border-[#0077B5] text-[#0077B5] rounded-xl hover:bg-[#0077B5]/5"
@@ -618,7 +621,6 @@ export default function CVBuilder() {
               {showPreview ? 'Dölj förhandsvisning' : 'Visa förhandsvisning'}
             </button>
             
-            {/* PDF Export */}
             <PDFExportButton
               type="cv"
               data={{
@@ -670,49 +672,125 @@ export default function CVBuilder() {
               {saving ? 'Sparar...' : 'Spara CV'}
             </button>
           </div>
+          
+          {/* Mobil verktygsmeny */}
+          <div className="sm:hidden">
+            <button
+              onClick={() => setShowToolsMenu(!showToolsMenu)}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-slate-300 rounded-xl text-slate-700 bg-white"
+            >
+              <Menu size={20} />
+              Verktyg & alternativ
+            </button>
+            
+            {showToolsMenu && (
+              <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-lg p-3 space-y-2">
+                <button
+                  onClick={() => {
+                    loadDemoData()
+                    setShowToolsMenu(false)
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-3 border border-amber-300 bg-amber-50 text-amber-700 rounded-lg"
+                >
+                  <span>✨</span>
+                  Demo-data
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setShowLinkedInImport(true)
+                    setShowToolsMenu(false)
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-3 border border-[#0077B5] text-[#0077B5] rounded-lg"
+                >
+                  <Linkedin size={18} />
+                  Importera LinkedIn
+                </button>
+                
+                <button
+                  onClick={() => {
+                    setShowPreview(!showPreview)
+                    setShowToolsMenu(false)
+                  }}
+                  className="w-full flex items-center gap-2 px-4 py-3 border border-slate-300 rounded-lg text-slate-700"
+                >
+                  {showPreview ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPreview ? 'Dölj förhandsvisning' : 'Visa förhandsvisning'}
+                </button>
+                
+                <button
+                  onClick={saveCV}
+                  disabled={saving}
+                  className="w-full flex items-center gap-2 px-4 py-3 bg-[#4f46e5] text-white rounded-lg disabled:opacity-50"
+                >
+                  {saving ? 'Sparar...' : 'Spara CV'}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* Mobil förhandsvisning (visas som overlay) */}
+      {showPreview && (
+        <div className="lg:hidden fixed inset-0 z-50 bg-white">
+          <div className="flex items-center justify-between p-4 border-b border-slate-200">
+            <h2 className="font-semibold text-slate-800">Förhandsvisning</h2>
+            <button
+              onClick={() => setShowPreview(false)}
+              className="p-2 hover:bg-slate-100 rounded-lg"
+            >
+              <X size={24} />
+            </button>
+          </div>
+          <div className="p-4 overflow-auto h-[calc(100vh-80px)]">
+            <CVPreview data={formData} />
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
         {/* Left column - Editor */}
-        <div className="space-y-6">
-          {/* Progress */}
-          <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-            <div className="flex items-center justify-between overflow-x-auto pb-2 scrollbar-hide">
+        <div className="space-y-4 sm:space-y-6">
+          {/* Progress - Scrollbar på mobil */}
+          <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+            <div className="flex items-center overflow-x-auto pb-2 scrollbar-hide gap-1">
               {steps.map((s, index) => (
                 <div key={s.number} className="flex items-center flex-shrink-0">
                   <button
                     onClick={() => setStep(s.number)}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold transition-colors flex-shrink-0 ${
+                    className={cn(
+                      'w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm sm:text-base font-semibold transition-colors flex-shrink-0',
                       step === s.number
                         ? 'bg-[#4f46e5] text-white'
                         : step > s.number
                         ? 'bg-[#4f46e5]/10 text-[#4f46e5]'
                         : 'bg-slate-200 text-slate-500'
-                    }`}
+                    )}
                     title={s.title}
                   >
                     {step > s.number ? '✓' : s.number}
                   </button>
                   {index < steps.length - 1 && (
                     <div
-                      className={`w-8 sm:w-12 h-1 mx-1 sm:mx-2 flex-shrink-0 ${
+                      className={cn(
+                        'w-3 sm:w-8 h-1 mx-0.5 sm:mx-1 flex-shrink-0',
                         step > s.number ? 'bg-[#4f46e5]' : 'bg-slate-200'
-                      }`}
+                      )}
                     />
                   )}
                 </div>
               ))}
             </div>
-            <div className="mt-4 text-center">
-              <p className="font-medium text-slate-800">{steps[step - 1].title}</p>
-              <p className="text-sm text-slate-500">{steps[step - 1].description}</p>
+            <div className="mt-3 sm:mt-4 text-center">
+              <p className="font-medium text-slate-800 text-sm sm:text-base">{steps[step - 1].title}</p>
+              <p className="text-xs sm:text-sm text-slate-500">{steps[step - 1].description}</p>
             </div>
           </div>
 
           {/* Step 1: Template Selection */}
           {step === 1 && (
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
               <CVTemplateSelector
                 selectedTemplate={formData.template}
                 selectedColorScheme={formData.colorScheme}
@@ -730,16 +808,17 @@ export default function CVBuilder() {
 
           {/* Step 2: Personal Info */}
           {step === 2 && (
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
               <h3 className="font-semibold text-slate-800">Personlig information</h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Förnamn</label>
                   <input
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base"
+                    placeholder="Förnamn"
                   />
                 </div>
                 <div>
@@ -748,7 +827,8 @@ export default function CVBuilder() {
                     type="text"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base"
+                    placeholder="Efternamn"
                   />
                 </div>
               </div>
@@ -758,7 +838,7 @@ export default function CVBuilder() {
                   type="text"
                   value={formData.title}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base"
                   placeholder="t.ex. Erfaren säljare"
                 />
               </div>
@@ -768,17 +848,19 @@ export default function CVBuilder() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base"
+                  placeholder="din@email.se"
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
                   <input
                     type="tel"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base"
+                    placeholder="+46 70 123 45 67"
                   />
                 </div>
                 <div>
@@ -787,7 +869,8 @@ export default function CVBuilder() {
                     type="text"
                     value={formData.location}
                     onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                    className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base"
+                    placeholder="Stockholm"
                   />
                 </div>
               </div>
@@ -796,634 +879,537 @@ export default function CVBuilder() {
 
           {/* Step 3: Summary */}
           {step === 3 && (
-            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-              <h3 className="font-semibold text-slate-800">Profil / Sammanfattning</h3>
-              <textarea
-                value={formData.summary}
-                onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
-                className="w-full h-40 px-4 py-3 border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                placeholder="Beskriv dig själv, din erfarenhet och vad du söker..."
-                maxLength={500}
-              />
-              <p className="text-sm text-slate-500">
-                {formData.summary.length}/500 tecken
-              </p>
-              
-              {/* SpellChecker */}
-              <SpellChecker
-                text={formData.summary}
-                onCorrect={(corrected) => setFormData({ ...formData, summary: corrected })}
-                language="sv"
-              />
-              
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <h3 className="font-semibold text-slate-800">Sammanfattning</h3>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-2">
+                  Berätta kort om dig själv
+                </label>
+                <textarea
+                  value={formData.summary}
+                  onChange={(e) => setFormData({ ...formData, summary: e.target.value })}
+                  rows={6}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base"
+                  placeholder="Beskriv din bakgrund, erfarenhet och vad du söker..."
+                />
+              </div>
               <AIWritingAssistant
-                text={formData.summary}
-                onApply={(newText) => setFormData({ ...formData, summary: newText })}
+                content={formData.summary}
+                onChange={(content) => setFormData({ ...formData, summary: content })}
                 type="summary"
               />
-              <div className="mt-4">
-                <PhraseBank onSelectPhrase={(phrase) => {
-                  setFormData({ ...formData, summary: phrase })
-                }} />
-              </div>
             </div>
           )}
 
           {/* Step 4: Work Experience */}
           {step === 4 && (
-            <div className="space-y-4">
-              {formData.workExperience.map((job) => (
-                <div key={job.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-semibold text-slate-800">Arbetsplats</h4>
-                    <button
-                      onClick={() => removeWorkExperience(job.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="Företag"
-                      value={job.company}
-                      onChange={(e) => updateWorkExperience(job.id, 'company', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Titel/roll"
-                      value={job.title}
-                      onChange={(e) => updateWorkExperience(job.id, 'title', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Plats (ort)"
-                      value={job.location}
-                      onChange={(e) => updateWorkExperience(job.id, 'location', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <div className="grid grid-cols-2 gap-3">
-                      <input
-                        type="month"
-                        placeholder="Startdatum"
-                        value={job.startDate}
-                        onChange={(e) => updateWorkExperience(job.id, 'startDate', e.target.value)}
-                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                      />
-                      {!job.current && (
-                        <input
-                          type="month"
-                          placeholder="Slutdatum"
-                          value={job.endDate}
-                          onChange={(e) => updateWorkExperience(job.id, 'endDate', e.target.value)}
-                          className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-slate-800">Arbetslivserfarenhet</h3>
+                <button
+                  onClick={addWorkExperience}
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors"
+                >
+                  <Plus size={18} />
+                  Lägg till
+                </button>
+              </div>
+              
+              {formData.workExperience.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Inga arbetserfarenheter tillagda ännu. Klicka på "Lägg till" för att börja.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {formData.workExperience.map((exp, index) => (
+                    <div key={exp.id} className="border border-slate-200 rounded-xl p-4 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-500">Erfarenhet {index + 1}</span>
+                        <button
+                          onClick={() => removeWorkExperience(exp.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Företag</label>
+                          <input
+                            type="text"
+                            value={exp.company}
+                            onChange={(e) => updateWorkExperience(exp.id, 'company', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="Företagsnamn"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Titel</label>
+                          <input
+                            type="text"
+                            value={exp.title}
+                            onChange={(e) => updateWorkExperience(exp.id, 'title', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="Jobbtitel"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-700 mb-1">Beskrivning</label>
+                        <textarea
+                          value={exp.description}
+                          onChange={(e) => updateWorkExperience(exp.id, 'description', e.target.value)}
+                          rows={3}
+                          className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                          placeholder="Beskriv dina arbetsuppgifter och ansvar..."
                         />
-                      )}
+                      </div>
                     </div>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={job.current}
-                        onChange={(e) => updateWorkExperience(job.id, 'current', e.target.checked)}
-                        className="rounded border-slate-300"
-                      />
-                      <span className="text-sm text-slate-700">Nuvarande anställning</span>
-                    </label>
-                    <textarea
-                      placeholder="Beskriv dina arbetsuppgifter och resultat..."
-                      value={job.description}
-                      onChange={(e) => updateWorkExperience(job.id, 'description', e.target.value)}
-                      className="w-full h-24 px-4 py-2 border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <AIWritingAssistant
-                      text={job.description}
-                      onApply={(newText) => updateWorkExperience(job.id, 'description', newText)}
-                      type="experience"
-                    />
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <button
-                onClick={addWorkExperience}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-[#4f46e5] hover:text-[#4f46e5] flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                Lägg till arbetslivserfarenhet
-              </button>
+              )}
             </div>
           )}
 
           {/* Step 5: Education */}
           {step === 5 && (
-            <div className="space-y-4">
-              {formData.education.map((edu) => (
-                <div key={edu.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-semibold text-slate-800">Utbildning</h4>
-                    <button
-                      onClick={() => removeEducation(edu.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="Skola/Universitet"
-                      value={edu.school}
-                      onChange={(e) => updateEducation(edu.id, 'school', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Examen"
-                      value={edu.degree}
-                      onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Inriktning/Ämne"
-                      value={edu.field}
-                      onChange={(e) => updateEducation(edu.id, 'field', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Plats (ort)"
-                      value={edu.location}
-                      onChange={(e) => updateEducation(edu.id, 'location', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <div className="grid grid-cols-2 gap-3">
-                      <input
-                        type="month"
-                        placeholder="Startår"
-                        value={edu.startDate}
-                        onChange={(e) => updateEducation(edu.id, 'startDate', e.target.value)}
-                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                      />
-                      <input
-                        type="month"
-                        placeholder="Slutår"
-                        value={edu.endDate}
-                        onChange={(e) => updateEducation(edu.id, 'endDate', e.target.value)}
-                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                      />
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-slate-800">Utbildning</h3>
+                <button
+                  onClick={addEducation}
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors"
+                >
+                  <Plus size={18} />
+                  Lägg till
+                </button>
+              </div>
+              
+              {formData.education.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Inga utbildningar tillagda ännu. Klicka på "Lägg till" för att börja.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {formData.education.map((edu, index) => (
+                    <div key={edu.id} className="border border-slate-200 rounded-xl p-4 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-500">Utbildning {index + 1}</span>
+                        <button
+                          onClick={() => removeEducation(edu.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Skola/Universitet</label>
+                          <input
+                            type="text"
+                            value={edu.school}
+                            onChange={(e) => updateEducation(edu.id, 'school', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="Skolans namn"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Examen</label>
+                          <input
+                            type="text"
+                            value={edu.degree}
+                            onChange={(e) => updateEducation(edu.id, 'degree', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="t.ex. Kandidatexamen"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-700 mb-1">Ämne/Inriktning</label>
+                        <input
+                          type="text"
+                          value={edu.field}
+                          onChange={(e) => updateEducation(edu.id, 'field', e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                          placeholder="t.ex. Datavetenskap"
+                        />
+                      </div>
                     </div>
-                    <textarea
-                      placeholder="Beskrivning (valfritt)..."
-                      value={edu.description}
-                      onChange={(e) => updateEducation(edu.id, 'description', e.target.value)}
-                      className="w-full h-20 px-4 py-2 border border-slate-200 rounded-xl resize-none focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <button
-                onClick={addEducation}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-[#4f46e5] hover:text-[#4f46e5] flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                Lägg till utbildning
-              </button>
+              )}
             </div>
           )}
 
           {/* Step 6: Skills */}
           {step === 6 && (
-            <div className="space-y-4">
-              {/* Kompetensförslag baserat på yrkestitel */}
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-slate-800">Färdigheter</h3>
+                <button
+                  onClick={addSkill}
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors"
+                >
+                  <Plus size={18} />
+                  Lägg till
+                </button>
+              </div>
+              
               <SkillSuggestions
-                occupationTitle={formData.title}
                 currentSkills={formData.skills}
-                onAddSkill={(skill) => {
-                  const newSkill: Skill = {
-                    id: Date.now().toString(),
-                    name: skill.name,
-                    level: 3,
-                    category: skill.category
-                  };
-                  setFormData(prev => ({
-                    ...prev,
-                    skills: [...prev.skills, newSkill]
-                  }));
-                }}
+                onAddSkill={(skill) => setFormData({ ...formData, skills: [...formData.skills, skill] })}
               />
               
-              {formData.skills.map((skill) => (
-                <div key={skill.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-semibold text-slate-800">Kompetens</h4>
-                    <button
-                      onClick={() => removeSkill(skill.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="Kompetens (t.ex. JavaScript, Projektledning)"
-                      value={skill.name}
-                      onChange={(e) => updateSkill(skill.id, 'name', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Nivå</label>
-                        <input
-                          type="range"
-                          min="1"
-                          max="5"
-                          value={skill.level || 3}
-                          onChange={(e) => updateSkill(skill.id, 'level', parseInt(e.target.value) as 1 | 2 | 3 | 4 | 5)}
-                          className="w-full"
-                        />
-                        <div className="flex justify-between text-xs text-slate-500 mt-1">
-                          <span>Nybörjare</span>
-                          <span>Expert</span>
-                        </div>
-                        <p className="text-sm text-slate-600 mt-1">
-                          Nivå: {skill.level || 3}/5
-                        </p>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Kategori</label>
-                        <select
-                          value={skill.category || 'technical'}
-                          onChange={(e) => updateSkill(skill.id, 'category', e.target.value as Skill['category'])}
-                          className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                        >
-                          <option value="technical">Teknisk</option>
-                          <option value="soft">Mjuk kompetens</option>
-                          <option value="tool">Verktyg</option>
-                          <option value="language">Språk</option>
-                        </select>
-                      </div>
+              {formData.skills.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Inga färdigheter tillagda ännu. Klicka på "Lägg till" för att börja.
+                </p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {formData.skills.map((skill) => (
+                    <div key={skill.id} className="flex items-center gap-2 border border-slate-200 rounded-lg p-3">
+                      <input
+                        type="text"
+                        value={skill.name}
+                        onChange={(e) => updateSkill(skill.id, 'name', e.target.value)}
+                        className="flex-1 px-2 py-1 border-0 text-sm focus:outline-none"
+                        placeholder="Färdighet"
+                      />
+                      <select
+                        value={skill.level}
+                        onChange={(e) => updateSkill(skill.id, 'level', parseInt(e.target.value))}
+                        className="px-2 py-1 border border-slate-200 rounded text-sm"
+                      >
+                        <option value={1}>1</option>
+                        <option value={2}>2</option>
+                        <option value={3}>3</option>
+                        <option value={4}>4</option>
+                        <option value={5}>5</option>
+                      </select>
+                      <button
+                        onClick={() => removeSkill(skill.id)}
+                        className="p-1.5 text-red-500 hover:bg-red-50 rounded transition-colors"
+                      >
+                        <Trash2 size={16} />
+                      </button>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <button
-                onClick={addSkill}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-[#4f46e5] hover:text-[#4f46e5] flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                Lägg till kompetens
-              </button>
+              )}
             </div>
           )}
 
           {/* Step 7: Languages */}
           {step === 7 && (
-            <div className="space-y-4">
-              {formData.languages.map((lang) => (
-                <div key={lang.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-semibold text-slate-800">Språk</h4>
-                    <button
-                      onClick={() => removeLanguage(lang.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="Språk (t.ex. Engelska, Spanska)"
-                      value={lang.language}
-                      onChange={(e) => updateLanguage(lang.id, 'language', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Nivå</label>
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-slate-800">Språk</h3>
+                <button
+                  onClick={addLanguage}
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors"
+                >
+                  <Plus size={18} />
+                  Lägg till
+                </button>
+              </div>
+              
+              {formData.languages.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Inga språk tillagda ännu. Klicka på "Lägg till" för att börja.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {formData.languages.map((lang) => (
+                    <div key={lang.id} className="flex items-center gap-2 border border-slate-200 rounded-lg p-3">
+                      <input
+                        type="text"
+                        value={lang.name}
+                        onChange={(e) => updateLanguage(lang.id, 'name', e.target.value)}
+                        className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                        placeholder="Språk"
+                      />
                       <select
                         value={lang.level}
-                        onChange={(e) => updateLanguage(lang.id, 'level', e.target.value as Language['level'])}
-                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                        onChange={(e) => updateLanguage(lang.id, 'level', e.target.value)}
+                        className="px-3 py-2 border border-slate-200 rounded-lg text-sm"
                       >
                         <option value="Grundläggande">Grundläggande</option>
-                        <option value="Medel">Medel</option>
+                        <option value="God">God</option>
                         <option value="Flytande">Flytande</option>
                         <option value="Modersmål">Modersmål</option>
                       </select>
+                      <button
+                        onClick={() => removeLanguage(lang.id)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 size={18} />
+                      </button>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <button
-                onClick={addLanguage}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-[#4f46e5] hover:text-[#4f46e5] flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                Lägg till språk
-              </button>
+              )}
             </div>
           )}
 
           {/* Step 8: Certificates */}
           {step === 8 && (
-            <div className="space-y-4">
-              {formData.certificates.map((cert) => (
-                <div key={cert.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-semibold text-slate-800">Certifikat</h4>
-                    <button
-                      onClick={() => removeCertificate(cert.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="Certifikatnamn (t.ex. Körkort B, ISO-certifiering)"
-                      value={cert.name}
-                      onChange={(e) => updateCertificate(cert.id, 'name', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Utfärdare (t.ex. Transportstyrelsen)"
-                      value={cert.issuer}
-                      onChange={(e) => updateCertificate(cert.id, 'issuer', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Utfärdat datum</label>
-                        <input
-                          type="month"
-                          value={cert.date}
-                          onChange={(e) => updateCertificate(cert.id, 'date', e.target.value)}
-                          className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                        />
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-slate-800">Certifikat</h3>
+                <button
+                  onClick={addCertificate}
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors"
+                >
+                  <Plus size={18} />
+                  Lägg till
+                </button>
+              </div>
+              
+              {formData.certificates.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Inga certifikat tillagda ännu. Klicka på "Lägg till" för att börja.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {formData.certificates.map((cert, index) => (
+                    <div key={cert.id} className="border border-slate-200 rounded-xl p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-500">Certifikat {index + 1}</span>
+                        <button
+                          onClick={() => removeCertificate(cert.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Utgångsdatum (valfritt)</label>
+                        <label className="block text-xs font-medium text-slate-700 mb-1">Namn</label>
                         <input
-                          type="month"
-                          value={cert.expiryDate || ''}
-                          onChange={(e) => updateCertificate(cert.id, 'expiryDate', e.target.value)}
-                          className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+                          type="text"
+                          value={cert.name}
+                          onChange={(e) => updateCertificate(cert.id, 'name', e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                          placeholder="t.ex. PMP Certification"
                         />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Utfärdare</label>
+                          <input
+                            type="text"
+                            value={cert.issuer}
+                            onChange={(e) => updateCertificate(cert.id, 'issuer', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="t.ex. PMI"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Datum</label>
+                          <input
+                            type="text"
+                            value={cert.date}
+                            onChange={(e) => updateCertificate(cert.id, 'date', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="t.ex. 2023"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <button
-                onClick={addCertificate}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-[#4f46e5] hover:text-[#4f46e5] flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                Lägg till certifikat
-              </button>
+              )}
             </div>
           )}
 
           {/* Step 9: Links */}
           {step === 9 && (
-            <div className="space-y-4">
-              {formData.links.map((link) => (
-                <div key={link.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-semibold text-slate-800">Länk</h4>
-                    <button
-                      onClick={() => removeLink(link.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Typ</label>
-                      <select
-                        value={link.type}
-                        onChange={(e) => updateLink(link.id, 'type', e.target.value as Link['type'])}
-                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-slate-800">Länkar</h3>
+                <button
+                  onClick={addLink}
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors"
+                >
+                  <Plus size={18} />
+                  Lägg till
+                </button>
+              </div>
+              
+              {formData.links.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Inga länkar tillagda ännu. Klicka på "Lägg till" för att börja.
+                </p>
+              ) : (
+                <div className="space-y-3">
+                  {formData.links.map((link) => (
+                    <div key={link.id} className="flex items-center gap-2 border border-slate-200 rounded-lg p-3">
+                      <input
+                        type="text"
+                        value={link.label}
+                        onChange={(e) => updateLink(link.id, 'label', e.target.value)}
+                        className="w-1/3 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                        placeholder="Titel"
+                      />
+                      <input
+                        type="url"
+                        value={link.url}
+                        onChange={(e) => updateLink(link.id, 'url', e.target.value)}
+                        className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                        placeholder="https://..."
+                      />
+                      <button
+                        onClick={() => removeLink(link.id)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                       >
-                        <option value="linkedin">LinkedIn</option>
-                        <option value="github">GitHub</option>
-                        <option value="portfolio">Portfolio</option>
-                        <option value="website">Webbsida</option>
-                        <option value="other">Annat</option>
-                      </select>
+                        <Trash2 size={18} />
+                      </button>
                     </div>
-                    <input
-                      type="text"
-                      placeholder="Etikett (valfritt, t.ex. Min portfolio)"
-                      value={link.label || ''}
-                      onChange={(e) => updateLink(link.id, 'label', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="url"
-                      placeholder="https://..."
-                      value={link.url}
-                      onChange={(e) => updateLink(link.id, 'url', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <button
-                onClick={addLink}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-[#4f46e5] hover:text-[#4f46e5] flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                Lägg till länk
-              </button>
+              )}
             </div>
           )}
 
           {/* Step 10: References */}
           {step === 10 && (
-            <div className="space-y-4">
-              {formData.references.map((ref) => (
-                <div key={ref.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
-                  <div className="flex justify-between items-start mb-4">
-                    <h4 className="font-semibold text-slate-800">Referens</h4>
-                    <button
-                      onClick={() => removeReference(ref.id)}
-                      className="text-red-500 hover:text-red-700"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                  <div className="space-y-3">
-                    <input
-                      type="text"
-                      placeholder="Namn"
-                      value={ref.name}
-                      onChange={(e) => updateReference(ref.id, 'name', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Titel/roll"
-                      value={ref.title}
-                      onChange={(e) => updateReference(ref.id, 'title', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Företag/Organisation"
-                      value={ref.company}
-                      onChange={(e) => updateReference(ref.id, 'company', e.target.value)}
-                      className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                    />
-                    <div className="grid grid-cols-2 gap-3">
-                      <input
-                        type="tel"
-                        placeholder="Telefon (valfritt)"
-                        value={ref.phone || ''}
-                        onChange={(e) => updateReference(ref.id, 'phone', e.target.value)}
-                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                      />
-                      <input
-                        type="email"
-                        placeholder="E-post (valfritt)"
-                        value={ref.email || ''}
-                        onChange={(e) => updateReference(ref.id, 'email', e.target.value)}
-                        className="w-full px-4 py-2 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5]"
-                      />
+            <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-slate-800">Referenser</h3>
+                <button
+                  onClick={addReference}
+                  className="flex items-center gap-1 px-3 py-2 text-sm text-[#4f46e5] hover:bg-[#4f46e5]/10 rounded-lg transition-colors"
+                >
+                  <Plus size={18} />
+                  Lägg till
+                </button>
+              </div>
+              
+              {formData.references.length === 0 ? (
+                <p className="text-sm text-slate-400 text-center py-8">
+                  Inga referenser tillagda ännu. Klicka på "Lägg till" för att börja.
+                </p>
+              ) : (
+                <div className="space-y-4">
+                  {formData.references.map((ref, index) => (
+                    <div key={ref.id} className="border border-slate-200 rounded-xl p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm font-medium text-slate-500">Referens {index + 1}</span>
+                        <button
+                          onClick={() => removeReference(ref.id)}
+                          className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <Trash2 size={18} />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Namn</label>
+                          <input
+                            type="text"
+                            value={ref.name}
+                            onChange={(e) => updateReference(ref.id, 'name', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="Namn"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-medium text-slate-700 mb-1">Titel</label>
+                          <input
+                            type="text"
+                            value={ref.title}
+                            onChange={(e) => updateReference(ref.id, 'title', e.target.value)}
+                            className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                            placeholder="Titel"
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-slate-700 mb-1">Företag</label>
+                        <input
+                          type="text"
+                          value={ref.company}
+                          onChange={(e) => updateReference(ref.id, 'company', e.target.value)}
+                          className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                          placeholder="Företag"
+                        />
+                      </div>
                     </div>
-                  </div>
+                  ))}
                 </div>
-              ))}
-              <button
-                onClick={addReference}
-                className="w-full py-3 border-2 border-dashed border-slate-300 rounded-xl text-slate-600 hover:border-[#4f46e5] hover:text-[#4f46e5] flex items-center justify-center gap-2"
-              >
-                <Plus size={20} />
-                Lägg till referens
-              </button>
+              )}
             </div>
           )}
 
-          {/* Navigation */}
-          <div className="flex justify-between pt-6">
+          {/* Navigation buttons */}
+          <div className="flex items-center justify-between pt-4">
             <button
-              onClick={() => setStep(step - 1)}
+              onClick={() => setStep(Math.max(1, step - 1))}
               disabled={step === 1}
-              className="flex items-center gap-2 px-6 py-3 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center gap-1 px-4 py-3 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
             >
-              <ChevronLeft size={20} />
+              <ChevronLeft size={18} />
               Föregående
             </button>
             <button
-              onClick={() => setStep(step + 1)}
-              disabled={step === 10}
-              className="flex items-center gap-2 px-6 py-3 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => setStep(Math.min(steps.length, step + 1))}
+              disabled={step === steps.length}
+              className="flex items-center gap-1 px-4 py-3 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 disabled:cursor-not-allowed min-h-[48px]"
             >
               Nästa
-              <ChevronRight size={20} />
+              <ChevronRight size={18} />
             </button>
           </div>
+
+          {/* Versionshistorik - visas under editorn */}
+          <CVVersionHistory
+            versions={versions}
+            onSaveVersion={handleSaveVersion}
+            onRestoreVersion={handleRestoreVersion}
+            currentData={formData}
+          />
         </div>
 
-        {/* Right column - Preview & Tools */}
-        <div className="space-y-6">
-          {/* Preview - always rendered but can be visually hidden */}
-          <div 
-            ref={previewRef}
-            className={showPreview ? 'sticky top-6' : ''}
-            style={showPreview ? {} : { 
-              position: 'absolute',
-              left: '-10000px',
-              top: '0',
-              opacity: '0.01',
-              pointerEvents: 'none',
-              width: '794px',
-            }}
-          >
-            <CVPreview data={formData} />
-          </div>
-
-          {/* Sidebar tools */}
-          {!showPreview && (
-            <div className="space-y-6">
-              <CVExport cvData={formData} />
-              
-              <CVShare onShare={handleShare} />
-              
-              <CVVersionHistory 
-                versions={versions}
-                onSaveVersion={handleSaveVersion}
-                onRestoreVersion={handleRestoreVersion}
-                currentData={formData}
-              />
-              
-              <ATSAnalyzer cvData={formData} />
-              
-              <JobAdAnalyzer cvData={formData} />
-              
-              <JobMatcher 
-                cvSkills={formData.skills.map(s => s.name).join(', ')}
-                cvSummary={formData.summary}
-              />
+        {/* Right column - Preview (desktop only) */}
+        <div className="hidden lg:block space-y-6">
+          <div className="sticky top-6">
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h3 className="font-semibold text-slate-800 mb-4">Förhandsvisning</h3>
+              <div 
+                ref={previewRef}
+                className="overflow-auto max-h-[calc(100vh-300px)]"
+              >
+                <CVPreview data={formData} />
+              </div>
             </div>
-          )}
+            
+            {/* Tools panel */}
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <AIWritingAssistant
+                content={formData.summary}
+                onChange={(content) => setFormData({ ...formData, summary: content })}
+                type="summary"
+              />
+              <JobMatcher cvData={formData} />
+              <ATSAnalyzer cvData={formData} />
+              <PhraseBank />
+              <CVExport cvData={formData} />
+              <SpellChecker content={formData.summary} />
+              <JobAdAnalyzer />
+              <CVShare onShare={handleShare} />
+            </div>
+          </div>
         </div>
       </div>
 
       {/* LinkedIn Import Modal */}
       {showLinkedInImport && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="max-w-lg w-full">
-            <LinkedInImport
-              onImport={(cvData) => {
-                // Merge LinkedIn data with existing form data
-                setFormData(prev => ({
-                  ...prev,
-                  firstName: cvData.personalInfo?.firstName || prev.firstName,
-                  lastName: cvData.personalInfo?.lastName || prev.lastName,
-                  email: cvData.personalInfo?.email || prev.email,
-                  location: cvData.personalInfo?.city || prev.location,
-                  summary: cvData.summary || prev.summary,
-                  workExperience: cvData.experience?.length > 0 
-                    ? cvData.experience.map((exp: any) => ({
-                        id: Date.now().toString() + Math.random(),
-                        ...exp,
-                      }))
-                    : prev.workExperience,
-                  education: cvData.education?.length > 0
-                    ? cvData.education.map((edu: any) => ({
-                        id: Date.now().toString() + Math.random(),
-                        ...edu,
-                      }))
-                    : prev.education,
-                  skills: cvData.skills?.length > 0
-                    ? cvData.skills.map((skill: string) => ({
-                        id: Date.now().toString() + Math.random(),
-                        name: skill,
-                        level: 'intermediate',
-                      }))
-                    : prev.skills,
-                  languages: cvData.languages?.length > 0
-                    ? cvData.languages.map((lang: any) => ({
-                        id: Date.now().toString() + Math.random(),
-                        name: lang.language,
-                        level: lang.level,
-                      }))
-                    : prev.languages,
-                }));
-                setShowLinkedInImport(false);
-              }}
-              existingData={formData}
-            />
-          </div>
-        </div>
+        <LinkedInImport
+          onImport={(data) => {
+            setFormData({ ...formData, ...data })
+            setShowLinkedInImport(false)
+          }}
+          onClose={() => setShowLinkedInImport(false)}
+        />
       )}
     </div>
   )

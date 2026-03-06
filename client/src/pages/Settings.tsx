@@ -5,19 +5,16 @@ import {
   Lock, 
   User, 
   Palette, 
-  Globe, 
   Shield,
   ChevronRight,
   Moon,
   Sun,
-  Smartphone,
-  Mail,
   Save,
-  Heart,
   Accessibility,
-  Type,
-  Contrast
+  X,
+  Menu
 } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface SettingSection {
   id: string
@@ -68,7 +65,7 @@ const sections: SettingSection[] = [
 export default function Settings() {
   const [activeSection, setActiveSection] = useState('profile')
   const [darkMode, setDarkMode] = useState(false)
-  const [language, setLanguage] = useState('sv')
+  const [showMobileMenu, setShowMobileMenu] = useState(false)
   
   // Settings from store
   const {
@@ -86,44 +83,422 @@ export default function Settings() {
     toggleLargeText,
   } = useSettingsStore()
 
+  // Aktiv sektion innehåll
+  const renderSectionContent = () => {
+    switch (activeSection) {
+      case 'profile':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-slate-900">Profilinställningar</h2>
+            
+            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
+                <User size={32} className="text-teal-700" />
+              </div>
+              <div className="text-center sm:text-left">
+                <button className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors min-h-[44px]">
+                  Byt profilbild
+                </button>
+                <p className="text-sm text-slate-500 mt-1">JPG, PNG eller GIF. Max 2MB.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Förnamn</label>
+                <input 
+                  type="text" 
+                  defaultValue="Anna"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Efternamn</label>
+                <input 
+                  type="text" 
+                  defaultValue="Andersson"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
+                <input 
+                  type="email" 
+                  defaultValue="anna.andersson@email.se"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
+                <input 
+                  type="tel" 
+                  defaultValue="070-123 45 67"
+                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Om mig</label>
+              <textarea 
+                rows={3}
+                placeholder="Berätta kort om dig själv..."
+                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none text-base"
+              />
+            </div>
+
+            <div className="flex justify-end pt-4">
+              <button className="flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors min-h-[48px]">
+                <Save size={18} />
+                Spara ändringar
+              </button>
+            </div>
+          </div>
+        )
+
+      case 'accessibility':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-slate-900">Tillgänglighet</h2>
+            <p className="text-slate-500">Anpassa portalen efter dina behov och preferenser.</p>
+
+            <div className="space-y-4">
+              {/* High Contrast */}
+              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-slate-900">Hög kontrast</h3>
+                  <p className="text-sm text-slate-500">Ökar kontrasten för bättre läsbarhet</p>
+                </div>
+                <button
+                  onClick={toggleHighContrast}
+                  className={cn(
+                    "w-14 h-8 rounded-full transition-colors relative",
+                    highContrast ? "bg-teal-600" : "bg-slate-300"
+                  )}
+                >
+                  <span className={cn(
+                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
+                    highContrast ? "translate-x-7" : "translate-x-1"
+                  )} />
+                </button>
+              </div>
+
+              {/* Large Text */}
+              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-slate-900">Större text</h3>
+                  <p className="text-sm text-slate-500">Ökar textstorleken i hela appen</p>
+                </div>
+                <button
+                  onClick={toggleLargeText}
+                  className={cn(
+                    "w-14 h-8 rounded-full transition-colors relative",
+                    largeText ? "bg-teal-600" : "bg-slate-300"
+                  )}
+                >
+                  <span className={cn(
+                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
+                    largeText ? "translate-x-7" : "translate-x-1"
+                  )} />
+                </button>
+              </div>
+
+              {/* Calm Mode */}
+              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-slate-900">Lugnt läge</h3>
+                  <p className="text-sm text-slate-500">Reducerar animationer och distraktioner</p>
+                </div>
+                <button
+                  onClick={toggleCalmMode}
+                  className={cn(
+                    "w-14 h-8 rounded-full transition-colors relative",
+                    calmMode ? "bg-teal-600" : "bg-slate-300"
+                  )}
+                >
+                  <span className={cn(
+                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
+                    calmMode ? "translate-x-7" : "translate-x-1"
+                  )} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'notifications':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-slate-900">Notifikationer</h2>
+            <p className="text-slate-500">Välj hur du vill bli kontaktad om uppdateringar.</p>
+
+            <div className="space-y-4">
+              {/* Email Notifications */}
+              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-slate-900">E-postnotifikationer</h3>
+                  <p className="text-sm text-slate-500">Få uppdateringar via e-post</p>
+                </div>
+                <button
+                  onClick={() => setEmailNotifications(!emailNotifications)}
+                  className={cn(
+                    "w-14 h-8 rounded-full transition-colors relative",
+                    emailNotifications ? "bg-teal-600" : "bg-slate-300"
+                  )}
+                >
+                  <span className={cn(
+                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
+                    emailNotifications ? "translate-x-7" : "translate-x-1"
+                  )} />
+                </button>
+              </div>
+
+              {/* Push Notifications */}
+              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-slate-900">Push-notifikationer</h3>
+                  <p className="text-sm text-slate-500">Få notiser i webbläsaren</p>
+                </div>
+                <button
+                  onClick={() => setPushNotifications(!pushNotifications)}
+                  className={cn(
+                    "w-14 h-8 rounded-full transition-colors relative",
+                    pushNotifications ? "bg-teal-600" : "bg-slate-300"
+                  )}
+                >
+                  <span className={cn(
+                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
+                    pushNotifications ? "translate-x-7" : "translate-x-1"
+                  )} />
+                </button>
+              </div>
+
+              {/* Weekly Summary */}
+              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-slate-900">Veckosammanfattning</h3>
+                  <p className="text-sm text-slate-500">Få en veckovis sammanfattning</p>
+                </div>
+                <button
+                  onClick={() => setWeeklySummary(!weeklySummary)}
+                  className={cn(
+                    "w-14 h-8 rounded-full transition-colors relative",
+                    weeklySummary ? "bg-teal-600" : "bg-slate-300"
+                  )}
+                >
+                  <span className={cn(
+                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
+                    weeklySummary ? "translate-x-7" : "translate-x-1"
+                  )} />
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'appearance':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-slate-900">Utseende</h2>
+            <p className="text-slate-500">Anpassa portalens utseende efter din smak.</p>
+
+            <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+              <div className="flex items-center gap-3">
+                {darkMode ? <Moon size={20} className="text-slate-600" /> : <Sun size={20} className="text-slate-600" />}
+                <div>
+                  <h3 className="font-medium text-slate-900">Mörkt läge</h3>
+                  <p className="text-sm text-slate-500">Byt till mörkt tema</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setDarkMode(!darkMode)}
+                className={cn(
+                  "w-14 h-8 rounded-full transition-colors relative",
+                  darkMode ? "bg-teal-600" : "bg-slate-300"
+                )}
+              >
+                <span className={cn(
+                  "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
+                  darkMode ? "translate-x-7" : "translate-x-1"
+                )} />
+              </button>
+            </div>
+          </div>
+        )
+
+      case 'privacy':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-slate-900">Integritet</h2>
+            <p className="text-slate-500">Hantera dina sekretessinställningar.</p>
+
+            <div className="space-y-4">
+              <div className="p-4 border border-slate-200 rounded-xl">
+                <h3 className="font-medium text-slate-900 mb-2">Dela aktivitet</h3>
+                <p className="text-sm text-slate-500 mb-3">Tillåt delning av anonymiserad användningsstatistik för att förbättra tjänsten.</p>
+                <button className="text-teal-600 font-medium text-sm">Läs mer om dataintegritet</button>
+              </div>
+
+              <div className="p-4 border border-slate-200 rounded-xl">
+                <h3 className="font-medium text-slate-900 mb-2">Profilsynlighet</h3>
+                <p className="text-sm text-slate-500 mb-3">Välj vem som kan se din profil.</p>
+                <select className="w-full px-4 py-2 border border-slate-200 rounded-lg">
+                  <option>Endast jag</option>
+                  <option>Arbetsförmedlare</option>
+                  <option>Alla</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )
+
+      case 'security':
+        return (
+          <div className="space-y-6">
+            <h2 className="text-lg font-semibold text-slate-900">Säkerhet</h2>
+            <p className="text-slate-500">Hantera lösenord och säkerhetsinställningar.</p>
+
+            <div className="space-y-4">
+              <div className="p-4 border border-slate-200 rounded-xl">
+                <h3 className="font-medium text-slate-900 mb-2">Ändra lösenord</h3>
+                <div className="space-y-3 mt-4">
+                  <input 
+                    type="password" 
+                    placeholder="Nuvarande lösenord"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
+                  />
+                  <input 
+                    type="password" 
+                    placeholder="Nytt lösenord"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
+                  />
+                  <input 
+                    type="password" 
+                    placeholder="Bekräfta nytt lösenord"
+                    className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
+                  />
+                  <button className="w-full px-4 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 min-h-[48px]">
+                    Uppdatera lösenord
+                  </button>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+                <div>
+                  <h3 className="font-medium text-slate-900">Tvåfaktorsautentisering</h3>
+                  <p className="text-sm text-slate-500">Lägg till extra säkerhet</p>
+                </div>
+                <button className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 min-h-[44px]">
+                  Aktivera
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+
+      default:
+        return null
+    }
+  }
+
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Inställningar</h1>
-        <p className="text-slate-500 mt-1">Anpassa portalen efter dina behov</p>
+        <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Inställningar</h1>
+        <p className="text-slate-500 mt-1 text-sm sm:text-base">Anpassa portalen efter dina behov</p>
+      </div>
+
+      {/* Mobile: Dropdown menu */}
+      <div className="lg:hidden">
+        <button
+          onClick={() => setShowMobileMenu(!showMobileMenu)}
+          className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl"
+        >
+          <div className="flex items-center gap-3">
+            {(() => {
+              const section = sections.find(s => s.id === activeSection)
+              const Icon = section?.icon || User
+              return (
+                <>
+                  <div className="p-2 bg-teal-100 rounded-lg">
+                    <Icon size={20} className="text-teal-700" />
+                  </div>
+                  <span className="font-medium text-slate-900">{section?.title}</span>
+                </>
+              )
+            })()}
+          </div>
+          {showMobileMenu ? <X size={20} className="text-slate-400" /> : <Menu size={20} className="text-slate-400" />}
+        </button>
+
+        {showMobileMenu && (
+          <div className="mt-2 bg-white border border-slate-200 rounded-xl overflow-hidden">
+            {sections.map((section) => {
+              const Icon = section.icon
+              return (
+                <button
+                  key={section.id}
+                  onClick={() => {
+                    setActiveSection(section.id)
+                    setShowMobileMenu(false)
+                  }}
+                  className={cn(
+                    "w-full flex items-center gap-3 p-4 text-left transition-colors",
+                    activeSection === section.id 
+                      ? 'bg-teal-50 text-teal-900' 
+                      : 'hover:bg-slate-50'
+                  )}
+                >
+                  <div className={cn(
+                    "p-2 rounded-lg",
+                    activeSection === section.id ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-600'
+                  )}>
+                    <Icon size={18} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-medium text-sm">{section.title}</h3>
+                    <p className="text-xs text-slate-500">{section.description}</p>
+                  </div>
+                </button>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Settings Navigation */}
-        <div className="lg:col-span-1 space-y-2">
+        {/* Desktop Settings Navigation */}
+        <div className="hidden lg:block lg:col-span-1 space-y-2">
           {sections.map((section) => {
             const Icon = section.icon
             return (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`
-                  w-full flex items-center gap-3 p-4 rounded-xl transition-all text-left
-                  ${activeSection === section.id 
+                className={cn(
+                  "w-full flex items-center gap-3 p-4 rounded-xl transition-all text-left",
+                  activeSection === section.id 
                     ? 'bg-teal-50 border-2 border-teal-500' 
                     : 'bg-white border-2 border-transparent hover:bg-slate-50'
-                  }
-                `}
+                )}
               >
-                <div className={`
-                  p-2 rounded-lg
-                  ${activeSection === section.id ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-600'}
-                `}>
+                <div className={cn(
+                  "p-2 rounded-lg",
+                  activeSection === section.id ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-600'
+                )}>
                   <Icon size={20} />
                 </div>
-                <div className="flex-1">
-                  <h3 className={`font-semibold ${activeSection === section.id ? 'text-teal-900' : 'text-slate-900'}`}>
+                <div className="flex-1 min-w-0">
+                  <h3 className={cn(
+                    "font-semibold",
+                    activeSection === section.id ? 'text-teal-900' : 'text-slate-900'
+                  )}>
                     {section.title}
                   </h3>
-                  <p className="text-sm text-slate-500">{section.description}</p>
+                  <p className="text-sm text-slate-500 truncate">{section.description}</p>
                 </div>
-                <ChevronRight size={18} className="text-slate-400" />
+                <ChevronRight size={18} className="text-slate-400 flex-shrink-0" />
               </button>
             )
           })}
@@ -131,443 +506,9 @@ export default function Settings() {
 
         {/* Settings Content */}
         <div className="lg:col-span-2">
-          {/* Profile Section */}
-          {activeSection === 'profile' && (
-            <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-6">
-              <h2 className="text-lg font-semibold text-slate-900">Profilinställningar</h2>
-              
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
-                  <User size={32} className="text-teal-700" />
-                </div>
-                <div>
-                  <button className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors">
-                    Byt profilbild
-                  </button>
-                  <p className="text-sm text-slate-500 mt-1">JPG, PNG eller GIF. Max 2MB.</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Förnamn</label>
-                  <input 
-                    type="text" 
-                    defaultValue="Anna"
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Efternamn</label>
-                  <input 
-                    type="text" 
-                    defaultValue="Andersson"
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
-                  <input 
-                    type="email" 
-                    defaultValue="anna.andersson@email.se"
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
-                  <input 
-                    type="tel" 
-                    defaultValue="070-123 45 67"
-                    className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Om mig</label>
-                <textarea 
-                  rows={3}
-                  placeholder="Berätta kort om dig själv..."
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none"
-                />
-              </div>
-
-              <div className="flex justify-end">
-                <button className="flex items-center gap-2 px-6 py-2 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors">
-                  <Save size={18} />
-                  Spara ändringar
-                </button>
-              </div>
-            </div>
-          )}
-
-          {/* Accessibility Section */}
-          {activeSection === 'accessibility' && (
-            <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-6">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">Tillgänglighet</h2>
-                <p className="text-slate-500 mt-1">Anpassa portalen efter dina behov</p>
-              </div>
-
-              {/* Calm Mode */}
-              <div className="p-5 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl border border-teal-100">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 bg-teal-500 text-white rounded-xl">
-                      <Heart size={24} />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-teal-900 text-lg">Lugn läge</h3>
-                      <p className="text-teal-700 mt-1">
-                        Ett mjukare gränssnitt med större knappar, färre val och mer stöttande feedback. 
-                        Perfekt när energin är låg.
-                      </p>
-                      <ul className="mt-3 space-y-1 text-sm text-teal-600">
-                        <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-teal-400 rounded-full" />
-                          Större knappar och text
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-teal-400 rounded-full" />
-                          Färre alternativ synliga samtidigt
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-teal-400 rounded-full" />
-                          Ingen "skam-skapande" statistik
-                        </li>
-                        <li className="flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 bg-teal-400 rounded-full" />
-                          Påminnelser om pauser
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                  <button
-                    onClick={toggleCalmMode}
-                    className={`
-                      w-14 h-8 rounded-full transition-colors relative flex-shrink-0
-                      ${calmMode ? 'bg-teal-500' : 'bg-slate-300'}
-                    `}
-                  >
-                    <span className={`
-                      absolute top-1 w-6 h-6 bg-white rounded-full transition-transform shadow-sm
-                      ${calmMode ? 'left-7' : 'left-1'}
-                    `} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Visual Settings */}
-              <div className="space-y-4">
-                <h3 className="font-semibold text-slate-900">Visuella inställningar</h3>
-                
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-indigo-100 text-indigo-700 rounded-lg">
-                      <Type size={20} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-slate-900">Större text</h4>
-                      <p className="text-sm text-slate-500">Ökar textstorleken i hela portalen</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={toggleLargeText}
-                    className={`
-                      w-12 h-6 rounded-full transition-colors relative
-                      ${largeText ? 'bg-teal-500' : 'bg-slate-300'}
-                    `}
-                  >
-                    <span className={`
-                      absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                      ${largeText ? 'left-7' : 'left-1'}
-                    `} />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 text-purple-700 rounded-lg">
-                      <Contrast size={20} />
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-slate-900">Hög kontrast</h4>
-                      <p className="text-sm text-slate-500">Starkare färger för bättre läsbarhet</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={toggleHighContrast}
-                    className={`
-                      w-12 h-6 rounded-full transition-colors relative
-                      ${highContrast ? 'bg-teal-500' : 'bg-slate-300'}
-                    `}
-                  >
-                    <span className={`
-                      absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                      ${highContrast ? 'left-7' : 'left-1'}
-                    `} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Crisis Support Info */}
-              <div className="p-4 bg-rose-50 rounded-xl border border-rose-100">
-                <div className="flex items-center gap-2 mb-2">
-                  <Heart size={18} className="text-rose-600" />
-                  <h3 className="font-medium text-rose-900">Behöver du stöd?</h3>
-                </div>
-                <p className="text-sm text-rose-700 mb-3">
-                  Det finns alltid hjälp att få. Krisstöd-knappen finns alltid synlig längst ner till höger.
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <span className="px-3 py-1 bg-white text-rose-700 rounded-full text-sm font-medium">
-                    Jourhavande medmänniska: 08-702 16 80
-                  </span>
-                  <span className="px-3 py-1 bg-white text-rose-700 rounded-full text-sm font-medium">
-                    1177: 1177
-                  </span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Notifications Section */}
-          {activeSection === 'notifications' && (
-            <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-6">
-              <h2 className="text-lg font-semibold text-slate-900">Notifikationsinställningar</h2>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-blue-100 text-blue-700 rounded-lg">
-                      <Mail size={20} />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-slate-900">E-postnotifikationer</h3>
-                      <p className="text-sm text-slate-500">Få uppdateringar via e-post</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setEmailNotifications(!emailNotifications)}
-                    className={`
-                      w-12 h-6 rounded-full transition-colors relative
-                      ${emailNotifications ? 'bg-teal-500' : 'bg-slate-300'}
-                    `}
-                  >
-                    <span className={`
-                      absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                      ${emailNotifications ? 'left-7' : 'left-1'}
-                    `} />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-purple-100 text-purple-700 rounded-lg">
-                      <Smartphone size={20} />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-slate-900">Push-notifikationer</h3>
-                      <p className="text-sm text-slate-500">Få notifikationer i webbläsaren</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setPushNotifications(!pushNotifications)}
-                    className={`
-                      w-12 h-6 rounded-full transition-colors relative
-                      ${pushNotifications ? 'bg-teal-500' : 'bg-slate-300'}
-                    `}
-                  >
-                    <span className={`
-                      absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                      ${pushNotifications ? 'left-7' : 'left-1'}
-                    `} />
-                  </button>
-                </div>
-
-                <div className="flex items-center justify-between p-4 bg-slate-50 rounded-xl">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-amber-100 text-amber-700 rounded-lg">
-                      <Globe size={20} />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-slate-900">Veckosammanfattning</h3>
-                      <p className="text-sm text-slate-500">Få en sammanfattning varje vecka</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setWeeklySummary(!weeklySummary)}
-                    className={`
-                      w-12 h-6 rounded-full transition-colors relative
-                      ${weeklySummary ? 'bg-teal-500' : 'bg-slate-300'}
-                    `}
-                  >
-                    <span className={`
-                      absolute top-1 w-4 h-4 bg-white rounded-full transition-transform
-                      ${weeklySummary ? 'left-7' : 'left-1'}
-                    `} />
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Appearance Section */}
-          {activeSection === 'appearance' && (
-            <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-6">
-              <h2 className="text-lg font-semibold text-slate-900">Utseende</h2>
-              
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-3">Tema</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    onClick={() => setDarkMode(false)}
-                    className={`
-                      flex items-center gap-3 p-4 rounded-xl border-2 transition-all
-                      ${!darkMode ? 'border-teal-500 bg-teal-50' : 'border-slate-200 hover:border-slate-300'}
-                    `}
-                  >
-                    <div className="p-2 bg-amber-100 text-amber-600 rounded-lg">
-                      <Sun size={20} />
-                    </div>
-                    <div className="text-left">
-                      <h3 className={`font-medium ${!darkMode ? 'text-teal-900' : 'text-slate-900'}`}>Ljust</h3>
-                      <p className="text-sm text-slate-500">Standardläge</p>
-                    </div>
-                  </button>
-                  <button
-                    onClick={() => setDarkMode(true)}
-                    className={`
-                      flex items-center gap-3 p-4 rounded-xl border-2 transition-all
-                      ${darkMode ? 'border-teal-500 bg-teal-50' : 'border-slate-200 hover:border-slate-300'}
-                    `}
-                  >
-                    <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
-                      <Moon size={20} />
-                    </div>
-                    <div className="text-left">
-                      <h3 className={`font-medium ${darkMode ? 'text-teal-900' : 'text-slate-900'}`}>Mörkt</h3>
-                      <p className="text-sm text-slate-500">Kommer snart</p>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-3">Språk</label>
-                <select 
-                  value={language}
-                  onChange={(e) => setLanguage(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                >
-                  <option value="sv">Svenska</option>
-                  <option value="en">English</option>
-                  <option value="no">Norsk</option>
-                  <option value="da">Dansk</option>
-                </select>
-              </div>
-            </div>
-          )}
-
-          {/* Privacy Section */}
-          {activeSection === 'privacy' && (
-            <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-6">
-              <h2 className="text-lg font-semibold text-slate-900">Integritet</h2>
-              
-              <div className="space-y-4">
-                <div className="p-4 bg-slate-50 rounded-xl">
-                  <h3 className="font-medium text-slate-900 mb-2">Dela profil med arbetskonsulent</h3>
-                  <p className="text-sm text-slate-600 mb-3">
-                    Tillåt din arbetskonsulent att se din aktivitet och dina framsteg i portalen.
-                  </p>
-                  <button className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors">
-                    Hantera delning
-                  </button>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-xl">
-                  <h3 className="font-medium text-slate-900 mb-2">Exportera din data</h3>
-                  <p className="text-sm text-slate-600 mb-3">
-                    Ladda ner en kopia av alla dina data från portalen.
-                  </p>
-                  <button className="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
-                    Exportera data
-                  </button>
-                </div>
-
-                <div className="p-4 bg-red-50 rounded-xl border border-red-100">
-                  <h3 className="font-medium text-red-900 mb-2">Radera konto</h3>
-                  <p className="text-sm text-red-600 mb-3">
-                    Detta kommer permanent radera ditt konto och all associerad data.
-                  </p>
-                  <button className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">
-                    Radera konto
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Security Section */}
-          {activeSection === 'security' && (
-            <div className="bg-white p-6 rounded-xl border border-slate-200 space-y-6">
-              <h2 className="text-lg font-semibold text-slate-900">Säkerhet</h2>
-              
-              <div className="space-y-4">
-                <div className="p-4 bg-slate-50 rounded-xl">
-                  <h3 className="font-medium text-slate-900 mb-2">Ändra lösenord</h3>
-                  <div className="space-y-3 mt-3">
-                    <input 
-                      type="password" 
-                      placeholder="Nuvarande lösenord"
-                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    />
-                    <input 
-                      type="password" 
-                      placeholder="Nytt lösenord"
-                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    />
-                    <input 
-                      type="password" 
-                      placeholder="Bekräfta nytt lösenord"
-                      className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent"
-                    />
-                  </div>
-                  <button className="mt-3 px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors">
-                    Uppdatera lösenord
-                  </button>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-xl">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h3 className="font-medium text-slate-900">Tvåfaktorsautentisering</h3>
-                      <p className="text-sm text-slate-500">Öka säkerheten på ditt konto</p>
-                    </div>
-                    <button className="px-4 py-2 bg-white border border-slate-200 text-slate-700 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors">
-                      Aktivera
-                    </button>
-                  </div>
-                </div>
-
-                <div className="p-4 bg-slate-50 rounded-xl">
-                  <h3 className="font-medium text-slate-900 mb-2">Aktiva sessioner</h3>
-                  <p className="text-sm text-slate-500 mb-3">Du är för närvarande inloggad på:</p>
-                  <div className="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-200">
-                    <div className="flex items-center gap-3">
-                      <div className="p-2 bg-green-100 text-green-700 rounded-lg">
-                        <Globe size={16} />
-                      </div>
-                      <div>
-                        <p className="font-medium text-sm text-slate-900">Chrome på Windows</p>
-                        <p className="text-xs text-slate-500">Stockholm, Sverige • Nuvarande session</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-slate-200">
+            {renderSectionContent()}
+          </div>
         </div>
       </div>
     </div>
