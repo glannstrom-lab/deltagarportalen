@@ -13,10 +13,13 @@ import {
   RotateCcw,
   Loader2,
   MapPin,
+  Building2,
+  Calendar,
 } from 'lucide-react';
 import {
   searchPlatsbanken,
   getJobDetails,
+  getMunicipalities,
   POPULAR_QUERIES,
   PlatsbankenJob,
 } from '@/services/arbetsformedlingenApi';
@@ -27,19 +30,42 @@ import { cn } from '@/lib/utils';
 // Sökfilters-interface
 interface JobFilters {
   search: string;
-  location: string;
+  municipality: string;
   region: string;
-  employmentType: string[];
+  employmentType: string;
   publishedWithin: 'today' | 'week' | 'month' | 'all';
 }
 
 const defaultFilters: JobFilters = {
   search: '',
-  location: '',
+  municipality: '',
   region: '',
-  employmentType: [],
+  employmentType: '',
   publishedWithin: 'all',
 };
+
+// Län alternativ
+const REGION_OPTIONS = [
+  { code: 'SE110', name: 'Stockholms län' },
+  { code: 'SE232', name: 'Västra Götalands län' },
+  { code: 'SE224', name: 'Skåne län' },
+  { code: 'SE121', name: 'Uppsala län' },
+  { code: 'SE123', name: 'Östergötlands län' },
+  { code: 'SE211', name: 'Jönköpings län' },
+  { code: 'SE212', name: 'Kronobergs län' },
+  { code: 'SE213', name: 'Kalmar län' },
+  { code: 'SE221', name: 'Blekinge län' },
+  { code: 'SE231', name: 'Hallands län' },
+  { code: 'SE311', name: 'Värmlands län' },
+  { code: 'SE124', name: 'Örebro län' },
+  { code: 'SE125', name: 'Västmanlands län' },
+  { code: 'SE312', name: 'Dalarnas län' },
+  { code: 'SE313', name: 'Gävleborgs län' },
+  { code: 'SE321', name: 'Västernorrlands län' },
+  { code: 'SE322', name: 'Jämtlands län' },
+  { code: 'SE331', name: 'Västerbottens län' },
+  { code: 'SE332', name: 'Norrbottens län' },
+];
 
 // Konvertera Platsbanken-job till internt format
 function convertJob(job: PlatsbankenJob) {
@@ -51,6 +77,7 @@ function convertJob(job: PlatsbankenJob) {
       job.workplace_address?.municipality ||
       job.workplace_address?.city ||
       'Ort ej angiven',
+    region: job.workplace_address?.region || '',
     description: job.description?.text
       ? job.description.text.substring(0, 300) + '...'
       : 'Ingen beskrivning',
@@ -69,11 +96,25 @@ export default function JobSearch() {
   const [filters, setFilters] = useState<JobFilters>(defaultFilters);
   const [selectedJob, setSelectedJob] = useState<PlatsbankenJob | null>(null);
   const [showFilters, setShowFilters] = useState(false);
+  const [municipalities, setMunicipalities] = useState<Array<{id: string, name: string}>>([]);
+  const [municipalitySearch, setMunicipalitySearch] = useState('');
+
+  // Ladda kommuner vid start
+  useEffect(() => {
+    loadMunicipalities();
+  }, []);
 
   // Sök jobb när filter ändras
   useEffect(() => {
     searchJobs();
   }, [filters]);
+
+  const loadMunicipalities = async () => {
+    const munis = await getMunicipalities();
+    // Sortera alfabetiskt
+    const sorted = munis.sort((a, b) => a.name.localeCompare(b.name, 'sv'));
+    setMunicipalities(sorted);
+  };
 
   const searchJobs = async () => {
     try {
@@ -97,8 +138,9 @@ export default function JobSearch() {
       // Anropa AF API
       const result = await searchPlatsbanken({
         q: filters.search,
-        municipality: filters.location,
+        municipality: filters.municipality,
         region: filters.region,
+        employment_type: filters.employmentType,
         published_after: publishedAfter,
         limit: 50,
       });
@@ -123,10 +165,17 @@ export default function JobSearch() {
   };
 
   const hasActiveFilters =
-    filters.location ||
+    filters.municipality ||
     filters.region ||
-    filters.employmentType.length > 0 ||
+    filters.employmentType ||
     filters.publishedWithin !== 'all';
+
+  // Filtrera kommuner baserat på sökning
+  const filteredMunicipalities = municipalitySearch
+    ? municipalities.filter(m => 
+        m.name.toLowerCase().includes(municipalitySearch.toLowerCase())
+      ).slice(0, 10)
+    : municipalities.slice(0, 20);
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -141,7 +190,7 @@ export default function JobSearch() {
               Hitta lediga jobb från Platsbanken
               {totalJobs > 0 && (
                 <span className="ml-2 text-violet-600 font-medium">
-                  • {totalJobs} jobb
+                  • {totalJobs} jobb hittade
                 </span>
               )}
             </p>
@@ -189,31 +238,64 @@ export default function JobSearch() {
         {/* Filter panel */}
         {showFilters && (
           <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Location */}
+            {/* Municipality - med dropdown */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Kommun/Ort
+                <MapPin size={14} className="inline mr-1" />
+                Kommun
               </label>
               <div className="relative">
-                <MapPin
-                  size={16}
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-                />
-                <input
-                  type="text"
-                  placeholder="t.ex. Stockholm"
-                  value={filters.location}
-                  onChange={(e) =>
-                    setFilters({ ...filters, location: e.target.value })
-                  }
-                  className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-                />
+                {filters.municipality ? (
+                  <div className="flex items-center justify-between w-full px-3 py-2 border border-slate-200 rounded-lg bg-violet-50">
+                    <span className="text-violet-700">
+                      {municipalities.find(m => m.id === filters.municipality)?.name || filters.municipality}
+                    </span>
+                    <button
+                      onClick={() => setFilters({ ...filters, municipality: '' })}
+                      className="text-violet-400 hover:text-violet-600"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      placeholder="Sök kommun..."
+                      value={municipalitySearch}
+                      onChange={(e) => setMunicipalitySearch(e.target.value)}
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                    />
+                    {municipalitySearch && (
+                      <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                        {filteredMunicipalities.map((muni) => (
+                          <button
+                            key={muni.id}
+                            onClick={() => {
+                              setFilters({ ...filters, municipality: muni.id });
+                              setMunicipalitySearch('');
+                            }}
+                            className="w-full text-left px-3 py-2 hover:bg-violet-50 text-sm"
+                          >
+                            {muni.name}
+                          </button>
+                        ))}
+                        {filteredMunicipalities.length === 0 && (
+                          <div className="px-3 py-2 text-sm text-slate-500">
+                            Inga kommuner hittades
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             </div>
 
             {/* Region */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
+                <Map size={14} className="inline mr-1" />
                 Län
               </label>
               <select
@@ -221,51 +303,35 @@ export default function JobSearch() {
                 onChange={(e) =>
                   setFilters({ ...filters, region: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
                 <option value="">Alla län</option>
-                <option value="SE110">Stockholms län</option>
-                <option value="SE232">Västra Götalands län</option>
-                <option value="SE224">Skåne län</option>
-                <option value="SE121">Uppsala län</option>
-                <option value="SE123">Östergötlands län</option>
-                <option value="SE211">Jönköpings län</option>
-                <option value="SE212">Kronobergs län</option>
-                <option value="SE213">Kalmar län</option>
-                <option value="SE221">Blekinge län</option>
-                <option value="SE231">Hallands län</option>
-                <option value="SE311">Värmlands län</option>
-                <option value="SE124">Örebro län</option>
-                <option value="SE125">Västmanlands län</option>
-                <option value="SE312">Dalarnas län</option>
-                <option value="SE313">Gävleborgs län</option>
-                <option value="SE321">Västernorrlands län</option>
-                <option value="SE322">Jämtlands län</option>
-                <option value="SE331">Västerbottens län</option>
-                <option value="SE332">Norrbottens län</option>
+                {REGION_OPTIONS.map((region) => (
+                  <option key={region.code} value={region.code}>
+                    {region.name}
+                  </option>
+                ))}
               </select>
             </div>
 
             {/* Employment type */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
+                <Briefcase size={14} className="inline mr-1" />
                 Anställningsform
               </label>
               <select
-                value={filters.employmentType[0] || ''}
+                value={filters.employmentType}
                 onChange={(e) =>
-                  setFilters({
-                    ...filters,
-                    employmentType: e.target.value ? [e.target.value] : [],
-                  })
+                  setFilters({ ...filters, employmentType: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
                 <option value="">Alla typer</option>
                 <option value="Heltid">Heltid</option>
                 <option value="Deltid">Deltid</option>
                 <option value="Tillsvidare">Tillsvidare</option>
-                <option value="Projekt">Projekt/Visstid</option>
+                <option value="Visstid">Visstid / Projekt</option>
                 <option value="Sommarjobb">Sommarjobb</option>
               </select>
             </div>
@@ -273,6 +339,7 @@ export default function JobSearch() {
             {/* Published date */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
+                <Calendar size={14} className="inline mr-1" />
                 Publicerad
               </label>
               <select
@@ -283,7 +350,7 @@ export default function JobSearch() {
                     publishedWithin: e.target.value as any,
                   })
                 }
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
                 <option value="all">När som helst</option>
                 <option value="today">Idag</option>
@@ -320,11 +387,12 @@ export default function JobSearch() {
       {hasActiveFilters && (
         <div className="mb-4 flex flex-wrap items-center gap-2">
           <span className="text-sm text-slate-500">Aktiva filter:</span>
-          {filters.location && (
+          {filters.municipality && (
             <span className="px-3 py-1 bg-violet-100 text-violet-700 text-sm rounded-full flex items-center gap-2">
-              📍 {filters.location}
+              <MapPin size={14} />
+              {municipalities.find(m => m.id === filters.municipality)?.name || filters.municipality}
               <button
-                onClick={() => setFilters({ ...filters, location: '' })}
+                onClick={() => setFilters({ ...filters, municipality: '' })}
                 className="hover:text-violet-900"
               >
                 <X size={14} />
@@ -333,7 +401,8 @@ export default function JobSearch() {
           )}
           {filters.region && (
             <span className="px-3 py-1 bg-violet-100 text-violet-700 text-sm rounded-full flex items-center gap-2">
-              🗺️ {filters.region}
+              <Map size={14} />
+              {REGION_OPTIONS.find(r => r.code === filters.region)?.name}
               <button
                 onClick={() => setFilters({ ...filters, region: '' })}
                 className="hover:text-violet-900"
@@ -342,27 +411,20 @@ export default function JobSearch() {
               </button>
             </span>
           )}
-          {filters.employmentType.map((type) => (
-            <span
-              key={type}
-              className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full flex items-center gap-2"
-            >
-              💼 {type}
+          {filters.employmentType && (
+            <span className="px-3 py-1 bg-blue-100 text-blue-700 text-sm rounded-full flex items-center gap-2">
+              <Briefcase size={14} />
+              {filters.employmentType}
               <button
                 onClick={() =>
-                  setFilters({
-                    ...filters,
-                    employmentType: filters.employmentType.filter(
-                      (t) => t !== type
-                    ),
-                  })
+                  setFilters({ ...filters, employmentType: '' })
                 }
                 className="hover:text-blue-900"
               >
                 <X size={14} />
               </button>
             </span>
-          ))}
+          )}
           <button
             onClick={() => setFilters(defaultFilters)}
             className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1"
@@ -492,7 +554,7 @@ export default function JobSearch() {
             </div>
             <div className="p-6">
               <div className="flex items-center gap-2 text-slate-600 mb-4">
-                <Briefcase size={18} />
+                <Building2 size={18} />
                 <span className="font-medium">
                   {selectedJob.employer?.name}
                 </span>
@@ -503,6 +565,11 @@ export default function JobSearch() {
                   {selectedJob.workplace_address?.municipality ||
                     'Ort ej angiven'}
                 </span>
+                {selectedJob.workplace_address?.region && (
+                  <span className="text-slate-400">
+                    ({selectedJob.workplace_address.region})
+                  </span>
+                )}
               </div>
               <div
                 className="prose max-w-none mt-4"
