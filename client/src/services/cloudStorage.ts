@@ -43,9 +43,23 @@ export const articleBookmarksApi = {
   },
 
   async add(articleId: string) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      console.log('[CloudStorage] Ingen användare inloggad - sparar till localStorage')
+      const bookmarks = JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
+      if (!bookmarks.includes(articleId)) {
+        bookmarks.push(articleId)
+        localStorage.setItem('article_bookmarks', JSON.stringify(bookmarks))
+      }
+      return
+    }
+
     const { error } = await supabase
       .from('article_bookmarks')
-      .insert({ article_id: articleId })
+      .insert({ 
+        user_id: user.id,
+        article_id: articleId 
+      })
     
     if (error) {
       handleStorageError(error, 'lägga till bokmärke')
@@ -189,14 +203,15 @@ export const dashboardPreferencesApi = {
     const { data, error } = await supabase
       .from('dashboard_preferences')
       .select('*')
-      .single()
+      .limit(1)
     
     if (error) {
       handleStorageError(error, 'hämta dashboard-inställningar')
       // Fallback till localStorage
       return JSON.parse(localStorage.getItem('dashboard_preferences') || 'null')
     }
-    return data
+    // Return first item or null
+    return data?.[0] || null
   },
 
   async update(preferences: {
@@ -204,9 +219,20 @@ export const dashboardPreferencesApi = {
     widget_sizes?: Record<string, string>
     widget_order?: string[]
   }) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      console.log('[CloudStorage] Ingen användare inloggad - sparar till localStorage')
+      localStorage.setItem('dashboard_preferences', JSON.stringify(preferences))
+      return
+    }
+
     const { error } = await supabase
       .from('dashboard_preferences')
-      .upsert(preferences, {
+      .upsert({
+        user_id: user.id,
+        ...preferences,
+        updated_at: new Date().toISOString()
+      }, {
         onConflict: 'user_id'
       })
     
@@ -227,14 +253,15 @@ export const userPreferencesApi = {
     const { data, error } = await supabase
       .from('user_preferences')
       .select('*')
-      .single()
+      .limit(1)
     
     if (error) {
       handleStorageError(error, 'hämta användarinställningar')
       // Fallback till localStorage
       return JSON.parse(localStorage.getItem('user_preferences') || 'null')
     }
-    return data
+    // Return first item or null
+    return data?.[0] || null
   },
 
   async update(preferences: {
@@ -246,13 +273,28 @@ export const userPreferencesApi = {
     onboarding_skipped?: boolean
     onboarding_progress?: any
   }) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      console.log('[CloudStorage] Ingen användare inloggad - sparar till localStorage')
+      localStorage.setItem('user_preferences', JSON.stringify(preferences))
+      return
+    }
+
     const { error } = await supabase
       .from('user_preferences')
-      .upsert(preferences, {
+      .upsert({
+        user_id: user.id,
+        ...preferences,
+        updated_at: new Date().toISOString()
+      }, {
         onConflict: 'user_id'
       })
     
-    if (error) throw error
+    if (error) {
+      handleStorageError(error, 'uppdatera användarinställningar')
+      localStorage.setItem('user_preferences', JSON.stringify(preferences))
+      return
+    }
   }
 }
 
