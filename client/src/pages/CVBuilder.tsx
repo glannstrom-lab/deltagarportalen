@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
-  Linkedin, Wand2, FileDown, Share2, Sparkles, Layout, Type, Palette,
-  Briefcase, GraduationCap, Award, Link2, Users, Loader2, CheckCircle2
+  Linkedin, Wand2, Sparkles, Layout, Briefcase, GraduationCap, 
+  Award, Link2, CheckCircle2, Share2, FileText, Lightbulb
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -48,11 +48,11 @@ const COLORS = [
 
 // Typsnitt
 const FONTS = [
-  { id: 'inter', name: 'Inter', desc: 'Modern sans-serif' },
-  { id: 'georgia', name: 'Georgia', desc: 'Klassisk serif' },
-  { id: 'playfair', name: 'Playfair', desc: 'Elegant serif' },
-  { id: 'roboto', name: 'Roboto', desc: 'Clean sans-serif' },
-  { id: 'montserrat', name: 'Montserrat', desc: 'Modern geometric' },
+  { id: 'inter', name: 'Inter', desc: 'Modern' },
+  { id: 'georgia', name: 'Georgia', desc: 'Klassisk' },
+  { id: 'playfair', name: 'Playfair', desc: 'Elegant' },
+  { id: 'roboto', name: 'Roboto', desc: 'Clean' },
+  { id: 'montserrat', name: 'Montserrat', desc: 'Modern' },
 ]
 
 // ============================================
@@ -78,11 +78,7 @@ function StepDots({ currentStep, totalSteps, onStepClick, completedSteps }: {
             onClick={() => onStepClick(stepNum)}
             className={cn(
               "h-2 rounded-full transition-all",
-              isActive 
-                ? "w-6 bg-[#4f46e5]" 
-                : isCompleted 
-                  ? "w-2 bg-green-500"
-                  : "w-2 bg-slate-300"
+              isActive ? "w-6 bg-[#4f46e5]" : isCompleted ? "w-2 bg-green-500" : "w-2 bg-slate-300"
             )}
           />
         )
@@ -94,91 +90,49 @@ function StepDots({ currentStep, totalSteps, onStepClick, completedSteps }: {
 function DesktopSidebar({ 
   currentStep, 
   onStepClick, 
-  completedSteps,
-  onShowTools,
-  onShowVersions
+  completedSteps 
 }: { 
   currentStep: number
   onStepClick: (step: number) => void
   completedSteps: number[]
-  onShowTools: () => void
-  onShowVersions: () => void
 }) {
   return (
-    <div className="space-y-4">
-      {/* Steg */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-        <h3 className="font-semibold text-slate-800 mb-4 px-2">Ditt CV</h3>
-        <nav className="space-y-1">
-          {STEPS.map((step) => {
-            const isActive = step.id === currentStep
-            const isCompleted = completedSteps.includes(step.id)
-            
-            return (
-              <button
-                key={step.id}
-                onClick={() => onStepClick(step.id)}
-                className={cn(
-                  "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-left",
-                  isActive 
-                    ? "bg-[#4f46e5] text-white shadow-md" 
-                    : isCompleted
-                      ? "text-slate-700 hover:bg-slate-50"
-                      : "text-slate-500 hover:bg-slate-50"
-                )}
-              >
-                <div className={cn(
-                  "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-sm font-semibold",
-                  isActive 
-                    ? "bg-white/20" 
-                    : isCompleted
-                      ? "bg-green-100 text-green-600"
-                      : "bg-slate-100"
-                )}>
-                  {isCompleted && !isActive ? (
-                    <CheckCircle2 className="w-4 h-4" />
-                  ) : (
-                    step.id
-                  )}
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className={cn("font-medium text-sm truncate", isActive ? "text-white" : "text-slate-800")}>
-                    {step.title}
-                  </p>
-                  <p className={cn("text-xs truncate", isActive ? "text-white/70" : "text-slate-500")}>
-                    {step.description}
-                  </p>
-                </div>
-              </button>
-            )
-          })}
-        </nav>
-      </div>
-
-      {/* Tools */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-        <h3 className="font-semibold text-slate-800 mb-3 px-2">Verktyg</h3>
-        <div className="space-y-2">
-          <button 
-            onClick={onShowTools}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-left"
-          >
-            <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center text-violet-600">
-              <Wand2 className="w-4 h-4" />
-            </div>
-            <span className="text-sm font-medium text-slate-700">AI-hjälp</span>
-          </button>
-          <button 
-            onClick={onShowVersions}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 text-left"
-          >
-            <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">
-              <Save className="w-4 h-4" />
-            </div>
-            <span className="text-sm font-medium text-slate-700">Versioner</span>
-          </button>
-        </div>
-      </div>
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
+      <h3 className="font-semibold text-slate-800 mb-4 px-2">Ditt CV</h3>
+      <nav className="space-y-1">
+        {STEPS.map((step) => {
+          const isActive = step.id === currentStep
+          const isCompleted = completedSteps.includes(step.id)
+          
+          return (
+            <button
+              key={step.id}
+              onClick={() => onStepClick(step.id)}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-3 rounded-xl transition-all text-left",
+                isActive 
+                  ? "bg-[#4f46e5] text-white shadow-md" 
+                  : isCompleted ? "text-slate-700 hover:bg-slate-50" : "text-slate-500 hover:bg-slate-50"
+              )}
+            >
+              <div className={cn(
+                "w-8 h-8 rounded-lg flex items-center justify-center shrink-0 text-sm font-semibold",
+                isActive ? "bg-white/20" : isCompleted ? "bg-green-100 text-green-600" : "bg-slate-100"
+              )}>
+                {isCompleted && !isActive ? <CheckCircle2 className="w-4 h-4" /> : step.id}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className={cn("font-medium text-sm truncate", isActive ? "text-white" : "text-slate-800")}>
+                  {step.title}
+                </p>
+                <p className={cn("text-xs truncate", isActive ? "text-white/70" : "text-slate-500")}>
+                  {step.description}
+                </p>
+              </div>
+            </button>
+          )
+        })}
+      </nav>
     </div>
   )
 }
@@ -220,7 +174,6 @@ export default function CVBuilder() {
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [showLinkedInImport, setShowLinkedInImport] = useState(false)
-  const [showTools, setShowTools] = useState(false)
   const [showVersions, setShowVersions] = useState(false)
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
@@ -233,9 +186,8 @@ export default function CVBuilder() {
     template: 'modern', colorScheme: 'indigo', font: 'inter',
   })
 
-  // Beräkna klara steg
   const completedSteps = [
-    1, // Design alltid klar
+    1,
     !!(data.firstName && data.lastName) && 2,
     !!data.summary && 3,
     (data.workExperience.length > 0 || data.education.length > 0) && 4,
@@ -308,7 +260,6 @@ export default function CVBuilder() {
     })
   }
 
-  // Array helpers
   const add = <T extends { id: string }>(arr: T[], item: T, key: keyof CVData) => {
     setData({ ...data, [key]: [...arr, item] } as CVData)
   }
@@ -322,17 +273,6 @@ export default function CVBuilder() {
   // STEG 1: DESIGN
   const renderStep1 = () => (
     <div className="space-y-6">
-      {/* Demo-knapp */}
-      <div className="flex justify-end">
-        <button
-          onClick={loadDemoData}
-          className="text-sm text-amber-600 hover:text-amber-700 font-medium flex items-center gap-1"
-        >
-          <Sparkles className="w-4 h-4" />
-          Fyll med exempeldata
-        </button>
-      </div>
-
       {/* Mallar */}
       <Card>
         <h3 className="font-semibold text-slate-800 mb-4">Välj mall</h3>
@@ -382,10 +322,7 @@ export default function CVBuilder() {
                   selected ? "border-[#4f46e5] bg-[#eef2ff]" : "border-slate-200 hover:border-slate-300"
                 )}
               >
-                <div 
-                  className="w-10 h-10 rounded-full border-2 border-white shadow-sm"
-                  style={{ backgroundColor: c.hex }}
-                />
+                <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: c.hex }} />
                 <span className="text-xs font-medium text-slate-700">{c.name}</span>
               </button>
             )
@@ -470,7 +407,6 @@ export default function CVBuilder() {
   // STEG 4: ERFARENHET
   const renderStep4 = () => (
     <div className="space-y-4">
-      {/* Jobb */}
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Arbetslivserfarenhet</h3>
@@ -519,7 +455,6 @@ export default function CVBuilder() {
         )}
       </Card>
 
-      {/* Utbildning */}
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Utbildning</h3>
@@ -547,7 +482,7 @@ export default function CVBuilder() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <input value={edu.school} onChange={(e) => update(data.education, edu.id, 'education', 'school', e.target.value)} placeholder="Skola/Universitet" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                  <input value={edu.degree} onChange={(e) => update(data.education, edu.id, 'education', 'degree', e.target.value)} placeholder="Examen (t.ex. Kandidatexamen)" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                  <input value={edu.degree} onChange={(e) => update(data.education, edu.id, 'education', 'degree', e.target.value)} placeholder="Examen" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 </div>
               </div>
             ))}
@@ -560,7 +495,6 @@ export default function CVBuilder() {
   // STEG 5: KOMPETENSER
   const renderStep5 = () => (
     <div className="space-y-4">
-      {/* Skills */}
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Kompetenser</h3>
@@ -594,7 +528,6 @@ export default function CVBuilder() {
         )}
       </Card>
 
-      {/* Språk */}
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Språk</h3>
@@ -618,7 +551,6 @@ export default function CVBuilder() {
         )}
       </Card>
 
-      {/* Certifikat */}
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Certifikat</h3>
@@ -636,7 +568,6 @@ export default function CVBuilder() {
         )}
       </Card>
 
-      {/* Länkar */}
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Länkar</h3>
@@ -646,7 +577,7 @@ export default function CVBuilder() {
           <div className="space-y-2">
             {data.links.map((link) => (
               <div key={link.id} className="flex items-center gap-3">
-                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder="Titel (t.ex. LinkedIn)" className="w-1/3 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder="Titel" className="w-1/3 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 <input type="url" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 <button onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
@@ -668,14 +599,22 @@ export default function CVBuilder() {
     }
   }
 
-  // Tools Panel (desktop sidebar)
-  const ToolsPanel = () => (
-    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4">
-      <h3 className="font-semibold text-slate-800 mb-4">AI & Verktyg</h3>
-      <div className="space-y-3">
+  // AI Panel (desktop sidebar)
+  const AIPanel = () => (
+    step === 3 && (
+      <div className="bg-gradient-to-br from-violet-50 to-indigo-50 rounded-2xl shadow-sm border border-violet-200 p-4">
+        <div className="flex items-center gap-2 mb-3">
+          <div className="w-8 h-8 bg-violet-500 rounded-lg flex items-center justify-center">
+            <Lightbulb className="w-4 h-4 text-white" />
+          </div>
+          <h3 className="font-semibold text-violet-900">AI-hjälp</h3>
+        </div>
+        <p className="text-sm text-violet-700 mb-3">
+          Få hjälp att skriva en bättre sammanfattning
+        </p>
         <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
       </div>
-    </div>
+    )
   )
 
   // Versions Panel
@@ -733,16 +672,31 @@ export default function CVBuilder() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header */}
+      {/* Header med alla knappar */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Skapa CV</h1>
           <p className="text-slate-600 text-sm">Steg {step} av {STEPS.length}: {currentStep.title}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          {/* Demo-data knapp - alltid synlig */}
+          <button
+            onClick={loadDemoData}
+            className="flex items-center gap-2 px-3 py-2 text-sm text-amber-600 hover:bg-amber-50 border border-amber-200 rounded-lg transition-colors"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span className="hidden sm:inline">Exempeldata</span>
+          </button>
+          
           <button onClick={() => setShowLinkedInImport(true)} className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm border border-[#0077B5] text-[#0077B5] rounded-lg hover:bg-[#0077B5]/5">
             <Linkedin className="w-4 h-4" /> Importera
           </button>
+          
+          {/* Dela CV - synlig på desktop */}
+          <div className="hidden sm:block">
+            <CVShare onShare={async () => await cvApi.shareCV()} />
+          </div>
+          
           <PDFExportButton type="cv" data={{
             personalInfo: { firstName: data.firstName, lastName: data.lastName, email: data.email, phone: data.phone, city: data.location },
             summary: data.summary,
@@ -752,6 +706,7 @@ export default function CVBuilder() {
             languages: data.languages.map(l => ({ language: l.name, level: l.level })),
             certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
           }} variant="outline" size="md" />
+          
           <button onClick={save} disabled={saving} className="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] disabled:opacity-50 text-sm font-medium">
             <Save className="w-4 h-4" />
             {saving ? 'Sparar...' : 'Spara'}
@@ -779,15 +734,9 @@ export default function CVBuilder() {
         {/* Left Sidebar (desktop) */}
         <div className="hidden lg:block lg:col-span-3">
           <div className="sticky top-4 space-y-4">
-            <DesktopSidebar 
-              currentStep={step} 
-              onStepClick={setStep} 
-              completedSteps={completedSteps}
-              onShowTools={() => setShowTools(!showTools)}
-              onShowVersions={() => setShowVersions(!showVersions)}
-            />
-            {showTools && <ToolsPanel />}
-            {showVersions && <VersionsPanel />}
+            <DesktopSidebar currentStep={step} onStepClick={setStep} completedSteps={completedSteps} />
+            {step === 3 && <AIPanel />}
+            <VersionsPanel />
           </div>
         </div>
 
@@ -825,6 +774,7 @@ export default function CVBuilder() {
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               <div className="p-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
                 <h3 className="font-medium text-slate-700 text-sm">Förhandsvisning</h3>
+                {/* Dela-knapp även här */}
                 <CVShare onShare={async () => await cvApi.shareCV()} />
               </div>
               <div className="max-h-[calc(100vh-250px)] overflow-y-auto">
