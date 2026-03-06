@@ -53,6 +53,20 @@ CREATE POLICY "Users can CRUD own checklists" ON article_checklists
 -- ============================================
 -- 3. MOOD_HISTORY
 -- ============================================
+-- Om gammal tabell finns med 'recorded_at', lägg till 'created_at'
+DO $$ 
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'mood_history' AND column_name = 'recorded_at'
+  ) AND NOT EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'mood_history' AND column_name = 'created_at'
+  ) THEN
+    ALTER TABLE mood_history ADD COLUMN created_at TIMESTAMPTZ DEFAULT NOW();
+  END IF;
+END $$;
+
 CREATE TABLE IF NOT EXISTS mood_history (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
@@ -259,7 +273,21 @@ CREATE POLICY "Users can CRUD own saved jobs" ON saved_jobs
 -- ============================================
 CREATE INDEX IF NOT EXISTS idx_article_progress_user_article ON article_reading_progress(user_id, article_id);
 CREATE INDEX IF NOT EXISTS idx_article_checklists_user_article ON article_checklists(user_id, article_id);
-CREATE INDEX IF NOT EXISTS idx_mood_history_user_created ON mood_history(user_id, created_at);
+-- Index för mood_history - använd recorded_at om created_at inte finns
+DO $$ 
+BEGIN
+  IF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'mood_history' AND column_name = 'created_at'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_mood_history_user_created ON mood_history(user_id, created_at);
+  ELSIF EXISTS (
+    SELECT 1 FROM information_schema.columns 
+    WHERE table_name = 'mood_history' AND column_name = 'recorded_at'
+  ) THEN
+    CREATE INDEX IF NOT EXISTS idx_mood_history_user_recorded ON mood_history(user_id, recorded_at);
+  END IF;
+END $$;
 CREATE INDEX IF NOT EXISTS idx_journal_entries_user_created ON journal_entries(user_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_daily_tasks_user_date ON daily_tasks(user_id, due_date);
 CREATE INDEX IF NOT EXISTS idx_daily_tasks_user_completed ON daily_tasks(user_id, completed);
