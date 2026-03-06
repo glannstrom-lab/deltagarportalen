@@ -19,7 +19,7 @@ interface PDFExportButtonProps {
   type: 'cv' | 'job' | 'applications';
   data: CVData | JobData | any;
   filename?: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'light';
   size?: 'sm' | 'md' | 'lg';
   showPreview?: boolean;
   className?: string;
@@ -47,6 +47,7 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
     primary: 'bg-primary-600 text-white hover:bg-primary-700',
     secondary: 'bg-gray-200 text-gray-700 hover:bg-gray-300',
     outline: 'border-2 border-primary-600 text-primary-600 hover:bg-primary-50',
+    light: 'bg-white text-indigo-600 hover:bg-indigo-50 font-medium',
   };
 
   const getDefaultFilename = () => {

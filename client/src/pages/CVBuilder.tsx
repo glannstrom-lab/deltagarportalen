@@ -644,12 +644,12 @@ export default function CVBuilder() {
           </div>
 
           {/* Share & Export */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-            <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <Share2 className="w-5 h-5 text-[#4f46e5]" />
+          <div className="bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] rounded-2xl shadow-lg p-5 text-white">
+            <h3 className="font-semibold mb-4 flex items-center gap-2">
+              <Share2 className="w-5 h-5" />
               Dela & Exportera
             </h3>
-            <div className="space-y-3">
+            <div className="grid grid-cols-2 gap-3">
               <CVShare onShare={async () => await cvApi.shareCV()} />
               <PDFExportButton 
                 type="cv" 
@@ -662,9 +662,10 @@ export default function CVBuilder() {
                   languages: data.languages.map(l => ({ language: l.name, level: l.level })),
                   certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
                 }} 
-                variant="primary" 
+                variant="light" 
                 size="md" 
                 className="w-full"
+                showPreview={false}
               />
             </div>
           </div>

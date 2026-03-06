@@ -48,12 +48,12 @@ export function CVShare({ onShare }: CVShareProps) {
       <button
         onClick={handleShare}
         disabled={loading}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border border-white/30 text-white rounded-xl hover:bg-white/20 transition-colors disabled:opacity-50 font-medium"
       >
         {loading ? (
           <>
-            <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
-            Skapar länk...
+            <div className="w-4 h-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />
+            Skapar...
           </>
         ) : (
           <>
