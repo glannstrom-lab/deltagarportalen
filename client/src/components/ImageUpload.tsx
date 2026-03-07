@@ -301,6 +301,7 @@ export function CompactImageUpload({
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pasteMessage, setPasteMessage] = useState<string | null>(null)
+  const [localPreview, setLocalPreview] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
@@ -323,12 +324,20 @@ export function CompactImageUpload({
       return
     }
 
+    // Show local preview immediately
+    const localUrl = URL.createObjectURL(file)
+    setLocalPreview(localUrl)
+
     if (onUpload) {
       setIsUploading(true)
       try {
         const uploadedUrl = await onUpload(file)
         if (uploadedUrl) {
           onChange(uploadedUrl)
+          setLocalPreview(null) // Clear local preview when upload completes
+        } else {
+          // Upload failed, keep local preview but show error
+          setError('Uppladdning misslyckades')
         }
       } catch (err) {
         setError('Uppladdning misslyckades')
@@ -336,7 +345,6 @@ export function CompactImageUpload({
         setIsUploading(false)
       }
     } else {
-      const localUrl = URL.createObjectURL(file)
       onChange(localUrl)
     }
   }
@@ -378,11 +386,11 @@ export function CompactImageUpload({
       <div className="relative">
         <div className={cn(
           'w-20 h-20 rounded-full overflow-hidden bg-slate-100 flex items-center justify-center',
-          value ? 'ring-2 ring-violet-500 ring-offset-2' : 'border-2 border-dashed border-slate-300'
+          (value || localPreview) ? 'ring-2 ring-violet-500 ring-offset-2' : 'border-2 border-dashed border-slate-300'
         )}>
-          {value ? (
+          {value || localPreview ? (
             <img
-              src={value}
+              src={localPreview || value || ''}
               alt="Profilbild"
               className="w-full h-full object-cover"
             />
@@ -417,15 +425,18 @@ export function CompactImageUpload({
             disabled={isUploading}
           >
             <Camera className="w-4 h-4 mr-2" />
-            {value ? 'Ändra bild' : 'Ladda upp'}
+            {(value || localPreview) ? 'Ändra bild' : 'Ladda upp'}
           </Button>
           
-          {value && (
+          {(value || localPreview) && (
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              onClick={() => onChange(null)}
+              onClick={() => {
+                onChange(null)
+                setLocalPreview(null)
+              }}
             >
               <X className="w-4 h-4 mr-2" />
               Ta bort
