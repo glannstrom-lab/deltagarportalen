@@ -123,12 +123,31 @@ export function CVPreview({ data }: CVPreviewProps) {
         className="cv-header p-8"
         style={headerStyle}
       >
-        <h1 className="text-3xl font-bold">{fullName}</h1>
-        {data.title && (
-          <p className="title text-xl mt-2" style={{ opacity: 0.9 }}>{data.title}</p>
-        )}
+        <div className="flex items-start gap-6">
+          {/* Profile Image */}
+          {data.profileImage && (
+            <div className="shrink-0">
+              <img
+                src={data.profileImage}
+                alt={`Profilbild av ${fullName}`}
+                className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-4 border-white shadow-lg"
+                style={{ 
+                  borderColor: template === 'creative' || template === 'modern' || template === 'corporate' ? 'rgba(255,255,255,0.3)' : '#ffffff'
+                }}
+              />
+            </div>
+          )}
+          
+          {/* Name and Title */}
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold">{fullName}</h1>
+            {data.title && (
+              <p className="title text-xl mt-2" style={{ opacity: 0.9 }}>{data.title}</p>
+            )}
+          </div>
+        </div>
         
-        <div className="contact-info flex flex-wrap gap-4 mt-4 text-sm">
+        <div className="contact-info flex flex-wrap gap-4 mt-4 text-sm"
           {data.email && (
             <div className="flex items-center gap-1">
               <Mail size={14} />

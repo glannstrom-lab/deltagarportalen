@@ -74,6 +74,7 @@ export interface CVData {
   phone: string
   location: string
   summary: string
+  profileImage: string | null
   workExperience: WorkExperience[]
   education: Education[]
   skills: Skill[]

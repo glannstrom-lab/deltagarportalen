@@ -62,19 +62,50 @@ export function useZodForm<T extends Record<string, any>>({
   // Validera enskilt fält
   const validateField = useCallback(<K extends keyof T>(field: K, value: T[K]): string | undefined => {
     // Skapa ett partial schema för endast detta fält
-    const partialSchema = schema instanceof z.ZodObject
-      ? schema.pick({ [field]: true } as any)
-      : schema
+    // För ZodObject, försök plocka ut fältet, men hantera fel om det inte går (t.ex. pga refine)
+    let fieldSchema: z.ZodType<any>
     
-    const result = partialSchema.safeParse({ [field]: value })
+    if (schema instanceof z.ZodObject) {
+      try {
+        // @ts-ignore - shape finns på ZodObject
+        const shape = schema.shape || schema._def?.shape?.()
+        if (shape && field in shape) {
+          fieldSchema = shape[field]
+        } else {
+          // Fallback: validera hela schemat och filtrera på fältet
+          const result = schema.safeParse({ ...values, [field]: value })
+          if (!result.success) {
+            const error = result.error.errors.find((e) => e.path[0] === field)
+            return error?.message
+          }
+          return undefined
+        }
+      } catch {
+        // Fallback om pick/shape inte fungerar
+        const result = schema.safeParse({ ...values, [field]: value })
+        if (!result.success) {
+          const error = result.error.errors.find((e) => e.path[0] === field)
+          return error?.message
+        }
+        return undefined
+      }
+    } else {
+      fieldSchema = schema
+    }
+    
+    // Validera enskilt fält
+    const result = fieldSchema.safeParse(value)
     
     if (!result.success) {
-      const error = result.error.errors.find((e) => e.path[0] === field)
-      return error?.message
+      // Handle both ZodError format and issues array
+      const issues = result.error.errors || result.error.issues
+      if (issues && issues.length > 0) {
+        return issues[0].message
+      }
     }
     
     return undefined
-  }, [schema])
+  }, [schema, values])
 
   // Sätt värde för enskilt fält
   const setValue = useCallback(<K extends keyof T>(field: K, value: T[K]) => {

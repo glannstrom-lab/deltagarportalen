@@ -1,82 +1,82 @@
 import { useState, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
+import { useZodForm } from '../hooks/useZodForm'
+import { registerSchema } from '../lib/validations'
 import { Eye, EyeOff, Loader2, Mail, Lock, User, ArrowRight, Check, X } from 'lucide-react'
 
-// Valideringsregler för lösenord
+// Valideringsregler för lösenord (för UI-visning)
 const passwordRules = [
-  { id: 'length', label: 'Minst 10 tecken', test: (pwd: string) => pwd.length >= 10 },
+  { id: 'length', label: 'Minst 8 tecken', test: (pwd: string) => pwd.length >= 8 },
   { id: 'uppercase', label: 'En stor bokstav (A-Z)', test: (pwd: string) => /[A-Z]/.test(pwd) },
   { id: 'lowercase', label: 'En liten bokstav (a-z)', test: (pwd: string) => /[a-z]/.test(pwd) },
   { id: 'number', label: 'En siffra (0-9)', test: (pwd: string) => /[0-9]/.test(pwd) },
-  { id: 'special', label: 'Ett specialtecken (!@#$%^&*)', test: (pwd: string) => /[^A-Za-z0-9]/.test(pwd) },
 ]
 
 export default function Register() {
   const navigate = useNavigate()
   const { signUp } = useAuthStore()
-  const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  })
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const [submitError, setSubmitError] = useState('')
 
-  // Validera lösenordsstyrka i realtid
+  const {
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setValue,
+  } = useZodForm({
+    schema: registerSchema,
+    initialValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
+    onSubmit: async (data) => {
+      setSubmitError('')
+      
+      try {
+        const { error: signUpError } = await signUp({
+          email: data.email,
+          password: data.password,
+          firstName: data.firstName,
+          lastName: data.lastName,
+          role: 'USER'
+        })
+
+        if (signUpError) {
+          if (signUpError.includes('finns redan')) {
+            throw new Error('En användare med denna e-postadress finns redan. Logga in istället.')
+          }
+          throw new Error(signUpError)
+        }
+
+        // Navigera till dashboard (auth store hanterar automatiskt)
+        navigate('/')
+      } catch (err: any) {
+        setSubmitError(err.message || 'Det gick inte att skapa kontot. Försök igen om en stund.')
+      }
+    },
+  })
+
+  // Validera lösenordsstyrka i realtid (för UI-indikator)
   const passwordStrength = useMemo(() => {
-    const passed = passwordRules.filter(rule => rule.test(formData.password))
+    const passed = passwordRules.filter(rule => rule.test(values.password))
     return {
       passed,
       score: passed.length,
       total: passwordRules.length,
       isValid: passed.length === passwordRules.length,
     }
-  }, [formData.password])
+  }, [values.password])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-
-    if (formData.password !== formData.confirmPassword) {
-      setError('Lösenorden matchar inte. Kontrollera att du skrivit samma lösenord två gånger.')
-      return
-    }
-
-    if (!passwordStrength.isValid) {
-      setError('Lösenordet uppfyller inte alla krav. Kontrollera listan nedan.')
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const { error: signUpError } = await signUp({
-        email: formData.email,
-        password: formData.password,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        role: 'USER'
-      })
-
-      if (signUpError) {
-        if (signUpError.includes('finns redan')) {
-          throw new Error('En användare med denna e-postadress finns redan. Logga in istället.')
-        }
-        throw new Error(signUpError)
-      }
-
-      // Navigera till dashboard (auth store hanterar automatiskt)
-      navigate('/')
-    } catch (err: any) {
-      setError(err.message || 'Det gick inte att skapa kontot. Försök igen om en stund.')
-    } finally {
-      setLoading(false)
-    }
-  }
+  // Kombinera Zod-validering med UI-regler
+  const isPasswordValid = passwordStrength.isValid && !errors.password
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-800 to-teal-600 flex items-center justify-center p-4">
@@ -96,13 +96,25 @@ export default function Register() {
           <p className="text-slate-500 text-center mb-6">Ta det första steget mot din nya karriär</p>
 
           {/* Error Message */}
-          {error && (
+          {submitError && (
             <div 
               role="alert" 
               aria-live="polite"
               className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
             >
-              {error}
+              {submitError}
+            </div>
+          )}
+
+          {/* Validation Summary */}
+          {(Object.keys(errors).length > 0 && Object.keys(touched).length > 0) && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <p className="text-amber-800 text-sm font-medium mb-1">Vänligen korrigera följande:</p>
+              <ul className="text-amber-700 text-sm list-disc list-inside">
+                {Object.entries(errors).map(([field, error]) => (
+                  touched[field as keyof typeof touched] && <li key={field}>{error}</li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -124,15 +136,23 @@ export default function Register() {
                   />
                   <input
                     id="firstName"
+                    name="firstName"
                     type="text"
-                    value={formData.firstName}
-                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                      touched.firstName && errors.firstName 
+                        ? 'border-red-300 focus:border-red-500' 
+                        : 'border-slate-300'
+                    }`}
                     placeholder="Anna"
-                    required
                     autoComplete="given-name"
                   />
                 </div>
+                {touched.firstName && errors.firstName && (
+                  <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                )}
               </div>
               <div>
                 <label 
@@ -143,14 +163,22 @@ export default function Register() {
                 </label>
                 <input
                   id="lastName"
+                  name="lastName"
                   type="text"
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  className="w-full px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  value={values.lastName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    touched.lastName && errors.lastName 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-slate-300'
+                  }`}
                   placeholder="Andersson"
-                  required
                   autoComplete="family-name"
                 />
+                {touched.lastName && errors.lastName && (
+                  <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                )}
               </div>
             </div>
 
@@ -170,15 +198,23 @@ export default function Register() {
                 />
                 <input
                   id="email"
+                  name="email"
                   type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    touched.email && errors.email 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-slate-300'
+                  }`}
                   placeholder="namn@exempel.se"
-                  required
                   autoComplete="email"
                 />
               </div>
+              {touched.email && errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -197,12 +233,17 @@ export default function Register() {
                 />
                 <input
                   id="password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    touched.password && errors.password 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-slate-300'
+                  }`}
                   placeholder="Välj ett säkert lösenord"
-                  required
                   autoComplete="new-password"
                 />
                 <button
@@ -214,18 +255,21 @@ export default function Register() {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+              {touched.password && errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
 
               {/* Password Strength Indicator */}
               <div className="mt-3 p-3 bg-slate-50 rounded-lg space-y-2">
                 <p className="text-sm font-medium text-slate-700">Ditt lösenord behöver:</p>
                 <ul className="space-y-1">
                   {passwordRules.map((rule) => {
-                    const isPassed = rule.test(formData.password)
+                    const isPassed = rule.test(values.password)
                     return (
                       <li 
                         key={rule.id}
                         className={`flex items-center gap-2 text-sm ${
-                          formData.password === '' 
+                          values.password === '' 
                             ? 'text-slate-500' 
                             : isPassed 
                               ? 'text-green-600' 
@@ -242,7 +286,7 @@ export default function Register() {
                     )
                   })}
                 </ul>
-                {passwordStrength.isValid && (
+                {isPasswordValid && (
                   <p className="text-sm text-green-600 font-medium mt-2">
                     ✨ Perfekt! Ditt lösenord är säkert.
                   </p>
@@ -266,25 +310,27 @@ export default function Register() {
                 />
                 <input
                   id="confirmPassword"
+                  name="confirmPassword"
                   type={showPassword ? 'text' : 'password'}
-                  value={formData.confirmPassword}
-                  onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  value={values.confirmPassword}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    touched.confirmPassword && errors.confirmPassword 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-slate-300'
+                  }`}
                   placeholder="Upprepa lösenordet"
-                  required
                   autoComplete="new-password"
                 />
               </div>
-              {formData.confirmPassword && formData.password === formData.confirmPassword && (
+              {touched.confirmPassword && errors.confirmPassword && (
+                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+              )}
+              {values.confirmPassword && values.password === values.confirmPassword && !errors.confirmPassword && (
                 <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
                   <Check size={16} />
                   Lösenorden matchar
-                </p>
-              )}
-              {formData.confirmPassword && formData.password !== formData.confirmPassword && (
-                <p className="mt-2 text-sm text-amber-600 flex items-center gap-1">
-                  <X size={16} />
-                  Lösenorden matchar inte ännu
                 </p>
               )}
             </div>
@@ -292,10 +338,10 @@ export default function Register() {
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading || !passwordStrength.isValid}
+              disabled={isSubmitting || !isPasswordValid}
               className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {loading ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
                   <span>Skapar ditt konto...</span>

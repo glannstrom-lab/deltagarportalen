@@ -11,6 +11,9 @@ import { ATSAnalyzer } from '@/components/cv/ATSAnalyzer'
 import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVShare } from '@/components/cv/CVShare'
+import { CompactImageUpload } from '@/components/ImageUpload'
+import { useImageUpload } from '@/hooks/useImageUpload'
+import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import type { CVData, CVVersion } from '@/services/mockApi'
 
@@ -152,8 +155,11 @@ export default function CVBuilder() {
     firstName: '', lastName: '', title: '', email: '', phone: '', location: '',
     summary: '', skills: [], workExperience: [], education: [],
     languages: [], certificates: [], links: [], references: [],
-    template: 'modern', colorScheme: 'indigo', font: 'inter',
+    template: 'modern', colorScheme: 'indigo', font: 'inter', profileImage: null,
   })
+  
+  const { uploadCVProfileImage, deleteImage } = useImageUpload()
+  const { user } = useAuthStore()
 
   const completedSteps = [
     1,
@@ -214,6 +220,7 @@ export default function CVBuilder() {
       ...data,
       firstName: 'Anna', lastName: 'Andersson', title: 'Projektledare',
       email: 'anna@example.com', phone: '070-123 45 67', location: 'Stockholm',
+      profileImage: null,
       summary: 'Erfaren projektledare med passion för att skapa effektiva team.',
       skills: [
         { id: '1', name: 'Projektledning', level: 5, category: 'technical' },
@@ -330,6 +337,29 @@ export default function CVBuilder() {
   // STEG 2: OM DIG
   const renderStep2 = () => (
     <div className="space-y-4">
+      <Card>
+        <h3 className="font-semibold text-slate-800 mb-4">Profilbild</h3>
+        <p className="text-sm text-slate-500 mb-4">
+          Lägg till en professionell profilbild för att göra ditt CV mer personligt
+        </p>
+        <CompactImageUpload
+          value={data.profileImage}
+          onChange={(url) => setData({ ...data, profileImage: url })}
+          onUpload={async (file) => {
+            if (!user?.id) {
+              alert('Du måste vara inloggad för att ladda upp bilder')
+              return null
+            }
+            const result = await uploadCVProfileImage(file, user.id)
+            if (result.error) {
+              alert(result.error)
+              return null
+            }
+            return result.url
+          }}
+        />
+      </Card>
+      
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Input label="Förnamn *" value={data.firstName} onChange={(v) => setData({ ...data, firstName: v })} placeholder="Anna" />

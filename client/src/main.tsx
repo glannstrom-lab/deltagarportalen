@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import App from './App'
 import ErrorBoundary from './components/ErrorBoundary'
 import { MobileOptimizer } from './components/MobileOptimizer'
+import { FontProvider } from './components/FontProvider'
+import { UpdateNotification } from './components/UpdateNotification'
 import './index.css'
 import './styles/mobile.css'
 
@@ -29,8 +31,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <HashRouter>
-          <MobileOptimizer />
-          <App />
+          <FontProvider>
+            <MobileOptimizer />
+            <App />
+            <UpdateNotification />
+          </FontProvider>
         </HashRouter>
       </QueryClientProvider>
     </ErrorBoundary>

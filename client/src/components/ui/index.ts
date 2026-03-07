@@ -20,3 +20,8 @@ export {
   ArticleSkeleton,
   TableSkeleton,
 } from './Skeleton'
+export {
+  Image,
+  Picture,
+  Avatar,
+} from './Image'

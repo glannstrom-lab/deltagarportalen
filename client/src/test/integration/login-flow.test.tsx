@@ -6,18 +6,27 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Login from '../../pages/Login'
 import { useAuthStore } from '../../stores/authStore'
 
-// Mock auth store
+// Mock auth store - return a function that returns the store state
 const mockSignIn = vi.fn()
 const mockClearError = vi.fn()
 
+const createMockStore = (overrides = {}) => ({
+  signIn: mockSignIn,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+  clearError: mockClearError,
+  user: null,
+  session: null,
+  initialize: vi.fn(),
+  signUp: vi.fn(),
+  signOut: vi.fn(),
+  updateProfile: vi.fn(),
+  ...overrides,
+})
+
 vi.mock('../../stores/authStore', () => ({
-  useAuthStore: vi.fn(() => ({
-    signIn: mockSignIn,
-    isAuthenticated: false,
-    isLoading: false,
-    error: null,
-    clearError: mockClearError,
-  })),
+  useAuthStore: vi.fn(() => createMockStore()),
 }))
 
 // Create test query client
@@ -116,7 +125,7 @@ describe('Login Flow Integration', () => {
     const queryClient = createTestQueryClient()
     
     // Create a delayed promise
-    mockSignIn.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)))
+    mockSignIn.mockImplementation(() => new Promise(resolve => setTimeout(() => resolve({ error: null }), 1000)))
 
     render(
       <QueryClientProvider client={queryClient}>

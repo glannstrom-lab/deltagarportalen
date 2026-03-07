@@ -85,6 +85,11 @@ export const personalInfoSchema = z.object({
     .string()
     .max(2000, 'Max 2000 tecken')
     .optional(),
+  profileImage: z
+    .string()
+    .url('Ogiltig bild-URL')
+    .optional()
+    .nullable(),
 })
 
 export const workExperienceSchema = z.object({

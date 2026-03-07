@@ -39,6 +39,34 @@ Object.defineProperty(window, 'IntersectionObserver', {
   value: IntersectionObserverMock,
 })
 
+// Mock HTMLCanvasElement for Image component
+class MockCanvas {
+  width = 0
+  height = 0
+  getContext = vi.fn()
+  toDataURL = vi.fn((type) => {
+    // Return a data URL that indicates WebP/AVIF support based on requested type
+    if (type === 'image/webp') {
+      return 'data:image/webp;base64,test'
+    }
+    if (type === 'image/avif') {
+      return 'data:image/avif;base64,test'
+    }
+    return 'data:image/png;base64,test'
+  })
+}
+
+// Store original createElement
+const originalCreateElement = document.createElement.bind(document)
+
+// Mock document.createElement for canvas
+document.createElement = vi.fn((tagName: string) => {
+  if (tagName === 'canvas') {
+    return new MockCanvas() as any
+  }
+  return originalCreateElement(tagName)
+}) as any
+
 // Supabase mock helpers
 export const createMockSupabaseClient = () => ({
   auth: {
