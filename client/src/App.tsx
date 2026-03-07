@@ -1,31 +1,44 @@
-import { useEffect } from 'react'
+import { useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Loader2 } from 'lucide-react'
 
-// Alla komponenter - NU STATISKA (inte lazy loaded)
-// Detta fixar problem med code splitting på Vercel
+// Eager-loaded kritiska komponenter
 import Layout from './components/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
-import Dashboard from './pages/Dashboard'
-import CVBuilder from './pages/CVBuilder'
-import CoverLetterGenerator from './pages/CoverLetterGenerator'
-import InterestGuide from './pages/InterestGuide'
-import KnowledgeBase from './pages/KnowledgeBase'
-import Article from './pages/Article'
-import Profile from './pages/Profile'
-import JobTracker from './pages/JobTracker'
-import JobSearch from './pages/JobSearch'
-import Career from './pages/Career'
-import Diary from './pages/Diary'
-import Wellness from './pages/Wellness'
-import Exercises from './pages/Exercises'
-import Settings from './pages/Settings'
-import ConsultantDashboard from './components/consultant/ConsultantDashboard'
-import SuperAdminPanel from './components/admin/SuperAdminPanel'
-import InviteHandler from './components/auth/InviteHandler'
+
+// Lazy-loaded sidor för bättre prestanda
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const CVBuilder = lazy(() => import('./pages/CVBuilder'))
+const CoverLetterGenerator = lazy(() => import('./pages/CoverLetterGenerator'))
+const InterestGuide = lazy(() => import('./pages/InterestGuide'))
+const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
+const Article = lazy(() => import('./pages/Article'))
+const Profile = lazy(() => import('./pages/Profile'))
+const JobTracker = lazy(() => import('./pages/JobTracker'))
+const JobSearch = lazy(() => import('./pages/JobSearch'))
+const Career = lazy(() => import('./pages/Career'))
+const Diary = lazy(() => import('./pages/Diary'))
+const Wellness = lazy(() => import('./pages/Wellness'))
+const Exercises = lazy(() => import('./pages/Exercises'))
+const Settings = lazy(() => import('./pages/Settings'))
+const ConsultantDashboard = lazy(() => import('./components/consultant/ConsultantDashboard'))
+const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
+const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
+
+// Loading fallback för lazy-loaded komponenter
+function PageLoader() {
+  return (
+    <div className="min-h-[60vh] flex items-center justify-center">
+      <div className="text-center">
+        <Loader2 className="animate-spin text-violet-600 mx-auto mb-3" size={32} />
+        <p className="text-sm text-slate-500">Laddar sida...</p>
+      </div>
+    </div>
+  )
+}
 
 // Error Boundary wrapper for routes
 function RouteErrorBoundary({ children }: { children: React.ReactNode }) {
@@ -33,6 +46,15 @@ function RouteErrorBoundary({ children }: { children: React.ReactNode }) {
     <ErrorBoundary>
       {children}
     </ErrorBoundary>
+  )
+}
+
+// Suspense wrapper med loading state
+function LazyRoute({ children }: { children: React.ReactNode }) {
+  return (
+    <Suspense fallback={<PageLoader />}>
+      {children}
+    </Suspense>
   )
 }
 
@@ -105,7 +127,7 @@ function App() {
 
   return (
     <Routes>
-      {/* Public routes */}
+      {/* Public routes - eager loaded för snabb initial rendering */}
       <Route path="/login" element={
         <PublicRoute>
           <RouteErrorBoundary>
@@ -121,104 +143,138 @@ function App() {
         </PublicRoute>
       } />
       <Route path="/invite/:code" element={
-        <RouteErrorBoundary>
-          <InviteHandler />
-        </RouteErrorBoundary>
+        <LazyRoute>
+          <RouteErrorBoundary>
+            <InviteHandler />
+          </RouteErrorBoundary>
+        </LazyRoute>
       } />
 
-      {/* Protected routes */}
+      {/* Protected routes - lazy loaded för bättre prestanda */}
       <Route path="/" element={
         <PrivateRoute>
           <Layout />
         </PrivateRoute>
       }>
         <Route index element={
-          <RouteErrorBoundary>
-            <Dashboard />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="cv" element={
-          <RouteErrorBoundary>
-            <CVBuilder />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <CVBuilder />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="cover-letter" element={
-          <RouteErrorBoundary>
-            <CoverLetterGenerator />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <CoverLetterGenerator />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="interest-guide" element={
-          <RouteErrorBoundary>
-            <InterestGuide />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <InterestGuide />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="knowledge-base" element={
-          <RouteErrorBoundary>
-            <KnowledgeBase />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <KnowledgeBase />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="knowledge-base/:id" element={
-          <RouteErrorBoundary>
-            <Article />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Article />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="profile" element={
-          <RouteErrorBoundary>
-            <Profile />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Profile />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="job-search" element={
-          <RouteErrorBoundary>
-            <JobSearch />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <JobSearch />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="jobs" element={<Navigate to="/job-search" replace />} />
         <Route path="job-tracker" element={
-          <RouteErrorBoundary>
-            <JobTracker />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <JobTracker />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="career" element={
-          <RouteErrorBoundary>
-            <Career />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Career />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="diary" element={
-          <RouteErrorBoundary>
-            <Diary />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Diary />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="wellness" element={
-          <RouteErrorBoundary>
-            <Wellness />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Wellness />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="exercises" element={
-          <RouteErrorBoundary>
-            <Exercises />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Exercises />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         <Route path="settings" element={
-          <RouteErrorBoundary>
-            <Settings />
-          </RouteErrorBoundary>
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Settings />
+            </RouteErrorBoundary>
+          </LazyRoute>
         } />
         
         {/* Consultant routes */}
         <Route path="consultant" element={
           <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
-            <RouteErrorBoundary>
-              <ConsultantDashboard />
-            </RouteErrorBoundary>
+            <LazyRoute>
+              <RouteErrorBoundary>
+                <ConsultantDashboard />
+              </RouteErrorBoundary>
+            </LazyRoute>
           </PrivateRoute>
         } />
         
         {/* Admin routes */}
         <Route path="admin" element={
           <PrivateRoute allowedRoles={['ADMIN', 'SUPERADMIN']}>
-            <RouteErrorBoundary>
-              <SuperAdminPanel />
-            </RouteErrorBoundary>
+            <LazyRoute>
+              <RouteErrorBoundary>
+                <SuperAdminPanel />
+              </RouteErrorBoundary>
+            </LazyRoute>
           </PrivateRoute>
         } />
       </Route>
