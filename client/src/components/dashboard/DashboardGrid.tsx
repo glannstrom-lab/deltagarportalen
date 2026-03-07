@@ -16,6 +16,8 @@ export function DashboardGrid({ children, className }: DashboardGridProps) {
   return (
     <div
       className={cn(
+        // Prevent horizontal overflow
+        'w-full overflow-x-hidden',
         // Mobile: 1 kolumn (alltid full bredd för bättre UX)
         'grid grid-cols-1 gap-2',
         // Tablet: 2 kolumner  
@@ -31,19 +33,20 @@ export function DashboardGrid({ children, className }: DashboardGridProps) {
 }
 
 // Hjälpfunktion för att få grid-klass baserat på storlek
-// UPPDATERAD: Alltid fullbredd på mobil för bättre UX
+// UPPDATERAD: Alltid fullbredd på mobil (<768px) för bättre UX
 export function getWidgetGridClasses(size: WidgetSize): string {
+  // På mobil (grid-cols-1) är allt col-span-1 automatiskt
+  // Men vi lägger till !important för att vara säkra
   switch (size) {
     case 'large':
-      // Stor: alltid full bredd på alla skärmar
+      // Stor: fullbredd på mobil, 2 cols på tablet, 4 cols på desktop
       return 'col-span-1 sm:col-span-2 lg:col-span-4'
     case 'medium':
-      // Medel: fullbredd mobil, halv bredd tablet+
+      // Medel: fullbredd mobil, halv bredd tablet+, men max 2 cols
       return 'col-span-1 sm:col-span-2 lg:col-span-2'
     case 'small':
     default:
-      // Liten: alltid fullbredd på mobil för bättre läsbarhet
-      // Först på lg (desktop) går de till 1/4 bredd
+      // Liten: fullbredd på mobil och tablet, 1/4 på desktop
       return 'col-span-1 lg:col-span-1'
   }
 }

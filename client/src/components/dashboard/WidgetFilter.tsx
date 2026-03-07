@@ -58,7 +58,7 @@ export const WidgetFilter = memo(function WidgetFilter({
   const totalCount = availableWidgets.length
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 mb-4 sm:mb-6">
+    <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 mb-4 sm:mb-6 w-full max-w-full overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2">

@@ -1,7 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
-import { MobileOptimizer } from '@/components/MobileOptimizer'
 import { DashboardGrid, getWidgetGridClasses } from '@/components/dashboard/DashboardGrid'
 import { WidgetFilter, type WidgetType } from '@/components/dashboard/WidgetFilter'
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
@@ -185,9 +184,7 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <MobileOptimizer />
-
+    <div className="space-y-6 w-full overflow-x-hidden">
       {/* Välkomstmeddelande */}
       <div className="mb-4 sm:mb-6">
         <h1 className="text-lg sm:text-xl font-semibold text-slate-800">
