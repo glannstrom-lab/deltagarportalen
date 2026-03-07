@@ -6,6 +6,7 @@ import { DashboardGrid, getWidgetGridClasses } from '@/components/dashboard/Dash
 import { CompactWidgetFilter, type WidgetType } from '@/components/dashboard/CompactWidgetFilter'
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
 import { MobileDashboard } from '@/components/dashboard/MobileDashboard'
+import { DashboardGridSkeleton } from '@/components/ui/Skeleton'
 import {
   CVWidget,
   CoverLetterWidget,
@@ -177,6 +178,25 @@ function DesktopDashboard() {
     )
   }
 
+  // Loading state with skeleton
+  if (loading || prefsLoading) {
+    return (
+      <div className="space-y-4 max-w-7xl">
+        {/* Compact Welcome - skeleton */}
+        <div>
+          <div className="h-7 w-48 bg-slate-200 rounded animate-pulse mb-2" />
+          <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+        </div>
+
+        {/* Filter skeleton */}
+        <div className="h-14 w-full bg-white rounded-xl border border-slate-200 animate-pulse" />
+
+        {/* Widget Grid Skeleton */}
+        <DashboardGridSkeleton count={visibleWidgets.length || 4} />
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-4 max-w-7xl">
       {/* Compact Welcome */}
@@ -205,7 +225,6 @@ function DesktopDashboard() {
               progress={data?.cv.progress ?? 0}
               atsScore={data?.cv.atsScore ?? 0}
               missingSections={data?.cv.missingSections}
-              loading={loading}
               error={error}
               onRetry={refetch}
               size={widgetSizes['cv']}
@@ -220,7 +239,6 @@ function DesktopDashboard() {
               recentLetters={data?.coverLetters.recentLetters}
               applicationsCount={data?.applications.total ?? 0}
               applicationsStatus={data?.applications.statusBreakdown}
-              loading={loading}
               size={widgetSizes['coverLetter']}
             />
           )}
@@ -232,7 +250,6 @@ function DesktopDashboard() {
               savedCount={data?.jobs.savedCount ?? 0}
               newMatches={data?.jobs.newMatches}
               recentJobs={data?.jobs.recentSavedJobs}
-              loading={loading}
               size={widgetSizes['jobSearch']}
             />
           )}
@@ -243,7 +260,6 @@ function DesktopDashboard() {
             <CareerWidget
               exploredCount={data?.interest.hasResult ? 1 : 0}
               recommendedOccupations={data?.interest.topRecommendations}
-              loading={loading}
               size={widgetSizes['career']}
             />
           )}
@@ -255,7 +271,6 @@ function DesktopDashboard() {
               hasResult={data?.interest.hasResult ?? false}
               topRecommendations={data?.interest.topRecommendations}
               completedAt={data?.interest.completedAt}
-              loading={loading}
               size={widgetSizes['interests']}
             />
           )}
@@ -266,7 +281,6 @@ function DesktopDashboard() {
             <ExercisesWidget
               completedCount={0}
               streakDays={0}
-              loading={loading}
               size={widgetSizes['exercises']}
             />
           )}
@@ -278,7 +292,6 @@ function DesktopDashboard() {
               entriesCount={0}
               streakDays={0}
               hasEntryToday={false}
-              loading={loading}
               size={widgetSizes['diary']}
             />
           )}
@@ -290,7 +303,6 @@ function DesktopDashboard() {
               readCount={0}
               savedCount={0}
               totalArticles={0}
-              loading={loading}
               size={widgetSizes['knowledge']}
             />
           )}

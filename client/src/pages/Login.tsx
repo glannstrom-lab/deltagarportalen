@@ -1,17 +1,40 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuthStore } from '../stores/authStore'
+import { useZodForm } from '../hooks/useZodForm'
+import { loginSchema, type LoginInput } from '../lib/validations'
 import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from 'lucide-react'
 
 export default function Login() {
   const navigate = useNavigate()
   const { signIn, isAuthenticated, isLoading: authLoading, error: authError, clearError } = useAuthStore()
   
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const {
+    values,
+    errors,
+    touched,
+    isSubmitting,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setValue,
+  } = useZodForm({
+    schema: loginSchema,
+    initialValues: {
+      email: '',
+      password: '',
+    },
+    onSubmit: async (data) => {
+      const { error: signInError } = await signIn(data.email, data.password)
+      
+      if (signInError) {
+        // Error is shown via authError from store
+      }
+      // Navigation happens automatically via useEffect when isAuthenticated changes
+    },
+  })
+
   const [showPassword, setShowPassword] = useState(false)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -23,36 +46,18 @@ export default function Login() {
   // Sync auth error from store
   useEffect(() => {
     if (authError) {
-      setError(authError)
+      // Error is displayed below
     }
   }, [authError])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setError('')
-    clearError()
-    setLoading(true)
-
-    const { error: signInError } = await signIn(email, password)
-    
-    if (signInError) {
-      setError(signInError)
-    }
-    // Navigation happens automatically via useEffect when isAuthenticated changes
-    
-    setLoading(false)
-  }
-
   const handleDemoLogin = async () => {
-    setError('')
     clearError()
-    setLoading(true)
     
     const demoEmail = `demo${Date.now()}@example.com`
     const demoPassword = 'Demo123456!'
     
-    setEmail(demoEmail)
-    setPassword(demoPassword)
+    setValue('email', demoEmail)
+    setValue('password', demoPassword)
 
     const { error: signInError } = await signIn(demoEmail, demoPassword)
     
@@ -70,17 +75,12 @@ export default function Login() {
       })
       
       if (signUpError && !signUpError.includes('begränsad')) {
-        setError(signUpError)
+        // Error handling
       } else {
         // Try login again after registration
-        const { error: retryError } = await signIn(demoEmail, demoPassword)
-        if (retryError) {
-          setError(retryError)
-        }
+        await signIn(demoEmail, demoPassword)
       }
     }
-    
-    setLoading(false)
   }
 
   // Show loading while checking auth state
@@ -109,9 +109,11 @@ export default function Login() {
           <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Välkommen tillbaka!</h2>
           <p className="text-slate-500 text-center mb-6">Logga in för att fortsätta</p>
 
-          {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
-              {error}
+          {(authError || errors.email || errors.password) && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              {authError && <p className="text-red-600 text-sm">{authError}</p>}
+              {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
+              {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
             </div>
           )}
 
@@ -125,15 +127,23 @@ export default function Login() {
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                 <input
                   id="email"
+                  name="email"
                   type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    touched.email && errors.email 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-slate-300'
+                  }`}
                   placeholder="namn@exempel.se"
-                  required
                   autoComplete="email"
                 />
               </div>
+              {touched.email && errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+              )}
             </div>
 
             {/* Password */}
@@ -145,12 +155,17 @@ export default function Login() {
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
                 <input
                   id="password"
+                  name="password"
                   type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                    touched.password && errors.password 
+                      ? 'border-red-300 focus:border-red-500' 
+                      : 'border-slate-300'
+                  }`}
                   placeholder="Ange ditt lösenord"
-                  required
                   autoComplete="current-password"
                 />
                 <button
@@ -161,15 +176,18 @@ export default function Login() {
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
+              {touched.password && errors.password && (
+                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+              )}
             </div>
 
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={isSubmitting}
               className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
-              {loading ? (
+              {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
                   <span>Loggar in...</span>
@@ -204,11 +222,11 @@ export default function Login() {
           <button
             type="button"
             onClick={handleDemoLogin}
-            disabled={loading}
+            disabled={isSubmitting}
             className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <span>🚀</span>
-            <span>{loading ? 'Skapar demo...' : 'Utforska med demokonto'}</span>
+            <span>{isSubmitting ? 'Skapar demo...' : 'Utforska med demokonto'}</span>
           </button>
         </div>
 
@@ -222,3 +240,5 @@ export default function Login() {
     </div>
   )
 }
+
+
