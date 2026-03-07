@@ -8,24 +8,52 @@ interface MobileOptimizationState {
   touchZone: 'left' | 'right' | 'center'
 }
 
+// Helper to detect mobile via user agent
+const isMobileUserAgent = (): boolean => {
+  if (typeof navigator === 'undefined') return false
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+}
+
 export function useMobileOptimization(): MobileOptimizationState {
-  const [state, setState] = useState<MobileOptimizationState>({
-    isMobile: false,
-    isTablet: false,
-    isLandscape: false,
-    simplifiedView: false,
-    touchZone: 'center'
-  })
+  // Initial check during first render - use both width and user agent
+  const getInitialState = (): MobileOptimizationState => {
+    if (typeof window === 'undefined') {
+      return {
+        isMobile: false,
+        isTablet: false,
+        isLandscape: false,
+        simplifiedView: false,
+        touchZone: 'center'
+      }
+    }
+    const width = window.innerWidth
+    const height = window.innerHeight
+    const mobileUA = isMobileUserAgent()
+    // Use lower breakpoint (768) but also check user agent for high-DPI phones
+    const isMobile = width < 768 || (mobileUA && width < 1024)
+    return {
+      isMobile,
+      isTablet: width >= 768 && width < 1024,
+      isLandscape: width > height,
+      simplifiedView: width < 360 || (width < 768 && height < 600),
+      touchZone: 'center'
+    }
+  }
+
+  const [state, setState] = useState<MobileOptimizationState>(getInitialState)
 
   useEffect(() => {
     const checkDevice = () => {
       const width = window.innerWidth
       const height = window.innerHeight
       const isLandscape = width > height
+      const mobileUA = isMobileUserAgent()
+      // Use lower breakpoint but also check user agent for high-DPI phones
+      const isMobile = width < 768 || (mobileUA && width < 1024)
       
       setState(prev => ({
         ...prev,
-        isMobile: width < 768,
+        isMobile,
         isTablet: width >= 768 && width < 1024,
         isLandscape,
         simplifiedView: width < 360 || (width < 768 && height < 600),
