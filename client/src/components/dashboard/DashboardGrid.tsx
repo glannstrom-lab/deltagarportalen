@@ -22,8 +22,8 @@ export function DashboardGrid({ children, className }: DashboardGridProps) {
         'grid grid-cols-1 gap-2',
         // Tablet: 2 kolumner  
         'sm:grid-cols-2 sm:gap-3',
-        // Desktop: 4 kolumner för att stödja 1/4-storlek
-        'lg:grid-cols-4 lg:gap-4',
+        // Desktop: 4 kolumner för att stödja 1/4-storlek, kompakt gap
+        'lg:grid-cols-4 lg:gap-3',
         className
       )}
     >
