@@ -147,7 +147,7 @@ export function CVPreview({ data }: CVPreviewProps) {
           </div>
         </div>
         
-        <div className="contact-info flex flex-wrap gap-4 mt-4 text-sm"
+        <div className="contact-info flex flex-wrap gap-4 mt-4 text-sm">
           {data.email && (
             <div className="flex items-center gap-1">
               <Mail size={14} />

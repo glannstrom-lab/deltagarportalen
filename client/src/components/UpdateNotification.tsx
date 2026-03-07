@@ -5,7 +5,7 @@
  */
 
 import { useServiceWorker } from '@/hooks/useServiceWorker'
-import { Button } from './ui'
+import { Button } from './ui/Button'
 import { RefreshCw, X } from 'lucide-react'
 import { useState, useEffect } from 'react'
 

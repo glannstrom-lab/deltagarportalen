@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
-import compression from 'vite-plugin-compression'
+import compression from 'vite-plugin-compression2'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
@@ -46,15 +46,9 @@ export default defineConfig(({ mode }) => ({
       output: {
         // Manual chunk splitting for better caching
         manualChunks: {
-          // Vendor chunks
+          // Vendor chunks - only include packages we know exist
           'vendor-react': ['react', 'react-dom'],
           'vendor-router': ['react-router-dom'],
-          'vendor-query': ['@tanstack/react-query'],
-          'vendor-supabase': ['@supabase/supabase-js'],
-          'vendor-charts': ['recharts'],
-          'vendor-forms': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'vendor-ui': ['framer-motion', 'lucide-react'],
-          'vendor-date': ['date-fns'],
         },
         // Asset naming for better caching
         assetFileNames: (assetInfo) => {

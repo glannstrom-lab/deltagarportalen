@@ -10,8 +10,8 @@
  * - Error handling
  */
 
-import { useState, useRef, useCallback } from 'react'
-import { Upload, X, User, Loader2, Camera } from 'lucide-react'
+import { useState, useRef, useCallback, useEffect } from 'react'
+import { Upload, X, User, Loader2, Camera, Clipboard } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/Button'
 
@@ -40,6 +40,7 @@ export function ImageUpload({
   const [error, setError] = useState<string | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(value || null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   // Validate file
   const validateFile = (file: File): string | null => {
@@ -132,14 +133,42 @@ export function ImageUpload({
     inputRef.current?.click()
   }
 
+  // Handle paste from clipboard
+  const handlePaste = useCallback(async (e: ClipboardEvent) => {
+    e.preventDefault()
+    
+    const items = e.clipboardData?.items
+    if (!items) return
+
+    for (const item of Array.from(items)) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile()
+        if (file) {
+          await handleFile(file)
+          break
+        }
+      }
+    }
+  }, [])
+
+  // Add paste event listener
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    container.addEventListener('paste', handlePaste)
+    return () => container.removeEventListener('paste', handlePaste)
+  }, [handlePaste])
+
   return (
-    <div className={cn('space-y-2', className)}>
+    <div ref={containerRef} className={cn('space-y-2', className)}>
       {/* Upload Area */}
       <div
         onClick={handleClick}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
+        tabIndex={0}
         className={cn(
           'relative cursor-pointer transition-all duration-200 rounded-xl overflow-hidden',
           'border-2 border-dashed',
@@ -219,7 +248,7 @@ export function ImageUpload({
                 {isDragging ? 'Släpp bilden här' : 'Ladda upp profilbild'}
               </p>
               <p className="text-xs text-slate-500">
-                Klicka eller dra och släpp en bild
+                Klicka, dra och släpp, eller klistra in (Ctrl+V)
               </p>
               <p className="text-xs text-slate-400">
                 {acceptedTypes.map(t => t.replace('image/', '.').toUpperCase()).join(', ')} upp till {maxSizeMB}MB
@@ -271,7 +300,9 @@ export function CompactImageUpload({
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [pasteMessage, setPasteMessage] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
 
   const validateFile = (file: File): string | null => {
     if (!acceptedTypes.includes(file.type)) {
@@ -315,8 +346,34 @@ export function CompactImageUpload({
     if (file) handleFile(file)
   }
 
+  // Handle paste from clipboard
+  const handlePaste = useCallback(async (e: ClipboardEvent) => {
+    e.preventDefault()
+    
+    const items = e.clipboardData?.items
+    if (!items) return
+
+    for (const item of Array.from(items)) {
+      if (item.type.startsWith('image/')) {
+        const file = item.getAsFile()
+        if (file) {
+          setPasteMessage('Bild inklistrad!')
+          setTimeout(() => setPasteMessage(null), 2000)
+          await handleFile(file)
+          break
+        }
+      }
+    }
+  }, [])
+
+  // Add paste event listener
+  useEffect(() => {
+    document.addEventListener('paste', handlePaste)
+    return () => document.removeEventListener('paste', handlePaste)
+  }, [handlePaste])
+
   return (
-    <div className={cn('flex items-center gap-4', className)}>
+    <div ref={containerRef} className={cn('flex items-center gap-4', className)}>
       {/* Avatar Preview */}
       <div className="relative">
         <div className={cn(
@@ -380,8 +437,18 @@ export function CompactImageUpload({
           <p className="text-xs text-red-600">{error}</p>
         )}
         
+        {pasteMessage && (
+          <p className="text-xs text-green-600 flex items-center gap-1">
+            <Clipboard className="w-3 h-3" />
+            {pasteMessage}
+          </p>
+        )}
+        
         <p className="text-xs text-slate-500">
           JPG, PNG eller WebP, max {maxSizeMB}MB
+        </p>
+        <p className="text-xs text-slate-400">
+          Tips: Kopiera en bild och tryck Ctrl+V för att klistra in
         </p>
       </div>
     </div>
