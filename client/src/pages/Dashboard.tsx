@@ -1,9 +1,11 @@
 import { useState, useCallback, useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import { useMobileOptimization } from '@/components/MobileOptimizer'
 import { DashboardGrid, getWidgetGridClasses } from '@/components/dashboard/DashboardGrid'
 import { WidgetFilter, type WidgetType } from '@/components/dashboard/WidgetFilter'
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
+import { MobileDashboard } from '@/components/dashboard/MobileDashboard'
 import {
   CVWidget,
   CoverLetterWidget,
@@ -46,6 +48,19 @@ const STORAGE_KEY_VISIBLE = 'dashboard_visible_widgets'
 const STORAGE_KEY_SIZES = 'dashboard_widget_sizes'
 
 export default function Dashboard() {
+  const { isMobile } = useMobileOptimization()
+  
+  // Use mobile-optimized dashboard for mobile devices
+  if (isMobile) {
+    return <MobileDashboard />
+  }
+
+  // Desktop version below
+  return <DesktopDashboard />
+}
+
+// Desktop Dashboard Component
+function DesktopDashboard() {
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
 
