@@ -1,5 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
+// Generera ett unikt fel-ID
+const generateErrorId = () => {
+  return `err-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+};
+
 export default function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers
   res.setHeader('Access-Control-Allow-Credentials', 'true');
@@ -16,23 +21,49 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  const errorId = generateErrorId();
+
   try {
-    const error = req.body;
+    const error = req.body || {};
     
-    // Logga felet till konsolen (kan ses i Vercel logs)
-    console.error('[Client Error]', {
-      message: error?.message || 'Unknown error',
-      stack: error?.stack,
-      component: error?.component,
-      url: error?.url,
+    // Logga detaljerat fel till konsolen (kan ses i Vercel logs)
+    console.error('[Client Error]', JSON.stringify({
+      errorId,
+      message: error.message || error.error?.message || 'Unknown error',
+      stack: error.stack || error.error?.stack,
+      component: error.component,
+      url: error.url || req.headers.referer,
+      method: req.method,
       userAgent: req.headers['user-agent'],
+      timestamp: new Date().toISOString(),
+      // Ytterligare kontext
+      errorType: error.name || error.error?.name,
+      source: error.source,
+      lineno: error.lineno,
+      colno: error.colno,
+      filename: error.filename,
+      // För React-fel
+      errorInfo: error.errorInfo,
+      componentStack: error.componentStack
+    }, null, 2));
+
+    // Returnera errorId så klienten kan referera till det
+    return res.json({ 
+      success: true, 
+      errorId,
+      message: 'Error logged successfully'
+    });
+  } catch (e: any) {
+    console.error('[Error Logging Failed]', {
+      errorId,
+      message: e.message,
+      stack: e.stack,
       timestamp: new Date().toISOString()
     });
-
-    // Returnera 200 för att inte störa användarupplevelsen
-    return res.json({ success: true });
-  } catch (e) {
-    console.error('Error logging client error:', e);
-    return res.status(500).json({ error: 'Failed to log error' });
+    
+    return res.status(500).json({ 
+      error: 'Failed to log error',
+      errorId
+    });
   }
 }
