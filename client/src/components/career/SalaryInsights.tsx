@@ -1,11 +1,28 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info, Save, Star, Trash2, Loader2 } from 'lucide-react';
+import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info, Save, Star, Trash2, Loader2, Brain } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { afDirectApi } from '@/services/afDirectApi';
 import { salaryApi, type SavedSalarySearch } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import { COMMON_OCCUPATIONS } from './occupations';
+
+// AI API call for salary data
+async function getSalaryDataFromAI(occupation: string, experience?: number) {
+  const response = await fetch('/api/ai/salary', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      function: 'salary',
+      data: { occupation, experience }
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Kunde inte hämta lönedata');
+  }
+  
+  return response.json();
+}
 
 interface SalaryData {
   occupation: string;
@@ -111,37 +128,40 @@ export default function SalaryInsights() {
     setLoading(true);
     
     try {
-      // Hämta lönestatistik direkt från AF API (CORS tillåtet)
-      const stats = await afDirectApi.getSalaryStats(occupation.label);
+      // Hämta lönestatistik från AI
+      const aiResult = await getSalaryDataFromAI(occupation.label);
       
-      if (stats) {
+      if (aiResult.salaryData) {
+        const data = aiResult.salaryData;
         setSalaryData({
-          occupation: stats.occupation,
-          median: stats.median_salary,
-          percentile25: stats.percentile_25,
-          percentile75: stats.percentile_75,
-          byRegion: stats.by_region.map(r => ({
+          occupation: occupation.label,
+          median: data.medianSalary,
+          percentile25: data.percentile25,
+          percentile75: data.percentile75,
+          byRegion: data.byRegion.map((r: any) => ({
             region: r.region,
-            median: r.median_salary,
-            jobCount: r.job_count,
+            median: r.median,
+            jobCount: r.jobCount,
           })),
-          byExperience: stats.by_experience.map(e => ({
-            years: e.experience_years,
-            median: e.median_salary,
+          byExperience: data.byExperience.map((e: any) => ({
+            years: e.years,
+            median: e.median,
           })),
           trends: {
-            growth: 8,
-            jobCount: stats.sample_size,
-            competition: 8.5,
+            growth: data.trends?.growth || 5,
+            jobCount: data.trends?.jobCount || 1000,
+            competition: data.trends?.competition === 'Låg' ? 5 : 
+                        data.trends?.competition === 'Medel' ? 8 : 12,
           },
-          source: stats.source,
-          sampleSize: stats.sample_size,
+          source: 'AI-uppskattning',
+          sampleSize: data.trends?.jobCount,
         });
       } else {
         setSalaryData(null);
       }
     } catch (error) {
       console.error('Fel vid hämtning av lönedata:', error);
+      showToast.error('Kunde inte hämta lönedata från AI');
       setSalaryData(null);
     } finally {
       setLoading(false);

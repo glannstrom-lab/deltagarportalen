@@ -37,12 +37,15 @@ const DURATION_OPTIONS = [
 export default function EducationOverview() {
   const [occupation, setOccupation] = useState<AutocompleteOption | null>(null);
   const [loading, setLoading] = useState(false);
-  const [courses, setCourses] = useState<EducationInfo[]>([]);
+  const [recommendations, setRecommendations] = useState<AIRecommendation[]>([]);
+  const [alternativePaths, setAlternativePaths] = useState<Array<{path: string; description: string; bestFor: string}>>([]);
+  const [csnInfo, setCsnInfo] = useState<string>('');
+  const [comparison, setComparison] = useState<string>('');
+  const [advice, setAdvice] = useState<string>('');
   const [filter, setFilter] = useState<EducationFilter>({
     type: 'all',
     duration: 'all'
   });
-  const [filteredCourses, setFilteredCourses] = useState<EducationInfo[]>([]);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [savedEducations, setSavedEducations] = useState<SavedEducation[]>([]);
 
@@ -64,22 +67,22 @@ export default function EducationOverview() {
     return savedEducations.some(e => e.education_code === code);
   };
 
-  const saveEducation = async (course: EducationInfo) => {
+  const saveEducation = async (rec: AIRecommendation) => {
     if (!occupation) return;
     
     try {
       await educationApi.save({
-        education_code: course.code || course.title,
-        title: course.title,
-        type: course.type || 'Övrig',
-        description: course.description,
-        duration_months: course.duration_months,
-        location: course.location,
-        url: course.url,
-        provider: course.provider,
+        education_code: rec.title,
+        title: rec.title,
+        type: rec.type,
+        description: rec.description,
+        duration_months: rec.durationMonths,
+        location: '',
+        url: '',
+        provider: rec.provider,
         target_occupation: occupation.label,
         status: 'interested',
-        notes: ''
+        notes: rec.valueReason
       });
       showToast.success('Utbildningen sparad!');
       await loadSavedEducations();
@@ -104,12 +107,18 @@ export default function EducationOverview() {
     setLoading(true);
     
     try {
-      const results = await afDirectApi.searchEducations(occupation.label);
+      const aiResult = await getEducationFromAI(occupation.label);
       
-      setCourses(results);
-      setFilteredCourses(results);
+      if (aiResult.educationData) {
+        setRecommendations(aiResult.educationData.recommendations || []);
+        setAlternativePaths(aiResult.educationData.alternativePaths || []);
+        setCsnInfo(aiResult.educationData.csnInfo || '');
+        setComparison(aiResult.educationData.comparison || '');
+        setAdvice(aiResult.educationData.advice || '');
+      }
     } catch (error) {
       console.error('Fel vid sökning efter utbildningar:', error);
+      showToast.error('Kunde inte hämta utbildningsrekommendationer');
     } finally {
       setLoading(false);
     }

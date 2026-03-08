@@ -1,17 +1,51 @@
 import { useState, useEffect } from 'react';
-import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2 } from 'lucide-react';
+import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2, Brain } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { afDirectApi } from '@/services/afDirectApi';
 import { skillsApi, type UserSkill } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
-import type { CompetencyStat } from '@/services/afDirectApi';
 import { COMMON_OCCUPATIONS } from './occupations';
+
+// AI API call for skills data
+async function getSkillsFromAI(occupation: string, currentOccupation?: string) {
+  const response = await fetch('/api/ai/skills', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      function: 'skills',
+      data: { occupation, currentOccupation }
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Kunde inte hämta kompetenser');
+  }
+  
+  return response.json();
+}
+
+interface AISkill {
+  name: string;
+  importance: string;
+  howToLearn: string;
+  timeToAcquire?: string;
+}
+
+interface AICertification {
+  name: string;
+  value: string;
+  provider: string;
+}
 
 export default function SkillsDevelopment() {
   const [occupation, setOccupation] = useState<AutocompleteOption | null>(null);
   const [loading, setLoading] = useState(false);
-  const [skills, setSkills] = useState<CompetencyStat[]>([]);
+  const [technicalSkills, setTechnicalSkills] = useState<AISkill[]>([]);
+  const [softSkills, setSoftSkills] = useState<AISkill[]>([]);
+  const [certifications, setCertifications] = useState<AICertification[]>([]);
+  const [priority, setPriority] = useState<Array<{rank: number; skill: string; reason: string}>>([]);
+  const [gapAnalysis, setGapAnalysis] = useState<string>('');
+  const [learningPath, setLearningPath] = useState<Array<{step: number; action: string; timeframe: string}>>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [savedSkills, setSavedSkills] = useState<UserSkill[]>([]);
 
@@ -29,12 +63,12 @@ export default function SkillsDevelopment() {
     }
   };
 
-  const saveSkill = async (skill: CompetencyStat, occupationName: string) => {
+  const saveSkill = async (skillName: string, category: 'technical' | 'soft' | 'certification' | 'language', occupationName: string) => {
     try {
       await skillsApi.save({
-        skill_name: skill.name,
-        category: skill.category as UserSkill['category'],
-        frequency: skill.frequency,
+        skill_name: skillName,
+        category,
+        frequency: 50,
         target_occupation: occupationName,
         status: 'interested',
         priority: 0
@@ -78,11 +112,20 @@ export default function SkillsDevelopment() {
     setLoading(true);
     
     try {
-      // Hämta kompetenser DIREKT från AF API (CORS tillåtet)
-      const competencies = await afDirectApi.getCompetencyStats(occupation.label);
-      setSkills(competencies);
+      // Hämta kompetenser från AI
+      const aiResult = await getSkillsFromAI(occupation.label);
+      
+      if (aiResult.skillsData) {
+        setTechnicalSkills(aiResult.skillsData.technicalSkills || []);
+        setSoftSkills(aiResult.skillsData.softSkills || []);
+        setCertifications(aiResult.skillsData.certifications || []);
+        setPriority(aiResult.skillsData.priority || []);
+        setGapAnalysis(aiResult.skillsData.gapAnalysis || '');
+        setLearningPath(aiResult.skillsData.learningPath || []);
+      }
     } catch (error) {
       console.error('Fel vid kompetensanalys:', error);
+      showToast.error('Kunde inte hämta kompetenser från AI');
     } finally {
       setLoading(false);
     }
