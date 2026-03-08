@@ -16,22 +16,22 @@ import {
 // Standard navigation för deltagare
 export const navItems = [
   { path: '/dashboard', label: 'Översikt', icon: LayoutDashboard },
-  { path: '/cv', label: 'CV', icon: FileText },
-  { path: '/cover-letter', label: 'Personligt brev', icon: Mail },
-  { path: '/job-search', label: 'Sök jobb', icon: Briefcase },
-  { path: '/career', label: 'Karriär', icon: Target },
-  { path: '/interest-guide', label: 'Intresseguide', icon: Compass },
-  { path: '/exercises', label: 'Övningar', icon: Dumbbell },
-  { path: '/diary', label: 'Dagbok', icon: BookHeart },
-  { path: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
+  { path: '/dashboard/cv', label: 'CV', icon: FileText },
+  { path: '/dashboard/cover-letter', label: 'Personligt brev', icon: Mail },
+  { path: '/dashboard/job-search', label: 'Sök jobb', icon: Briefcase },
+  { path: '/dashboard/career', label: 'Karriär', icon: Target },
+  { path: '/dashboard/interest-guide', label: 'Intresseguide', icon: Compass },
+  { path: '/dashboard/exercises', label: 'Övningar', icon: Dumbbell },
+  { path: '/dashboard/diary', label: 'Dagbok', icon: BookHeart },
+  { path: '/dashboard/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
 ]
 
 // Admin navigation (visas för SUPERADMIN och ADMIN)
 export const adminNavItems = [
-  { path: '/admin', label: 'Admin Panel', icon: Shield },
+  { path: '/dashboard/admin', label: 'Admin Panel', icon: Shield },
 ]
 
 // Konsulent navigation (visas för CONSULTANT)
 export const consultantNavItems = [
-  { path: '/consultant', label: 'Mina Deltagare', icon: Users },
+  { path: '/dashboard/consultant', label: 'Mina Deltagare', icon: Users },
 ]

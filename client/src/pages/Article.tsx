@@ -157,7 +157,7 @@ export default function Article() {
 
       {/* Back button */}
       <button
-        onClick={() => navigate('/knowledge-base')}
+        onClick={() => navigate('/dashboard/knowledge-base')}
         className="flex items-center gap-2 text-slate-600 hover:text-teal-700 mb-6 transition-colors"
       >
         <ArrowLeft size={20} />

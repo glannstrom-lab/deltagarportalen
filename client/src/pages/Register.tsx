@@ -56,8 +56,8 @@ export default function Register() {
           throw new Error(signUpError)
         }
 
-        // Navigera till dashboard (auth store hanterar automatiskt)
-        navigate('/')
+        // Navigera till dashboard
+        navigate('/dashboard')
       } catch (err: any) {
         setSubmitError(err.message || 'Det gick inte att skapa kontot. Försök igen om en stund.')
       }

@@ -118,15 +118,15 @@ function MobileTopBar() {
   
   const handleLogout = async () => {
     await signOut()
-    navigate('/login')
+    navigate('/')
   }
   
   // Meny-items
   const menuItems = [
-    { to: '/', label: 'Översikt' },
-    { to: '/cv', label: 'CV-byggare' },
-    { to: '/cover-letter', label: 'Personligt brev' },
-    { to: '/interest-guide', label: 'Intresseguiden' },
+    { to: '/dashboard', label: 'Översikt' },
+    { to: '/dashboard/cv', label: 'CV-byggare' },
+    { to: '/dashboard/cover-letter', label: 'Personligt brev' },
+    { to: '/dashboard/interest-guide', label: 'Intresseguiden' },
     { to: '/job-search', label: 'Sök jobb' },
     { to: '/job-tracker', label: 'Ansökningar' },
     { to: '/career', label: 'Karriär' },

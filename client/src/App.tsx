@@ -293,6 +293,22 @@ function App() {
         } />
       </Route>
 
+      {/* Redirect old routes to new /dashboard routes for backward compatibility */}
+      <Route path="/cv" element={<Navigate to="/dashboard/cv" replace />} />
+      <Route path="/cover-letter" element={<Navigate to="/dashboard/cover-letter" replace />} />
+      <Route path="/job-search" element={<Navigate to="/dashboard/job-search" replace />} />
+      <Route path="/career" element={<Navigate to="/dashboard/career" replace />} />
+      <Route path="/interest-guide" element={<Navigate to="/dashboard/interest-guide" replace />} />
+      <Route path="/exercises" element={<Navigate to="/dashboard/exercises" replace />} />
+      <Route path="/diary" element={<Navigate to="/dashboard/diary" replace />} />
+      <Route path="/knowledge-base" element={<Navigate to="/dashboard/knowledge-base" replace />} />
+      <Route path="/knowledge-base/:id" element={<Navigate to="/dashboard/knowledge-base/:id" replace />} />
+      <Route path="/profile" element={<Navigate to="/dashboard/profile" replace />} />
+      <Route path="/job-tracker" element={<Navigate to="/dashboard/job-tracker" replace />} />
+      <Route path="/settings" element={<Navigate to="/dashboard/settings" replace />} />
+      <Route path="/consultant" element={<Navigate to="/dashboard/consultant" replace />} />
+      <Route path="/admin" element={<Navigate to="/dashboard/admin" replace />} />
+
       {/* Catch all - 404 */}
       <Route path="*" element={
         <div className="min-h-screen flex items-center justify-center bg-slate-50">
