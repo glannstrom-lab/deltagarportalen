@@ -3,9 +3,10 @@ import { Share2, Copy, Check, QrCode, X, Download } from 'lucide-react'
 
 interface CVShareProps {
   onShare: () => Promise<{ shareUrl: string; qrCode: string; expiresAt: string }>
+  variant?: 'default' | 'compact'
 }
 
-export function CVShare({ onShare }: CVShareProps) {
+export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
   const [showModal, setShowModal] = useState(false)
   const [loading, setLoading] = useState(false)
   const [shareData, setShareData] = useState<{ shareUrl: string; qrCode: string; expiresAt: string } | null>(null)
@@ -45,23 +46,43 @@ export function CVShare({ onShare }: CVShareProps) {
 
   return (
     <>
-      <button
-        onClick={handleShare}
-        disabled={loading}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border border-white/30 text-white rounded-xl hover:bg-white/20 transition-colors disabled:opacity-50 font-medium"
-      >
-        {loading ? (
-          <>
-            <div className="w-4 h-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />
-            Skapar...
-          </>
-        ) : (
-          <>
-            <Share2 size={18} />
-            Dela CV
-          </>
-        )}
-      </button>
+      {variant === 'compact' ? (
+        <button
+          onClick={handleShare}
+          disabled={loading}
+          className="flex items-center gap-2 px-3 py-2 text-sm border border-slate-300 text-slate-700 bg-white rounded-lg hover:bg-slate-50 transition-colors disabled:opacity-50 font-medium"
+        >
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" />
+              <span className="hidden sm:inline">Skapar...</span>
+            </>
+          ) : (
+            <>
+              <Share2 size={16} />
+              <span className="hidden sm:inline">Dela</span>
+            </>
+          )}
+        </button>
+      ) : (
+        <button
+          onClick={handleShare}
+          disabled={loading}
+          className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border border-white/30 text-white rounded-xl hover:bg-white/20 transition-colors disabled:opacity-50 font-medium"
+        >
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/60 border-t-transparent rounded-full animate-spin" />
+              Skapar...
+            </>
+          ) : (
+            <>
+              <Share2 size={18} />
+              Dela CV
+            </>
+          )}
+        </button>
+      )}
 
       {showModal && shareData && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">

@@ -618,7 +618,7 @@ export default function CVBuilder() {
             {saving ? 'Sparar...' : 'Spara'}
           </button>
           <div className="w-px h-6 bg-slate-300 mx-1" />
-          <CVShare onShare={async () => await cvApi.shareCV()} />
+          <CVShare onShare={async () => await cvApi.shareCV()} variant="compact" />
           <PDFExportButton 
             type="cv" 
             data={{
@@ -630,8 +630,9 @@ export default function CVBuilder() {
               languages: data.languages.map(l => ({ language: l.name, level: l.level })),
               certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
             }} 
-            variant="secondary"
-            size="sm" 
+            variant="outline"
+            size="sm"
+            showPreview={false}
           />
         </div>
       </div>
