@@ -687,6 +687,8 @@ export default function CoverLetterGenerator() {
   // === RENDER ===
   
   // Mobile simplified view
+  console.log('[CoverLetter] Mobile view active. jobbAnnons length:', jobbAnnons.length, 'company:', company, 'jobTitle:', jobTitle)
+  
   if (isMobile) {
     return (
       <div className="max-w-lg mx-auto space-y-4 pb-20 px-4">
