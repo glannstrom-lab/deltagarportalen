@@ -1,5 +1,5 @@
 import { memo, useState } from 'react'
-import { FileText, CheckCircle2, AlertCircle, Sparkles, TrendingUp, Award, Download, Loader2, Check } from 'lucide-react'
+import { FileText, CheckCircle2, AlertCircle, Sparkles, TrendingUp, Award, Download, Loader2, Check, ArrowRight, BookOpen, Briefcase, Lightbulb, Target } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
@@ -18,7 +18,44 @@ interface CVWidgetProps {
   size?: WidgetSize
 }
 
-// SMALL VARIANT - Minimal info
+// Helper to get recommended next steps based on CV status
+function getRecommendations(progress: number, missingSections: string[] = []) {
+  const recs = []
+  
+  if (progress < 30) {
+    recs.push({ 
+      type: 'interest', 
+      label: 'Utforska karriärmöjligheter',
+      description: 'Hitta yrken som passar dig',
+      icon: Lightbulb,
+      link: '/interests'
+    })
+  }
+  
+  if (missingSections.includes('skills')) {
+    recs.push({ 
+      type: 'knowledge', 
+      label: 'Utveckla kompetenser',
+      description: 'Kurser för din karriär',
+      icon: BookOpen,
+      link: '/knowledge'
+    })
+  }
+  
+  if (progress >= 50 && missingSections.length <= 2) {
+    recs.push({ 
+      type: 'jobs', 
+      label: 'Hitta jobb',
+      description: 'Se matchande tjänster',
+      icon: Briefcase,
+      link: '/job-search'
+    })
+  }
+  
+  return recs.slice(0, 2)
+}
+
+// SMALL VARIANT - Minimal info med smarta tips
 function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: Omit<CVWidgetProps, 'size' | 'missingSections'>) {
   const getStatus = (): WidgetStatus => {
     if (!hasCV) return 'empty'
@@ -62,7 +99,7 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
   )
 }
 
-// MEDIUM VARIANT - Mer detaljer
+// MEDIUM VARIANT - Mer detaljer med integrationer
 function CVWidgetMedium({ hasCV, progress, atsScore, missingSections = [], loading, error, onRetry }: CVWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (!hasCV) return 'empty'
@@ -71,6 +108,7 @@ function CVWidgetMedium({ hasCV, progress, atsScore, missingSections = [], loadi
   }
 
   const status = getStatus()
+  const recommendations = getRecommendations(progress, missingSections)
 
   return (
     <DashboardWidget
@@ -134,6 +172,26 @@ function CVWidgetMedium({ hasCV, progress, atsScore, missingSections = [], loadi
           </div>
         )}
 
+        {/* Integration: Recommendations from other pages */}
+        {recommendations.length > 0 && (
+          <div className="pt-2 border-t border-slate-100">
+            <p className="text-xs text-slate-400 mb-2">Rekommenderat nästa steg:</p>
+            <div className="space-y-1.5">
+              {recommendations.map((rec) => (
+                <a
+                  key={rec.type}
+                  href={rec.link}
+                  className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 hover:bg-violet-50 transition-colors group"
+                >
+                  <rec.icon size={14} className="text-slate-400 group-hover:text-violet-500" />
+                  <span className="text-sm text-slate-600 group-hover:text-violet-700 flex-1">{rec.label}</span>
+                  <ArrowRight size={12} className="text-slate-300 group-hover:text-violet-500" />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Empty state */}
         {status === 'empty' && (
           <div className="p-3 bg-violet-50 rounded-lg">
@@ -155,7 +213,7 @@ function CVWidgetMedium({ hasCV, progress, atsScore, missingSections = [], loadi
   )
 }
 
-// LARGE VARIANT - Fullständig översikt
+// LARGE VARIANT - Fullständig översikt med alla integrationer
 function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loading, error, onRetry }: CVWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (!hasCV) return 'empty'
@@ -166,20 +224,19 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
   const status = getStatus()
   const [isExporting, setIsExporting] = useState(false)
   const [exportSuccess, setExportSuccess] = useState(false)
+  const recommendations = getRecommendations(progress, missingSections)
 
   const handleExportPDF = async () => {
     setIsExporting(true)
     setExportSuccess(false)
     
     try {
-      // Hämta CV-data
       const cvData = await cvApi.getCV()
       if (!cvData) {
         alert('Inget CV att exportera')
         return
       }
 
-      // Skapa ett temporärt element för rendering
       const tempDiv = document.createElement('div')
       tempDiv.style.cssText = `
         position: fixed;
@@ -194,7 +251,6 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
         z-index: -9999;
       `
       
-      // Bygg CV HTML
       const fullName = `${cvData.firstName || ''} ${cvData.lastName || ''}`.trim() || 'Ditt Namn'
       const scheme = { primary: '#4f46e5', secondary: '#6366f1', accent: '#818cf8' }
       
@@ -252,10 +308,8 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
       
       document.body.appendChild(tempDiv)
       
-      // Vänta på rendering
       await new Promise(resolve => setTimeout(resolve, 100))
       
-      // Skapa PDF
       const canvas = await html2canvas(tempDiv, {
         scale: 2,
         useCORS: true,
@@ -290,7 +344,6 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
       alert('Kunde inte exportera PDF. Försök igen.')
     } finally {
       setIsExporting(false)
-      // Städa upp
       const tempDivs = document.querySelectorAll('[style*="left: -10000px"]')
       tempDivs.forEach(el => el.remove())
     }
@@ -350,29 +403,65 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
           </div>
         </div>
 
-        {/* Missing sections lista */}
-        {missingSections.length > 0 && status !== 'empty' && (
-          <div className="p-4 bg-slate-50 rounded-xl">
-            <p className="text-sm font-medium text-slate-700 mb-3">
-              Komplettera din profil för att nå 100%:
+        {/* Integration: Missing sections + Quick actions */}
+        <div className="grid grid-cols-2 gap-4">
+          {/* Missing sections */}
+          {missingSections.length > 0 && status !== 'empty' && (
+            <div className="p-4 bg-slate-50 rounded-xl">
+              <p className="text-sm font-medium text-slate-700 mb-3">
+                Komplettera din profil:
+              </p>
+              <div className="space-y-2">
+                {missingSections.slice(0, 4).map((section) => (
+                  <div 
+                    key={section}
+                    className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg text-sm text-slate-600"
+                  >
+                    <AlertCircle size={14} className="text-amber-500" />
+                    {section === 'profile' && 'Grundinformation'}
+                    {section === 'summary' && 'Sammanfattning'}
+                    {section === 'work_experience' && 'Arbetslivserfarenhet'}
+                    {section === 'education' && 'Utbildning'}
+                    {section === 'skills' && 'Kompetenser'}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Integration: Recommended next steps */}
+          <div className="p-4 bg-violet-50/50 rounded-xl border border-violet-100">
+            <p className="text-sm font-medium text-violet-900 mb-3 flex items-center gap-2">
+              <Target size={16} />
+              Förslag på nästa steg
             </p>
-            <div className="grid grid-cols-2 gap-2">
-              {missingSections.map((section) => (
-                <div 
-                  key={section}
-                  className="flex items-center gap-2 px-3 py-2 bg-white rounded-lg text-sm text-slate-600"
-                >
-                  <AlertCircle size={14} className="text-amber-500" />
-                  {section === 'profile' && 'Grundinformation'}
-                  {section === 'summary' && 'Sammanfattning'}
-                  {section === 'work_experience' && 'Arbetslivserfarenhet'}
-                  {section === 'education' && 'Utbildning'}
-                  {section === 'skills' && 'Kompetenser'}
+            <div className="space-y-2">
+              {recommendations.length > 0 ? (
+                recommendations.map((rec) => (
+                  <a
+                    key={rec.type}
+                    href={rec.link}
+                    className="flex items-center gap-3 p-2.5 bg-white rounded-lg hover:bg-violet-50 transition-colors group"
+                  >
+                    <div className="w-8 h-8 bg-violet-100 rounded-lg flex items-center justify-center">
+                      <rec.icon size={16} className="text-violet-600" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-slate-700 group-hover:text-violet-700">{rec.label}</p>
+                      <p className="text-xs text-slate-500">{rec.description}</p>
+                    </div>
+                    <ArrowRight size={14} className="text-slate-300 group-hover:text-violet-500" />
+                  </a>
+                ))
+              ) : (
+                <div className="flex items-center gap-2 p-2 text-sm text-emerald-600">
+                  <CheckCircle2 size={16} />
+                  <span>Din profil är redo för jobbsökning!</span>
                 </div>
-              ))}
+              )}
             </div>
           </div>
-        )}
+        </div>
 
         {/* Empty state */}
         {status === 'empty' && (
