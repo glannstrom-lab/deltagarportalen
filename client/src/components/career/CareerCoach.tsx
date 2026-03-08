@@ -60,6 +60,20 @@ interface CareerPath {
   steps: CareerStep[];
   timeline: string;
   salaryIncrease: number;
+  analysis?: string;
+  marketAnalysis?: {
+    salaryIncrease: string;
+    jobMarket: string;
+    competition: string;
+    timelineEstimate: string;
+  };
+  keySkills?: string[];
+  challenges?: string[];
+  salaryProgression?: Array<{
+    stage: string;
+    estimatedSalary: number;
+    notes: string;
+  }>;
 }
 
 export default function CareerCoach() {
@@ -192,6 +206,12 @@ export default function CareerCoach() {
       
       // Generera AI-baserad karriärplan
       let aiSteps: CareerStep[] = [];
+      let aiAnalysis: string | undefined;
+      let aiMarketAnalysis: CareerPath['marketAnalysis'] | undefined;
+      let aiKeySkills: string[] | undefined;
+      let aiChallenges: string[] | undefined;
+      let aiSalaryProgression: CareerPath['salaryProgression'] | undefined;
+      
       try {
         const aiResult = await generateCareerPlanWithAI({
           currentOccupation: currentOccupation.label,
@@ -205,6 +225,11 @@ export default function CareerCoach() {
         
         if (aiResult.plan?.steps) {
           aiSteps = aiResult.plan.steps;
+          aiAnalysis = aiResult.plan.analysis;
+          aiMarketAnalysis = aiResult.plan.marketAnalysis;
+          aiKeySkills = aiResult.plan.keySkills;
+          aiChallenges = aiResult.plan.challenges;
+          aiSalaryProgression = aiResult.plan.salaryProgression;
         }
       } catch (aiError) {
         console.error('AI generation failed, using fallback:', aiError);
@@ -224,9 +249,14 @@ export default function CareerCoach() {
           demand,
           jobCount,
         },
-        timeline: `${estimatedYears}-${estimatedYears + 1} år`,
+        timeline: aiMarketAnalysis?.timelineEstimate || `${estimatedYears}-${estimatedYears + 1} år`,
         salaryIncrease: targetSalaryValue - currentSalaryValue,
         steps: aiSteps,
+        analysis: aiAnalysis,
+        marketAnalysis: aiMarketAnalysis,
+        keySkills: aiKeySkills,
+        challenges: aiChallenges,
+        salaryProgression: aiSalaryProgression,
       };
       
       setCareerPath(path);
@@ -565,6 +595,108 @@ export default function CareerCoach() {
               </div>
             ))}
           </div>
+
+          {/* AI Analys */}
+          {careerPath.analysis && (
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-200">
+              <h3 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+                <Briefcase className="text-blue-600" size={20} />
+                AI:s analys av din karriärövergång
+              </h3>
+              <p className="text-slate-700 leading-relaxed">{careerPath.analysis}</p>
+            </div>
+          )}
+
+          {/* Marknadsanalys */}
+          {careerPath.marketAnalysis && (
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                <TrendingUp className="text-green-600" size={20} />
+                Marknadsanalys
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-4 bg-green-50 rounded-xl">
+                  <p className="text-sm text-green-700 font-medium mb-1">Löneutveckling</p>
+                  <p className="text-slate-700 text-sm">{careerPath.marketAnalysis.salaryIncrease}</p>
+                </div>
+                <div className="p-4 bg-blue-50 rounded-xl">
+                  <p className="text-sm text-blue-700 font-medium mb-1">Jobbmarknad</p>
+                  <p className="text-slate-700 text-sm">{careerPath.marketAnalysis.jobMarket}</p>
+                </div>
+                <div className="p-4 bg-amber-50 rounded-xl">
+                  <p className="text-sm text-amber-700 font-medium mb-1">Konkurrens</p>
+                  <p className="text-slate-700 text-sm">{careerPath.marketAnalysis.competition}</p>
+                </div>
+                <div className="p-4 bg-purple-50 rounded-xl">
+                  <p className="text-sm text-purple-700 font-medium mb-1">Uppskattad tidslinje</p>
+                  <p className="text-slate-700 text-sm">{careerPath.marketAnalysis.timelineEstimate}</p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Nyckelkompetenser */}
+          {careerPath.keySkills && careerPath.keySkills.length > 0 && (
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                <Award className="text-amber-500" size={20} />
+                Viktiga kompetenser för {careerPath.target.occupation}
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {careerPath.keySkills.map((skill, i) => (
+                  <span key={i} className="px-3 py-1.5 bg-amber-50 text-amber-800 rounded-full text-sm font-medium">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Utmaningar */}
+          {careerPath.challenges && careerPath.challenges.length > 0 && (
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                <MapPin className="text-red-500" size={20} />
+                Möjliga utmaningar att förbereda sig för
+              </h3>
+              <ul className="space-y-2">
+                {careerPath.challenges.map((challenge, i) => (
+                  <li key={i} className="flex items-start gap-3 text-slate-700">
+                    <span className="w-6 h-6 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-sm font-medium shrink-0">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm">{challenge}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {/* Löneutveckling */}
+          {careerPath.salaryProgression && careerPath.salaryProgression.length > 0 && (
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+              <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+                <DollarSign className="text-green-600" size={20} />
+                Uppskattad löneutveckling
+              </h3>
+              <div className="space-y-3">
+                {careerPath.salaryProgression.map((stage, i) => (
+                  <div key={i} className="flex items-center gap-4 p-3 bg-slate-50 rounded-xl">
+                    <div className="w-20 font-medium text-slate-700">{stage.stage}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <div className="h-2 bg-green-500 rounded-full" style={{ width: `${Math.min(100, (stage.estimatedSalary / 80000) * 100)}%` }} />
+                        <span className="font-semibold text-green-700">
+                          {stage.estimatedSalary.toLocaleString()} kr
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-1">{stage.notes}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row gap-4">

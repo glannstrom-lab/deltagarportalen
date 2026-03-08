@@ -55,15 +55,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const data = req.body.data || req.body;
 
-    const systemPrompt = `Du är en expert på karriärutveckling och kompetensöverföring. 
-Din uppgift är att skapa realistiska, skräddarsydda karriärvägar för personer som vill byta eller utveckla sin karriär.
+    const salaryIncrease = data?.targetSalary - data?.currentSalary;
+    const salaryIncreasePercent = data?.currentSalary > 0 
+      ? Math.round((salaryIncrease / data?.currentSalary) * 100) 
+      : 0;
+
+    const systemPrompt = `Du är en expert på karriärutveckling och arbetsmarknadsanalys. 
+Din uppgift är att skapa realistiska, skräddarsydda karriärvägar baserat på faktisk marknadsdata.
 
 Du ska:
-- Analysera vad personen har idag (nuvarande yrke, erfarenhet)
-- Identifiera vad som krävs för att nå målyrket
-- Skapa konkreta, genomförbara steg
-- Fokusera på överförbara färdigheter
-- Vara realistisk om tidslinjer
+- Analysera löneutveckling och ge realistiska förväntningar
+- Beakta antalet lediga jobb och konkurrensen
+- Skapa en realistisk tidslinje baserat på erfarenhet och utbildningsbehov
+- Identifiera överförbara färdigheter mellan yrkena
+- Ge konkreta, genomförbara steg
 - Inkludera både formell utbildning och praktisk erfarenhet
 
 Svara i JSON-format med följande struktur:
@@ -78,26 +83,45 @@ Svara i JSON-format med följande struktur:
       "education": ["Utbildning 1", "Utbildning 2"]
     }
   ],
+  "marketAnalysis": {
+    "salaryIncrease": "Löneökning analys",
+    "jobMarket": "Bedömning av arbetsmarknaden baserat på antal lediga jobb",
+    "competition": "Hur svårt är det att få jobb?",
+    "timelineEstimate": "Uppskattad tidslinje för hela övergången"
+  },
   "analysis": "Kort analys av övergången",
   "keySkills": ["Viktig färdighet 1", "Viktig färdighet 2"],
-  "challenges": ["Utmaning 1", "Utmaning 2"]
+  "challenges": ["Utmaning 1", "Utmaning 2"],
+  "salaryProgression": [
+    {"stage": "År 1", "estimatedSalary": 45000, "notes": "Entry level i målyrket"},
+    {"stage": "År 3", "estimatedSalary": 52000, "notes": "Med erfarenhet"}
+  ]
 }`;
 
-    const userPrompt = `Skapa en detaljerad karriärplan för följande övergång:
+    const userPrompt = `Skapa en detaljerad karriärplan baserat på följande marknadsdata:
 
+=== PERSONLIG INFORMATION ===
 NUVARANDE YRKE: ${data?.currentOccupation}
 ERFARENHET: ${data?.experienceYears} år
 MÅLYRKE: ${data?.targetOccupation}
-NUVARANDE LÖN: ${data?.currentSalary} kr/mån
-MÅLLÖN: ${data?.targetSalary} kr/mån
-EFTERFRÅGAN: ${data?.demand === 'high' ? 'Hög' : data?.demand === 'medium' ? 'Medel' : 'Låg'} (${data?.jobCount} lediga jobb)
 
-Skapa 4-5 konkreta steg för karriärövergången. Var specifik om:
-1. Vilka färdigheter som behövs för målyrket
-2. Vilka av nuvarande färdigheter som är överförbara
-3. Konkreta åtgärder för varje steg
-4. Rekommenderad utbildning/kompetensutveckling
-5. Realistisk tidsram
+=== LÖNEDATA ===
+NUVARANDE LÖN: ${data?.currentSalary?.toLocaleString()} kr/mån
+MÅLLÖN: ${data?.targetSalary?.toLocaleString()} kr/mån
+LÖNEÖKNING: +${salaryIncrease?.toLocaleString()} kr/mån (+${salaryIncreasePercent}%)
+
+=== ARBETSMARKNADSDATA ===
+LEDIGA JOBB NATIONELLT: ${data?.jobCount}
+EFTERFRÅGAN: ${data?.demand === 'high' ? 'Hög' : data?.demand === 'medium' ? 'Medel' : 'Låg'}
+
+Skapa 4-5 konkreta steg för karriärövergången. Inkludera:
+1. En marknadsanalys som kommenterar löneökningen och jobbmarknaden
+2. Realistisk tidslinje baserat på erfarenhet och kompetensgap
+3. Vilka färdigheter som behövs för målyrket
+4. Överförbara färdigheter från nuvarande yrke
+5. Konkreta åtgärder för varje steg
+6. Rekommenderad utbildning/kompetensutveckling
+7. Löneutveckling över tid (estimerad progression)
 
 Svara ENDAST med JSON, inget annat.`;
 
