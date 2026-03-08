@@ -9,6 +9,7 @@ import Layout from './components/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Landing from './pages/Landing'
+import StorageTest from './pages/StorageTest'
 
 // Lazy-loaded sidor för bättre prestanda
 const Dashboard = lazy(() => import('./pages/Dashboard'))
@@ -161,6 +162,12 @@ function App() {
       <Route path="/landing" element={
         <RouteErrorBoundary>
           <Landing />
+        </RouteErrorBoundary>
+      } />
+      {/* Storage test page */}
+      <Route path="/test/storage" element={
+        <RouteErrorBoundary>
+          <StorageTest />
         </RouteErrorBoundary>
       } />
 
