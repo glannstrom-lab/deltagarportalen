@@ -12,7 +12,7 @@ import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVShare } from '@/components/cv/CVShare'
 import { CompactImageUpload } from '@/components/ImageUpload'
-import { useImageUpload } from '@/hooks/useImageUpload'
+import { useVercelImageUpload } from '@/hooks/useVercelImageUpload'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import type { CVData, CVVersion } from '@/services/mockApi'
@@ -158,7 +158,7 @@ export default function CVBuilder() {
     template: 'modern', colorScheme: 'indigo', font: 'inter', profileImage: null,
   })
   
-  const { uploadCVProfileImage, deleteImage } = useImageUpload()
+  const { upload: uploadImage, isUploading: isImageUploading } = useVercelImageUpload()
   const { user } = useAuthStore()
 
   const completedSteps = [
@@ -350,9 +350,9 @@ export default function CVBuilder() {
               alert('Du måste vara inloggad för att ladda upp bilder')
               return null
             }
-            const result = await uploadCVProfileImage(file, user.id)
+            const result = await uploadImage(file)
             if (result.error) {
-              alert(result.error)
+              alert('Uppladdning misslyckades: ' + result.error)
               return null
             }
             return result.url
