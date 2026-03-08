@@ -524,7 +524,7 @@ export default function CareerCoach() {
           <div className="space-y-4">
             <h3 className="font-semibold text-slate-800">Din väg framåt</h3>
             
-            {careerPath.steps.map((step) => (
+            {careerPath.steps && careerPath.steps.length > 0 ? careerPath.steps.map((step) => (
               <div
                 key={step.order}
                 className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200"
@@ -549,7 +549,7 @@ export default function CareerCoach() {
                       <div>
                         <p className="text-sm font-medium text-slate-700 mb-2">Konkreta åtgärder:</p>
                         <ul className="space-y-1">
-                          {step.actions.map((action, i) => (
+                          {step.actions && step.actions.map((action, i) => (
                             <li key={i} className="text-sm text-slate-600 flex items-center gap-2">
                               <ArrowRight size={14} className="text-[#4f46e5]" />
                               {action}
@@ -558,7 +558,7 @@ export default function CareerCoach() {
                         </ul>
                       </div>
                       
-                      {step.education && (
+                      {step.education && step.education.length > 0 && (
                         <div>
                           <p className="text-sm font-medium text-slate-700 mb-2">Rekommenderad utbildning:</p>
                           <ul className="space-y-1">
@@ -575,7 +575,11 @@ export default function CareerCoach() {
                   </div>
                 </div>
               </div>
-            ))}
+            )) : (
+              <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
+                <p className="text-slate-500">Inga steg kunde genereras. Försök igen.</p>
+              </div>
+            )}
           </div>
 
           {/* AI Analys */}
