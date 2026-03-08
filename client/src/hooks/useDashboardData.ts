@@ -14,14 +14,44 @@ export interface UseDashboardDataReturn {
   isRefetching: boolean
 }
 
+// Funktion för att hämta sparade jobb från både Supabase och localStorage
+function getSavedJobsFromStorage(): any[] {
+  const jobs: any[] = []
+  
+  // Försök hämta från localStorage först (där useSavedJobs sparar)
+  try {
+    const localStorageJobs = localStorage.getItem('savedJobs')
+    if (localStorageJobs) {
+      const parsed = JSON.parse(localStorageJobs)
+      // Konvertera från useSavedJobs format till dashboard format
+      parsed.forEach((job: any) => {
+        if (job.id && job.jobData) {
+          jobs.push({
+            job_id: job.id,
+            job_data: job.jobData,
+            created_at: job.savedAt,
+          })
+        }
+      })
+    }
+  } catch (e) {
+    console.error('Error reading localStorage saved jobs:', e)
+  }
+  
+  return jobs
+}
+
 // Funktion för att hämta all dashboard-data
 async function fetchDashboardData(): Promise<DashboardWidgetData> {
+  // Hämta sparade jobb från localStorage (används av JobSearch)
+  const localSavedJobs = getSavedJobsFromStorage()
+  
   // Parallella anrop för bättre prestanda
   const [
     cv,
     atsAnalysis,
     interestResult,
-    savedJobs,
+    supabaseSavedJobs,
     coverLetters,
     activities,
     applicationCount,
@@ -34,21 +64,32 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     activityApi.getActivities().catch(() => []),
     activityApi.getCount('application_sent').catch(() => 0),
   ])
+  
+  // Kombinera localStorage och Supabase (prioritera localStorage då det är mest aktuellt)
+  const savedJobs = localSavedJobs.length > 0 ? localSavedJobs : supabaseSavedJobs
 
   // Beräkna CV-progress
   const cvProgress = calculateCVProgress(cv)
   const hasCV = !!cv && (!!cv.summary || !!(cv.work_experience && cv.work_experience.length > 0))
 
+  // Debug-loggning
+  console.log('[useDashboardData] localSavedJobs:', localSavedJobs.length, 'supabaseSavedJobs:', supabaseSavedJobs.length, 'final:', savedJobs.length)
+  if (savedJobs.length > 0) {
+    console.log('[useDashboardData] first savedJob:', JSON.stringify(savedJobs[0], null, 2))
+  }
+
   // Hämta nyligen sparade jobb (max 3)
   // savedJobs har strukturen: { id, job_id, job_data: { headline, employer: { name } } }
   const recentJobs = savedJobs.slice(0, 3).map((savedJob: any) => {
     const jobData = savedJob.job_data || {}
-    return {
+    const mapped = {
       id: savedJob.job_id || savedJob.id,
       title: jobData.headline || jobData.title || 'Okänt jobb',
       company: jobData.employer?.name || jobData.company || 'Okänt företag',
       location: jobData.workplace_address?.municipality || jobData.location,
     }
+    console.log('[useDashboardData] mapped job:', mapped)
+    return mapped
   })
 
   // Hämta nyligen skapade brev (max 3)
