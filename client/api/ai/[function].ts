@@ -103,36 +103,60 @@ Texten ska:
       };
 
     case 'personligt-brev':
+    case 'generera-personligt-brev':
       const ton = data?.ton || 'professionell';
       const tonInstructions: Record<string, string> = {
         professionell: ' professionell och balanserad',
         entusiastisk: ' entusiastisk och energisk',
         formell: ' formell och traditionell'
       };
+      
+      // Build CV context if available
+      let cvContext = '';
+      if (data?.cvData) {
+        const cv = data.cvData;
+        cvContext = `
+
+MIN CV-INFORMATION:
+Namn: ${cv.firstName || ''} ${cv.lastName || ''}
+Titel: ${cv.title || 'Ej angiven'}
+Sammanfattning: ${cv.summary || 'Ej angiven'}
+
+ERFARENHET:
+${cv.workExperience?.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.description ? `: ${exp.description}` : ''}`).join('\n') || 'Ingen erfarenhet angiven'}
+
+KOMPETENSER:
+${cv.skills?.map((s: any) => s.name).join(', ') || 'Inga kompetenser angivna'}
+`;
+      }
+      
       return {
         systemPrompt: `Du är en expert på att skriva personliga brev för jobbansökningar.
 Skriv på svenska med en${tonInstructions[ton] || tonInstructions.professionell} ton.
-Brevet ska vara personligt, engagerande och visa varför just denna person passar för jobbet.`,
-        userPrompt: `Skriv ett personligt brev baserat på:
+Brevet ska vara personligt, engagerande och visa varför just denna person passar för jobbet.
+Använd CV-informationen för att koppla personens erfarenheter till jobbets krav.`,
+        userPrompt: `Skriv ett personligt brev för följande jobb:
+
+FÖRETAG: ${data?.companyName || 'Ej angivet'}
+JOBBTITEL: ${data?.jobTitle || 'Ej angiven'}
 
 JOBBANNONS:
 ${data?.jobbAnnons || data?.jobDescription || ''}
+${cvContext}
 
-MIN BAKGRUND:
-${data?.erfarenhet || 'Varierad arbetslivserfarenhet'}
+${data?.motivering ? `VARFÖR JAG VILL HA JOBBET:\n${data.motivering}\n` : ''}
+${data?.extraContext ? `EXTRA KONTEXT:\n${data.extraContext}\n` : ''}
 
-VARFÖR JAG VILL HA JOBBET:
-${data?.motivering || 'Jag söker nya utmaningar och vill utvecklas'}
+VIKTIGT:
+- Brevet ska vara 250-350 ord
+- Koppla specifikt min erfarenhet till jobbets krav
+- Nämn företagsnamnet i inledningen
+- Använd mina faktiska erfarenheter från CV:t
+- Avsluta med att be om intervju
 
-${data?.namn ? `Mitt namn: ${data?.namn}` : ''}
-
-Struktur:
-1. Inledning - fånga intresset, nämn varför du söker jobbet
-2. Kropp - koppla din erfarenhet till jobbets krav (2-3 stycken)
-3. Avslutning - call-to-action, uttryck intresse för intervju
-
-Max 300-400 ord. Professionellt men personligt.`,
-        maxTokens: 1200
+Skriv brevet:`
+        ,
+        maxTokens: 1500
       };
 
     case 'intervju-forberedelser':
@@ -272,7 +296,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.json({
       success: true,
-      [fn === 'chatbot' ? 'svar' : fn === 'personligt-brev' ? 'brev' : 'result']: content,
+      [fn === 'chatbot' ? 'svar' : fn === 'personligt-brev' || fn === 'generera-personligt-brev' ? 'brev' : 'result']: content,
       function: fn,
       model: DEFAULT_MODEL
     });

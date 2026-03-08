@@ -87,7 +87,7 @@ export const aiService = {
   },
 
   /**
-   * Skriv personligt brev
+   * Skriv personligt brev (legacy)
    */
   personligtBrev: async (data: {
     jobbAnnons: string;
@@ -98,6 +98,35 @@ export const aiService = {
   }) => {
     const response = await callAI('personligt-brev', data);
     return response.brev;
+  },
+
+  /**
+   * Generera personligt brev med fullständig CV-data
+   */
+  generateCoverLetter: async (data: {
+    jobbAnnons: string;
+    companyName?: string;
+    jobTitle?: string;
+    erfarenhet?: string;
+    motivering?: string;
+    namn?: string;
+    ton?: 'professionell' | 'entusiastisk' | 'formell';
+    extraContext?: string;
+    cvData?: {
+      firstName?: string;
+      lastName?: string;
+      title?: string;
+      summary?: string;
+      workExperience?: Array<{
+        title: string;
+        company: string;
+        description?: string;
+      }>;
+      skills?: Array<{ name: string }>;
+    };
+  }) => {
+    const response = await callAI('generera-personligt-brev', data);
+    return { brev: response.brev, result: response.result };
   },
 
   /**
