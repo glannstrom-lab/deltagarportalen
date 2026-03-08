@@ -1,5 +1,18 @@
 import { supabase } from '@/lib/supabase';
-import { APIError } from './api';
+
+// ===== API Error Class =====
+
+export class APIError extends Error {
+  code: string;
+  status: number;
+  
+  constructor(message: string, code: string = 'UNKNOWN', status: number = 500) {
+    super(message);
+    this.name = 'APIError';
+    this.code = code;
+    this.status = status;
+  }
+}
 
 // ===== Types =====
 
