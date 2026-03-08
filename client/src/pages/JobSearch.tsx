@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { 
   Search, MapPin, Briefcase, Calendar, X, Building2, 
   ExternalLink, Filter, ChevronDown, SlidersHorizontal,
@@ -79,11 +79,20 @@ export default function JobSearch() {
 
   // Hämta autocomplete-förslag
   useEffect(() => {
-    if (filters.query.length >= 2) {
-      getAutocomplete(filters.query).then(setSuggestions);
-    } else {
-      setSuggestions([]);
-    }
+    const fetchAutocomplete = async () => {
+      if (filters.query.length >= 2) {
+        try {
+          const results = await getAutocomplete(filters.query);
+          setSuggestions(results);
+        } catch (err) {
+          console.error('Autocomplete error:', err);
+          setSuggestions([]);
+        }
+      } else {
+        setSuggestions([]);
+      }
+    };
+    fetchAutocomplete();
   }, [filters.query]);
 
   // Reset pagination när filter ändras
@@ -281,8 +290,12 @@ export default function JobSearch() {
             placeholder="Vad vill du jobba med?"
             value={filters.query}
             onChange={(e) => {
-              setFilters({ ...filters, query: e.target.value });
-              setShowSuggestions(true);
+              try {
+                setFilters({ ...filters, query: e.target.value });
+                setShowSuggestions(true);
+              } catch (err) {
+                console.error('Error in search input onChange:', err);
+              }
             }}
             onFocus={() => setShowSuggestions(true)}
             className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-base"
