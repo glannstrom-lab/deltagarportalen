@@ -234,6 +234,7 @@ export const cvApi = {
       colorScheme: data.color_scheme,
       firstName: data.first_name,
       lastName: data.last_name,
+      profileImage: data.profile_image,
     }
   },
 
@@ -250,6 +251,7 @@ export const cvApi = {
       phone: cvData.phone,
       location: cvData.location,
       summary: cvData.summary,
+      profile_image: cvData.profile_image || cvData.profileImage,
       work_experience: cvData.work_experience || cvData.workExperience,
       education: cvData.education,
       skills: cvData.skills,

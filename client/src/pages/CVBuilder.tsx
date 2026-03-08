@@ -3,7 +3,7 @@ import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
   Linkedin, Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
-  Lightbulb, Target, Share2
+  Lightbulb, Target
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -617,6 +617,22 @@ export default function CVBuilder() {
             <Save className="w-4 h-4" />
             {saving ? 'Sparar...' : 'Spara'}
           </button>
+          <div className="w-px h-6 bg-slate-300 mx-1" />
+          <CVShare onShare={async () => await cvApi.shareCV()} />
+          <PDFExportButton 
+            type="cv" 
+            data={{
+              personalInfo: { firstName: data.firstName, lastName: data.lastName, email: data.email, phone: data.phone, city: data.location },
+              summary: data.summary,
+              experience: data.workExperience.map(w => ({ title: w.title, company: w.company, location: w.location, startDate: w.startDate, endDate: w.endDate, current: w.current, description: w.description })),
+              education: data.education.map(e => ({ degree: e.degree, school: e.school, location: e.location, startDate: e.startDate, endDate: e.endDate, description: e.description })),
+              skills: data.skills.map(s => s.name),
+              languages: data.languages.map(l => ({ language: l.name, level: l.level })),
+              certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
+            }} 
+            variant="secondary"
+            size="sm" 
+          />
         </div>
       </div>
 
@@ -670,33 +686,6 @@ export default function CVBuilder() {
           <div className="bg-slate-100 rounded-2xl p-6">
             <div className="bg-white shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
               <CVPreview data={data} />
-            </div>
-          </div>
-
-          {/* Share & Export */}
-          <div className="bg-gradient-to-br from-[#4f46e5] to-[#7c3aed] rounded-2xl shadow-lg p-5 text-white">
-            <h3 className="font-semibold mb-4 flex items-center gap-2">
-              <Share2 className="w-5 h-5" />
-              Dela & Exportera
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              <CVShare onShare={async () => await cvApi.shareCV()} />
-              <PDFExportButton 
-                type="cv" 
-                data={{
-                  personalInfo: { firstName: data.firstName, lastName: data.lastName, email: data.email, phone: data.phone, city: data.location },
-                  summary: data.summary,
-                  experience: data.workExperience.map(w => ({ title: w.title, company: w.company, location: w.location, startDate: w.startDate, endDate: w.endDate, current: w.current, description: w.description })),
-                  education: data.education.map(e => ({ degree: e.degree, school: e.school, location: e.location, startDate: e.startDate, endDate: e.endDate, description: e.description })),
-                  skills: data.skills.map(s => s.name),
-                  languages: data.languages.map(l => ({ language: l.name, level: l.level })),
-                  certifications: data.certificates.map(c => ({ name: c.name, issuer: c.issuer, date: c.date })),
-                }} 
-                variant="light" 
-                size="md" 
-                className="w-full"
-                showPreview={false}
-              />
             </div>
           </div>
 
