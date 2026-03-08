@@ -1,9 +1,10 @@
 /**
  * Hook for managing saved jobs
- * Persists to localStorage and provides CRUD operations
+ * Persists to Supabase database
  */
 
 import { useState, useEffect, useCallback } from 'react'
+import { savedJobsApi } from '@/services/supabaseApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
 export interface SavedJob {
@@ -14,64 +15,87 @@ export interface SavedJob {
   status: 'saved' | 'applied' | 'interview' | 'rejected' | 'offer'
 }
 
-const STORAGE_KEY = 'savedJobs'
-
 export function useSavedJobs() {
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  // Load from localStorage on mount
+  // Load from Supabase on mount
   useEffect(() => {
-    const loadSavedJobs = () => {
+    const loadSavedJobs = async () => {
       try {
-        const stored = localStorage.getItem(STORAGE_KEY)
-        if (stored) {
-          const parsed = JSON.parse(stored)
-          setSavedJobs(parsed)
-        }
-      } catch (error) {
-        console.error('Error loading saved jobs:', error)
+        const jobs = await savedJobsApi.getAll()
+        // Konvertera från Supabase-format till vårt format
+        const formatted = jobs.map((job: any) => ({
+          id: job.job_id,
+          jobData: job.job_data,
+          savedAt: job.created_at,
+          notes: job.notes,
+          status: (job.status?.toLowerCase() || 'saved') as SavedJob['status']
+        }))
+        setSavedJobs(formatted)
+        setError(null)
+      } catch (err) {
+        console.error('Error loading saved jobs:', err)
+        setError('Kunde inte ladda sparade jobb')
       }
       setIsLoaded(true)
     }
     loadSavedJobs()
   }, [])
 
-  // Save to localStorage whenever savedJobs changes
-  useEffect(() => {
-    if (isLoaded) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(savedJobs))
+  const saveJob = useCallback(async (job: PlatsbankenJob) => {
+    try {
+      // Spara till Supabase
+      await savedJobsApi.save(job.id, job)
+      
+      // Uppdatera lokalt state
+      setSavedJobs(prev => {
+        if (prev.some(saved => saved.id === job.id)) {
+          return prev
+        }
+        const newSavedJob: SavedJob = {
+          id: job.id,
+          jobData: job,
+          savedAt: new Date().toISOString(),
+          status: 'saved'
+        }
+        return [newSavedJob, ...prev]
+      })
+      return true
+    } catch (err) {
+      console.error('Error saving job:', err)
+      setError('Kunde inte spara jobb')
+      return false
     }
-  }, [savedJobs, isLoaded])
-
-  const saveJob = useCallback((job: PlatsbankenJob) => {
-    setSavedJobs(prev => {
-      // Check if already saved
-      if (prev.some(saved => saved.id === job.id)) {
-        return prev
-      }
-      
-      const newSavedJob: SavedJob = {
-        id: job.id,
-        jobData: job,
-        savedAt: new Date().toISOString(),
-        status: 'saved'
-      }
-      
-      return [newSavedJob, ...prev]
-    })
   }, [])
 
-  const removeJob = useCallback((jobId: string) => {
-    setSavedJobs(prev => prev.filter(job => job.id !== jobId))
+  const removeJob = useCallback(async (jobId: string) => {
+    try {
+      await savedJobsApi.delete(jobId)
+      setSavedJobs(prev => prev.filter(job => job.id !== jobId))
+      return true
+    } catch (err) {
+      console.error('Error removing job:', err)
+      setError('Kunde inte ta bort jobb')
+      return false
+    }
   }, [])
 
-  const updateJobStatus = useCallback((jobId: string, status: SavedJob['status']) => {
-    setSavedJobs(prev => 
-      prev.map(job => 
-        job.id === jobId ? { ...job, status } : job
+  const updateJobStatus = useCallback(async (jobId: string, status: SavedJob['status']) => {
+    try {
+      await savedJobsApi.updateStatus(jobId, status.toUpperCase())
+      setSavedJobs(prev => 
+        prev.map(job => 
+          job.id === jobId ? { ...job, status } : job
+        )
       )
-    )
+      return true
+    } catch (err) {
+      console.error('Error updating job status:', err)
+      setError('Kunde inte uppdatera status')
+      return false
+    }
   }, [])
 
   const addNotes = useCallback((jobId: string, notes: string) => {
@@ -80,6 +104,8 @@ export function useSavedJobs() {
         job.id === jobId ? { ...job, notes } : job
       )
     )
+    // Notera: Supabase API har ingen direkt metod för att uppdatera notes
+    // Detta kan läggas till senare om behov finns
   }, [])
 
   const isSaved = useCallback((jobId: string) => {
@@ -104,6 +130,7 @@ export function useSavedJobs() {
   return {
     savedJobs,
     isLoaded,
+    error,
     saveJob,
     removeJob,
     updateJobStatus,
