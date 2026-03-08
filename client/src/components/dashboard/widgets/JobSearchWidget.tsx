@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Briefcase, Bookmark, MapPin, Building2, Bell, Search } from 'lucide-react'
+import { Briefcase, Bookmark, MapPin, Building2, Bell, Search, Target } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
@@ -14,14 +14,21 @@ interface JobSearchWidgetProps {
   size?: WidgetSize
 }
 
-// SMALL - Fokus på nya matchningar
-function JobSearchWidgetSmall({ savedCount, newMatches = 0, loading, error, onRetry }: Omit<JobSearchWidgetProps, 'size' | 'recentJobs'>) {
+// Helper för att förkorta långa texter
+function truncate(text: string, maxLength: number): string {
+  if (!text || text.length <= maxLength) return text
+  return text.substring(0, maxLength - 3) + '...'
+}
+
+// SMALL - Kompakt vy med fokus på antal sparade jobb
+function JobSearchWidgetSmall({ savedCount, newMatches = 0, recentJobs = [], loading, error, onRetry }: JobSearchWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (savedCount === 0) return 'empty'
     return 'complete'
   }
 
   const status = getStatus()
+  const latestJob = recentJobs[0]
 
   return (
     <DashboardWidget
@@ -35,23 +42,28 @@ function JobSearchWidgetSmall({ savedCount, newMatches = 0, loading, error, onRe
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: newMatches > 0 ? `${newMatches} nya` : savedCount > 0 ? 'Se sparade' : 'Hitta jobb',
+        label: savedCount > 0 ? 'Se alla' : 'Hitta jobb',
       }}
     >
       <div className="flex flex-col items-center justify-center py-2 text-center">
-        {newMatches > 0 ? (
-          <>
-            <div className="flex items-center gap-2 mb-1">
-              <Bell size={20} className="text-blue-500" />
-              <span className="text-3xl font-bold text-blue-600">{newMatches}</span>
-            </div>
-            <p className="text-sm text-slate-500">nya matchningar</p>
-          </>
-        ) : (
+        {savedCount > 0 ? (
           <>
             <Bookmark size={28} className="text-blue-500 mb-2" />
             <p className="text-2xl font-bold text-slate-800">{savedCount}</p>
-            <p className="text-sm text-slate-500">sparade jobb</p>
+            <p className="text-sm text-slate-500">
+              {savedCount === 1 ? 'sparat jobb' : 'sparade jobb'}
+            </p>
+            {latestJob && (
+              <p className="text-xs text-slate-400 mt-1 truncate max-w-[140px]" title={latestJob.title}>
+                Senast: {truncate(latestJob.title, 20)}
+              </p>
+            )}
+          </>
+        ) : (
+          <>
+            <Search size={28} className="text-slate-400 mb-2" />
+            <p className="text-sm text-slate-600">Inga sparade jobb</p>
+            <p className="text-xs text-slate-400 mt-1">Klicka för att söka</p>
           </>
         )}
       </div>
@@ -59,7 +71,7 @@ function JobSearchWidgetSmall({ savedCount, newMatches = 0, loading, error, onRe
   )
 }
 
-// MEDIUM - Visa sparade jobb + matchningar
+// MEDIUM - Visa sparade jobb med detaljer
 function JobSearchWidgetMedium({ savedCount, newMatches = 0, recentJobs = [], loading, error, onRetry }: JobSearchWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (savedCount === 0) return 'empty'
@@ -80,7 +92,7 @@ function JobSearchWidgetMedium({ savedCount, newMatches = 0, recentJobs = [], lo
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: newMatches > 0 ? 'Se nya matchningar' : 'Hitta jobb',
+        label: savedCount > 0 ? 'Se alla jobb' : 'Sök jobb',
       }}
     >
       <div className="space-y-3">
@@ -112,10 +124,17 @@ function JobSearchWidgetMedium({ savedCount, newMatches = 0, recentJobs = [], lo
                   key={job.id}
                   className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg"
                 >
-                  <Building2 size={14} className="text-slate-400" />
+                  <Building2 size={14} className="text-slate-400 flex-shrink-0" />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-700 truncate">{job.title}</p>
-                    <p className="text-xs text-slate-500 truncate">{job.company}</p>
+                    <p className="text-sm font-medium text-slate-700 truncate" title={job.title}>
+                      {truncate(job.title, 30)}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate" title={job.company}>
+                      {job.company}
+                      {job.location && (
+                        <span className="text-slate-400"> • {job.location}</span>
+                      )}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -192,7 +211,10 @@ function JobSearchWidgetLarge({ savedCount, newMatches = 0, recentJobs = [], loa
         {/* Lista över sparade jobb */}
         {recentJobs.length > 0 ? (
           <div className="p-4 bg-slate-50 rounded-xl">
-            <p className="text-sm font-medium text-slate-700 mb-3">Dina sparade jobb:</p>
+            <p className="text-sm font-medium text-slate-700 mb-3">
+              Dina {savedCount} sparade jobb:
+              {savedCount > 4 && <span className="text-slate-400 font-normal"> (visar de 4 senaste)</span>}
+            </p>
             <div className="grid grid-cols-2 gap-3">
               {recentJobs.slice(0, 4).map((job) => (
                 <div 
@@ -203,8 +225,12 @@ function JobSearchWidgetLarge({ savedCount, newMatches = 0, recentJobs = [], loa
                     <Building2 size={18} className="text-blue-500" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-800 truncate">{job.title}</p>
-                    <p className="text-xs text-slate-500 truncate">{job.company}</p>
+                    <p className="text-sm font-medium text-slate-800 truncate" title={job.title}>
+                      {truncate(job.title, 35)}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate" title={job.company}>
+                      {job.company}
+                    </p>
                     {job.location && (
                       <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
                         <MapPin size={10} />

@@ -30,6 +30,7 @@ export interface DashboardWidgetData {
       id: string
       title: string
       company: string
+      location?: string
     }[]
   }
   

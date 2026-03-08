@@ -40,11 +40,16 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
   const hasCV = !!cv && (!!cv.summary || !!(cv.work_experience && cv.work_experience.length > 0))
 
   // Hämta nyligen sparade jobb (max 3)
-  const recentJobs = savedJobs.slice(0, 3).map((job: any) => ({
-    id: job.id,
-    title: job.title || 'Okänt jobb',
-    company: job.company || 'Okänt företag',
-  }))
+  // savedJobs har strukturen: { id, job_id, job_data: { headline, employer: { name } } }
+  const recentJobs = savedJobs.slice(0, 3).map((savedJob: any) => {
+    const jobData = savedJob.job_data || {}
+    return {
+      id: savedJob.job_id || savedJob.id,
+      title: jobData.headline || jobData.title || 'Okänt jobb',
+      company: jobData.employer?.name || jobData.company || 'Okänt företag',
+      location: jobData.workplace_address?.municipality || jobData.location,
+    }
+  })
 
   // Hämta nyligen skapade brev (max 3)
   const recentLetters = coverLetters.slice(0, 3).map((letter: any) => ({
