@@ -103,6 +103,7 @@ export function MobileSimplified({
   }
 
   const handleLoadJobAndClose = (job: PlatsbankenJob) => {
+    console.log('[MobileSimplified] Loading job:', job.headline, 'description length:', job.description?.text?.length || 0)
     onLoadJob(job)
     setShowSavedJobs(false)
     setStep('details')
@@ -309,9 +310,25 @@ export function MobileSimplified({
 
         {step === 'details' && (
           <div className="space-y-5">
+            {/* Vald jobbinfo */}
+            {(company || jobTitle) && (
+              <div className="p-3 bg-teal-50 rounded-lg border border-teal-100">
+                <p className="text-xs text-teal-600 font-medium uppercase">Valt jobb:</p>
+                <p className="font-medium text-slate-800">{jobTitle}</p>
+                {company && <p className="text-sm text-slate-600">{company}</p>}
+              </div>
+            )}
+            
             {/* Job Ad */}
             <div className="space-y-2">
-              <label className="text-sm font-medium text-slate-700">Jobbannons</label>
+              <label className="text-sm font-medium text-slate-700 flex items-center justify-between">
+                <span>Jobbannons</span>
+                {jobAd.length > 0 && (
+                  <span className="text-xs text-emerald-600 font-normal">
+                    ✓ {jobAd.length} tecken
+                  </span>
+                )}
+              </label>
               <textarea
                 value={jobAd}
                 onChange={(e) => onJobAdChange(e.target.value)}
