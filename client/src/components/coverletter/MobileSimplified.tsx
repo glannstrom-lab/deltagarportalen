@@ -103,7 +103,6 @@ export function MobileSimplified({
   }
 
   const handleLoadJobAndClose = (job: PlatsbankenJob) => {
-    console.log('[MobileSimplified] Loading job:', job.headline, 'description length:', job.description?.text?.length || 0)
     onLoadJob(job)
     setShowSavedJobs(false)
     setStep('details')
