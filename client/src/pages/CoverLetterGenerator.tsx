@@ -252,12 +252,12 @@ export default function CoverLetterGenerator() {
       setSavedLetters(letters.map((l: any) => ({
         id: l.id,
         title: l.title,
-        jobbAnnons: l.jobAd,
+        jobbAnnons: l.job_ad || '',
         brev: l.content,
-        createdAt: l.createdAt,
-        updatedAt: l.updatedAt,
+        createdAt: l.created_at,
+        updatedAt: l.updated_at,
         company: l.company,
-        jobTitle: l.jobTitle
+        jobTitle: l.job_title
       })))
     } catch (e) {
       console.error('Kunde inte ladda sparade brev:', e)
@@ -518,10 +518,11 @@ export default function CoverLetterGenerator() {
     try {
       await coverLetterApi.create({
         title,
-        jobAd: jobbAnnons,
+        job_ad: jobbAnnons,
         content: generatedBrev,
         company: company || undefined,
-        jobTitle: jobTitle || undefined
+        job_title: jobTitle || undefined,
+        ai_generated: true
       })
       
       await loadSavedLetters()
