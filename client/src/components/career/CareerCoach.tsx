@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign, Loader2 } from 'lucide-react';
+import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign, Loader2, Save, History, Trash2, Star } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
 import { searchJobs } from '@/services/arbetsformedlingenApi';
+import { careerPathApi, type SavedCareerPath } from '@/services/careerApi';
+import { useToast } from '@/hooks/useToast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
 interface CareerStep {
@@ -37,10 +39,89 @@ export default function CareerCoach() {
   const [targetOccupation, setTargetOccupation] = useState<AutocompleteOption | null>(null);
   const [currentExperience, setCurrentExperience] = useState('3');
   const [careerPath, setCareerPath] = useState<CareerPath | null>(null);
+  const [savedPaths, setSavedPaths] = useState<SavedCareerPath[]>([]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
+  const { showToast } = useToast();
 
   const fetchOccupations = async (query: string) => {
     return taxonomyApi.autocompleteOccupations(query);
+  };
+
+  // Load saved career paths on mount
+  useEffect(() => {
+    loadSavedPaths();
+  }, []);
+
+  const loadSavedPaths = async () => {
+    try {
+      const paths = await careerPathApi.getAll();
+      setSavedPaths(paths);
+    } catch (error) {
+      console.error('Failed to load saved paths:', error);
+    }
+  };
+
+  const saveCareerPath = async () => {
+    if (!careerPath) return;
+    
+    setSaving(true);
+    try {
+      await careerPathApi.save({
+        current_occupation: careerPath.current.occupation,
+        target_occupation: careerPath.target.occupation,
+        experience_years: parseInt(currentExperience),
+        current_salary: careerPath.current.salary,
+        target_salary: careerPath.target.salary,
+        salary_increase: careerPath.salaryIncrease,
+        timeline_months: parseInt(careerPath.timeline.split('-')[0]) * 12,
+        demand_level: careerPath.target.demand,
+        job_count: careerPath.target.jobCount,
+        steps: careerPath.steps
+      });
+      showToast('Karriärvägen sparad!', 'success');
+      await loadSavedPaths();
+    } catch (error) {
+      showToast('Kunde inte spara karriärvägen', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteSavedPath = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await careerPathApi.delete(id);
+      showToast('Karriärvägen borttagen', 'success');
+      await loadSavedPaths();
+    } catch (error) {
+      showToast('Kunde inte ta bort karriärvägen', 'error');
+    }
+  };
+
+  const loadSavedPath = (path: SavedCareerPath) => {
+    setCurrentOccupation({ id: path.current_occupation, label: path.current_occupation });
+    setTargetOccupation({ id: path.target_occupation, label: path.target_occupation });
+    setCurrentExperience(path.experience_years.toString());
+    setCareerPath({
+      current: {
+        occupation: path.current_occupation,
+        experience: `${path.experience_years} år`,
+        salary: path.current_salary
+      },
+      target: {
+        occupation: path.target_occupation,
+        salary: path.target_salary,
+        demand: path.demand_level,
+        jobCount: path.job_count
+      },
+      salaryIncrease: path.salary_increase,
+      timeline: `${Math.ceil(path.timeline_months / 12)}-${Math.ceil(path.timeline_months / 12) + 1} år`,
+      steps: path.steps as CareerStep[]
+    });
+    setShowHistory(false);
+    showToast('Karriärvägen laddad', 'success');
   };
 
   const generateCareerPath = async () => {
@@ -191,6 +272,65 @@ export default function CareerCoach() {
           efterfrågan och ger dig en konkret handlingsplan baserat på riktiga data.
         </p>
       </div>
+
+      {/* Historik-knapp */}
+      {savedPaths.length > 0 && (
+        <div className="flex justify-end">
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className="flex items-center gap-2 px-4 py-2 text-sm text-slate-600 hover:text-[#4f46e5] hover:bg-white rounded-xl transition-colors"
+          >
+            <History size={18} />
+            {showHistory ? 'Dölj historik' : `Visa sparade vägar (${savedPaths.length})`}
+          </button>
+        </div>
+      )}
+
+      {/* Sparade vägar */}
+      {showHistory && savedPaths.length > 0 && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+            <Star className="text-amber-500" size={20} />
+            Dina sparade karriärvägar
+          </h3>
+          <div className="space-y-3">
+            {savedPaths.map((path) => (
+              <div
+                key={path.id}
+                onClick={() => loadSavedPath(path)}
+                className="flex items-center justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 cursor-pointer transition-colors group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="text-sm">
+                    <span className="font-medium text-slate-800">{path.current_occupation}</span>
+                    <ArrowRight className="inline mx-2 text-slate-400" size={16} />
+                    <span className="font-medium text-[#4f46e5]">{path.target_occupation}</span>
+                  </div>
+                  <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full">
+                      +{(path.salary_increase / 1000).toFixed(0)}k kr
+                    </span>
+                    <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-full">
+                      {Math.ceil(path.timeline_months / 12)} år
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-slate-400">
+                    {new Date(path.created_at).toLocaleDateString('sv-SE')}
+                  </span>
+                  <button
+                    onClick={(e) => deleteSavedPath(path.id, e)}
+                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Input-formulär */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
@@ -370,18 +510,35 @@ export default function CareerCoach() {
           </div>
 
           {/* CTA */}
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <button 
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="flex-1 py-3 bg-[#4f46e5] text-white rounded-xl font-medium hover:bg-[#4338ca] transition-colors"
             >
               Justera min plan
             </button>
+            <button
+              onClick={saveCareerPath}
+              disabled={saving}
+              className="flex-1 py-3 bg-white border-2 border-[#4f46e5] text-[#4f46e5] rounded-xl font-medium hover:bg-[#4f46e5]/5 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+            >
+              {saving ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Sparar...
+                </>
+              ) : (
+                <>
+                  <Save size={18} />
+                  Spara karriärväg
+                </>
+              )}
+            </button>
             <a
               href="/job-search"
-              className="flex-1 py-3 bg-white border-2 border-[#4f46e5] text-[#4f46e5] rounded-xl font-medium hover:bg-[#4f46e5]/5 transition-colors text-center"
+              className="flex-1 py-3 bg-white border-2 border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors text-center"
             >
-              Sök jobb inom {careerPath.target.occupation}
+              Sök jobb
             </a>
           </div>
         </>

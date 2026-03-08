@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Users, 
   MessageCircle, 
@@ -11,9 +11,20 @@ import {
   CheckCircle2,
   Lightbulb,
   Target,
-  Sparkles
+  Sparkles,
+  Plus,
+  Trash2,
+  Calendar,
+  Building2,
+  Tag,
+  Search,
+  Filter,
+  Check,
+  X
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { networkApi, type NetworkContact } from '@/services/careerApi'
+import { useToast } from '@/hooks/useToast'
 
 interface NetworkTemplate {
   id: string
@@ -131,9 +142,140 @@ const networkingTips = [
   }
 ]
 
-export function NetworkingGuide() {
+export default function NetworkingGuide() {
   const [expandedTemplate, setExpandedTemplate] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
+  const [contacts, setContacts] = useState<NetworkContact[]>([])
+  const [loading, setLoading] = useState(false)
+  const [showAddForm, setShowAddForm] = useState(false)
+  const [filterStatus, setFilterStatus] = useState<NetworkContact['status'] | 'all'>('all')
+  const { showToast } = useToast()
+  
+  // Form state
+  const [newContact, setNewContact] = useState<Partial<NetworkContact>>({
+    name: '',
+    company: '',
+    role: '',
+    email: '',
+    linkedin_url: '',
+    relationship: 'colleague',
+    notes: '',
+    status: 'active',
+    tags: []
+  })
+  const [tagInput, setTagInput] = useState('')
+
+  useEffect(() => {
+    loadContacts()
+  }, [])
+
+  const loadContacts = async () => {
+    try {
+      setLoading(true)
+      const data = await networkApi.getAll()
+      setContacts(data)
+    } catch (error) {
+      console.error('Failed to load contacts:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const addContact = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!newContact.name) return
+
+    try {
+      await networkApi.save({
+        name: newContact.name,
+        company: newContact.company || '',
+        role: newContact.role || '',
+        email: newContact.email || '',
+        linkedin_url: newContact.linkedin_url || '',
+        relationship: newContact.relationship || 'other',
+        notes: newContact.notes || '',
+        status: newContact.status || 'active',
+        tags: newContact.tags || []
+      })
+      showToast('Kontakten tillagd!', 'success')
+      setNewContact({
+        name: '',
+        company: '',
+        role: '',
+        email: '',
+        linkedin_url: '',
+        relationship: 'colleague',
+        notes: '',
+        status: 'active',
+        tags: []
+      })
+      setShowAddForm(false)
+      await loadContacts()
+    } catch (error) {
+      showToast('Kunde inte lägga till kontakten', 'error')
+    }
+  }
+
+  const deleteContact = async (id: string) => {
+    try {
+      await networkApi.delete(id)
+      showToast('Kontakten borttagen', 'success')
+      await loadContacts()
+    } catch (error) {
+      showToast('Kunde inte ta bort kontakten', 'error')
+    }
+  }
+
+  const markAsContacted = async (id: string) => {
+    try {
+      await networkApi.markContacted(id)
+      showToast('Kontakten markerad som kontaktad', 'success')
+      await loadContacts()
+    } catch (error) {
+      showToast('Kunde inte uppdatera kontakten', 'error')
+    }
+  }
+
+  const addTag = () => {
+    if (tagInput.trim() && !newContact.tags?.includes(tagInput.trim())) {
+      setNewContact({
+        ...newContact,
+        tags: [...(newContact.tags || []), tagInput.trim()]
+      })
+      setTagInput('')
+    }
+  }
+
+  const removeTag = (tagToRemove: string) => {
+    setNewContact({
+      ...newContact,
+      tags: newContact.tags?.filter(tag => tag !== tagToRemove) || []
+    })
+  }
+
+  const filteredContacts = filterStatus === 'all' 
+    ? contacts 
+    : contacts.filter(c => c.status === filterStatus)
+
+  const getRelationshipLabel = (rel: string) => {
+    const labels: Record<string, string> = {
+      colleague: 'Kollega',
+      friend: 'Vän',
+      mentor: 'Mentor',
+      recruiter: 'Rekryterare',
+      other: 'Annat'
+    }
+    return labels[rel] || rel
+  }
+
+  const getStatusColor = (status: string) => {
+    const colors: Record<string, string> = {
+      active: 'bg-green-100 text-green-700',
+      dormant: 'bg-slate-100 text-slate-600',
+      reconnect: 'bg-amber-100 text-amber-700'
+    }
+    return colors[status] || 'bg-slate-100 text-slate-600'
+  }
 
   const handleCopy = (template: NetworkTemplate) => {
     navigator.clipboard.writeText(template.template)
@@ -200,6 +342,283 @@ export function NetworkingGuide() {
             Mallar nedan
           </span>
         </div>
+      </div>
+
+      {/* Kontakter */}
+      <div className="bg-white rounded-2xl p-6 border border-slate-200">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+            <Users size={20} className="text-teal-500" />
+            Dina kontakter ({contacts.length})
+          </h3>
+          <button
+            onClick={() => setShowAddForm(!showAddForm)}
+            className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
+          >
+            <Plus size={18} />
+            Lägg till kontakt
+          </button>
+        </div>
+
+        {/* Filter */}
+        {contacts.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button
+              onClick={() => setFilterStatus('all')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                filterStatus === 'all'
+                  ? 'bg-teal-500 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Alla
+            </button>
+            <button
+              onClick={() => setFilterStatus('active')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                filterStatus === 'active'
+                  ? 'bg-green-500 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Aktiva
+            </button>
+            <button
+              onClick={() => setFilterStatus('reconnect')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                filterStatus === 'reconnect'
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Återkontakt
+            </button>
+            <button
+              onClick={() => setFilterStatus('dormant')}
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                filterStatus === 'dormant'
+                  ? 'bg-slate-500 text-white'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              }`}
+            >
+              Vilande
+            </button>
+          </div>
+        )}
+
+        {/* Lägg till formulär */}
+        {showAddForm && (
+          <form onSubmit={addContact} className="mb-6 p-4 bg-slate-50 rounded-xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Namn *</label>
+                <input
+                  type="text"
+                  value={newContact.name}
+                  onChange={(e) => setNewContact({...newContact, name: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  placeholder="T.ex. Anna Andersson"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Företag</label>
+                <input
+                  type="text"
+                  value={newContact.company}
+                  onChange={(e) => setNewContact({...newContact, company: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  placeholder="T.ex. Spotify"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Roll</label>
+                <input
+                  type="text"
+                  value={newContact.role}
+                  onChange={(e) => setNewContact({...newContact, role: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  placeholder="T.ex. HR-chef"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Relation</label>
+                <select
+                  value={newContact.relationship}
+                  onChange={(e) => setNewContact({...newContact, relationship: e.target.value as any})}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                >
+                  <option value="colleague">Kollega</option>
+                  <option value="friend">Vän</option>
+                  <option value="mentor">Mentor</option>
+                  <option value="recruiter">Rekryterare</option>
+                  <option value="other">Annat</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
+                <input
+                  type="email"
+                  value={newContact.email}
+                  onChange={(e) => setNewContact({...newContact, email: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  placeholder="anna@exempel.se"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">LinkedIn</label>
+                <input
+                  type="url"
+                  value={newContact.linkedin_url}
+                  onChange={(e) => setNewContact({...newContact, linkedin_url: e.target.value})}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  placeholder="https://linkedin.com/in/..."
+                />
+              </div>
+            </div>
+            
+            {/* Tags */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-700 mb-1">Taggar</label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {newContact.tags?.map(tag => (
+                  <span key={tag} className="inline-flex items-center gap-1 px-2 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">
+                    {tag}
+                    <button type="button" onClick={() => removeTag(tag)} className="hover:text-teal-900">
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  placeholder="Lägg till tagg (t.ex. 'IT', 'Rekrytering')"
+                />
+                <button
+                  type="button"
+                  onClick={addTag}
+                  className="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300 transition-colors"
+                >
+                  Lägg till
+                </button>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-700 mb-1">Anteckningar</label>
+              <textarea
+                value={newContact.notes}
+                onChange={(e) => setNewContact({...newContact, notes: e.target.value})}
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                rows={3}
+                placeholder="T.ex. 'Träffades på konferens i maj, skickade CV'"
+              />
+            </div>
+
+            <div className="flex gap-3">
+              <button
+                type="submit"
+                className="flex-1 py-2.5 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
+              >
+                Spara kontakt
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowAddForm(false)}
+                className="px-6 py-2.5 bg-slate-200 text-slate-700 rounded-xl font-medium hover:bg-slate-300 transition-colors"
+              >
+                Avbryt
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* Kontaktlista */}
+        {loading ? (
+          <div className="text-center py-8 text-slate-500">Laddar kontakter...</div>
+        ) : filteredContacts.length === 0 ? (
+          <div className="text-center py-8 text-slate-500">
+            <Users size={48} className="mx-auto mb-4 text-slate-300" />
+            <p>Inga kontakter ännu.</p>
+            <p className="text-sm">Lägg till dina första nätverkskontakter ovan!</p>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            {filteredContacts.map((contact) => (
+              <div
+                key={contact.id}
+                className="flex items-start justify-between p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="font-medium text-slate-800">{contact.name}</span>
+                    <span className={`text-xs px-2 py-0.5 rounded-full ${getStatusColor(contact.status)}`}>
+                      {contact.status === 'active' ? 'Aktiv' : 
+                       contact.status === 'reconnect' ? 'Återkontakt' : 'Vilande'}
+                    </span>
+                  </div>
+                  {(contact.company || contact.role) && (
+                    <p className="text-sm text-slate-600 mb-1">
+                      {contact.role} {contact.company && `på ${contact.company}`}
+                    </p>
+                  )}
+                  {contact.tags && contact.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-2">
+                      {contact.tags.map(tag => (
+                        <span key={tag} className="text-xs px-2 py-0.5 bg-white text-slate-600 rounded-full">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {contact.last_contact_date && (
+                    <p className="text-xs text-slate-500">
+                      Senast kontakt: {new Date(contact.last_contact_date).toLocaleDateString('sv-SE')}
+                    </p>
+                  )}
+                </div>
+                <div className="flex items-center gap-2">
+                  {contact.linkedin_url && (
+                    <a
+                      href={contact.linkedin_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                    >
+                      <Linkedin size={18} />
+                    </a>
+                  )}
+                  {contact.email && (
+                    <a
+                      href={`mailto:${contact.email}`}
+                      className="p-2 text-slate-600 hover:bg-slate-200 rounded-lg"
+                    >
+                      <Mail size={18} />
+                    </a>
+                  )}
+                  <button
+                    onClick={() => markAsContacted(contact.id)}
+                    className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+                    title="Markera som kontaktad idag"
+                  >
+                    <Check size={18} />
+                  </button>
+                  <button
+                    onClick={() => deleteContact(contact.id)}
+                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Tips Section */}

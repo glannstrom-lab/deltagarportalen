@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { 
   GraduationCap, ExternalLink, Search, Loader2, BookOpen, 
   Clock, Award, Filter, ChevronDown, X, SlidersHorizontal,
-  MapPin, Building2
+  MapPin, Building2, Heart, CheckCircle, Bookmark
 } from 'lucide-react';
+import { useToast } from '@/hooks/useToast';
+import { educationApi, type SavedEducation } from '@/services/careerApi';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { afDirectApi } from '@/services/afDirectApi';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
@@ -41,6 +43,60 @@ export default function EducationOverview() {
   });
   const [filteredCourses, setFilteredCourses] = useState<EducationInfo[]>([]);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [savedEducations, setSavedEducations] = useState<SavedEducation[]>([]);
+  const { showToast } = useToast();
+
+  // Load saved educations on mount
+  useEffect(() => {
+    loadSavedEducations();
+  }, []);
+
+  const loadSavedEducations = async () => {
+    try {
+      const educations = await educationApi.getAll();
+      setSavedEducations(educations);
+    } catch (error) {
+      console.error('Failed to load saved educations:', error);
+    }
+  };
+
+  const isEducationSaved = (code: string) => {
+    return savedEducations.some(e => e.education_code === code);
+  };
+
+  const saveEducation = async (course: EducationInfo) => {
+    if (!occupation) return;
+    
+    try {
+      await educationApi.save({
+        education_code: course.code || course.title,
+        title: course.title,
+        type: course.type || 'Övrig',
+        description: course.description,
+        duration_months: course.duration_months,
+        location: course.location,
+        url: course.url,
+        provider: course.provider,
+        target_occupation: occupation.label,
+        status: 'interested',
+        notes: ''
+      });
+      showToast('Utbildningen sparad!', 'success');
+      await loadSavedEducations();
+    } catch (error) {
+      showToast('Kunde inte spara utbildningen', 'error');
+    }
+  };
+
+  const updateEducationStatus = async (id: string, status: SavedEducation['status']) => {
+    try {
+      await educationApi.update(id, { status });
+      showToast('Status uppdaterad!', 'success');
+      await loadSavedEducations();
+    } catch (error) {
+      showToast('Kunde inte uppdatera status', 'error');
+    }
+  };
 
   const searchEducation = async () => {
     if (!occupation) return;
@@ -219,6 +275,43 @@ export default function EducationOverview() {
           Komvux och andra utbildningsanordnare.
         </p>
       </div>
+
+      {/* Sparade utbildningar */}
+      {savedEducations.length > 0 && (
+        <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200">
+          <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <Bookmark className="text-blue-500" size={16} />
+            Dina sparade utbildningar ({savedEducations.length})
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {savedEducations.map((edu) => (
+              <div
+                key={edu.id}
+                className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg"
+              >
+                <a
+                  href={edu.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-blue-700 hover:text-blue-800 font-medium truncate max-w-[200px]"
+                >
+                  {edu.title}
+                </a>
+                <span className={`text-xs px-2 py-0.5 rounded-full ${
+                  edu.status === 'interested' ? 'bg-slate-200 text-slate-600' :
+                  edu.status === 'applied' ? 'bg-yellow-100 text-yellow-700' :
+                  edu.status === 'enrolled' ? 'bg-green-100 text-green-700' :
+                  'bg-blue-100 text-blue-700'
+                }`}>
+                  {edu.status === 'interested' ? 'Intresserad' :
+                   edu.status === 'applied' ? 'Ansökt' :
+                   edu.status === 'enrolled' ? 'Antagen' : 'Avslutad'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Sök och filter */}
       <div className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200 space-y-4">
@@ -413,11 +506,25 @@ export default function EducationOverview() {
                       </a>
                     )}
                     <button
-                      onClick={() => {/* TODO: Spara intresse */}}
-                      className="flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors min-h-[44px]"
+                      onClick={() => saveEducation(course)}
+                      disabled={isEducationSaved(course.code || course.title)}
+                      className={`flex-1 lg:flex-none flex items-center justify-center gap-1.5 px-4 py-2.5 sm:py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] ${
+                        isEducationSaved(course.code || course.title)
+                          ? 'bg-green-50 text-green-600 border border-green-200 cursor-default'
+                          : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                      }`}
                     >
-                      <Award size={14} />
-                      Spara
+                      {isEducationSaved(course.code || course.title) ? (
+                        <>
+                          <CheckCircle size={14} />
+                          Sparad
+                        </>
+                      ) : (
+                        <>
+                          <Heart size={14} />
+                          Spara
+                        </>
+                      )}
                     </button>
                   </div>
                 </div>

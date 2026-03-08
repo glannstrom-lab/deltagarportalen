@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2 } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
+import { skillsApi, type UserSkill } from '@/services/careerApi';
+import { useToast } from '@/hooks/useToast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import type { CompetencyStat } from '@/services/afDirectApi';
 
@@ -11,6 +13,55 @@ export default function SkillsDevelopment() {
   const [loading, setLoading] = useState(false);
   const [skills, setSkills] = useState<CompetencyStat[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [savedSkills, setSavedSkills] = useState<UserSkill[]>([]);
+  const { showToast } = useToast();
+
+  // Load saved skills on mount
+  useEffect(() => {
+    loadSavedSkills();
+  }, []);
+
+  const loadSavedSkills = async () => {
+    try {
+      const skills = await skillsApi.getAll();
+      setSavedSkills(skills);
+    } catch (error) {
+      console.error('Failed to load saved skills:', error);
+    }
+  };
+
+  const saveSkill = async (skill: CompetencyStat, occupationName: string) => {
+    try {
+      await skillsApi.save({
+        skill_name: skill.name,
+        category: skill.category as UserSkill['category'],
+        frequency: skill.frequency,
+        target_occupation: occupationName,
+        status: 'interested',
+        priority: 0
+      });
+      showToast('Kompetensen sparad!', 'success');
+      await loadSavedSkills();
+    } catch (error) {
+      showToast('Kunde inte spara kompetensen', 'error');
+    }
+  };
+
+  const deleteSavedSkill = async (id: string) => {
+    try {
+      await skillsApi.delete(id);
+      showToast('Kompetensen borttagen', 'success');
+      await loadSavedSkills();
+    } catch (error) {
+      showToast('Kunde inte ta bort kompetensen', 'error');
+    }
+  };
+
+  const isSkillSaved = (skillName: string, occupationName: string) => {
+    return savedSkills.find(s => 
+      s.skill_name === skillName && s.target_occupation === occupationName
+    );
+  };
 
   const fetchOccupations = async (query: string) => {
     return taxonomyApi.autocompleteOccupations(query);
@@ -123,6 +174,33 @@ export default function SkillsDevelopment() {
         </div>
       </div>
 
+      {/* Sparade kompetenser */}
+      {savedSkills.length > 0 && (
+        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+          <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <Bookmark className="text-emerald-500" size={16} />
+            Dina sparade kompetenser ({savedSkills.length})
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {savedSkills.map((skill) => (
+              <div
+                key={skill.id}
+                className="flex items-center gap-2 px-3 py-2 bg-emerald-50 rounded-lg group"
+              >
+                <span className="text-sm text-emerald-700 font-medium">{skill.skill_name}</span>
+                <span className="text-xs text-emerald-500">({skill.target_occupation})</span>
+                <button
+                  onClick={() => deleteSavedSkill(skill.id)}
+                  className="text-emerald-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Resultat */}
       {!loading && skills.length > 0 && (
         <div className="space-y-6">
@@ -158,16 +236,38 @@ export default function SkillsDevelopment() {
 
           {/* Skills grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredSkills.map((skill) => (
+            {filteredSkills.map((skill) => {
+              const savedSkill = occupation ? isSkillSaved(skill.name, occupation.label) : null;
+              return (
               <div
                 key={skill.name}
                 className="bg-white rounded-xl p-5 shadow-sm border border-slate-200 hover:border-emerald-300 transition-colors"
               >
                 <div className="flex items-start justify-between mb-3">
                   <h4 className="font-semibold text-slate-800">{skill.name}</h4>
-                  <span className={`text-xs px-2 py-1 rounded-full ${getDemandColor(skill.category)}`}>
-                    {getCategoryLabel(skill.category)}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span className={`text-xs px-2 py-1 rounded-full ${getDemandColor(skill.category)}`}>
+                      {getCategoryLabel(skill.category)}
+                    </span>
+                    {savedSkill ? (
+                      <button
+                        onClick={() => deleteSavedSkill(savedSkill.id)}
+                        className="p-1 text-green-600 hover:text-red-500 transition-colors"
+                        title="Ta bort från sparade"
+                      >
+                        <CheckCircle size={18} />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => occupation && saveSkill(skill, occupation.label)}
+                        disabled={!occupation}
+                        className="p-1 text-slate-400 hover:text-emerald-500 transition-colors"
+                        title="Spara kompetens"
+                      >
+                        <Heart size={18} />
+                      </button>
+                    )}
+                  </div>
                 </div>
                 
                 <div className="mb-3">
@@ -190,7 +290,7 @@ export default function SkillsDevelopment() {
                   </div>
                 )}
               </div>
-            ))}
+            )})}
           </div>
         </div>
       )}

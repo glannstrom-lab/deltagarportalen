@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info } from 'lucide-react';
+import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info, Save, Star, Trash2, Loader2 } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
+import { salaryApi, type SavedSalarySearch } from '@/services/careerApi';
+import { useToast } from '@/hooks/useToast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
 interface SalaryData {
@@ -44,7 +46,57 @@ const SWEDISH_REGIONS = [
 export default function SalaryInsights() {
   const [selectedOccupation, setSelectedOccupation] = useState<AutocompleteOption | null>(null);
   const [salaryData, setSalaryData] = useState<SalaryData | null>(null);
+  const [savedSearches, setSavedSearches] = useState<SavedSalarySearch[]>([]);
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const { showToast } = useToast();
+
+  // Load saved searches on mount
+  useEffect(() => {
+    loadSavedSearches();
+  }, []);
+
+  const loadSavedSearches = async () => {
+    try {
+      const searches = await salaryApi.getAll();
+      setSavedSearches(searches);
+    } catch (error) {
+      console.error('Failed to load saved searches:', error);
+    }
+  };
+
+  const saveSalarySearch = async () => {
+    if (!salaryData || !selectedOccupation) return;
+    
+    setSaving(true);
+    try {
+      await salaryApi.save({
+        occupation: selectedOccupation.label,
+        median_salary: salaryData.median,
+        percentile_25: salaryData.percentile25,
+        percentile_75: salaryData.percentile75,
+        region_data: salaryData.byRegion,
+        experience_data: salaryData.byExperience,
+        trends: salaryData.trends
+      });
+      showToast('Lönejämförelsen sparad!', 'success');
+      await loadSavedSearches();
+    } catch (error) {
+      showToast('Kunde inte spara lönejämförelsen', 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const deleteSavedSearch = async (id: string) => {
+    try {
+      await salaryApi.delete(id);
+      showToast('Sparad lönejämförelse borttagen', 'success');
+      await loadSavedSearches();
+    } catch (error) {
+      showToast('Kunde inte ta bort lönejämförelsen', 'error');
+    }
+  };
 
   const fetchOccupations = async (query: string) => {
     return taxonomyApi.autocompleteOccupations(query);
@@ -102,6 +154,37 @@ export default function SalaryInsights() {
 
   return (
     <div className="space-y-6">
+      {/* Sparade sökningar */}
+      {savedSearches.length > 0 && (
+        <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200">
+          <h3 className="text-sm font-medium text-slate-700 mb-3 flex items-center gap-2">
+            <Star className="text-amber-500" size={16} />
+            Dina sparade lönejämförelser
+          </h3>
+          <div className="flex flex-wrap gap-2">
+            {savedSearches.map((search) => (
+              <div
+                key={search.id}
+                className="flex items-center gap-2 px-3 py-2 bg-green-50 rounded-lg group"
+              >
+                <button
+                  onClick={() => handleSelectOccupation({ id: search.occupation, label: search.occupation })}
+                  className="text-sm text-green-700 hover:text-green-800 font-medium"
+                >
+                  {search.occupation}
+                </button>
+                <button
+                  onClick={() => deleteSavedSearch(search.id)}
+                  className="text-green-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
         <div className="flex items-center gap-3 mb-4">
@@ -312,6 +395,27 @@ export default function SalaryInsights() {
                 </div>
               ))}
             </div>
+          </div>
+
+          {/* Spara-knapp */}
+          <div className="flex justify-center">
+            <button
+              onClick={saveSalarySearch}
+              disabled={saving}
+              className="flex items-center gap-2 px-6 py-3 bg-green-500 text-white rounded-xl font-medium hover:bg-green-600 disabled:bg-slate-300 disabled:cursor-not-allowed transition-colors"
+            >
+              {saving ? (
+                <>
+                  <Loader2 size={18} className="animate-spin" />
+                  Sparar...
+                </>
+              ) : (
+                <>
+                  <Save size={18} />
+                  Spara lönejämförelse
+                </>
+              )}
+            </button>
           </div>
 
           {/* Tips för löneökning */}
