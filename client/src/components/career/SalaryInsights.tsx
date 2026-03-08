@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
 import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info, Save, Star, Trash2, Loader2 } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
 import { salaryApi, type SavedSalarySearch } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
+import { COMMON_OCCUPATIONS } from './occupations';
 
 interface SalaryData {
   occupation: string;
@@ -97,8 +97,14 @@ export default function SalaryInsights() {
     }
   };
 
-  const fetchOccupations = async (query: string) => {
-    return taxonomyApi.autocompleteOccupations(query);
+  const fetchOccupations = async (query: string): Promise<AutocompleteOption[]> => {
+    if (!query || query.length < 2) return [];
+    
+    const filtered = COMMON_OCCUPATIONS.filter(o => 
+      o.label.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    return filtered.slice(0, 10);
   };
 
   const loadSalaryData = async (occupation: AutocompleteOption) => {

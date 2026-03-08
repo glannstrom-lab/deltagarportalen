@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2 } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
 import { skillsApi, type UserSkill } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import type { CompetencyStat } from '@/services/afDirectApi';
+import { COMMON_OCCUPATIONS } from './occupations';
 
 export default function SkillsDevelopment() {
   const [occupation, setOccupation] = useState<AutocompleteOption | null>(null);
@@ -62,8 +62,14 @@ export default function SkillsDevelopment() {
     );
   };
 
-  const fetchOccupations = async (query: string) => {
-    return taxonomyApi.autocompleteOccupations(query);
+  const fetchOccupations = async (query: string): Promise<AutocompleteOption[]> => {
+    if (!query || query.length < 2) return [];
+    
+    const filtered = COMMON_OCCUPATIONS.filter(o => 
+      o.label.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    return filtered.slice(0, 10);
   };
 
   const analyzeSkills = async () => {

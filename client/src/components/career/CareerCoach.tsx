@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign, Loader2, Save, History, Trash2, Star } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
 import { searchJobs } from '@/services/arbetsformedlingenApi';
 import { careerPathApi, type SavedCareerPath } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
+import { COMMON_OCCUPATIONS } from './occupations';
 
 // AI API call
 async function generateCareerPlanWithAI(data: {
@@ -18,7 +18,7 @@ async function generateCareerPlanWithAI(data: {
   demand: 'high' | 'medium' | 'low';
   jobCount: number;
 }) {
-  const response = await fetch('/api/ai/karriarplan', {
+  const response = await fetch('/api/ai/career', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -28,6 +28,8 @@ async function generateCareerPlanWithAI(data: {
   });
   
   if (!response.ok) {
+    const errorText = await response.text();
+    console.error('AI API error:', response.status, errorText);
     throw new Error('Kunde inte generera karriärplan');
   }
   
@@ -70,8 +72,15 @@ export default function CareerCoach() {
   const [saving, setSaving] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
 
-  const fetchOccupations = async (query: string) => {
-    return taxonomyApi.autocompleteOccupations(query);
+  const fetchOccupations = async (query: string): Promise<AutocompleteOption[]> => {
+    if (!query || query.length < 2) return [];
+    
+    // Filter local occupations list
+    const filtered = COMMON_OCCUPATIONS.filter(o => 
+      o.label.toLowerCase().includes(query.toLowerCase())
+    );
+    
+    return filtered.slice(0, 10);
   };
 
   // Load saved career paths on mount

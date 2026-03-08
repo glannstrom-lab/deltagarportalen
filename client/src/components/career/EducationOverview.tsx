@@ -11,6 +11,7 @@ import { afDirectApi } from '@/services/afDirectApi';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import type { EducationInfo } from '@/services/afDirectApi';
 import { cn } from '@/lib/utils';
+import { COMMON_OCCUPATIONS } from './occupations';
 
 interface EducationFilter {
   type: 'all' | 'yrkeshogskola' | 'universitet' | 'komvux' | 'folkhogskola' | 'arbetsmarknadsutbildning';
@@ -326,8 +327,11 @@ export default function EducationOverview() {
               onChange={() => {}}
               onSelect={setOccupation}
               fetchSuggestions={async (q) => {
-                const res = await fetch(`/api/taxonomy/autocomplete?q=${encodeURIComponent(q)}`);
-                return res.ok ? res.json() : [];
+                if (!q || q.length < 2) return [];
+                const filtered = COMMON_OCCUPATIONS.filter(o => 
+                  o.label.toLowerCase().includes(q.toLowerCase())
+                );
+                return filtered.slice(0, 10);
               }}
               showCategories={false}
             />
