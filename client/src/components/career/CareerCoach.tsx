@@ -5,7 +5,7 @@ import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
 import { searchJobs } from '@/services/arbetsformedlingenApi';
 import { careerPathApi, type SavedCareerPath } from '@/services/careerApi';
-import { useToast } from '@/hooks/useToast';
+import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
 interface CareerStep {
@@ -43,7 +43,6 @@ export default function CareerCoach() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
-  const { showToast } = useToast();
 
   const fetchOccupations = async (query: string) => {
     return taxonomyApi.autocompleteOccupations(query);
@@ -80,10 +79,10 @@ export default function CareerCoach() {
         job_count: careerPath.target.jobCount,
         steps: careerPath.steps
       });
-      showToast('Karriärvägen sparad!', 'success');
+      showToast.success('Karriärvägen sparad!');
       await loadSavedPaths();
     } catch (error) {
-      showToast('Kunde inte spara karriärvägen', 'error');
+      showToast.error('Kunde inte spara karriärvägen');
     } finally {
       setSaving(false);
     }
@@ -93,10 +92,10 @@ export default function CareerCoach() {
     e.stopPropagation();
     try {
       await careerPathApi.delete(id);
-      showToast('Karriärvägen borttagen', 'success');
+      showToast.success('Karriärvägen borttagen');
       await loadSavedPaths();
     } catch (error) {
-      showToast('Kunde inte ta bort karriärvägen', 'error');
+      showToast.error('Kunde inte ta bort karriärvägen');
     }
   };
 
@@ -121,7 +120,7 @@ export default function CareerCoach() {
       steps: path.steps as CareerStep[]
     });
     setShowHistory(false);
-    showToast('Karriärvägen laddad', 'success');
+    showToast.success('Karriärvägen laddad');
   };
 
   const generateCareerPath = async () => {

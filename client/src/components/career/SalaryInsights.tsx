@@ -4,7 +4,7 @@ import { Autocomplete } from '@/components/common/Autocomplete';
 import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
 import { salaryApi, type SavedSalarySearch } from '@/services/careerApi';
-import { useToast } from '@/hooks/useToast';
+import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
 interface SalaryData {
@@ -49,7 +49,6 @@ export default function SalaryInsights() {
   const [savedSearches, setSavedSearches] = useState<SavedSalarySearch[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const { showToast } = useToast();
 
   // Load saved searches on mount
   useEffect(() => {
@@ -79,10 +78,10 @@ export default function SalaryInsights() {
         experience_data: salaryData.byExperience,
         trends: salaryData.trends
       });
-      showToast('Lönejämförelsen sparad!', 'success');
+      showToast.success('Lönejämförelsen sparad!');
       await loadSavedSearches();
     } catch (error) {
-      showToast('Kunde inte spara lönejämförelsen', 'error');
+      showToast.error('Kunde inte spara lönejämförelsen');
     } finally {
       setSaving(false);
     }
@@ -91,10 +90,10 @@ export default function SalaryInsights() {
   const deleteSavedSearch = async (id: string) => {
     try {
       await salaryApi.delete(id);
-      showToast('Sparad lönejämförelse borttagen', 'success');
+      showToast.success('Sparad lönejämförelse borttagen');
       await loadSavedSearches();
     } catch (error) {
-      showToast('Kunde inte ta bort lönejämförelsen', 'error');
+      showToast.error('Kunde inte ta bort lönejämförelsen');
     }
   };
 

@@ -24,7 +24,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { networkApi, type NetworkContact } from '@/services/careerApi'
-import { useToast } from '@/hooks/useToast'
+import { showToast } from '@/components/Toast'
 
 interface NetworkTemplate {
   id: string
@@ -149,7 +149,6 @@ export default function NetworkingGuide() {
   const [loading, setLoading] = useState(false)
   const [showAddForm, setShowAddForm] = useState(false)
   const [filterStatus, setFilterStatus] = useState<NetworkContact['status'] | 'all'>('all')
-  const { showToast } = useToast()
   
   // Form state
   const [newContact, setNewContact] = useState<Partial<NetworkContact>>({
@@ -197,7 +196,7 @@ export default function NetworkingGuide() {
         status: newContact.status || 'active',
         tags: newContact.tags || []
       })
-      showToast('Kontakten tillagd!', 'success')
+      showToast.success('Kontakten tillagd!')
       setNewContact({
         name: '',
         company: '',
@@ -212,27 +211,27 @@ export default function NetworkingGuide() {
       setShowAddForm(false)
       await loadContacts()
     } catch (error) {
-      showToast('Kunde inte lägga till kontakten', 'error')
+      showToast.error('Kunde inte lägga till kontakten')
     }
   }
 
   const deleteContact = async (id: string) => {
     try {
       await networkApi.delete(id)
-      showToast('Kontakten borttagen', 'success')
+      showToast.success('Kontakten borttagen')
       await loadContacts()
     } catch (error) {
-      showToast('Kunde inte ta bort kontakten', 'error')
+      showToast.error('Kunde inte ta bort kontakten')
     }
   }
 
   const markAsContacted = async (id: string) => {
     try {
       await networkApi.markContacted(id)
-      showToast('Kontakten markerad som kontaktad', 'success')
+      showToast.success('Kontakten markerad som kontaktad')
       await loadContacts()
     } catch (error) {
-      showToast('Kunde inte uppdatera kontakten', 'error')
+      showToast.error('Kunde inte uppdatera kontakten')
     }
   }
 

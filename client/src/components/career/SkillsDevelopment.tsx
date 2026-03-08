@@ -4,7 +4,7 @@ import { Autocomplete } from '@/components/common/Autocomplete';
 import { taxonomyApi } from '@/services/api';
 import { afDirectApi } from '@/services/afDirectApi';
 import { skillsApi, type UserSkill } from '@/services/careerApi';
-import { useToast } from '@/hooks/useToast';
+import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import type { CompetencyStat } from '@/services/afDirectApi';
 
@@ -14,7 +14,6 @@ export default function SkillsDevelopment() {
   const [skills, setSkills] = useState<CompetencyStat[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [savedSkills, setSavedSkills] = useState<UserSkill[]>([]);
-  const { showToast } = useToast();
 
   // Load saved skills on mount
   useEffect(() => {
@@ -40,20 +39,20 @@ export default function SkillsDevelopment() {
         status: 'interested',
         priority: 0
       });
-      showToast('Kompetensen sparad!', 'success');
+      showToast.success('Kompetensen sparad!');
       await loadSavedSkills();
     } catch (error) {
-      showToast('Kunde inte spara kompetensen', 'error');
+      showToast.error('Kunde inte spara kompetensen');
     }
   };
 
   const deleteSavedSkill = async (id: string) => {
     try {
       await skillsApi.delete(id);
-      showToast('Kompetensen borttagen', 'success');
+      showToast.success('Kompetensen borttagen');
       await loadSavedSkills();
     } catch (error) {
-      showToast('Kunde inte ta bort kompetensen', 'error');
+      showToast.error('Kunde inte ta bort kompetensen');
     }
   };
 

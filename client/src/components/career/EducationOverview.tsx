@@ -4,7 +4,7 @@ import {
   Clock, Award, Filter, ChevronDown, X, SlidersHorizontal,
   MapPin, Building2, Heart, CheckCircle, Bookmark
 } from 'lucide-react';
-import { useToast } from '@/hooks/useToast';
+import { showToast } from '@/components/Toast';
 import { educationApi, type SavedEducation } from '@/services/careerApi';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { afDirectApi } from '@/services/afDirectApi';
@@ -44,7 +44,6 @@ export default function EducationOverview() {
   const [filteredCourses, setFilteredCourses] = useState<EducationInfo[]>([]);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [savedEducations, setSavedEducations] = useState<SavedEducation[]>([]);
-  const { showToast } = useToast();
 
   // Load saved educations on mount
   useEffect(() => {
@@ -81,20 +80,20 @@ export default function EducationOverview() {
         status: 'interested',
         notes: ''
       });
-      showToast('Utbildningen sparad!', 'success');
+      showToast.success('Utbildningen sparad!');
       await loadSavedEducations();
     } catch (error) {
-      showToast('Kunde inte spara utbildningen', 'error');
+      showToast.error('Kunde inte spara utbildningen');
     }
   };
 
   const updateEducationStatus = async (id: string, status: SavedEducation['status']) => {
     try {
       await educationApi.update(id, { status });
-      showToast('Status uppdaterad!', 'success');
+      showToast.success('Status uppdaterad!');
       await loadSavedEducations();
     } catch (error) {
-      showToast('Kunde inte uppdatera status', 'error');
+      showToast.error('Kunde inte uppdatera status');
     }
   };
 
