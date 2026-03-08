@@ -103,7 +103,6 @@ Texten ska:
       };
 
     case 'personligt-brev':
-    case 'generera-personligt-brev':
       const ton = data?.ton || 'professionell';
       const tonInstructions: Record<string, string> = {
         professionell: ' professionell och balanserad',
@@ -300,7 +299,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     return res.json({
       success: true,
-      [fn === 'chatbot' ? 'svar' : fn === 'personligt-brev' || fn === 'generera-personligt-brev' ? 'brev' : 'result']: content,
+      [fn === 'chatbot' ? 'svar' : fn === 'personligt-brev' ? 'brev' : 'result']: content,
       function: fn,
       model: DEFAULT_MODEL
     });
