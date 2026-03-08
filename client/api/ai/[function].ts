@@ -279,15 +279,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const { function: fn, data } = req.body;
+    // Get function name from URL path (Vercel dynamic routing) or body
+    const fn = req.query.function as string || req.body.function;
+    const data = req.body.data || req.body;
 
     if (!fn) {
       return res.status(400).json({ error: 'Missing function parameter' });
     }
 
-    const { systemPrompt, userPrompt, maxTokens } = buildPrompt(fn, data);
-
     console.log(`AI call: ${fn}, model: ${DEFAULT_MODEL}`);
+    console.log(`Request body:`, JSON.stringify(req.body).substring(0, 200));
+    console.log(`Request query:`, JSON.stringify(req.query));
+
+    const { systemPrompt, userPrompt, maxTokens } = buildPrompt(fn, data);
 
     const content = await callOpenRouter([
       { role: 'system', content: systemPrompt },
