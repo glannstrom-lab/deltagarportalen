@@ -3,12 +3,13 @@
  */
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Sparkles, Save, RotateCcw, Bookmark, FileText, Palette, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, RotateCcw, Bookmark, FileText, Palette, Lightbulb, ChevronDown, ChevronUp, Building2, MapPin, Briefcase } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { PromptButtons } from './PromptButtons'
 import { WordCounter } from './WordCounter'
 import { coverLetterTemplates } from './CoverLetterTemplates'
 import type { CoverLetterTemplate } from './CoverLetterTemplates'
+import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
 type Step = 'company' | 'job' | 'details' | 'review'
 
@@ -21,6 +22,8 @@ interface MobileSimplifiedProps {
   ton: 'professionell' | 'entusiastisk' | 'formell'
   selectedTemplate: string
   savedLettersCount: number
+  savedJobsCount: number
+  savedJobs: PlatsbankenJob[]
   isGenerating: boolean
   hasCV: boolean
   onCompanyChange: (value: string) => void
@@ -30,6 +33,7 @@ interface MobileSimplifiedProps {
   onLetterChange: (value: string) => void
   onTonChange: (ton: 'professionell' | 'entusiastisk' | 'formell') => void
   onTemplateChange: (templateId: string) => void
+  onLoadJob: (job: PlatsbankenJob) => void
   onGenerate: () => void
   onShowSavedLetters: () => void
 }
@@ -43,6 +47,8 @@ export function MobileSimplified({
   ton,
   selectedTemplate,
   savedLettersCount,
+  savedJobsCount,
+  savedJobs,
   isGenerating,
   hasCV,
   onCompanyChange,
@@ -52,12 +58,14 @@ export function MobileSimplified({
   onLetterChange,
   onTonChange,
   onTemplateChange,
+  onLoadJob,
   onGenerate,
   onShowSavedLetters
 }: MobileSimplifiedProps) {
   const [step, setStep] = useState<Step>('company')
   const [tempLetter, setTempLetter] = useState(letter)
   const [showTemplates, setShowTemplates] = useState(false)
+  const [showSavedJobs, setShowSavedJobs] = useState(false)
 
   const templates = coverLetterTemplates
   const selectedTemplateObj = templates.find(t => t.id === selectedTemplate)
@@ -91,11 +99,17 @@ export function MobileSimplified({
     onLetterChange(newText)
   }
 
+  const handleLoadJobAndClose = (job: PlatsbankenJob) => {
+    onLoadJob(job)
+    setShowSavedJobs(false)
+    setStep('details')
+  }
+
   const canProceed = () => {
     switch (step) {
       case 'company': return company.length > 0
       case 'job': return jobTitle.length > 0
-      case 'details': return jobAd.length > 10
+      case 'details': return jobAd.length > 10 || hasCV
       case 'review': return true
       default: return false
     }
@@ -108,6 +122,55 @@ export function MobileSimplified({
       case 'formell': return 'Formell'
       default: return 'Professionell'
     }
+  }
+
+  // Visa sparade jobb om användaren vill
+  if (showSavedJobs) {
+    return (
+      <div className="space-y-4">
+        <div className="bg-white rounded-xl border border-slate-200 p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-slate-800">Dina sparade jobb</h3>
+            <button
+              onClick={() => setShowSavedJobs(false)}
+              className="text-sm text-slate-500 hover:text-slate-700"
+            >
+              Stäng
+            </button>
+          </div>
+          <div className="space-y-3 max-h-96 overflow-y-auto">
+            {savedJobs.length === 0 ? (
+              <p className="text-slate-500 text-center py-4 text-sm">Inga sparade jobb ännu</p>
+            ) : (
+              savedJobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="p-3 bg-slate-50 rounded-lg border border-slate-100"
+                >
+                  <h4 className="font-medium text-slate-900">{job.headline}</h4>
+                  <p className="text-sm text-slate-600 flex items-center gap-1 mt-1">
+                    <Building2 className="w-3 h-3" />
+                    {job.employer?.name}
+                  </p>
+                  {job.workplace_address && (
+                    <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                      <MapPin className="w-3 h-3" />
+                      {job.workplace_address.municipality}
+                    </p>
+                  )}
+                  <button
+                    onClick={() => handleLoadJobAndClose(job)}
+                    className="mt-3 w-full py-2 px-3 bg-teal-500 text-white text-sm rounded-lg hover:bg-teal-600 transition-colors"
+                  >
+                    Använd detta jobb
+                  </button>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -133,16 +196,27 @@ export function MobileSimplified({
         ))}
       </div>
 
-      {/* Saved Letters Button */}
-      {savedLettersCount > 0 && (
-        <button
-          onClick={onShowSavedLetters}
-          className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm transition-colors"
-        >
-          <Bookmark className="w-4 h-4" />
-          {savedLettersCount} sparade brev
-        </button>
-      )}
+      {/* Action Buttons Row */}
+      <div className="flex gap-2">
+        {savedLettersCount > 0 && (
+          <button
+            onClick={onShowSavedLetters}
+            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm transition-colors"
+          >
+            <Bookmark className="w-4 h-4" />
+            {savedLettersCount} brev
+          </button>
+        )}
+        {savedJobsCount > 0 && (
+          <button
+            onClick={() => setShowSavedJobs(true)}
+            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm transition-colors"
+          >
+            <Briefcase className="w-4 h-4" />
+            {savedJobsCount} jobb
+          </button>
+        )}
+      </div>
 
       {/* CV Status */}
       {hasCV && (

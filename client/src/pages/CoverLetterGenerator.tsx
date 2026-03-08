@@ -777,6 +777,8 @@ export default function CoverLetterGenerator() {
             ton={ton}
             selectedTemplate={selectedTemplate}
             savedLettersCount={savedLetters.length}
+            savedJobsCount={savedJobs.length}
+            savedJobs={savedJobs}
             isGenerating={isGenerating}
             hasCV={!!cvData}
             onCompanyChange={setCompany}
@@ -786,6 +788,7 @@ export default function CoverLetterGenerator() {
             onLetterChange={setGeneratedBrev}
             onTonChange={setTon}
             onTemplateChange={setSelectedTemplate}
+            onLoadJob={handleLoadJob}
             onGenerate={handleGenerate}
             onShowSavedLetters={() => setShowSaved(true)}
           />
