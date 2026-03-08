@@ -190,7 +190,12 @@ export function MobileSimplified({
 
   return (
     <div className="space-y-4">
-      {/* Progress Steps */}
+      {/* Debug info - temporary */}
+      <div className="text-xs text-slate-400 bg-slate-50 p-2 rounded">
+        DEBUG: jobs={savedJobsCount} letters={savedLettersCount} cv={hasCV ? 'yes' : 'no'}
+      </div>
+      
+      {/* Progress Steps -->
       <div className="flex items-center justify-between px-2">
         {steps.map((s, index) => (
           <div key={s.id} className="flex items-center">
@@ -213,24 +218,20 @@ export function MobileSimplified({
 
       {/* Action Buttons Row - alltid synlig */}
       <div className="flex gap-2">
-        {savedLettersCount > 0 && (
-          <button
-            onClick={onShowSavedLetters}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm font-medium transition-colors border border-slate-200"
-          >
-            <Bookmark className="w-4 h-4" />
-            {savedLettersCount} brev
-          </button>
-        )}
-        {savedJobsCount > 0 && (
-          <button
-            onClick={() => setShowSavedJobs(true)}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm font-medium transition-colors border border-slate-200"
-          >
-            <Briefcase className="w-4 h-4" />
-            {savedJobsCount} jobb
-          </button>
-        )}
+        <button
+          onClick={onShowSavedLetters}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm font-medium transition-colors border border-slate-200"
+        >
+          <Bookmark className="w-4 h-4" />
+          {savedLettersCount} brev
+        </button>
+        <button
+          onClick={() => setShowSavedJobs(true)}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm font-medium transition-colors border border-slate-200"
+        >
+          <Briefcase className="w-4 h-4" />
+          {savedJobsCount} jobb
+        </button>
       </div>
 
       {/* CV Status */}
@@ -251,22 +252,20 @@ export function MobileSimplified({
       <div className="bg-white rounded-xl border border-slate-200 p-4">
         {step === 'company' && (
           <div className="space-y-4">
-            {/* Sparade jobb - högst upp i steg 1 */}
-            {savedJobsCount > 0 && (
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-slate-700">Hämta från sparade jobb:</p>
-                <button
-                  onClick={() => setShowSavedJobs(true)}
-                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg text-sm font-medium transition-colors border border-teal-200"
-                >
-                  <Briefcase className="w-4 h-4" />
-                  Välj bland {savedJobsCount} sparade jobb
-                </button>
-                <p className="text-xs text-slate-500">
-                  Eller fyll i manuellt nedan:
-                </p>
-              </div>
-            )}
+            {/* Sparade jobb - högst upp i steg 1 - ALLTID SYNLIG */}
+            <div className="space-y-2">
+              <p className="text-sm font-medium text-slate-700">Hämta från sparade jobb:</p>
+              <button
+                onClick={() => setShowSavedJobs(true)}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg text-sm font-medium transition-colors border border-teal-200"
+              >
+                <Briefcase className="w-4 h-4" />
+                Välj bland {savedJobsCount} sparade jobb
+              </button>
+              <p className="text-xs text-slate-500">
+                Eller fyll i manuellt nedan:
+              </p>
+            </div>
             
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">Företagsnamn</label>
