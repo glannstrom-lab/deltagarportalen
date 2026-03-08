@@ -55,75 +55,53 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     const data = req.body.data || req.body;
 
-    const salaryIncrease = data?.targetSalary - data?.currentSalary;
-    const salaryIncreasePercent = data?.currentSalary > 0 
-      ? Math.round((salaryIncrease / data?.currentSalary) * 100) 
-      : 0;
+    const systemPrompt = `Du är en expert på karriärutveckling och arbetsmarknadsanalys med djup kunskap om svenska löner och jobbmarknaden 2024.
 
-    const systemPrompt = `Du är en expert på karriärutveckling och arbetsmarknadsanalys. 
-Din uppgift är att skapa realistiska, skräddarsydda karriärvägar baserat på faktisk marknadsdata.
+Din uppgift är att skapa realistiska karriärvägar och du ska SJÄLV uppskatta:
+- Löner för både nuvarande och målyrke (baserat på svensk lönestatistik 2024)
+- Antal lediga jobb nationellt (uppskatta baserat på yrkets storlek)
+- Efterfrågan på arbetsmarknaden
 
-Du ska:
-- Analysera löneutveckling och ge realistiska förväntningar
-- Beakta antalet lediga jobb och konkurrensen
-- Skapa en realistisk tidslinje baserat på erfarenhet och utbildningsbehov
-- Identifiera överförbara färdigheter mellan yrkena
-- Ge konkreta, genomförbara steg
-- Inkludera både formell utbildning och praktisk erfarenhet
+Var realistisk och använd faktiska lönespann för Sverige. En sjuksköterska tjänar t.ex. 35-45k, en utvecklare 40-60k, en butikssäljare 25-30k.
 
-Svara i JSON-format med följande struktur:
+Svara i JSON-format med:
 {
-  "steps": [
-    {
-      "order": 1,
-      "title": "Stegtitel",
-      "description": "Beskrivning av steget",
-      "timeframe": "Tidsram",
-      "actions": ["Åtgärd 1", "Åtgärd 2"],
-      "education": ["Utbildning 1", "Utbildning 2"]
-    }
-  ],
+  "estimatedCurrentSalary": 35000,
+  "estimatedTargetSalary": 52000,
+  "estimatedJobCount": 850,
+  "demandLevel": "high",
+  "steps": [...],
   "marketAnalysis": {
-    "salaryIncrease": "Löneökning analys",
-    "jobMarket": "Bedömning av arbetsmarknaden baserat på antal lediga jobb",
-    "competition": "Hur svårt är det att få jobb?",
-    "timelineEstimate": "Uppskattad tidslinje för hela övergången"
+    "salaryAnalysis": "Detaljerad analys av lönerna",
+    "jobMarket": "Analys av jobbmarknaden",
+    "competition": "Konkurrensbedömning",
+    "timelineEstimate": "Realistisk tidslinje"
   },
-  "analysis": "Kort analys av övergången",
-  "keySkills": ["Viktig färdighet 1", "Viktig färdighet 2"],
-  "challenges": ["Utmaning 1", "Utmaning 2"],
+  "analysis": "Övergripande analys",
+  "keySkills": ["färdighet 1", "färdighet 2"],
+  "challenges": ["utmaning 1"],
   "salaryProgression": [
-    {"stage": "År 1", "estimatedSalary": 45000, "notes": "Entry level i målyrket"},
-    {"stage": "År 3", "estimatedSalary": 52000, "notes": "Med erfarenhet"}
+    {"stage": "År 1", "estimatedSalary": 45000, "notes": "Beskrivning"}
   ]
 }`;
 
-    const userPrompt = `Skapa en detaljerad karriärplan baserat på följande marknadsdata:
+    const userPrompt = `Skapa en karriärplan för följande övergång:
 
-=== PERSONLIG INFORMATION ===
 NUVARANDE YRKE: ${data?.currentOccupation}
-ERFARENHET: ${data?.experienceYears} år
 MÅLYRKE: ${data?.targetOccupation}
+ERFARENHET: ${data?.experienceYears} år
 
-=== LÖNEDATA ===
-NUVARANDE LÖN: ${data?.currentSalary?.toLocaleString()} kr/mån
-MÅLLÖN: ${data?.targetSalary?.toLocaleString()} kr/mån
-LÖNEÖKNING: +${salaryIncrease?.toLocaleString()} kr/mån (+${salaryIncreasePercent}%)
+BASERAT PÅ DIN KUNSKAP OM DEN SVENSKA ARBETSMARKNADEN 2024:
 
-=== ARBETSMARKNADSDATA ===
-LEDIGA JOBB NATIONELLT: ${data?.jobCount}
-EFTERFRÅGAN: ${data?.demand === 'high' ? 'Hög' : data?.demand === 'medium' ? 'Medel' : 'Låg'}
+1. Uppskatta MEDIANLÖN för båda yrkena (i kr/mån)
+2. Uppskatta hur många LEDIGA JOBB som finns nationellt (siffra)
+3. Bedöm efterfrågan: "high", "medium" eller "low"
+4. Analysera löneutvecklingen
+5. Skapa konkreta steg för övergången
 
-Skapa 4-5 konkreta steg för karriärövergången. Inkludera:
-1. En marknadsanalys som kommenterar löneökningen och jobbmarknaden
-2. Realistisk tidslinje baserat på erfarenhet och kompetensgap
-3. Vilka färdigheter som behövs för målyrket
-4. Överförbara färdigheter från nuvarande yrke
-5. Konkreta åtgärder för varje steg
-6. Rekommenderad utbildning/kompetensutveckling
-7. Löneutveckling över tid (estimerad progression)
+VIKTIGT: Använd realistiska löner för Sverige 2024. Var inte optimistisk - var realistisk.
 
-Svara ENDAST med JSON, inget annat.`;
+Svara ENDAST med JSON.`;
 
     const content = await callOpenRouter([
       { role: 'system', content: systemPrompt },

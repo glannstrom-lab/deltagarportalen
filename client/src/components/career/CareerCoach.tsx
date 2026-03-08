@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign, Loader2, Save, History, Trash2, Star } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
-import { afDirectApi } from '@/services/afDirectApi';
-import { searchJobs } from '@/services/arbetsformedlingenApi';
 import { careerPathApi, type SavedCareerPath } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
@@ -13,10 +11,6 @@ async function generateCareerPlanWithAI(data: {
   currentOccupation: string;
   targetOccupation: string;
   experienceYears: number;
-  currentSalary: number;
-  targetSalary: number;
-  demand: 'high' | 'medium' | 'low';
-  jobCount: number;
 }) {
   const response = await fetch('/api/ai/career', {
     method: 'POST',
@@ -62,7 +56,8 @@ interface CareerPath {
   salaryIncrease: number;
   analysis?: string;
   marketAnalysis?: {
-    salaryIncrease: string;
+    salaryAnalysis?: string;
+    salaryIncrease?: string;
     jobMarket: string;
     competition: string;
     timelineEstimate: string;
@@ -74,6 +69,7 @@ interface CareerPath {
     estimatedSalary: number;
     notes: string;
   }>;
+  aiEstimated?: boolean;
 }
 
 export default function CareerCoach() {
@@ -178,49 +174,26 @@ export default function CareerCoach() {
     setLoading(true);
     
     try {
-      // Hämta lönedata för båda yrkena DIREKT från AF API (CORS tillåtet)
-      const [currentSalary, targetSalary] = await Promise.all([
-        afDirectApi.getSalaryStats(currentOccupation.label),
-        afDirectApi.getSalaryStats(targetOccupation.label)
-      ]);
-
-      // Hämta antal lediga jobb för målyrket
-      const jobSearch = await searchJobs({
-        query: targetOccupation.label,
-        limit: 1
-      });
-
-      const currentSalaryValue = currentSalary?.median_salary || 35000;
-      const targetSalaryValue = targetSalary?.median_salary || 45000;
-      const jobCount = jobSearch.total?.value || 0;
-      
-      // Bestäm efterfrågan baserat på jobbantal
-      let demand: 'high' | 'medium' | 'low' = 'medium';
-      if (jobCount > 100) demand = 'high';
-      else if (jobCount < 10) demand = 'low';
-
-      // Beräkna tidslinje baserat på erfarenhet och löneskillnad
       const expYears = parseInt(currentExperience);
-      const salaryDiff = targetSalaryValue - currentSalaryValue;
-      const estimatedYears = Math.max(1, Math.min(4, Math.ceil(salaryDiff / 10000) - Math.floor(expYears / 3)));
       
-      // Generera AI-baserad karriärplan
+      // Generera AI-baserad karriärplan med AI:s egna löneuppskattningar
       let aiSteps: CareerStep[] = [];
       let aiAnalysis: string | undefined;
       let aiMarketAnalysis: CareerPath['marketAnalysis'] | undefined;
       let aiKeySkills: string[] | undefined;
       let aiChallenges: string[] | undefined;
       let aiSalaryProgression: CareerPath['salaryProgression'] | undefined;
+      let aiCurrentSalary = 35000;
+      let aiTargetSalary = 45000;
+      let aiJobCount = 0;
+      let aiDemand: 'high' | 'medium' | 'low' = 'medium';
+      let aiTimeline = `${Math.max(1, Math.min(3, expYears > 5 ? 1 : 2))}-${Math.max(2, Math.min(4, expYears > 5 ? 2 : 3))} år`;
       
       try {
         const aiResult = await generateCareerPlanWithAI({
           currentOccupation: currentOccupation.label,
           targetOccupation: targetOccupation.label,
-          experienceYears: expYears,
-          currentSalary: currentSalaryValue,
-          targetSalary: targetSalaryValue,
-          demand,
-          jobCount
+          experienceYears: expYears
         });
         
         if (aiResult.plan?.steps) {
@@ -230,33 +203,42 @@ export default function CareerCoach() {
           aiKeySkills = aiResult.plan.keySkills;
           aiChallenges = aiResult.plan.challenges;
           aiSalaryProgression = aiResult.plan.salaryProgression;
+          
+          // Använd AI:s uppskattade löner och marknadsdata
+          aiCurrentSalary = aiResult.plan.estimatedCurrentSalary || 35000;
+          aiTargetSalary = aiResult.plan.estimatedTargetSalary || 45000;
+          aiJobCount = aiResult.plan.estimatedJobCount || 500;
+          aiDemand = aiResult.plan.demandLevel || 'medium';
+          aiTimeline = aiResult.plan.marketAnalysis?.timelineEstimate || aiTimeline;
         }
       } catch (aiError) {
         console.error('AI generation failed, using fallback:', aiError);
-        // Fallback till generiska steg om AI misslyckas
-        aiSteps = generateSteps(currentOccupation.label, targetOccupation.label, expYears, estimatedYears);
+        showToast.error('AI kunde inte generera plan. Försök igen.');
+        setLoading(false);
+        return;
       }
       
       const path: CareerPath = {
         current: {
           occupation: currentOccupation.label,
           experience: `${currentExperience} år`,
-          salary: currentSalaryValue,
+          salary: aiCurrentSalary,
         },
         target: {
           occupation: targetOccupation.label,
-          salary: targetSalaryValue,
-          demand,
-          jobCount,
+          salary: aiTargetSalary,
+          demand: aiDemand,
+          jobCount: aiJobCount,
         },
-        timeline: aiMarketAnalysis?.timelineEstimate || `${estimatedYears}-${estimatedYears + 1} år`,
-        salaryIncrease: targetSalaryValue - currentSalaryValue,
+        timeline: aiTimeline,
+        salaryIncrease: aiTargetSalary - aiCurrentSalary,
         steps: aiSteps,
         analysis: aiAnalysis,
         marketAnalysis: aiMarketAnalysis,
         keySkills: aiKeySkills,
         challenges: aiChallenges,
         salaryProgression: aiSalaryProgression,
+        aiEstimated: true,
       };
       
       setCareerPath(path);
