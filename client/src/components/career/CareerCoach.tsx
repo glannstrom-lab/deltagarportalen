@@ -196,7 +196,7 @@ export default function CareerCoach() {
           experienceYears: expYears
         });
         
-        if (aiResult.plan?.steps) {
+        if (aiResult.plan?.steps && aiResult.plan.steps.length > 0) {
           aiSteps = aiResult.plan.steps;
           aiAnalysis = aiResult.plan.analysis;
           aiMarketAnalysis = aiResult.plan.marketAnalysis;
@@ -210,12 +210,17 @@ export default function CareerCoach() {
           aiJobCount = aiResult.plan.estimatedJobCount || 500;
           aiDemand = aiResult.plan.demandLevel || 'medium';
           aiTimeline = aiResult.plan.marketAnalysis?.timelineEstimate || aiTimeline;
+        } else {
+          // AI returned but no steps - use fallback
+          console.warn('AI returned no steps, using fallback');
+          aiSteps = generateSteps(currentOccupation.label, targetOccupation.label, expYears, 2);
+          aiAnalysis = 'Kunde inte generera AI-analys. Visar generiska steg.';
         }
       } catch (aiError) {
         console.error('AI generation failed, using fallback:', aiError);
-        showToast.error('AI kunde inte generera plan. Försök igen.');
-        setLoading(false);
-        return;
+        // Use fallback steps instead of showing error
+        aiSteps = generateSteps(currentOccupation.label, targetOccupation.label, expYears, 2);
+        aiAnalysis = 'Kunde inte ansluta till AI. Visar generiska steg.';
       }
       
       const path: CareerPath = {

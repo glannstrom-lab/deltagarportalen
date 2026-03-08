@@ -112,6 +112,11 @@ Svara ENDAST med JSON.`;
     let plan;
     try {
       plan = JSON.parse(content);
+      // Ensure plan has required fields
+      if (!plan.steps || !Array.isArray(plan.steps)) {
+        console.error('AI response missing steps, using fallback');
+        plan.steps = generateFallbackSteps(data?.currentOccupation, data?.targetOccupation);
+      }
     } catch (e) {
       console.error('Failed to parse AI response as JSON:', content);
       // Return fallback plan
@@ -119,7 +124,17 @@ Svara ENDAST med JSON.`;
         steps: generateFallbackSteps(data?.currentOccupation, data?.targetOccupation),
         analysis: 'Kunde inte generera AI-analys',
         keySkills: [],
-        challenges: []
+        challenges: [],
+        estimatedCurrentSalary: 35000,
+        estimatedTargetSalary: 45000,
+        estimatedJobCount: 500,
+        demandLevel: 'medium',
+        marketAnalysis: {
+          salaryAnalysis: 'Löneuppskattning ej tillgänglig',
+          jobMarket: 'Jobbmarknadsdata ej tillgänglig',
+          competition: 'Konkurrensbedömning ej tillgänglig',
+          timelineEstimate: '1-2 år'
+        }
       };
     }
 
