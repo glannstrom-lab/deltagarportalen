@@ -91,6 +91,7 @@ export default function CoverLetterGenerator() {
   const [jobbAnnons, setJobbAnnons] = useState(queryDesc || '')
   const [tidigareBrev, setTidigareBrev] = useState('')
   const [motivering, setMotivering] = useState('')
+  const [extraKeywords, setExtraKeywords] = useState('')
   const [ton, setTon] = useState<'professionell' | 'entusiastisk' | 'formell'>('professionell')
   const [company, setCompany] = useState(queryCompany || '')
   const [jobTitle, setJobTitle] = useState(queryTitle || '')
@@ -201,6 +202,18 @@ export default function CoverLetterGenerator() {
       const savedJob = getSavedJob(queryJobId)
       if (savedJob) {
         setSourceJob(savedJob.jobData)
+        // Extrahera jobbannons från sparat jobb om den inte redan är satt
+        if (!queryDesc && savedJob.jobData?.description?.text) {
+          setJobbAnnons(savedJob.jobData.description.text)
+        }
+        // Extrahera företag om det inte redan är satt
+        if (!queryCompany && savedJob.jobData?.employer?.name) {
+          setCompany(savedJob.jobData.employer.name)
+        }
+        // Extrahera titel om den inte redan är satt
+        if (!queryTitle && savedJob.jobData?.headline) {
+          setJobTitle(savedJob.jobData.headline)
+        }
       }
     }
   }, [queryCompany, queryTitle, queryDesc, queryJobId, getSavedJob])
@@ -380,6 +393,11 @@ export default function CoverLetterGenerator() {
       return
     }
 
+    // Varna om jobbannons är tom - brevet blir mindre personligt
+    if (!jobbAnnons.trim()) {
+      console.warn('Jobbannons saknas - brevet kommer att vara mindre personligt');
+    }
+
     setIsGenerating(true)
     setError(null)
     setGenerationProgress(0)
@@ -405,6 +423,33 @@ export default function CoverLetterGenerator() {
         skills: cvData.skills || []
       } : undefined
 
+      // DEBUG: Logga exakt vad som skickas till AI
+      console.log('=== FRONTEND SKICKAR ===');
+      console.log('jobbAnnons state length:', jobbAnnons.length);
+      console.log('jobbAnnons state preview:', jobbAnnons.substring(0, 150));
+      console.log('company state:', company);
+      console.log('jobTitle state:', jobTitle);
+      console.log('cvData workExperience count:', aiCvData?.workExperience?.length || 0);
+      console.log('extraKeywords:', extraKeywords);
+      
+      // Bygg payload för debugging
+      const payload = {
+        jobbAnnons,
+        companyName: company,
+        jobTitle: jobTitle,
+        erfarenhet: erfarenhet || cvData?.summary || tidigareBrev,
+        motivering: motivering || undefined,
+        namn: cvData?.firstName && cvData?.lastName 
+          ? `${cvData.firstName} ${cvData.lastName}` 
+          : undefined,
+        ton,
+        extraContext: template?.promptAddition,
+        extraKeywords,
+        cvData: aiCvData
+      };
+      console.log('Full payload:', JSON.stringify(payload, null, 2).substring(0, 800));
+      console.log('=======================');
+
       const response = await aiService.generateCoverLetter({
         jobbAnnons,
         companyName: company,
@@ -416,6 +461,7 @@ export default function CoverLetterGenerator() {
           : undefined,
         ton,
         extraContext: template?.promptAddition,
+        extraKeywords,
         cvData: aiCvData
       })
 
@@ -441,6 +487,7 @@ export default function CoverLetterGenerator() {
       clearInterval(progressInterval)
       
       // OFFLINE FALLBACK: Generera mall lokalt
+      console.error('AI-tjänsten fel:', err);
       console.log('AI-tjänsten ej tillgänglig, använder offline-mall')
       const offlineBrev = generateOfflineTemplate()
       setGeneratedBrev(offlineBrev)
@@ -1103,6 +1150,23 @@ export default function CoverLetterGenerator() {
                 rows={3}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
               />
+            </div>
+
+            {/* Extra keywords/interests */}
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Extra nyckelord/intressen <span className="text-slate-400 font-normal">(valfritt)</span>
+              </label>
+              <textarea
+                value={extraKeywords}
+                onChange={(e) => setExtraKeywords(e.target.value)}
+                placeholder="T.ex. specifika verktyg, mjuka kompetenser, intressen eller certifieringar du vill lyfta som inte finns i CV:t..."
+                rows={2}
+                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
+              />
+              <p className="text-xs text-slate-500 mt-1">
+                Här kan du lägga till saker som inte syns i ditt CV men som är relevanta för jobbet
+              </p>
             </div>
 
             {/* Tone Selection */}

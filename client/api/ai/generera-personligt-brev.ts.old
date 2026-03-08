@@ -82,19 +82,26 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const data = req.body;
+    // Hantera både direkt body och wrappad body från aiService
+    const rawData = req.body;
+    const data = rawData.data || rawData;
     
     // DEBUG: Logga inkommande data
     console.log('=== INKOMMANDE DATA ===');
+    console.log('Raw keys:', Object.keys(rawData));
     console.log('companyName:', data?.companyName);
     console.log('jobTitle:', data?.jobTitle);
     console.log('jobbAnnons length:', data?.jobbAnnons?.length);
+    console.log('jobbAnnons preview:', data?.jobbAnnons?.substring(0, 100));
     console.log('cvData exists:', !!data?.cvData);
     console.log('cvData.firstName:', data?.cvData?.firstName);
     console.log('cvData.lastName:', data?.cvData?.lastName);
     console.log('cvData.title:', data?.cvData?.title);
+    console.log('cvData.summary exists:', !!data?.cvData?.summary);
     console.log('cvData.workExperience count:', data?.cvData?.workExperience?.length);
     console.log('cvData.skills count:', data?.cvData?.skills?.length);
+    console.log('extraKeywords:', data?.extraKeywords);
+    console.log('motivering:', data?.motivering);
     console.log('=======================');
     
     const ton = data?.ton || 'professionell';
@@ -116,6 +123,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const workExperience = data?.cvData?.workExperience || [];
     const skills = data?.cvData?.skills || [];
     const motivering = data?.motivering || 'Jag är intresserad av denna tjänst och ser fram emot att bidra med min erfarenhet.';
+    const extraKeywords = data?.extraKeywords || '';
     
     // Bygg CV-kontext
     const cvContext = `
@@ -126,13 +134,14 @@ ${summary ? `Sammanfattning: ${summary}` : ''}
 
 ERFARENHETER:
 ${workExperience.length > 0 
-  ? workExperience.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.description ? ` (${exp.description.substring(0, 100)}...)` : ''}`).join('\n')
+  ? workExperience.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.duration ? ` (${exp.duration})` : ''}${exp.description ? `: ${exp.description.substring(0, 150)}` : ''}`).join('\n')
   : '- Har relevant arbetslivserfarenhet inom området'}
 
 KOMPETENSER:
 ${skills.length > 0 
   ? skills.map((s: any) => s.name).join(', ')
   : 'Kompetenser inom relevanta områden'}
+${extraKeywords ? `\nEXTRA NYCKELORD/INTRESSEN:\n${extraKeywords}` : ''}
 `;
 
     const systemPrompt = `Du är en expert på att skriva personliga brev för jobbansökningar.
@@ -165,12 +174,18 @@ ${data?.extraContext ? `=== EXTRA INSTRUKTIONER ===\n${data.extraContext}\n` : '
 4. Inled med: "Bästa ${companyName}," eller "Hej ${companyName},"
 5. Nämn jobbtiteln tidigt i brevet
 6. Koppla erfarenheter till jobbets krav (även om du måste generalisera)
-7. Avsluta med "Med vänliga hälsningar, [namn]"
-8. Om namn saknas, skriv bara "Med vänliga hälsningar"
+7. Använd extra nyckelord/intressen som kompletterande argument
+8. Avsluta med "Med vänliga hälsningar, [namn]"
+9. Om namn saknas, skriv bara "Med vänliga hälsningar"
 
 Skriv det färdiga brevet nu:`;
 
     console.log('AI call: generera-personligt-brev');
+    
+    // DEBUG: Logga hela prompten som skickas till AI
+    console.log('=== PROMPT TILL AI ===');
+    console.log(userPrompt);
+    console.log('======================');
 
     const content = await callOpenRouter([
       { role: 'system', content: systemPrompt },

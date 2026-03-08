@@ -112,6 +112,7 @@ export const aiService = {
     namn?: string;
     ton?: 'professionell' | 'entusiastisk' | 'formell';
     extraContext?: string;
+    extraKeywords?: string;
     cvData?: {
       firstName?: string;
       lastName?: string;
@@ -121,11 +122,13 @@ export const aiService = {
         title: string;
         company: string;
         description?: string;
+        duration?: string;
       }>;
       skills?: Array<{ name: string }>;
     };
   }) => {
-    const response = await callAI('generera-personligt-brev', data);
+    // Använder endpointen 'personligt-brev' via [function].ts
+    const response = await callAI('personligt-brev', data);
     return { brev: response.brev, result: response.result };
   },
 

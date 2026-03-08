@@ -122,38 +122,50 @@ Titel: ${cv.title || 'Ej angiven'}
 Sammanfattning: ${cv.summary || 'Ej angiven'}
 
 ERFARENHET:
-${cv.workExperience?.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.description ? `: ${exp.description}` : ''}`).join('\n') || 'Ingen erfarenhet angiven'}
+${cv.workExperience?.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.duration ? ` (${exp.duration})` : ''}${exp.description ? `: ${exp.description.substring(0, 150)}` : ''}`).join('\n') || 'Ingen erfarenhet angiven'}
 
 KOMPETENSER:
 ${cv.skills?.map((s: any) => s.name).join(', ') || 'Inga kompetenser angivna'}
 `;
       }
       
+      const jobbAnnonsText = data?.jobbAnnons || data?.jobDescription || '';
+      
+      // Beräkna faktisk längd på jobbannons för debugging
+      const annonsLength = jobbAnnonsText.length;
+      
       return {
         systemPrompt: `Du är en expert på att skriva personliga brev för jobbansökningar.
 Skriv på svenska med en${tonInstructions[ton] || tonInstructions.professionell} ton.
-Brevet ska vara personligt, engagerande och visa varför just denna person passar för jobbet.
-Använd CV-informationen för att koppla personens erfarenheter till jobbets krav.`,
+
+ABSOLUT VIKTIGT - FÖLJ DESSA REGLER:
+1. Du MÅSTE läsa och analysera jobbannonsen som finns i användarens meddelande
+2. Du MÅSTE identifiera specifika krav från jobbannonsen
+3. Du MÅSTE koppla dessa krav till personens faktiska erfarenheter från CV:t
+4. Du FÅR INTE ignorera jobbannonsen och bara skriva generellt om personens CV
+5. Brevet ska visa VARFÖR personen passar för DETTA specifika jobb, inte bara varför de är en bra kandidat generellt`,
         userPrompt: `Skriv ett personligt brev för följande jobb:
 
 FÖRETAG: ${data?.companyName || 'Ej angivet'}
 JOBBTITEL: ${data?.jobTitle || 'Ej angiven'}
 
-JOBBANNONS:
-${data?.jobbAnnons || data?.jobDescription || ''}
-${cvContext}
+${annonsLength > 0 ? `JOBBANNONS (${annonsLength} tecken - LÄS HELA!):
+${jobbAnnonsText.substring(0, 3000)}` : 'OBS: Ingen jobbannons tillgänglig - be om mer information'}
 
-${data?.motivering ? `VARFÖR JAG VILL HA JOBBET:\n${data.motivering}\n` : ''}
-${data?.extraContext ? `EXTRA KONTEXT:\n${data.extraContext}\n` : ''}
+MIN CV-INFORMATION:${cvContext || '\n(Ingen CV-data tillgänglig)'}
+${data?.extraKeywords ? `\nEXTRA NYCKELORD/INTRESSEN:\n${data.extraKeywords}\n` : ''}
+${data?.motivering ? `\nMIN MOTIVERING:\n${data.motivering}\n` : ''}
 
-VIKTIGT:
-- Brevet ska vara 250-350 ord
-- Koppla specifikt min erfarenhet till jobbets krav
-- Nämn företagsnamnet i inledningen
-- Använd mina faktiska erfarenheter från CV:t
-- Avsluta med att be om intervju
+EXAKTA INSTRUKTIONER:
+${annonsLength > 100 ? `1. Analysera jobbannonsen ovan och identifiera 2-3 specifika krav eller önskemål
+2. Hitta motsvarande erfarenheter i mitt CV som matchar dessa krav
+3. Skriv brevet så att det tydligt kopplar mina erfarenheter till jobbets specifika krav
+4. Använd formuleringar som "Eftersom ni söker någon med [krav från annons], kan jag bidra med..."` : '1. OBS: Ingen jobbannons finns - skriv ett generellt brev baserat på CV:t'}
+5. Brevet ska vara 250-350 ord
+6. Nämn företagsnamnet och jobbtiteln tidigt i brevet
+7. Avsluta med att be om intervju
 
-Skriv brevet:`
+Skriv det personliga brevet nu:`
         ,
         maxTokens: 1500
       };
@@ -286,9 +298,24 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Missing function parameter' });
     }
 
-    console.log(`AI call: ${fn}, model: ${DEFAULT_MODEL}`);
-    console.log(`Request body:`, JSON.stringify(req.body).substring(0, 200));
-    console.log(`Request query:`, JSON.stringify(req.query));
+    console.log(`[AI] Function: ${fn}, URL: ${req.url}`);
+    console.log(`[AI] Body keys:`, Object.keys(req.body));
+    console.log(`[AI] Full body (first 500):`, JSON.stringify(req.body).substring(0, 500));
+    
+    // Extra debug för personligt-brev
+    if (fn === 'personligt-brev') {
+      console.log('[AI] === PERSONLIGT BREV DATA ===');
+      console.log('[AI] jobbAnnons length:', data?.jobbAnnons?.length || 0);
+      console.log('[AI] jobbAnnons preview:', data?.jobbAnnons?.substring(0, 150) || 'SAKNAS');
+      console.log('[AI] companyName:', data?.companyName || 'SAKNAS');
+      console.log('[AI] jobTitle:', data?.jobTitle || 'SAKNAS');
+      console.log('[AI] cvData exists:', !!data?.cvData);
+      if (data?.cvData) {
+        console.log('[AI] cvData.firstName:', data.cvData.firstName);
+        console.log('[AI] cvData.skills count:', data.cvData.skills?.length || 0);
+      }
+      console.log('[AI] ============================');
+    }
 
     const { systemPrompt, userPrompt, maxTokens } = buildPrompt(fn, data);
 
