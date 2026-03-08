@@ -20,11 +20,16 @@ import {
   Search,
   Filter,
   Check,
-  X
+  X,
+  Send,
+  Wand2,
+  Briefcase,
+  RefreshCw
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { networkApi, type NetworkContact } from '@/services/careerApi'
 import { showToast } from '@/components/Toast'
+import { COMMON_OCCUPATIONS } from './occupations'
 
 interface NetworkTemplate {
   id: string
@@ -142,6 +147,73 @@ const networkingTips = [
   }
 ]
 
+// AI API call
+async function generateNetworkingStrategyWithAI(data: {
+  occupation: string;
+  experienceLevel: 'entry' | 'mid' | 'senior';
+  goals: string[];
+}) {
+  const response = await fetch('/api/ai/networking', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to generate networking strategy');
+  }
+  
+  return response.json();
+}
+
+// Generate custom message with AI
+async function generateCustomMessageWithAI(data: {
+  contactName: string;
+  contactRole?: string;
+  contactCompany?: string;
+  messageType: 'initial' | 'followup' | 'thankyou';
+  userOccupation: string;
+  purpose: string;
+  relationship: string;
+}) {
+  const response = await fetch('/api/ai/networking', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ 
+      data: {
+        ...data,
+        generateMessage: true
+      }
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Failed to generate message');
+  }
+  
+  return response.json();
+}
+
+interface NetworkingStrategy {
+  strategies: Array<{
+    title: string;
+    description: string;
+    actions: string[];
+    difficulty: 'easy' | 'medium' | 'hard';
+  }>;
+  targetContacts: Array<{
+    type: string;
+    description: string;
+    whereToFind: string[];
+  }>;
+  linkedinTips: string[];
+  conversationStarters: string[];
+  followUpSchedule: Array<{
+    timing: string;
+    action: string;
+  }>;
+}
+
 export default function NetworkingGuide() {
   const [expandedTemplate, setExpandedTemplate] = useState<string | null>(null)
   const [copiedId, setCopiedId] = useState<string | null>(null)
@@ -149,6 +221,24 @@ export default function NetworkingGuide() {
   const [loading, setLoading] = useState(false)
   const [showAddForm, setShowAddForm] = useState(false)
   const [filterStatus, setFilterStatus] = useState<NetworkContact['status'] | 'all'>('all')
+  
+  // AI States
+  const [occupation, setOccupation] = useState('')
+  const [occupationSuggestions, setOccupationSuggestions] = useState<string[]>([])
+  const [showOccupationSuggestions, setShowOccupationSuggestions] = useState(false)
+  const [experienceLevel, setExperienceLevel] = useState<'entry' | 'mid' | 'senior'>('mid')
+  const [networkingGoals, setNetworkingGoals] = useState<string[]>(['job'])
+  const [aiStrategy, setAiStrategy] = useState<NetworkingStrategy | null>(null)
+  const [generatingStrategy, setGeneratingStrategy] = useState(false)
+  const [showAIStrategy, setShowAIStrategy] = useState(false)
+  
+  // AI Message Generator States
+  const [selectedContactForMessage, setSelectedContactForMessage] = useState<NetworkContact | null>(null)
+  const [messageType, setMessageType] = useState<'initial' | 'followup' | 'thankyou'>('initial')
+  const [messagePurpose, setMessagePurpose] = useState('')
+  const [generatedMessage, setGeneratedMessage] = useState('')
+  const [generatingMessage, setGeneratingMessage] = useState(false)
+  const [showMessageGenerator, setShowMessageGenerator] = useState(false)
   
   // Form state
   const [newContact, setNewContact] = useState<Partial<NetworkContact>>({
@@ -252,6 +342,149 @@ export default function NetworkingGuide() {
     })
   }
 
+  const handleOccupationInput = (value: string) => {
+    setOccupation(value)
+    if (value.length >= 2) {
+      const filtered = COMMON_OCCUPATIONS
+        .filter(occ => occ.toLowerCase().includes(value.toLowerCase()))
+        .slice(0, 5)
+      setOccupationSuggestions(filtered)
+      setShowOccupationSuggestions(filtered.length > 0)
+    } else {
+      setShowOccupationSuggestions(false)
+    }
+  }
+
+  const generateNetworkingStrategy = async () => {
+    if (!occupation) {
+      showToast.error('Välj ett yrke först')
+      return
+    }
+
+    setGeneratingStrategy(true)
+    try {
+      const result = await generateNetworkingStrategyWithAI({
+        occupation,
+        experienceLevel,
+        goals: networkingGoals
+      })
+      setAiStrategy(result)
+      setShowAIStrategy(true)
+      showToast.success('Nätverksstrategi genererad!')
+    } catch (error) {
+      showToast.error('Kunde inte generera strategi')
+      // Fallback strategy
+      setAiStrategy(getFallbackStrategy())
+      setShowAIStrategy(true)
+    } finally {
+      setGeneratingStrategy(false)
+    }
+  }
+
+  const generateCustomMessage = async () => {
+    if (!selectedContactForMessage || !messagePurpose) {
+      showToast.error('Fyll i alla fält')
+      return
+    }
+
+    setGeneratingMessage(true)
+    try {
+      const result = await generateCustomMessageWithAI({
+        contactName: selectedContactForMessage.name,
+        contactRole: selectedContactForMessage.role,
+        contactCompany: selectedContactForMessage.company,
+        messageType,
+        userOccupation: occupation || 'jobbsökande',
+        purpose: messagePurpose,
+        relationship: selectedContactForMessage.relationship || 'colleague'
+      })
+      setGeneratedMessage(result.message || result.customMessage || '')
+    } catch (error) {
+      showToast.error('Kunde inte generera meddelande')
+      setGeneratedMessage(getFallbackMessage(selectedContactForMessage, messageType))
+    } finally {
+      setGeneratingMessage(false)
+    }
+  }
+
+  const getFallbackStrategy = (): NetworkingStrategy => ({
+    strategies: [
+      {
+        title: 'Börja med ditt befintliga nätverk',
+        description: 'Kontakta gamla kollegor, klasskamrater och vänner. De känner dig redan och vill hjälpa.',
+        actions: ['Gör en lista på 10 personer du känner', 'Skicka ett personligt meddelande', 'Be om 15 minuters rådgivningssamtal'],
+        difficulty: 'easy'
+      },
+      {
+        title: 'Optimera din LinkedIn-profil',
+        description: 'Se till att din profil är professionell och synlig för rekryterare.',
+        actions: ['Uppdatera rubriken med ditt mål', 'Skriv en sammanfattning som visar passion', 'Aktivera "Open to Work" om lämpligt'],
+        difficulty: 'easy'
+      },
+      {
+        title: 'Delta i branschevenemang',
+        description: 'Nätverka på konferenser, meetups och seminarier i din bransch.',
+        actions: ['Sök efter kommande evenemang', 'Förbered en 30-sekunders pitch', 'Följ upp med nya kontakter inom 24 timmar'],
+        difficulty: 'medium'
+      }
+    ],
+    targetContacts: [
+      {
+        type: 'Rekryterare',
+        description: 'Specialister som hjälper företag att hitta rätt talanger',
+        whereToFind: ['LinkedIn', 'Rekryteringsbyråer', 'Branschevenemang']
+      },
+      {
+        type: 'Branschkollegor',
+        description: 'Personer som arbetar i samma bransch och kan dela insikter',
+        whereToFind: ['LinkedIn-grupper', 'Branschföreningar', 'Meetups']
+      }
+    ],
+    linkedinTips: [
+      'Skicka alltid ett personligt meddelande med connection requests',
+      'Engagera dig i andras inlägg innan du ber om hjälp',
+      'Dela med dig av din kunskap genom egna inlägg'
+    ],
+    conversationStarters: [
+      'Vad är det mest spännande du arbetar med just nu?',
+      'Hur kom du in i den här branschen?',
+      'Vilka trender ser du inom vårt område just nu?'
+    ],
+    followUpSchedule: [
+      { timing: 'Direkt efter mötet', action: 'Skicka ett tack-meddelande' },
+      { timing: '1 vecka senare', action: 'Dela en intressant artikel relaterat till ert samtal' },
+      { timing: '1 månad senare', action: 'Ge en kort uppdatering om dina framsteg' }
+    ]
+  })
+
+  const getFallbackMessage = (contact: NetworkContact, type: string): string => {
+    if (type === 'initial') {
+      return `Hej ${contact.name}!
+
+Jag hoppas allt är bra med dig. Jag söker just nu nya möjligheter och skulle väldigt gärna vilja höra om du har några tips eller råd att dela med dig av.
+
+Det vore jättetrevligt att få prata en stund när du har möjlighet!
+
+Vänliga hälsningar`
+    } else if (type === 'followup') {
+      return `Hej ${contact.name}!
+
+Jag ville bara följa upp mitt tidigare meddelande. Jag skulle fortfarande jättegärna vilja prata med dig om möjligheterna inom branschen.
+
+Hoppas vi kan höras snart!
+
+Vänliga hälsningar`
+    } else {
+      return `Hej ${contact.name}!
+
+Jag ville bara säga tack för att du tog dig tid att prata med mig. Dina råd betydde verkligen mycket!
+
+Jag återkommer gärna med en uppdatering om hur det går.
+
+Varmt tack igen!`
+    }
+  }
+
   const filteredContacts = filterStatus === 'all' 
     ? contacts 
     : contacts.filter(c => c.status === filterStatus)
@@ -276,10 +509,14 @@ export default function NetworkingGuide() {
     return colors[status] || 'bg-slate-100 text-slate-600'
   }
 
-  const handleCopy = (template: NetworkTemplate) => {
-    navigator.clipboard.writeText(template.template)
-    setCopiedId(template.id)
-    setTimeout(() => setCopiedId(null), 2000)
+  const handleCopy = (text: string, id?: string) => {
+    navigator.clipboard.writeText(text)
+    if (id) {
+      setCopiedId(id)
+      setTimeout(() => setCopiedId(null), 2000)
+    } else {
+      showToast.success('Kopierat!')
+    }
   }
 
   return (
@@ -298,6 +535,191 @@ export default function NetworkingGuide() {
         </p>
       </div>
 
+      {/* AI Strategy Generator */}
+      <div className="bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl p-6 border border-violet-200">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 bg-violet-500 rounded-xl flex items-center justify-center">
+            <Wand2 size={20} className="text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-semibold text-slate-900">AI Nätverksstrategi</h3>
+            <p className="text-sm text-slate-600">Få en personlig nätverksplan med AI</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+          <div className="relative">
+            <label className="block text-sm font-medium text-slate-700 mb-1">Ditt yrke/mål *</label>
+            <input
+              type="text"
+              value={occupation}
+              onChange={(e) => handleOccupationInput(e.target.value)}
+              placeholder="T.ex. Systemutvecklare"
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+            />
+            {showOccupationSuggestions && (
+              <div className="absolute z-10 w-full bg-white border border-slate-200 rounded-lg shadow-lg mt-1">
+                {occupationSuggestions.map((occ) => (
+                  <button
+                    key={occ}
+                    onClick={() => {
+                      setOccupation(occ)
+                      setShowOccupationSuggestions(false)
+                    }}
+                    className="w-full text-left px-4 py-2 hover:bg-violet-50 text-sm"
+                  >
+                    {occ}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Erfarenhetsnivå</label>
+            <select
+              value={experienceLevel}
+              onChange={(e) => setExperienceLevel(e.target.value as any)}
+              className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+            >
+              <option value="entry">Junior (0-2 år)</option>
+              <option value="mid">Medel (3-7 år)</option>
+              <option value="senior">Senior (8+ år)</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-1">Mål med nätverkande</label>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { id: 'job', label: 'Hitta jobb' },
+                { id: 'learn', label: 'Lära mig' },
+                { id: 'collaborate', label: 'Samarbeta' }
+              ].map((goal) => (
+                <button
+                  key={goal.id}
+                  onClick={() => {
+                    if (networkingGoals.includes(goal.id)) {
+                      setNetworkingGoals(networkingGoals.filter(g => g !== goal.id))
+                    } else {
+                      setNetworkingGoals([...networkingGoals, goal.id])
+                    }
+                  }}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                    networkingGoals.includes(goal.id)
+                      ? 'bg-violet-500 text-white'
+                      : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {goal.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <button
+          onClick={generateNetworkingStrategy}
+          disabled={generatingStrategy || !occupation}
+          className="w-full md:w-auto px-6 py-2.5 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+        >
+          {generatingStrategy ? (
+            <>
+              <RefreshCw size={18} className="animate-spin" />
+              Skapar strategi...
+            </>
+          ) : (
+            <>
+              <Sparkles size={18} />
+              Generera nätverksstrategi
+            </>
+          )}
+        </button>
+
+        {/* AI Strategy Results */}
+        {showAIStrategy && aiStrategy && (
+          <div className="mt-6 space-y-6">
+            {/* Strategies */}
+            <div>
+              <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                <Target size={18} className="text-violet-500" />
+                Strategier för dig
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {aiStrategy.strategies.map((strategy, idx) => (
+                  <div key={idx} className="bg-white rounded-xl p-4 border border-slate-200">
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        strategy.difficulty === 'easy' ? 'bg-green-100 text-green-700' :
+                        strategy.difficulty === 'medium' ? 'bg-amber-100 text-amber-700' :
+                        'bg-red-100 text-red-700'
+                      }`}>
+                        {strategy.difficulty === 'easy' ? 'Lätt' :
+                         strategy.difficulty === 'medium' ? 'Medel' : 'Avancerad'}
+                      </span>
+                    </div>
+                    <h5 className="font-medium text-slate-800 mb-1">{strategy.title}</h5>
+                    <p className="text-sm text-slate-600 mb-3">{strategy.description}</p>
+                    <ul className="space-y-1">
+                      {strategy.actions.map((action, i) => (
+                        <li key={i} className="text-sm text-slate-500 flex items-start gap-2">
+                          <Check size={14} className="text-violet-500 mt-0.5 flex-shrink-0" />
+                          {action}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Target Contacts */}
+            <div>
+              <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                <Users size={18} className="text-violet-500" />
+                Vilka du bör kontakta
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {aiStrategy.targetContacts.map((contact, idx) => (
+                  <div key={idx} className="bg-white rounded-xl p-4 border border-slate-200">
+                    <h5 className="font-medium text-slate-800 mb-1">{contact.type}</h5>
+                    <p className="text-sm text-slate-600 mb-2">{contact.description}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {contact.whereToFind.map((place, i) => (
+                        <span key={i} className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded-full">
+                          {place}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Conversation Starters */}
+            <div className="bg-white rounded-xl p-4 border border-slate-200">
+              <h4 className="font-medium text-slate-900 mb-3 flex items-center gap-2">
+                <MessageCircle size={18} className="text-violet-500" />
+                Konversationsöppnare
+              </h4>
+              <div className="space-y-2">
+                {aiStrategy.conversationStarters.map((starter, idx) => (
+                  <div key={idx} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
+                    <span className="text-sm text-slate-700">"{starter}"</span>
+                    <button
+                      onClick={() => handleCopy(starter)}
+                      className="p-1.5 text-slate-400 hover:text-violet-500"
+                    >
+                      <Copy size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-white rounded-xl p-5 border border-slate-200">
@@ -309,7 +731,7 @@ export default function NetworkingGuide() {
             Se till att din profil är uppdaterad och professionell.
           </p>
           <a 
-            href="/cv" 
+            href="#/cv" 
             className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 mt-3"
           >
             Gå till CV-byggaren <ChevronDown size={14} className="-rotate-90" />
@@ -350,14 +772,128 @@ export default function NetworkingGuide() {
             <Users size={20} className="text-teal-500" />
             Dina kontakter ({contacts.length})
           </h3>
-          <button
-            onClick={() => setShowAddForm(!showAddForm)}
-            className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
-          >
-            <Plus size={18} />
-            Lägg till kontakt
-          </button>
+          <div className="flex gap-2">
+            {contacts.length > 0 && (
+              <button
+                onClick={() => setShowMessageGenerator(true)}
+                className="flex items-center gap-2 px-4 py-2 bg-violet-100 text-violet-700 rounded-xl font-medium hover:bg-violet-200 transition-colors"
+              >
+                <Wand2 size={18} />
+                AI-meddelande
+              </button>
+            )}
+            <button
+              onClick={() => setShowAddForm(!showAddForm)}
+              className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-600 transition-colors"
+            >
+              <Plus size={18} />
+              Lägg till kontakt
+            </button>
+          </div>
         </div>
+
+        {/* AI Message Generator Modal */}
+        {showMessageGenerator && (
+          <div className="mb-6 p-4 bg-violet-50 rounded-xl border border-violet-200">
+            <div className="flex items-center justify-between mb-4">
+              <h4 className="font-medium text-slate-900 flex items-center gap-2">
+                <Wand2 size={18} className="text-violet-500" />
+                Skapa personligt meddelande med AI
+              </h4>
+              <button
+                onClick={() => {
+                  setShowMessageGenerator(false)
+                  setGeneratedMessage('')
+                  setSelectedContactForMessage(null)
+                }}
+                className="p-1.5 text-slate-400 hover:text-slate-600"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Välj kontakt</label>
+                <select
+                  value={selectedContactForMessage?.id || ''}
+                  onChange={(e) => {
+                    const contact = contacts.find(c => c.id === e.target.value)
+                    setSelectedContactForMessage(contact || null)
+                  }}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                >
+                  <option value="">Välj kontakt...</option>
+                  {contacts.map(contact => (
+                    <option key={contact.id} value={contact.id}>
+                      {contact.name} {contact.company && `(${contact.company})`}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">Typ av meddelande</label>
+                <select
+                  value={messageType}
+                  onChange={(e) => setMessageType(e.target.value as any)}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                >
+                  <option value="initial">Första kontakten</option>
+                  <option value="followup">Uppföljning</option>
+                  <option value="thankyou">Tack-meddelande</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-slate-700 mb-1">Syfte med kontakten</label>
+              <input
+                type="text"
+                value={messagePurpose}
+                onChange={(e) => setMessagePurpose(e.target.value)}
+                placeholder="T.ex. Be om råd om karriärbyte, be om referens, etc."
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+            </div>
+
+            <button
+              onClick={generateCustomMessage}
+              disabled={generatingMessage || !selectedContactForMessage || !messagePurpose}
+              className="w-full md:w-auto px-6 py-2 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors disabled:opacity-50 flex items-center justify-center gap-2 mb-4"
+            >
+              {generatingMessage ? (
+                <>
+                  <RefreshCw size={18} className="animate-spin" />
+                  Skapar meddelande...
+                </>
+              ) : (
+                <>
+                  <Send size={18} />
+                  Generera meddelande
+                </>
+              )}
+            </button>
+
+            {generatedMessage && (
+              <div className="bg-white rounded-xl p-4 border border-slate-200">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-sm font-medium text-slate-700">Ditt AI-genererade meddelande:</span>
+                  <button
+                    onClick={() => handleCopy(generatedMessage)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-violet-100 text-violet-700 rounded-lg text-sm font-medium hover:bg-violet-200"
+                  >
+                    <Copy size={14} />
+                    Kopiera
+                  </button>
+                </div>
+                <pre className="text-sm text-slate-700 whitespace-pre-wrap font-sans leading-relaxed">
+                  {generatedMessage}
+                </pre>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Filter */}
         {contacts.length > 0 && (
@@ -582,6 +1118,16 @@ export default function NetworkingGuide() {
                   )}
                 </div>
                 <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => {
+                      setSelectedContactForMessage(contact)
+                      setShowMessageGenerator(true)
+                    }}
+                    className="p-2 text-violet-600 hover:bg-violet-50 rounded-lg"
+                    title="Skapa AI-meddelande"
+                  >
+                    <Wand2 size={18} />
+                  </button>
                   {contact.linkedin_url && (
                     <a
                       href={contact.linkedin_url}
@@ -687,7 +1233,7 @@ export default function NetworkingGuide() {
                         Mall
                       </span>
                       <button
-                        onClick={() => handleCopy(template)}
+                        onClick={() => handleCopy(template.template, template.id)}
                         className={cn(
                           'flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
                           copiedId === template.id
@@ -747,7 +1293,7 @@ export default function NetworkingGuide() {
             </p>
           </div>
           <a
-            href="/exercises"
+            href="#/exercises"
             className="px-5 py-2.5 bg-white text-teal-600 rounded-xl font-medium hover:bg-teal-50 transition-colors flex items-center gap-2"
           >
             <Sparkles size={18} />
