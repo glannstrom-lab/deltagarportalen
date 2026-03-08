@@ -62,9 +62,9 @@ export default defineConfig(({ mode }) => ({
           }
           return `assets/[name]-[hash][extname]`
         },
-        // Chunk naming
-        chunkFileNames: 'js/[name]-[hash].js',
-        entryFileNames: 'js/[name]-[hash].js',
+        // Chunk naming - place all JS in assets folder for consistency
+        chunkFileNames: 'assets/[name]-[hash].js',
+        entryFileNames: 'assets/[name]-[hash].js',
       },
     },
     // Minification options
