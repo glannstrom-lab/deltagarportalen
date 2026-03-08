@@ -1,26 +1,37 @@
 /**
- * Mobile-optimized simplified cover letter form
+ * Mobile-optimized cover letter form with full functionality
  */
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Sparkles, Save, RotateCcw } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, Save, RotateCcw, Bookmark, FileText, Palette, Lightbulb, ChevronDown, ChevronUp } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { PromptButtons } from './PromptButtons'
 import { WordCounter } from './WordCounter'
+import { coverLetterTemplates } from './templates'
+import type { CoverLetterTemplate } from './types'
 
-type Step = 'company' | 'job' | 'why' | 'review'
+type Step = 'company' | 'job' | 'details' | 'review'
 
 interface MobileSimplifiedProps {
   company: string
   jobTitle: string
   jobAd: string
   letter: string
+  extraKeywords: string
+  ton: 'professionell' | 'entusiastisk' | 'formell'
+  selectedTemplate: string
+  savedLettersCount: number
+  isGenerating: boolean
+  hasCV: boolean
   onCompanyChange: (value: string) => void
   onJobTitleChange: (value: string) => void
   onJobAdChange: (value: string) => void
+  onExtraKeywordsChange: (value: string) => void
   onLetterChange: (value: string) => void
+  onTonChange: (ton: 'professionell' | 'entusiastisk' | 'formell') => void
+  onTemplateChange: (templateId: string) => void
   onGenerate: () => void
-  isGenerating: boolean
+  onShowSavedLetters: () => void
 }
 
 export function MobileSimplified({
@@ -28,20 +39,33 @@ export function MobileSimplified({
   jobTitle,
   jobAd,
   letter,
+  extraKeywords,
+  ton,
+  selectedTemplate,
+  savedLettersCount,
+  isGenerating,
+  hasCV,
   onCompanyChange,
   onJobTitleChange,
   onJobAdChange,
+  onExtraKeywordsChange,
   onLetterChange,
+  onTonChange,
+  onTemplateChange,
   onGenerate,
-  isGenerating
+  onShowSavedLetters
 }: MobileSimplifiedProps) {
   const [step, setStep] = useState<Step>('company')
   const [tempLetter, setTempLetter] = useState(letter)
+  const [showTemplates, setShowTemplates] = useState(false)
+
+  const templates = coverLetterTemplates
+  const selectedTemplateObj = templates.find(t => t.id === selectedTemplate)
 
   const steps: { id: Step; title: string; description: string }[] = [
     { id: 'company', title: 'Företag', description: 'Vilket företag söker du till?' },
     { id: 'job', title: 'Tjänst', description: 'Vilken tjänst gäller det?' },
-    { id: 'why', title: 'Varför', description: 'Vad lockar dig med jobbet?' },
+    { id: 'details', title: 'Detaljer', description: 'Anpassa ditt brev' },
     { id: 'review', title: 'Granska', description: 'Ditt personliga brev' },
   ]
 
@@ -71,9 +95,18 @@ export function MobileSimplified({
     switch (step) {
       case 'company': return company.length > 0
       case 'job': return jobTitle.length > 0
-      case 'why': return jobAd.length > 10
+      case 'details': return jobAd.length > 10
       case 'review': return true
       default: return false
+    }
+  }
+
+  const getTonLabel = (t: string) => {
+    switch (t) {
+      case 'professionell': return 'Professionell'
+      case 'entusiastisk': return 'Entusiastisk'
+      case 'formell': return 'Formell'
+      default: return 'Professionell'
     }
   }
 
@@ -99,6 +132,25 @@ export function MobileSimplified({
           </div>
         ))}
       </div>
+
+      {/* Saved Letters Button */}
+      {savedLettersCount > 0 && (
+        <button
+          onClick={onShowSavedLetters}
+          className="w-full flex items-center justify-center gap-2 py-2 px-4 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm transition-colors"
+        >
+          <Bookmark className="w-4 h-4" />
+          {savedLettersCount} sparade brev
+        </button>
+      )}
+
+      {/* CV Status */}
+      {hasCV && (
+        <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">
+          <FileText className="w-4 h-4" />
+          Ditt CV kommer användas för att skräddarsy brevet
+        </div>
+      )}
 
       {/* Current Step Title */}
       <div className="text-center">
@@ -151,16 +203,96 @@ export function MobileSimplified({
           </div>
         )}
 
-        {step === 'why' && (
-          <div className="space-y-4">
-            <textarea
-              value={jobAd}
-              onChange={(e) => onJobAdChange(e.target.value)}
-              placeholder="Klistra in jobbannonsen eller skriv vad som lockar dig..."
-              rows={5}
-              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-none"
-              autoFocus
-            />
+        {step === 'details' && (
+          <div className="space-y-5">
+            {/* Job Ad */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Jobbannons</label>
+              <textarea
+                value={jobAd}
+                onChange={(e) => onJobAdChange(e.target.value)}
+                placeholder="Klistra in jobbannonsen här..."
+                rows={5}
+                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-none"
+              />
+              <p className="text-xs text-slate-500">
+                Ju mer information du ger, desto bättre blir brevet
+              </p>
+            </div>
+
+            {/* Extra Keywords */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">
+                Extra nyckelord/intressen <span className="text-slate-400 font-normal">(valfritt)</span>
+              </label>
+              <textarea
+                value={extraKeywords}
+                onChange={(e) => onExtraKeywordsChange(e.target.value)}
+                placeholder="T.ex. certifieringar, mjuka kompetenser, specifika verktyg..."
+                rows={2}
+                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-none"
+              />
+            </div>
+
+            {/* Tone Selection */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                <Palette className="w-4 h-4" />
+                Ton i brevet
+              </label>
+              <div className="flex gap-2">
+                {(['professionell', 'entusiastisk', 'formell'] as const).map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => onTonChange(t)}
+                    className={`flex-1 py-2 px-3 rounded-lg text-sm font-medium transition-colors ${
+                      ton === t
+                        ? 'bg-teal-500 text-white'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {getTonLabel(t)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Template Selection */}
+            <div className="space-y-2">
+              <button
+                onClick={() => setShowTemplates(!showTemplates)}
+                className="w-full flex items-center justify-between py-2 px-3 bg-slate-50 rounded-lg text-sm text-slate-700"
+              >
+                <span className="flex items-center gap-2">
+                  <Lightbulb className="w-4 h-4" />
+                  {selectedTemplateObj?.label || 'Välj mall'}
+                </span>
+                {showTemplates ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              </button>
+              
+              {showTemplates && (
+                <div className="space-y-2 mt-2">
+                  {templates.map((template) => (
+                    <button
+                      key={template.id}
+                      onClick={() => {
+                        onTemplateChange(template.id)
+                        setShowTemplates(false)
+                      }}
+                      className={`w-full text-left p-3 rounded-lg border transition-colors ${
+                        selectedTemplate === template.id
+                          ? 'border-teal-500 bg-teal-50'
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <p className="font-medium text-sm text-slate-800">{template.label}</p>
+                      <p className="text-xs text-slate-500 mt-1">{template.description}</p>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <PromptButtons 
               type="motivation" 
               onSelect={(text) => onJobAdChange(jobAd + ' ' + text)} 
@@ -170,31 +302,45 @@ export function MobileSimplified({
 
         {step === 'review' && (
           <div className="space-y-4">
-            <textarea
-              value={tempLetter}
-              onChange={(e) => {
-                setTempLetter(e.target.value)
-                onLetterChange(e.target.value)
-              }}
-              placeholder="Ditt personliga brev visas här..."
-              rows={10}
-              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-y"
-            />
-            
-            <WordCounter 
-              text={tempLetter} 
-              compact 
-              showProgress
-            />
-            
-            <PromptButtons 
-              type="opening" 
-              onSelect={handleInsertPrompt} 
-            />
-            <PromptButtons 
-              type="closing" 
-              onSelect={handleInsertPrompt} 
-            />
+            {letter ? (
+              <>
+                <textarea
+                  value={tempLetter}
+                  onChange={(e) => {
+                    setTempLetter(e.target.value)
+                    onLetterChange(e.target.value)
+                  }}
+                  placeholder="Ditt personliga brev visas här..."
+                  rows={10}
+                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-y"
+                />
+                
+                <WordCounter 
+                  text={tempLetter} 
+                  compact 
+                  showProgress
+                />
+                
+                <PromptButtons 
+                  type="opening" 
+                  onSelect={handleInsertPrompt} 
+                />
+                <PromptButtons 
+                  type="closing" 
+                  onSelect={handleInsertPrompt} 
+                />
+              </>
+            ) : (
+              <div className="text-center py-8 space-y-4">
+                <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
+                  <Sparkles className="w-8 h-8 text-slate-400" />
+                </div>
+                <div>
+                  <p className="text-slate-600">Inget brev skapat ännu</p>
+                  <p className="text-sm text-slate-500">Gå tillbaka och fyll i informationen, sedan kan du skapa ett brev med AI</p>
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -224,7 +370,7 @@ export function MobileSimplified({
         ) : (
           <Button
             onClick={onGenerate}
-            disabled={isGenerating || tempLetter.length < 50}
+            disabled={isGenerating || (jobAd.length < 10 && !hasCV)}
             className="flex-1 py-3 text-base bg-teal-500 hover:bg-teal-600"
           >
             {isGenerating ? (
@@ -235,12 +381,19 @@ export function MobileSimplified({
             ) : (
               <>
                 <Sparkles className="w-5 h-5 mr-1" />
-                Förbättra med AI
+                Skapa med AI
               </>
             )}
           </Button>
         )}
       </div>
+
+      {/* Helper text */}
+      {step === 'details' && (
+        <p className="text-xs text-center text-slate-500">
+          AI:n använder din jobbannons och CV för att skapa ett skräddarsytt brev
+        </p>
+      )}
     </div>
   )
 }

@@ -717,20 +717,81 @@ export default function CoverLetterGenerator() {
           </p>
         </div>
         
-        <MobileSimplified
-          company={company}
-          jobTitle={jobTitle}
-          jobAd={jobbAnnons}
-          letter={generatedBrev}
-          onCompanyChange={setCompany}
-          onJobTitleChange={setJobTitle}
-          onJobAdChange={setJobbAnnons}
-          onLetterChange={setGeneratedBrev}
-          onGenerate={handleGenerate}
-          isGenerating={isGenerating}
-        />
+        {/* Saved Letters Modal for Mobile */}
+        {showSaved ? (
+          <div className="bg-white rounded-xl border border-slate-200 p-4">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-semibold text-slate-800">Dina sparade brev</h3>
+              <button
+                onClick={() => setShowSaved(false)}
+                className="text-sm text-slate-500 hover:text-slate-700"
+              >
+                Stäng
+              </button>
+            </div>
+            <div className="space-y-3 max-h-96 overflow-y-auto">
+              {savedLetters.length === 0 ? (
+                <p className="text-slate-500 text-center py-4 text-sm">Inga sparade brev ännu</p>
+              ) : (
+                savedLetters.map((letter) => (
+                  <div
+                    key={letter.id}
+                    className="flex items-center justify-between p-3 bg-slate-50 rounded-lg"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="font-medium text-slate-900 truncate">{letter.title}</p>
+                      <p className="text-sm text-slate-500">
+                        {new Date(letter.createdAt).toLocaleDateString('sv-SE')}
+                        {letter.company && ` • ${letter.company}`}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 ml-4">
+                      <button
+                        onClick={() => {
+                          handleLoad(letter)
+                          setShowSaved(false)
+                        }}
+                        className="px-3 py-1 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                      >
+                        Öppna
+                      </button>
+                      <button
+                        onClick={() => handleDelete(letter.id)}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        ) : (
+          <MobileSimplified
+            company={company}
+            jobTitle={jobTitle}
+            jobAd={jobbAnnons}
+            letter={generatedBrev}
+            extraKeywords={extraKeywords}
+            ton={ton}
+            selectedTemplate={selectedTemplate}
+            savedLettersCount={savedLetters.length}
+            isGenerating={isGenerating}
+            hasCV={!!cvData}
+            onCompanyChange={setCompany}
+            onJobTitleChange={setJobTitle}
+            onJobAdChange={setJobbAnnons}
+            onExtraKeywordsChange={setExtraKeywords}
+            onLetterChange={setGeneratedBrev}
+            onTonChange={setTon}
+            onTemplateChange={setSelectedTemplate}
+            onGenerate={handleGenerate}
+            onShowSavedLetters={() => setShowSaved(true)}
+          />
+        )}
         
-        {error && (
+        {error && !showSaved && (
           <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-sm">
             {error}
           </div>
