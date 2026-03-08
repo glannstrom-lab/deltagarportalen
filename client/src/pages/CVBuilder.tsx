@@ -180,23 +180,52 @@ export default function CVBuilder() {
   const { saveStatus, lastSavedAt, hasUnsavedChanges } = useCVAutoSave(data)
   const { restoreDraft, clearDraft } = useCVDraft()
   
-  // Fråga om att återställa draft vid mount
+  // Fråga om att återställa draft vid mount - efter att server data laddats
   useEffect(() => {
     // Visa onboarding om användaren inte sett den tidigare
     if (shouldShowOnboarding()) {
       setTimeout(() => setShowOnboarding(true), 500)
     }
-    
-    const draft = restoreDraft()
-    if (draft && !data.firstName) {
-      // Endast om vi inte redan har data
-      const hasData = Object.values(draft).some(v => 
-        v && (typeof v === 'string' ? v.length > 0 : Array.isArray(v) ? v.length > 0 : true)
-      )
-      if (hasData && confirm('Du har ett osparat utkast. Vill du återställa det?')) {
+  }, [])
+  
+  // Separat effect för draft restoration som körs efter data laddats
+  useEffect(() => {
+    // Vänta tills data har laddats från servern
+    const checkAndRestoreDraft = async () => {
+      // Ge tid för server-data att laddas
+      await new Promise(r => setTimeout(r, 1000))
+      
+      const draft = restoreDraft()
+      if (!draft) return
+      
+      // Kolla om draft faktiskt har annat innehåll än vad som redan är laddat
+      const draftContent = JSON.stringify(draft)
+      const currentContent = JSON.stringify({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        title: data.title,
+        summary: data.summary,
+        workExperience: data.workExperience,
+        education: data.education,
+        skills: data.skills,
+      })
+      
+      // Om draft är samma som nuvarande data, rensa det och fråga inte
+      if (draftContent === currentContent) {
+        clearDraft()
+        return
+      }
+      
+      // Fråga användaren
+      if (confirm('Du har ett osparat utkast som är nyare än din sparade version. Vill du återställa det?')) {
         setData(prev => ({ ...prev, ...draft }))
+      } else {
+        // Om användaren inte vill återställa, rensa draftet
+        clearDraft()
       }
     }
+    
+    checkAndRestoreDraft()
   }, [])
 
   const completedSteps = [

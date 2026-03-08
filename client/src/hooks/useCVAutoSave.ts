@@ -53,6 +53,9 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
       markSaved()
       queryClient.invalidateQueries({ queryKey: ['cv'] })
       setPendingCount(0)
+      // Clear localStorage draft on successful save
+      localStorage.removeItem('cv-draft')
+      localStorage.setItem('cv-last-saved', Date.now().toString())
     },
     onError: (error: any) => {
       console.error('Auto-save failed:', error)
@@ -169,6 +172,7 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
 
 /**
  * Hook to restore draft from localStorage
+ * Only returns draft if it contains meaningful unsaved data
  */
 export function useCVDraft() {
   const { setHasDraft } = useCVStore()
@@ -188,6 +192,32 @@ export function useCVDraft() {
         return null
       }
       
+      // Check if draft is newer than last server save
+      const lastSaved = localStorage.getItem('cv-last-saved')
+      if (lastSaved) {
+        const lastSavedTime = parseInt(lastSaved)
+        // If server save happened after draft was created, draft is stale
+        if (lastSavedTime > (_timestamp || 0)) {
+          localStorage.removeItem('cv-draft')
+          return null
+        }
+      }
+      
+      // Check if draft has meaningful content (not just empty fields)
+      const hasContent = Object.entries(data).some(([key, value]) => {
+        // Skip metadata fields
+        if (key.startsWith('_')) return false
+        
+        if (typeof value === 'string') return value.trim().length > 0
+        if (Array.isArray(value)) return value.length > 0
+        return value != null
+      })
+      
+      if (!hasContent) {
+        localStorage.removeItem('cv-draft')
+        return null
+      }
+      
       setHasDraft(true)
       return data as CVData
     } catch {
@@ -197,6 +227,7 @@ export function useCVDraft() {
   
   const clearDraft = useCallback(() => {
     localStorage.removeItem('cv-draft')
+    localStorage.removeItem('cv-last-saved')
     setHasDraft(false)
   }, [setHasDraft])
   
