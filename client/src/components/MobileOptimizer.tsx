@@ -15,52 +15,41 @@ const isMobileUserAgent = (): boolean => {
 }
 
 export function useMobileOptimization(): MobileOptimizationState {
-  // Initial check during first render - use both width and user agent
-  const getInitialState = (): MobileOptimizationState => {
-    if (typeof window === 'undefined') {
-      return {
-        isMobile: false,
-        isTablet: false,
-        isLandscape: false,
-        simplifiedView: false,
-        touchZone: 'center'
-      }
-    }
-    const width = window.innerWidth
-    const height = window.innerHeight
-    const mobileUA = isMobileUserAgent()
-    // Use lower breakpoint (768) but also check user agent for high-DPI phones
-    const isMobile = width < 768 || (mobileUA && width < 1024)
-    return {
-      isMobile,
-      isTablet: width >= 768 && width < 1024,
-      isLandscape: width > height,
-      simplifiedView: width < 360 || (width < 768 && height < 600),
-      touchZone: 'center'
-    }
-  }
-
-  const [state, setState] = useState<MobileOptimizationState>(getInitialState)
+  const [state, setState] = useState<MobileOptimizationState>({
+    isMobile: false,
+    isTablet: false,
+    isLandscape: false,
+    simplifiedView: false,
+    touchZone: 'center'
+  })
 
   useEffect(() => {
     const checkDevice = () => {
+      if (typeof window === 'undefined') return
+      
       const width = window.innerWidth
       const height = window.innerHeight
-      const isLandscape = width > height
       const mobileUA = isMobileUserAgent()
-      // Use lower breakpoint but also check user agent for high-DPI phones
-      const isMobile = width < 768 || (mobileUA && width < 1024)
       
-      setState(prev => ({
-        ...prev,
+      // STRICT: Om skärmen är mindre än 768px ELLER om det är en mobil user agent, visa mobilvy
+      const isMobile = width < 768 || mobileUA
+      const isTablet = width >= 768 && width < 1024 && !mobileUA
+      
+      console.log('[MobileOptimizer] width:', width, 'mobileUA:', mobileUA, 'isMobile:', isMobile)
+      
+      setState({
         isMobile,
-        isTablet: width >= 768 && width < 1024,
-        isLandscape,
+        isTablet,
+        isLandscape: width > height,
         simplifiedView: width < 360 || (width < 768 && height < 600),
-      }))
+        touchZone: 'center'
+      })
     }
 
+    // Kör direkt vid mount
     checkDevice()
+    
+    // Lyssna på ändringar
     window.addEventListener('resize', checkDevice)
     window.addEventListener('orientationchange', checkDevice)
 
