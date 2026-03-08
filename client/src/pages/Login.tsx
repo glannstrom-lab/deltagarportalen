@@ -233,7 +233,7 @@ export default function Login() {
         {/* Back Link */}
         <div className="mt-6 text-center">
           <Link to="/" className="text-teal-200 hover:text-white text-sm">
-            ← Tillbaka till startsidan
+            ← Tillbaka till Jobin
           </Link>
         </div>
       </div>

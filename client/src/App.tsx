@@ -8,6 +8,7 @@ import { Loader2 } from 'lucide-react'
 import Layout from './components/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import Landing from './pages/Landing'
 
 // Lazy-loaded sidor för bättre prestanda
 const Dashboard = lazy(() => import('./pages/Dashboard'))
@@ -81,7 +82,7 @@ function PrivateRoute({
   }
   
   if (allowedRoles && profile?.role && !allowedRoles.includes(profile.role)) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/dashboard" replace />
   }
   
   return <>{children}</>
@@ -100,7 +101,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
   
   if (isAuthenticated) {
-    return <Navigate to="/" replace />
+    return <Navigate to="/dashboard" replace />
   }
   
   return <>{children}</>
@@ -128,6 +129,13 @@ function App() {
   return (
     <Routes>
       {/* Public routes - eager loaded för snabb initial rendering */}
+      <Route path="/" element={
+        <PublicRoute>
+          <RouteErrorBoundary>
+            <Landing />
+          </RouteErrorBoundary>
+        </PublicRoute>
+      } />
       <Route path="/login" element={
         <PublicRoute>
           <RouteErrorBoundary>
@@ -151,7 +159,7 @@ function App() {
       } />
 
       {/* Protected routes - lazy loaded för bättre prestanda */}
-      <Route path="/" element={
+      <Route path="/dashboard" element={
         <PrivateRoute>
           <Layout />
         </PrivateRoute>
