@@ -8,7 +8,6 @@ import {
   LogOut, 
   Settings,
   HelpCircle,
-  Zap,
   ChevronDown,
   Flame
 } from 'lucide-react'
@@ -21,7 +20,6 @@ interface UserProfile {
   first_name: string
   last_name: string
   avatar_url?: string
-  energy_level?: string
 }
 
 interface Notification {
@@ -77,7 +75,7 @@ export function TopBar() {
     if (!user) return
     const { data } = await supabase
       .from('profiles')
-      .select('first_name, last_name, avatar_url, energy_level')
+      .select('first_name, last_name, avatar_url')
       .eq('id', user.id)
       .single()
     if (data) setProfile(data)
@@ -156,16 +154,6 @@ export function TopBar() {
     return 'Sök jobb, artiklar...'
   }
 
-  // Energy level färg
-  const getEnergyColor = (level?: string) => {
-    switch (level) {
-      case 'high': return 'text-green-500'
-      case 'medium': return 'text-yellow-500'
-      case 'low': return 'text-orange-500'
-      default: return 'text-slate-400'
-    }
-  }
-
   return (
     <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/80 px-4 sm:px-6 py-3 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
@@ -207,18 +195,7 @@ export function TopBar() {
 
         {/* Höger - Actions */}
         <div className="flex items-center gap-1 sm:gap-2">
-          {/* Energy Level Indicator */}
-          {profile?.energy_level && (
-            <div 
-              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50"
-              title={`Energynivå: ${profile.energy_level}`}
-            >
-              <Zap size={16} className={getEnergyColor(profile.energy_level)} />
-              <span className="text-xs font-medium text-slate-600 capitalize">
-                {profile.energy_level === 'high' ? 'Hög' : profile.energy_level === 'medium' ? 'Medel' : 'Låg'}
-              </span>
-            </div>
-          )}
+
 
           {/* Dark Mode Toggle */}
           <button

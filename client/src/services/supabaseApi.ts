@@ -269,14 +269,41 @@ export const cvApi = {
       if (dbData[key] === undefined) delete dbData[key]
     })
     
-    const { data, error } = await supabase
-      .from('cvs')
-      .upsert(dbData)
-      .select()
-      .single()
-    
-    if (error) handleError(error)
-    return data
+    try {
+      // Försök uppdatera först (om raden finns)
+      const { data: existing } = await supabase
+        .from('cvs')
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle()
+      
+      let result
+      if (existing) {
+        // Uppdatera befintlig rad
+        const { data, error } = await supabase
+          .from('cvs')
+          .update(dbData)
+          .eq('user_id', user.id)
+          .select()
+          .single()
+        if (error) throw error
+        result = data
+      } else {
+        // Skapa ny rad
+        const { data, error } = await supabase
+          .from('cvs')
+          .insert(dbData)
+          .select()
+          .single()
+        if (error) throw error
+        result = data
+      }
+      
+      return result
+    } catch (error: any) {
+      handleError(error)
+      throw error
+    }
   },
 
   async getATSAnalysis() {
