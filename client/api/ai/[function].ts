@@ -239,6 +239,55 @@ Ge:
         maxTokens: 1500
       };
 
+    case 'karriarplan':
+      return {
+        systemPrompt: `Du är en expert på karriärutveckling och kompetensöverföring. 
+Din uppgift är att skapa realistiska, skräddarsydda karriärvägar för personer som vill byta eller utveckla sin karriär.
+
+Du ska:
+- Analysera vad personen har idag (nuvarande yrke, erfarenhet)
+- Identifiera vad som krävs för att nå målyrket
+- Skapa konkreta, genomförbara steg
+- Fokusera på överförbara färdigheter
+- Vara realistisk om tidslinjer
+- Inkludera både formell utbildning och praktisk erfarenhet
+
+Svara i JSON-format med följande struktur:
+{
+  "steps": [
+    {
+      "order": 1,
+      "title": "Stegtitel",
+      "description": "Beskrivning av steget",
+      "timeframe": "Tidsram",
+      "actions": ["Åtgärd 1", "Åtgärd 2"],
+      "education": ["Utbildning 1", "Utbildning 2"]
+    }
+  ],
+  "analysis": "Kort analys av övergången",
+  "keySkills": ["Viktig färdighet 1", "Viktig färdighet 2"],
+  "challenges": ["Utmaning 1", "Utmaning 2"]
+}`,
+        userPrompt: `Skapa en detaljerad karriärplan för följande övergång:
+
+NUVARANDE YRKE: ${data?.currentOccupation}
+ERFARENHET: ${data?.experienceYears} år
+MÅLYRKE: ${data?.targetOccupation}
+NUVARANDE LÖN: ${data?.currentSalary} kr/mån
+MÅLLÖN: ${data?.targetSalary} kr/mån
+EFTERFRÅGAN: ${data?.demand === 'high' ? 'Hög' : data?.demand === 'medium' ? 'Medel' : 'Låg'} (${data?.jobCount} lediga jobb)
+
+Skapa 4-5 konkreta steg för karriärövergången. Var specifik om:
+1. Vilka färdigheter som behövs för målyrket
+2. Vilka av nuvarande färdigheter som är överförbara
+3. Konkreta åtgärder för varje steg
+4. Rekommenderad utbildning/kompetensutveckling
+5. Realistisk tidsram
+
+Svara ENDAST med JSON, inget annat.`,
+        maxTokens: 2500
+      };
+
     case 'chatbot':
       const historik = data?.historik || [];
       return {
@@ -324,9 +373,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       { role: 'user', content: userPrompt }
     ], { max_tokens: maxTokens });
 
+    // Parse JSON response for karriarplan
+    let responseData: any = content;
+    if (fn === 'karriarplan') {
+      try {
+        responseData = JSON.parse(content);
+      } catch (e) {
+        console.error('Failed to parse karriarplan JSON:', e);
+        // Return raw content if parsing fails
+        responseData = { raw: content, steps: [] };
+      }
+    }
+
     return res.json({
       success: true,
-      [fn === 'chatbot' ? 'svar' : fn === 'personligt-brev' ? 'brev' : 'result']: content,
+      [fn === 'chatbot' ? 'svar' : fn === 'personligt-brev' ? 'brev' : fn === 'karriarplan' ? 'plan' : 'result']: responseData,
       function: fn,
       model: DEFAULT_MODEL
     });

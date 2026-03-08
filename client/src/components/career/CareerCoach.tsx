@@ -8,6 +8,32 @@ import { careerPathApi, type SavedCareerPath } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 
+// AI API call
+async function generateCareerPlanWithAI(data: {
+  currentOccupation: string;
+  targetOccupation: string;
+  experienceYears: number;
+  currentSalary: number;
+  targetSalary: number;
+  demand: 'high' | 'medium' | 'low';
+  jobCount: number;
+}) {
+  const response = await fetch('/api/ai/karriarplan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      function: 'karriarplan',
+      data
+    })
+  });
+  
+  if (!response.ok) {
+    throw new Error('Kunde inte generera karriärplan');
+  }
+  
+  return response.json();
+}
+
 interface CareerStep {
   order: number;
   title: string;
@@ -155,6 +181,28 @@ export default function CareerCoach() {
       const salaryDiff = targetSalaryValue - currentSalaryValue;
       const estimatedYears = Math.max(1, Math.min(4, Math.ceil(salaryDiff / 10000) - Math.floor(expYears / 3)));
       
+      // Generera AI-baserad karriärplan
+      let aiSteps: CareerStep[] = [];
+      try {
+        const aiResult = await generateCareerPlanWithAI({
+          currentOccupation: currentOccupation.label,
+          targetOccupation: targetOccupation.label,
+          experienceYears: expYears,
+          currentSalary: currentSalaryValue,
+          targetSalary: targetSalaryValue,
+          demand,
+          jobCount
+        });
+        
+        if (aiResult.plan?.steps) {
+          aiSteps = aiResult.plan.steps;
+        }
+      } catch (aiError) {
+        console.error('AI generation failed, using fallback:', aiError);
+        // Fallback till generiska steg om AI misslyckas
+        aiSteps = generateSteps(currentOccupation.label, targetOccupation.label, expYears, estimatedYears);
+      }
+      
       const path: CareerPath = {
         current: {
           occupation: currentOccupation.label,
@@ -169,12 +217,13 @@ export default function CareerCoach() {
         },
         timeline: `${estimatedYears}-${estimatedYears + 1} år`,
         salaryIncrease: targetSalaryValue - currentSalaryValue,
-        steps: generateSteps(currentOccupation.label, targetOccupation.label, expYears, estimatedYears),
+        steps: aiSteps,
       };
       
       setCareerPath(path);
     } catch (error) {
       console.error('Fel vid generering av karriärväg:', error);
+      showToast.error('Kunde inte generera karriärväg');
     } finally {
       setLoading(false);
     }
@@ -267,8 +316,8 @@ export default function CareerCoach() {
         </div>
         
         <p className="text-white/90 max-w-2xl">
-          Berätta var du är idag och vart du vill komma. Vi analyserar marknadslön, 
-          efterfrågan och ger dig en konkret handlingsplan baserat på riktiga data.
+          Berätta var du är idag och vart du vill komma. Vår AI analyserar din bakgrund 
+          och skapar en skräddarsydd karriärplan med konkreta steg för att nå ditt mål.
         </p>
       </div>
 
@@ -392,9 +441,9 @@ export default function CareerCoach() {
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
                   <Loader2 size={18} className="animate-spin" />
-                  Analyserar...
+                  AI skapar din plan...
                 </span>
-              ) : 'Generera karriärväg'}
+              ) : 'Generera karriärväg med AI'}
             </button>
           </div>
         </div>
@@ -404,8 +453,8 @@ export default function CareerCoach() {
       {loading && (
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
           <div className="animate-spin w-10 h-10 border-3 border-[#4f46e5] border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-slate-600">Analyserar din karriärväg...</p>
-          <p className="text-sm text-slate-400 mt-2">Hämtar lönestatistik och marknadsdata från Arbetsförmedlingen</p>
+          <p className="text-slate-600">AI:n skapar din personliga karriärplan...</p>
+          <p className="text-sm text-slate-400 mt-2">Analyserar kompetensöverföring och skapar skräddarsydda steg</p>
         </div>
       )}
 
@@ -546,10 +595,10 @@ export default function CareerCoach() {
       {!loading && !careerPath && (
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Target size={48} className="text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-slate-800 mb-2">Planera din karriär</h3>
+          <h3 className="text-lg font-medium text-slate-800 mb-2">Planera din karriär med AI</h3>
           <p className="text-slate-500 max-w-md mx-auto">
-            Fyll i ditt nuvarande yrke och vart du vill komma så analyserar vi marknadslön, 
-            efterfrågan och skapar en personlig handlingsplan.
+            Fyll i ditt nuvarande yrke och vart du vill komma. Vår AI analyserar 
+            kompetensöverföringen och skapar en skräddarsydd väg framåt.
           </p>
         </div>
       )}
