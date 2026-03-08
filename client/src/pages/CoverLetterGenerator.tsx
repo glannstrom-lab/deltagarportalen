@@ -790,6 +790,7 @@ export default function CoverLetterGenerator() {
             onTemplateChange={setSelectedTemplate}
             onLoadJob={handleLoadJob}
             onGenerate={handleGenerate}
+            onSave={handleSave}
             onShowSavedLetters={() => setShowSaved(true)}
           />
         )}

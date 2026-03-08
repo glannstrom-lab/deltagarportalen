@@ -3,7 +3,7 @@
  */
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Sparkles, RotateCcw, Bookmark, FileText, Palette, Lightbulb, ChevronDown, ChevronUp, Building2, MapPin, Briefcase } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, RotateCcw, Bookmark, FileText, Palette, Lightbulb, ChevronDown, ChevronUp, Building2, MapPin, Briefcase, Save } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { PromptButtons } from './PromptButtons'
 import { WordCounter } from './WordCounter'
@@ -35,6 +35,7 @@ interface MobileSimplifiedProps {
   onTemplateChange: (templateId: string) => void
   onLoadJob: (job: PlatsbankenJob) => void
   onGenerate: () => void
+  onSave?: () => void
   onShowSavedLetters: () => void
 }
 
@@ -60,12 +61,14 @@ export function MobileSimplified({
   onTemplateChange,
   onLoadJob,
   onGenerate,
+  onSave,
   onShowSavedLetters
 }: MobileSimplifiedProps) {
   const [step, setStep] = useState<Step>('company')
   const [tempLetter, setTempLetter] = useState(letter)
   const [showTemplates, setShowTemplates] = useState(false)
   const [showSavedJobs, setShowSavedJobs] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
 
   const templates = coverLetterTemplates
   const selectedTemplateObj = templates.find(t => t.id === selectedTemplate)
@@ -105,6 +108,16 @@ export function MobileSimplified({
     setStep('details')
   }
 
+  const handleSaveLetter = async () => {
+    if (!onSave || !tempLetter.trim()) return
+    setIsSaving(true)
+    try {
+      await onSave()
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   const canProceed = () => {
     switch (step) {
       case 'company': return company.length > 0
@@ -124,28 +137,28 @@ export function MobileSimplified({
     }
   }
 
-  // Visa sparade jobb om användaren vill
+  // Visa sparade jobb som fullskärmsvy
   if (showSavedJobs) {
     return (
       <div className="space-y-4">
         <div className="bg-white rounded-xl border border-slate-200 p-4">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-800">Dina sparade jobb</h3>
+            <h3 className="font-semibold text-slate-800">Välj ett sparat jobb</h3>
             <button
               onClick={() => setShowSavedJobs(false)}
-              className="text-sm text-slate-500 hover:text-slate-700"
+              className="text-sm text-slate-500 hover:text-slate-700 px-3 py-1"
             >
               Stäng
             </button>
           </div>
-          <div className="space-y-3 max-h-96 overflow-y-auto">
+          <div className="space-y-3 max-h-[70vh] overflow-y-auto">
             {savedJobs.length === 0 ? (
               <p className="text-slate-500 text-center py-4 text-sm">Inga sparade jobb ännu</p>
             ) : (
               savedJobs.map((job) => (
                 <div
                   key={job.id}
-                  className="p-3 bg-slate-50 rounded-lg border border-slate-100"
+                  className="p-4 bg-slate-50 rounded-lg border border-slate-100"
                 >
                   <h4 className="font-medium text-slate-900">{job.headline}</h4>
                   <p className="text-sm text-slate-600 flex items-center gap-1 mt-1">
@@ -160,7 +173,7 @@ export function MobileSimplified({
                   )}
                   <button
                     onClick={() => handleLoadJobAndClose(job)}
-                    className="mt-3 w-full py-2 px-3 bg-teal-500 text-white text-sm rounded-lg hover:bg-teal-600 transition-colors"
+                    className="mt-3 w-full py-2.5 px-3 bg-teal-500 text-white text-sm font-medium rounded-lg hover:bg-teal-600 transition-colors"
                   >
                     Använd detta jobb
                   </button>
@@ -196,12 +209,12 @@ export function MobileSimplified({
         ))}
       </div>
 
-      {/* Action Buttons Row */}
+      {/* Action Buttons Row - alltid synlig */}
       <div className="flex gap-2">
         {savedLettersCount > 0 && (
           <button
             onClick={onShowSavedLetters}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm font-medium transition-colors border border-slate-200"
           >
             <Bookmark className="w-4 h-4" />
             {savedLettersCount} brev
@@ -210,7 +223,7 @@ export function MobileSimplified({
         {savedJobsCount > 0 && (
           <button
             onClick={() => setShowSavedJobs(true)}
-            className="flex-1 flex items-center justify-center gap-2 py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm transition-colors"
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 px-3 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg text-sm font-medium transition-colors border border-slate-200"
           >
             <Briefcase className="w-4 h-4" />
             {savedJobsCount} jobb
@@ -220,14 +233,14 @@ export function MobileSimplified({
 
       {/* CV Status */}
       {hasCV && (
-        <div className="flex items-center gap-2 px-3 py-2 bg-emerald-50 text-emerald-700 rounded-lg text-sm">
+        <div className="flex items-center gap-2 px-3 py-2.5 bg-emerald-50 text-emerald-700 rounded-lg text-sm">
           <FileText className="w-4 h-4" />
           Ditt CV kommer användas för att skräddarsy brevet
         </div>
       )}
 
       {/* Current Step Title */}
-      <div className="text-center">
+      <div className="text-center pt-2">
         <h3 className="font-semibold text-slate-800">{steps[currentStepIndex].title}</h3>
         <p className="text-sm text-slate-500">{steps[currentStepIndex].description}</p>
       </div>
@@ -236,14 +249,34 @@ export function MobileSimplified({
       <div className="bg-white rounded-xl border border-slate-200 p-4">
         {step === 'company' && (
           <div className="space-y-4">
-            <input
-              type="text"
-              value={company}
-              onChange={(e) => onCompanyChange(e.target.value)}
-              placeholder="t.ex. Acme AB"
-              className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
-              autoFocus
-            />
+            {/* Sparade jobb - högst upp i steg 1 */}
+            {savedJobsCount > 0 && (
+              <div className="space-y-2">
+                <p className="text-sm font-medium text-slate-700">Hämta från sparade jobb:</p>
+                <button
+                  onClick={() => setShowSavedJobs(true)}
+                  className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-50 hover:bg-teal-100 text-teal-700 rounded-lg text-sm font-medium transition-colors border border-teal-200"
+                >
+                  <Briefcase className="w-4 h-4" />
+                  Välj bland {savedJobsCount} sparade jobb
+                </button>
+                <p className="text-xs text-slate-500">
+                  Eller fyll i manuellt nedan:
+                </p>
+              </div>
+            )}
+            
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Företagsnamn</label>
+              <input
+                type="text"
+                value={company}
+                onChange={(e) => onCompanyChange(e.target.value)}
+                placeholder="t.ex. Acme AB"
+                className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
+                autoFocus
+              />
+            </div>
             <p className="text-sm text-slate-500">
               Tips: Kolla företagets webbplats för rätt namn
             </p>
@@ -252,14 +285,17 @@ export function MobileSimplified({
 
         {step === 'job' && (
           <div className="space-y-4">
-            <input
-              type="text"
-              value={jobTitle}
-              onChange={(e) => onJobTitleChange(e.target.value)}
-              placeholder="t.ex. Projektledare"
-              className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
-              autoFocus
-            />
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Jobbtitel</label>
+              <input
+                type="text"
+                value={jobTitle}
+                onChange={(e) => onJobTitleChange(e.target.value)}
+                placeholder="t.ex. Projektledare"
+                className="w-full px-4 py-3 text-lg rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
+                autoFocus
+              />
+            </div>
             <div className="space-y-2">
               <p className="text-sm text-slate-500">Vanliga titlar:</p>
               <div className="flex flex-wrap gap-2">
@@ -403,6 +439,27 @@ export function MobileSimplified({
                   type="closing" 
                   onSelect={handleInsertPrompt} 
                 />
+
+                {/* Save Button */}
+                {onSave && (
+                  <button
+                    onClick={handleSaveLetter}
+                    disabled={isSaving || !tempLetter.trim()}
+                    className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-teal-500 hover:bg-teal-600 disabled:bg-slate-300 text-white rounded-lg font-medium transition-colors"
+                  >
+                    {isSaving ? (
+                      <>
+                        <RotateCcw className="w-5 h-5 animate-spin" />
+                        Sparar...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-5 h-5" />
+                        Spara brev
+                      </>
+                    )}
+                  </button>
+                )}
               </>
             ) : (
               <div className="text-center py-8 space-y-4">
@@ -411,7 +468,7 @@ export function MobileSimplified({
                 </div>
                 <div>
                   <p className="text-slate-600">Inget brev skapat ännu</p>
-                  <p className="text-sm text-slate-500">Gå tillbaka och fyll i informationen, sedan kan du skapa ett brev med AI</p>
+                  <p className="text-sm text-slate-500">Gå tillbaka till steg 3 och klicka på "Skapa med AI"</p>
                 </div>
               </div>
             )}
@@ -444,13 +501,18 @@ export function MobileSimplified({
         ) : (
           <Button
             onClick={onGenerate}
-            disabled={isGenerating || (jobAd.length < 10 && !hasCV)}
+            disabled={isGenerating || (!letter && (jobAd.length < 10 && !hasCV))}
             className="flex-1 py-3 text-base bg-teal-500 hover:bg-teal-600"
           >
             {isGenerating ? (
               <>
                 <RotateCcw className="w-5 h-5 mr-1 animate-spin" />
                 Skapar...
+              </>
+            ) : letter ? (
+              <>
+                <Sparkles className="w-5 h-5 mr-1" />
+                Skapa nytt brev
               </>
             ) : (
               <>
