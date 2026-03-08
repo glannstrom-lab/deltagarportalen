@@ -2,9 +2,12 @@ import { useState, useEffect } from 'react';
 import { 
   Search, MapPin, Briefcase, Calendar, X, Building2, 
   ExternalLink, Filter, ChevronDown, SlidersHorizontal,
-  ChevronLeft, ChevronRight, Sparkles
+  ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
+  Bookmark, CheckCircle2
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
+import { useSavedJobs } from '@/hooks/useSavedJobs';
 
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
 import { cn } from '@/lib/utils';
@@ -61,6 +64,10 @@ export default function JobSearch() {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [showPopularQueries, setShowPopularQueries] = useState(false);
+
+  // Saved jobs hook
+  const { savedJobs, saveJob, removeJob, isSaved, getStats } = useSavedJobs()
+  const [showSavedOnly, setShowSavedOnly] = useState(false)
 
   // Sök när filter ändras (med debounce)
   useEffect(() => {
@@ -553,14 +560,70 @@ export default function JobSearch() {
                     <p className="text-slate-600 mt-3 line-clamp-2 text-sm hidden sm:block">
                       {job.description?.text?.substring(0, 200)}...
                     </p>
+                    
+                    {/* Action buttons */}
+                    <div className="flex items-center gap-2 mt-3">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (isSaved(job.id)) {
+                            removeJob(job.id)
+                          } else {
+                            saveJob(job)
+                          }
+                        }}
+                        className={cn(
+                          "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                          isSaved(job.id)
+                            ? "bg-rose-50 text-rose-600 hover:bg-rose-100"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        )}
+                      >
+                        <Heart size={16} className={isSaved(job.id) ? "fill-current" : ""} />
+                        {isSaved(job.id) ? 'Sparad' : 'Spara'}
+                      </button>
+                      
+                      <Link
+                        to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(job.description?.text?.substring(0, 500) || '')}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-teal-50 text-teal-600 hover:bg-teal-100 transition-colors"
+                      >
+                        <FileText size={16} />
+                        Skriv brev
+                      </Link>
+                    </div>
                   </div>
                   
                   {/* Action på mobil */}
                   <div className="sm:hidden flex items-center justify-between pt-2 border-t border-slate-100">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (isSaved(job.id)) {
+                            removeJob(job.id)
+                          } else {
+                            saveJob(job)
+                          }
+                        }}
+                        className={cn(
+                          "p-2 rounded-lg transition-colors",
+                          isSaved(job.id) ? "text-rose-500" : "text-slate-400"
+                        )}
+                      >
+                        <Heart size={20} className={isSaved(job.id) ? "fill-current" : ""} />
+                      </button>
+                      <Link
+                        to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-2 text-teal-500 rounded-lg"
+                      >
+                        <FileText size={20} />
+                      </Link>
+                    </div>
                     <span className="text-xs text-slate-400">
                       {new Date(job.publication_date).toLocaleDateString('sv-SE')}
                     </span>
-                    <ExternalLink size={18} className="text-violet-500" />
                   </div>
                 </div>
               </div>
@@ -649,17 +712,52 @@ export default function JobSearch() {
                   />
                 </div>
 
-                {selectedJob.application_details?.url && (
-                  <a
-                    href={selectedJob.application_details.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors min-h-[48px]"
-                  >
-                    <ExternalLink size={18} />
-                    Ansök på Arbetsförmedlingen
-                  </a>
-                )}
+                {/* Action Buttons */}
+                <div className="space-y-3 pt-4 border-t border-slate-100">
+                  {/* Save & Cover Letter Row */}
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => {
+                        if (isSaved(selectedJob.id)) {
+                          removeJob(selectedJob.id)
+                        } else {
+                          saveJob(selectedJob)
+                        }
+                      }}
+                      className={cn(
+                        "flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-colors min-h-[48px]",
+                        isSaved(selectedJob.id)
+                          ? "bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200"
+                          : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                      )}
+                    >
+                      <Heart size={20} className={isSaved(selectedJob.id) ? "fill-current" : ""} />
+                      {isSaved(selectedJob.id) ? 'Sparad' : 'Spara jobb'}
+                    </button>
+                    
+                    <Link
+                      to={`/cover-letter?jobId=${selectedJob.id}&company=${encodeURIComponent(selectedJob.employer?.name || '')}&title=${encodeURIComponent(selectedJob.headline)}&desc=${encodeURIComponent(selectedJob.description?.text?.substring(0, 1000) || '')}`}
+                      onClick={() => setSelectedJob(null)}
+                      className="flex items-center justify-center gap-2 py-3 bg-teal-50 text-teal-600 hover:bg-teal-100 rounded-xl font-medium transition-colors min-h-[48px] border border-teal-200"
+                    >
+                      <FileText size={20} />
+                      Skriv personligt brev
+                    </Link>
+                  </div>
+
+                  {/* Apply Button */}
+                  {selectedJob.application_details?.url && (
+                    <a
+                      href={selectedJob.application_details.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors min-h-[48px]"
+                    >
+                      <ExternalLink size={18} />
+                      Ansök på Arbetsförmedlingen
+                    </a>
+                  )}
+                </div>
               </div>
             </div>
           </div>

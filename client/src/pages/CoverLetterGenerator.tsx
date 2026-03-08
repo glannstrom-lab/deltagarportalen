@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useSearchParams, Link } from 'react-router-dom'
 import { 
   FileText, 
   Sparkles, 
@@ -25,7 +26,9 @@ import {
   Target,
   Award,
   Send,
-  Calendar
+  Calendar,
+  ArrowLeft,
+  Bookmark
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -36,6 +39,7 @@ import { useAutoSave } from '@/hooks/useAutoSave'
 import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
 import { SupportiveLanguage } from '@/components/SupportiveLanguage'
 import { useMobileOptimization } from '@/components/MobileOptimizer'
+import { useSavedJobs } from '@/hooks/useSavedJobs'
 import { 
   PromptButtons, 
   QuickPhrases,
@@ -76,14 +80,22 @@ interface CVData {
 const templates = coverLetterTemplates
 
 export default function CoverLetterGenerator() {
+  // === QUERY PARAMS ===
+  const [searchParams] = useSearchParams()
+  const queryJobId = searchParams.get('jobId')
+  const queryCompany = searchParams.get('company')
+  const queryTitle = searchParams.get('title')
+  const queryDesc = searchParams.get('desc')
+  
   // === FORM STATE ===
-  const [jobbAnnons, setJobbAnnons] = useState('')
+  const [jobbAnnons, setJobbAnnons] = useState(queryDesc || '')
   const [tidigareBrev, setTidigareBrev] = useState('')
   const [motivering, setMotivering] = useState('')
   const [ton, setTon] = useState<'professionell' | 'entusiastisk' | 'formell'>('professionell')
-  const [company, setCompany] = useState('')
-  const [jobTitle, setJobTitle] = useState('')
+  const [company, setCompany] = useState(queryCompany || '')
+  const [jobTitle, setJobTitle] = useState(queryTitle || '')
   const [selectedTemplate, setSelectedTemplate] = useState<string>('standard')
+  const [sourceJob, setSourceJob] = useState<PlatsbankenJob | null>(null)
   
   // === CV DATA ===
   const [cvData, setCvData] = useState<CVData | null>(null)
@@ -119,6 +131,9 @@ export default function CoverLetterGenerator() {
 
   // === MOBILE OPTIMIZATION ===
   const { isMobile } = useMobileOptimization()
+  
+  // === SAVED JOBS HOOK ===
+  const { getSavedJob } = useSavedJobs()
   
   // === SWEDISH NORMS CHECK ===
   const [normIssues, setNormIssues] = useState<ReturnType<typeof checkSwedishNorms>>([])
@@ -169,6 +184,16 @@ export default function CoverLetterGenerator() {
     loadSavedLetters()
     loadSavedJobs()
   }, [])
+  
+  // Load source job if coming from job search
+  useEffect(() => {
+    if (queryJobId) {
+      const savedJob = getSavedJob(queryJobId)
+      if (savedJob) {
+        setSourceJob(savedJob.jobData)
+      }
+    }
+  }, [queryJobId, getSavedJob])
 
   const loadCVData = async () => {
     setCvLoading(true)
@@ -622,6 +647,26 @@ export default function CoverLetterGenerator() {
   if (isMobile) {
     return (
       <div className="max-w-lg mx-auto space-y-4 pb-20 px-4">
+        {/* Back button */}
+        {(sourceJob || queryJobId) && (
+          <Link 
+            to="/jobs"
+            className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 pt-4"
+          >
+            <ArrowLeft size={16} />
+            Tillbaka till jobbsök
+          </Link>
+        )}
+        
+        {/* Source Job Info */}
+        {(company || jobTitle) && (
+          <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-4 border border-teal-100">
+            <p className="text-xs text-teal-600 font-medium uppercase tracking-wider mb-1">Skriver brev för:</p>
+            <h2 className="font-semibold text-slate-800">{jobTitle}</h2>
+            {company && <p className="text-sm text-slate-600">{company}</p>}
+          </div>
+        )}
+        
         <div className="text-center space-y-2 pt-4">
           <h1 className="text-xl font-bold text-slate-800">Personligt brev</h1>
           <p className="text-sm text-slate-600">
@@ -653,6 +698,31 @@ export default function CoverLetterGenerator() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-20">
+      {/* Back button & Source Job Info */}
+      {(sourceJob || queryJobId || company || jobTitle) && (
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+          <Link 
+            to="/jobs"
+            className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
+          >
+            <ArrowLeft size={16} />
+            Tillbaka till jobbsök
+          </Link>
+          
+          {(company || jobTitle) && (
+            <div className="flex-1 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl px-4 py-3 border border-teal-100">
+              <div className="flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-teal-600" />
+                <div>
+                  <p className="text-xs text-teal-600 font-medium uppercase tracking-wider">Skriver brev för:</p>
+                  <p className="font-semibold text-slate-800">{jobTitle} {company && `på ${company}`}</p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+      
       {/* Header */}
       <div className="text-center space-y-3">
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-teal-100 to-emerald-100 mb-2">
