@@ -246,6 +246,8 @@ export const cvApi = {
     const dbData: any = {
       user_id: user.id,
       updated_at: new Date().toISOString(),
+      first_name: cvData.first_name || cvData.firstName,
+      last_name: cvData.last_name || cvData.lastName,
       title: cvData.title,
       email: cvData.email,
       phone: cvData.phone,
