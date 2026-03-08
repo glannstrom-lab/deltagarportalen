@@ -1,5 +1,5 @@
 import { memo } from 'react'
-import { Briefcase, Bookmark, MapPin, Building2, Bell, Search, Target } from 'lucide-react'
+import { Briefcase, Bookmark, MapPin, Building2, Bell, Search } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
