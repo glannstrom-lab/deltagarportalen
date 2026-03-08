@@ -35,6 +35,16 @@ import { searchPlatsbanken, type PlatsbankenJob } from '@/services/arbetsformedl
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
 import { SupportiveLanguage } from '@/components/SupportiveLanguage'
+import { useMobileOptimization } from '@/components/MobileOptimizer'
+import { 
+  PromptButtons, 
+  QuickPhrases,
+  WordCounter,
+  MobileSimplified,
+  coverLetterTemplates,
+  checkSwedishNorms,
+  type CoverLetterTemplate 
+} from '@/components/coverletter'
 
 interface SavedCoverLetter {
   id: string
@@ -62,51 +72,8 @@ interface CVData {
   }>
 }
 
-interface Template {
-  id: string
-  label: string
-  description: string
-  promptAddition: string
-  icon: React.ReactNode
-}
-
-const templates: Template[] = [
-  {
-    id: 'standard',
-    label: 'Standard',
-    description: 'Bra för de flesta situationer',
-    promptAddition: '',
-    icon: <FileText className="w-4 h-4" />,
-  },
-  {
-    id: 'tillbaka',
-    label: 'Tillbaka efter paus',
-    description: 'Efter sjukskrivning, föräldraledighet eller annan paus',
-    promptAddition: 'Användaren har varit borta från arbetsmarknaden och är nu redo att komma tillbaka. Fokusera på motivation och framåtblick, inte ursäkter.',
-    icon: <Heart className="w-4 h-4" />,
-  },
-  {
-    id: 'karriarbyte',
-    label: 'Byter karriärväg',
-    description: 'När du söker jobb i en ny bransch',
-    promptAddition: 'Användaren byter karriärväg. Fokusera på överförbara färdigheter och motivation för den nya branschen.',
-    icon: <ArrowRight className="w-4 h-4" />,
-  },
-  {
-    id: 'nyexaminerad',
-    label: 'Nyexaminerad',
-    description: 'När du saknar arbetslivserfarenhet',
-    promptAddition: 'Användaren är nyexaminerad. Fokusera på utbildning, praktik, och potential snarare än erfarenhet.',
-    icon: <Award className="w-4 h-4" />,
-  },
-  {
-    id: 'kort',
-    label: 'Kort & konkret',
-    description: 'När du har ont om tid eller energi',
-    promptAddition: 'Håll brevet kort och konkret. Max 2-3 korta stycken. Fokusera på det viktigaste.',
-    icon: <Sparkles className="w-4 h-4" />,
-  }
-]
+// Templates now imported from components/coverletter
+const templates = coverLetterTemplates
 
 export default function CoverLetterGenerator() {
   // === FORM STATE ===
@@ -149,6 +116,12 @@ export default function CoverLetterGenerator() {
     appliedDate: string
   }>>([])
   const [showApplications, setShowApplications] = useState(false)
+
+  // === MOBILE OPTIMIZATION ===
+  const { isMobile } = useMobileOptimization()
+  
+  // === SWEDISH NORMS CHECK ===
+  const [normIssues, setNormIssues] = useState<ReturnType<typeof checkSwedishNorms>>([])
   
   // === SECTIONS EXPANSION ===
   const [expandedSections, setExpandedSections] = useState({
@@ -288,9 +261,16 @@ export default function CoverLetterGenerator() {
     analyzeCVMatch()
   }, [analyzeCVMatch])
 
+  // Check Swedish norms when letter changes
+  useEffect(() => {
+    if (generatedBrev) {
+      setNormIssues(checkSwedishNorms(generatedBrev))
+    }
+  }, [generatedBrev])
+
   // === OFFLINE TEMPLATE GENERATOR ===
   const generateOfflineTemplate = (): string => {
-    const template = templates.find(t => t.id === selectedTemplate)
+    const template = coverLetterTemplates.find(t => t.id === selectedTemplate)
     const erfarenheter = cvData?.workExperience?.slice(0, 2) || []
     const kompetenser = cvData?.skills?.slice(0, 5).map(s => s.name).join(', ') || ''
     
@@ -305,12 +285,16 @@ export default function CoverLetterGenerator() {
     brev += 'Hej,\n\n'
     
     // Inledning baserad på mall
-    if (template?.id === 'tillbaka') {
+    if (template?.id === 'return-to-work') {
       brev += `Jag skriver för att uttrycka mitt intresse för tjänsten som ${jobTitle || 'den aktuella rollen'}. Efter en period borta från arbetsmarknaden är jag nu redo att återvända och bidra med mina erfarenheter.`
-    } else if (template?.id === 'karriarbyte') {
+    } else if (template?.id === 'career-change') {
       brev += `Jag skriver för att söka tjänsten som ${jobTitle || 'den aktuella rollen'}. Jag ser detta som en spännande möjlighet att ta med mig mina erfarenheter in i en ny bransch.`
-    } else if (template?.id === 'nyexaminerad') {
+    } else if (template?.id === 'graduate') {
       brev += `Som nyexaminerad inom ${cvData?.title || 'mitt område'} skriver jag för att söka tjänsten som ${jobTitle || 'den aktuella rollen'}. Jag är entusiastisk över möjligheten att få bidra och utvecklas.`
+    } else if (template?.exampleOpening) {
+      brev += template.exampleOpening
+        .replace('[titel]', jobTitle || 'den aktuella rollen')
+        .replace('[företag]', company || 'ert företag')
     } else {
       brev += `Jag skriver med stort intresse för tjänsten som ${jobTitle || 'den aktuella rollen'}${company ? ` på ${company}` : ''}.`
     }
@@ -346,8 +330,10 @@ export default function CoverLetterGenerator() {
       brev += 'När jag läste om tjänsten kände jag att mina erfarenheter skulle kunna komma till nytta, särskilt med tanke på de krav och kvalifikationer ni efterfrågar. '
     }
     
-    // Avslutning baserad på ton
-    if (ton === 'entusiastisk') {
+    // Avslutning baserad på template eller ton
+    if (template?.exampleClosing) {
+      brev += template.exampleClosing + '\n\n'
+    } else if (ton === 'entusiastisk') {
       brev += 'Jag ser verkligen fram emot möjligheten att få diskutera hur jag kan bidra till ert team!\n\n'
     } else if (ton === 'formell') {
       brev += 'Jag ser fram emot att få diskutera mina kvalifikationer vidare vid ett eventuellt intervjutillfälle.\n\n'
@@ -631,6 +617,40 @@ export default function CoverLetterGenerator() {
   }
 
   // === RENDER ===
+  
+  // Mobile simplified view
+  if (isMobile) {
+    return (
+      <div className="max-w-lg mx-auto space-y-4 pb-20 px-4">
+        <div className="text-center space-y-2 pt-4">
+          <h1 className="text-xl font-bold text-slate-800">Personligt brev</h1>
+          <p className="text-sm text-slate-600">
+            Steg för steg - vi tar det lugnt
+          </p>
+        </div>
+        
+        <MobileSimplified
+          company={company}
+          jobTitle={jobTitle}
+          jobAd={jobbAnnons}
+          letter={generatedBrev}
+          onCompanyChange={setCompany}
+          onJobTitleChange={setJobTitle}
+          onJobAdChange={setJobbAnnons}
+          onLetterChange={setGeneratedBrev}
+          onGenerate={handleGenerate}
+          isGenerating={isGenerating}
+        />
+        
+        {error && (
+          <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+      </div>
+    )
+  }
+
   return (
     <div className="max-w-5xl mx-auto space-y-6 pb-20">
       {/* Header */}
@@ -672,7 +692,7 @@ export default function CoverLetterGenerator() {
             <div>
               <h2 className="font-semibold text-slate-800">Välj utgångspunkt</h2>
               <p className="text-sm text-slate-500">
-                {templates.find(t => t.id === selectedTemplate)?.label}
+                {coverLetterTemplates.find(t => t.id === selectedTemplate)?.label}
               </p>
             </div>
           </div>
@@ -680,28 +700,58 @@ export default function CoverLetterGenerator() {
         </button>
         
         {expandedSections.template && (
-          <div className="p-4 pt-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {templates.map((template) => (
-                <button
-                  key={template.id}
-                  onClick={() => setSelectedTemplate(template.id)}
-                  className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all ${
-                    selectedTemplate === template.id
-                      ? 'border-teal-500 bg-teal-50'
-                      : 'border-slate-200 hover:border-teal-200 bg-white'
-                  }`}
-                >
-                  <div className={`p-2 rounded-lg ${selectedTemplate === template.id ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-500'}`}>
-                    {template.icon}
-                  </div>
-                  <div className="flex-1">
-                    <span className="font-medium text-slate-800">{template.label}</span>
-                    <p className="text-sm text-slate-500 mt-1">{template.description}</p>
-                  </div>
-                </button>
-              ))}
-            </div>
+          <div className="p-4 pt-0 space-y-6">
+            {/* Group templates by industry */}
+            {Object.entries(
+              coverLetterTemplates.reduce((acc, template) => {
+                const group = template.industry === 'general' ? 'Allmänt' :
+                             template.industry === 'public' ? 'Offentlig sektor' :
+                             template.industry === 'creative' ? 'Kreativa yrken' :
+                             template.industry === 'tech' ? 'Tech & IT' :
+                             template.industry === 'care' ? 'Vård & Omsorg' :
+                             'Ny på arbetsmarknaden'
+                if (!acc[group]) acc[group] = []
+                acc[group].push(template)
+                return acc
+              }, {} as Record<string, typeof coverLetterTemplates>)
+            ).map(([group, groupTemplates]) => (
+              <div key={group}>
+                <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wider mb-3">{group}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {groupTemplates.map((template) => (
+                    <button
+                      key={template.id}
+                      onClick={() => setSelectedTemplate(template.id)}
+                      className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all ${
+                        selectedTemplate === template.id
+                          ? 'border-teal-500 bg-teal-50'
+                          : 'border-slate-200 hover:border-teal-200 bg-white'
+                      }`}
+                    >
+                      <div className={`p-2 rounded-lg ${selectedTemplate === template.id ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-500'}`}>
+                        {template.icon}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <span className="font-medium text-slate-800 block">{template.label}</span>
+                        <p className="text-sm text-slate-500 mt-1 line-clamp-2">{template.description}</p>
+                        {selectedTemplate === template.id && template.tips && (
+                          <div className="mt-2 pt-2 border-t border-teal-200">
+                            <ul className="text-xs text-teal-700 space-y-1">
+                              {template.tips.slice(0, 2).map((tip, idx) => (
+                                <li key={idx} className="flex items-start gap-1">
+                                  <span className="text-teal-500">•</span>
+                                  {tip}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </Card>
@@ -1207,10 +1257,52 @@ export default function CoverLetterGenerator() {
                 </p>
               </div>
 
-              {/* Generated Letter */}
-              <div className="bg-white rounded-lg p-6 whitespace-pre-wrap text-slate-800 leading-relaxed shadow-sm font-serif">
-                {generatedBrev}
+              {/* Word Counter */}
+              <WordCounter 
+                text={generatedBrev} 
+                minWords={150}
+                maxWords={400}
+                showProgress
+              />
+
+              {/* Generated Letter with inline editing */}
+              <div className="space-y-2">
+                <label className="block text-sm font-medium text-slate-700">
+                  Redigera ditt brev:
+                </label>
+                <textarea
+                  value={generatedBrev}
+                  onChange={(e) => setGeneratedBrev(e.target.value)}
+                  rows={12}
+                  className="w-full px-4 py-4 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-y font-serif leading-relaxed"
+                />
+                
+                {/* Quick phrases */}
+                <div className="pt-2">
+                  <p className="text-xs text-slate-500 mb-2">Snabbinfoga:</p>
+                  <QuickPhrases onSelect={(text) => setGeneratedBrev(generatedBrev + ' ' + text)} />
+                </div>
               </div>
+
+              {/* Swedish Norms Check */}
+              {normIssues.length > 0 && (
+                <div className="space-y-2">
+                  <h4 className="text-sm font-medium text-slate-700">Språkkontroll:</h4>
+                  {normIssues.map((issue, idx) => (
+                    <div 
+                      key={idx}
+                      className={`p-3 rounded-lg text-sm ${
+                        issue.severity === 'warning' 
+                          ? 'bg-amber-50 border border-amber-200 text-amber-800' 
+                          : 'bg-blue-50 border border-blue-200 text-blue-800'
+                      }`}
+                    >
+                      <p className="font-medium">{issue.issue}</p>
+                      <p className="text-xs mt-1 opacity-75">{issue.suggestion}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
 
               {/* Save Title Input */}
               <div>
