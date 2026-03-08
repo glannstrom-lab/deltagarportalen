@@ -35,8 +35,6 @@ export function useMobileOptimization(): MobileOptimizationState {
       const isMobile = width < 768 || mobileUA
       const isTablet = width >= 768 && width < 1024 && !mobileUA
       
-      console.log('[MobileOptimizer] width:', width, 'mobileUA:', mobileUA, 'isMobile:', isMobile)
-      
       setState({
         isMobile,
         isTablet,

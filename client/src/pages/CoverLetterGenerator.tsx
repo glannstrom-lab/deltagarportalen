@@ -687,8 +687,6 @@ export default function CoverLetterGenerator() {
   // === RENDER ===
   
   // Mobile simplified view
-  console.log('[CoverLetter] isMobile:', isMobile, 'width:', window.innerWidth)
-  
   if (isMobile) {
     return (
       <div className="max-w-lg mx-auto space-y-4 pb-20 px-4">
@@ -713,9 +711,6 @@ export default function CoverLetterGenerator() {
         )}
         
         <div className="text-center space-y-2 pt-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">
-            Mobilvy
-          </div>
           <h1 className="text-xl font-bold text-slate-800">Personligt brev</h1>
           <p className="text-sm text-slate-600">
             Steg för steg - vi tar det lugnt

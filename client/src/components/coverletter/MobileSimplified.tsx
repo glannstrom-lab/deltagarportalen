@@ -64,8 +64,6 @@ export function MobileSimplified({
   onSave,
   onShowSavedLetters
 }: MobileSimplifiedProps) {
-  console.log('[MobileSimplified] Rendering with savedJobsCount:', savedJobsCount, 'savedLettersCount:', savedLettersCount)
-  
   const [step, setStep] = useState<Step>('company')
   const [tempLetter, setTempLetter] = useState(letter)
   const [showTemplates, setShowTemplates] = useState(false)
@@ -190,11 +188,6 @@ export function MobileSimplified({
 
   return (
     <div className="space-y-4">
-      {/* Debug info - temporary */}
-      <div className="text-xs text-slate-400 bg-slate-50 p-2 rounded">
-        DEBUG: jobs={savedJobsCount} letters={savedLettersCount} cv={hasCV ? 'yes' : 'no'}
-      </div>
-      
       {/* Progress Steps -->
       <div className="flex items-center justify-between px-2">
         {steps.map((s, index) => (
