@@ -64,6 +64,8 @@ export function MobileSimplified({
   onSave,
   onShowSavedLetters
 }: MobileSimplifiedProps) {
+  console.log('[MobileSimplified] Rendering with savedJobsCount:', savedJobsCount, 'savedLettersCount:', savedLettersCount)
+  
   const [step, setStep] = useState<Step>('company')
   const [tempLetter, setTempLetter] = useState(letter)
   const [showTemplates, setShowTemplates] = useState(false)
