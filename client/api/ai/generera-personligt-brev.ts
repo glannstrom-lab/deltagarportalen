@@ -83,6 +83,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     const data = req.body;
+    
+    // DEBUG: Logga inkommande data
+    console.log('=== INKOMMANDE DATA ===');
+    console.log('companyName:', data?.companyName);
+    console.log('jobTitle:', data?.jobTitle);
+    console.log('jobbAnnons length:', data?.jobbAnnons?.length);
+    console.log('cvData exists:', !!data?.cvData);
+    console.log('cvData.firstName:', data?.cvData?.firstName);
+    console.log('cvData.lastName:', data?.cvData?.lastName);
+    console.log('cvData.title:', data?.cvData?.title);
+    console.log('cvData.workExperience count:', data?.cvData?.workExperience?.length);
+    console.log('cvData.skills count:', data?.cvData?.skills?.length);
+    console.log('=======================');
+    
     const ton = data?.ton || 'professionell';
     
     const tonInstructions: Record<string, string> = {
@@ -91,49 +105,70 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       formell: ' formell och traditionell'
     };
     
-    // Build CV context if available
-    let cvContext = '';
-    if (data?.cvData) {
-      const cv = data.cvData;
-      cvContext = `
-MIN CV-INFORMATION:
-Namn: ${cv.firstName || ''} ${cv.lastName || ''}
-Titel: ${cv.title || 'Ej angiven'}
-Sammanfattning: ${cv.summary || 'Ej angiven'}
+    // Extrahera data med fallback-värden
+    const companyName = data?.companyName || 'Företaget';
+    const jobTitle = data?.jobTitle || 'den aktuella tjänsten';
+    const jobbAnnons = data?.jobbAnnons || data?.jobDescription || 'En intressant tjänst inom området.';
+    const firstName = data?.cvData?.firstName || '';
+    const lastName = data?.cvData?.lastName || '';
+    const title = data?.cvData?.title || 'Erfaren kandidat';
+    const summary = data?.cvData?.summary || '';
+    const workExperience = data?.cvData?.workExperience || [];
+    const skills = data?.cvData?.skills || [];
+    const motivering = data?.motivering || 'Jag är intresserad av denna tjänst och ser fram emot att bidra med min erfarenhet.';
+    
+    // Bygg CV-kontext
+    const cvContext = `
+MIN BAKGRUND:
+Namn: ${firstName} ${lastName}
+Titel: ${title}
+${summary ? `Sammanfattning: ${summary}` : ''}
 
-ERFARENHET:
-${cv.workExperience?.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.description ? `: ${exp.description}` : ''}`).join('\n') || 'Ingen erfarenhet angiven'}
+ERFARENHETER:
+${workExperience.length > 0 
+  ? workExperience.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.description ? ` (${exp.description.substring(0, 100)}...)` : ''}`).join('\n')
+  : '- Har relevant arbetslivserfarenhet inom området'}
 
 KOMPETENSER:
-${cv.skills?.map((s: any) => s.name).join(', ') || 'Inga kompetenser angivna'}
+${skills.length > 0 
+  ? skills.map((s: any) => s.name).join(', ')
+  : 'Kompetenser inom relevanta områden'}
 `;
-    }
 
     const systemPrompt = `Du är en expert på att skriva personliga brev för jobbansökningar.
+Din uppgift är att ALLTID skriva ett komplett personligt brev, aldrig be om mer information.
 Skriv på svenska med en${tonInstructions[ton] || tonInstructions.professionell} ton.
-Brevet ska vara personligt, engagerande och visa varför just denna person passar för jobbet.
-Använd CV-informationen för att koppla personens erfarenheter till jobbets krav.`;
+Brevet ska vara personligt, engagerande och visa varför personen passar för jobbet.
+Använd informationen som finns, även om den är ofullständig.`;
 
-    const userPrompt = `Skriv ett personligt brev för följande jobb:
+    const userPrompt = `SKRIV ETT PERSONLIGT BREV för denna ansökan:
 
-FÖRETAG: ${data?.companyName || 'Ej angivet'}
-JOBBTITEL: ${data?.jobTitle || 'Ej angiven'}
+=== JOBBINFO ===
+Företag: ${companyName}
+Titel: ${jobTitle}
 
-JOBBANNONS:
-${data?.jobbAnnons || data?.jobDescription || ''}
+=== JOBBANNONS ===
+${jobbAnnons.substring(0, 2000)}
+
+=== MIN BAKGRUND (från CV) ===
 ${cvContext}
 
-${data?.motivering ? `VARFÖR JAG VILL HA JOBBET:\n${data.motivering}\n` : ''}
-${data?.extraContext ? `EXTRA KONTEXT:\n${data.extraContext}\n` : ''}
+=== MIN MOTIVERING ===
+${motivering}
 
-VIKTIGT:
-- Brevet ska vara 250-350 ord
-- Koppla specifikt min erfarenhet till jobbets krav
-- Nämn företagsnamnet i inledningen
-- Använd mina faktiska erfarenheter från CV:t
-- Avsluta med att be om intervju
+${data?.extraContext ? `=== EXTRA INSTRUKTIONER ===\n${data.extraContext}\n` : ''}
 
-Skriv brevet:`;
+=== VIKTIGA INSTRUKTIONER ===
+1. Skriv ALLTID ett komplett brev - be aldrig om mer information
+2. Använd informationen ovan även om den verkar ofullständig
+3. Brevet ska vara 250-350 ord
+4. Inled med: "Bästa ${companyName}," eller "Hej ${companyName},"
+5. Nämn jobbtiteln tidigt i brevet
+6. Koppla erfarenheter till jobbets krav (även om du måste generalisera)
+7. Avsluta med "Med vänliga hälsningar, [namn]"
+8. Om namn saknas, skriv bara "Med vänliga hälsningar"
+
+Skriv det färdiga brevet nu:`;
 
     console.log('AI call: generera-personligt-brev');
 
