@@ -39,12 +39,6 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
   const cvProgress = calculateCVProgress(cv)
   const hasCV = !!cv && (!!cv.summary || !!(cv.work_experience && cv.work_experience.length > 0))
 
-  // Debug-loggning
-  console.log('[useDashboardData] savedJobs from Supabase:', savedJobs.length)
-  if (savedJobs.length > 0) {
-    console.log('[useDashboardData] first savedJob:', JSON.stringify(savedJobs[0], null, 2))
-  }
-
   // Hämta nyligen sparade jobb (max 3)
   // savedJobs har strukturen: { id, job_id, job_data: { headline, employer: { name } } }
   const recentJobs = savedJobs.slice(0, 3).map((savedJob: any) => {

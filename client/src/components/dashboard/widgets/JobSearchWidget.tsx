@@ -46,9 +46,6 @@ function JobSearchWidgetSmall({ savedCount, newMatches = 0, recentJobs = [], loa
       }}
     >
       <div className="flex flex-col items-center justify-center py-2 text-center">
-        {/* Debug - synlig text */}
-        <p className="text-[10px] text-slate-300 mb-1">DEBUG: {savedCount} jobb, {recentJobs.length} recent</p>
-        
         {savedCount > 0 ? (
           <>
             <Bookmark size={28} className="text-blue-500 mb-2" />
@@ -282,18 +279,15 @@ function JobSearchWidgetLarge({ savedCount, newMatches = 0, recentJobs = [], loa
 
 // Huvudkomponent
 export const JobSearchWidget = memo(function JobSearchWidget(props: JobSearchWidgetProps) {
-  const { size = 'small', savedCount, recentJobs = [], ...rest } = props
-  
-  // Debug-loggning - synlig på sidan
-  console.log('[JobSearchWidget] rendered:', { size, savedCount, recentJobsCount: recentJobs.length })
+  const { size = 'small', ...rest } = props
   
   switch (size) {
     case 'large':
-      return <JobSearchWidgetLarge savedCount={savedCount} recentJobs={recentJobs} {...rest} />
+      return <JobSearchWidgetLarge {...rest} />
     case 'medium':
-      return <JobSearchWidgetMedium savedCount={savedCount} recentJobs={recentJobs} {...rest} />
+      return <JobSearchWidgetMedium {...rest} />
     case 'small':
     default:
-      return <JobSearchWidgetSmall savedCount={savedCount} recentJobs={recentJobs} {...rest} />
+      return <JobSearchWidgetSmall {...rest} />
   }
 })
