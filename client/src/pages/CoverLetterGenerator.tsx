@@ -115,8 +115,8 @@ export default function CoverLetterGenerator() {
   const [isSaving, setIsSaving] = useState(false)
   const [copied, setCopied] = useState(false)
   
-  // === SAVED JOBS ===
-  const [savedJobs, setSavedJobs] = useState<PlatsbankenJob[]>([])
+  // === SAVED JOBS HOOK ===
+  const { savedJobs: savedJobsFromHook, getSavedJob, isLoaded: savedJobsLoaded } = useSavedJobs()
   const [showSavedJobs, setShowSavedJobs] = useState(false)
   
   // === APPLICATIONS ===
@@ -131,9 +131,6 @@ export default function CoverLetterGenerator() {
 
   // === MOBILE OPTIMIZATION ===
   const { isMobile } = useMobileOptimization()
-  
-  // === SAVED JOBS HOOK ===
-  const { getSavedJob } = useSavedJobs()
   
   // === SWEDISH NORMS CHECK ===
   const [normIssues, setNormIssues] = useState<ReturnType<typeof checkSwedishNorms>>([])
@@ -158,6 +155,8 @@ export default function CoverLetterGenerator() {
     saveTitle
   }
 
+  const hasQueryParams = !!(queryCompany || queryTitle || queryDesc || queryJobId)
+
   const {
     lastSaved,
     isSaving: isAutoSaving,
@@ -167,6 +166,9 @@ export default function CoverLetterGenerator() {
     key: 'cover-letter-draft',
     data: autoSaveData,
     onRestore: (saved) => {
+      // Don't restore if we have query params from job search - prioritize the job data
+      if (hasQueryParams) return
+      
       setJobbAnnons(saved.jobbAnnons || '')
       setTidigareBrev(saved.tidigareBrev || '')
       setMotivering(saved.motivering || '')
@@ -182,18 +184,26 @@ export default function CoverLetterGenerator() {
   useEffect(() => {
     loadCVData()
     loadSavedLetters()
-    loadSavedJobs()
   }, [])
   
-  // Load source job if coming from job search
+  // Update state when query params change (coming from job search)
   useEffect(() => {
+    if (queryCompany) {
+      setCompany(decodeURIComponent(queryCompany))
+    }
+    if (queryTitle) {
+      setJobTitle(decodeURIComponent(queryTitle))
+    }
+    if (queryDesc) {
+      setJobbAnnons(decodeURIComponent(queryDesc))
+    }
     if (queryJobId) {
       const savedJob = getSavedJob(queryJobId)
       if (savedJob) {
         setSourceJob(savedJob.jobData)
       }
     }
-  }, [queryJobId, getSavedJob])
+  }, [queryCompany, queryTitle, queryDesc, queryJobId, getSavedJob])
 
   const loadCVData = async () => {
     setCvLoading(true)
@@ -241,23 +251,8 @@ export default function CoverLetterGenerator() {
     }
   }
 
-  const loadSavedJobs = async () => {
-    try {
-      const jobs = await jobsApi.getSavedJobs()
-      setSavedJobs(jobs.map((j: any) => j.job_data))
-    } catch (e) {
-      console.error('Kunde inte ladda sparade jobb:', e)
-      // Fallback till localStorage om API inte fungerar
-      const saved = localStorage.getItem('savedJobs')
-      if (saved) {
-        try {
-          setSavedJobs(JSON.parse(saved))
-        } catch (e) {
-          console.error('Kunde inte ladda sparade jobb från localStorage:', e)
-        }
-      }
-    }
-  }
+  // Use saved jobs from hook - filtered to just the job data
+  const savedJobs = savedJobsFromHook.map(sj => sj.jobData)
 
   // === CV MATCH ANALYSIS ===
   const analyzeCVMatch = useCallback(() => {
