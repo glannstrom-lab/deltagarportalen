@@ -7,8 +7,8 @@ import { ChevronLeft, ChevronRight, Sparkles, Save, RotateCcw, Bookmark, FileTex
 import { Button } from '@/components/ui/Button'
 import { PromptButtons } from './PromptButtons'
 import { WordCounter } from './WordCounter'
-import { coverLetterTemplates } from './templates'
-import type { CoverLetterTemplate } from './types'
+import { coverLetterTemplates } from './CoverLetterTemplates'
+import type { CoverLetterTemplate } from './CoverLetterTemplates'
 
 type Step = 'company' | 'job' | 'details' | 'review'
 
