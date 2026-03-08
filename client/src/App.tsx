@@ -157,6 +157,12 @@ function App() {
           </RouteErrorBoundary>
         </LazyRoute>
       } />
+      {/* Landing page preview - accessible even when logged in */}
+      <Route path="/landing" element={
+        <RouteErrorBoundary>
+          <Landing />
+        </RouteErrorBoundary>
+      } />
 
       {/* Protected routes - lazy loaded för bättre prestanda */}
       <Route path="/dashboard" element={
