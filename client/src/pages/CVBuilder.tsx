@@ -3,7 +3,7 @@ import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
   Linkedin, Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
-  Lightbulb, Target
+  Lightbulb, Target, Wand2
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -16,6 +16,20 @@ import { useVercelImageUpload } from '@/hooks/useVercelImageUpload'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import type { CVData, CVVersion } from '@/services/mockApi'
+
+// NYA IMPORTS för förbättringar
+import { useCVAutoSave, useCVDraft } from '@/hooks/useCVAutoSave'
+import { useCVScore, getOverallTips, getScoreColor } from '@/hooks/useCVScore'
+import { SaveIndicator } from '@/components/cv/SaveIndicator'
+import { CVProgressBar } from '@/components/cv/CVProgressBar'
+import { MobilePreviewFAB } from '@/components/cv/MobilePreviewFAB'
+import { AIHelpButton } from '@/components/cv/AIHelpButton'
+import { RichTextEditor } from '@/components/cv/RichTextEditor'
+import { ExperienceEditor } from '@/components/cv/ExperienceEditor'
+import { EducationEditor } from '@/components/cv/EducationEditor'
+import { SkillsEditor } from '@/components/cv/SkillsEditor'
+import { ContextualHelp } from '@/components/cv/ContextualHelp'
+import { CVOnboarding, shouldShowOnboarding } from '@/components/cv/CVOnboarding'
 
 // ============================================
 // STEG
@@ -150,6 +164,7 @@ export default function CVBuilder() {
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
   const [versionName, setVersionName] = useState('')
+  const [showOnboarding, setShowOnboarding] = useState(false)
   
   const [data, setData] = useState<CVData>({
     firstName: '', lastName: '', title: '', email: '', phone: '', location: '',
@@ -160,6 +175,29 @@ export default function CVBuilder() {
   
   const { upload: uploadImage, isUploading: isImageUploading } = useVercelImageUpload()
   const { user } = useAuthStore()
+  
+  // NYA FEATURES: Auto-save och draft
+  const { saveStatus, lastSavedAt, hasUnsavedChanges } = useCVAutoSave(data)
+  const { restoreDraft, clearDraft } = useCVDraft()
+  
+  // Fråga om att återställa draft vid mount
+  useEffect(() => {
+    // Visa onboarding om användaren inte sett den tidigare
+    if (shouldShowOnboarding()) {
+      setTimeout(() => setShowOnboarding(true), 500)
+    }
+    
+    const draft = restoreDraft()
+    if (draft && !data.firstName) {
+      // Endast om vi inte redan har data
+      const hasData = Object.values(draft).some(v => 
+        v && (typeof v === 'string' ? v.length > 0 : Array.isArray(v) ? v.length > 0 : true)
+      )
+      if (hasData && confirm('Du har ett osparat utkast. Vill du återställa det?')) {
+        setData(prev => ({ ...prev, ...draft }))
+      }
+    }
+  }, [])
 
   const completedSteps = [
     1,
@@ -387,143 +425,69 @@ export default function CVBuilder() {
       <Card>
         <h3 className="font-semibold text-slate-800 mb-2">Sammanfattning</h3>
         <p className="text-sm text-slate-500 mb-4">Beskriv din bakgrund och vad du söker</p>
-        <textarea
-          value={data.summary}
-          onChange={(e) => setData({ ...data, summary: e.target.value })}
+        <RichTextEditor
+          value={data.summary || ''}
+          onChange={(v) => setData({ ...data, summary: v })}
           placeholder="Jag är en driven..."
-          rows={6}
-          className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4f46e5] text-base resize-none"
+          maxLength={1000}
+          minHeight="150px"
+          helpText="Tips: Använd aktiva verb och nämn vad som gör dig unik. 3-5 meningar är lagom."
         />
         <div className="mt-4">
           <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
         </div>
       </Card>
+      
+      <ContextualHelp context="summary" data={data.summary} />
+      
+      <AIHelpButton field="summary" onFill={() => setData({ ...data, summary: 'Erfaren [yrke] med [X] års erfarenhet inom [område]. Jag brinner för [intresse] och vill nu ta nästa steg i min karriär.' })} />
     </div>
   )
 
   // STEG 4: ERFARENHET
   const renderStep4 = () => (
-    <div className="space-y-4">
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800">Arbetslivserfarenhet</h3>
-          <button
-            onClick={() => add(data.workExperience, { id: Date.now().toString(), company: '', title: '', location: '', startDate: '', endDate: '', current: false, description: '' }, 'workExperience')}
-            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"
-          >
-            <Plus className="w-4 h-4" /> Lägg till
-          </button>
-        </div>
-        {data.workExperience.length === 0 ? (
-          <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
-            <Briefcase className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-            <p className="text-slate-500 text-sm">Inga jobb tillagda ännu</p>
-            <button
-              onClick={() => add(data.workExperience, { id: Date.now().toString(), company: '', title: '', location: '', startDate: '', endDate: '', current: false, description: '' }, 'workExperience')}
-              className="mt-2 text-[#4f46e5] text-sm font-medium hover:underline"
-            >
-              + Lägg till första jobbet
-            </button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {data.workExperience.map((exp, i) => (
-              <div key={exp.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-slate-500">Jobb {i + 1}</span>
-                  <button onClick={() => remove(data.workExperience, exp.id, 'workExperience')} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="space-y-3">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input value={exp.company} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'company', e.target.value)} placeholder="Företag" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                    <input value={exp.title} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'title', e.target.value)} placeholder="Titel/roll" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <input value={exp.startDate} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'startDate', e.target.value)} placeholder="Start (t.ex. 2021-01)" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                    <input value={exp.endDate} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'endDate', e.target.value)} placeholder="Slut (eller 'Nuvarande')" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                  </div>
-                  <textarea value={exp.description} onChange={(e) => update(data.workExperience, exp.id, 'workExperience', 'description', e.target.value)} placeholder="Beskriv dina arbetsuppgifter..." rows={3} className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm resize-none" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Card>
+    <div className="space-y-6">
+      <ContextualHelp context="experience" />
+      
+      <div>
+        <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <Briefcase className="w-5 h-5 text-purple-500" />
+          Arbetslivserfarenhet
+        </h3>
+        <ExperienceEditor
+          experiences={data.workExperience || []}
+          onChange={(experiences) => setData({ ...data, workExperience: experiences })}
+        />
+      </div>
 
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800">Utbildning</h3>
-          <button
-            onClick={() => add(data.education, { id: Date.now().toString(), school: '', degree: '', field: '', location: '', startDate: '', endDate: '', description: '' }, 'education')}
-            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"
-          >
-            <Plus className="w-4 h-4" /> Lägg till
-          </button>
-        </div>
-        {data.education.length === 0 ? (
-          <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
-            <GraduationCap className="w-10 h-10 text-slate-300 mx-auto mb-2" />
-            <p className="text-slate-500 text-sm">Inga utbildningar tillagda ännu</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {data.education.map((edu, i) => (
-              <div key={edu.id} className="p-4 bg-slate-50 rounded-xl border border-slate-100">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-medium text-slate-500">Utbildning {i + 1}</span>
-                  <button onClick={() => remove(data.education, edu.id, 'education')} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg">
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <input value={edu.school} onChange={(e) => update(data.education, edu.id, 'education', 'school', e.target.value)} placeholder="Skola/Universitet" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                  <input value={edu.degree} onChange={(e) => update(data.education, edu.id, 'education', 'degree', e.target.value)} placeholder="Examen" className="px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </Card>
+      <div>
+        <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <GraduationCap className="w-5 h-5 text-purple-500" />
+          Utbildning
+        </h3>
+        <EducationEditor
+          education={data.education || []}
+          onChange={(education) => setData({ ...data, education })}
+        />
+      </div>
     </div>
   )
 
   // STEG 5: KOMPETENSER
   const renderStep5 = () => (
-    <div className="space-y-4">
-      <Card>
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800">Kompetenser</h3>
-          <button
-            onClick={() => add(data.skills, { id: Date.now().toString(), name: '', level: 3, category: 'technical' }, 'skills')}
-            className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"
-          >
-            <Plus className="w-4 h-4" /> Lägg till
-          </button>
-        </div>
-        {data.skills.length === 0 ? (
-          <div className="text-center py-8 border-2 border-dashed border-slate-200 rounded-xl">
-            <p className="text-slate-500 text-sm">Inga kompetenser tillagda</p>
-          </div>
-        ) : (
-          <div className="space-y-2">
-            {data.skills.map((skill) => (
-              <div key={skill.id} className="flex items-center gap-3">
-                <input type="text" value={skill.name} onChange={(e) => update(data.skills, skill.id, 'skills', 'name', e.target.value)} placeholder="Kompetens" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                <select value={skill.level} onChange={(e) => update(data.skills, skill.id, 'skills', 'level', parseInt(e.target.value))} className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-24">
-                  <option value={1}>1/5</option>
-                  <option value={2}>2/5</option>
-                  <option value={3}>3/5</option>
-                  <option value={4}>4/5</option>
-                  <option value={5}>5/5</option>
-                </select>
-                <button onClick={() => remove(data.skills, skill.id, 'skills')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
-              </div>
-            ))}
-          </div>
-        )}
-      </Card>
+    <div className="space-y-6">
+      <ContextualHelp context="skills" />
+      
+      <div>
+        <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <Award className="w-5 h-5 text-purple-500" />
+          Kompetenser
+        </h3>
+        <SkillsEditor
+          skills={data.skills || []}
+          onChange={(skills) => setData({ ...data, skills })}
+        />
+      </div>
 
       <Card>
         <div className="flex items-center justify-between mb-4">
@@ -600,10 +564,13 @@ export default function CVBuilder() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header */}
+      {/* Header med auto-save indikator */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
           <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Skapa CV</h1>
+          <div className="flex items-center gap-2 mt-1">
+            <SaveIndicator />
+          </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
           <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-amber-600 hover:bg-amber-50 border border-amber-200 rounded-lg transition-colors">
@@ -613,9 +580,15 @@ export default function CVBuilder() {
           <button onClick={() => setShowLinkedInImport(true)} className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm border border-[#0077B5] text-[#0077B5] rounded-lg hover:bg-[#0077B5]/5">
             <Linkedin className="w-4 h-4" /> Importera
           </button>
-          <button onClick={save} disabled={saving} className="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] disabled:opacity-50 text-sm font-medium">
+          {/* Manuell spara-knapp - backup om auto-save misslyckas */}
+          <button 
+            onClick={save} 
+            disabled={saving} 
+            className="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] disabled:opacity-50 text-sm font-medium"
+            title="Spara manuellt (auto-save är aktivt)"
+          >
             <Save className="w-4 h-4" />
-            {saving ? 'Sparar...' : 'Spara'}
+            {saving ? 'Sparar...' : 'Spara nu'}
           </button>
           <div className="w-px h-6 bg-slate-300 mx-1" />
           <CVShare onShare={async () => await cvApi.shareCV()} variant="compact" />
@@ -636,6 +609,13 @@ export default function CVBuilder() {
           />
         </div>
       </div>
+      
+      {/* Progress Bar med CV Score */}
+      <CVProgressBar 
+        data={data} 
+        currentStep={step} 
+        onStepClick={setStep}
+      />
 
       {/* Steg-indikator - ovanför allt */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
@@ -688,6 +668,20 @@ export default function CVBuilder() {
             <div className="bg-white shadow-lg rounded-lg overflow-hidden max-h-[700px] overflow-y-auto">
               <CVPreview data={data} />
             </div>
+          </div>
+
+          {/* Help - Show onboarding again */}
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+            <h3 className="font-semibold text-slate-800 mb-2">Behöver du hjälp?</h3>
+            <p className="text-sm text-slate-500 mb-3">
+              Se guiden igen för tips om hur du skapar ett bra CV.
+            </p>
+            <button
+              onClick={() => setShowOnboarding(true)}
+              className="w-full px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+            >
+              Visa guide igen
+            </button>
           </div>
 
           {/* AI Tools */}
@@ -776,6 +770,17 @@ export default function CVBuilder() {
           onClose={() => setShowLinkedInImport(false)}
         />
       )}
+      
+      {/* Onboarding */}
+      {showOnboarding && (
+        <CVOnboarding 
+          onComplete={() => setShowOnboarding(false)}
+          onSkip={() => setShowOnboarding(false)}
+        />
+      )}
+      
+      {/* Mobile Preview FAB */}
+      <MobilePreviewFAB data={data} />
     </div>
   )
 }

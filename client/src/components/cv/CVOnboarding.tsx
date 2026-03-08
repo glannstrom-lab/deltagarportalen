@@ -1,198 +1,250 @@
+/**
+ * CV Builder Onboarding / Walkthrough
+ * Guides first-time users through the CV creation process
+ */
+
 import { useState, useEffect } from 'react'
-import { X, ChevronRight, ChevronLeft, Sparkles, FileText, Wand2, Download, Check } from 'lucide-react'
+import { 
+  X, ChevronRight, ChevronLeft, Sparkles, CheckCircle,
+  FileText, User, Briefcase, Award, Eye, Download
+} from 'lucide-react'
+
+interface OnboardingStep {
+  id: string
+  title: string
+  description: string
+  target: string
+  icon: React.ElementType
+  tip: string
+}
+
+const ONBOARDING_STEPS: OnboardingStep[] = [
+  {
+    id: 'welcome',
+    title: 'Välkommen till CV-byggaren!',
+    description: 'Här skapar du ett professionellt CV på nolltid. Jag guidar dig genom processen.',
+    target: '',
+    icon: Sparkles,
+    tip: 'Allt sparas automatiskt, så du kan alltid fortsätta senare.'
+  },
+  {
+    id: 'design',
+    title: 'Välj design',
+    description: 'Börja med att välja en mall och färg som passar din personlighet och bransch.',
+    target: 'step-1',
+    icon: FileText,
+    tip: 'Moderna mallar passar bra för kreativa yrken, medan klassiska fungerar överallt.'
+  },
+  {
+    id: 'personal',
+    title: 'Fyll i dina uppgifter',
+    description: 'Lägg till ditt namn, kontaktuppgifter och en profilbild.',
+    target: 'step-2',
+    icon: User,
+    tip: 'En professionell profilbild ökar chanserna att bli uppmärksammad.'
+  },
+  {
+    id: 'profile',
+    title: 'Skriv en sammanfattning',
+    description: 'Berätta kort vem du är och vad du söker. Detta är det första rekryterare läser.',
+    target: 'step-3',
+    icon: FileText,
+    tip: 'Använd aktiva verb och nämn dina starkaste sidor. 3-5 meningar räcker.'
+  },
+  {
+    id: 'experience',
+    title: 'Lägg till erfarenhet',
+    description: 'Beskriv dina tidigare jobb och utbildningar. Var specifik!',
+    target: 'step-4',
+    icon: Briefcase,
+    tip: 'Kvantifiera resultat när du kan: "Ökade försäljningen med 25%".'
+  },
+  {
+    id: 'skills',
+    title: 'Lista dina kompetenser',
+    description: 'Lägg till både tekniska och mjuka färdigheter. Betygsätta dig själv ärligt.',
+    target: 'step-5',
+    icon: Award,
+    tip: 'Titta på jobbannonser för att se vilka kompetenser som efterfrågas.'
+  },
+  {
+    id: 'preview',
+    title: 'Förhandsgranska och exportera',
+    description: 'Se hur ditt CV ser ut och ladda ner det som PDF när du är nöjd.',
+    target: '',
+    icon: Eye,
+    tip: 'Be någon du litar på att läsa igenom innan du skickar det.'
+  }
+]
 
 interface CVOnboardingProps {
   onComplete: () => void
   onSkip: () => void
 }
 
-const steps = [
-  {
-    title: 'Välkommen till CV-generatorn!',
-    description: 'Här kan du skapa ett professionellt CV med hjälp av AI och smarta verktyg.',
-    icon: Sparkles,
-  },
-  {
-    title: 'Välj en mall',
-    description: 'Börja med att välja en CV-mall som passar din bransch och stil. Du kan ändra detta senare.',
-    icon: FileText,
-  },
-  {
-    title: 'Fyll i din information',
-    description: 'Gå igenom stegen och fyll i dina personuppgifter, erfarenheter och utbildning.',
-    icon: Check,
-  },
-  {
-    title: 'Använd AI-hjälp',
-    description: 'Klicka på "AI-skrivhjälp" för att förbättra dina formuleringar och få förslag.',
-    icon: Wand2,
-  },
-  {
-    title: 'Exportera ditt CV',
-    description: 'När du är nöjd, ladda ner ditt CV som PDF eller dela det via en länk.',
-    icon: Download,
-  },
-]
-
 export function CVOnboarding({ onComplete, onSkip }: CVOnboardingProps) {
   const [currentStep, setCurrentStep] = useState(0)
-  const [visible, setVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(true)
 
   // Check if user has seen onboarding before
   useEffect(() => {
     const hasSeenOnboarding = localStorage.getItem('cv-onboarding-completed')
     if (hasSeenOnboarding) {
-      setVisible(false)
+      setIsVisible(false)
     }
   }, [])
 
-  if (!visible) return null
+  if (!isVisible) return null
+
+  const step = ONBOARDING_STEPS[currentStep]
+  const isFirstStep = currentStep === 0
+  const isLastStep = currentStep === ONBOARDING_STEPS.length - 1
+  const Icon = step.icon
 
   const handleNext = () => {
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1)
-    } else {
+    if (isLastStep) {
       completeOnboarding()
+    } else {
+      setCurrentStep(currentStep + 1)
     }
   }
 
   const handlePrevious = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1)
-    }
+    setCurrentStep(currentStep - 1)
   }
 
   const completeOnboarding = () => {
     localStorage.setItem('cv-onboarding-completed', 'true')
+    setIsVisible(false)
     onComplete()
-    setVisible(false)
   }
 
-  const skipOnboarding = () => {
+  const handleSkip = () => {
     localStorage.setItem('cv-onboarding-completed', 'true')
+    setIsVisible(false)
     onSkip()
-    setVisible(false)
   }
-
-  const CurrentIcon = steps[currentStep].icon
 
   return (
-    <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl p-8 w-full max-w-lg shadow-2xl relative">
-        {/* Close button */}
-        <button
-          onClick={skipOnboarding}
-          className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-full transition-colors"
-        >
-          <X size={20} className="text-slate-400" />
-        </button>
-
-        {/* Progress */}
-        <div className="flex gap-2 mb-8">
-          {steps.map((_, index) => (
-            <div
-              key={index}
-              className={`h-1 flex-1 rounded-full transition-colors ${
-                index <= currentStep ? 'bg-[#4f46e5]' : 'bg-slate-200'
-              }`}
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+      <div className="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+        {/* Header with progress */}
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-white">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <div className="p-2 bg-white/20 rounded-lg">
+                <Icon className="w-6 h-6" />
+              </div>
+              <span className="text-sm font-medium text-white/80">
+                Steg {currentStep + 1} av {ONBOARDING_STEPS.length}
+              </span>
+            </div>
+            <button
+              onClick={handleSkip}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          {/* Progress bar */}
+          <div className="h-1 bg-white/20 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-white rounded-full transition-all duration-500"
+              style={{ width: `${((currentStep + 1) / ONBOARDING_STEPS.length) * 100}%` }}
             />
-          ))}
+          </div>
         </div>
 
         {/* Content */}
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-[#4f46e5]/10 rounded-full flex items-center justify-center mx-auto mb-6">
-            <CurrentIcon size={40} className="text-[#4f46e5]" />
-          </div>
+        <div className="p-6">
           <h2 className="text-2xl font-bold text-slate-800 mb-3">
-            {steps[currentStep].title}
+            {step.title}
           </h2>
-          <p className="text-slate-600">
-            {steps[currentStep].description}
+          <p className="text-slate-600 mb-6 leading-relaxed">
+            {step.description}
           </p>
-        </div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between">
-          <button
-            onClick={skipOnboarding}
-            className="text-slate-500 hover:text-slate-700 text-sm"
-          >
-            Hoppa över
-          </button>
+          {/* Tip box */}
+          <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-6">
+            <div className="flex gap-3">
+              <Sparkles className="w-5 h-5 text-purple-500 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-medium text-purple-800 mb-1">Tips!</p>
+                <p className="text-sm text-purple-700">{step.tip}</p>
+              </div>
+            </div>
+          </div>
 
-          <div className="flex gap-3">
-            {currentStep > 0 && (
-              <button
-                onClick={handlePrevious}
-                className="px-4 py-2 text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-lg transition-colors"
-              >
-                <ChevronLeft size={20} />
-              </button>
-            )}
+          {/* Navigation */}
+          <div className="flex items-center justify-between">
             <button
-              onClick={handleNext}
-              className="px-6 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] transition-colors flex items-center gap-2"
+              onClick={handlePrevious}
+              disabled={isFirstStep}
+              className={`
+                flex items-center gap-1 px-4 py-2 rounded-lg font-medium transition-colors
+                ${isFirstStep 
+                  ? 'text-slate-300 cursor-not-allowed' 
+                  : 'text-slate-600 hover:bg-slate-100'
+                }
+              `}
             >
-              {currentStep === steps.length - 1 ? (
-                <>Kom igång!</>
-              ) : (
-                <>
-                  Nästa
-                  <ChevronRight size={20} />
-                </>
-              )}
+              <ChevronLeft className="w-4 h-4" />
+              Tillbaka
             </button>
+
+            <div className="flex gap-2">
+              <button
+                onClick={handleSkip}
+                className="px-4 py-2 text-slate-500 hover:text-slate-700 font-medium transition-colors"
+              >
+                Hoppa över
+              </button>
+              <button
+                onClick={handleNext}
+                className="flex items-center gap-1 px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 font-medium transition-colors"
+              >
+                {isLastStep ? (
+                  <>
+                    <CheckCircle className="w-4 h-4" />
+                    Kom igång!
+                  </>
+                ) : (
+                  <>
+                    Nästa
+                    <ChevronRight className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Step indicator */}
-        <p className="text-center text-sm text-slate-400 mt-4">
-          Steg {currentStep + 1} av {steps.length}
-        </p>
+        {/* Step indicators */}
+        <div className="flex justify-center gap-1.5 pb-4">
+          {ONBOARDING_STEPS.map((_, idx) => (
+            <button
+              key={idx}
+              onClick={() => setCurrentStep(idx)}
+              className={`
+                w-2 h-2 rounded-full transition-colors
+                ${idx === currentStep ? 'bg-purple-600' : 
+                  idx < currentStep ? 'bg-purple-300' : 'bg-slate-200'}
+              `}
+            />
+          ))}
+        </div>
       </div>
     </div>
   )
 }
 
-// Tooltips for specific features
-interface TooltipProps {
-  children: React.ReactNode
-  text: string
-  position?: 'top' | 'bottom' | 'left' | 'right'
-  show?: boolean
+// Reset onboarding (for testing or if user wants to see it again)
+export function resetOnboarding() {
+  localStorage.removeItem('cv-onboarding-completed')
 }
 
-export function Tooltip({ children, text, position = 'top', show = true }: TooltipProps) {
-  const [isVisible, setIsVisible] = useState(false)
-
-  if (!show) return <>{children}</>
-
-  const positionClasses = {
-    top: 'bottom-full left-1/2 -translate-x-1/2 mb-2',
-    bottom: 'top-full left-1/2 -translate-x-1/2 mt-2',
-    left: 'right-full top-1/2 -translate-y-1/2 mr-2',
-    right: 'left-full top-1/2 -translate-y-1/2 ml-2',
-  }
-
-  return (
-    <div 
-      className="relative inline-block"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
-    >
-      {children}
-      {isVisible && (
-        <div className={`absolute ${positionClasses[position]} z-50 px-3 py-2 bg-slate-800 text-white text-xs rounded-lg whitespace-nowrap`}>
-          {text}
-          <div className={`absolute w-2 h-2 bg-slate-800 rotate-45 ${
-            position === 'top' ? 'top-full left-1/2 -translate-x-1/2 -mt-1' :
-            position === 'bottom' ? 'bottom-full left-1/2 -translate-x-1/2 -mb-1' :
-            position === 'left' ? 'left-full top-1/2 -translate-y-1/2 -ml-1' :
-            'right-full top-1/2 -translate-y-1/2 -mr-1'
-          }`} />
-        </div>
-      )}
-    </div>
-  )
+// Check if onboarding should be shown
+export function shouldShowOnboarding(): boolean {
+  return !localStorage.getItem('cv-onboarding-completed')
 }
