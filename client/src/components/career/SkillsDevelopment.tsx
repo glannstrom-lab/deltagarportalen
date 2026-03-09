@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2, Brain } from 'lucide-react';
+import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2, Brain, GraduationCap } from 'lucide-react';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { skillsApi, type UserSkill } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
@@ -337,12 +337,15 @@ export default function SkillsDevelopment() {
                   </div>
                 </div>
                 
-                {skill.howToLearn && (
-                  <div className="text-sm text-slate-600">
-                    <p className="text-xs text-slate-400 mb-1">Efterfrågas av:</p>
-                    <p className="line-clamp-2">{skill.top_employers.join(', ')}</p>
-                  </div>
-                )}
+                <div className="mt-3 pt-3 border-t border-slate-100">
+                  <a
+                    href="#/career?tab=microlearning"
+                    className="inline-flex items-center gap-1.5 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                  >
+                    <BookOpen size={14} />
+                    Hitta kurser för {skill.name}
+                  </a>
+                </div>
               </div>
             )})}
           </div>

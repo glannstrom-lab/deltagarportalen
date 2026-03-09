@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { 
   Target, DollarSign, TrendingUp, GraduationCap, Users,
-  ChevronDown, LayoutGrid
+  ChevronDown, LayoutGrid, BookOpen
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { 
@@ -11,8 +11,9 @@ import {
   EducationOverview, 
   NetworkingGuide 
 } from '@/components/career';
+import { MicroLearningHub } from '@/components/microlearning';
 
-type CareerTab = 'coach' | 'salary' | 'skills' | 'education' | 'networking';
+type CareerTab = 'coach' | 'salary' | 'skills' | 'microlearning' | 'education' | 'networking';
 
 interface TabConfig {
   id: CareerTab;
@@ -55,6 +56,16 @@ const TABS: TabConfig[] = [
     activeBg: 'bg-purple-500',
     activeBorder: 'border-purple-500',
     inactiveHover: 'hover:border-purple-300',
+  },
+  {
+    id: 'microlearning',
+    title: 'Mikro-Lärande',
+    description: 'Korta kurser & kompetens',
+    icon: BookOpen,
+    color: 'bg-rose-500 text-rose-600',
+    activeBg: 'bg-rose-500',
+    activeBorder: 'border-rose-500',
+    inactiveHover: 'hover:border-rose-300',
   },
   {
     id: 'education',
@@ -266,6 +277,7 @@ export default function Career() {
         {activeTab === 'coach' && <CareerCoach />}
         {activeTab === 'salary' && <SalaryInsights />}
         {activeTab === 'skills' && <SkillsDevelopment />}
+        {activeTab === 'microlearning' && <MicroLearningHub />}
         {activeTab === 'education' && <EducationOverview />}
         {activeTab === 'networking' && <NetworkingGuide />}
       </div>
