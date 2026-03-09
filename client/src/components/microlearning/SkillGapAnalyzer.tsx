@@ -51,13 +51,9 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
         .from('cvs')
         .select('skills, work_experience, education')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('desired_position')
-        .eq('id', user.id)
-        .single();
+      // Använd bara selectedRole från UI, inte från profilen (kolumnen finns inte)
 
       // Anropa Vercel API via aiService för analys
       const result = await aiService.kompetensgap({
@@ -66,7 +62,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
           workExperience: cvData?.work_experience || [],
           education: cvData?.education || []
         }),
-        drömjobb: selectedRole || profileData?.desired_position || ''
+        drömjobb: selectedRole || ''
       });
       
       // Parsa resultatet (som kommer som en string från aiService)

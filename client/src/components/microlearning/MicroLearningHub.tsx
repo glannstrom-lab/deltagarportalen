@@ -87,12 +87,22 @@ export default function MicroLearningHub() {
     try {
       setLoading(true);
       
-      // Hämta statistik
-      const { data: statsData, error: statsError } = await supabase
-        .rpc('get_user_learning_stats');
-        
-      if (statsError) throw statsError;
-      setStats(statsData);
+      // Hämta statistik (fallback om funktionen inte finns än)
+      try {
+        const { data: statsData } = await supabase
+          .rpc('get_user_learning_stats');
+        setStats(statsData);
+      } catch {
+        // Sätt default-värden om funktionen inte finns
+        setStats({
+          total_courses_started: 0,
+          total_courses_completed: 0,
+          total_time_spent_minutes: 0,
+          current_streak_days: 0,
+          skills_in_progress: 0,
+          certifications_count: 0
+        });
+      }
       
       // Hämta learning paths
       const { data: paths, error: pathsError } = await supabase
