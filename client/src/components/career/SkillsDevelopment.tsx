@@ -131,6 +131,18 @@ export default function SkillsDevelopment() {
     }
   };
 
+  // Kombinera alla skills till en array
+  const skills = [
+    ...technicalSkills.map(s => ({ ...s, category: 'technical' as const })),
+    ...softSkills.map(s => ({ ...s, category: 'soft' as const })),
+    ...certifications.map(c => ({ 
+      name: c.name, 
+      importance: c.value,
+      howToLearn: c.provider,
+      category: 'certification' as const
+    }))
+  ];
+
   // Filtrera skills efter kategori
   const filteredSkills = selectedCategory === 'all' 
     ? skills 
@@ -307,7 +319,7 @@ export default function SkillsDevelopment() {
                       </button>
                     ) : (
                       <button
-                        onClick={() => occupation && saveSkill(skill, occupation.label)}
+                        onClick={() => occupation && saveSkill(skill.name, skill.category, occupation.label)}
                         disabled={!occupation}
                         className="p-1 text-slate-400 hover:text-emerald-500 transition-colors"
                         title="Spara kompetens"
@@ -321,17 +333,11 @@ export default function SkillsDevelopment() {
                 <div className="mb-3">
                   <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
                     <TrendingUp size={14} />
-                    Förekommer i {skill.frequency} annonser
-                  </div>
-                  <div className="w-full bg-slate-100 rounded-full h-2">
-                    <div
-                      className="bg-emerald-500 h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${Math.min(100, (skill.frequency / 50) * 100)}%` }}
-                    />
+                    Viktighet: {skill.importance}
                   </div>
                 </div>
                 
-                {skill.top_employers.length > 0 && (
+                {skill.howToLearn && (
                   <div className="text-sm text-slate-600">
                     <p className="text-xs text-slate-400 mb-1">Efterfrågas av:</p>
                     <p className="line-clamp-2">{skill.top_employers.join(', ')}</p>
