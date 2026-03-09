@@ -87,9 +87,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   try {
     console.log('[microlearning] Request received');
+    console.log('[microlearning] Body:', JSON.stringify(req.body));
     
     const payload = req.body.data || req.body;
-    const { cvData, targetRole, jobRequirements } = payload;
+    // Hantera både cvText (från aiService) och cvData (direkt)
+    let cvData = payload.cvData;
+    if (!cvData && payload.cvText) {
+      try {
+        cvData = JSON.parse(payload.cvText);
+      } catch {
+        cvData = { skills: [], workExperience: [], education: [] };
+      }
+    }
+    const targetRole = payload.drömjobb || payload.targetRole || '';
 
     if (!cvData) {
       return res.status(400).json({ error: 'CV data is required' });
