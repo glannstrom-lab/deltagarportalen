@@ -9,6 +9,8 @@ import Layout from './components/Layout'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Landing from './pages/Landing'
+import Privacy from './pages/Privacy'
+import Terms from './pages/Terms'
 import StorageTest from './pages/StorageTest'
 
 // Lazy-loaded sidor för bättre prestanda
@@ -164,10 +166,34 @@ function App() {
           <Landing />
         </RouteErrorBoundary>
       } />
+      
+      {/* Legal pages - public */}
+      <Route path="/privacy" element={
+        <RouteErrorBoundary>
+          <Privacy />
+        </RouteErrorBoundary>
+      } />
+      <Route path="/terms" element={
+        <RouteErrorBoundary>
+          <Terms />
+        </RouteErrorBoundary>
+      } />
       {/* Storage test page */}
       <Route path="/test/storage" element={
         <RouteErrorBoundary>
           <StorageTest />
+        </RouteErrorBoundary>
+      } />
+      
+      {/* Legal pages - public */}
+      <Route path="/privacy" element={
+        <RouteErrorBoundary>
+          <Privacy />
+        </RouteErrorBoundary>
+      } />
+      <Route path="/terms" element={
+        <RouteErrorBoundary>
+          <Terms />
         </RouteErrorBoundary>
       } />
 
