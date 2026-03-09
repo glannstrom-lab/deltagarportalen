@@ -159,41 +159,52 @@ export default function MicroLearningHub() {
 
   const loadRecommendations = async () => {
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-
-      const response = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/learning-recommend`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${session.access_token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            maxResults: 6,
-            userContext: {
-              energyLevel,
-              weeklyTimeAvailable: 120
-            },
-            filters: {
-              maxDuration: energyLevel === 'LOW' ? 15 : energyLevel === 'MEDIUM' ? 30 : undefined,
-              freeOnly: true
-            }
-          })
-        }
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        if (error.error !== 'No active learning paths found') {
-          console.error('Error fetching recommendations:', error);
-        }
+      // Hämta kurser direkt från databasen istället för via Edge Function
+      let query = supabase
+        .from('courses')
+        .select('*')
+        .eq('is_active', true)
+        .eq('is_free', true);
+      
+      // Filtrera på längd baserat på energinivå
+      if (energyLevel === 'LOW') {
+        query = query.lte('duration_minutes', 15);
+      } else if (energyLevel === 'MEDIUM') {
+        query = query.lte('duration_minutes', 30);
+      }
+      
+      const { data: courses, error } = await query.limit(6);
+      
+      if (error) {
+        console.error('Error fetching courses:', error);
         return;
       }
-
-      const data = await response.json();
-      setRecommendations(data.recommendations || []);
+      
+      // Konvertera till CourseRecommendation format
+      const recs = courses?.map(course => ({
+        id: `temp-${course.id}`,
+        relevance_score: 80,
+        energy_level: course.duration_minutes <= 15 ? 'LOW' : course.duration_minutes <= 30 ? 'MEDIUM' : 'HIGH',
+        match_reason: 'Rekommenderad för din energinivå',
+        status: 'SUGGESTED',
+        progress_percent: 0,
+        course: {
+          id: course.id,
+          title: course.title,
+          description: course.description || '',
+          provider: course.provider,
+          thumbnail_url: course.thumbnail_url,
+          content_url: course.content_url,
+          duration_minutes: course.duration_minutes,
+          difficulty: course.difficulty_level || 'BEGINNER',
+          is_free: course.is_free,
+          skills: course.skills_tags || [],
+          rating: course.rating,
+          view_count: course.view_count
+        }
+      })) || [];
+      
+      setRecommendations(recs);
     } catch (error) {
       console.error('Error loading recommendations:', error);
     }
