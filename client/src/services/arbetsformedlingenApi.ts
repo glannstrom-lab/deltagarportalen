@@ -343,7 +343,14 @@ export async function getAutocomplete(query: string): Promise<string[]> {
   try {
     const url = `${AF_JOBSEARCH_BASE}/complete?q=${encodeURIComponent(query)}`;
     const data = await fetchFromAF(url);
-    return data.typeahead || [];
+    
+    // AF API returns objects with { value, found_phrase, type, occurrences }
+    // We need to extract the 'value' property to get the suggestion string
+    const typeahead = data.typeahead || [];
+    return typeahead.map((item: any) => {
+      if (typeof item === 'string') return item;
+      return item.value || item.found_phrase || '';
+    }).filter(Boolean);
   } catch (error) {
     return [];
   }
