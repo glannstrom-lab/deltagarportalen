@@ -76,7 +76,6 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
       setSkillGaps(gaps);
       
       // Skapa learning paths i Supabase för varje gap
-      const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const pathIds: string[] = [];
         for (const gap of gaps.slice(0, 5)) {
