@@ -1,384 +1,458 @@
 /**
  * PDF Export Service
- * Genererar PDF-dokument för CV och jobbannonser
- * ANPASSAD för att matcha rätt datastruktur
+ * Genererar PDF-dokument för CV - MATCHAR EXAKT CVPreview.tsx
  */
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { CVData, JobData } from '@/types/pdf.types';
 
-// Re-export types for bakåtkompatibilitet
+// Re-export types
 export type { CVData, JobData } from '@/types/pdf.types';
 
-// Make autoTable available on jsPDF
+// Make autoTable available
 (jsPDF as any).autoTable = autoTable;
 
-// Brand colors
-const COLORS = {
-  primary: [79, 70, 229],      // Indigo-600
-  primaryDark: [67, 56, 202],  // Indigo-700
-  text: [15, 23, 42],          // Slate-900
-  textLight: [71, 85, 105],    // Slate-600
-  textMuted: [100, 116, 139],  // Slate-500
-  border: [226, 232, 240],     // Slate-200
-  white: [255, 255, 255],
+// Color schemes - MATCHAR CVPreview.tsx exakt
+const colorSchemes: Record<string, { primary: string; secondary: string; accent: string; headerBg: string }> = {
+  indigo: { primary: '#4f46e5', secondary: '#6366f1', accent: '#818cf8', headerBg: '#4f46e5' },
+  ocean: { primary: '#0ea5e9', secondary: '#38bdf8', accent: '#7dd3fc', headerBg: '#0ea5e9' },
+  forest: { primary: '#059669', secondary: '#10b981', accent: '#34d399', headerBg: '#059669' },
+  berry: { primary: '#db2777', secondary: '#ec4899', accent: '#f472b6', headerBg: '#db2777' },
+  amber: { primary: '#d97706', secondary: '#f59e0b', accent: '#fbbf24', headerBg: '#d97706' },
+  ruby: { primary: '#dc2626', secondary: '#ef4444', accent: '#f87171', headerBg: '#dc2626' },
+  slate: { primary: '#1e293b', secondary: '#475569', accent: '#64748b', headerBg: '#1e293b' },
+  violet: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa', headerBg: '#7c3aed' },
 };
 
+// Helper to safely get skill name
+function getSkillName(skill: any): string {
+  if (typeof skill === 'string') return skill;
+  if (skill && typeof skill === 'object') {
+    return skill.name || skill.label || String(skill);
+  }
+  return String(skill);
+}
+
+// Helper to safely get skill category
+function getSkillCategory(skill: any): string {
+  if (typeof skill === 'string') return 'other';
+  if (skill && typeof skill === 'object') {
+    return skill.category || 'other';
+  }
+  return 'other';
+}
+
 /**
- * Generera PDF från CV-data
- * ANPASSAD för att matcha rätt datastruktur
+ * Generera PDF från CV-data - MATCHAR EXAKT CVPreview.tsx
  */
 export async function generateCVPDF(cvData: CVData): Promise<Blob> {
-  const doc = new jsPDF();
+  const doc = new jsPDF('p', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
-  let yPos = 15;
+  const pageHeight = doc.internal.pageSize.getHeight();
+  const margin = 20;
+  const contentWidth = pageWidth - (margin * 2);
+  let yPos = margin;
 
-  // Helper to check page overflow
-  const checkPageOverflow = (neededSpace: number = 30) => {
-    if (yPos > 280 - neededSpace) {
+  // Get settings
+  const scheme = colorSchemes[cvData.colorScheme || 'indigo'] || colorSchemes.indigo;
+  const template = cvData.template || 'modern';
+  const fullName = `${cvData.firstName || ''} ${cvData.lastName || ''}`.trim() || 'Ditt Namn';
+
+  // Helper: Check page overflow
+  const checkOverflow = (neededSpace: number = 30) => {
+    if (yPos + neededSpace > pageHeight - margin) {
       doc.addPage();
-      yPos = 20;
+      yPos = margin;
     }
   };
 
-  // ============================================
-  // HEADER
-  // ============================================
-  
-  // Fullständigt namn
-  const fullName = `${cvData.firstName || ''} ${cvData.lastName || ''}`.trim() || 'Ditt Namn';
-  doc.setFontSize(24);
-  doc.setTextColor(...COLORS.primary);
-  doc.setFont('helvetica', 'bold');
-  doc.text(fullName, 20, yPos);
-  
-  // Titel/Yrke
-  if (cvData.title) {
-    yPos += 10;
-    doc.setFontSize(14);
-    doc.setTextColor(...COLORS.textLight);
-    doc.setFont('helvetica', 'normal');
-    doc.text(cvData.title, 20, yPos);
-  }
-  
-  yPos += 12;
+  // Helper: Convert hex to RGB
+  const hexToRgb = (hex: string): [number, number, number] => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? [
+      parseInt(result[1], 16),
+      parseInt(result[2], 16),
+      parseInt(result[3], 16)
+    ] : [79, 70, 229];
+  };
 
-  // Kontaktinformation - på en rad
-  doc.setFontSize(9);
-  doc.setTextColor(...COLORS.textMuted);
+  const primaryRgb = hexToRgb(scheme.primary);
+  const secondaryRgb = hexToRgb(scheme.secondary);
+
+  // ============================================
+  // HEADER - Matchar CVPreview.tsx exakt
+  // ============================================
   
+  // Header background
+  const headerHeight = cvData.profileImage ? 50 : (cvData.title ? 35 : 25);
+  
+  // Template-specific header colors
+  let headerBgColor: [number, number, number] = primaryRgb;
+  let headerTextColor: [number, number, number] = [255, 255, 255];
+  
+  if (template === 'classic') {
+    headerBgColor = [255, 255, 255];
+    headerTextColor = primaryRgb;
+  } else if (template === 'minimal') {
+    headerBgColor = [248, 250, 252];
+    headerTextColor = [15, 23, 42];
+  } else if (template === 'tech') {
+    headerBgColor = [15, 23, 42];
+    headerTextColor = secondaryRgb;
+  } else if (template === 'executive') {
+    headerBgColor = [30, 58, 95];
+    headerTextColor = [255, 255, 255];
+  } else if (template === 'academic') {
+    headerBgColor = [255, 255, 255];
+    headerTextColor = primaryRgb;
+  }
+
+  // Draw header background
+  doc.setFillColor(...headerBgColor);
+  doc.rect(0, 0, pageWidth, headerHeight + 10, 'F');
+
+  // Profile image placeholder (if exists)
+  if (cvData.profileImage) {
+    // Draw circle for profile image
+    doc.setDrawColor(...headerTextColor);
+    doc.setLineWidth(0.5);
+    doc.circle(margin + 12, headerHeight / 2 + 5, 12, 'S');
+    doc.setFontSize(8);
+    doc.setTextColor(...headerTextColor);
+    doc.text('[Foto]', margin + 8, headerHeight / 2 + 7);
+  }
+
+  // Name
+  doc.setFontSize(24);
+  doc.setTextColor(...headerTextColor);
+  doc.setFont('helvetica', 'bold');
+  const nameX = cvData.profileImage ? margin + 35 : margin;
+  doc.text(fullName, nameX, 18);
+
+  // Title
+  if (cvData.title) {
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'normal');
+    doc.text(cvData.title, nameX, 26);
+  }
+
+  // Contact info row
+  doc.setFontSize(9);
   const contactParts: string[] = [];
   if (cvData.email) contactParts.push(`✉ ${cvData.email}`);
   if (cvData.phone) contactParts.push(`☎ ${cvData.phone}`);
   if (cvData.location) contactParts.push(`📍 ${cvData.location}`);
-  if (cvData.linkedIn) contactParts.push(`💼 LinkedIn`);
   
   if (contactParts.length > 0) {
-    const contactText = contactParts.join('  •  ');
-    const splitContact = doc.splitTextToSize(contactText, pageWidth - 40);
-    doc.text(splitContact, 20, yPos);
-    yPos += splitContact.length * 4 + 5;
+    doc.text(contactParts.join('    '), nameX, headerHeight - 5);
   }
 
-  // Avdelarlinje
-  doc.setDrawColor(...COLORS.border);
-  doc.setLineWidth(0.5);
-  doc.line(20, yPos, pageWidth - 20, yPos);
-  yPos += 12;
+  // Links
+  if (cvData.links && cvData.links.length > 0) {
+    const linkTexts = cvData.links.map(link => {
+      const type = link.type;
+      if (type === 'linkedin') return 'LinkedIn';
+      if (type === 'github') return 'GitHub';
+      if (type === 'portfolio') return 'Portfolio';
+      if (type === 'website') return 'Webbplats';
+      return link.label || 'Länk';
+    });
+    
+    doc.setFontSize(8);
+    doc.text(linkTexts.join('    '), nameX, headerHeight + 2);
+  }
+
+  yPos = headerHeight + 20;
 
   // ============================================
-  // SAMMANFATTNING
+  // CONTENT
   // ============================================
-  if (cvData.summary?.trim()) {
-    checkPageOverflow(40);
+
+  // Helper: Draw section title
+  const drawSectionTitle = (title: string, icon?: string) => {
+    checkOverflow(20);
     
     doc.setFontSize(13);
-    doc.setTextColor(...COLORS.primary);
+    doc.setTextColor(...primaryRgb);
     doc.setFont('helvetica', 'bold');
-    doc.text('SAMMANFATTNING', 20, yPos);
-    yPos += 8;
+    
+    const fullTitle = icon ? `${icon} ${title}` : title;
+    doc.text(fullTitle, margin, yPos);
+    
+    // Underline
+    doc.setDrawColor(...primaryRgb);
+    doc.setLineWidth(0.5);
+    
+    if (template === 'classic' || template === 'minimal' || template === 'creative') {
+      doc.line(margin, yPos + 2, margin + contentWidth, yPos + 2);
+    } else if (template === 'corporate') {
+      doc.line(margin, yPos + 2, margin + 4, yPos + 2);
+    } else {
+      doc.line(margin, yPos + 2, margin + contentWidth, yPos + 2);
+    }
+    
+    yPos += 10;
+  };
+
+  // Helper: Draw text with word wrap
+  const drawWrappedText = (text: string, x: number, maxWidth: number, fontSize: number = 10): number => {
+    doc.setFontSize(fontSize);
+    const splitText = doc.splitTextToSize(text, maxWidth);
+    doc.text(splitText, x, yPos);
+    return splitText.length * (fontSize * 0.4);
+  };
+
+  // SAMMANFATTNING
+  if (cvData.summary?.trim()) {
+    drawSectionTitle('Profil');
     
     doc.setFontSize(10);
-    doc.setTextColor(...COLORS.text);
+    doc.setTextColor(51, 65, 85); // slate-700
     doc.setFont('helvetica', 'normal');
-    const splitSummary = doc.splitTextToSize(cvData.summary, pageWidth - 40);
-    doc.text(splitSummary, 20, yPos);
-    yPos += splitSummary.length * 5 + 12;
+    const lines = doc.splitTextToSize(cvData.summary, contentWidth);
+    doc.text(lines, margin, yPos);
+    yPos += lines.length * 5 + 8;
   }
 
-  // ============================================
   // ARBETSLIVSERFARENHET
-  // ============================================
   if (cvData.workExperience?.length > 0) {
-    checkPageOverflow(40);
+    drawSectionTitle('Arbetslivserfarenhet', '💼');
     
-    doc.setFontSize(13);
-    doc.setTextColor(...COLORS.primary);
-    doc.setFont('helvetica', 'bold');
-    doc.text('ARBETSLIVSERFARENHET', 20, yPos);
-    yPos += 10;
-
-    cvData.workExperience.forEach((exp, index) => {
-      checkPageOverflow(35);
+    cvData.workExperience.forEach((job, index) => {
+      checkOverflow(35);
       
-      // Titel
+      // Job title
       doc.setFontSize(11);
-      doc.setTextColor(...COLORS.text);
+      doc.setTextColor(15, 23, 42); // slate-900
       doc.setFont('helvetica', 'bold');
-      doc.text(exp.title || '', 20, yPos);
+      doc.text(job.title || '', margin, yPos);
       
-      // Datum - högerjusterat
-      const dateStr = exp.current 
-        ? `${exp.startDate} – Pågående`
-        : `${exp.startDate} – ${exp.endDate || ''}`;
+      // Date on right
+      const dateStr = job.current 
+        ? `${job.startDate} – Pågående`
+        : `${job.startDate} – ${job.endDate || ''}`;
       doc.setFont('helvetica', 'italic');
-      doc.setTextColor(...COLORS.textMuted);
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139); // slate-500
       const dateWidth = doc.getTextWidth(dateStr);
-      doc.text(dateStr, pageWidth - 20 - dateWidth, yPos);
+      doc.text(dateStr, pageWidth - margin - dateWidth, yPos);
       
-      yPos += 6;
-      
-      // Företag och plats
-      doc.setFontSize(10);
-      doc.setTextColor(...COLORS.textLight);
-      doc.setFont('helvetica', 'normal');
-      let companyText = exp.company || '';
-      if (exp.location) companyText += `, ${exp.location}`;
-      doc.text(companyText, 20, yPos);
       yPos += 5;
       
-      // Beskrivning
-      if (exp.description?.trim()) {
+      // Company
+      doc.setFontSize(10);
+      doc.setTextColor(71, 85, 105); // slate-600
+      doc.setFont('helvetica', 'normal');
+      let companyText = job.company || '';
+      if (job.location) companyText += `, ${job.location}`;
+      doc.text(companyText, margin, yPos);
+      yPos += 5;
+      
+      // Description
+      if (job.description?.trim()) {
         doc.setFontSize(9);
-        doc.setTextColor(...COLORS.text);
-        const splitDesc = doc.splitTextToSize(exp.description, pageWidth - 40);
-        doc.text(splitDesc, 20, yPos);
-        yPos += splitDesc.length * 4 + 8;
+        doc.setTextColor(51, 65, 85);
+        const descLines = doc.splitTextToSize(job.description, contentWidth);
+        doc.text(descLines, margin, yPos);
+        yPos += descLines.length * 4 + 6;
       } else {
-        yPos += 5;
+        yPos += 3;
       }
     });
     
     yPos += 5;
   }
 
-  // ============================================
   // UTBILDNING
-  // ============================================
   if (cvData.education?.length > 0) {
-    checkPageOverflow(40);
+    drawSectionTitle('Utbildning', '🎓');
     
-    doc.setFontSize(13);
-    doc.setTextColor(...COLORS.primary);
-    doc.setFont('helvetica', 'bold');
-    doc.text('UTBILDNING', 20, yPos);
-    yPos += 10;
-
     cvData.education.forEach((edu) => {
-      checkPageOverflow(25);
+      checkOverflow(25);
       
-      // Examen
+      // Degree
       doc.setFontSize(11);
-      doc.setTextColor(...COLORS.text);
+      doc.setTextColor(15, 23, 42);
       doc.setFont('helvetica', 'bold');
-      doc.text(edu.degree || '', 20, yPos);
+      doc.text(edu.degree || '', margin, yPos);
       
-      // Datum
+      // Date
       const dateStr = `${edu.startDate} – ${edu.endDate || 'Pågående'}`;
       doc.setFont('helvetica', 'italic');
-      doc.setTextColor(...COLORS.textMuted);
+      doc.setFontSize(9);
+      doc.setTextColor(100, 116, 139);
       const dateWidth = doc.getTextWidth(dateStr);
-      doc.text(dateStr, pageWidth - 20 - dateWidth, yPos);
+      doc.text(dateStr, pageWidth - margin - dateWidth, yPos);
       
-      yPos += 6;
+      yPos += 5;
       
-      // Skola och inriktning
+      // School
       doc.setFontSize(10);
-      doc.setTextColor(...COLORS.textLight);
+      doc.setTextColor(71, 85, 105);
       doc.setFont('helvetica', 'normal');
       let schoolText = edu.school || '';
       if (edu.field) schoolText += ` – ${edu.field}`;
-      doc.text(schoolText, 20, yPos);
-      yPos += 10;
+      doc.text(schoolText, margin, yPos);
+      yPos += 8;
     });
     
     yPos += 2;
   }
 
-  // ============================================
   // KOMPETENSER
-  // ============================================
   if (cvData.skills?.length > 0) {
-    checkPageOverflow(50);
+    drawSectionTitle('Kompetenser', '🛠');
     
-    doc.setFontSize(13);
-    doc.setTextColor(...COLORS.primary);
-    doc.setFont('helvetica', 'bold');
-    doc.text('KOMPETENSER', 20, yPos);
-    yPos += 10;
-
-    // Gruppera efter kategori
-    const technicalSkills = cvData.skills.filter(s => s.category === 'technical');
-    const softSkills = cvData.skills.filter(s => s.category === 'soft');
-    const otherSkills = cvData.skills.filter(s => !s.category || !['technical', 'soft'].includes(s.category));
-
-    // Tekniska kompetenser
+    // Group skills by category - MATCHAR CVPreview.tsx exakt
+    const technicalSkills = cvData.skills.filter(s => getSkillCategory(s) === 'technical');
+    const softSkills = cvData.skills.filter(s => getSkillCategory(s) === 'soft');
+    const toolSkills = cvData.skills.filter(s => getSkillCategory(s) === 'tool');
+    const otherSkills = cvData.skills.filter(s => {
+      const cat = getSkillCategory(s);
+      return !cat || cat === 'language' || cat === 'other';
+    });
+    
+    // Technical skills
     if (technicalSkills.length > 0) {
-      doc.setFontSize(9);
-      doc.setTextColor(...COLORS.textMuted);
-      doc.text('Tekniska:', 20, yPos);
-      yPos += 5;
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Tekniska:', margin, yPos);
+      yPos += 4;
       
       doc.setFontSize(10);
-      doc.setTextColor(...COLORS.text);
-      const skillsText = technicalSkills.map(s => s.name).join(' • ');
-      const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 40);
-      doc.text(splitSkills, 20, yPos);
-      yPos += splitSkills.length * 4 + 6;
-    }
-
-    // Mjuka färdigheter
-    if (softSkills.length > 0) {
-      doc.setFontSize(9);
-      doc.setTextColor(...COLORS.textMuted);
-      doc.text('Mjuka färdigheter:', 20, yPos);
-      yPos += 5;
-      
-      doc.setFontSize(10);
-      doc.setTextColor(...COLORS.text);
-      const skillsText = softSkills.map(s => s.name).join(' • ');
-      const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 40);
-      doc.text(splitSkills, 20, yPos);
-      yPos += splitSkills.length * 4 + 6;
-    }
-
-    // Övriga kompetenser
-    if (otherSkills.length > 0) {
-      doc.setFontSize(9);
-      doc.setTextColor(...COLORS.textMuted);
-      doc.text('Övrigt:', 20, yPos);
-      yPos += 5;
-      
-      doc.setFontSize(10);
-      doc.setTextColor(...COLORS.text);
-      const skillsText = otherSkills.map(s => s.name).join(' • ');
-      const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 40);
-      doc.text(splitSkills, 20, yPos);
-      yPos += splitSkills.length * 4 + 6;
+      doc.setTextColor(15, 23, 42);
+      const skillsText = technicalSkills.map(s => getSkillName(s)).join(' • ');
+      const lines = doc.splitTextToSize(skillsText, contentWidth);
+      doc.text(lines, margin, yPos);
+      yPos += lines.length * 4 + 5;
     }
     
-    yPos += 5;
+    // Soft skills
+    if (softSkills.length > 0) {
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Mjuka färdigheter:', margin, yPos);
+      yPos += 4;
+      
+      doc.setFontSize(10);
+      doc.setTextColor(15, 23, 42);
+      const skillsText = softSkills.map(s => getSkillName(s)).join(' • ');
+      const lines = doc.splitTextToSize(skillsText, contentWidth);
+      doc.text(lines, margin, yPos);
+      yPos += lines.length * 4 + 5;
+    }
+    
+    // Other skills
+    const remainingSkills = [...toolSkills, ...otherSkills];
+    if (remainingSkills.length > 0) {
+      doc.setFontSize(10);
+      doc.setTextColor(15, 23, 42);
+      const skillsText = remainingSkills.map(s => getSkillName(s)).join(' • ');
+      const lines = doc.splitTextToSize(skillsText, contentWidth);
+      doc.text(lines, margin, yPos);
+      yPos += lines.length * 4 + 5;
+    }
+    
+    yPos += 3;
   }
 
-  // ============================================
   // SPRÅK & CERTIFIKAT (två kolumner)
-  // ============================================
   const hasLanguages = cvData.languages?.length > 0;
   const hasCertificates = cvData.certificates?.length > 0;
   
   if (hasLanguages || hasCertificates) {
-    checkPageOverflow(60);
+    checkOverflow(40);
     
-    const colWidth = (pageWidth - 50) / 2;
+    const colWidth = contentWidth / 2;
     let leftY = yPos;
     let rightY = yPos;
     
-    // Språk (vänster kolumn)
+    // Språk (vänster)
     if (hasLanguages) {
       doc.setFontSize(13);
-      doc.setTextColor(...COLORS.primary);
+      doc.setTextColor(...primaryRgb);
       doc.setFont('helvetica', 'bold');
-      doc.text('SPRÅK', 20, leftY);
-      leftY += 10;
+      doc.text('🌐 Språk', margin, leftY);
+      leftY += 8;
       
       doc.setFontSize(10);
       cvData.languages!.forEach((lang) => {
-        doc.setTextColor(...COLORS.text);
+        doc.setTextColor(15, 23, 42);
         doc.setFont('helvetica', 'bold');
-        doc.text(lang.language || '', 20, leftY);
+        doc.text(lang.language || '', margin, leftY);
         
-        doc.setTextColor(...COLORS.textLight);
+        doc.setTextColor(100, 116, 139);
         doc.setFont('helvetica', 'normal');
-        doc.text(` – ${lang.level}`, 20 + doc.getTextWidth(lang.language || ''), leftY);
-        leftY += 6;
+        doc.text(` (${lang.level})`, margin + doc.getTextWidth(lang.language || ''), leftY);
+        leftY += 5;
       });
     }
     
-    // Certifikat (höger kolumn)
+    // Certifikat (höger)
     if (hasCertificates) {
       doc.setFontSize(13);
-      doc.setTextColor(...COLORS.primary);
+      doc.setTextColor(...primaryRgb);
       doc.setFont('helvetica', 'bold');
-      doc.text('CERTIFIKAT', 30 + colWidth, rightY);
-      rightY += 10;
+      doc.text('🏆 Certifikat', margin + colWidth + 5, rightY);
+      rightY += 8;
       
       doc.setFontSize(9);
       cvData.certificates!.forEach((cert) => {
-        doc.setTextColor(...COLORS.text);
+        doc.setTextColor(15, 23, 42);
         doc.setFont('helvetica', 'bold');
-        doc.text(cert.name || '', 30 + colWidth, rightY);
-        rightY += 5;
+        doc.text(cert.name || '', margin + colWidth + 5, rightY);
+        rightY += 4;
         
         if (cert.issuer || cert.date) {
-          doc.setTextColor(...COLORS.textLight);
+          doc.setTextColor(100, 116, 139);
           doc.setFont('helvetica', 'normal');
           const details = [cert.issuer, cert.date].filter(Boolean).join(' • ');
-          doc.text(details, 30 + colWidth, rightY);
-          rightY += 6;
+          doc.text(details, margin + colWidth + 5, rightY);
+          rightY += 5;
         }
       });
     }
     
-    yPos = Math.max(leftY, rightY) + 10;
+    yPos = Math.max(leftY, rightY) + 8;
   }
 
-  // ============================================
   // REFERENSER
-  // ============================================
   if (cvData.references?.length > 0) {
-    checkPageOverflow(40);
+    drawSectionTitle('Referenser', '👥');
     
-    doc.setFontSize(13);
-    doc.setTextColor(...COLORS.primary);
-    doc.setFont('helvetica', 'bold');
-    doc.text('REFERENSER', 20, yPos);
-    yPos += 10;
-
     cvData.references.forEach((ref) => {
-      checkPageOverflow(20);
+      checkOverflow(20);
       
       doc.setFontSize(10);
-      doc.setTextColor(...COLORS.text);
+      doc.setTextColor(15, 23, 42);
       doc.setFont('helvetica', 'bold');
-      doc.text(ref.name || '', 20, yPos);
-      yPos += 5;
+      doc.text(ref.name || '', margin, yPos);
+      yPos += 4;
       
-      doc.setTextColor(...COLORS.textLight);
+      doc.setTextColor(71, 85, 105);
       doc.setFont('helvetica', 'normal');
       let titleText = '';
       if (ref.title) titleText += ref.title;
       if (ref.company) titleText += (titleText ? ', ' : '') + ref.company;
       if (titleText) {
-        doc.text(titleText, 20, yPos);
-        yPos += 5;
+        doc.text(titleText, margin, yPos);
+        yPos += 4;
       }
       
       if (ref.phone || ref.email) {
         doc.setFontSize(8);
-        doc.setTextColor(...COLORS.textMuted);
+        doc.setTextColor(100, 116, 139);
         const contact = [ref.phone, ref.email].filter(Boolean).join(' • ');
-        doc.text(contact, 20, yPos);
-        yPos += 5;
+        doc.text(contact, margin, yPos);
+        yPos += 4;
       }
       
       yPos += 3;
     });
   }
 
-  // ============================================
   // FOOTER
-  // ============================================
   const totalPages = doc.getNumberOfPages();
   for (let i = 1; i <= totalPages; i++) {
     doc.setPage(i);
@@ -388,7 +462,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     doc.text(
       `Genererat från Deltagarportalen • Sida ${i} av ${totalPages}`,
       pageWidth / 2,
-      292,
+      pageHeight - 10,
       { align: 'center' }
     );
   }
@@ -404,9 +478,12 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   const pageWidth = doc.internal.pageSize.getWidth();
   let yPos = 20;
 
+  // Primary color
+  const primaryRgb: [number, number, number] = [79, 70, 229];
+
   // Titel
   doc.setFontSize(18);
-  doc.setTextColor(...COLORS.primary);
+  doc.setTextColor(...primaryRgb);
   doc.setFont('helvetica', 'bold');
   const splitTitle = doc.splitTextToSize(jobData.headline || 'Jobbannons', pageWidth - 40);
   doc.text(splitTitle, 20, yPos);
@@ -415,7 +492,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   // Arbetsgivare
   if (jobData.employer?.name) {
     doc.setFontSize(12);
-    doc.setTextColor(...COLORS.text);
+    doc.setTextColor(15, 23, 42);
     doc.setFont('helvetica', 'bold');
     doc.text(jobData.employer.name, 20, yPos);
     yPos += 7;
@@ -424,7 +501,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   // Plats
   if (jobData.workplace_address) {
     doc.setFontSize(10);
-    doc.setTextColor(...COLORS.textLight);
+    doc.setTextColor(71, 85, 105);
     doc.setFont('helvetica', 'normal');
     const location = `${jobData.workplace_address.municipality}, ${jobData.workplace_address.region}`;
     doc.text(`📍 ${location}`, 20, yPos);
@@ -434,7 +511,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   // Anställningstyp
   if (jobData.employment_type?.label) {
     doc.setFontSize(10);
-    doc.setTextColor(...COLORS.textLight);
+    doc.setTextColor(71, 85, 105);
     doc.text(`💼 ${jobData.employment_type.label}`, 20, yPos);
     yPos += 6;
   }
@@ -442,27 +519,27 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   // Publiceringsdatum
   if (jobData.publication_date) {
     doc.setFontSize(9);
-    doc.setTextColor(...COLORS.textMuted);
+    doc.setTextColor(100, 116, 139);
     const pubDate = new Date(jobData.publication_date).toLocaleDateString('sv-SE');
     doc.text(`Publicerad: ${pubDate}`, 20, yPos);
     yPos += 10;
   }
 
   // Linje
-  doc.setDrawColor(...COLORS.border);
+  doc.setDrawColor(226, 232, 240);
   doc.line(20, yPos, pageWidth - 20, yPos);
   yPos += 12;
 
   // Beskrivning
   if (jobData.description?.text) {
-    doc.setFontSize(11);
-    doc.setTextColor(...COLORS.text);
+    doc.setFontSize(12);
+    doc.setTextColor(...primaryRgb);
     doc.setFont('helvetica', 'bold');
     doc.text('Om tjänsten', 20, yPos);
     yPos += 8;
     
     doc.setFontSize(10);
-    doc.setTextColor(...COLORS.text);
+    doc.setTextColor(15, 23, 42);
     doc.setFont('helvetica', 'normal');
     
     // Rensa HTML-taggar
@@ -488,14 +565,14 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   }
 
   doc.setFontSize(13);
-  doc.setTextColor(...COLORS.primary);
+  doc.setTextColor(...primaryRgb);
   doc.setFont('helvetica', 'bold');
-  doc.text('ANSÖKAN', 20, yPos);
+  doc.text('Ansökan', 20, yPos);
   yPos += 10;
 
   if (jobData.application_details) {
     doc.setFontSize(10);
-    doc.setTextColor(...COLORS.text);
+    doc.setTextColor(15, 23, 42);
     doc.setFont('helvetica', 'normal');
     
     if (jobData.application_details.email) {
@@ -564,12 +641,12 @@ export async function generateApplicationHistoryPDF(
   
   // Header
   doc.setFontSize(20);
-  doc.setTextColor(...COLORS.primary);
+  doc.setTextColor(79, 70, 229);
   doc.setFont('helvetica', 'bold');
   doc.text('Ansökningshistorik', 20, 20);
   
   doc.setFontSize(10);
-  doc.setTextColor(...COLORS.textLight);
+  doc.setTextColor(71, 85, 105);
   doc.setFont('helvetica', 'normal');
   doc.text(`Genererad: ${new Date().toLocaleDateString('sv-SE')}`, 20, 28);
 
@@ -587,7 +664,7 @@ export async function generateApplicationHistoryPDF(
     body: tableData,
     theme: 'striped',
     headStyles: {
-      fillColor: COLORS.primary,
+      fillColor: [79, 70, 229],
       textColor: 255,
       fontStyle: 'bold',
     },
@@ -638,5 +715,5 @@ export function previewPDF(blob: Blob): void {
   window.open(url, '_blank');
 }
 
-// Explicit type exports för TypeScript
+// Type exports
 export type { CVData as CVDataType, JobData as JobDataType };

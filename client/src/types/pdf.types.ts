@@ -1,82 +1,93 @@
 /**
  * PDF Types
- * Separata typer för PDF-export för att undvika cirkulära beroenden
- * ANPASSAD för att matcha CVData från mockApi/supabaseApi
+ * MATCHAR EXAKT mockApi.ts struktur för CV-data
  */
 
-// Types for CV data - MATCHAR mockApi.ts struktur
+// Skill can be either an object or a string (for backward compatibility)
+export interface Skill {
+  id: string;
+  name: string;
+  level: 1 | 2 | 3 | 4 | 5;
+  category: 'technical' | 'soft' | 'tool' | 'language' | 'other' | string;
+}
+
+export interface WorkExperience {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  startDate: string;
+  endDate: string;
+  current: boolean;
+  description: string;
+}
+
+export interface Education {
+  id: string;
+  degree: string;
+  school: string;
+  field: string;
+  location?: string;
+  startDate: string;
+  endDate: string;
+  description?: string;
+}
+
+export interface Language {
+  id: string;
+  language: string;
+  level: 'Grundläggande' | 'Medel' | 'Flytande' | 'Modersmål' | string;
+}
+
+export interface Certificate {
+  id: string;
+  name: string;
+  issuer: string;
+  date: string;
+  expiryDate?: string;
+}
+
+export interface Link {
+  id: string;
+  type: 'linkedin' | 'github' | 'portfolio' | 'website' | 'other';
+  url: string;
+  label?: string;
+}
+
+export interface Reference {
+  id: string;
+  name: string;
+  title: string;
+  company: string;
+  email?: string;
+  phone?: string;
+}
+
+// Main CVData interface - MATCHAR mockApi.ts EXAKT
 export interface CVData {
   id?: string;
   firstName: string;
   lastName: string;
-  title?: string;
-  email?: string;
-  phone?: string;
-  location?: string;
+  title: string;
+  email: string;
+  phone: string;
+  location: string;
   address?: string;
-  linkedIn?: string;
-  portfolio?: string;
-  summary?: string;
-  workExperience: Array<{
-    id?: string;
-    title: string;
-    company: string;
-    location?: string;
-    startDate: string;
-    endDate?: string;
-    current?: boolean;
-    description?: string;
-  }>;
-  education: Array<{
-    id?: string;
-    degree: string;
-    school: string;
-    field?: string;
-    location?: string;
-    startDate: string;
-    endDate?: string;
-    description?: string;
-  }>;
-  skills: Array<{
-    id?: string;
-    name: string;
-    level?: string | number;
-    category?: 'technical' | 'soft' | 'language' | 'other' | string;
-  }>;
-  languages?: Array<{
-    id?: string;
-    language: string;
-    level: string;
-  }>;
-  certificates?: Array<{
-    id?: string;
-    name: string;
-    issuer?: string;
-    date?: string;
-    expiryDate?: string;
-  }>;
-  links?: Array<{
-    id?: string;
-    type: 'linkedin' | 'github' | 'portfolio' | 'website' | 'other';
-    url: string;
-    label?: string;
-  }>;
-  references?: Array<{
-    id?: string;
-    name: string;
-    title?: string;
-    company?: string;
-    phone?: string;
-    email?: string;
-  }>;
-  // UI settings
-  template?: string;
-  colorScheme?: string;
-  font?: string;
-  profileImage?: string | null;
+  summary: string;
+  profileImage: string | null;
+  workExperience: WorkExperience[];
+  education: Education[];
+  skills: (Skill | string)[];  // Can be objects or strings
+  languages: Language[];
+  certificates: Certificate[];
+  links: Link[];
+  references: Reference[];
+  template: string;
+  colorScheme: string;
+  font: string;
 }
 
-// Types for job data - MATCHAR PlatsbankenJob struktur
+// Types for job data - MATCHAR PlatsbankenJob
 export interface JobData {
   id: string;
   headline: string;
