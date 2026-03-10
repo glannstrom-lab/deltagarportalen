@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Briefcase, GraduationCap, Wrench, Award, Link2, Users, Languages } from 'lucide-react'
+import { Mail, Phone, MapPin, Briefcase, GraduationCap, Wrench, Award, Link2, Users, Languages, Globe, Trophy } from 'lucide-react'
 import type { CVData } from '@/services/mockApi'
 
 interface CVPreviewProps {
