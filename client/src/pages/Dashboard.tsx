@@ -17,9 +17,7 @@ import {
   DiaryWidget,
   KnowledgeWidget,
 } from '@/components/dashboard'
-// Widget-baserad dashboard utan AI-assistent
 import { cn } from '@/lib/utils'
-import { dashboardPreferencesApi } from '@/services/cloudStorage'
 
 // Default widget sizes
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
@@ -33,109 +31,28 @@ const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   knowledge: 'small',
 }
 
-// Default visible widgets
+// Default visible widgets - ALLTID synliga som default
 const defaultVisibleWidgets: WidgetType[] = [
   'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'knowledge',
 ]
 
-// Storage keys (fallback)
-const STORAGE_KEY_VISIBLE = 'dashboard_visible_widgets'
-const STORAGE_KEY_SIZES = 'dashboard_widget_sizes'
-
 export default function Dashboard() {
   const { isMobile } = useMobileOptimization()
   
-  // Mobile gets the list view
   if (isMobile) {
     return <MobileDashboard />
   }
 
-  // Desktop gets the grid view with size options
   return <DesktopDashboard />
 }
 
-// Desktop Dashboard Component - Grid layout with compact widgets
 function DesktopDashboard() {
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
 
-  // State for visible widgets
+  // State for visible widgets - starta med alla synliga
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
-  
-  // State for widget sizes
   const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(defaultWidgetSizes)
-  
-  // Loading state for preferences
-  const [prefsLoading, setPrefsLoading] = useState(true)
-
-  // Load preferences from cloud on mount
-  useEffect(() => {
-    const loadPreferences = async () => {
-      try {
-        setPrefsLoading(true)
-        const prefs = await dashboardPreferencesApi.get()
-        
-        if (prefs) {
-          if (prefs.visible_widgets && Array.isArray(prefs.visible_widgets)) {
-            setVisibleWidgets(prefs.visible_widgets)
-          }
-          if (prefs.widget_sizes && typeof prefs.widget_sizes === 'object') {
-            setWidgetSizes(prev => ({ ...prev, ...prefs.widget_sizes }))
-          }
-        } else {
-          // Try loading from localStorage as fallback
-          try {
-            const savedVisible = localStorage.getItem(STORAGE_KEY_VISIBLE)
-            const savedSizes = localStorage.getItem(STORAGE_KEY_SIZES)
-            
-            if (savedVisible) {
-              const parsed = JSON.parse(savedVisible)
-              if (Array.isArray(parsed)) setVisibleWidgets(parsed)
-            }
-            if (savedSizes) {
-              const parsed = JSON.parse(savedSizes)
-              if (parsed && typeof parsed === 'object') {
-                setWidgetSizes(prev => ({ ...prev, ...parsed }))
-              }
-            }
-          } catch {
-            // Ignore localStorage errors
-          }
-        }
-      } catch (error) {
-        console.error('Fel vid laddning av dashboard-inställningar:', error)
-      } finally {
-        setPrefsLoading(false)
-      }
-    }
-
-    loadPreferences()
-  }, [])
-
-  // Persist changes to cloud (debounced)
-  useEffect(() => {
-    if (prefsLoading) return
-    
-    const timeoutId = setTimeout(async () => {
-      try {
-        await dashboardPreferencesApi.update({
-          visible_widgets: visibleWidgets,
-          widget_sizes: widgetSizes
-        })
-      } catch (error) {
-        console.error('Fel vid sparande av dashboard-inställningar:', error)
-        // Fallback to localStorage
-        try {
-          localStorage.setItem(STORAGE_KEY_VISIBLE, JSON.stringify(visibleWidgets))
-          localStorage.setItem(STORAGE_KEY_SIZES, JSON.stringify(widgetSizes))
-        } catch {
-          // Ignore localStorage errors
-        }
-      }
-    }, 500)
-
-    return () => clearTimeout(timeoutId)
-  }, [visibleWidgets, widgetSizes, prefsLoading])
 
   // Toggle widget visibility
   const handleToggleWidget = useCallback((widgetId: WidgetType) => {
@@ -179,31 +96,26 @@ function DesktopDashboard() {
     )
   }
 
-  // Loading state with skeleton
+  // Loading state
   if (loading) {
     return (
       <div className="space-y-4 max-w-7xl">
-        {/* Compact Welcome - skeleton */}
         <div>
           <div className="h-7 w-48 bg-slate-200 rounded animate-pulse mb-2" />
           <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
         </div>
-
-        {/* Filter skeleton */}
         <div className="h-14 w-full bg-white rounded-xl border border-slate-200 animate-pulse" />
-
-        {/* Widget Grid Skeleton */}
         <DashboardGridSkeleton count={8} />
       </div>
     )
   }
-  
-  // Fallback: om inga widgets är valda, visa alla
+
+  // Säkerställ att vi alltid har widgets att visa
   const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : defaultVisibleWidgets
 
   return (
     <div className="space-y-4 max-w-7xl">
-      {/* Compact Welcome */}
+      {/* Welcome */}
       <div className="mb-2">
         <h1 className="text-xl font-semibold text-slate-800">
           Hej{user?.firstName ? `, ${user.firstName}` : ''}! 👋
@@ -211,7 +123,7 @@ function DesktopDashboard() {
         <p className="text-sm text-slate-500">Här är din översikt för idag.</p>
       </div>
 
-      {/* Collapsible Filter */}
+      {/* Filter */}
       <CompactWidgetFilter
         visibleWidgets={widgetsToShow}
         onToggleWidget={handleToggleWidget}
@@ -219,7 +131,7 @@ function DesktopDashboard() {
         onHideAll={handleHideAll}
       />
 
-      {/* Widget Grid - 4 columns -->
+      {/* Widget Grid */}
       <DashboardGrid>
         {widgetsToShow.includes('cv') &&
           renderWidget(
