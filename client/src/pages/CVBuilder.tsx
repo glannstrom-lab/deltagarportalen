@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
@@ -180,6 +180,7 @@ export default function CVBuilder() {
   // NYA FEATURES: Auto-save och draft
   const { saveStatus, lastSavedAt, hasUnsavedChanges } = useCVAutoSave(data)
   const { restoreDraft, clearDraft } = useCVDraft()
+  const hasCheckedDraft = useRef(false)
   
   // Fråga om att återställa draft vid mount - efter att server data laddats
   useEffect(() => {
@@ -193,23 +194,48 @@ export default function CVBuilder() {
   useEffect(() => {
     // Vänta tills data har laddats från servern
     const checkAndRestoreDraft = async () => {
+      // Bara kolla en gång per session
+      if (hasCheckedDraft.current) return
+      
+      hasCheckedDraft.current = true
+      
       // Ge tid för server-data att laddas
       await new Promise(r => setTimeout(r, 1000))
       
       const draft = restoreDraft()
       if (!draft) return
       
-      // Kolla om draft faktiskt har annat innehåll än vad som redan är laddat
-      const draftContent = JSON.stringify(draft)
-      const currentContent = JSON.stringify({
-        firstName: data.firstName,
-        lastName: data.lastName,
-        title: data.title,
-        summary: data.summary,
-        workExperience: data.workExperience,
-        education: data.education,
-        skills: data.skills,
-      })
+      // VIKTIGT: Vänta tills data är laddad från servern
+      // Kolla om vi fortfarande har tomma default-värden = data ej laddad än
+      const isDataLoaded = data.firstName !== undefined && 
+        (Array.isArray(data.workExperience) || Array.isArray(data.education))
+      
+      if (!isDataLoaded) {
+        // Data inte laddad än, återställ flaggan så vi kan försöka igen
+        hasCheckedDraft.current = false
+        return
+      }
+      
+      // Jämför draft med nuvarande data - använd samma fält för båda
+      const normalizeForCompare = (obj: any) => {
+        const relevantFields = ['firstName', 'lastName', 'title', 'summary', 'workExperience', 'education', 'skills', 'email', 'phone', 'location']
+        const normalized: any = {}
+        for (const key of relevantFields) {
+          const val = obj[key]
+          // Normalisera: tom sträng === undefined === null
+          if (val === undefined || val === null) {
+            normalized[key] = ''
+          } else if (Array.isArray(val)) {
+            normalized[key] = val.length === 0 ? '' : JSON.stringify(val)
+          } else {
+            normalized[key] = String(val)
+          }
+        }
+        return JSON.stringify(normalized)
+      }
+      
+      const draftContent = normalizeForCompare(draft)
+      const currentContent = normalizeForCompare(data)
       
       // Om draft är samma som nuvarande data, rensa det och fråga inte
       if (draftContent === currentContent) {
