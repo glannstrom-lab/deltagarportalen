@@ -5,18 +5,16 @@ interface CVPreviewProps {
   data: CVData
 }
 
-// Color schemes
+// Color schemes - matchar CVBuilder.tsx
 const colorSchemes: Record<string, { primary: string; secondary: string; accent: string; headerBg: string }> = {
   indigo: { primary: '#4f46e5', secondary: '#6366f1', accent: '#818cf8', headerBg: '#4f46e5' },
   ocean: { primary: '#0ea5e9', secondary: '#38bdf8', accent: '#7dd3fc', headerBg: '#0ea5e9' },
   forest: { primary: '#059669', secondary: '#10b981', accent: '#34d399', headerBg: '#059669' },
   berry: { primary: '#db2777', secondary: '#ec4899', accent: '#f472b6', headerBg: '#db2777' },
-  sunset: { primary: '#ea580c', secondary: '#f97316', accent: '#fb923c', headerBg: '#ea580c' },
+  amber: { primary: '#d97706', secondary: '#f59e0b', accent: '#fbbf24', headerBg: '#d97706' },
   ruby: { primary: '#dc2626', secondary: '#ef4444', accent: '#f87171', headerBg: '#dc2626' },
   slate: { primary: '#1e293b', secondary: '#475569', accent: '#64748b', headerBg: '#1e293b' },
   violet: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa', headerBg: '#7c3aed' },
-  cyan: { primary: '#0891b2', secondary: '#06b6d4', accent: '#22d3ee', headerBg: '#0891b2' },
-  rose: { primary: '#e11d48', secondary: '#fb7185', accent: '#fda4af', headerBg: '#e11d48' },
 }
 
 // Fonts

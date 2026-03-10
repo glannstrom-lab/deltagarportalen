@@ -137,7 +137,11 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
 
     doc.setFontSize(10);
     doc.setTextColor(60, 60, 60);
-    const skillsText = cvData.skills.join(' • ');
+    // Hantera både strängar och objekt (med name-egenskap)
+    const skillsText = cvData.skills
+      .map((skill: any) => typeof skill === 'string' ? skill : skill.name || '')
+      .filter(Boolean)
+      .join(' • ');
     const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 40);
     doc.text(splitSkills, 20, yPos);
     yPos += splitSkills.length * 5 + 10;
@@ -152,21 +156,25 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
 
     doc.setFontSize(10);
     doc.setTextColor(60, 60, 60);
-    cvData.languages.forEach(lang => {
-      doc.text(`${lang.language}: ${lang.level}`, 20, yPos);
-      yPos += 5;
+    cvData.languages.forEach((lang: any) => {
+      const langName = lang.language || lang.name || '';
+      const langLevel = lang.level || '';
+      if (langName) {
+        doc.text(`${langName}: ${langLevel}`, 20, yPos);
+        yPos += 5;
+      }
     });
   }
 
-  // Sertifikat
+  // Certifikat
   if (cvData.certifications && cvData.certifications.length > 0) {
     yPos += 5;
     doc.setFontSize(14);
     doc.setTextColor(30, 58, 138);
-    doc.text('Certifieringar', 20, yPos);
+    doc.text('Certifikat', 20, yPos);
     yPos += 8;
 
-    cvData.certifications.forEach(cert => {
+    cvData.certifications.forEach((cert: any) => {
       doc.setFontSize(10);
       doc.setTextColor(40, 40, 40);
       doc.text(cert.name, 20, yPos);
@@ -174,8 +182,12 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       
       doc.setFontSize(9);
       doc.setTextColor(100, 100, 100);
-      doc.text(`${cert.issuer} • ${cert.date}`, 20, yPos);
-      yPos += 8;
+      const certDetails = [cert.issuer, cert.date].filter(Boolean).join(' • ');
+      if (certDetails) {
+        doc.text(certDetails, 20, yPos);
+        yPos += 5;
+      }
+      yPos += 3;
     });
   }
 

@@ -336,6 +336,9 @@ function App() {
       <Route path="/diary" element={<Navigate to="/dashboard/diary" replace />} />
       <Route path="/knowledge-base" element={<Navigate to="/dashboard/knowledge-base" replace />} />
       <Route path="/knowledge-base/:id" element={<Navigate to="/dashboard/knowledge-base/:id" replace />} />
+      
+      {/* Legacy article routes - redirect to new knowledge-base structure */}
+      <Route path="/article/:id" element={<Navigate to="/dashboard/knowledge-base/:id" replace />} />
       <Route path="/profile" element={<Navigate to="/dashboard/profile" replace />} />
       <Route path="/job-tracker" element={<Navigate to="/dashboard/job-tracker" replace />} />
       <Route path="/settings" element={<Navigate to="/dashboard/settings" replace />} />

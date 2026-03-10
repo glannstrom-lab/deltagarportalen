@@ -8,18 +8,16 @@ interface CVExportProps {
   cvData?: CVData
 }
 
-// Color schemes för PDF-export
+// Color schemes för PDF-export - matchar CVBuilder.tsx och CVPreview.tsx
 const colorSchemes: Record<string, { primary: string; secondary: string; accent: string }> = {
   indigo: { primary: '#4f46e5', secondary: '#6366f1', accent: '#818cf8' },
   ocean: { primary: '#0ea5e9', secondary: '#38bdf8', accent: '#7dd3fc' },
   forest: { primary: '#059669', secondary: '#10b981', accent: '#34d399' },
   berry: { primary: '#db2777', secondary: '#ec4899', accent: '#f472b6' },
-  sunset: { primary: '#ea580c', secondary: '#f97316', accent: '#fb923c' },
+  amber: { primary: '#d97706', secondary: '#f59e0b', accent: '#fbbf24' },
   ruby: { primary: '#dc2626', secondary: '#ef4444', accent: '#f87171' },
   slate: { primary: '#1e293b', secondary: '#475569', accent: '#64748b' },
   violet: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa' },
-  cyan: { primary: '#0891b2', secondary: '#06b6d4', accent: '#22d3ee' },
-  rose: { primary: '#e11d48', secondary: '#fb7185', accent: '#fda4af' },
 }
 
 export function CVExport({ cvData }: CVExportProps) {

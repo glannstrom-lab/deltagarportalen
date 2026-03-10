@@ -33,9 +33,10 @@ export interface CVData {
     endDate?: string;
     description?: string;
   }>;
-  skills: string[];
+  skills: (string | { name: string; level?: number; category?: string })[];
   languages: Array<{
-    language: string;
+    language?: string;
+    name?: string;
     level: string;
   }>;
   certifications?: Array<{
