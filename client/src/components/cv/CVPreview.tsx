@@ -299,7 +299,7 @@ export function CVPreview({ data }: CVPreviewProps) {
             <div className="language-list">
               {data.languages.map((lang) => (
                 <div key={lang.id} className="language-item">
-                  <span className="font-medium text-sm">{lang.language}</span>
+                  <span className="font-medium text-sm">{lang.language || (lang as any).name}</span>
                   <span className="text-xs" style={{ color: '#64748b' }}>({lang.level})</span>
                 </div>
               ))}

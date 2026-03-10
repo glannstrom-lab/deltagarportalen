@@ -548,13 +548,13 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">Språk</h3>
-          <button onClick={() => add(data.languages, { id: Date.now().toString(), name: '', level: 'God' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
+          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'God' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
             {data.languages.map((lang) => (
               <div key={lang.id} className="flex items-center gap-3">
-                <input type="text" value={lang.name} onChange={(e) => update(data.languages, lang.id, 'languages', 'name', e.target.value)} placeholder="Språk" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <input type="text" value={lang.language} onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)} placeholder="Språk" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 <select value={lang.level} onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)} className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-32">
                   <option value="Grundläggande">Grundläggande</option>
                   <option value="God">God</option>

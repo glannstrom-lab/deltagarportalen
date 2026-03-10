@@ -456,7 +456,8 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       cvData.languages!.forEach((lang) => {
         doc.setTextColor(15, 23, 42);
         doc.setFont('helvetica', 'bold');
-        const langName = encodePdfText(lang.language) || '';
+        // Handle both 'name' (old) and 'language' (new) for backward compatibility
+        const langName = encodePdfText(lang.language || (lang as any).name) || '';
         doc.text(langName, margin, leftY);
         
         doc.setTextColor(100, 116, 139);

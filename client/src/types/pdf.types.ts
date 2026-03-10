@@ -36,6 +36,7 @@ export interface Education {
 export interface Language {
   id: string;
   language: string;
+  name?: string;  // For backward compatibility (old data used 'name')
   level: 'Grundläggande' | 'Medel' | 'Flytande' | 'Modersmål' | string;
 }
 
