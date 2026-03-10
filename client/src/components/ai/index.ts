@@ -1,2 +1,8 @@
+/**
+ * AI Components - Fas 3
+ * 
+ * Intelligent features for personalized career guidance
+ */
+
 export { AIAssistant } from './AIAssistant'
-export { AIToolsPanel } from './AIToolsPanel'
+export { SmartJobMatches, SkillGapAnalysis } from './SmartJobMatches'

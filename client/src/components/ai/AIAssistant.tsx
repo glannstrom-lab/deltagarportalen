@@ -1,351 +1,391 @@
-import { useState } from 'react'
-import { Sparkles, X, Loader2, MessageSquare, Wand2, Lightbulb } from 'lucide-react'
-import { Button } from '@/components/ui/Button'
-import { Card } from '@/components/ui/Card'
-import { aiService } from '@/services/aiService'
+/**
+ * AI Assistant Component - Fas 3
+ * 
+ * Intelligent widget som visar personliga rekommendationer
+ * baserat på all användardata.
+ */
+
+import { useState, useEffect } from 'react'
+import { 
+  Sparkles, AlertCircle, Lightbulb, Calendar, 
+  PartyPopper, ChevronRight, X, CheckCircle2,
+  TrendingUp, Clock, Loader2, Zap
+} from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { cn } from '@/lib/utils'
+import { 
+  aiAssistantApi, 
+  type AIRecommendation, 
+  type RecommendationPriority,
+  type RecommendationType 
+} from '@/services/ai/aiAssistant'
 
 interface AIAssistantProps {
-  mode: 'cv-optimization' | 'cv-generate' | 'cover-letter' | 'interview-prep' | 'job-tips' | 'salary' | 'exercise-help'
-  context?: Record<string, any>
-  onResult?: (result: string) => void
-  buttonText?: string
-  compact?: boolean
+  className?: string
 }
 
-const modeConfig = {
-  'cv-optimization': {
-    icon: Sparkles,
-    title: 'AI CV-analys',
-    description: 'Få feedback på ditt CV',
-    buttonText: 'Analysera med AI',
-    placeholder: 'Klistra in ditt CV-text här...'
-  },
-  'cv-generate': {
-    icon: Wand2,
-    title: 'Generera CV-text',
-    description: 'Låt AI hjälpa dig skriva',
-    buttonText: 'Generera text',
-    placeholder: 'Beskriv vad du vill ha hjälp med...'
-  },
-  'cover-letter': {
-    icon: MessageSquare,
-    title: 'Personligt brev',
-    description: 'Skriv personligt brev med AI',
-    buttonText: 'Skriv brev',
-    placeholder: 'Klistra in jobbannonsen...'
-  },
-  'interview-prep': {
-    icon: Lightbulb,
-    title: 'Intervjuförberedelser',
-    description: 'Förbered dig inför intervjun',
-    buttonText: 'Förbered mig',
-    placeholder: 'Ange roll och företag...'
-  },
-  'job-tips': {
-    icon: Sparkles,
-    title: 'Jobbsökartips',
-    description: 'Få personliga tips',
-    buttonText: 'Få tips',
-    placeholder: 'Beskriv din situation...'
-  },
-  'salary': {
-    icon: Sparkles,
-    title: 'Löneförhandling',
-    description: 'Få råd inför löneförhandling',
-    buttonText: 'Få rådgivning',
-    placeholder: 'Ange roll och erfarenhet...'
-  },
-  'exercise-help': {
-    icon: Lightbulb,
-    title: 'AI Coach',
-    description: 'Få hjälp med övningen',
-    buttonText: 'Be om hjälp',
-    placeholder: 'Beskriv vad du behöver hjälp med...'
-  }
-}
+export function AIAssistant({ className }: AIAssistantProps) {
+  const [recommendations, setRecommendations] = useState<AIRecommendation[]>([])
+  const [loading, setLoading] = useState(true)
+  const [dismissedIds, setDismissedIds] = useState<string[]>([])
+  const [expandedId, setExpandedId] = useState<string | null>(null)
 
-export function AIAssistant({ mode, context = {}, onResult, buttonText, compact = false }: AIAssistantProps) {
-  const [isOpen, setIsOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [result, setResult] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [input, setInput] = useState('')
+  useEffect(() => {
+    loadRecommendations()
+    
+    // Uppdatera var 5:e minut
+    const interval = setInterval(loadRecommendations, 5 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [])
 
-  const config = modeConfig[mode]
-  const Icon = config.icon
-
-  const handleSubmit = async () => {
-    setIsLoading(true)
-    setError(null)
-    setResult(null)
-
+  const loadRecommendations = async () => {
     try {
-      let response
-
-      switch (mode) {
-        case 'cv-optimization':
-          response = await aiService.optimizeCV({
-            cvText: input || context.cvText,
-            yrke: context.yrke
-          })
-          setResult(response.feedback)
-          onResult?.(response.feedback)
-          break
-
-        case 'cv-generate':
-          response = await aiService.generateCVText({
-            yrke: context.yrke || input,
-            erfarenhet: context.erfarenhet,
-            styrkor: context.styrkor
-          })
-          setResult(response.cvText)
-          onResult?.(response.cvText)
-          break
-
-        case 'cover-letter':
-          response = await aiService.generateCoverLetter({
-            jobbAnnons: input || context.jobbAnnons,
-            erfarenhet: context.erfarenhet,
-            motivering: context.motivering,
-            namn: context.namn,
-            ton: context.ton || 'professionell'
-          })
-          setResult(response.brev)
-          onResult?.(response.brev)
-          break
-
-        case 'interview-prep':
-          response = await aiService.prepareInterview({
-            jobbTitel: context.jobbTitel || input,
-            foretag: context.foretag,
-            erfarenhet: context.erfarenhet,
-            egenskaper: context.egenskaper
-          })
-          setResult(response.forberedelser)
-          onResult?.(response.forberedelser)
-          break
-
-        case 'job-tips':
-          response = await aiService.getJobTips({
-            intressen: context.intressen || input,
-            tidigareErfarenhet: context.tidigareErfarenhet,
-            hinder: context.hinder,
-            mal: context.mal
-          })
-          setResult(response.tips)
-          onResult?.(response.tips)
-          break
-
-        case 'salary':
-          response = await aiService.getSalaryAdvice({
-            roll: context.roll || input,
-            erfarenhetAr: context.erfarenhetAr,
-            nuvarandeLon: context.nuvarandeLon,
-            foretagsStorlek: context.foretagsStorlek,
-            ort: context.ort
-          })
-          setResult(response.radgivning)
-          onResult?.(response.radgivning)
-          break
-
-        case 'exercise-help':
-          response = await aiService.getExerciseHelp({
-            ovningId: context.ovningId,
-            steg: context.steg,
-            fraga: context.fraga,
-            anvandarSvar: context.anvandarSvar || input
-          })
-          setResult(response.hjalp)
-          onResult?.(response.hjalp)
-          break
-      }
-    } catch (err) {
-      setError('Ett fel uppstod. Försök igen senare.')
-      console.error('AI error:', err)
+      setLoading(true)
+      const recs = await aiAssistantApi.getRecommendations()
+      setRecommendations(recs)
+    } catch (error) {
+      console.error('Fel vid hämtning av rekommendationer:', error)
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
-  if (compact) {
+  const handleDismiss = async (id: string) => {
+    setDismissedIds(prev => [...prev, id])
+    await aiAssistantApi.dismissRecommendation(id)
+  }
+
+  const handleComplete = async (id: string) => {
+    setDismissedIds(prev => [...prev, id])
+    await aiAssistantApi.completeRecommendation(id)
+  }
+
+  // Filtrera bort avfärdade
+  const visibleRecommendations = recommendations.filter(
+    r => !dismissedIds.includes(r.id)
+  )
+
+  // Gruppera efter prioritet
+  const critical = visibleRecommendations.filter(r => r.priority === 'critical')
+  const high = visibleRecommendations.filter(r => r.priority === 'high')
+  const medium = visibleRecommendations.filter(r => r.priority === 'medium')
+  const low = visibleRecommendations.filter(r => r.priority === 'low')
+
+  if (loading) {
     return (
-      <>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setIsOpen(true)}
-          className="flex items-center gap-2"
-        >
-          <Icon className="w-4 h-4" />
-          {buttonText || config.buttonText}
-        </Button>
+      <div className={cn(
+        "bg-white rounded-2xl shadow-sm border border-slate-200 p-6",
+        className
+      )}>
+        <div className="flex items-center gap-2 mb-4">
+          <Loader2 size={20} className="animate-spin text-violet-500" />
+          <span className="text-slate-600">Analyserar din data...</span>
+        </div>
+      </div>
+    )
+  }
 
-        {isOpen && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-            <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-              <div className="p-6 space-y-4">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-indigo-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-gray-900">{config.title}</h3>
-                      <p className="text-sm text-gray-500">{config.description}</p>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setIsOpen(false)}
-                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                  >
-                    <X className="w-5 h-5 text-gray-500" />
-                  </button>
-                </div>
-
-                {/* Content */}
-                {!result ? (
-                  <div className="space-y-4">
-                    <textarea
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder={config.placeholder}
-                      rows={6}
-                      className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 resize-y"
-                    />
-                    {error && (
-                      <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
-                        {error}
-                      </div>
-                    )}
-                    <Button
-                      onClick={handleSubmit}
-                      disabled={isLoading || !input.trim()}
-                      className="w-full"
-                    >
-                      {isLoading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Bearbetar...
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="w-4 h-4 mr-2" />
-                          {config.buttonText}
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    <div className="bg-gray-50 rounded-lg p-4 whitespace-pre-wrap text-gray-800 max-h-96 overflow-y-auto">
-                      {result}
-                    </div>
-                    <div className="flex gap-3">
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setResult(null)
-                          setInput('')
-                        }}
-                        className="flex-1"
-                      >
-                        Ny fråga
-                      </Button>
-                      <Button
-                        onClick={() => {
-                          navigator.clipboard.writeText(result)
-                        }}
-                        className="flex-1"
-                      >
-                        Kopiera
-                      </Button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </Card>
+  if (visibleRecommendations.length === 0) {
+    return (
+      <div className={cn(
+        "bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl border border-violet-200 p-6",
+        className
+      )}>
+        <div className="flex items-center gap-3 mb-3">
+          <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
+            <Sparkles size={20} className="text-violet-600" />
           </div>
-        )}
-      </>
+          <div>
+            <h3 className="font-semibold text-slate-900">Din assistent</h3>
+            <p className="text-sm text-slate-500">Allt ser bra ut just nu!</p>
+          </div>
+        </div>
+        <p className="text-sm text-slate-600">
+          Fortsätt med ditt arbete. Jag håller koll på dina jobb, intervjuer och deadlines 
+          och meddelar dig när det är dags att agera.
+        </p>
+      </div>
     )
   }
 
   return (
-    <Card className="p-4 border-indigo-100 bg-indigo-50/50">
-      <div className="space-y-4">
-        {/* Header */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-            <Icon className="w-5 h-5 text-indigo-600" />
+    <div className={cn(
+      "bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden",
+      className
+    )}>
+      {/* Header -->
+      <div className="bg-gradient-to-r from-violet-500 to-purple-600 px-6 py-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+              <Sparkles size={20} className="text-white" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-white">Din assistent</h3>
+              <p className="text-sm text-white/80">
+                {visibleRecommendations.length} rekommendationer
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">{config.title}</h3>
-            <p className="text-sm text-gray-500">{config.description}</p>
+          <button
+            onClick={loadRecommendations}
+            className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
+            title="Uppdatera"
+          >
+            <Loader2 size={18} />
+          </button>
+        </div>
+      </div>
+
+      {/* Critical Priority */}
+      {critical.length > 0 && (
+        <div className="p-4 bg-rose-50 border-b border-rose-100">
+          <div className="flex items-center gap-2 mb-3">
+            <AlertCircle size={16} className="text-rose-600" />
+            <span className="font-semibold text-rose-900 text-sm">KRÄVER ÅTGÄRD</span>
+          </div>
+          <div className="space-y-3">
+            {critical.map(rec => (
+              <RecommendationCard
+                key={rec.id}
+                recommendation={rec}
+                isExpanded={expandedId === rec.id}
+                onExpand={() => setExpandedId(expandedId === rec.id ? null : rec.id)}
+                onDismiss={() => handleDismiss(rec.id)}
+                onComplete={() => handleComplete(rec.id)}
+              />
+            ))}
           </div>
         </div>
+      )}
 
-        {/* Content */}
-        {!result ? (
+      {/* High Priority */}
+      {high.length > 0 && (
+        <div className="p-4 border-b border-slate-100">
+          <div className="flex items-center gap-2 mb-3">
+            <Zap size={16} className="text-amber-500" />
+            <span className="font-semibold text-slate-700 text-sm">REKOMMENDERAT</span>
+          </div>
           <div className="space-y-3">
-            <textarea
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder={config.placeholder}
-              rows={4}
-              className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 resize-y"
-            />
-            {error && (
-              <div className="p-3 bg-red-50 text-red-700 rounded-lg text-sm">
-                {error}
-              </div>
-            )}
-            <Button
-              onClick={handleSubmit}
-              disabled={isLoading || !input.trim()}
-              className="w-full"
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Bearbetar...
-                </>
-              ) : (
-                <>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  {buttonText || config.buttonText}
-                </>
+            {high.map(rec => (
+              <RecommendationCard
+                key={rec.id}
+                recommendation={rec}
+                isExpanded={expandedId === rec.id}
+                onExpand={() => setExpandedId(expandedId === rec.id ? null : rec.id)}
+                onDismiss={() => handleDismiss(rec.id)}
+                onComplete={() => handleComplete(rec.id)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Medium & Low Priority */}
+      {(medium.length > 0 || low.length > 0) && (
+        <div className="p-4">
+          {(medium.length > 0 || low.length > 0) && (
+            <div className="flex items-center gap-2 mb-3">
+              <Lightbulb size={16} className="text-blue-500" />
+              <span className="font-semibold text-slate-700 text-sm">INSIGHTS & TIPS</span>
+            </div>
+          )}
+          <div className="space-y-3">
+            {[...medium, ...low].map(rec => (
+              <RecommendationCard
+                key={rec.id}
+                recommendation={rec}
+                isExpanded={expandedId === rec.id}
+                onExpand={() => setExpandedId(expandedId === rec.id ? null : rec.id)}
+                onDismiss={() => handleDismiss(rec.id)}
+                onComplete={() => handleComplete(rec.id)}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ============================================
+// RECOMMENDATION CARD
+// ============================================
+
+interface RecommendationCardProps {
+  recommendation: AIRecommendation
+  isExpanded: boolean
+  onExpand: () => void
+  onDismiss: () => void
+  onComplete: () => void
+}
+
+function RecommendationCard({ 
+  recommendation, 
+  isExpanded, 
+  onExpand, 
+  onDismiss,
+  onComplete 
+}: RecommendationCardProps) {
+  const { priority, type, title, description, reasoning, action, deadline, expectedOutcome } = recommendation
+
+  const getIcon = () => {
+    switch (type) {
+      case 'action': return <Zap size={18} />
+      case 'insight': return <Lightbulb size={18} />
+      case 'reminder': return <Clock size={18} />
+      case 'celebration': return <PartyPopper size={18} />
+    }
+  }
+
+  const getColors = () => {
+    switch (priority) {
+      case 'critical':
+        return {
+          bg: 'bg-rose-50',
+          border: 'border-rose-200',
+          icon: 'bg-rose-100 text-rose-600',
+          title: 'text-rose-900'
+        }
+      case 'high':
+        return {
+          bg: 'bg-amber-50',
+          border: 'border-amber-200',
+          icon: 'bg-amber-100 text-amber-600',
+          title: 'text-amber-900'
+        }
+      case 'medium':
+        return {
+          bg: 'bg-blue-50',
+          border: 'border-blue-200',
+          icon: 'bg-blue-100 text-blue-600',
+          title: 'text-blue-900'
+        }
+      case 'low':
+      default:
+        return {
+          bg: 'bg-slate-50',
+          border: 'border-slate-200',
+          icon: 'bg-slate-100 text-slate-600',
+          title: 'text-slate-900'
+        }
+    }
+  }
+
+  const colors = getColors()
+
+  const formatDeadline = (date: Date) => {
+    const now = new Date()
+    const days = Math.ceil((date.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+    
+    if (days === 0) return 'Idag'
+    if (days === 1) return 'Imorgon'
+    if (days < 0) return 'Passerat'
+    return `Om ${days} dagar`
+  }
+
+  return (
+    <div className={cn(
+      "rounded-xl border transition-all",
+      colors.bg,
+      colors.border,
+      isExpanded ? "p-4" : "p-3"
+    )}>
+      {/* Header */}
+      <div className="flex items-start gap-3">
+        <div className={cn(
+          "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
+          colors.icon
+        )}>
+          {getIcon()}
+        </div>
+        
+        <div className="flex-1 min-w-0">
+          <h4 className={cn("font-semibold text-sm", colors.title)}>
+            {title}
+          </h4>
+          
+          {!isExpanded ? (
+            <p className="text-sm text-slate-600 mt-0.5 line-clamp-2">
+              {description}
+            </p>
+          ) : (
+            <div className="mt-2 space-y-2">
+              <p className="text-sm text-slate-700">
+                {description}
+              </p>
+              
+              {reasoning && (
+                <div className="bg-white/50 rounded-lg p-2.5">
+                  <p className="text-xs text-slate-500">
+                    <span className="font-medium">Varför:</span> {reasoning}
+                  </p>
+                </div>
               )}
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <div className="bg-white rounded-lg p-4 whitespace-pre-wrap text-gray-800 max-h-64 overflow-y-auto">
-              {result}
+              
+              {expectedOutcome && (
+                <div className="flex items-center gap-1.5 text-xs text-green-700">
+                  <TrendingUp size={12} />
+                  <span>{expectedOutcome}</span>
+                </div>
+              )}
+              
+              {deadline && (
+                <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                  <Calendar size={12} />
+                  <span>{formatDeadline(deadline)}</span>
+                </div>
+              )}
             </div>
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setResult(null)
-                  setInput('')
-                }}
-                className="flex-1"
+          )}
+          
+          {/* Actions */}
+          <div className="flex items-center gap-2 mt-3">
+            <Link
+              to={action.link}
+              onClick={onComplete}
+              className={cn(
+                "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                priority === 'critical' 
+                  ? "bg-rose-500 text-white hover:bg-rose-600" :
+                priority === 'high'
+                  ? "bg-amber-500 text-white hover:bg-amber-600"
+                  : "bg-white text-slate-700 hover:bg-slate-50 border border-slate-200"
+              )}
+            >
+              {action.label}
+              <ChevronRight size={14} />
+            </Link>
+            
+            {action.dismissLabel && (
+              <button
+                onClick={onDismiss}
+                className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1.5"
               >
-                Ny fråga
-              </Button>
-              <Button
-                onClick={() => {
-                  navigator.clipboard.writeText(result)
-                }}
-                className="flex-1"
-              >
-                Kopiera
-              </Button>
-            </div>
+                {action.dismissLabel}
+              </button>
+            )}
           </div>
-        )}
+        </div>
+        
+        {/* Expand/Close buttons */}
+        <div className="flex items-center gap-1">
+          <button
+            onClick={onExpand}
+            className="p-1 text-slate-400 hover:text-slate-600 hover:bg-white/50 rounded"
+          >
+            {isExpanded ? <X size={14} /> : <ChevronRight size={14} className="rotate-90" />}
+          </button>
+          {!isExpanded && (
+            <button
+              onClick={onDismiss}
+              className="p-1 text-slate-400 hover:text-slate-600 hover:bg-white/50 rounded"
+            >
+              <X size={14} />
+            </button>
+          )}
+        </div>
       </div>
-    </Card>
+    </div>
   )
 }

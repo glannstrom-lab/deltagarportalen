@@ -27,6 +27,7 @@ const InterestGuide = lazy(() => import('./pages/InterestGuide'))
 const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
 const Article = lazy(() => import('./pages/Article'))
 const Profile = lazy(() => import('./pages/Profile'))
+const UnifiedProfile = lazy(() => import('./pages/UnifiedProfile'))
 const JobTracker = lazy(() => import('./pages/JobTracker'))
 const JobSearch = lazy(() => import('./pages/JobSearch'))
 const Career = lazy(() => import('./pages/Career'))
@@ -257,6 +258,13 @@ function App() {
           <LazyRoute>
             <RouteErrorBoundary>
               <Profile />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="unified-profile" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <UnifiedProfile />
             </RouteErrorBoundary>
           </LazyRoute>
         } />

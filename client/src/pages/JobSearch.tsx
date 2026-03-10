@@ -3,7 +3,7 @@ import {
   Search, MapPin, Briefcase, Calendar, X, Building2, 
   ExternalLink, Filter, ChevronDown, SlidersHorizontal,
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
-  Bookmark, CheckCircle2
+  Bookmark, CheckCircle2, Send
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
@@ -11,6 +11,7 @@ import { useSavedJobs } from '@/hooks/useSavedJobs';
 
 import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
 import { cn } from '@/lib/utils';
+import { CreateApplicationModal } from '@/components/workflow';
 
 interface SearchFilters {
   query: string;
@@ -68,6 +69,9 @@ export default function JobSearch() {
   // Saved jobs hook
   const { savedJobs, saveJob, removeJob, isSaved, getStats } = useSavedJobs()
   const [showSavedOnly, setShowSavedOnly] = useState(false)
+
+  // Create Application Modal state
+  const [applicationModalJob, setApplicationModalJob] = useState<PlatsbankenJob | null>(null)
 
   // Sök när filter ändras (med debounce)
   useEffect(() => {
@@ -604,12 +608,23 @@ export default function JobSearch() {
                         <FileText size={16} />
                         Skriv brev
                       </Link>
+                      
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setApplicationModalJob(job)
+                        }}
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-500 text-white hover:bg-violet-600 transition-colors"
+                      >
+                        <Send size={16} />
+                        Skapa ansökan
+                      </button>
                     </div>
                   </div>
                   
                   {/* Action på mobil */}
                   <div className="sm:hidden flex items-center justify-between pt-2 border-t border-slate-100">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1">
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -633,6 +648,15 @@ export default function JobSearch() {
                       >
                         <FileText size={20} />
                       </Link>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setApplicationModalJob(job)
+                        }}
+                        className="p-2 text-violet-500 rounded-lg"
+                      >
+                        <Send size={20} />
+                      </button>
                     </div>
                     <span className="text-xs text-slate-400">
                       {new Date(job.publication_date).toLocaleDateString('sv-SE')}
@@ -758,16 +782,28 @@ export default function JobSearch() {
                     </Link>
                   </div>
 
+                  {/* Create Application Button */}
+                  <button
+                    onClick={() => {
+                      setApplicationModalJob(selectedJob)
+                      setSelectedJob(null)
+                    }}
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors min-h-[48px]"
+                  >
+                    <Send size={18} />
+                    Skapa ansökan
+                  </button>
+
                   {/* Apply Button */}
                   {selectedJob.application_details?.url && (
                     <a
                       href={selectedJob.application_details.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors min-h-[48px]"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors min-h-[48px]"
                     >
                       <ExternalLink size={18} />
-                      Ansök på Arbetsförmedlingen
+                      Ansök direkt på Arbetsförmedlingen
                     </a>
                   )}
                 </div>
@@ -775,6 +811,19 @@ export default function JobSearch() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Create Application Modal */}
+      {applicationModalJob && (
+        <CreateApplicationModal
+          job={applicationModalJob}
+          isOpen={!!applicationModalJob}
+          onClose={() => setApplicationModalJob(null)}
+          onSuccess={() => {
+            // Refresh saved jobs stats
+            getStats()
+          }}
+        />
       )}
     </div>
   );

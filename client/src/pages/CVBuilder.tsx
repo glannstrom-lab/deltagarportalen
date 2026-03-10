@@ -30,6 +30,7 @@ import { EducationEditor } from '@/components/cv/EducationEditor'
 import { SkillsEditor } from '@/components/cv/SkillsEditor'
 import { ContextualHelp } from '@/components/cv/ContextualHelp'
 import { CVOnboarding, shouldShowOnboarding } from '@/components/cv/CVOnboarding'
+import { ContextualKnowledgeWidget } from '@/components/workflow'
 
 // ============================================
 // STEG
@@ -726,6 +727,9 @@ export default function CVBuilder() {
               <CVPreview data={data} />
             </div>
           </div>
+
+          {/* Contextual Knowledge - Fas 2 */}
+          <ContextualKnowledgeWidget context="cv-building" variant="full" />
 
           {/* Help - Show onboarding again */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">

@@ -17,6 +17,8 @@ import {
   DiaryWidget,
   KnowledgeWidget,
 } from '@/components/dashboard'
+import { NextStepWidget } from '@/components/workflow'
+import { AIAssistant, SmartJobMatches, SkillGapAnalysis } from '@/components/ai'
 import { cn } from '@/lib/utils'
 import { dashboardPreferencesApi } from '@/services/cloudStorage'
 
@@ -199,6 +201,14 @@ function DesktopDashboard() {
 
   return (
     <div className="space-y-4 max-w-7xl">
+      {/* AI Assistant - Högst upp för intelligent vägledning */}
+      <AIAssistant />
+
+      {/* Next Step Widget - Sekundär vägledning */}
+      <div className="pt-2">
+        <NextStepWidget />
+      </div>
+
       {/* Compact Welcome */}
       <div>
         <h1 className="text-lg font-semibold text-slate-800">
@@ -206,6 +216,20 @@ function DesktopDashboard() {
         </h1>
         <p className="text-sm text-slate-500">Här är din översikt för idag.</p>
       </div>
+
+      {/* Smart Matching - Fas 3 AI Features */}
+      {data?.cv.hasCV && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <SmartJobMatches 
+            cv={data.cv.data || {}} 
+            jobs={data.jobs.recentSavedJobs?.map((j: any) => j.job_data) || []} 
+          />
+          <SkillGapAnalysis 
+            cv={data.cv.data || {}} 
+            jobs={data.jobs.recentSavedJobs?.map((j: any) => j.job_data) || []} 
+          />
+        </div>
+      )}
 
       {/* Collapsible Filter */}
       <CompactWidgetFilter
@@ -215,7 +239,7 @@ function DesktopDashboard() {
         onHideAll={handleHideAll}
       />
 
-      {/* Widget Grid - 4 columns */}
+      {/* Widget Grid - 4 columns -->
       <DashboardGrid>
         {visibleWidgets.includes('cv') &&
           renderWidget(
