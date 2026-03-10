@@ -238,7 +238,7 @@ function generateCVPDF(cvData: CVData) {
     y += 8
     doc.setFontSize(10)
     doc.setTextColor(60, 60, 60)
-    const skillsText = cvData.skills.join(', ')
+    const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : s.name).join(', ')
     const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 2 * margin)
     doc.text(splitSkills, margin, y)
   }
@@ -527,7 +527,7 @@ export default function Resources() {
                   <div className="flex flex-wrap gap-2">
                     {cvData.skills.slice(0, 10).map((skill, i) => (
                       <span key={i} className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm">
-                        {skill}
+                        {typeof skill === 'string' ? skill : skill.name}
                       </span>
                     ))}
                     {cvData.skills.length > 10 && (
@@ -868,7 +868,7 @@ export default function Resources() {
                       <div className="flex flex-wrap gap-2">
                         {cvData.skills.map((skill, i) => (
                           <span key={i} className="px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm">
-                            {skill}
+                            {typeof skill === 'string' ? skill : skill.name}
                           </span>
                         ))}
                       </div>
