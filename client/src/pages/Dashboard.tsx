@@ -180,7 +180,7 @@ function DesktopDashboard() {
   }
 
   // Loading state with skeleton
-  if (loading || prefsLoading) {
+  if (loading) {
     return (
       <div className="space-y-4 max-w-7xl">
         {/* Compact Welcome - skeleton */}
@@ -193,10 +193,13 @@ function DesktopDashboard() {
         <div className="h-14 w-full bg-white rounded-xl border border-slate-200 animate-pulse" />
 
         {/* Widget Grid Skeleton */}
-        <DashboardGridSkeleton count={visibleWidgets.length || 4} />
+        <DashboardGridSkeleton count={8} />
       </div>
     )
   }
+  
+  // Fallback: om inga widgets är valda, visa alla
+  const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : defaultVisibleWidgets
 
   return (
     <div className="space-y-4 max-w-7xl">
@@ -210,7 +213,7 @@ function DesktopDashboard() {
 
       {/* Collapsible Filter */}
       <CompactWidgetFilter
-        visibleWidgets={visibleWidgets}
+        visibleWidgets={widgetsToShow}
         onToggleWidget={handleToggleWidget}
         onShowAll={handleShowAll}
         onHideAll={handleHideAll}
@@ -218,7 +221,7 @@ function DesktopDashboard() {
 
       {/* Widget Grid - 4 columns -->
       <DashboardGrid>
-        {visibleWidgets.includes('cv') &&
+        {widgetsToShow.includes('cv') &&
           renderWidget(
             'cv',
             <CVWidget
@@ -232,7 +235,7 @@ function DesktopDashboard() {
             />
           )}
 
-        {visibleWidgets.includes('coverLetter') &&
+        {widgetsToShow.includes('coverLetter') &&
           renderWidget(
             'coverLetter',
             <CoverLetterWidget
@@ -244,7 +247,7 @@ function DesktopDashboard() {
             />
           )}
 
-        {visibleWidgets.includes('jobSearch') &&
+        {widgetsToShow.includes('jobSearch') &&
           renderWidget(
             'jobSearch',
             <JobSearchWidget
@@ -255,7 +258,7 @@ function DesktopDashboard() {
             />
           )}
 
-        {visibleWidgets.includes('career') &&
+        {widgetsToShow.includes('career') &&
           renderWidget(
             'career',
             <CareerWidget
@@ -265,7 +268,7 @@ function DesktopDashboard() {
             />
           )}
 
-        {visibleWidgets.includes('interests') &&
+        {widgetsToShow.includes('interests') &&
           renderWidget(
             'interests',
             <InterestWidget
@@ -276,7 +279,7 @@ function DesktopDashboard() {
             />
           )}
 
-        {visibleWidgets.includes('exercises') &&
+        {widgetsToShow.includes('exercises') &&
           renderWidget(
             'exercises',
             <ExercisesWidget
@@ -286,7 +289,7 @@ function DesktopDashboard() {
             />
           )}
 
-        {visibleWidgets.includes('diary') &&
+        {widgetsToShow.includes('diary') &&
           renderWidget(
             'diary',
             <DiaryWidget
@@ -297,7 +300,7 @@ function DesktopDashboard() {
             />
           )}
 
-        {visibleWidgets.includes('knowledge') &&
+        {widgetsToShow.includes('knowledge') &&
           renderWidget(
             'knowledge',
             <KnowledgeWidget
@@ -310,7 +313,7 @@ function DesktopDashboard() {
       </DashboardGrid>
 
       {/* Empty state */}
-      {visibleWidgets.length === 0 && (
+      {widgetsToShow.length === 0 && (
         <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
           <p className="text-slate-500 mb-2">Inga moduler synliga</p>
           <p className="text-sm text-slate-400">
