@@ -34,6 +34,8 @@ export default function Article() {
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal')
 
   useEffect(() => {
+    console.log('Article - ID from params:', id)
+    console.log('Article - Current URL:', window.location.href)
     if (id) {
       loadArticle()
       checkBookmark()
@@ -130,11 +132,32 @@ export default function Article() {
     )
   }
 
+  // Handle invalid ID (e.g., literal ":id" in URL)
+  if (!id || id === ':id' || !id.match(/^[a-z0-9-]+$/)) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-slate-500 mb-2">Ogiltig artikellänk</p>
+        <p className="text-slate-400 text-sm mb-4">
+          {!id || id === ':id' 
+            ? 'Artikel-ID saknas eller är ogiltigt'
+            : `Ogiltigt ID-format: "${id}"`
+          }
+        </p>
+        <Link to="/dashboard/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
+          Tillbaka till kunskapsbanken
+        </Link>
+      </div>
+    )
+  }
+
   if (!article) {
     return (
       <div className="text-center py-12">
         <p className="text-slate-500">Artikeln hittades inte</p>
-        <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
+        <p className="text-slate-400 text-sm mt-1 mb-4">
+          ID: {id}
+        </p>
+        <Link to="/dashboard/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
           Tillbaka till kunskapsbanken
         </Link>
       </div>
