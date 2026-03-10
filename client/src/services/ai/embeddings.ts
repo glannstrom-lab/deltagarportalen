@@ -287,6 +287,18 @@ export async function getCVEmbedding(): Promise<Embedding | null> {
  * Generera embedding för jobb
  */
 export function generateJobEmbedding(job: PlatsbankenJob): Embedding {
+  // Safety check - return zero vector if job is invalid
+  if (!job || !job.headline) {
+    return {
+      vector: new Array(VOCAB_SIZE).fill(0),
+      metadata: {
+        source: 'job',
+        id: job?.id || 'unknown',
+        generatedAt: new Date().toISOString()
+      }
+    }
+  }
+  
   const jobText = [
     job.headline,
     job.description?.text,

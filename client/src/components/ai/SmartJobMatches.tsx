@@ -179,6 +179,11 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
 function JobMatchCard({ match }: { match: SemanticMatch }) {
   const { job, similarity, matchedKeywords, explanation } = match
   
+  // Safety check - if job is undefined or missing headline, don't render
+  if (!job || !job.headline) {
+    return null
+  }
+  
   const matchPercentage = Math.round(similarity * 100)
   
   const getMatchColor = (score: number) => {
@@ -195,7 +200,7 @@ function JobMatchCard({ match }: { match: SemanticMatch }) {
             {job.headline}
           </h4>
           <p className="text-sm text-slate-500">
-            {job.employer?.name}
+            {job.employer?.name || 'Okänd arbetsgivare'}
           </p>
           
           {/* Match score */}

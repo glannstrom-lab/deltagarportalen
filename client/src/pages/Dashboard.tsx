@@ -222,11 +222,15 @@ function DesktopDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           <SmartJobMatches 
             cv={data.cv.data || {}} 
-            jobs={data.jobs.recentSavedJobs?.map((j: any) => j.job_data) || []} 
+            jobs={data.jobs.recentSavedJobs
+              ?.map((j: any) => j.job_data)
+              ?.filter((job: any) => job && job.headline) || []} 
           />
           <SkillGapAnalysis 
             cv={data.cv.data || {}} 
-            jobs={data.jobs.recentSavedJobs?.map((j: any) => j.job_data) || []} 
+            jobs={data.jobs.recentSavedJobs
+              ?.map((j: any) => j.job_data)
+              ?.filter((job: any) => job && job.headline) || []} 
           />
         </div>
       )}
