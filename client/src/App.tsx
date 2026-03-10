@@ -35,6 +35,7 @@ const Wellness = lazy(() => import('./pages/Wellness'))
 const Exercises = lazy(() => import('./pages/Exercises'))
 const Settings = lazy(() => import('./pages/Settings'))
 const Resources = lazy(() => import('./pages/Resources'))
+const Help = lazy(() => import('./pages/Help'))
 const ConsultantDashboard = lazy(() => import('./components/consultant/ConsultantDashboard'))
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
@@ -316,6 +317,13 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
+        <Route path="help" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Help />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
         
         {/* Consultant routes */}
         <Route path="consultant" element={
@@ -351,6 +359,7 @@ function App() {
       <Route path="/knowledge-base" element={<Navigate to="/dashboard/knowledge-base" replace />} />
       <Route path="/knowledge-base/:id" element={<ArticleRedirect />} />
       <Route path="/resources" element={<Navigate to="/dashboard/resources" replace />} />
+      <Route path="/help" element={<Navigate to="/dashboard/help" replace />} />
       
       {/* Legacy article routes - redirect to new knowledge-base structure */}
       <Route path="/article/:id" element={<ArticleRedirect />} />

@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useSettingsStore } from '../stores/settingsStore'
+import { useAuthStore } from '../stores/authStore'
+import { userApi } from '../services/supabaseApi'
 import { 
   Bell, 
   Lock, 
@@ -12,7 +14,8 @@ import {
   Save,
   Accessibility,
   X,
-  Menu
+  Menu,
+  Loader2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -66,6 +69,20 @@ export default function Settings() {
   const [activeSection, setActiveSection] = useState('profile')
   const [darkMode, setDarkMode] = useState(false)
   const [showMobileMenu, setShowMobileMenu] = useState(false)
+  const [isLoadingProfile, setIsLoadingProfile] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  
+  // Profile data
+  const [profileData, setProfileData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    bio: '',
+  })
+  
+  // Auth store
+  const { user } = useAuthStore()
   
   // Settings from store
   const {
@@ -83,6 +100,61 @@ export default function Settings() {
     toggleLargeText,
   } = useSettingsStore()
 
+  // Load profile data
+  useEffect(() => {
+    const loadProfile = async () => {
+      try {
+        setIsLoadingProfile(true)
+        // First set from auth store
+        if (user) {
+          setProfileData(prev => ({
+            ...prev,
+            firstName: user.firstName || '',
+            lastName: user.lastName || '',
+            email: user.email || '',
+          }))
+        }
+        
+        // Then try to load full profile from API
+        const profile = await userApi.getProfile()
+        if (profile) {
+          setProfileData({
+            firstName: profile.first_name || user?.firstName || '',
+            lastName: profile.last_name || user?.lastName || '',
+            email: profile.email || user?.email || '',
+            phone: profile.phone || '',
+            bio: profile.bio || '',
+          })
+        }
+      } catch (error) {
+        console.error('Fel vid laddning av profil:', error)
+      } finally {
+        setIsLoadingProfile(false)
+      }
+    }
+    
+    loadProfile()
+  }, [user])
+
+  // Save profile
+  const handleSaveProfile = async () => {
+    try {
+      setIsSaving(true)
+      await userApi.updateProfile({
+        first_name: profileData.firstName,
+        last_name: profileData.lastName,
+        phone: profileData.phone,
+        bio: profileData.bio,
+      })
+      alert('Profilen sparades!')
+    } catch (error) {
+      console.error('Fel vid sparande av profil:', error)
+      alert('Kunde inte spara profilen. Försök igen.')
+    } finally {
+      setIsSaving(false)
+    }
+  }
+
   // Aktiv sektion innehåll
   const renderSectionContent = () => {
     switch (activeSection) {
@@ -91,68 +163,96 @@ export default function Settings() {
           <div className="space-y-6">
             <h2 className="text-lg font-semibold text-slate-900">Profilinställningar</h2>
             
-            <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-              <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
-                <User size={32} className="text-teal-700" />
+            {isLoadingProfile ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
               </div>
-              <div className="text-center sm:text-left">
-                <button className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors min-h-[44px]">
-                  Byt profilbild
-                </button>
-                <p className="text-sm text-slate-500 mt-1">JPG, PNG eller GIF. Max 2MB.</p>
-              </div>
-            </div>
+            ) : (
+              <>
+                <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
+                  <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
+                    <User size={32} className="text-teal-700" />
+                  </div>
+                  <div className="text-center sm:text-left">
+                    <button className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors min-h-[44px]">
+                      Byt profilbild
+                    </button>
+                    <p className="text-sm text-slate-500 mt-1">JPG, PNG eller GIF. Max 2MB.</p>
+                  </div>
+                </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Förnamn</label>
-                <input 
-                  type="text" 
-                  defaultValue="Anna"
-                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Efternamn</label>
-                <input 
-                  type="text" 
-                  defaultValue="Andersson"
-                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
-                <input 
-                  type="email" 
-                  defaultValue="anna.andersson@email.se"
-                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
-                <input 
-                  type="tel" 
-                  defaultValue="070-123 45 67"
-                  className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
-                />
-              </div>
-            </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Förnamn</label>
+                    <input 
+                      type="text" 
+                      value={profileData.firstName}
+                      onChange={(e) => setProfileData({...profileData, firstName: e.target.value})}
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Efternamn</label>
+                    <input 
+                      type="text" 
+                      value={profileData.lastName}
+                      onChange={(e) => setProfileData({...profileData, lastName: e.target.value})}
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
+                    <input 
+                      type="email" 
+                      value={profileData.email}
+                      disabled
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-base cursor-not-allowed"
+                    />
+                    <p className="text-xs text-slate-400 mt-1">E-post kan inte ändras här</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
+                    <input 
+                      type="tel" 
+                      value={profileData.phone}
+                      onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
+                    />
+                  </div>
+                </div>
 
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Om mig</label>
-              <textarea 
-                rows={3}
-                placeholder="Berätta kort om dig själv..."
-                className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none text-base"
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Om mig</label>
+                  <textarea 
+                    rows={3}
+                    value={profileData.bio}
+                    onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
+                    placeholder="Berätta kort om dig själv..."
+                    className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none text-base"
+                  />
+                </div>
 
-            <div className="flex justify-end pt-4">
-              <button className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors min-h-[48px]">
-                <Save size={18} />
-                Spara ändringar
-              </button>
-            </div>
+                <div className="flex justify-end pt-4">
+                  <button 
+                    onClick={handleSaveProfile}
+                    disabled={isSaving}
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors min-h-[48px] disabled:opacity-50"
+                  >
+                    {isSaving ? (
+                      <>
+                        <Loader2 size={18} className="animate-spin" />
+                        Sparar...
+                      </>
+                    ) : (
+                      <>
+                        <Save size={18} />
+                        Spara ändringar
+                      </>
+                    )}
+                  </button>
+                </div>
+              </>
+            )}
           </div>
         )
 
@@ -361,22 +461,37 @@ export default function Settings() {
             <div className="space-y-4">
               <div className="p-4 border border-slate-200 rounded-xl">
                 <h3 className="font-medium text-slate-900 mb-2">Ändra lösenord</h3>
-                <div className="space-y-3 mt-4">
-                  <input 
-                    type="password" 
-                    placeholder="Nuvarande lösenord"
-                    className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
-                  />
-                  <input 
-                    type="password" 
-                    placeholder="Nytt lösenord"
-                    className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
-                  />
-                  <input 
-                    type="password" 
-                    placeholder="Bekräfta nytt lösenord"
-                    className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
-                  />
+                <div className="space-y-4 mt-4">
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Nuvarande lösenord
+                    </label>
+                    <input 
+                      type="password" 
+                      placeholder="Ange ditt nuvarande lösenord"
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Nytt lösenord
+                    </label>
+                    <input 
+                      type="password" 
+                      placeholder="Ange nytt lösenord (minst 8 tecken)"
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                      Bekräfta nytt lösenord
+                    </label>
+                    <input 
+                      type="password" 
+                      placeholder="Upprepa det nya lösenordet"
+                      className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
+                    />
+                  </div>
                   <button className="w-full px-4 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 min-h-[48px]">
                     Uppdatera lösenord
                   </button>

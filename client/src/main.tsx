@@ -10,6 +10,54 @@ import { UpdateNotification } from './components/UpdateNotification'
 import './index.css'
 import './styles/mobile.css'
 
+// Global error handler for chunk load errors
+// This catches errors that might slip past ErrorBoundary
+window.addEventListener('error', (event) => {
+  const message = event.error?.message?.toLowerCase() || event.message?.toLowerCase() || ''
+  
+  if (
+    message.includes('chunk') ||
+    message.includes('dynamically imported module') ||
+    message.includes('loading chunk') ||
+    message.includes('failed to fetch dynamically')
+  ) {
+    console.warn('[Global Error Handler] ChunkLoadError detected:', event.error)
+    
+    // Prevent default error handling
+    event.preventDefault()
+    
+    // Show a user-friendly message and reload
+    const shouldReload = confirm(
+      'En ny version av appen är tillgänglig. Sidan behöver laddas om för att visa uppdateringarna.'
+    )
+    
+    if (shouldReload) {
+      window.location.reload()
+    }
+  }
+})
+
+// Handle unhandled promise rejections (for async chunk loading)
+window.addEventListener('unhandledrejection', (event) => {
+  const message = event.reason?.message?.toLowerCase() || ''
+  
+  if (
+    message.includes('chunk') ||
+    message.includes('dynamically imported module') ||
+    message.includes('loading chunk') ||
+    message.includes('failed to fetch dynamically')
+  ) {
+    console.warn('[Global Rejection Handler] ChunkLoadError detected:', event.reason)
+    
+    event.preventDefault()
+    
+    // Auto-reload after a short delay
+    setTimeout(() => {
+      window.location.reload()
+    }, 1000)
+  }
+})
+
 // Create Query Client with optimized settings
 const queryClient = new QueryClient({
   defaultOptions: {
