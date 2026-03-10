@@ -43,35 +43,48 @@ const STEPS = [
   { id: 5, title: 'Kompetenser', description: 'Skills & övrigt' },
 ] as const
 
-// Mallar
+// Kompletta färdiga mallar - varje mall innehåller allt (layout, färger, typsnitt)
 const TEMPLATES = [
-  { id: 'modern', name: 'Modern', desc: 'Clean & professionell', color: '#4f46e5' },
-  { id: 'classic', name: 'Klassisk', desc: 'Traditionell', color: '#1e293b' },
-  { id: 'creative', name: 'Kreativ', desc: 'Unik design', color: '#ec4899' },
-  { id: 'minimal', name: 'Minimal', desc: 'Enkel & luftig', color: '#0f172a' },
-  { id: 'tech', name: 'Tech', desc: 'För IT & utvecklare', color: '#0891b2' },
-  { id: 'executive', name: 'Executive', desc: 'För ledare', color: '#1e3a5f' },
-]
-
-// Färger
-const COLORS = [
-  { id: 'indigo', name: 'Indigo', hex: '#4f46e5' },
-  { id: 'ocean', name: 'Blå', hex: '#0ea5e9' },
-  { id: 'forest', name: 'Grön', hex: '#10b981' },
-  { id: 'berry', name: 'Rosa', hex: '#ec4899' },
-  { id: 'slate', name: 'Mörk', hex: '#1e293b' },
-  { id: 'ruby', name: 'Röd', hex: '#ef4444' },
-  { id: 'amber', name: 'Orange', hex: '#f59e0b' },
-  { id: 'violet', name: 'Lila', hex: '#8b5cf6' },
-]
-
-// Typsnitt
-const FONTS = [
-  { id: 'inter', name: 'Inter', desc: 'Modern' },
-  { id: 'georgia', name: 'Georgia', desc: 'Klassisk' },
-  { id: 'playfair', name: 'Playfair', desc: 'Elegant' },
-  { id: 'roboto', name: 'Roboto', desc: 'Clean' },
-  { id: 'montserrat', name: 'Montserrat', desc: 'Modern' },
+  { 
+    id: 'modern', 
+    name: 'Modern', 
+    desc: 'Clean & professionell',
+    colorScheme: 'indigo',
+    font: 'inter',
+    preview: 'bg-gradient-to-br from-indigo-500 to-purple-600'
+  },
+  { 
+    id: 'minimal', 
+    name: 'Minimal', 
+    desc: 'Enkel & luftig',
+    colorScheme: 'slate',
+    font: 'inter',
+    preview: 'bg-gradient-to-br from-slate-100 to-slate-300'
+  },
+  { 
+    id: 'creative', 
+    name: 'Kreativ', 
+    desc: 'För designers & kreatörer',
+    colorScheme: 'berry',
+    font: 'montserrat',
+    preview: 'bg-gradient-to-br from-pink-500 to-rose-500'
+  },
+  { 
+    id: 'executive', 
+    name: 'Executive', 
+    desc: 'För seniora roller',
+    colorScheme: 'navy',
+    font: 'georgia',
+    preview: 'bg-gradient-to-br from-slate-800 to-slate-900'
+  },
+  { 
+    id: 'nordic', 
+    name: 'Nordisk', 
+    desc: 'Skandinavisk design',
+    colorScheme: 'forest',
+    font: 'inter',
+    preview: 'bg-gradient-to-br from-emerald-500 to-teal-600'
+  },
 ]
 
 // ============================================
@@ -340,91 +353,65 @@ export default function CVBuilder() {
     setData({ ...data, [key]: arr.map(x => x.id === id ? { ...x, [field]: val } : x) } as CVData)
   }
 
-  // STEG 1: DESIGN
+  // STEG 1: DESIGN - Färdiga mallar
   const renderStep1 = () => (
     <div className="space-y-6">
+      <div className="text-center mb-6">
+        <h3 className="text-lg font-semibold text-slate-800 mb-2">Välj en mall</h3>
+        <p className="text-sm text-slate-500">Varje mall har en unik stil med förvalda färger och typsnitt</p>
+      </div>
 
-      <Card>
-        <h3 className="font-semibold text-slate-800 mb-4">Välj mall</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          {TEMPLATES.map((t) => {
-            const selected = data.template === t.id
-            return (
-              <button
-                key={t.id}
-                onClick={() => setData({ ...data, template: t.id })}
-                className={cn(
-                  "flex items-center gap-4 p-4 rounded-xl border-2 text-left transition-all",
-                  selected ? "border-[#4f46e5] bg-[#eef2ff]" : "border-slate-200 hover:border-slate-300"
-                )}
-              >
-                <div 
-                  className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: selected ? t.color : '#f1f5f9', color: selected ? 'white' : '#64748b' }}
-                >
-                  <Layout className="w-6 h-6" />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-semibold text-slate-800">{t.name}</h4>
-                    {selected && <Check className="w-4 h-4 text-[#4f46e5]" />}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {TEMPLATES.map((t) => {
+          const selected = data.template === t.id
+          return (
+            <button
+              key={t.id}
+              onClick={() => setData({ 
+                ...data, 
+                template: t.id,
+                colorScheme: t.colorScheme,
+                font: t.font 
+              })}
+              className={cn(
+                "group relative overflow-hidden rounded-2xl border-2 text-left transition-all hover:shadow-lg",
+                selected ? "border-[#4f46e5] ring-2 ring-[#4f46e5] ring-offset-2" : "border-slate-200 hover:border-slate-300"
+              )}
+            >
+              {/* Preview thumbnail */}
+              <div className={cn("h-32 w-full relative", t.preview)}>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="bg-white/90 backdrop-blur rounded-lg px-4 py-2 shadow-sm">
+                    <span className="text-sm font-semibold text-slate-800">Aa</span>
                   </div>
-                  <p className="text-sm text-slate-500">{t.desc}</p>
                 </div>
-              </button>
-            )
-          })}
-        </div>
-      </Card>
-
-      <Card>
-        <h3 className="font-semibold text-slate-800 mb-4">Färg</h3>
-        <div className="grid grid-cols-4 sm:grid-cols-8 gap-3">
-          {COLORS.map((c) => {
-            const selected = data.colorScheme === c.id
-            return (
-              <button
-                key={c.id}
-                onClick={() => setData({ ...data, colorScheme: c.id })}
-                className={cn(
-                  "flex flex-col items-center gap-2 p-2 rounded-xl border-2 transition-all",
-                  selected ? "border-[#4f46e5] bg-[#eef2ff]" : "border-slate-200 hover:border-slate-300"
+                {selected && (
+                  <div className="absolute top-3 right-3 bg-[#4f46e5] text-white rounded-full p-1">
+                    <Check className="w-4 h-4" />
+                  </div>
                 )}
-              >
-                <div className="w-10 h-10 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: c.hex }} />
-                <span className="text-xs font-medium text-slate-700">{c.name}</span>
-              </button>
-            )
-          })}
-        </div>
-      </Card>
+              </div>
+              
+              {/* Info */}
+              <div className="p-4">
+                <h4 className="font-semibold text-slate-800 mb-1">{t.name}</h4>
+                <p className="text-sm text-slate-500">{t.desc}</p>
+              </div>
+            </button>
+          )
+        })}
+      </div>
 
-      <Card>
-        <h3 className="font-semibold text-slate-800 mb-4">Typsnitt</h3>
-        <div className="space-y-2">
-          {FONTS.map((f) => {
-            const selected = data.font === f.id
-            return (
-              <button
-                key={f.id}
-                onClick={() => setData({ ...data, font: f.id })}
-                className={cn(
-                  "w-full flex items-center justify-between p-4 rounded-xl border-2 transition-all",
-                  selected ? "border-[#4f46e5] bg-[#eef2ff]" : "border-slate-200 hover:border-slate-300"
-                )}
-              >
-                <div className="text-left">
-                  <h4 className="font-semibold text-slate-800" style={{ fontFamily: f.id === 'playfair' || f.id === 'georgia' ? 'serif' : 'sans-serif' }}>
-                    {f.name}
-                  </h4>
-                  <p className="text-sm text-slate-500">{f.desc}</p>
-                </div>
-                {selected && <Check className="w-5 h-5 text-[#4f46e5]" />}
-              </button>
-            )
-          })}
+      {data.template && (
+        <div className="mt-6 p-4 bg-blue-50 rounded-xl border border-blue-100">
+          <p className="text-sm text-blue-700">
+            <strong>Vald mall:</strong> {TEMPLATES.find(t => t.id === data.template)?.name}
+          </p>
+          <p className="text-xs text-blue-600 mt-1">
+            Färg och typsnitt ingår i mallen. Förhandsgranska för att se resultatet.
+          </p>
         </div>
-      </Card>
+      )}
     </div>
   )
 

@@ -1,77 +1,70 @@
 /**
  * PDF Export Service
- * Genererar PDF-dokument för CV med fullt UTF-8 stöd
+ * Synkade mallar med CVPreview - 5 kompletta moderna mallar
  */
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import type { CVData, JobData } from '@/types/pdf.types';
 
-// Re-export types
 export type { CVData, JobData } from '@/types/pdf.types';
-
-// Make autoTable available
 (jsPDF as any).autoTable = autoTable;
 
-// Color schemes
-const colorSchemes: Record<string, { primary: string; secondary: string; accent: string; headerBg: string }> = {
-  indigo: { primary: '#4f46e5', secondary: '#6366f1', accent: '#818cf8', headerBg: '#4f46e5' },
-  ocean: { primary: '#0ea5e9', secondary: '#38bdf8', accent: '#7dd3fc', headerBg: '#0ea5e9' },
-  forest: { primary: '#059669', secondary: '#10b981', accent: '#34d399', headerBg: '#059669' },
-  berry: { primary: '#db2777', secondary: '#ec4899', accent: '#f472b6', headerBg: '#db2777' },
-  amber: { primary: '#d97706', secondary: '#f59e0b', accent: '#fbbf24', headerBg: '#d97706' },
-  ruby: { primary: '#dc2626', secondary: '#ef4444', accent: '#f87171', headerBg: '#dc2626' },
-  slate: { primary: '#1e293b', secondary: '#475569', accent: '#64748b', headerBg: '#1e293b' },
-  violet: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa', headerBg: '#7c3aed' },
+// 5 Kompletta mallar - EXAKT samma som CVPreview.tsx
+const TEMPLATES = {
+  modern: {
+    font: 'helvetica',
+    colors: { primary: [79, 70, 229], text: [30, 41, 59], muted: [100, 116, 139], border: [226, 232, 240] },
+    header: { bg: [79, 70, 229], text: [255, 255, 255], layout: 'centered' },
+    sectionTitle: { style: 'underline' },
+    skillTag: { style: 'pill' },
+  },
+  minimal: {
+    font: 'helvetica',
+    colors: { primary: [51, 65, 85], text: [15, 23, 42], muted: [100, 116, 139], border: [226, 232, 240] },
+    header: { bg: [248, 250, 252], text: [15, 23, 42], layout: 'left' },
+    sectionTitle: { style: 'line' },
+    skillTag: { style: 'box' },
+  },
+  creative: {
+    font: 'helvetica',
+    colors: { primary: [219, 39, 119], text: [30, 41, 59], muted: [100, 116, 139], border: [251, 207, 232] },
+    header: { bg: [219, 39, 119], text: [255, 255, 255], layout: 'centered' },
+    sectionTitle: { style: 'bold' },
+    skillTag: { style: 'rounded' },
+  },
+  executive: {
+    font: 'times', // Serif font for executive
+    colors: { primary: [30, 58, 95], text: [30, 41, 59], muted: [100, 116, 139], border: [201, 162, 39] },
+    header: { bg: [30, 58, 95], text: [255, 255, 255], layout: 'classic' },
+    sectionTitle: { style: 'elegant' },
+    skillTag: { style: 'bordered' },
+  },
+  nordic: {
+    font: 'helvetica',
+    colors: { primary: [5, 150, 105], text: [6, 78, 59], muted: [107, 114, 128], border: [209, 250, 229] },
+    header: { bg: [236, 253, 245], text: [6, 78, 59], layout: 'left' },
+    sectionTitle: { style: 'clean' },
+    skillTag: { style: 'pill' },
+  },
 };
 
-// UTF-8 safe encoding for jsPDF - handles Swedish characters properly
-function utf8ToLatin1(text: string | undefined | null): string {
-  if (!text) return '';
-  
-  // jsPDF's default fonts support Latin-1 (ISO-8859-1)
-  // These characters map directly:
-  // Å (0xC5), Ä (0xC4), Ö (0xD6)
-  // å (0xE5), ä (0xE4), ö (0xF6)
-  // É (0xC9), é (0xE9)
-  
-  // Replace problematic Unicode characters with Latin-1 equivalents
-  return text
-    .replace(/–/g, '-')   // en-dash to hyphen
-    .replace(/—/g, '-')   // em-dash to hyphen
-    .replace(/[\"]/g, '"')  // smart quotes
-    .replace(/['']/g, "'")   // smart single quotes
-    .replace(/…/g, '...')   // ellipsis
-    .replace(/•/g, '\u2022') // bullet (keep as is, supported in Latin-1 extended)
-    // Keep Swedish characters as-is - helvetica font supports them
-    .trim();
-}
-
-// Helper to safely get skill name
+// Hjälpfunktioner
 function getSkillName(skill: any): string {
   if (typeof skill === 'string') return skill;
-  if (skill && typeof skill === 'object') {
-    return skill.name || skill.label || String(skill);
-  }
+  if (skill && typeof skill === 'object') return skill.name || '';
   return String(skill);
 }
 
-// Helper to safely get skill category
 function getSkillCategory(skill: any): string {
   if (typeof skill === 'string') return 'other';
-  if (skill && typeof skill === 'object') {
-    return skill.category || 'other';
-  }
+  if (skill && typeof skill === 'object') return skill.category || 'other';
   return 'other';
 }
 
-// Helper to convert image to base64
 async function getImageAsBase64(url: string): Promise<string | null> {
   try {
-    if (url.startsWith('data:image')) {
-      return url;
-    }
-    
+    if (url.startsWith('data:image')) return url;
     const response = await fetch(url);
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
@@ -86,19 +79,18 @@ async function getImageAsBase64(url: string): Promise<string | null> {
   }
 }
 
-// Helper to convert hex to RGB
-function hexToRgb(hex: string): [number, number, number] {
-  const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result ? [
-    parseInt(result[1], 16),
-    parseInt(result[2], 16),
-    parseInt(result[3], 16)
-  ] : [79, 70, 229];
+// jsPDF har begränsat stöd för Unicode - vi behåller svenska tecken
+// men vissa tecken kan behöva ersättas för kompatibilitet
+function sanitizeText(text: string | undefined | null): string {
+  if (!text) return '';
+  return text
+    .replace(/[–—]/g, '-') // dashes
+    .replace(/[\"]/g, '"') // quotes
+    .replace(/['']/g, "'") // single quotes
+    .replace(/…/g, '...')  // ellipsis
+    .trim();
 }
 
-/**
- * Generera PDF från CV-data med fullt UTF-8 stöd
- */
 export async function generateCVPDF(cvData: CVData): Promise<Blob> {
   const doc = new jsPDF('p', 'mm', 'a4');
   const pageWidth = doc.internal.pageSize.getWidth();
@@ -107,14 +99,12 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
   const contentWidth = pageWidth - (margin * 2);
   let yPos = margin;
 
-  // Get settings
-  const scheme = colorSchemes[cvData.colorScheme || 'indigo'] || colorSchemes.indigo;
-  const template = cvData.template || 'modern';
-  const fullName = utf8ToLatin1(`${cvData.firstName || ''} ${cvData.lastName || ''}`.trim()) || 'Ditt Namn';
+  const template = TEMPLATES[cvData.template as keyof typeof TEMPLATES] || TEMPLATES.modern;
+  const fullName = sanitizeText(`${cvData.firstName || ''} ${cvData.lastName || ''}`.trim()) || 'Ditt Namn';
 
-  const primaryRgb = hexToRgb(scheme.primary);
+  // Set font
+  doc.setFont(template.font);
 
-  // Helper: Check page overflow
   const checkOverflow = (neededSpace: number = 30) => {
     if (yPos + neededSpace > pageHeight - margin) {
       doc.addPage();
@@ -123,182 +113,153 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
   };
 
   // ============================================
-  // HEADER
+  // HEADER - Matchar CVPreview exakt
   // ============================================
+  const headerHeight = cvData.profileImage ? 55 : (cvData.title ? 35 : 28);
   
-  const hasImage = !!cvData.profileImage;
-  const headerHeight = hasImage ? 55 : (cvData.title ? 35 : 28);
-  
-  // Template-specific header colors
-  let headerBgColor: [number, number, number] = primaryRgb;
-  let headerTextColor: [number, number, number] = [255, 255, 255];
-  
-  switch (template) {
-    case 'classic':
-      headerBgColor = [255, 255, 255];
-      headerTextColor = primaryRgb;
-      break;
-    case 'minimal':
-      headerBgColor = [248, 250, 252];
-      headerTextColor = [15, 23, 42];
-      break;
-    case 'tech':
-      headerBgColor = [15, 23, 42];
-      headerTextColor = hexToRgb(scheme.secondary);
-      break;
-    case 'executive':
-      headerBgColor = [30, 58, 95];
-      headerTextColor = [255, 255, 255];
-      break;
-    case 'academic':
-      headerBgColor = [255, 255, 255];
-      headerTextColor = primaryRgb;
-      break;
-  }
-
-  // Draw header background
-  doc.setFillColor(...headerBgColor);
+  // Header background
+  doc.setFillColor(...template.header.bg);
   doc.rect(0, 0, pageWidth, headerHeight + 5, 'F');
 
-  // Add profile image if exists
+  // Profile image
   let nameX = margin;
-  if (hasImage && cvData.profileImage) {
+  if (cvData.profileImage) {
     try {
       const base64Image = await getImageAsBase64(cvData.profileImage);
       if (base64Image) {
-        let format: 'JPEG' | 'PNG' = 'JPEG';
-        if (base64Image.includes('data:image/png')) {
-          format = 'PNG';
-        }
-        
+        const format = base64Image.includes('data:image/png') ? 'PNG' : 'JPEG';
         const imgSize = 25;
-        const imgX = margin;
-        const imgY = 8;
-        
-        doc.addImage(base64Image, format, imgX, imgY, imgSize, imgSize);
+        doc.addImage(base64Image, format, margin, 8, imgSize, imgSize);
         nameX = margin + imgSize + 10;
       }
     } catch (error) {
-      console.error('Failed to add profile image to PDF:', error);
-      nameX = margin;
+      console.error('Failed to add profile image:', error);
     }
   }
 
   // Name
   doc.setFontSize(22);
-  doc.setTextColor(...headerTextColor);
-  doc.setFont('helvetica', 'bold');
-  doc.text(fullName, nameX, 20);
+  doc.setTextColor(...template.header.text);
+  doc.setFont(template.font, 'bold');
+  
+  if (template.header.layout === 'centered') {
+    doc.text(fullName, pageWidth / 2, 20, { align: 'center' });
+  } else {
+    doc.text(fullName, nameX, 20);
+  }
 
   // Title
   if (cvData.title) {
     doc.setFontSize(12);
-    doc.setFont('helvetica', 'normal');
-    doc.text(utf8ToLatin1(cvData.title), nameX, 28);
+    doc.setFont(template.font, 'normal');
+    const titleX = template.header.layout === 'centered' ? pageWidth / 2 : nameX;
+    doc.text(sanitizeText(cvData.title), titleX, 28, template.header.layout === 'centered' ? { align: 'center' } : {});
   }
 
-  // Contact info row
+  // Contact info
   doc.setFontSize(8);
   const contactParts: string[] = [];
-  if (cvData.email) contactParts.push(`E-post: ${utf8ToLatin1(cvData.email)}`);
-  if (cvData.phone) contactParts.push(`Tel: ${utf8ToLatin1(cvData.phone)}`);
-  if (cvData.location) contactParts.push(utf8ToLatin1(cvData.location));
+  if (cvData.email) contactParts.push(`E-post: ${sanitizeText(cvData.email)}`);
+  if (cvData.phone) contactParts.push(`Tel: ${sanitizeText(cvData.phone)}`);
+  if (cvData.location) contactParts.push(sanitizeText(cvData.location));
   
   if (contactParts.length > 0) {
-    doc.text(contactParts.join('  |  '), nameX, headerHeight - 12);
+    const contactText = contactParts.join('  |  ');
+    const contactX = template.header.layout === 'centered' ? pageWidth / 2 : nameX;
+    doc.text(contactText, contactX, headerHeight - 12, template.header.layout === 'centered' ? { align: 'center' } : {});
   }
 
   // Links
-  if (cvData.links && cvData.links.length > 0) {
-    const linkTexts = cvData.links.map(link => {
-      const type = link.type;
-      if (type === 'linkedin') return 'LinkedIn';
-      if (type === 'github') return 'GitHub';
-      if (type === 'portfolio') return 'Portfolio';
-      if (type === 'website') return 'Webbplats';
-      return utf8ToLatin1(link.label) || 'Lank';
+  if (cvData.links?.length > 0) {
+    const linkTexts = cvData.links.map(l => {
+      if (l.type === 'linkedin') return 'LinkedIn';
+      if (l.type === 'github') return 'GitHub';
+      if (l.type === 'portfolio') return 'Portfolio';
+      if (l.type === 'website') return 'Webb';
+      return sanitizeText(l.label) || 'Lank';
     });
-    
     doc.setFontSize(7);
-    doc.text(linkTexts.join('  |  '), nameX, headerHeight - 5);
+    const linkX = template.header.layout === 'centered' ? pageWidth / 2 : nameX;
+    doc.text(linkTexts.join('  |  '), linkX, headerHeight - 5, template.header.layout === 'centered' ? { align: 'center' } : {});
   }
 
-  yPos = headerHeight + 15;
+  yPos = headerHeight + 18;
 
   // ============================================
   // CONTENT
   // ============================================
 
-  // Helper: Draw section title
   const drawSectionTitle = (title: string) => {
     checkOverflow(20);
-    
     doc.setFontSize(12);
-    doc.setTextColor(...primaryRgb);
-    doc.setFont('helvetica', 'bold');
-    doc.text(utf8ToLatin1(title).toUpperCase(), margin, yPos);
+    doc.setTextColor(...template.colors.primary);
+    doc.setFont(template.font, 'bold');
     
-    // Underline
-    doc.setDrawColor(...primaryRgb);
-    doc.setLineWidth(0.3);
-    doc.line(margin, yPos + 2, margin + contentWidth, yPos + 2);
+    const upperTitle = sanitizeText(title).toUpperCase();
+    doc.text(upperTitle, margin, yPos);
+    
+    // Underline based on template style
+    doc.setDrawColor(...template.colors.primary);
+    doc.setLineWidth(0.5);
+    
+    if (template.sectionTitle.style === 'underline') {
+      doc.line(margin, yPos + 2, margin + contentWidth, yPos + 2);
+    } else if (template.sectionTitle.style === 'line') {
+      doc.line(margin, yPos + 2, margin + contentWidth, yPos + 2);
+    } else if (template.sectionTitle.style === 'elegant') {
+      doc.setDrawColor(...template.colors.border); // Gold accent for executive
+      doc.line(margin, yPos + 2, margin + 40, yPos + 2);
+    }
     
     yPos += 10;
   };
 
-  // SAMMANFATTNING
+  // PROFIL
   if (cvData.summary?.trim()) {
     drawSectionTitle('Profil');
-    
     doc.setFontSize(10);
-    doc.setTextColor(51, 65, 85);
-    doc.setFont('helvetica', 'normal');
-    const encodedSummary = utf8ToLatin1(cvData.summary);
-    const lines = doc.splitTextToSize(encodedSummary, contentWidth);
+    doc.setTextColor(...template.colors.text);
+    doc.setFont(template.font, 'normal');
+    const lines = doc.splitTextToSize(sanitizeText(cvData.summary), contentWidth);
     doc.text(lines, margin, yPos);
     yPos += lines.length * 4.5 + 8;
   }
 
-  // ARBETSLIVSERFARENHET
+  // ERFARENHET
   if (cvData.workExperience?.length > 0) {
-    drawSectionTitle('Arbetslivserfarenhet');
+    drawSectionTitle('Erfarenhet');
     
     cvData.workExperience.forEach((job) => {
       checkOverflow(30);
       
-      // Job title
       doc.setFontSize(11);
-      doc.setTextColor(15, 23, 42);
-      doc.setFont('helvetica', 'bold');
-      doc.text(utf8ToLatin1(job.title) || '', margin, yPos);
+      doc.setTextColor(...template.colors.text);
+      doc.setFont(template.font, 'bold');
+      doc.text(sanitizeText(job.title) || '', margin, yPos);
       
-      // Date on right
       const dateStr = job.current 
-        ? `${utf8ToLatin1(job.startDate)} – Pågående`
-        : `${utf8ToLatin1(job.startDate)} – ${utf8ToLatin1(job.endDate) || ''}`;
-      doc.setFont('helvetica', 'italic');
+        ? `${sanitizeText(job.startDate)} – Pågående`
+        : `${sanitizeText(job.startDate)} – ${sanitizeText(job.endDate) || ''}`;
+      doc.setFont(template.font, 'italic');
       doc.setFontSize(8);
-      doc.setTextColor(100, 116, 139);
+      doc.setTextColor(...template.colors.muted);
       const dateWidth = doc.getTextWidth(dateStr);
       doc.text(dateStr, pageWidth - margin - dateWidth, yPos);
       
       yPos += 5;
       
-      // Company
       doc.setFontSize(10);
-      doc.setTextColor(71, 85, 105);
-      doc.setFont('helvetica', 'normal');
-      let companyText = utf8ToLatin1(job.company) || '';
-      if (job.location) companyText += `, ${utf8ToLatin1(job.location)}`;
+      doc.setTextColor(...template.colors.muted);
+      doc.setFont(template.font, 'normal');
+      let companyText = sanitizeText(job.company) || '';
+      if (job.location) companyText += `, ${sanitizeText(job.location)}`;
       doc.text(companyText, margin, yPos);
       yPos += 5;
       
-      // Description
       if (job.description?.trim()) {
         doc.setFontSize(9);
-        doc.setTextColor(51, 65, 85);
-        const encodedDesc = utf8ToLatin1(job.description);
-        const descLines = doc.splitTextToSize(encodedDesc, contentWidth);
+        doc.setTextColor(...template.colors.text);
+        const descLines = doc.splitTextToSize(sanitizeText(job.description), contentWidth);
         doc.text(descLines, margin, yPos);
         yPos += descLines.length * 4 + 5;
       } else {
@@ -316,28 +277,25 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     cvData.education.forEach((edu) => {
       checkOverflow(25);
       
-      // Degree
       doc.setFontSize(11);
-      doc.setTextColor(15, 23, 42);
-      doc.setFont('helvetica', 'bold');
-      doc.text(utf8ToLatin1(edu.degree) || '', margin, yPos);
+      doc.setTextColor(...template.colors.text);
+      doc.setFont(template.font, 'bold');
+      doc.text(sanitizeText(edu.degree) || '', margin, yPos);
       
-      // Date
-      const dateStr = `${utf8ToLatin1(edu.startDate)} – ${utf8ToLatin1(edu.endDate) || 'Pågående'}`;
-      doc.setFont('helvetica', 'italic');
+      const dateStr = `${sanitizeText(edu.startDate)} – ${sanitizeText(edu.endDate) || 'Pågående'}`;
+      doc.setFont(template.font, 'italic');
       doc.setFontSize(8);
-      doc.setTextColor(100, 116, 139);
+      doc.setTextColor(...template.colors.muted);
       const dateWidth = doc.getTextWidth(dateStr);
       doc.text(dateStr, pageWidth - margin - dateWidth, yPos);
       
       yPos += 5;
       
-      // School
       doc.setFontSize(10);
-      doc.setTextColor(71, 85, 105);
-      doc.setFont('helvetica', 'normal');
-      let schoolText = utf8ToLatin1(edu.school) || '';
-      if (edu.field) schoolText += ` – ${utf8ToLatin1(edu.field)}`;
+      doc.setTextColor(...template.colors.muted);
+      doc.setFont(template.font, 'normal');
+      let schoolText = sanitizeText(edu.school) || '';
+      if (edu.field) schoolText += ` – ${sanitizeText(edu.field)}`;
       doc.text(schoolText, margin, yPos);
       yPos += 8;
     });
@@ -345,65 +303,56 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     yPos += 2;
   }
 
-  // KOMPETENSER - med korrekt formatering
+  // KOMPETENSER
   if (cvData.skills?.length > 0) {
     drawSectionTitle('Kompetenser');
     
-    // Group skills by category
     const technicalSkills = cvData.skills.filter(s => getSkillCategory(s) === 'technical');
     const softSkills = cvData.skills.filter(s => getSkillCategory(s) === 'soft');
-    const toolSkills = cvData.skills.filter(s => getSkillCategory(s) === 'tool');
     const otherSkills = cvData.skills.filter(s => {
       const cat = getSkillCategory(s);
-      return !cat || cat === 'language' || cat === 'other';
+      return !cat || cat === 'tool' || cat === 'language' || cat === 'other';
     });
     
-    // Technical skills
-    if (technicalSkills.length > 0) {
-      doc.setFontSize(8);
-      doc.setTextColor(100, 116, 139);
-      doc.text('Tekniska:', margin, yPos);
-      yPos += 4;
+    const renderSkillCategory = (skills: any[], label?: string) => {
+      if (skills.length === 0) return;
+      
+      if (label) {
+        doc.setFontSize(8);
+        doc.setTextColor(...template.colors.muted);
+        doc.text(sanitizeText(label) + ':', margin, yPos);
+        yPos += 4;
+      }
       
       doc.setFontSize(10);
-      doc.setTextColor(15, 23, 42);
-      // Use bullet character (•) with proper spacing
-      const skillsText = technicalSkills.map(s => utf8ToLatin1(getSkillName(s))).join('  \u2022  ');
-      const lines = doc.splitTextToSize(skillsText, contentWidth);
-      doc.text(lines, margin, yPos);
-      yPos += lines.length * 4 + 4;
-    }
-    
-    // Soft skills
-    if (softSkills.length > 0) {
-      doc.setFontSize(8);
-      doc.setTextColor(100, 116, 139);
-      doc.text('Mjuka färdigheter:', margin, yPos);
-      yPos += 4;
+      doc.setTextColor(...template.colors.text);
       
-      doc.setFontSize(10);
-      doc.setTextColor(15, 23, 42);
-      const skillsText = softSkills.map(s => utf8ToLatin1(getSkillName(s))).join('  \u2022  ');
-      const lines = doc.splitTextToSize(skillsText, contentWidth);
-      doc.text(lines, margin, yPos);
-      yPos += lines.length * 4 + 4;
-    }
+      // Format skills based on template style
+      const skillTexts = skills.map(s => sanitizeText(getSkillName(s)));
+      
+      if (template.skillTag.style === 'pill' || template.skillTag.style === 'rounded') {
+        // List format for pills
+        const fullText = skillTexts.join('  •  ');
+        const lines = doc.splitTextToSize(fullText, contentWidth);
+        doc.text(lines, margin, yPos);
+        yPos += lines.length * 4 + 4;
+      } else {
+        // Comma separated for box/bordered
+        const fullText = skillTexts.join(', ');
+        const lines = doc.splitTextToSize(fullText, contentWidth);
+        doc.text(lines, margin, yPos);
+        yPos += lines.length * 4 + 4;
+      }
+    };
     
-    // Other skills
-    const remainingSkills = [...toolSkills, ...otherSkills];
-    if (remainingSkills.length > 0) {
-      doc.setFontSize(10);
-      doc.setTextColor(15, 23, 42);
-      const skillsText = remainingSkills.map(s => utf8ToLatin1(getSkillName(s))).join('  \u2022  ');
-      const lines = doc.splitTextToSize(skillsText, contentWidth);
-      doc.text(lines, margin, yPos);
-      yPos += lines.length * 4 + 5;
-    }
+    renderSkillCategory(technicalSkills, 'Tekniska');
+    renderSkillCategory(softSkills, 'Mjuka färdigheter');
+    renderSkillCategory(otherSkills);
     
     yPos += 3;
   }
 
-  // SPRÅK & CERTIFIKAT (två kolumner)
+  // SPRÅK & CERTIFIKAT
   const hasLanguages = cvData.languages?.length > 0;
   const hasCertificates = cvData.certificates?.length > 0;
   
@@ -414,50 +363,48 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     let leftY = yPos;
     let rightY = yPos;
     
-    // Språk (vänster)
+    // Språk
     if (hasLanguages) {
       doc.setFontSize(12);
-      doc.setTextColor(...primaryRgb);
-      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...template.colors.primary);
+      doc.setFont(template.font, 'bold');
       doc.text('SPRÅK', margin, leftY);
       leftY += 8;
       
       doc.setFontSize(10);
       cvData.languages!.forEach((lang) => {
-        doc.setTextColor(15, 23, 42);
-        doc.setFont('helvetica', 'bold');
-        // Handle both 'name' (old) and 'language' (new)
-        const langName = utf8ToLatin1(lang.language || (lang as any).name) || '';
+        doc.setTextColor(...template.colors.text);
+        doc.setFont(template.font, 'bold');
+        const langName = sanitizeText(lang.language || (lang as any).name) || '';
         doc.text(langName, margin, leftY);
         
-        // Level with proper spacing
-        doc.setTextColor(100, 116, 139);
-        doc.setFont('helvetica', 'normal');
-        const levelText = ` (${utf8ToLatin1(lang.level)})`;
+        doc.setTextColor(...template.colors.muted);
+        doc.setFont(template.font, 'normal');
+        const levelText = ` (${sanitizeText(lang.level)})`;
         doc.text(levelText, margin + doc.getTextWidth(langName), leftY);
         leftY += 5;
       });
     }
     
-    // Certifikat (höger)
+    // Certifikat
     if (hasCertificates) {
       doc.setFontSize(12);
-      doc.setTextColor(...primaryRgb);
-      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...template.colors.primary);
+      doc.setFont(template.font, 'bold');
       doc.text('CERTIFIKAT', margin + colWidth + 5, rightY);
       rightY += 8;
       
       doc.setFontSize(9);
       cvData.certificates!.forEach((cert) => {
-        doc.setTextColor(15, 23, 42);
-        doc.setFont('helvetica', 'bold');
-        doc.text(utf8ToLatin1(cert.name) || '', margin + colWidth + 5, rightY);
+        doc.setTextColor(...template.colors.text);
+        doc.setFont(template.font, 'bold');
+        doc.text(sanitizeText(cert.name) || '', margin + colWidth + 5, rightY);
         rightY += 4;
         
         if (cert.issuer || cert.date) {
-          doc.setTextColor(100, 116, 139);
-          doc.setFont('helvetica', 'normal');
-          const details = [utf8ToLatin1(cert.issuer), utf8ToLatin1(cert.date)].filter(Boolean).join(' \u2022 ');
+          doc.setTextColor(...template.colors.muted);
+          doc.setFont(template.font, 'normal');
+          const details = [sanitizeText(cert.issuer), sanitizeText(cert.date)].filter(Boolean).join(' • ');
           doc.text(details, margin + colWidth + 5, rightY);
           rightY += 5;
         }
@@ -475,26 +422,24 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       checkOverflow(20);
       
       doc.setFontSize(10);
-      doc.setTextColor(15, 23, 42);
-      doc.setFont('helvetica', 'bold');
-      doc.text(utf8ToLatin1(ref.name) || '', margin, yPos);
+      doc.setTextColor(...template.colors.text);
+      doc.setFont(template.font, 'bold');
+      doc.text(sanitizeText(ref.name) || '', margin, yPos);
       yPos += 4;
       
-      doc.setTextColor(71, 85, 105);
-      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(...template.colors.muted);
+      doc.setFont(template.font, 'normal');
       let titleText = '';
-      if (ref.title) titleText += utf8ToLatin1(ref.title);
-      if (ref.company) titleText += (titleText ? ', ' : '') + utf8ToLatin1(ref.company);
+      if (ref.title) titleText += sanitizeText(ref.title);
+      if (ref.company) titleText += (titleText ? ', ' : '') + sanitizeText(ref.company);
       if (titleText) {
         doc.text(titleText, margin, yPos);
         yPos += 4;
       }
       
-      if (ref.phone || ref.email) {
+      if (ref.phone) {
         doc.setFontSize(8);
-        doc.setTextColor(100, 116, 139);
-        const contact = [ref.phone, ref.email].filter(Boolean).join(' \u2022 ');
-        doc.text(contact, margin, yPos);
+        doc.text(ref.phone, margin, yPos);
         yPos += 4;
       }
       
@@ -508,7 +453,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     doc.setPage(i);
     doc.setFontSize(8);
     doc.setTextColor(150, 150, 150);
-    doc.setFont('helvetica', 'normal');
+    doc.setFont(template.font, 'normal');
     doc.text(
       `Genererat från Deltagarportalen • Sida ${i} av ${totalPages}`,
       pageWidth / 2,
@@ -520,79 +465,60 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
   return doc.output('blob');
 }
 
-/**
- * Generera PDF från jobbannons
- */
+// Andra PDF-funktioner (oförändrade)
 export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   let yPos = 20;
 
-  const primaryRgb: [number, number, number] = [79, 70, 229];
-
-  // Titel
   doc.setFontSize(18);
-  doc.setTextColor(...primaryRgb);
+  doc.setTextColor(79, 70, 229);
   doc.setFont('helvetica', 'bold');
-  const splitTitle = doc.splitTextToSize(utf8ToLatin1(jobData.headline) || 'Jobbannons', pageWidth - 40);
+  const splitTitle = doc.splitTextToSize(sanitizeText(jobData.headline) || 'Jobbannons', pageWidth - 40);
   doc.text(splitTitle, 20, yPos);
   yPos += splitTitle.length * 8 + 5;
 
-  // Arbetsgivare
   if (jobData.employer?.name) {
     doc.setFontSize(12);
     doc.setTextColor(15, 23, 42);
-    doc.setFont('helvetica', 'bold');
-    doc.text(utf8ToLatin1(jobData.employer.name), 20, yPos);
+    doc.text(sanitizeText(jobData.employer.name), 20, yPos);
     yPos += 7;
   }
 
-  // Plats
   if (jobData.workplace_address) {
     doc.setFontSize(10);
     doc.setTextColor(71, 85, 105);
-    doc.setFont('helvetica', 'normal');
-    const location = `${utf8ToLatin1(jobData.workplace_address.municipality)}, ${utf8ToLatin1(jobData.workplace_address.region)}`;
+    const location = `${sanitizeText(jobData.workplace_address.municipality)}, ${sanitizeText(jobData.workplace_address.region)}`;
     doc.text(location, 20, yPos);
     yPos += 6;
   }
 
-  // Anställningstyp
   if (jobData.employment_type?.label) {
     doc.setFontSize(10);
-    doc.setTextColor(71, 85, 105);
-    doc.text(utf8ToLatin1(jobData.employment_type.label), 20, yPos);
+    doc.text(sanitizeText(jobData.employment_type.label), 20, yPos);
     yPos += 6;
   }
 
-  // Publiceringsdatum
   if (jobData.publication_date) {
     doc.setFontSize(9);
     doc.setTextColor(100, 116, 139);
-    const pubDate = new Date(jobData.publication_date).toLocaleDateString('sv-SE');
-    doc.text(`Publicerad: ${pubDate}`, 20, yPos);
+    doc.text(`Publicerad: ${new Date(jobData.publication_date).toLocaleDateString('sv-SE')}`, 20, yPos);
     yPos += 10;
   }
 
-  // Linje
   doc.setDrawColor(226, 232, 240);
   doc.line(20, yPos, pageWidth - 20, yPos);
   yPos += 12;
 
-  // Beskrivning
   if (jobData.description?.text) {
     doc.setFontSize(12);
-    doc.setTextColor(...primaryRgb);
-    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(79, 70, 229);
     doc.text('Om tjänsten', 20, yPos);
     yPos += 8;
     
     doc.setFontSize(10);
     doc.setTextColor(15, 23, 42);
-    doc.setFont('helvetica', 'normal');
-    
-    // Rensa HTML-taggar
-    const cleanDescription = jobData.description.text
+    const cleanDesc = jobData.description.text
       .replace(/<[^>]*>/g, ' ')
       .replace(/&nbsp;/g, ' ')
       .replace(/&amp;/g, '&')
@@ -602,28 +528,24 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
       .replace(/\s+/g, ' ')
       .trim();
     
-    const encodedDesc = utf8ToLatin1(cleanDescription);
-    const splitDesc = doc.splitTextToSize(encodedDesc, pageWidth - 40);
+    const splitDesc = doc.splitTextToSize(sanitizeText(cleanDesc), pageWidth - 40);
     doc.text(splitDesc, 20, yPos);
     yPos += splitDesc.length * 5 + 15;
   }
 
-  // Ansökan
   if (yPos > 230) {
     doc.addPage();
     yPos = 20;
   }
 
   doc.setFontSize(13);
-  doc.setTextColor(...primaryRgb);
-  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(79, 70, 229);
   doc.text('Ansökan', 20, yPos);
   yPos += 10;
 
   if (jobData.application_details) {
     doc.setFontSize(10);
     doc.setTextColor(15, 23, 42);
-    doc.setFont('helvetica', 'normal');
     
     if (jobData.application_details.email) {
       doc.setFont('helvetica', 'bold');
@@ -640,43 +562,39 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
       doc.text(jobData.application_details.url, 50, yPos);
       yPos += 6;
     }
-    
-    if (jobData.application_details.reference) {
-      doc.setFont('helvetica', 'bold');
-      doc.text('Referens:', 20, yPos);
-      doc.setFont('helvetica', 'normal');
-      doc.text(utf8ToLatin1(jobData.application_details.reference), 50, yPos);
-      yPos += 6;
-    }
   }
 
-  // Sista ansökningsdag
   if (jobData.last_publication_date) {
     yPos += 8;
     doc.setFontSize(10);
     doc.setTextColor(200, 50, 50);
     doc.setFont('helvetica', 'bold');
-    const lastDate = new Date(jobData.last_publication_date).toLocaleDateString('sv-SE');
-    doc.text(`Sista ansökningsdag: ${lastDate}`, 20, yPos);
+    doc.text(`Sista ansökningsdag: ${new Date(jobData.last_publication_date).toLocaleDateString('sv-SE')}`, 20, yPos);
   }
 
-  // Footer
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
-  doc.setFont('helvetica', 'normal');
-  doc.text(
-    'Sparad från Deltagarportalen • Arbetsförmedlingen',
-    pageWidth / 2,
-    290,
-    { align: 'center' }
-  );
+  doc.text('Sparad från Deltagarportalen • Arbetsförmedlingen', pageWidth / 2, 290, { align: 'center' });
 
   return doc.output('blob');
 }
 
-/**
- * Generera ansökningshistorik PDF
- */
+export function downloadPDF(blob: Blob, filename: string): void {
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  URL.revokeObjectURL(url);
+}
+
+export function previewPDF(blob: Blob): void {
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
 export async function generateApplicationHistoryPDF(
   applications: Array<{
     jobTitle: string;
@@ -689,7 +607,6 @@ export async function generateApplicationHistoryPDF(
   const doc = new jsPDF();
   const pageWidth = doc.internal.pageSize.getWidth();
   
-  // Header
   doc.setFontSize(20);
   doc.setTextColor(79, 70, 229);
   doc.setFont('helvetica', 'bold');
@@ -700,12 +617,11 @@ export async function generateApplicationHistoryPDF(
   doc.setFont('helvetica', 'normal');
   doc.text(`Genererad: ${new Date().toLocaleDateString('sv-SE')}`, 20, 28);
 
-  // Tabell
   const tableData = applications.map(app => [
-    utf8ToLatin1(app.jobTitle),
-    utf8ToLatin1(app.company),
+    sanitizeText(app.jobTitle),
+    sanitizeText(app.company),
     new Date(app.appliedDate).toLocaleDateString('sv-SE'),
-    utf8ToLatin1(app.status),
+    sanitizeText(app.status),
   ]);
 
   (doc as any).autoTable({
@@ -722,15 +638,8 @@ export async function generateApplicationHistoryPDF(
       fontSize: 9,
       cellPadding: 3,
     },
-    columnStyles: {
-      0: { cellWidth: 60 },
-      1: { cellWidth: 50 },
-      2: { cellWidth: 30 },
-      3: { cellWidth: 40 },
-    },
   });
 
-  // Footer
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
   doc.text(
@@ -743,27 +652,4 @@ export async function generateApplicationHistoryPDF(
   return doc.output('blob');
 }
 
-/**
- * Ladda ner PDF-fil
- */
-export function downloadPDF(blob: Blob, filename: string): void {
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-}
-
-/**
- * Förhandsgranska PDF i ny flik
- */
-export function previewPDF(blob: Blob): void {
-  const url = URL.createObjectURL(blob);
-  window.open(url, '_blank');
-}
-
-// Type exports
 export type { CVData as CVDataType, JobData as JobDataType };
