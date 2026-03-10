@@ -255,9 +255,9 @@ export function CVPreview({ data }: CVPreviewProps) {
               <div className="skill-category mb-3">
                 <h4 className="skill-category-title">Tekniska</h4>
                 <div className="skill-list">
-                  {technicalSkills.map((skill) => (
-                    <span key={skill.id} className="skill-tag" style={skillTagStyle}>
-                      {skill.name}
+                  {technicalSkills.map((skill, idx) => (
+                    <span key={typeof skill === 'object' ? skill.id : idx} className="skill-tag" style={skillTagStyle}>
+                      {typeof skill === 'string' ? skill : skill.name}
                     </span>
                   ))}
                 </div>
@@ -268,9 +268,9 @@ export function CVPreview({ data }: CVPreviewProps) {
               <div className="skill-category mb-3">
                 <h4 className="skill-category-title">Mjuka färdigheter</h4>
                 <div className="skill-list">
-                  {softSkills.map((skill) => (
-                    <span key={skill.id} className="skill-tag" style={skillTagStyle}>
-                      {skill.name}
+                  {softSkills.map((skill, idx) => (
+                    <span key={typeof skill === 'object' ? skill.id : idx} className="skill-tag" style={skillTagStyle}>
+                      {typeof skill === 'string' ? skill : skill.name}
                     </span>
                   ))}
                 </div>
@@ -279,9 +279,9 @@ export function CVPreview({ data }: CVPreviewProps) {
 
             {(toolSkills.length > 0 || otherSkills.length > 0) && (
               <div className="skill-list">
-                {[...toolSkills, ...otherSkills].map((skill) => (
-                  <span key={skill.id} className="skill-tag" style={skillTagStyle}>
-                    {skill.name}
+                {[...toolSkills, ...otherSkills].map((skill, idx) => (
+                  <span key={typeof skill === 'object' ? skill.id : idx} className="skill-tag" style={skillTagStyle}>
+                    {typeof skill === 'string' ? skill : skill.name}
                   </span>
                 ))}
               </div>
@@ -298,7 +298,7 @@ export function CVPreview({ data }: CVPreviewProps) {
             </h2>
             <div className="language-list">
               {data.languages.map((lang) => (
-                <div key={lang.id} className="language-item">
+                <div key={lang.id} className="language-item flex items-center gap-2">
                   <span className="font-medium text-sm">{lang.language || (lang as any).name}</span>
                   <span className="text-xs" style={{ color: '#64748b' }}>({lang.level})</span>
                 </div>

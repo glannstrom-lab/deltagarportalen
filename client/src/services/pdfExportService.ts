@@ -1,6 +1,6 @@
 /**
  * PDF Export Service
- * Genererar PDF-dokument för CV med fullt stöd för bilder och svenska tecken
+ * Genererar PDF-dokument för CV med fullt UTF-8 stöd
  */
 
 import jsPDF from 'jspdf';
@@ -25,6 +25,28 @@ const colorSchemes: Record<string, { primary: string; secondary: string; accent:
   violet: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa', headerBg: '#7c3aed' },
 };
 
+// UTF-8 safe encoding for jsPDF - handles Swedish characters properly
+function utf8ToLatin1(text: string | undefined | null): string {
+  if (!text) return '';
+  
+  // jsPDF's default fonts support Latin-1 (ISO-8859-1)
+  // These characters map directly:
+  // Å (0xC5), Ä (0xC4), Ö (0xD6)
+  // å (0xE5), ä (0xE4), ö (0xF6)
+  // É (0xC9), é (0xE9)
+  
+  // Replace problematic Unicode characters with Latin-1 equivalents
+  return text
+    .replace(/–/g, '-')   // en-dash to hyphen
+    .replace(/—/g, '-')   // em-dash to hyphen
+    .replace(/[\"]/g, '"')  // smart quotes
+    .replace(/['']/g, "'")   // smart single quotes
+    .replace(/…/g, '...')   // ellipsis
+    .replace(/•/g, '\u2022') // bullet (keep as is, supported in Latin-1 extended)
+    // Keep Swedish characters as-is - helvetica font supports them
+    .trim();
+}
+
 // Helper to safely get skill name
 function getSkillName(skill: any): string {
   if (typeof skill === 'string') return skill;
@@ -46,12 +68,10 @@ function getSkillCategory(skill: any): string {
 // Helper to convert image to base64
 async function getImageAsBase64(url: string): Promise<string | null> {
   try {
-    // If already base64, return as-is
     if (url.startsWith('data:image')) {
       return url;
     }
     
-    // Fetch image and convert to base64
     const response = await fetch(url);
     const blob = await response.blob();
     return new Promise((resolve, reject) => {
@@ -66,49 +86,6 @@ async function getImageAsBase64(url: string): Promise<string | null> {
   }
 }
 
-// Helper to safely encode text for PDF (handle Swedish characters)
-function encodePdfText(text: string | undefined | null): string {
-  if (!text) return '';
-  
-  // jsPDF uses Latin-1 encoding by default, which doesn't support all Swedish characters well
-  // We need to replace problematic characters with their simple ASCII equivalents
-  return text
-    .replace(/[åä]/g, 'a')  // å and ä -> a
-    .replace(/[ÅÄ]/g, 'A')  // Å and Ä -> A
-    .replace(/[ö]/g, 'o')   // ö -> o
-    .replace(/[Ö]/g, 'O')   // Ö -> O
-    .replace(/[é]/g, 'e')   // é -> e
-    .replace(/[É]/g, 'E')   // É -> E
-    .replace(/[ü]/g, 'u')   // ü -> u
-    .replace(/[Ü]/g, 'U')   // Ü -> U
-    .replace(/[à]/g, 'a')   // à -> a
-    .replace(/[À]/g, 'A')   // À -> A
-    .replace(/[è]/g, 'e')   // è -> e
-    .replace(/[È]/g, 'E')   // È -> E
-    .replace(/[–]/g, '-')   // en-dash -> hyphen
-    .replace(/[—]/g, '-')   // em-dash -> hyphen
-    .replace(/[\"]/g, '"')  // smart quotes -> straight quotes
-    .replace(/['']/g, "'")   // smart single quotes -> straight quote
-    .replace(/[…]/g, '...')  // ellipsis -> three dots
-    .replace(/[•]/g, '*')    // bullet -> asterisk
-    .replace(/[✉]/g, 'E-post:')   // envelope icon
-    .replace(/[☎]/g, 'Tel:')       // phone icon
-    .replace(/[📍]/g, '')          // location icon (remove)
-    .replace(/[💼]/g, '')          // briefcase icon (remove)
-    .replace(/[🎓]/g, '')          // graduation icon (remove)
-    .replace(/[🛠]/g, '')          // tools icon (remove)
-    .replace(/[🌐]/g, '')          // globe icon (remove)
-    .replace(/[🏆]/g, '')          // trophy icon (remove)
-    .replace(/[👥]/g, '')          // people icon (remove)
-    .replace(/[⏰]/g, 'Sista ansokningsdag:')  // clock icon
-    .replace(/[Ø]/g, 'O')    // Danish/Norwegian O with stroke
-    .replace(/[ø]/g, 'o')    // Danish/Norwegian o with stroke
-    .replace(/[ß]/g, 'ss')   // German sharp s
-    .replace(/[«]/g, '"')    // French quotes
-    .replace(/[»]/g, '"')    // French quotes
-    .trim();
-}
-
 // Helper to convert hex to RGB
 function hexToRgb(hex: string): [number, number, number] {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -120,7 +97,7 @@ function hexToRgb(hex: string): [number, number, number] {
 }
 
 /**
- * Generera PDF från CV-data
+ * Generera PDF från CV-data med fullt UTF-8 stöd
  */
 export async function generateCVPDF(cvData: CVData): Promise<Blob> {
   const doc = new jsPDF('p', 'mm', 'a4');
@@ -133,7 +110,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
   // Get settings
   const scheme = colorSchemes[cvData.colorScheme || 'indigo'] || colorSchemes.indigo;
   const template = cvData.template || 'modern';
-  const fullName = encodePdfText(`${cvData.firstName || ''} ${cvData.lastName || ''}`.trim()) || 'Ditt Namn';
+  const fullName = utf8ToLatin1(`${cvData.firstName || ''} ${cvData.lastName || ''}`.trim()) || 'Ditt Namn';
 
   const primaryRgb = hexToRgb(scheme.primary);
 
@@ -189,24 +166,16 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     try {
       const base64Image = await getImageAsBase64(cvData.profileImage);
       if (base64Image) {
-        // Determine image format
         let format: 'JPEG' | 'PNG' = 'JPEG';
         if (base64Image.includes('data:image/png')) {
           format = 'PNG';
         }
         
-        // Add image - positioned at top left of header
-        const imgSize = 25; // mm
+        const imgSize = 25;
         const imgX = margin;
         const imgY = 8;
         
         doc.addImage(base64Image, format, imgX, imgY, imgSize, imgSize);
-        
-        // Draw circle border around image
-        doc.setDrawColor(...headerTextColor);
-        doc.setLineWidth(0.5);
-        // Note: jsPDF doesn't have circle outline, so we use the image as-is
-        
         nameX = margin + imgSize + 10;
       }
     } catch (error) {
@@ -225,15 +194,15 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
   if (cvData.title) {
     doc.setFontSize(12);
     doc.setFont('helvetica', 'normal');
-    doc.text(encodePdfText(cvData.title), nameX, 28);
+    doc.text(utf8ToLatin1(cvData.title), nameX, 28);
   }
 
   // Contact info row
   doc.setFontSize(8);
   const contactParts: string[] = [];
-  if (cvData.email) contactParts.push(`E-post: ${encodePdfText(cvData.email)}`);
-  if (cvData.phone) contactParts.push(`Tel: ${encodePdfText(cvData.phone)}`);
-  if (cvData.location) contactParts.push(encodePdfText(cvData.location));
+  if (cvData.email) contactParts.push(`E-post: ${utf8ToLatin1(cvData.email)}`);
+  if (cvData.phone) contactParts.push(`Tel: ${utf8ToLatin1(cvData.phone)}`);
+  if (cvData.location) contactParts.push(utf8ToLatin1(cvData.location));
   
   if (contactParts.length > 0) {
     doc.text(contactParts.join('  |  '), nameX, headerHeight - 12);
@@ -247,7 +216,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       if (type === 'github') return 'GitHub';
       if (type === 'portfolio') return 'Portfolio';
       if (type === 'website') return 'Webbplats';
-      return encodePdfText(link.label) || 'Lank';
+      return utf8ToLatin1(link.label) || 'Lank';
     });
     
     doc.setFontSize(7);
@@ -267,7 +236,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     doc.setFontSize(12);
     doc.setTextColor(...primaryRgb);
     doc.setFont('helvetica', 'bold');
-    doc.text(encodePdfText(title).toUpperCase(), margin, yPos);
+    doc.text(utf8ToLatin1(title).toUpperCase(), margin, yPos);
     
     // Underline
     doc.setDrawColor(...primaryRgb);
@@ -284,7 +253,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     doc.setFontSize(10);
     doc.setTextColor(51, 65, 85);
     doc.setFont('helvetica', 'normal');
-    const encodedSummary = encodePdfText(cvData.summary);
+    const encodedSummary = utf8ToLatin1(cvData.summary);
     const lines = doc.splitTextToSize(encodedSummary, contentWidth);
     doc.text(lines, margin, yPos);
     yPos += lines.length * 4.5 + 8;
@@ -301,12 +270,12 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       doc.setFontSize(11);
       doc.setTextColor(15, 23, 42);
       doc.setFont('helvetica', 'bold');
-      doc.text(encodePdfText(job.title) || '', margin, yPos);
+      doc.text(utf8ToLatin1(job.title) || '', margin, yPos);
       
       // Date on right
       const dateStr = job.current 
-        ? `${encodePdfText(job.startDate)} - Pagaende`
-        : `${encodePdfText(job.startDate)} - ${encodePdfText(job.endDate) || ''}`;
+        ? `${utf8ToLatin1(job.startDate)} – Pågående`
+        : `${utf8ToLatin1(job.startDate)} – ${utf8ToLatin1(job.endDate) || ''}`;
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(8);
       doc.setTextColor(100, 116, 139);
@@ -319,8 +288,8 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       doc.setFontSize(10);
       doc.setTextColor(71, 85, 105);
       doc.setFont('helvetica', 'normal');
-      let companyText = encodePdfText(job.company) || '';
-      if (job.location) companyText += `, ${encodePdfText(job.location)}`;
+      let companyText = utf8ToLatin1(job.company) || '';
+      if (job.location) companyText += `, ${utf8ToLatin1(job.location)}`;
       doc.text(companyText, margin, yPos);
       yPos += 5;
       
@@ -328,7 +297,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       if (job.description?.trim()) {
         doc.setFontSize(9);
         doc.setTextColor(51, 65, 85);
-        const encodedDesc = encodePdfText(job.description);
+        const encodedDesc = utf8ToLatin1(job.description);
         const descLines = doc.splitTextToSize(encodedDesc, contentWidth);
         doc.text(descLines, margin, yPos);
         yPos += descLines.length * 4 + 5;
@@ -351,10 +320,10 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       doc.setFontSize(11);
       doc.setTextColor(15, 23, 42);
       doc.setFont('helvetica', 'bold');
-      doc.text(encodePdfText(edu.degree) || '', margin, yPos);
+      doc.text(utf8ToLatin1(edu.degree) || '', margin, yPos);
       
       // Date
-      const dateStr = `${encodePdfText(edu.startDate)} - ${encodePdfText(edu.endDate) || 'Pagaende'}`;
+      const dateStr = `${utf8ToLatin1(edu.startDate)} – ${utf8ToLatin1(edu.endDate) || 'Pågående'}`;
       doc.setFont('helvetica', 'italic');
       doc.setFontSize(8);
       doc.setTextColor(100, 116, 139);
@@ -367,8 +336,8 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       doc.setFontSize(10);
       doc.setTextColor(71, 85, 105);
       doc.setFont('helvetica', 'normal');
-      let schoolText = encodePdfText(edu.school) || '';
-      if (edu.field) schoolText += ` - ${encodePdfText(edu.field)}`;
+      let schoolText = utf8ToLatin1(edu.school) || '';
+      if (edu.field) schoolText += ` – ${utf8ToLatin1(edu.field)}`;
       doc.text(schoolText, margin, yPos);
       yPos += 8;
     });
@@ -376,7 +345,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     yPos += 2;
   }
 
-  // KOMPETENSER
+  // KOMPETENSER - med korrekt formatering
   if (cvData.skills?.length > 0) {
     drawSectionTitle('Kompetenser');
     
@@ -398,7 +367,8 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       
       doc.setFontSize(10);
       doc.setTextColor(15, 23, 42);
-      const skillsText = technicalSkills.map(s => encodePdfText(getSkillName(s))).join(' * ');
+      // Use bullet character (•) with proper spacing
+      const skillsText = technicalSkills.map(s => utf8ToLatin1(getSkillName(s))).join('  \u2022  ');
       const lines = doc.splitTextToSize(skillsText, contentWidth);
       doc.text(lines, margin, yPos);
       yPos += lines.length * 4 + 4;
@@ -408,12 +378,12 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     if (softSkills.length > 0) {
       doc.setFontSize(8);
       doc.setTextColor(100, 116, 139);
-      doc.text('Mjuka fardigheter:', margin, yPos);
+      doc.text('Mjuka färdigheter:', margin, yPos);
       yPos += 4;
       
       doc.setFontSize(10);
       doc.setTextColor(15, 23, 42);
-      const skillsText = softSkills.map(s => encodePdfText(getSkillName(s))).join(' * ');
+      const skillsText = softSkills.map(s => utf8ToLatin1(getSkillName(s))).join('  \u2022  ');
       const lines = doc.splitTextToSize(skillsText, contentWidth);
       doc.text(lines, margin, yPos);
       yPos += lines.length * 4 + 4;
@@ -424,7 +394,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     if (remainingSkills.length > 0) {
       doc.setFontSize(10);
       doc.setTextColor(15, 23, 42);
-      const skillsText = remainingSkills.map(s => encodePdfText(getSkillName(s))).join(' * ');
+      const skillsText = remainingSkills.map(s => utf8ToLatin1(getSkillName(s))).join('  \u2022  ');
       const lines = doc.splitTextToSize(skillsText, contentWidth);
       doc.text(lines, margin, yPos);
       yPos += lines.length * 4 + 5;
@@ -433,7 +403,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     yPos += 3;
   }
 
-  // SPRAK & CERTIFIKAT (tva kolumner)
+  // SPRÅK & CERTIFIKAT (två kolumner)
   const hasLanguages = cvData.languages?.length > 0;
   const hasCertificates = cvData.certificates?.length > 0;
   
@@ -444,7 +414,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     let leftY = yPos;
     let rightY = yPos;
     
-    // Sprak (vanster)
+    // Språk (vänster)
     if (hasLanguages) {
       doc.setFontSize(12);
       doc.setTextColor(...primaryRgb);
@@ -456,19 +426,20 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       cvData.languages!.forEach((lang) => {
         doc.setTextColor(15, 23, 42);
         doc.setFont('helvetica', 'bold');
-        // Handle both 'name' (old) and 'language' (new) for backward compatibility
-        const langName = encodePdfText(lang.language || (lang as any).name) || '';
+        // Handle both 'name' (old) and 'language' (new)
+        const langName = utf8ToLatin1(lang.language || (lang as any).name) || '';
         doc.text(langName, margin, leftY);
         
+        // Level with proper spacing
         doc.setTextColor(100, 116, 139);
         doc.setFont('helvetica', 'normal');
-        const levelText = ` (${encodePdfText(lang.level)})`;
+        const levelText = ` (${utf8ToLatin1(lang.level)})`;
         doc.text(levelText, margin + doc.getTextWidth(langName), leftY);
         leftY += 5;
       });
     }
     
-    // Certifikat (hager)
+    // Certifikat (höger)
     if (hasCertificates) {
       doc.setFontSize(12);
       doc.setTextColor(...primaryRgb);
@@ -480,13 +451,13 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       cvData.certificates!.forEach((cert) => {
         doc.setTextColor(15, 23, 42);
         doc.setFont('helvetica', 'bold');
-        doc.text(encodePdfText(cert.name) || '', margin + colWidth + 5, rightY);
+        doc.text(utf8ToLatin1(cert.name) || '', margin + colWidth + 5, rightY);
         rightY += 4;
         
         if (cert.issuer || cert.date) {
           doc.setTextColor(100, 116, 139);
           doc.setFont('helvetica', 'normal');
-          const details = [encodePdfText(cert.issuer), encodePdfText(cert.date)].filter(Boolean).join(' * ');
+          const details = [utf8ToLatin1(cert.issuer), utf8ToLatin1(cert.date)].filter(Boolean).join(' \u2022 ');
           doc.text(details, margin + colWidth + 5, rightY);
           rightY += 5;
         }
@@ -506,14 +477,14 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       doc.setFontSize(10);
       doc.setTextColor(15, 23, 42);
       doc.setFont('helvetica', 'bold');
-      doc.text(encodePdfText(ref.name) || '', margin, yPos);
+      doc.text(utf8ToLatin1(ref.name) || '', margin, yPos);
       yPos += 4;
       
       doc.setTextColor(71, 85, 105);
       doc.setFont('helvetica', 'normal');
       let titleText = '';
-      if (ref.title) titleText += encodePdfText(ref.title);
-      if (ref.company) titleText += (titleText ? ', ' : '') + encodePdfText(ref.company);
+      if (ref.title) titleText += utf8ToLatin1(ref.title);
+      if (ref.company) titleText += (titleText ? ', ' : '') + utf8ToLatin1(ref.company);
       if (titleText) {
         doc.text(titleText, margin, yPos);
         yPos += 4;
@@ -522,7 +493,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
       if (ref.phone || ref.email) {
         doc.setFontSize(8);
         doc.setTextColor(100, 116, 139);
-        const contact = [ref.phone, ref.email].filter(Boolean).join(' * ');
+        const contact = [ref.phone, ref.email].filter(Boolean).join(' \u2022 ');
         doc.text(contact, margin, yPos);
         yPos += 4;
       }
@@ -539,7 +510,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
     doc.setTextColor(150, 150, 150);
     doc.setFont('helvetica', 'normal');
     doc.text(
-      `Genererat fran Deltagarportalen * Sida ${i} av ${totalPages}`,
+      `Genererat från Deltagarportalen • Sida ${i} av ${totalPages}`,
       pageWidth / 2,
       pageHeight - 10,
       { align: 'center' }
@@ -550,7 +521,7 @@ export async function generateCVPDF(cvData: CVData): Promise<Blob> {
 }
 
 /**
- * Generera PDF fran jobbannons
+ * Generera PDF från jobbannons
  */
 export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   const doc = new jsPDF();
@@ -563,7 +534,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   doc.setFontSize(18);
   doc.setTextColor(...primaryRgb);
   doc.setFont('helvetica', 'bold');
-  const splitTitle = doc.splitTextToSize(encodePdfText(jobData.headline) || 'Jobbannons', pageWidth - 40);
+  const splitTitle = doc.splitTextToSize(utf8ToLatin1(jobData.headline) || 'Jobbannons', pageWidth - 40);
   doc.text(splitTitle, 20, yPos);
   yPos += splitTitle.length * 8 + 5;
 
@@ -572,7 +543,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
     doc.setFontSize(12);
     doc.setTextColor(15, 23, 42);
     doc.setFont('helvetica', 'bold');
-    doc.text(encodePdfText(jobData.employer.name), 20, yPos);
+    doc.text(utf8ToLatin1(jobData.employer.name), 20, yPos);
     yPos += 7;
   }
 
@@ -581,16 +552,16 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
     doc.setFontSize(10);
     doc.setTextColor(71, 85, 105);
     doc.setFont('helvetica', 'normal');
-    const location = `${encodePdfText(jobData.workplace_address.municipality)}, ${encodePdfText(jobData.workplace_address.region)}`;
+    const location = `${utf8ToLatin1(jobData.workplace_address.municipality)}, ${utf8ToLatin1(jobData.workplace_address.region)}`;
     doc.text(location, 20, yPos);
     yPos += 6;
   }
 
-  // Anstallningstyp
+  // Anställningstyp
   if (jobData.employment_type?.label) {
     doc.setFontSize(10);
     doc.setTextColor(71, 85, 105);
-    doc.text(encodePdfText(jobData.employment_type.label), 20, yPos);
+    doc.text(utf8ToLatin1(jobData.employment_type.label), 20, yPos);
     yPos += 6;
   }
 
@@ -613,7 +584,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
     doc.setFontSize(12);
     doc.setTextColor(...primaryRgb);
     doc.setFont('helvetica', 'bold');
-    doc.text('Om tjansten', 20, yPos);
+    doc.text('Om tjänsten', 20, yPos);
     yPos += 8;
     
     doc.setFontSize(10);
@@ -631,13 +602,13 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
       .replace(/\s+/g, ' ')
       .trim();
     
-    const encodedDesc = encodePdfText(cleanDescription);
+    const encodedDesc = utf8ToLatin1(cleanDescription);
     const splitDesc = doc.splitTextToSize(encodedDesc, pageWidth - 40);
     doc.text(splitDesc, 20, yPos);
     yPos += splitDesc.length * 5 + 15;
   }
 
-  // Ansokan
+  // Ansökan
   if (yPos > 230) {
     doc.addPage();
     yPos = 20;
@@ -646,7 +617,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   doc.setFontSize(13);
   doc.setTextColor(...primaryRgb);
   doc.setFont('helvetica', 'bold');
-  doc.text('Ansokan', 20, yPos);
+  doc.text('Ansökan', 20, yPos);
   yPos += 10;
 
   if (jobData.application_details) {
@@ -674,19 +645,19 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
       doc.setFont('helvetica', 'bold');
       doc.text('Referens:', 20, yPos);
       doc.setFont('helvetica', 'normal');
-      doc.text(encodePdfText(jobData.application_details.reference), 50, yPos);
+      doc.text(utf8ToLatin1(jobData.application_details.reference), 50, yPos);
       yPos += 6;
     }
   }
 
-  // Sista ansokningsdag
+  // Sista ansökningsdag
   if (jobData.last_publication_date) {
     yPos += 8;
     doc.setFontSize(10);
     doc.setTextColor(200, 50, 50);
     doc.setFont('helvetica', 'bold');
     const lastDate = new Date(jobData.last_publication_date).toLocaleDateString('sv-SE');
-    doc.text(`Sista ansokningsdag: ${lastDate}`, 20, yPos);
+    doc.text(`Sista ansökningsdag: ${lastDate}`, 20, yPos);
   }
 
   // Footer
@@ -694,7 +665,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
   doc.setTextColor(150, 150, 150);
   doc.setFont('helvetica', 'normal');
   doc.text(
-    'Sparad fran Deltagarportalen * Arbetsformedlingen',
+    'Sparad från Deltagarportalen • Arbetsförmedlingen',
     pageWidth / 2,
     290,
     { align: 'center' }
@@ -704,7 +675,7 @@ export async function generateJobPDF(jobData: JobData): Promise<Blob> {
 }
 
 /**
- * Generera ansokningshistorik PDF
+ * Generera ansökningshistorik PDF
  */
 export async function generateApplicationHistoryPDF(
   applications: Array<{
@@ -722,7 +693,7 @@ export async function generateApplicationHistoryPDF(
   doc.setFontSize(20);
   doc.setTextColor(79, 70, 229);
   doc.setFont('helvetica', 'bold');
-  doc.text('Ansokningshistorik', 20, 20);
+  doc.text('Ansökningshistorik', 20, 20);
   
   doc.setFontSize(10);
   doc.setTextColor(71, 85, 105);
@@ -731,15 +702,15 @@ export async function generateApplicationHistoryPDF(
 
   // Tabell
   const tableData = applications.map(app => [
-    encodePdfText(app.jobTitle),
-    encodePdfText(app.company),
+    utf8ToLatin1(app.jobTitle),
+    utf8ToLatin1(app.company),
     new Date(app.appliedDate).toLocaleDateString('sv-SE'),
-    encodePdfText(app.status),
+    utf8ToLatin1(app.status),
   ]);
 
   (doc as any).autoTable({
     startY: 35,
-    head: [['Jobb', 'Foretag', 'Datum', 'Status']],
+    head: [['Jobb', 'Företag', 'Datum', 'Status']],
     body: tableData,
     theme: 'striped',
     headStyles: {
@@ -763,7 +734,7 @@ export async function generateApplicationHistoryPDF(
   doc.setFontSize(8);
   doc.setTextColor(150, 150, 150);
   doc.text(
-    'Genererat fran Deltagarportalen',
+    'Genererat från Deltagarportalen',
     pageWidth / 2,
     290,
     { align: 'center' }
@@ -787,7 +758,7 @@ export function downloadPDF(blob: Blob, filename: string): void {
 }
 
 /**
- * Forhandsgranska PDF i ny flik
+ * Förhandsgranska PDF i ny flik
  */
 export function previewPDF(blob: Blob): void {
   const url = URL.createObjectURL(blob);
