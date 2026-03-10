@@ -1845,33 +1845,39 @@ export function calculateJobMatches(
     const adaptations: string[] = []
     const warnings: string[] = []
 
-    // 1. RIASEC-matchning (30%) - arbetsstil och intresse
+    // 1. RIASEC-matchning (25%) - arbetsstil och intresse
     const riasecScore = calculateRiasecMatch(profile.riasec, occupation.riasec)
-    totalScore += riasecScore * 0.30
-    totalWeight += 0.30
-
-    // 2. Big Five-matchning (25%) - personlighet
-    const bigFiveScore = calculateBigFiveMatch(profile.bigFive, occupation.bigFive)
-    totalScore += bigFiveScore * 0.25
+    totalScore += riasecScore * 0.25
     totalWeight += 0.25
 
-    // 3. ICF-matchning (30%) - funktionsförutsättningar (inklusive fysiska)
+    // 2. Big Five-matchning (20%) - personlighet
+    const bigFiveScore = calculateBigFiveMatch(profile.bigFive, occupation.bigFive)
+    totalScore += bigFiveScore * 0.20
+    totalWeight += 0.20
+
+    // 3. ICF-matchning (25%) - funktionsförutsättningar (inklusive fysiska)
     const icfResult = calculateICFMatch(profile.icf, occupation.icf, occupation.challenges)
-    totalScore += icfResult.score * 0.30
-    totalWeight += 0.30
+    totalScore += icfResult.score * 0.25
+    totalWeight += 0.25
     adaptations.push(...icfResult.adaptations)
     warnings.push(...icfResult.warnings)
 
-    // 4. Intresseområden (15%) - specifika intressen
+    // 4. Intresseområden (20%) - specifika intressen (ökad vikt för bättre matchning)
     const interestScore = calculateInterestMatch(profile.strongInterest, occupation.categories)
-    totalScore += interestScore * 0.15
-    totalWeight += 0.15
+    totalScore += interestScore * 0.20
+    totalWeight += 0.20
+
+    // 5. Bonus för höga toppvärden i RIASEC (10%)
+    // Om användaren har höga värden (4-5) i samma kategorier som jobbet kräver
+    const topRiasecMatch = calculateTopRiasecBonus(profile.riasec, occupation.riasec)
+    totalScore += topRiasecMatch * 0.10
+    totalWeight += 0.10
 
     const matchPercentage = Math.round((totalScore / totalWeight) * 100)
     
-    // Bestäm lämplighet
-    const isSuitable = matchPercentage >= 60 && warnings.length === 0
-    const needsAdaptation = adaptations.length > 0 || (matchPercentage >= 50 && matchPercentage < 70)
+    // Bestäm lämplighet baserat på matchningsprocent och varningar
+    const isSuitable = matchPercentage >= 65 && warnings.length <= 1
+    const needsAdaptation = adaptations.length > 0 || (matchPercentage >= 55 && matchPercentage < 75)
 
     return {
       occupation,
@@ -1924,37 +1930,88 @@ function calculateICFMatch(
     const jobScore = job[key]
     
     if (userScore >= jobScore) {
+      // Användaren överträffar eller möter kravet - full poäng
       scoreSum += 1
     } else {
+      // Användaren under kravet - proportional poäng baserat på gap
       const gap = jobScore - userScore
-      scoreSum += Math.max(0, 1 - (gap / 5))
+      // Mjukare nedtrappning: gap på 1 ger 80% poäng, gap på 2 ger 50%, gap på 3+ ger 20%
+      let gapPenalty = 0
+      if (gap <= 1) gapPenalty = 0.2
+      else if (gap <= 2) gapPenalty = 0.5
+      else gapPenalty = 0.8
       
-      // Lägg till anpassningsrekommendationer
-      if (gap >= 1.5 && icfAdaptations[key]) {
-        adaptations.push(`${icfAdaptations[key].name}: ${icfAdaptations[key].adaptations[0]}`)
+      scoreSum += Math.max(0.2, 1 - gapPenalty)
+      
+      // Lägg till anpassningsrekommendationer vid större gap
+      if (gap >= 1 && icfAdaptations[key]) {
+        const adaptationText = `${icfAdaptations[key].name}: ${icfAdaptations[key].adaptations[0]}`
+        if (!adaptations.includes(adaptationText)) {
+          adaptations.push(adaptationText)
+        }
       }
     }
   })
 
-  // Kontrollera fysiska krav baserat på motorik och energi
+  // Kontrollera specifika utmaningar och matcha mot användarens profil
+  
+  // Fysisk rörlighet krävs
   if (challenges.fysisk_rorlighet && challenges.fysisk_rorlighet > 3) {
-    if (user.motorik < 3) {
-      warnings.push('Arbetet kan kräva mer rörlighet än du har förutsättningar för')
-      adaptations.push('Motorik: Be om anpassade arbetsuppgifter eller ergonomisk utrustning')
+    if (user.motorik < 2.5) {
+      warnings.push('Arbetet kräver god fysisk rörlighet')
+      adaptations.push('Motorik: Be om anpassade arbetsuppgifter eller hjälpmedel för rörlighet')
+    } else if (user.motorik < 3.5) {
+      adaptations.push('Motorik: Ergonomisk utrustning kan underlätta arbetsuppgifter')
     }
   }
 
+  // Fysisk styrka krävs
   if (challenges.fysisk_styrka && challenges.fysisk_styrka > 3) {
-    if (user.energi < 3 || user.motorik < 3) {
-      warnings.push('Arbetet kan vara fysiskt krävande')
-      adaptations.push('Energi/Motorik: Be om hjälp med tunga lyft och fysiska uppgifter')
+    if (user.energi < 2.5 || user.motorik < 2.5) {
+      warnings.push('Arbetet innebär tunga lyft eller fysiskt krävande uppgifter')
+      adaptations.push('Energi/Motorik: Be om hjälp med tunga lyft eller ergonomiska hjälpmedel')
     }
   }
 
+  // Stillasittande arbete
   if (challenges.stillasittande && challenges.stillasittande > 3) {
-    if (user.energi < 3) {
-      warnings.push('Stillasittande arbete kan vara påfrestande')
-      adaptations.push('Energi: Be om möjlighet till rörelsepauser och varierande arbetsställningar')
+    if (user.energi < 2.5) {
+      warnings.push('Långa perioder av stillasittande kan vara påfrestande')
+      adaptations.push('Energi: Be om möjlighet till rörelsepauser och höj-/sänkbart bord')
+    } else if (user.motorik < 3) {
+      adaptations.push('Motorik: Varierande arbetsställningar rekommenderas')
+    }
+  }
+
+  // Social energi krävs
+  if (challenges.social_energi && challenges.social_energi > 3) {
+    if (user.energi < 2.5) {
+      warnings.push('Arbetet är socialt krävande med mycket mänsklig kontakt')
+      adaptations.push('Energi: Be om schemalagda återhämtningspauser och tydliga rutiner')
+    }
+  }
+
+  // Koncentration krävs
+  if (challenges.koncentration && challenges.koncentration > 3) {
+    if (user.koncentration < 2.5) {
+      warnings.push('Arbetet kräver hög koncentrationsförmåga under långa perioder')
+      adaptations.push('Koncentration: Be om lugn arbetsmiljö och möjlighet att minska störningar')
+    }
+  }
+
+  // Sensoriska utmaningar
+  if (challenges.sensorisk && challenges.sensorisk > 3) {
+    if (user.sensorisk < 2.5) {
+      warnings.push('Arbetsmiljön kan innebära starka ljud, ljus eller andra sinnesintryck')
+      adaptations.push('Sensorisk: Be om hörselskydd, justerad belysning eller annan anpassning')
+    }
+  }
+
+  // Tidspress
+  if (challenges.tidspress && challenges.tidspress > 3) {
+    if (user.koncentration < 2.5 || user.energi < 2.5) {
+      warnings.push('Arbetet innebär ofta tidspress och högt tempo')
+      adaptations.push('Koncentration/Energi: Be om tydliga prioriteringslistor och möjlighet att påverka arbetstempo')
     }
   }
 
@@ -1968,7 +2025,7 @@ function calculateInterestMatch(
   categories: JobRequirements
 ): number {
   let matchSum = 0
-  let count = 0
+  let totalWeight = 0
 
   const mappings: Record<string, keyof StrongInterestCategories> = {
     vard: 'social_vard',
@@ -1983,18 +2040,66 @@ function calculateInterestMatch(
     social: 'social_vard',
     noggrannhet: 'administration_kontor',
     kommunikation: 'ledarskap_organisation',
+    forskning: 'natur_vetenskap',
+    ledarskap_organisation: 'ledarskap_organisation',
+    administration_kontor: 'administration_kontor',
+    konst_kultur: 'konst_kultur',
+    affarer_forsaljning: 'affarer_forsaljning',
+    stresshantering: 'social_vard',
   }
 
   Object.entries(categories).forEach(([cat, weight]) => {
     const userCat = mappings[cat]
-    if (userCat && weight) {
-      const userScore = user[userCat]
-      matchSum += Math.min(1, userScore / (weight * 20))
-      count++
+    if (userCat && weight && weight > 0) {
+      const userScore = user[userCat] // 0-100 skala
+      // Normalisera båda till 0-1 och beräkna matchning
+      // Jobbets vikt är 1-5, användarens score är 0-100
+      const jobRequirement = (weight - 1) / 4 // Konvertera 1-5 till 0-1
+      const userInterest = userScore / 100 // Konvertera 0-100 till 0-1
+      
+      // Matchning: hur väl användarens intresse motsvarar jobbets krav
+      // Om jobbet kräver mycket (1.0) och användaren har högt intresse (1.0) = perfekt match
+      // Om jobbet kräver lite (0.2) och användaren har lågt intresse (0.2) = också bra match
+      const diff = Math.abs(userInterest - jobRequirement)
+      const matchScore = Math.max(0, 1 - diff)
+      
+      matchSum += matchScore * weight // Väg efter vikten
+      totalWeight += weight
     }
   })
 
-  return count > 0 ? matchSum / count : 0.5
+  return totalWeight > 0 ? matchSum / totalWeight : 0.5
+}
+
+// Bonus för höga RIASEC-matchningar (när användaren har höga värden där jobbet kräver höga värden)
+function calculateTopRiasecBonus(user: RiasecScores, job: RiasecScores): number {
+  const keys: (keyof RiasecScores)[] = ['R', 'I', 'A', 'S', 'E', 'C']
+  let bonusSum = 0
+  let count = 0
+  
+  keys.forEach(key => {
+    const userScore = user[key] // 1-5 skala
+    const jobScore = job[key]   // 1-5 skala
+    
+    // Ge bonus om både användaren och jobbet har höga värden (>=4)
+    // eller om användaren överträffar jobbets krav
+    if (jobScore >= 4) {
+      if (userScore >= jobScore) {
+        bonusSum += 1 // Perfekt match
+      } else if (userScore >= 3) {
+        bonusSum += 0.7 // God match
+      } else {
+        bonusSum += 0.3 // Svag match
+      }
+      count++
+    } else if (userScore >= 4 && jobScore >= 3) {
+      // Användaren har högt värde och jobbet kan dra nytta av det
+      bonusSum += 0.5
+      count++
+    }
+  })
+  
+  return count > 0 ? bonusSum / count : 0.5
 }
 
 // ===== HJÄLPFUNKTIONER =====
@@ -2052,13 +2157,16 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
 
   // ICF (funktionsförutsättningar - inkluderar kognitivt, kommunikativt och fysiskt)
   const icf: ICFScores = { kognitiv: 3, kommunikation: 3, koncentration: 3, motorik: 3, sensorisk: 3, energi: 3 }
+  const icfMotorikValues: number[] = []
 
   // Summera svar
+  // Värden från QuestionCard är 1-5, normalisera till 0-1 skala
   Object.entries(answers).forEach(([questionId, value]) => {
     const question = allQuestions.find(q => q.id === questionId)
     if (!question) return
 
-    const normalizedValue = value / 100 // Konvertera till 0-1
+    // Konvertera 1-5 skala till 0-1 (där 1=0.0, 3=0.5, 5=1.0)
+    const normalizedValue = (value - 1) / 4
 
     if (question.section === 'riasec') {
       riasec[question.category as keyof RiasecScores] += normalizedValue * 5
@@ -2074,16 +2182,21 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
       const category = question.category as keyof ICFScores
       if (category === 'motorik' || question.id === 'icf_mot_grov' || question.id === 'icf_mot_fin') {
         // Beräkna medelvärde för motorik om flera frågor
-        if (icf.motorik === 3) {
-          icf.motorik = normalizedValue * 5
+        if (!icfMotorikValues.length) {
+          icfMotorikValues.push(normalizedValue * 5)
         } else {
-          icf.motorik = Math.round((icf.motorik + normalizedValue * 5) / 2)
+          icfMotorikValues.push(normalizedValue * 5)
         }
       } else {
         icf[category] = normalizedValue * 5
       }
     }
   })
+  
+  // Beräkna medelvärde för motorik från de två frågorna
+  if (icfMotorikValues.length > 0) {
+    icf.motorik = Math.round(icfMotorikValues.reduce((a, b) => a + b, 0) / icfMotorikValues.length)
+  }
 
   // Normalisera RIASEC
   Object.keys(riasec).forEach(key => {
