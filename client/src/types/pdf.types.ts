@@ -1,60 +1,93 @@
 /**
  * PDF Types
  * Separata typer för PDF-export för att undvika cirkulära beroenden
+ * ANPASSAD för att matcha CVData från mockApi/supabaseApi
  */
 
-// Types for CV data
+// Types for CV data - MATCHAR mockApi.ts struktur
 export interface CVData {
-  personalInfo: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone?: string;
-    address?: string;
-    city?: string;
-    linkedIn?: string;
-    portfolio?: string;
-  };
+  id?: string;
+  firstName: string;
+  lastName: string;
+  title?: string;
+  email?: string;
+  phone?: string;
+  location?: string;
+  address?: string;
+  linkedIn?: string;
+  portfolio?: string;
   summary?: string;
-  experience: Array<{
+  workExperience: Array<{
+    id?: string;
     title: string;
     company: string;
     location?: string;
     startDate: string;
     endDate?: string;
     current?: boolean;
-    description: string;
+    description?: string;
   }>;
   education: Array<{
+    id?: string;
     degree: string;
     school: string;
+    field?: string;
     location?: string;
     startDate: string;
     endDate?: string;
     description?: string;
   }>;
-  skills: (string | { name: string; level?: number; category?: string })[];
-  languages: Array<{
-    language?: string;
-    name?: string;
+  skills: Array<{
+    id?: string;
+    name: string;
+    level?: string | number;
+    category?: 'technical' | 'soft' | 'language' | 'other' | string;
+  }>;
+  languages?: Array<{
+    id?: string;
+    language: string;
     level: string;
   }>;
-  certifications?: Array<{
+  certificates?: Array<{
+    id?: string;
     name: string;
-    issuer: string;
-    date: string;
+    issuer?: string;
+    date?: string;
+    expiryDate?: string;
   }>;
+  links?: Array<{
+    id?: string;
+    type: 'linkedin' | 'github' | 'portfolio' | 'website' | 'other';
+    url: string;
+    label?: string;
+  }>;
+  references?: Array<{
+    id?: string;
+    name: string;
+    title?: string;
+    company?: string;
+    phone?: string;
+    email?: string;
+  }>;
+  // UI settings
+  template?: string;
+  colorScheme?: string;
+  font?: string;
+  profileImage?: string | null;
 }
 
-// Types for job data
+// Types for job data - MATCHAR PlatsbankenJob struktur
 export interface JobData {
+  id: string;
   headline: string;
-  description: {
+  description?: {
     text: string;
+    text_formatted?: string;
   };
-  employer: {
+  employer?: {
     name: string;
     workplace?: string;
+    url?: string;
   };
   workplace_address?: {
     municipality: string;
@@ -66,12 +99,19 @@ export interface JobData {
   };
   occupation?: {
     label: string;
+    concept_id?: string;
   };
   application_details?: {
     reference?: string;
     email?: string;
     url?: string;
+    information?: string;
   };
   publication_date: string;
   last_publication_date?: string;
+  salary_description?: string;
+  scope_of_work?: {
+    min?: number;
+    max?: number;
+  };
 }

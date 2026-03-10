@@ -650,43 +650,7 @@ export default function CVBuilder() {
           <CVShare onShare={async () => await cvApi.shareCV()} variant="compact" />
           <PDFExportButton 
             type="cv" 
-            data={{
-              personalInfo: { 
-                firstName: data.firstName, 
-                lastName: data.lastName, 
-                email: data.email, 
-                phone: data.phone, 
-                city: data.location,
-                address: '',
-                linkedIn: data.links?.find((l: any) => l.type === 'linkedin')?.url || '',
-                portfolio: data.links?.find((l: any) => l.type === 'portfolio')?.url || ''
-              },
-              summary: data.summary,
-              experience: data.workExperience.map(w => ({ 
-                title: w.title, 
-                company: w.company, 
-                location: w.location || '', 
-                startDate: w.startDate, 
-                endDate: w.endDate || '', 
-                current: w.current || false, 
-                description: w.description || '' 
-              })),
-              education: data.education.map(e => ({ 
-                degree: e.degree, 
-                school: e.school, 
-                location: e.location || '', 
-                startDate: e.startDate, 
-                endDate: e.endDate || '', 
-                description: e.description || '' 
-              })),
-              skills: data.skills.map((s: any) => s.name || s),
-              languages: data.languages.map((l: any) => ({ language: l.name || l.language, level: l.level })),
-              certifications: data.certificates.map((c: any) => ({ 
-                name: c.name, 
-                issuer: c.issuer || '', 
-                date: c.date || '' 
-              })),
-            }} 
+            data={data}
             variant="outline"
             size="sm"
             showPreview={false}

@@ -55,8 +55,8 @@ export const PDFExportButton: React.FC<PDFExportButtonProps> = ({
       switch (type) {
         case 'cv': {
           const cvData = data as CVData;
-          const firstName = cvData?.personalInfo?.firstName || 'okänd';
-          const lastName = cvData?.personalInfo?.lastName || '';
+          const firstName = cvData?.firstName || 'okänd';
+          const lastName = cvData?.lastName || '';
           return `CV_${firstName}_${lastName}.pdf`;
         }
         case 'job': {
