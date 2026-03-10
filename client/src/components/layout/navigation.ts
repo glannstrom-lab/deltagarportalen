@@ -11,6 +11,7 @@ import {
   Shield,
   Users,
   BookHeart,
+  Bookmark,
 } from 'lucide-react'
 
 // Standard navigation för deltagare
@@ -24,6 +25,7 @@ export const navItems = [
   { path: '/dashboard/exercises', label: 'Övningar', icon: Dumbbell },
   { path: '/dashboard/diary', label: 'Dagbok', icon: BookHeart },
   { path: '/dashboard/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
+  { path: '/dashboard/resources', label: 'Resurser', icon: Bookmark },
 ]
 
 // Admin navigation (visas för SUPERADMIN och ADMIN)
