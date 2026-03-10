@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { Question } from '@/services/interestGuideData'
-import { ThumbsUp, ThumbsDown, Minus } from 'lucide-react'
 
 interface QuestionCardProps {
   question: Question
@@ -13,159 +12,159 @@ interface QuestionCardProps {
 export function QuestionCard({ 
   question, 
   value, 
-  onChange, 
-  questionNumber, 
-  totalQuestions 
+  onChange,
+  questionNumber,
+  totalQuestions
 }: QuestionCardProps) {
-  const [localValue, setLocalValue] = useState(value || 50)
-
-  useEffect(() => {
-    setLocalValue(value || 50)
-  }, [value, question.id])
+  const [isAnimating, setIsAnimating] = useState(false)
 
   const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(e.target.value)
-    setLocalValue(newValue)
     onChange(newValue)
+    setIsAnimating(true)
+    setTimeout(() => setIsAnimating(false), 200)
   }
 
-  const handleLikertClick = (newValue: number) => {
-    setLocalValue(newValue)
-    onChange(newValue)
+  const getThumbPosition = () => {
+    return ((value - 1) / 4) * 100
   }
 
-  // Beräkna progress för sektionen
-  const progress = Math.round((questionNumber / totalQuestions) * 100)
-
-  if (question.type === 'slider') {
-    return (
-      <div className="w-full max-w-2xl mx-auto transition-all duration-300">
-        {/* Progress bar */}
-        <div className="mb-6">
-          <div className="flex justify-between text-sm text-gray-500 mb-2">
-            <span>Fråga {questionNumber} av {totalQuestions}</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <div 
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        {/* Fråga */}
-        <div className="mb-8">
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            {question.text}
-          </h3>
-        </div>
-
-        {/* Slider */}
-        <div className="bg-gray-50 rounded-2xl p-6 mb-6">
-          <div className="flex justify-between text-sm text-gray-500 mb-4">
-            <span>{question.lowLabel || 'Mycket svårt'}</span>
-            <span>{question.highLabel || 'Mycket lätt'}</span>
-          </div>
-          
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={localValue}
-            onChange={handleSliderChange}
-            className="w-full h-3 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600 hover:accent-indigo-700 transition-all"
-          />
-          
-          <div className="mt-4 text-center">
-            <span className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-indigo-500 to-purple-500 text-white text-xl font-bold shadow-lg">
-              {localValue}
-            </span>
-          </div>
-        </div>
-
-        {/* Värdeindikatorer */}
-        <div className="flex justify-center gap-2">
-          {[0, 25, 50, 75, 100].map((val) => (
-            <button
-              key={val}
-              onClick={() => handleLikertClick(val)}
-              className={`w-3 h-3 rounded-full transition-all ${
-                Math.abs(localValue - val) < 12
-                  ? 'bg-indigo-600 scale-150'
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-    )
+  const getGradientColor = () => {
+    const percentage = (value - 1) / 4
+    if (percentage < 0.25) return 'from-red-400 to-orange-400'
+    if (percentage < 0.5) return 'from-orange-400 to-yellow-400'
+    if (percentage < 0.75) return 'from-yellow-400 to-emerald-400'
+    return 'from-emerald-400 to-green-500'
   }
-
-  // Likert (radio buttons)
-  const likertOptions = [
-    { value: 0, label: 'Stämmer inte alls', icon: ThumbsDown },
-    { value: 25, label: 'Stämmer delvis', icon: Minus },
-    { value: 50, label: 'Varken eller', icon: Minus },
-    { value: 75, label: 'Stämmer ganska bra', icon: ThumbsUp },
-    { value: 100, label: 'Stämmer helt', icon: ThumbsUp },
-  ]
 
   return (
-    <div className="w-full max-w-2xl mx-auto transition-all duration-300">
-      {/* Progress bar */}
-      <div className="mb-6">
-        <div className="flex justify-between text-sm text-gray-500 mb-2">
-          <span>Fråga {questionNumber} av {totalQuestions}</span>
-          <span>{progress}%</span>
-        </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Fråga */}
-      <div className="mb-8">
-        <h3 className="text-xl font-semibold text-gray-900 mb-2">
+    <div className="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6 sm:p-8">
+      {/* Question text */}
+      <div className="text-center mb-8">
+        <h3 className="text-lg sm:text-xl font-medium text-gray-900 leading-relaxed">
           {question.text}
         </h3>
+        {question.subtext && (
+          <p className="text-sm text-gray-500 mt-2">{question.subtext}</p>
+        )}
       </div>
 
-      {/* Alternativ */}
-      <div className="space-y-3">
-        {likertOptions.map((option) => {
-          const Icon = option.icon
-          const isSelected = Math.abs(localValue - option.value) < 12
+      {/* Slider */}
+      <div className="relative px-2">
+        {/* Scale labels */}
+        <div className="flex justify-between text-xs text-gray-400 mb-3 px-1">
+          <span className="text-center flex-1">Stämmer inte alls</span>
+          <span className="text-center flex-1">Stämmer delvis</span>
+          <span className="text-center flex-1">Stämmer helt</span>
+        </div>
+
+        {/* Slider track */}
+        <div className="relative h-12 flex items-center">
+          {/* Background track */}
+          <div className="absolute inset-x-0 h-3 bg-gray-200 rounded-full"></div>
           
-          return (
-            <button
-              key={option.value}
-              onClick={() => handleLikertClick(option.value)}
-              className={`w-full p-4 rounded-xl border-2 text-left transition-all duration-200 flex items-center gap-4 ${
-                isSelected
-                  ? 'border-indigo-500 bg-indigo-50 shadow-md'
-                  : 'border-gray-200 bg-white hover:border-indigo-300 hover:bg-gray-50'
-              }`}
-            >
-              <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${
-                isSelected ? 'border-indigo-500 bg-indigo-500' : 'border-gray-300'
-              }`}>
-                {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
-              </div>
-              <span className={`flex-1 font-medium ${
-                isSelected ? 'text-indigo-900' : 'text-gray-700'
-              }`}>
-                {option.label}
-              </span>
-              <Icon className={`w-5 h-5 ${
-                isSelected ? 'text-indigo-500' : 'text-gray-400'
-              }`} />
-            </button>
-          )
-        })}
+          {/* Active gradient track */}
+          <div 
+            className={`absolute left-0 h-3 bg-gradient-to-r ${getGradientColor()} rounded-full transition-all duration-300 ease-out`}
+            style={{ width: `${getThumbPosition()}%` }}
+          />
+          
+          {/* Dots for each value */}
+          <div className="absolute inset-x-0 flex justify-between px-[2px]">
+            {[1, 2, 3, 4, 5].map((dotValue) => {
+              const isActive = value >= dotValue
+              const isCurrent = value === dotValue
+              
+              return (
+                <button
+                  key={dotValue}
+                  onClick={() => onChange(dotValue)}
+                  className={`
+                    w-6 h-6 rounded-full border-4 transition-all duration-200 ease-out
+                    ${isCurrent 
+                      ? 'bg-white border-indigo-600 scale-125 shadow-lg' 
+                      : isActive 
+                        ? 'bg-white border-emerald-400' 
+                        : 'bg-white border-gray-300'
+                    }
+                  `}
+                />
+              )
+            })}
+          </div>
+
+          {/* Hidden range input for accessibility */}
+          <input
+            type="range"
+            min="1"
+            max="5"
+            step="1"
+            value={value}
+            onChange={handleSliderChange}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            aria-label="Svarsalternativ"
+          />
+        </div>
+
+        {/* Labels below */}
+        <div className="flex justify-between mt-4 px-1">
+          <button 
+            onClick={() => onChange(1)}
+            className={`text-xs font-medium transition-colors ${value === 1 ? 'text-red-500' : 'text-gray-400 hover:text-gray-600'}`}
+          >
+            1
+          </button>
+          <button 
+            onClick={() => onChange(2)}
+            className={`text-xs font-medium transition-colors ${value === 2 ? 'text-orange-500' : 'text-gray-400 hover:text-gray-600'}`}
+          >
+            2
+          </button>
+          <button 
+            onClick={() => onChange(3)}
+            className={`text-xs font-medium transition-colors ${value === 3 ? 'text-yellow-500' : 'text-gray-400 hover:text-gray-600'}`}
+          >
+            3
+          </button>
+          <button 
+            onClick={() => onChange(4)}
+            className={`text-xs font-medium transition-colors ${value === 4 ? 'text-emerald-500' : 'text-gray-400 hover:text-gray-600'}`}
+          >
+            4
+          </button>
+          <button 
+            onClick={() => onChange(5)}
+            className={`text-xs font-medium transition-colors ${value === 5 ? 'text-green-600' : 'text-gray-400 hover:text-gray-600'}`}
+          >
+            5
+          </button>
+        </div>
+      </div>
+
+      {/* Selected value indicator */}
+      <div className="mt-6 text-center">
+        <div 
+          className={`
+            inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium
+            transition-all duration-300
+            ${isAnimating ? 'scale-105' : 'scale-100'}
+            ${value <= 2 
+              ? 'bg-red-50 text-red-700' 
+              : value === 3 
+                ? 'bg-yellow-50 text-yellow-700' 
+                : 'bg-emerald-50 text-emerald-700'
+            }
+          `}
+        >
+          <span>Ditt svar:</span>
+          <span className="font-bold">
+            {value === 1 && 'Stämmer inte alls'}
+            {value === 2 && 'Stämmer ganska dåligt'}
+            {value === 3 && 'Stämmer delvis'}
+            {value === 4 && 'Stämmer ganska bra'}
+            {value === 5 && 'Stämmer helt'}
+          </span>
+        </div>
       </div>
     </div>
   )

@@ -207,39 +207,65 @@ export function JobCard({
             </div>
           </div>
 
+          {/* Matchningsdetaljer */}
+          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+            <h4 className="text-sm font-medium text-blue-800 mb-2">
+              Om denna matchning
+            </h4>
+            <p className="text-sm text-blue-700">
+              {matchPercentage >= 80 
+                ? 'Detta yrke matchar väl med dina intressen och förutsättningar. Du har goda förutsättningar att trivas och lyckas.'
+                : matchPercentage >= 60
+                ? 'Detta yrke matchar delvis med dina intressen och förutsättningar. Med rätt anpassningar kan det vara ett bra val.'
+                : 'Denna matchning indikerar att yrket kanske inte är det mest lämpliga för dig just nu. Överväg att utforska andra alternativ.'}
+            </p>
+          </div>
+
           {/* Anpassningar */}
           {needsAdaptation && adaptations && adaptations.length > 0 && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
               <h4 className="text-sm font-medium text-amber-800 mb-2 flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4" />
-                Rekommenderade anpassningar:
+                Anpassningar som kan hjälpa dig:
               </h4>
-              <ul className="text-sm text-amber-700 space-y-1">
+              <p className="text-xs text-amber-600 mb-2">
+                Baserat på dina svar kan följande anpassningar göra det lättare att arbeta inom detta yrke:
+              </p>
+              <ul className="text-sm text-amber-700 space-y-2">
                 {adaptations?.map((adaptation, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span>•</span>
+                    <span className="text-amber-500 mt-0.5">•</span>
                     <span>{adaptation}</span>
                   </li>
                 ))}
               </ul>
+              <p className="text-xs text-amber-600 mt-3 italic">
+                Enligt Arbetsmiljölagen har du rätt till rimliga arbetsanpassningar. Diskutera med en arbetskonsulent eller arbetsgivare.
+              </p>
             </div>
           )}
 
-          {/* Varningar */}
-          {!isSuitable && warnings && warnings.length > 0 && (
+          {/* Varningar/Utmaningar */}
+          {warnings && warnings.length > 0 && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3">
               <h4 className="text-sm font-medium text-red-800 mb-2 flex items-center gap-2">
                 <AlertTriangle className="w-4 h-4" />
-                Att tänka på:
+                Utmaningar att vara medveten om:
               </h4>
-              <ul className="text-sm text-red-700 space-y-1">
+              <p className="text-xs text-red-600 mb-2">
+                Detta yrke kan innebära vissa utmaningar baserat på dina angivna förutsättningar:
+              </p>
+              <ul className="text-sm text-red-700 space-y-2">
                 {warnings?.map((warning, i) => (
                   <li key={i} className="flex items-start gap-2">
-                    <span>•</span>
+                    <span className="text-red-500 mt-0.5">•</span>
                     <span>{warning}</span>
                   </li>
                 ))}
               </ul>
+              <p className="text-xs text-red-600 mt-3">
+                Detta betyder inte att du inte kan arbeta med detta yrke, men det kan krävas extra stöd eller anpassningar.
+              </p>
             </div>
           )}
         </div>

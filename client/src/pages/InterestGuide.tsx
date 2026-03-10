@@ -5,23 +5,20 @@ import {
   calculateUserProfile,
   type SectionId,
   type UserProfile,
+  riasecNames,
+  bigFiveNames
 } from '@/services/interestGuideData'
 import { QuestionCard } from '@/components/interest-guide/QuestionCard'
-import { SectionDots, SectionInfo } from '@/components/interest-guide/SectionDots'
+import { SectionDots } from '@/components/interest-guide/SectionDots'
 import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
 import { Button } from '@/components/ui/Button'
-import { ArrowLeft, ArrowRight, Save, Trash2, Loader2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Save, Trash2, Loader2, Sparkles, CheckCircle2 } from 'lucide-react'
 import { interestGuideApi } from '@/services/cloudStorage'
 
 interface SavedProgress {
   answers: Record<string, number>
   currentQuestionIndex: number
-  timestamp: string
-}
-
-interface SavedResult {
-  profile: UserProfile
   timestamp: string
 }
 
@@ -44,14 +41,12 @@ export default function InterestGuide() {
         const data = await interestGuideApi.getProgress()
         
         if (data) {
-          // Kolla om det finns sparade svar
           if (data.answers && Object.keys(data.answers).length > 0) {
             setHasSavedProgress(true)
             setAnswers(data.answers)
             setCurrentQuestionIndex(data.current_step || 0)
           }
           
-          // Om guiden är markerad som slutförd, visa resultat
           if (data.is_completed && data.answers) {
             const calculatedProfile = calculateUserProfile(data.answers)
             setProfile(calculatedProfile)
@@ -110,7 +105,6 @@ export default function InterestGuide() {
   }
 
   const handleContinue = () => {
-    // Använd redan laddade svar
     if (hasSavedProgress && Object.keys(answers).length > 0) {
       setScreen('quiz')
     } else {
@@ -128,14 +122,13 @@ export default function InterestGuide() {
   const handleNext = async () => {
     if (currentQuestionIndex < allQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     } else {
-      // Beräkna resultat och spara
       try {
         setIsSaving(true)
         const calculatedProfile = calculateUserProfile(answers)
         setProfile(calculatedProfile)
         
-        // Spara som slutförd i molnet
         await interestGuideApi.saveProgress({
           current_step: currentQuestionIndex,
           answers: answers,
@@ -155,6 +148,7 @@ export default function InterestGuide() {
   const handlePrevious = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex(prev => prev - 1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
@@ -201,10 +195,10 @@ export default function InterestGuide() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Laddar...</p>
+          <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mx-auto mb-4" />
+          <p className="text-slate-600">Laddar din profil...</p>
         </div>
       </div>
     )
@@ -216,7 +210,7 @@ export default function InterestGuide() {
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4">
         <div className="max-w-4xl mx-auto">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-lg">
+            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
               {error}
             </div>
           )}
@@ -231,10 +225,10 @@ export default function InterestGuide() {
               <button
                 onClick={handleClearProgress}
                 disabled={isSaving}
-                className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1 mx-auto disabled:opacity-50"
+                className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1 mx-auto disabled:opacity-50 transition-colors"
               >
                 <Trash2 className="w-4 h-4" />
-                Rensa sparad data
+                Rensa all sparad data och börja om
               </button>
             </div>
           )}
@@ -248,7 +242,7 @@ export default function InterestGuide() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4">
         {error && (
-          <div className="max-w-4xl mx-auto mb-6 p-4 bg-red-50 text-red-600 rounded-lg">
+          <div className="max-w-4xl mx-auto mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
             {error}
           </div>
         )}
@@ -260,76 +254,103 @@ export default function InterestGuide() {
     )
   }
 
-  // Quiz screen
+  // Quiz screen - förenklad och mer fokuserad design
   const progress = Math.round((currentQuestionIndex / allQuestions.length) * 100)
   const canProceed = answers[currentQuestion.id] !== undefined
+  const isLastQuestion = currentQuestionIndex === allQuestions.length - 1
+
+  // Hämta sektionsnamn
+  const getSectionTitle = () => {
+    switch (currentSection?.id) {
+      case 'riasec': return 'Dina arbetsintressen'
+      case 'bigfive': return 'Din personlighet'
+      case 'strong': return 'Vad intresserar dig?'
+      case 'icf': return 'Dina förutsättningar'
+      default: return currentSection?.name
+    }
+  }
+
+  const getSectionDescription = () => {
+    switch (currentSection?.id) {
+      case 'riasec': return 'Vilka typer av arbete tilltalar dig mest?'
+      case 'bigfive': return 'Hur skulle du beskriva dig själv som person?'
+      case 'strong': return 'Vilka områden tycker du är intressanta?'
+      case 'icf': return 'Hur upplever du dina förutsättningar för arbete?'
+      default: return currentSection?.subtitle
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-8 px-4">
-      <div className="max-w-3xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-6 px-4">
+      <div className="max-w-2xl mx-auto">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-lg">
+          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
             {error}
           </div>
         )}
         
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">Intresseguide</h1>
+        {/* Minimal header */}
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            {/* Save indicator */}
+            <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="font-bold text-gray-900">Intresseguide</h1>
+              <p className="text-xs text-gray-500">Fråga {currentQuestionIndex + 1} av {allQuestions.length}</p>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2">
             {showSaveIndicator && (
-              <span className="flex items-center gap-1 text-sm text-green-600 animate-in fade-in">
-                <Save className="w-4 h-4" />
+              <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+                <CheckCircle2 className="w-3 h-3" />
                 Sparat
               </span>
             )}
-            
             {isSaving && (
-              <span className="flex items-center gap-1 text-sm text-slate-400">
-                <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="flex items-center gap-1 text-xs text-gray-500">
+                <Loader2 className="w-3 h-3 animate-spin" />
                 Sparar...
               </span>
             )}
-            
-            {/* Clear data button */}
-            <button
-              onClick={handleClearProgress}
-              disabled={isSaving}
-              className="p-2 text-gray-400 hover:text-red-500 transition-colors disabled:opacity-50"
-              title="Rensa sparad data"
-            >
-              <Trash2 className="w-5 h-5" />
-            </button>
           </div>
         </div>
 
-        {/* Section dots */}
-        <SectionDots
-          currentSection={currentSection?.id as SectionId}
-          completedSections={completedSections}
-          onSectionClick={goToSection}
-        />
-
-        {/* Section info */}
-        <SectionInfo sectionId={currentSection?.id as SectionId} />
-
-        {/* Overall progress */}
+        {/* Progress bar */}
         <div className="mb-8">
-          <div className="flex justify-between text-sm text-gray-500 mb-2">
-            <span>Totalt framsteg</span>
-            <span>{progress}%</span>
+          <div className="flex justify-between text-xs text-gray-500 mb-2">
+            <span>Din progress</span>
+            <span className="font-medium text-indigo-600">{progress}%</span>
           </div>
           <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div 
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
         </div>
 
-        {/* Question */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
+        {/* Section indicator - enkel */}
+        <div className="mb-6">
+          <SectionDots
+            currentSection={currentSection?.id as SectionId}
+            completedSections={completedSections}
+            onSectionClick={goToSection}
+          />
+        </div>
+
+        {/* Section header */}
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium mb-2">
+            {currentSection?.name}
+          </span>
+          <h2 className="text-xl font-bold text-gray-900 mb-1">{getSectionTitle()}</h2>
+          <p className="text-sm text-gray-500">{getSectionDescription()}</p>
+        </div>
+
+        {/* Question - huvudfokus */}
+        <div className="mb-8">
           <QuestionCard
             question={currentQuestion}
             value={answers[currentQuestion.id] || 50}
@@ -339,26 +360,23 @@ export default function InterestGuide() {
           />
         </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between items-center">
+        {/* Navigation - tydlig och centrerad */}
+        <div className="flex items-center justify-center gap-4">
           <Button
             variant="outline"
             onClick={handlePrevious}
             disabled={currentQuestionIndex === 0 || isSaving}
-            className="gap-2"
+            className="gap-2 px-6"
           >
             <ArrowLeft className="w-4 h-4" />
-            Tillbaka
+            Föregående
           </Button>
-
-          <div className="text-sm text-gray-500">
-            {currentQuestionIndex + 1} / {allQuestions.length}
-          </div>
 
           <Button
             onClick={handleNext}
             disabled={!canProceed || isSaving}
-            className="gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50"
+            className="gap-2 px-8 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 shadow-lg shadow-indigo-200"
+            size="lg"
           >
             {isSaving ? (
               <>
@@ -367,18 +385,31 @@ export default function InterestGuide() {
               </>
             ) : (
               <>
-                {currentQuestionIndex === allQuestions.length - 1 ? 'Se resultat' : 'Nästa'}
+                {isLastQuestion ? 'Se mitt resultat' : 'Nästa fråga'}
                 <ArrowRight className="w-4 h-4" />
               </>
             )}
           </Button>
         </div>
 
-        {/* Section progress */}
+        {/* Section progress - diskret */}
+        <div className="mt-10 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 text-xs text-gray-500">
+            <span>Fråga {questionInSectionIndex + 1} av {currentSectionQuestions.length}</span>
+            <span className="text-gray-300">|</span>
+            <span>{currentSection?.name}</span>
+          </div>
+        </div>
+
+        {/* Exit option - diskret */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            {currentSection?.name} - Fråga {questionInSectionIndex + 1} av {currentSectionQuestions.length}
-          </p>
+          <button
+            onClick={handleClearProgress}
+            disabled={isSaving}
+            className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+          >
+            Avbryt och börja om
+          </button>
         </div>
       </div>
     </div>

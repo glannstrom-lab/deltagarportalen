@@ -15,7 +15,7 @@ export interface Question {
   highLabel?: string
 }
 
-export type SectionId = 'riasec' | 'bigfive' | 'strong' | 'icf' | 'physical'
+export type SectionId = 'riasec' | 'bigfive' | 'strong' | 'icf'
 
 export interface Section {
   id: SectionId
@@ -42,19 +42,12 @@ export interface BigFiveScores {
 }
 
 export interface ICFScores {
-  kognitiv: number
-  kommunikation: number
-  koncentration: number
-  motorik: number
-  sensorisk: number
-  energi: number
-}
-
-export interface PhysicalScores {
-  kraft: number
-  uthallighet: number
-  rorlighet: number
-  precision: number
+  kognitiv: number      // Kognitiv funktion - minne, planering, problemlösning
+  kommunikation: number // Social kommunikation och samarbete
+  koncentration: number // Uppmärksamhet och fokus
+  motorik: number       // Grov- och finmotorik, rörlighet
+  sensorisk: number     // Hantering av sinnesintryck
+  energi: number        // Energinivå och uthållighet
 }
 
 export interface StrongInterestCategories {
@@ -74,7 +67,6 @@ export interface UserProfile {
   riasec: RiasecScores
   bigFive: BigFiveScores
   icf: ICFScores
-  physical: PhysicalScores
   strongInterest: StrongInterestCategories
 }
 
@@ -164,70 +156,297 @@ export const sections: Section[] = [
   { id: 'riasec', name: 'RIASEC', subtitle: 'Upptäck din arbetsstil', count: 6 },
   { id: 'bigfive', name: 'Big Five', subtitle: 'Din personlighetsprofil', count: 10 },
   { id: 'strong', name: 'Intresseområden', subtitle: 'Vad intresserar dig?', count: 10 },
-  { id: 'icf', name: 'ICF-profil', subtitle: 'Dina funktionsförutsättningar', count: 6 },
-  { id: 'physical', name: 'Fysiska utmaningar', subtitle: 'Dina fysiska förmågor', count: 8 },
+  { id: 'icf', name: 'ICF - Funktionsförutsättningar', subtitle: 'Dina förutsättningar för arbete', count: 8 },
 ]
 
 // ===== FRÅGOR =====
 
-// RIASEC Frågor (6 st - 1 per kategori)
+// RIASEC Frågor (6 st - 1 per kategori) - Tydligare formuleringar
 const riasecQuestions: Omit<Question, 'type'>[] = [
-  { id: 'r1', text: 'Jag gillar att arbeta praktiskt med händerna, maskiner eller utomhus', category: 'R', section: 'riasec' },
-  { id: 'i1', text: 'Jag gillar att analysera, forska och förstå komplexa problem', category: 'I', section: 'riasec' },
-  { id: 'a1', text: 'Jag älskar att vara kreativ, skapa och uttrycka mig estetiskt', category: 'A', section: 'riasec' },
-  { id: 's1', text: 'Jag trivs bäst när jag får hjälpa, undervisa eller stötta andra', category: 'S', section: 'riasec' },
-  { id: 'e1', text: 'Jag gillar att leda, påverka, sälja eller driva projekt', category: 'E', section: 'riasec' },
-  { id: 'c1', text: 'Jag gillar att organisera, strukturera och arbeta med detaljer/data', category: 'C', section: 'riasec' },
+  { 
+    id: 'r1', 
+    text: 'Jag tycker om praktiskt arbete med händerna, som att meka, bygga eller arbeta med maskiner', 
+    category: 'R', 
+    section: 'riasec',
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
+  },
+  { 
+    id: 'i1', 
+    text: 'Jag gillar att analysera problem, forska och förstå hur saker fungerar', 
+    category: 'I', 
+    section: 'riasec',
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
+  },
+  { 
+    id: 'a1', 
+    text: 'Jag tycker om att vara kreativ, skapa nya saker och uttrycka mig estetiskt', 
+    category: 'A', 
+    section: 'riasec',
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
+  },
+  { 
+    id: 's1', 
+    text: 'Jag trivs med att hjälpa, undervisa eller stötta andra människor', 
+    category: 'S', 
+    section: 'riasec',
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
+  },
+  { 
+    id: 'e1', 
+    text: 'Jag gillar att leda, påverka andra, sälja eller driva projekt', 
+    category: 'E', 
+    section: 'riasec',
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
+  },
+  { 
+    id: 'c1', 
+    text: 'Jag tycker om att organisera, strukturera och arbeta med siffror eller detaljer', 
+    category: 'C', 
+    section: 'riasec',
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
+  },
 ]
 
-// Big Five Frågor (10 st - 2 per trait)
+// Big Five Frågor (10 st - 2 per trait) - Tydligare formuleringar
 const bigFiveQuestions: Omit<Question, 'type'>[] = [
-  { id: 'bf_o1', text: 'Jag är nyfiken, kreativ och gillar nya idéer och upplevelser', category: 'openness', section: 'bigfive' },
-  { id: 'bf_o2', text: 'Jag uppskattar konst, fantasi och att tänka utanför boxen', category: 'openness', section: 'bigfive' },
-  { id: 'bf_c1', text: 'Jag är noggrann, organiserad och gör alltid mitt bästa', category: 'conscientiousness', section: 'bigfive' },
-  { id: 'bf_c2', text: 'Jag är pålitlig, planerar mitt arbete och håller deadlines', category: 'conscientiousness', section: 'bigfive' },
-  { id: 'bf_e1', text: 'Jag är utåtriktad, pratsam och trivs med andra människor', category: 'extraversion', section: 'bigfive' },
-  { id: 'bf_e2', text: 'Jag blir energisk av sociala sammanhang och tycker om att uttrycka mig', category: 'extraversion', section: 'bigfive' },
-  { id: 'bf_a1', text: 'Jag bryr mig om andra, är empatisk och samarbetsvillig', category: 'agreeableness', section: 'bigfive' },
-  { id: 'bf_a2', text: 'Jag litar på människor, undviker konflikter och ser det bästa i andra', category: 'agreeableness', section: 'bigfive' },
-  { id: 'bf_n1', text: 'Jag hanterar stress väl och håller mig lugn under press', category: 'stability', section: 'bigfive' },
-  { id: 'bf_n2', text: 'Jag är stabil i humöret och återhämtar mig snabbt från motgångar', category: 'stability', section: 'bigfive' },
+  { 
+    id: 'bf_o1', 
+    text: 'Jag är nyfiken på nya idéer och gillar att prova nya sätt att göra saker på', 
+    category: 'openness', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_o2', 
+    text: 'Jag uppskattar konst, kreativitet och att tänka i nya banor', 
+    category: 'openness', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_c1', 
+    text: 'Jag är noggrann, organiserad och fullföljer det jag påbörjar', 
+    category: 'conscientiousness', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_c2', 
+    text: 'Jag planerar mitt arbete väl och håller deadlines', 
+    category: 'conscientiousness', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_e1', 
+    text: 'Jag är utåtriktad, pratsam och trivs i sociala sammanhang', 
+    category: 'extraversion', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_e2', 
+    text: 'Jag får energi av att vara med andra människor', 
+    category: 'extraversion', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_a1', 
+    text: 'Jag bryr mig om andra människor och är hjälpsam', 
+    category: 'agreeableness', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_a2', 
+    text: 'Jag samarbetar väl med andra och försöker undvika konflikter', 
+    category: 'agreeableness', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_n1', 
+    text: 'Jag hanterar stress och påfrestningar väl', 
+    category: 'stability', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
+  { 
+    id: 'bf_n2', 
+    text: 'Jag är stabil i humöret och återhämtar mig snabbt från motgångar', 
+    category: 'stability', 
+    section: 'bigfive',
+    lowLabel: 'Stämmer inte',
+    highLabel: 'Stämmer mycket bra'
+  },
 ]
 
-// Strong Interest Inventory (10 frågor)
+// Strong Interest Inventory (10 frågor) - Tydligare formuleringar
 const strongInterestQuestions: Omit<Question, 'type'>[] = [
-  { id: 'si1', text: 'Teknik, mekanik och att förstå hur maskiner fungerar', category: 'teknik_mekanik', section: 'strong' },
-  { id: 'si2', text: 'Naturvetenskap, biologi, kemi och forskning', category: 'natur_vetenskap', section: 'strong' },
-  { id: 'si3', text: 'Konst, kultur, design och estetiskt skapande', category: 'konst_kultur', section: 'strong' },
-  { id: 'si4', text: 'Socialt arbete, vård och att hjälpa människor i svårigheter', category: 'social_vard', section: 'strong' },
-  { id: 'si5', text: 'Affärer, försäljning och entreprenörskap', category: 'affarer_forsaljning', section: 'strong' },
-  { id: 'si6', text: 'Administration, kontorsarbete och organisering', category: 'administration_kontor', section: 'strong' },
-  { id: 'si7', text: 'Utomhusarbete och arbete i naturen', category: 'utomhusarbete', section: 'strong' },
-  { id: 'si8', text: 'Ledarskap, organisation och att styra projekt', category: 'ledarskap_organisation', section: 'strong' },
-  { id: 'si9', text: 'Data, IT, programmering och digitala system', category: 'data_it', section: 'strong' },
-  { id: 'si10', text: 'Undervisning, pedagogik och att lära ut', category: 'undervisning_pedagogik', section: 'strong' },
+  { 
+    id: 'si1', 
+    text: 'Att arbeta med teknik, mekanik och förstå hur saker fungerar', 
+    category: 'teknik_mekanik', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si2', 
+    text: 'Naturvetenskap, biologi, kemi och forskning', 
+    category: 'natur_vetenskap', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si3', 
+    text: 'Konst, kultur, design och kreativt skapande', 
+    category: 'konst_kultur', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si4', 
+    text: 'Att hjälpa och stötta människor i svåra situationer', 
+    category: 'social_vard', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si5', 
+    text: 'Affärer, försäljning och driva egna projekt', 
+    category: 'affarer_forsaljning', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si6', 
+    text: 'Administration, kontorsarbete och att organisera', 
+    category: 'administration_kontor', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si7', 
+    text: 'Utomhusarbete och att arbeta i naturen', 
+    category: 'utomhusarbete', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si8', 
+    text: 'Att leda, organisera och styra projekt', 
+    category: 'ledarskap_organisation', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si9', 
+    text: 'Data, IT, programmering och digitala system', 
+    category: 'data_it', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
+  { 
+    id: 'si10', 
+    text: 'Att undervisa, lära ut och förklara saker för andra', 
+    category: 'undervisning_pedagogik', 
+    section: 'strong',
+    lowLabel: 'Intresserar mig inte',
+    highLabel: 'Intresserar mig mycket'
+  },
 ]
 
-// ICF-baserad arbetsstilsmodell (6 frågor)
+// ICF-baserad arbetsstilsmodell (8 frågor) - Integrerar fysiska aspekter
 const icfQuestions: Omit<Question, 'type'>[] = [
-  { id: 'icf_cog', text: 'Jag har lätt att komma ihåg, planera, organisera och lösa problem', category: 'kognitiv', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'icf_com', text: 'Jag kan uttrycka mig tydligt, förstå sociala koder och samarbeta', category: 'kommunikation', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'icf_con', text: 'Jag kan fokusera på uppgifter, växla fokus och ignorera störningar', category: 'koncentration', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'icf_mot', text: 'Jag kan röra mig fritt, hantera fysiska uppgifter och variera kroppsställning', category: 'motorik', section: 'icf', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'icf_sen', text: 'Jag hanterar ljud, ljus och andra sinnesintryck utan att bli överväldigad', category: 'sensorisk', section: 'icf', lowLabel: 'Mycket känslig', highLabel: 'Inte känslig' },
-  { id: 'icf_en', text: 'Jag har ork att arbeta hela dagen och återhämtar mig efter ansträngning', category: 'energi', section: 'icf', lowLabel: 'Mycket trött', highLabel: 'Mycket energi' },
-]
-
-// Fysiska utmaningar (8 frågor)
-const physicalQuestions: Omit<Question, 'type'>[] = [
-  { id: 'phy_kraft1', text: 'Jag klarar av att lyfta och bära tyngre föremål', category: 'kraft', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'phy_kraft2', text: 'Jag hanterar fysiskt krävande arbete med hög belastning', category: 'kraft', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'phy_uth1', text: 'Jag orkar med arbete som kräver god kondition under hela dagen', category: 'uthallighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'phy_uth2', text: 'Jag klarar av att röra mig mycket utan att bli andfådd eller trött', category: 'uthallighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'phy_ror1', text: 'Jag kan böja mig, sträcka mig och arbeta i olika positioner', category: 'rorlighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'phy_ror2', text: 'Jag klarar av att arbeta i obekväma ställningar (knästående, över huvudet, etc.)', category: 'rorlighet', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'phy_prec1', text: 'Jag har stadiga händer och kan utföra precisionsarbete', category: 'precision', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
-  { id: 'phy_prec2', text: 'Jag klarar av finmotoriska uppgifter som kräver noggrannhet (skruva, knäppa, etc.)', category: 'precision', section: 'physical', lowLabel: 'Mycket svårt', highLabel: 'Mycket lätt' },
+  { 
+    id: 'icf_cog', 
+    text: 'Jag har lätt att komma ihåg saker, planera mitt arbete och lösa problem', 
+    category: 'kognitiv', 
+    section: 'icf', 
+    lowLabel: 'Mycket svårt för mig',
+    highLabel: 'Mycket lätt för mig'
+  },
+  { 
+    id: 'icf_com', 
+    text: 'Jag kan uttrycka mig tydligt, förstå sociala koder och samarbeta med andra', 
+    category: 'kommunikation', 
+    section: 'icf', 
+    lowLabel: 'Mycket svårt för mig',
+    highLabel: 'Mycket lätt för mig'
+  },
+  { 
+    id: 'icf_con', 
+    text: 'Jag kan fokusera på uppgifter under längre tid och ignorera störningar', 
+    category: 'koncentration', 
+    section: 'icf', 
+    lowLabel: 'Mycket svårt för mig',
+    highLabel: 'Mycket lätt för mig'
+  },
+  { 
+    id: 'icf_mot_grov', 
+    text: 'Jag kan röra mig fritt, stå, gå och hantera fysiska arbetsuppgifter', 
+    category: 'motorik', 
+    section: 'icf', 
+    lowLabel: 'Mycket svårt för mig',
+    highLabel: 'Mycket lätt för mig'
+  },
+  { 
+    id: 'icf_mot_fin', 
+    text: 'Jag har stadiga händer och klarar precisionsarbete som kräver noggrannhet', 
+    category: 'motorik', 
+    section: 'icf', 
+    lowLabel: 'Mycket svårt för mig',
+    highLabel: 'Mycket lätt för mig'
+  },
+  { 
+    id: 'icf_sen', 
+    text: 'Jag hanterar ljud, ljus och andra sinnesintryck bra utan att bli överväldigad', 
+    category: 'sensorisk', 
+    section: 'icf', 
+    lowLabel: 'Bli lätt överväldigad',
+    highLabel: 'Hanterar det bra'
+  },
+  { 
+    id: 'icf_en_fys', 
+    text: 'Jag har ork att vara fysiskt aktiv under arbetsdagen', 
+    category: 'energi', 
+    section: 'icf', 
+    lowLabel: 'Blir trött/snabbt',
+    highLabel: 'Mycket ork'
+  },
+  { 
+    id: 'icf_en_men', 
+    text: 'Jag har energi att tänka, lära och hantera mentalt krävande uppgifter', 
+    category: 'energi', 
+    section: 'icf', 
+    lowLabel: 'Blir trött/snabbt',
+    highLabel: 'Mycket energi'
+  },
 ]
 
 // Kombinera alla frågor
@@ -236,7 +455,6 @@ export const allQuestions: Question[] = [
   ...bigFiveQuestions.map(q => ({ ...q, type: 'likert' as const })),
   ...strongInterestQuestions.map(q => ({ ...q, type: 'likert' as const })),
   ...icfQuestions.map(q => ({ ...q, type: 'slider' as const })),
-  ...physicalQuestions.map(q => ({ ...q, type: 'slider' as const })),
 ]
 
 // ===== YRKESDATABAS =====
@@ -1265,6 +1483,270 @@ export const occupations: Occupation[] = [
     careerPath: ['Sjöman', 'Maskinist', 'Fartygsbefäl'],
     requiresUniversity: false,
   },
+  // Ytterligare yrken för ökad bredd (70+ totalt)
+  // IT & Teknik forts.
+  {
+    id: 'cybersakerhet',
+    name: 'Cybersäkerhetsanalytiker',
+    description: 'Skyddar organisationers IT-system mot cyberhot och attacker',
+    riasec: { R: 2, I: 5, A: 2, S: 2, E: 2, C: 4 },
+    bigFive: { openness: 75, conscientiousness: 85, extraversion: 35, agreeableness: 50, stability: 70 },
+    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { it: 5, analytisk: 5, noggrannhet: 5 },
+    challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    salary: '40 000 - 70 000 kr/mån',
+    education: { name: 'Cybersäkerhet/Nätverkssäkerhet', length: '2-4 år', type: 'YH/Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Programmerare', 'Nätverkstekniker', 'IT-säkerhetschef'],
+    careerPath: ['Junior säkerhetsanalytiker', 'Säkerhetsanalytiker', 'Senior', 'CISO'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'nätverkstekniker',
+    name: 'Nätverkstekniker',
+    description: 'Bygger och underhåller företags nätverk och kommunikationssystem',
+    riasec: { R: 3, I: 4, A: 1, S: 3, E: 2, C: 4 },
+    bigFive: { openness: 60, conscientiousness: 80, extraversion: 45, agreeableness: 60, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
+    categories: { it: 5, teknisk: 4, noggrannhet: 4 },
+    challenges: { stillasittande: 4, koncentration: 4 },
+    salary: '32 000 - 50 000 kr/mån',
+    education: { name: 'Nätverksteknik/IT-infrastruktur', length: '2 år', type: 'YH' },
+    prognosis: 'growing',
+    relatedJobs: ['IT-supporttekniker', 'Systemadministratör', 'Cybersäkerhetsanalytiker'],
+    careerPath: ['Junior nätverkstekniker', 'Nätverkstekniker', 'Senior', 'Nätverksarkitekt'],
+    requiresUniversity: false,
+  },
+  // Vård & Hälsa forts.
+  {
+    id: 'barnmorska',
+    name: 'Barnmorska',
+    description: 'Ger vård och stöd till gravida, födande och nyblivna mödrar',
+    riasec: { R: 3, I: 3, A: 2, S: 5, E: 2, C: 3 },
+    bigFive: { openness: 65, conscientiousness: 85, extraversion: 60, agreeableness: 90, stability: 70 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 4, energi: 4 },
+    categories: { vard: 5, social: 5, praktisk: 3 },
+    challenges: { social_energi: 5, fysisk_rorlighet: 4, tidspress: 4 },
+    salary: '35 000 - 48 000 kr/mån',
+    education: { name: 'Barnmorskeprogrammet', length: '1,5 år', type: 'Universitet (påbyggnad)' },
+    prognosis: 'growing',
+    relatedJobs: ['Sjuksköterska', 'Läkare', 'BVC-sköterska'],
+    careerPath: ['Barnmorska', 'Klinisk barnmorska', 'Barnmorskechef'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'sjukskoterska_bvc',
+    name: 'BVC-sköterska',
+    description: 'Arbetar med barnhälsovård, vaccinationer och stöd till föräldrar',
+    riasec: { R: 2, I: 3, A: 2, S: 5, E: 2, C: 3 },
+    bigFive: { openness: 70, conscientiousness: 85, extraversion: 65, agreeableness: 90, stability: 70 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 3, sensorisk: 4, energi: 4 },
+    categories: { vard: 5, social: 5, pedagogik: 4 },
+    challenges: { social_energi: 5, koncentration: 4 },
+    salary: '34 000 - 46 000 kr/mån',
+    education: { name: 'Sjuksköterskeprogrammet + vidareutb.', length: '3 + 1 år', type: 'Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Barnmorska', 'Sjuksköterska', 'Distriktssköterska'],
+    careerPath: ['Sjuksköterska', 'BVC-sköterska', 'Klinisk specialist'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'kurator',
+    name: 'Skolkurator',
+    description: 'Stödjer elevers psykiska hälsa och sociala utveckling i skolan',
+    riasec: { R: 1, I: 3, A: 2, S: 5, E: 2, C: 3 },
+    bigFive: { openness: 75, conscientiousness: 75, extraversion: 60, agreeableness: 85, stability: 70 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 4, energi: 3 },
+    categories: { social: 5, vard: 4, pedagogik: 3 },
+    challenges: { social_energi: 5, koncentration: 4 },
+    salary: '32 000 - 45 000 kr/mån',
+    education: { name: 'Socionomprogrammet', length: '3,5 år', type: 'Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Socionom', 'Psykolog', 'Specialpedagog'],
+    careerPath: ['Socionom', 'Skolkurator', 'Kuratorssamordnare'],
+    requiresUniversity: true,
+  },
+  // Kreativa yrken forts.
+  {
+    id: 'art_director',
+    name: 'Art Director',
+    description: 'Leder visuellt kreativt arbete inom reklam, design eller media',
+    riasec: { R: 2, I: 3, A: 5, S: 3, E: 4, C: 2 },
+    bigFive: { openness: 90, conscientiousness: 75, extraversion: 60, agreeableness: 60, stability: 60 },
+    icf: { kognitiv: 5, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
+    categories: { kreativ: 5, ledarskap_organisation: 4, kommunikation: 4 },
+    challenges: { tidspress: 5, social_energi: 4, koncentration: 4 },
+    salary: '40 000 - 70 000 kr/mån',
+    education: { name: 'Grafisk design/Art Direction', length: '3 år', type: 'Konsthögskola/Universitet' },
+    prognosis: 'stable',
+    relatedJobs: ['Grafisk designer', 'UX-designer', 'Marknadsförare'],
+    careerPath: ['Designer', 'Senior designer', 'Art Director', 'Creative Director'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'skadespelare',
+    name: 'Skådespelare',
+    description: 'Framför roller inom teater, film, TV eller radio',
+    riasec: { R: 2, I: 2, A: 5, S: 4, E: 4, C: 1 },
+    bigFive: { openness: 90, conscientiousness: 60, extraversion: 75, agreeableness: 65, stability: 50 },
+    icf: { kognitiv: 3, kommunikation: 5, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
+    categories: { kreativ: 5, konst_kultur: 5, social: 4 },
+    challenges: { social_energi: 5, osakra_forutsattningar: 5, koncentration: 4 },
+    salary: '20 000 - 60 000 kr/mån (varierar mycket)',
+    education: { name: 'Teaterutbildning/Skådespeleri', length: '2-4 år', type: 'Teaterhögskola' },
+    prognosis: 'stable',
+    relatedJobs: ['Regissör', 'Manusförfattare', 'Sångare'],
+    careerPath: ['Elev', 'Skådespelare', 'Etablerad skådespelare'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'forfattare',
+    name: 'Författare/Copywriter',
+    description: 'Skriver texter för böcker, reklam, webb eller andra medier',
+    riasec: { R: 1, I: 4, A: 5, S: 2, E: 3, C: 2 },
+    bigFive: { openness: 90, conscientiousness: 70, extraversion: 35, agreeableness: 55, stability: 55 },
+    icf: { kognitiv: 5, kommunikation: 4, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { kreativ: 5, kommunikation: 5, analytisk: 3 },
+    challenges: { stillasittande: 5, koncentration: 5, osakra_forutsattningar: 4 },
+    salary: '25 000 - 50 000 kr/mån',
+    education: { name: 'Journalistik/Skrivande/Kreativt skrivande', length: '2-3 år', type: 'Universitet/YH' },
+    prognosis: 'stable',
+    relatedJobs: ['Journalist', 'PR-konsult', 'Redaktör'],
+    careerPath: ['Skribent', 'Copywriter', 'Senior copywriter', 'Creative Director'],
+    requiresUniversity: false,
+  },
+  // Handel & Försäljning forts.
+  {
+    id: 'key_account_manager',
+    name: 'Key Account Manager',
+    description: 'Ansvarar för strategiska kundrelationer och försäljning',
+    riasec: { R: 1, I: 3, A: 1, S: 4, E: 5, C: 3 },
+    bigFive: { openness: 65, conscientiousness: 80, extraversion: 75, agreeableness: 70, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
+    categories: { affarer_forsaljning: 5, kommunikation: 5, ledarskap_organisation: 4 },
+    challenges: { social_energi: 5, tidspress: 4, osakra_forutsattningar: 3 },
+    salary: '40 000 - 80 000 kr/mån (inkl. provision)',
+    education: { name: 'Ekonomi/Marknadsföring/Försäljning', length: '2-3 år', type: 'YH/Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Säljare', 'Försäljningschef', 'Marknadschef'],
+    careerPath: ['Säljare', 'Account Manager', 'Key Account Manager', 'Sales Director'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'inkopare',
+    name: 'Inköpare',
+    description: 'Ansvarar för inköp av varor och tjänster till företag',
+    riasec: { R: 1, I: 3, A: 1, S: 3, E: 4, C: 4 },
+    bigFive: { openness: 60, conscientiousness: 85, extraversion: 55, agreeableness: 60, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { ekonomi: 4, analytisk: 4, noggrannhet: 4 },
+    challenges: { tidspress: 4, koncentration: 4 },
+    salary: '35 000 - 55 000 kr/mån',
+    education: { name: 'Inköp/Logistik/Supply chain', length: '2-3 år', type: 'YH/Universitet' },
+    prognosis: 'stable',
+    relatedJobs: ['Controller', 'Logistiker', 'Inköpschef'],
+    careerPath: ['Inköpsassistent', 'Inköpare', 'Strategisk inköpare', 'Inköpschef'],
+    requiresUniversity: true,
+  },
+  // Bygg & Anläggning forts.
+  {
+    id: 'plattsattare',
+    name: 'Plattsättare',
+    description: 'Lägger kakel, klinker och andra golv- och väggbeklädnader',
+    riasec: { R: 4, I: 2, A: 3, S: 2, E: 2, C: 3 },
+    bigFive: { openness: 50, conscientiousness: 80, extraversion: 40, agreeableness: 55, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, teknisk: 3, noggrannhet: 5, kreativ: 3 },
+    challenges: { fysisk_rorlighet: 5, precision: 5, fysisk_styrka: 3 },
+    salary: '28 000 - 40 000 kr/mån',
+    education: { name: 'Bygg- och anläggningsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Snickare', 'Glasmästare', 'Kakelugnsmakare'],
+    careerPath: ['Lärling', 'Plattsättare', 'Förman', 'Egen företagare'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'malare',
+    name: 'Målare',
+    description: 'Målar och tapetserar inomhus och utomhus',
+    riasec: { R: 3, I: 1, A: 4, S: 2, E: 2, C: 2 },
+    bigFive: { openness: 60, conscientiousness: 75, extraversion: 45, agreeableness: 55, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, kreativ: 4, noggrannhet: 4 },
+    challenges: { fysisk_rorlighet: 5, precision: 4 },
+    salary: '27 000 - 38 000 kr/mån',
+    education: { name: 'Bygg- och anläggningsprogrammet', length: '3 år gymn', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Snickare', 'Plattsättare', 'Dekoratör'],
+    careerPath: ['Lärling', 'Målare', 'Förman', 'Egen företagare'],
+    requiresUniversity: false,
+  },
+  // Transport & Logistik forts.
+  {
+    id: 'logistiker',
+    name: 'Logistiker',
+    description: 'Planerar och optimerar varuflöden och transport',
+    riasec: { R: 2, I: 4, A: 1, S: 2, E: 3, C: 4 },
+    bigFive: { openness: 65, conscientiousness: 85, extraversion: 45, agreeableness: 55, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { analytisk: 4, noggrannhet: 4, ekonomi: 3 },
+    challenges: { stillasittande: 4, koncentration: 4, tidspress: 4 },
+    salary: '32 000 - 50 000 kr/mån',
+    education: { name: 'Logistik/Supply Chain Management', length: '2-3 år', type: 'YH/Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Inköpare', 'Transportledare', 'Lageransvarig'],
+    careerPath: ['Logistikassistent', 'Logistiker', 'Logistikchef', 'Supply Chain Director'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'taxichauffor',
+    name: 'Taxichaufför',
+    description: 'Kör taxi och transporterar passagerare',
+    riasec: { R: 3, I: 1, A: 1, S: 4, E: 2, C: 2 },
+    bigFive: { openness: 50, conscientiousness: 75, extraversion: 60, agreeableness: 70, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 3, sensorisk: 3, energi: 3 },
+    categories: { social: 4, praktisk: 3, kommunikation: 3 },
+    challenges: { stillasittande: 5, social_energi: 4, koncentration: 4 },
+    salary: '25 000 - 40 000 kr/mån',
+    education: { name: 'Taxiförarlegitimation', length: 'Kort utbildning', type: 'Transportstyrelsen' },
+    prognosis: 'declining',
+    relatedJobs: ['Bussförare', 'Lastbilschaufför', 'Uber-förare'],
+    careerPath: ['Taxichaufför', 'Erfaren chaufför', 'Förarcoach'],
+    requiresUniversity: false,
+  },
+  // Övriga serviceyrken
+  {
+    id: 'stromare',
+    name: 'Städare/Lokalvårdare',
+    description: 'Sköter städning och lokalvård av arbetsplatser och offentliga miljöer',
+    riasec: { R: 3, I: 1, A: 1, S: 2, E: 1, C: 3 },
+    bigFive: { openness: 40, conscientiousness: 75, extraversion: 40, agreeableness: 60, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, noggrannhet: 4 },
+    challenges: { fysisk_rorlighet: 4, repetitivt: 4, sensorisk: 3 },
+    salary: '24 000 - 32 000 kr/mån',
+    education: { name: 'Lokalvård/Städutbildning', length: 'Kort utbildning', type: 'Komvux/Företag' },
+    prognosis: 'stable',
+    relatedJobs: ['Fastighetsskötare', 'Hemtjänst', 'Hotellstädare'],
+    careerPath: ['Städare', 'Erfaren städare', 'Team leader', 'Städchef'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'vaktmastare',
+    name: 'Vaktmästare',
+    description: 'Sköter underhåll, reparationer och praktiska uppgifter i fastigheter',
+    riasec: { R: 4, I: 2, A: 1, S: 3, E: 2, C: 3 },
+    bigFive: { openness: 50, conscientiousness: 75, extraversion: 45, agreeableness: 60, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 3, energi: 4 },
+    categories: { praktisk: 5, teknisk: 4, noggrannhet: 3 },
+    challenges: { fysisk_rorlighet: 4, fysisk_styrka: 3 },
+    salary: '26 000 - 35 000 kr/mån',
+    education: { name: 'Fastighetsutbildning/Vaktmästarutbildning', length: '1-2 år', type: 'Komvux/YH' },
+    prognosis: 'stable',
+    relatedJobs: ['Fastighetsskötare', 'Elektriker', 'Snickare'],
+    careerPath: ['Vaktmästare', 'Fastighetstekniker', 'Fastighetsförvaltare'],
+    requiresUniversity: false,
+  },
 ]
 
 // ===== ICF ANPASSNINGSREKOMMENDATIONER =====
@@ -1363,29 +1845,24 @@ export function calculateJobMatches(
     const adaptations: string[] = []
     const warnings: string[] = []
 
-    // 1. RIASEC-matchning (25%)
+    // 1. RIASEC-matchning (30%) - arbetsstil och intresse
     const riasecScore = calculateRiasecMatch(profile.riasec, occupation.riasec)
-    totalScore += riasecScore * 0.25
-    totalWeight += 0.25
+    totalScore += riasecScore * 0.30
+    totalWeight += 0.30
 
-    // 2. Big Five-matchning (20%)
+    // 2. Big Five-matchning (25%) - personlighet
     const bigFiveScore = calculateBigFiveMatch(profile.bigFive, occupation.bigFive)
-    totalScore += bigFiveScore * 0.20
-    totalWeight += 0.20
-
-    // 3. ICF-matchning (25%) - viktigt för anpassningsbarhet
-    const icfResult = calculateICFMatch(profile.icf, occupation.icf)
-    totalScore += icfResult.score * 0.25
+    totalScore += bigFiveScore * 0.25
     totalWeight += 0.25
+
+    // 3. ICF-matchning (30%) - funktionsförutsättningar (inklusive fysiska)
+    const icfResult = calculateICFMatch(profile.icf, occupation.icf, occupation.challenges)
+    totalScore += icfResult.score * 0.30
+    totalWeight += 0.30
     adaptations.push(...icfResult.adaptations)
+    warnings.push(...icfResult.warnings)
 
-    // 4. Fysiska krav (15%)
-    const physicalResult = calculatePhysicalMatch(profile.physical, occupation.challenges)
-    totalScore += physicalResult.score * 0.15
-    totalWeight += 0.15
-    warnings.push(...physicalResult.warnings)
-
-    // 5. Intresseområden (15%)
+    // 4. Intresseområden (15%) - specifika intressen
     const interestScore = calculateInterestMatch(profile.strongInterest, occupation.categories)
     totalScore += interestScore * 0.15
     totalWeight += 0.15
@@ -1432,10 +1909,15 @@ function calculateBigFiveMatch(user: BigFiveScores, job: BigFiveScores): number 
   return 1 - (diffSum / maxDiff)
 }
 
-function calculateICFMatch(user: ICFScores, job: ICFScores): { score: number; adaptations: string[] } {
+function calculateICFMatch(
+  user: ICFScores, 
+  job: ICFScores, 
+  challenges: JobChallenges
+): { score: number; adaptations: string[]; warnings: string[] } {
   const keys: (keyof ICFScores)[] = ['kognitiv', 'kommunikation', 'koncentration', 'motorik', 'sensorisk', 'energi']
   let scoreSum = 0
   const adaptations: string[] = []
+  const warnings: string[] = []
 
   keys.forEach(key => {
     const userScore = user[key]
@@ -1448,52 +1930,38 @@ function calculateICFMatch(user: ICFScores, job: ICFScores): { score: number; ad
       scoreSum += Math.max(0, 1 - (gap / 5))
       
       // Lägg till anpassningsrekommendationer
-      if (gap >= 2 && icfAdaptations[key]) {
+      if (gap >= 1.5 && icfAdaptations[key]) {
         adaptations.push(`${icfAdaptations[key].name}: ${icfAdaptations[key].adaptations[0]}`)
       }
     }
   })
 
-  return { score: scoreSum / keys.length, adaptations }
-}
-
-function calculatePhysicalMatch(
-  user: PhysicalScores,
-  challenges: JobChallenges
-): { score: number; warnings: string[] } {
-  const warnings: string[] = []
-  let scoreSum = 0
-  let count = 0
-
-  if (challenges.fysisk_rorlighet) {
-    const userScore = user.rorlighet
-    if (userScore < challenges.fysisk_rorlighet) {
-      warnings.push('Arbetet kräver mer rörlighet än du indikerat')
+  // Kontrollera fysiska krav baserat på motorik och energi
+  if (challenges.fysisk_rorlighet && challenges.fysisk_rorlighet > 3) {
+    if (user.motorik < 3) {
+      warnings.push('Arbetet kan kräva mer rörlighet än du har förutsättningar för')
+      adaptations.push('Motorik: Be om anpassade arbetsuppgifter eller ergonomisk utrustning')
     }
-    scoreSum += Math.min(1, userScore / challenges.fysisk_rorlighet)
-    count++
   }
 
-  if (challenges.fysisk_styrka) {
-    const userScore = user.kraft
-    if (userScore < challenges.fysisk_styrka) {
+  if (challenges.fysisk_styrka && challenges.fysisk_styrka > 3) {
+    if (user.energi < 3 || user.motorik < 3) {
       warnings.push('Arbetet kan vara fysiskt krävande')
+      adaptations.push('Energi/Motorik: Be om hjälp med tunga lyft och fysiska uppgifter')
     }
-    scoreSum += Math.min(1, userScore / challenges.fysisk_styrka)
-    count++
   }
 
   if (challenges.stillasittande && challenges.stillasittande > 3) {
-    const userScore = user.uthallighet
-    if (userScore < 3) {
+    if (user.energi < 3) {
       warnings.push('Stillasittande arbete kan vara påfrestande')
+      adaptations.push('Energi: Be om möjlighet till rörelsepauser och varierande arbetsställningar')
     }
-    scoreSum += Math.min(1, userScore / challenges.stillasittande)
-    count++
   }
 
-  return { score: count > 0 ? scoreSum / count : 0.5, warnings }
+  return { score: scoreSum / keys.length, adaptations, warnings }
 }
+
+// Fysiska matchningen är nu integrerad i ICF-matchningen via motorik och energi
 
 function calculateInterestMatch(
   user: StrongInterestCategories,
@@ -1582,9 +2050,8 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
     undervisning_pedagogik: { sum: 0, count: 0 },
   }
 
-  // ICF och Physical
+  // ICF (funktionsförutsättningar - inkluderar kognitivt, kommunikativt och fysiskt)
   const icf: ICFScores = { kognitiv: 3, kommunikation: 3, koncentration: 3, motorik: 3, sensorisk: 3, energi: 3 }
-  const physical: PhysicalScores = { kraft: 3, uthallighet: 3, rorlighet: 3, precision: 3 }
 
   // Summera svar
   Object.entries(answers).forEach(([questionId, value]) => {
@@ -1603,9 +2070,18 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
       strongCounts[question.category].sum += normalizedValue * 100
       strongCounts[question.category].count++
     } else if (question.section === 'icf') {
-      icf[question.category as keyof ICFScores] = normalizedValue * 5
-    } else if (question.section === 'physical') {
-      physical[question.category as keyof PhysicalScores] = normalizedValue * 5
+      // Hantera både motorik-grov och motorik-fin som motorik
+      const category = question.category as keyof ICFScores
+      if (category === 'motorik' || question.id === 'icf_mot_grov' || question.id === 'icf_mot_fin') {
+        // Beräkna medelvärde för motorik om flera frågor
+        if (icf.motorik === 3) {
+          icf.motorik = normalizedValue * 5
+        } else {
+          icf.motorik = Math.round((icf.motorik + normalizedValue * 5) / 2)
+        }
+      } else {
+        icf[category] = normalizedValue * 5
+      }
     }
   })
 
@@ -1635,7 +2111,7 @@ export function calculateUserProfile(answers: Record<string, number>): UserProfi
     }
   })
 
-  return { riasec, bigFive, icf, physical, strongInterest }
+  return { riasec, bigFive, icf, strongInterest }
 }
 
 // ===== RIASEC FÄRGER =====

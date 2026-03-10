@@ -15,12 +15,12 @@ const icfIcons: Record<string, typeof Brain> = {
 }
 
 const icfNames: Record<string, string> = {
-  kognitiv: 'Kognitiv funktion',
-  kommunikation: 'Kommunikation',
-  koncentration: 'Koncentration',
-  motorik: 'Motorik',
-  sensorisk: 'Sensorisk',
-  energi: 'Energi',
+  kognitiv: 'Kognitiv funktion (tänka, planera, komma ihåg)',
+  kommunikation: 'Kommunikation (prata, lyssna, samarbeta)',
+  koncentration: 'Koncentration (fokusera, hålla uppmärksamheten)',
+  motorik: 'Motorik (rörelse, stadiga händer, fysik)',
+  sensorisk: 'Sensorisk (ljud, ljus, sinnesintryck)',
+  energi: 'Energi (uthållighet, ork, återhämtning)',
 }
 
 export function ICFSection({ scores }: ICFSectionProps) {
@@ -34,9 +34,15 @@ export function ICFSection({ scores }: ICFSectionProps) {
         const adaptation = icfAdaptations[key]
         
         const getColor = (s: number) => {
-          if (s >= 4) return 'text-green-600 bg-green-50 border-green-200'
-          if (s >= 3) return 'text-amber-600 bg-amber-50 border-amber-200'
-          return 'text-red-600 bg-red-50 border-red-200'
+          if (s >= 4) return 'text-green-700 bg-green-50 border-green-300'
+          if (s >= 3) return 'text-amber-700 bg-amber-50 border-amber-300'
+          return 'text-red-700 bg-red-50 border-red-300'
+        }
+
+        const getLevelText = (s: number) => {
+          if (s >= 4) return 'Stark förutsättning'
+          if (s >= 3) return 'God förutsättning - vissa anpassningar kan behövas'
+          return 'Utmanande - anpassningar rekommenderas'
         }
 
         const getBarColor = (s: number) => {
@@ -55,11 +61,14 @@ export function ICFSection({ scores }: ICFSectionProps) {
                 <Icon className="w-5 h-5" />
               </div>
               <div className="flex-1">
-                <div className="flex justify-between items-center">
-                  <span className="font-semibold">{name}</span>
-                  <span className="text-sm font-medium">{score}/5</span>
+                <div className="flex justify-between items-center flex-wrap gap-1">
+                  <span className="font-semibold text-sm">{name}</span>
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-white/70 font-medium">
+                    {score}/5
+                  </span>
                 </div>
-                <div className="h-2 bg-white/50 rounded-full mt-1 overflow-hidden">
+                <p className="text-xs mt-0.5 opacity-80">{getLevelText(score)}</p>
+                <div className="h-2 bg-white/50 rounded-full mt-1.5 overflow-hidden">
                   <div
                     className={`h-full bg-gradient-to-r ${getBarColor(score)} rounded-full transition-all duration-500`}
                     style={{ width: `${(score / 5) * 100}%` }}
