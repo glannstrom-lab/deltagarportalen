@@ -17,8 +17,7 @@ import {
   DiaryWidget,
   KnowledgeWidget,
 } from '@/components/dashboard'
-import { NextStepWidget } from '@/components/workflow'
-import { AIAssistant, SmartJobMatches, SkillGapAnalysis } from '@/components/ai'
+// Widget-baserad dashboard utan AI-assistent
 import { cn } from '@/lib/utils'
 import { dashboardPreferencesApi } from '@/services/cloudStorage'
 
@@ -201,39 +200,13 @@ function DesktopDashboard() {
 
   return (
     <div className="space-y-4 max-w-7xl">
-      {/* AI Assistant - Högst upp för intelligent vägledning */}
-      <AIAssistant />
-
-      {/* Next Step Widget - Sekundär vägledning */}
-      <div className="pt-2">
-        <NextStepWidget />
-      </div>
-
       {/* Compact Welcome */}
-      <div>
-        <h1 className="text-lg font-semibold text-slate-800">
+      <div className="mb-2">
+        <h1 className="text-xl font-semibold text-slate-800">
           Hej{user?.firstName ? `, ${user.firstName}` : ''}! 👋
         </h1>
         <p className="text-sm text-slate-500">Här är din översikt för idag.</p>
       </div>
-
-      {/* Smart Matching - Fas 3 AI Features */}
-      {data?.cv.hasCV && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <SmartJobMatches 
-            cv={data.cv.data || {}} 
-            jobs={data.jobs.recentSavedJobs
-              ?.map((j: any) => j.job_data)
-              ?.filter((job: any) => job && job.headline) || []} 
-          />
-          <SkillGapAnalysis 
-            cv={data.cv.data || {}} 
-            jobs={data.jobs.recentSavedJobs
-              ?.map((j: any) => j.job_data)
-              ?.filter((job: any) => job && job.headline) || []} 
-          />
-        </div>
-      )}
 
       {/* Collapsible Filter */}
       <CompactWidgetFilter
