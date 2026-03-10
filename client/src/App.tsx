@@ -1,8 +1,14 @@
 import { useEffect, lazy, Suspense } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { Loader2 } from 'lucide-react'
+
+// Wrapper komponent för att hantera redirects med params
+function ArticleRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/dashboard/knowledge-base/${id}`} replace />
+}
 
 // Eager-loaded kritiska komponenter
 import Layout from './components/Layout'
@@ -335,10 +341,10 @@ function App() {
       <Route path="/exercises" element={<Navigate to="/dashboard/exercises" replace />} />
       <Route path="/diary" element={<Navigate to="/dashboard/diary" replace />} />
       <Route path="/knowledge-base" element={<Navigate to="/dashboard/knowledge-base" replace />} />
-      <Route path="/knowledge-base/:id" element={<Navigate to="/dashboard/knowledge-base/:id" replace />} />
+      <Route path="/knowledge-base/:id" element={<ArticleRedirect />} />
       
       {/* Legacy article routes - redirect to new knowledge-base structure */}
-      <Route path="/article/:id" element={<Navigate to="/dashboard/knowledge-base/:id" replace />} />
+      <Route path="/article/:id" element={<ArticleRedirect />} />
       <Route path="/profile" element={<Navigate to="/dashboard/profile" replace />} />
       <Route path="/job-tracker" element={<Navigate to="/dashboard/job-tracker" replace />} />
       <Route path="/settings" element={<Navigate to="/dashboard/settings" replace />} />
