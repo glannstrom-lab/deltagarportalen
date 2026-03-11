@@ -34,9 +34,9 @@ export function PageTabs({ tabs, className, collapsible = true }: PageTabsProps)
   // Mobile: Collapsible dropdown
   return (
     <>
-      {/* Desktop Tabs */}
+      {/* Desktop Tabs - Slim & Modern */}
       <div className={cn(
-        'hidden md:flex items-center gap-1 p-1 bg-slate-100 rounded-xl',
+        'hidden md:flex items-center gap-0.5 p-0.5 bg-slate-100/80 rounded-lg border border-slate-200/60',
         className
       )}>
         {tabs.map((tab) => {
@@ -48,17 +48,17 @@ export function PageTabs({ tabs, className, collapsible = true }: PageTabsProps)
               key={tab.id}
               to={tab.path}
               className={cn(
-                'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-all duration-200',
                 isActive
-                  ? 'bg-white text-indigo-600 shadow-sm'
-                  : 'text-slate-600 hover:text-slate-800 hover:bg-white/50'
+                  ? 'bg-white text-indigo-600 shadow-sm border border-slate-200/50'
+                  : 'text-slate-500 hover:text-slate-700 hover:bg-slate-200/50'
               )}
             >
-              {Icon && <Icon className="w-4 h-4" />}
+              {Icon && <Icon className="w-3.5 h-3.5" />}
               <span>{tab.label}</span>
               {tab.badge !== undefined && tab.badge > 0 && (
                 <span className={cn(
-                  'ml-1 px-1.5 py-0.5 text-xs rounded-full',
+                  'ml-0.5 px-1.5 py-0 text-[10px] rounded-full font-semibold',
                   isActive ? 'bg-indigo-100 text-indigo-700' : 'bg-slate-200 text-slate-600'
                 )}>
                   {tab.badge}
@@ -69,32 +69,32 @@ export function PageTabs({ tabs, className, collapsible = true }: PageTabsProps)
         })}
       </div>
 
-      {/* Mobile Collapsible Tabs */}
+      {/* Mobile Collapsible Tabs - Slim */}
       {collapsible && (
         <div className={cn('md:hidden', className)}>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className={cn(
-              'w-full flex items-center justify-between px-4 py-3 rounded-xl border transition-colors',
+              'w-full flex items-center justify-between px-3 py-2 rounded-lg border transition-colors text-sm',
               isExpanded 
                 ? 'bg-indigo-50 border-indigo-200 text-indigo-700' 
                 : 'bg-white border-slate-200 text-slate-700'
             )}
           >
             <div className="flex items-center gap-2">
-              <Menu className="w-5 h-5" />
+              <Menu className="w-4 h-4" />
               <span className="font-medium">
                 {activeTab?.label || 'Välj sida'}
               </span>
             </div>
             <ChevronDown className={cn(
-              'w-5 h-5 transition-transform',
+              'w-4 h-4 transition-transform',
               isExpanded && 'rotate-180'
             )} />
           </button>
           
           {isExpanded && (
-            <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-lg overflow-hidden animate-fade-in">
+            <div className="mt-1.5 bg-white rounded-lg border border-slate-200 shadow-lg overflow-hidden">
               {tabs.map((tab, index) => {
                 const Icon = tab.icon
                 const isActive = location.pathname === tab.path || location.pathname.startsWith(`${tab.path}/`)
@@ -105,20 +105,20 @@ export function PageTabs({ tabs, className, collapsible = true }: PageTabsProps)
                     to={tab.path}
                     onClick={() => setIsExpanded(false)}
                     className={cn(
-                      'flex items-center justify-between px-4 py-3 transition-colors',
+                      'flex items-center justify-between px-3 py-2.5 text-sm transition-colors',
                       isActive
                         ? 'bg-indigo-50 text-indigo-700'
                         : 'text-slate-700 hover:bg-slate-50',
                       index !== tabs.length - 1 && 'border-b border-slate-100'
                     )}
                   >
-                    <div className="flex items-center gap-3">
-                      {Icon && <Icon className="w-5 h-5" />}
+                    <div className="flex items-center gap-2">
+                      {Icon && <Icon className="w-4 h-4" />}
                       <span className="font-medium">{tab.label}</span>
                     </div>
                     {tab.badge !== undefined && tab.badge > 0 && (
                       <span className={cn(
-                        'px-2 py-0.5 text-xs rounded-full',
+                        'px-1.5 py-0 text-xs rounded-full font-medium',
                         isActive ? 'bg-indigo-200 text-indigo-800' : 'bg-slate-100 text-slate-600'
                       )}>
                         {tab.badge}

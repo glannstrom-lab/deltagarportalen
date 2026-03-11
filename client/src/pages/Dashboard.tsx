@@ -21,7 +21,6 @@ import { EnergyLevelSelector, useEnergyAdaptedContent } from '@/components/energ
 import { QuickWinButton } from '@/components/energy/QuickWinButton'
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist'
 import { PageLayout } from '@/components/layout'
-import { dashboardTabs } from '@/data/pageTabs'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { cn } from '@/lib/utils'
 import { 
@@ -138,8 +137,7 @@ function DesktopDashboard() {
     <PageLayout
       title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}!`}
       description={getEncouragingMessage()}
-      customTabs={dashboardTabs}
-      showTabs={true}
+      showTabs={false}
       className="space-y-5"
     >
       {/* Professional Header Stats Bar */}
