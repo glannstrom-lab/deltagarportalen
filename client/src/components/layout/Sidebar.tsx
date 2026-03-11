@@ -123,10 +123,10 @@ export function Sidebar() {
   }
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      {/* Header */}
+    <div className="flex flex-col h-full overflow-hidden">
+      {/* Header - Fixed height */}
       <div className={cn(
-        'flex items-center h-14 border-b border-white/10 flex-shrink-0',
+        'flex items-center h-14 border-b border-white/10 shrink-0',
         isExpanded ? 'px-3 justify-between' : 'px-3 justify-center'
       )}>
         <Link to="/dashboard" className="flex items-center gap-2.5 group">
@@ -149,18 +149,18 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* User Profile */}
+      {/* User Profile - Fixed height */}
       <Link
         to="/profile"
         onClick={() => isMobile && setMobileOpen(false)}
         className={cn(
-          'group relative flex items-center border-b border-white/10 transition-all flex-shrink-0',
+          'group relative flex items-center border-b border-white/10 transition-all shrink-0',
           isExpanded
             ? 'gap-2.5 px-3 py-2.5 hover:bg-white/5'
             : 'py-3 justify-center hover:bg-white/10'
         )}
       >
-        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
           <User size={14} className="text-white" />
         </div>
         {isExpanded && (
@@ -178,8 +178,8 @@ export function Sidebar() {
         {!isExpanded && <Tooltip>{user?.firstName || 'Profil'}</Tooltip>}
       </Link>
 
-      {/* Main Navigation */}
-      <nav className="flex-1 py-2 overflow-y-auto">
+      {/* Main Navigation - Scrollable area */}
+      <nav className="flex-1 min-h-0 py-2 overflow-y-auto">
         <div className={cn(!isExpanded && 'space-y-1')}>
           {navItems.map((item) => {
             const isActive = location.pathname === item.path ||
@@ -249,9 +249,9 @@ export function Sidebar() {
         )}
       </nav>
 
-      {/* Bottom Actions */}
+      {/* Bottom Actions - Fixed at bottom */}
       <div className={cn(
-        'border-t border-white/10 py-2 flex-shrink-0',
+        'border-t border-white/10 py-2 shrink-0 mt-auto',
         !isExpanded && 'space-y-1'
       )}>
         <NavItem
@@ -297,7 +297,7 @@ export function Sidebar() {
       {!isMobile && (
         <aside
           className={cn(
-            'h-screen sticky top-0 flex-shrink-0 transition-all duration-200 ease-out z-40',
+            'h-screen sticky top-0 shrink-0 transition-all duration-200 ease-out z-40',
             'bg-gradient-to-b from-indigo-600 to-indigo-700 shadow-lg',
             isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH
           )}
