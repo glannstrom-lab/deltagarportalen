@@ -19,11 +19,11 @@ export function DashboardGrid({ children, className }: DashboardGridProps) {
         // Prevent horizontal overflow
         'w-full overflow-x-hidden',
         // Mobile: 1 kolumn (alltid full bredd för bättre UX)
-        'grid grid-cols-1 gap-2',
+        'grid grid-cols-1 gap-4',
         // Tablet: 2 kolumner  
-        'sm:grid-cols-2 sm:gap-3',
-        // Desktop: 4 kolumner för att stödja 1/4-storlek, kompakt gap
-        'lg:grid-cols-4 lg:gap-3',
+        'sm:grid-cols-2 sm:gap-5',
+        // Desktop: 4 kolumner för att stödja 1/4-storlek
+        'lg:grid-cols-4 lg:gap-5',
         className
       )}
     >

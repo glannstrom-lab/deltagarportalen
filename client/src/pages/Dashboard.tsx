@@ -18,20 +18,19 @@ import {
   DiaryWidget,
   KnowledgeWidget,
 } from '@/components/dashboard'
-import { EnergyLevelSelector, useEnergyAdaptedContent } from '@/components/energy/EnergyLevelSelector'
-import { QuickWinButton } from '@/components/energy/QuickWinButton'
-import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist'
 import { PageLayout } from '@/components/layout/index'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { cn } from '@/lib/utils'
 import { 
-  Zap, 
-  BatteryLow, 
-  BatteryMedium, 
-  BatteryFull,
-  ChevronDown,
-  BookOpen,
-  Sparkles
+  Compass,
+  X,
+  Check,
+  Target,
+  FileText,
+  Briefcase,
+  BookHeart,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react'
 
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
@@ -61,22 +60,81 @@ export default function Dashboard() {
   return <DesktopDashboard />
 }
 
+// GuideStep komponent
+interface GuideStepProps {
+  number: number
+  icon: React.ElementType
+  title: string
+  description: string
+  done: boolean
+  href: string
+  optional?: boolean
+}
+
+function GuideStep({ icon: Icon, title, description, done, href, optional }: GuideStepProps) {
+  return (
+    <a
+      href={href}
+      className={cn(
+        'flex items-center gap-3 p-3 rounded-lg transition-all',
+        done 
+          ? 'bg-green-50 hover:bg-green-100' 
+          : 'bg-slate-50 hover:bg-slate-100'
+      )}
+    >
+      <div className={cn(
+        'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0',
+        done ? 'bg-green-500 text-white' : 'bg-indigo-100 text-indigo-600'
+      )}>
+        {done ? <Check className="w-4 h-4" /> : <Icon className="w-4 h-4" />}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className={cn(
+            'font-medium text-sm',
+            done ? 'text-green-800 line-through' : 'text-slate-800'
+          )}>
+            {title}
+          </span>
+          {optional && (
+            <span className="text-xs text-slate-400">(valfritt)</span>
+          )}
+        </div>
+        <p className="text-xs text-slate-500">{description}</p>
+      </div>
+      {!done && <ArrowRight className="w-4 h-4 text-slate-400" />}
+    </a>
+  )
+}
+
 function DesktopDashboard() {
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
-  const { energyLevel, hasCompletedOnboarding } = useSettingsStore()
-  const { getVisibleWidgets, getEncouragingMessage, isLowEnergy } = useEnergyAdaptedContent()
+  const { hasCompletedOnboarding } = useSettingsStore()
 
-  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(
-    getVisibleWidgets(allWidgets)
-  )
+  // Ladda sparade widget-val från localStorage
+  const loadSavedWidgets = (): WidgetType[] => {
+    try {
+      const saved = localStorage.getItem('dashboard-visible-widgets')
+      if (saved) {
+        const parsed = JSON.parse(saved) as WidgetType[]
+        // Validera att alla sparade widgets är giltiga
+        return parsed.filter(w => allWidgets.includes(w))
+      }
+    } catch {
+      // Ignorera fel, använd default
+    }
+    return defaultVisibleWidgets
+  }
+
+  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(loadSavedWidgets)
   const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(defaultWidgetSizes)
-  const [showEnergySelector, setShowEnergySelector] = useState(false)
-  const [checklistExpanded, setChecklistExpanded] = useState(true)
+  const [showGuide, setShowGuide] = useState(false)
 
+  // Spara widget-val till localStorage när de ändras
   useEffect(() => {
-    setVisibleWidgets(getVisibleWidgets(allWidgets))
-  }, [energyLevel])
+    localStorage.setItem('dashboard-visible-widgets', JSON.stringify(visibleWidgets))
+  }, [visibleWidgets])
 
   const handleToggleWidget = useCallback((widgetId: WidgetType) => {
     setVisibleWidgets((prev) =>
@@ -154,52 +212,88 @@ function DesktopDashboard() {
     )
   }
 
-  const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : getVisibleWidgets(allWidgets)
-
-  const EnergyIcon = energyLevel === 'low' ? BatteryLow : energyLevel === 'medium' ? BatteryMedium : BatteryFull
+  const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : defaultVisibleWidgets
 
   return (
     <PageLayout
       title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}!`}
-      description={getEncouragingMessage()}
       showTabs={false}
       className="space-y-5"
       actions={
         <button
-          onClick={() => setShowEnergySelector(!showEnergySelector)}
-          className={cn(
-            'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all',
-            isLowEnergy
-              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
-              : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
-          )}
+          onClick={() => setShowGuide(true)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+          title="Visa guide för nästa steg"
         >
-          <EnergyIcon className="w-4 h-4" />
-          <span className="capitalize hidden sm:inline">
-            {energyLevel === 'low' && 'Låg energi'}
-            {energyLevel === 'medium' && 'Medium energi'}
-            {energyLevel === 'high' && 'Hög energi'}
-          </span>
-          <ChevronDown className={cn('w-3 h-3 transition-transform', showEnergySelector && 'rotate-180')} />
+          <Compass className="w-4 h-4" />
+          <span className="hidden sm:inline">Guide</span>
         </button>
       }
     >
-      {/* Energy Level Selector - Compact */}
-      {showEnergySelector && (
+      {/* Guide Modal - Compact */}
+      {showGuide && (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 animate-in slide-in-from-top-2">
-          <EnergyLevelSelector 
-            onSelect={() => setShowEnergySelector(false)}
-            showDescription={true}
-          />
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <Compass className="w-5 h-5 text-indigo-600" />
+              <h3 className="font-semibold text-slate-800">Din väg framåt</h3>
+            </div>
+            <button 
+              onClick={() => setShowGuide(false)}
+              className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-3">
+            <GuideStep 
+              number={1}
+              icon={Target}
+              title="Komplett profil"
+              description="Fyll i dina grunduppgifter"
+              done={hasCompletedOnboarding}
+              href="/profile"
+            />
+            <GuideStep 
+              number={2}
+              icon={FileText}
+              title="Bygg ditt CV"
+              description="Samla dina erfarenheter på ett ställe"
+              done={data?.cv.progress ? data.cv.progress > 50 : false}
+              href="/dashboard/cv"
+            />
+            <GuideStep 
+              number={3}
+              icon={Sparkles}
+              title="Upptäck intressen"
+              description="Se vilka yrken som kan passa dig"
+              done={data?.interest.hasResult ?? false}
+              href="/dashboard/interest-guide"
+            />
+            <GuideStep 
+              number={4}
+              icon={Briefcase}
+              title="Utforska jobb"
+              description="Hitta lediga jobb att spara"
+              done={(data?.jobs.savedCount ?? 0) > 0}
+              href="/dashboard/job-search"
+            />
+            <GuideStep 
+              number={5}
+              icon={BookHeart}
+              title="Dagboken"
+              description="Skriv ner dina tankar när du vill (valfritt)"
+              done={false}
+              href="/dashboard/diary"
+              optional
+            />
+          </div>
+          
+          <p className="text-xs text-slate-500 mt-4 text-center">
+            Ta det i din egen takt - varje litet steg räknas!
+          </p>
         </div>
-      )}
-
-      {/* Getting Started Checklist - Collapsible */}
-      {!hasCompletedOnboarding && (
-        <GettingStartedChecklist 
-          expanded={checklistExpanded}
-          onToggle={() => setChecklistExpanded(!checklistExpanded)}
-        />
       )}
 
       {/* Filter */}
@@ -314,9 +408,6 @@ function DesktopDashboard() {
           }}
         />
       )}
-
-      {/* Quick Win Floating Button */}
-      <QuickWinButton variant="floating" />
     </PageLayout>
   )
 }
