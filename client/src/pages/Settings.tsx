@@ -3,20 +3,17 @@ import { useSettingsStore } from '../stores/settingsStore'
 import { useAuthStore } from '../stores/authStore'
 import { userApi } from '../services/supabaseApi'
 import { 
-  Bell, 
-  Lock, 
-  User, 
-  Palette, 
-  Shield,
-  ChevronRight,
-  Moon,
-  Sun,
-  Save,
-  Accessibility,
-  X,
-  Menu,
-  Loader2
+  Bell, Lock, User, Palette, Shield,
+  ChevronRight, Moon, Sun, Save,
+  Accessibility, X, Menu, Loader2,
+  Eye, EyeOff
 } from 'lucide-react'
+import { PageLayout } from '@/components/layout'
+import { 
+  Card, CardHeader, CardSection,
+  Input, Button, Toggle,
+  LoadingState, InfoCard
+} from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 interface SettingSection {
@@ -27,42 +24,12 @@ interface SettingSection {
 }
 
 const sections: SettingSection[] = [
-  { 
-    id: 'profile', 
-    title: 'Profil', 
-    description: 'Hantera dina personuppgifter', 
-    icon: User 
-  },
-  { 
-    id: 'accessibility', 
-    title: 'Tillgänglighet', 
-    description: 'Anpassa efter dina behov', 
-    icon: Accessibility 
-  },
-  { 
-    id: 'notifications', 
-    title: 'Notifikationer', 
-    description: 'Välj hur du vill bli kontaktad', 
-    icon: Bell 
-  },
-  { 
-    id: 'appearance', 
-    title: 'Utseende', 
-    description: 'Anpassa portalens utseende', 
-    icon: Palette 
-  },
-  { 
-    id: 'privacy', 
-    title: 'Integritet', 
-    description: 'Hantera dina sekretessinställningar', 
-    icon: Shield 
-  },
-  { 
-    id: 'security', 
-    title: 'Säkerhet', 
-    description: 'Ändra lösenord och tvåfaktorsauth', 
-    icon: Lock 
-  },
+  { id: 'profile', title: 'Profil', description: 'Hantera dina personuppgifter', icon: User },
+  { id: 'accessibility', title: 'Tillgänglighet', description: 'Anpassa efter dina behov', icon: Accessibility },
+  { id: 'notifications', title: 'Notifikationer', description: 'Välj hur du vill bli kontaktad', icon: Bell },
+  { id: 'appearance', title: 'Utseende', description: 'Anpassa portalens utseende', icon: Palette },
+  { id: 'privacy', title: 'Integritet', description: 'Hantera dina sekretessinställningar', icon: Shield },
+  { id: 'security', title: 'Säkerhet', description: 'Ändra lösenord och tvåfaktorsauth', icon: Lock },
 ]
 
 export default function Settings() {
@@ -71,6 +38,7 @@ export default function Settings() {
   const [showMobileMenu, setShowMobileMenu] = useState(false)
   const [isLoadingProfile, setIsLoadingProfile] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   
   // Profile data
   const [profileData, setProfileData] = useState({
@@ -81,31 +49,21 @@ export default function Settings() {
     bio: '',
   })
   
-  // Auth store
   const { user } = useAuthStore()
   
-  // Settings from store
   const {
-    calmMode,
-    toggleCalmMode,
-    emailNotifications,
-    setEmailNotifications,
-    pushNotifications,
-    setPushNotifications,
-    weeklySummary,
-    setWeeklySummary,
-    highContrast,
-    toggleHighContrast,
-    largeText,
-    toggleLargeText,
+    calmMode, toggleCalmMode,
+    emailNotifications, setEmailNotifications,
+    pushNotifications, setPushNotifications,
+    weeklySummary, setWeeklySummary,
+    highContrast, toggleHighContrast,
+    largeText, toggleLargeText,
   } = useSettingsStore()
 
-  // Load profile data
   useEffect(() => {
     const loadProfile = async () => {
       try {
         setIsLoadingProfile(true)
-        // First set from auth store
         if (user) {
           setProfileData(prev => ({
             ...prev,
@@ -114,8 +72,6 @@ export default function Settings() {
             email: user.email || '',
           }))
         }
-        
-        // Then try to load full profile from API
         const profile = await userApi.getProfile()
         if (profile) {
           setProfileData({
@@ -132,11 +88,9 @@ export default function Settings() {
         setIsLoadingProfile(false)
       }
     }
-    
     loadProfile()
   }, [user])
 
-  // Save profile
   const handleSaveProfile = async () => {
     try {
       setIsSaving(true)
@@ -146,110 +100,96 @@ export default function Settings() {
         phone: profileData.phone,
         bio: profileData.bio,
       })
-      alert('Profilen sparades!')
     } catch (error) {
       console.error('Fel vid sparande av profil:', error)
-      alert('Kunde inte spara profilen. Försök igen.')
     } finally {
       setIsSaving(false)
     }
   }
 
-  // Aktiv sektion innehåll
   const renderSectionContent = () => {
     switch (activeSection) {
       case 'profile':
         return (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-900">Profilinställningar</h2>
+            <CardHeader 
+              title="Profilinställningar"
+              description="Hantera dina personuppgifter och profilbild"
+            />
             
             {isLoadingProfile ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
-              </div>
+              <LoadingState message="Laddar profil..." />
             ) : (
               <>
                 <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-                  <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
-                    <User size={32} className="text-teal-700" />
+                  <div className="w-20 h-20 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-full flex items-center justify-center">
+                    <User size={32} className="text-indigo-600" />
                   </div>
                   <div className="text-center sm:text-left">
-                    <button className="px-4 py-2 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors min-h-[44px]">
+                    <Button variant="secondary" size="sm">
                       Byt profilbild
-                    </button>
+                    </Button>
                     <p className="text-sm text-slate-500 mt-1">JPG, PNG eller GIF. Max 2MB.</p>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Förnamn</label>
-                    <input 
-                      type="text" 
+                <CardSection title="Personlig information">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label="Förnamn"
                       value={profileData.firstName}
                       onChange={(e) => setProfileData({...profileData, firstName: e.target.value})}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
                     />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Efternamn</label>
-                    <input 
-                      type="text" 
+                    <Input
+                      label="Efternamn"
                       value={profileData.lastName}
                       onChange={(e) => setProfileData({...profileData, lastName: e.target.value})}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
-                    <input 
-                      type="email" 
+                </CardSection>
+
+                <CardSection title="Kontaktuppgifter">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Input
+                      label="E-post"
+                      type="email"
                       value={profileData.email}
                       disabled
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg bg-slate-50 text-slate-500 text-base cursor-not-allowed"
+                      hint="E-post kan inte ändras här"
                     />
-                    <p className="text-xs text-slate-400 mt-1">E-post kan inte ändras här</p>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
-                    <input 
-                      type="tel" 
+                    <Input
+                      label="Telefon"
+                      type="tel"
                       value={profileData.phone}
                       onChange={(e) => setProfileData({...profileData, phone: e.target.value})}
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent text-base"
                     />
                   </div>
-                </div>
+                </CardSection>
 
-                <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Om mig</label>
-                  <textarea 
+                <CardSection title="Om mig">
+                  <textarea
                     rows={3}
                     value={profileData.bio}
                     onChange={(e) => setProfileData({...profileData, bio: e.target.value})}
                     placeholder="Berätta kort om dig själv..."
-                    className="w-full px-4 py-3 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent resize-none text-base"
-                  />
-                </div>
-
-                <div className="flex justify-end pt-4">
-                  <button 
-                    onClick={handleSaveProfile}
-                    disabled={isSaving}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors min-h-[48px] disabled:opacity-50"
-                  >
-                    {isSaving ? (
-                      <>
-                        <Loader2 size={18} className="animate-spin" />
-                        Sparar...
-                      </>
-                    ) : (
-                      <>
-                        <Save size={18} />
-                        Spara ändringar
-                      </>
+                    className={cn(
+                      "w-full px-4 py-3 border border-slate-200 rounded-lg",
+                      "focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500",
+                      "resize-none text-base"
                     )}
-                  </button>
+                  />
+                </CardSection>
+
+                <div className="flex justify-end pt-4 border-t border-slate-100">
+                  <Button
+                    variant="primary"
+                    onClick={handleSaveProfile}
+                    isLoading={isSaving}
+                    leftIcon={<Save size={18} />}
+                    touchOptimized
+                  >
+                    Spara ändringar
+                  </Button>
                 </div>
               </>
             )}
@@ -259,69 +199,38 @@ export default function Settings() {
       case 'accessibility':
         return (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-900">Tillgänglighet</h2>
-            <p className="text-slate-500">Anpassa portalen efter dina behov och preferenser.</p>
+            <CardHeader 
+              title="Tillgänglighet"
+              description="Anpassa portalen efter dina behov och preferenser"
+            />
 
             <div className="space-y-4">
-              {/* High Contrast */}
-              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
-                <div>
-                  <h3 className="font-medium text-slate-900">Hög kontrast</h3>
-                  <p className="text-sm text-slate-500">Ökar kontrasten för bättre läsbarhet</p>
-                </div>
-                <button
-                  onClick={toggleHighContrast}
-                  className={cn(
-                    "w-14 h-8 rounded-full transition-colors relative",
-                    highContrast ? "bg-teal-600" : "bg-slate-300"
-                  )}
-                >
-                  <span className={cn(
-                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
-                    highContrast ? "translate-x-7" : "translate-x-1"
-                  )} />
-                </button>
-              </div>
+              <Card variant="flat" padding="sm">
+                <Toggle
+                  label="Hög kontrast"
+                  description="Ökar kontrasten för bättre läsbarhet"
+                  checked={highContrast}
+                  onChange={toggleHighContrast}
+                />
+              </Card>
 
-              {/* Large Text */}
-              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
-                <div>
-                  <h3 className="font-medium text-slate-900">Större text</h3>
-                  <p className="text-sm text-slate-500">Ökar textstorleken i hela appen</p>
-                </div>
-                <button
-                  onClick={toggleLargeText}
-                  className={cn(
-                    "w-14 h-8 rounded-full transition-colors relative",
-                    largeText ? "bg-teal-600" : "bg-slate-300"
-                  )}
-                >
-                  <span className={cn(
-                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
-                    largeText ? "translate-x-7" : "translate-x-1"
-                  )} />
-                </button>
-              </div>
+              <Card variant="flat" padding="sm">
+                <Toggle
+                  label="Större text"
+                  description="Ökar textstorleken i hela appen"
+                  checked={largeText}
+                  onChange={toggleLargeText}
+                />
+              </Card>
 
-              {/* Calm Mode */}
-              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
-                <div>
-                  <h3 className="font-medium text-slate-900">Lugnt läge</h3>
-                  <p className="text-sm text-slate-500">Reducerar animationer och distraktioner</p>
-                </div>
-                <button
-                  onClick={toggleCalmMode}
-                  className={cn(
-                    "w-14 h-8 rounded-full transition-colors relative",
-                    calmMode ? "bg-teal-600" : "bg-slate-300"
-                  )}
-                >
-                  <span className={cn(
-                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
-                    calmMode ? "translate-x-7" : "translate-x-1"
-                  )} />
-                </button>
-              </div>
+              <Card variant="flat" padding="sm">
+                <Toggle
+                  label="Lugnt läge"
+                  description="Reducerar animationer och distraktioner"
+                  checked={calmMode}
+                  onChange={toggleCalmMode}
+                />
+              </Card>
             </div>
           </div>
         )
@@ -329,69 +238,38 @@ export default function Settings() {
       case 'notifications':
         return (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-900">Notifikationer</h2>
-            <p className="text-slate-500">Välj hur du vill bli kontaktad om uppdateringar.</p>
+            <CardHeader 
+              title="Notifikationer"
+              description="Välj hur du vill bli kontaktad om uppdateringar"
+            />
 
             <div className="space-y-4">
-              {/* Email Notifications */}
-              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
-                <div>
-                  <h3 className="font-medium text-slate-900">E-postnotifikationer</h3>
-                  <p className="text-sm text-slate-500">Få uppdateringar via e-post</p>
-                </div>
-                <button
-                  onClick={() => setEmailNotifications(!emailNotifications)}
-                  className={cn(
-                    "w-14 h-8 rounded-full transition-colors relative",
-                    emailNotifications ? "bg-teal-600" : "bg-slate-300"
-                  )}
-                >
-                  <span className={cn(
-                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
-                    emailNotifications ? "translate-x-7" : "translate-x-1"
-                  )} />
-                </button>
-              </div>
+              <Card variant="flat" padding="sm">
+                <Toggle
+                  label="E-postnotifikationer"
+                  description="Få uppdateringar via e-post"
+                  checked={emailNotifications}
+                  onChange={() => setEmailNotifications(!emailNotifications)}
+                />
+              </Card>
 
-              {/* Push Notifications */}
-              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
-                <div>
-                  <h3 className="font-medium text-slate-900">Push-notifikationer</h3>
-                  <p className="text-sm text-slate-500">Få notiser i webbläsaren</p>
-                </div>
-                <button
-                  onClick={() => setPushNotifications(!pushNotifications)}
-                  className={cn(
-                    "w-14 h-8 rounded-full transition-colors relative",
-                    pushNotifications ? "bg-teal-600" : "bg-slate-300"
-                  )}
-                >
-                  <span className={cn(
-                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
-                    pushNotifications ? "translate-x-7" : "translate-x-1"
-                  )} />
-                </button>
-              </div>
+              <Card variant="flat" padding="sm">
+                <Toggle
+                  label="Push-notifikationer"
+                  description="Få notiser i webbläsaren"
+                  checked={pushNotifications}
+                  onChange={() => setPushNotifications(!pushNotifications)}
+                />
+              </Card>
 
-              {/* Weekly Summary */}
-              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
-                <div>
-                  <h3 className="font-medium text-slate-900">Veckosammanfattning</h3>
-                  <p className="text-sm text-slate-500">Få en veckovis sammanfattning</p>
-                </div>
-                <button
-                  onClick={() => setWeeklySummary(!weeklySummary)}
-                  className={cn(
-                    "w-14 h-8 rounded-full transition-colors relative",
-                    weeklySummary ? "bg-teal-600" : "bg-slate-300"
-                  )}
-                >
-                  <span className={cn(
-                    "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
-                    weeklySummary ? "translate-x-7" : "translate-x-1"
-                  )} />
-                </button>
-              </div>
+              <Card variant="flat" padding="sm">
+                <Toggle
+                  label="Veckosammanfattning"
+                  description="Få en veckovis sammanfattning"
+                  checked={weeklySummary}
+                  onChange={() => setWeeklySummary(!weeklySummary)}
+                />
+              </Card>
             </div>
           </div>
         )
@@ -399,47 +277,45 @@ export default function Settings() {
       case 'appearance':
         return (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-900">Utseende</h2>
-            <p className="text-slate-500">Anpassa portalens utseende efter din smak.</p>
+            <CardHeader 
+              title="Utseende"
+              description="Anpassa portalens utseende efter din smak"
+            />
 
-            <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
+            <Card variant="flat" padding="sm">
               <div className="flex items-center gap-3">
                 {darkMode ? <Moon size={20} className="text-slate-600" /> : <Sun size={20} className="text-slate-600" />}
-                <div>
-                  <h3 className="font-medium text-slate-900">Mörkt läge</h3>
-                  <p className="text-sm text-slate-500">Byt till mörkt tema</p>
+                <div className="flex-1">
+                  <Toggle
+                    label="Mörkt läge"
+                    description="Byt till mörkt tema"
+                    checked={darkMode}
+                    onChange={() => setDarkMode(!darkMode)}
+                  />
                 </div>
               </div>
-              <button
-                onClick={() => setDarkMode(!darkMode)}
-                className={cn(
-                  "w-14 h-8 rounded-full transition-colors relative",
-                  darkMode ? "bg-teal-600" : "bg-slate-300"
-                )}
-              >
-                <span className={cn(
-                  "absolute top-1 w-6 h-6 bg-white rounded-full transition-transform",
-                  darkMode ? "translate-x-7" : "translate-x-1"
-                )} />
-              </button>
-            </div>
+            </Card>
           </div>
         )
 
       case 'privacy':
         return (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-900">Integritet</h2>
-            <p className="text-slate-500">Hantera dina sekretessinställningar.</p>
+            <CardHeader 
+              title="Integritet"
+              description="Hantera dina sekretessinställningar"
+            />
 
             <div className="space-y-4">
-              <div className="p-4 border border-slate-200 rounded-xl">
+              <Card variant="flat">
                 <h3 className="font-medium text-slate-900 mb-2">Dela aktivitet</h3>
                 <p className="text-sm text-slate-500 mb-3">Tillåt delning av anonymiserad användningsstatistik för att förbättra tjänsten.</p>
-                <button className="text-teal-600 font-medium text-sm">Läs mer om dataintegritet</button>
-              </div>
+                <button className="text-indigo-600 font-medium text-sm hover:text-indigo-700">
+                  Läs mer om dataintegritet
+                </button>
+              </Card>
 
-              <div className="p-4 border border-slate-200 rounded-xl">
+              <Card variant="flat">
                 <h3 className="font-medium text-slate-900 mb-2">Profilsynlighet</h3>
                 <p className="text-sm text-slate-500 mb-3">Välj vem som kan se din profil.</p>
                 <select className="w-full px-4 py-2 border border-slate-200 rounded-lg">
@@ -447,7 +323,7 @@ export default function Settings() {
                   <option>Arbetsförmedlare</option>
                   <option>Alla</option>
                 </select>
-              </div>
+              </Card>
             </div>
           </div>
         )
@@ -455,58 +331,47 @@ export default function Settings() {
       case 'security':
         return (
           <div className="space-y-6">
-            <h2 className="text-lg font-semibold text-slate-900">Säkerhet</h2>
-            <p className="text-slate-500">Hantera lösenord och säkerhetsinställningar.</p>
+            <CardHeader 
+              title="Säkerhet"
+              description="Hantera lösenord och säkerhetsinställningar"
+            />
 
             <div className="space-y-4">
-              <div className="p-4 border border-slate-200 rounded-xl">
-                <h3 className="font-medium text-slate-900 mb-2">Ändra lösenord</h3>
-                <div className="space-y-4 mt-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                      Nuvarande lösenord
-                    </label>
-                    <input 
-                      type="password" 
-                      placeholder="Ange ditt nuvarande lösenord"
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                      Nytt lösenord
-                    </label>
-                    <input 
-                      type="password" 
-                      placeholder="Ange nytt lösenord (minst 8 tecken)"
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
-                      Bekräfta nytt lösenord
-                    </label>
-                    <input 
-                      type="password" 
-                      placeholder="Upprepa det nya lösenordet"
-                      className="w-full px-4 py-3 border border-slate-200 rounded-lg text-base"
-                    />
-                  </div>
-                  <button className="w-full px-4 py-3 bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 min-h-[48px]">
+              <Card variant="flat">
+                <h3 className="font-medium text-slate-900 mb-4">Ändra lösenord</h3>
+                <div className="space-y-4">
+                  <Input
+                    label="Nuvarande lösenord"
+                    type="password"
+                    placeholder="Ange ditt nuvarande lösenord"
+                  />
+                  <Input
+                    label="Nytt lösenord"
+                    type="password"
+                    placeholder="Ange nytt lösenord (minst 8 tecken)"
+                  />
+                  <Input
+                    label="Bekräfta nytt lösenord"
+                    type="password"
+                    placeholder="Upprepa det nya lösenordet"
+                  />
+                  <Button variant="primary" touchOptimized fullWidth>
                     Uppdatera lösenord
-                  </button>
+                  </Button>
                 </div>
-              </div>
+              </Card>
 
-              <div className="flex items-center justify-between p-4 border border-slate-200 rounded-xl">
-                <div>
-                  <h3 className="font-medium text-slate-900">Tvåfaktorsautentisering</h3>
-                  <p className="text-sm text-slate-500">Lägg till extra säkerhet</p>
+              <Card variant="flat" padding="sm">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-medium text-slate-900">Tvåfaktorsautentisering</h3>
+                    <p className="text-sm text-slate-500">Lägg till extra säkerhet</p>
+                  </div>
+                  <Button variant="secondary" size="sm">
+                    Aktivera
+                  </Button>
                 </div>
-                <button className="px-4 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-50 min-h-[44px]">
-                  Aktivera
-                </button>
-              </div>
+              </Card>
             </div>
           </div>
         )
@@ -517,15 +382,13 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Inställningar</h1>
-        <p className="text-slate-500 mt-1 text-sm sm:text-base">Anpassa portalen efter dina behov</p>
-      </div>
-
+    <PageLayout
+      title="Inställningar"
+      description="Anpassa portalen efter dina behov"
+      showTabs={false}
+    >
       {/* Mobile: Dropdown menu */}
-      <div className="lg:hidden">
+      <div className="lg:hidden mb-6">
         <button
           onClick={() => setShowMobileMenu(!showMobileMenu)}
           className="w-full flex items-center justify-between p-4 bg-white border border-slate-200 rounded-xl"
@@ -536,8 +399,8 @@ export default function Settings() {
               const Icon = section?.icon || User
               return (
                 <>
-                  <div className="p-2 bg-teal-100 rounded-lg">
-                    <Icon size={20} className="text-teal-700" />
+                  <div className="p-2 bg-indigo-100 rounded-lg">
+                    <Icon size={20} className="text-indigo-600" />
                   </div>
                   <span className="font-medium text-slate-900">{section?.title}</span>
                 </>
@@ -561,13 +424,13 @@ export default function Settings() {
                   className={cn(
                     "w-full flex items-center gap-3 p-4 text-left transition-colors",
                     activeSection === section.id 
-                      ? 'bg-teal-50 text-teal-900' 
+                      ? 'bg-indigo-50 text-indigo-900' 
                       : 'hover:bg-slate-50'
                   )}
                 >
                   <div className={cn(
                     "p-2 rounded-lg",
-                    activeSection === section.id ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-600'
+                    activeSection === section.id ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-600'
                   )}>
                     <Icon size={18} />
                   </div>
@@ -587,33 +450,42 @@ export default function Settings() {
         <div className="hidden lg:block lg:col-span-1 space-y-2">
           {sections.map((section) => {
             const Icon = section.icon
+            const isActive = activeSection === section.id
             return (
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-4 rounded-xl transition-all text-left",
-                  activeSection === section.id 
-                    ? 'bg-teal-50 border-2 border-teal-500' 
-                    : 'bg-white border-2 border-transparent hover:bg-slate-50'
+                  "w-full flex items-center gap-3 p-4 rounded-xl transition-all text-left relative",
+                  isActive 
+                    ? 'bg-indigo-50' 
+                    : 'bg-white hover:bg-slate-50'
                 )}
               >
+                {/* Active indicator */}
+                {isActive && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-indigo-500 rounded-r-full" />
+                )}
+                
                 <div className={cn(
                   "p-2 rounded-lg",
-                  activeSection === section.id ? 'bg-teal-500 text-white' : 'bg-slate-100 text-slate-600'
+                  isActive ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-600'
                 )}>
                   <Icon size={20} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <h3 className={cn(
                     "font-semibold",
-                    activeSection === section.id ? 'text-teal-900' : 'text-slate-900'
+                    isActive ? 'text-indigo-900' : 'text-slate-900'
                   )}>
                     {section.title}
                   </h3>
                   <p className="text-sm text-slate-500 truncate">{section.description}</p>
                 </div>
-                <ChevronRight size={18} className="text-slate-400 flex-shrink-0" />
+                <ChevronRight size={18} className={cn(
+                  "flex-shrink-0 transition-colors",
+                  isActive ? 'text-indigo-500' : 'text-slate-400'
+                )} />
               </button>
             )
           })}
@@ -621,11 +493,11 @@ export default function Settings() {
 
         {/* Settings Content */}
         <div className="lg:col-span-2">
-          <div className="bg-white p-4 sm:p-6 rounded-xl border border-slate-200 shadow-sm">
+          <Card variant="elevated">
             {renderSectionContent()}
-          </div>
+          </Card>
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }

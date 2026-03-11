@@ -7,6 +7,7 @@ import { CompactWidgetFilter, type WidgetType } from '@/components/dashboard/Com
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
 import { MobileDashboard } from '@/components/dashboard/MobileDashboard'
 import { DashboardGridSkeleton } from '@/components/ui/Skeleton'
+import { StatCard, ErrorState, EmptyWidget } from '@/components/ui'
 import {
   CVWidget,
   CoverLetterWidget,
@@ -30,7 +31,11 @@ import {
   BatteryFull,
   ChevronDown,
   LayoutGrid,
-  TrendingUp
+  TrendingUp,
+  FileText,
+  Briefcase,
+  BookOpen,
+  Sparkles
 } from 'lucide-react'
 
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
@@ -120,14 +125,42 @@ function DesktopDashboard() {
 
   if (loading) {
     return (
-      <div className="space-y-4 max-w-7xl">
-        <div>
-          <div className="h-7 w-48 bg-slate-200 rounded animate-pulse mb-2" />
-          <div className="h-4 w-32 bg-slate-200 rounded animate-pulse" />
+      <PageLayout
+        title="Laddar..."
+        showTabs={false}
+        className="space-y-5"
+      >
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="bg-white rounded-xl border border-slate-200 p-4 animate-pulse">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-slate-200" />
+                <div className="flex-1">
+                  <div className="h-6 w-12 bg-slate-200 rounded mb-1" />
+                  <div className="h-3 w-20 bg-slate-200 rounded" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="h-14 w-full bg-white rounded-xl border border-slate-200 animate-pulse" />
         <DashboardGridSkeleton count={8} />
-      </div>
+      </PageLayout>
+    )
+  }
+
+  if (error) {
+    return (
+      <PageLayout
+        title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}!`}
+        showTabs={false}
+        className="space-y-5"
+      >
+        <ErrorState
+          title="Kunde inte ladda dashboard"
+          message="Något gick fel när vi hämtade din data. Försök igen."
+          onRetry={refetch}
+        />
+      </PageLayout>
     )
   }
 
@@ -142,35 +175,27 @@ function DesktopDashboard() {
     >
       {/* Professional Header Stats Bar */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
-            <LayoutGrid className="w-5 h-5 text-indigo-600" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-800">{widgetsToShow.length}</p>
-            <p className="text-xs text-slate-500">Aktiva moduler</p>
-          </div>
-        </div>
+        <StatCard
+          value={widgetsToShow.length}
+          label="Aktiva moduler"
+          icon={<LayoutGrid className="w-5 h-5" />}
+          color="indigo"
+        />
         
-        <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-green-600" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-800">{data?.cv.progress ?? 0}%</p>
-            <p className="text-xs text-slate-500">CV färdigt</p>
-          </div>
-        </div>
+        <StatCard
+          value={`${data?.cv.progress ?? 0}%`}
+          label="CV färdigt"
+          icon={<FileText className="w-5 h-5" />}
+          color="green"
+          trend={data?.cv.progress && data.cv.progress > 50 ? { value: 12, isPositive: true } : undefined}
+        />
         
-        <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
-            <Zap className="w-5 h-5 text-blue-600" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-800">{data?.jobs.savedCount ?? 0}</p>
-            <p className="text-xs text-slate-500">Sparade jobb</p>
-          </div>
-        </div>
+        <StatCard
+          value={data?.jobs.savedCount ?? 0}
+          label="Sparade jobb"
+          icon={<Briefcase className="w-5 h-5" />}
+          color="blue"
+        />
         
         {/* Energy Level Compact Selector */}
         <button
@@ -321,12 +346,14 @@ function DesktopDashboard() {
 
       {/* Empty state */}
       {widgetsToShow.length === 0 && (
-        <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-500 mb-2">Inga moduler synliga</p>
-          <p className="text-sm text-slate-400">
-            Klicka på "Moduler" ovan för att välja vad du vill se
-          </p>
-        </div>
+        <EmptyWidget
+          title="Inga moduler synliga"
+          description="Välj vilka moduler du vill visa på din dashboard"
+          action={{
+            label: "Visa alla moduler",
+            onClick: handleShowAll
+          }}
+        />
       )}
 
       {/* Quick Win Floating Button */}
