@@ -5,7 +5,7 @@
 
 import { cn } from '@/lib/utils'
 import { inputBase, labelBase, animations, touch } from '@/styles/design-system'
-import { AlertCircle, Eye, EyeOff } from 'lucide-react'
+import { AlertCircle, Eye, EyeOff, ChevronDown } from 'lucide-react'
 import { useState, forwardRef } from 'react'
 
 // ============================================
@@ -205,31 +205,32 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
             {props.required && <span className="text-red-500 ml-1">*</span>}
           </label>
         )}
-        <select
-          ref={ref}
-          className={cn(
-            inputBase,
-            'appearance-none bg-white',
-            'bg-[url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e\")] bg-no-repeat bg-right-3 bg-[length:1.5em_1.5em]',
-            'pr-10',
-            error && 'border-red-300 focus:border-red-500 focus:ring-red-500/20',
-            className
-          )}
-          {...props}
-        >
-          {placeholder && (
-            <option value="" disabled>{placeholder}</option>
-          )}
-          {options.map((option) => (
-            <option 
-              key={option.value} 
-              value={option.value}
-              disabled={option.disabled}
-            >
-              {option.label}
-            </option>
-          ))}
-        </select>
+        <div className="relative">
+          <select
+            ref={ref}
+            className={cn(
+              inputBase,
+              'appearance-none bg-white pr-10',
+              error && 'border-red-300 focus:border-red-500 focus:ring-red-500/20',
+              className
+            )}
+            {...props}
+          >
+            {placeholder && (
+              <option value="" disabled>{placeholder}</option>
+            )}
+            {options.map((option) => (
+              <option 
+                key={option.value} 
+                value={option.value}
+                disabled={option.disabled}
+              >
+                {option.label}
+              </option>
+            ))}
+          </select>
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+        </div>
         {error && (
           <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
             <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
@@ -339,7 +340,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
             'peer-checked:bg-indigo-600',
             'peer-focus:ring-2 peer-focus:ring-indigo-500/20',
             'transition-colors duration-200',
-            'after:content-[\"\"] after:absolute after:top-0.5 after:left-0.5',
+            'after:content-[""] after:absolute after:top-0.5 after:left-0.5',
             'after:bg-white after:rounded-full after:w-5 after:h-5',
             'after:transition-transform after:duration-200',
             'peer-checked:after:translate-x-5'
