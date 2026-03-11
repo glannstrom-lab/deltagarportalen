@@ -41,8 +41,11 @@ export function Sidebar() {
   const isAdmin = user?.role === 'ADMIN' || isSuperAdmin
   const isConsultant = user?.role === 'CONSULTANT' || isAdmin
 
+  // Consistent collapsed item size
+  const collapsedItemClass = 'w-10 h-10 justify-center'
+
   const Tooltip = ({ children }: { children: React.ReactNode }) => (
-    <div className="absolute left-full ml-2 px-2.5 py-1 bg-slate-900 text-white text-xs font-medium rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 whitespace-nowrap z-50 shadow-lg pointer-events-none">
+    <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-900 text-white text-xs font-medium rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 whitespace-nowrap z-50 shadow-lg pointer-events-none">
       {children}
       <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-900" />
     </div>
@@ -75,7 +78,7 @@ export function Sidebar() {
         onClick={() => isMobile && setMobileOpen(false)}
         className={cn(
           'group relative flex items-center rounded-lg transition-all duration-150',
-          isExpanded ? 'gap-2.5 px-2.5 py-1.5 mx-1.5' : 'justify-center mx-auto w-9 h-9',
+          isExpanded ? 'gap-2.5 px-2.5 py-1.5 mx-2' : collapsedItemClass,
           isActive ? colors[variant].active : colors[variant].inactive
         )}
       >
@@ -91,10 +94,13 @@ export function Sidebar() {
   }
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      {/* Header with Logo and User */}
+    <div className={cn(
+      'flex flex-col h-full',
+      !isExpanded && 'items-center'
+    )}>
+      {/* Header */}
       <div className={cn(
-        'flex items-center h-14 border-b border-white/10 flex-shrink-0',
+        'flex items-center h-14 border-b border-white/10 flex-shrink-0 w-full',
         isExpanded ? 'px-3 justify-between' : 'justify-center'
       )}>
         <Link to="/dashboard" className="flex items-center gap-2.5 group">
@@ -117,21 +123,18 @@ export function Sidebar() {
         )}
       </div>
 
-      {/* User Profile - Compact */}
+      {/* User Profile */}
       <Link
         to="/profile"
         onClick={() => isMobile && setMobileOpen(false)}
         className={cn(
-          'group relative flex items-center border-b border-white/10 transition-all flex-shrink-0',
+          'group relative flex items-center border-b border-white/10 transition-all flex-shrink-0 w-full',
           isExpanded
             ? 'gap-2.5 px-3 py-2.5 hover:bg-white/5'
-            : 'justify-center py-2.5 hover:bg-white/10'
+            : 'justify-center py-2 hover:bg-white/10'
         )}
       >
-        <div className={cn(
-          'rounded-full bg-white/20 flex items-center justify-center flex-shrink-0',
-          isExpanded ? 'w-8 h-8' : 'w-8 h-8'
-        )}>
+        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
           <User size={14} className="text-white" />
         </div>
         {isExpanded && (
@@ -149,8 +152,11 @@ export function Sidebar() {
         {!isExpanded && <Tooltip>{user?.firstName || 'Profil'}</Tooltip>}
       </Link>
 
-      {/* Main Navigation - Compact */}
-      <nav className="flex-1 py-2 space-y-0.5 overflow-y-auto">
+      {/* Main Navigation */}
+      <nav className={cn(
+        'flex-1 py-2 space-y-0.5 overflow-y-auto w-full',
+        !isExpanded && 'flex flex-col items-center'
+      )}>
         {navItems.map((item) => {
           const isActive = location.pathname === item.path ||
             (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`))
@@ -160,7 +166,10 @@ export function Sidebar() {
         {/* Consultant Section */}
         {isConsultant && !isAdmin && (
           <>
-            <div className={cn('pt-2 mt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-2')}>
+            <div className={cn(
+              'pt-2 mt-2 border-t border-white/10',
+              isExpanded ? 'mx-3' : 'w-10'
+            )}>
               {isExpanded && (
                 <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
                   Konsulent
@@ -177,7 +186,10 @@ export function Sidebar() {
         {/* Admin Section */}
         {isAdmin && (
           <>
-            <div className={cn('pt-2 mt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-2')}>
+            <div className={cn(
+              'pt-2 mt-2 border-t border-white/10',
+              isExpanded ? 'mx-3' : 'w-10'
+            )}>
               {isExpanded && (
                 <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
                   Admin
@@ -192,17 +204,17 @@ export function Sidebar() {
         )}
       </nav>
 
-      {/* Bottom Actions - Compact */}
+      {/* Bottom Actions */}
       <div className={cn(
-        'border-t border-white/10 py-2 space-y-0.5 flex-shrink-0',
-        isExpanded ? 'px-1.5' : 'px-0'
+        'border-t border-white/10 py-2 space-y-0.5 flex-shrink-0 w-full',
+        !isExpanded && 'flex flex-col items-center'
       )}>
         <Link
           to="/settings"
           onClick={() => isMobile && setMobileOpen(false)}
           className={cn(
             'group relative flex items-center rounded-lg transition-all duration-150',
-            isExpanded ? 'gap-2.5 px-2.5 py-1.5' : 'justify-center mx-auto w-9 h-9',
+            isExpanded ? 'gap-2.5 px-2.5 py-1.5 mx-2' : collapsedItemClass,
             location.pathname === '/settings'
               ? 'bg-white/15 text-white'
               : 'text-white/60 hover:text-white hover:bg-white/10'
@@ -219,8 +231,8 @@ export function Sidebar() {
             isMobile && setMobileOpen(false)
           }}
           className={cn(
-            'group relative flex items-center rounded-lg transition-all duration-150 w-full',
-            isExpanded ? 'gap-2.5 px-2.5 py-1.5' : 'justify-center mx-auto w-9 h-9',
+            'group relative flex items-center rounded-lg transition-all duration-150',
+            isExpanded ? 'gap-2.5 px-2.5 py-1.5 mx-2 w-auto' : collapsedItemClass,
             'text-white/60 hover:text-red-300 hover:bg-red-500/15'
           )}
         >
@@ -229,11 +241,15 @@ export function Sidebar() {
           {!isExpanded && <Tooltip>Logga ut</Tooltip>}
         </button>
 
-        {/* Expand toggle at bottom when collapsed */}
+        {/* Expand toggle when collapsed */}
         {!isExpanded && !isMobile && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="group relative w-9 h-9 mx-auto flex items-center justify-center text-white/40 hover:text-white hover:bg-white/10 rounded-lg transition-all mt-1"
+            className={cn(
+              'group relative flex items-center rounded-lg transition-all duration-150 mt-1',
+              collapsedItemClass,
+              'text-white/40 hover:text-white hover:bg-white/10'
+            )}
             aria-label="Expandera"
           >
             <ChevronRight size={16} />
@@ -260,7 +276,7 @@ export function Sidebar() {
           className={cn(
             'h-screen sticky top-0 flex-shrink-0 transition-all duration-200 ease-out z-40',
             'bg-gradient-to-b from-indigo-600 to-indigo-700 shadow-lg',
-            isExpanded ? 'w-52' : 'w-14'
+            isExpanded ? 'w-52' : 'w-[60px]'
           )}
         >
           <SidebarContent />
