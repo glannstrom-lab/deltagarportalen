@@ -36,7 +36,7 @@ const checklistItems: ChecklistItem[] = [
     label: 'Välj din väg',
     description: 'Välj vad du vill fokusera på först',
     icon: Target,
-    path: '/onboarding',
+    path: '/dashboard',
     checkComplete: () => {
       const settings = localStorage.getItem('deltagarportal-settings')
       if (!settings) return false
