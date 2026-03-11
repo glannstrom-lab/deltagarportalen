@@ -418,7 +418,7 @@ export function BottomBar() {
   return (
     <>
       {/* Smart Bottom Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/80 px-4 py-2 z-40 lg:left-20 shadow-lg shadow-slate-200/50">
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200/80 px-4 py-2 z-30 shadow-lg shadow-slate-200/50">
         <div className="max-w-7xl mx-auto">
           
           {/* Övre rad - Stats & Primary Action */}
@@ -551,7 +551,7 @@ export function BottomBar() {
       </div>
 
       {/* Padding för att innehåll inte ska hamna bakom bottom bar */}
-      <div className="h-20" />
+      <div className="h-28" />
     </>
   )
 }

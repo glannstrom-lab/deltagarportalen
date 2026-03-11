@@ -13,37 +13,23 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
-  Sparkles,
-  Menu,
-  X
+  Sparkles
 } from 'lucide-react'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 // Sidebar widths
 const EXPANDED_WIDTH = 'w-52'
 const COLLAPSED_WIDTH = 'w-16'
 
 // Bottom bar height (Settings + Logout + Expand button when collapsed)
-const BOTTOM_BAR_HEIGHT_EXPANDED = 'pb-24' // ~96px for 2 items
-const BOTTOM_BAR_HEIGHT_COLLAPSED = 'pb-36' // ~144px for 3 items
+// Ökad padding för att säkerställa att inget innehåll täcks av bottom actions
+const BOTTOM_BAR_HEIGHT_EXPANDED = 'pb-32' // ~128px för 2 items + extra utrymme
+const BOTTOM_BAR_HEIGHT_COLLAPSED = 'pb-40' // ~160px för 3 items + extra utrymme
 
 export function Sidebar() {
   const location = useLocation()
   const { signOut, user } = useAuthStore()
   const [isExpanded, setIsExpanded] = useState(true)
-  const [isMobile, setIsMobile] = useState(false)
-  const [mobileOpen, setMobileOpen] = useState(false)
-
-  useEffect(() => {
-    const checkMobile = () => {
-      const mobile = window.innerWidth < 1024
-      setIsMobile(mobile)
-      if (mobile) setIsExpanded(true)
-    }
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
 
   const isSuperAdmin = user?.role === 'SUPERADMIN'
   const isAdmin = user?.role === 'ADMIN' || isSuperAdmin
@@ -108,7 +94,7 @@ export function Sidebar() {
       return (
         <Link
           to={to}
-          onClick={() => { onClick?.(); isMobile && setMobileOpen(false) }}
+          onClick={() => onClick?.()}
           className={cn(baseClasses, isExpanded ? expandedClasses : collapsedClasses)}
         >
           {content}
@@ -118,7 +104,7 @@ export function Sidebar() {
 
     return (
       <button
-        onClick={() => { onClick?.(); isMobile && setMobileOpen(false) }}
+        onClick={() => onClick?.()}
         className={cn(baseClasses, isExpanded ? expandedClasses : collapsedClasses)}
       >
         {content}
@@ -147,7 +133,7 @@ export function Sidebar() {
             )}
           </Link>
 
-          {isExpanded && !isMobile && (
+          {isExpanded && (
             <button
               onClick={() => setIsExpanded(false)}
               className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-md transition-all"
@@ -161,7 +147,6 @@ export function Sidebar() {
         {/* User Profile */}
         <Link
           to="/profile"
-          onClick={() => isMobile && setMobileOpen(false)}
           className={cn(
             'group relative flex items-center border-b border-white/10 transition-all',
             isExpanded
@@ -279,7 +264,7 @@ export function Sidebar() {
         />
 
         {/* Expand toggle when collapsed */}
-        {!isExpanded && !isMobile && (
+        {!isExpanded && (
           <button
             onClick={() => setIsExpanded(true)}
             className="group relative flex items-center justify-center w-10 h-10 mx-auto rounded-lg transition-all duration-150 mt-1 text-white/40 hover:text-white hover:bg-white/10"
@@ -294,58 +279,15 @@ export function Sidebar() {
   )
 
   return (
-    <>
-      {/* Mobile Overlay */}
-      {isMobile && mobileOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden backdrop-blur-sm"
-          onClick={() => setMobileOpen(false)}
-        />
+    <aside
+      className={cn(
+        'h-screen sticky top-0 shrink-0 transition-all duration-200 ease-out z-40',
+        'bg-gradient-to-b from-indigo-600 to-indigo-700 shadow-lg',
+        isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH
       )}
-
-      {/* Desktop Sidebar */}
-      {!isMobile && (
-        <aside
-          className={cn(
-            'h-screen sticky top-0 shrink-0 transition-all duration-200 ease-out z-40',
-            'bg-gradient-to-b from-indigo-600 to-indigo-700 shadow-lg',
-            isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH
-          )}
-        >
-          <SidebarContent />
-        </aside>
-      )}
-
-      {/* Mobile */}
-      {isMobile && (
-        <>
-          <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className={cn(
-              'fixed top-3 left-3 z-50 w-10 h-10 rounded-lg flex items-center justify-center lg:hidden transition-all',
-              mobileOpen
-                ? 'bg-white/20 text-white'
-                : 'bg-white text-slate-700 shadow-md'
-            )}
-            aria-label={mobileOpen ? 'Stäng meny' : 'Öppna meny'}
-          >
-            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
-          </button>
-
-          <aside
-            className={cn(
-              'fixed inset-y-0 left-0 z-50 lg:hidden',
-              'bg-gradient-to-b from-indigo-600 to-indigo-700 shadow-xl',
-              'transform transition-transform duration-200 ease-out',
-              EXPANDED_WIDTH,
-              mobileOpen ? 'translate-x-0' : '-translate-x-full'
-            )}
-          >
-            <SidebarContent />
-          </aside>
-        </>
-      )}
-    </>
+    >
+      <SidebarContent />
+    </aside>
   )
 }
 

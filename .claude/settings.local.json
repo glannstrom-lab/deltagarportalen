@@ -9,7 +9,11 @@
       "Bash(tasklist:*)",
       "Bash(taskkill:*)",
       "Bash(npm run dev)",
-      "Bash(npm install:*)"
+      "Bash(npm install:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: redesign sidebar with modern professional look\n\n- Add gradient background with subtle shadow\n- Implement vertical accent bar for active navigation items\n- Improve tooltips with elegant dark styling and animations\n- Enhance user profile section with gradient avatar and role display\n- Add smooth hover animations with icon scaling\n- Improve section labels for Admin and Consultant areas\n- Widen sidebar for better readability \\(256px expanded, 72px collapsed\\)\n- Add expand/collapse toggle at bottom when collapsed\n- Improve mobile drawer with backdrop blur effect\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ]
   }
 }

@@ -1,13 +1,33 @@
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { 
+  Menu, X, User, Settings, LogOut, 
+  LayoutDashboard, FileText, Mail, Briefcase, Target, 
+  Compass, Dumbbell, BookHeart, BookOpen, Bookmark 
+} from 'lucide-react'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
 import { BottomBar } from './layout/BottomBar'
-import { MobileNav } from './MobileNav'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
+import { useAuthStore } from '@/stores/authStore'
+
+// Mobila navigeringsitems - synkade med Sidebar navigation.ts
+const mobileNavItems = [
+  { to: '/dashboard', label: 'Översikt', icon: LayoutDashboard },
+  { to: '/dashboard/cv', label: 'CV', icon: FileText },
+  { to: '/dashboard/cover-letter', label: 'Personligt brev', icon: Mail },
+  { to: '/dashboard/job-search', label: 'Sök jobb', icon: Briefcase },
+  { to: '/dashboard/career', label: 'Karriär', icon: Target },
+  { to: '/dashboard/interest-guide', label: 'Intresseguide', icon: Compass },
+  { to: '/dashboard/exercises', label: 'Övningar', icon: Dumbbell },
+  { to: '/dashboard/diary', label: 'Dagbok', icon: BookHeart },
+  { to: '/dashboard/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
+  { to: '/dashboard/resources', label: 'Resurser', icon: Bookmark },
+]
 
 export default function Layout() {
   const { isMobile } = useMobileOptimizer()
@@ -27,11 +47,8 @@ export default function Layout() {
       )}
       style={{ backgroundColor: '#eef2ff' }}
     >
-      {/* Sidebar - döljs på mobil */}
-      <div className={cn(
-        'hidden lg:block',
-        isMobile && '!hidden'
-      )}>
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block">
         <Sidebar />
       </div>
       
@@ -48,7 +65,7 @@ export default function Layout() {
           id="main-content"
           className={cn(
             'flex-1 overflow-auto',
-            isMobile ? 'p-4' : 'p-6' // Ingen extra padding för bottom nav på mobil
+            isMobile ? 'p-4' : 'p-6'
           )}
           tabIndex={-1}
         >
@@ -60,12 +77,9 @@ export default function Layout() {
           </div>
         </main>
         
-        {/* Desktop footer */}
+        {/* Desktop footer - synkad med Sidebar z-index hierarki */}
         {!isMobile && showBars && <BottomBar />}
       </div>
-      
-      {/* Mobil sidomeny (hamburger) - ingen bottom nav */}
-      {isMobile && showBars && <MobileNav />}
       
       {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
       {showBackButton && <MobileBackButton />}
@@ -78,11 +92,6 @@ export default function Layout() {
 }
 
 // Mobil topbar med meny-knapp och profil
-import { useState } from 'react'
-import { Menu, X, User, ChevronLeft } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useAuthStore } from '@/stores/authStore'
-
 function MobileTopBar() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -90,50 +99,21 @@ function MobileTopBar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
   
-  const currentDate = new Date().toLocaleDateString('sv-SE', { 
-    weekday: 'short', 
-    day: 'numeric',
-    month: 'short'
-  })
-  
-  // Hämta sidtitel baserat på path
+  // Hämta sidtitel baserat på path - synkad med navItems
   const getPageTitle = () => {
     const path = location.pathname
-    if (path === '/') return 'Översikt'
-    if (path.includes('cv')) return 'CV'
-    if (path.includes('cover-letter')) return 'Personligt brev'
-    if (path.includes('job-search')) return 'Sök jobb'
-    if (path.includes('job-tracker')) return 'Ansökningar'
-    if (path.includes('knowledge')) return 'Kunskapsbank'
-    if (path.includes('interest')) return 'Intresseguiden'
-    if (path.includes('career')) return 'Karriär'
-    if (path.includes('diary')) return 'Dagbok'
-    if (path.includes('wellness')) return 'Mående'
-    if (path.includes('profile')) return 'Profil'
-    if (path.includes('settings')) return 'Inställningar'
-    return ''
+    const navItem = mobileNavItems.find(item => 
+      path === item.to || path.startsWith(item.to + '/')
+    )
+    return navItem?.label || ''
   }
   
   const title = getPageTitle()
   
   const handleLogout = async () => {
     await signOut()
-    navigate('/')
+    navigate('/login')
   }
-  
-  // Meny-items
-  const menuItems = [
-    { to: '/dashboard', label: 'Översikt' },
-    { to: '/dashboard/cv', label: 'CV-byggare' },
-    { to: '/dashboard/cover-letter', label: 'Personligt brev' },
-    { to: '/dashboard/interest-guide', label: 'Intresseguiden' },
-    { to: '/job-search', label: 'Sök jobb' },
-    { to: '/job-tracker', label: 'Ansökningar' },
-    { to: '/career', label: 'Karriär' },
-    { to: '/knowledge-base', label: 'Kunskapsbank' },
-    { to: '/diary', label: 'Dagbok' },
-    { to: '/wellness', label: 'Mående' },
-  ]
   
   return (
     <>
@@ -177,7 +157,7 @@ function MobileTopBar() {
         />
       )}
       
-      {/* Sidomeny (höger) */}
+      {/* Sidomeny (höger) - Huvudnavigation synkad med Desktop Sidebar */}
       <div 
         className={cn(
           'fixed top-0 right-0 bottom-0 bg-white z-50 shadow-xl',
@@ -197,33 +177,44 @@ function MobileTopBar() {
           </button>
         </div>
         
-        {/* Meny-länkar */}
-        <nav className="p-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              onClick={() => setIsMenuOpen(false)}
-              className={cn(
-                'flex items-center px-4 py-3 rounded-xl transition-colors',
-                location.pathname === item.to || location.pathname.startsWith(item.to + '/')
-                  ? 'bg-violet-100 text-violet-700 font-medium'
-                  : 'text-slate-700 hover:bg-slate-100'
-              )}
-            >
-              {item.label}
-            </Link>
-          ))}
+        {/* Meny-länkar - synkade med Desktop Sidebar */}
+        <nav className="p-2 space-y-1">
+          {mobileNavItems.map((item) => {
+            const Icon = item.icon
+            const isActive = location.pathname === item.to || location.pathname.startsWith(item.to + '/')
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                onClick={() => setIsMenuOpen(false)}
+                className={cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
+                  isActive
+                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    : 'text-slate-700 hover:bg-slate-100'
+                )}
+              >
+                <Icon className="w-5 h-5" />
+                <span>{item.label}</span>
+              </Link>
+            )
+          })}
         </nav>
         
-        {/* Footer i meny */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom">
+        {/* Footer i meny - Inställningar synkad med Sidebar */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom space-y-1">
           <Link
             to="/settings"
             onClick={() => setIsMenuOpen(false)}
-            className="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
+            className={cn(
+              'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
+              location.pathname === '/settings'
+                ? 'bg-violet-100 text-violet-700 font-medium'
+                : 'text-slate-700 hover:bg-slate-100'
+            )}
           >
-            Inställningar
+            <Settings className="w-5 h-5" />
+            <span>Inställningar</span>
           </Link>
         </div>
       </div>
@@ -286,12 +277,13 @@ function MobileTopBar() {
           </nav>
         </div>
         
-        {/* Logga ut */}
+        {/* Logga ut - synkad med Sidebar */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom">
           <button
             onClick={handleLogout}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-red-50 text-red-600 rounded-xl font-medium hover:bg-red-100 transition-colors"
           >
+            <LogOut className="w-5 h-5" />
             Logga ut
           </button>
         </div>
