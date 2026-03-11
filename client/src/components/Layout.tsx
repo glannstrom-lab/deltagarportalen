@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { 
   Menu, X, User, Settings, LogOut, 
   LayoutDashboard, FileText, Mail, Briefcase, Target, 
-  Compass, Dumbbell, BookHeart, BookOpen, Bookmark 
+  Compass, Dumbbell, Heart, BookOpen, Bookmark 
 } from 'lucide-react'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
@@ -24,7 +24,7 @@ const mobileNavItems = [
   { to: '/dashboard/career', label: 'Karriär', icon: Target },
   { to: '/dashboard/interest-guide', label: 'Intresseguide', icon: Compass },
   { to: '/dashboard/exercises', label: 'Övningar', icon: Dumbbell },
-  { to: '/dashboard/diary', label: 'Dagbok', icon: BookHeart },
+  { to: '/dashboard/diary', label: 'Hälsa', icon: Heart },
   { to: '/dashboard/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
   { to: '/dashboard/resources', label: 'Resurser', icon: Bookmark },
 ]

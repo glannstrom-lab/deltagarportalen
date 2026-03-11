@@ -10,7 +10,7 @@ import {
   Target,
   Shield,
   Users,
-  BookHeart,
+  Heart,
   Bookmark,
 } from 'lucide-react'
 
@@ -23,7 +23,7 @@ export const navItems = [
   { path: '/dashboard/career', label: 'Karriär', icon: Target },
   { path: '/dashboard/interest-guide', label: 'Intresseguide', icon: Compass },
   { path: '/dashboard/exercises', label: 'Övningar', icon: Dumbbell },
-  { path: '/dashboard/diary', label: 'Dagbok', icon: BookHeart },
+  { path: '/dashboard/diary', label: 'Dagbok', icon: Heart },
   { path: '/dashboard/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
   { path: '/dashboard/resources', label: 'Resurser', icon: Bookmark },
 ]

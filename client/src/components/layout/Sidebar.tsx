@@ -22,9 +22,8 @@ const EXPANDED_WIDTH = 'w-52'
 const COLLAPSED_WIDTH = 'w-16'
 
 // Bottom bar height (Settings + Logout + Expand button when collapsed)
-// Ökad padding för att säkerställa att inget innehåll täcks av bottom actions
-const BOTTOM_BAR_HEIGHT_EXPANDED = 'pb-32' // ~128px för 2 items + extra utrymme
-const BOTTOM_BAR_HEIGHT_COLLAPSED = 'pb-40' // ~160px för 3 items + extra utrymme
+const BOTTOM_BAR_HEIGHT_EXPANDED = 'pb-24' // ~96px för slim design
+const BOTTOM_BAR_HEIGHT_COLLAPSED = 'pb-28' // ~112px för slim design med 3 items
 
 export function Sidebar() {
   const location = useLocation()
@@ -75,8 +74,8 @@ export function Sidebar() {
       colors[variant]
     )
 
-    const expandedClasses = 'gap-2.5 px-3 py-2 mx-2'
-    const collapsedClasses = 'w-10 h-10 mx-auto justify-center'
+    const expandedClasses = 'gap-2 px-3 py-1.5 mx-2'
+    const collapsedClasses = 'w-8 h-8 mx-auto justify-center'
 
     const content = (
       <>
@@ -150,8 +149,8 @@ export function Sidebar() {
           className={cn(
             'group relative flex items-center border-b border-white/10 transition-all',
             isExpanded
-              ? 'gap-2.5 px-3 py-2.5 hover:bg-white/5'
-              : 'py-3 justify-center hover:bg-white/10'
+              ? 'gap-2 px-3 py-2 hover:bg-white/5'
+              : 'py-2 justify-center hover:bg-white/10'
           )}
         >
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
@@ -173,8 +172,8 @@ export function Sidebar() {
         </Link>
 
         {/* Main Navigation */}
-        <nav className="py-2">
-          <div className={cn(!isExpanded && 'space-y-1')}>
+        <nav className="py-1">
+          <div className={cn(!isExpanded && 'space-y-0.5')}>
             {navItems.map((item) => {
               const isActive = location.pathname === item.path ||
                 (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`))
@@ -192,13 +191,13 @@ export function Sidebar() {
 
           {/* Consultant Section */}
           {isConsultant && !isAdmin && (
-            <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+            <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
               {isExpanded && (
                 <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
                   Konsulent
                 </p>
               )}
-              <div className={cn(!isExpanded && 'space-y-1')}>
+              <div className={cn(!isExpanded && 'space-y-0.5')}>
                 {consultantNavItems.map((item) => {
                   const isActive = location.pathname.startsWith(item.path)
                   return (
@@ -218,13 +217,13 @@ export function Sidebar() {
 
           {/* Admin Section */}
           {isAdmin && (
-            <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+            <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
               {isExpanded && (
                 <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
                   Admin
                 </p>
               )}
-              <div className={cn(!isExpanded && 'space-y-1')}>
+              <div className={cn(!isExpanded && 'space-y-0.5')}>
                 {adminNavItems.map((item) => {
                   const isActive = location.pathname.startsWith(item.path)
                   return (
@@ -246,8 +245,8 @@ export function Sidebar() {
 
       {/* Bottom Actions - Absolute positioned */}
       <div className={cn(
-        'absolute bottom-0 left-0 right-0 border-t border-white/10 py-2 bg-gradient-to-b from-indigo-600 to-indigo-700',
-        !isExpanded && 'space-y-1'
+        'absolute bottom-0 left-0 right-0 border-t border-white/10 py-1 bg-gradient-to-b from-indigo-600 to-indigo-700',
+        !isExpanded && 'space-y-0.5'
       )}>
         <NavItem
           to="/settings"
@@ -267,7 +266,7 @@ export function Sidebar() {
         {!isExpanded && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="group relative flex items-center justify-center w-10 h-10 mx-auto rounded-lg transition-all duration-150 mt-1 text-white/40 hover:text-white hover:bg-white/10"
+            className="group relative flex items-center justify-center w-8 h-8 mx-auto rounded-lg transition-all duration-150 text-white/40 hover:text-white hover:bg-white/10"
             aria-label="Expandera"
           >
             <ChevronRight size={16} />
