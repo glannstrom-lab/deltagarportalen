@@ -355,6 +355,20 @@
 }
 
 @layer utilities {
+  /* Gentle bounce animation for mood emojis */
+  @keyframes bounce-subtle {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-3px);
+    }
+  }
+  
+  .animate-bounce-subtle {
+    animation: bounce-subtle 2s ease-in-out infinite;
+  }
+  
   /* Accent color background utilities */
   .bg-accent-orange {
     background-color: #f97316;

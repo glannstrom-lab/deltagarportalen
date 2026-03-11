@@ -232,7 +232,7 @@ function DesktopDashboard() {
     >
       {/* Guide Modal - Compact */}
       {showGuide && (
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 animate-in slide-in-from-top-2">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 animate-in slide-in-from-top-2 mb-6">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Compass className="w-5 h-5 text-indigo-600" />
@@ -297,12 +297,14 @@ function DesktopDashboard() {
       )}
 
       {/* Filter */}
-      <CompactWidgetFilter
-        visibleWidgets={widgetsToShow}
-        onToggleWidget={handleToggleWidget}
-        onShowAll={handleShowAll}
-        onHideAll={handleHideAll}
-      />
+      <div className="mb-6">
+        <CompactWidgetFilter
+          visibleWidgets={widgetsToShow}
+          onToggleWidget={handleToggleWidget}
+          onShowAll={handleShowAll}
+          onHideAll={handleHideAll}
+        />
+      </div>
 
       {/* Widget Grid */}
       <DashboardGrid>
