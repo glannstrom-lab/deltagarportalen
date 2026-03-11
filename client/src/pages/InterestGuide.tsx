@@ -12,8 +12,15 @@ import { QuestionCard } from '@/components/interest-guide/QuestionCard'
 import { SectionDots } from '@/components/interest-guide/SectionDots'
 import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
-import { Button } from '@/components/ui/Button'
-import { ArrowLeft, ArrowRight, Save, Trash2, Loader2, Sparkles, CheckCircle2 } from 'lucide-react'
+import { PageLayout } from '@/components/layout'
+import { 
+  Button,
+  Card,
+  LoadingState,
+  InfoCard,
+  IconButton
+} from '@/components/ui'
+import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, X } from 'lucide-react'
 import { interestGuideApi } from '@/services/cloudStorage'
 
 interface SavedProgress {
@@ -196,10 +203,10 @@ export default function InterestGuide() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mx-auto mb-4" />
-          <p className="text-slate-600">Laddar din profil...</p>
-        </div>
+        <LoadingState 
+          title="Laddar din profil..." 
+          size="lg"
+        />
       </div>
     )
   }
@@ -210,9 +217,9 @@ export default function InterestGuide() {
       <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-12 px-4">
         <div className="max-w-4xl mx-auto">
           {error && (
-            <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
+            <InfoCard variant="error" className="mb-6">
               {error}
-            </div>
+            </InfoCard>
           )}
           <IntroScreen
             onStart={handleStart}
@@ -284,9 +291,9 @@ export default function InterestGuide() {
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 py-6 px-4">
       <div className="max-w-2xl mx-auto">
         {error && (
-          <div className="mb-6 p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
+          <InfoCard variant="error" className="mb-6">
             {error}
-          </div>
+          </InfoCard>
         )}
         
         {/* Minimal header */}

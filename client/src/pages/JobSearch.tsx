@@ -9,7 +9,18 @@ import { Link } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
 
-import { LoadingState, ErrorState } from '@/components/ui/LoadingState';
+import { PageLayout } from '@/components/layout';
+import { 
+  LoadingState, 
+  ErrorState, 
+  EmptySearch,
+  Button,
+  IconButton,
+  FilterSheet,
+  Card,
+  Input,
+  Select
+} from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { CreateApplicationModal } from '@/components/workflow';
 
@@ -141,148 +152,21 @@ export default function JobSearch() {
   const totalPages = Math.ceil(jobs.length / JOBS_PER_PAGE);
   const paginatedJobs = jobs.slice((currentPage - 1) * JOBS_PER_PAGE, currentPage * JOBS_PER_PAGE);
 
-  // Mobile filter drawer komponent
-  const MobileFilterDrawer = () => {
-    if (!showMobileFilters) return null;
-
-    return (
-      <div className="fixed inset-0 z-50 lg:hidden">
-        {/* Backdrop */}
-        <div 
-          className="absolute inset-0 bg-black/50 transition-opacity"
-          onClick={() => setShowMobileFilters(false)}
-        />
-        
-        {/* Drawer */}
-        <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh] overflow-hidden flex flex-col animate-in slide-in-from-bottom">
-          {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-slate-100">
-            <h2 className="text-lg font-semibold text-slate-900">Filtrera jobb</h2>
-            <button 
-              onClick={() => setShowMobileFilters(false)}
-              className="p-2 hover:bg-slate-100 rounded-full transition-colors"
-            >
-              <X size={24} className="text-slate-500" />
-            </button>
-          </div>
-          
-          {/* Filter content */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-4">
-            {/* Kommun */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                <MapPin size={16} className="inline mr-1" />
-                Stad/Kommun
-              </label>
-              <input
-                type="text"
-                placeholder="t.ex. Stockholm..."
-                value={filters.municipality}
-                onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-base"
-              />
-            </div>
-
-            {/* Län */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                Län
-              </label>
-              <select
-                value={filters.region}
-                onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-base bg-white"
-              >
-                <option value="">Alla län</option>
-                {REGIONS.map((r) => (
-                  <option key={r.code} value={r.code}>{r.name}</option>
-                ))}
-              </select>
-            </div>
-
-            {/* Anställningstyp */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                <Briefcase size={16} className="inline mr-1" />
-                Anställningsform
-              </label>
-              <select
-                value={filters.employmentType}
-                onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-base bg-white"
-              >
-                <option value="">Alla typer</option>
-                <option value="Heltid">Heltid</option>
-                <option value="Deltid">Deltid</option>
-              </select>
-            </div>
-
-            {/* Publicerad */}
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
-                <Calendar size={16} className="inline mr-1" />
-                Publicerad
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { value: 'all', label: 'När som' },
-                  { value: 'today', label: 'Idag' },
-                  { value: 'week', label: 'Senaste veckan' },
-                  { value: 'month', label: 'Senaste månaden' },
-                ].map((opt) => (
-                  <button
-                    key={opt.value}
-                    onClick={() => setFilters({ ...filters, publishedWithin: opt.value as any })}
-                    className={cn(
-                      "px-3 py-3 rounded-xl text-sm font-medium transition-colors",
-                      filters.publishedWithin === opt.value
-                        ? "bg-violet-500 text-white"
-                        : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                    )}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-          
-          {/* Footer */}
-          <div className="p-4 border-t border-slate-100 space-y-3 bg-white">
-            {hasActiveFilters && (
-              <button
-                onClick={() => {
-                  setFilters(defaultFilters);
-                }}
-                className="w-full py-3 text-violet-600 font-medium hover:bg-violet-50 rounded-xl transition-colors"
-              >
-                Rensa alla filter
-              </button>
-            )}
-            <button
-              onClick={() => setShowMobileFilters(false)}
-              className="w-full py-3 bg-violet-500 text-white font-medium rounded-xl hover:bg-violet-600 transition-colors"
-            >
-              Visa {totalJobs} träffar
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // Filter count for badge
+  const activeFilterCount = [
+    filters.municipality,
+    filters.region,
+    filters.employmentType,
+    filters.publishedWithin !== 'all' ? '1' : ''
+  ].filter(Boolean).length;
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Sök jobb</h1>
-        <p className="text-slate-600 mt-1">
-          Hitta lediga jobb från Arbetsförmedlingen
-          {!loading && totalJobs > 0 && (
-            <span className="ml-2 text-violet-600 font-medium">• {totalJobs} träffar</span>
-          )}
-        </p>
-      </div>
+    <PageLayout
+      title="Sök jobb"
+      description={!loading && totalJobs > 0 ? `${totalJobs} lediga jobb från Arbetsförmedlingen` : 'Hitta lediga jobb från Arbetsförmedlingen'}
+      showTabs={false}
+      className="max-w-7xl mx-auto"
+    >
 
       {/* Sökruta */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-4">
@@ -527,17 +411,86 @@ export default function JobSearch() {
         </div>
       )}
 
+      {/* Filter Sheet för mobil */}
+      <FilterSheet
+        isOpen={showMobileFilters}
+        onClose={() => setShowMobileFilters(false)}
+        title="Filtrera jobb"
+        filterCount={activeFilterCount}
+        onClear={() => setFilters(defaultFilters)}
+        onApply={() => setShowMobileFilters(false)}
+      >
+        <div className="space-y-4">
+          <Input
+            label="Stad/Kommun"
+            placeholder="t.ex. Stockholm..."
+            value={filters.municipality}
+            onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
+            leftIcon={<MapPin size={16} />}
+          />
+          
+          <Select
+            label="Län"
+            value={filters.region}
+            onChange={(e) => setFilters({ ...filters, region: e.target.value })}
+            options={[
+              { value: '', label: 'Alla län' },
+              ...REGIONS.map((r) => ({ value: r.code, label: r.name }))
+            ]}
+          />
+          
+          <Select
+            label="Anställningsform"
+            value={filters.employmentType}
+            onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
+            options={[
+              { value: '', label: 'Alla typer' },
+              { value: 'Heltid', label: 'Heltid' },
+              { value: 'Deltid', label: 'Deltid' },
+            ]}
+          />
+          
+          <div>
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              <Calendar size={16} className="inline mr-1" />
+              Publicerad
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'all', label: 'När som' },
+                { value: 'today', label: 'Idag' },
+                { value: 'week', label: 'Senaste veckan' },
+                { value: 'month', label: 'Senaste månaden' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setFilters({ ...filters, publishedWithin: opt.value as any })}
+                  className={cn(
+                    "px-3 py-3 rounded-xl text-sm font-medium transition-colors",
+                    filters.publishedWithin === opt.value
+                      ? "bg-indigo-500 text-white"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
+                  )}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </FilterSheet>
+
       {/* Resultat */}
       <div>
         {/* Jobblista */}
         {loading ? (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 sm:p-12">
-            <LoadingState message="Söker jobb..." submessage="Hämtar från Arbetsförmedlingen" size="md" />
-          </div>
+          <Card className="p-8 sm:p-12">
+            <LoadingState title="Söker jobb..." message="Hämtar från Arbetsförmedlingen" />
+          </Card>
         ) : error ? (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 sm:p-12 text-center">
+          <Card className="p-8 sm:p-12">
             <ErrorState title="Något gick fel" message={error} onRetry={performSearch} />
-          </div>
+          </Card>
         ) : paginatedJobs.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {paginatedJobs.map((job) => (
@@ -692,22 +645,17 @@ export default function JobSearch() {
             )}
           </div>
         ) : (
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 sm:p-12 text-center">
-            <Search className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-slate-300" />
-            <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-2">
-              {filters.query || hasActiveFilters ? 'Inga jobb hittades' : 'Börja söka'}
-            </h3>
-            <p className="text-slate-500 max-w-md mx-auto text-sm sm:text-base">
-              {filters.query || hasActiveFilters 
-                ? 'Prova att ändra sökord eller filter för att hitta fler jobb.'
-                : 'Ange ett yrke eller sökord ovan för att hitta lediga jobb.'}
-            </p>
-          </div>
+          <Card className="p-8 sm:p-12">
+            <EmptySearch
+              query={filters.query}
+              onClear={() => setFilters(defaultFilters)}
+              suggestions={!filters.query && !hasActiveFilters ? ['Programmerare', 'Sjuksköterska', 'Lärare', 'Projektledare'] : undefined}
+            />
+          </Card>
         )}
       </div>
 
-      {/* Mobile Filter Drawer */}
-      <MobileFilterDrawer />
+
 
       {/* Job Detail Modal */}
       {selectedJob && (
@@ -825,6 +773,6 @@ export default function JobSearch() {
           }}
         />
       )}
-    </div>
+    </PageLayout>
   );
 }

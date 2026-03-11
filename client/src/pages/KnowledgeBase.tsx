@@ -10,8 +10,18 @@ import {
   Bookmark,
   Lightbulb,
   Target,
+  Search,
 } from 'lucide-react'
-
+import { PageLayout } from '@/components/layout'
+import { 
+  Card,
+  StatCard,
+  LoadingState,
+  EmptySearch,
+  InfoCard,
+  Button
+} from '@/components/ui'
+import { cn } from '@/lib/utils'
 
 interface Article {
   id: string
@@ -36,7 +46,6 @@ export default function KnowledgeBase() {
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedSubcategory, setSelectedSubcategory] = useState('')
 
-  // Load articles
   useEffect(() => {
     loadData()
   }, [])
@@ -56,10 +65,8 @@ export default function KnowledgeBase() {
     }
   }
 
-  // Filter articles
   const filteredArticles = useMemo(() => {
     return articles.filter((article) => {
-      // Search filter
       if (searchQuery) {
         const search = searchQuery.toLowerCase()
         const matchesSearch = 
@@ -71,12 +78,10 @@ export default function KnowledgeBase() {
         if (!matchesSearch) return false
       }
 
-      // Category filter
       if (selectedCategory && article.category !== selectedCategory) {
         return false
       }
 
-      // Subcategory filter
       if (selectedSubcategory && article.subcategory !== selectedSubcategory) {
         return false
       }
@@ -85,14 +90,12 @@ export default function KnowledgeBase() {
     })
   }, [articles, searchQuery, selectedCategory, selectedSubcategory])
 
-  // Get featured articles (highest rated)
   const featuredArticles = useMemo(() => {
     return [...articles]
       .filter(a => a.helpfulnessRating && a.helpfulnessRating >= 4.8)
       .slice(0, 2)
   }, [articles])
 
-  // Get recommended for new users
   const recommendedArticles = useMemo(() => {
     return articles.filter(a => 
       a.category === 'getting-started' || 
@@ -102,7 +105,6 @@ export default function KnowledgeBase() {
     ).slice(0, 3)
   }, [articles])
 
-  // Get articles in progress
   const getArticlesInProgress = () => {
     const inProgress: string[] = []
     articles.forEach(article => {
@@ -123,66 +125,49 @@ export default function KnowledgeBase() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div>
-      </div>
+      <PageLayout title="Kunskapsbank" showTabs={false}>
+        <LoadingState title="Laddar artiklar..." fullHeight />
+      </PageLayout>
     )
   }
 
   return (
-    <div className="max-w-7xl mx-auto">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-3">
-          <BookOpen className="text-teal-600" size={32} />
-          Kunskapsbank
-        </h1>
-        <p className="text-slate-600 mt-2 max-w-2xl">
-          Artiklar, guider och verktyg för din jobbsökarresa. 
-          Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt.
-        </p>
-      </div>
-
-      {/* Quick stats / Info */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-teal-50 to-teal-100 rounded-xl p-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-teal-600 rounded-lg flex items-center justify-center">
-            <BookOpen size={20} className="text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-800">{articles.length}</p>
-            <p className="text-sm text-slate-600">Artiklar</p>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-            <Target size={20} className="text-white" />
-          </div>
-          <div>
-            <p className="text-2xl font-bold text-slate-800">{categories.length}</p>
-            <p className="text-sm text-slate-600">Kategorier</p>
-          </div>
-        </div>
-        
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl p-4 flex items-center gap-3">
-          <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
-            <Lightbulb size={20} className="text-white" />
-          </div>
-          <div>
-            <p className="text-sm font-medium text-slate-800">Tips</p>
-            <p className="text-sm text-slate-600">Använd filter för att hitta rätt innehåll</p>
-          </div>
-        </div>
+    <PageLayout
+      title="Kunskapsbank"
+      description="Artiklar, guider och verktyg för din jobbsökarresa. Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt."
+      showTabs={false}
+      className="max-w-7xl mx-auto"
+    >
+      {/* Quick stats */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <StatCard
+          value={articles.length}
+          label="Artiklar"
+          icon={<BookOpen className="w-5 h-5" />}
+          color="indigo"
+        />
+        <StatCard
+          value={categories.length}
+          label="Kategorier"
+          icon={<Target className="w-5 h-5" />}
+          color="blue"
+        />
+        <InfoCard 
+          variant="info"
+          icon={<Lightbulb className="w-5 h-5" />}
+          title="Tips"
+        >
+          Använd filter för att hitta rätt innehåll
+        </InfoCard>
       </div>
 
       {/* Main content */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar */}
         <div className="lg:col-span-1">
-          <div className="card sticky top-4">
+          <Card variant="elevated" className="sticky top-4">
             <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <Sparkles size={18} className="text-teal-600" />
+              <Sparkles size={18} className="text-indigo-600" />
               Filter & Sök
             </h3>
             <CategoryFilter
@@ -192,13 +177,13 @@ export default function KnowledgeBase() {
               searchQuery={searchQuery}
               onSearchChange={setSearchQuery}
             />
-          </div>
+          </Card>
         </div>
 
         {/* Articles area */}
         <div className="lg:col-span-3 space-y-8">
           
-          {/* Featured articles (only on initial view) */}
+          {/* Featured articles */}
           {!searchQuery && !selectedCategory && featuredArticles.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
@@ -221,10 +206,10 @@ export default function KnowledgeBase() {
           {!searchQuery && !selectedCategory && articlesInProgress.length > 0 && (
             <section>
               <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Bookmark size={20} className="text-teal-600" />
+                <Bookmark size={20} className="text-indigo-600" />
                 Fortsätt läsa
               </h2>
-              <div className="bg-amber-50 rounded-xl p-4">
+              <Card variant="flat" className="bg-amber-50/50 border-amber-100">
                 <div className="space-y-2">
                   {articlesInProgress.map((article) => (
                     <EnhancedArticleCard 
@@ -234,7 +219,7 @@ export default function KnowledgeBase() {
                     />
                   ))}
                 </div>
-              </div>
+              </Card>
             </section>
           )}
 
@@ -268,13 +253,16 @@ export default function KnowledgeBase() {
             </div>
 
             {filteredArticles.length === 0 ? (
-              <div className="card text-center py-12">
-                <BookOpen size={48} className="mx-auto text-slate-300 mb-4" />
-                <p className="text-slate-600 font-medium">Inga artiklar hittades</p>
-                <p className="text-slate-500 text-sm mt-1">
-                  Prova att ändra dina filter eller sökord
-                </p>
-              </div>
+              <Card className="text-center py-12">
+                <EmptySearch
+                  query={searchQuery}
+                  onClear={() => {
+                    setSearchQuery('')
+                    setSelectedCategory('')
+                    setSelectedSubcategory('')
+                  }}
+                />
+              </Card>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {filteredArticles.map((article) => (
@@ -289,6 +277,6 @@ export default function KnowledgeBase() {
 
         </div>
       </div>
-    </div>
+    </PageLayout>
   )
 }
