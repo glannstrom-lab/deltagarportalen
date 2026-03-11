@@ -309,7 +309,7 @@ body { font-family: 'Calibri', sans-serif; margin: 40px; }
       'from-purple-500 via-pink-500 to-orange-500': '#a855f7, #ec4899, #f97316',
       'from-slate-100 to-slate-200': '#f1f5f9, #e2e8f0',
       'from-indigo-600 to-blue-700': '#4f46e5, #1d4ed8',
-      'from-amber-100 to-amber-200': '#fef3c7, '#fde68a',
+      'from-amber-100 to-amber-200': '#fef3c7, #fde68a',
       'from-cyan-500 to-blue-600': '#06b6d4, #2563eb',
       'from-rose-400 via-fuchsia-500 to-indigo-500': '#fb7185, #d946ef, #6366f1',
       'from-slate-700 to-slate-900': '#334155, #0f172a',
