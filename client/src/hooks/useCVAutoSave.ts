@@ -127,8 +127,15 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
     }, 2000) // 2 second debounce
   }, [data, isOnline, markSaving, markUnsaved, saveToLocalStorage, saveToServer])
   
-  // Auto-save when data changes
+  // Auto-save when data changes (men inte vid första renderingen)
+  const isFirstRender = useRef(true)
   useEffect(() => {
+    // Hoppa över första renderingen (när data laddas från servern)
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      return
+    }
+    
     triggerSave()
     
     return () => {

@@ -205,70 +205,53 @@ export default function CVBuilder() {
     }
   }, [])
   
-  // Separat effect för draft restoration som körs efter data laddats
+  // Separat effect för draft restoration som körs EFTER data laddats från servern
   useEffect(() => {
-    // Vänta tills data har laddats från servern
-    const checkAndRestoreDraft = async () => {
-      // Bara kolla en gång per session
-      if (hasCheckedDraft.current) return
-      
-      hasCheckedDraft.current = true
-      
-      // Ge tid för server-data att laddas
-      await new Promise(r => setTimeout(r, 1000))
-      
-      const draft = restoreDraft()
-      if (!draft) return
-      
-      // VIKTIGT: Vänta tills data är laddad från servern
-      // Kolla om vi fortfarande har tomma default-värden = data ej laddad än
-      const isDataLoaded = data.firstName !== undefined && 
-        (Array.isArray(data.workExperience) || Array.isArray(data.education))
-      
-      if (!isDataLoaded) {
-        // Data inte laddad än, återställ flaggan så vi kan försöka igen
-        hasCheckedDraft.current = false
-        return
-      }
-      
-      // Jämför draft med nuvarande data - använd samma fält för båda
-      const normalizeForCompare = (obj: any) => {
-        const relevantFields = ['firstName', 'lastName', 'title', 'summary', 'workExperience', 'education', 'skills', 'email', 'phone', 'location']
-        const normalized: any = {}
-        for (const key of relevantFields) {
-          const val = obj[key]
-          // Normalisera: tom sträng === undefined === null
-          if (val === undefined || val === null) {
-            normalized[key] = ''
-          } else if (Array.isArray(val)) {
-            normalized[key] = val.length === 0 ? '' : JSON.stringify(val)
-          } else {
-            normalized[key] = String(val)
-          }
+    // Vänta tills data har laddats från servern (förnamn eller efternamn finns = data laddad)
+    const isDataLoaded = data.firstName !== '' || data.lastName !== ''
+    
+    if (!isDataLoaded || hasCheckedDraft.current) return
+    
+    hasCheckedDraft.current = true
+    
+    const draft = restoreDraft()
+    if (!draft) return
+    
+    // Jämför draft med nuvarande data - använd samma fält för båda
+    const normalizeForCompare = (obj: any) => {
+      const relevantFields = ['firstName', 'lastName', 'title', 'summary', 'workExperience', 'education', 'skills', 'email', 'phone', 'location']
+      const normalized: any = {}
+      for (const key of relevantFields) {
+        const val = obj[key]
+        // Normalisera: tom sträng === undefined === null
+        if (val === undefined || val === null) {
+          normalized[key] = ''
+        } else if (Array.isArray(val)) {
+          normalized[key] = val.length === 0 ? '' : JSON.stringify(val)
+        } else {
+          normalized[key] = String(val)
         }
-        return JSON.stringify(normalized)
       }
-      
-      const draftContent = normalizeForCompare(draft)
-      const currentContent = normalizeForCompare(data)
-      
-      // Om draft är samma som nuvarande data, rensa det och fråga inte
-      if (draftContent === currentContent) {
-        clearDraft()
-        return
-      }
-      
-      // Fråga användaren
-      if (confirm('Du har ett osparat utkast som är nyare än din sparade version. Vill du återställa det?')) {
-        setData(prev => ({ ...prev, ...draft }))
-      } else {
-        // Om användaren inte vill återställa, rensa draftet
-        clearDraft()
-      }
+      return JSON.stringify(normalized)
     }
     
-    checkAndRestoreDraft()
-  }, [])
+    const draftContent = normalizeForCompare(draft)
+    const currentContent = normalizeForCompare(data)
+    
+    // Om draft är samma som nuvarande data, rensa det och fråga inte
+    if (draftContent === currentContent) {
+      clearDraft()
+      return
+    }
+    
+    // Fråga användaren
+    if (confirm('Du har ett osparat utkast som är nyare än din sparade version. Vill du återställa det?')) {
+      setData(prev => ({ ...prev, ...draft }))
+    } else {
+      // Om användaren inte vill återställa, rensa draftet
+      clearDraft()
+    }
+  }, [data.firstName, data.lastName]) // Kör när data laddats från servern
 
   const completedSteps = [
     1,
@@ -283,7 +266,22 @@ export default function CVBuilder() {
   const loadCV = async () => {
     try {
       const cv = await cvApi.getCV()
-      if (cv) setData(prev => ({ ...prev, ...cv }))
+      if (cv) {
+        setData(prev => ({ ...prev, ...cv }))
+        // Viktigt: Markera att server-data är laddad så draft inte triggar
+        localStorage.setItem('cv-last-saved', Date.now().toString())
+        // Rensa eventuellt gammalt draft om det finns
+        const draft = localStorage.getItem('cv-draft')
+        if (draft) {
+          try {
+            const parsed = JSON.parse(draft)
+            // Om draft är äldre än 5 minuter, rensa det
+            if (Date.now() - (parsed._timestamp || 0) > 5 * 60 * 1000) {
+              localStorage.removeItem('cv-draft')
+            }
+          } catch { }
+        }
+      }
     } catch (e) { console.error(e) }
   }
 
