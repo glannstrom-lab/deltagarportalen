@@ -24,9 +24,16 @@ import { PageLayout } from '@/components/layout'
 import { dashboardTabs } from '@/data/pageTabs'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { cn } from '@/lib/utils'
-import { Sparkles, Zap } from 'lucide-react'
+import { 
+  Zap, 
+  BatteryLow, 
+  BatteryMedium, 
+  BatteryFull,
+  ChevronDown,
+  LayoutGrid,
+  TrendingUp
+} from 'lucide-react'
 
-// Default widget sizes
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   cv: 'small',
   coverLetter: 'small',
@@ -38,7 +45,6 @@ const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   knowledge: 'small',
 }
 
-// Default visible widgets - anpassas efter energinivå
 const allWidgets: WidgetType[] = [
   'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'knowledge',
 ]
@@ -61,7 +67,6 @@ function DesktopDashboard() {
   const { energyLevel, hasCompletedOnboarding } = useSettingsStore()
   const { getVisibleWidgets, getEncouragingMessage, isLowEnergy } = useEnergyAdaptedContent()
 
-  // State for visible widgets - anpassas efter energinivå
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(
     getVisibleWidgets(allWidgets)
   )
@@ -69,12 +74,10 @@ function DesktopDashboard() {
   const [showEnergySelector, setShowEnergySelector] = useState(false)
   const [checklistDismissed, setChecklistDismissed] = useState(false)
 
-  // Update visible widgets when energy level changes
   useEffect(() => {
     setVisibleWidgets(getVisibleWidgets(allWidgets))
   }, [energyLevel])
 
-  // Toggle widget visibility
   const handleToggleWidget = useCallback((widgetId: WidgetType) => {
     setVisibleWidgets((prev) =>
       prev.includes(widgetId)
@@ -86,12 +89,10 @@ function DesktopDashboard() {
   const handleShowAll = useCallback(() => setVisibleWidgets(defaultVisibleWidgets), [])
   const handleHideAll = useCallback(() => setVisibleWidgets([]), [])
 
-  // Change widget size
   const handleSizeChange = useCallback((widgetId: WidgetType, size: WidgetSize) => {
     setWidgetSizes((prev) => ({ ...prev, [widgetId]: size }))
   }, [])
 
-  // Render widget with size selector wrapper
   const renderWidget = (widgetId: WidgetType, content: React.ReactNode) => {
     const size = widgetSizes[widgetId] || 'small'
 
@@ -116,7 +117,8 @@ function DesktopDashboard() {
     )
   }
 
-  // Loading state
+  const EnergyIcon = energyLevel === 'low' ? BatteryLow : energyLevel === 'medium' ? BatteryMedium : BatteryFull
+
   if (loading) {
     return (
       <div className="space-y-4 max-w-7xl">
@@ -130,40 +132,80 @@ function DesktopDashboard() {
     )
   }
 
-  // Säkerställ att vi alltid har widgets att visa
   const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : getVisibleWidgets(allWidgets)
 
   return (
     <PageLayout
-      title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}! 👋`}
+      title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}!`}
       description={getEncouragingMessage()}
       customTabs={dashboardTabs}
       showTabs={true}
-      className="space-y-4"
+      className="space-y-5"
     >
-      {/* Energy Level Quick Toggle */}
-      <div className="flex justify-end">
+      {/* Professional Header Stats Bar */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
+            <LayoutGrid className="w-5 h-5 text-indigo-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800">{widgetsToShow.length}</p>
+            <p className="text-xs text-slate-500">Aktiva moduler</p>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-green-50 flex items-center justify-center">
+            <TrendingUp className="w-5 h-5 text-green-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800">{data?.cv.progress ?? 0}%</p>
+            <p className="text-xs text-slate-500">CV färdigt</p>
+          </div>
+        </div>
+        
+        <div className="bg-white rounded-xl border border-slate-200 p-4 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center">
+            <Zap className="w-5 h-5 text-blue-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800">{data?.jobs.savedCount ?? 0}</p>
+            <p className="text-xs text-slate-500">Sparade jobb</p>
+          </div>
+        </div>
+        
+        {/* Energy Level Compact Selector */}
         <button
           onClick={() => setShowEnergySelector(!showEnergySelector)}
           className={cn(
-            'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
+            'rounded-xl border p-4 flex items-center gap-3 transition-all text-left',
             isLowEnergy
-              ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-              : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+              ? 'bg-blue-50 border-blue-200 hover:bg-blue-100'
+              : 'bg-amber-50 border-amber-200 hover:bg-amber-100'
           )}
         >
-          <Zap className="w-4 h-4" />
-          <span className="capitalize">
-            {energyLevel === 'low' && 'Låg energi'}
-            {energyLevel === 'medium' && 'Medium energi'}
-            {energyLevel === 'high' && 'Hög energi'}
-          </span>
+          <div className={cn(
+            'w-10 h-10 rounded-lg flex items-center justify-center',
+            isLowEnergy ? 'bg-blue-100' : 'bg-amber-100'
+          )}>
+            <EnergyIcon className={cn('w-5 h-5', isLowEnergy ? 'text-blue-600' : 'text-amber-600')} />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm font-medium text-slate-700 capitalize">
+              {energyLevel === 'low' && 'Låg energi'}
+              {energyLevel === 'medium' && 'Medium energi'}
+              {energyLevel === 'high' && 'Hög energi'}
+            </p>
+            <p className="text-xs text-slate-500 flex items-center gap-1">
+              Ändra <ChevronDown className={cn('w-3 h-3 transition-transform', showEnergySelector && 'rotate-180')} />
+            </p>
+          </div>
         </button>
       </div>
 
       {/* Energy Level Selector (Collapsible) */}
       {showEnergySelector && (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 animate-fade-in">
+        <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 animate-in slide-in-from-top-2">
           <EnergyLevelSelector 
             onSelect={() => setShowEnergySelector(false)}
             showDescription={true}

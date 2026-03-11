@@ -1,6 +1,6 @@
 /**
- * Improved Sidebar Component
- * Compact design with expand/collapse functionality
+ * Professional Compact Sidebar Component
+ * Clean, minimal design with reduced spacing
  */
 
 import { Link, useLocation } from 'react-router-dom'
@@ -13,7 +13,9 @@ import {
   User, 
   ChevronRight,
   ChevronLeft,
-  Sparkles
+  Sparkles,
+  Menu,
+  X
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
@@ -22,8 +24,8 @@ export function Sidebar() {
   const { signOut, user } = useAuthStore()
   const [isExpanded, setIsExpanded] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   
-  // Check if mobile on mount and resize
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024)
@@ -37,276 +39,274 @@ export function Sidebar() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
   
-  // Kontrollera användarens roll
   const isSuperAdmin = user?.role === 'SUPERADMIN'
   const isAdmin = user?.role === 'ADMIN' || isSuperAdmin
   const isConsultant = user?.role === 'CONSULTANT' || isAdmin
 
-  const sidebarWidth = isExpanded ? 'w-64' : 'w-16'
+  // Compact sidebar width: 64px, Expanded: 220px
+  const sidebarWidth = isExpanded ? 'w-[220px]' : 'w-16'
 
-  return (
-    <>
-      {/* Mobile Overlay */}
-      {isMobile && isExpanded && (
-        <div 
-          className="fixed inset-0 bg-black/30 z-40 lg:hidden"
-          onClick={() => setIsExpanded(false)}
-        />
-      )}
-
-      <aside 
+  const NavLink = ({ item, isActive }: { item: typeof navItems[0], isActive: boolean }) => {
+    const Icon = item.icon
+    
+    return (
+      <Link
+        to={item.path}
+        onClick={() => isMobile && setMobileOpen(false)}
         className={cn(
-          'h-screen sticky top-0 flex flex-col flex-shrink-0 transition-all duration-300 z-50',
-          sidebarWidth,
-          isMobile && !isExpanded && '-ml-16',
-          isMobile && isExpanded && 'fixed left-0'
+          'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative mx-2',
+          isActive 
+            ? 'bg-white/15 text-white shadow-sm' 
+            : 'text-white/60 hover:bg-white/10 hover:text-white'
         )}
-        style={{ backgroundColor: '#4f46e5' }}
+        title={!isExpanded ? item.label : undefined}
       >
-        {/* Logo / Toggle */}
-        <div className={cn(
-          'flex items-center py-4 px-3',
-          isExpanded ? 'justify-between' : 'justify-center'
-        )}>
-          {isExpanded ? (
-            <>
-              <Link to="/dashboard" className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center">
-                  <Sparkles className="w-5 h-5 text-indigo-600" />
-                </div>
-                <span className="text-white font-bold text-lg">Jobin</span>
-              </Link>
-              <button
-                onClick={() => setIsExpanded(false)}
-                className="p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-              >
-                <ChevronLeft size={18} />
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsExpanded(true)}
-              className="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
-              title="Expandera menyn"
-            >
-              <ChevronRight size={20} />
-            </button>
-          )}
-        </div>
+        <Icon size={18} className="flex-shrink-0" strokeWidth={isActive ? 2.5 : 2} />
+        {isExpanded && (
+          <span className="font-medium text-sm truncate leading-none">{item.label}</span>
+        )}
+        
+        {/* Tooltip for collapsed state */}
+        {!isExpanded && (
+          <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-slate-800 text-white text-xs rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 shadow-lg">
+            {item.label}
+            <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
+          </div>
+        )}
+      </Link>
+    )
+  }
 
-        {/* User Profile */}
+  const SidebarContent = () => (
+    <>
+      {/* Header - Compact */}
+      <div className="flex items-center h-14 px-3 border-b border-white/10">
+        {isExpanded ? (
+          <>
+            <Link to="/dashboard" className="flex items-center gap-2 flex-1">
+              <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <Sparkles className="w-4 h-4 text-indigo-600" />
+              </div>
+              <span className="text-white font-bold text-lg tracking-tight">Jobin</span>
+            </Link>
+            <button
+              onClick={() => setIsExpanded(false)}
+              className="p-1.5 text-white/50 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+            >
+              <ChevronLeft size={18} />
+            </button>
+          </>
+        ) : (
+          <div className="flex items-center justify-between w-full">
+            <Link to="/dashboard" className="flex justify-center w-full">
+              <div className="w-9 h-9 bg-white rounded-lg flex items-center justify-center shadow-sm">
+                <Sparkles className="w-5 h-5 text-indigo-600" />
+              </div>
+            </Link>
+            {!isMobile && (
+              <button
+                onClick={() => setIsExpanded(true)}
+                className="absolute -right-3 w-6 h-6 bg-indigo-600 text-white rounded-full shadow-md flex items-center justify-center hover:bg-indigo-700 transition-colors"
+              >
+                <ChevronRight size={14} />
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* User - Compact */}
+      <div className="px-2 py-2">
         <Link 
           to="/profile" 
           className={cn(
-            'mx-3 mb-4 p-2 rounded-xl transition-colors',
-            isExpanded ? 'flex items-center gap-3 hover:bg-white/10' : 'flex justify-center hover:bg-white/10'
+            'flex items-center gap-2 p-2 rounded-lg transition-colors hover:bg-white/10',
+            isExpanded ? '' : 'justify-center'
           )}
         >
-          <div 
-            className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-            style={{ backgroundColor: 'rgba(255,255,255,0.2)' }}
-          >
-            <User size={20} className="text-white" />
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 border border-white/10">
+            <User size={16} className="text-white" />
           </div>
           {isExpanded && (
-            <div className="min-w-0">
-              <p className="text-white font-medium text-sm truncate">
+            <div className="min-w-0 overflow-hidden">
+              <p className="text-white font-medium text-sm truncate leading-tight">
                 {user?.firstName || 'Användare'}
               </p>
-              <p className="text-white/60 text-xs truncate">
-                {user?.role === 'CONSULTANT' ? 'Arbetskonsulent' : 'Deltagare'}
+              <p className="text-white/40 text-xs truncate leading-tight">
+                {user?.role === 'CONSULTANT' ? 'Konsulent' : 'Deltagare'}
               </p>
             </div>
           )}
         </Link>
+      </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 flex flex-col gap-1 overflow-y-auto px-2">
-          {/* Standard navigation */}
-          {navItems.map((item) => {
-            const Icon = item.icon
-            const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-            
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => isMobile && setIsExpanded(false)}
-                className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
-                  isActive 
-                    ? 'bg-white text-indigo-600 shadow-sm' 
-                    : 'text-white/70 hover:bg-white/10 hover:text-white'
-                )}
-                title={!isExpanded ? item.label : undefined}
-              >
-                <Icon size={20} className="flex-shrink-0" />
-                {isExpanded && (
-                  <span className="font-medium text-sm truncate">{item.label}</span>
-                )}
-                
-                {/* Tooltip for collapsed state */}
-                {!isExpanded && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50">
-                    {item.label}
-                    <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
-                  </div>
-                )}
-              </Link>
-            )
-          })}
-          
-          {/* Admin-länkar */}
-          {isAdmin && (
-            <>
-              <div className={cn(
-                'my-2 border-t border-white/20',
-                isExpanded ? 'mx-3' : 'mx-2'
-              )} />
-              <div className={cn(
-                'text-xs font-medium text-white/40 mb-1',
-                isExpanded ? 'px-3' : 'text-center'
-              )}>
-                {isExpanded ? 'Admin' : '•'}
+      {/* Navigation - Compact */}
+      <nav className="flex-1 overflow-y-auto px-1 py-1 space-y-0.5">
+        {navItems.map((item) => {
+          const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+          return <NavLink key={item.path} item={item} isActive={isActive} />
+        })}
+        
+        {/* Admin Section */}
+        {isAdmin && (
+          <div className="mt-4 pt-3 border-t border-white/10">
+            {isExpanded && (
+              <div className="px-3 mb-1.5 text-[10px] font-semibold text-white/30 uppercase tracking-wider">
+                Admin
               </div>
-              {adminNavItems.map((item) => {
-                const Icon = item.icon
-                const isActive = location.pathname.startsWith(item.path)
-                
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => isMobile && setIsExpanded(false)}
-                    className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
-                      isActive 
-                        ? 'bg-amber-400 text-indigo-900 shadow-sm' 
-                        : 'text-amber-300 hover:bg-white/10 hover:text-white'
-                    )}
-                    title={!isExpanded ? item.label : undefined}
-                  >
-                    <Icon size={20} className="flex-shrink-0" />
-                    {isExpanded && (
-                      <span className="font-medium text-sm truncate">{item.label}</span>
-                    )}
-                    
-                    {!isExpanded && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50">
-                        {item.label}
-                        <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
-                      </div>
-                    )}
-                  </Link>
-                )
-              })}
-            </>
+            )}
+            {adminNavItems.map((item) => {
+              const Icon = item.icon
+              const isActive = location.pathname.startsWith(item.path)
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => isMobile && setMobileOpen(false)}
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative mx-2',
+                    isActive 
+                      ? 'bg-amber-400/90 text-indigo-900' 
+                      : 'text-amber-200/70 hover:bg-white/10 hover:text-white'
+                  )}
+                  title={!isExpanded ? item.label : undefined}
+                >
+                  <Icon size={18} className="flex-shrink-0" />
+                  {isExpanded && (
+                    <span className="font-medium text-sm truncate leading-none">{item.label}</span>
+                  )}
+                </Link>
+              )
+            })}
+          </div>
+        )}
+        
+        {/* Consultant Section */}
+        {isConsultant && !isAdmin && (
+          <div className="mt-4 pt-3 border-t border-white/10">
+            {isExpanded && (
+              <div className="px-3 mb-1.5 text-[10px] font-semibold text-white/30 uppercase tracking-wider">
+                Konsulent
+              </div>
+            )}
+            {consultantNavItems.map((item) => {
+              const Icon = item.icon
+              const isActive = location.pathname.startsWith(item.path)
+              
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => isMobile && setMobileOpen(false)}
+                  className={cn(
+                    'flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative mx-2',
+                    isActive 
+                      ? 'bg-teal-400/90 text-indigo-900' 
+                      : 'text-teal-200/70 hover:bg-white/10 hover:text-white'
+                  )}
+                  title={!isExpanded ? item.label : undefined}
+                >
+                  <Icon size={18} className="flex-shrink-0" />
+                  {isExpanded && (
+                    <span className="font-medium text-sm truncate leading-none">{item.label}</span>
+                  )}
+                </Link>
+              )
+            })}
+          </div>
+        )}
+      </nav>
+
+      {/* Bottom Actions - Compact */}
+      <div className="p-2 border-t border-white/10 space-y-0.5">
+        <Link
+          to="/settings"
+          onClick={() => isMobile && setMobileOpen(false)}
+          className={cn(
+            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-all group relative',
+            !isExpanded && 'justify-center'
           )}
-          
-          {/* Konsulent-länkar */}
-          {isConsultant && !isAdmin && (
-            <>
-              <div className={cn(
-                'my-2 border-t border-white/20',
-                isExpanded ? 'mx-3' : 'mx-2'
-              )} />
-              <div className={cn(
-                'text-xs font-medium text-white/40 mb-1',
-                isExpanded ? 'px-3' : 'text-center'
-              )}>
-                {isExpanded ? 'Konsulent' : '•'}
-              </div>
-              {consultantNavItems.map((item) => {
-                const Icon = item.icon
-                const isActive = location.pathname.startsWith(item.path)
-                
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => isMobile && setIsExpanded(false)}
-                    className={cn(
-                      'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
-                      isActive 
-                        ? 'bg-teal-400 text-indigo-900 shadow-sm' 
-                        : 'text-teal-300 hover:bg-white/10 hover:text-white'
-                    )}
-                    title={!isExpanded ? item.label : undefined}
-                  >
-                    <Icon size={20} className="flex-shrink-0" />
-                    {isExpanded && (
-                      <span className="font-medium text-sm truncate">{item.label}</span>
-                    )}
-                    
-                    {!isExpanded && (
-                      <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50">
-                        {item.label}
-                        <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
-                      </div>
-                    )}
-                  </Link>
-                )
-              })}
-            </>
-          )}
-        </nav>
-
-        {/* Bottom Actions */}
-        <div className={cn(
-          'flex flex-col gap-1 p-2 mt-auto',
-          !isExpanded && 'items-center'
-        )}>
-          <Link
-            to="/settings"
-            onClick={() => isMobile && setIsExpanded(false)}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:bg-white/10 hover:text-white transition-all group relative',
-              !isExpanded && 'justify-center w-10 h-10 p-0'
-            )}
-            title={!isExpanded ? 'Inställningar' : undefined}
-          >
-            <Settings size={20} />
-            {isExpanded && <span className="font-medium text-sm">Inställningar</span>}
-            
-            {!isExpanded && (
-              <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50">
-                Inställningar
-                <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
-              </div>
-            )}
-          </Link>
-          <button
-            onClick={() => {
-              signOut()
-              isMobile && setIsExpanded(false)
-            }}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/70 hover:bg-red-500/20 hover:text-red-200 transition-all group relative',
-              !isExpanded && 'justify-center w-10 h-10 p-0'
-            )}
-            title={!isExpanded ? 'Logga ut' : undefined}
-          >
-            <LogOut size={20} />
-            {isExpanded && <span className="font-medium text-sm">Logga ut</span>}
-            
-            {!isExpanded && (
-              <div className="absolute left-full ml-2 px-2 py-1 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50">
-                Logga ut
-                <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
-              </div>
-            )}
-          </button>
-        </div>
-      </aside>
-
-      {/* Mobile Toggle Button - Fixed at bottom */}
-      {isMobile && (
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="fixed bottom-4 left-4 z-50 w-12 h-12 bg-indigo-600 text-white rounded-full shadow-lg flex items-center justify-center lg:hidden"
+          title={!isExpanded ? 'Inställningar' : undefined}
         >
-          {isExpanded ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
+          <Settings size={18} />
+          {isExpanded && <span className="font-medium text-sm leading-none">Inställningar</span>}
+          
+          {!isExpanded && (
+            <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-slate-800 text-white text-xs rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 shadow-lg">
+              Inställningar
+              <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
+            </div>
+          )}
+        </Link>
+        <button
+          onClick={() => {
+            signOut()
+            isMobile && setMobileOpen(false)
+          }}
+          className={cn(
+            'w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/60 hover:bg-red-500/20 hover:text-red-200 transition-all group relative',
+            !isExpanded && 'justify-center'
+          )}
+          title={!isExpanded ? 'Logga ut' : undefined}
+        >
+          <LogOut size={18} />
+          {isExpanded && <span className="font-medium text-sm leading-none">Logga ut</span>}
+          
+          {!isExpanded && (
+            <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-slate-800 text-white text-xs rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all whitespace-nowrap z-50 shadow-lg">
+              Logga ut
+              <div className="absolute left-0 top-1/2 -translate-x-1 -translate-y-1/2 border-4 border-transparent border-r-slate-800" />
+            </div>
+          )}
         </button>
+      </div>
+    </>
+  )
+
+  return (
+    <>
+      {/* Mobile Overlay */}
+      {isMobile && mobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* Desktop Sidebar */}
+      {!isMobile && (
+        <aside 
+          className={cn(
+            'h-screen sticky top-0 flex flex-col flex-shrink-0 transition-all duration-300 ease-in-out z-50 bg-[#4f46e5]',
+            sidebarWidth
+          )}
+        >
+          <SidebarContent />
+        </aside>
+      )}
+
+      {/* Mobile Sidebar - Drawer */}
+      {isMobile && (
+        <>
+          {/* Mobile Toggle Button - Fixed */}
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="fixed top-4 left-4 z-50 w-10 h-10 bg-white shadow-lg rounded-xl flex items-center justify-center lg:hidden border border-slate-200"
+          >
+            {mobileOpen ? <X size={20} className="text-slate-700" /> : <Menu size={20} className="text-slate-700" />}
+          </button>
+
+          {/* Mobile Drawer */}
+          <aside 
+            className={cn(
+              'fixed inset-y-0 left-0 w-[260px] flex flex-col z-50 bg-[#4f46e5] transform transition-transform duration-300 ease-in-out lg:hidden',
+              mobileOpen ? 'translate-x-0' : '-translate-x-full'
+            )}
+          >
+            <SidebarContent />
+          </aside>
+        </>
       )}
     </>
   )
