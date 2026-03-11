@@ -21,6 +21,7 @@ import StorageTest from './pages/StorageTest'
 
 // Lazy-loaded sidor för bättre prestanda
 const Dashboard = lazy(() => import('./pages/Dashboard'))
+const CVPage = lazy(() => import('./pages/CVPage'))
 const CVBuilder = lazy(() => import('./pages/CVBuilder'))
 const CoverLetterGenerator = lazy(() => import('./pages/CoverLetterGenerator'))
 const InterestGuide = lazy(() => import('./pages/InterestGuide'))
@@ -219,10 +220,10 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="cv" element={
+        <Route path="cv/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
-              <CVBuilder />
+              <CVPage />
             </RouteErrorBoundary>
           </LazyRoute>
         } />

@@ -97,6 +97,13 @@ export function useAutoSave<T extends Record<string, unknown>>({
     }
   }, [storageKey])
 
+  // Cleanup vid unmount
+  useEffect(() => {
+    return () => {
+      hasRestoredRef.current = false
+    }
+  }, [])
+
   const restoreData = useCallback(() => {
     if (restoredData) {
       onRestore?.(restoredData)

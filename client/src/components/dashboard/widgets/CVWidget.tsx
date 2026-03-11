@@ -86,12 +86,12 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
           {progress}%
         </div>
         <p className="text-sm text-slate-500 text-center">
-          {progress === 0 ? 'Kom igång' : progress >= 80 ? 'Bra jobbat!' : 'Du är på väg'}
+          {progress === 0 ? 'Redo att börja när du vill' : progress >= 80 ? 'Bra jobbat!' : 'Du är på väg!'}
         </p>
         {atsScore > 0 && (
-          <div className="flex items-center gap-1 mt-2 text-xs text-slate-400">
+          <div className="flex items-center gap-1 mt-2 text-xs text-slate-400" title="CV-optimering för rekryteringssystem">
             <Award size={12} />
-            <span>ATS: {atsScore}</span>
+            <span>CV-optimering: {atsScore}/100</span>
           </div>
         )}
       </div>
@@ -142,10 +142,12 @@ function CVWidgetMedium({ hasCV, progress, atsScore, missingSections = [], loadi
               )}
             </div>
             <p className="text-xs text-slate-500">
-              {progress < 25 && 'Bra början!'}
-              {progress >= 25 && progress < 50 && 'Du gör framsteg!'}
-              {progress >= 50 && progress < 75 && 'Så bra det blir!'}
-              {progress >= 75 && 'Ser jättebra ut!'}
+              {progress === 0 && 'Redo att börja när du vill 💙'}
+              {progress > 0 && progress < 25 && 'Bra början! Varje steg räknas 🌱'}
+              {progress >= 25 && progress < 50 && 'Du gör framsteg! Fortsätt så 💪'}
+              {progress >= 50 && progress < 75 && 'Så bra det blir! Du är duktig ✨'}
+              {progress >= 75 && progress < 100 && 'Ser jättebra ut! Nästan klart 🌟'}
+              {progress === 100 && 'Allt klart! Vad duktig du är! 🎉'}
             </p>
           </div>
         </div>

@@ -53,7 +53,8 @@ export default function Login() {
   const handleDemoLogin = async () => {
     clearError()
     
-    const demoEmail = `demo${Date.now()}@example.com`
+    // Use a fixed demo account to avoid creating new users every time
+    const demoEmail = 'demo@jobin.se'
     const demoPassword = 'Demo123456!'
     
     setValue('email', demoEmail)
@@ -62,45 +63,31 @@ export default function Login() {
     const { error: signInError } = await signIn(demoEmail, demoPassword)
     
     if (signInError) {
-      // If login fails, try to register first
-      const { useAuthStore } = await import('../stores/authStore')
-      const { signUp } = useAuthStore.getState()
-      
-      const { error: signUpError } = await signUp({
-        email: demoEmail,
-        password: demoPassword,
-        firstName: 'Demo',
-        lastName: 'Användare',
-        role: 'USER',
-      })
-      
-      if (signUpError && !signUpError.includes('begränsad')) {
-        // Error handling
-      } else {
-        // Try login again after registration
-        await signIn(demoEmail, demoPassword)
-      }
+      // If login fails, the demo account might not exist yet
+      // Show a helpful message instead of auto-creating
+      console.error('Demo login failed:', signInError)
+      // The authError from store will be displayed
     }
   }
 
   // Show loading while checking auth state
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-teal-600 to-slate-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-slate-800 flex items-center justify-center">
         <Loader2 className="animate-spin text-white" size={48} />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-teal-600 to-slate-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-slate-800 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <span className="text-teal-700 font-bold text-2xl">D</span>
+            <span className="text-indigo-600 font-bold text-2xl">J</span>
           </div>
-          <h1 className="text-2xl font-bold text-white">Deltagarportalen</h1>
+          <h1 className="text-2xl font-bold text-white">Jobin</h1>
           <p className="text-teal-200 mt-1">Din väg till nytt jobb</p>
         </div>
 
@@ -132,7 +119,7 @@ export default function Login() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                     touched.email && errors.email 
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-slate-300'
@@ -160,7 +147,7 @@ export default function Login() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
                     touched.password && errors.password 
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-slate-300'
@@ -185,7 +172,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <>
@@ -205,7 +192,7 @@ export default function Login() {
           <div className="mt-6 text-center">
             <p className="text-slate-600">
               Har du inget konto?{' '}
-              <Link to="/register" className="text-teal-600 hover:text-teal-700 font-semibold">
+              <Link to="/register" className="text-indigo-600 hover:text-indigo-700 font-semibold">
                 Skapa ett konto
               </Link>
             </p>
@@ -232,7 +219,7 @@ export default function Login() {
 
         {/* Back Link */}
         <div className="mt-6 text-center">
-          <Link to="/" className="text-teal-200 hover:text-white text-sm">
+          <Link to="/" className="text-indigo-200 hover:text-white text-sm">
             ← Tillbaka till Jobin
           </Link>
         </div>

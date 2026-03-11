@@ -1,0 +1,343 @@
+/**
+ * ATS Analysis Component
+ * Check how well CV passes through recruitment systems
+ */
+
+import { useState } from 'react'
+import { 
+  Target, 
+  Check, 
+  AlertCircle, 
+  X, 
+  RefreshCw,
+  FileText,
+  Sparkles,
+  ArrowRight,
+  Lightbulb,
+  Award
+} from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+interface ATSCheck {
+  id: string
+  category: 'content' | 'format' | 'keywords' | 'technical'
+  title: string
+  description: string
+  status: 'pass' | 'warning' | 'fail' | 'neutral'
+  score: number
+  tips: string[]
+}
+
+const defaultChecks: ATSCheck[] = [
+  {
+    id: '1',
+    category: 'content',
+    title: 'Kontaktinformation',
+    description: 'Har du fyllt i namn, e-post och telefon?',
+    status: 'pass',
+    score: 10,
+    tips: ['Se till att din e-post är professionell', 'Dubbelkolla att telefonnumret är korrekt']
+  },
+  {
+    id: '2',
+    category: 'content',
+    title: 'Sammanfattning/Profil',
+    description: 'En kort sammanfattning ökar chanserna avsevärt',
+    status: 'pass',
+    score: 15,
+    tips: ['Skriv 2-3 meningar om vem du är', 'Nämn vad du söker för typ av roll']
+  },
+  {
+    id: '3',
+    category: 'content',
+    title: 'Arbetslivserfarenhet',
+    description: 'Har du listat dina tidigare jobb?',
+    status: 'pass',
+    score: 20,
+    tips: ['Börja med det senaste jobbet', 'Använd bullet points för arbetsuppgifter']
+  },
+  {
+    id: '4',
+    category: 'content',
+    title: 'Utbildning',
+    description: 'Har du med din utbildning?',
+    status: 'warning',
+    score: 10,
+    tips: ['Lista även pågående utbildningar', 'Inkludera relevanta kurser']
+  },
+  {
+    id: '5',
+    category: 'keywords',
+    title: 'Nyckelord från annonsen',
+    description: 'Matchar ditt CV jobbannonsens nyckelord?',
+    status: 'warning',
+    score: 15,
+    tips: ['Läs jobbannonsen noggrant', 'Inkludera viktiga kompetenser de efterfrågar']
+  },
+  {
+    id: '6',
+    category: 'format',
+    title: 'Filformat',
+    description: 'Är ditt CV sparat i rätt format?',
+    status: 'pass',
+    score: 10,
+    tips: ['PDF är säkrast för formatering', 'Word (.docx) fungerar också bra']
+  },
+  {
+    id: '7',
+    category: 'format',
+    title: 'Typsnitt och design',
+    description: 'Använder du läsbara typsnitt?',
+    status: 'pass',
+    score: 10,
+    tips: ['Undvik konstiga typsnitt', 'Ha tillräckligt med whitespace']
+  },
+  {
+    id: '8',
+    category: 'technical',
+    title: 'Bilder och grafik',
+    description: 'ATS-system kan ha svårt med bilder',
+    status: 'neutral',
+    score: 5,
+    tips: ['Undvik för mycket grafik', 'Se till att texten är välstrukturerad']
+  },
+  {
+    id: '9',
+    category: 'technical',
+    title: 'Rubriker och sektioner',
+    description: 'Tydliga rubriker hjälper ATS att parsa innehållet',
+    status: 'pass',
+    score: 5,
+    tips: ['Använd standardrubriker', 'Undvik kreativa rubriker som systemet inte förstår']
+  }
+]
+
+export function ATSAnalysis() {
+  const [checks, setChecks] = useState<ATSCheck[]>(defaultChecks)
+  const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [showDetails, setShowDetails] = useState<string | null>(null)
+
+  const totalScore = checks.reduce((sum, check) => sum + check.score, 0)
+  const maxScore = 100
+  const percentage = Math.round((totalScore / maxScore) * 100)
+
+  const runAnalysis = () => {
+    setIsAnalyzing(true)
+    // Simulate analysis
+    setTimeout(() => {
+      setIsAnalyzing(false)
+    }, 2000)
+  }
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-600 bg-green-100'
+    if (score >= 60) return 'text-amber-600 bg-amber-100'
+    return 'text-red-600 bg-red-100'
+  }
+
+  const getScoreText = (score: number) => {
+    if (score >= 80) return 'Utmärkt'
+    if (score >= 60) return 'Godkänd'
+    if (score >= 40) return 'Behöver förbättras'
+    return 'Kritisk - åtgärda omgående'
+  }
+
+  const categoryLabels: Record<string, string> = {
+    content: 'Innehåll',
+    format: 'Format & Design',
+    keywords: 'Nyckelord',
+    technical: 'Tekniskt'
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Score Card */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="flex flex-col md:flex-row md:items-center gap-6">
+          {/* Score Circle */}
+          <div className="flex items-center justify-center">
+            <div className={cn(
+              'w-32 h-32 rounded-full flex flex-col items-center justify-center border-4',
+              percentage >= 80 ? 'border-green-500 bg-green-50' :
+              percentage >= 60 ? 'border-amber-500 bg-amber-50' :
+              'border-red-500 bg-red-50'
+            )}>
+              <span className={cn(
+                'text-4xl font-bold',
+                percentage >= 80 ? 'text-green-600' :
+                percentage >= 60 ? 'text-amber-600' :
+                'text-red-600'
+              )}>
+                {percentage}%
+              </span>
+              <span className="text-xs text-slate-500 mt-1">ATS-score</span>
+            </div>
+          </div>
+
+          {/* Score Info */}
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-slate-800 mb-2">
+              {getScoreText(percentage)}
+            </h2>
+            <p className="text-slate-600 mb-4">
+              Ditt CV kommer att klara sig {percentage >= 60 ? 'bra' : 'svårt'} i de flesta 
+              rekryteringssystem (ATS). {percentage < 80 && 'Det finns dock utrymme för förbättring.'}
+            </p>
+            
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={runAnalysis}
+                disabled={isAnalyzing}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className={cn('w-4 h-4', isAnalyzing && 'animate-spin')} />
+                {isAnalyzing ? 'Analyserar...' : 'Kör ny analys'}
+              </button>
+              
+              {percentage < 80 && (
+                <button className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-xl font-medium hover:bg-amber-200 transition-colors">
+                  <Lightbulb className="w-4 h-4" />
+                  Se förbättringsförslag
+                </button>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-2 gap-4 min-w-[200px]">
+            <div className="text-center p-3 bg-green-50 rounded-xl">
+              <div className="text-2xl font-bold text-green-600">
+                {checks.filter(c => c.status === 'pass').length}
+              </div>
+              <div className="text-xs text-green-700">Godkända</div>
+            </div>
+            <div className="text-center p-3 bg-amber-50 rounded-xl">
+              <div className="text-2xl font-bold text-amber-600">
+                {checks.filter(c => c.status === 'warning').length}
+              </div>
+              <div className="text-xs text-amber-700">Varningar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Detailed Checks */}
+      <div className="space-y-4">
+        <h3 className="font-semibold text-slate-800">Detaljerad analys</h3>
+        
+        {Object.entries(categoryLabels).map(([category, label]) => {
+          const categoryChecks = checks.filter(c => c.category === category)
+          
+          return (
+            <div key={category} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+              <div className="px-6 py-4 bg-slate-50 border-b border-slate-100">
+                <h4 className="font-semibold text-slate-800">{label}</h4>
+              </div>
+              
+              <div className="divide-y divide-slate-100">
+                {categoryChecks.map(check => (
+                  <div key={check.id} className="p-6">
+                    <div className="flex items-start gap-4">
+                      {/* Status Icon */}
+                      <div className={cn(
+                        'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0',
+                        check.status === 'pass' && 'bg-green-100 text-green-600',
+                        check.status === 'warning' && 'bg-amber-100 text-amber-600',
+                        check.status === 'fail' && 'bg-red-100 text-red-600',
+                        check.status === 'neutral' && 'bg-slate-100 text-slate-500'
+                      )}>
+                        {check.status === 'pass' && <Check className="w-5 h-5" />}
+                        {check.status === 'warning' && <AlertCircle className="w-5 h-5" />}
+                        {check.status === 'fail' && <X className="w-5 h-5" />}
+                        {check.status === 'neutral' && <Target className="w-5 h-5" />}
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <h5 className="font-medium text-slate-800">{check.title}</h5>
+                            <p className="text-sm text-slate-500">{check.description}</p>
+                          </div>
+                          <span className={cn(
+                            'px-3 py-1 rounded-full text-sm font-medium',
+                            getScoreColor(check.score)
+                          )}>
+                            +{check.score}p
+                          </span>
+                        </div>
+
+                        {/* Expandable Tips */}
+                        <div className="mt-3">
+                          <button
+                            onClick={() => setShowDetails(showDetails === check.id ? null : check.id)}
+                            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+                          >
+                            {showDetails === check.id ? 'Dölj tips' : 'Visa tips'}
+                            <ArrowRight className={cn('w-4 h-4 transition-transform', showDetails === check.id && 'rotate-90')} />
+                          </button>
+                          
+                          {showDetails === check.id && (
+                            <div className="mt-3 p-4 bg-indigo-50 rounded-xl">
+                              <ul className="space-y-2">
+                                {check.tips.map((tip, i) => (
+                                  <li key={i} className="flex items-start gap-2 text-sm text-indigo-800">
+                                    <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                                    {tip}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Info Box */}
+      <div className="bg-blue-50 rounded-2xl p-6 border border-blue-100">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+            <FileText className="w-6 h-6 text-blue-600" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-blue-900 mb-2">Vad är ATS?</h3>
+            <p className="text-blue-800 text-sm mb-3">
+              ATS (Applicant Tracking System) är programvara som används av arbetsgivare för att 
+              hantera jobbansökningar. Systemet scannar CV:n automatiskt och letar efter nyckelord 
+              och kvalifikationer som matchar jobbannonsen.
+            </p>
+            <p className="text-blue-800 text-sm">
+              <strong>Varför är det viktigt?</strong> Uppskattningsvis 75% av alla större företag 
+              använder ATS. Om ditt CV inte är optimerat kan det bli bortfiltrerat innan en människa 
+              ens ser det.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* CTA */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl">
+        <div>
+          <h3 className="font-semibold text-slate-800">Vill du förbättra ditt CV?</h3>
+          <p className="text-slate-600 text-sm">Gå tillbaka till CV-byggaren och gör justeringar</p>
+        </div>
+        <a
+          href="/dashboard/cv"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
+        >
+          <Award className="w-5 h-5" />
+          Förbättra mitt CV
+        </a>
+      </div>
+    </div>
+  )
+}
+
+export default ATSAnalysis

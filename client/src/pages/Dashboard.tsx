@@ -17,7 +17,14 @@ import {
   DiaryWidget,
   KnowledgeWidget,
 } from '@/components/dashboard'
+import { EnergyLevelSelector, useEnergyAdaptedContent } from '@/components/energy/EnergyLevelSelector'
+import { QuickWinButton } from '@/components/energy/QuickWinButton'
+import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist'
+import { PageLayout } from '@/components/layout'
+import { dashboardTabs } from '@/data/pageTabs'
+import { useSettingsStore } from '@/stores/settingsStore'
 import { cn } from '@/lib/utils'
+import { Sparkles, Zap } from 'lucide-react'
 
 // Default widget sizes
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
@@ -31,10 +38,12 @@ const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   knowledge: 'small',
 }
 
-// Default visible widgets - ALLTID synliga som default
-const defaultVisibleWidgets: WidgetType[] = [
+// Default visible widgets - anpassas efter energinivå
+const allWidgets: WidgetType[] = [
   'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'knowledge',
 ]
+
+const defaultVisibleWidgets: WidgetType[] = allWidgets
 
 export default function Dashboard() {
   const { isMobile } = useMobileOptimization()
@@ -49,10 +58,21 @@ export default function Dashboard() {
 function DesktopDashboard() {
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
+  const { energyLevel, hasCompletedOnboarding } = useSettingsStore()
+  const { getVisibleWidgets, getEncouragingMessage, isLowEnergy } = useEnergyAdaptedContent()
 
-  // State for visible widgets - starta med alla synliga
-  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
+  // State for visible widgets - anpassas efter energinivå
+  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(
+    getVisibleWidgets(allWidgets)
+  )
   const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(defaultWidgetSizes)
+  const [showEnergySelector, setShowEnergySelector] = useState(false)
+  const [checklistDismissed, setChecklistDismissed] = useState(false)
+
+  // Update visible widgets when energy level changes
+  useEffect(() => {
+    setVisibleWidgets(getVisibleWidgets(allWidgets))
+  }, [energyLevel])
 
   // Toggle widget visibility
   const handleToggleWidget = useCallback((widgetId: WidgetType) => {
@@ -111,17 +131,52 @@ function DesktopDashboard() {
   }
 
   // Säkerställ att vi alltid har widgets att visa
-  const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : defaultVisibleWidgets
+  const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : getVisibleWidgets(allWidgets)
 
   return (
-    <div className="space-y-4 max-w-7xl">
-      {/* Welcome */}
-      <div className="mb-2">
-        <h1 className="text-xl font-semibold text-slate-800">
-          Hej{user?.firstName ? `, ${user.firstName}` : ''}! 👋
-        </h1>
-        <p className="text-sm text-slate-500">Här är din översikt för idag.</p>
+    <PageLayout
+      title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}! 👋`}
+      description={getEncouragingMessage()}
+      customTabs={dashboardTabs}
+      showTabs={true}
+      className="space-y-4"
+    >
+      {/* Energy Level Quick Toggle */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setShowEnergySelector(!showEnergySelector)}
+          className={cn(
+            'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-colors',
+            isLowEnergy
+              ? 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+              : 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100'
+          )}
+        >
+          <Zap className="w-4 h-4" />
+          <span className="capitalize">
+            {energyLevel === 'low' && 'Låg energi'}
+            {energyLevel === 'medium' && 'Medium energi'}
+            {energyLevel === 'high' && 'Hög energi'}
+          </span>
+        </button>
       </div>
+
+      {/* Energy Level Selector (Collapsible) */}
+      {showEnergySelector && (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 animate-fade-in">
+          <EnergyLevelSelector 
+            onSelect={() => setShowEnergySelector(false)}
+            showDescription={true}
+          />
+        </div>
+      )}
+
+      {/* Getting Started Checklist for new users */}
+      {!hasCompletedOnboarding && !checklistDismissed && (
+        <GettingStartedChecklist 
+          onClose={() => setChecklistDismissed(true)}
+        />
+      )}
 
       {/* Filter */}
       <CompactWidgetFilter
@@ -233,6 +288,9 @@ function DesktopDashboard() {
           </p>
         </div>
       )}
-    </div>
+
+      {/* Quick Win Floating Button */}
+      <QuickWinButton variant="floating" />
+    </PageLayout>
   )
 }

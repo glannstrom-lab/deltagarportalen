@@ -1,6 +1,8 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+export type EnergyLevel = 'low' | 'medium' | 'high'
+
 interface SettingsState {
   // Tillgänglighet
   calmMode: boolean
@@ -19,7 +21,14 @@ interface SettingsState {
   largeText: boolean
   toggleHighContrast: () => void
   toggleLargeText: () => void
-}
+  
+  // Energinivå - viktigt för anpassning vid låg ork
+  energyLevel: EnergyLevel
+  setEnergyLevel: (level: EnergyLevel) => void
+  
+  // Onboarding status
+  hasCompletedOnboarding: boolean
+  setHasCompletedOnboarding: (value: boolean) => void
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
@@ -41,6 +50,14 @@ export const useSettingsStore = create<SettingsState>()(
       largeText: false,
       toggleHighContrast: () => set((state) => ({ highContrast: !state.highContrast })),
       toggleLargeText: () => set((state) => ({ largeText: !state.largeText })),
+      
+      // Energinivå - default medium
+      energyLevel: 'medium',
+      setEnergyLevel: (level) => set({ energyLevel: level }),
+      
+      // Onboarding
+      hasCompletedOnboarding: false,
+      setHasCompletedOnboarding: (value) => set({ hasCompletedOnboarding: value }),
     }),
     {
       name: 'deltagarportal-settings',

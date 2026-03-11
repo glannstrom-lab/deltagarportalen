@@ -24,7 +24,7 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
   
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const pendingQueue = useRef<CVData[]>([])
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   
   // Track online status
   useEffect(() => {

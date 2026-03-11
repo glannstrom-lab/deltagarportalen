@@ -47,8 +47,6 @@ async function compressImage(
     img.src = URL.createObjectURL(file)
     
     img.onload = () => {
-      URL.revokeObjectURL(img.src)
-      
       // Calculate new dimensions
       let { width, height } = img
       
@@ -74,6 +72,7 @@ async function compressImage(
       
       canvas.toBlob(
         (blob) => {
+          URL.revokeObjectURL(img.src)
           if (blob) {
             resolve(blob)
           } else {
@@ -86,6 +85,7 @@ async function compressImage(
     }
     
     img.onerror = () => {
+      URL.revokeObjectURL(img.src)
       reject(new Error('Could not load image'))
     }
   })
