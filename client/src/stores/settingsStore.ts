@@ -29,6 +29,7 @@ interface SettingsState {
   // Onboarding status
   hasCompletedOnboarding: boolean
   setHasCompletedOnboarding: (value: boolean) => void
+}
 
 export const useSettingsStore = create<SettingsState>()(
   persist(
