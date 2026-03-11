@@ -4,7 +4,7 @@ import {
   User, Save, CheckCircle, Camera, Phone, MapPin, Mail,
   FileText, Sparkles, Lightbulb
 } from 'lucide-react'
-import { PageLayout } from '@/components/layout'
+import { PageLayout } from '@/components/layout/index'
 import { 
   Card, 
   CardHeader, 

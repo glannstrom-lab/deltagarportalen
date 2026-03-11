@@ -12,7 +12,7 @@ import {
   Target,
   Search,
 } from 'lucide-react'
-import { PageLayout } from '@/components/layout'
+import { PageLayout } from '@/components/layout/index'
 import { 
   Card,
   StatCard,

@@ -8,7 +8,7 @@ import {
   Accessibility, X, Menu, Loader2,
   Eye, EyeOff
 } from 'lucide-react'
-import { PageLayout } from '@/components/layout'
+import { PageLayout } from '@/components/layout/index'
 import { 
   Card, CardHeader, CardSection,
   Input, Button, Toggle,

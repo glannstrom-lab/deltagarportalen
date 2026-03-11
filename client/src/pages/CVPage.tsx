@@ -4,7 +4,7 @@
  */
 
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
-import { PageLayout } from '@/components/layout'
+import { PageLayout } from '@/components/layout/index'
 import { cvTabs } from '@/data/cvTabs'
 import CVBuilder from './CVBuilder'
 import { MyCVs } from '@/components/cv/MyCVs'

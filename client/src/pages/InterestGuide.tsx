@@ -12,7 +12,7 @@ import { QuestionCard } from '@/components/interest-guide/QuestionCard'
 import { SectionDots } from '@/components/interest-guide/SectionDots'
 import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
-import { PageLayout } from '@/components/layout'
+import { PageLayout } from '@/components/layout/index'
 import { 
   Button,
   Card,

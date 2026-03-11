@@ -40,7 +40,7 @@ import { Button } from '@/components/ui/Button'
 import { savedJobsApi, articleBookmarksApi } from '@/services/cloudStorage'
 import { cvApi, coverLetterApi, interestApi } from '@/services/supabaseApi'
 import { useImageUpload } from '@/hooks/useImageUpload'
-import { PageLayout } from '@/components/layout'
+import { PageLayout } from '@/components/layout/index'
 import { resourcesTabs } from '@/data/pageTabs'
 import jsPDF from 'jspdf'
 

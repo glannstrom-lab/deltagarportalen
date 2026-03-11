@@ -16,6 +16,7 @@ import {
   Briefcase,
   BookHeart,
   ChevronRight,
+  ChevronDown,
   Trophy,
   X
 } from 'lucide-react'
@@ -107,10 +108,11 @@ const checklistItems: ChecklistItem[] = [
 
 interface GettingStartedChecklistProps {
   className?: string
-  onClose?: () => void
+  expanded?: boolean
+  onToggle?: () => void
 }
 
-export function GettingStartedChecklist({ className, onClose }: GettingStartedChecklistProps) {
+export function GettingStartedChecklist({ className, expanded = true, onToggle }: GettingStartedChecklistProps) {
   const navigate = useNavigate()
   const { hasCompletedOnboarding } = useSettingsStore()
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set())
@@ -137,9 +139,9 @@ export function GettingStartedChecklist({ className, onClose }: GettingStartedCh
     navigate(item.path)
   }
 
-  const handleDismiss = () => {
+  const handleDismiss = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
     setIsDismissed(true)
-    onClose?.()
     // Save dismissal to localStorage
     localStorage.setItem('getting-started-dismissed', 'true')
   }
@@ -192,32 +194,46 @@ export function GettingStartedChecklist({ className, onClose }: GettingStartedCh
 
   return (
     <div className={cn('bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden', className)}>
-      {/* Header */}
-      <div className="p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-slate-100">
-        <div className="flex items-start justify-between">
-          <div>
+      {/* Collapsible Header */}
+      <button 
+        onClick={onToggle}
+        className="w-full p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-slate-100 text-left hover:from-indigo-100 hover:to-purple-100 transition-colors"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <Sparkles className="w-5 h-5 text-indigo-500" />
               <h3 className="font-bold text-slate-800">Kom igång</h3>
+              <span className="text-xs font-medium text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
+                {completedItems.size}/{checklistItems.length}
+              </span>
             </div>
             <p className="text-sm text-slate-600">
-              Följ dessa steg för att komma igång med din jobbsökarresa
+              {expanded 
+                ? 'Följ dessa steg för att komma igång med din jobbsökarresa'
+                : `${completedItems.size} av ${checklistItems.length} steg klara - klicka för att visa`
+              }
             </p>
           </div>
-          <button
-            onClick={handleDismiss}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handleDismiss}
+              className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              title="Dölj checklistan"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <ChevronDown 
+              className={cn(
+                'w-5 h-5 text-slate-400 transition-transform duration-200',
+                expanded && 'rotate-180'
+              )} 
+            />
+          </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* Progress Bar - Always visible */}
         <div className="mt-4">
-          <div className="flex justify-between text-sm mb-1">
-            <span className="text-slate-600">Din framsteg</span>
-            <span className="font-medium text-indigo-600">{completedItems.size} av {checklistItems.length}</span>
-          </div>
           <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
@@ -225,7 +241,10 @@ export function GettingStartedChecklist({ className, onClose }: GettingStartedCh
             />
           </div>
         </div>
-      </div>
+      </button>
+
+      {/* Collapsible Content */}
+      {expanded && (<>
 
       {/* Checklist Items */}
       <div className="p-4 space-y-2">
@@ -299,6 +318,7 @@ export function GettingStartedChecklist({ className, onClose }: GettingStartedCh
           Du kan alltid hitta denna lista igen under "Hjälp" i menyn
         </p>
       </div>
+      </>)}
     </div>
   )
 }

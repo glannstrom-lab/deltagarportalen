@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
 
-import { PageLayout } from '@/components/layout';
+import { PageLayout } from '@/components/layout/index';
 import { 
   LoadingState, 
   ErrorState, 

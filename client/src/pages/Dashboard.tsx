@@ -7,7 +7,7 @@ import { CompactWidgetFilter, type WidgetType } from '@/components/dashboard/Com
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
 import { MobileDashboard } from '@/components/dashboard/MobileDashboard'
 import { DashboardGridSkeleton } from '@/components/ui/Skeleton'
-import { StatCard, ErrorState, EmptyWidget } from '@/components/ui'
+import { ErrorState, EmptyWidget } from '@/components/ui'
 import {
   CVWidget,
   CoverLetterWidget,
@@ -21,7 +21,7 @@ import {
 import { EnergyLevelSelector, useEnergyAdaptedContent } from '@/components/energy/EnergyLevelSelector'
 import { QuickWinButton } from '@/components/energy/QuickWinButton'
 import { GettingStartedChecklist } from '@/components/onboarding/GettingStartedChecklist'
-import { PageLayout } from '@/components/layout'
+import { PageLayout } from '@/components/layout/index'
 import { useSettingsStore } from '@/stores/settingsStore'
 import { cn } from '@/lib/utils'
 import { 
@@ -30,10 +30,6 @@ import {
   BatteryMedium, 
   BatteryFull,
   ChevronDown,
-  LayoutGrid,
-  TrendingUp,
-  FileText,
-  Briefcase,
   BookOpen,
   Sparkles
 } from 'lucide-react'
@@ -76,7 +72,7 @@ function DesktopDashboard() {
   )
   const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(defaultWidgetSizes)
   const [showEnergySelector, setShowEnergySelector] = useState(false)
-  const [checklistDismissed, setChecklistDismissed] = useState(false)
+  const [checklistExpanded, setChecklistExpanded] = useState(true)
 
   useEffect(() => {
     setVisibleWidgets(getVisibleWidgets(allWidgets))
@@ -121,8 +117,6 @@ function DesktopDashboard() {
     )
   }
 
-  const EnergyIcon = energyLevel === 'low' ? BatteryLow : energyLevel === 'medium' ? BatteryMedium : BatteryFull
-
   if (loading) {
     return (
       <PageLayout
@@ -130,18 +124,14 @@ function DesktopDashboard() {
         showTabs={false}
         className="space-y-5"
       >
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="bg-white rounded-xl border border-slate-200 p-4 animate-pulse">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg bg-slate-200" />
-                <div className="flex-1">
-                  <div className="h-6 w-12 bg-slate-200 rounded mb-1" />
-                  <div className="h-3 w-20 bg-slate-200 rounded" />
-                </div>
-              </div>
+        <div className="bg-white rounded-xl border border-slate-200 p-4 animate-pulse">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-slate-200" />
+            <div className="flex-1">
+              <div className="h-5 w-32 bg-slate-200 rounded mb-2" />
+              <div className="h-3 w-48 bg-slate-200 rounded" />
             </div>
-          ))}
+          </div>
         </div>
         <DashboardGridSkeleton count={8} />
       </PageLayout>
@@ -166,67 +156,35 @@ function DesktopDashboard() {
 
   const widgetsToShow = visibleWidgets.length > 0 ? visibleWidgets : getVisibleWidgets(allWidgets)
 
+  const EnergyIcon = energyLevel === 'low' ? BatteryLow : energyLevel === 'medium' ? BatteryMedium : BatteryFull
+
   return (
     <PageLayout
       title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}!`}
       description={getEncouragingMessage()}
       showTabs={false}
       className="space-y-5"
-    >
-      {/* Professional Header Stats Bar */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <StatCard
-          value={widgetsToShow.length}
-          label="Aktiva moduler"
-          icon={<LayoutGrid className="w-5 h-5" />}
-          color="indigo"
-        />
-        
-        <StatCard
-          value={`${data?.cv.progress ?? 0}%`}
-          label="CV färdigt"
-          icon={<FileText className="w-5 h-5" />}
-          color="green"
-          trend={data?.cv.progress && data.cv.progress > 50 ? { value: 12, isPositive: true } : undefined}
-        />
-        
-        <StatCard
-          value={data?.jobs.savedCount ?? 0}
-          label="Sparade jobb"
-          icon={<Briefcase className="w-5 h-5" />}
-          color="blue"
-        />
-        
-        {/* Energy Level Compact Selector */}
+      actions={
         <button
           onClick={() => setShowEnergySelector(!showEnergySelector)}
           className={cn(
-            'rounded-xl border p-4 flex items-center gap-3 transition-all text-left',
+            'flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all',
             isLowEnergy
-              ? 'bg-blue-50 border-blue-200 hover:bg-blue-100'
-              : 'bg-amber-50 border-amber-200 hover:bg-amber-100'
+              ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+              : 'bg-amber-100 text-amber-700 hover:bg-amber-200'
           )}
         >
-          <div className={cn(
-            'w-10 h-10 rounded-lg flex items-center justify-center',
-            isLowEnergy ? 'bg-blue-100' : 'bg-amber-100'
-          )}>
-            <EnergyIcon className={cn('w-5 h-5', isLowEnergy ? 'text-blue-600' : 'text-amber-600')} />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-medium text-slate-700 capitalize">
-              {energyLevel === 'low' && 'Låg energi'}
-              {energyLevel === 'medium' && 'Medium energi'}
-              {energyLevel === 'high' && 'Hög energi'}
-            </p>
-            <p className="text-xs text-slate-500 flex items-center gap-1">
-              Ändra <ChevronDown className={cn('w-3 h-3 transition-transform', showEnergySelector && 'rotate-180')} />
-            </p>
-          </div>
+          <EnergyIcon className="w-4 h-4" />
+          <span className="capitalize hidden sm:inline">
+            {energyLevel === 'low' && 'Låg energi'}
+            {energyLevel === 'medium' && 'Medium energi'}
+            {energyLevel === 'high' && 'Hög energi'}
+          </span>
+          <ChevronDown className={cn('w-3 h-3 transition-transform', showEnergySelector && 'rotate-180')} />
         </button>
-      </div>
-
-      {/* Energy Level Selector (Collapsible) */}
+      }
+    >
+      {/* Energy Level Selector - Compact */}
       {showEnergySelector && (
         <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-5 animate-in slide-in-from-top-2">
           <EnergyLevelSelector 
@@ -236,10 +194,11 @@ function DesktopDashboard() {
         </div>
       )}
 
-      {/* Getting Started Checklist for new users */}
-      {!hasCompletedOnboarding && !checklistDismissed && (
+      {/* Getting Started Checklist - Collapsible */}
+      {!hasCompletedOnboarding && (
         <GettingStartedChecklist 
-          onClose={() => setChecklistDismissed(true)}
+          expanded={checklistExpanded}
+          onToggle={() => setChecklistExpanded(!checklistExpanded)}
         />
       )}
 
