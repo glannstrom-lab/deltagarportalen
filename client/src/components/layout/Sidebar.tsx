@@ -19,6 +19,10 @@ import {
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 
+// Sidebar widths
+const EXPANDED_WIDTH = 'w-52'
+const COLLAPSED_WIDTH = 'w-16'
+
 export function Sidebar() {
   const location = useLocation()
   const { signOut, user } = useAuthStore()
@@ -41,9 +45,6 @@ export function Sidebar() {
   const isAdmin = user?.role === 'ADMIN' || isSuperAdmin
   const isConsultant = user?.role === 'CONSULTANT' || isAdmin
 
-  // Consistent collapsed item size
-  const collapsedItemClass = 'w-10 h-10 justify-center'
-
   const Tooltip = ({ children }: { children: React.ReactNode }) => (
     <div className="absolute left-full ml-3 px-2.5 py-1.5 bg-slate-900 text-white text-xs font-medium rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 whitespace-nowrap z-50 shadow-lg pointer-events-none">
       {children}
@@ -51,57 +52,82 @@ export function Sidebar() {
     </div>
   )
 
-  const NavLink = ({ item, isActive, variant = 'default' }: {
-    item: typeof navItems[0],
-    isActive: boolean,
-    variant?: 'default' | 'admin' | 'consultant'
+  const NavItem = ({
+    to,
+    icon: Icon,
+    label,
+    isActive,
+    onClick,
+    variant = 'default'
+  }: {
+    to?: string
+    icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
+    label: string
+    isActive?: boolean
+    onClick?: () => void
+    variant?: 'default' | 'admin' | 'consultant' | 'danger'
   }) => {
-    const Icon = item.icon
     const colors = {
-      default: {
-        active: 'bg-white/15 text-white',
-        inactive: 'text-white/60 hover:text-white hover:bg-white/10'
-      },
-      admin: {
-        active: 'bg-amber-500/20 text-amber-200',
-        inactive: 'text-amber-200/50 hover:text-amber-200 hover:bg-amber-500/10'
-      },
-      consultant: {
-        active: 'bg-teal-500/20 text-teal-200',
-        inactive: 'text-teal-200/50 hover:text-teal-200 hover:bg-teal-500/10'
-      }
+      default: isActive
+        ? 'bg-white/15 text-white'
+        : 'text-white/60 hover:text-white hover:bg-white/10',
+      admin: isActive
+        ? 'bg-amber-500/20 text-amber-200'
+        : 'text-amber-200/50 hover:text-amber-200 hover:bg-amber-500/10',
+      consultant: isActive
+        ? 'bg-teal-500/20 text-teal-200'
+        : 'text-teal-200/50 hover:text-teal-200 hover:bg-teal-500/10',
+      danger: 'text-white/60 hover:text-red-300 hover:bg-red-500/15'
     }
 
-    return (
-      <Link
-        to={item.path}
-        onClick={() => isMobile && setMobileOpen(false)}
-        className={cn(
-          'group relative flex items-center rounded-lg transition-all duration-150',
-          isExpanded ? 'gap-2.5 px-2.5 py-1.5 mx-2' : collapsedItemClass,
-          isActive ? colors[variant].active : colors[variant].inactive
-        )}
-      >
+    const baseClasses = cn(
+      'group relative flex items-center rounded-lg transition-all duration-150',
+      colors[variant]
+    )
+
+    const expandedClasses = 'gap-2.5 px-3 py-2 mx-2'
+    const collapsedClasses = 'w-10 h-10 mx-auto justify-center'
+
+    const content = (
+      <>
         <Icon size={18} strokeWidth={isActive ? 2.2 : 1.8} className="flex-shrink-0" />
         {isExpanded && (
           <span className={cn('text-[13px]', isActive ? 'font-semibold' : 'font-medium')}>
-            {item.label}
+            {label}
           </span>
         )}
-        {!isExpanded && <Tooltip>{item.label}</Tooltip>}
-      </Link>
+        {!isExpanded && <Tooltip>{label}</Tooltip>}
+      </>
+    )
+
+    if (to) {
+      return (
+        <Link
+          to={to}
+          onClick={() => { onClick?.(); isMobile && setMobileOpen(false) }}
+          className={cn(baseClasses, isExpanded ? expandedClasses : collapsedClasses)}
+        >
+          {content}
+        </Link>
+      )
+    }
+
+    return (
+      <button
+        onClick={() => { onClick?.(); isMobile && setMobileOpen(false) }}
+        className={cn(baseClasses, isExpanded ? expandedClasses : collapsedClasses)}
+      >
+        {content}
+      </button>
     )
   }
 
   const SidebarContent = () => (
-    <div className={cn(
-      'flex flex-col h-full',
-      !isExpanded && 'items-center'
-    )}>
+    <div className="flex flex-col h-full">
       {/* Header */}
       <div className={cn(
-        'flex items-center h-14 border-b border-white/10 flex-shrink-0 w-full',
-        isExpanded ? 'px-3 justify-between' : 'justify-center'
+        'flex items-center h-14 border-b border-white/10 flex-shrink-0',
+        isExpanded ? 'px-3 justify-between' : 'px-3 justify-center'
       )}>
         <Link to="/dashboard" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-md transition-transform duration-150 group-hover:scale-105">
@@ -128,10 +154,10 @@ export function Sidebar() {
         to="/profile"
         onClick={() => isMobile && setMobileOpen(false)}
         className={cn(
-          'group relative flex items-center border-b border-white/10 transition-all flex-shrink-0 w-full',
+          'group relative flex items-center border-b border-white/10 transition-all flex-shrink-0',
           isExpanded
             ? 'gap-2.5 px-3 py-2.5 hover:bg-white/5'
-            : 'justify-center py-2 hover:bg-white/10'
+            : 'py-3 justify-center hover:bg-white/10'
         )}
       >
         <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0">
@@ -153,103 +179,100 @@ export function Sidebar() {
       </Link>
 
       {/* Main Navigation */}
-      <nav className={cn(
-        'flex-1 py-2 space-y-0.5 overflow-y-auto w-full',
-        !isExpanded && 'flex flex-col items-center'
-      )}>
-        {navItems.map((item) => {
-          const isActive = location.pathname === item.path ||
-            (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`))
-          return <NavLink key={item.path} item={item} isActive={isActive} />
-        })}
+      <nav className="flex-1 py-2 overflow-y-auto">
+        <div className={cn(!isExpanded && 'space-y-1')}>
+          {navItems.map((item) => {
+            const isActive = location.pathname === item.path ||
+              (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`))
+            return (
+              <NavItem
+                key={item.path}
+                to={item.path}
+                icon={item.icon}
+                label={item.label}
+                isActive={isActive}
+              />
+            )
+          })}
+        </div>
 
         {/* Consultant Section */}
         {isConsultant && !isAdmin && (
-          <>
-            <div className={cn(
-              'pt-2 mt-2 border-t border-white/10',
-              isExpanded ? 'mx-3' : 'w-10'
-            )}>
-              {isExpanded && (
-                <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
-                  Konsulent
-                </p>
-              )}
+          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+            {isExpanded && (
+              <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+                Konsulent
+              </p>
+            )}
+            <div className={cn(!isExpanded && 'space-y-1')}>
+              {consultantNavItems.map((item) => {
+                const isActive = location.pathname.startsWith(item.path)
+                return (
+                  <NavItem
+                    key={item.path}
+                    to={item.path}
+                    icon={item.icon}
+                    label={item.label}
+                    isActive={isActive}
+                    variant="consultant"
+                  />
+                )
+              })}
             </div>
-            {consultantNavItems.map((item) => {
-              const isActive = location.pathname.startsWith(item.path)
-              return <NavLink key={item.path} item={item} isActive={isActive} variant="consultant" />
-            })}
-          </>
+          </div>
         )}
 
         {/* Admin Section */}
         {isAdmin && (
-          <>
-            <div className={cn(
-              'pt-2 mt-2 border-t border-white/10',
-              isExpanded ? 'mx-3' : 'w-10'
-            )}>
-              {isExpanded && (
-                <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
-                  Admin
-                </p>
-              )}
+          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+            {isExpanded && (
+              <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+                Admin
+              </p>
+            )}
+            <div className={cn(!isExpanded && 'space-y-1')}>
+              {adminNavItems.map((item) => {
+                const isActive = location.pathname.startsWith(item.path)
+                return (
+                  <NavItem
+                    key={item.path}
+                    to={item.path}
+                    icon={item.icon}
+                    label={item.label}
+                    isActive={isActive}
+                    variant="admin"
+                  />
+                )
+              })}
             </div>
-            {adminNavItems.map((item) => {
-              const isActive = location.pathname.startsWith(item.path)
-              return <NavLink key={item.path} item={item} isActive={isActive} variant="admin" />
-            })}
-          </>
+          </div>
         )}
       </nav>
 
       {/* Bottom Actions */}
       <div className={cn(
-        'border-t border-white/10 py-2 space-y-0.5 flex-shrink-0 w-full',
-        !isExpanded && 'flex flex-col items-center'
+        'border-t border-white/10 py-2 flex-shrink-0',
+        !isExpanded && 'space-y-1'
       )}>
-        <Link
+        <NavItem
           to="/settings"
-          onClick={() => isMobile && setMobileOpen(false)}
-          className={cn(
-            'group relative flex items-center rounded-lg transition-all duration-150',
-            isExpanded ? 'gap-2.5 px-2.5 py-1.5 mx-2' : collapsedItemClass,
-            location.pathname === '/settings'
-              ? 'bg-white/15 text-white'
-              : 'text-white/60 hover:text-white hover:bg-white/10'
-          )}
-        >
-          <Settings size={18} strokeWidth={1.8} className="flex-shrink-0" />
-          {isExpanded && <span className="text-[13px] font-medium">Inställningar</span>}
-          {!isExpanded && <Tooltip>Inställningar</Tooltip>}
-        </Link>
+          icon={Settings}
+          label="Inställningar"
+          isActive={location.pathname === '/settings'}
+        />
 
-        <button
-          onClick={() => {
-            signOut()
-            isMobile && setMobileOpen(false)
-          }}
-          className={cn(
-            'group relative flex items-center rounded-lg transition-all duration-150',
-            isExpanded ? 'gap-2.5 px-2.5 py-1.5 mx-2 w-auto' : collapsedItemClass,
-            'text-white/60 hover:text-red-300 hover:bg-red-500/15'
-          )}
-        >
-          <LogOut size={18} strokeWidth={1.8} className="flex-shrink-0" />
-          {isExpanded && <span className="text-[13px] font-medium">Logga ut</span>}
-          {!isExpanded && <Tooltip>Logga ut</Tooltip>}
-        </button>
+        <NavItem
+          icon={LogOut}
+          label="Logga ut"
+          onClick={signOut}
+          variant="danger"
+        />
 
         {/* Expand toggle when collapsed */}
         {!isExpanded && !isMobile && (
           <button
             onClick={() => setIsExpanded(true)}
-            className={cn(
-              'group relative flex items-center rounded-lg transition-all duration-150 mt-1',
-              collapsedItemClass,
-              'text-white/40 hover:text-white hover:bg-white/10'
-            )}
+            className="group relative flex items-center justify-center w-10 h-10 mx-auto rounded-lg transition-all duration-150 mt-1 text-white/40 hover:text-white hover:bg-white/10"
             aria-label="Expandera"
           >
             <ChevronRight size={16} />
@@ -276,7 +299,7 @@ export function Sidebar() {
           className={cn(
             'h-screen sticky top-0 flex-shrink-0 transition-all duration-200 ease-out z-40',
             'bg-gradient-to-b from-indigo-600 to-indigo-700 shadow-lg',
-            isExpanded ? 'w-52' : 'w-[60px]'
+            isExpanded ? EXPANDED_WIDTH : COLLAPSED_WIDTH
           )}
         >
           <SidebarContent />
@@ -301,9 +324,10 @@ export function Sidebar() {
 
           <aside
             className={cn(
-              'fixed inset-y-0 left-0 w-64 z-50 lg:hidden',
+              'fixed inset-y-0 left-0 z-50 lg:hidden',
               'bg-gradient-to-b from-indigo-600 to-indigo-700 shadow-xl',
               'transform transition-transform duration-200 ease-out',
+              EXPANDED_WIDTH,
               mobileOpen ? 'translate-x-0' : '-translate-x-full'
             )}
           >
