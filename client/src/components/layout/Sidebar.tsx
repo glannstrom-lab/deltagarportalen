@@ -1,6 +1,6 @@
 /**
  * Professional Sidebar Component
- * Compact design optimized for desktop - no scrolling needed
+ * Compact design with absolute positioned bottom bar
  */
 
 import { Link, useLocation } from 'react-router-dom'
@@ -22,6 +22,10 @@ import { useState, useEffect } from 'react'
 // Sidebar widths
 const EXPANDED_WIDTH = 'w-52'
 const COLLAPSED_WIDTH = 'w-16'
+
+// Bottom bar height (Settings + Logout + Expand button when collapsed)
+const BOTTOM_BAR_HEIGHT_EXPANDED = 'pb-24' // ~96px for 2 items
+const BOTTOM_BAR_HEIGHT_COLLAPSED = 'pb-36' // ~144px for 3 items
 
 export function Sidebar() {
   const location = useLocation()
@@ -123,135 +127,141 @@ export function Sidebar() {
   }
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full overflow-hidden">
-      {/* Header - Fixed height */}
+    <div className="relative h-full">
+      {/* Scrollable content area */}
       <div className={cn(
-        'flex items-center h-14 border-b border-white/10 shrink-0',
-        isExpanded ? 'px-3 justify-between' : 'px-3 justify-center'
+        'h-full overflow-y-auto',
+        isExpanded ? BOTTOM_BAR_HEIGHT_EXPANDED : BOTTOM_BAR_HEIGHT_COLLAPSED
       )}>
-        <Link to="/dashboard" className="flex items-center gap-2.5 group">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-md transition-transform duration-150 group-hover:scale-105">
-            <Sparkles className="w-4 h-4 text-indigo-600" />
+        {/* Header */}
+        <div className={cn(
+          'flex items-center h-14 border-b border-white/10',
+          isExpanded ? 'px-3 justify-between' : 'px-3 justify-center'
+        )}>
+          <Link to="/dashboard" className="flex items-center gap-2.5 group">
+            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-md transition-transform duration-150 group-hover:scale-105">
+              <Sparkles className="w-4 h-4 text-indigo-600" />
+            </div>
+            {isExpanded && (
+              <span className="text-white font-bold text-base tracking-tight">Jobin</span>
+            )}
+          </Link>
+
+          {isExpanded && !isMobile && (
+            <button
+              onClick={() => setIsExpanded(false)}
+              className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-md transition-all"
+              aria-label="Minimera"
+            >
+              <ChevronLeft size={16} />
+            </button>
+          )}
+        </div>
+
+        {/* User Profile */}
+        <Link
+          to="/profile"
+          onClick={() => isMobile && setMobileOpen(false)}
+          className={cn(
+            'group relative flex items-center border-b border-white/10 transition-all',
+            isExpanded
+              ? 'gap-2.5 px-3 py-2.5 hover:bg-white/5'
+              : 'py-3 justify-center hover:bg-white/10'
+          )}
+        >
+          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+            <User size={14} className="text-white" />
           </div>
           {isExpanded && (
-            <span className="text-white font-bold text-base tracking-tight">Jobin</span>
+            <div className="min-w-0 flex-1">
+              <p className="text-white font-medium text-sm truncate leading-tight">
+                {user?.firstName || 'Användare'}
+              </p>
+              <p className="text-white/40 text-[11px] truncate leading-tight">
+                {user?.role === 'SUPERADMIN' ? 'Superadmin' :
+                 user?.role === 'ADMIN' ? 'Admin' :
+                 user?.role === 'CONSULTANT' ? 'Konsulent' : 'Deltagare'}
+              </p>
+            </div>
           )}
+          {!isExpanded && <Tooltip>{user?.firstName || 'Profil'}</Tooltip>}
         </Link>
 
-        {isExpanded && !isMobile && (
-          <button
-            onClick={() => setIsExpanded(false)}
-            className="p-1.5 text-white/40 hover:text-white hover:bg-white/10 rounded-md transition-all"
-            aria-label="Minimera"
-          >
-            <ChevronLeft size={16} />
-          </button>
-        )}
+        {/* Main Navigation */}
+        <nav className="py-2">
+          <div className={cn(!isExpanded && 'space-y-1')}>
+            {navItems.map((item) => {
+              const isActive = location.pathname === item.path ||
+                (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`))
+              return (
+                <NavItem
+                  key={item.path}
+                  to={item.path}
+                  icon={item.icon}
+                  label={item.label}
+                  isActive={isActive}
+                />
+              )
+            })}
+          </div>
+
+          {/* Consultant Section */}
+          {isConsultant && !isAdmin && (
+            <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+              {isExpanded && (
+                <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+                  Konsulent
+                </p>
+              )}
+              <div className={cn(!isExpanded && 'space-y-1')}>
+                {consultantNavItems.map((item) => {
+                  const isActive = location.pathname.startsWith(item.path)
+                  return (
+                    <NavItem
+                      key={item.path}
+                      to={item.path}
+                      icon={item.icon}
+                      label={item.label}
+                      isActive={isActive}
+                      variant="consultant"
+                    />
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Admin Section */}
+          {isAdmin && (
+            <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+              {isExpanded && (
+                <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+                  Admin
+                </p>
+              )}
+              <div className={cn(!isExpanded && 'space-y-1')}>
+                {adminNavItems.map((item) => {
+                  const isActive = location.pathname.startsWith(item.path)
+                  return (
+                    <NavItem
+                      key={item.path}
+                      to={item.path}
+                      icon={item.icon}
+                      label={item.label}
+                      isActive={isActive}
+                      variant="admin"
+                    />
+                  )
+                })}
+              </div>
+            </div>
+          )}
+        </nav>
       </div>
 
-      {/* User Profile - Fixed height */}
-      <Link
-        to="/profile"
-        onClick={() => isMobile && setMobileOpen(false)}
-        className={cn(
-          'group relative flex items-center border-b border-white/10 transition-all shrink-0',
-          isExpanded
-            ? 'gap-2.5 px-3 py-2.5 hover:bg-white/5'
-            : 'py-3 justify-center hover:bg-white/10'
-        )}
-      >
-        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center shrink-0">
-          <User size={14} className="text-white" />
-        </div>
-        {isExpanded && (
-          <div className="min-w-0 flex-1">
-            <p className="text-white font-medium text-sm truncate leading-tight">
-              {user?.firstName || 'Användare'}
-            </p>
-            <p className="text-white/40 text-[11px] truncate leading-tight">
-              {user?.role === 'SUPERADMIN' ? 'Superadmin' :
-               user?.role === 'ADMIN' ? 'Admin' :
-               user?.role === 'CONSULTANT' ? 'Konsulent' : 'Deltagare'}
-            </p>
-          </div>
-        )}
-        {!isExpanded && <Tooltip>{user?.firstName || 'Profil'}</Tooltip>}
-      </Link>
-
-      {/* Main Navigation - Scrollable area */}
-      <nav className="flex-1 min-h-0 py-2 overflow-y-auto">
-        <div className={cn(!isExpanded && 'space-y-1')}>
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path ||
-              (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`))
-            return (
-              <NavItem
-                key={item.path}
-                to={item.path}
-                icon={item.icon}
-                label={item.label}
-                isActive={isActive}
-              />
-            )
-          })}
-        </div>
-
-        {/* Consultant Section */}
-        {isConsultant && !isAdmin && (
-          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
-            {isExpanded && (
-              <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
-                Konsulent
-              </p>
-            )}
-            <div className={cn(!isExpanded && 'space-y-1')}>
-              {consultantNavItems.map((item) => {
-                const isActive = location.pathname.startsWith(item.path)
-                return (
-                  <NavItem
-                    key={item.path}
-                    to={item.path}
-                    icon={item.icon}
-                    label={item.label}
-                    isActive={isActive}
-                    variant="consultant"
-                  />
-                )
-              })}
-            </div>
-          </div>
-        )}
-
-        {/* Admin Section */}
-        {isAdmin && (
-          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
-            {isExpanded && (
-              <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
-                Admin
-              </p>
-            )}
-            <div className={cn(!isExpanded && 'space-y-1')}>
-              {adminNavItems.map((item) => {
-                const isActive = location.pathname.startsWith(item.path)
-                return (
-                  <NavItem
-                    key={item.path}
-                    to={item.path}
-                    icon={item.icon}
-                    label={item.label}
-                    isActive={isActive}
-                    variant="admin"
-                  />
-                )
-              })}
-            </div>
-          </div>
-        )}
-      </nav>
-
-      {/* Bottom Actions - Fixed at bottom */}
+      {/* Bottom Actions - Absolute positioned */}
       <div className={cn(
-        'border-t border-white/10 py-2 shrink-0 mt-auto',
+        'absolute bottom-0 left-0 right-0 border-t border-white/10 py-2 bg-gradient-to-b from-indigo-600 to-indigo-700',
         !isExpanded && 'space-y-1'
       )}>
         <NavItem
