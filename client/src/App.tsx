@@ -10,6 +10,11 @@ function ArticleRedirect() {
   return <Navigate to={`/dashboard/knowledge-base/article/${id}`} replace />
 }
 
+// Legacy article redirects
+function LegacyArticleRedirect() {
+  return <Navigate to="/dashboard/knowledge-base" replace />
+}
+
 // Eager-loaded kritiska komponenter
 import Layout from './components/Layout'
 import Login from './pages/Login'
@@ -268,7 +273,7 @@ function App() {
           </LazyRoute>
         } />
         {/* Article detail view */}
-        <Route path="article/:id" element={
+        <Route path="knowledge-base/article/:id" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <Article />
@@ -387,12 +392,13 @@ function App() {
       <Route path="/diary" element={<Navigate to="/dashboard/diary" replace />} />
       <Route path="/knowledge-base" element={<Navigate to="/dashboard/knowledge-base" replace />} />
       <Route path="/knowledge-base/:id" element={<ArticleRedirect />} />
-      <Route path="/knowledge-base/article/:id" element={<Navigate to={`/dashboard/knowledge-base/article/:id`} replace />} />
+
       <Route path="/resources" element={<Navigate to="/dashboard/resources" replace />} />
       <Route path="/help" element={<Navigate to="/dashboard/help" replace />} />
       
-      {/* Legacy article routes - redirect to new knowledge-base structure */}
+      {/* Legacy article routes - redirect to new structure */}
       <Route path="/article/:id" element={<ArticleRedirect />} />
+      <Route path="/knowledge-base/:id" element={<LegacyArticleRedirect />} />
       <Route path="/profile" element={<Navigate to="/dashboard/profile" replace />} />
       <Route path="/job-tracker" element={<Navigate to="/dashboard/job-tracker" replace />} />
       <Route path="/settings" element={<Navigate to="/dashboard/settings" replace />} />

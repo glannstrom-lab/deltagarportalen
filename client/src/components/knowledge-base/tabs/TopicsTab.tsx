@@ -170,7 +170,6 @@ export default function TopicsTab({ articles, categories, energyLevel, onEnergyL
                   summary: article.summary,
                   readingTime: article.readingTime,
                 }}
-                onClick={() => onArticleClick(article.id)}
               />
             ))}
           </div>
@@ -181,7 +180,6 @@ export default function TopicsTab({ articles, categories, energyLevel, onEnergyL
               <EnhancedArticleCard
                 key={article.id}
                 article={article}
-                onClick={() => onArticleClick(article.id)}
               />
             ))}
           </div>
@@ -193,7 +191,6 @@ export default function TopicsTab({ articles, categories, energyLevel, onEnergyL
                 key={article.id}
                 article={article}
                 variant="compact"
-                onClick={() => onArticleClick(article.id)}
               />
             ))}
           </div>
