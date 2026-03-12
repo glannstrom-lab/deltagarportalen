@@ -37,7 +37,7 @@ export default function EnhancedArticleCard({
     : []
   
   // Build article URL
-  const articleUrl = `/knowledge-base/article/${article.id}`
+  const articleUrl = `/dashboard/knowledge-base/article/${article.id}`
 
   if (variant === 'compact') {
     return (
