@@ -259,6 +259,66 @@ export function getMessageForError(error: Error | string | null, context?: Error
   return getSupportiveMessage(context)
 }
 
+// Meddelanden för kunskapsbanken
+export const knowledgeBaseMessages = {
+  // När användaren sparar för senare
+  saveForLater: [
+    'Helt okej! Vi har sparat artikeln till när du har mer energi. Din hälsa kommer alltid först. 💙',
+    'Ingen stress – artikeln väntar på dig när du är redo. Ta hand om dig! 🤗',
+    'Så bra att du lyssnar på kroppen! Vi har sparat den åt dig. 💙',
+  ],
+  
+  // När användaren inte orkar läsa
+  cantReadNow: [
+    'Det är normalt att inte orka ibland. Det är ingen prestation att läsa allt på en gång.',
+    'Din hjärna behöver också vila. Kom tillbaka när du känner dig redo. ☕',
+    'Det är helt okej. Du är inte mindre värd för att du behöver pausa. 💙',
+  ],
+  
+  // När artikeln är för lång
+  articleTooLong: [
+    'Denna artikel är ganska lång. Vill du läsa en kortare version först?',
+    'Detta är ett djupgående ämne. Vill du se en sammanfattning först?',
+    'Detta tar ungefär {time} minuter att läsa. Vill du fortsätta eller se ett kortare alternativ?',
+  ],
+  
+  // Låg energi-varning
+  lowEnergySuggestion: [
+    'Du verkar ha låg energi idag. Vill jag visa kortare artiklar istället?',
+    'Det märks att du behöver ta det lugnt. Ska vi filtrera efter snabba läsningar?',
+    'Hur mår du? Jag kan visa innehåll som matchar din energinivå. 💙',
+  ],
+  
+  // Fortsätt läsa
+  continueReading: [
+    'Vill du fortsätta där du slutade?',
+    'Du har påbörjat denna artikel. Ska vi fortsätta?',
+    'Välkommen tillbaka! Vill du fortsätta läsa?',
+  ],
+  
+  // Checklistor
+  checklistCompleted: [
+    'Bra jobbat med checklistan! Ett steg närmare målet! ✨',
+    'Du har gått igenom alla punkter – så duktig! 🎉',
+    'Checklistan klar! Du är på rätt väg. 💪',
+  ],
+}
+
+// Hjälpfunktion för kunskapsbank-meddelanden
+export function getKnowledgeBaseMessage(type: keyof typeof knowledgeBaseMessages, params?: Record<string, string>): string {
+  const messages = knowledgeBaseMessages[type]
+  let message = messages[Math.floor(Math.random() * messages.length)]
+  
+  // Ersätt parametrar om de finns
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      message = message.replace(`{${key}}`, value)
+    })
+  }
+  
+  return message
+}
+
 // Uppmuntrande meddelanden för olika situationer
 export const encouragingMessages = {
   // När användaren loggar in

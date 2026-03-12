@@ -1,282 +1,253 @@
-import { useState, useEffect, useMemo } from 'react'
-import { articleApi } from '../services/api'
-import { 
-  EnhancedArticleCard, 
-  CategoryFilter,
-} from '../components/knowledge-base'
-import { 
-  BookOpen, 
-  Sparkles, 
-  Bookmark,
-  Lightbulb,
-  Target,
-  Search,
-} from 'lucide-react'
-import { PageLayout } from '@/components/layout/index'
-import { 
-  Card,
-  StatCard,
-  LoadingState,
-  EmptySearch,
-  InfoCard,
-  Button
-} from '@/components/ui'
-import { cn } from '@/lib/utils'
+/**
+ * Knowledge Base - Main Page with Tab Navigation
+ * Complete rewrite with new tab structure and features
+ */
 
-interface Article {
-  id: string
-  title: string
-  summary: string
-  category: string
-  subcategory?: string
-  tags?: string | string[]
-  createdAt: string
-  readingTime?: number
-  difficulty?: 'easy' | 'medium' | 'detailed'
-  helpfulnessRating?: number
-  bookmarkCount?: number
-  author?: string
+import { useState, useEffect } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import {
+  Sparkles,
+  Rocket,
+  BookOpen,
+  Route,
+  Wrench,
+  Flame,
+  AlertCircle,
+} from 'lucide-react'
+import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
+import { useEnergyLevel } from '@/hooks/useEnergyLevel'
+import { cn } from '@/lib/utils'
+import { Card, LoadingState } from '@/components/ui'
+import {
+  ForYouTab,
+  GettingStartedTab,
+  TopicsTab,
+  QuickHelpTab,
+  MyJourneyTab,
+  ToolsTab,
+  TrendingTab,
+} from '@/components/knowledge-base'
+
+// Tab definitions
+const tabs = [
+  {
+    id: 'for-you',
+    label: 'För dig',
+    path: '/dashboard/knowledge-base',
+    icon: Sparkles,
+    description: 'Personligt anpassat innehåll',
+  },
+  {
+    id: 'getting-started',
+    label: 'Komma igång',
+    path: '/dashboard/knowledge-base/getting-started',
+    icon: Rocket,
+    description: 'Snabbstart för nya användare',
+  },
+  {
+    id: 'topics',
+    label: 'Ämnen',
+    path: '/dashboard/knowledge-base/topics',
+    icon: BookOpen,
+    description: 'Bläddra alla kategorier',
+  },
+  {
+    id: 'quick-help',
+    label: 'Snabbhjälp',
+    path: '/dashboard/knowledge-base/quick-help',
+    icon: AlertCircle,
+    description: 'Akuta situationer',
+  },
+  {
+    id: 'my-journey',
+    label: 'Min resa',
+    path: '/dashboard/knowledge-base/my-journey',
+    icon: Route,
+    description: 'Din progress och sparade',
+  },
+  {
+    id: 'tools',
+    label: 'Verktyg',
+    path: '/dashboard/knowledge-base/tools',
+    icon: Wrench,
+    description: 'Mallar och checklistor',
+  },
+  {
+    id: 'trending',
+    label: 'Trendar',
+    path: '/dashboard/knowledge-base/trending',
+    icon: Flame,
+    description: 'Populärt just nu',
+  },
+]
+
+// Mock user profile - in real app, this comes from auth context
+const mockUserProfile = {
+  name: 'Maria',
+  interests: ['cv', 'intervju', 'kundservice'],
+  completedArticles: ['welcome', 'first-cv'],
+  streak: 3,
+  weeklyGoal: 5,
+  weeklyProgress: 3,
 }
 
 export default function KnowledgeBase() {
-  const [articles, setArticles] = useState<Article[]>([])
-  const [categories, setCategories] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
-  const [selectedSubcategory, setSelectedSubcategory] = useState('')
-
-  useEffect(() => {
-    loadData()
-  }, [])
-
-  const loadData = async () => {
-    try {
-      const [articlesData, categoriesData] = await Promise.all([
-        articleApi.getAll(),
-        articleApi.getCategories(),
-      ])
-      setArticles(articlesData)
-      setCategories(categoriesData)
-    } catch (error) {
-      console.error('Fel vid laddning:', error)
-    } finally {
-      setLoading(false)
-    }
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const { data: articles, isLoading } = useArticles()
+  const { data: bookmarks = [] } = useBookmarks()
+  const [energyLevel] = useEnergyLevel()
+  
+  // Determine active tab from URL
+  const currentPath = window.location.pathname
+  const activeTab = tabs.find(t => currentPath.startsWith(t.path)) || tabs[0]
+  
+  const handleTabClick = (tab: typeof tabs[0]) => {
+    navigate(tab.path)
   }
-
-  const filteredArticles = useMemo(() => {
-    return articles.filter((article) => {
-      if (searchQuery) {
-        const search = searchQuery.toLowerCase()
-        const matchesSearch = 
-          article.title.toLowerCase().includes(search) ||
-          article.summary.toLowerCase().includes(search) ||
-          (article.tags && (Array.isArray(article.tags) 
-            ? article.tags.some(t => t.toLowerCase().includes(search))
-            : article.tags.toLowerCase().includes(search)))
-        if (!matchesSearch) return false
-      }
-
-      if (selectedCategory && article.category !== selectedCategory) {
-        return false
-      }
-
-      if (selectedSubcategory && article.subcategory !== selectedSubcategory) {
-        return false
-      }
-
-      return true
-    })
-  }, [articles, searchQuery, selectedCategory, selectedSubcategory])
-
-  const featuredArticles = useMemo(() => {
-    return [...articles]
-      .filter(a => a.helpfulnessRating && a.helpfulnessRating >= 4.8)
-      .slice(0, 2)
-  }, [articles])
-
-  const recommendedArticles = useMemo(() => {
-    return articles.filter(a => 
-      a.category === 'getting-started' || 
-      (Array.isArray(a.tags) 
-        ? a.tags.includes('för-nybörjare') 
-        : a.tags?.includes('för-nybörjare'))
-    ).slice(0, 3)
-  }, [articles])
-
-  const getArticlesInProgress = () => {
-    const inProgress: string[] = []
-    articles.forEach(article => {
-      const progress = localStorage.getItem(`article-progress-${article.id}`)
-      if (progress && parseInt(progress) > 0 && parseInt(progress) < 100) {
-        inProgress.push(article.id)
-      }
-    })
-    return articles.filter(a => inProgress.includes(a.id))
+  
+  const handleArticleClick = (articleId: string) => {
+    navigate(`/knowledge-base/${articleId}`)
   }
-
-  const articlesInProgress = getArticlesInProgress()
-
-  const handleCategoryChange = (category: string, subcategory: string) => {
-    setSelectedCategory(category)
-    setSelectedSubcategory(subcategory)
-  }
-
-  if (loading) {
+  
+  if (isLoading) {
     return (
-      <PageLayout title="Kunskapsbank" showTabs={false}>
-        <LoadingState title="Laddar artiklar..." fullHeight />
-      </PageLayout>
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <LoadingState title="Laddar kunskapsbanken..." />
+      </div>
     )
   }
-
+  
+  if (!articles) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-8">
+        <Card className="text-center py-12">
+          <p className="text-slate-500">Kunde inte ladda artiklar</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="text-teal-600 hover:underline mt-2"
+          >
+            Försök igen
+          </button>
+        </Card>
+      </div>
+    )
+  }
+  
   return (
-    <PageLayout
-      title="Kunskapsbank"
-      description="Artiklar, guider och verktyg för din jobbsökarresa. Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt."
-      showTabs={false}
-      className="max-w-7xl mx-auto"
-    >
-      {/* Quick stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard
-          value={articles.length}
-          label="Artiklar"
-          icon={<BookOpen className="w-5 h-5" />}
-          color="indigo"
-        />
-        <StatCard
-          value={categories.length}
-          label="Kategorier"
-          icon={<Target className="w-5 h-5" />}
-          color="blue"
-        />
-        <InfoCard 
-          variant="info"
-          icon={<Lightbulb className="w-5 h-5" />}
-          title="Tips"
-        >
-          Använd filter för att hitta rätt innehåll
-        </InfoCard>
-      </div>
-
-      {/* Main content */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Sidebar */}
-        <div className="lg:col-span-1">
-          <Card variant="elevated" className="sticky top-4">
-            <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <Sparkles size={18} className="text-indigo-600" />
-              Filter & Sök
-            </h3>
-            <CategoryFilter
-              selectedCategory={selectedCategory}
-              selectedSubcategory={selectedSubcategory}
-              onCategoryChange={handleCategoryChange}
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-            />
-          </Card>
-        </div>
-
-        {/* Articles area */}
-        <div className="lg:col-span-3 space-y-8">
-          
-          {/* Featured articles */}
-          {!searchQuery && !selectedCategory && featuredArticles.length > 0 && (
-            <section>
-              <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Sparkles size={20} className="text-amber-500" />
-                Mest uppskattade artiklar
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {featuredArticles.map((article) => (
-                  <EnhancedArticleCard 
-                    key={article.id} 
-                    article={article} 
-                    variant="featured"
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* Continue reading */}
-          {!searchQuery && !selectedCategory && articlesInProgress.length > 0 && (
-            <section>
-              <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Bookmark size={20} className="text-indigo-600" />
-                Fortsätt läsa
-              </h2>
-              <Card variant="flat" className="bg-amber-50/50 border-amber-100">
-                <div className="space-y-2">
-                  {articlesInProgress.map((article) => (
-                    <EnhancedArticleCard 
-                      key={article.id} 
-                      article={article} 
-                      variant="compact"
-                    />
-                  ))}
-                </div>
-              </Card>
-            </section>
-          )}
-
-          {/* Recommended for new users */}
-          {!searchQuery && !selectedCategory && recommendedArticles.length > 0 && (
-            <section>
-              <h2 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-                <Target size={20} className="text-blue-600" />
-                Komma igång
-              </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                {recommendedArticles.map((article) => (
-                  <EnhancedArticleCard 
-                    key={article.id} 
-                    article={article} 
-                  />
-                ))}
-              </div>
-            </section>
-          )}
-
-          {/* All/Filtered articles */}
-          <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-slate-800">
-                {searchQuery || selectedCategory ? 'Sökresultat' : 'Alla artiklar'}
-              </h2>
-              <span className="text-sm text-slate-500">
-                {filteredArticles.length} artiklar
-              </span>
-            </div>
-
-            {filteredArticles.length === 0 ? (
-              <Card className="text-center py-12">
-                <EmptySearch
-                  query={searchQuery}
-                  onClear={() => {
-                    setSearchQuery('')
-                    setSelectedCategory('')
-                    setSelectedSubcategory('')
-                  }}
-                />
-              </Card>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredArticles.map((article) => (
-                  <EnhancedArticleCard 
-                    key={article.id} 
-                    article={article}
-                  />
-                ))}
-              </div>
-            )}
-          </section>
-
+    <div className="max-w-7xl mx-auto px-4 py-8">
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-slate-900">Kunskapsbank</h1>
+        <p className="text-slate-600 mt-2 max-w-2xl">
+          Artiklar, guider och verktyg för din jobbsökarresa. 
+          Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt.
+        </p>
+        
+        {/* Energy indicator */}
+        <div className={cn(
+          "inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm font-medium",
+          energyLevel === 'low' && "bg-sky-100 text-sky-800",
+          energyLevel === 'medium' && "bg-amber-100 text-amber-800",
+          energyLevel === 'high' && "bg-rose-100 text-rose-800",
+        )}>
+          <span>Din energinivå:</span>
+          <span className="capitalize">
+            {energyLevel === 'low' ? 'Låg' : energyLevel === 'medium' ? 'Medel' : 'Hög'}
+          </span>
+          <span className="opacity-70">
+            {energyLevel === 'low' && '• Korta artiklar rekommenderas'}
+            {energyLevel === 'medium' && '• Balanserat innehåll'}
+            {energyLevel === 'high' && '• Perfekt för djupgående läsning'}
+          </span>
         </div>
       </div>
-    </PageLayout>
+      
+      {/* Tab navigation */}
+      <div className="mb-8">
+        <div className="border-b border-slate-200">
+          <nav className="flex gap-1 overflow-x-auto scrollbar-hide" aria-label="Tabs">
+            {tabs.map((tab) => {
+              const Icon = tab.icon
+              const isActive = activeTab.id === tab.id
+              
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => handleTabClick(tab)}
+                  className={cn(
+                    "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
+                    isActive
+                      ? "border-violet-600 text-violet-600"
+                      : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+                  )}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <Icon className={cn(
+                    "w-4 h-4",
+                    isActive ? "text-violet-600" : "text-slate-400"
+                  )} />
+                  <span>{tab.label}</span>
+                </button>
+              )
+            })}
+          </nav>
+        </div>
+        
+        {/* Tab description */}
+        <p className="text-sm text-slate-500 mt-3">
+          {activeTab.description}
+        </p>
+      </div>
+      
+      {/* Tab content */}
+      <div className="min-h-[400px]">
+        {activeTab.id === 'for-you' && (
+          <ForYouTab userProfile={mockUserProfile} />
+        )}
+        
+        {activeTab.id === 'getting-started' && (
+          <GettingStartedTab
+            articles={articles}
+            completedArticles={mockUserProfile.completedArticles}
+            onArticleClick={handleArticleClick}
+          />
+        )}
+        
+        {activeTab.id === 'topics' && (
+          <TopicsTab
+            articles={articles}
+            categories={[]}
+            onArticleClick={handleArticleClick}
+          />
+        )}
+        
+        {activeTab.id === 'quick-help' && (
+          <QuickHelpTab
+            articles={articles}
+            onArticleClick={handleArticleClick}
+          />
+        )}
+        
+        {activeTab.id === 'my-journey' && (
+          <MyJourneyTab
+            articles={articles}
+            bookmarks={bookmarks}
+            completedArticles={mockUserProfile.completedArticles}
+            streak={mockUserProfile.streak}
+            weeklyGoal={mockUserProfile.weeklyGoal}
+            weeklyProgress={mockUserProfile.weeklyProgress}
+          />
+        )}
+        
+        {activeTab.id === 'tools' && (
+          <ToolsTab />
+        )}
+        
+        {activeTab.id === 'trending' && (
+          <TrendingTab articles={articles} />
+        )}
+      </div>
+    </div>
   )
 }
