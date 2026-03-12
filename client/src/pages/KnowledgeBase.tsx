@@ -107,7 +107,7 @@ export default function KnowledgeBase() {
   }
   
   const handleArticleClick = (articleId: string) => {
-    navigate(`/knowledge-base/${articleId}`)
+    navigate(`/knowledge-base/article/${articleId}`)
   }
   
   if (isLoading) {

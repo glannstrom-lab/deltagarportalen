@@ -885,7 +885,7 @@ export default function Resources() {
               {bookmarkedArticles.map((article) => (
                 <Link
                   key={article.id}
-                  to={`/dashboard/knowledge-base/${article.id}`}
+                  to={`/dashboard/knowledge-base/article/${article.id}`}
                   className="block bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow"
                 >
                   <div className="flex items-start justify-between gap-3">

@@ -56,7 +56,7 @@ export default function EnhancedArticleCard({
   if (variant === 'compact') {
     return (
       <Link
-        to={`/knowledge-base/${article.id}`}
+        to={`/knowledge-base/article/${article.id}`}
         onClick={onClick}
         className="group flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
         aria-label={ariaLabel}
@@ -79,7 +79,7 @@ export default function EnhancedArticleCard({
   if (variant === 'featured') {
     return (
       <Link
-        to={`/knowledge-base/${article.id}`}
+        to={`/knowledge-base/article/${article.id}`}
         onClick={onClick}
         className="group block bg-gradient-to-br from-teal-50 to-blue-50 rounded-xl p-6 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
         aria-label={ariaLabel}
@@ -115,7 +115,7 @@ export default function EnhancedArticleCard({
 
   return (
     <Link
-      to={`/knowledge-base/${article.id}`}
+      to={`/knowledge-base/article/${article.id}`}
       onClick={onClick}
       className="group block card hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
       aria-label={ariaLabel}

@@ -7,7 +7,7 @@ import { Loader2 } from 'lucide-react'
 // Wrapper komponent för att hantera redirects med params
 function ArticleRedirect() {
   const { id } = useParams()
-  return <Navigate to={`/dashboard/knowledge-base/${id}`} replace />
+  return <Navigate to={`/dashboard/knowledge-base/article/${id}`} replace />
 }
 
 // Eager-loaded kritiska komponenter
@@ -249,7 +249,50 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="knowledge-base/:id" element={
+        {/* Knowledge Base tabs - must be before :id route */}
+        <Route path="knowledge-base/getting-started" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <KnowledgeBase />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="knowledge-base/topics" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <KnowledgeBase />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="knowledge-base/quick-help" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <KnowledgeBase />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="knowledge-base/my-journey" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <KnowledgeBase />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="knowledge-base/tools" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <KnowledgeBase />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="knowledge-base/trending" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <KnowledgeBase />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="knowledge-base/article/:id" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <Article />
@@ -368,6 +411,7 @@ function App() {
       <Route path="/diary" element={<Navigate to="/dashboard/diary" replace />} />
       <Route path="/knowledge-base" element={<Navigate to="/dashboard/knowledge-base" replace />} />
       <Route path="/knowledge-base/:id" element={<ArticleRedirect />} />
+      <Route path="/knowledge-base/article/:id" element={<Navigate to={`/dashboard/knowledge-base/article/:id`} replace />} />
       <Route path="/resources" element={<Navigate to="/dashboard/resources" replace />} />
       <Route path="/help" element={<Navigate to="/dashboard/help" replace />} />
       
