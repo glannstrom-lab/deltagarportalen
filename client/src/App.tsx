@@ -24,6 +24,7 @@ const Dashboard = lazy(() => import('./pages/Dashboard'))
 const CVPage = lazy(() => import('./pages/CVPage'))
 const CVBuilder = lazy(() => import('./pages/CVBuilder'))
 const CoverLetterGenerator = lazy(() => import('./pages/CoverLetterGenerator'))
+const CoverLetterPage = lazy(() => import('./pages/CoverLetterPage'))
 const InterestGuide = lazy(() => import('./pages/InterestGuide'))
 const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
 const Article = lazy(() => import('./pages/Article'))
@@ -227,10 +228,10 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="cover-letter" element={
+        <Route path="cover-letter/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
-              <CoverLetterGenerator />
+              <CoverLetterPage />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
