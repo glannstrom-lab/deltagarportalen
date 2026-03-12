@@ -257,6 +257,14 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
+        {/* Article detail view - MUST come before knowledge-base routes */}
+        <Route path="knowledge-base/article/:id" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Article />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
         {/* Knowledge Base - handles tabs via hash routing */}
         <Route path="knowledge-base" element={
           <LazyRoute>
@@ -269,14 +277,6 @@ function App() {
           <LazyRoute>
             <RouteErrorBoundary>
               <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        {/* Article detail view */}
-        <Route path="knowledge-base/article/:id" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Article />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
