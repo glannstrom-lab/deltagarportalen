@@ -126,6 +126,16 @@ function App() {
 
   useEffect(() => {
     initialize()
+    
+    // Clear old service worker to fix routing issues
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        registrations.forEach((registration) => {
+          console.log('[App] Unregistering old service worker:', registration.scope)
+          registration.unregister()
+        })
+      })
+    }
   }, [initialize])
 
   // Visa loading-screen medan auth initialiseras
