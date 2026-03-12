@@ -399,17 +399,9 @@ function App() {
       <Route path="/consultant" element={<Navigate to="/dashboard/consultant" replace />} />
       <Route path="/admin" element={<Navigate to="/dashboard/admin" replace />} />
 
-      {/* Catch all - 404 */}
+      {/* Catch all - redirect to dashboard for client-side routing */}
       <Route path="*" element={
-        <div className="min-h-screen flex items-center justify-center bg-slate-50">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-slate-800 mb-4">404</h1>
-            <p className="text-slate-600 mb-6">Sidan hittades inte</p>
-            <a href="/" className="text-teal-600 hover:underline">
-              Tillbaka till startsidan
-            </a>
-          </div>
-        </div>
+        <Navigate to="/dashboard" replace />
       } />
     </Routes>
   )

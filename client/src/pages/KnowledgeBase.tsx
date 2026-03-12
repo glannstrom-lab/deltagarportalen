@@ -1,9 +1,9 @@
 /**
- * Knowledge Base - Full implementation with all features
+ * Knowledge Base - Full implementation with query-based tab routing
  */
 
 import { useState, useEffect, useCallback, Suspense, lazy } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { Sparkles, Rocket, BookOpen, Route, Wrench, Flame, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Card, LoadingState } from '@/components/ui'
@@ -20,13 +20,13 @@ const ToolsTab = lazy(() => import('@/components/knowledge-base/tabs/ToolsTab'))
 const TrendingTab = lazy(() => import('@/components/knowledge-base/tabs/TrendingTab'))
 
 const tabs = [
-  { id: 'for-you', label: 'För dig', hash: '', icon: Sparkles },
-  { id: 'getting-started', label: 'Komma igång', hash: '#getting-started', icon: Rocket },
-  { id: 'topics', label: 'Ämnen', hash: '#topics', icon: BookOpen },
-  { id: 'quick-help', label: 'Snabbhjälp', hash: '#quick-help', icon: AlertCircle },
-  { id: 'my-journey', label: 'Min resa', hash: '#my-journey', icon: Route },
-  { id: 'tools', label: 'Verktyg', hash: '#tools', icon: Wrench },
-  { id: 'trending', label: 'Trendar', hash: '#trending', icon: Flame },
+  { id: 'for-you', label: 'För dig', param: '', icon: Sparkles },
+  { id: 'getting-started', label: 'Komma igång', param: 'getting-started', icon: Rocket },
+  { id: 'topics', label: 'Ämnen', param: 'topics', icon: BookOpen },
+  { id: 'quick-help', label: 'Snabbhjälp', param: 'quick-help', icon: AlertCircle },
+  { id: 'my-journey', label: 'Min resa', param: 'my-journey', icon: Route },
+  { id: 'tools', label: 'Verktyg', param: 'tools', icon: Wrench },
+  { id: 'trending', label: 'Trendar', param: 'trending', icon: Flame },
 ] as const
 
 type TabId = typeof tabs[number]['id']
@@ -50,34 +50,47 @@ function TabLoader() {
 }
 
 export default function KnowledgeBase() {
+  const navigate = useNavigate()
   const location = useLocation()
   const [energyLevel, setEnergyLevel] = useEnergyLevel()
   const { data: articles, isLoading: articlesLoading } = useArticles()
   const { data: bookmarks = [] } = useBookmarks()
   
-  // Get initial tab from URL hash
-  const getTabFromHash = useCallback((): TabId => {
-    const hash = location.hash.replace('#', '')
-    const matchedTab = tabs.find(t => t.id === hash)
+  // Get tab from URL query param (e.g., ?tab=topics)
+  const getTabFromQuery = useCallback((): TabId => {
+    const params = new URLSearchParams(location.search)
+    const tabParam = params.get('tab')
+    const matchedTab = tabs.find(t => t.param === tabParam)
     return matchedTab ? matchedTab.id : 'for-you'
-  }, [location.hash])
+  }, [location.search])
   
   // Local state for active tab
-  const [activeTabId, setActiveTabId] = useState<TabId>(getTabFromHash)
+  const [activeTabId, setActiveTabId] = useState<TabId>(getTabFromQuery)
   
-  // Sync with URL hash when it changes
+  // Sync with URL query param when it changes
   useEffect(() => {
-    const newTabId = getTabFromHash()
+    const newTabId = getTabFromQuery()
     if (newTabId !== activeTabId) {
       setActiveTabId(newTabId)
     }
-  }, [location.hash, getTabFromHash, activeTabId])
+  }, [location.search, getTabFromQuery, activeTabId])
   
   const handleTabClick = (tab: typeof tabs[number]) => {
     if (tab.id === activeTabId) return
     
-    // Update URL hash
-    window.location.hash = tab.hash
+    // Update URL query param
+    const params = new URLSearchParams(location.search)
+    if (tab.param) {
+      params.set('tab', tab.param)
+    } else {
+      params.delete('tab')
+    }
+    
+    navigate({
+      pathname: location.pathname,
+      search: params.toString(),
+    }, { replace: true })
+    
     setActiveTabId(tab.id)
   }
   
