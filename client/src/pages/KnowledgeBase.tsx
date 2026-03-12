@@ -216,10 +216,7 @@ export default function KnowledgeBase() {
         </Card>
       </div>
       
-      {/* Debug info - remove in production */}
-      <div className="mt-8 p-4 bg-slate-100 rounded-lg text-xs font-mono text-slate-500">
-        <p>Debug: activeTabId={activeTabId} | hash={location.hash} | pathname={location.pathname}</p>
-      </div>
+
     </div>
   )
 }
