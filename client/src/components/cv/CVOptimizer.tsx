@@ -185,7 +185,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
             {/* Action buttons */}
             <div className="pt-4 border-t flex flex-wrap gap-3">
               <a
-                href="/cv-builder"
+                href="/dashboard/cv"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700"
               >
                 Öppna CV-generatorn

@@ -88,7 +88,7 @@ function DiaryWidgetSmall({ entriesCount = 0, lastEntry, hasEntryToday = false, 
     <DashboardWidget
       title="Dagbok"
       icon={<BookHeart size={18} className="text-rose-500" />}
-      to="/diary"
+      to="/dashboard/diary"
       color="rose"
       status={getStatus()}
       loading={loading}
@@ -159,7 +159,7 @@ function DiaryWidgetMedium({ entriesCount = 0, lastEntry, hasEntryToday = false,
     <DashboardWidget
       title="Dagbok"
       icon={<BookHeart size={20} className="text-rose-500" />}
-      to="/diary"
+      to="/dashboard/diary"
       color="rose"
       status={getStatus()}
       loading={loading}
@@ -280,7 +280,7 @@ function DiaryWidgetLarge({ entriesCount = 0, lastEntry, streakDays = 0, hasEntr
     <DashboardWidget
       title="Dagbok"
       icon={<BookHeart size={22} className="text-rose-500" />}
-      to="/diary"
+      to="/dashboard/diary"
       color="rose"
       status={getStatus()}
       loading={loading}

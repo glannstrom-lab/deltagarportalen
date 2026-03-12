@@ -693,7 +693,7 @@ export default function CoverLetterGenerator() {
         {/* Back button */}
         {(sourceJob || queryJobId) && (
           <Link 
-            to="/jobs"
+            to="/dashboard/job-search"
             className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 pt-4"
           >
             <ArrowLeft size={16} />
@@ -810,7 +810,7 @@ export default function CoverLetterGenerator() {
       {(sourceJob || queryJobId || company || jobTitle) && (
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
           <Link 
-            to="/jobs"
+            to="/dashboard/job-search"
             className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
           >
             <ArrowLeft size={16} />
@@ -1009,7 +1009,7 @@ export default function CoverLetterGenerator() {
               {savedJobs.length === 0 ? (
                 <div className="text-center py-4">
                   <p className="text-slate-500 text-sm mb-2">Inga sparade jobb</p>
-                  <a href="/jobs" className="text-sm text-teal-600 hover:underline">
+                  <a href="/dashboard/job-search" className="text-sm text-teal-600 hover:underline">
                     Sök jobb att spara →
                   </a>
                 </div>

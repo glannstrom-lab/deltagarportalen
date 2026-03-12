@@ -777,7 +777,7 @@ export default function Exercises() {
                   ))}
                 </div>
                 <Link
-                  to="/knowledge-base"
+                  to="/dashboard/knowledge-base"
                   className="inline-flex items-center gap-1 text-sm text-teal-700 hover:text-teal-800 mt-3 font-medium"
                 >
                   Se alla artiklar

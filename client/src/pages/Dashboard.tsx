@@ -253,7 +253,7 @@ function DesktopDashboard() {
               title="Komplett profil"
               description="Fyll i dina grunduppgifter"
               done={hasCompletedOnboarding}
-              href="/profile"
+              href="/dashboard/profile"
             />
             <GuideStep 
               number={2}

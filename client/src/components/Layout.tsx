@@ -204,7 +204,7 @@ function MobileTopBar() {
         {/* Footer i meny - Inställningar synkad med Sidebar */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom space-y-1">
           <Link
-            to="/settings"
+            to="/dashboard/settings"
             onClick={() => setIsMenuOpen(false)}
             className={cn(
               'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
@@ -261,14 +261,14 @@ function MobileTopBar() {
           
           <nav className="space-y-1">
             <Link
-              to="/profile"
+              to="/dashboard/profile"
               onClick={() => setIsProfileOpen(false)}
               className="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
             >
               Min profil
             </Link>
             <Link
-              to="/settings"
+              to="/dashboard/settings"
               onClick={() => setIsProfileOpen(false)}
               className="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
             >

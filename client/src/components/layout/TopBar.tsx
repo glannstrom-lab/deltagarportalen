@@ -212,7 +212,7 @@ export function TopBar() {
 
           {/* Help */}
           <Link
-            to="/help"
+            to="/dashboard/help"
             className="hidden sm:flex p-2.5 rounded-xl hover:bg-slate-100 transition-colors"
             title="Hjälp & Support"
           >
@@ -313,7 +313,7 @@ export function TopBar() {
                   </div>
                   
                   <Link
-                    to="/profile"
+                    to="/dashboard/profile"
                     onClick={() => setShowUserMenu(false)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors mt-1"
                   >
@@ -322,7 +322,7 @@ export function TopBar() {
                   </Link>
                   
                   <Link
-                    to="/settings"
+                    to="/dashboard/settings"
                     onClick={() => setShowUserMenu(false)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-50 transition-colors"
                   >

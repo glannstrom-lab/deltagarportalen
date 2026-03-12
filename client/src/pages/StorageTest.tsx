@@ -260,7 +260,7 @@ export default function StorageTest() {
             <p className="text-red-600 text-sm mt-1">
               Följ anvisningarna ovan för att åtgärda felen. 
               <a 
-                href="/SUPABASE_STORAGE_SIMPLE_GUIDE.md" 
+                href="https://github.com/supabase/supabase-js/blob/main/README.md" 
                 className="underline ml-1"
                 target="_blank"
               >

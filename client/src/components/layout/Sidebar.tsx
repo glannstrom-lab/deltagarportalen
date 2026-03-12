@@ -145,7 +145,7 @@ export function Sidebar() {
 
         {/* User Profile */}
         <Link
-          to="/profile"
+          to="/dashboard/profile"
           className={cn(
             'group relative flex items-center border-b border-white/10 transition-all',
             isExpanded
@@ -249,7 +249,7 @@ export function Sidebar() {
         !isExpanded && 'space-y-0.5'
       )}>
         <NavItem
-          to="/settings"
+          to="/dashboard/settings"
           icon={Settings}
           label="Inställningar"
           isActive={location.pathname === '/settings'}

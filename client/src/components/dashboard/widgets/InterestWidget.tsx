@@ -104,7 +104,7 @@ function InterestWidgetSmall({ hasResult, topRecommendations = [], loading, erro
     <DashboardWidget
       title="Dina intressen"
       icon={<Compass size={20} className="text-teal-500" />}
-      to="/interest-guide"
+      to="/dashboard/interest-guide"
       color="teal"
       status={status}
       progress={hasResult ? 100 : 0}
@@ -177,7 +177,7 @@ function InterestWidgetMedium({ hasResult, topRecommendations = [], completedAt,
     <DashboardWidget
       title="Dina intressen"
       icon={<Compass size={22} className="text-teal-500" />}
-      to="/interest-guide"
+      to="/dashboard/interest-guide"
       color="teal"
       status={status}
       progress={hasResult ? 100 : 0}
@@ -337,7 +337,7 @@ function InterestWidgetLarge({ hasResult, topRecommendations = [], completedAt, 
     <DashboardWidget
       title="Dina intressen"
       icon={<Compass size={24} className="text-teal-500" />}
-      to="/interest-guide"
+      to="/dashboard/interest-guide"
       color="teal"
       status={status}
       progress={hasResult ? 100 : 0}

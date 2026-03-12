@@ -70,7 +70,7 @@ function CareerWidgetSmall({ exploredCount = 0, recommendedOccupations = [], loa
     <DashboardWidget
       title="Karriär"
       icon={<Route size={20} />}
-      to="/career"
+      to="/dashboard/career"
       color="indigo"
       status={status}
       progress={exploredCount > 0 ? Math.min(100, exploredCount * 20) : 0}
@@ -121,7 +121,7 @@ function CareerWidgetMedium({ exploredCount = 0, savedPaths = [], recommendedOcc
     <DashboardWidget
       title="Karriärvägar"
       icon={<Route size={22} />}
-      to="/career"
+      to="/dashboard/career"
       color="indigo"
       status={status}
       progress={exploredCount > 0 ? Math.min(100, exploredCount * 20) : 0}
@@ -236,7 +236,7 @@ function CareerWidgetLarge({ exploredCount = 0, savedPaths = [], recommendedOccu
     <DashboardWidget
       title="Karriärvägar"
       icon={<Route size={24} />}
-      to="/career"
+      to="/dashboard/career"
       color="indigo"
       status={status}
       progress={exploredCount > 0 ? Math.min(100, exploredCount * 20) : 0}

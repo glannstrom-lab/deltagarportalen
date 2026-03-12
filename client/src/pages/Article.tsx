@@ -499,7 +499,7 @@ export default function Article() {
               Vi finns här för dig!
             </p>
             <Link 
-              to="/diary"
+              to="/dashboard/diary"
               className="inline-flex items-center gap-2 text-teal-700 font-medium hover:underline"
             >
               Boka ett möte

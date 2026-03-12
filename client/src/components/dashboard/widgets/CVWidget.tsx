@@ -115,7 +115,7 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
     <DashboardWidget
       title="Ditt CV"
       icon={<FileText size={18} className="text-violet-600" />}
-      to="/cv"
+      to="/dashboard/cv"
       color="violet"
       status={status}
       progress={progress}
@@ -183,7 +183,7 @@ function CVWidgetMedium({ hasCV, progress, atsScore, missingSections = [], loadi
     <DashboardWidget
       title="Ditt CV"
       icon={<FileText size={20} className="text-violet-600" />}
-      to="/cv"
+      to="/dashboard/cv"
       color="violet"
       status={status}
       progress={progress}
@@ -465,7 +465,7 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
     <DashboardWidget
       title="Ditt CV"
       icon={<FileText size={22} className="text-violet-600" />}
-      to="/cv"
+      to="/dashboard/cv"
       color="violet"
       status={status}
       progress={progress}
@@ -544,7 +544,7 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
           </button>
 
           <a
-            href="/cv/preview"
+            href="/dashboard/cv?tab=preview"
             className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-violet-300 hover:bg-violet-50 transition-all"
           >
             <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
