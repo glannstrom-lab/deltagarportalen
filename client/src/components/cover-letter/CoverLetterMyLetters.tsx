@@ -281,7 +281,7 @@ export function CoverLetterMyLetters() {
                   {letter.status === 'draft' && (
                     <Button
                       size="sm"
-                      onClick={() => navigate('/dashboard/cover-letter/applications')}
+                      onClick={() => navigate('/cover-letter/applications')}
                       className="gap-1.5 ml-auto"
                     >
                       <Send size={14} />

@@ -122,7 +122,7 @@ export function CoverLetterWrite() {
   const handleSave = () => {
     // TODO: Spara brev
     console.log('Sparar brev:', editedLetter)
-    navigate('/dashboard/cover-letter/my-letters')
+    navigate('/cover-letter/my-letters')
   }
 
   const canProceed = () => {

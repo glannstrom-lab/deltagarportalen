@@ -57,7 +57,7 @@ export default function Register() {
         }
 
         // Navigera till dashboard
-        navigate('/dashboard')
+        navigate('/')
       } catch (err: any) {
         setSubmitError(err.message || 'Det gick inte att skapa kontot. Försök igen om en stund.')
       }

@@ -150,7 +150,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
                 {getLastContactText(p.last_contact_at)}
               </span>
               <Link
-                to={`/profile/${p.participant_id}`}
+                to="/profile"
                 className="text-primary-600 hover:text-primary-700 font-medium"
               >
                 Visa profil →
@@ -216,7 +216,7 @@ export const ParticipantList: React.FC<ParticipantListProps> = ({
               </td>
               <td className="px-6 py-4 text-right">
                 <Link
-                  to={`/profile/${p.participant_id}`}
+                  to="/profile"
                   className="text-primary-600 hover:text-primary-700 text-sm font-medium"
                 >
                   Visa →

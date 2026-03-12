@@ -337,7 +337,7 @@ export function ContextualKnowledgeWidget({
           {articles.map((article) => (
             <Link
               key={article.id}
-              to={`/dashboard/knowledge-base/article/${article.id}`}
+              to={`/knowledge-base/article/${article.id}`}
               className="block bg-white/70 hover:bg-white rounded-lg p-3 transition-colors group"
             >
               <div className="flex items-start gap-3">
@@ -399,7 +399,7 @@ export function ContextualKnowledgeWidget({
         {articles.map((article) => (
           <Link
             key={article.id}
-            to={`/dashboard/knowledge-base/article/${article.id}`}
+            to={`/knowledge-base/article/${article.id}`}
             className="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors group"
           >
             <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors">

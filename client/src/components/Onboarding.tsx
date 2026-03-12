@@ -535,10 +535,10 @@ export default function Onboarding() {
               <button
                 onClick={() => {
                   handleComplete()
-                  if (selectedPath === 'interest') navigate('/dashboard/interest-guide')
-                  else if (selectedPath === 'cv') navigate('/dashboard/cv')
-                  else if (selectedPath === 'jobs') navigate('/dashboard/job-search')
-                  else navigate('/dashboard')
+                  if (selectedPath === 'interest') navigate('/interest-guide')
+                  else if (selectedPath === 'cv') navigate('/cv')
+                  else if (selectedPath === 'jobs') navigate('/job-search')
+                  else navigate('/')
                 }}
                 className="flex items-center gap-2 px-6 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
               >

@@ -329,7 +329,7 @@ export function CVTips() {
             Testa hur väl ditt CV klarar rekryteringssystem
           </p>
           <a 
-            href="/dashboard/cv/ats"
+            href="/cv/ats"
             className="text-indigo-600 text-sm font-medium hover:underline"
           >
             Gå till ATS-analys →
