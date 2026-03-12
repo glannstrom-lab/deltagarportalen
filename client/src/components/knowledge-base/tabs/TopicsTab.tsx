@@ -5,7 +5,7 @@
 
 import { useState, useMemo } from 'react'
 import { BookOpen, Grid, List, SlidersHorizontal } from 'lucide-react'
-import { EnhancedArticleCard } from '../EnhancedArticleCard'
+import EnhancedArticleCard from '../EnhancedArticleCard'
 import { CategoryFilter } from '../CategoryFilter'
 import { EnergyFilter } from '../EnergyFilter'
 import { ZenModeToggle, ZenArticleCard } from '../ZenModeToggle'

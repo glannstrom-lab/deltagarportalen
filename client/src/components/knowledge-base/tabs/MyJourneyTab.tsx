@@ -6,7 +6,7 @@
 import { useMemo } from 'react'
 import { Route, Bookmark, CheckCircle2, Clock, TrendingUp, Calendar, Target } from 'lucide-react'
 import { Card, Progress } from '@/components/ui'
-import { EnhancedArticleCard } from '../EnhancedArticleCard'
+import EnhancedArticleCard from '../EnhancedArticleCard'
 import type { Article } from '@/types/knowledge'
 
 interface MyJourneyTabProps {
