@@ -2,10 +2,10 @@
  * For You Tab - Personalized content based on user profile
  */
 
-import { useState, useMemo } from 'react'
-import { Sparkles, Target, Flame, BookOpen, Zap, TrendingUp } from 'lucide-react'
+import { useMemo } from 'react'
+import { Sparkles, Target, Flame, BookOpen, Zap, TrendingUp, ChevronRight } from 'lucide-react'
 import EnhancedArticleCard from '../EnhancedArticleCard'
-import { Card, Button } from '@/components/ui'
+import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { Article } from '@/types/knowledge'
 
@@ -20,20 +20,54 @@ interface ForYouTabProps {
   energyLevel: 'low' | 'medium' | 'high'
 }
 
-export default function ForYouTab({ articles, userProfile, energyLevel }: ForYouTabProps) {
-  
-  const recommendations = useMemo(() => {
-    if (!articles) return []
-    return getRecommendations({
-      readArticles: userProfile.completedArticles,
-      interests: userProfile.interests,
-      energyLevel,
+// Simple recommendation algorithm
+function getRecommendations(
+  articles: Article[],
+  userProfile: ForYouTabProps['userProfile'],
+  energyLevel: string
+): Article[] {
+  return articles
+    .filter(article => !userProfile.completedArticles.includes(article.id))
+    .map(article => {
+      let score = 0
+      
+      // Interest match
+      if (userProfile.interests.some(i => 
+        article.category.toLowerCase().includes(i.toLowerCase()) ||
+        article.tags?.includes(i)
+      )) {
+        score += 20
+      }
+      
+      // Energy level match
+      if (energyLevel === 'low' && article.readingTime && article.readingTime <= 5) {
+        score += 15
+      } else if (energyLevel === 'medium' && article.readingTime && article.readingTime <= 10) {
+        score += 10
+      } else if (energyLevel === 'high') {
+        score += 5
+      }
+      
+      // Popular articles
+      if (article.helpfulnessRating && article.helpfulnessRating >= 4.5) {
+        score += 10
+      }
+      
+      return { article, score }
     })
-  }, [articles, userProfile, energyLevel, getRecommendations])
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 4)
+    .map(item => item.article)
+}
+
+export default function ForYouTab({ articles, userProfile, energyLevel }: ForYouTabProps) {
+  // Get recommendations
+  const recommendations = useMemo(() => {
+    return getRecommendations(articles, userProfile, energyLevel)
+  }, [articles, userProfile, energyLevel])
   
   // Get trending articles
   const trendingArticles = useMemo(() => {
-    if (!articles) return []
     return [...articles]
       .filter(a => a.helpfulnessRating && a.helpfulnessRating >= 4.5)
       .sort((a, b) => (b.helpfulnessRating || 0) - (a.helpfulnessRating || 0))
@@ -42,16 +76,14 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
   
   // Get quick wins based on energy
   const quickWins = useMemo(() => {
-    if (!articles) return []
-    const maxTime = energyLevel === 'low' ? 3 : energyLevel === 'medium' ? 8 : 15
+    const maxTime = energyLevel === 'low' ? 5 : energyLevel === 'medium' ? 8 : 15
     return articles
-      .filter(a => a.readingTime && a.readingTime <= maxTime && a.difficulty === 'easy')
+      .filter(a => a.readingTime && a.readingTime <= maxTime)
       .slice(0, 3)
   }, [articles, energyLevel])
   
   // Get continue reading
   const continueReading = useMemo(() => {
-    if (!articles) return []
     return articles.filter(a => {
       const progress = localStorage.getItem(`article-progress-${a.id}`)
       return progress && parseInt(progress) > 0 && parseInt(progress) < 100
@@ -91,7 +123,7 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
             <h3 className="text-lg font-semibold text-slate-900">Fortsätt där du slutade</h3>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {continueReading.map((article: Article) => {
+            {continueReading.map((article) => {
               const progress = parseInt(localStorage.getItem(`article-progress-${article.id}`) || '0')
               return (
                 <div key={article.id} className="relative">
@@ -130,7 +162,7 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
             : 'Djupgående material för när du har energi att lära mycket!'}
         </p>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {quickWins.map((article: Article) => (
+          {quickWins.map((article) => (
             <EnhancedArticleCard 
               key={article.id} 
               article={article}
@@ -153,7 +185,7 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {recommendations.slice(0, 4).map((article: Article) => (
+            {recommendations.map((article) => (
               <EnhancedArticleCard 
                 key={article.id} 
                 article={article}
@@ -171,7 +203,7 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
           <h3 className="text-lg font-semibold text-slate-900">Trendar nu</h3>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {trendingArticles.map((article: Article) => (
+          {trendingArticles.map((article) => (
             <EnhancedArticleCard 
               key={article.id} 
               article={article}
@@ -179,21 +211,6 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
           ))}
         </div>
       </section>
-    </div>
-  )
-}
-
-function ForYouSkeleton() {
-  return (
-    <div className="space-y-8 animate-pulse">
-      <div className="h-32 bg-slate-100 rounded-xl" />
-      <div className="space-y-4">
-        <div className="h-6 w-48 bg-slate-100 rounded" />
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="h-40 bg-slate-100 rounded-xl" />
-          <div className="h-40 bg-slate-100 rounded-xl" />
-        </div>
-      </div>
     </div>
   )
 }
