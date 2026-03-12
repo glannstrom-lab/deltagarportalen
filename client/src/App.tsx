@@ -7,12 +7,12 @@ import { Loader2 } from 'lucide-react'
 // Wrapper komponent för att hantera redirects med params
 function ArticleRedirect() {
   const { id } = useParams()
-  return <Navigate to={`/dashboard/knowledge-base/article/${id}`} replace />
+  return <Navigate to={`/knowledge-base/article/${id}`} replace />
 }
 
 // Legacy article redirects
 function LegacyArticleRedirect() {
-  return <Navigate to="/dashboard/knowledge-base" replace />
+  return <Navigate to="/knowledge-base" replace />
 }
 
 // Eager-loaded kritiska komponenter
@@ -101,7 +101,7 @@ function PrivateRoute({
   }
   
   if (allowedRoles && profile?.role && !allowedRoles.includes(profile.role)) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/" replace />
   }
   
   return <>{children}</>
@@ -120,7 +120,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
   
   if (isAuthenticated) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/" replace />
   }
   
   return <>{children}</>
@@ -382,32 +382,28 @@ function App() {
         } />
       </Route>
 
-      {/* Redirect old routes to new /dashboard routes for backward compatibility */}
-      <Route path="/cv" element={<Navigate to="/dashboard/cv" replace />} />
-      <Route path="/cover-letter" element={<Navigate to="/dashboard/cover-letter" replace />} />
-      <Route path="/job-search" element={<Navigate to="/dashboard/job-search" replace />} />
-      <Route path="/career" element={<Navigate to="/dashboard/career" replace />} />
-      <Route path="/interest-guide" element={<Navigate to="/dashboard/interest-guide" replace />} />
-      <Route path="/exercises" element={<Navigate to="/dashboard/exercises" replace />} />
-      <Route path="/diary" element={<Navigate to="/dashboard/diary" replace />} />
-      <Route path="/knowledge-base" element={<Navigate to="/dashboard/knowledge-base" replace />} />
-      <Route path="/knowledge-base/:id" element={<ArticleRedirect />} />
+      {/* Redirect old routes - all routes now work without /dashboard prefix */}
+      {/* These redirects ensure old bookmarks still work */}
+      <Route path="/dashboard/cv" element={<Navigate to="/cv" replace />} />
+      <Route path="/dashboard/cover-letter" element={<Navigate to="/cover-letter" replace />} />
+      <Route path="/dashboard/job-search" element={<Navigate to="/job-search" replace />} />
+      <Route path="/dashboard/career" element={<Navigate to="/career" replace />} />
+      <Route path="/dashboard/interest-guide" element={<Navigate to="/interest-guide" replace />} />
+      <Route path="/dashboard/exercises" element={<Navigate to="/exercises" replace />} />
+      <Route path="/dashboard/diary" element={<Navigate to="/diary" replace />} />
+      <Route path="/dashboard/knowledge-base" element={<Navigate to="/knowledge-base" replace />} />
+      <Route path="/dashboard/knowledge-base/*" element={<Navigate to="/knowledge-base" replace />} />
+      <Route path="/dashboard/resources" element={<Navigate to="/resources" replace />} />
+      <Route path="/dashboard/help" element={<Navigate to="/help" replace />} />
+      <Route path="/dashboard/profile" element={<Navigate to="/profile" replace />} />
+      <Route path="/dashboard/job-tracker" element={<Navigate to="/job-tracker" replace />} />
+      <Route path="/dashboard/settings" element={<Navigate to="/settings" replace />} />
+      <Route path="/dashboard/consultant" element={<Navigate to="/consultant" replace />} />
+      <Route path="/dashboard/admin" element={<Navigate to="/admin" replace />} />
 
-      <Route path="/resources" element={<Navigate to="/dashboard/resources" replace />} />
-      <Route path="/help" element={<Navigate to="/dashboard/help" replace />} />
-      
-      {/* Legacy article routes - redirect to new structure */}
-      <Route path="/article/:id" element={<ArticleRedirect />} />
-      <Route path="/knowledge-base/:id" element={<LegacyArticleRedirect />} />
-      <Route path="/profile" element={<Navigate to="/dashboard/profile" replace />} />
-      <Route path="/job-tracker" element={<Navigate to="/dashboard/job-tracker" replace />} />
-      <Route path="/settings" element={<Navigate to="/dashboard/settings" replace />} />
-      <Route path="/consultant" element={<Navigate to="/dashboard/consultant" replace />} />
-      <Route path="/admin" element={<Navigate to="/dashboard/admin" replace />} />
-
-      {/* Catch all - redirect to dashboard for client-side routing */}
+      {/* Catch all - redirect to home for client-side routing */}
       <Route path="*" element={
-        <Navigate to="/dashboard" replace />
+        <Navigate to="/" replace />
       } />
     </Routes>
   )
