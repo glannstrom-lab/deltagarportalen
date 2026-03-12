@@ -224,7 +224,7 @@ function App() {
       } />
 
       {/* Protected routes - lazy loaded för bättre prestanda */}
-      <Route path="/dashboard" element={
+      <Route path="/" element={
         <PrivateRoute>
           <Layout />
         </PrivateRoute>
