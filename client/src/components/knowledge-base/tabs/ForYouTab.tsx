@@ -4,27 +4,23 @@
 
 import { useState, useMemo } from 'react'
 import { Sparkles, Target, Flame, BookOpen, Zap, TrendingUp } from 'lucide-react'
-import { useArticles, useBookmarks, usePersonalizedArticles } from '@/hooks/knowledge-base/useArticles'
-import { useEnergyLevel } from '@/hooks/useEnergyLevel'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import type { Article } from '@/types/knowledge'
 
 interface ForYouTabProps {
+  articles: Article[]
   userProfile: {
     name: string
     interests: string[]
     completedArticles: string[]
     streak: number
   }
+  energyLevel: 'low' | 'medium' | 'high'
 }
 
-export function ForYouTab({ userProfile }: ForYouTabProps) {
-  const { data: articles, isLoading } = useArticles()
-  const { data: bookmarks = [] } = useBookmarks()
-  const [energyLevel] = useEnergyLevel()
-  const { getRecommendations } = usePersonalizedArticles()
+export default function ForYouTab({ articles, userProfile, energyLevel }: ForYouTabProps) {
   
   const recommendations = useMemo(() => {
     if (!articles) return []
@@ -61,10 +57,6 @@ export function ForYouTab({ userProfile }: ForYouTabProps) {
       return progress && parseInt(progress) > 0 && parseInt(progress) < 100
     }).slice(0, 2)
   }, [articles])
-  
-  if (isLoading) {
-    return <ForYouSkeleton />
-  }
   
   return (
     <div className="space-y-8">

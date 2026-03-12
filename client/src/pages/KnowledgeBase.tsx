@@ -1,15 +1,24 @@
 /**
- * Knowledge Base - Robust implementation with working tabs
- * Uses local state synced with URL hash for reliability
+ * Knowledge Base - Full implementation with all features
  */
 
-import { useState, useEffect, useCallback } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useState, useEffect, useCallback, Suspense, lazy } from 'react'
+import { useLocation } from 'react-router-dom'
 import { Sparkles, Rocket, BookOpen, Route, Wrench, Flame, AlertCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Card } from '@/components/ui'
+import { Card, LoadingState } from '@/components/ui'
+import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
+import { useEnergyLevel } from '@/hooks/useEnergyLevel'
 
-// Tab definitions
+// Lazy load tab components for better performance
+const ForYouTab = lazy(() => import('@/components/knowledge-base/tabs/ForYouTab'))
+const GettingStartedTab = lazy(() => import('@/components/knowledge-base/tabs/GettingStartedTab'))
+const TopicsTab = lazy(() => import('@/components/knowledge-base/tabs/TopicsTab'))
+const QuickHelpTab = lazy(() => import('@/components/knowledge-base/tabs/QuickHelpTab'))
+const MyJourneyTab = lazy(() => import('@/components/knowledge-base/tabs/MyJourneyTab'))
+const ToolsTab = lazy(() => import('@/components/knowledge-base/tabs/ToolsTab'))
+const TrendingTab = lazy(() => import('@/components/knowledge-base/tabs/TrendingTab'))
+
 const tabs = [
   { id: 'for-you', label: 'För dig', hash: '', icon: Sparkles },
   { id: 'getting-started', label: 'Komma igång', hash: '#getting-started', icon: Rocket },
@@ -22,9 +31,29 @@ const tabs = [
 
 type TabId = typeof tabs[number]['id']
 
+// Mock user profile - in real app, this comes from auth context
+const mockUserProfile = {
+  name: 'Maria',
+  interests: ['cv', 'intervju', 'kundservice'],
+  completedArticles: ['welcome', 'first-cv'],
+  streak: 3,
+  weeklyGoal: 5,
+  weeklyProgress: 3,
+}
+
+function TabLoader() {
+  return (
+    <div className="min-h-[400px] flex items-center justify-center">
+      <LoadingState title="Laddar innehåll..." />
+    </div>
+  )
+}
+
 export default function KnowledgeBase() {
-  const navigate = useNavigate()
   const location = useLocation()
+  const [energyLevel, setEnergyLevel] = useEnergyLevel()
+  const { data: articles, isLoading: articlesLoading } = useArticles()
+  const { data: bookmarks = [] } = useBookmarks()
   
   // Get initial tab from URL hash
   const getTabFromHash = useCallback((): TabId => {
@@ -35,143 +64,115 @@ export default function KnowledgeBase() {
   
   // Local state for active tab
   const [activeTabId, setActiveTabId] = useState<TabId>(getTabFromHash)
-  const [isNavigating, setIsNavigating] = useState(false)
   
   // Sync with URL hash when it changes
   useEffect(() => {
     const newTabId = getTabFromHash()
-    if (newTabId !== activeTabId && !isNavigating) {
+    if (newTabId !== activeTabId) {
       setActiveTabId(newTabId)
     }
-  }, [location.hash, getTabFromHash, activeTabId, isNavigating])
+  }, [location.hash, getTabFromHash, activeTabId])
   
   const handleTabClick = (tab: typeof tabs[number]) => {
-    if (tab.id === activeTabId) return // Don't re-navigate to same tab
+    if (tab.id === activeTabId) return
     
-    setIsNavigating(true)
+    // Update URL hash
+    window.location.hash = tab.hash
     setActiveTabId(tab.id)
-    
-    // Update URL hash (only the hash part, not the pathname)
-    navigate({
-      pathname: '/dashboard/knowledge-base',
-      hash: tab.hash.replace('#', ''),
-    }, { replace: true })
-    
-    // Reset navigating flag after animation
-    setTimeout(() => setIsNavigating(false), 100)
   }
   
   const activeTab = tabs.find(t => t.id === activeTabId) || tabs[0]
   
   // Render content based on active tab
   const renderContent = () => {
-    const contentMap: Record<TabId, React.ReactNode> = {
-      'for-you': (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-slate-900">För dig</h2>
-          <p className="text-slate-600">Personligt anpassat innehåll baserat på dina intressen och mål.</p>
-          <div className="mt-4 p-4 bg-violet-50 rounded-lg">
-            <p className="text-sm text-violet-700">Här kommer AI-anpassade rekommendationer att visas baserat på din profil.</p>
-          </div>
-        </>
-      ),
-      'getting-started': (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-slate-900">Komma igång</h2>
-          <p className="text-slate-600">Snabbstartguide för nya användare.</p>
-          <div className="mt-4 space-y-2">
-            <div className="p-3 bg-white border rounded-lg">Steg 1: Skapa ditt CV</div>
-            <div className="p-3 bg-white border rounded-lg">Steg 2: Gör intresseguiden</div>
-            <div className="p-3 bg-white border rounded-lg">Steg 3: Sök ditt första jobb</div>
-          </div>
-        </>
-      ),
-      'topics': (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-slate-900">Ämnen</h2>
-          <p className="text-slate-600">Bläddra bland alla artikelkategorier.</p>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <div className="p-4 bg-teal-50 rounded-lg">CV & Personligt brev</div>
-            <div className="p-4 bg-blue-50 rounded-lg">Jobbsökning</div>
-            <div className="p-4 bg-amber-50 rounded-lg">Intervjutips</div>
-            <div className="p-4 bg-rose-50 rounded-lg">Karriärutveckling</div>
-          </div>
-        </>
-      ),
-      'quick-help': (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-slate-900">Snabbhjälp</h2>
-          <p className="text-slate-600">Akuta situationer och snabba svar.</p>
-          <div className="mt-4 space-y-2">
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-800">🚨 Jag har intervju imorgon!</div>
-            <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-800">⚠️ Mitt CV ser tomt ut</div>
-            <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg text-blue-800">💬 Hur förklarar jag ett glapp?</div>
-          </div>
-        </>
-      ),
-      'my-journey': (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-slate-900">Min resa</h2>
-          <p className="text-slate-600">Din progress och sparade artiklar.</p>
-          <div className="mt-4 grid grid-cols-3 gap-4">
-            <div className="text-center p-4 bg-slate-50 rounded-lg">
-              <div className="text-2xl font-bold text-violet-600">12</div>
-              <div className="text-sm text-slate-500">Artiklar lästa</div>
-            </div>
-            <div className="text-center p-4 bg-slate-50 rounded-lg">
-              <div className="text-2xl font-bold text-amber-600">5</div>
-              <div className="text-sm text-slate-500">Sparade</div>
-            </div>
-            <div className="text-center p-4 bg-slate-50 rounded-lg">
-              <div className="text-2xl font-bold text-emerald-600">3</div>
-              <div className="text-sm text-slate-500">Dagars streak</div>
-            </div>
-          </div>
-        </>
-      ),
-      'tools': (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-slate-900">Verktyg</h2>
-          <p className="text-slate-600">Mallar och checklistor för din jobbsökning.</p>
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <button className="p-4 text-left bg-white border hover:border-violet-300 rounded-lg transition-colors">
-              <div className="font-medium">CV-mall (Modern)</div>
-              <div className="text-sm text-slate-500">Word + PDF</div>
-            </button>
-            <button className="p-4 text-left bg-white border hover:border-violet-300 rounded-lg transition-colors">
-              <div className="font-medium">Personligt brev-mall</div>
-              <div className="text-sm text-slate-500">Word</div>
-            </button>
-            <button className="p-4 text-left bg-white border hover:border-violet-300 rounded-lg transition-colors">
-              <div className="font-medium">Intervju-checklista</div>
-              <div className="text-sm text-slate-500">PDF</div>
-            </button>
-            <button className="p-4 text-left bg-white border hover:border-violet-300 rounded-lg transition-colors">
-              <div className="font-medium">Lönekalkylator</div>
-              <div className="text-sm text-slate-500">Excel</div>
-            </button>
-          </div>
-        </>
-      ),
-      'trending': (
-        <>
-          <h2 className="text-xl font-bold mb-4 text-slate-900">Trendar</h2>
-          <p className="text-slate-600">Populärt innehåll just nu.</p>
-          <div className="mt-4 space-y-3">
-            <div className="p-4 bg-gradient-to-r from-rose-50 to-pink-50 rounded-lg border border-rose-100">
-              <div className="font-medium text-rose-900">🔥 Så hanterar du nervositet inför intervjun</div>
-              <div className="text-sm text-rose-600">247 läser just nu</div>
-            </div>
-            <div className="p-4 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg border border-amber-100">
-              <div className="font-medium text-amber-900">⭐ Så skriver du ett CV utan erfarenhet</div>
-              <div className="text-sm text-amber-600">189 läser just nu</div>
-            </div>
-          </div>
-        </>
-      ),
+    if (articlesLoading) {
+      return <TabLoader />
     }
     
-    return contentMap[activeTabId] || contentMap['for-you']
+    if (!articles) {
+      return (
+        <Card className="p-6 text-center">
+          <p className="text-slate-500">Kunde inte ladda artiklar</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="text-violet-600 hover:underline mt-2"
+          >
+            Försök igen
+          </button>
+        </Card>
+      )
+    }
+    
+    switch (activeTabId) {
+      case 'for-you':
+        return (
+          <Suspense fallback={<TabLoader />}>
+            <ForYouTab 
+              articles={articles}
+              userProfile={mockUserProfile}
+              energyLevel={energyLevel}
+            />
+          </Suspense>
+        )
+      case 'getting-started':
+        return (
+          <Suspense fallback={<TabLoader />}>
+            <GettingStartedTab
+              articles={articles}
+              completedArticles={mockUserProfile.completedArticles}
+            />
+          </Suspense>
+        )
+      case 'topics':
+        return (
+          <Suspense fallback={<TabLoader />}>
+            <TopicsTab
+              articles={articles}
+              categories={[]}
+              energyLevel={energyLevel}
+              onEnergyLevelChange={setEnergyLevel}
+            />
+          </Suspense>
+        )
+      case 'quick-help':
+        return (
+          <Suspense fallback={<TabLoader />}>
+            <QuickHelpTab articles={articles} />
+          </Suspense>
+        )
+      case 'my-journey':
+        return (
+          <Suspense fallback={<TabLoader />}>
+            <MyJourneyTab
+              articles={articles}
+              bookmarks={bookmarks}
+              completedArticles={mockUserProfile.completedArticles}
+              streak={mockUserProfile.streak}
+              weeklyGoal={mockUserProfile.weeklyGoal}
+              weeklyProgress={mockUserProfile.weeklyProgress}
+            />
+          </Suspense>
+        )
+      case 'tools':
+        return (
+          <Suspense fallback={<TabLoader />}>
+            <ToolsTab />
+          </Suspense>
+        )
+      case 'trending':
+        return (
+          <Suspense fallback={<TabLoader />}>
+            <TrendingTab articles={articles} />
+          </Suspense>
+        )
+      default:
+        return (
+          <Card className="p-6">
+            <h2 className="text-xl font-bold mb-4">Välkommen</h2>
+            <p className="text-slate-600">Välj en flik ovan för att utforska kunskapsbanken.</p>
+          </Card>
+        )
+    }
   }
   
   return (
@@ -179,7 +180,28 @@ export default function KnowledgeBase() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900">Kunskapsbank</h1>
-        <p className="text-slate-600 mt-2">Artiklar, guider och verktyg för din jobbsökarresa.</p>
+        <p className="text-slate-600 mt-2 max-w-2xl">
+          Artiklar, guider och verktyg för din jobbsökarresa. 
+          Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt.
+        </p>
+        
+        {/* Energy indicator */}
+        <div className={cn(
+          "inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm font-medium",
+          energyLevel === 'low' && "bg-sky-100 text-sky-800",
+          energyLevel === 'medium' && "bg-amber-100 text-amber-800",
+          energyLevel === 'high' && "bg-rose-100 text-rose-800",
+        )}>
+          <span>Din energinivå:</span>
+          <span className="capitalize">
+            {energyLevel === 'low' ? 'Låg' : energyLevel === 'medium' ? 'Medel' : 'Hög'}
+          </span>
+          <span className="opacity-70">
+            {energyLevel === 'low' && '• Korta artiklar rekommenderas'}
+            {energyLevel === 'medium' && '• Balanserat innehåll'}
+            {energyLevel === 'high' && '• Perfekt för djupgående läsning'}
+          </span>
+        </div>
       </div>
       
       {/* Tab navigation */}
@@ -211,12 +233,8 @@ export default function KnowledgeBase() {
       
       {/* Tab content */}
       <div className="min-h-[400px]">
-        <Card className="p-6 animate-in fade-in duration-200">
-          {renderContent()}
-        </Card>
+        {renderContent()}
       </div>
-      
-
     </div>
   )
 }

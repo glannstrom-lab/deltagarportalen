@@ -18,7 +18,7 @@ interface MyJourneyTabProps {
   weeklyProgress: number
 }
 
-export function MyJourneyTab({
+export default function MyJourneyTab({
   articles,
   bookmarks,
   completedArticles,

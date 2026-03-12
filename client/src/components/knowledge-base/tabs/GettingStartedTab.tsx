@@ -10,7 +10,6 @@ import type { Article } from '@/types/knowledge'
 interface GettingStartedTabProps {
   articles: Article[]
   completedArticles: string[]
-  onArticleClick: (id: string) => void
 }
 
 const quickStartSteps = [
@@ -56,10 +55,9 @@ const quickStartSteps = [
   },
 ]
 
-export function GettingStartedTab({ 
+export default function GettingStartedTab({ 
   articles, 
-  completedArticles, 
-  onArticleClick 
+  completedArticles
 }: GettingStartedTabProps) {
   const completedCount = quickStartSteps.filter(step => 
     completedArticles.includes(step.id)
@@ -169,7 +167,7 @@ export function GettingStartedTab({
                         </a>
                       ) : (
                         <button
-                          onClick={() => onArticleClick(step.id)}
+                          onClick={() => {}}
                           className="shrink-0 inline-flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors"
                         >
                           Läs artikel

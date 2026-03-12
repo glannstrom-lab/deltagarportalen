@@ -9,7 +9,6 @@ import type { Article } from '@/types/knowledge'
 
 interface QuickHelpTabProps {
   articles: Article[]
-  onArticleClick: (id: string) => void
 }
 
 const emergencyTopics = [

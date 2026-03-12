@@ -104,7 +104,7 @@ const categoryLabels: Record<string, { label: string; color: string }> = {
   planner: { label: 'Planerare', color: 'bg-violet-100 text-violet-700' },
 }
 
-export function ToolsTab() {
+export default function ToolsTab() {
   const handleDownload = (toolId: string) => {
     // Track download
     console.log(`Downloading ${toolId}`)

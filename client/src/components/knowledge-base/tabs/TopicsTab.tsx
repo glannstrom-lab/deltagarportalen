@@ -15,10 +15,11 @@ import type { Article } from '@/types/knowledge'
 interface TopicsTabProps {
   articles: Article[]
   categories: any[]
-  onArticleClick: (id: string) => void
+  energyLevel: 'low' | 'medium' | 'high'
+  onEnergyLevelChange: (level: 'low' | 'medium' | 'high') => void
 }
 
-export function TopicsTab({ articles, categories, onArticleClick }: TopicsTabProps) {
+export default function TopicsTab({ articles, categories, energyLevel, onEnergyLevelChange }: TopicsTabProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedSubcategory, setSelectedSubcategory] = useState('')

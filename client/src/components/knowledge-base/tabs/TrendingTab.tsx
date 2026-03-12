@@ -13,7 +13,7 @@ interface TrendingTabProps {
   articles: Article[]
 }
 
-export function TrendingTab({ articles }: TrendingTabProps) {
+export default function TrendingTab({ articles }: TrendingTabProps) {
   // Get trending articles (highest rated)
   const trendingArticles = useMemo(() => {
     return [...articles]
