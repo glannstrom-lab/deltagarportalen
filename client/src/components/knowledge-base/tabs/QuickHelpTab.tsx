@@ -4,6 +4,7 @@
  */
 
 import { AlertCircle, Clock, ChevronRight, Phone, Calendar, FileText, Briefcase } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { Card } from '@/components/ui'
 import type { Article } from '@/types/knowledge'
 
@@ -90,7 +91,8 @@ const quickChecklists = [
   },
 ]
 
-export function QuickHelpTab({ onArticleClick }: QuickHelpTabProps) {
+export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
+  const navigate = useNavigate()
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -122,7 +124,7 @@ export function QuickHelpTab({ onArticleClick }: QuickHelpTabProps) {
             return (
               <button
                 key={topic.id}
-                onClick={() => onArticleClick(topic.id)}
+                onClick={() => navigate(`/knowledge-base/article/${topic.id}`)}
                 className={`
                   text-left p-4 rounded-xl border transition-all hover:shadow-md
                   ${topic.color}
@@ -199,7 +201,7 @@ export function QuickHelpTab({ onArticleClick }: QuickHelpTabProps) {
               tveka inte att kontakta din arbetskonsulent.
             </p>
             <a
-              href="/dashboard/diary"
+              href="#/diary"
               className="inline-flex items-center gap-2 mt-3 text-sky-700 font-medium hover:underline"
             >
               Boka ett möte
