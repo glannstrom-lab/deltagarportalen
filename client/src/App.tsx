@@ -252,6 +252,7 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
+        {/* Knowledge Base - handles tabs via hash routing */}
         <Route path="knowledge-base" element={
           <LazyRoute>
             <RouteErrorBoundary>
@@ -259,50 +260,15 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        {/* Knowledge Base tabs - must be before :id route */}
-        <Route path="knowledge-base/getting-started" element={
+        <Route path="knowledge-base/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <KnowledgeBase />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="knowledge-base/topics" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base/quick-help" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base/my-journey" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base/tools" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base/trending" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base/article/:id" element={
+        {/* Article detail view */}
+        <Route path="article/:id" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <Article />
