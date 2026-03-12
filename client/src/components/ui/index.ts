@@ -1,4 +1,5 @@
 // UI Components
+export { Progress } from './Progress'
 export { StatCard } from './StatCard'
 export { CalendarWidget } from './CalendarWidget'
 export { ProgressBars } from './ProgressBars'
