@@ -1,10 +1,10 @@
 /**
  * Knowledge Base - Main Page with Tab Navigation
- * Complete rewrite with new tab structure and features
+ * Simplified debug version
  */
 
-import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import {
   Sparkles,
   Rocket,
@@ -14,126 +14,112 @@ import {
   Flame,
   AlertCircle,
 } from 'lucide-react'
-import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
-import { useEnergyLevel } from '@/hooks/useEnergyLevel'
 import { cn } from '@/lib/utils'
 import { Card, LoadingState } from '@/components/ui'
-import {
-  ForYouTab,
-  GettingStartedTab,
-  TopicsTab,
-  QuickHelpTab,
-  MyJourneyTab,
-  ToolsTab,
-  TrendingTab,
-} from '@/components/knowledge-base'
 
 // Tab definitions
 const tabs = [
-  {
-    id: 'for-you',
-    label: 'För dig',
-    path: '/dashboard/knowledge-base',
-    icon: Sparkles,
-    description: 'Personligt anpassat innehåll',
-  },
-  {
-    id: 'getting-started',
-    label: 'Komma igång',
-    path: '/dashboard/knowledge-base/getting-started',
-    icon: Rocket,
-    description: 'Snabbstart för nya användare',
-  },
-  {
-    id: 'topics',
-    label: 'Ämnen',
-    path: '/dashboard/knowledge-base/topics',
-    icon: BookOpen,
-    description: 'Bläddra alla kategorier',
-  },
-  {
-    id: 'quick-help',
-    label: 'Snabbhjälp',
-    path: '/dashboard/knowledge-base/quick-help',
-    icon: AlertCircle,
-    description: 'Akuta situationer',
-  },
-  {
-    id: 'my-journey',
-    label: 'Min resa',
-    path: '/dashboard/knowledge-base/my-journey',
-    icon: Route,
-    description: 'Din progress och sparade',
-  },
-  {
-    id: 'tools',
-    label: 'Verktyg',
-    path: '/dashboard/knowledge-base/tools',
-    icon: Wrench,
-    description: 'Mallar och checklistor',
-  },
-  {
-    id: 'trending',
-    label: 'Trendar',
-    path: '/dashboard/knowledge-base/trending',
-    icon: Flame,
-    description: 'Populärt just nu',
-  },
+  { id: 'for-you', label: 'För dig', path: '/dashboard/knowledge-base', icon: Sparkles },
+  { id: 'getting-started', label: 'Komma igång', path: '/dashboard/knowledge-base/getting-started', icon: Rocket },
+  { id: 'topics', label: 'Ämnen', path: '/dashboard/knowledge-base/topics', icon: BookOpen },
+  { id: 'quick-help', label: 'Snabbhjälp', path: '/dashboard/knowledge-base/quick-help', icon: AlertCircle },
+  { id: 'my-journey', label: 'Min resa', path: '/dashboard/knowledge-base/my-journey', icon: Route },
+  { id: 'tools', label: 'Verktyg', path: '/dashboard/knowledge-base/tools', icon: Wrench },
+  { id: 'trending', label: 'Trendar', path: '/dashboard/knowledge-base/trending', icon: Flame },
 ]
 
-// Mock user profile - in real app, this comes from auth context
-const mockUserProfile = {
-  name: 'Maria',
-  interests: ['cv', 'intervju', 'kundservice'],
-  completedArticles: ['welcome', 'first-cv'],
-  streak: 3,
-  weeklyGoal: 5,
-  weeklyProgress: 3,
+// Simple tab content components
+function ForYouContent() {
+  return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-4">För dig</h2>
+      <p>Här visas personligt anpassat innehåll baserat på dina intressen.</p>
+    </Card>
+  )
+}
+
+function GettingStartedContent() {
+  return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-4">Komma igång</h2>
+      <p>Snabbstartguide för nya användare.</p>
+    </Card>
+  )
+}
+
+function TopicsContent() {
+  return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-4">Ämnen</h2>
+      <p>Bläddra bland alla artikelkategorier.</p>
+    </Card>
+  )
+}
+
+function QuickHelpContent() {
+  return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-4">Snabbhjälp</h2>
+      <p>Akuta situationer och snabba svar.</p>
+    </Card>
+  )
+}
+
+function MyJourneyContent() {
+  return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-4">Min resa</h2>
+      <p>Din progress och sparade artiklar.</p>
+    </Card>
+  )
+}
+
+function ToolsContent() {
+  return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-4">Verktyg</h2>
+      <p>Mallar och checklistor.</p>
+    </Card>
+  )
+}
+
+function TrendingContent() {
+  return (
+    <Card className="p-6">
+      <h2 className="text-xl font-bold mb-4">Trendar</h2>
+      <p>Populärt innehåll just nu.</p>
+    </Card>
+  )
 }
 
 export default function KnowledgeBase() {
   const navigate = useNavigate()
   const location = useLocation()
-  const [searchParams] = useSearchParams()
-  const { data: articles, isLoading } = useArticles()
-  const { data: bookmarks = [] } = useBookmarks()
-  const [energyLevel] = useEnergyLevel()
   
-  // Determine active tab from URL - use location.pathname from React Router
+  // Determine active tab from URL
   const currentPath = location.pathname
   const activeTab = tabs.find(t => currentPath === t.path || currentPath.startsWith(t.path + '/')) || tabs[0]
   
   const handleTabClick = (tab: typeof tabs[0]) => {
-    console.log('Tab clicked:', tab.id, 'navigating to:', tab.path)
+    console.log('=== TAB CLICKED ===')
+    console.log('Tab:', tab.label)
+    console.log('Path:', tab.path)
+    console.log('Current path:', currentPath)
     navigate(tab.path)
   }
   
-  const handleArticleClick = (articleId: string) => {
-    navigate(`/knowledge-base/article/${articleId}`)
-  }
-  
-  if (isLoading) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <LoadingState title="Laddar kunskapsbanken..." />
-      </div>
-    )
-  }
-  
-  if (!articles) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <Card className="text-center py-12">
-          <p className="text-slate-500">Kunde inte ladda artiklar</p>
-          <button 
-            onClick={() => window.location.reload()}
-            className="text-teal-600 hover:underline mt-2"
-          >
-            Försök igen
-          </button>
-        </Card>
-      </div>
-    )
+  // Render content based on active tab
+  const renderContent = () => {
+    switch (activeTab.id) {
+      case 'for-you': return <ForYouContent />
+      case 'getting-started': return <GettingStartedContent />
+      case 'topics': return <TopicsContent />
+      case 'quick-help': return <QuickHelpContent />
+      case 'my-journey': return <MyJourneyContent />
+      case 'tools': return <ToolsContent />
+      case 'trending': return <TrendingContent />
+      default: return <ForYouContent />
+    }
   }
   
   return (
@@ -141,114 +127,41 @@ export default function KnowledgeBase() {
       {/* Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-slate-900">Kunskapsbank</h1>
-        <p className="text-slate-600 mt-2 max-w-2xl">
-          Artiklar, guider och verktyg för din jobbsökarresa. 
-          Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt.
-        </p>
-        
-        {/* Energy indicator */}
-        <div className={cn(
-          "inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm font-medium",
-          energyLevel === 'low' && "bg-sky-100 text-sky-800",
-          energyLevel === 'medium' && "bg-amber-100 text-amber-800",
-          energyLevel === 'high' && "bg-rose-100 text-rose-800",
-        )}>
-          <span>Din energinivå:</span>
-          <span className="capitalize">
-            {energyLevel === 'low' ? 'Låg' : energyLevel === 'medium' ? 'Medel' : 'Hög'}
-          </span>
-          <span className="opacity-70">
-            {energyLevel === 'low' && '• Korta artiklar rekommenderas'}
-            {energyLevel === 'medium' && '• Balanserat innehåll'}
-            {energyLevel === 'high' && '• Perfekt för djupgående läsning'}
-          </span>
-        </div>
+        <p className="text-slate-600 mt-2">Artiklar, guider och verktyg för din jobbsökarresa.</p>
+        <p className="text-sm text-slate-400 mt-1">Nuvarande URL: {currentPath}</p>
       </div>
       
-      {/* Tab navigation */}
-      <div className="mb-8">
-        <div className="border-b border-slate-200">
-          <nav className="flex gap-1 overflow-x-auto scrollbar-hide" aria-label="Tabs">
-            {tabs.map((tab) => {
-              const Icon = tab.icon
-              const isActive = activeTab.id === tab.id
-              
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => handleTabClick(tab)}
-                  className={cn(
-                    "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap",
-                    isActive
-                      ? "border-violet-600 text-violet-600"
-                      : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-                  )}
-                  aria-current={isActive ? 'page' : undefined}
-                >
-                  <Icon className={cn(
-                    "w-4 h-4",
-                    isActive ? "text-violet-600" : "text-slate-400"
-                  )} />
-                  <span>{tab.label}</span>
-                </button>
-              )
-            })}
-          </nav>
+      {/* Tab navigation - simplified */}
+      <div className="mb-8 border-b border-slate-200">
+        <div className="flex gap-1 overflow-x-auto">
+          {tabs.map((tab) => {
+            const Icon = tab.icon
+            const isActive = activeTab.id === tab.id
+            
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => handleTabClick(tab)}
+                style={{ cursor: 'pointer' }}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap bg-transparent",
+                  isActive
+                    ? "border-violet-600 text-violet-600"
+                    : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
+                )}
+              >
+                <Icon className="w-4 h-4" />
+                <span>{tab.label}</span>
+              </button>
+            )
+          })}
         </div>
-        
-        {/* Tab description */}
-        <p className="text-sm text-slate-500 mt-3">
-          {activeTab.description}
-        </p>
       </div>
       
       {/* Tab content */}
       <div className="min-h-[400px]">
-        {activeTab.id === 'for-you' && (
-          <ForYouTab userProfile={mockUserProfile} />
-        )}
-        
-        {activeTab.id === 'getting-started' && (
-          <GettingStartedTab
-            articles={articles}
-            completedArticles={mockUserProfile.completedArticles}
-            onArticleClick={handleArticleClick}
-          />
-        )}
-        
-        {activeTab.id === 'topics' && (
-          <TopicsTab
-            articles={articles}
-            categories={[]}
-            onArticleClick={handleArticleClick}
-          />
-        )}
-        
-        {activeTab.id === 'quick-help' && (
-          <QuickHelpTab
-            articles={articles}
-            onArticleClick={handleArticleClick}
-          />
-        )}
-        
-        {activeTab.id === 'my-journey' && (
-          <MyJourneyTab
-            articles={articles}
-            bookmarks={bookmarks}
-            completedArticles={mockUserProfile.completedArticles}
-            streak={mockUserProfile.streak}
-            weeklyGoal={mockUserProfile.weeklyGoal}
-            weeklyProgress={mockUserProfile.weeklyProgress}
-          />
-        )}
-        
-        {activeTab.id === 'tools' && (
-          <ToolsTab />
-        )}
-        
-        {activeTab.id === 'trending' && (
-          <TrendingTab articles={articles} />
-        )}
+        {renderContent()}
       </div>
     </div>
   )
