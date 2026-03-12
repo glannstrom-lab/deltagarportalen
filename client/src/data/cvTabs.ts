@@ -16,31 +16,31 @@ export const cvTabs: Tab[] = [
   { 
     id: 'create', 
     label: 'Skapa CV', 
-    path: '/dashboard/cv', 
+    path: '/cv', 
     icon: FileEdit 
   },
   { 
     id: 'my-cvs', 
     label: 'Mina CV', 
-    path: '/dashboard/cv/my-cvs', 
+    path: '/cv/my-cvs', 
     icon: Folder 
   },
   { 
     id: 'templates', 
     label: 'Mallar', 
-    path: '/dashboard/cv/templates', 
+    path: '/cv/templates', 
     icon: Layout 
   },
   { 
     id: 'ats', 
     label: 'ATS-analys', 
-    path: '/dashboard/cv/ats', 
+    path: '/cv/ats', 
     icon: Target 
   },
   { 
     id: 'tips', 
     label: 'CV-tips', 
-    path: '/dashboard/cv/tips', 
+    path: '/cv/tips', 
     icon: BookOpen 
   },
 ]

@@ -193,7 +193,7 @@ export default function Onboarding() {
   const handleQuickStart = () => {
     localStorage.setItem('has-seen-onboarding-v2', 'true')
     localStorage.removeItem('onboarding-progress-v2')
-    navigate('/dashboard/cv')
+    navigate('/cv')
   }
 
   const handleEnergySelect = (level: EnergyLevel) => {

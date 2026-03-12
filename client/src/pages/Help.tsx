@@ -17,36 +17,36 @@ const faqCategories = [
     title: 'Komma igång',
     icon: BookOpen,
     items: [
-      { q: 'Hur skapar jag ett CV?', a: 'Gå till CV-sektionen och följ steg-för-steg-guiden. Du kan välja mellan olika mallar och få AI-hjälp med formuleringarna.', link: '/dashboard/cv' },
-      { q: 'Vad är Intresseguiden?', a: 'Intresseguiden hjälper dig att hitta yrken som passar din personlighet och dina intressen. Det tar ca 10 minuter att slutföra.', link: '/dashboard/interest-guide' },
-      { q: 'Hur sparar jag jobb?', a: 'När du söker jobb kan du klicka på hjärtat/spara-knappen på varje jobbannons för att spara den till din jobbtracker.', link: '/dashboard/job-search' },
+      { q: 'Hur skapar jag ett CV?', a: 'Gå till CV-sektionen och följ steg-för-steg-guiden. Du kan välja mellan olika mallar och få AI-hjälp med formuleringarna.', link: '/cv' },
+      { q: 'Vad är Intresseguiden?', a: 'Intresseguiden hjälper dig att hitta yrken som passar din personlighet och dina intressen. Det tar ca 10 minuter att slutföra.', link: '/interest-guide' },
+      { q: 'Hur sparar jag jobb?', a: 'När du söker jobb kan du klicka på hjärtat/spara-knappen på varje jobbannons för att spara den till din jobbtracker.', link: '/job-search' },
     ]
   },
   {
     title: 'CV & Personligt brev',
     icon: FileText,
     items: [
-      { q: 'Kan jag ha flera CV-versioner?', a: 'Ja! Du kan spara flera versioner av ditt CV och välja vilken du vill använda för varje ansökan.', link: '/dashboard/cv' },
-      { q: 'Hur fungerar AI-brevskrivaren?', a: 'AI:n analyserar jobbannonsen och ditt CV för att skriva ett personligt brev som matchar just det jobbet.', link: '/dashboard/cover-letter' },
-      { q: 'Vad är ATS-analys?', a: 'ATS (Applicant Tracking System) är system som många företag använder för att filtrera CV:n. Vår analys hjälper dig att optimera ditt CV så det kommer förbi dessa system.', link: '/dashboard/cv' },
+      { q: 'Kan jag ha flera CV-versioner?', a: 'Ja! Du kan spara flera versioner av ditt CV och välja vilken du vill använda för varje ansökan.', link: '/cv' },
+      { q: 'Hur fungerar AI-brevskrivaren?', a: 'AI:n analyserar jobbannonsen och ditt CV för att skriva ett personligt brev som matchar just det jobbet.', link: '/cover-letter' },
+      { q: 'Vad är ATS-analys?', a: 'ATS (Applicant Tracking System) är system som många företag använder för att filtrera CV:n. Vår analys hjälper dig att optimera ditt CV så det kommer förbi dessa system.', link: '/cv' },
     ]
   },
   {
     title: 'Jobbsökning',
     icon: Briefcase,
     items: [
-      { q: 'Hur söker jag jobb via portalen?', a: 'Använd jobbsöksfunktionen för att söka bland lediga jobb. Du kan filtrera på plats, yrke och anställningstyp.', link: '/dashboard/job-search' },
-      { q: 'Vad är skillnaden mellan att spara och ansöka?', a: 'När du sparar ett jobb läggs det i din jobbtracker så du kan återkomma till det senare. Ansökan gör du vanligtvis via företagets hemsida.', link: '/dashboard/job-tracker' },
-      { q: 'Kan jag få notiser om nya jobb?', a: 'Ja, du kan ställa in jobbaviseringar i dina inställningar för att få mail när nya jobb som matchar dina kriterier publiceras.', link: '/dashboard/settings' },
+      { q: 'Hur söker jag jobb via portalen?', a: 'Använd jobbsöksfunktionen för att söka bland lediga jobb. Du kan filtrera på plats, yrke och anställningstyp.', link: '/job-search' },
+      { q: 'Vad är skillnaden mellan att spara och ansöka?', a: 'När du sparar ett jobb läggs det i din jobbtracker så du kan återkomma till det senare. Ansökan gör du vanligtvis via företagets hemsida.', link: '/job-tracker' },
+      { q: 'Kan jag få notiser om nya jobb?', a: 'Ja, du kan ställa in jobbaviseringar i dina inställningar för att få mail när nya jobb som matchar dina kriterier publiceras.', link: '/settings' },
     ]
   },
   {
     title: 'Karriär & Utveckling',
     icon: Target,
     items: [
-      { q: 'Vad kan jag göra i Kunskapsbanken?', a: 'Kunskapsbanken innehåller artiklar, guider och tips om allt från CV-skrivning till intervjuteknik och arbetsrätt.', link: '/dashboard/knowledge-base' },
-      { q: 'Hur fungerar Övningarna?', a: 'Övningarna är interaktiva verktyg som hjälper dig att träna på olika aspekter av jobbsökning, som att sälja in dig själv eller förbereda dig för intervju.', link: '/dashboard/exercises' },
-      { q: 'Kan jag spara artiklar?', a: 'Ja! Klicka på bokmärkes-ikonen på valfri artikel för att spara den till dina bokmärken.', link: '/dashboard/resources' },
+      { q: 'Vad kan jag göra i Kunskapsbanken?', a: 'Kunskapsbanken innehåller artiklar, guider och tips om allt från CV-skrivning till intervjuteknik och arbetsrätt.', link: '/knowledge-base' },
+      { q: 'Hur fungerar Övningarna?', a: 'Övningarna är interaktiva verktyg som hjälper dig att träna på olika aspekter av jobbsökning, som att sälja in dig själv eller förbereda dig för intervju.', link: '/exercises' },
+      { q: 'Kan jag spara artiklar?', a: 'Ja! Klicka på bokmärkes-ikonen på valfri artikel för att spara den till dina bokmärken.', link: '/resources' },
     ]
   },
 ]
@@ -54,8 +54,8 @@ const faqCategories = [
 const quickLinks = [
   { title: 'Kunskapsbanken', desc: 'Artiklar och guider', icon: BookOpen, link: '/dashboard/knowledge-base' },
   { title: 'Intresseguiden', desc: 'Hitta rätt yrke', icon: Compass, link: '/dashboard/interest-guide' },
-  { title: 'Skapa CV', desc: 'Bygg ditt CV', icon: FileText, link: '/dashboard/cv' },
-  { title: 'Sök jobb', desc: 'Hitta lediga jobb', icon: Briefcase, link: '/dashboard/job-search' },
+  { title: 'Skapa CV', desc: 'Bygg ditt CV', icon: FileText, link: '/cv' },
+  { title: 'Sök jobb', desc: 'Hitta lediga jobb', icon: Briefcase, link: '/job-search' },
 ]
 
 export default function Help() {
@@ -136,7 +136,7 @@ export default function Help() {
             </p>
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <Link
-                to="/dashboard/diary"
+                to="/diary"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />

@@ -297,7 +297,7 @@ export default function UnifiedProfilePage() {
                 {(!professional?.skills || professional.skills.length === 0) && (
                   <p className="text-slate-500 text-sm">
                     Inga kompetenser tillagda ännu.{' '}
-                    <Link to="/dashboard/cv" className="text-violet-600 hover:underline">
+                    <Link to="/cv" className="text-violet-600 hover:underline">
                       Lägg till i CV-byggaren
                     </Link>
                   </p>
@@ -322,7 +322,7 @@ export default function UnifiedProfilePage() {
                   ))}
                   {professional.workExperience.length > 3 && (
                     <Link 
-                      to="/dashboard/cv"
+                      to="/cv"
                       className="text-sm text-violet-600 hover:underline flex items-center gap-1"
                     >
                       Se alla {professional.workExperience.length} erfarenheter
@@ -333,7 +333,7 @@ export default function UnifiedProfilePage() {
               ) : (
                 <p className="text-slate-500 text-sm">
                   Ingen erfarenhet tillagd ännu.{' '}
-                  <Link to="/dashboard/cv" className="text-violet-600 hover:underline">
+                  <Link to="/cv" className="text-violet-600 hover:underline">
                     Lägg till i CV-byggaren
                   </Link>
                 </p>
@@ -359,7 +359,7 @@ export default function UnifiedProfilePage() {
               ) : (
                 <p className="text-slate-500 text-sm">
                   Ingen utbildning tillagd ännu.{' '}
-                  <Link to="/dashboard/cv" className="text-violet-600 hover:underline">
+                  <Link to="/cv" className="text-violet-600 hover:underline">
                     Lägg till i CV-byggaren
                   </Link>
                 </p>
@@ -403,7 +403,7 @@ export default function UnifiedProfilePage() {
                     ))}
                   </div>
                   <Link 
-                    to="/dashboard/interest-guide"
+                    to="/interest-guide"
                     className="text-sm text-violet-600 hover:underline"
                   >
                     Gör om intresseguiden →
@@ -416,7 +416,7 @@ export default function UnifiedProfilePage() {
                     Du har inte gjort intresseguiden ännu
                   </p>
                   <Link 
-                    to="/dashboard/interest-guide"
+                    to="/interest-guide"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600"
                   >
                     Gör intresseguiden
@@ -432,7 +432,7 @@ export default function UnifiedProfilePage() {
                   {career.topOccupations.map((occupation, idx) => (
                     <Link
                       key={idx}
-                      to={`/dashboard/job-search?query=${encodeURIComponent(occupation)}`}
+                      to={`/job-search?query=${encodeURIComponent(occupation)}`}
                       className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-700 hover:border-violet-300 hover:bg-violet-50 transition-colors"
                     >
                       {occupation}
@@ -490,12 +490,12 @@ export default function UnifiedProfilePage() {
                 <StatCard 
                   label="Ansökningar"
                   value={usage?.applicationsCount || 0}
-                  link="/dashboard/job-tracker"
+                  link="/job-tracker"
                 />
                 <StatCard 
                   label="Personliga brev"
                   value={usage?.coverLettersCount || 0}
-                  link="/dashboard/cover-letter"
+                  link="/cover-letter"
                 />
                 <StatCard 
                   label="CV-uppdatering"
@@ -503,7 +503,7 @@ export default function UnifiedProfilePage() {
                     ? new Date(usage.cvLastUpdated).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })
                     : 'Aldrig'
                   }
-                  link="/dashboard/cv"
+                  link="/cv"
                   isDate={!!usage?.cvLastUpdated}
                 />
               </div>

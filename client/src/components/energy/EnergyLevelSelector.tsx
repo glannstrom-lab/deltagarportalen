@@ -296,28 +296,28 @@ export function useEnergyAdaptedContent() {
             label: 'Skriv ner en sak du är stolt över', 
             description: 'Reflektera över något positivt',
             duration: '2 min', 
-            action: '/dashboard/diary',
+            action: '/diary',
             whyHelpful: 'Att fokusera på det positiva stärker självförtroendet'
           },
           { 
             label: 'Hur mår du just nu?', 
             description: 'Markera dagens humör',
             duration: '1 min', 
-            action: '/dashboard/diary',
+            action: '/diary',
             whyHelpful: 'Att tracka måendet hjälper dig förstå dina mönster'
           },
           { 
             label: 'Titta på ett sparat jobb', 
             description: 'Utforska utan press',
             duration: '3 min', 
-            action: '/dashboard/job-search',
+            action: '/job-search',
             whyHelpful: 'Att bara titta är ett steg i rätt riktning'
           },
           { 
             label: 'Läs en inspirerande artikel', 
             description: 'Ta del av motivation och tips',
             duration: '5 min', 
-            action: '/dashboard/knowledge-base',
+            action: '/knowledge-base',
             whyHelpful: 'Inspiration kan ge ny energi och perspektiv'
           },
         ]
@@ -327,28 +327,28 @@ export function useEnergyAdaptedContent() {
             label: 'Uppdatera din kontaktinfo', 
             description: 'Se över dina uppgifter',
             duration: '10 min', 
-            action: '/dashboard/cv',
+            action: '/cv',
             whyHelpful: 'Uppdaterad information ökar chanserna att bli kontaktad'
           },
           { 
             label: 'Besvara 3 frågor i intresseguiden', 
             description: 'Utforska dina intressen',
             duration: '5 min', 
-            action: '/dashboard/interest-guide',
+            action: '/interest-guide',
             whyHelpful: 'Att förstå dina intressen hjälper dig hitta rätt riktning'
           },
           { 
             label: 'Sök efter nya jobb', 
             description: 'Hitta möjligheter som passar dig',
             duration: '10 min', 
-            action: '/dashboard/job-search',
+            action: '/job-search',
             whyHelpful: 'Ju fler du hittar, desto större är chansen att hitta det rätta'
           },
           { 
             label: 'Skriv några rader i dagboken', 
             description: 'Reflektera över din resa',
             duration: '5 min', 
-            action: '/dashboard/diary',
+            action: '/diary',
             whyHelpful: 'Reflektion hjälper dig se din utveckling över tid'
           },
         ]
@@ -358,28 +358,28 @@ export function useEnergyAdaptedContent() {
             label: 'Lägg till en arbetslivserfarenhet', 
             description: 'Berika ditt CV med erfarenhet',
             duration: '30 min', 
-            action: '/dashboard/cv',
+            action: '/cv',
             whyHelpful: 'Ett komplett CV ökar chanserna att bli kallad till intervju'
           },
           { 
             label: 'Gör klart intresseguiden', 
             description: 'Få insikter om din karriärväg',
             duration: '15 min', 
-            action: '/dashboard/interest-guide',
+            action: '/interest-guide',
             whyHelpful: 'Resultaten ger dig en klarare bild av vilka yrken som passar'
           },
           { 
             label: 'Skriv ett personligt brev', 
             description: 'Förbered en ansökan',
             duration: '20 min', 
-            action: '/dashboard/cover-letter',
+            action: '/cover-letter',
             whyHelpful: 'Ett bra brev kan öppna dörrar till drömjobbet'
           },
           { 
             label: 'Spara 5 intressanta jobb', 
             description: 'Bygg din jobbshortlist',
             duration: '15 min', 
-            action: '/dashboard/job-search',
+            action: '/job-search',
             whyHelpful: 'Att ha alternativ ger dig fler möjligheter att välja rätt'
           },
         ]

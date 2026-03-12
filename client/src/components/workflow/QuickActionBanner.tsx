@@ -50,11 +50,11 @@ export function QuickActionBanner({
       message: 'Nu är det dags att hitta jobb som matchar dina kompetenser.',
       primaryAction: {
         label: 'Sök jobb med detta CV',
-        to: '/dashboard/job-search'
+        to: '/job-search'
       },
       secondaryAction: {
         label: 'Optimera CV:t ytterligare',
-        to: '/dashboard/cv'
+        to: '/cv'
       },
       bgColor: 'bg-green-50',
       borderColor: 'border-green-200'
@@ -73,7 +73,7 @@ export function QuickActionBanner({
       },
       secondaryAction: {
         label: 'Se sparade jobb',
-        to: '/dashboard/job-tracker'
+        to: '/job-tracker'
       },
       bgColor: 'bg-violet-50',
       borderColor: 'border-violet-200'
@@ -84,11 +84,11 @@ export function QuickActionBanner({
       message: 'Bra jobbat! När du hittar fler intressanta jobb kan du använda detta som mall.',
       primaryAction: {
         label: 'Sök fler jobb',
-        to: '/dashboard/job-search'
+        to: '/job-search'
       },
       secondaryAction: {
         label: 'Se alla brev',
-        to: '/dashboard/cover-letter'
+        to: '/cover-letter'
       },
       bgColor: 'bg-teal-50',
       borderColor: 'border-teal-200'
@@ -99,11 +99,11 @@ export function QuickActionBanner({
       message: 'Du har allt du behöver för att börja söka jobb på allvar.',
       primaryAction: {
         label: 'Börja söka jobb',
-        to: '/dashboard/job-search'
+        to: '/job-search'
       },
       secondaryAction: {
         label: 'Se intresseguiden',
-        to: '/dashboard/interest-guide'
+        to: '/interest-guide'
       },
       bgColor: 'bg-amber-50',
       borderColor: 'border-amber-200'
@@ -114,7 +114,7 @@ export function QuickActionBanner({
       message: 'Regelbunden jobbsökning ökar dina chanser. Sätt av 30 minuter nu!',
       primaryAction: {
         label: 'Hitta jobb nu',
-        to: '/dashboard/job-search'
+        to: '/job-search'
       },
       bgColor: 'bg-blue-50',
       borderColor: 'border-blue-200'
@@ -208,7 +208,7 @@ export function JobTrackerActions({
   return (
     <div className="flex items-center gap-1">
       <button
-        onClick={() => navigate(`/dashboard/cover-letter?jobId=${jobId}&company=${encodeURIComponent(employer)}&title=${encodeURIComponent(jobTitle)}`)}
+        onClick={() => navigate(`/cover-letter?jobId=${jobId}&company=${encodeURIComponent(employer)}&title=${encodeURIComponent(jobTitle)}`)}
         className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
         title="Skriv personligt brev"
       >
@@ -216,7 +216,7 @@ export function JobTrackerActions({
       </button>
       
       <button
-        onClick={() => navigate(`/dashboard/cv?optimizeFor=${jobId}`)}
+        onClick={() => navigate(`/cv?optimizeFor=${jobId}`)}
         className="p-1.5 text-slate-500 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
         title="Optimera CV för detta jobb"
       >

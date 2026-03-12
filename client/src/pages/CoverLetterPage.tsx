@@ -33,7 +33,7 @@ export default function CoverLetterPage() {
         <Route path="/applications" element={<CoverLetterApplications />} />
         <Route path="/templates" element={<CoverLetterTemplates />} />
         <Route path="/statistics" element={<CoverLetterStatistics />} />
-        <Route path="*" element={<Navigate to="/dashboard/cover-letter" replace />} />
+        <Route path="*" element={<Navigate to="/cover-letter" replace />} />
       </Routes>
     </PageLayout>
   )

@@ -38,37 +38,37 @@ const intentResponses: Record<string, (params: any) => { response: string; sugge
   'cv_hjälp': () => ({
     response: 'Jag kan hjälpa dig med ditt CV! Vad vill du förbättra? Jag kan ge tips om struktur, innehåll, eller specifika sektioner som sammanfattning eller erfarenheter.',
     suggestions: ['Hur skriver jag en bra sammanfattning?', 'Vilka kompetenser ska jag lyfta?', 'CV-mallar'],
-    actions: [{ label: 'Öppna CV-byggaren', url: '/dashboard/cv' }]
+    actions: [{ label: 'Öppna CV-byggaren', url: '/cv' }]
   }),
   
   'personligt_brev': () => ({
     response: 'Ett personligt brev ska komplettera ditt CV och förklara VARFÖR du vill ha just detta jobb. Jag kan hjälpa dig strukturera det!',
     suggestions: ['Hur börjar jag brevet?', 'Vad ska jag undvika?', 'Exempel på bra brev'],
-    actions: [{ label: 'Skapa brev', url: '/dashboard/cover-letter' }]
+    actions: [{ label: 'Skapa brev', url: '/cover-letter' }]
   }),
   
   'jobbsökning': () => ({
     response: 'Att söka jobb är en process! Jag rekommenderar att du sparar intressanta jobb, anpassar ditt CV för varje ansökan, och följer upp efter en vecka.',
     suggestions: ['Hitta jobb som passar mig', 'Hur följer jag upp?', 'Förberedelse inför intervju'],
-    actions: [{ label: 'Sök jobb', url: '/dashboard/job-search' }]
+    actions: [{ label: 'Sök jobb', url: '/job-search' }]
   }),
   
   'intervju': () => ({
     response: 'Intervjuer kan kännas nervösa, men med rätt förberedelse går det bra! Fokusera på dina styrkor, förbered exempel på tidigare erfarenheter, och ställ frågor till arbetsgivaren.',
     suggestions: ['Vanliga intervjufrågor', 'Hur hanterar jag nervositet?', 'Vad ska jag fråga dem?'],
-    actions: [{ label: 'Intervjutips', url: '/dashboard/knowledge/interview' }]
+    actions: [{ label: 'Intervjutips', url: '/knowledge/interview' }]
   }),
   
   'karriärväg': () => ({
     response: 'Att hitta rätt karriärväg börjar med att förstå dina intressen och styrkor. Har du gjort vår intresseguide? Den kan ge dig insikter om vilka yrken som passar dig!',
     suggestions: ['Gör intresseguiden', 'Utforska yrken', 'Utbildningsvägar'],
-    actions: [{ label: 'Intresseguide', url: '/dashboard/interest-guide' }]
+    actions: [{ label: 'Intresseguide', url: '/interest-guide' }]
   }),
   
   'motivation': () => ({
     response: 'Det är helt normalt att känna sig less eller frustrerad ibland under jobbsökningen. Kom ihåg: varje ansökan är ett steg framåt, även om det inte alltid känns så. Vilken del känns tuffast just nu?',
     suggestions: ['Jag orkar inte mer', 'Ingen svarar på mina ansökningar', 'Hur håller jag motivationen uppe?'],
-    actions: [{ label: 'Skriv i dagboken', url: '/dashboard/diary' }]
+    actions: [{ label: 'Skriv i dagboken', url: '/diary' }]
   }),
   
   'default': (userMessage: string) => ({

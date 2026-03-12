@@ -50,7 +50,7 @@ export function CoverLetterTemplates() {
   const [selectedTemplate, setSelectedTemplate] = useState<CoverLetterTemplate | null>(null)
 
   const handleUseTemplate = (templateId: string) => {
-    navigate(`/dashboard/cover-letter?template=${templateId}`)
+    navigate(`/cover-letter?template=${templateId}`)
   }
 
   return (

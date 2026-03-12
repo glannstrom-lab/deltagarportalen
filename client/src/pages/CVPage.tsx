@@ -33,7 +33,7 @@ export default function CVPage() {
         <Route path="/templates" element={<CVTemplates />} />
         <Route path="/ats" element={<ATSAnalysis />} />
         <Route path="/tips" element={<CVTips />} />
-        <Route path="*" element={<Navigate to="/dashboard/cv" replace />} />
+        <Route path="*" element={<Navigate to="/cv" replace />} />
       </Routes>
     </PageLayout>
   )

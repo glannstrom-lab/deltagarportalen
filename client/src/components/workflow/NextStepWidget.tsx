@@ -193,13 +193,13 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
         <div className="mt-4 flex items-center justify-center gap-2">
           <span className="text-sm text-slate-500">Eller:</span>
           <div className="flex items-center gap-1">
-            <QuickLink to="/dashboard/cv" icon={<FileText size={14} />}>
+            <QuickLink to="/cv" icon={<FileText size={14} />}>
               CV
             </QuickLink>
-            <QuickLink to="/dashboard/job-search" icon={<Search size={14} />}>
+            <QuickLink to="/job-search" icon={<Search size={14} />}>
               Sök
             </QuickLink>
-            <QuickLink to="/dashboard/job-tracker" icon={<TrendingUp size={14} />}>
+            <QuickLink to="/job-tracker" icon={<TrendingUp size={14} />}>
               Tracker
             </QuickLink>
           </div>

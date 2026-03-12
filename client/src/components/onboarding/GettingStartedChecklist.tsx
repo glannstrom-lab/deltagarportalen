@@ -47,7 +47,7 @@ const checklistItems: ChecklistItem[] = [
     description: 'Berätta vad du vill fokusera på först – vi anpassar efter dig',
     whyItHelps: 'Att välja fokus hjälper oss visa dig rätt innehåll i rätt ordning',
     icon: Compass,
-    path: '/dashboard',
+    path: '/',
     checkComplete: () => {
       const settings = localStorage.getItem('deltagarportal-settings')
       if (!settings) return false
@@ -84,7 +84,7 @@ const checklistItems: ChecklistItem[] = [
     description: 'Gör vår intresseguide och se vilka yrken som passar dig',
     whyItHelps: 'Att förstå dina intressen hjälper dig hitta ett jobb där du trivs',
     icon: Sparkles,
-    path: '/dashboard/interest-guide',
+    path: '/interest-guide',
     checkComplete: () => {
       const interest = localStorage.getItem('interest-result')
       return !!interest
@@ -96,7 +96,7 @@ const checklistItems: ChecklistItem[] = [
     description: 'Skapa ett CV som visar vem du är och vad du kan',
     whyItHelps: 'Ett välskrivet CV är din biljett till intervjuer',
     icon: FileText,
-    path: '/dashboard/cv',
+    path: '/cv',
     checkComplete: () => {
       const cv = localStorage.getItem('cv-data')
       if (!cv) return false
@@ -115,7 +115,7 @@ const checklistItems: ChecklistItem[] = [
     description: 'Spara ett jobb som verkar intressant – du behöver inte söka än!',
     whyItHelps: 'Att spara jobb hjälper dig bygga en lista över möjligheter',
     icon: Briefcase,
-    path: '/dashboard/job-search',
+    path: '/job-search',
     checkComplete: () => {
       const savedJobs = localStorage.getItem('saved-jobs')
       if (!savedJobs) return false
@@ -133,7 +133,7 @@ const checklistItems: ChecklistItem[] = [
     description: 'Reflektera över din resa – det är viktigt att fira framstegen',
     whyItHelps: 'Att reflektera hjälper dig se hur långt du kommit och vad som fungerar',
     icon: BookHeart,
-    path: '/dashboard/diary',
+    path: '/diary',
     checkComplete: () => {
       const diary = localStorage.getItem('diary-entries')
       if (!diary) return false

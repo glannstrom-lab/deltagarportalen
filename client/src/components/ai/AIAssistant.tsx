@@ -71,7 +71,7 @@ function generateAIRecommendations(
       reasoning: 'Tidskritisk möjlighet - dessa annonser kanske inte finns tillgängliga om några dagar',
       action: {
         label: 'Se sparade jobb',
-        link: '/dashboard/job-search'
+        link: '/job-search'
       },
       expectedOutcome: 'Ökar chansen att komma i fråga för aktuella positioner',
       confidence: 85
@@ -89,7 +89,7 @@ function generateAIRecommendations(
       reasoning: 'Du har sparat jobb men CV:t behöver mer information för att göra intryck',
       action: {
         label: 'Fortsätt med CV',
-        link: '/dashboard/cv'
+        link: '/cv'
       },
       expectedOutcome: 'Fler svar från arbetsgivare och bättre matchning',
       confidence: 92
@@ -107,7 +107,7 @@ function generateAIRecommendations(
       reasoning: 'Att förstå dina intressen och personlighet ger riktning åt jobbsökningen',
       action: {
         label: 'Gör intresseguiden',
-        link: '/dashboard/interest-guide'
+        link: '/interest-guide'
       },
       expectedOutcome: 'Tydligare bild av lämpliga yrken och karriärvägar',
       confidence: 88
@@ -127,7 +127,7 @@ function generateAIRecommendations(
       reasoning: 'Regelbunden reflektion korrelerar med högre motivation och bättre resultat',
       action: {
         label: 'Skriv i dagboken',
-        link: '/dashboard/diary'
+        link: '/diary'
       },
       expectedOutcome: 'Ökad självinsikt och motivation genom att se framsteg',
       confidence: 75
@@ -145,7 +145,7 @@ function generateAIRecommendations(
       reasoning: 'Många fastnar i "perfektionism" - det är bättre att söka än att vänta på det perfekta tillfället',
       action: {
         label: 'Börja söka',
-        link: '/dashboard/job-search'
+        link: '/job-search'
       },
       expectedOutcome: 'Fler intervjuer och snabbare väg till jobb',
       confidence: 80
@@ -163,7 +163,7 @@ function generateAIRecommendations(
       reasoning: 'Konsekvens är nyckeln till framgång i jobbsökning',
       action: {
         label: 'Fortsätt momentum',
-        link: '/dashboard'
+        link: '/'
       },
       expectedOutcome: 'Fortsatt motivation och regelbundna framsteg',
       confidence: 95
@@ -181,7 +181,7 @@ function generateAIRecommendations(
       reasoning: 'Små steg är bättre än inga steg alls - det bygger momentum',
       action: {
         label: 'Markera dagens humör',
-        link: '/dashboard/diary'
+        link: '/diary'
       },
       expectedOutcome: 'Känsla av framsteg även på lågenergidagar',
       confidence: 90

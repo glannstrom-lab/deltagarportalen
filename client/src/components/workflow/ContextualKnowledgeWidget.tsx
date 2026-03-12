@@ -369,7 +369,7 @@ export function ContextualKnowledgeWidget({
         </div>
         
         <Link
-          to="/dashboard/knowledge-base"
+          to="/knowledge-base"
           className="flex items-center justify-center gap-1 mt-3 text-sm text-amber-700 hover:text-amber-800 font-medium"
         >
           <BookOpen size={14} />

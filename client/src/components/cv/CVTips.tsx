@@ -297,7 +297,7 @@ export function CVTips() {
           <p className="text-slate-600 text-sm">Använd vår CV-byggare med inbyggda tips</p>
         </div>
         <a
-          href="/dashboard/cv"
+          href="/cv"
           className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
         >
           <FileText className="w-5 h-5" />

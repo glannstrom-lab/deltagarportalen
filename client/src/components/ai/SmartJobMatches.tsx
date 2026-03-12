@@ -81,7 +81,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
           baserat på dina kompetenser.
         </p>
         <Link
-          to="/dashboard/cv"
+          to="/cv"
           className="inline-flex items-center gap-2 mt-3 text-sm text-violet-600 hover:text-violet-700 font-medium"
         >
           Komplettera CV:t
@@ -151,7 +151,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             ))}
             
             <Link
-              to="/dashboard/job-search"
+              to="/job-search"
               className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-violet-600 hover:text-violet-700 font-medium hover:bg-violet-50 rounded-lg transition-colors"
             >
               Se alla matchade jobb
@@ -227,7 +227,7 @@ function JobMatchCard({ match }: { match: SemanticMatch }) {
         </div>
         
         <Link
-          to={`/dashboard/job-search?highlight=${job.id}`}
+          to={`/job-search?highlight=${job.id}`}
           className="flex-shrink-0 p-2 text-violet-600 hover:bg-violet-100 rounded-lg transition-colors"
         >
           <ChevronRight size={20} />
@@ -303,7 +303,7 @@ function SimilarRoleCard({ role }: { role: SimilarRole }) {
         </div>
         
         <Link
-          to={`/dashboard/job-search?query=${encodeURIComponent(role.role)}`}
+          to={`/job-search?query=${encodeURIComponent(role.role)}`}
           className="flex-shrink-0 p-2 text-violet-600 hover:bg-violet-100 rounded-lg transition-colors"
         >
           <ChevronRight size={20} />

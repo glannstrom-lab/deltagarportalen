@@ -153,7 +153,7 @@ export function CoverLetterApplications() {
         description="När du skickar ett personligt brev till en arbetsgivare sparas det här – så har du koll på vilka jobb du sökt och när."
         action={{
           label: 'Börja skriva ett brev',
-          onClick: () => window.location.href = '/dashboard/cover-letter',
+          onClick: () => window.location.href = '/cover-letter',
         }}
       />
     )

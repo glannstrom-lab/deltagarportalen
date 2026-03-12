@@ -142,12 +142,12 @@ export function CreateApplicationModal({
 
   const handleGenerateCoverLetter = () => {
     // Navigera till cover letter-sidan med förifylld data
-    navigate(`/dashboard/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(job.description?.text?.substring(0, 500) || '')}&autoGenerate=true`)
+    navigate(`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(job.description?.text?.substring(0, 500) || '')}&autoGenerate=true`)
     onClose()
   }
 
   const goToCV = () => {
-    navigate('/dashboard/cv')
+    navigate('/cv')
     onClose()
   }
 
@@ -335,7 +335,7 @@ export function CreateApplicationModal({
                   Skriv med AI-hjälp
                 </button>
                 <button
-                  onClick={() => navigate(`/dashboard/cover-letter?jobId=${job.id}`)}
+                  onClick={() => navigate(`/cover-letter?jobId=${job.id}`)}
                   className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-100 text-slate-700 rounded-lg font-medium hover:bg-slate-200 transition-colors"
                 >
                   <FileText size={18} />

@@ -612,7 +612,7 @@ export default function Resources() {
               </div>
               <div className="flex items-center gap-2">
                 <Link
-                  to="/dashboard/cv"
+                  to="/cv"
                   className="flex items-center gap-2 px-4 py-2 bg-white text-amber-700 rounded-lg font-medium hover:bg-amber-50 border border-amber-200 transition-colors"
                 >
                   <Edit2 className="w-4 h-4" />
@@ -806,7 +806,7 @@ export default function Resources() {
                 <Briefcase className="text-blue-600" size={24} />
                 Sparade jobb
               </h2>
-              <Link to="/dashboard/job-tracker" className="text-sm text-indigo-600 hover:underline">
+              <Link to="/job-tracker" className="text-sm text-indigo-600 hover:underline">
                 Öppna jobbtracker →
               </Link>
             </div>
@@ -935,13 +935,13 @@ export default function Resources() {
                 </p>
                 <div className="flex flex-wrap gap-2">
                   <Link
-                    to="/dashboard/interest-guide"
+                    to="/interest-guide"
                     className="px-4 py-2 bg-white text-pink-700 rounded-lg font-medium hover:bg-pink-50 border border-pink-200 transition-colors"
                   >
                     Se resultat
                   </Link>
                   <Link
-                    to="/dashboard/career"
+                    to="/career"
                     className="px-4 py-2 bg-pink-600 text-white rounded-lg font-medium hover:bg-pink-700 transition-colors"
                   >
                     Utforska yrken
@@ -963,10 +963,10 @@ export default function Resources() {
               När du sparar jobb, skapar dokument eller bokmärker artiklar kommer de att visas här.
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link to="/dashboard/cv" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+              <Link to="/cv" className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
                 Skapa CV
               </Link>
-              <Link to="/dashboard/job-search" className="px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50">
+              <Link to="/job-search" className="px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg hover:bg-slate-50">
                 Sök jobb
               </Link>
             </div>

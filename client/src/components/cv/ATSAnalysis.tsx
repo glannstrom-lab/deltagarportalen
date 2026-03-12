@@ -329,7 +329,7 @@ export function ATSAnalysis() {
           <p className="text-slate-600 text-sm">Gå tillbaka till CV-byggaren och gör justeringar</p>
         </div>
         <a
-          href="/dashboard/cv"
+          href="/cv"
           className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
         >
           <Award className="w-5 h-5" />

@@ -165,7 +165,7 @@ export function MyCVs() {
           <p className="text-slate-600">Du har {cvs.length} CV:n sparade</p>
         </div>
         <Link
-          to="/dashboard/cv"
+          to="/cv"
           className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
         >
           <Plus className="w-4 h-4" />
@@ -210,7 +210,7 @@ export function MyCVs() {
               : 'Skapa ditt första CV för att komma igång'}
           </p>
           <Link
-            to="/dashboard/cv"
+            to="/cv"
             className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
           >
             <Plus className="w-4 h-4" />
@@ -277,7 +277,7 @@ export function MyCVs() {
                 {/* Actions */}
                 <div className="flex items-center gap-2">
                   <Link
-                    to={`/dashboard/cv?id=${cv.id}`}
+                    to={`/cv?id=${cv.id}`}
                     className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                     title="Redigera"
                   >

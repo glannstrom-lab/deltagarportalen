@@ -300,7 +300,7 @@ export const nextStepApi = {
         submessage: 'Ett bra CV är grunden för en framgångsrik jobbsökning',
         action: { 
           label: 'Skapa ditt första CV', 
-          link: '/dashboard/cv' 
+          link: '/cv' 
         },
         icon: '📝',
         priority: 'high'
@@ -315,7 +315,7 @@ export const nextStepApi = {
         submessage: `Nuvarande poäng: ${progress.cvScore}/100. Lägg till mer information för att öka dina chanser.`,
         action: { 
           label: 'Förbättra CV:t', 
-          link: '/dashboard/cv' 
+          link: '/cv' 
         },
         icon: '✨',
         priority: 'high'
@@ -330,11 +330,11 @@ export const nextStepApi = {
         submessage: 'Vi har tusentals jobb från Arbetsförmedlingen att välja mellan',
         action: { 
           label: 'Sök jobb', 
-          link: '/dashboard/job-search' 
+          link: '/job-search' 
         },
         secondaryAction: {
           label: 'Se matchade jobb för dig',
-          link: '/dashboard/job-search?matched=true'
+          link: '/job-search?matched=true'
         },
         icon: '🔍',
         priority: 'high'
@@ -363,7 +363,7 @@ export const nextStepApi = {
         },
         secondaryAction: {
           label: 'Se alla sparade jobb',
-          link: '/dashboard/job-tracker'
+          link: '/job-tracker'
         },
         icon: '📨',
         priority: 'high'
@@ -378,11 +378,11 @@ export const nextStepApi = {
         submessage: 'Fortsätt momentumet och hitta fler intressanta jobb',
         action: { 
           label: 'Sök fler jobb', 
-          link: '/dashboard/job-search' 
+          link: '/job-search' 
         },
         secondaryAction: {
           label: 'Skriv i dagboken',
-          link: '/dashboard/diary'
+          link: '/diary'
         },
         icon: '🎯',
         priority: 'medium'
@@ -397,11 +397,11 @@ export const nextStepApi = {
         submessage: `Du har skickat ${progress.applicationsCount} ansökningar totalt.`,
         action: { 
           label: 'Fortsätt söka jobb', 
-          link: '/dashboard/job-search' 
+          link: '/job-search' 
         },
         secondaryAction: {
           label: 'Se dina ansökningar',
-          link: '/dashboard/job-tracker'
+          link: '/job-tracker'
         },
         icon: '📊',
         priority: 'medium'
@@ -414,7 +414,7 @@ export const nextStepApi = {
       message: 'Redo för nästa steg i karriären?',
       action: { 
         label: 'Sök jobb', 
-        link: '/dashboard/job-search' 
+        link: '/job-search' 
       },
       icon: '🚀',
       priority: 'low'

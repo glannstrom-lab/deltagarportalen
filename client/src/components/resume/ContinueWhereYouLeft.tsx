@@ -54,7 +54,7 @@ export function ContinueWhereYouLeft() {
             description: `Du har fyllt i ${cvProgress}% av ditt CV`,
             progress: cvProgress,
             lastActive: new Date(cv.updatedAt || Date.now()),
-            path: '/dashboard/cv',
+            path: '/cv',
             icon: FileText
           })
         }
@@ -78,7 +78,7 @@ export function ContinueWhereYouLeft() {
           description: `Du har svarat på ${answeredCount} av ${totalQuestions} frågor`,
           progress,
           lastActive: new Date(interestProgress.timestamp),
-          path: '/dashboard/interest-guide',
+          path: '/interest-guide',
           icon: Sparkles
         })
       }
@@ -96,7 +96,7 @@ export function ContinueWhereYouLeft() {
           description: 'Du påbörjade ett inlägg men har inte sparat det',
           progress: 50,
           lastActive: new Date(draft.timestamp || Date.now()),
-          path: '/dashboard/diary',
+          path: '/diary',
           icon: BookHeart
         })
       } catch {}

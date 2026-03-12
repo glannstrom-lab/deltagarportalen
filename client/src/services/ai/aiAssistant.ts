@@ -296,7 +296,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Jobbannonser stänger i genomsnitt efter 14 dagar. Ju längre du väntar, desto större risk att missa chansen.',
       action: {
         label: count === 1 ? 'Skapa ansökan nu' : `Se ${count} jobb`,
-        link: '/dashboard/job-search?filter=saved',
+        link: '/job-search?filter=saved',
         dismissLabel: 'Påminn mig imorgon'
       },
       expectedOutcome: 'Ökar chansen att komma på intervju med 40% genom att ansöka tidigt',
@@ -325,7 +325,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
         reasoning: 'Förberedda kandidater har 3x större chans att få jobberbjudande.',
         action: {
           label: 'Förbered dig nu',
-          link: '/dashboard/knowledge-base/interview-prep',
+          link: '/knowledge-base/interview-prep',
           dismissLabel: 'Jag är redo'
         },
         deadline: interviewDate,
@@ -348,7 +348,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Användare med kompletta CV:n får 5x fler intervjuer.',
       action: {
         label: 'Skapa CV nu',
-        link: '/dashboard/cv'
+        link: '/cv'
       },
       expectedOutcome: 'Du kan börja söka jobb och skicka ansökningar',
       confidence: 90,
@@ -369,7 +369,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Konsistens är viktigare än perfektion. 3 ansökningar/vecka ger bäst resultat.',
       action: {
         label: 'Sök ett jobb nu (10 min)',
-        link: '/dashboard/job-search',
+        link: '/job-search',
         dismissLabel: 'Jag behöver en paus'
       },
       expectedOutcome: 'Komma tillbaka i flow och bygga momentum',
@@ -389,7 +389,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Sparade jobb ger inget värde förrän du ansöker. Batch-processera för effektivitet.',
       action: {
         label: 'Ansök på 3 jobb nu',
-        link: '/dashboard/job-tracker?filter=saved',
+        link: '/job-tracker?filter=saved',
         dismissLabel: 'Inte idag'
       },
       expectedOutcome: 'Fler ansökningar ute = större chans till intervju',
@@ -411,7 +411,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Jobb som matchar dina intressen ger högre jobbtillfredsställelse och längre anställningstid.',
       action: {
         label: 'Se matchade jobb',
-        link: '/dashboard/job-search?matched=true'
+        link: '/job-search?matched=true'
       },
       expectedOutcome: 'Hitta jobb du kanske missat i vanlig sökning',
       confidence: 75,
@@ -435,7 +435,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
         reasoning: 'Väl förberedda kandidater är mer avslappnade och ger bättre svar.',
         action: {
           label: 'Förberedelse-guide',
-          link: '/dashboard/knowledge-base/interview-prep'
+          link: '/knowledge-base/interview-prep'
         },
         deadline: interviewDate,
         confidence: 80,
@@ -455,7 +455,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Hållbarhet är viktigare än intensitet. Små steg leder också framåt.',
       action: {
         label: 'Se energianpassade övningar',
-        link: '/dashboard/exercises?energy=low',
+        link: '/exercises?energy=low',
         dismissLabel: 'Tack, jag vill vila'
       },
       expectedOutcome: 'Undvika utbrändhet och hålla långsiktig motivation',
@@ -477,7 +477,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Att fira små framsteg ökar motivation och bygger självförtroende.',
       action: {
         label: 'Skriv om känslan i dagboken',
-        link: '/dashboard/diary'
+        link: '/diary'
       },
       expectedOutcome: 'Bygga positivt momentum i din jobbsökning',
       confidence: 90,
@@ -495,7 +495,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Statistiskt sett leder 10-20 ansökningar till 1-2 intervjuer.',
       action: {
         label: 'Se din statistik',
-        link: '/dashboard/job-tracker?tab=stats'
+        link: '/job-tracker?tab=stats'
       },
       confidence: 85,
       createdAt: new Date().toISOString()
@@ -512,7 +512,7 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
       reasoning: 'Att komma på intervju betyder att du är kvalificerad - de vill lära känna dig!',
       action: {
         label: 'Förbered dig för intervjun',
-        link: '/dashboard/knowledge-base/interview-prep'
+        link: '/knowledge-base/interview-prep'
       },
       expectedOutcome: 'Känn dig stolt och förberedd inför intervjun',
       confidence: 95,

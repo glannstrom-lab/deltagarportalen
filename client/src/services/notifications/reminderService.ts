@@ -73,7 +73,7 @@ export function generateSmartReminders(
         priority: daysSinceSaved > 10 ? 'high' : 'medium',
         action: {
           label: 'Se jobb',
-          url: `/dashboard/job-search`
+          url: `/job-search`
         },
         completed: false,
         dismissed: false
@@ -96,7 +96,7 @@ export function generateSmartReminders(
           priority: 'medium',
           action: {
             label: 'Skriv uppföljning',
-            url: `/dashboard/applications`
+            url: `/applications`
           },
           completed: false,
           dismissed: false
@@ -120,7 +120,7 @@ export function generateSmartReminders(
           priority: daysUntilDeadline === 1 ? 'high' : 'medium',
           action: {
             label: 'Se mål',
-            url: `/dashboard/goals`
+            url: `/goals`
           },
           completed: false,
           dismissed: false
@@ -143,7 +143,7 @@ export function generateSmartReminders(
         priority: 'low',
         action: {
           label: 'Logga in',
-          url: '/dashboard'
+          url: '/'
         },
         completed: false,
         dismissed: false
@@ -165,7 +165,7 @@ export function generateSmartReminders(
       priority: 'low',
       action: {
         label: 'Gör något litet',
-        url: '/dashboard'
+        url: '/'
       },
       completed: false,
       dismissed: false
