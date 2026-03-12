@@ -1,122 +1,255 @@
-import { useState, useEffect, useCallback, useRef } from 'react'
+/**
+ * Improved Auto Save Hook
+ * Förbättrad auto-save med recovery, retry-logik och status-indikering
+ */
 
-interface UseAutoSaveOptions<T> {
+import { useState, useEffect, useRef, useCallback } from 'react'
+
+interface AutoSaveOptions<T> {
   key: string
-  data: T
+  saveFn: (data: T) => Promise<void>
+  validateFn?: (data: T) => { valid: boolean; error?: string }
+  onError?: (error: Error) => void
+  onSuccess?: () => void
   debounceMs?: number
-  onRestore?: (data: T) => void
-  enabled?: boolean
+  maxRetries?: number
 }
 
-interface UseAutoSaveReturn<T> {
+interface AutoSaveState {
+  status: 'idle' | 'saving' | 'saved' | 'error'
   lastSaved: Date | null
-  isSaving: boolean
-  hasRestoredData: boolean
-  restoredData: T | null
-  clearSavedData: () => void
-  restoreData: () => void
+  error: string | null
+  retryCount: number
 }
 
-export function useAutoSave<T extends Record<string, unknown>>({
-  key,
-  data,
-  debounceMs = 2000,
-  onRestore,
-  enabled = true
-}: UseAutoSaveOptions<T>): UseAutoSaveReturn<T> {
-  const [lastSaved, setLastSaved] = useState<Date | null>(null)
-  const [isSaving, setIsSaving] = useState(false)
-  const [hasRestoredData, setHasRestoredData] = useState(false)
-  const [restoredData, setRestoredData] = useState<T | null>(null)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+export function useAutoSave<T>(
+  data: T,
+  options: AutoSaveOptions<T>
+) {
+  const {
+    key,
+    saveFn,
+    validateFn,
+    onError,
+    onSuccess,
+    debounceMs = 3000,
+    maxRetries = 3
+  } = options
+
+  const [state, setState] = useState<AutoSaveState>({
+    status: 'idle',
+    lastSaved: null,
+    error: null,
+    retryCount: 0
+  })
+
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const pendingDataRef = useRef<T | null>(null)
   const hasRestoredRef = useRef(false)
-  const storageKey = `autosave-${key}`
 
-  // Ladda sparad data vid mount - ENDAST EN GÅNG
-  useEffect(() => {
-    if (!enabled || hasRestoredRef.current) return
-
+  // Spara till localStorage för recovery
+  const saveToLocalStorage = useCallback((dataToSave: T) => {
     try {
-      const saved = localStorage.getItem(storageKey)
-      if (saved) {
-        const parsed = JSON.parse(saved) as T & { _timestamp: number }
-        delete (parsed as Record<string, unknown>)._timestamp
-        setRestoredData(parsed as T)
-        setHasRestoredData(true)
-        hasRestoredRef.current = true
-        onRestore?.(parsed as T)
-      }
-    } catch (error) {
-      console.error('Fel vid laddning av autosave:', error)
+      localStorage.setItem(`${key}-pending`, JSON.stringify({
+        data: dataToSave,
+        timestamp: Date.now()
+      }))
+    } catch (e) {
+      console.warn('Kunde inte spara till localStorage:', e)
     }
-  }, []) // Tom dependency array - körs endast vid mount
+  }, [key])
 
-  // Spara data med debounce
+  // Hämta från localStorage vid återställning
+  const restoreFromLocalStorage = useCallback((): { data: T; timestamp: number } | null => {
+    try {
+      const stored = localStorage.getItem(`${key}-pending`)
+      if (stored) {
+        return JSON.parse(stored)
+      }
+    } catch (e) {
+      console.warn('Kunde inte läsa från localStorage:', e)
+    }
+    return null
+  }, [key])
+
+  // Rensa localStorage
+  const clearLocalStorage = useCallback(() => {
+    try {
+      localStorage.removeItem(`${key}-pending`)
+    } catch (e) {
+      console.warn('Kunde inte rensa localStorage:', e)
+    }
+  }, [key])
+
+  // Återställ vid mount
   useEffect(() => {
-    if (!enabled) return
+    if (hasRestoredRef.current) return
+    
+    const restored = restoreFromLocalStorage()
+    if (restored) {
+      const hoursSince = (Date.now() - restored.timestamp) / (1000 * 60 * 60)
+      // Varna användaren om osparad data om det är inom 24 timmar
+      if (hoursSince < 24) {
+        setState(prev => ({
+          ...prev,
+          status: 'error',
+          error: `Hittade osparad data från ${Math.round(hoursSince * 10) / 10} timmar sedan. Klicka på Återställ för att hämta den.`,
+          lastSaved: new Date(restored.timestamp)
+        }))
+      } else {
+        // Rensa gammal data
+        clearLocalStorage()
+      }
+    }
+    
+    hasRestoredRef.current = true
+  }, [restoreFromLocalStorage, clearLocalStorage])
+
+  // Cleanup vid unmount
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
+  // Retry-funktion
+  const retry = useCallback(async () => {
+    if (pendingDataRef.current && state.retryCount < maxRetries) {
+      setState(prev => ({
+        ...prev,
+        status: 'saving',
+        retryCount: prev.retryCount + 1
+      }))
+      
+      try {
+        await saveFn(pendingDataRef.current)
+        clearLocalStorage()
+        setState({
+          status: 'saved',
+          lastSaved: new Date(),
+          error: null,
+          retryCount: 0
+        })
+        onSuccess?.()
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Osparat - försöker igen...'
+        setState(prev => ({
+          ...prev,
+          status: 'error',
+          error: errorMessage
+        }))
+        onError?.(error instanceof Error ? error : new Error(String(error)))
+      }
+    }
+  }, [saveFn, clearLocalStorage, onSuccess, onError, state.retryCount, maxRetries])
+
+  // Huvudsparningslogik
+  useEffect(() => {
+    // Validera data om validator finns
+    if (validateFn) {
+      const validation = validateFn(data)
+      if (!validation.valid) {
+        setState(prev => ({
+          ...prev,
+          status: 'error',
+          error: validation.error || 'Ogiltig data'
+        }))
+        return
+      }
+    }
 
     // Rensa tidigare timeout
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current)
     }
 
-    // Sätt ny timeout för att spara
-    timeoutRef.current = setTimeout(() => {
-      setIsSaving(true)
-      
+    // Spara till localStorage för recovery
+    saveToLocalStorage(data)
+    pendingDataRef.current = data
+
+    // Sätt ny timeout
+    setState(prev => ({ ...prev, status: 'saving' }))
+    
+    timeoutRef.current = setTimeout(async () => {
       try {
-        const dataToSave = {
-          ...data,
-          _timestamp: Date.now()
-        }
-        localStorage.setItem(storageKey, JSON.stringify(dataToSave))
-        setLastSaved(new Date())
+        await saveFn(data)
+        clearLocalStorage()
+        setState({
+          status: 'saved',
+          lastSaved: new Date(),
+          error: null,
+          retryCount: 0
+        })
+        onSuccess?.()
       } catch (error) {
-        console.error('Fel vid autosave:', error)
-      } finally {
-        setIsSaving(false)
+        const errorMessage = error instanceof Error ? error.message : 'Kunde inte spara'
+        setState({
+          status: 'error',
+          lastSaved: null,
+          error: errorMessage,
+          retryCount: 0
+        })
+        onError?.(error instanceof Error ? error : new Error(String(error)))
       }
     }, debounceMs)
+  }, [data, saveFn, validateFn, debounceMs, saveToLocalStorage, clearLocalStorage, onSuccess, onError])
 
-    return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current)
-      }
+  // Manuell sparning
+  const saveImmediately = useCallback(async () => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
     }
-  }, [data, debounceMs, enabled, storageKey])
 
-  const clearSavedData = useCallback(() => {
+    setState(prev => ({ ...prev, status: 'saving' }))
+
     try {
-      localStorage.removeItem(storageKey)
-      setRestoredData(null)
-      setHasRestoredData(false)
-      hasRestoredRef.current = false
-      setLastSaved(null)
+      await saveFn(data)
+      clearLocalStorage()
+      setState({
+        status: 'saved',
+        lastSaved: new Date(),
+        error: null,
+        retryCount: 0
+      })
+      onSuccess?.()
     } catch (error) {
-      console.error('Fel vid rensning av autosave:', error)
+      const errorMessage = error instanceof Error ? error.message : 'Kunde inte spara'
+      setState({
+        status: 'error',
+        lastSaved: null,
+        error: errorMessage,
+        retryCount: 0
+      })
+      onError?.(error instanceof Error ? error : new Error(String(error)))
     }
-  }, [storageKey])
+  }, [data, saveFn, clearLocalStorage, onSuccess, onError])
 
-  // Cleanup vid unmount
-  useEffect(() => {
-    return () => {
-      hasRestoredRef.current = false
+  // Återställ från localStorage
+  const restoreData = useCallback((): T | null => {
+    const restored = restoreFromLocalStorage()
+    if (restored) {
+      clearLocalStorage()
+      setState({
+        status: 'idle',
+        lastSaved: null,
+        error: null,
+        retryCount: 0
+      })
+      return restored.data
     }
-  }, [])
-
-  const restoreData = useCallback(() => {
-    if (restoredData) {
-      onRestore?.(restoredData)
-    }
-  }, [restoredData, onRestore])
+    return null
+  }, [restoreFromLocalStorage, clearLocalStorage])
 
   return {
-    lastSaved,
-    isSaving,
-    hasRestoredData,
-    restoredData,
-    clearSavedData,
-    restoreData
+    ...state,
+    retry,
+    saveImmediately,
+    restoreData,
+    isSaving: state.status === 'saving',
+    isSaved: state.status === 'saved',
+    hasError: state.status === 'error'
   }
 }
 

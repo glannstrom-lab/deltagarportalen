@@ -1,105 +1,188 @@
 /**
- * Action Plan Component
- * Individual action plans with milestones and deadlines
+ * Action Plan Component with SMART Goals
+ * Handlingsplan med SMARTA-mål (Specifika, Mätbara, Accepterade, Realistiska, Tidsbundna)
  */
 
-import { useState } from 'react'
-import { useAuthStore } from '@/stores/authStore'
+import { useState, useMemo } from 'react'
 import { cn } from '@/lib/utils'
-import {
-  Target,
-  Plus,
-  Calendar,
-  Check,
+import { 
+  Target, 
+  Plus, 
+  Calendar, 
   Clock,
+  CheckCircle2,
   AlertCircle,
+  TrendingUp,
+  X,
+  Save,
   Edit2,
   Trash2,
   ChevronDown,
   ChevronUp,
-  Save,
-  X,
-  Flag
+  Sparkles,
+  Link as LinkIcon
 } from 'lucide-react'
 
-export interface ActionItem {
+export type GoalPriority = 'HIGH' | 'MEDIUM' | 'LOW'
+export type GoalStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'BLOCKED'
+
+export interface SmartGoal {
   id: string
   participantId: string
   consultantId: string
   title: string
-  description?: string
-  deadline?: string
-  completedAt?: string
-  status: 'PENDING' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED'
-  priority: 'LOW' | 'MEDIUM' | 'HIGH'
-  linkedTo?: 'CV' | 'INTEREST_GUIDE' | 'JOB_SEARCH' | 'COVER_LETTER' | 'OTHER'
+  description: string
+  
+  // SMART-komponenter
+  specific: string      // Vad exakt ska uppnås?
+  measurable: string    // Hur mäter vi framgång?
+  achievable: string    // Är det realistiskt?
+  relevant: string      // Varför är det viktigt?
+  timeBound: string     // När ska det vara klart?
+  
+  priority: GoalPriority
+  status: GoalStatus
+  deadline: string
+  progress: number      // 0-100
+  
+  // Kopplingar
+  relatedTo?: {
+    type: 'CV' | 'INTEREST_GUIDE' | 'JOB_SEARCH' | 'EDUCATION' | 'OTHER'
+    description: string
+  }
+  
   createdAt: string
+  updatedAt: string
+  completedAt?: string
 }
 
 interface ActionPlanProps {
   participantId: string
   participantName: string
-  actions: ActionItem[]
-  onAddAction: (action: Omit<ActionItem, 'id' | 'createdAt'>) => void
-  onUpdateAction: (id: string, updates: Partial<ActionItem>) => void
-  onDeleteAction: (id: string) => void
+  goals: SmartGoal[]
+  onAddGoal: (goal: Omit<SmartGoal, 'id' | 'createdAt' | 'updatedAt'>) => void
+  onUpdateGoal: (id: string, updates: Partial<SmartGoal>) => void
+  onDeleteGoal: (id: string) => void
   className?: string
 }
 
-const priorityConfig = {
-  HIGH: { label: 'Hög', color: 'bg-red-100 text-red-700 border-red-200' },
-  MEDIUM: { label: 'Medium', color: 'bg-amber-100 text-amber-700 border-amber-200' },
-  LOW: { label: 'Låg', color: 'bg-blue-100 text-blue-700 border-blue-200' },
+const priorityConfig: Record<GoalPriority, { label: string; color: string; bg: string }> = {
+  HIGH: { label: 'Hög', color: 'text-rose-600', bg: 'bg-rose-100' },
+  MEDIUM: { label: 'Medium', color: 'text-amber-600', bg: 'bg-amber-100' },
+  LOW: { label: 'Låg', color: 'text-emerald-600', bg: 'bg-emerald-100' },
 }
 
-const statusConfig = {
-  PENDING: { label: 'Väntar', color: 'bg-slate-100 text-slate-600' },
-  IN_PROGRESS: { label: 'Pågår', color: 'bg-indigo-100 text-indigo-700' },
-  COMPLETED: { label: 'Klar', color: 'bg-green-100 text-green-700' },
-  CANCELLED: { label: 'Avbruten', color: 'bg-gray-100 text-gray-500' },
+const statusConfig: Record<GoalStatus, { label: string; color: string; icon: typeof CheckCircle2 }> = {
+  NOT_STARTED: { label: 'Inte påbörjad', color: 'text-slate-500', icon: Clock },
+  IN_PROGRESS: { label: 'Pågående', color: 'text-blue-500', icon: TrendingUp },
+  COMPLETED: { label: 'Avklarad', color: 'text-emerald-500', icon: CheckCircle2 },
+  BLOCKED: { label: 'Blockerad', color: 'text-rose-500', icon: AlertCircle },
 }
 
-const linkConfig = {
-  CV: { label: 'CV', path: '/dashboard/cv' },
-  INTEREST_GUIDE: { label: 'Intresseguide', path: '/dashboard/interest-guide' },
-  JOB_SEARCH: { label: 'Jobbsökning', path: '/dashboard/job-search' },
-  COVER_LETTER: { label: 'Personligt brev', path: '/dashboard/cover-letter' },
-  OTHER: { label: 'Annat', path: null },
-}
+// Mallar för SMARTA-mål
+const goalTemplates = [
+  {
+    title: 'Skapa komplett CV',
+    specific: 'Färdigställa CV med alla obligatoriska sektioner',
+    measurable: 'CV:t ska innehålla personuppgifter, erfarenhet, utbildning och kompetenser',
+    achievable: 'Genom att fylla i en sektion per dag',
+    relevant: 'Ett komplett CV krävs för att kunna söka jobb effektivt',
+    timeBound: 'Inom 2 veckor',
+    priority: 'HIGH' as GoalPriority,
+    relatedTo: { type: 'CV' as const, description: 'CV-byggaren' }
+  },
+  {
+    title: 'Slutför intresseguiden',
+    specific: 'Besvara alla frågor i intresseguiden',
+    measurable: 'Samtliga 24 frågor besvarade',
+    achievable: 'Genom att göra 5 frågor per session',
+    relevant: 'För att förstå vilka yrken som passar bäst',
+    timeBound: 'Inom 1 vecka',
+    priority: 'HIGH' as GoalPriority,
+    relatedTo: { type: 'INTEREST_GUIDE' as const, description: 'Intresseguide' }
+  },
+  {
+    title: 'Spara intressanta jobb',
+    specific: 'Hitta och spara jobb som matchar profilen',
+    measurable: 'Minst 5 sparade jobb',
+    achievable: 'Genom att söka 15 minuter per dag',
+    relevant: 'För att ha alternativ redo när det är dags att söka',
+    timeBound: 'Inom 2 veckor',
+    priority: 'MEDIUM' as GoalPriority,
+    relatedTo: { type: 'JOB_SEARCH' as const, description: 'Jobbsökning' }
+  },
+  {
+    title: 'Skriv dagbok regelbundet',
+    specific: 'Reflektera över jobbsökarprocessen',
+    measurable: 'Minst 3 inlägg per vecka',
+    achievable: 'Genom att skriva 10 minuter efter varje aktivitet',
+    relevant: 'För att följa utveckling och mående över tid',
+    timeBound: 'Pågående varje vecka',
+    priority: 'MEDIUM' as GoalPriority,
+    relatedTo: { type: 'OTHER' as const, description: 'Dagbok' }
+  }
+]
 
 export function ActionPlan({
   participantId,
   participantName,
-  actions,
-  onAddAction,
-  onUpdateAction,
-  onDeleteAction,
+  goals,
+  onAddGoal,
+  onUpdateGoal,
+  onDeleteGoal,
   className,
 }: ActionPlanProps) {
-  const { user } = useAuthStore()
   const [isAdding, setIsAdding] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [expandedId, setExpandedId] = useState<string | null>(null)
+  const [showTemplates, setShowTemplates] = useState(false)
 
   // Form state
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
+  const [specific, setSpecific] = useState('')
+  const [measurable, setMeasurable] = useState('')
+  const [achievable, setAchievable] = useState('')
+  const [relevant, setRelevant] = useState('')
+  const [timeBound, setTimeBound] = useState('')
+  const [priority, setPriority] = useState<GoalPriority>('MEDIUM')
   const [deadline, setDeadline] = useState('')
-  const [priority, setPriority] = useState<ActionItem['priority']>('MEDIUM')
-  const [linkedTo, setLinkedTo] = useState<ActionItem['linkedTo']>('OTHER')
+  const [relatedType, setRelatedType] = useState<SmartGoal['relatedTo']['type']>('OTHER')
+
+  const resetForm = () => {
+    setTitle('')
+    setDescription('')
+    setSpecific('')
+    setMeasurable('')
+    setAchievable('')
+    setRelevant('')
+    setTimeBound('')
+    setPriority('MEDIUM')
+    setDeadline('')
+    setRelatedType('OTHER')
+  }
 
   const handleSubmit = () => {
-    if (!title.trim() || !user) return
+    if (!title.trim() || !deadline) return
 
-    onAddAction({
+    onAddGoal({
       participantId,
-      consultantId: user.id,
+      consultantId: 'current-user', // Ska hämtas från auth
       title: title.trim(),
-      description: description.trim() || undefined,
-      deadline: deadline || undefined,
-      status: 'PENDING',
+      description: description.trim(),
+      specific: specific.trim(),
+      measurable: measurable.trim(),
+      achievable: achievable.trim(),
+      relevant: relevant.trim(),
+      timeBound: timeBound.trim(),
       priority,
-      linkedTo,
+      status: 'NOT_STARTED',
+      deadline,
+      progress: 0,
+      relatedTo: {
+        type: relatedType,
+        description: getRelatedDescription(relatedType)
+      }
     })
 
     resetForm()
@@ -107,83 +190,103 @@ export function ActionPlan({
   }
 
   const handleUpdate = (id: string) => {
-    if (!title.trim()) return
-
-    onUpdateAction(id, {
+    onUpdateGoal(id, {
       title: title.trim(),
-      description: description.trim() || undefined,
-      deadline: deadline || undefined,
+      description: description.trim(),
+      specific: specific.trim(),
+      measurable: measurable.trim(),
+      achievable: achievable.trim(),
+      relevant: relevant.trim(),
+      timeBound: timeBound.trim(),
       priority,
-      linkedTo,
+      deadline,
+      relatedTo: {
+        type: relatedType,
+        description: getRelatedDescription(relatedType)
+      }
     })
 
     setEditingId(null)
     resetForm()
   }
 
-  const handleStatusChange = (id: string, newStatus: ActionItem['status']) => {
-    onUpdateAction(id, {
-      status: newStatus,
-      completedAt: newStatus === 'COMPLETED' ? new Date().toISOString() : undefined,
-    })
-  }
-
-  const resetForm = () => {
-    setTitle('')
-    setDescription('')
-    setDeadline('')
-    setPriority('MEDIUM')
-    setLinkedTo('OTHER')
-  }
-
-  const handleEdit = (action: ActionItem) => {
-    setEditingId(action.id)
-    setTitle(action.title)
-    setDescription(action.description || '')
-    setDeadline(action.deadline || '')
-    setPriority(action.priority)
-    setLinkedTo(action.linkedTo)
+  const handleEdit = (goal: SmartGoal) => {
+    setEditingId(goal.id)
+    setTitle(goal.title)
+    setDescription(goal.description)
+    setSpecific(goal.specific)
+    setMeasurable(goal.measurable)
+    setAchievable(goal.achievable)
+    setRelevant(goal.relevant)
+    setTimeBound(goal.timeBound)
+    setPriority(goal.priority)
+    setDeadline(goal.deadline)
+    setRelatedType(goal.relatedTo?.type || 'OTHER')
+    setExpandedId(goal.id)
   }
 
   const handleCancel = () => {
     setIsAdding(false)
     setEditingId(null)
+    setShowTemplates(false)
     resetForm()
   }
 
-  const sortedActions = [...actions].sort((a, b) => {
-    // Sort by status (pending first), then priority, then deadline
-    if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1
-    if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1
+  const applyTemplate = (template: typeof goalTemplates[0]) => {
+    setTitle(template.title)
+    setDescription(template.specific)
+    setSpecific(template.specific)
+    setMeasurable(template.measurable)
+    setAchievable(template.achievable)
+    setRelevant(template.relevant)
+    setTimeBound(template.timeBound)
+    setPriority(template.priority)
+    setRelatedType(template.relatedTo.type)
+    setShowTemplates(false)
     
-    const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 }
-    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-      return priorityOrder[a.priority] - priorityOrder[b.priority]
-    }
-    
-    if (a.deadline && b.deadline) {
-      return new Date(a.deadline).getTime() - new Date(b.deadline).getTime()
-    }
-    
-    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  })
-
-  const stats = {
-    total: actions.length,
-    completed: actions.filter(a => a.status === 'COMPLETED').length,
-    pending: actions.filter(a => a.status === 'PENDING').length,
-    inProgress: actions.filter(a => a.status === 'IN_PROGRESS').length,
-    overdue: actions.filter(a => 
-      a.deadline && 
-      new Date(a.deadline) < new Date() && 
-      a.status !== 'COMPLETED' && 
-      a.status !== 'CANCELLED'
-    ).length,
+    // Sätt deadline baserat på timeBound
+    const days = template.timeBound.includes('2 veckor') ? 14 : 
+                 template.timeBound.includes('1 vecka') ? 7 : 30
+    const date = new Date()
+    date.setDate(date.getDate() + days)
+    setDeadline(date.toISOString().split('T')[0])
   }
+
+  const getRelatedDescription = (type: string): string => {
+    const descriptions: Record<string, string> = {
+      CV: 'CV-byggaren',
+      INTEREST_GUIDE: 'Intresseguide',
+      JOB_SEARCH: 'Jobbsökning',
+      EDUCATION: 'Utbildning',
+      OTHER: 'Övrigt'
+    }
+    return descriptions[type] || 'Övrigt'
+  }
+
+  // Statistik
+  const stats = useMemo(() => {
+    const total = goals.length
+    const completed = goals.filter(g => g.status === 'COMPLETED').length
+    const inProgress = goals.filter(g => g.status === 'IN_PROGRESS').length
+    const blocked = goals.filter(g => g.status === 'BLOCKED').length
+    const highPriority = goals.filter(g => g.priority === 'HIGH' && g.status !== 'COMPLETED').length
+    return { total, completed, inProgress, blocked, highPriority }
+  }, [goals])
+
+  // Sortera mål: Först efter status (inte avklarade först), sedan efter prioritet
+  const sortedGoals = useMemo(() => {
+    return [...goals].sort((a, b) => {
+      if (a.status === 'COMPLETED' && b.status !== 'COMPLETED') return 1
+      if (a.status !== 'COMPLETED' && b.status === 'COMPLETED') return -1
+      
+      const priorityOrder = { HIGH: 0, MEDIUM: 1, LOW: 2 }
+      return priorityOrder[a.priority] - priorityOrder[b.priority]
+    })
+  }, [goals])
 
   return (
     <div className={cn('bg-white rounded-2xl shadow-sm border border-slate-200', className)}>
-      {/* Header */}
+      {/* Header med statistik */}
       <div className="p-6 border-b border-slate-100">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-3">
@@ -192,7 +295,7 @@ export function ActionPlan({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800">Handlingsplan</h3>
-              <p className="text-sm text-slate-500">{participantName}</p>
+              <p className="text-sm text-slate-500">SMARTA-mål för {participantName}</p>
             </div>
           </div>
           
@@ -202,99 +305,190 @@ export function ActionPlan({
             className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
           >
             <Plus className="w-4 h-4" />
-            <span>Ny aktivitet</span>
+            <span>Nytt mål</span>
           </button>
         </div>
 
-        {/* Stats */}
-        <div className="grid grid-cols-4 gap-4">
-          <div className="text-center p-3 bg-slate-50 rounded-xl">
-            <div className="text-2xl font-bold text-slate-700">{stats.total}</div>
-            <div className="text-xs text-slate-500">Totalt</div>
+        {/* Statistik-kort */}
+        <div className="grid grid-cols-4 gap-3">
+          <div className="bg-slate-50 rounded-xl p-3 text-center">
+            <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
+            <p className="text-xs text-slate-500">Totalt</p>
           </div>
-          <div className="text-center p-3 bg-green-50 rounded-xl">
-            <div className="text-2xl font-bold text-green-700">{stats.completed}</div>
-            <div className="text-xs text-green-600">Klara</div>
+          <div className="bg-emerald-50 rounded-xl p-3 text-center">
+            <p className="text-2xl font-bold text-emerald-600">{stats.completed}</p>
+            <p className="text-xs text-emerald-600">Avklarade</p>
           </div>
-          <div className="text-center p-3 bg-indigo-50 rounded-xl">
-            <div className="text-2xl font-bold text-indigo-700">{stats.inProgress}</div>
-            <div className="text-xs text-indigo-600">Pågår</div>
+          <div className="bg-blue-50 rounded-xl p-3 text-center">
+            <p className="text-2xl font-bold text-blue-600">{stats.inProgress}</p>
+            <p className="text-xs text-blue-600">Pågående</p>
           </div>
-          {stats.overdue > 0 && (
-            <div className="text-center p-3 bg-red-50 rounded-xl">
-              <div className="text-2xl font-bold text-red-700">{stats.overdue}</div>
-              <div className="text-xs text-red-600">Försenade</div>
-            </div>
-          )}
+          <div className="bg-rose-50 rounded-xl p-3 text-center">
+            <p className="text-2xl font-bold text-rose-600">{stats.highPriority}</p>
+            <p className="text-xs text-rose-600">Hög prio</p>
+          </div>
         </div>
       </div>
 
-      {/* Add/Edit Form */}
+      {/* Mallar */}
+      {showTemplates && (
+        <div className="p-4 bg-slate-50 border-b border-slate-100">
+          <div className="flex items-center justify-between mb-3">
+            <h4 className="font-medium text-slate-700 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              Välj en mall
+            </h4>
+            <button
+              onClick={() => setShowTemplates(false)}
+              className="text-sm text-slate-500 hover:text-slate-700"
+            >
+              Stäng
+            </button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {goalTemplates.map((template, i) => (
+              <button
+                key={i}
+                onClick={() => applyTemplate(template)}
+                className="text-left p-4 bg-white rounded-xl border border-slate-200 hover:border-indigo-300 hover:shadow-sm transition-all"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <span className={cn(
+                    'text-xs font-medium px-2 py-0.5 rounded-full',
+                    priorityConfig[template.priority].bg,
+                    priorityConfig[template.priority].color
+                  )}>
+                    {priorityConfig[template.priority].label}
+                  </span>
+                  <span className="text-xs text-slate-400">{template.timeBound}</span>
+                </div>
+                <p className="font-medium text-slate-800">{template.title}</p>
+                <p className="text-sm text-slate-500 mt-1">{template.specific}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Lägg till/Redigera formulär */}
       {(isAdding || editingId) && (
         <div className="p-6 bg-slate-50 border-b border-slate-100">
+          {!showTemplates && isAdding && (
+            <button
+              onClick={() => setShowTemplates(true)}
+              className="mb-4 text-sm text-indigo-600 hover:text-indigo-700 flex items-center gap-1"
+            >
+              <Sparkles className="w-4 h-4" />
+              Eller välj från mall
+            </button>
+          )}
+
           <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Titel</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Vad ska deltagaren göra?"
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">Beskrivning (valfritt)</label>
-              <textarea
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Mer information om aktiviteten..."
-                className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
-                rows={2}
-              />
-            </div>
-
-            <div className="grid grid-cols-3 gap-4">
+            {/* Titel och deadline */}
+            <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Prioritet</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Mål (Specifikt)
+                </label>
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="Vad ska uppnås?"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Deadline (Tidsbundet)
+                </label>
+                <input
+                  type="date"
+                  value={deadline}
+                  onChange={(e) => setDeadline(e.target.value)}
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+            </div>
+
+            {/* SMART-komponenter */}
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Mätbart - Hur vet vi att det är uppnått?
+                </label>
+                <input
+                  type="text"
+                  value={measurable}
+                  onChange={(e) => setMeasurable(e.target.value)}
+                  placeholder="Ex: Minst 5 sparade jobb, 80% komplett CV..."
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Genomförbart - Hur ska vi göra?
+                  </label>
+                  <input
+                    type="text"
+                    value={achievable}
+                    onChange={(e) => setAchievable(e.target.value)}
+                    placeholder="Ex: Genom att..."
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Relevant - Varför är det viktigt?
+                  </label>
+                  <input
+                    type="text"
+                    value={relevant}
+                    onChange={(e) => setRelevant(e.target.value)}
+                    placeholder="Ex: För att kunna..."
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Prioritet och koppling */}
+            <div className="flex gap-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Prioritet
+                </label>
                 <select
                   value={priority}
-                  onChange={(e) => setPriority(e.target.value as ActionItem['priority'])}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  onChange={(e) => setPriority(e.target.value as GoalPriority)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="HIGH">Hög</option>
                   <option value="MEDIUM">Medium</option>
                   <option value="LOW">Låg</option>
                 </select>
               </div>
-
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Deadline (valfritt)</label>
-                <input
-                  type="date"
-                  value={deadline}
-                  onChange={(e) => setDeadline(e.target.value)}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">Koppla till</label>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Kopplad till
+                </label>
                 <select
-                  value={linkedTo}
-                  onChange={(e) => setLinkedTo(e.target.value as ActionItem['linkedTo'])}
-                  className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  value={relatedType}
+                  onChange={(e) => setRelatedType(e.target.value as SmartGoal['relatedTo']['type'])}
+                  className="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="CV">CV</option>
                   <option value="INTEREST_GUIDE">Intresseguide</option>
                   <option value="JOB_SEARCH">Jobbsökning</option>
-                  <option value="COVER_LETTER">Personligt brev</option>
-                  <option value="OTHER">Annat</option>
+                  <option value="EDUCATION">Utbildning</option>
+                  <option value="OTHER">Övrigt</option>
                 </select>
               </div>
             </div>
 
+            {/* Actions */}
             <div className="flex justify-end gap-2">
               <button
                 onClick={handleCancel}
@@ -304,141 +498,175 @@ export function ActionPlan({
               </button>
               <button
                 onClick={() => editingId ? handleUpdate(editingId) : handleSubmit()}
-                disabled={!title.trim()}
+                disabled={!title.trim() || !deadline}
                 className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-50"
               >
                 <Save className="w-4 h-4" />
-                <span>{editingId ? 'Uppdatera' : 'Spara'}</span>
+                <span>{editingId ? 'Uppdatera' : 'Spara mål'}</span>
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Actions List */}
-      <div className="max-h-96 overflow-y-auto">
-        {actions.length === 0 ? (
+      {/* Mållista */}
+      <div className="max-h-[600px] overflow-y-auto">
+        {goals.length === 0 ? (
           <div className="p-8 text-center">
             <Target className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500">Inga aktiviteter ännu</p>
+            <p className="text-slate-500">Inga mål ännu</p>
             <p className="text-sm text-slate-400 mt-1">
-              Skapa en handlingsplan med delmål och deadlines
+              Skapa SMARTA-mål för att hjälpa deltagaren framåt
             </p>
           </div>
         ) : (
           <div className="divide-y divide-slate-100">
-            {sortedActions.map((action) => {
-              const isExpanded = expandedId === action.id
-              const isOverdue = action.deadline && 
-                new Date(action.deadline) < new Date() && 
-                action.status !== 'COMPLETED' && 
-                action.status !== 'CANCELLED'
-
+            {sortedGoals.map((goal) => {
+              const isExpanded = expandedId === goal.id
+              const priorityStyle = priorityConfig[goal.priority]
+              const statusStyle = statusConfig[goal.status]
+              const StatusIcon = statusStyle.icon
+              
               return (
                 <div
-                  key={action.id}
+                  key={goal.id}
                   className={cn(
-                    'p-4 hover:bg-slate-50 transition-colors',
-                    action.status === 'COMPLETED' && 'opacity-60'
+                    'p-4 transition-colors',
+                    goal.status === 'COMPLETED' && 'bg-emerald-50/50'
                   )}
                 >
                   <div className="flex items-start gap-3">
-                    {/* Status Checkbox */}
+                    {/* Checkbox för status */}
                     <button
-                      onClick={() => handleStatusChange(
-                        action.id,
-                        action.status === 'COMPLETED' ? 'PENDING' : 'COMPLETED'
-                      )}
+                      onClick={() => onUpdateGoal(goal.id, { 
+                        status: goal.status === 'COMPLETED' ? 'NOT_STARTED' : 'COMPLETED',
+                        progress: goal.status === 'COMPLETED' ? 0 : 100,
+                        completedAt: goal.status === 'COMPLETED' ? undefined : new Date().toISOString()
+                      })}
                       className={cn(
-                        'w-6 h-6 rounded-full border-2 flex items-center justify-center flex-shrink-0 mt-0.5 transition-colors',
-                        action.status === 'COMPLETED'
-                          ? 'bg-green-500 border-green-500'
+                        'w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 transition-colors',
+                        goal.status === 'COMPLETED'
+                          ? 'bg-emerald-500 border-emerald-500'
                           : 'border-slate-300 hover:border-indigo-400'
                       )}
                     >
-                      {action.status === 'COMPLETED' && (
-                        <Check className="w-4 h-4 text-white" />
+                      {goal.status === 'COMPLETED' && (
+                        <CheckCircle2 className="w-4 h-4 text-white" />
                       )}
                     </button>
 
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className={cn(
-                          'font-medium',
-                          action.status === 'COMPLETED' && 'line-through text-slate-500'
+                      {/* Header */}
+                      <div className="flex items-center gap-2 mb-1 flex-wrap">
+                        <h4 className={cn(
+                          'font-semibold text-slate-800',
+                          goal.status === 'COMPLETED' && 'line-through text-slate-500'
                         )}>
-                          {action.title}
+                          {goal.title}
+                        </h4>
+                        <span className={cn('text-xs font-medium px-2 py-0.5 rounded-full', priorityStyle.bg, priorityStyle.color)}>
+                          {priorityStyle.label}
                         </span>
-                        <span className={cn('text-xs px-2 py-0.5 rounded-full', priorityConfig[action.priority].color)}>
-                          {priorityConfig[action.priority].label}
+                        <span className={cn('text-xs flex items-center gap-1', statusStyle.color)}>
+                          <StatusIcon className="w-3 h-3" />
+                          {statusStyle.label}
                         </span>
-                        <span className={cn('text-xs px-2 py-0.5 rounded-full', statusConfig[action.status].color)}>
-                          {statusConfig[action.status].label}
+                        {goal.relatedTo && (
+                          <span className="text-xs text-slate-400 flex items-center gap-1">
+                            <LinkIcon className="w-3 h-3" />
+                            {goal.relatedTo.description}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Progress */}
+                      <div className="flex items-center gap-3 mb-2">
+                        <div className="flex-1 h-2 bg-slate-100 rounded-full max-w-[150px]">
+                          <div 
+                            className={cn(
+                              'h-full rounded-full transition-all',
+                              goal.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-indigo-500'
+                            )}
+                            style={{ width: `${goal.progress}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-slate-500">{goal.progress}%</span>
+                        <span className="text-xs text-slate-400">
+                          Deadline: {new Date(goal.deadline).toLocaleDateString('sv-SE')}
                         </span>
                       </div>
 
-                      {action.description && (
-                        <p className={cn(
-                          'text-sm text-slate-600 mt-1',
-                          !isExpanded && 'line-clamp-1'
-                        )}>
-                          {action.description}
-                        </p>
+                      {/* Expandable details */}
+                      {isExpanded && (
+                        <div className="mt-3 p-3 bg-slate-50 rounded-lg space-y-2 animate-in fade-in">
+                          <div>
+                            <span className="text-xs font-medium text-slate-500">Mätbart:</span>
+                            <p className="text-sm text-slate-700">{goal.measurable}</p>
+                          </div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <span className="text-xs font-medium text-slate-500">Genomförbart:</span>
+                              <p className="text-sm text-slate-700">{goal.achievable}</p>
+                            </div>
+                            <div>
+                              <span className="text-xs font-medium text-slate-500">Relevant:</span>
+                              <p className="text-sm text-slate-700">{goal.relevant}</p>
+                            </div>
+                          </div>
+                          
+                          {/* Progress update */}
+                          {goal.status !== 'COMPLETED' && (
+                            <div className="pt-2 border-t border-slate-200">
+                              <label className="text-xs font-medium text-slate-500 block mb-1">
+                                Uppdatera framsteg:
+                              </label>
+                              <input
+                                type="range"
+                                min="0"
+                                max="100"
+                                value={goal.progress}
+                                onChange={(e) => onUpdateGoal(goal.id, { 
+                                  progress: parseInt(e.target.value),
+                                  status: parseInt(e.target.value) === 100 ? 'COMPLETED' : 
+                                          parseInt(e.target.value) > 0 ? 'IN_PROGRESS' : 'NOT_STARTED'
+                                })}
+                                className="w-full"
+                              />
+                            </div>
+                          )}
+                        </div>
                       )}
 
-                      <div className="flex items-center gap-4 mt-2 text-sm">
-                        {action.deadline && (
-                          <span className={cn(
-                            'flex items-center gap-1',
-                            isOverdue ? 'text-red-600' : 'text-slate-500'
-                          )}>
-                            <Calendar className="w-4 h-4" />
-                            {isOverdue ? 'Försenad: ' : ''}
-                            {new Date(action.deadline).toLocaleDateString('sv-SE')}
-                          </span>
+                      {/* Expand button */}
+                      <button
+                        onClick={() => setExpandedId(isExpanded ? null : goal.id)}
+                        className="text-sm text-indigo-600 hover:text-indigo-700 mt-1 flex items-center gap-1"
+                      >
+                        {isExpanded ? (
+                          <>
+                            <ChevronUp className="w-4 h-4" />
+                            Visa mindre
+                          </>
+                        ) : (
+                          <>
+                            <ChevronDown className="w-4 h-4" />
+                            Visa SMARTA-kriterier
+                          </>
                         )}
-                        
-                        {action.linkedTo && linkConfig[action.linkedTo] && (
-                          <span className="flex items-center gap-1 text-slate-500">
-                            <Flag className="w-4 h-4" />
-                            {linkConfig[action.linkedTo].label}
-                          </span>
-                        )}
-
-                        {action.status === 'COMPLETED' && action.completedAt && (
-                          <span className="flex items-center gap-1 text-green-600">
-                            <Check className="w-4 h-4" />
-                            Klar: {new Date(action.completedAt).toLocaleDateString('sv-SE')}
-                          </span>
-                        )}
-                      </div>
+                      </button>
                     </div>
 
                     {/* Actions */}
                     <div className="flex items-center gap-1">
-                      {action.status !== 'COMPLETED' && (
-                        <button
-                          onClick={() => handleStatusChange(action.id, 'IN_PROGRESS')}
-                          className={cn(
-                            'p-1.5 rounded-lg transition-colors',
-                            action.status === 'IN_PROGRESS'
-                              ? 'bg-indigo-100 text-indigo-600'
-                              : 'text-slate-400 hover:text-indigo-600 hover:bg-indigo-50'
-                          )}
-                          title="Markera som pågående"
-                        >
-                          <Clock className="w-4 h-4" />
-                        </button>
-                      )}
                       <button
-                        onClick={() => handleEdit(action)}
+                        onClick={() => handleEdit(goal)}
                         className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                         title="Redigera"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
-                        onClick={() => onDeleteAction(action.id)}
+                        onClick={() => onDeleteGoal(goal.id)}
                         className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Ta bort"
                       >

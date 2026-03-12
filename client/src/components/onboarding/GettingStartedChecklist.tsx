@@ -1,6 +1,11 @@
 /**
  * Getting Started Checklist Component
  * Shows progress for new users and guides them through first steps
+ * Förbättrad med:
+ * - Mikrobelöningar och firande
+ * - Kontextuell hjälp och "Varför"-beskrivningar
+ * - Kollapsade klara steg
+ * - Mindre skuldbeläggande design
  */
 
 import { useState, useEffect } from 'react'
@@ -18,24 +23,30 @@ import {
   ChevronRight,
   ChevronDown,
   Trophy,
-  X
+  X,
+  User,
+  Compass,
+  HelpCircle
 } from 'lucide-react'
 
 interface ChecklistItem {
   id: string
   label: string
   description: string
+  whyItHelps: string
   icon: typeof Target
   path: string
   checkComplete: () => boolean
 }
 
+// Förbättrade checklist-items med "Varför det hjälper dig"
 const checklistItems: ChecklistItem[] = [
   {
     id: 'onboarding',
     label: 'Välj din väg',
-    description: 'Välj vad du vill fokusera på först',
-    icon: Target,
+    description: 'Berätta vad du vill fokusera på först – vi anpassar efter dig',
+    whyItHelps: 'Att välja fokus hjälper oss visa dig rätt innehåll i rätt ordning',
+    icon: Compass,
     path: '/dashboard',
     checkComplete: () => {
       const settings = localStorage.getItem('deltagarportal-settings')
@@ -50,58 +61,88 @@ const checklistItems: ChecklistItem[] = [
   },
   {
     id: 'profile',
-    label: 'Komplett profil',
-    description: 'Fyll i dina grunduppgifter',
-    icon: FileText,
+    label: 'Berätta om dig själv',
+    description: 'Fyll i dina kontaktuppgifter så arbetsgivare kan nå dig',
+    whyItHelps: 'Ett komplett CV ökar dina chanser att bli kallad till intervju med 40%',
+    icon: User,
     path: '/profile',
     checkComplete: () => {
       // Check if user has filled in basic profile info
-      // This would typically check against actual user data
-      return false
+      const profile = localStorage.getItem('profile-data')
+      if (!profile) return false
+      try {
+        const parsed = JSON.parse(profile)
+        return parsed.firstName && parsed.email
+      } catch {
+        return false
+      }
     },
   },
   {
     id: 'interest',
-    label: 'Gör intresseguiden',
-    description: 'Upptäck vad som passar dig',
+    label: 'Upptäck dina styrkor',
+    description: 'Gör vår intresseguide och se vilka yrken som passar dig',
+    whyItHelps: 'Att förstå dina intressen hjälper dig hitta ett jobb där du trivs',
     icon: Sparkles,
     path: '/dashboard/interest-guide',
     checkComplete: () => {
-      // Check if interest guide is completed
-      return false
+      const interest = localStorage.getItem('interest-result')
+      return !!interest
     },
   },
   {
     id: 'cv',
-    label: 'Skapa ditt CV',
-    description: 'Bygg ett CV som sticker ut',
+    label: 'Bygg ditt CV',
+    description: 'Skapa ett CV som visar vem du är och vad du kan',
+    whyItHelps: 'Ett välskrivet CV är din biljett till intervjuer',
     icon: FileText,
     path: '/dashboard/cv',
     checkComplete: () => {
-      // Check if CV has content
-      return false
+      const cv = localStorage.getItem('cv-data')
+      if (!cv) return false
+      try {
+        const parsed = JSON.parse(cv)
+        // Consider complete if at least personal info + one section exists
+        return parsed.firstName && (parsed.workExperience?.length > 0 || parsed.skills?.length > 0)
+      } catch {
+        return false
+      }
     },
   },
   {
     id: 'job',
-    label: 'Spara första jobbet',
-    description: 'Hitta och spara ett jobb du gillar',
+    label: 'Hitta ditt första jobb',
+    description: 'Spara ett jobb som verkar intressant – du behöver inte söka än!',
+    whyItHelps: 'Att spara jobb hjälper dig bygga en lista över möjligheter',
     icon: Briefcase,
     path: '/dashboard/job-search',
     checkComplete: () => {
-      // Check if any jobs are saved
-      return false
+      const savedJobs = localStorage.getItem('saved-jobs')
+      if (!savedJobs) return false
+      try {
+        const parsed = JSON.parse(savedJobs)
+        return Array.isArray(parsed) && parsed.length > 0
+      } catch {
+        return false
+      }
     },
   },
   {
     id: 'diary',
-    label: 'Skriv i dagboken',
-    description: 'Reflektera över din resa',
+    label: 'Börja din dagbok',
+    description: 'Reflektera över din resa – det är viktigt att fira framstegen',
+    whyItHelps: 'Att reflektera hjälper dig se hur långt du kommit och vad som fungerar',
     icon: BookHeart,
     path: '/dashboard/diary',
     checkComplete: () => {
-      // Check if diary has entries
-      return false
+      const diary = localStorage.getItem('diary-entries')
+      if (!diary) return false
+      try {
+        const parsed = JSON.parse(diary)
+        return Array.isArray(parsed) && parsed.length > 0
+      } catch {
+        return false
+      }
     },
   },
 ]
@@ -117,6 +158,8 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
   const { hasCompletedOnboarding } = useSettingsStore()
   const [completedItems, setCompletedItems] = useState<Set<string>>(new Set())
   const [isDismissed, setIsDismissed] = useState(false)
+  const [showCompleted, setShowCompleted] = useState(false)
+  const [recentlyCompleted, setRecentlyCompleted] = useState<string | null>(null)
 
   useEffect(() => {
     // Check which items are completed
@@ -135,6 +178,24 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
     setCompletedItems(completed)
   }, [hasCompletedOnboarding])
 
+  // Check for newly completed items to show celebration
+  useEffect(() => {
+    const checkForNewCompletions = () => {
+      const newlyCompleted = checklistItems.find(item => {
+        const isNowComplete = item.checkComplete()
+        const wasComplete = completedItems.has(item.id)
+        return isNowComplete && !wasComplete
+      })
+      
+      if (newlyCompleted) {
+        setRecentlyCompleted(newlyCompleted.id)
+        setTimeout(() => setRecentlyCompleted(null), 3000)
+      }
+    }
+    
+    checkForNewCompletions()
+  }, [completedItems])
+
   const handleItemClick = (item: ChecklistItem) => {
     navigate(item.path)
   }
@@ -142,7 +203,6 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
   const handleDismiss = (e?: React.MouseEvent) => {
     e?.stopPropagation()
     setIsDismissed(true)
-    // Save dismissal to localStorage
     localStorage.setItem('getting-started-dismissed', 'true')
   }
 
@@ -150,7 +210,6 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
   useEffect(() => {
     const dismissed = localStorage.getItem('getting-started-dismissed')
     if (dismissed === 'true') {
-      // Only show if not all items are completed
       const allCompleted = checklistItems.every(item => {
         if (item.id === 'onboarding') return hasCompletedOnboarding
         return item.checkComplete()
@@ -167,23 +226,35 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
 
   const progress = (completedItems.size / checklistItems.length) * 100
   const isComplete = completedItems.size === checklistItems.length
+  
+  // Separera klara och icke-klara steg
+  const incompleteItems = checklistItems.filter(item => !completedItems.has(item.id))
+  const completedItemsList = checklistItems.filter(item => completedItems.has(item.id))
+  
+  // Hitta nästa steg att fokusera på
+  const nextItem = incompleteItems[0]
 
   if (isComplete) {
     return (
-      <div className={cn('bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl shadow-sm border border-green-200 p-6', className)}>
+      <div className={cn(
+        'bg-gradient-to-r from-emerald-50 via-teal-50 to-cyan-50 rounded-2xl shadow-sm border border-emerald-200 p-6 animate-in fade-in slide-in-from-bottom-4',
+        className
+      )}>
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
-            <Trophy className="w-7 h-7 text-green-600" />
+          <div className="w-14 h-14 rounded-full bg-emerald-100 flex items-center justify-center animate-bounce">
+            <Trophy className="w-7 h-7 text-emerald-600" />
           </div>
           <div className="flex-1">
-            <h3 className="font-bold text-green-800 text-lg">Grattis! 🎉</h3>
-            <p className="text-green-700">
-              Du har kommit igång med alla grundsteg. Du är redo att söka jobb!
+            <h3 className="font-bold text-emerald-800 text-lg">Du är igång! 🎉</h3>
+            <p className="text-emerald-700">
+              Du har lagt en stark grund för din jobbsökarresa. 
+              Kom ihåg: varje steg räknas, oavsett hur litet det känns.
             </p>
           </div>
           <button
             onClick={handleDismiss}
-            className="p-2 text-green-600 hover:bg-green-100 rounded-lg transition-colors"
+            className="p-2 text-emerald-600 hover:bg-emerald-100 rounded-lg transition-colors"
+            aria-label="Stäng meddelande"
           >
             <X className="w-5 h-5" />
           </button>
@@ -197,20 +268,20 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
       {/* Collapsible Header */}
       <button 
         onClick={onToggle}
-        className="w-full p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-slate-100 text-left hover:from-indigo-100 hover:to-purple-100 transition-colors"
+        className="w-full p-6 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-slate-100 text-left hover:from-indigo-100 hover:to-purple-100 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
       >
         <div className="flex items-center justify-between">
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
-              <Sparkles className="w-5 h-5 text-indigo-500" />
-              <h3 className="font-bold text-slate-800">Kom igång</h3>
-              <span className="text-xs font-medium text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">
+              <Sparkles className="w-5 h-5 text-indigo-500" aria-hidden="true" />
+              <h3 className="font-bold text-slate-800 text-lg">Kom igång</h3>
+              <span className="text-xs font-medium text-indigo-600 bg-indigo-100 px-2.5 py-0.5 rounded-full">
                 {completedItems.size}/{checklistItems.length}
               </span>
             </div>
             <p className="text-sm text-slate-600">
               {expanded 
-                ? 'Följ dessa steg för att komma igång med din jobbsökarresa'
+                ? 'Följ dessa steg för att komma igång med din jobbsökarresa. Ta den tid du behöver!'
                 : `${completedItems.size} av ${checklistItems.length} steg klara - klicka för att visa`
               }
             </p>
@@ -219,7 +290,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
             <button
               onClick={handleDismiss}
               className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              title="Dölj checklistan"
+              title="Dölj checklistan (visas igen om inte allt är klart)"
             >
               <X className="w-4 h-4" />
             </button>
@@ -228,97 +299,153 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
                 'w-5 h-5 text-slate-400 transition-transform duration-200',
                 expanded && 'rotate-180'
               )} 
+              aria-hidden="true"
             />
           </div>
         </div>
 
         {/* Progress Bar - Always visible */}
         <div className="mt-4">
-          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div className="flex items-center justify-between text-xs mb-1.5">
+            <span className="text-slate-500 font-medium">Din framsteg</span>
+            <span className="text-indigo-600 font-semibold">{Math.round(progress)}%</span>
+          </div>
+          <div className="h-2.5 bg-slate-200 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 rounded-full"
               style={{ width: `${progress}%` }}
+              role="progressbar"
+              aria-valuenow={Math.round(progress)}
+              aria-valuemin={0}
+              aria-valuemax={100}
             />
           </div>
         </div>
       </button>
 
       {/* Collapsible Content */}
-      {expanded && (<>
-
-      {/* Checklist Items */}
-      <div className="p-4 space-y-2">
-        {checklistItems.map((item, index) => {
-          const Icon = item.icon
-          const isCompleted = completedItems.has(item.id)
-          const isPreviousCompleted = index === 0 || completedItems.has(checklistItems[index - 1].id)
-
-          return (
-            <button
-              key={item.id}
-              onClick={() => handleItemClick(item)}
-              disabled={!isPreviousCompleted && !isCompleted}
-              className={cn(
-                'w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-200 text-left',
-                isCompleted
-                  ? 'bg-green-50 border-green-200 opacity-70'
-                  : isPreviousCompleted
-                    ? 'bg-white border-slate-200 hover:border-indigo-300 hover:shadow-sm'
-                    : 'bg-slate-50 border-slate-100 opacity-50 cursor-not-allowed'
-              )}
-            >
-              {/* Status Icon */}
-              <div
-                className={cn(
-                  'w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 transition-colors',
-                  isCompleted
-                    ? 'bg-green-500 text-white'
-                    : isPreviousCompleted
-                      ? 'bg-indigo-100 text-indigo-600'
-                      : 'bg-slate-200 text-slate-400'
-                )}
+      {expanded && (
+        <>
+          {/* Nästa steg - Huvudfokus */}
+          {nextItem && (
+            <div className="px-4 pt-4">
+              <div className="flex items-center gap-2 mb-3">
+                <Target className="w-4 h-4 text-indigo-500" />
+                <span className="text-sm font-semibold text-slate-700">Nästa steg:</span>
+              </div>
+              <button
+                onClick={() => handleItemClick(nextItem)}
+                className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-indigo-200 bg-indigo-50 hover:bg-indigo-100 hover:border-indigo-300 transition-all text-left group animate-in fade-in"
               >
-                {isCompleted ? (
-                  <Check className="w-5 h-5" />
-                ) : (
-                  <Icon className="w-5 h-5" />
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className={cn(
-                  'font-medium',
-                  isCompleted ? 'text-green-800 line-through' : 'text-slate-800'
-                )}>
-                  {item.label}
+                <div className="w-12 h-12 rounded-full bg-indigo-500 text-white flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                  <nextItem.icon className="w-6 h-6" />
                 </div>
-                <div className="text-sm text-slate-500">{item.description}</div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-slate-800 text-base">{nextItem.label}</div>
+                  <div className="text-sm text-slate-600 mt-0.5">{nextItem.description}</div>
+                  <div className="flex items-center gap-1 mt-2 text-xs text-indigo-600">
+                    <HelpCircle className="w-3 h-3" />
+                    <span>{nextItem.whyItHelps}</span>
+                  </div>
+                </div>
+                <ChevronRight className="w-5 h-5 text-indigo-400 group-hover:text-indigo-600 group-hover:translate-x-0.5 transition-all" />
+              </button>
+            </div>
+          )}
+
+          {/* Övriga ej klara steg */}
+          {incompleteItems.length > 1 && (
+            <div className="px-4 pt-3">
+              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-2">
+                Kommande steg
+              </p>
+              <div className="space-y-2">
+                {incompleteItems.slice(1).map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <button
+                      key={item.id}
+                      onClick={() => handleItemClick(item)}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-200 hover:bg-slate-50 transition-all text-left group opacity-75 hover:opacity-100"
+                    >
+                      <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center shrink-0 group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                        <Icon className="w-5 h-5" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium text-slate-700 text-sm">{item.label}</div>
+                        <div className="text-xs text-slate-500 truncate">{item.description}</div>
+                      </div>
+                    </button>
+                  )
+                })}
               </div>
+            </div>
+          )}
 
-              {/* Arrow */}
-              {!isCompleted && isPreviousCompleted && (
-                <ChevronRight className="w-5 h-5 text-slate-300" />
+          {/* Klara steg - Kollapsad sektion */}
+          {completedItemsList.length > 0 && (
+            <div className="px-4 py-3">
+              <button
+                onClick={() => setShowCompleted(!showCompleted)}
+                className="flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+              >
+                <Check className="w-4 h-4 text-emerald-500" />
+                <span>{completedItemsList.length} steg klara</span>
+                <ChevronDown 
+                  className={cn(
+                    'w-4 h-4 transition-transform',
+                    showCompleted && 'rotate-180'
+                  )} 
+                />
+              </button>
+              
+              {showCompleted && (
+                <div className="mt-3 space-y-2 animate-in fade-in">
+                  {completedItemsList.map((item) => {
+                    const Icon = item.icon
+                    const isRecent = recentlyCompleted === item.id
+                    
+                    return (
+                      <div
+                        key={item.id}
+                        className={cn(
+                          'flex items-center gap-3 p-3 rounded-xl border-2 bg-emerald-50/50 border-emerald-100',
+                          isRecent && 'ring-2 ring-emerald-400 animate-pulse'
+                        )}
+                      >
+                        <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                          <Check className="w-5 h-5" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium text-emerald-800 text-sm">{item.label}</div>
+                          {isRecent && (
+                            <div className="text-xs text-emerald-600 mt-0.5 animate-in fade-in">
+                              ✨ Bra jobbat! Ett steg närmare målet
+                            </div>
+                          )}
+                        </div>
+                        {isRecent && (
+                          <span className="text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-0.5 rounded-full">
+                            Nyss klar!
+                          </span>
+                        )}
+                      </div>
+                    )
+                  })}
+                </div>
               )}
+            </div>
+          )}
 
-              {/* Step Number */}
-              {isCompleted && (
-                <span className="text-xs font-medium text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
-                  Klar!
-                </span>
-              )}
-            </button>
-          )
-        })}
-      </div>
-
-      {/* Footer */}
-      <div className="px-6 py-4 bg-slate-50 border-t border-slate-100 text-center">
-        <p className="text-sm text-slate-500">
-          Du kan alltid hitta denna lista igen under "Hjälp" i menyn
-        </p>
-      </div>
-      </>)}
+          {/* Footer med uppmuntran */}
+          <div className="px-6 py-4 bg-slate-50 border-t border-slate-100">
+            <p className="text-sm text-slate-500 text-center">
+              💡 <span className="font-medium">Tips:</span> Det är okej att hoppa över steg eller göra dem i en annan ordning. 
+              Gör det som känns rätt för dig.
+            </p>
+          </div>
+        </>
+      )}
     </div>
   )
 }
