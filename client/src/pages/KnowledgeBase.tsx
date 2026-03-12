@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import {
   Sparkles,
   Rocket,
@@ -93,16 +93,18 @@ const mockUserProfile = {
 
 export default function KnowledgeBase() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams] = useSearchParams()
   const { data: articles, isLoading } = useArticles()
   const { data: bookmarks = [] } = useBookmarks()
   const [energyLevel] = useEnergyLevel()
   
-  // Determine active tab from URL
-  const currentPath = window.location.pathname
-  const activeTab = tabs.find(t => currentPath.startsWith(t.path)) || tabs[0]
+  // Determine active tab from URL - use location.pathname from React Router
+  const currentPath = location.pathname
+  const activeTab = tabs.find(t => currentPath === t.path || currentPath.startsWith(t.path + '/')) || tabs[0]
   
   const handleTabClick = (tab: typeof tabs[0]) => {
+    console.log('Tab clicked:', tab.id, 'navigating to:', tab.path)
     navigate(tab.path)
   }
   

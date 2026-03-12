@@ -3,7 +3,7 @@
  * Accessible, WCAG 2.1 AA compliant article card
  */
 
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { ChevronRight, Bookmark, Star, Tag, Dumbbell, Clock } from 'lucide-react'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
@@ -37,6 +37,7 @@ export default function EnhancedArticleCard({
   index,
   total,
 }: EnhancedArticleCardProps) {
+  const navigate = useNavigate()
   const tags = article.tags 
     ? Array.isArray(article.tags) 
       ? article.tags.slice(0, 3) 
@@ -53,12 +54,19 @@ export default function EnhancedArticleCard({
     index !== undefined && total !== undefined && `Artikel ${index + 1} av ${total}`,
   ].filter(Boolean).join('. ')
 
+  const handleClick = () => {
+    if (onClick) {
+      onClick()
+    } else {
+      navigate(`/knowledge-base/article/${article.id}`)
+    }
+  }
+
   if (variant === 'compact') {
     return (
-      <Link
-        to={`/knowledge-base/article/${article.id}`}
-        onClick={onClick}
-        className="group flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+      <button
+        onClick={handleClick}
+        className="group flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 w-full text-left"
         aria-label={ariaLabel}
       >
         <div className="flex-1 min-w-0">
@@ -72,16 +80,15 @@ export default function EnhancedArticleCard({
           </div>
         </div>
         <ChevronRight size={16} className="text-slate-300 group-hover:text-teal-500" />
-      </Link>
+      </button>
     )
   }
 
   if (variant === 'featured') {
     return (
-      <Link
-        to={`/knowledge-base/article/${article.id}`}
-        onClick={onClick}
-        className="group block bg-gradient-to-br from-teal-50 to-blue-50 rounded-xl p-6 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+      <button
+        onClick={handleClick}
+        className="group block bg-gradient-to-br from-teal-50 to-blue-50 rounded-xl p-6 hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 w-full text-left"
         aria-label={ariaLabel}
       >
         <div className="flex items-start justify-between gap-4">
@@ -109,15 +116,14 @@ export default function EnhancedArticleCard({
           </div>
           <ChevronRight size={24} className="text-slate-300 group-hover:text-teal-500 mt-1 shrink-0" />
         </div>
-      </Link>
+      </button>
     )
   }
 
   return (
-    <Link
-      to={`/knowledge-base/article/${article.id}`}
-      onClick={onClick}
-      className="group block card hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+    <button
+      onClick={handleClick}
+      className="group block card hover:shadow-md transition-all focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2 w-full text-left"
       aria-label={ariaLabel}
       role="article"
       aria-posinset={index ? index + 1 : undefined}
@@ -208,6 +214,6 @@ export default function EnhancedArticleCard({
         
         <ChevronRight size={20} className="text-slate-300 group-hover:text-teal-500 mt-1 shrink-0" />
       </div>
-    </Link>
+    </button>
   )
 }
