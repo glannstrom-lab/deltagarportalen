@@ -1,6 +1,13 @@
 /**
  * Link component that works with hash-based routing
- * Use this instead of react-router-dom's Link for internal navigation
+ * 
+ * IMPORTANT: With HashRouter, all links should be WITHOUT /dashboard prefix!
+ * HashRouter uses URL format: https://example.com/#/path
+ * Not: https://example.com/dashboard/#/path
+ * 
+ * So links should be:
+ * - to="/cv" (NOT to="/dashboard/cv")
+ * - to="/profile" (NOT to="/dashboard/profile")
  */
 
 import { Link as RouterLink, LinkProps } from 'react-router-dom'
@@ -13,11 +20,10 @@ interface AppLinkProps extends Omit<LinkProps, 'to'> {
 }
 
 /**
- * Link component that handles hash-based routing correctly
- * Converts regular paths to hash-based paths
+ * Link component for HashRouter navigation
+ * All links should start with / but NOT include /dashboard
  */
 export function Link({ to, children, className, ...props }: AppLinkProps) {
-  // For internal links, use RouterLink as-is (it handles hash routing)
   return (
     <RouterLink to={to} className={className} {...props}>
       {children}
@@ -26,54 +32,56 @@ export function Link({ to, children, className, ...props }: AppLinkProps) {
 }
 
 /**
- * Utility to create correct paths
- * All paths should start with /dashboard/ for protected routes
+ * Utility to create correct paths for HashRouter
+ * All paths should start with / but NOT include /dashboard
  */
 export function createPath(path: string): string {
-  // Remove leading hash if present
-  const cleanPath = path.replace(/^#/, '')
-  
-  // Ensure path starts with /
-  if (!cleanPath.startsWith('/')) {
-    return '/' + cleanPath
+  // Remove /dashboard/ prefix if present (legacy fix)
+  if (path.startsWith('/dashboard/')) {
+    return path.replace('/dashboard/', '/')
   }
   
-  return cleanPath
+  // Ensure path starts with /
+  if (!path.startsWith('/')) {
+    return '/' + path
+  }
+  
+  return path
 }
 
-// Common paths used throughout the app
+// Common paths used throughout the app (HashRouter format - NO /dashboard prefix)
 export const paths = {
-  dashboard: '/dashboard',
-  cv: '/dashboard/cv',
-  cvWithId: (id: string) => `/dashboard/cv?id=${id}`,
-  coverLetter: '/dashboard/cover-letter',
+  dashboard: '/',
+  cv: '/cv',
+  cvWithId: (id: string) => `/cv?id=${id}`,
+  coverLetter: '/cover-letter',
   coverLetterWithParams: (params: { jobId?: string; company?: string; title?: string; desc?: string }) => {
     const searchParams = new URLSearchParams()
     if (params.jobId) searchParams.set('jobId', params.jobId)
     if (params.company) searchParams.set('company', params.company)
     if (params.title) searchParams.set('title', params.title)
     if (params.desc) searchParams.set('desc', params.desc)
-    return `/dashboard/cover-letter?${searchParams.toString()}`
+    return `/cover-letter?${searchParams.toString()}`
   },
-  jobSearch: '/dashboard/job-search',
-  jobSearchWithQuery: (query: string) => `/dashboard/job-search?query=${encodeURIComponent(query)}`,
-  knowledgeBase: '/dashboard/knowledge-base',
-  knowledgeBaseWithTab: (tab: string) => `/dashboard/knowledge-base?tab=${tab}`,
-  article: (id: string) => `/dashboard/knowledge-base/article/${id}`,
-  interestGuide: '/dashboard/interest-guide',
-  exercises: '/dashboard/exercises',
-  profile: '/dashboard/profile',
-  profileWithId: (id: string) => `/dashboard/profile/${id}`,
-  diary: '/dashboard/diary',
-  wellness: '/dashboard/wellness',
-  resources: '/dashboard/resources',
-  help: '/dashboard/help',
-  settings: '/dashboard/settings',
-  consultant: '/dashboard/consultant',
-  admin: '/dashboard/admin',
+  jobSearch: '/job-search',
+  jobSearchWithQuery: (query: string) => `/job-search?query=${encodeURIComponent(query)}`,
+  knowledgeBase: '/knowledge-base',
+  knowledgeBaseWithTab: (tab: string) => `/knowledge-base?tab=${tab}`,
+  article: (id: string) => `/knowledge-base/article/${id}`,
+  interestGuide: '/interest-guide',
+  exercises: '/exercises',
+  profile: '/profile',
+  profileWithId: (id: string) => `/profile/${id}`,
+  diary: '/diary',
+  wellness: '/wellness',
+  resources: '/resources',
+  help: '/help',
+  settings: '/settings',
+  consultant: '/consultant',
+  admin: '/admin',
   // Legacy redirects
-  jobs: '/dashboard/job-search',
-  applications: '/dashboard/job-tracker',
+  jobs: '/job-search',
+  applications: '/job-tracker',
 } as const
 
 export default Link

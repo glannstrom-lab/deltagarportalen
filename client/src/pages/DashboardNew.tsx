@@ -225,7 +225,7 @@ export default function DashboardNew() {
           title="Mitt CV"
           icon={FileText}
           color="violet"
-          to="/dashboard/cv"
+          to="/cv"
           statusText={widgetData.cv.exists 
             ? `CV-score: ${widgetData.cv.progress}/100` 
             : 'Inget CV skapat än'}
@@ -244,7 +244,7 @@ export default function DashboardNew() {
           title="Intresseguide"
           icon={Compass}
           color="teal"
-          to="/dashboard/interest-guide"
+          to="/interest-guide"
           statusText={widgetData.interestGuide.hasResult
             ? `${widgetData.interestGuide.matches} yrken matchar`
             : 'Hitta yrken som passar dig'}
@@ -293,7 +293,7 @@ export default function DashboardNew() {
           title="Personliga brev"
           icon={Mail}
           color="emerald"
-          to="/dashboard/cover-letter"
+          to="/cover-letter"
           statusText={widgetData.coverLetters.count > 0
             ? `${widgetData.coverLetters.count} sparade brev`
             : 'Skapa personliga brev'}
@@ -310,7 +310,7 @@ export default function DashboardNew() {
           title="Kunskapsbank"
           icon={BookOpen}
           color="amber"
-          to="/dashboard/knowledge-base"
+          to="/knowledge-base"
           statusText={widgetData.knowledgeBase.articlesRead > 0
             ? `${widgetData.knowledgeBase.articlesRead} artiklar lästa`
             : 'Artiklar och guider'}
@@ -326,7 +326,7 @@ export default function DashboardNew() {
           title="Karriärvägar"
           icon={TrendingUp}
           color="pink"
-          to="/dashboard/career"
+          to="/career"
           statusText="Utforska yrken och löner"
           statusDescription="Se utbildningsvägar och karriärmöjligheter"
           ctaText="Utforska"
@@ -337,7 +337,7 @@ export default function DashboardNew() {
           title="Kalender"
           icon={Calendar}
           color="purple"
-          to="/dashboard/diary"
+          to="/diary"
           statusText="Schema och påminnelser"
           statusDescription="Håll koll på möten och deadlines"
           ctaText="Öppna kalender"
@@ -348,7 +348,7 @@ export default function DashboardNew() {
           title="Välmående"
           icon={Heart}
           color="rose"
-          to="/dashboard/wellness"
+          to="/wellness"
           statusText={widgetData.wellness.streakDays > 0
             ? `${widgetData.wellness.streakDays} dagar i rad!`
             : 'Hur mår du idag?'}
@@ -364,7 +364,7 @@ export default function DashboardNew() {
           title="Övningar"
           icon={Dumbbell}
           color="mint"
-          to="/dashboard/exercises"
+          to="/exercises"
           statusText={`${widgetData.exercises.completedThisWeek}/${widgetData.exercises.weeklyGoal} övningar denna vecka`}
           statusDescription={widgetData.exercises.completedThisWeek >= widgetData.exercises.weeklyGoal
             ? 'Bra jobbat! Veckans mål uppnått'

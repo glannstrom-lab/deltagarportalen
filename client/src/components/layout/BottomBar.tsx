@@ -428,7 +428,7 @@ export function BottomBar() {
             <div className="flex items-center gap-4">
               {/* CV-poäng */}
               <Link 
-                to="/dashboard/cv" 
+                to="/cv" 
                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors group"
               >
                 <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center transition-colors", getScoreBg(stats.cvScore))}>

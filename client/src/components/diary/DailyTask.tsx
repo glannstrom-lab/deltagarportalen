@@ -19,7 +19,7 @@ const dailyTasks: Task[] = [
     description: 'Reflektera över din dag och dina framsteg',
     type: 'diary',
     estimatedTime: '5 min',
-    link: '/dashboard/diary'
+    link: '/diary'
   },
   {
     id: 'exercise-1',
@@ -27,7 +27,7 @@ const dailyTasks: Task[] = [
     description: 'Utforska dina styrkor eller öva på intervjuteknik',
     type: 'exercise',
     estimatedTime: '15 min',
-    link: '/dashboard/exercises'
+    link: '/exercises'
   },
   {
     id: 'cv-1',
@@ -35,7 +35,7 @@ const dailyTasks: Task[] = [
     description: 'Lägg till en ny erfarenhet eller färdighet',
     type: 'cv',
     estimatedTime: '10 min',
-    link: '/dashboard/cv'
+    link: '/cv'
   },
   {
     id: 'jobsearch-1',
@@ -43,7 +43,7 @@ const dailyTasks: Task[] = [
     description: 'Utforska nya möjligheter som matchar din profil',
     type: 'jobsearch',
     estimatedTime: '15 min',
-    link: '/dashboard/job-search'
+    link: '/job-search'
   },
   {
     id: 'networking-1',
@@ -51,7 +51,7 @@ const dailyTasks: Task[] = [
     description: 'Kontakta någon i ditt nätverk eller utöka det',
     type: 'networking',
     estimatedTime: '10 min',
-    link: '/dashboard/career'
+    link: '/career'
   },
   {
     id: 'reflection-1',
@@ -59,7 +59,7 @@ const dailyTasks: Task[] = [
     description: 'Vad är viktigast för dig just nu?',
     type: 'reflection',
     estimatedTime: '5 min',
-    link: '/dashboard/exercises'
+    link: '/exercises'
   }
 ]
 

@@ -93,7 +93,7 @@ function KnowledgeWidgetSmall({
     <DashboardWidget
       title="Kunskapsbank"
       icon={<Library size={20} />}
-      to="/dashboard/knowledge-base"
+      to="/knowledge-base"
       color="amber"
       status={status}
       progress={readCount > 0 ? 100 : 0}
@@ -168,7 +168,7 @@ function KnowledgeWidgetMedium({
     <DashboardWidget
       title="Kunskapsbank"
       icon={<Library size={22} />}
-      to="/dashboard/knowledge-base"
+      to="/knowledge-base"
       color="amber"
       status={status}
       progress={readCount > 0 ? 100 : 0}
@@ -359,7 +359,7 @@ function KnowledgeWidgetLarge({
     <DashboardWidget
       title="Kunskapsbank"
       icon={<Library size={24} />}
-      to="/dashboard/knowledge-base"
+      to="/knowledge-base"
       color="amber"
       status={status}
       progress={readCount > 0 ? 100 : 0}

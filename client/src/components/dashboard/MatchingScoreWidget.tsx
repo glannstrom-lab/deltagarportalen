@@ -167,7 +167,7 @@ export default function MatchingScoreWidget() {
           Se matchande jobb
         </Link>
         <Link
-          to="/dashboard/career"
+          to="/career"
           className="flex-1 flex items-center justify-center gap-2 py-2.5 border border-slate-200 text-slate-700 rounded-xl text-sm font-medium hover:bg-slate-50 transition-colors"
         >
           <TrendingUp size={16} />

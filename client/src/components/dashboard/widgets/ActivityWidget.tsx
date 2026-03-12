@@ -35,7 +35,7 @@ export const ActivityWidget = memo(function ActivityWidget({
     <DashboardWidget
       title="Din aktivitet"
       icon={<TrendingUp size={20} />}
-      to="/dashboard/diary"
+      to="/diary"
       color="rose"
       status={status}
       progress={Math.min(100, (weeklyApplications / 5) * 100)} // 5 ansökningar = 100%

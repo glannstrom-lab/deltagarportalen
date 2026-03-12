@@ -715,7 +715,7 @@ export default function CareerCoach() {
               )}
             </button>
             <a
-              href="/dashboard/job-search"
+              href="/job-search"
               className="flex-1 py-3 bg-white border-2 border-slate-300 text-slate-700 rounded-xl font-medium hover:bg-slate-50 transition-colors text-center"
             >
               Sök jobb

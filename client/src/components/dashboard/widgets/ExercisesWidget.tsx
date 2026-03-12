@@ -89,7 +89,7 @@ function ExercisesWidgetSmall({
     <DashboardWidget
       title="Övningar"
       icon={<Dumbbell size={20} />}
-      to="/dashboard/exercises"
+      to="/exercises"
       color="green"
       status={status}
       progress={Math.min(100, (completedCount / 5) * 100)}
@@ -176,7 +176,7 @@ function ExercisesWidgetMedium({
     <DashboardWidget
       title="Övningar"
       icon={<Dumbbell size={22} />}
-      to="/dashboard/exercises"
+      to="/exercises"
       color="green"
       status={status}
       progress={progress}
@@ -337,7 +337,7 @@ function ExercisesWidgetLarge({
     <DashboardWidget
       title="Övningar"
       icon={<Dumbbell size={24} />}
-      to="/dashboard/exercises"
+      to="/exercises"
       color="green"
       status={status}
       progress={progress}

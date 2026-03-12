@@ -186,7 +186,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
                 <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
                 <span>
                   Du verkar ha hög stressnivå. Kom ihåg att ta pauser och vila. 
-                  Besök gärna <a href="/dashboard/wellness" className="underline">Välmående-sidan</a> för tips.
+                  Besök gärna <a href="/wellness" className="underline">Välmående-sidan</a> för tips.
                 </span>
               </p>
             </div>

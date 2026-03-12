@@ -143,7 +143,7 @@ export default function Article() {
             : `Ogiltigt ID-format: "${id}"`
           }
         </p>
-        <Link to="/dashboard/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
+        <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
           Tillbaka till kunskapsbanken
         </Link>
       </div>
@@ -157,7 +157,7 @@ export default function Article() {
         <p className="text-slate-400 text-sm mt-1 mb-4">
           ID: {id}
         </p>
-        <Link to="/dashboard/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
+        <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
           Tillbaka till kunskapsbanken
         </Link>
       </div>
@@ -499,7 +499,7 @@ export default function Article() {
               Vi finns här för dig!
             </p>
             <Link 
-              to="/dashboard/diary"
+              to="/diary"
               className="inline-flex items-center gap-2 text-teal-700 font-medium hover:underline"
             >
               Boka ett möte

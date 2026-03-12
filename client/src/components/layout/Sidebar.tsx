@@ -123,7 +123,7 @@ export function Sidebar() {
           'flex items-center h-14 border-b border-white/10',
           isExpanded ? 'px-3 justify-between' : 'px-3 justify-center'
         )}>
-          <Link to="/dashboard" className="flex items-center gap-2.5 group">
+          <Link to="/" className="flex items-center gap-2.5 group">
             <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-md transition-transform duration-150 group-hover:scale-105">
               <Sparkles className="w-4 h-4 text-indigo-600" />
             </div>
@@ -145,7 +145,7 @@ export function Sidebar() {
 
         {/* User Profile */}
         <Link
-          to="/dashboard/profile"
+          to="/profile"
           className={cn(
             'group relative flex items-center border-b border-white/10 transition-all',
             isExpanded
@@ -249,7 +249,7 @@ export function Sidebar() {
         !isExpanded && 'space-y-0.5'
       )}>
         <NavItem
-          to="/dashboard/settings"
+          to="/settings"
           icon={Settings}
           label="Inställningar"
           isActive={location.pathname === '/settings'}

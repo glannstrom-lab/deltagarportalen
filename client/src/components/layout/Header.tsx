@@ -7,7 +7,7 @@ export function Header() {
 
   return (
     <header className="h-16 bg-white border-b border-slate-100 px-8 flex items-center justify-end">
-      <Link to="/dashboard/profile" className="flex items-center gap-3">
+      <Link to="/profile" className="flex items-center gap-3">
         <div className="text-right hidden sm:block">
           <p className="text-sm font-medium text-slate-900">
             {user?.firstName} {user?.lastName}

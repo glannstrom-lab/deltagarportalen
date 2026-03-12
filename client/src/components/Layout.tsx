@@ -17,16 +17,16 @@ import { useAuthStore } from '@/stores/authStore'
 
 // Mobila navigeringsitems - synkade med Sidebar navigation.ts
 const mobileNavItems = [
-  { to: '/dashboard', label: 'Översikt', icon: LayoutDashboard },
-  { to: '/dashboard/cv', label: 'CV', icon: FileText },
-  { to: '/dashboard/cover-letter', label: 'Personligt brev', icon: Mail },
-  { to: '/dashboard/job-search', label: 'Sök jobb', icon: Briefcase },
-  { to: '/dashboard/career', label: 'Karriär', icon: Target },
-  { to: '/dashboard/interest-guide', label: 'Intresseguide', icon: Compass },
-  { to: '/dashboard/exercises', label: 'Övningar', icon: Dumbbell },
-  { to: '/dashboard/diary', label: 'Hälsa', icon: Heart },
-  { to: '/dashboard/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
-  { to: '/dashboard/resources', label: 'Resurser', icon: Bookmark },
+  { to: '/', label: 'Översikt', icon: LayoutDashboard },
+  { to: '/cv', label: 'CV', icon: FileText },
+  { to: '/cover-letter', label: 'Personligt brev', icon: Mail },
+  { to: '/job-search', label: 'Sök jobb', icon: Briefcase },
+  { to: '/career', label: 'Karriär', icon: Target },
+  { to: '/interest-guide', label: 'Intresseguide', icon: Compass },
+  { to: '/exercises', label: 'Övningar', icon: Dumbbell },
+  { to: '/diary', label: 'Hälsa', icon: Heart },
+  { to: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
+  { to: '/resources', label: 'Resurser', icon: Bookmark },
 ]
 
 export default function Layout() {
@@ -204,7 +204,7 @@ function MobileTopBar() {
         {/* Footer i meny - Inställningar synkad med Sidebar */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom space-y-1">
           <Link
-            to="/dashboard/settings"
+            to="/settings"
             onClick={() => setIsMenuOpen(false)}
             className={cn(
               'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
@@ -261,14 +261,14 @@ function MobileTopBar() {
           
           <nav className="space-y-1">
             <Link
-              to="/dashboard/profile"
+              to="/profile"
               onClick={() => setIsProfileOpen(false)}
               className="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
             >
               Min profil
             </Link>
             <Link
-              to="/dashboard/settings"
+              to="/settings"
               onClick={() => setIsProfileOpen(false)}
               className="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors"
             >

@@ -106,7 +106,7 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
     <DashboardWidget
       title="Brev & ansökningar"
       icon={<Mail size={18} className="text-rose-600" />}
-      to="/dashboard/cover-letter"
+      to="/cover-letter"
       color="rose"
       status={status}
       progress={totalActivity > 0 ? 100 : 0}
@@ -179,7 +179,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
     <DashboardWidget
       title="Personliga brev & ansökningar"
       icon={<Mail size={20} className="text-rose-600" />}
-      to="/dashboard/cover-letter"
+      to="/cover-letter"
       color="rose"
       status={status}
       progress={count > 0 || applicationsCount > 0 ? 100 : 0}
@@ -317,7 +317,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
     <DashboardWidget
       title="Personliga brev & ansökningar"
       icon={<Mail size={22} className="text-rose-600" />}
-      to="/dashboard/cover-letter"
+      to="/cover-letter"
       color="rose"
       status={status}
       progress={count > 0 || applicationsCount > 0 ? 100 : 0}

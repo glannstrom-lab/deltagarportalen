@@ -768,7 +768,7 @@ export default function Exercises() {
                   {relatedArticles.map((article) => (
                     <Link
                       key={article.id}
-                      to={`/dashboard/knowledge-base/article/${article.id}`}
+                      to={`/knowledge-base/article/${article.id}`}
                       className="block p-3 bg-white rounded-lg hover:shadow-sm transition-shadow border border-teal-100"
                     >
                       <h4 className="font-medium text-slate-800 text-sm">{article.title}</h4>
@@ -777,7 +777,7 @@ export default function Exercises() {
                   ))}
                 </div>
                 <Link
-                  to="/dashboard/knowledge-base"
+                  to="/knowledge-base"
                   className="inline-flex items-center gap-1 text-sm text-teal-700 hover:text-teal-800 mt-3 font-medium"
                 >
                   Se alla artiklar

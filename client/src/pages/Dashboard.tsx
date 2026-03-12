@@ -253,7 +253,7 @@ function DesktopDashboard() {
               title="Komplett profil"
               description="Fyll i dina grunduppgifter"
               done={hasCompletedOnboarding}
-              href="/dashboard/profile"
+              href="/profile"
             />
             <GuideStep 
               number={2}
@@ -261,7 +261,7 @@ function DesktopDashboard() {
               title="Bygg ditt CV"
               description="Samla dina erfarenheter på ett ställe"
               done={data?.cv.progress ? data.cv.progress > 50 : false}
-              href="/dashboard/cv"
+              href="/cv"
             />
             <GuideStep 
               number={3}
@@ -269,7 +269,7 @@ function DesktopDashboard() {
               title="Upptäck intressen"
               description="Se vilka yrken som kan passa dig"
               done={data?.interest.hasResult ?? false}
-              href="/dashboard/interest-guide"
+              href="/interest-guide"
             />
             <GuideStep 
               number={4}
@@ -277,7 +277,7 @@ function DesktopDashboard() {
               title="Utforska jobb"
               description="Hitta lediga jobb att spara"
               done={(data?.jobs.savedCount ?? 0) > 0}
-              href="/dashboard/job-search"
+              href="/job-search"
             />
             <GuideStep 
               number={5}
@@ -285,7 +285,7 @@ function DesktopDashboard() {
               title="Dagboken"
               description="Skriv ner dina tankar när du vill (valfritt)"
               done={false}
-              href="/dashboard/diary"
+              href="/diary"
               optional
             />
           </div>
