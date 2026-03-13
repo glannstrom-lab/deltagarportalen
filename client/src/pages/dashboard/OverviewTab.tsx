@@ -55,14 +55,10 @@ export default function OverviewTab() {
 
   const loadSavedWidgets = (): WidgetType[] => {
     try {
-      const saved = localStorage.getItem('dashboard-visible-widgets')
+      const saved = localStorage.getItem('dashboard-visible-widgets-v2')
       if (saved) {
         const parsed = JSON.parse(saved) as WidgetType[]
-        // Behåll sparade widgets som fortfarande är giltiga
-        const validWidgets = parsed.filter(w => allWidgets.includes(w))
-        // Lägg till nya widgets som inte finns i sparad lista
-        const newWidgets = allWidgets.filter(w => !parsed.includes(w))
-        return [...validWidgets, ...newWidgets]
+        return parsed.filter(w => allWidgets.includes(w))
       }
     } catch {
       // Ignorera fel
@@ -74,7 +70,7 @@ export default function OverviewTab() {
   const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(defaultWidgetSizes)
 
   useEffect(() => {
-    localStorage.setItem('dashboard-visible-widgets', JSON.stringify(visibleWidgets))
+    localStorage.setItem('dashboard-visible-widgets-v2', JSON.stringify(visibleWidgets))
   }, [visibleWidgets])
 
   const handleToggleWidget = useCallback((widgetId: WidgetType) => {

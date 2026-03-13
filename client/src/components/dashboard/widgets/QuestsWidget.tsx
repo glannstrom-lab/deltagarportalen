@@ -44,7 +44,6 @@ function QuestsWidgetSmall({
   error, 
   onRetry 
 }: Omit<QuestsWidgetProps, 'size' | 'quests'>) {
-  console.log('QuestsWidgetSmall render:', { completedQuests, totalQuests, streakDays })
   const getStatus = (): WidgetStatus => {
     if (completedQuests === 0) return 'empty'
     if (completedQuests === totalQuests) return 'complete'
