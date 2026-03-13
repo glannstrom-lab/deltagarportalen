@@ -76,6 +76,23 @@ export function CoverLetterWrite() {
     achievement: '',
   })
 
+  // Ladda jobbdata från query params (när man kommer från jobbsidan)
+  useEffect(() => {
+    const jobId = searchParams.get('jobId')
+    const company = searchParams.get('company')
+    const title = searchParams.get('title')
+    const desc = searchParams.get('desc')
+
+    if (jobId || company || title) {
+      setFormData(prev => ({
+        ...prev,
+        company: company ? decodeURIComponent(company) : prev.company,
+        jobTitle: title ? decodeURIComponent(title) : prev.jobTitle,
+        jobAd: desc ? decodeURIComponent(desc) : prev.jobAd,
+      }))
+    }
+  }, [searchParams])
+
   useEffect(() => {
     if (editId) {
       // TODO: Ladda befintligt brev
@@ -278,6 +295,9 @@ function Step1JobInfo({
   formData: any
   setFormData: (data: any) => void 
 }) {
+  const [searchParams] = useSearchParams()
+  const hasJobData = searchParams.get('jobId') || searchParams.get('company') || searchParams.get('title')
+
   return (
     <div className="space-y-6">
       <div>
@@ -288,6 +308,21 @@ function Step1JobInfo({
           Ju mer information du ger, desto bättre kan vi hjälpa dig att skräddarsy brevet.
         </p>
       </div>
+
+      {/* Visa info om jobbdata har hämtats automatiskt */}
+      {hasJobData && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
+          <div className="flex items-start gap-3">
+            <Building2 className="w-5 h-5 text-emerald-600 mt-0.5" />
+            <div>
+              <h4 className="font-medium text-emerald-800">Jobbdata hämtad automatiskt</h4>
+              <p className="text-sm text-emerald-700 mt-1">
+                Vi har fyllt i information från jobbannonsen. Kontrollera och justera vid behov.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="grid gap-4">
         <div>

@@ -145,6 +145,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       prompt += `MÅLYRKE: ${targetRole}\n\n`;
     }
 
+    const jobRequirements = payload.jobRequirements;
     if (jobRequirements) {
       prompt += `JOBBKRAV:\n`;
       prompt += `Titel: ${jobRequirements.title}\n`;
