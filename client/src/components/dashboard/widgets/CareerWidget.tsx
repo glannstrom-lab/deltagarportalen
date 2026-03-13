@@ -1,5 +1,6 @@
 import { memo } from 'react'
-import { Route, Briefcase, Target, Sparkles } from 'lucide-react'
+import { Route, Briefcase, Target, Sparkles, Users, Accessibility, Building2, ChevronRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
@@ -123,7 +124,7 @@ function CareerWidgetMedium({
   )
 }
 
-// LARGE - Fullständig överblick
+// LARGE - Fullständig överblick med nya tabs
 function CareerWidgetLarge({ 
   exploredCount = 0, 
   savedPaths = [], 
@@ -139,6 +140,13 @@ function CareerWidgetLarge({
   }
 
   const status = getStatus()
+
+  // Nya career tabs som snabblänkar
+  const careerTabs = [
+    { id: 'network', label: 'Nätverk', icon: Users, path: '/career/network', color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
+    { id: 'adaptation', label: 'Anpassning', icon: Accessibility, path: '/career/adaptation', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+    { id: 'companies', label: 'Företag', icon: Building2, path: '/career/companies', color: 'text-blue-600 bg-blue-50 border-blue-200' },
+  ]
 
   return (
     <DashboardWidget
@@ -188,6 +196,23 @@ function CareerWidgetLarge({
             </div>
           </div>
         )}
+
+        {/* Snabblänkar till nya career tabs */}
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-slate-700">Karriärverktyg:</p>
+          <div className="grid grid-cols-3 gap-2">
+            {careerTabs.map((tab) => (
+              <Link
+                key={tab.id}
+                to={tab.path}
+                className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all hover:shadow-sm ${tab.color}`}
+              >
+                <tab.icon size={18} />
+                <span className="text-xs font-medium">{tab.label}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
 
         {exploredCount === 0 && (
           <div className="p-4 bg-indigo-50 rounded-xl border border-indigo-100">

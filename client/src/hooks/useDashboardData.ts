@@ -29,6 +29,8 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     cvVersions,
     exerciseAnswers,
     calendarEvents,
+    quests,
+    userStreaks,
   ] = await Promise.all([
     cvApi.getCV().catch(() => null),
     cvApi.getATSAnalysis().catch(() => null),
@@ -40,6 +42,8 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     cvApi.getVersions().catch(() => []),
     fetchExerciseProgress(),
     fetchCalendarEvents(),
+    fetchQuests(),
+    fetchUserStreaks(),
   ])
 
   // Beräkna CV-progress
@@ -154,7 +158,18 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     },
     activity: {
       weeklyApplications: applicationCount,
-      streakDays,
+      streakDays: userStreaks?.current_streak || streakDays,
+    },
+    quests: {
+      total: quests.length || 3,
+      completed: quests.filter((q: any) => q.is_completed).length,
+      items: quests.map((q: any) => ({
+        id: q.id,
+        title: q.title,
+        completed: q.is_completed,
+        points: q.points,
+        category: q.category,
+      })),
     },
   }
 }
@@ -170,7 +185,11 @@ async function fetchExerciseProgress() {
       .select('*')
       .eq('user_id', user.id)
     
-    if (error) throw error
+    if (error) {
+      // Table might not exist yet, return empty array
+      console.warn('Exercise answers not available:', error.message)
+      return []
+    }
     return data || []
   } catch {
     return []
@@ -188,10 +207,60 @@ async function fetchCalendarEvents() {
       .select('*')
       .eq('user_id', user.id)
     
-    if (error) throw error
+    if (error) {
+      // Table might not exist yet, return empty array
+      console.warn('Calendar events not available:', error.message)
+      return []
+    }
     return data || []
   } catch {
     return []
+  }
+}
+
+// Hämta quests från Supabase
+async function fetchQuests() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+    
+    const { data, error } = await supabase
+      .from('quests')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('assigned_date', new Date().toISOString().split('T')[0])
+    
+    if (error) {
+      // Table might not exist yet, return empty array
+      console.warn('Quests not available:', error.message)
+      return []
+    }
+    return data || []
+  } catch {
+    return []
+  }
+}
+
+// Hämta user streaks från Supabase
+async function fetchUserStreaks() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+    
+    const { data, error } = await supabase
+      .from('user_streaks')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('streak_type', 'general')
+      .maybeSingle()
+    
+    if (error) {
+      console.warn('User streaks not available:', error.message)
+      return null
+    }
+    return data
+  } catch {
+    return null
   }
 }
 

@@ -14,12 +14,14 @@ import {
   CVWidget,
   CoverLetterWidget,
   JobSearchWidget,
+  ApplicationsWidget,
   CareerWidget,
   InterestWidget,
   ExercisesWidget,
   DiaryWidget,
   KnowledgeWidget,
   WellnessWidget,
+  QuestsWidget,
 } from '@/components/dashboard'
 import { PageLayout } from '@/components/layout/index'
 import { cn } from '@/lib/utils'
@@ -31,16 +33,18 @@ const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   cv: 'small',
   coverLetter: 'small',
   jobSearch: 'small',
+  applications: 'small',
   career: 'small',
   interests: 'small',
   exercises: 'small',
   diary: 'small',
   wellness: 'small',
   knowledge: 'small',
+  quests: 'small',
 }
 
 const allWidgets: WidgetType[] = [
-  'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge',
+  'cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge', 'quests',
 ]
 
 const defaultVisibleWidgets: WidgetType[] = allWidgets
@@ -54,7 +58,11 @@ export default function OverviewTab() {
       const saved = localStorage.getItem('dashboard-visible-widgets')
       if (saved) {
         const parsed = JSON.parse(saved) as WidgetType[]
-        return parsed.filter(w => allWidgets.includes(w))
+        // Behåll sparade widgets som fortfarande är giltiga
+        const validWidgets = parsed.filter(w => allWidgets.includes(w))
+        // Lägg till nya widgets som inte finns i sparad lista
+        const newWidgets = allWidgets.filter(w => !parsed.includes(w))
+        return [...validWidgets, ...newWidgets]
       }
     } catch {
       // Ignorera fel
@@ -257,6 +265,29 @@ export default function OverviewTab() {
               savedCount={0}
               totalArticles={0}
               size={widgetSizes['knowledge']}
+            />
+          )}
+
+        {widgetsToShow.includes('applications') &&
+          renderWidget(
+            'applications',
+            <ApplicationsWidget
+              total={data?.applications.total ?? 0}
+              statusBreakdown={data?.applications.statusBreakdown}
+              nextFollowUp={data?.applications.nextFollowUp}
+              size={widgetSizes['applications']}
+            />
+          )}
+
+        {widgetsToShow.includes('quests') &&
+          renderWidget(
+            'quests',
+            <QuestsWidget
+              completedQuests={data?.quests.completed ?? 0}
+              totalQuests={data?.quests.total ?? 3}
+              quests={data?.quests.items}
+              streakDays={data?.activity.streakDays ?? 0}
+              size={widgetSizes['quests']}
             />
           )}
       </DashboardGrid>

@@ -14,8 +14,10 @@ import {
   Heart,
   PlayCircle,
   ChevronRight,
-  Library
+  Library,
+  Star,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
@@ -379,6 +381,21 @@ function KnowledgeWidgetLarge({
             </div>
           </div>
         </div>
+
+        {/* Success Stories link */}
+        <Link 
+          to="/knowledge-base/stories"
+          className="flex items-center gap-3 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl border border-amber-100 hover:border-amber-200 hover:shadow-sm transition-all group"
+        >
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
+            <Star size={20} className="text-amber-500" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="font-medium text-amber-900">Framgångsberättelser</p>
+            <p className="text-sm text-amber-700">Läs om andra som hittat sitt drömjobb</p>
+          </div>
+          <ChevronRight size={16} className="text-amber-400 group-hover:text-amber-600 transition-colors" />
+        </Link>
 
         {/* Reading progress */}
         {readCount > 0 && (

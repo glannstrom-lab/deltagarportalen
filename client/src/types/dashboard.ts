@@ -129,6 +129,19 @@ export interface DashboardWidgetData {
       category: string
     } | null
   }
+  
+  // Quests (dagliga uppdrag)
+  quests: {
+    total: number
+    completed: number
+    items: {
+      id: string
+      title: string
+      completed: boolean
+      points: number
+      category: string
+    }[]
+  }
 }
 
 export interface WidgetStat {

@@ -1,5 +1,6 @@
 import { memo } from 'react'
-import { Sparkles, Sun, Moon, Brain, Heart, Activity } from 'lucide-react'
+import { Sparkles, Sun, Moon, Brain, Heart, Activity, Zap, Calendar, AlertCircle, ChevronRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
@@ -156,7 +157,7 @@ function WellnessWidgetMedium({
   )
 }
 
-// LARGE - Full översikt
+// LARGE - Full översikt med nya tabs
 function WellnessWidgetLarge({ 
   completedActivities = 0, 
   streakDays = 0,
@@ -172,10 +173,12 @@ function WellnessWidgetLarge({
 
   const status = getStatus()
 
-  const wellnessActivities = [
-    { id: '1', title: 'Mindfulness', completed: false, icon: Brain },
-    { id: '2', title: 'Rörelse', completed: false, icon: Activity },
-    { id: '3', title: 'Sömn', completed: false, icon: Moon },
+  // Nya wellness tabs som snabblänkar
+  const wellnessTabs = [
+    { id: 'energy', label: 'Energi', icon: Zap, path: '/wellness/energy', color: 'text-yellow-600 bg-yellow-50 border-yellow-200' },
+    { id: 'routines', label: 'Rutiner', icon: Calendar, path: '/wellness/routines', color: 'text-blue-600 bg-blue-50 border-blue-200' },
+    { id: 'cognitive', label: 'Kognitiv', icon: Brain, path: '/wellness/cognitive', color: 'text-purple-600 bg-purple-50 border-purple-200' },
+    { id: 'crisis', label: 'Akut stöd', icon: AlertCircle, path: '/wellness/crisis', color: 'text-red-600 bg-red-50 border-red-200' },
   ]
 
   return (
@@ -224,18 +227,20 @@ function WellnessWidgetLarge({
           </div>
         )}
 
-        {/* Activity suggestions */}
+        {/* Snabblänkar till nya wellness tabs */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-700">Förslag för idag:</p>
-          <div className="grid grid-cols-3 gap-2">
-            {wellnessActivities.map((activity) => (
-              <div 
-                key={activity.id}
-                className="flex flex-col items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-200 hover:border-emerald-200 hover:bg-emerald-50 transition-colors cursor-pointer"
+          <p className="text-sm font-medium text-slate-700">Verktyg för välmående:</p>
+          <div className="grid grid-cols-2 gap-2">
+            {wellnessTabs.map((tab) => (
+              <Link
+                key={tab.id}
+                to={tab.path}
+                className={`flex items-center gap-2 p-3 rounded-xl border transition-all hover:shadow-sm ${tab.color}`}
               >
-                <activity.icon size={20} className="text-emerald-500" />
-                <span className="text-xs font-medium text-slate-600">{activity.title}</span>
-              </div>
+                <tab.icon size={18} />
+                <span className="text-sm font-medium flex-1">{tab.label}</span>
+                <ChevronRight size={14} className="opacity-50" />
+              </Link>
             ))}
           </div>
         </div>
