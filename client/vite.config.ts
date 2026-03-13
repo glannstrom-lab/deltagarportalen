@@ -46,9 +46,21 @@ export default defineConfig(({ mode }) => ({
       output: {
         // Manual chunk splitting for better caching
         manualChunks: {
-          // Vendor chunks - only include packages we know exist
+          // Core vendor chunks - most stable
           'vendor-react': ['react', 'react-dom'],
           'vendor-router': ['react-router-dom'],
+          
+          // Data fetching and state management
+          'vendor-data': ['zustand'],
+          
+          // Backend integration - split to reduce main bundle
+          'vendor-supabase': ['@supabase/supabase-js'],
+          
+          // Form validation
+          'vendor-forms': ['zod'],
+          
+          // PDF generation - heavy, only needed for CV/PB pages
+          'vendor-pdf': ['jspdf', 'html2canvas'],
         },
         // Asset naming for better caching
         assetFileNames: (assetInfo) => {
@@ -90,11 +102,9 @@ export default defineConfig(({ mode }) => ({
       'react',
       'react-dom',
       'react-router-dom',
-      '@tanstack/react-query',
       '@supabase/supabase-js',
       'zod',
-      'react-hook-form',
-      '@hookform/resolvers',
+      'zustand',
     ],
   },
 }))

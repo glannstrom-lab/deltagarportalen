@@ -1,161 +1,189 @@
 /**
- * Security utilities for input sanitization and XSS prevention
+ * Security utilities for input sanitization and validation
+ * Protects against XSS, injection attacks, and other security vulnerabilities
  */
 
-/**
- * Sanitize user input to prevent XSS attacks
- * Removes potentially dangerous HTML tags and attributes
- */
-export function sanitizeInput(input: string): string {
-  if (!input || typeof input !== 'string') return ''
+// XSS Sanitization - removes potentially dangerous HTML
+type StringOrObject = string | object | null | undefined;
+
+export function sanitizeInput(input: StringOrObject): string {
+  if (input === null || input === undefined) return '';
   
-  return input
-    // Remove script tags and their contents
+  const str = typeof input === 'object' ? JSON.stringify(input) : String(input);
+  
+  return str
+    // Remove script tags and their content
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
     // Remove event handlers
-    .replace(/\s*on\w+\s*=\s*["']?[^"']*["']?/gi, '')
-    // Remove potentially dangerous tags
-    .replace(/<\s*(iframe|object|embed|form|input|textarea|button)[^>]*>/gi, '')
+    .replace(/\s*on\w+\s*=\s*["']?[^"'>]*["']?/gi, '')
     // Remove javascript: protocols
     .replace(/javascript:/gi, '')
-    // Remove data: URIs (can contain JavaScript)
+    // Remove data: URLs (can contain JavaScript)
     .replace(/data:[^;]*;base64,/gi, '')
-    // Escape remaining < and > to prevent HTML injection
+    // Escape HTML entities
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
 }
 
-/**
- * Sanitize HTML content while allowing safe tags
- * Use for rich text that needs to preserve formatting
- */
-export function sanitizeHtml(input: string): string {
-  if (!input || typeof input !== 'string') return ''
+// Sanitize HTML but allow safe tags (for rich text content)
+const ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li'];
+const ALLOWED_ATTRIBUTES: Record<string, string[]> = {
+  'a': ['href', 'title', 'target'],
+};
+
+export function sanitizeHTML(html: string): string {
+  if (!html) return '';
   
-  // List of allowed tags
-  const allowedTags = ['b', 'i', 'em', 'strong', 'p', 'br', 'ul', 'ol', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6']
+  // Create a temporary div to parse HTML
+  const temp = document.createElement('div');
+  temp.innerHTML = html;
   
-  // First pass: remove script tags completely
-  let sanitized = input.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+  // Remove all script and style tags
+  const scripts = temp.querySelectorAll('script, style, iframe, object, embed');
+  scripts.forEach(el => el.remove());
   
-  // Second pass: remove event handlers from all tags
-  sanitized = sanitized.replace(/\s*on\w+\s*=\s*["'][^"']*["']/gi, '')
-  
-  // Third pass: remove javascript: and data: protocols
-  sanitized = sanitized.replace(/(javascript|data):/gi, '')
-  
-  // Fourth pass: only allow specific safe tags
-  const tagRegex = /<\/?([a-z][a-z0-9]*)[^>]*>/gi
-  sanitized = sanitized.replace(tagRegex, (match, tag) => {
-    const lowerTag = tag.toLowerCase()
-    if (allowedTags.includes(lowerTag)) {
-      // For allowed tags, still remove any attributes except specific safe ones
-      if (lowerTag === 'a') {
-        // Allow href but sanitize it
-        const hrefMatch = match.match(/href="([^"]*)"/i)
-        if (hrefMatch) {
-          const href = hrefMatch[1]
-          // Only allow http/https links
-          if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('/') || href.startsWith('#')) {
-            return `<a href="${href}" target="_blank" rel="noopener noreferrer">`
-          }
+  // Process all elements
+  const allElements = temp.querySelectorAll('*');
+  allElements.forEach(el => {
+    const tagName = el.tagName.toLowerCase();
+    
+    // Remove disallowed tags but keep their content
+    if (!ALLOWED_TAGS.includes(tagName) && tagName !== 'a') {
+      const parent = el.parentNode;
+      if (parent) {
+        while (el.firstChild) {
+          parent.insertBefore(el.firstChild, el);
         }
-        return '<a>'
+        parent.removeChild(el);
       }
-      // Self-closing tags
-      if (match.endsWith('/>')) {
-        return `<${lowerTag} />`
+    } else {
+      // Remove disallowed attributes
+      const attributes = Array.from(el.attributes);
+      attributes.forEach(attr => {
+        const allowed = ALLOWED_ATTRIBUTES[tagName] || [];
+        if (!allowed.includes(attr.name.toLowerCase())) {
+          el.removeAttribute(attr.name);
+        }
+      });
+      
+      // Sanitize href attributes
+      if (tagName === 'a' && el.hasAttribute('href')) {
+        const href = el.getAttribute('href') || '';
+        if (href.startsWith('javascript:') || href.startsWith('data:')) {
+          el.removeAttribute('href');
+        }
+        // Add rel="noopener noreferrer" for external links
+        if (href.startsWith('http') && !href.includes(window.location.hostname)) {
+          el.setAttribute('rel', 'noopener noreferrer');
+          el.setAttribute('target', '_blank');
+        }
       }
-      return match.replace(/\s+\w+\s*=\s*["'][^"']*["']/g, '')
     }
-    // Remove disallowed tags but keep content
-    return ''
-  })
+  });
   
-  return sanitized
+  return temp.innerHTML;
 }
 
-/**
- * Validate and sanitize email address
- */
-export function sanitizeEmail(email: string): string {
-  if (!email || typeof email !== 'string') return ''
+// Validate email format
+export function isValidEmail(email: string): boolean {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
+
+// Validate Swedish personal number (YYMMDD-XXXX or YYYYMMDD-XXXX)
+export function isValidPersonalNumber(pnr: string): boolean {
+  const pnrRegex = /^(\d{2})?(\d{6})-?(\d{4})$/;
+  return pnrRegex.test(pnr);
+}
+
+// Validate phone number (Swedish format)
+export function isValidPhoneNumber(phone: string): boolean {
+  const phoneRegex = /^(\+46|0)[\s\-]?[\d\s\-]{7,12}$/;
+  return phoneRegex.test(phone);
+}
+
+// Prevent SQL injection patterns
+export function containsSQLInjection(input: string): boolean {
+  const sqlPatterns = [
+    /(\%27)|(\')|(\-\-)|(\%23)|(#)/i,
+    /((\%3D)|(=))[^\n]*((\%27)|(\')|(\-\-)|(\%3B)|(;))/i,
+    /\w*((\%27)|(\'))((\%6F)|o|(\%4F))((\%72)|r|(\%52))/i,
+    /((\%27)|(\'))union/i,
+    /exec(\s|\+)+(s|x)p\w+/i,
+    /UNION\s+SELECT/i,
+    /INSERT\s+INTO/i,
+    /DELETE\s+FROM/i,
+    /DROP\s+TABLE/i,
+  ];
   
-  // Basic email sanitization
-  return email
-    .toLowerCase()
-    .trim()
-    .replace(/[<>"']/g, '')
+  return sqlPatterns.some(pattern => pattern.test(input));
 }
 
-/**
- * Sanitize filename to prevent path traversal
- */
-export function sanitizeFilename(filename: string): string {
-  if (!filename || typeof filename !== 'string') return ''
-  
-  // Remove path traversal attempts
-  return filename
-    .replace(/[.]{2,}/g, '')
-    .replace(/[\\/:*?"<>|]/g, '_')
-    .trim()
-}
-
-/**
- * Escape special regex characters
- */
-export function escapeRegex(input: string): string {
-  return input.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
-
-/**
- * Create a safe JSON string that won't cause XSS if embedded in HTML
- */
-export function safeJsonStringify(obj: unknown): string {
-  return JSON.stringify(obj)
-    .replace(/</g, '\\u003c')
-    .replace(/>/g, '\\u003e')
-    .replace(/&/g, '\\u0026')
-    .replace(/\//g, '\\/')
-}
-
-/**
- * Validate that a string is a safe URL (http/https only)
- */
-export function isSafeUrl(url: string): boolean {
-  if (!url || typeof url !== 'string') return false
-  
-  try {
-    const parsed = new URL(url)
-    return parsed.protocol === 'http:' || parsed.protocol === 'https:'
-  } catch {
-    // Relative URLs are considered safe
-    return url.startsWith('/') || url.startsWith('#')
-  }
-}
-
-/**
- * Rate limiter for API calls
- */
+// Rate limiting helper
 export class RateLimiter {
-  private limits = new Map<string, number>()
+  private attempts: Map<string, number[]> = new Map();
+  private maxAttempts: number;
+  private windowMs: number;
   
-  checkLimit(key: string, limitMs: number = 1000): boolean {
-    const now = Date.now()
-    const last = this.limits.get(key) || 0
-    
-    if (now - last < limitMs) {
-      return false
-    }
-    
-    this.limits.set(key, now)
-    return true
+  constructor(maxAttempts = 5, windowMs = 60000) {
+    this.maxAttempts = maxAttempts;
+    this.windowMs = windowMs;
   }
   
-  reset(key: string): void {
-    this.limits.delete(key)
+  canProceed(key: string): boolean {
+    const now = Date.now();
+    const attempts = this.attempts.get(key) || [];
+    
+    // Remove old attempts outside the window
+    const recentAttempts = attempts.filter(time => now - time < this.windowMs);
+    
+    if (recentAttempts.length >= this.maxAttempts) {
+      return false;
+    }
+    
+    recentAttempts.push(now);
+    this.attempts.set(key, recentAttempts);
+    return true;
+  }
+  
+  getRemainingTime(key: string): number {
+    const attempts = this.attempts.get(key) || [];
+    if (attempts.length === 0) return 0;
+    
+    const oldestAttempt = Math.min(...attempts);
+    const remaining = this.windowMs - (Date.now() - oldestAttempt);
+    return Math.max(0, remaining);
   }
 }
 
-// Global rate limiter instance
-export const globalRateLimiter = new RateLimiter()
+// CSRF Token generator
+export function generateCSRFToken(): string {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+}
+
+// Safe JSON parse with error handling
+export function safeJSONParse<T>(json: string, fallback: T): T {
+  try {
+    return JSON.parse(json) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+// Export all security utilities
+export default {
+  sanitizeInput,
+  sanitizeHTML,
+  isValidEmail,
+  isValidPersonalNumber,
+  isValidPhoneNumber,
+  containsSQLInjection,
+  RateLimiter,
+  generateCSRFToken,
+  safeJSONParse,
+};

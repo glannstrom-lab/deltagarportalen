@@ -1,6 +1,6 @@
 /**
  * AI Writing Assistant - Säker version
- * Använder server-side Vercel API istället för direkta OpenRouter-anrop
+ * Använder server-side Edge Function istället för direkt API-nyckel
  */
 
 import { useState } from 'react'
@@ -25,9 +25,8 @@ const powerWords = [
   { weak: 'fixade', strong: 'löste' },
 ]
 
-type FeatureType = 'improve' | 'quantify' | 'translate' | 'generate'
-
-const features: Record<FeatureType, { label: string; icon: typeof Zap; color: string; description: string }> = {
+// Feature-konfiguration
+const features = {
   improve: {
     label: 'Förbättra',
     icon: Zap,
@@ -54,17 +53,44 @@ const features: Record<FeatureType, { label: string; icon: typeof Zap; color: st
   }
 }
 
-export function AIWritingAssistant({ content, onChange, type }: AIWritingAssistantProps) {
+export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingAssistantProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [suggestion, setSuggestion] = useState('')
-  const [activeFeature, setActiveFeature] = useState<FeatureType | null>(null)
+  const [activeFeature, setActiveFeature] = useState<keyof typeof features | null>(null)
+  const [requestCount, setRequestCount] = useState(0)
+  const [lastRequestTime, setLastRequestTime] = useState(0)
 
-  // SÄKER implementation - anropa Vercel API istället för direkt OpenRouter
-  const callSecureAI = async (feature: FeatureType) => {
+  // Client-side rate limiting
+  const checkClientRateLimit = (): boolean => {
+    const now = Date.now()
+    const windowStart = now - 60000 // 1 minute window
+    
+    if (lastRequestTime < windowStart) {
+      setRequestCount(1)
+      setLastRequestTime(now)
+      return true
+    }
+    
+    if (requestCount >= 10) {
+      return false
+    }
+    
+    setRequestCount(prev => prev + 1)
+    return true
+  }
+
+  // Använd den säkra Edge Function
+  const callSecureAI = async (feature: keyof typeof features) => {
     if (!content?.trim()) {
       setError('Skriv något först innan du använder AI-förbättring.')
+      return
+    }
+
+    // Client-side rate limiting
+    if (!checkClientRateLimit()) {
+      setError('Du har nått gränsen för AI-anrop. Vänta en minut och försök igen.')
       return
     }
 
@@ -73,11 +99,17 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
     setActiveFeature(feature)
 
     try {
-      // Anropa Vercel Serverless Function istället för direkt OpenRouter
-      const response = await fetch('/api/ai/cv-writing', {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session?.access_token) {
+        throw new Error('Du måste vara inloggad för att använda AI-funktioner.')
+      }
+
+      const response = await fetch('/functions/ai-cv-writing', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
         },
         body: JSON.stringify({
           content,
@@ -93,7 +125,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
           throw new Error('För många förfrågningar. Vänta en stund och försök igen.')
         }
         if (response.status === 401) {
-          throw new Error('Inte auktoriserad. Kontrollera att du är inloggad.')
+          throw new Error('Din session har gått ut. Logga in igen.')
         }
         
         throw new Error(errorData.error || `Serverfel: ${response.status}`)
@@ -140,7 +172,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
       >
         <Shield size={16} />
         <Sparkles size={16} />
-        <span>AI-skrivhjälp</span>
+        <span>AI-skrivhjälp (Säker)</span>
       </button>
 
       {isOpen && (
@@ -162,7 +194,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
 
           {/* AI Features */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
-            {(Object.keys(features) as FeatureType[]).map((key) => {
+            {(Object.keys(features) as Array<keyof typeof features>).map((key) => {
               const feat = features[key]
               const Icon = feat.icon
               return (
@@ -210,7 +242,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
             </div>
           )}
 
-          {/* Loading */}
+          {/* Suggestion */}
           {loading && (
             <div className="p-4 bg-white rounded-lg border border-slate-200 text-center">
               <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-[#4f46e5]" />
@@ -219,7 +251,6 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
             </div>
           )}
 
-          {/* Suggestion */}
           {!loading && suggestion && (
             <div className="bg-white p-4 rounded-lg border border-slate-200">
               <p className="text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide">
@@ -251,8 +282,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
             </div>
           )}
 
-          {/* Empty state */}
-          {!loading && !suggestion && !error && (
+          {!loading && !suggestion && (
             <div className="text-center py-4 text-slate-500 text-sm">
               Välj en funktion ovan för att få hjälp av AI
             </div>
@@ -263,4 +293,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
   )
 }
 
-export default AIWritingAssistant
+// Import supabase
+import { supabase } from '@/lib/supabase'
+
+export default AIWritingAssistantSecure

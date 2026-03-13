@@ -11,6 +11,7 @@ import { BottomBar } from './layout/BottomBar'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
+import { SkipLinks } from './SkipLinks'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
@@ -40,13 +41,15 @@ export default function Layout() {
   const showBackButton = isMobile && location.pathname !== '/'
 
   return (
-    <div 
-      className={cn(
-        'min-h-screen flex',
-        isMobile ? 'pb-safe' : ''
-      )}
-      style={{ backgroundColor: '#eef2ff' }}
-    >
+    <>
+      <SkipLinks />
+      <div 
+        className={cn(
+          'min-h-screen flex',
+          isMobile ? 'pb-safe' : ''
+        )}
+        style={{ backgroundColor: '#eef2ff' }}
+      >
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar />
@@ -88,6 +91,7 @@ export default function Layout() {
       <BreakReminder workDuration={15} />
       <ToastContainer />
     </div>
+    </>
   )
 }
 
