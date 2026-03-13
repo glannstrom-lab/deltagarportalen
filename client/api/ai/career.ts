@@ -92,8 +92,37 @@ Svara ENDAST med JSON.`;
   ], { max_tokens: 2500 });
 
   try {
-    return JSON.parse(content);
+    // Försök att extrahera JSON från AI-svaret (kan vara omgivet av markdown-kodblock)
+    let jsonContent = content.trim();
+    
+    // Ta bort markdown kodblock om de finns
+    if (jsonContent.startsWith('```json')) {
+      jsonContent = jsonContent.slice(7);
+      if (jsonContent.endsWith('```')) {
+        jsonContent = jsonContent.slice(0, -3);
+      }
+    } else if (jsonContent.startsWith('```')) {
+      jsonContent = jsonContent.slice(3);
+      if (jsonContent.endsWith('```')) {
+        jsonContent = jsonContent.slice(0, -3);
+      }
+    }
+    
+    jsonContent = jsonContent.trim();
+    
+    console.log('[career] Parsed JSON content:', jsonContent.substring(0, 500));
+    
+    const parsed = JSON.parse(jsonContent);
+    
+    // Validera att steps finns och är en array
+    if (!parsed.steps || !Array.isArray(parsed.steps)) {
+      console.warn('[career] AI returned data without steps array');
+    }
+    
+    return parsed;
   } catch (e) {
+    console.error('[career] Failed to parse AI response:', e);
+    console.error('[career] Raw content:', content.substring(0, 500));
     return generateFallbackPlan(data?.currentOccupation, data?.targetOccupation);
   }
 }

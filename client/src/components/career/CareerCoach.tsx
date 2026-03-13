@@ -197,9 +197,16 @@ export default function CareerCoach() {
         });
         
         console.log('[CareerCoach] AI result:', aiResult);
+        console.log('[CareerCoach] aiResult keys:', Object.keys(aiResult));
+        console.log('[CareerCoach] aiResult.steps:', aiResult.steps);
+        console.log('[CareerCoach] aiResult.plan:', aiResult.plan);
         
         // API:et returnerar data direkt (inte inuti en "plan" property)
         const planData = aiResult.plan || aiResult;
+        
+        console.log('[CareerCoach] planData:', planData);
+        console.log('[CareerCoach] planData.steps:', planData?.steps);
+        console.log('[CareerCoach] planData.steps length:', planData?.steps?.length);
         
         if (planData?.steps && planData.steps.length > 0) {
           aiSteps = planData.steps;
