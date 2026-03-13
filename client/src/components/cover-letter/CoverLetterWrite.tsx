@@ -42,16 +42,25 @@ import { showToast } from '@/components/Toast'
 import type { CVData } from '@/services/supabaseApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
-// Sparat jobb interface
+// Sparat jobb interface - matchar databasens struktur med job_data JSON
 interface SavedJob {
   id: string
   job_id: string
   user_id: string
-  title: string
-  company: string
-  description?: string
-  location?: string
-  published_date?: string
+  job_data: {
+    headline?: string
+    employer?: {
+      name?: string
+    }
+    description?: {
+      text?: string
+    }
+    workplace_address?: {
+      municipality?: string
+      region?: string
+    }
+    publication_date?: string
+  }
   created_at: string
 }
 
@@ -198,17 +207,21 @@ export function CoverLetterWrite() {
     }
   }, [searchParams])
 
-  // Välj ett sparat jobb
+  // Välj ett sparat jobb - extrahera data från job_data JSON
   const selectSavedJob = (job: SavedJob) => {
+    const title = job.job_data?.headline || 'Okänd titel'
+    const company = job.job_data?.employer?.name || 'Okänt företag'
+    const description = job.job_data?.description?.text || ''
+    
     setFormData(prev => ({
       ...prev,
       selectedJobId: job.job_id,
-      company: job.company,
-      jobTitle: job.title,
-      jobAd: job.description || '',
+      company: company,
+      jobTitle: title,
+      jobAd: description,
       useManualInput: false,
     }))
-    showToast.success(`Valde: ${job.title} på ${job.company}`)
+    showToast.success(`Valde: ${title} på ${company}`)
   }
 
   // Byt till manuell inmatning
@@ -517,45 +530,53 @@ function Step1SelectJob({
             Dina sparade jobb ({savedJobs.length})
           </h3>
           <div className="grid gap-3 max-h-64 overflow-y-auto">
-            {savedJobs.map((job) => (
-              <div
-                key={job.id}
-                onClick={() => onSelectJob(job)}
-                className={cn(
-                  'p-4 rounded-xl border-2 cursor-pointer transition-all',
-                  formData.selectedJobId === job.job_id
-                    ? 'border-indigo-500 bg-indigo-50'
-                    : 'border-slate-200 hover:border-indigo-200 hover:bg-slate-50'
-                )}
-              >
-                <div className="flex items-start gap-3">
-                  <div className={cn(
-                    'w-10 h-10 rounded-lg flex items-center justify-center',
+            {savedJobs.map((job) => {
+              // Extrahera data från job_data JSON
+              const title = job.job_data?.headline || 'Okänd titel'
+              const company = job.job_data?.employer?.name || 'Okänt företag'
+              const location = job.job_data?.workplace_address?.municipality || 
+                              job.job_data?.workplace_address?.region
+              
+              return (
+                <div
+                  key={job.id}
+                  onClick={() => onSelectJob(job)}
+                  className={cn(
+                    'p-4 rounded-xl border-2 cursor-pointer transition-all',
                     formData.selectedJobId === job.job_id
-                      ? 'bg-indigo-100 text-indigo-600'
-                      : 'bg-slate-100 text-slate-500'
-                  )}>
-                    <Briefcase size={20} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-slate-800">{job.title}</h4>
-                    <p className="text-sm text-slate-500">{job.company}</p>
-                    {job.location && (
-                      <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
-                        <MapPin size={12} />
-                        {job.location}
-                      </p>
+                      ? 'border-indigo-500 bg-indigo-50'
+                      : 'border-slate-200 hover:border-indigo-200 hover:bg-slate-50'
+                  )}
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={cn(
+                      'w-10 h-10 rounded-lg flex items-center justify-center',
+                      formData.selectedJobId === job.job_id
+                        ? 'bg-indigo-100 text-indigo-600'
+                        : 'bg-slate-100 text-slate-500'
+                    )}>
+                      <Briefcase size={20} />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-slate-800">{title}</h4>
+                      <p className="text-sm text-slate-500">{company}</p>
+                      {location && (
+                        <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+                          <MapPin size={12} />
+                          {location}
+                        </p>
+                      )}
+                    </div>
+                    {formData.selectedJobId === job.job_id && (
+                      <div className="flex items-center gap-1 text-indigo-600 text-sm">
+                        <Check size={16} />
+                        <span>Vald</span>
+                      </div>
                     )}
                   </div>
-                  {formData.selectedJobId === job.job_id && (
-                    <div className="flex items-center gap-1 text-indigo-600 text-sm">
-                      <Check size={16} />
-                      <span>Vald</span>
-                    </div>
-                  )}
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       )}
