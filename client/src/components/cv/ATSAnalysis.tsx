@@ -3,7 +3,7 @@
  * Check how well CV passes through recruitment systems
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { 
   Target, 
   Check, 
@@ -14,9 +14,13 @@ import {
   Sparkles,
   ArrowRight,
   Lightbulb,
-  Award
+  Award,
+  Loader2
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { ATSAnalyzer } from './ATSAnalyzer'
+import { cvApi } from '@/services/supabaseApi'
+import type { CVData } from '@/services/supabaseApi'
 
 interface ATSCheck {
   id: string
@@ -116,6 +120,25 @@ export function ATSAnalysis() {
   const [checks, setChecks] = useState<ATSCheck[]>(defaultChecks)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [showDetails, setShowDetails] = useState<string | null>(null)
+  const [cvData, setCvData] = useState<CVData | null>(null)
+  const [loadingCV, setLoadingCV] = useState(true)
+
+  // Hämta användarens CV-data
+  useEffect(() => {
+    const loadCV = async () => {
+      try {
+        const cv = await cvApi.getCV()
+        if (cv) {
+          setCvData(cv)
+        }
+      } catch (e) {
+        console.error('Kunde inte ladda CV:', e)
+      } finally {
+        setLoadingCV(false)
+      }
+    }
+    loadCV()
+  }, [])
 
   const totalScore = checks.reduce((sum, check) => sum + check.score, 0)
   const maxScore = 100
@@ -151,6 +174,49 @@ export function ATSAnalysis() {
 
   return (
     <div className="space-y-6">
+      {/* ATS Analyzer Widget - Hämtar och analyserar användarens CV */}
+      {loadingCV ? (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+          <div className="flex items-center justify-center gap-3 py-8">
+            <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+            <span className="text-slate-600">Laddar CV-data...</span>
+          </div>
+        </div>
+      ) : cvData ? (
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+              <Target className="w-4 h-4 text-white" />
+            </div>
+            <h3 className="font-semibold text-slate-800">ATS-analys av ditt CV</h3>
+          </div>
+          <p className="text-sm text-slate-500 mb-4">
+            Se hur väl ditt nuvarande CV klarar automatisk screening i rekryteringssystem
+          </p>
+          <ATSAnalyzer cvData={cvData} />
+        </div>
+      ) : (
+        <div className="bg-amber-50 rounded-2xl border border-amber-200 p-6">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <FileText className="w-6 h-6 text-amber-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-amber-900 mb-2">Inget CV hittades</h3>
+              <p className="text-amber-800 text-sm mb-3">
+                Du behöver skapa ett CV innan du kan göra en ATS-analys.
+              </p>
+              <a
+                href="/cv"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors"
+              >
+                Skapa CV
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Score Card */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6">
         <div className="flex flex-col md:flex-row md:items-center gap-6">

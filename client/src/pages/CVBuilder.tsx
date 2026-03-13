@@ -3,11 +3,11 @@ import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
   Linkedin, Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
-  Lightbulb, Target, Wand2
+  Lightbulb, Wand2
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
-import { ATSAnalyzer } from '@/components/cv/ATSAnalyzer'
+
 import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVShare } from '@/components/cv/CVShare'
@@ -803,20 +803,6 @@ export default function CVBuilder() {
               <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
             </div>
           )}
-
-          {/* ATS Analys */}
-          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
-                <Target className="w-4 h-4 text-white" />
-              </div>
-              <h3 className="font-semibold text-slate-800">ATS-analys</h3>
-            </div>
-            <p className="text-sm text-slate-500 mb-3">
-              Se hur väl ditt CV klarar automatisk screening
-            </p>
-            <ATSAnalyzer cvData={data} />
-          </div>
 
           {/* Versions */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
