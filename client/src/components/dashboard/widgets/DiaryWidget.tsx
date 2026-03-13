@@ -74,7 +74,7 @@ const formatDate = (dateString: string) => {
 }
 
 // ============================================
-// SMALL - Kompakt men mysig
+// SMALL - Ultra kompakt
 // ============================================
 function DiaryWidgetSmall({ entriesCount = 0, lastEntry, hasEntryToday = false, loading, error, onRetry }: Omit<DiaryWidgetProps, 'size' | 'streakDays'>) {
   const moodConfig = lastEntry ? getMoodConfig(lastEntry.mood) : null
@@ -87,57 +87,34 @@ function DiaryWidgetSmall({ entriesCount = 0, lastEntry, hasEntryToday = false, 
   return (
     <DashboardWidget
       title="Dagbok"
-      icon={<BookHeart size={18} className="text-rose-500" />}
+      icon={<BookHeart size={14} />}
       to="/diary"
       color="rose"
       status={getStatus()}
       loading={loading}
       error={error}
       onRetry={onRetry}
-      primaryAction={{
-        label: hasEntryToday ? 'Läs' : 'Skriv',
-      }}
     >
-      <div className="flex flex-col items-center justify-center py-1 text-center">
+      <div className="flex items-center gap-2">
         {entriesCount === 0 ? (
-          // Empty state - varm och inbjudande
-          <div className="relative">
-            <div className="absolute inset-0 bg-rose-200 rounded-full blur-xl opacity-30 animate-pulse" />
-            <div className="relative w-12 h-12 bg-gradient-to-br from-rose-100 to-pink-100 rounded-2xl flex items-center justify-center mb-2 shadow-sm">
-              <Sparkles size={22} className="text-rose-500" />
-            </div>
-          </div>
+          <Sparkles size={14} className="text-rose-400" />
         ) : hasEntryToday ? (
-          // Skrivet idag - visa dagens humör
-          <div className="flex flex-col items-center">
-            <div className="relative group cursor-pointer">
-              <div className={`w-14 h-14 ${moodConfig?.bgColor || 'bg-emerald-50'} rounded-2xl flex items-center justify-center mb-2 shadow-sm transition-transform duration-300 group-hover:scale-110`}>
-                <span className="text-3xl animate-bounce-subtle">{moodConfig?.emoji || '😊'}</span>
-              </div>
-              <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full flex items-center justify-center">
-                <Heart size={10} className="text-white fill-white" />
-              </div>
-            </div>
-            <p className="text-xs font-medium text-emerald-600">Skrivet idag!</p>
-          </div>
+          <span className="text-base">{moodConfig?.emoji || '😊'}</span>
         ) : (
-          // Inte skrivet idag - visa senaste humör eller default
-          <div className="flex flex-col items-center">
-            <div className="relative">
-              {lastEntry ? (
-                <div className={`w-12 h-12 ${moodConfig?.bgColor} rounded-2xl flex items-center justify-center mb-2 shadow-sm`}>
-                  <span className="text-2xl">{moodConfig?.emoji}</span>
-                </div>
-              ) : (
-                <div className="w-12 h-12 bg-gradient-to-br from-rose-100 to-pink-50 rounded-2xl flex items-center justify-center mb-2 shadow-sm">
-                  <BookHeart size={22} className="text-rose-400" />
-                </div>
-              )}
-            </div>
-            <p className="text-2xl font-bold text-slate-700">{entriesCount}</p>
-            <p className="text-xs text-slate-400">{entriesCount === 1 ? 'inlägg' : 'inlägg'}</p>
-          </div>
+          <span className="text-base">{moodConfig?.emoji || '📓'}</span>
         )}
+        <div className="flex-1 min-w-0">
+          {entriesCount === 0 ? (
+            <span className="text-[10px] text-slate-500">Börja skriva</span>
+          ) : hasEntryToday ? (
+            <span className="text-[10px] text-emerald-600">Skrivet idag!</span>
+          ) : (
+            <div className="flex items-center gap-1">
+              <span className="text-sm font-bold text-slate-700">{entriesCount}</span>
+              <span className="text-[10px] text-slate-400">inlägg</span>
+            </div>
+          )}
+        </div>
       </div>
     </DashboardWidget>
   )

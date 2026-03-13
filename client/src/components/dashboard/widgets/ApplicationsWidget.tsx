@@ -32,23 +32,21 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
 
   const status = getStatus()
 
-  // Formatera datum
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const today = new Date()
     const diffTime = date.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
     if (diffDays === 0) return 'Idag'
     if (diffDays === 1) return 'Imorgon'
-    if (diffDays < 0) return `${Math.abs(diffDays)} dagar sedan`
-    return `Om ${diffDays} dagar`
+    if (diffDays < 0) return `${Math.abs(diffDays)}d sen`
+    return `Om ${diffDays}d`
   }
 
   return (
     <DashboardWidget
       title="Ansökningar"
-      icon={<Send size={20} />}
+      icon={<Send size={14} />}
       to="/job-tracker"
       color="orange"
       status={status}
@@ -56,24 +54,21 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
       loading={loading}
       error={error}
       onRetry={onRetry}
-      primaryAction={{
-        label: total > 0 ? 'Se status' : 'Registrera',
-      }}
     >
-      <div className="flex flex-col items-center justify-center py-2 text-center">
-        <Trophy size={28} className="text-orange-500 mb-2" />
-        <p className="text-3xl font-bold text-slate-800">{total}</p>
-        <p className="text-sm text-slate-500">
-          {total === 0 ? 'Inga ansökningar' : total === 1 ? 'ansökan' : 'ansökningar'}
-        </p>
-        
-        {/* Nästa uppföljning - viktigast */}
-        {nextFollowUp && (
-          <div className="mt-3 px-3 py-1.5 bg-amber-50 rounded-lg w-full">
-            <p className="text-xs text-amber-600">Följ upp {formatDate(nextFollowUp.dueDate).toLowerCase()}</p>
-          </div>
-        )}
+      <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <Trophy size={14} className="text-orange-500" />
+          <span className="text-lg font-bold text-slate-800">{total}</span>
+        </div>
+        <span className="text-[10px] text-slate-500">
+          {total === 0 ? 'Inga' : total === 1 ? 'ansökan' : 'ansökningar'}
+        </span>
       </div>
+      {nextFollowUp && (
+        <p className="text-[9px] text-amber-600 mt-1">
+          Följ upp {formatDate(nextFollowUp.dueDate).toLowerCase()}
+        </p>
+      )}
     </DashboardWidget>
   )
 }

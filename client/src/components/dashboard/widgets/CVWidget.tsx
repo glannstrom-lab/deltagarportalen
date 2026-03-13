@@ -68,11 +68,13 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
   }
 
   const status = getStatus()
+  const radius = 14
+  const circumference = 2 * Math.PI * radius
 
   return (
     <DashboardWidget
       title="CV"
-      icon={<FileText size={16} className="text-violet-600" />}
+      icon={<FileText size={14} />}
       to="/cv"
       color="violet"
       status={status}
@@ -80,41 +82,33 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
       loading={loading}
       error={error}
       onRetry={onRetry}
-      primaryAction={{
-        label: hasCV ? (progress >= 80 ? 'Redigera' : 'Fortsätt') : 'Skapa',
-      }}
     >
-      <div className="flex items-center gap-3 py-1">
-        {/* Compact progress circle */}
-        <div className="relative w-12 h-12 shrink-0">
-          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 48 48">
-            <circle cx="24" cy="24" r="20" fill="none" stroke="#e2e8f0" strokeWidth="4" />
+      <div className="flex items-center gap-2">
+        {/* Mini progress ring - 32px */}
+        <div className="relative w-8 h-8 shrink-0">
+          <svg className="w-8 h-8 transform -rotate-90" viewBox="0 0 32 32">
+            <circle cx="16" cy="16" r={radius} fill="none" stroke="#e2e8f0" strokeWidth="3" />
             <circle 
-              cx="24" cy="24" r="20" fill="none" 
+              cx="16" cy="16" r={radius} fill="none" 
               stroke={progress >= 80 ? '#10b981' : progress >= 50 ? '#f59e0b' : '#8b5cf6'}
-              strokeWidth="4" 
+              strokeWidth="3" 
               strokeLinecap="round"
-              strokeDasharray={`${2 * Math.PI * 20 * progress / 100} ${2 * Math.PI * 20}`}
+              strokeDasharray={`${circumference * progress / 100} ${circumference}`}
               className="transition-all duration-500"
             />
           </svg>
           <div className="absolute inset-0 flex items-center justify-center">
-            <span className="text-xs font-bold text-slate-700">{progress}%</span>
+            <span className="text-[9px] font-bold text-slate-700">{progress}%</span>
           </div>
         </div>
         
         {/* Status text */}
-        <div className="flex-1 min-w-0">
-          <p className="text-xs text-slate-600 truncate">
-            {progress === 0 && 'Inget CV än'}
-            {progress > 0 && progress < 50 && 'Kom igång'}
-            {progress >= 50 && progress < 80 && 'Påbörjat'}
-            {progress >= 80 && 'Redo!'}
+        <div className="flex-1 min-w-0 leading-tight">
+          <p className="text-[10px] text-slate-500">
+            {progress === 0 ? 'Inget CV än' : progress < 50 ? 'Kom igång' : progress < 80 ? 'Påbörjat' : 'Redo!'}
           </p>
           {atsScore > 0 && (
-            <p className="text-xs text-amber-600 font-medium">
-              ATS: {atsScore}
-            </p>
+            <p className="text-[9px] text-amber-600">ATS: {atsScore}</p>
           )}
         </div>
       </div>

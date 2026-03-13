@@ -92,7 +92,7 @@ function formatRelativeDate(dateString: string): { text: string; color: string }
   return { text: date.toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' }), color: 'text-slate-400' }
 }
 
-// SMALL - Compact with beautiful stats display
+// SMALL - Ultra kompakt
 function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, onRetry }: Omit<CoverLetterWidgetProps, 'size' | 'recentLetters' | 'applicationsStatus'>) {
   const getStatus = (): WidgetStatus => {
     if (count === 0 && applicationsCount === 0) return 'empty'
@@ -104,8 +104,8 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
 
   return (
     <DashboardWidget
-      title="Brev & ansökningar"
-      icon={<Mail size={18} className="text-rose-600" />}
+      title="Brev"
+      icon={<Mail size={14} />}
       to="/cover-letter"
       color="rose"
       status={status}
@@ -113,53 +113,19 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
       loading={loading}
       error={error}
       onRetry={onRetry}
-      primaryAction={{
-        label: count > 0 ? 'Skapa nytt' : 'Kom igång',
-      }}
     >
-      <div className="flex flex-col items-center justify-center py-3 text-center">
-        {totalActivity > 0 ? (
-          <>
-            {/* Animated icon */}
-            <div className="relative mb-3">
-              <div className="absolute inset-0 bg-rose-400/20 rounded-full blur-xl animate-pulse" />
-              <div className="relative w-14 h-14 bg-gradient-to-br from-rose-100 to-orange-50 rounded-2xl flex items-center justify-center shadow-lg shadow-rose-200/50">
-                <Mail size={26} className="text-rose-600" />
-              </div>
-              {/* Sparkle decorations */}
-              <Sparkles size={10} className="absolute -top-1 -right-1 text-rose-400 animate-pulse" />
-              <Zap size={10} className="absolute -bottom-1 -left-1 text-orange-400 animate-pulse delay-150" />
-            </div>
-            
-            {/* Stats */}
-            <div className="flex items-center gap-4">
-              <div className="text-center">
-                <p className="text-2xl font-bold text-slate-800">{count}</p>
-                <p className="text-xs text-slate-500">{count === 1 ? 'brev' : 'brev'}</p>
-              </div>
-              {applicationsCount > 0 && (
-                <>
-                  <div className="w-px h-10 bg-slate-200" />
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-orange-600">{applicationsCount}</p>
-                    <p className="text-xs text-slate-500">ansökningar</p>
-                  </div>
-                </>
-              )}
-            </div>
-          </>
-        ) : (
-          <>
-            {/* Empty state */}
-            <div className="relative mb-3">
-              <div className="absolute inset-0 bg-rose-400/10 rounded-full blur-lg" />
-              <div className="relative w-14 h-14 bg-gradient-to-br from-rose-50 to-orange-50 rounded-2xl flex items-center justify-center border-2 border-dashed border-rose-200">
-                <Plus size={24} className="text-rose-400" />
-              </div>
-            </div>
-            <p className="text-sm font-medium text-slate-600">Inga brev än</p>
-            <p className="text-xs text-slate-400 mt-0.5">Skapa ditt första!</p>
-          </>
+      <div className="flex items-center gap-2">
+        <Mail size={14} className="text-rose-500" />
+        <div className="flex items-center gap-1">
+          <span className="text-lg font-bold text-slate-800">{count}</span>
+          <span className="text-[10px] text-slate-500">
+            {count === 1 ? 'brev' : 'brev'}
+          </span>
+        </div>
+        {applicationsCount > 0 && (
+          <span className="text-[9px] bg-orange-100 text-orange-600 px-1 py-0.5 rounded ml-1">
+            {applicationsCount} ansökn
+          </span>
         )}
       </div>
     </DashboardWidget>

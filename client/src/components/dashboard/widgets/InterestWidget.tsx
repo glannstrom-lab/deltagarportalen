@@ -90,7 +90,7 @@ const getStarRating = (index: number) => {
   return Math.max(4 - Math.floor((index - 2) / 2), 2)
 }
 
-// SMALL - Inspiring with stars/compass animation feel
+// SMALL - Ultra kompakt
 function InterestWidgetSmall({ hasResult, topRecommendations = [], loading, error, onRetry }: Omit<InterestWidgetProps, 'size'>) {
   const getStatus = (): WidgetStatus => {
     if (!hasResult) return 'empty'
@@ -102,8 +102,8 @@ function InterestWidgetSmall({ hasResult, topRecommendations = [], loading, erro
 
   return (
     <DashboardWidget
-      title="Dina intressen"
-      icon={<Compass size={20} className="text-teal-500" />}
+      title="Intressen"
+      icon={<Compass size={14} />}
       to="/interest-guide"
       color="teal"
       status={status}
@@ -111,52 +111,22 @@ function InterestWidgetSmall({ hasResult, topRecommendations = [], loading, erro
       loading={loading}
       error={error}
       onRetry={onRetry}
-      primaryAction={{
-        label: hasResult ? 'Se resultat' : 'Gör testet',
-      }}
     >
-      <div className="flex flex-col items-center justify-center py-3 text-center">
+      <div className="flex items-center gap-2">
         {hasResult ? (
           <>
-            {/* Animated star burst effect */}
-            <div className="relative mb-3">
-              <div className="absolute inset-0 animate-pulse">
-                <Sparkles size={32} className="text-amber-400 opacity-50" />
-              </div>
-              <div className="relative w-14 h-14 bg-gradient-to-br from-amber-100 to-yellow-50 rounded-full flex items-center justify-center shadow-lg shadow-amber-200/50">
-                <Crown size={24} className="text-amber-500" />
-              </div>
-              {/* Floating stars */}
-              <Star size={10} className="absolute -top-1 -right-1 text-amber-400 animate-pulse" />
-              <Star size={8} className="absolute -bottom-1 -left-1 text-teal-400 animate-pulse delay-150" />
+            <Star size={14} className="text-amber-500" />
+            <div className="flex-1 min-w-0">
+              <span className="text-[10px] text-emerald-600">Test klart!</span>
+              {firstRecommendation && (
+                <p className="text-[10px] text-slate-600 truncate">{firstRecommendation}</p>
+              )}
             </div>
-            <div className="flex items-center gap-1.5 text-emerald-600 mb-1">
-              <Sparkles size={14} className="text-amber-500" />
-              <span className="text-sm font-bold">Test klart!</span>
-            </div>
-            {firstRecommendation && (
-              <div className="space-y-1">
-                <p className="text-xs text-slate-400 uppercase tracking-wide font-medium">Din topp-match</p>
-                <p className="text-sm font-semibold text-slate-700 line-clamp-1 bg-gradient-to-r from-amber-50 to-transparent px-2 py-0.5 rounded-full">
-                  {firstRecommendation}
-                </p>
-              </div>
-            )}
           </>
         ) : (
           <>
-            {/* Inspiring empty state with animated compass */}
-            <div className="relative mb-3">
-              <div className="absolute inset-0 bg-teal-400/20 rounded-full blur-xl animate-pulse" />
-              <div className="relative w-16 h-16 bg-gradient-to-br from-teal-100 to-cyan-50 rounded-full flex items-center justify-center shadow-lg shadow-teal-200/50 group-hover:scale-105 transition-transform">
-                <Compass size={28} className="text-teal-600" />
-              </div>
-              {/* Orbiting sparkles */}
-              <Sparkles size={12} className="absolute -top-0.5 right-0 text-teal-400 animate-pulse" />
-              <Sparkles size={10} className="absolute bottom-0 -left-1 text-cyan-400 animate-pulse delay-300" />
-            </div>
-            <p className="text-sm font-semibold text-slate-700 mb-1">Upptäck din framtid!</p>
-            <p className="text-xs text-slate-500">5 minuter • 20 frågor • Personliga resultat</p>
+            <Compass size={14} className="text-teal-500" />
+            <span className="text-[10px] text-slate-500">5 min • 20 frågor</span>
           </>
         )}
       </div>

@@ -56,20 +56,19 @@ function getCompanyInitials(company: string): string {
     .toUpperCase()
 }
 
-// SMALL - Kompakt vy med fokus på antal sparade jobb
-function JobSearchWidgetSmall({ savedCount, newMatches = 0, recentJobs = [], loading, error, onRetry }: JobSearchWidgetProps) {
+// SMALL - Ultra kompakt
+function JobSearchWidgetSmall({ savedCount, newMatches = 0, loading, error, onRetry }: JobSearchWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (savedCount === 0) return 'empty'
     return 'complete'
   }
 
   const status = getStatus()
-  const latestJob = recentJobs[0]
 
   return (
     <DashboardWidget
-      title="Sök jobb"
-      icon={<Briefcase size={20} />}
+      title="Jobb"
+      icon={<Briefcase size={14} />}
       to="/job-search"
       color="blue"
       status={status}
@@ -77,54 +76,19 @@ function JobSearchWidgetSmall({ savedCount, newMatches = 0, recentJobs = [], loa
       loading={loading}
       error={error}
       onRetry={onRetry}
-      primaryAction={{
-        label: savedCount > 0 ? 'Se alla' : 'Hitta jobb',
-      }}
     >
-      <div className="flex flex-col items-center justify-center py-2 text-center">
-        {savedCount > 0 ? (
-          <>
-            {/* Modern stat display med gradient bakgrund */}
-            <div className="relative mb-3">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
-                <Bookmark size={28} className="text-white" fill="white" />
-              </div>
-              {newMatches > 0 && (
-                <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center shadow-md">
-                  <span className="text-[10px] font-bold text-white">{newMatches}</span>
-                </div>
-              )}
-            </div>
-            
-            {/* Tydlig siffra */}
-            <div className="flex items-baseline gap-1">
-              <p className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
-                {savedCount}
-              </p>
-              <span className="text-sm text-slate-500 font-medium">
-                {savedCount === 1 ? 'jobb' : 'jobb'}
-              </span>
-            </div>
-            
-            <p className="text-xs text-slate-400 mt-1">
-              {savedCount === 1 ? 'sparat' : 'sparade'}
-            </p>
-            
-            {latestJob && (
-              <p className="text-xs text-slate-500 mt-2 truncate max-w-[160px] font-medium" title={latestJob.title}>
-                {truncate(latestJob.title, 22)}
-              </p>
-            )}
-          </>
-        ) : (
-          <>
-            {/* Empty state med gradient */}
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center mb-3">
-              <Search size={28} className="text-slate-400" />
-            </div>
-            <p className="text-sm font-medium text-slate-600">Inga sparade jobb</p>
-            <p className="text-xs text-slate-400 mt-1">Klicka för att söka</p>
-          </>
+      <div className="flex items-center gap-2">
+        <Bookmark size={14} className="text-blue-500" fill="#3b82f6" />
+        <div className="flex items-center gap-1">
+          <span className="text-lg font-bold text-slate-800">{savedCount}</span>
+          <span className="text-[10px] text-slate-500">
+            {savedCount === 1 ? 'sparat' : 'sparade'}
+          </span>
+        </div>
+        {newMatches > 0 && (
+          <span className="text-[9px] bg-emerald-100 text-emerald-600 px-1 py-0.5 rounded">
+            +{newMatches}
+          </span>
         )}
       </div>
     </DashboardWidget>

@@ -73,7 +73,7 @@ const getCategoryIcon = (iconName: string) => {
   return icons[iconName] || <BookOpen size={14} />
 }
 
-// SMALL - Compact reading stats with saved articles
+// SMALL - Ultra kompakt
 function KnowledgeWidgetSmall({ 
   readCount = 0, 
   savedCount = 0,
@@ -87,12 +87,11 @@ function KnowledgeWidgetSmall({
   }
 
   const status = getStatus()
-  const hasSaved = savedCount > 0
 
   return (
     <DashboardWidget
-      title="Kunskapsbank"
-      icon={<Library size={20} />}
+      title="Kunskap"
+      icon={<BookOpen size={14} />}
       to="/knowledge-base"
       color="amber"
       status={status}
@@ -100,41 +99,20 @@ function KnowledgeWidgetSmall({
       loading={loading}
       error={error}
       onRetry={onRetry}
-      primaryAction={{
-        label: readCount > 0 ? 'Fortsätt läsa' : 'Börja läsa',
-      }}
     >
-      <div className="space-y-3">
-        {/* Main stats row */}
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center shadow-sm">
-            <BookOpen size={22} className="text-amber-600" />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-baseline gap-1">
-              <span className="text-2xl font-bold text-slate-800">{readCount}</span>
-              <span className="text-xs text-slate-500">
-                {readCount === 1 ? 'artikel' : 'artiklar'}
-              </span>
-            </div>
-            <p className="text-xs text-slate-400">lästa</p>
-          </div>
+      <div className="flex items-center gap-2">
+        <BookOpen size={14} className="text-amber-500" />
+        <div className="flex items-center gap-1">
+          <span className="text-lg font-bold text-slate-800">{readCount}</span>
+          <span className="text-[10px] text-slate-500">
+            {readCount === 1 ? 'läst' : 'lästa'}
+          </span>
         </div>
-
-        {/* Saved articles indicator */}
-        {hasSaved ? (
-          <div className="flex items-center gap-2 px-3 py-2 bg-amber-50 rounded-lg border border-amber-100">
-            <Bookmark size={14} className="text-amber-500 fill-amber-500" />
-            <span className="text-xs font-medium text-amber-700">
-              {savedCount} sparad{savedCount !== 1 ? 'e' : ''} för senare
-            </span>
-          </div>
-        ) : readCount === 0 ? (
-          <div className="flex items-center gap-2 text-xs text-slate-400">
-            <Sparkles size={12} className="text-amber-400" />
-            <span>CV-tips & intervjutips</span>
-          </div>
-        ) : null}
+        {savedCount > 0 && (
+          <span className="text-[9px] bg-amber-100 text-amber-600 px-1 py-0.5 rounded ml-1">
+            {savedCount} sparad
+          </span>
+        )}
       </div>
     </DashboardWidget>
   )
