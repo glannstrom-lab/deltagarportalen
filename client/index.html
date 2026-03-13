@@ -14,10 +14,11 @@
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
     
-    <!-- Cache Control -->
+    <!-- Cache Control - Force refresh on new deployments -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
+    <meta name="build-timestamp" content="2026-03-13">
     
     <title>Deltagarportalen - Stöd för arbetssökande</title>
     
@@ -147,6 +148,40 @@
             });
           }
         }, true);
+      })();
+    </script>
+    
+    <!-- Force clear old service workers on version mismatch -->
+    <script type="text/javascript">
+      (function() {
+        const CURRENT_VERSION = 'v3';
+        const storedVersion = localStorage.getItem('app-version');
+        
+        if (storedVersion !== CURRENT_VERSION) {
+          // Unregister all service workers
+          if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+              registrations.forEach(function(registration) {
+                registration.unregister();
+                console.log('[App] Unregistered old service worker');
+              });
+              // Clear all caches
+              if ('caches' in window) {
+                caches.keys().then(function(cacheNames) {
+                  cacheNames.forEach(function(cacheName) {
+                    caches.delete(cacheName);
+                    console.log('[App] Deleted cache:', cacheName);
+                  });
+                });
+              }
+              // Store new version and reload
+              localStorage.setItem('app-version', CURRENT_VERSION);
+              console.log('[App] Updated to version:', CURRENT_VERSION);
+            });
+          } else {
+            localStorage.setItem('app-version', CURRENT_VERSION);
+          }
+        }
       })();
     </script>
     

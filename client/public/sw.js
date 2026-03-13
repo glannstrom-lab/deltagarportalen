@@ -3,7 +3,7 @@
  * Fixed for hash-based routing
  */
 
-const CACHE_VERSION = 'v2'
+const CACHE_VERSION = 'v3'
 const STATIC_CACHE = `static-${CACHE_VERSION}`
 const DYNAMIC_CACHE = `dynamic-${CACHE_VERSION}`
 const IMAGE_CACHE = `images-${CACHE_VERSION}`
@@ -14,6 +14,7 @@ const PRECACHE_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
+  '/jobin-logo.png',
 ]
 
 // Install event - Precache critical assets
@@ -148,19 +149,26 @@ async function handleStaticRequest(request) {
   const cache = await caches.open(STATIC_CACHE)
   const cached = await cache.match(request)
   
-  if (cached) {
-    return cached
-  }
-  
   try {
     const response = await fetch(request)
     if (response.status === 200) {
+      // Update cache with fresh version
       cache.put(request, response.clone())
+      return response
+    }
+    // If network fails, return cached version
+    if (cached) {
+      return cached
     }
     return response
   } catch (error) {
     console.error('[SW] Static asset fetch failed:', error)
-    throw error
+    // Return cached version if available
+    if (cached) {
+      return cached
+    }
+    // Return a proper error response instead of throwing
+    return new Response('Asset not available', { status: 404, statusText: 'Not Found' })
   }
 }
 
