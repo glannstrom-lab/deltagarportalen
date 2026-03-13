@@ -17,6 +17,7 @@ import {
   ExercisesWidget,
   DiaryWidget,
   KnowledgeWidget,
+  WellnessWidget,
 } from '@/components/dashboard'
 import { PageLayout } from '@/components/layout/index'
 import { useSettingsStore } from '@/stores/settingsStore'
@@ -42,11 +43,12 @@ const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   interests: 'small',
   exercises: 'small',
   diary: 'small',
+  wellness: 'small',
   knowledge: 'small',
 }
 
 const allWidgets: WidgetType[] = [
-  'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'knowledge',
+  'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge',
 ]
 
 const defaultVisibleWidgets: WidgetType[] = allWidgets
@@ -392,6 +394,17 @@ function DesktopDashboard() {
               streakDays={0}
               hasEntryToday={false}
               size={widgetSizes['diary']}
+            />
+          )}
+
+        {widgetsToShow.includes('wellness') &&
+          renderWidget(
+            'wellness',
+            <WellnessWidget
+              completedActivities={0}
+              streakDays={0}
+              moodToday={null}
+              size={widgetSizes['wellness']}
             />
           )}
 

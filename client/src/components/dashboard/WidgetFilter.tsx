@@ -10,6 +10,7 @@ import {
   BookHeart,
   BookOpen,
   LayoutGrid,
+  Sparkles,
 } from 'lucide-react'
 
 export type WidgetType = 
@@ -20,6 +21,7 @@ export type WidgetType =
   | 'interests'
   | 'exercises'
   | 'diary'
+  | 'wellness'
   | 'knowledge'
 
 export interface WidgetFilterItem {
@@ -38,6 +40,7 @@ export const availableWidgets: WidgetFilterItem[] = [
   { id: 'interests', label: 'Intressen', icon: Compass, color: 'text-teal-600 bg-teal-50 border-teal-200' },
   { id: 'exercises', label: 'Övningar', icon: Dumbbell, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'diary', label: 'Dagbok', icon: BookHeart, color: 'text-rose-600 bg-rose-50 border-rose-200' },
+  { id: 'wellness', label: 'Hälsa', icon: Sparkles, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'knowledge', label: 'Kunskap', icon: BookOpen, color: 'text-amber-600 bg-amber-50 border-amber-200' },
 ]
 

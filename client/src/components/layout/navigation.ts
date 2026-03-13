@@ -12,6 +12,7 @@ import {
   Users,
   Heart,
   Bookmark,
+  Sparkles,
 } from 'lucide-react'
 
 // Standard navigation för deltagare
@@ -24,6 +25,7 @@ export const navItems = [
   { path: '/interest-guide', label: 'Intresseguide', icon: Compass },
   { path: '/exercises', label: 'Övningar', icon: Dumbbell },
   { path: '/diary', label: 'Dagbok', icon: Heart },
+  { path: '/wellness', label: 'Hälsa', icon: Sparkles },
   { path: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
   { path: '/resources', label: 'Resurser', icon: Bookmark },
 ]

@@ -16,6 +16,7 @@ import {
   ChevronRight,
   TrendingUp,
   Award,
+  Sparkles,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -86,7 +87,7 @@ function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor,
 
 // Default visible widgets
 const defaultVisibleWidgets: WidgetType[] = [
-  'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'knowledge',
+  'cv', 'coverLetter', 'jobSearch', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge',
 ]
 
 const STORAGE_KEY_VISIBLE = 'dashboard_visible_widgets'
@@ -227,6 +228,14 @@ export function MobileDashboard() {
       title: 'Dagbok',
       subtitle: 'Din jobbsökningsdagbok',
       color: 'rose',
+    },
+    {
+      id: 'wellness' as WidgetType,
+      to: '/wellness',
+      icon: <Sparkles size={20} />,
+      title: 'Hälsa',
+      subtitle: 'Ditt välmående',
+      color: 'emerald',
     },
     {
       id: 'knowledge' as WidgetType,
