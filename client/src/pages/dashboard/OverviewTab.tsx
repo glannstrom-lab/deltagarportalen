@@ -9,6 +9,11 @@ import { CompactWidgetFilter, type WidgetType } from '@/components/dashboard/Com
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
 import { DashboardGridSkeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui'
+import {
+  CVWidget,
+  CoverLetterWidget,
+  JobSearchWidget,
+} from '@/components/dashboard'
 import { cn } from '@/lib/utils'
 
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
@@ -105,47 +110,45 @@ export default function OverviewTab() {
         onHideAll={handleHideAll}
       />
 
-      {/* Debug info */}
-      <div className="p-4 bg-blue-50 rounded-lg text-sm">
-        <p><strong>Debug:</strong></p>
-        <p>Data loaded: {data ? 'Ja' : 'Nej'}</p>
-        <p>User: {user?.email || 'Ej inloggad'}</p>
-        <p>Widgets: {visibleWidgets.join(', ')}</p>
-      </div>
-
       {/* Widget Grid */}
       <DashboardGrid>
         {visibleWidgets.includes('cv') &&
           renderWidget(
             'cv',
-            <div className="p-6 bg-white rounded-xl border border-slate-200">
-              <h3 className="font-semibold text-slate-800">CV Widget</h3>
-              <p className="text-sm text-slate-600 mt-2">
-                Har CV: {data?.cv?.hasCV ? 'Ja' : 'Nej'}
-              </p>
-            </div>
+            <CVWidget
+              hasCV={data?.cv?.hasCV ?? false}
+              progress={data?.cv?.progress ?? 0}
+              atsScore={data?.cv?.atsScore ?? 0}
+              missingSections={data?.cv?.missingSections}
+              savedCVs={data?.cv?.savedCVs}
+              currentTemplate={data?.cv?.currentTemplate}
+              error={error}
+              onRetry={refetch}
+              size={widgetSizes['cv']}
+            />
           )}
 
         {visibleWidgets.includes('coverLetter') &&
           renderWidget(
             'coverLetter',
-            <div className="p-6 bg-white rounded-xl border border-slate-200">
-              <h3 className="font-semibold text-slate-800">Brev Widget</h3>
-              <p className="text-sm text-slate-600 mt-2">
-                Antal brev: {data?.coverLetters?.count ?? 0}
-              </p>
-            </div>
+            <CoverLetterWidget
+              count={data?.coverLetters?.count ?? 0}
+              recentLetters={data?.coverLetters?.recentLetters}
+              applicationsCount={data?.applications?.total ?? 0}
+              applicationsStatus={data?.applications?.statusBreakdown}
+              size={widgetSizes['coverLetter']}
+            />
           )}
 
         {visibleWidgets.includes('jobSearch') &&
           renderWidget(
             'jobSearch',
-            <div className="p-6 bg-white rounded-xl border border-slate-200">
-              <h3 className="font-semibold text-slate-800">Jobb Widget</h3>
-              <p className="text-sm text-slate-600 mt-2">
-                Sparade jobb: {data?.jobs?.savedCount ?? 0}
-              </p>
-            </div>
+            <JobSearchWidget
+              savedCount={data?.jobs?.savedCount ?? 0}
+              newMatches={data?.jobs?.newMatches}
+              recentJobs={data?.jobs?.recentSavedJobs}
+              size={widgetSizes['jobSearch']}
+            />
           )}
       </DashboardGrid>
     </div>
