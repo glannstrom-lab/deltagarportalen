@@ -16,6 +16,11 @@ import {
   ApplicationsWidget,
   CareerWidget,
   InterestWidget,
+  ExercisesWidget,
+  DiaryWidget,
+  WellnessWidget,
+  KnowledgeWidget,
+  QuestsWidget,
 } from '@/components/dashboard'
 import { cn } from '@/lib/utils'
 
@@ -37,7 +42,7 @@ const allWidgets: WidgetType[] = [
   'cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge', 'quests',
 ]
 
-const defaultVisibleWidgets: WidgetType[] = ['cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests']
+const defaultVisibleWidgets: WidgetType[] = allWidgets
 
 export default function OverviewTab() {
   const { user } = useAuthStore()
@@ -187,6 +192,64 @@ export default function OverviewTab() {
               totalQuestions={data?.interest?.totalQuestions}
               riasecProfile={data?.interest?.riasecProfile}
               size={widgetSizes['interests']}
+            />
+          )}
+
+        {visibleWidgets.includes('exercises') &&
+          renderWidget(
+            'exercises',
+            <ExercisesWidget
+              totalExercises={data?.exercises?.totalExercises ?? 38}
+              completedCount={data?.exercises?.completedExercises ?? 0}
+              completionRate={data?.exercises?.completionRate ?? 0}
+              streakDays={data?.exercises?.streakDays ?? 0}
+              size={widgetSizes['exercises']}
+            />
+          )}
+
+        {visibleWidgets.includes('diary') &&
+          renderWidget(
+            'diary',
+            <DiaryWidget
+              upcomingEvents={data?.calendar?.upcomingEvents}
+              eventsThisWeek={data?.calendar?.eventsThisWeek ?? 0}
+              hasConsultantMeeting={data?.calendar?.hasConsultantMeeting ?? false}
+              streakDays={data?.activity?.streakDays ?? 0}
+              size={widgetSizes['diary']}
+            />
+          )}
+
+        {visibleWidgets.includes('wellness') &&
+          renderWidget(
+            'wellness',
+            <WellnessWidget
+              completedActivities={0}
+              streakDays={0}
+              moodToday={null}
+              size={widgetSizes['wellness']}
+            />
+          )}
+
+        {visibleWidgets.includes('knowledge') &&
+          renderWidget(
+            'knowledge',
+            <KnowledgeWidget
+              readCount={0}
+              savedCount={0}
+              totalArticles={0}
+              size={widgetSizes['knowledge']}
+            />
+          )}
+
+        {visibleWidgets.includes('quests') &&
+          renderWidget(
+            'quests',
+            <QuestsWidget
+              completedQuests={0}
+              totalQuests={3}
+              quests={[]}
+              streakDays={0}
+              size={widgetSizes['quests']}
             />
           )}
       </DashboardGrid>
