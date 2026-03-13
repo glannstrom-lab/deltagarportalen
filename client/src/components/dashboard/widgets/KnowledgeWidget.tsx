@@ -347,10 +347,6 @@ function KnowledgeWidgetLarge({
       primaryAction={{
         label: 'Utforska alla artiklar',
       }}
-      secondaryAction={savedCount > 0 ? {
-        label: `Sparade artiklar (${savedCount})`,
-        onClick: () => {},
-      } : undefined}
     >
       <div className="space-y-5">
         {/* Top stats row */}

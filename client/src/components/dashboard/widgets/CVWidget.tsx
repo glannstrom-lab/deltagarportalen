@@ -1,8 +1,9 @@
 import { memo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { 
   FileText, CheckCircle2, AlertCircle, Sparkles, TrendingUp, Award, 
   Download, Loader2, Check, ArrowRight, BookOpen, Briefcase, 
-  Lightbulb, Target, Eye, Share2, ChevronRight, Plus, Zap
+  Lightbulb, Target, Eye, ChevronRight, Plus, Zap
 } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
@@ -489,7 +490,7 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           <button
             onClick={handleExportPDF}
             disabled={isExporting || !hasCV}
@@ -509,26 +510,15 @@ function CVWidgetLarge({ hasCV, progress, atsScore, missingSections = [], loadin
             </span>
           </button>
 
-          <a
-            href="/cv?tab=preview"
+          <Link
+            to="/cv?tab=preview"
             className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-violet-300 hover:bg-violet-50 transition-all"
           >
             <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
               <Eye size={24} className="text-blue-600" />
             </div>
             <span className="text-sm font-medium text-slate-700 group-hover:text-violet-700">Förhandsgranska</span>
-          </a>
-
-          <button
-            className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-violet-300 hover:bg-violet-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={!hasCV}
-            onClick={() => alert('Dela-funktion kommer snart!')}
-          >
-            <div className="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center group-hover:bg-emerald-200 transition-colors">
-              <Share2 size={24} className="text-emerald-600" />
-            </div>
-            <span className="text-sm font-medium text-slate-700 group-hover:text-violet-700">Dela</span>
-          </button>
+          </Link>
         </div>
 
         {/* Missing Sections & Recommendations Grid */}

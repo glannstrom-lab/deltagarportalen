@@ -228,10 +228,6 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
       primaryAction={{
         label: 'Ny ansökan',
       }}
-      secondaryAction={total > 0 ? {
-        label: 'Se alla',
-        onClick: () => {},
-      } : undefined}
     >
       <div className="space-y-4">
         {/* Pipeline-översikt i grid */}

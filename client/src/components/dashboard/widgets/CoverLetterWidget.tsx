@@ -293,10 +293,6 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
       primaryAction={{
         label: 'Skapa nytt brev',
       }}
-      secondaryAction={count > 0 ? {
-        label: 'Se alla brev',
-        onClick: () => {},
-      } : undefined}
     >
       <div className="space-y-5">
         {/* Stats Grid */}

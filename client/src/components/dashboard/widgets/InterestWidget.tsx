@@ -317,10 +317,6 @@ function InterestWidgetLarge({ hasResult, topRecommendations = [], completedAt, 
       primaryAction={{
         label: hasResult ? 'Se fullständigt resultat' : 'Starta testet',
       }}
-      secondaryAction={hasResult ? {
-        label: 'Gör om testet',
-        onClick: () => {},
-      } : undefined}
     >
       <div className="space-y-5">
         {hasResult ? (

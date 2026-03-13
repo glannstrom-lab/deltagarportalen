@@ -246,10 +246,6 @@ function JobSearchWidgetLarge({ savedCount, newMatches = 0, recentJobs = [], loa
       primaryAction={{
         label: 'Sök jobb',
       }}
-      secondaryAction={savedCount > 0 ? {
-        label: 'Se sparade',
-        onClick: () => {},
-      } : undefined}
     >
       <div className="space-y-4">
         {/* Stats grid med modern design */}
