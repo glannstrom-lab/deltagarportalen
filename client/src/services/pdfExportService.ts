@@ -174,6 +174,9 @@ async function getCircularImage(url: string, size: number): Promise<string | nul
           return
         }
         
+        // Töm canvas (transparent bakgrund)
+        ctx.clearRect(0, 0, size, size)
+        
         // Skapa cirkel-clip
         ctx.beginPath()
         ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2)
@@ -199,8 +202,8 @@ async function getCircularImage(url: string, size: number): Promise<string | nul
         
         ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight)
         
-        // Returnera som base64
-        resolve(canvas.toDataURL('image/jpeg', 0.9))
+        // Returnera som PNG för att behålla transparens
+        resolve(canvas.toDataURL('image/png'))
       }
       img.onerror = () => reject(new Error('Failed to load image'))
     })
@@ -271,16 +274,12 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
         // Skapa cirkelformad bild
         const circularImg = await getCircularImage(data.profileImage, 200)
         if (circularImg) {
-          // Vit bakgrundscirkel
-          doc.setFillColor(255, 255, 255)
-          doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2 + 2, 'F')
+          // Lägg till den cirkelformade bilden (PNG med transparens)
+          doc.addImage(circularImg, 'PNG', imgX, imgY, imgSize, imgSize, undefined, 'FAST')
           
-          // Lägg till den cirkelformade bilden
-          doc.addImage(circularImg, 'JPEG', imgX, imgY, imgSize, imgSize, undefined, 'FAST')
-          
-          // Vit kantlinje
+          // Vit kantlinje för att bilden ska synas mot mörk bakgrund
           doc.setDrawColor(255, 255, 255)
-          doc.setLineWidth(2)
+          doc.setLineWidth(1.5)
           doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2, 'S')
           
           yPos = 70
@@ -500,16 +499,16 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
         // Skapa cirkelformad bild
         const circularImg = await getCircularImage(data.profileImage, 150)
         if (circularImg) {
-          // Vit bakgrundscirkel
+          // Vit bakgrundscirkel (behövs för att bilden ska synas mot färgad header)
           doc.setFillColor(255, 255, 255)
-          doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2 + 2, 'F')
+          doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2 + 1, 'F')
           
-          // Lägg till den cirkelformade bilden
-          doc.addImage(circularImg, 'JPEG', imgX, imgY, imgSize, imgSize, undefined, 'FAST')
+          // Lägg till den cirkelformade bilden (PNG med transparens)
+          doc.addImage(circularImg, 'PNG', imgX + 1, imgY + 1, imgSize - 2, imgSize - 2, undefined, 'FAST')
           
           // Vit kantlinje
           doc.setDrawColor(255, 255, 255)
-          doc.setLineWidth(1.5)
+          doc.setLineWidth(1)
           doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2, 'S')
         }
       } catch (e) {
@@ -687,14 +686,10 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
         // Skapa cirkelformad bild
         const circularImg = await getCircularImage(data.profileImage, 200)
         if (circularImg) {
-          // Vit bakgrundscirkel
-          doc.setFillColor(255, 255, 255)
-          doc.circle(imgX + imgSize/2, leftY + imgSize/2, imgSize/2 + 2, 'F')
+          // Lägg till den cirkelformade bilden (PNG med transparens)
+          doc.addImage(circularImg, 'PNG', imgX, leftY, imgSize, imgSize, undefined, 'FAST')
           
-          // Lägg till den cirkelformade bilden
-          doc.addImage(circularImg, 'JPEG', imgX, leftY, imgSize, imgSize, undefined, 'FAST')
-          
-          // Vit kantlinje
+          // Vit kantlinje för kontrast mot rosa bakgrund
           doc.setDrawColor(255, 255, 255)
           doc.setLineWidth(2)
           doc.circle(imgX + imgSize/2, leftY + imgSize/2, imgSize/2, 'S')
