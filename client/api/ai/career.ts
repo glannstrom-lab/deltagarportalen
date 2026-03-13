@@ -364,8 +364,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    const data = req.body.data || req.body;
+    // Hantera både { function: 'karriarplan', data: {...} } och { type: 'plan', ... }
+    const body = req.body;
+    const isLegacyFormat = body.function === 'karriarplan';
+    const data = isLegacyFormat ? body.data : (body.data || body);
     const type = req.query.type || data.type || 'plan';
+
+    console.log('[career] Request received:', { isLegacyFormat, type, dataKeys: Object.keys(data || {}) });
 
     let result;
     switch (type) {
