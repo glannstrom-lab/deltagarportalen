@@ -1,7 +1,7 @@
 /**
  * Overview Tab - Main dashboard view with widgets
  */
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { DashboardGrid, getWidgetGridClasses } from '@/components/dashboard/DashboardGrid'
@@ -13,6 +13,9 @@ import {
   CVWidget,
   CoverLetterWidget,
   JobSearchWidget,
+  ApplicationsWidget,
+  CareerWidget,
+  InterestWidget,
 } from '@/components/dashboard'
 import { cn } from '@/lib/utils'
 
@@ -34,7 +37,7 @@ const allWidgets: WidgetType[] = [
   'cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge', 'quests',
 ]
 
-const defaultVisibleWidgets: WidgetType[] = ['cv', 'coverLetter', 'jobSearch']
+const defaultVisibleWidgets: WidgetType[] = ['cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests']
 
 export default function OverviewTab() {
   const { user } = useAuthStore()
@@ -148,6 +151,42 @@ export default function OverviewTab() {
               newMatches={data?.jobs?.newMatches}
               recentJobs={data?.jobs?.recentSavedJobs}
               size={widgetSizes['jobSearch']}
+            />
+          )}
+
+        {visibleWidgets.includes('applications') &&
+          renderWidget(
+            'applications',
+            <ApplicationsWidget
+              total={data?.applications?.total ?? 0}
+              statusBreakdown={data?.applications?.statusBreakdown}
+              nextFollowUp={data?.applications?.nextFollowUp}
+              size={widgetSizes['applications']}
+            />
+          )}
+
+        {visibleWidgets.includes('career') &&
+          renderWidget(
+            'career',
+            <CareerWidget
+              exploredCount={data?.interest?.hasResult ? 1 : 0}
+              recommendedOccupations={data?.interest?.topRecommendations}
+              riasecProfile={data?.interest?.riasecProfile}
+              size={widgetSizes['career']}
+            />
+          )}
+
+        {visibleWidgets.includes('interests') &&
+          renderWidget(
+            'interests',
+            <InterestWidget
+              hasResult={data?.interest?.hasResult ?? false}
+              topRecommendations={data?.interest?.topRecommendations}
+              completedAt={data?.interest?.completedAt}
+              answeredQuestions={data?.interest?.answeredQuestions}
+              totalQuestions={data?.interest?.totalQuestions}
+              riasecProfile={data?.interest?.riasecProfile}
+              size={widgetSizes['interests']}
             />
           )}
       </DashboardGrid>
