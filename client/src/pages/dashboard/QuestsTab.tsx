@@ -1,285 +1,340 @@
 /**
- * Quests Tab - Gamification with daily challenges and achievements
+ * Quests Tab - Daily quests and challenges
  */
-import { useState } from 'react'
-import { 
-  Trophy, Star, Target, Flame, CheckCircle2, Lock,
-  Zap, Calendar, TrendingUp, Gift, ChevronRight
-} from 'lucide-react'
-import { Card, Button } from '@/components/ui'
+import { useState, useEffect } from 'react'
+import { useAuthStore } from '@/stores/authStore'
+import { supabase } from '@/lib/supabase'
+import { CheckCircle2, Circle, Zap, Trophy, Flame, ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 interface Quest {
   id: string
   title: string
   description: string
-  xp: number
-  completed: boolean
-  category: 'daily' | 'weekly' | 'achievement'
-  icon: React.ElementType
+  category: 'cv' | 'apply' | 'network' | 'wellness'
+  energy_level: 'low' | 'medium' | 'high'
+  points: number
+  estimated_minutes: number
+  is_completed: boolean
 }
 
-interface Achievement {
-  id: string
-  title: string
-  description: string
-  icon: React.ElementType
-  unlocked: boolean
-  rarity: 'common' | 'rare' | 'epic' | 'legendary'
+interface QuestStats {
+  current_streak: number
+  total_points: number
+  quests_completed: number
 }
 
-const dailyQuests: Quest[] = [
-  { id: '1', title: 'Spara 3 jobb', description: 'Spara intressanta jobbannonser', xp: 50, completed: true, category: 'daily', icon: Target },
-  { id: '2', title: 'Uppdatera CV', description: 'Gör en förbättring i ditt CV', xp: 100, completed: false, category: 'daily', icon: Zap },
-  { id: '3', title: 'Kontakta nätverk', description: 'Skicka ett meddelande till en kontakt', xp: 75, completed: false, category: 'daily', icon: Flame },
-]
+const categoryIcons: Record<string, string> = {
+  cv: '📝',
+  apply: '📤',
+  network: '🤝',
+  wellness: '✨',
+}
 
-const weeklyQuests: Quest[] = [
-  { id: '4', title: 'Skicka 5 ansökningar', description: 'Skicka minst 5 jobbansökningar', xp: 300, completed: false, category: 'weekly', icon: Trophy },
-  { id: '5', title: 'Gå på intervju', description: 'Genomför en jobbintervju', xp: 500, completed: false, category: 'weekly', icon: Star },
-]
+const categoryLabels: Record<string, string> = {
+  cv: 'CV & Profil',
+  apply: 'Jobbsökning',
+  network: 'Nätverkande',
+  wellness: 'Välmående',
+}
 
-const achievements: Achievement[] = [
-  { id: '1', title: 'Första steget', description: 'Skapa ditt första CV', icon: Trophy, unlocked: true, rarity: 'common' },
-  { id: '2', title: 'Nätverkare', description: 'Kontakta 5 personer', icon: Flame, unlocked: true, rarity: 'common' },
-  { id: '3', title: 'Intervjuproffs', description: 'Gå på 3 intervjuer', icon: Star, unlocked: false, rarity: 'rare' },
-  { id: '4', title: 'Comeback Kid', description: 'Få ett jobberbjudande', icon: Trophy, unlocked: false, rarity: 'epic' },
-  { id: '5', title: 'Mästare', description: 'Fullfölj alla dagliga uppdrag i 30 dagar', icon: Trophy, unlocked: false, rarity: 'legendary' },
-]
-
-const rarityColors = {
-  common: 'bg-slate-100 text-slate-600 border-slate-300',
-  rare: 'bg-blue-100 text-blue-600 border-blue-300',
-  epic: 'bg-purple-100 text-purple-600 border-purple-300',
-  legendary: 'bg-amber-100 text-amber-600 border-amber-300',
+const energyLabels: Record<string, { text: string; color: string }> = {
+  low: { text: 'Låg energi', color: 'text-emerald-600 bg-emerald-50' },
+  medium: { text: 'Medium', color: 'text-yellow-600 bg-yellow-50' },
+  high: { text: 'Hög energi', color: 'text-rose-600 bg-rose-50' },
 }
 
 export default function QuestsTab() {
-  const [quests, setQuests] = useState<Quest[]>([...dailyQuests, ...weeklyQuests])
-  const [streak, setStreak] = useState(5)
-  const [totalXP, setTotalXP] = useState(1250)
-  const [level, setLevel] = useState(3)
+  const { user } = useAuthStore()
+  const [quests, setQuests] = useState<Quest[]>([])
+  const [stats, setStats] = useState<QuestStats>({ current_streak: 0, total_points: 0, quests_completed: 0 })
+  const [loading, setLoading] = useState(true)
+  const [completingId, setCompletingId] = useState<string | null>(null)
 
-  const toggleQuest = (id: string) => {
-    setQuests(prev => prev.map(q => {
-      if (q.id === id) {
-        const newCompleted = !q.completed
-        setTotalXP(xp => newCompleted ? xp + q.xp : xp - q.xp)
-        return { ...q, completed: newCompleted }
+  // Fetch daily quests
+  useEffect(() => {
+    if (!user) return
+
+    const fetchQuests = async () => {
+      try {
+        setLoading(true)
+
+        // First, ensure user has quests assigned for today
+        await supabase.rpc('assign_daily_quests', { p_user_id: user.id })
+
+        // Fetch quests with template info
+        const { data: questsData, error: questsError } = await supabase
+          .from('user_daily_quests')
+          .select(`
+            id,
+            is_completed,
+            quest_templates:quest_template_id (
+              title,
+              description,
+              category,
+              energy_level,
+              points,
+              estimated_minutes
+            )
+          `)
+          .eq('user_id', user.id)
+          .eq('assigned_date', new Date().toISOString().split('T')[0])
+
+        if (questsError) throw questsError
+
+        // Transform data
+        const formattedQuests: Quest[] = questsData?.map((q: any) => ({
+          id: q.id,
+          title: q.quest_templates.title,
+          description: q.quest_templates.description,
+          category: q.quest_templates.category,
+          energy_level: q.quest_templates.energy_level,
+          points: q.quest_templates.points,
+          estimated_minutes: q.quest_templates.estimated_minutes,
+          is_completed: q.is_completed,
+        })) || []
+
+        setQuests(formattedQuests)
+
+        // Fetch stats
+        const { data: statsData, error: statsError } = await supabase
+          .from('user_quest_stats')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle()
+
+        if (statsError) throw statsError
+
+        if (statsData) {
+          setStats(statsData)
+        }
+      } catch (err) {
+        console.error('Error fetching quests:', err)
+      } finally {
+        setLoading(false)
       }
-      return q
-    }))
+    }
+
+    fetchQuests()
+  }, [user])
+
+  // Complete a quest
+  const completeQuest = async (questId: string) => {
+    if (!user) return
+
+    setCompletingId(questId)
+
+    try {
+      const { error } = await supabase.rpc('complete_quest', {
+        p_quest_id: questId,
+        p_user_id: user.id,
+      })
+
+      if (error) throw error
+
+      // Update local state
+      setQuests((prev) =>
+        prev.map((q) => (q.id === questId ? { ...q, is_completed: true } : q))
+      )
+
+      // Update stats
+      const quest = quests.find((q) => q.id === questId)
+      if (quest) {
+        setStats((prev) => ({
+          ...prev,
+          total_points: prev.total_points + quest.points,
+          quests_completed: prev.quests_completed + 1,
+        }))
+      }
+    } catch (err) {
+      console.error('Error completing quest:', err)
+    } finally {
+      setCompletingId(null)
+    }
   }
 
-  const completedDaily = quests.filter(q => q.category === 'daily' && q.completed).length
-  const completedWeekly = quests.filter(q => q.category === 'weekly' && q.completed).length
-  const unlockedAchievements = achievements.filter(a => a.unlocked).length
+  const completedCount = quests.filter((q) => q.is_completed).length
+  const totalPoints = quests.filter((q) => q.is_completed).reduce((sum, q) => sum + q.points, 0)
+  const progress = quests.length > 0 ? Math.round((completedCount / quests.length) * 100) : 0
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="h-32 bg-slate-100 rounded-2xl animate-pulse" />
+        <div className="grid gap-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-32 bg-slate-100 rounded-xl animate-pulse" />
+          ))}
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="space-y-6">
-      {/* Profile Card */}
-      <Card className="p-6 bg-gradient-to-br from-indigo-500 to-purple-600 text-white">
-        <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-2xl bg-white/20 backdrop-blur flex items-center justify-center">
-            <Trophy className="w-10 h-10 text-yellow-300" />
+    <div className="space-y-8">
+      {/* Header Stats */}
+      <div className="grid grid-cols-3 gap-4">
+        <div className="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-2xl border border-yellow-200">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3">
+            <Zap size={20} className="text-yellow-600" />
           </div>
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-1">
-              <h3 className="text-2xl font-bold">Nivå {level}</h3>
-              <div className="flex items-center gap-1 px-3 py-1 bg-white/20 rounded-full">
-                <Flame className="w-4 h-4 text-orange-300" />
-                <span className="font-bold">{streak} dagar</span>
-              </div>
-            </div>
-            <p className="text-indigo-100 mb-3">Jobbsökar-äventyrare</p>
-            
-            {/* XP Bar */}
-            <div className="flex items-center gap-3">
-              <span className="text-sm font-medium">{totalXP} XP</span>
-              <div className="flex-1 h-3 bg-black/20 rounded-full overflow-hidden">
-                <div 
-                  className="h-full bg-gradient-to-r from-yellow-400 to-amber-400 transition-all"
-                  style={{ width: '65%' }}
-                />
-              </div>
-              <span className="text-sm text-indigo-200">{1500 - totalXP} till nivå {level + 1}</span>
-            </div>
-          </div>
+          <p className="text-2xl font-bold text-yellow-800">{totalPoints}</p>
+          <p className="text-sm text-yellow-600">poäng idag</p>
         </div>
-      </Card>
 
-      {/* Daily Quests */}
-      <Card className="p-6">
+        <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border border-orange-200">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3">
+            <Flame size={20} className="text-orange-600" />
+          </div>
+          <p className="text-2xl font-bold text-orange-800">{stats.current_streak}</p>
+          <p className="text-sm text-orange-600">dagar i rad</p>
+        </div>
+
+        <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
+          <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm mb-3">
+            <Trophy size={20} className="text-emerald-600" />
+          </div>
+          <p className="text-2xl font-bold text-emerald-800">{stats.quests_completed}</p>
+          <p className="text-sm text-emerald-600">totalt avklarade</p>
+        </div>
+      </div>
+
+      {/* Progress */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-blue-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-slate-800">Dagens uppdrag</h3>
-              <p className="text-sm text-slate-500">{completedDaily} av {dailyQuests.length} avklarade</p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="text-sm text-slate-500">Återställs om</p>
-            <p className="font-mono font-bold text-slate-700">14:32:15</p>
-          </div>
+          <h3 className="font-semibold text-slate-800">Dagens progress</h3>
+          <span className="text-lg font-bold text-yellow-600">{progress}%</span>
         </div>
+        <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+          <div
+            className="bg-gradient-to-r from-yellow-400 to-amber-500 h-3 rounded-full transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+        <p className="text-sm text-slate-500 mt-3">
+          {completedCount} av {quests.length} quests avklarade
+        </p>
+      </div>
 
-        <div className="space-y-3">
-          {dailyQuests.map((quest) => {
-            const Icon = quest.icon
+      {/* Quests List */}
+      <div className="space-y-4">
+        <h3 className="font-semibold text-slate-800 text-lg">Dagens uppdrag</h3>
+
+        {quests.length === 0 ? (
+          <div className="p-8 bg-slate-50 rounded-2xl text-center">
+            <p className="text-slate-600">Inga quests tilldelade än.</p>
+            <p className="text-sm text-slate-500 mt-1">Kom tillbaka imorgon!</p>
+          </div>
+        ) : (
+          quests.map((quest) => {
+            const energy = energyLabels[quest.energy_level]
+
             return (
               <div
                 key={quest.id}
-                onClick={() => toggleQuest(quest.id)}
-                className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  quest.completed
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-white border-slate-200 hover:border-blue-300'
-                }`}
+                className={cn(
+                  'relative p-5 rounded-2xl border-2 transition-all',
+                  quest.is_completed
+                    ? 'bg-emerald-50/50 border-emerald-200'
+                    : 'bg-white border-slate-200 hover:border-yellow-300'
+                )}
               >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  quest.completed ? 'bg-green-100' : 'bg-blue-100'
-                }`}>
-                  {quest.completed ? (
-                    <CheckCircle2 className="w-6 h-6 text-green-600" />
-                  ) : (
-                    <Icon className="w-6 h-6 text-blue-600" />
-                  )}
+                <div className="flex items-start gap-4">
+                  {/* Checkbox */}
+                  <button
+                    onClick={() => !quest.is_completed && completeQuest(quest.id)}
+                    disabled={quest.is_completed || completingId === quest.id}
+                    className={cn(
+                      'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all',
+                      quest.is_completed
+                        ? 'bg-emerald-500 text-white'
+                        : 'bg-slate-100 text-slate-400 hover:bg-yellow-100 hover:text-yellow-600'
+                    )}
+                  >
+                    {completingId === quest.id ? (
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    ) : quest.is_completed ? (
+                      <CheckCircle2 size={22} />
+                    ) : (
+                      <Circle size={22} />
+                    )}
+                  </button>
+
+                  {/* Content */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-lg">{categoryIcons[quest.category]}</span>
+                      <span className="text-xs font-medium text-slate-500">
+                        {categoryLabels[quest.category]}
+                      </span>
+                      <span className={cn('text-xs px-2 py-0.5 rounded-full', energy.color)}>
+                        {energy.text}
+                      </span>
+                    </div>
+
+                    <h4
+                      className={cn(
+                        'font-semibold text-slate-800 mt-1',
+                        quest.is_completed && 'line-through text-slate-400'
+                      )}
+                    >
+                      {quest.title}
+                    </h4>
+
+                    <p
+                      className={cn(
+                        'text-sm mt-1',
+                        quest.is_completed ? 'text-slate-400' : 'text-slate-600'
+                      )}
+                    >
+                      {quest.description}
+                    </p>
+
+                    <div className="flex items-center gap-4 mt-3 text-sm">
+                      <span className="text-slate-500">⏱ {quest.estimated_minutes} min</span>
+                      <span className="text-yellow-600 font-medium">+{quest.points} poäng</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex-1">
-                  <h4 className={`font-semibold ${quest.completed ? 'text-green-700 line-through' : 'text-slate-800'}`}>
-                    {quest.title}
-                  </h4>
-                  <p className="text-sm text-slate-500">{quest.description}</p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-                    +{quest.xp} XP
-                  </span>
-                </div>
-              </div>
-            )
-          })}
-        </div>
-      </Card>
-
-      {/* Weekly Quests */}
-      <Card className="p-6">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-purple-600" />
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-slate-800">Veckovisa utmaningar</h3>
-            <p className="text-sm text-slate-500">{completedWeekly} av {weeklyQuests.length} avklarade</p>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          {weeklyQuests.map((quest) => {
-            const Icon = quest.icon
-            return (
-              <div
-                key={quest.id}
-                onClick={() => toggleQuest(quest.id)}
-                className={`flex items-center gap-4 p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                  quest.completed
-                    ? 'bg-green-50 border-green-200'
-                    : 'bg-white border-slate-200 hover:border-purple-300'
-                }`}
-              >
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                  quest.completed ? 'bg-green-100' : 'bg-purple-100'
-                }`}>
-                  {quest.completed ? (
-                    <CheckCircle2 className="w-6 h-6 text-green-600" />
-                  ) : (
-                    <Icon className="w-6 h-6 text-purple-600" />
-                  )}
-                </div>
-
-                <div className="flex-1">
-                  <h4 className={`font-semibold ${quest.completed ? 'text-green-700 line-through' : 'text-slate-800'}`}>
-                    {quest.title}
-                  </h4>
-                  <p className="text-sm text-slate-500">{quest.description}</p>
-                </div>
-
-                <span className="px-3 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-medium">
-                  +{quest.xp} XP
-                </span>
-              </div>
-            )
-          })}
-        </div>
-      </Card>
-
-      {/* Achievements */}
-      <Card className="p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center">
-              <Star className="w-5 h-5 text-yellow-600" />
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-slate-800">Achievements</h3>
-              <p className="text-sm text-slate-500">{unlockedAchievements} av {achievements.length} upplåsta</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-          {achievements.map((achievement) => {
-            const Icon = achievement.icon
-            return (
-              <div
-                key={achievement.id}
-                className={`p-4 rounded-xl border-2 ${
-                  achievement.unlocked
-                    ? rarityColors[achievement.rarity]
-                    : 'bg-slate-50 border-slate-200 opacity-60'
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  {achievement.unlocked ? (
-                    <Icon className="w-8 h-8" />
-                  ) : (
-                    <Lock className="w-8 h-8 text-slate-400" />
-                  )}
-                  {achievement.unlocked && (
-                    <span className="text-xs px-2 py-1 bg-white/50 rounded-full capitalize">
-                      {achievement.rarity}
+                {/* Completed badge */}
+                {quest.is_completed && (
+                  <div className="absolute top-4 right-4">
+                    <span className="text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
+                      Avklarad!
                     </span>
-                  )}
-                </div>
-                <h4 className={`font-semibold ${achievement.unlocked ? '' : 'text-slate-500'}`}>
-                  {achievement.title}
-                </h4>
-                <p className="text-sm opacity-80">{achievement.description}</p>
+                  </div>
+                )}
               </div>
             )
-          })}
-        </div>
-      </Card>
+          })
+        )}
+      </div>
 
-      {/* Rewards Preview */}
-      <Card className="p-6 bg-gradient-to-br from-amber-50 to-yellow-50 border-amber-200">
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-            <Gift className="w-7 h-7 text-amber-500" />
+      {/* All completed celebration */}
+      {completedCount === quests.length && quests.length > 0 && (
+        <div className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200 text-center">
+          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-4">
+            <Trophy size={32} className="text-emerald-500" />
           </div>
-          <div className="flex-1">
-            <h4 className="font-semibold text-slate-800">Kommande belöningar</h4>
-            <p className="text-slate-600">
-              Nå nivå 5 för att låsa upp exklusiva CV-mallar och premium-funktioner!
-            </p>
-          </div>
-          <ChevronRight className="w-5 h-5 text-slate-400" />
+          <h3 className="text-xl font-bold text-emerald-900">Bra jobbat! 🎉</h3>
+          <p className="text-emerald-700 mt-2">
+            Du har avslutat alla dagens quests. Ta en välförtjänt paus!
+          </p>
         </div>
-      </Card>
+      )}
+
+      {/* Tips */}
+      <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
+        <h4 className="font-medium text-blue-900 flex items-center gap-2">
+          <ChevronRight size={16} />
+          Tips
+        </h4>
+        <p className="text-sm text-blue-700 mt-1">
+          Välj quests baserat på din energinivå idag. Det är okej att bara göra en liten del -
+          allt räknas!
+        </p>
+      </div>
     </div>
   )
 }

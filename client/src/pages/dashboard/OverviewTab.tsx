@@ -20,6 +20,7 @@ import {
   DiaryWidget,
   WellnessWidget,
   KnowledgeWidget,
+  QuestsWidget,
 } from '@/components/dashboard'
 import { cn } from '@/lib/utils'
 
@@ -34,13 +35,14 @@ const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
   diary: 'small',
   wellness: 'small',
   knowledge: 'small',
+  quests: 'small',
 }
 
 const allWidgets: WidgetType[] = [
-  'cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge',
+  'cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge', 'quests',
 ]
 
-const defaultVisibleWidgets: WidgetType[] = ['cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge']
+const defaultVisibleWidgets: WidgetType[] = allWidgets
 
 export default function OverviewTab() {
   const { user } = useAuthStore()
@@ -236,6 +238,17 @@ export default function OverviewTab() {
               savedCount={0}
               totalArticles={0}
               size={widgetSizes['knowledge']}
+            />
+          )}
+
+        {visibleWidgets.includes('quests') &&
+          renderWidget(
+            'quests',
+            <QuestsWidget
+              completedQuests={0}
+              totalQuests={3}
+              streakDays={0}
+              size={widgetSizes['quests']}
             />
           )}
       </DashboardGrid>
