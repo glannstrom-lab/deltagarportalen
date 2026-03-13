@@ -155,6 +155,78 @@ async function getImageAsBase64(url: string): Promise<string | null> {
   }
 }
 
+// Beskär bild till cirkel med canvas
+async function getCircularImage(url: string, size: number): Promise<string | null> {
+  try {
+    // Ladda bilden
+    const img = new Image()
+    img.crossOrigin = 'anonymous'
+    
+    const imgLoaded = new Promise<string>((resolve, reject) => {
+      img.onload = () => {
+        // Skapa canvas
+        const canvas = document.createElement('canvas')
+        canvas.width = size
+        canvas.height = size
+        const ctx = canvas.getContext('2d')
+        if (!ctx) {
+          reject(new Error('Could not get canvas context'))
+          return
+        }
+        
+        // Skapa cirkel-clip
+        ctx.beginPath()
+        ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2)
+        ctx.closePath()
+        ctx.clip()
+        
+        // Rita bilden centrerad och täckande
+        const aspectRatio = img.width / img.height
+        let drawWidth = size
+        let drawHeight = size
+        let offsetX = 0
+        let offsetY = 0
+        
+        if (aspectRatio > 1) {
+          // Bred bild - anpassa höjden
+          drawWidth = size * aspectRatio
+          offsetX = -(drawWidth - size) / 2
+        } else {
+          // Hög bild - anpassa bredden
+          drawHeight = size / aspectRatio
+          offsetY = -(drawHeight - size) / 2
+        }
+        
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight)
+        
+        // Returnera som base64
+        resolve(canvas.toDataURL('image/jpeg', 0.9))
+      }
+      img.onerror = () => reject(new Error('Failed to load image'))
+    })
+    
+    // Om det är en URL, sätt src direkt
+    if (url.startsWith('http') || url.startsWith('/')) {
+      img.src = url
+    } else if (url.startsWith('data:')) {
+      img.src = url
+    } else {
+      // Försök hämta som base64 först
+      const base64 = await getImageAsBase64(url)
+      if (base64) {
+        img.src = base64
+      } else {
+        return null
+      }
+    }
+    
+    return await imgLoaded
+  } catch (e) {
+    console.error('Failed to create circular image:', e)
+    return null
+  }
+}
+
 // Hämta skill name
 function getSkillName(skill: any): string {
   if (typeof skill === 'string') return skill
@@ -188,23 +260,33 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     doc.setFillColor(...(isNordic ? [240, 249, 255] : template.colors.sidebar as [number, number, number]))
     doc.rect(0, 0, sidebarWidth, pageHeight, 'F')
 
-    // Profilbild
+    // Profilbild (cirkelformad)
     let yPos = 20
     if (data.profileImage) {
       try {
-        const imgData = await getImageAsBase64(data.profileImage)
-        if (imgData) {
-          const imgX = (sidebarWidth - 40) / 2
-          const imgY = 15
+        const imgSize = 44
+        const imgX = (sidebarWidth - imgSize) / 2
+        const imgY = 15
+        
+        // Skapa cirkelformad bild
+        const circularImg = await getCircularImage(data.profileImage, 200)
+        if (circularImg) {
+          // Vit bakgrundscirkel
           doc.setFillColor(255, 255, 255)
-          doc.circle(imgX + 20, imgY + 20, 22, 'F')
-          doc.addImage(imgData, 'JPEG', imgX, imgY, 40, 40, undefined, 'FAST')
-          doc.setDrawColor(255, 255, 255, 0.5)
+          doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2 + 2, 'F')
+          
+          // Lägg till den cirkelformade bilden
+          doc.addImage(circularImg, 'JPEG', imgX, imgY, imgSize, imgSize, undefined, 'FAST')
+          
+          // Vit kantlinje
+          doc.setDrawColor(255, 255, 255)
           doc.setLineWidth(2)
-          doc.circle(imgX + 20, imgY + 20, 21, 'S')
-          yPos = 65
+          doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2, 'S')
+          
+          yPos = 70
         }
       } catch (e) {
+        console.error('Error adding profile image:', e)
         yPos = 20
       }
     }
@@ -408,21 +490,30 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
 
     let headerY = isGradient || isExecutive ? 30 : 25
 
-    // Profilbild i header
+    // Profilbild i header (cirkelformad)
     if (data.profileImage) {
       try {
-        const imgData = await getImageAsBase64(data.profileImage)
-        if (imgData) {
-          const imgSize = isGradient || isExecutive ? 30 : 25
-          const imgX = margin
-          const imgY = isGradient || isExecutive ? 20 : 15
-          
+        const imgSize = isGradient || isExecutive ? 30 : 25
+        const imgX = margin
+        const imgY = isGradient || isExecutive ? 20 : 15
+        
+        // Skapa cirkelformad bild
+        const circularImg = await getCircularImage(data.profileImage, 150)
+        if (circularImg) {
+          // Vit bakgrundscirkel
           doc.setFillColor(255, 255, 255)
           doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2 + 2, 'F')
-          doc.addImage(imgData, 'JPEG', imgX, imgY, imgSize, imgSize, undefined, 'FAST')
+          
+          // Lägg till den cirkelformade bilden
+          doc.addImage(circularImg, 'JPEG', imgX, imgY, imgSize, imgSize, undefined, 'FAST')
+          
+          // Vit kantlinje
+          doc.setDrawColor(255, 255, 255)
+          doc.setLineWidth(1.5)
+          doc.circle(imgX + imgSize/2, imgY + imgSize/2, imgSize/2, 'S')
         }
       } catch (e) {
-        // Ignore
+        console.error('Error adding header profile image:', e)
       }
     }
 
@@ -587,19 +678,31 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
 
     let leftY = 20
 
-    // Profilbild
+    // Profilbild (cirkelformad)
     if (data.profileImage) {
       try {
-        const imgData = await getImageAsBase64(data.profileImage)
-        if (imgData) {
-          const imgSize = 45
-          const imgX = (leftWidth - imgSize) / 2
+        const imgSize = 45
+        const imgX = (leftWidth - imgSize) / 2
+        
+        // Skapa cirkelformad bild
+        const circularImg = await getCircularImage(data.profileImage, 200)
+        if (circularImg) {
+          // Vit bakgrundscirkel
           doc.setFillColor(255, 255, 255)
-          doc.roundedRect(imgX - 2, leftY - 2, imgSize + 4, imgSize + 4, 10, 10, 'F')
-          doc.addImage(imgData, 'JPEG', imgX, leftY, imgSize, imgSize, undefined, 'FAST')
+          doc.circle(imgX + imgSize/2, leftY + imgSize/2, imgSize/2 + 2, 'F')
+          
+          // Lägg till den cirkelformade bilden
+          doc.addImage(circularImg, 'JPEG', imgX, leftY, imgSize, imgSize, undefined, 'FAST')
+          
+          // Vit kantlinje
+          doc.setDrawColor(255, 255, 255)
+          doc.setLineWidth(2)
+          doc.circle(imgX + imgSize/2, leftY + imgSize/2, imgSize/2, 'S')
+          
           leftY += imgSize + 15
         }
       } catch (e) {
+        console.error('Error adding split layout profile image:', e)
         leftY = 20
       }
     }
