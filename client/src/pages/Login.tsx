@@ -85,7 +85,7 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-8">
           <img 
-            src="/jobin-logo.png" 
+            src="/jobin-logga.png" 
             alt="Jobin" 
             className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
           />

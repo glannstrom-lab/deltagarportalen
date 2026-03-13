@@ -266,7 +266,7 @@ export default function Landing() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
               <img 
-                src="/jobin-logo.png" 
+                src="/jobin-logga.png" 
                 alt="Jobin" 
                 className="w-10 h-10 rounded-xl shadow-lg group-hover:shadow-xl transition-shadow object-contain bg-white"
               />

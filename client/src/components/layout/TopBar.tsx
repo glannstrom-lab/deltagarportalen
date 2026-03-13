@@ -162,7 +162,7 @@ export function TopBar() {
         <div className="flex items-center gap-3">
           <Link to="/" className="lg:hidden flex items-center gap-2">
             <img 
-              src="/jobin-logo.png" 
+              src="/jobin-logga.png" 
               alt="Jobin" 
               className="w-8 h-8 rounded-xl object-contain bg-white shadow-md"
             />

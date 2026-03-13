@@ -14,7 +14,7 @@ const PRECACHE_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/favicon.ico',
-  '/jobin-logo.png',
+  '/jobin-logga.png',
 ]
 
 // Install event - Precache critical assets

@@ -125,7 +125,7 @@ export function Sidebar() {
         )}>
           <Link to="/" className="flex items-center gap-2.5 group">
             <img 
-              src="/jobin-logo.png" 
+              src="/jobin-logga.png" 
               alt="Jobin" 
               className="w-8 h-8 rounded-lg shadow-md transition-transform duration-150 group-hover:scale-105 object-contain bg-white"
             />
