@@ -7,7 +7,6 @@ import {
 } from 'lucide-react'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
-import { BottomBar } from './layout/BottomBar'
 import { MobileBackButton } from './MobileBackButton'
 import BreakReminder from './BreakReminder'
 import { ToastContainer } from './Toast'
@@ -80,8 +79,7 @@ export default function Layout() {
           </div>
         </main>
         
-        {/* Desktop footer - synkad med Sidebar z-index hierarki */}
-        {!isMobile && showBars && <BottomBar />}
+
       </div>
       
       {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}

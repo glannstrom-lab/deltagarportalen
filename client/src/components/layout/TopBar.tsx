@@ -9,12 +9,14 @@ import {
   Settings,
   HelpCircle,
   ChevronDown,
-  Flame
+  Flame,
+  Heart
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
+import CrisisSupport from '@/components/CrisisSupport'
 
 interface UserProfile {
   first_name: string
@@ -220,6 +222,11 @@ export function TopBar() {
           >
             <HelpCircle size={20} className="text-slate-500" />
           </Link>
+
+          {/* Crisis Support / Hjärtat */}
+          <div className="hidden lg:flex items-center">
+            <CrisisSupport variant="inline" />
+          </div>
 
           {/* Notifikationer */}
           <div className="relative">
