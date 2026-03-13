@@ -83,10 +83,12 @@ export default function Register() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-            <span className="text-teal-700 font-bold text-2xl">D</span>
-          </div>
-          <h1 className="text-2xl font-bold text-white">Deltagarportalen</h1>
+          <img 
+            src="/jobin-logo.png" 
+            alt="Jobin" 
+            className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
+          />
+          <h1 className="text-2xl font-bold text-white">Jobin</h1>
           <p className="text-teal-200 mt-1">Din väg till nytt jobb börjar här</p>
         </div>
 

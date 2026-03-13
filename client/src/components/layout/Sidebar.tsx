@@ -124,9 +124,11 @@ export function Sidebar() {
           isExpanded ? 'px-3 justify-between' : 'px-3 justify-center'
         )}>
           <Link to="/" className="flex items-center gap-2.5 group">
-            <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-md transition-transform duration-150 group-hover:scale-105">
-              <Sparkles className="w-4 h-4 text-indigo-600" />
-            </div>
+            <img 
+              src="/jobin-logo.png" 
+              alt="Jobin" 
+              className="w-8 h-8 rounded-lg shadow-md transition-transform duration-150 group-hover:scale-105 object-contain bg-white"
+            />
             {isExpanded && (
               <span className="text-white font-bold text-base tracking-tight">Jobin</span>
             )}

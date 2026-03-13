@@ -265,9 +265,11 @@ export default function Landing() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-xl transition-shadow">
-                J
-              </div>
+              <img 
+                src="/jobin-logo.png" 
+                alt="Jobin" 
+                className="w-10 h-10 rounded-xl shadow-lg group-hover:shadow-xl transition-shadow object-contain bg-white"
+              />
               <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">Jobin</span>
             </Link>
 

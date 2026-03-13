@@ -161,9 +161,11 @@ export function TopBar() {
         {/* Vänster - Logo/Datum + Streak */}
         <div className="flex items-center gap-3">
           <Link to="/" className="lg:hidden flex items-center gap-2">
-            <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-sm">DP</span>
-            </div>
+            <img 
+              src="/jobin-logo.png" 
+              alt="Jobin" 
+              className="w-8 h-8 rounded-xl object-contain bg-white shadow-md"
+            />
           </Link>
           
           <div className="hidden sm:flex items-center gap-2 text-slate-600">
