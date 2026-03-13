@@ -15,8 +15,12 @@ export interface UseDashboardDataReturn {
   isRefetching: boolean
 }
 
+// Forward declaration
+function getDefaultDashboardData(): DashboardWidgetData
+
 // Funktion för att hämta all dashboard-data
 async function fetchDashboardData(): Promise<DashboardWidgetData> {
+  try {
   // Parallella anrop för bättre prestanda
   const [
     cv,
@@ -161,15 +165,85 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
       streakDays: userStreaks?.current_streak || streakDays,
     },
     quests: {
-      total: quests.length || 3,
-      completed: quests.filter((q: any) => q.is_completed).length,
-      items: quests.map((q: any) => ({
+      total: quests?.length || 3,
+      completed: quests?.filter((q: any) => q.is_completed).length || 0,
+      items: quests?.map((q: any) => ({
         id: q.id,
         title: q.title,
         completed: q.is_completed,
         points: q.points,
         category: q.category,
-      })),
+      })) || [],
+    },
+  }
+  } catch (err) {
+    console.error('Error in fetchDashboardData:', err)
+    return getDefaultDashboardData()
+  }
+}
+
+// Default dashboard data fallback
+export function getDefaultDashboardData(): DashboardWidgetData {
+  return {
+    cv: {
+      hasCV: false,
+      progress: 0,
+      atsScore: 0,
+      atsFeedback: [],
+      lastEdited: null,
+      missingSections: ['profile', 'summary', 'work_experience', 'education', 'skills'],
+      savedCVs: [],
+      currentTemplate: 'modern',
+    },
+    interest: {
+      hasResult: false,
+      topRecommendations: [],
+      completedAt: null,
+      riasecProfile: null,
+      answeredQuestions: 0,
+      totalQuestions: 36,
+    },
+    jobs: {
+      savedCount: 0,
+      newMatches: 0,
+      recentSavedJobs: [],
+    },
+    applications: {
+      total: 0,
+      statusBreakdown: { applied: 0, interview: 0, rejected: 0, offer: 0 },
+      nextFollowUp: null,
+    },
+    coverLetters: {
+      count: 0,
+      drafts: 0,
+      recentLetters: [],
+    },
+    exercises: {
+      totalExercises: 38,
+      completedExercises: 0,
+      completionRate: 0,
+      streakDays: 0,
+    },
+    calendar: {
+      upcomingEvents: [],
+      eventsThisWeek: 0,
+      hasConsultantMeeting: false,
+    },
+    activity: {
+      weeklyApplications: 0,
+      streakDays: 0,
+    },
+    knowledge: {
+      readCount: 0,
+      savedCount: 0,
+      totalArticles: 0,
+      recentlyRead: [],
+      recommendedArticle: null,
+    },
+    quests: {
+      total: 3,
+      completed: 0,
+      items: [],
     },
   }
 }
@@ -297,6 +371,8 @@ export function useDashboardData(): UseDashboardDataReturn {
     } catch (err) {
       console.error('Fel vid hämtning av dashboard-data:', err)
       setError('Kunde inte ladda dashboard-data')
+      // Use default data as fallback so UI still works
+      setData(getDefaultDashboardData())
     } finally {
       setLoading(false)
       setIsRefetching(false)
