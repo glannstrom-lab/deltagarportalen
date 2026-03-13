@@ -30,7 +30,8 @@ import {
   Briefcase,
   BookHeart,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  LayoutGrid
 } from 'lucide-react'
 
 const defaultWidgetSizes: Record<WidgetType, WidgetSize> = {
@@ -71,10 +72,12 @@ interface GuideStepProps {
   optional?: boolean
 }
 
+import { Link } from 'react-router-dom'
+
 function GuideStep({ icon: Icon, title, description, done, href, optional }: GuideStepProps) {
   return (
-    <a
-      href={href}
+    <Link
+      to={href}
       className={cn(
         'flex items-center gap-3 p-3 rounded-lg transition-all',
         done 
@@ -103,7 +106,7 @@ function GuideStep({ icon: Icon, title, description, done, href, optional }: Gui
         <p className="text-xs text-slate-500">{description}</p>
       </div>
       {!done && <ArrowRight className="w-4 h-4 text-slate-400" />}
-    </a>
+    </Link>
   )
 }
 
@@ -199,7 +202,7 @@ function DesktopDashboard() {
   if (error) {
     return (
       <PageLayout
-        title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}!`}
+        title="Översikt"
         showTabs={false}
         className="space-y-5"
       >
@@ -216,13 +219,18 @@ function DesktopDashboard() {
 
   return (
     <PageLayout
-      title={`Hej${user?.firstName ? `, ${user.firstName}` : ''}!`}
+      title="Översikt"
       showTabs={false}
-      className="space-y-5"
+      className="space-y-4"
       actions={
         <button
           onClick={() => setShowGuide(true)}
-          className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+          className={cn(
+            "flex items-center gap-2 px-3 py-1.5 rounded-full text-sm font-medium transition-all",
+            showGuide 
+              ? "bg-indigo-600 text-white" 
+              : "bg-indigo-100 text-indigo-700 hover:bg-indigo-200"
+          )}
           title="Visa guide för nästa steg"
         >
           <Compass className="w-4 h-4" />

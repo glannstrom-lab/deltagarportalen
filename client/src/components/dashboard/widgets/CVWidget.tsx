@@ -59,7 +59,7 @@ function getRecommendations(progress: number, missingSections: string[] = []) {
   return recs.slice(0, 2)
 }
 
-// SMALL VARIANT - Compact & visually appealing
+// SMALL VARIANT - Ultra Compact
 function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: Omit<CVWidgetProps, 'size' | 'missingSections'>) {
   const getStatus = (): WidgetStatus => {
     if (!hasCV) return 'empty'
@@ -69,52 +69,10 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
 
   const status = getStatus()
 
-  // Dynamic content based on progress
-  const getProgressVisual = () => {
-    if (progress === 0) {
-      return (
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-100 to-purple-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-300">
-          <Plus className="w-8 h-8 text-violet-500" />
-        </div>
-      )
-    }
-    if (progress >= 80) {
-      return (
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-100 to-teal-100 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform duration-300">
-          <CheckCircle2 className="w-8 h-8 text-emerald-500" />
-        </div>
-      )
-    }
-    return (
-      <div className="relative w-16 h-16 mb-3">
-        <svg className="w-16 h-16 transform -rotate-90" viewBox="0 0 64 64">
-          <circle cx="32" cy="32" r="28" fill="none" stroke="#e2e8f0" strokeWidth="6" />
-          <circle 
-            cx="32" cy="32" r="28" fill="none" 
-            stroke="url(#gradientSmall)" 
-            strokeWidth="6" 
-            strokeLinecap="round"
-            strokeDasharray={`${2 * Math.PI * 28 * progress / 100} ${2 * Math.PI * 28}`}
-            className="transition-all duration-500"
-          />
-          <defs>
-            <linearGradient id="gradientSmall" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#8b5cf6" />
-              <stop offset="100%" stopColor="#a855f7" />
-            </linearGradient>
-          </defs>
-        </svg>
-        <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-lg font-bold text-violet-700">{progress}%</span>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <DashboardWidget
-      title="Ditt CV"
-      icon={<FileText size={18} className="text-violet-600" />}
+      title="CV"
+      icon={<FileText size={16} className="text-violet-600" />}
       to="/cv"
       color="violet"
       status={status}
@@ -123,28 +81,42 @@ function CVWidgetSmall({ hasCV, progress, atsScore, loading, error, onRetry }: O
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: hasCV ? 'Fortsätt' : 'Skapa CV',
+        label: hasCV ? (progress >= 80 ? 'Redigera' : 'Fortsätt') : 'Skapa',
       }}
     >
-      <div className="flex flex-col items-center justify-center py-3 group">
-        {/* Visual indicator */}
-        {getProgressVisual()}
+      <div className="flex items-center gap-3 py-1">
+        {/* Compact progress circle */}
+        <div className="relative w-12 h-12 shrink-0">
+          <svg className="w-12 h-12 transform -rotate-90" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="20" fill="none" stroke="#e2e8f0" strokeWidth="4" />
+            <circle 
+              cx="24" cy="24" r="20" fill="none" 
+              stroke={progress >= 80 ? '#10b981' : progress >= 50 ? '#f59e0b' : '#8b5cf6'}
+              strokeWidth="4" 
+              strokeLinecap="round"
+              strokeDasharray={`${2 * Math.PI * 20 * progress / 100} ${2 * Math.PI * 20}`}
+              className="transition-all duration-500"
+            />
+          </svg>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-xs font-bold text-slate-700">{progress}%</span>
+          </div>
+        </div>
         
         {/* Status text */}
-        <p className="text-sm font-medium text-slate-700 text-center">
-          {progress === 0 && 'Kom igång idag'}
-          {progress > 0 && progress < 50 && 'Bra start!'}
-          {progress >= 50 && progress < 80 && 'Nästan klart!'}
-          {progress >= 80 && 'Redo att söka jobb!'}
-        </p>
-        
-        {/* ATS Score badge */}
-        {atsScore > 0 && (
-          <div className="flex items-center gap-1.5 mt-2 px-2.5 py-1 bg-amber-50 rounded-full">
-            <Award size={12} className="text-amber-500" />
-            <span className="text-xs font-medium text-amber-700">ATS {atsScore}</span>
-          </div>
-        )}
+        <div className="flex-1 min-w-0">
+          <p className="text-xs text-slate-600 truncate">
+            {progress === 0 && 'Inget CV än'}
+            {progress > 0 && progress < 50 && 'Kom igång'}
+            {progress >= 50 && progress < 80 && 'Påbörjat'}
+            {progress >= 80 && 'Redo!'}
+          </p>
+          {atsScore > 0 && (
+            <p className="text-xs text-amber-600 font-medium">
+              ATS: {atsScore}
+            </p>
+          )}
+        </div>
       </div>
     </DashboardWidget>
   )

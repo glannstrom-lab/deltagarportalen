@@ -94,10 +94,10 @@ const statusConfig: Record<WidgetStatus, { label: string; barColor: string; aria
 
 function StatRow({ stat }: { stat: WidgetStat }) {
   return (
-    <div className="flex items-center justify-between py-2">
-      <span className="text-sm text-slate-500">{stat.label}</span>
+    <div className="flex items-center justify-between py-1">
+      <span className="text-xs text-slate-500">{stat.label}</span>
       <div className="flex items-center gap-1">
-        <span className="font-medium text-slate-800">{stat.value}</span>
+        <span className="font-medium text-slate-800 text-xs">{stat.value}</span>
         {stat.trend === 'up' && <span className="text-emerald-500 text-xs" aria-label="Ökande trend">↑</span>}
         {stat.trend === 'down' && <span className="text-rose-500 text-xs" aria-label="Minskande trend">↓</span>}
       </div>
@@ -126,8 +126,8 @@ export function DashboardWidget({
 
   if (loading) {
     return (
-      <Card className="min-h-[140px] h-auto p-5 flex items-center justify-center" role="status" aria-live="polite">
-        <LoadingState size="sm" message="Laddar..." />
+      <Card className="h-auto p-4 flex items-center justify-center" role="status" aria-live="polite">
+        <LoadingState size="sm" message="" />
       </Card>
     )
   }
@@ -135,18 +135,18 @@ export function DashboardWidget({
   if (error) {
     return (
       <Card 
-        className="min-h-[140px] h-auto p-5 flex flex-col items-center justify-center text-center" 
+        className="h-auto p-4 flex flex-col items-center justify-center text-center" 
         role="alert" 
         aria-live="assertive"
       >
-        <div className="w-10 h-10 bg-rose-50 rounded-full flex items-center justify-center mb-2">
-          <AlertCircle className="w-5 h-5 text-rose-500" aria-hidden="true" />
+        <div className="w-8 h-8 bg-rose-50 rounded-full flex items-center justify-center mb-1">
+          <AlertCircle className="w-4 h-4 text-rose-500" aria-hidden="true" />
         </div>
-        <p className="text-sm text-slate-600 mb-2">{error}</p>
+        <p className="text-xs text-slate-600 mb-1">{error}</p>
         {onRetry && (
           <button
             onClick={onRetry}
-            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded px-2 py-1"
+            className="text-xs text-indigo-600 hover:text-indigo-700 font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded px-2 py-1"
           >
             Försök igen
           </button>
@@ -157,23 +157,22 @@ export function DashboardWidget({
 
   return (
     <Card 
-      className="min-h-[140px] h-full p-5 flex flex-col hover:shadow-md transition-shadow focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2"
+      className="h-full p-4 flex flex-col hover:shadow-md transition-shadow focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2"
       role="article"
       aria-label={`${title} - ${statusInfo.ariaLabel}`}
     >
-      {/* Header - Standardiserad struktur */}
-      <div className="flex items-start justify-between mb-3">
+      {/* Header - Compact */}
+      <div className="flex items-center justify-between mb-2">
         <Link 
           to={to} 
-          className="flex items-center gap-3 group min-w-0 flex-1 focus:outline-none"
+          className="flex items-center gap-2 group min-w-0 flex-1 focus:outline-none"
           aria-label={`Gå till ${title}`}
         >
           <div
             className={cn(
-              'w-10 h-10 rounded-xl flex items-center justify-center border-2 shrink-0 transition-colors',
+              'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-colors',
               colors.bg,
-              colors.text,
-              colors.border
+              colors.text
             )}
             aria-hidden="true"
           >
@@ -183,32 +182,32 @@ export function DashboardWidget({
             {title}
           </h3>
         </Link>
-        <div className="flex items-center gap-1 shrink-0 ml-2">
+        <div className="flex items-center gap-0.5 shrink-0 ml-1">
           {sizeSelector}
           <Link
             to={to}
-            className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500"
             aria-label={`Gå till ${title}`}
             title={`Gå till ${title}`}
           >
-            <ArrowRight size={16} />
+            <ArrowRight size={14} />
           </Link>
         </div>
       </div>
 
-      {/* Progress bar - Standardiserad */}
+      {/* Progress bar - Compact */}
       {(status !== 'complete' || progress > 0) && (
-        <div className="mb-3">
-          <div className="flex items-center justify-between text-xs mb-1.5">
-            <span className="text-slate-500 font-medium">{statusInfo.label}</span>
+        <div className="mb-2">
+          <div className="flex items-center justify-between text-xs mb-1">
+            <span className="text-slate-500 text-xs">{statusInfo.label}</span>
             {progress > 0 && (
-              <span className="font-semibold text-slate-700" aria-label={`${progress}% klart`}>
+              <span className="font-medium text-slate-700 text-xs" aria-label={`${progress}% klart`}>
                 {progress}%
               </span>
             )}
           </div>
           <div 
-            className="h-2 bg-slate-100 rounded-full overflow-hidden" 
+            className="h-1.5 bg-slate-100 rounded-full overflow-hidden" 
             role="progressbar" 
             aria-valuenow={progress} 
             aria-valuemin={0} 
@@ -223,10 +222,10 @@ export function DashboardWidget({
         </div>
       )}
 
-      {/* Content */}
+      {/* Content - Compact */}
       <div className="flex-1 overflow-hidden">
         {children || (
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {stats?.map((stat, i) => (
               <StatRow key={i} stat={stat} />
             ))}
@@ -234,24 +233,24 @@ export function DashboardWidget({
         )}
       </div>
 
-      {/* Actions - Standardiserad footer-höjd */}
-      <div className="pt-3 mt-auto border-t border-slate-100 flex gap-2 min-h-[44px]">
+      {/* Actions - Compact */}
+      <div className="pt-2 mt-auto border-t border-slate-100 flex gap-2">
         {primaryAction && (
           <Link
             to={to}
             onClick={primaryAction.onClick}
-            className="flex-1 py-2 px-3 text-white text-xs font-medium rounded-lg text-center transition-all duration-200 hover:opacity-90 flex items-center justify-center gap-1.5 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500"
+            className="flex-1 py-1.5 px-2 text-white text-xs font-medium rounded-md text-center transition-all duration-200 hover:opacity-90 flex items-center justify-center gap-1 focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-indigo-500"
             style={{ backgroundColor: SIDEBAR_COLOR }}
           >
             <span className="truncate">{primaryAction.label}</span>
-            <ArrowRight size={12} className="shrink-0" aria-hidden="true" />
+            <ArrowRight size={10} className="shrink-0" aria-hidden="true" />
           </Link>
         )}
         {secondaryAction && (
           <button
             onClick={secondaryAction.onClick}
             disabled={secondaryAction.disabled}
-            className="flex-1 py-2 px-3 border border-slate-200 text-slate-700 text-xs font-medium rounded-lg hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1.5 truncate focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-400"
+            className="flex-1 py-1.5 px-2 border border-slate-200 text-slate-700 text-xs font-medium rounded-md hover:bg-slate-50 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-1 truncate focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-slate-400"
           >
             {secondaryAction.icon}
             <span className="truncate">{secondaryAction.label}</span>
