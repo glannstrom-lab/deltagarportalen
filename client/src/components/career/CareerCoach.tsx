@@ -81,6 +81,7 @@ export default function CareerCoach() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [debugData, setDebugData] = useState<any>(null); // DEBUG
 
   const fetchOccupations = async (query: string): Promise<AutocompleteOption[]> => {
     if (!query || query.length < 2) return [];
@@ -197,16 +198,12 @@ export default function CareerCoach() {
         });
         
         console.log('[CareerCoach] AI result:', aiResult);
-        console.log('[CareerCoach] aiResult keys:', Object.keys(aiResult));
-        console.log('[CareerCoach] aiResult.steps:', aiResult.steps);
-        console.log('[CareerCoach] aiResult.plan:', aiResult.plan);
+        
+        // Spara för debug-visning
+        setDebugData(aiResult);
         
         // API:et returnerar data direkt (inte inuti en "plan" property)
         const planData = aiResult.plan || aiResult;
-        
-        console.log('[CareerCoach] planData:', planData);
-        console.log('[CareerCoach] planData.steps:', planData?.steps);
-        console.log('[CareerCoach] planData.steps length:', planData?.steps?.length);
         
         if (planData?.steps && planData.steps.length > 0) {
           aiSteps = planData.steps;
@@ -595,6 +592,21 @@ export default function CareerCoach() {
             )) : (
               <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
                 <p className="text-slate-500">Inga steg kunde genereras. Försök igen.</p>
+                {/* DEBUG - ta bort senare */}
+                <details className="mt-4 text-left">
+                  <summary className="text-xs text-slate-400 cursor-pointer">Debug info (klicka för att visa)</summary>
+                  <pre className="mt-2 p-4 bg-slate-900 text-green-400 text-xs rounded-lg overflow-auto max-h-96">
+{JSON.stringify({
+  apiResponse: debugData,
+  careerPath: {
+    stepsLength: careerPath.steps?.length,
+    hasSteps: !!careerPath.steps,
+    analysisPreview: careerPath.analysis?.substring(0, 100),
+    keys: Object.keys(careerPath)
+  }
+}, null, 2)}
+                  </pre>
+                </details>
               </div>
             )}
           </div>
