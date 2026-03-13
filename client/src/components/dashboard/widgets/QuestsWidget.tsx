@@ -57,7 +57,7 @@ function QuestsWidgetSmall({
     <DashboardWidget
       title="Quests"
       icon={<Zap size={14} />}
-      to="/dashboard/quests"
+      to="/quests"
       color="yellow"
       status={status}
       progress={progress}
@@ -114,7 +114,7 @@ function QuestsWidgetMedium({
     <DashboardWidget
       title="Dagens Quests"
       icon={<Target size={22} />}
-      to="/dashboard/quests"
+      to="/quests"
       color="yellow"
       status={status}
       progress={progress}
@@ -215,7 +215,7 @@ function QuestsWidgetLarge({
     <DashboardWidget
       title="Dagens Quests"
       icon={<Target size={24} />}
-      to="/dashboard/quests"
+      to="/quests"
       color="yellow"
       status={status}
       progress={progress}

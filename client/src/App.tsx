@@ -236,6 +236,13 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
+        <Route path="quests" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
         <Route path="cv/*" element={
           <LazyRoute>
             <RouteErrorBoundary>

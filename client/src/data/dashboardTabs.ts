@@ -20,7 +20,7 @@ export const dashboardTabs: Tab[] = [
   { 
     id: 'quests', 
     label: 'Mina Quests', 
-    path: '/dashboard/quests', 
+    path: '/quests', 
     icon: Trophy,
     description: 'Dagliga utmaningar och belöningar',
     badge: 'Ny!'
