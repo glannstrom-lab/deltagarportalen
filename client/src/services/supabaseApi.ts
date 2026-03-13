@@ -428,6 +428,20 @@ export const cvApi = {
     return data?.data
   },
 
+  async deleteVersion(versionId: string) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+    
+    const { error } = await supabase
+      .from('cv_versions')
+      .delete()
+      .eq('id', versionId)
+      .eq('user_id', user.id)
+    
+    if (error) handleError(error)
+    return true
+  },
+
   async shareCV() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)

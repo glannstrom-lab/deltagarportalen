@@ -7,7 +7,7 @@ import {
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
-
+import { showToast } from '@/components/Toast'
 import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVShare } from '@/components/cv/CVShare'
@@ -266,6 +266,20 @@ export default function CVBuilder() {
 
   const loadCV = async () => {
     try {
+      // Kolla först om vi ska redigera en specifik version (från Mina CV)
+      const editVersion = localStorage.getItem('cv-edit-version')
+      if (editVersion) {
+        try {
+          const { data: versionData } = JSON.parse(editVersion)
+          setData(prev => ({ ...prev, ...versionData }))
+          localStorage.removeItem('cv-edit-version')
+          showToast.success('Laddade sparad CV-version')
+          return
+        } catch (e) {
+          console.error('Fel vid laddning av version:', e)
+        }
+      }
+      
       const cv = await cvApi.getCV()
       if (cv) {
         setData(prev => ({ ...prev, ...cv }))
