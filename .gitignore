@@ -49,6 +49,13 @@ server/ai/.env
 *.webp
 *.gif
 
+# But allow images in client/public (logos, favicons, etc.)
+!client/public/**/*.png
+!client/public/**/*.jpg
+!client/public/**/*.jpeg
+!client/public/**/*.webp
+!client/public/**/*.gif
+
 # Demo files
 demo*.html
 *DEMO*.sql
