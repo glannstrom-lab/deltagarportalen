@@ -283,10 +283,10 @@ export default function OverviewTab() {
           renderWidget(
             'quests',
             <QuestsWidget
-              completedQuests={data?.quests.completed ?? 0}
-              totalQuests={data?.quests.total ?? 3}
-              quests={data?.quests.items}
-              streakDays={data?.activity.streakDays ?? 0}
+              completedQuests={data?.quests?.completed ?? 0}
+              totalQuests={data?.quests?.total ?? 3}
+              quests={data?.quests?.items || []}
+              streakDays={data?.activity?.streakDays ?? 0}
               size={widgetSizes['quests']}
             />
           )}

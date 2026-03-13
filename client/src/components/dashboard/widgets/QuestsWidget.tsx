@@ -107,7 +107,8 @@ function QuestsWidgetMedium({
     { id: '3', title: 'Registrera mående', completed: false, points: 10, category: 'wellness' },
   ]
 
-  const displayQuests = quests.length > 0 ? quests : defaultQuests
+  const safeQuests = quests || []
+  const displayQuests = safeQuests.length > 0 ? safeQuests : defaultQuests
 
   return (
     <DashboardWidget
@@ -196,8 +197,7 @@ function QuestsWidgetLarge({
 
   const status = getStatus()
   const progress = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0
-  const totalPoints = quests.reduce((sum, q) => sum + (q.completed ? q.points : 0), 0)
-
+  
   // Default quests if none provided
   const defaultQuests: Quest[] = [
     { id: '1', title: 'Uppdatera CV med ny erfarenhet', completed: false, points: 10, category: 'cv' },
@@ -207,7 +207,9 @@ function QuestsWidgetLarge({
     { id: '5', title: 'Gör 1 karriärövning', completed: false, points: 15, category: 'cv' },
   ]
 
-  const displayQuests = quests.length > 0 ? quests : defaultQuests
+  const safeQuests = quests || []
+  const totalPoints = safeQuests.reduce((sum, q) => sum + (q.completed ? q.points : 0), 0)
+  const displayQuests = safeQuests.length > 0 ? safeQuests : defaultQuests
 
   return (
     <DashboardWidget
