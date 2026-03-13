@@ -12,7 +12,6 @@ import {
   LayoutGrid,
   Sparkles,
   Send,
-  Zap,
 } from 'lucide-react'
 
 export type WidgetType = 
@@ -26,7 +25,6 @@ export type WidgetType =
   | 'diary'
   | 'wellness'
   | 'knowledge'
-  | 'quests'
 
 export interface WidgetFilterItem {
   id: WidgetType
@@ -47,7 +45,6 @@ export const availableWidgets: WidgetFilterItem[] = [
   { id: 'diary', label: 'Dagbok', icon: BookHeart, color: 'text-rose-600 bg-rose-50 border-rose-200' },
   { id: 'wellness', label: 'Hälsa', icon: Sparkles, color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
   { id: 'knowledge', label: 'Kunskap', icon: BookOpen, color: 'text-amber-600 bg-amber-50 border-amber-200' },
-  { id: 'quests', label: 'Quests', icon: Zap, color: 'text-yellow-600 bg-yellow-50 border-yellow-200' },
 ]
 
 interface WidgetFilterProps {
