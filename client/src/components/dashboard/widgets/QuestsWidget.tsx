@@ -1,20 +1,18 @@
 /**
  * QuestsWidget - Dashboard widget for daily quests
- * Shows daily tasks and progress
  */
 import { memo } from 'react'
-import { Zap, CheckCircle2, Circle, Target, Trophy, ChevronRight } from 'lucide-react'
+import { Zap, CheckCircle2, Circle, Target, Trophy } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
-import { Link } from 'react-router-dom'
 
 interface Quest {
   id: string
   title: string
   completed: boolean
   points: number
-  category: 'cv' | 'apply' | 'network' | 'wellness'
+  category: string
 }
 
 interface QuestsWidgetProps {
@@ -33,6 +31,7 @@ const categoryIcons: Record<string, string> = {
   apply: '📤',
   network: '🤝',
   wellness: '✨',
+  general: '⭐',
 }
 
 // SMALL - Compact view
@@ -85,7 +84,7 @@ function QuestsWidgetSmall({
 function QuestsWidgetMedium({ 
   completedQuests = 0, 
   totalQuests = 3,
-  quests = [],
+  quests,
   streakDays = 0,
   loading, 
   error, 
@@ -100,14 +99,13 @@ function QuestsWidgetMedium({
   const status = getStatus()
   const progress = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0
 
-  // Default quests if none provided
+  // Safe fallback for quests
+  const safeQuests = quests || []
   const defaultQuests: Quest[] = [
     { id: '1', title: 'Uppdatera CV', completed: false, points: 10, category: 'cv' },
     { id: '2', title: 'Skicka 1 ansökan', completed: false, points: 20, category: 'apply' },
     { id: '3', title: 'Registrera mående', completed: false, points: 10, category: 'wellness' },
   ]
-
-  const safeQuests = quests || []
   const displayQuests = safeQuests.length > 0 ? safeQuests : defaultQuests
 
   return (
@@ -126,7 +124,6 @@ function QuestsWidgetMedium({
       }}
     >
       <div className="space-y-3">
-        {/* Progress header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
@@ -145,7 +142,6 @@ function QuestsWidgetMedium({
           )}
         </div>
 
-        {/* Quest list */}
         <div className="space-y-2">
           {displayQuests.slice(0, 3).map((quest) => (
             <div
@@ -160,14 +156,13 @@ function QuestsWidgetMedium({
                 <Circle size={16} className="text-slate-300 flex-shrink-0" />
               )}
               <span className={`text-sm flex-1 ${quest.completed ? 'line-through text-slate-400' : 'text-slate-700'}`}>
-                {categoryIcons[quest.category]} {quest.title}
+                {categoryIcons[quest.category] || '⭐'} {quest.title}
               </span>
               <span className="text-[10px] text-slate-400">+{quest.points}</span>
             </div>
           ))}
         </div>
 
-        {/* Empty state */}
         {completedQuests === 0 && (
           <div className="p-3 bg-yellow-50 rounded-lg">
             <p className="text-sm text-yellow-700">Starta din dag med små mål!</p>
@@ -183,7 +178,7 @@ function QuestsWidgetMedium({
 function QuestsWidgetLarge({ 
   completedQuests = 0, 
   totalQuests = 5,
-  quests = [],
+  quests,
   streakDays = 0,
   loading, 
   error, 
@@ -198,7 +193,8 @@ function QuestsWidgetLarge({
   const status = getStatus()
   const progress = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0
   
-  // Default quests if none provided
+  // Safe fallback for quests
+  const safeQuests = quests || []
   const defaultQuests: Quest[] = [
     { id: '1', title: 'Uppdatera CV med ny erfarenhet', completed: false, points: 10, category: 'cv' },
     { id: '2', title: 'Skicka 1 jobbansökan', completed: false, points: 20, category: 'apply' },
@@ -206,10 +202,8 @@ function QuestsWidgetLarge({
     { id: '4', title: 'Registrera dagens mående', completed: false, points: 10, category: 'wellness' },
     { id: '5', title: 'Gör 1 karriärövning', completed: false, points: 15, category: 'cv' },
   ]
-
-  const safeQuests = quests || []
-  const totalPoints = safeQuests.reduce((sum, q) => sum + (q.completed ? q.points : 0), 0)
   const displayQuests = safeQuests.length > 0 ? safeQuests : defaultQuests
+  const totalPoints = displayQuests.reduce((sum, q) => sum + (q.completed ? q.points : 0), 0)
 
   return (
     <DashboardWidget
@@ -227,7 +221,6 @@ function QuestsWidgetLarge({
       }}
     >
       <div className="space-y-4">
-        {/* Stats row */}
         <div className="grid grid-cols-3 gap-3">
           <div className="p-3 bg-yellow-50 rounded-xl text-center">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center mx-auto mb-2 shadow-sm">
@@ -252,7 +245,6 @@ function QuestsWidgetLarge({
           </div>
         </div>
 
-        {/* Progress bar */}
         <div className="space-y-1">
           <div className="flex items-center justify-between text-sm">
             <span className="text-slate-600">Dagens progress</span>
@@ -266,7 +258,6 @@ function QuestsWidgetLarge({
           </div>
         </div>
 
-        {/* Quest list */}
         <div className="space-y-2">
           <p className="text-sm font-medium text-slate-700">Att göra idag:</p>
           <div className="space-y-2">
@@ -293,7 +284,7 @@ function QuestsWidgetLarge({
                     {quest.title}
                   </p>
                   <p className="text-[10px] text-slate-400">
-                    {categoryIcons[quest.category]} {quest.category === 'cv' ? 'CV' : quest.category === 'apply' ? 'Ansök' : quest.category === 'network' ? 'Nätverk' : 'Välmående'}
+                    {categoryIcons[quest.category] || '⭐'} {quest.category}
                   </p>
                 </div>
                 <span className={`text-xs font-medium px-2 py-1 rounded-full ${
@@ -306,25 +297,6 @@ function QuestsWidgetLarge({
           </div>
         </div>
 
-        {/* Empty state */}
-        {completedQuests === 0 && (
-          <div className="p-4 bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl border border-yellow-100">
-            <div className="flex items-start gap-3">
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                <Zap size={24} className="text-yellow-500" />
-              </div>
-              <div>
-                <p className="font-semibold text-yellow-900">Starta din dag!</p>
-                <p className="text-sm text-yellow-700 mt-1">
-                  Avsluta quests för att tjäna poäng och bygga en streak. 
-                  Små steg varje dag leder till stora resultat!
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* All complete celebration */}
         {completedQuests === totalQuests && completedQuests > 0 && (
           <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl border border-emerald-200">
             <div className="flex items-center gap-3">
