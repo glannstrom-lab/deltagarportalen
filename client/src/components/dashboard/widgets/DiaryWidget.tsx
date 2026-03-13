@@ -1,117 +1,109 @@
-import { memo, useMemo } from 'react'
-import { BookHeart, PenLine, Sparkles, Calendar, Heart, TrendingUp, Feather } from 'lucide-react'
+import { memo } from 'react'
+import { 
+  Calendar, 
+  Clock, 
+  MapPin, 
+  Briefcase, 
+  Video, 
+  FileText,
+  AlertCircle,
+  CheckCircle2,
+  Flame
+} from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface DiaryWidgetProps {
-  entriesCount?: number
-  lastEntry?: { date: string; mood: 1 | 2 | 3 | 4 | 5; preview: string } | null
+  // Kalender-data istället för dagboks-data
+  upcomingEvents?: {
+    id: string
+    title: string
+    date: string
+    time?: string
+    type: string
+  }[]
+  eventsThisWeek?: number
+  hasConsultantMeeting?: boolean
   streakDays?: number
-  hasEntryToday?: boolean
   loading?: boolean
   error?: string | null
   onRetry?: () => void
   size?: WidgetSize
 }
 
-// Humör-konfiguration med färger och copy
-const MOOD_CONFIG = {
-  5: { emoji: '😄', color: 'emerald', bgColor: 'bg-emerald-50', textColor: 'text-emerald-700', borderColor: 'border-emerald-200', label: 'Jättebra', vibe: 'Så härligt att du har en bra dag!' },
-  4: { emoji: '🙂', color: 'amber', bgColor: 'bg-amber-50', textColor: 'text-amber-700', borderColor: 'border-amber-200', label: 'Bra', vibe: 'Skönt att det känns okej idag.' },
-  3: { emoji: '😐', color: 'slate', bgColor: 'bg-slate-50', textColor: 'text-slate-700', borderColor: 'border-slate-200', label: 'Neutral', vibe: 'Det är helt okej att ha en sådan dag.' },
-  2: { emoji: '😔', color: 'blue', bgColor: 'bg-blue-50', textColor: 'text-blue-700', borderColor: 'border-blue-200', label: 'Nere', vibe: 'Skickar en varm tanke till dig idag.' },
-  1: { emoji: '😢', color: 'indigo', bgColor: 'bg-indigo-50', textColor: 'text-indigo-700', borderColor: 'border-indigo-200', label: 'Ledsen', vibe: 'Ta hand om dig själv idag, du är värdefull.' },
+// Event type config
+const eventTypeConfig: Record<string, { icon: typeof Calendar; color: string; bg: string; label: string }> = {
+  interview: { icon: Briefcase, color: 'text-amber-600', bg: 'bg-amber-100', label: 'Intervju' },
+  meeting: { icon: Video, color: 'text-blue-600', bg: 'bg-blue-100', label: 'Möte' },
+  deadline: { icon: AlertCircle, color: 'text-red-600', bg: 'bg-red-100', label: 'Deadline' },
+  preparation: { icon: FileText, color: 'text-purple-600', bg: 'bg-purple-100', label: 'Förberedelse' },
+  default: { icon: Calendar, color: 'text-slate-600', bg: 'bg-slate-100', label: 'Händelse' },
 }
 
-// Inspirerande prompts för att skriva
-const WRITING_PROMPTS = [
-  'Vad är du tacksam över just nu?',
-  'Vad har du lärt dig om dig själv på sistone?',
-  'Vad ser du fram emot imorgon?',
-  'Vad är en sak du kan vara snäll mot dig själv med idag?',
-  'Vad har du gjort idag som du kan vara stolt över?',
-  'Vilken liten sak gjorde dig glad idag?',
-  'Hur känns det i kroppen just nu?',
-  'Vad skulle du vilja säga till dig själv för ett år sedan?',
-  'Vad är viktigast för dig just nu?',
-  'Vilken stjärna är du stolt över att ha satt igår?',
-]
-
-// Hjälpfunktioner
-const getMoodConfig = (mood: number) => MOOD_CONFIG[mood as keyof typeof MOOD_CONFIG] || MOOD_CONFIG[3]
-const getRandomPrompt = () => WRITING_PROMPTS[Math.floor(Math.random() * WRITING_PROMPTS.length)]
-
-const getTimeAgo = (dateString: string) => {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
-  
-  if (diffDays === 0) return 'Idag'
-  if (diffDays === 1) return 'Igår'
-  if (diffDays < 7) return `${diffDays} dagar sedan`
-  if (diffDays < 30) return `${Math.floor(diffDays / 7)} veckor sedan`
-  return `${Math.floor(diffDays / 30)} månader sedan`
-}
-
-const formatDate = (dateString: string) => {
+// Format date relative
+const getRelativeDate = (dateString: string) => {
   const date = new Date(dateString)
   const today = new Date()
-  const isToday = date.toDateString() === today.toDateString()
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
   
-  if (isToday) {
-    return 'Idag'
+  if (date.toDateString() === today.toDateString()) return 'Idag'
+  if (date.toDateString() === tomorrow.toDateString()) return 'Imorgon'
+  
+  const diffDays = Math.floor((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24))
+  if (diffDays < 7) {
+    const weekdays = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör']
+    return weekdays[date.getDay()]
   }
   
-  const weekdays = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
-  const months = ['jan', 'feb', 'mar', 'apr', 'maj', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
-  
-  const weekday = weekdays[date.getDay()]
-  const day = date.getDate()
-  const month = months[date.getMonth()]
-  
-  return `${weekday} ${day} ${month}`
+  return date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
 }
 
-// ============================================
-// SMALL - Ultra kompakt
-// ============================================
-function DiaryWidgetSmall({ entriesCount = 0, lastEntry, hasEntryToday = false, loading, error, onRetry }: Omit<DiaryWidgetProps, 'size' | 'streakDays'>) {
-  const moodConfig = lastEntry ? getMoodConfig(lastEntry.mood) : null
-  
+// SMALL - Ultra kompakt kalender-widget
+function DiaryWidgetSmall({ 
+  upcomingEvents = [], 
+  eventsThisWeek = 0,
+  streakDays = 0,
+  loading, 
+  error, 
+  onRetry 
+}: Omit<DiaryWidgetProps, 'size' | 'hasConsultantMeeting'>) {
   const getStatus = (): WidgetStatus => {
-    if (entriesCount === 0) return 'empty'
+    if (upcomingEvents.length === 0) return 'empty'
     return 'complete'
   }
 
+  const status = getStatus()
+  const nextEvent = upcomingEvents[0]
+
   return (
     <DashboardWidget
-      title="Dagbok"
-      icon={<BookHeart size={14} />}
+      title="Kalender"
+      icon={<Calendar size={14} />}
       to="/diary"
       color="rose"
-      status={getStatus()}
+      status={status}
       loading={loading}
       error={error}
       onRetry={onRetry}
     >
       <div className="flex items-center gap-2">
-        {entriesCount === 0 ? (
-          <Sparkles size={14} className="text-rose-400" />
-        ) : hasEntryToday ? (
-          <span className="text-base">{moodConfig?.emoji || '😊'}</span>
-        ) : (
-          <span className="text-base">{moodConfig?.emoji || '📓'}</span>
-        )}
+        <Calendar size={14} className="text-rose-500" />
         <div className="flex-1 min-w-0">
-          {entriesCount === 0 ? (
-            <span className="text-[10px] text-slate-500">Börja skriva</span>
-          ) : hasEntryToday ? (
-            <span className="text-[10px] text-emerald-600">Skrivet idag!</span>
+          {upcomingEvents.length === 0 ? (
+            <span className="text-[10px] text-slate-500">Inga händelser</span>
           ) : (
             <div className="flex items-center gap-1">
-              <span className="text-sm font-bold text-slate-700">{entriesCount}</span>
-              <span className="text-[10px] text-slate-400">inlägg</span>
+              <span className="text-sm font-bold text-slate-800">{upcomingEvents.length}</span>
+              <span className="text-[10px] text-slate-500">
+                {upcomingEvents.length === 1 ? 'kommande' : 'kommande'}
+              </span>
+              {streakDays > 0 && (
+                <span className="text-[9px] bg-amber-100 text-amber-600 px-1 py-0.5 rounded ml-1">
+                  🔥 {streakDays}
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -120,99 +112,109 @@ function DiaryWidgetSmall({ entriesCount = 0, lastEntry, hasEntryToday = false, 
   )
 }
 
-// ============================================
-// MEDIUM - Balanserad överblick
-// ============================================
-function DiaryWidgetMedium({ entriesCount = 0, lastEntry, hasEntryToday = false, loading, error, onRetry }: DiaryWidgetProps) {
-  const moodConfig = lastEntry ? getMoodConfig(lastEntry.mood) : null
-  const prompt = useMemo(() => getRandomPrompt(), [hasEntryToday])
-  
+// MEDIUM - Kalender med nästa händelser
+function DiaryWidgetMedium({ 
+  upcomingEvents = [], 
+  eventsThisWeek = 0,
+  hasConsultantMeeting = false,
+  streakDays = 0,
+  loading, 
+  error, 
+  onRetry 
+}: DiaryWidgetProps) {
   const getStatus = (): WidgetStatus => {
-    if (entriesCount === 0) return 'empty'
+    if (upcomingEvents.length === 0) return 'empty'
     return 'complete'
   }
 
+  const status = getStatus()
+  const nextEvent = upcomingEvents[0]
+
   return (
     <DashboardWidget
-      title="Dagbok"
-      icon={<BookHeart size={20} className="text-rose-500" />}
+      title="Kalender"
+      icon={<Calendar size={20} className="text-rose-500" />}
       to="/diary"
       color="rose"
-      status={getStatus()}
+      status={status}
       loading={loading}
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: hasEntryToday ? 'Läs dagbok' : 'Skriv en rad',
+        label: upcomingEvents.length > 0 ? 'Se schema' : 'Lägg till',
       }}
     >
       <div className="space-y-3">
-        {entriesCount === 0 ? (
-          // Empty state - locka till att börja skriva
-          <div className="relative overflow-hidden p-4 bg-gradient-to-br from-rose-50 via-pink-50 to-rose-100 rounded-2xl border border-rose-100">
-            <div className="absolute top-0 right-0 w-24 h-24 bg-rose-200 rounded-full blur-2xl opacity-20 -translate-y-1/2 translate-x-1/2" />
-            <div className="relative flex items-start gap-3">
-              <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
-                <Sparkles size={22} className="text-rose-500" />
-              </div>
+        {/* Stats header */}
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center">
+            <Calendar size={24} className="text-rose-600" />
+          </div>
+          <div>
+            <p className="text-2xl font-bold text-slate-800">{upcomingEvents.length}</p>
+            <p className="text-xs text-slate-500">kommande händelser</p>
+          </div>
+          {eventsThisWeek > 0 && (
+            <div className="ml-auto text-right">
+              <p className="text-sm font-bold text-rose-600">{eventsThisWeek}</p>
+              <p className="text-xs text-slate-500">denna vecka</p>
+            </div>
+          )}
+        </div>
+
+        {/* Nästa händelser */}
+        {upcomingEvents.length > 0 && (
+          <div className="space-y-2">
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Nästkommande</p>
+            {upcomingEvents.slice(0, 2).map((event) => {
+              const config = eventTypeConfig[event.type] || eventTypeConfig.default
+              const Icon = config.icon
+              return (
+                <div 
+                  key={event.id}
+                  className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all cursor-pointer group"
+                >
+                  <div className={`w-9 h-9 rounded-lg ${config.bg} flex items-center justify-center`}>
+                    <Icon size={16} className={config.color} />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-slate-700 truncate group-hover:text-rose-700 transition-colors">
+                      {event.title}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-rose-600 font-medium">{getRelativeDate(event.date)}</span>
+                      {event.time && (
+                        <>
+                          <span className="text-xs text-slate-400">•</span>
+                          <span className="text-xs text-slate-500">{event.time}</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        )}
+
+        {/* Tomt state */}
+        {upcomingEvents.length === 0 && (
+          <div className="p-4 bg-rose-50 rounded-xl border border-rose-100">
+            <div className="flex items-center gap-3">
+              <CheckCircle2 size={24} className="text-rose-400" />
               <div>
-                <p className="font-semibold text-rose-900 mb-1">Din personliga plats</p>
-                <p className="text-sm text-rose-700 leading-relaxed">
-                  Börja skriva om dina tankar, känslor och framsteg. Inget måste vara perfekt här.
-                </p>
+                <p className="font-semibold text-rose-900 text-sm">Inga planerade händelser</p>
+                <p className="text-xs text-rose-600">Lägg till intervjuer och möten</p>
               </div>
             </div>
           </div>
-        ) : hasEntryToday ? (
-          // Skrivet idag - visa senaste inlägget snyggt
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-teal-50 rounded-2xl flex items-center justify-center shadow-sm">
-                  <span className="text-2xl animate-bounce-subtle">{moodConfig?.emoji}</span>
-                </div>
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-emerald-400 rounded-full flex items-center justify-center border-2 border-white">
-                  <Heart size={9} className="text-white fill-white" />
-                </div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-slate-800 truncate">{formatDate(lastEntry?.date || new Date().toISOString())}</p>
-                <p className="text-xs text-slate-500">{moodConfig?.vibe}</p>
-              </div>
-            </div>
-            
-            {lastEntry && (
-              <div className={`p-3 ${moodConfig?.bgColor} ${moodConfig?.borderColor} border rounded-xl`}>
-                <p className="text-sm text-slate-700 line-clamp-2 leading-relaxed">"{lastEntry.preview}"</p>
-              </div>
-            )}
-          </div>
-        ) : (
-          // Inte skrivet idag - uppmuntran att skriva
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-rose-100 to-pink-50 rounded-2xl flex items-center justify-center shadow-sm">
-                <PenLine size={22} className="text-rose-500" />
-              </div>
-              <div>
-                <p className="font-semibold text-slate-800">Vill du skriva idag?</p>
-                <p className="text-xs text-slate-500">Ingen press, bara om du känner för det</p>
-              </div>
-            </div>
-            
-            <div className="p-3 bg-rose-50 rounded-xl border border-rose-100">
-              <p className="text-xs font-medium text-rose-600 mb-1">💭 Dagens tanke:</p>
-              <p className="text-sm text-slate-700 italic">"{prompt}"</p>
-            </div>
-            
-            {lastEntry && (
-              <div className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
-                <span className="text-lg">{moodConfig?.emoji}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-xs text-slate-500">Senaste: {getTimeAgo(lastEntry.date)}</p>
-                </div>
-              </div>
-            )}
+        )}
+
+        {/* Konsulentmöte badge */}
+        {hasConsultantMeeting && (
+          <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 rounded-lg border border-blue-100">
+            <Video size={14} className="text-blue-500" />
+            <span className="text-xs text-blue-700">Konsulentmöte inbokat</span>
           </div>
         )}
       </div>
@@ -220,246 +222,146 @@ function DiaryWidgetMedium({ entriesCount = 0, lastEntry, hasEntryToday = false,
   )
 }
 
-// ============================================
-// LARGE - Full dagboks-upplevelse
-// ============================================
-function DiaryWidgetLarge({ entriesCount = 0, lastEntry, streakDays = 0, hasEntryToday = false, loading, error, onRetry }: DiaryWidgetProps) {
-  const moodConfig = lastEntry ? getMoodConfig(lastEntry.mood) : null
-  const prompt = useMemo(() => getRandomPrompt(), [hasEntryToday])
-  
-  // Simulerad vecka (i verkligheten hämtas detta från API)
-  const weekMoods = useMemo(() => {
-    if (!lastEntry) return []
-    return [
-      { day: 'M', mood: 4, hasEntry: true },
-      { day: 'T', mood: 3, hasEntry: true },
-      { day: 'O', mood: 5, hasEntry: true },
-      { day: 'T', mood: 2, hasEntry: true },
-      { day: 'F', mood: 4, hasEntry: true },
-      { day: 'L', mood: 0, hasEntry: false },
-      { day: 'S', mood: hasEntryToday ? lastEntry.mood : 0, hasEntry: hasEntryToday },
-    ]
-  }, [lastEntry, hasEntryToday])
-  
+// LARGE - Full kalender-överblick
+function DiaryWidgetLarge({ 
+  upcomingEvents = [], 
+  eventsThisWeek = 0,
+  hasConsultantMeeting = false,
+  streakDays = 0,
+  loading, 
+  error, 
+  onRetry 
+}: DiaryWidgetProps) {
   const getStatus = (): WidgetStatus => {
-    if (entriesCount === 0) return 'empty'
+    if (upcomingEvents.length === 0) return 'empty'
     return 'complete'
   }
 
-  const today = new Date()
-  const weekdayNames = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
-  const todayName = weekdayNames[today.getDay()]
-  
-  const months = ['januari', 'februari', 'mars', 'april', 'maj', 'juni', 'juli', 'augusti', 'september', 'oktober', 'november', 'december']
-  const todayDate = `${today.getDate()} ${months[today.getMonth()]}`
+  const status = getStatus()
+
+  // Gruppera events per dag
+  const eventsByDay = upcomingEvents.slice(0, 5).reduce((acc, event) => {
+    const date = getRelativeDate(event.date)
+    if (!acc[date]) acc[date] = []
+    acc[date].push(event)
+    return acc
+  }, {} as Record<string, typeof upcomingEvents>)
 
   return (
     <DashboardWidget
-      title="Dagbok"
-      icon={<BookHeart size={22} className="text-rose-500" />}
+      title="Kalender"
+      icon={<Calendar size={22} className="text-rose-500" />}
       to="/diary"
       color="rose"
-      status={getStatus()}
+      status={status}
       loading={loading}
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: hasEntryToday ? 'Läs dagbok' : 'Skriv nytt inlägg',
+        label: 'Öppna kalender',
       }}
     >
       <div className="space-y-4">
-        {entriesCount === 0 ? (
-          // ============================================
-          // EMPTY STATE - Snyggaste möjliga
-          // ============================================
-          <div className="relative overflow-hidden">
-            {/* Dekorativ bakgrund */}
-            <div className="absolute inset-0 bg-gradient-to-br from-rose-50 via-pink-50 to-rose-100 rounded-2xl" />
-            <div className="absolute top-0 right-0 w-40 h-40 bg-rose-200 rounded-full blur-3xl opacity-20" />
-            <div className="absolute bottom-0 left-0 w-32 h-32 bg-pink-200 rounded-full blur-3xl opacity-20" />
-            
-            <div className="relative p-5">
-              {/* Header */}
-              <div className="text-center mb-6">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-2xl shadow-sm mb-4 relative">
-                  <div className="absolute inset-0 bg-rose-100 rounded-2xl animate-pulse opacity-50" />
-                  <Feather size={28} className="text-rose-500 relative" />
-                </div>
-                <h3 className="text-lg font-bold text-rose-900 mb-2">Välkommen till din dagbok</h3>
-                <p className="text-sm text-rose-700 max-w-xs mx-auto leading-relaxed">
-                  En trygg plats för dina tankar. Inga krav, ingen prestation - bara du och dina ord.
-                </p>
-              </div>
-              
-              {/* Fördelar */}
-              <div className="grid grid-cols-3 gap-3 mb-5">
-                <div className="p-3 bg-white/70 backdrop-blur-sm rounded-xl text-center shadow-sm">
-                  <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                    <span className="text-xl">😌</span>
+        {/* Stats cards */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="p-3 bg-gradient-to-br from-rose-50 to-pink-50 rounded-xl border border-rose-100 text-center">
+            <p className="text-2xl font-bold text-rose-600">{upcomingEvents.length}</p>
+            <p className="text-xs text-rose-700">Kommande</p>
+          </div>
+          <div className="p-3 bg-slate-50 rounded-xl text-center">
+            <p className="text-2xl font-bold text-slate-700">{eventsThisWeek}</p>
+            <p className="text-xs text-slate-500">Denna vecka</p>
+          </div>
+          <div className="p-3 bg-amber-50 rounded-xl text-center">
+            <div className="flex items-center justify-center gap-1">
+              <Flame size={16} className="text-amber-500" />
+              <p className="text-2xl font-bold text-amber-600">{streakDays || 0}</p>
+            </div>
+            <p className="text-xs text-amber-700">Dagar i rad</p>
+          </div>
+        </div>
+
+        {/* Timeline */}
+        {upcomingEvents.length > 0 ? (
+          <div className="space-y-3">
+            <p className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Clock size={16} className="text-rose-500" />
+              Kommande händelser
+            </p>
+            <div className="space-y-2">
+              {upcomingEvents.slice(0, 4).map((event, index) => {
+                const config = eventTypeConfig[event.type] || eventTypeConfig.default
+                const Icon = config.icon
+                return (
+                  <div 
+                    key={event.id}
+                    className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 hover:bg-rose-50 border border-slate-100 hover:border-rose-200 transition-all cursor-pointer group"
+                  >
+                    {/* Date column */}
+                    <div className="w-14 text-center shrink-0">
+                      <p className="text-xs font-bold text-rose-600">{getRelativeDate(event.date)}</p>
+                      {event.time && (
+                        <p className="text-[10px] text-slate-500">{event.time}</p>
+                      )}
+                    </div>
+                    
+                    {/* Icon */}
+                    <div className={`w-10 h-10 rounded-xl ${config.bg} flex items-center justify-center`}>
+                      <Icon size={18} className={config.color} />
+                    </div>
+                    
+                    {/* Content */}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-700 truncate group-hover:text-rose-700 transition-colors">
+                        {event.title}
+                      </p>
+                      <span className={`text-xs ${config.color}`}>{config.label}</span>
+                    </div>
                   </div>
-                  <p className="text-xs font-medium text-slate-700">Reflektera</p>
-                </div>
-                <div className="p-3 bg-white/70 backdrop-blur-sm rounded-xl text-center shadow-sm">
-                  <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                    <span className="text-xl">📈</span>
-                  </div>
-                  <p className="text-xs font-medium text-slate-700">Följ din resa</p>
-                </div>
-                <div className="p-3 bg-white/70 backdrop-blur-sm rounded-xl text-center shadow-sm">
-                  <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                    <span className="text-xl">💝</span>
-                  </div>
-                  <p className="text-xs font-medium text-slate-700">Var snäll</p>
-                </div>
-              </div>
-              
-              {/* CTA */}
-              <div className="p-4 bg-white/80 backdrop-blur-sm rounded-xl border border-rose-100 shadow-sm">
-                <div className="flex items-center gap-3">
-                  <Sparkles size={20} className="text-rose-400 flex-shrink-0" />
-                  <p className="text-sm text-slate-600">
-                    <span className="font-medium text-slate-800">Dagens tanke:</span> "{WRITING_PROMPTS[0]}"
-                  </p>
-                </div>
-              </div>
+                )
+              })}
             </div>
           </div>
         ) : (
-          // ============================================
-          // HAR INLÄGG - Full upplevelse
-          // ============================================
-          <>
-            {/* Header med dag och datum */}
-            <div className="relative overflow-hidden bg-gradient-to-r from-rose-50 to-pink-50 rounded-2xl p-4 border border-rose-100">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-rose-200 rounded-full blur-2xl opacity-20" />
-              <div className="relative flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-medium text-rose-500 uppercase tracking-wide">{todayDate}</p>
-                  <h3 className="text-xl font-bold text-rose-900">{todayName}</h3>
-                </div>
-                <div className="flex items-center gap-2">
-                  {hasEntryToday ? (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-100 rounded-full">
-                      <Heart size={14} className="text-emerald-600 fill-emerald-600" />
-                      <span className="text-sm font-medium text-emerald-700">Skrivet idag</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 px-3 py-1.5 bg-white/70 rounded-full">
-                      <Calendar size={14} className="text-rose-400" />
-                      <span className="text-sm text-slate-600">Väntar på dig</span>
-                    </div>
-                  )}
-                </div>
-              </div>
+          /* Empty state */
+          <div className="p-6 bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl border border-rose-100 text-center">
+            <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-sm">
+              <Calendar size={28} className="text-rose-400" />
             </div>
-
-            {/* Veckans översikt / Humör-historik */}
-            {weekMoods.length > 0 && (
-              <div className="p-4 bg-slate-50 rounded-2xl">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <TrendingUp size={16} className="text-slate-400" />
-                    <span className="text-sm font-medium text-slate-700">Din vecka</span>
-                  </div>
-                  {streakDays > 0 && (
-                    <span className="text-xs text-rose-600 font-medium">🔥 {streakDays} dagar i rad</span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between">
-                  {weekMoods.map((day, idx) => {
-                    const dayMood = day.mood > 0 ? getMoodConfig(day.mood) : null
-                    return (
-                      <div key={idx} className="flex flex-col items-center gap-1.5">
-                        <div 
-                          className={`
-                            w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-300
-                            ${day.hasEntry 
-                              ? `${dayMood?.bgColor} ${dayMood?.borderColor} border shadow-sm` 
-                              : 'bg-white border border-slate-200'
-                            }
-                            ${day.hasEntry ? 'hover:scale-110' : ''}
-                          `}
-                        >
-                          {day.hasEntry ? (
-                            <span className="text-lg animate-bounce-subtle">{dayMood?.emoji}</span>
-                          ) : (
-                            <div className="w-1.5 h-1.5 bg-slate-300 rounded-full" />
-                          )}
-                        </div>
-                        <span className={`text-xs ${day.hasEntry ? 'text-slate-600 font-medium' : 'text-slate-400'}`}>
-                          {day.day}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            )}
-
-            {/* Senaste inlägget eller "Skriv idag" */}
-            {hasEntryToday && lastEntry ? (
-              // Visa dagens inlägg
-              <div className={`p-4 ${moodConfig?.bgColor} ${moodConfig?.borderColor} border rounded-2xl`}>
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-                    <span className="text-2xl animate-bounce-subtle">{moodConfig?.emoji}</span>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-slate-800">Dagens inlägg</p>
-                    <p className="text-xs text-slate-500">{moodConfig?.vibe}</p>
-                  </div>
-                </div>
-                <div className="p-3 bg-white/70 backdrop-blur-sm rounded-xl">
-                  <p className="text-sm text-slate-700 leading-relaxed line-clamp-3">"{lastEntry.preview}"</p>
-                </div>
-              </div>
-            ) : (
-              // Uppmuntran att skriva
-              <div className="p-4 bg-gradient-to-br from-rose-50 to-pink-50 rounded-2xl border border-rose-100">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm flex-shrink-0">
-                    <PenLine size={22} className="text-rose-500" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="font-semibold text-rose-900 mb-1">Skriv en rad om dagen</p>
-                    <p className="text-sm text-rose-700 mb-3">Det behöver inte vara mycket - bara några tankar om hur du mår.</p>
-                    
-                    <div className="p-3 bg-white/70 backdrop-blur-sm rounded-xl mb-3">
-                      <p className="text-xs font-medium text-rose-600 mb-1">💭 Dagens tanke:</p>
-                      <p className="text-sm text-slate-700 italic">"{prompt}"</p>
-                    </div>
-                    
-                    <p className="text-xs text-rose-500">Klicka för att börja skriva ✨</p>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Statistik */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="p-3 bg-slate-50 rounded-xl text-center">
-                <p className="text-xl font-bold text-slate-700">{entriesCount}</p>
-                <p className="text-xs text-slate-500">Totalt inlägg</p>
-              </div>
-              <div className="p-3 bg-slate-50 rounded-xl text-center">
-                <p className="text-xl font-bold text-slate-700">{Math.min(entriesCount, 7)}</p>
-                <p className="text-xs text-slate-500">Denna vecka</p>
-              </div>
-              <div className="p-3 bg-slate-50 rounded-xl text-center">
-                <p className="text-xl font-bold text-slate-700">{streakDays || '-'}</p>
-                <p className="text-xs text-slate-500">Dagar i rad</p>
-              </div>
+            <h3 className="font-semibold text-rose-900 mb-1">Din kalender är tom</h3>
+            <p className="text-sm text-rose-600 mb-4">Lägg till intervjuer, möten och deadlines för att hålla koll på ditt jobbsökande</p>
+            <div className="flex flex-wrap justify-center gap-2">
+              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 border border-rose-100">
+                📅 Intervjuer
+              </span>
+              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 border border-rose-100">
+                💼 Möten
+              </span>
+              <span className="px-3 py-1.5 bg-white rounded-lg text-xs text-slate-600 border border-rose-100">
+                ⏰ Deadlines
+              </span>
             </div>
-          </>
+          </div>
+        )}
+
+        {/* Consultant meeting alert */}
+        {hasConsultantMeeting && (
+          <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-xl border border-blue-100">
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Video size={20} className="text-blue-600" />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-blue-900">Konsulentmöte inbokat</p>
+              <p className="text-xs text-blue-600">Du har ett möte med din arbetskonsulent</p>
+            </div>
+          </div>
         )}
       </div>
     </DashboardWidget>
   )
 }
 
-// ============================================
 // HUVUDKOMPONENT
-// ============================================
 export const DiaryWidget = memo(function DiaryWidget(props: DiaryWidgetProps) {
   const { size = 'small', ...rest } = props
 

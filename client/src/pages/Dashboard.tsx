@@ -325,7 +325,10 @@ function DesktopDashboard() {
               hasCV={data?.cv.hasCV ?? false}
               progress={data?.cv.progress ?? 0}
               atsScore={data?.cv.atsScore ?? 0}
+              atsFeedback={data?.cv.atsFeedback}
               missingSections={data?.cv.missingSections}
+              savedCVs={data?.cv.savedCVs}
+              currentTemplate={data?.cv.currentTemplate}
               error={error}
               onRetry={refetch}
               size={widgetSizes['cv']}
@@ -361,6 +364,7 @@ function DesktopDashboard() {
             <CareerWidget
               exploredCount={data?.interest.hasResult ? 1 : 0}
               recommendedOccupations={data?.interest.topRecommendations}
+              riasecProfile={data?.interest.riasecProfile}
               size={widgetSizes['career']}
             />
           )}
@@ -372,6 +376,9 @@ function DesktopDashboard() {
               hasResult={data?.interest.hasResult ?? false}
               topRecommendations={data?.interest.topRecommendations}
               completedAt={data?.interest.completedAt}
+              answeredQuestions={data?.interest.answeredQuestions}
+              totalQuestions={data?.interest.totalQuestions}
+              riasecProfile={data?.interest.riasecProfile}
               size={widgetSizes['interests']}
             />
           )}
@@ -380,8 +387,10 @@ function DesktopDashboard() {
           renderWidget(
             'exercises',
             <ExercisesWidget
-              completedCount={0}
-              streakDays={0}
+              totalExercises={data?.exercises.totalExercises ?? 38}
+              completedCount={data?.exercises.completedExercises ?? 0}
+              completionRate={data?.exercises.completionRate ?? 0}
+              streakDays={data?.exercises.streakDays ?? 0}
               size={widgetSizes['exercises']}
             />
           )}
@@ -390,9 +399,10 @@ function DesktopDashboard() {
           renderWidget(
             'diary',
             <DiaryWidget
-              entriesCount={0}
-              streakDays={0}
-              hasEntryToday={false}
+              upcomingEvents={data?.calendar.upcomingEvents}
+              eventsThisWeek={data?.calendar.eventsThisWeek ?? 0}
+              hasConsultantMeeting={data?.calendar.hasConsultantMeeting ?? false}
+              streakDays={data?.activity.streakDays ?? 0}
               size={widgetSizes['diary']}
             />
           )}

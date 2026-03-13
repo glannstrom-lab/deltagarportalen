@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { cvApi, interestApi, coverLetterApi, activityApi, savedJobsApi } from '@/services/supabaseApi'
 import type { DashboardWidgetData } from '@/types/dashboard'
+import { supabase } from '@/lib/supabase'
 
 // Query keys för caching
 const DASHBOARD_QUERY_KEY = 'dashboard' as const
@@ -25,6 +26,9 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     coverLetters,
     activities,
     applicationCount,
+    cvVersions,
+    exerciseAnswers,
+    calendarEvents,
   ] = await Promise.all([
     cvApi.getCV().catch(() => null),
     cvApi.getATSAnalysis().catch(() => null),
@@ -33,6 +37,9 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     coverLetterApi.getAll().catch(() => []),
     activityApi.getActivities().catch(() => []),
     activityApi.getCount('application_sent').catch(() => 0),
+    cvApi.getVersions().catch(() => []),
+    fetchExerciseProgress(),
+    fetchCalendarEvents(),
   ])
 
   // Beräkna CV-progress
@@ -40,17 +47,15 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
   const hasCV = !!cv && (!!cv.summary || !!(cv.work_experience && cv.work_experience.length > 0))
 
   // Hämta nyligen sparade jobb (max 3)
-  // savedJobs har strukturen: { id, job_id, job_data: { headline, employer: { name } } }
   const recentJobs = savedJobs.slice(0, 3).map((savedJob: any) => {
     const jobData = savedJob.job_data || {}
-    const mapped = {
+    return {
       id: savedJob.job_id || savedJob.id,
       title: jobData.headline || jobData.title || 'Okänt jobb',
       company: jobData.employer?.name || jobData.company || 'Okänt företag',
       location: jobData.workplace_address?.municipality || jobData.location,
+      deadline: jobData.application_deadline,
     }
-    console.log('[useDashboardData] mapped job:', mapped)
-    return mapped
   })
 
   // Hämta nyligen skapade brev (max 3)
@@ -59,23 +64,51 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     title: letter.title || 'Nytt brev',
     company: letter.company || 'Okänt företag',
     createdAt: letter.created_at,
+    jobTitle: letter.job_title,
   }))
 
   // Räkna streak
   const streakDays = calculateStreak(activities)
+
+  // Beräkna övningsprogress
+  const completedExercises = exerciseAnswers.filter((ea: any) => ea.is_completed).length
+
+  // Hämta kommande händelser
+  const upcomingEvents = calendarEvents
+    .filter((e: any) => new Date(e.date) >= new Date())
+    .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .slice(0, 3)
 
   return {
     cv: {
       hasCV,
       progress: cvProgress,
       atsScore: atsAnalysis?.score || 0,
+      atsFeedback: atsAnalysis?.feedback || [],
       lastEdited: cv?.updated_at || null,
       missingSections: getMissingSections(cv),
+      // Mina CV data
+      savedCVs: cvVersions.map((v: any) => ({
+        id: v.id,
+        name: v.name,
+        createdAt: v.created_at,
+        isDefault: v.is_default,
+      })),
+      // Mall-data
+      currentTemplate: cv?.template || 'modern',
     },
     interest: {
       hasResult: !!interestResult,
-      topRecommendations: interestResult?.recommended_occupations?.slice(0, 3).map((o: any) => o.name) || [],
+      topRecommendations: interestResult?.recommended_occupations?.slice(0, 3).map((o: any) => ({
+        name: o.name,
+        matchPercentage: o.match_percentage || o.match,
+      })) || [],
       completedAt: interestResult?.created_at || null,
+      // RIASEC-data
+      riasecProfile: interestResult?.riasec_profile || null,
+      // Quiz-progress
+      answeredQuestions: interestResult?.answers ? Object.keys(interestResult.answers).length : 0,
+      totalQuestions: 36,
     },
     jobs: {
       savedCount: savedJobs.length,
@@ -95,16 +128,70 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     coverLetters: {
       count: coverLetters.length,
       recentLetters,
+      drafts: coverLetters.filter((l: any) => !l.is_completed).length,
+    },
+    exercises: {
+      totalExercises: 38, // Totalt antal övningar
+      completedExercises,
+      completionRate: Math.round((completedExercises / 38) * 100),
+      streakDays,
     },
     calendar: {
-      upcomingEvents: [],
-      eventsThisWeek: 0,
-      hasConsultantMeeting: false,
+      upcomingEvents: upcomingEvents.map((e: any) => ({
+        id: e.id,
+        title: e.title,
+        date: e.date,
+        time: e.time,
+        type: e.type,
+      })),
+      eventsThisWeek: calendarEvents.filter((e: any) => {
+        const eventDate = new Date(e.date)
+        const now = new Date()
+        const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+        return eventDate >= now && eventDate <= weekFromNow
+      }).length,
+      hasConsultantMeeting: calendarEvents.some((e: any) => e.type === 'meeting'),
     },
     activity: {
       weeklyApplications: applicationCount,
       streakDays,
     },
+  }
+}
+
+// Hämta övningsprogress från Supabase
+async function fetchExerciseProgress() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+    
+    const { data, error } = await supabase
+      .from('exercise_answers')
+      .select('*')
+      .eq('user_id', user.id)
+    
+    if (error) throw error
+    return data || []
+  } catch {
+    return []
+  }
+}
+
+// Hämta kalenderhändelser från Supabase
+async function fetchCalendarEvents() {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+    
+    const { data, error } = await supabase
+      .from('calendar_events')
+      .select('*')
+      .eq('user_id', user.id)
+    
+    if (error) throw error
+    return data || []
+  } catch {
+    return []
   }
 }
 

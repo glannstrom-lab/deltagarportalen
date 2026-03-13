@@ -5,7 +5,9 @@ import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'
 
 interface ExercisesWidgetProps {
+  totalExercises?: number
   completedCount?: number
+  completionRate?: number
   streakDays?: number
   lastCompleted?: { title: string; completedAt: string } | null
   recommendedExercise?: { title: string; duration: number; category: string } | null
@@ -17,7 +19,9 @@ interface ExercisesWidgetProps {
 
 // SMALL - Ultra kompakt
 function ExercisesWidgetSmall({ 
+  totalExercises = 38,
   completedCount = 0, 
+  completionRate = 0,
   streakDays = 0,
   loading, 
   error, 
@@ -25,7 +29,8 @@ function ExercisesWidgetSmall({
 }: Omit<ExercisesWidgetProps, 'size' | 'lastCompleted' | 'recommendedExercise'>) {
   const getStatus = (): WidgetStatus => {
     if (completedCount === 0) return 'empty'
-    return 'complete'
+    if (completionRate >= 100) return 'complete'
+    return 'in-progress'
   }
 
   const status = getStatus()
@@ -37,7 +42,7 @@ function ExercisesWidgetSmall({
       to="/exercises"
       color="green"
       status={status}
-      progress={Math.min(100, (completedCount / 5) * 100)}
+      progress={completionRate}
       loading={loading}
       error={error}
       onRetry={onRetry}
@@ -46,9 +51,7 @@ function ExercisesWidgetSmall({
         <Trophy size={14} className="text-emerald-500" />
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{completedCount}</span>
-          <span className="text-[10px] text-slate-500">
-            {completedCount === 0 ? 'gjorda' : completedCount === 1 ? 'gjord' : 'gjorda'}
-          </span>
+          <span className="text-[10px] text-slate-500">/{totalExercises}</span>
         </div>
         {streakDays > 0 && (
           <span className="text-[9px] bg-orange-100 text-orange-600 px-1 py-0.5 rounded flex items-center gap-0.5">
@@ -63,7 +66,9 @@ function ExercisesWidgetSmall({
 
 // MEDIUM - Balanserad överblick
 function ExercisesWidgetMedium({ 
+  totalExercises = 38,
   completedCount = 0, 
+  completionRate = 0,
   streakDays = 0,
   lastCompleted, 
   recommendedExercise, 
@@ -73,12 +78,12 @@ function ExercisesWidgetMedium({
 }: ExercisesWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (completedCount === 0) return 'empty'
-    return 'complete'
+    if (completionRate >= 100) return 'complete'
+    return 'in-progress'
   }
 
   const status = getStatus()
-  const weeklyGoal = 5
-  const progress = Math.min(100, (completedCount / weeklyGoal) * 100)
+  const progress = completionRate
 
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
@@ -108,7 +113,7 @@ function ExercisesWidgetMedium({
         <div className="flex items-center gap-3">
           <Trophy size={22} className="text-emerald-500" />
           <div>
-            <p className="text-2xl font-bold text-slate-800">{completedCount}</p>
+            <p className="text-2xl font-bold text-slate-800">{completedCount}/{totalExercises}</p>
             <p className="text-xs text-slate-500">övningar gjorda</p>
           </div>
           {streakDays > 0 && (
@@ -135,7 +140,9 @@ function ExercisesWidgetMedium({
 
 // LARGE - Full översikt
 function ExercisesWidgetLarge({ 
+  totalExercises = 38,
   completedCount = 0, 
+  completionRate = 0,
   streakDays = 0,
   lastCompleted, 
   recommendedExercise, 
@@ -145,12 +152,12 @@ function ExercisesWidgetLarge({
 }: ExercisesWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (completedCount === 0) return 'empty'
-    return 'complete'
+    if (completionRate >= 100) return 'complete'
+    return 'in-progress'
   }
 
   const status = getStatus()
-  const weeklyGoal = 5
-  const progress = Math.min(100, (completedCount / weeklyGoal) * 100)
+  const progress = completionRate
 
   const getTimeAgo = (dateString: string) => {
     const date = new Date(dateString)
@@ -186,8 +193,8 @@ function ExercisesWidgetLarge({
           <div className="flex-1 flex items-center gap-3 p-3 bg-emerald-50 rounded-xl">
             <Trophy size={24} className="text-emerald-500" />
             <div>
-              <p className="text-2xl font-bold text-slate-800">{completedCount}</p>
-              <p className="text-sm text-slate-500">övningar gjorda</p>
+              <p className="text-2xl font-bold text-slate-800">{completedCount}/{totalExercises}</p>
+              <p className="text-sm text-slate-500">övningar gjorda ({completionRate}%)</p>
             </div>
           </div>
           {streakDays > 0 ? (

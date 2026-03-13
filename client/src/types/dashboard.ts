@@ -6,20 +6,42 @@ export type WidgetStatus = 'empty' | 'in-progress' | 'complete' | 'error'
 export type WidgetColor = 'violet' | 'teal' | 'blue' | 'orange' | 'green' | 'rose' | 'amber' | 'indigo'
 
 export interface DashboardWidgetData {
-  // CV
+  // CV - uppdaterad med data från alla 5 tabs
   cv: {
     hasCV: boolean
     progress: number
     atsScore: number
+    atsFeedback: string[]
     lastEdited: string | null
     missingSections: string[]
+    // Mina CV - sparade versioner
+    savedCVs: {
+      id: string
+      name: string
+      createdAt: string
+      isDefault?: boolean
+    }[]
+    // Mallar
+    currentTemplate: string
   }
   
-  // Intresseguide
+  // Intresseguide - uppdaterad med RIASEC-data
   interest: {
     hasResult: boolean
-    topRecommendations: string[]
+    topRecommendations: {
+      name: string
+      matchPercentage: number
+    }[]
     completedAt: string | null
+    // RIASEC-profil
+    riasecProfile: {
+      dominant: string
+      secondary: string
+      scores: Record<string, number>
+    } | null
+    // Quiz-progress
+    answeredQuestions: number
+    totalQuestions: number
   }
   
   // Jobbsökning
@@ -31,6 +53,7 @@ export interface DashboardWidgetData {
       title: string
       company: string
       location?: string
+      deadline?: string
     }[]
   }
   
@@ -50,27 +73,30 @@ export interface DashboardWidgetData {
     } | null
   }
   
-  // Personliga brev
+  // Personliga brev - uppdaterad med mer data
   coverLetters: {
     count: number
+    drafts: number
     recentLetters: {
       id: string
       title: string
       company: string
+      jobTitle?: string
       createdAt: string
     }[]
   }
   
-  // Dagbok
-  diary: {
-    entriesCount: number
-    lastEntry: {
+  // Dagbok / Kalender - uppdaterad
+  calendar: {
+    upcomingEvents: {
+      id: string
+      title: string
       date: string
-      mood: 1 | 2 | 3 | 4 | 5
-      preview: string
-    } | null
-    streakDays: number
-    hasEntryToday: boolean
+      time?: string
+      type: string
+    }[]
+    eventsThisWeek: number
+    hasConsultantMeeting: boolean
   }
   
   // Aktivitet
@@ -79,18 +105,12 @@ export interface DashboardWidgetData {
     streakDays: number
   }
   
-  // Övningar
+  // Övningar - uppdaterad
   exercises: {
-    completedCount: number
-    lastCompleted: {
-      title: string
-      completedAt: string
-    } | null
-    recommendedExercise: {
-      title: string
-      duration: number
-      category: string
-    } | null
+    totalExercises: number
+    completedExercises: number
+    completionRate: number
+    streakDays: number
   }
   
   // Kunskapsbank

@@ -7,7 +7,12 @@ import type { WidgetSize } from '../WidgetSizeSelector'
 interface CareerWidgetProps {
   exploredCount?: number
   savedPaths?: { id: string; title: string; progress: number }[]
-  recommendedOccupations?: string[]
+  recommendedOccupations?: { name: string; matchPercentage?: number }[]
+  riasecProfile?: {
+    dominant: string
+    secondary: string
+    scores: Record<string, number>
+  } | null
   loading?: boolean
   error?: string | null
   onRetry?: () => void
@@ -21,7 +26,7 @@ function CareerWidgetSmall({
   loading, 
   error, 
   onRetry 
-}: Omit<CareerWidgetProps, 'size' | 'savedPaths'>) {
+}: Omit<CareerWidgetProps, 'size' | 'savedPaths' | 'riasecProfile'>) {
   const getStatus = (): WidgetStatus => {
     if (exploredCount === 0) return 'empty'
     return 'complete'
@@ -65,6 +70,7 @@ function CareerWidgetMedium({
   exploredCount = 0, 
   savedPaths = [], 
   recommendedOccupations = [], 
+  riasecProfile,
   loading, 
   error, 
   onRetry 
@@ -107,7 +113,7 @@ function CareerWidgetMedium({
                 key={i} 
                 className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-md border border-indigo-100"
               >
-                {occ}
+                {occ.name}
               </span>
             ))}
           </div>
@@ -122,6 +128,7 @@ function CareerWidgetLarge({
   exploredCount = 0, 
   savedPaths = [], 
   recommendedOccupations = [], 
+  riasecProfile,
   loading, 
   error, 
   onRetry 
@@ -175,7 +182,7 @@ function CareerWidgetLarge({
                   key={i} 
                   className="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm rounded-lg border border-indigo-100"
                 >
-                  {occ}
+                  {occ.name}
                 </span>
               ))}
             </div>
