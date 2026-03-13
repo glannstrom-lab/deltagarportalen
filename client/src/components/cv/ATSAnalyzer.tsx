@@ -4,7 +4,7 @@ import {
   FileText, Type, Layout, Image, Download, Briefcase, Building, HeartPulse, 
   Hammer, ShoppingCart, GraduationCap, Code, Wrench, FileCheck, AlertTriangle
 } from 'lucide-react'
-import type { CVData, Skill } from '@/services/mockApi'
+import type { CVData, Skill } from '@/services/supabaseApi'
 
 interface ATSCheck {
   name: string

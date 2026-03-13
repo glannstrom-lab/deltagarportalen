@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Search, Sparkles, AlertCircle, CheckCircle, XCircle, Loader2 } from 'lucide-react'
-import type { CVData } from '@/services/mockApi'
+import type { CVData } from '@/services/supabaseApi'
 
 interface JobAdAnalyzerProps {
   cvData: CVData

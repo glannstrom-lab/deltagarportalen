@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { Download, FileText, Check, FileType, Loader2 } from 'lucide-react'
 import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
-import type { CVData } from '@/services/mockApi'
+import type { CVData } from '@/services/supabaseApi'
 
 interface CVExportProps {
   cvData?: CVData

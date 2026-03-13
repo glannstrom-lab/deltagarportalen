@@ -10,55 +10,118 @@ import type { Tables } from '../lib/supabase'
 // ============================================
 // TYPES
 // ============================================
+
+// WorkExperience som används i UI-komponenter (camelCase)
+export interface WorkExperience {
+  id: string
+  title: string
+  company: string
+  location?: string
+  startDate: string
+  endDate?: string
+  current?: boolean
+  description?: string
+}
+
+// Education som används i UI-komponenter (camelCase)
+export interface Education {
+  id: string
+  degree: string
+  school: string
+  field?: string
+  location?: string
+  startDate: string
+  endDate?: string
+  description?: string
+}
+
+// Skill som används i UI-komponenter
+export interface Skill {
+  id: string
+  name: string
+  level: number // 1-5
+  category: 'technical' | 'soft' | 'tool' | 'language' | 'certification' | 'other'
+}
+
+// Language som används i UI-komponenter
+export interface Language {
+  id: string
+  language: string
+  level: 'Grundläggande' | 'God' | 'Flytande' | 'Modersmål'
+}
+
+// Certificate som används i UI-komponenter
+export interface Certificate {
+  id: string
+  name: string
+  issuer?: string
+  date?: string
+  expiryDate?: string
+}
+
+// Link som används i UI-komponenter
+export interface Link {
+  id: string
+  type: 'linkedin' | 'github' | 'portfolio' | 'website' | 'other'
+  url: string
+  label?: string
+}
+
+// Reference som används i UI-komponenter
+export interface Reference {
+  id: string
+  name: string
+  title?: string
+  company?: string
+  relation?: string
+  email?: string
+  phone?: string
+}
+
+// CVVersion för versionshantering
+export interface CVVersion {
+  id: string
+  name: string
+  data: CVData
+  createdAt: string
+}
+
+// Huvud-CVData interface som används i hela applikationen
 export interface CVData {
   id?: string
   user_id?: string
+  // Personlig info (camelCase för UI)
+  firstName?: string
+  lastName?: string
+  first_name?: string
+  last_name?: string
+  profileImage?: string | null
   profile_image?: string | null
   title?: string | null
   email?: string | null
   phone?: string | null
   location?: string | null
   summary?: string | null
-  work_experience?: Array<{
-    id?: string
-    title: string
-    company: string
-    description?: string
-    startDate?: string
-    endDate?: string
-    current?: boolean
-  }>
-  education?: Array<{
-    id?: string
-    degree: string
-    school: string
-    startDate?: string
-    endDate?: string
-  }>
-  skills?: string[]
-  languages?: Array<{
-    language: string
-    level: string
-  }>
-  certificates?: Array<{
-    name: string
-    issuer?: string
-    date?: string
-  }>
-  links?: Array<{
-    type: string
-    url: string
-  }>
-  references?: Array<{
-    name: string
-    relation: string
-    contact?: string
-  }>
+  // Erfarenheter och utbildning
+  workExperience?: WorkExperience[]
+  work_experience?: WorkExperience[]
+  education?: Education[]
+  // Kompetenser och andra listor
+  skills?: Skill[]
+  languages?: Language[]
+  certificates?: Certificate[]
+  links?: Link[]
+  references?: Reference[]
+  // Utseende
   template?: string
+  colorScheme?: string
   color_scheme?: string
   font?: string
+  // ATS-analys
   ats_score?: number | null
+  atsScore?: number | null
   ats_feedback?: any
+  atsFeedback?: any
 }
 
 export interface CoverLetter {

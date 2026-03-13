@@ -15,10 +15,11 @@ import { CompactImageUpload } from '@/components/ImageUpload'
 import { useVercelImageUpload } from '@/hooks/useVercelImageUpload'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import type { CVData, CVVersion } from '@/services/mockApi'
+import type { CVData, CVVersion } from '@/services/supabaseApi'
 
 // NYA IMPORTS för förbättringar
 import { useCVAutoSave, useCVDraft } from '@/hooks/useCVAutoSave'
+import type { WorkExperience } from '@/services/supabaseApi'
 import { useCVScore, getOverallTips, getScoreColor } from '@/hooks/useCVScore'
 import { SaveIndicator } from '@/components/cv/SaveIndicator'
 import { CVProgressBar } from '@/components/cv/CVProgressBar'

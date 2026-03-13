@@ -15,7 +15,7 @@ import {
   GraduationCap,
 } from 'lucide-react'
 import { afApi, type CVMatchAnalysis } from '@/services/arbetsformedlingenApi'
-import type { CVData } from '@/services/mockApi'
+import type { CVData } from '@/services/supabaseApi'
 
 interface JobMatchAnalyzerProps {
   jobId: string

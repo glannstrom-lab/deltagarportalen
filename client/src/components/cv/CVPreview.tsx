@@ -7,7 +7,7 @@ import {
   Mail, Phone, MapPin, Briefcase, GraduationCap, 
   Award, Link2, Globe, Star, Target, Zap, BookOpen, Sparkles
 } from 'lucide-react'
-import type { CVData } from '@/services/mockApi'
+import type { CVData } from '@/services/supabaseApi'
 
 interface CVPreviewProps {
   data: CVData

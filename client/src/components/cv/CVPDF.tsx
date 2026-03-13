@@ -1,5 +1,5 @@
 import { Document, Page, Text, View, StyleSheet, Font, Link } from '@react-pdf/renderer'
-import type { CVData } from '@/services/mockApi'
+import type { CVData } from '@/services/supabaseApi'
 
 // Register fonts (using standard fonts that work in react-pdf)
 Font.register({

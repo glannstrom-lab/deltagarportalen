@@ -11,7 +11,7 @@ import {
   Check,
 } from 'lucide-react'
 import { afApi } from '@/services/arbetsformedlingenApi'
-import type { CVData } from '@/services/mockApi'
+import type { CVData } from '@/services/supabaseApi'
 
 interface CVOptimizerProps {
   cvData: CVData

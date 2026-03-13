@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { X, MapPin, Briefcase, Clock, DollarSign, Calendar, Heart, Sparkles, Send, Building, Share2, FileDown } from 'lucide-react'
-import type { Job, CVData } from '@/services/mockApi'
+import type { Job } from '@/services/mockApi'
+import type { CVData } from '@/services/supabaseApi'
 import { jobsApi } from '@/services/api'
 import { ShareJobDialog } from './ShareJobDialog'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
