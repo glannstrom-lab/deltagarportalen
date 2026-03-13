@@ -18,10 +18,18 @@ import {
   Calendar,
   Settings,
   User,
+  Sparkles,
 } from 'lucide-react'
 
-// Dashboard tabs
-export const dashboardTabs: Tab[] = [
+// Import new tab configurations
+import { wellnessTabs } from './wellnessTabs'
+import { jobTrackerTabs } from './jobTrackerTabs'
+import { dashboardTabs } from './dashboardTabs'
+import { careerTabs } from './careerTabs'
+import { knowledgeTabs } from './knowledgeTabs'
+
+// Dashboard navigation (sidebar)
+export const dashboardNavTabs: Tab[] = [
   { id: 'overview', label: 'Översikt', path: '/', icon: LayoutDashboard },
   { id: 'cv', label: 'CV', path: '/cv', icon: FileText },
   { id: 'cover-letter', label: 'Personligt brev', path: '/cover-letter', icon: Mail },
@@ -30,6 +38,7 @@ export const dashboardTabs: Tab[] = [
   { id: 'interest-guide', label: 'Intresseguide', path: '/interest-guide', icon: Compass },
   { id: 'exercises', label: 'Övningar', path: '/exercises', icon: Dumbbell },
   { id: 'diary', label: 'Dagbok', path: '/diary', icon: BookHeart },
+  { id: 'wellness', label: 'Hälsa', path: '/wellness', icon: BookHeart },
   { id: 'knowledge-base', label: 'Kunskapsbank', path: '/knowledge-base', icon: BookOpen },
   { id: 'resources', label: 'Resurser', path: '/resources', icon: Bookmark },
 ]
@@ -48,24 +57,11 @@ export const coverLetterTabs: Tab[] = [
   { id: 'saved', label: 'Sparade brev', path: '/cover-letter/saved', icon: Bookmark },
 ]
 
-// Job Search tabs
+// Job Search tabs (main navigation)
 export const jobSearchTabs: Tab[] = [
   { id: 'search', label: 'Sök', path: '/job-search', icon: Briefcase },
   { id: 'tracker', label: 'Ansöknings tracker', path: '/job-tracker', icon: Target },
   { id: 'saved', label: 'Sparade jobb', path: '/resources', icon: Bookmark },
-]
-
-// Career tabs
-export const careerTabs: Tab[] = [
-  { id: 'explore', label: 'Utforska yrken', path: '/career', icon: Compass },
-  { id: 'plan', label: 'Karriärplan', path: '/career-plan', icon: Target },
-  { id: 'skills', label: 'Kompetensanalys', path: '/skills-gap', icon: LayoutDashboard },
-]
-
-// Knowledge Base tabs
-export const knowledgeTabs: Tab[] = [
-  { id: 'articles', label: 'Artiklar', path: '/knowledge-base', icon: BookOpen },
-  { id: 'resources', label: 'Mina resurser', path: '/resources', icon: Bookmark },
 ]
 
 // Profile tabs
@@ -86,13 +82,15 @@ export const resourcesTabs: Tab[] = [
 export function getTabsForPath(path: string): Tab[] {
   if (path.startsWith('/cv')) return cvBuilderTabs
   if (path.startsWith('/cover-letter')) return coverLetterTabs
-  if (path.startsWith('/job-search') || path.startsWith('/job-tracker')) return jobSearchTabs
+  if (path.startsWith('/job-search')) return jobSearchTabs
+  if (path.startsWith('/job-tracker')) return jobTrackerTabs
   if (path.startsWith('/career')) return careerTabs
+  if (path.startsWith('/skills-gap')) return careerTabs
+  if (path.startsWith('/career-plan')) return careerTabs
+  if (path.startsWith('/wellness')) return wellnessTabs
   if (path.startsWith('/knowledge-base')) return knowledgeTabs
   if (path.startsWith('/resources')) return resourcesTabs
   if (path.startsWith('/profile') || path.startsWith('/settings')) return profileTabs
-  return dashboardTabs
+  if (path.startsWith('/dashboard')) return dashboardTabs
+  return []
 }
-
-// Lucide icons need to be imported
-import { Sparkles } from 'lucide-react'

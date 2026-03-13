@@ -302,14 +302,14 @@ function App() {
           </LazyRoute>
         } />
         <Route path="jobs" element={<Navigate to="/job-search" replace />} />
-        <Route path="job-tracker" element={
+        <Route path="job-tracker/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <JobTracker />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="career" element={
+        <Route path="career/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <Career />
@@ -323,7 +323,7 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="wellness" element={
+        <Route path="wellness/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <Wellness />
