@@ -23,9 +23,9 @@ import Landing from './pages/Landing'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import StorageTest from './pages/StorageTest'
+import Dashboard from './pages/Dashboard'
 
 // Lazy-loaded sidor för bättre prestanda
-const Dashboard = lazy(() => import('./pages/Dashboard'))
 const CVPage = lazy(() => import('./pages/CVPage'))
 const CVBuilder = lazy(() => import('./pages/CVBuilder'))
 const CoverLetterGenerator = lazy(() => import('./pages/CoverLetterGenerator'))
@@ -229,13 +229,11 @@ function App() {
           <Layout />
         </PrivateRoute>
       }>
-        {/* Dashboard with tabs - all dashboard routes handled here */}
+        {/* Dashboard with tabs - eager loaded for debugging */}
         <Route path="dashboard/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
+          <RouteErrorBoundary>
+            <Dashboard />
+          </RouteErrorBoundary>
         } />
         {/* Redirect root to dashboard */}
         <Route index element={<Navigate to="/dashboard" replace />} />
