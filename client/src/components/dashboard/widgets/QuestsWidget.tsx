@@ -24,6 +24,7 @@ interface QuestsWidgetProps {
   error?: string | null
   onRetry?: () => void
   size?: WidgetSize
+  to?: string
 }
 
 const categoryIcons: Record<string, string> = {
@@ -41,7 +42,8 @@ function QuestsWidgetSmall({
   streakDays = 0,
   loading, 
   error, 
-  onRetry 
+  onRetry,
+  to = '/quests'
 }: Omit<QuestsWidgetProps, 'size' | 'quests'>) {
   const getStatus = (): WidgetStatus => {
     if (completedQuests === 0) return 'empty'
@@ -56,7 +58,7 @@ function QuestsWidgetSmall({
     <DashboardWidget
       title="Quests"
       icon={<Zap size={14} />}
-      to="/quests"
+      to={to}
       color="yellow"
       status={status}
       progress={progress}
@@ -88,7 +90,8 @@ function QuestsWidgetMedium({
   streakDays = 0,
   loading, 
   error, 
-  onRetry 
+  onRetry,
+  to = '/quests'
 }: QuestsWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (completedQuests === 0) return 'empty'
@@ -112,7 +115,7 @@ function QuestsWidgetMedium({
     <DashboardWidget
       title="Dagens Quests"
       icon={<Target size={22} />}
-      to="/quests"
+      to={to}
       color="yellow"
       status={status}
       progress={progress}
@@ -182,7 +185,8 @@ function QuestsWidgetLarge({
   streakDays = 0,
   loading, 
   error, 
-  onRetry 
+  onRetry,
+  to = '/quests'
 }: QuestsWidgetProps) {
   const getStatus = (): WidgetStatus => {
     if (completedQuests === 0) return 'empty'
@@ -209,7 +213,7 @@ function QuestsWidgetLarge({
     <DashboardWidget
       title="Dagens Quests"
       icon={<Target size={24} />}
-      to="/quests"
+      to={to}
       color="yellow"
       status={status}
       progress={progress}

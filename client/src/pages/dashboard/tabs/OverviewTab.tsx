@@ -65,7 +65,15 @@ export default function OverviewTab() {
         {visibleWidgets.includes('cv') && data && <CVWidget hasCV={data.cv.hasCV} progress={data.cv.progress} atsScore={data.cv.atsScore} size={widgetSizes.cv} />}
         {visibleWidgets.includes('jobSearch') && data && <JobSearchWidget savedCount={data.jobs.savedCount} size={widgetSizes.jobSearch} />}
         {visibleWidgets.includes('wellness') && data && <WellnessWidget completedActivities={data.wellness.completedActivities} streakDays={data.wellness.streakDays} moodToday={data.wellness.moodToday} size={widgetSizes.wellness} />}
-        {visibleWidgets.includes('quests') && data && <QuestsWidget completedQuests={data.quests.completed} totalQuests={data.quests.total} streakDays={data.activity.streakDays} size={widgetSizes.quests} />}
+        {visibleWidgets.includes('quests') && data && (
+          <QuestsWidget 
+            completedQuests={data.quests.completed} 
+            totalQuests={data.quests.total} 
+            streakDays={data.activity.streakDays} 
+            size={widgetSizes.quests} 
+            to="/activity"
+          />
+        )}
       </DashboardGrid>
     </div>
   )
