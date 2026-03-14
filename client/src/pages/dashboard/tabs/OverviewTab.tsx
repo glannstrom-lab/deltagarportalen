@@ -13,8 +13,6 @@ import { type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
 import { DashboardGridSkeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui'
 import { CVWidget, JobSearchWidget, WellnessWidget, QuestsWidget } from '@/components/dashboard'
-import { NextStepWidget } from '@/components/dashboard/widgets/NextStepWidget'
-import { WeeklySummary } from '@/components/dashboard/WeeklySummary'
 import { cn } from '@/lib/utils'
 
 const allWidgets: WidgetType[] = ['cv', 'coverLetter', 'jobSearch', 'applications', 'career', 'interests', 'exercises', 'diary', 'wellness', 'knowledge', 'quests']
@@ -34,8 +32,6 @@ export default function OverviewTab() {
   if (loading) return <DashboardGridSkeleton count={4} />
   if (error) return <ErrorState title="Kunde inte ladda" message="Något gick fel" onRetry={refetch} />
 
-  const isNewUser = !data?.cv?.hasCV
-
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -50,9 +46,6 @@ export default function OverviewTab() {
           <ChevronRight size={16} />
         </Link>
       </div>
-
-      {/* Nästa steg */}
-      {!isNewUser && data && <NextStepWidget />}
 
       {/* Snabb-statistik */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -77,8 +70,6 @@ export default function OverviewTab() {
         {visibleWidgets.includes('wellness') && data && <WellnessWidget completedActivities={data.wellness.completedActivities} streakDays={data.wellness.streakDays} moodToday={data.wellness.moodToday} size={widgetSizes.wellness} />}
         {visibleWidgets.includes('quests') && data && <QuestsWidget completedQuests={data.quests.completed} totalQuests={data.quests.total} streakDays={data.activity.streakDays} size={widgetSizes.quests} />}
       </DashboardGrid>
-
-      <WeeklySummary />
     </div>
   )
 }

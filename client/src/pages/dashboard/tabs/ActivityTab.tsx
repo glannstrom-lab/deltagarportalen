@@ -1,10 +1,8 @@
 /**
  * ActivityTab - Aktivitet, påminnelser, timeline och quests
- * Allt som händer och ska hända
  */
 import { Flame, CheckCircle2, Target, TrendingUp } from 'lucide-react'
 import { useDashboardData } from '@/hooks/useDashboardData'
-import { RemindersWidget } from '@/components/dashboard/widgets/RemindersWidget'
 import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
 import { JourneyTimeline } from '@/components/analytics/JourneyTimeline'
 import { cn } from '@/lib/utils'
@@ -19,29 +17,24 @@ export default function ActivityTab() {
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-slate-800">Min aktivitet</h2>
-        <p className="text-slate-500">Påminnelser, quests och din resa</p>
+        <p className="text-slate-500">Dina quests och din resa</p>
       </div>
 
-      {/* Påminnelser - alltid överst */}
-      <div className="grid md:grid-cols-2 gap-6">
-        <RemindersWidget size="medium" />
-        
-        {/* Dagens Quests */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
-          <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <Target size={20} className="text-violet-500" />
-            Dagens quests
-          </h3>
-          {data && (
-            <QuestsWidget 
-              completedQuests={data.quests.completed} 
-              totalQuests={data.quests.total}
-              quests={data.quests.items}
-              streakDays={data.activity.streakDays}
-              size="medium"
-            />
-          )}
-        </div>
+      {/* Dagens Quests */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+          <Target size={20} className="text-violet-500" />
+          Dagens quests
+        </h3>
+        {data && (
+          <QuestsWidget 
+            completedQuests={data.quests.completed} 
+            totalQuests={data.quests.total}
+            quests={data.quests.items}
+            streakDays={data.activity.streakDays}
+            size="medium"
+          />
+        )}
       </div>
 
       {/* Streak och statistik */}
