@@ -1,6 +1,5 @@
 import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom'
 import { LayoutDashboard, Activity, Users, Brain, BookOpen } from 'lucide-react'
-import { useAuthStore } from '@/stores/authStore'
 
 // Tab components
 import OverviewTab from './dashboard/tabs/OverviewTab'
@@ -19,7 +18,6 @@ const tabs = [
 
 export default function DashboardPage() {
   const location = useLocation()
-  const { user } = useAuthStore()
 
   const currentTab = tabs.find(tab => {
     if (tab.path === '') return location.pathname === '/dashboard' || location.pathname === '/dashboard/'
@@ -46,7 +44,6 @@ export default function DashboardPage() {
             <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1e293b' }}>
               Deltagarportalen
             </h1>
-            <span style={{ fontSize: '14px', color: '#64748b' }}>{user?.email}</span>
           </div>
 
           {/* Tab navigation */}

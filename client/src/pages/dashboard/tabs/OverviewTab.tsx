@@ -1,12 +1,8 @@
-import { useAuthStore } from '@/stores/authStore'
-
 export default function OverviewTab() {
-  const { user } = useAuthStore()
-
   return (
     <div style={{ padding: '24px' }}>
       <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e293b' }}>
-        Hej, {user?.firstName || 'dar'}!
+        Hej!
       </h1>
       <p style={{ color: '#475569', marginTop: '8px' }}>
         Valkommen till din oversikt.
