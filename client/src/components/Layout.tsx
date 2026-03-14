@@ -17,7 +17,7 @@ import { useAuthStore } from '@/stores/authStore'
 
 // Mobila navigeringsitems - synkade med Sidebar navigation.ts
 const mobileNavItems = [
-  { to: '/', label: 'Översikt', icon: LayoutDashboard },
+  { to: '/dashboard', label: 'Översikt', icon: LayoutDashboard },
   { to: '/cv', label: 'CV', icon: FileText },
   { to: '/cover-letter', label: 'Personligt brev', icon: Mail },
   { to: '/job-search', label: 'Sök jobb', icon: Briefcase },
@@ -60,8 +60,8 @@ export default function Layout() {
         {/* TopBar - desktop (dölj på dashboard som har egen header) */}
         {showBars && !isMobile && !location.pathname.startsWith('/dashboard') && <TopBar />}
         
-        {/* Mobil TopBar med meny och profil (dölj på dashboard) */}
-        {showBars && isMobile && location.pathname !== '/' && location.pathname !== '/activity' && location.pathname !== '/community' && location.pathname !== '/insights' && location.pathname !== '/learning' && <MobileTopBar />}
+        {/* Mobil TopBar med meny och profil (dölj på dashboard som har egen header) */}
+        {showBars && isMobile && !location.pathname.startsWith('/dashboard') && <MobileTopBar />}
         
         {/* Main content */}
         <main 

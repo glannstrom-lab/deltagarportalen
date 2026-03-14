@@ -178,7 +178,7 @@ export function Sidebar() {
           <div className={cn(!isExpanded && 'space-y-0.5')}>
             {navItems.map((item) => {
               const isActive = location.pathname === item.path ||
-                (item.path !== '/dashboard' && location.pathname.startsWith(`${item.path}/`))
+                location.pathname.startsWith(`${item.path}/`)
               return (
                 <NavItem
                   key={item.path}

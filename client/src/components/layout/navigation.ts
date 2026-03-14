@@ -17,7 +17,7 @@ import {
 
 // Standard navigation för deltagare
 export const navItems = [
-  { path: '/', label: 'Översikt', icon: LayoutDashboard },
+  { path: '/dashboard', label: 'Översikt', icon: LayoutDashboard },
   { path: '/cv', label: 'CV', icon: FileText },
   { path: '/cover-letter', label: 'Personligt brev', icon: Mail },
   { path: '/job-search', label: 'Sök jobb', icon: Briefcase },
