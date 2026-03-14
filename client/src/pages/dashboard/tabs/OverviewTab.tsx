@@ -7,6 +7,7 @@ import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
 import { CVWidget } from '@/components/dashboard/widgets/CVWidget'
 import { JobSearchWidget } from '@/components/dashboard/widgets/JobSearchWidget'
 import { WellnessWidget } from '@/components/dashboard/widgets/WellnessWidget'
+import { NextStepCard } from '@/components/dashboard/NextStepCard'
 import { cn } from '@/lib/utils'
 
 export default function OverviewTab() {
@@ -43,6 +44,9 @@ export default function OverviewTab() {
         </Link>
       </div>
 
+      {/* Nästa steg - prominent */}
+      {data && <NextStepCard data={data} />}
+
       {/* Snabb-statistik */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         <QuickStat 
@@ -72,28 +76,31 @@ export default function OverviewTab() {
       </div>
 
       {/* Widgets Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <CVWidget 
-          hasCV={data?.cv?.hasCV} 
-          progress={data?.cv?.progress} 
-          size="small" 
-        />
-        <JobSearchWidget 
-          savedCount={data?.jobs?.savedCount} 
-          size="small" 
-        />
-        <WellnessWidget 
-          completedActivities={data?.wellness?.completedActivities}
-          streakDays={data?.wellness?.streakDays}
-          moodToday={data?.wellness?.moodToday}
-          size="small" 
-        />
-        <QuestsWidget 
-          completedQuests={data?.quests?.completed || 0} 
-          totalQuests={data?.quests?.total || 3}
-          streakDays={data?.activity?.streakDays || 0}
-          size="small" 
-        />
+      <div>
+        <h2 className="text-lg font-semibold text-slate-800 mb-4">Dina verktyg</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <CVWidget 
+            hasCV={data?.cv?.hasCV} 
+            progress={data?.cv?.progress} 
+            size="small" 
+          />
+          <JobSearchWidget 
+            savedCount={data?.jobs?.savedCount} 
+            size="small" 
+          />
+          <WellnessWidget 
+            completedActivities={data?.wellness?.completedActivities}
+            streakDays={data?.wellness?.streakDays}
+            moodToday={data?.wellness?.moodToday}
+            size="small" 
+          />
+          <QuestsWidget 
+            completedQuests={data?.quests?.completed || 0} 
+            totalQuests={data?.quests?.total || 3}
+            streakDays={data?.activity?.streakDays || 0}
+            size="small" 
+          />
+        </div>
       </div>
     </div>
   )
