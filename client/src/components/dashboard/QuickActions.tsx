@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Clock, ArrowRight, Zap, Coffee, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
