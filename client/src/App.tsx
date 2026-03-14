@@ -23,9 +23,9 @@ import Landing from './pages/Landing'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import StorageTest from './pages/StorageTest'
-import Dashboard from './pages/Dashboard'
 
-// Lazy-loaded sidor för bättre prestanda
+// Lazy-loaded sidor
+const Dashboard = lazy(() => import('./pages/Dashboard'))
 const CVPage = lazy(() => import('./pages/CVPage'))
 const CVBuilder = lazy(() => import('./pages/CVBuilder'))
 const CoverLetterGenerator = lazy(() => import('./pages/CoverLetterGenerator'))
@@ -48,7 +48,7 @@ const ConsultantDashboard = lazy(() => import('./components/consultant/Consultan
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 
-// Loading fallback för lazy-loaded komponenter
+// Loading fallback
 function PageLoader() {
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
@@ -60,7 +60,7 @@ function PageLoader() {
   )
 }
 
-// Error Boundary wrapper for routes
+// Error Boundary wrapper
 function RouteErrorBoundary({ children }: { children: React.ReactNode }) {
   return (
     <ErrorBoundary>
@@ -69,7 +69,7 @@ function RouteErrorBoundary({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Suspense wrapper med loading state
+// Suspense wrapper
 function LazyRoute({ children }: { children: React.ReactNode }) {
   return (
     <Suspense fallback={<PageLoader />}>
@@ -78,7 +78,7 @@ function LazyRoute({ children }: { children: React.ReactNode }) {
   )
 }
 
-// Roll-baserad route-guard
+// Private route guard
 function PrivateRoute({ 
   children, 
   allowedRoles 
@@ -143,7 +143,7 @@ function App() {
     }
   }, [initialize])
 
-  // Visa loading-screen medan auth initialiseras
+  // Show loading screen while auth initializes
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-slate-800">
@@ -157,89 +157,89 @@ function App() {
 
   return (
     <Routes>
-      {/* Public routes - eager loaded för snabb initial rendering */}
+      {/* Public routes */}
       <Route path="/" element={
         <PublicRoute>
-          <RouteErrorBoundary>
-            <Landing />
-          </RouteErrorBoundary>
+          <Landing />
         </PublicRoute>
       } />
       <Route path="/login" element={
         <PublicRoute>
-          <RouteErrorBoundary>
-            <Login />
-          </RouteErrorBoundary>
+          <Login />
         </PublicRoute>
       } />
       <Route path="/register" element={
         <PublicRoute>
-          <RouteErrorBoundary>
-            <Register />
-          </RouteErrorBoundary>
+          <Register />
         </PublicRoute>
       } />
       <Route path="/invite/:code" element={
         <LazyRoute>
-          <RouteErrorBoundary>
-            <InviteHandler />
-          </RouteErrorBoundary>
+          <InviteHandler />
         </LazyRoute>
       } />
-      {/* Landing page preview - accessible even when logged in */}
-      <Route path="/landing" element={
-        <RouteErrorBoundary>
-          <Landing />
-        </RouteErrorBoundary>
-      } />
       
-      {/* Legal pages - public */}
-      <Route path="/privacy" element={
-        <RouteErrorBoundary>
-          <Privacy />
-        </RouteErrorBoundary>
-      } />
-      <Route path="/terms" element={
-        <RouteErrorBoundary>
-          <Terms />
-        </RouteErrorBoundary>
-      } />
-      {/* Storage test page */}
-      <Route path="/test/storage" element={
-        <RouteErrorBoundary>
-          <StorageTest />
-        </RouteErrorBoundary>
-      } />
+      {/* Landing page preview */}
+      <Route path="/landing" element={<Landing />} />
       
-      {/* Legal pages - public */}
-      <Route path="/privacy" element={
-        <RouteErrorBoundary>
-          <Privacy />
-        </RouteErrorBoundary>
-      } />
-      <Route path="/terms" element={
-        <RouteErrorBoundary>
-          <Terms />
-        </RouteErrorBoundary>
-      } />
+      {/* Legal pages */}
+      <Route path="/privacy" element={<Privacy />} />
+      <Route path="/terms" element={<Terms />} />
+      <Route path="/test/storage" element={<StorageTest />} />
 
-      {/* Dashboard - standalone route without Layout */}
-      <Route path="/dashboard/*" element={
-        <PrivateRoute>
-          <RouteErrorBoundary>
-            <Dashboard />
-          </RouteErrorBoundary>
-        </PrivateRoute>
-      } />
-      
       {/* Protected routes with Layout */}
       <Route path="/" element={
         <PrivateRoute>
           <Layout />
         </PrivateRoute>
       }>
-        {/* Redirect root to dashboard */}
-        <Route index element={<Navigate to="/dashboard" replace />} />
+        {/* Dashboard with tabs - main route */}
+        <Route index element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        
+        {/* Dashboard tab routes */}
+        <Route path="activity" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="community" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="insights" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="learning" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="quests" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        
+        {/* Other protected routes */}
         <Route path="cv/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
@@ -261,7 +261,6 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        {/* Article detail view - MUST come before knowledge-base routes */}
         <Route path="knowledge-base/article/:id" element={
           <LazyRoute>
             <RouteErrorBoundary>
@@ -269,7 +268,6 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        {/* Knowledge Base - handles tabs via hash routing */}
         <Route path="knowledge-base" element={
           <LazyRoute>
             <RouteErrorBoundary>
@@ -386,32 +384,12 @@ function App() {
         } />
       </Route>
 
-      {/* Redirect old routes - all routes now work without /dashboard prefix */}
-      {/* These redirects ensure old bookmarks still work */}
-      <Route path="/dashboard/cv" element={<Navigate to="/cv" replace />} />
-      <Route path="/dashboard/cover-letter" element={<Navigate to="/cover-letter" replace />} />
-      <Route path="/dashboard/job-search" element={<Navigate to="/job-search" replace />} />
-      <Route path="/dashboard/career" element={<Navigate to="/career" replace />} />
-      <Route path="/dashboard/interest-guide" element={<Navigate to="/interest-guide" replace />} />
-      <Route path="/dashboard/exercises" element={<Navigate to="/exercises" replace />} />
-      <Route path="/dashboard/diary" element={<Navigate to="/diary" replace />} />
-      <Route path="/dashboard/knowledge-base" element={<Navigate to="/knowledge-base" replace />} />
-      <Route path="/dashboard/knowledge-base/*" element={<Navigate to="/knowledge-base" replace />} />
-      <Route path="/dashboard/resources" element={<Navigate to="/resources" replace />} />
-      <Route path="/dashboard/help" element={<Navigate to="/help" replace />} />
-      <Route path="/dashboard/profile" element={<Navigate to="/profile" replace />} />
-      <Route path="/dashboard/job-tracker" element={<Navigate to="/job-tracker" replace />} />
-      <Route path="/dashboard/settings" element={<Navigate to="/settings" replace />} />
-      <Route path="/dashboard/consultant" element={<Navigate to="/consultant" replace />} />
-      <Route path="/dashboard/admin" element={<Navigate to="/admin" replace />} />
-      
-      {/* Dashboard main route */}
-      <Route path="/dashboard" element={<Navigate to="/dashboard/" replace />} />
+      {/* Redirect old dashboard routes */}
+      <Route path="/dashboard" element={<Navigate to="/" replace />} />
+      <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
 
-      {/* Catch all - redirect to home for client-side routing */}
-      <Route path="*" element={
-        <Navigate to="/" replace />
-      } />
+      {/* Catch all - redirect to home */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
 }

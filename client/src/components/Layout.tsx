@@ -17,7 +17,7 @@ import { useAuthStore } from '@/stores/authStore'
 
 // Mobila navigeringsitems - synkade med Sidebar navigation.ts
 const mobileNavItems = [
-  { to: '/dashboard', label: 'Översikt', icon: LayoutDashboard },
+  { to: '/', label: 'Översikt', icon: LayoutDashboard },
   { to: '/cv', label: 'CV', icon: FileText },
   { to: '/cover-letter', label: 'Personligt brev', icon: Mail },
   { to: '/job-search', label: 'Sök jobb', icon: Briefcase },
@@ -36,9 +36,8 @@ export default function Layout() {
   // Visa TopBar och BottomBar på alla sidor förutom login/register
   const showBars = !['/login', '/register'].includes(location.pathname)
   
-  // Bestäm om vi ska visa tillbaka-knapp (alla sidor utom dashboard)
-  // Dashboard har nu egna flikar inbyggt i komponenten
-  const showBackButton = isMobile && location.pathname !== '/' && !location.pathname.startsWith('/dashboard')
+  // Bestäm om vi ska visa tillbaka-knapp (alla sidor utom startsidan)
+  const showBackButton = isMobile && location.pathname !== '/'
 
   return (
     <>
@@ -57,11 +56,11 @@ export default function Layout() {
       
       {/* Huvudinnehåll */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* TopBar - desktop (dölj på dashboard som har egen header) */}
-        {showBars && !isMobile && !location.pathname.startsWith('/dashboard') && <TopBar />}
+        {/* TopBar - desktop */}
+        {showBars && !isMobile && <TopBar />}
         
-        {/* Mobil TopBar med meny och profil (dölj på dashboard som har egen header) */}
-        {showBars && isMobile && !location.pathname.startsWith('/dashboard') && <MobileTopBar />}
+        {/* Mobil TopBar med meny och profil */}
+        {showBars && isMobile && <MobileTopBar />}
         
         {/* Main content */}
         <main 
