@@ -4,6 +4,9 @@ import { LayoutDashboard, Sparkles, Zap, TrendingUp, Target, ChevronRight } from
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
+import { CVWidget } from '@/components/dashboard/widgets/CVWidget'
+import { JobSearchWidget } from '@/components/dashboard/widgets/JobSearchWidget'
+import { WellnessWidget } from '@/components/dashboard/widgets/WellnessWidget'
 import { cn } from '@/lib/utils'
 
 export default function OverviewTab() {
@@ -68,8 +71,23 @@ export default function OverviewTab() {
         />
       </div>
 
-      {/* Widgets */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Widgets Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <CVWidget 
+          hasCV={data?.cv?.hasCV} 
+          progress={data?.cv?.progress} 
+          size="small" 
+        />
+        <JobSearchWidget 
+          savedCount={data?.jobs?.savedCount} 
+          size="small" 
+        />
+        <WellnessWidget 
+          completedActivities={data?.wellness?.completedActivities}
+          streakDays={data?.wellness?.streakDays}
+          moodToday={data?.wellness?.moodToday}
+          size="small" 
+        />
         <QuestsWidget 
           completedQuests={data?.quests?.completed || 0} 
           totalQuests={data?.quests?.total || 3}
