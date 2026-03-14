@@ -673,6 +673,85 @@ Rapporterar till: **CEO** (HR till COO)
 
 ---
 
+## 🎯 TILLGÄNGLIGA AGENTER
+
+Alla dessa agenter finns i `.claude/agents/` och kan konsulteras vid behov:
+
+### 🎨 Design & UX
+| Agent | Fil | Användning |
+|-------|-----|------------|
+| **UX-designer** | `ux-designer.md` | Användarflöden, wireframes, prototyper |
+| **Graphic Designer** | `graphic-designer.md` | Visuell design, illustrationer |
+| **Graphic Designer (Elena)** | `graphic-designer-elena.md` | Senior designer med specialisering |
+| **Graphic Designer (Active)** | `graphic-designer-active.md` | Aktiv design-resurs |
+
+### 💻 Utveckling
+| Agent | Fil | Användning |
+|-------|-----|------------|
+| **Developer** | `developer.md` | Fullstack-utveckling |
+| **Frontend Developer** | `frontend-developer.md` | React, TypeScript, CSS |
+| **Backend Developer** | `backend-developer.md` | Node.js, API:er, databaser |
+| **Fullstack Developer** | `fullstack-developer.md` | Kompletta lösningar |
+| **Fullstack Developer (Active)** | `fullstack-developer-active.md` | Primär utvecklare |
+| **React Specialist** | `react-specialist.md` | React-arkitektur och patterns |
+| **TypeScript Pro** | `typescript-pro.md` | Typer och kodkvalitet |
+| **AI Engineer** | `ai-engineer.md` | ML, AI-funktioner |
+
+### 🏗️ Arkitektur & DevOps
+| Agent | Fil | Användning |
+|-------|-----|------------|
+| **CTO** | `cto.md` | Teknisk strategi och arkitektur |
+| **DevOps Engineer** | `devops-engineer.md` | CI/CD, infrastruktur |
+| **Performance Engineer** | `performance-engineer.md` | Prestandaoptimering |
+| **Security Engineer** | `security-engineer.md` | Säkerhetsgranskning |
+| **Cybersecurity Specialist** | `cybersecurity-specialist.md` | GDPR, compliance |
+
+### 📋 Produkt & Projekt
+| Agent | Fil | Användning |
+|-------|-----|------------|
+| **CPO** | `cpo.md` | Produktstrategi och vision |
+| **Product Manager** | `product-manager.md` | Feature-strategi och roadmap |
+| **Product Owner** | `product-owner.md` | Backlog och sprintplanering |
+| **VD Agent** | `vd-agent.md` | Affärsstrategi och beslut |
+
+### 🧪 Kvalitet & Test
+| Agent | Fil | Användning |
+|-------|-----|------------|
+| **Tester** | `tester.md` | Kvalitetssäkring och bugg-jakt |
+| **Accessibility Tester** | `accessibility-tester.md` | WCAG 2.1 AA compliance |
+
+### 👥 Domänexperter
+| Agent | Fil | Användning |
+|-------|-----|------------|
+| **Work Consultant** | `work-consultant.md` | Arbetsmarknad, arbetskonsulent-perspektiv |
+| **Long-term Jobseeker** | `long-term-jobseeker.md` | Långtidsarbetslösas perspektiv |
+| **Marketer** | `marketer.md` | Copywriting och kommunikation |
+| **Marketing Manager** | `marketing-manager.md` | Marknadsstrategi |
+| **Customer Success Manager** | `customer-success-manager.md` | Onboarding och support |
+| **Support** | `support.md` | Helpdesk och kundservice |
+| **Data Analyst** | `data-analyst.md` | Analys och insikter |
+
+---
+
+## 🎓 ADVISORY BOARD
+
+Experter och användarrepresentanter i `.claude/advisory-board/`:
+
+### Användarrepresentanter
+| Medlem | Fil | Perspektiv |
+|--------|-----|------------|
+| **Long-term Jobseeker** | `long-term-jobseeker.md` | Tillgänglighet och empati |
+| **Career Transitioner** | `career-transitioner.md` | Effektivitet och kvalitet |
+
+### Experter
+| Medlem | Fil | Expertis |
+|--------|-----|----------|
+| **Psychology Researcher** | `psychology-researcher.md` | Arbete och välmående |
+| **Occupational Therapist** | `occupational-therapist.md` | Arbetsanpassning |
+| **Job Coach** | `job-coach.md` | Arbetsmarknad och coachning |
+
+---
+
 ## 📋 ROLLER - SAMMANSTÄLLNING
 
 ### Aktiva Roller (Anställda nu)
