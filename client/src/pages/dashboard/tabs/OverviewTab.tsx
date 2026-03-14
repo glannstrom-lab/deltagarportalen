@@ -1,18 +1,18 @@
 /**
  * OverviewTab - Huvudöversikt med widgets och snabbinfo
  */
-import { useState, useMemo } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { LayoutDashboard, Sparkles, Zap, TrendingUp, Target, ChevronRight } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { useEnergyStore, getWidgetsForEnergyLevel } from '@/stores/energyStore'
-import { DashboardGrid, getWidgetGridClasses } from '@/components/dashboard/DashboardGrid'
+import { DashboardGrid } from '@/components/dashboard/DashboardGrid'
 import { CompactWidgetFilter, type WidgetType } from '@/components/dashboard/CompactWidgetFilter'
-import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
+import { type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
 import { DashboardGridSkeleton } from '@/components/ui/Skeleton'
 import { ErrorState } from '@/components/ui'
-import { CVWidget, CoverLetterWidget, JobSearchWidget, ApplicationsWidget, CareerWidget, InterestWidget, ExercisesWidget, DiaryWidget, WellnessWidget, KnowledgeWidget, QuestsWidget } from '@/components/dashboard'
+import { CVWidget, JobSearchWidget, WellnessWidget, QuestsWidget } from '@/components/dashboard'
 import { NextStepWidget } from '@/components/dashboard/widgets/NextStepWidget'
 import { WeeklySummary } from '@/components/dashboard/WeeklySummary'
 import { cn } from '@/lib/utils'
@@ -25,7 +25,7 @@ export default function OverviewTab() {
   const { level: energyLevel } = useEnergyStore()
   
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(getWidgetsForEnergyLevel(energyLevel, allWidgets))
-  const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>({
+  const [widgetSizes] = useState<Record<WidgetType, WidgetSize>>({
     cv: 'medium', coverLetter: 'small', jobSearch: 'small', applications: 'small',
     career: 'small', interests: 'small', exercises: 'small', diary: 'small',
     wellness: 'small', knowledge: 'small', quests: 'medium'

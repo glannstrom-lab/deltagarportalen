@@ -2,8 +2,7 @@
  * ActivityTab - Aktivitet, påminnelser, timeline och quests
  * Allt som händer och ska hända
  */
-import { motion } from 'framer-motion'
-import { Clock, Calendar, CheckCircle2, Target, Zap, Flame, TrendingUp } from 'lucide-react'
+import { Flame, CheckCircle2, Target, TrendingUp } from 'lucide-react'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { RemindersWidget } from '@/components/dashboard/widgets/RemindersWidget'
 import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
