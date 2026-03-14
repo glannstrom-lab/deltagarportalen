@@ -223,18 +223,21 @@ function App() {
         </RouteErrorBoundary>
       } />
 
-      {/* Protected routes - lazy loaded för bättre prestanda */}
+      {/* Dashboard - standalone route without Layout */}
+      <Route path="/dashboard/*" element={
+        <PrivateRoute>
+          <RouteErrorBoundary>
+            <Dashboard />
+          </RouteErrorBoundary>
+        </PrivateRoute>
+      } />
+      
+      {/* Protected routes with Layout */}
       <Route path="/" element={
         <PrivateRoute>
           <Layout />
         </PrivateRoute>
       }>
-        {/* Dashboard with tabs - eager loaded for debugging */}
-        <Route path="dashboard/*" element={
-          <RouteErrorBoundary>
-            <Dashboard />
-          </RouteErrorBoundary>
-        } />
         {/* Redirect root to dashboard */}
         <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="cv/*" element={
