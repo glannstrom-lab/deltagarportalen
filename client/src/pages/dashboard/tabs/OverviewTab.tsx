@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { LayoutDashboard, Zap, TrendingUp, Target, ChevronRight, Sparkles, Clock } from 'lucide-react'
+import { LayoutDashboard, Zap, TrendingUp, Target, ChevronRight, Sparkles } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
@@ -16,8 +16,7 @@ import '@/styles/animations.css'
 
 // Color system for consistent theming
 const colorSystem = {
-  cv: {
-    primary: 'violet',
+  violet: {
     bg: 'bg-violet-50',
     bgHover: 'hover:bg-violet-100',
     text: 'text-violet-700',
@@ -27,8 +26,7 @@ const colorSystem = {
     ring: 'focus:ring-violet-500',
     shadow: 'shadow-violet-100'
   },
-  jobs: {
-    primary: 'blue',
+  blue: {
     bg: 'bg-blue-50',
     bgHover: 'hover:bg-blue-100',
     text: 'text-blue-700',
@@ -38,8 +36,7 @@ const colorSystem = {
     ring: 'focus:ring-blue-500',
     shadow: 'shadow-blue-100'
   },
-  wellness: {
-    primary: 'rose',
+  rose: {
     bg: 'bg-rose-50',
     bgHover: 'hover:bg-rose-100',
     text: 'text-rose-700',
@@ -49,8 +46,7 @@ const colorSystem = {
     ring: 'focus:ring-rose-500',
     shadow: 'shadow-rose-100'
   },
-  quests: {
-    primary: 'amber',
+  amber: {
     bg: 'bg-amber-50',
     bgHover: 'hover:bg-amber-100',
     text: 'text-amber-700',
@@ -61,7 +57,6 @@ const colorSystem = {
     shadow: 'shadow-amber-100'
   },
   emerald: {
-    primary: 'emerald',
     bg: 'bg-emerald-50',
     bgHover: 'hover:bg-emerald-100',
     text: 'text-emerald-700',
@@ -109,8 +104,6 @@ function AnimatedSection({
 export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading, error } = useDashboardData()
-  const [widgetOrder, setWidgetOrder] = useState(['cv', 'jobs', 'wellness', 'quests'])
-  const [draggedWidget, setDraggedWidget] = useState<string | null>(null)
 
   // Loading state with staggered skeletons
   if (loading) {
@@ -131,7 +124,7 @@ export default function OverviewTab() {
   if (error) {
     return (
       <div className="p-6">
-        <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 text-center animate-fade-in-up">
+        <div className="bg-rose-50 border-2 border-rose-200 rounded-2xl p-6 text-center">
           <div className="w-16 h-16 bg-rose-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
             <span className="text-3xl">😕</span>
           </div>
@@ -150,89 +143,6 @@ export default function OverviewTab() {
         </div>
       </div>
     )
-  }
-
-  // Drag and drop handlers
-  const handleDragStart = (widgetId: string) => {
-    setDraggedWidget(widgetId)
-  }
-
-  const handleDragOver = (e: React.DragEvent, targetWidget: string) => {
-    e.preventDefault()
-    if (draggedWidget && draggedWidget !== targetWidget) {
-      const newOrder = [...widgetOrder]
-      const draggedIdx = newOrder.indexOf(draggedWidget)
-      const targetIdx = newOrder.indexOf(targetWidget)
-      
-      newOrder.splice(draggedIdx, 1)
-      newOrder.splice(targetIdx, 0, draggedWidget)
-      
-      setWidgetOrder(newOrder)
-    }
-  }
-
-  const handleDragEnd = () => {
-    setDraggedWidget(null)
-  }
-
-  // Render widget based on type
-  const renderWidget = (type: string) => {
-    const widgetProps = {
-      draggable: true,
-      onDragStart: () => handleDragStart(type),
-      onDragOver: (e: React.DragEvent) => handleDragOver(e, type),
-      onDragEnd: handleDragEnd,
-      className: cn(
-        "transition-all duration-200",
-        draggedWidget === type && "opacity-50 scale-105 rotate-1"
-      )
-    }
-
-    switch (type) {
-      case 'cv':
-        return (
-          <div key="cv" {...widgetProps}>
-            <CVWidget 
-              hasCV={data?.cv?.hasCV} 
-              progress={data?.cv?.progress} 
-              size="small" 
-            />
-          </div>
-        )
-      case 'jobs':
-        return (
-          <div key="jobs" {...widgetProps}>
-            <JobSearchWidget 
-              savedCount={data?.jobs?.savedCount} 
-              size="small" 
-            />
-          </div>
-        )
-      case 'wellness':
-        return (
-          <div key="wellness" {...widgetProps}>
-            <WellnessWidget 
-              completedActivities={data?.wellness?.completedActivities}
-              streakDays={data?.wellness?.streakDays}
-              moodToday={data?.wellness?.moodToday}
-              size="small" 
-            />
-          </div>
-        )
-      case 'quests':
-        return (
-          <div key="quests" {...widgetProps}>
-            <QuestsWidget 
-              completedQuests={data?.quests?.completed || 0} 
-              totalQuests={data?.quests?.total || 3}
-              streakDays={data?.activity?.streakDays || 0}
-              size="small" 
-            />
-          </div>
-        )
-      default:
-        return null
-    }
   }
 
   return (
@@ -327,20 +237,37 @@ export default function OverviewTab() {
         </section>
       </AnimatedSection>
 
-      {/* Widgets Grid - Drag & Drop */}
+      {/* Widgets Grid */}
       <AnimatedSection delay={400}>
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900">
               Dina verktyg
             </h2>
-            <p className="text-xs text-slate-500">
-              Dra för att ordna
-            </p>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {widgetOrder.map((widgetType) => renderWidget(widgetType))}
+            <CVWidget 
+              hasCV={data?.cv?.hasCV} 
+              progress={data?.cv?.progress} 
+              size="small" 
+            />
+            <JobSearchWidget 
+              savedCount={data?.jobs?.savedCount} 
+              size="small" 
+            />
+            <WellnessWidget 
+              completedActivities={data?.wellness?.completedActivities}
+              streakDays={data?.wellness?.streakDays}
+              moodToday={data?.wellness?.moodToday ? String(data.wellness.moodToday) : null}
+              size="small" 
+            />
+            <QuestsWidget 
+              completedQuests={data?.quests?.completed || 0} 
+              totalQuests={data?.quests?.total || 3}
+              streakDays={data?.activity?.streakDays || 0}
+              size="small" 
+            />
           </div>
         </section>
       </AnimatedSection>
