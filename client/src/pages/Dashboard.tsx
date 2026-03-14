@@ -21,8 +21,6 @@ export default function DashboardPage() {
   const location = useLocation()
   const { data } = useDashboardData()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  
-  const currentTab = tabs.find(tab => tab.path === location.pathname)?.id || 'overview'
 
   // Beräkna badges baserat på data
   const getTabBadge = (tabId: string): number => {
@@ -76,6 +74,8 @@ export default function DashboardPage() {
       badge: getTabBadge('learning')
     },
   ]
+  
+  const currentTab = tabs.find(tab => tab.path === location.pathname)?.id || 'overview'
 
   return (
     <div className="min-h-screen bg-slate-50">
