@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom'
+import { useLocation, Link } from 'react-router-dom'
 import { LayoutDashboard, Activity, Users, Brain, BookOpen } from 'lucide-react'
 
 // Tab components
@@ -9,36 +9,19 @@ import InsightsTab from './dashboard/tabs/InsightsTab'
 import LearningTab from './dashboard/tabs/LearningTab'
 
 const tabs = [
-  { id: 'overview', label: 'Oversikt', path: '', icon: LayoutDashboard },
-  { id: 'activity', label: 'Aktivitet', path: 'activity', icon: Activity },
-  { id: 'community', label: 'Community', path: 'community', icon: Users },
-  { id: 'insights', label: 'Insikter', path: 'insights', icon: Brain },
-  { id: 'learning', label: 'Larande', path: 'learning', icon: BookOpen },
+  { id: 'overview', label: 'Oversikt', path: '/', icon: LayoutDashboard, component: OverviewTab },
+  { id: 'activity', label: 'Aktivitet', path: '/activity', icon: Activity, component: ActivityTab },
+  { id: 'community', label: 'Community', path: '/community', icon: Users, component: CommunityTab },
+  { id: 'insights', label: 'Insikter', path: '/insights', icon: Brain, component: InsightsTab },
+  { id: 'learning', label: 'Larande', path: '/learning', icon: BookOpen, component: LearningTab },
 ]
 
 export default function DashboardPage() {
   const location = useLocation()
   
-  // Debug: logga location for att se vad vi faktiskt har
-  console.log('[Dashboard] location:', location)
-
-  // For hash routing, we need to check the full path including the hash
-  const fullPath = location.pathname + location.hash
-  console.log('[Dashboard] fullPath:', fullPath)
-
-  const currentTab = tabs.find(tab => {
-    if (tab.path === '') {
-      // Match /dashboard or /dashboard/ (with or without hash)
-      const isRoot = location.pathname === '/dashboard' || 
-                     location.pathname === '/dashboard/' ||
-                     fullPath === '/#/dashboard' ||
-                     fullPath === '/#/dashboard/' ||
-                     fullPath === '/#/dashboard/activity' === false // Not other tabs
-      return isRoot
-    }
-    return location.pathname.includes(`/dashboard/${tab.path}`) ||
-           fullPath.includes(`/dashboard/${tab.path}`)
-  }) || tabs[0]
+  // Hitta aktuell flik baserat på pathname
+  const currentTab = tabs.find(tab => tab.path === location.pathname) || tabs[0]
+  const CurrentComponent = currentTab.component
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
@@ -71,7 +54,7 @@ export default function DashboardPage() {
               return (
                 <Link
                   key={tab.id}
-                  to={tab.path === '' ? '/dashboard' : `/dashboard/${tab.path}`}
+                  to={tab.path}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -95,16 +78,9 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Main content - rendera aktuell flik */}
       <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 16px' }}>
-        <Routes>
-          <Route path="/" element={<OverviewTab />} />
-          <Route path="activity" element={<ActivityTab />} />
-          <Route path="community" element={<CommunityTab />} />
-          <Route path="insights" element={<InsightsTab />} />
-          <Route path="learning" element={<LearningTab />} />
-          <Route path="*" element={<div style={{padding: 24}}>Route not found: {location.pathname}</div>} />
-        </Routes>
+        <CurrentComponent />
       </main>
     </div>
   )
