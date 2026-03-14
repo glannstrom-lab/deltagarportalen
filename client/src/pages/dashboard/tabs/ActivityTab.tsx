@@ -1,7 +1,6 @@
 import { Flame, CheckCircle2, Target, TrendingUp } from 'lucide-react'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
-import { JourneyTimeline } from '@/components/analytics/JourneyTimeline'
 import { cn } from '@/lib/utils'
 
 export default function ActivityTab() {
@@ -25,11 +24,12 @@ export default function ActivityTab() {
         </h3>
         {data && (
           <QuestsWidget 
-            completedQuests={data.quests.completed} 
-            totalQuests={data.quests.total}
-            quests={data.quests.items}
-            streakDays={data.activity.streakDays}
+            completedQuests={data.quests?.completed || 0} 
+            totalQuests={data.quests?.total || 3}
+            quests={data.quests?.items || []}
+            streakDays={data.activity?.streakDays || 0}
             size="medium"
+            to="/activity"
           />
         )}
       </div>
@@ -55,9 +55,6 @@ export default function ActivityTab() {
           color="violet"
         />
       </div>
-
-      {/* Timeline */}
-      <JourneyTimeline />
     </div>
   )
 }
