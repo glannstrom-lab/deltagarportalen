@@ -73,6 +73,19 @@ const queryClient = new QueryClient({
   },
 })
 
+// Registrera Service Worker för offline-stöd
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('[SW] Registrerad:', registration.scope)
+      })
+      .catch(error => {
+        console.log('[SW] Registrering misslyckades:', error)
+      })
+  })
+}
+
 // Initialize app
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>

@@ -175,6 +175,14 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
         category: q.category,
       })) || [],
     },
+    wellness: {
+      moodToday: null,
+      streakDays: streakDays,
+      completedActivities: activities.filter((a: any) => 
+        a.activity_type === 'wellness' || a.activity_type === 'mood_logged'
+      ).length,
+      lastEntryDate: activities.find((a: any) => a.activity_type === 'mood_logged')?.created_at || null,
+    },
   }
   } catch (err) {
     console.error('Error in fetchDashboardData:', err)
@@ -244,6 +252,12 @@ export function getDefaultDashboardData(): DashboardWidgetData {
       total: 3,
       completed: 0,
       items: [],
+    },
+    wellness: {
+      moodToday: null,
+      streakDays: 0,
+      completedActivities: 0,
+      lastEntryDate: null,
     },
   }
 }

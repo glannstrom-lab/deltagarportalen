@@ -236,7 +236,44 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
+        {/* Dashboard tabs */}
+        <Route path="activity" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="community" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="insights" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="learning" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
         <Route path="quests" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Dashboard />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        {/* Dashboard sub-routes for tabs */}
+        <Route path="dashboard/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <Dashboard />
@@ -407,6 +444,13 @@ function App() {
       <Route path="/dashboard/settings" element={<Navigate to="/settings" replace />} />
       <Route path="/dashboard/consultant" element={<Navigate to="/consultant" replace />} />
       <Route path="/dashboard/admin" element={<Navigate to="/admin" replace />} />
+      
+      {/* Dashboard routes - handle all /dashboard/* paths */}
+      <Route path="/dashboard" element={<Navigate to="/" replace />} />
+      <Route path="/dashboard/activity" element={<Navigate to="/activity" replace />} />
+      <Route path="/dashboard/community" element={<Navigate to="/community" replace />} />
+      <Route path="/dashboard/insights" element={<Navigate to="/insights" replace />} />
+      <Route path="/dashboard/learning" element={<Navigate to="/learning" replace />} />
 
       {/* Catch all - redirect to home for client-side routing */}
       <Route path="*" element={

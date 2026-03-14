@@ -1,0 +1,32 @@
+{
+  "name": "Deltagarportalen",
+  "short_name": "Jobin",
+  "description": "Din personliga portal för jobbsökande",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color":="#ffffff",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "48x48",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/jobin-logga.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/jobin-logga.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "categories": ["productivity", "education", "lifestyle"],
+  "lang": "sv",
+  "dir": "ltr",
+  "prefer_related_applications": false
+}

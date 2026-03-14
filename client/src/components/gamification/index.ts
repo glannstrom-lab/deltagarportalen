@@ -1,4 +1,10 @@
-export { AchievementCelebration, useAchievements, type Achievement } from './AchievementCelebration'
-export { DailyStep } from './DailyStep'
-export { CareerRoadmap } from './CareerRoadmap'
-export { WeeklySummary } from './WeeklySummary'
+/**
+ * Gamification components exports
+ */
+export { 
+  BadgeShowcase, 
+  useBadges,
+  badges,
+  type Badge,
+  type BadgeTier
+} from './BadgeSystem'

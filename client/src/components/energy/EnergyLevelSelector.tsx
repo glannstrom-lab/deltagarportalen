@@ -1,423 +1,279 @@
 /**
- * Energy Level Selector Component
- * Allows users to set their energy level and adapts the UI accordingly
- * Förbättrad med:
- * - Mer accepterande språk
- * - Distinkta färger per energinivå
- * - Micro-task alternativ för låg energi
- * - Tydligare visuell feedback
+ * EnergyLevelSelector - Låter användaren välja sin energinivå
+ * Visas vid inloggning och kan visas igen via header
  */
-
-import { useSettingsStore, type EnergyLevel } from '@/stores/settingsStore'
-import { BatteryLow, BatteryMedium, BatteryFull, Sparkles, ChevronRight } from 'lucide-react'
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import { 
+  type EnergyLevel, 
+  getEnergyDescription, 
+  getEnergyEmoji,
+  useEnergyStore 
+} from '@/stores/energyStore'
+import { Button } from '@/components/ui/button'
+import { Sparkles, Battery, BatteryLow, BatteryMedium, BatteryFull } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { LucideIcon } from 'lucide-react'
 
 interface EnergyLevelSelectorProps {
-  onSelect?: (level: EnergyLevel) => void
-  showDescription?: boolean
-  showMicroTasks?: boolean
+  onComplete?: () => void
+  showLater?: boolean
   className?: string
 }
 
 interface EnergyOption {
   level: EnergyLevel
   label: string
+  emoji: string
   description: string
-  encouragement: string
-  color: {
-    bg: string
-    border: string
-    text: string
-    iconBg: string
-    selectedBg: string
-  }
-  icon: LucideIcon
+  icon: React.ReactNode
+  color: string
 }
 
-// Förbättrad energikonfiguration med distinkta färger och accepterande språk
 const energyOptions: EnergyOption[] = [
   {
     level: 'low',
-    label: 'Lugn dag',
-    description: 'Jag har inte så mycket energi idag – visa mig små, hanterbara steg',
-    encouragement: 'Det är helt okej att ta det lugnt idag. Att vila är också ett steg framåt. 💙',
-    color: {
-      bg: 'bg-sky-50',
-      border: 'border-sky-200',
-      text: 'text-sky-700',
-      iconBg: 'bg-sky-500',
-      selectedBg: 'bg-sky-100'
-    },
-    icon: BatteryLow,
+    label: 'Låg energi',
+    emoji: '😌',
+    description: 'Jag har lite ork idag, jag tar det lugnt',
+    icon: <BatteryLow size={24} />,
+    color: 'bg-rose-100 border-rose-300 text-rose-700 hover:bg-rose-200'
   },
   {
     level: 'medium',
-    label: 'Balanserad dag',
-    description: 'Jag klarar av de flesta uppgifter i min egen takt',
-    encouragement: 'Bra att du hittar din egen rytm! Du gör framsteg i din takt. 💪',
-    color: {
-      bg: 'bg-amber-50',
-      border: 'border-amber-200',
-      text: 'text-amber-700',
-      iconBg: 'bg-amber-500',
-      selectedBg: 'bg-amber-100'
-    },
-    icon: BatteryMedium,
+    label: 'Medium energi',
+    emoji: '😐',
+    description: 'Jag mår okej, kan göra några saker',
+    icon: <BatteryMedium size={24} />,
+    color: 'bg-amber-100 border-amber-300 text-amber-700 hover:bg-amber-200'
   },
   {
     level: 'high',
-    label: 'Energidag',
-    description: 'Jag känner mig stark idag – visa mig vad som finns att göra!',
-    encouragement: 'Härligt att du har energi idag! Passa på att göra det som känns viktigt. 🚀',
-    color: {
-      bg: 'bg-rose-50',
-      border: 'border-rose-200',
-      text: 'text-rose-700',
-      iconBg: 'bg-rose-500',
-      selectedBg: 'bg-rose-100'
-    },
-    icon: BatteryFull,
-  },
+    label: 'Hög energi',
+    emoji: '😊',
+    description: 'Jag är redo att ta i!',
+    icon: <BatteryFull size={24} />,
+    color: 'bg-emerald-100 border-emerald-300 text-emerald-700 hover:bg-emerald-200'
+  }
 ]
 
-// Micro-task alternativ för låg energi
-const microAlternatives: Record<string, { low: string[]; medium: string[] }> = {
-  'diary': {
-    low: [
-      'Välj en humör-emoji',
-      'Skriv ett ord som beskriver dagen',
-      'Ta en djup andetag och reflektera'
-    ],
-    medium: [
-      'Skriv 3 meningar om dagen',
-      'Svara på en reflektionsfråga',
-      'Dela en positiv tanke'
-    ]
-  },
-  'cv': {
-    low: [
-      'Uppdatera din e-postadress',
-      'Lägg till ett telefonnummer',
-      'Välj en profilbild'
-    ],
-    medium: [
-      'Skriv en kort sammanfattning',
-      'Lägg till en kompetens',
-      'Uppdatera din titel'
-    ]
-  },
-  'interest': {
-    low: [
-      'Svara på 1 fråga i taget',
-      'Läs om ett yrke som verkar intressant',
-      'Spara ett resultat till senare'
-    ],
-    medium: [
-      'Besvara 3 intressefrågor',
-      'Utforska ditt högst rankade yrke',
-      'Jämför två yrkesalternativ'
-    ]
-  }
-}
-
 export function EnergyLevelSelector({ 
-  onSelect, 
-  showDescription = true,
-  showMicroTasks = false,
+  onComplete, 
+  showLater = true,
   className 
 }: EnergyLevelSelectorProps) {
-  const { energyLevel, setEnergyLevel } = useSettingsStore()
+  const [selectedLevel, setSelectedLevel] = useState<EnergyLevel | null>(null)
+  const [isCompleted, setIsCompleted] = useState(false)
+  const { setLevel, incrementStreak } = useEnergyStore()
 
   const handleSelect = (level: EnergyLevel) => {
-    setEnergyLevel(level)
-    onSelect?.(level)
+    setSelectedLevel(level)
   }
 
-  const selectedOption = energyOptions.find(opt => opt.level === energyLevel)
+  const handleConfirm = () => {
+    if (!selectedLevel) return
+    
+    setLevel(selectedLevel)
+    incrementStreak()
+    setIsCompleted(true)
+    
+    setTimeout(() => {
+      onComplete?.()
+    }, 1000)
+  }
+
+  const handleSkip = () => {
+    // Sätt medium som default om användaren skippar
+    setLevel('medium')
+    incrementStreak()
+    onComplete?.()
+  }
+
+  if (isCompleted) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="flex flex-col items-center justify-center p-8 text-center"
+      >
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+          className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center mb-4"
+        >
+          <Sparkles className="w-10 h-10 text-white" />
+        </motion.div>
+        <h3 className="text-xl font-bold text-slate-800 mb-2">
+          Tack! {getEnergyEmoji(selectedLevel!)}
+        </h3>
+        <p className="text-slate-600">
+          {getEnergyDescription(selectedLevel!)}
+        </p>
+      </motion.div>
+    )
+  }
 
   return (
-    <div className={cn('space-y-4', className)}>
-      {/* Header med förklaring */}
-      <div className="flex items-start gap-3 mb-4">
-        <div className="w-10 h-10 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
-          <Sparkles className="w-5 h-5 text-indigo-600" aria-hidden="true" />
-        </div>
-        <div>
-          <h3 className="font-semibold text-slate-800 text-lg">Hur är din energi idag?</h3>
-          <p className="text-sm text-slate-500 mt-0.5">
-            Välj din energinivå så visar vi lämpliga uppgifter. Det är okej att ändra under dagen.
-          </p>
-        </div>
+    <div className={cn("p-6", className)}>
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-slate-800 mb-2">
+          Hur är din energi idag?
+        </h2>
+        <p className="text-slate-500">
+          Vi anpassar din översikt efter hur du mår
+        </p>
       </div>
-      
-      {/* Energy options */}
-      <div className="grid gap-3" role="radiogroup" aria-label="Välj energinivå">
-        {energyOptions.map((option) => {
-          const Icon = option.icon
-          const isSelected = energyLevel === option.level
-          
-          return (
-            <button
-              key={option.level}
-              onClick={() => handleSelect(option.level)}
-              role="radio"
-              aria-checked={isSelected}
-              className={cn(
-                'flex items-center gap-4 p-4 rounded-xl border-2 transition-all duration-200 text-left focus:outline-none focus:ring-2 focus:ring-offset-2',
-                isSelected
-                  ? `${option.color.border} ${option.color.selectedBg} shadow-md focus:ring-${option.color.iconBg.split('-')[1]}-500`
-                  : `${option.color.border.replace('200', '100')} bg-white hover:${option.color.bg} hover:${option.color.border} focus:ring-slate-400`
-              )}
-            >
-              <div
-                className={cn(
-                  'w-12 h-12 rounded-full flex items-center justify-center transition-colors shrink-0',
-                  isSelected ? option.color.iconBg : 'bg-slate-100',
-                  isSelected ? 'text-white' : 'text-slate-500'
-                )}
-                aria-hidden="true"
-              >
-                <Icon className="w-6 h-6" />
-              </div>
-              
-              <div className="flex-1 min-w-0">
-                <div className={cn(
-                  'font-semibold text-base',
-                  isSelected ? option.color.text : 'text-slate-800'
+
+      <div className="space-y-3 mb-6">
+        {energyOptions.map((option) => (
+          <motion.button
+            key={option.level}
+            onClick={() => handleSelect(option.level)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={cn(
+              "w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4",
+              selectedLevel === option.level
+                ? option.color + ' border-current ring-2 ring-offset-2 ring-current'
+                : 'bg-white border-slate-200 hover:border-slate-300'
+            )}
+          >
+            <div className={cn(
+              "w-12 h-12 rounded-xl flex items-center justify-center text-2xl",
+              selectedLevel === option.level ? 'bg-white/50' : 'bg-slate-100'
+            )}>
+              {option.emoji}
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <span className={cn(
+                  "font-semibold",
+                  selectedLevel === option.level ? '' : 'text-slate-700'
                 )}>
                   {option.label}
-                </div>
-                {showDescription && (
-                  <div className="text-sm text-slate-500 mt-0.5 leading-relaxed">
-                    {option.description}
-                  </div>
+                </span>
+                {selectedLevel === option.level && (
+                  <motion.span
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    className="text-xs bg-white/70 px-2 py-0.5 rounded-full"
+                  >
+                    Vald
+                  </motion.span>
                 )}
               </div>
-              
-              {isSelected && (
-                <div className={cn(
-                  'w-6 h-6 rounded-full flex items-center justify-center shrink-0',
-                  option.color.iconBg
-                )}>
-                  <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-              )}
-            </button>
-          )
-        })}
+              <p className={cn(
+                "text-sm",
+                selectedLevel === option.level ? '' : 'text-slate-500'
+              )}>
+                {option.description}
+              </p>
+            </div>
+            <div className={cn(
+              "transition-colors",
+              selectedLevel === option.level ? '' : 'text-slate-400'
+            )}>
+              {option.icon}
+            </div>
+          </motion.button>
+        ))}
       </div>
 
-      {/* Uppmuntrande meddelande baserat på val */}
-      {selectedOption && (
-        <div 
+      <div className="flex gap-3">
+        {showLater && (
+          <Button
+            variant="outline"
+            onClick={handleSkip}
+            className="flex-1"
+          >
+            Hoppa över
+          </Button>
+        )}
+        <Button
+          onClick={handleConfirm}
+          disabled={!selectedLevel}
           className={cn(
-            'p-4 rounded-xl border-2 text-sm leading-relaxed',
-            selectedOption.color.bg,
-            selectedOption.color.border,
-            selectedOption.color.text
+            "flex-1 transition-all",
+            selectedLevel 
+              ? 'bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700' 
+              : ''
           )}
-          role="status"
-          aria-live="polite"
         >
-          {selectedOption.encouragement}
-        </div>
-      )}
+          Fortsätt
+        </Button>
+      </div>
 
-      {/* Micro-task alternativ (valfritt) */}
-      {showMicroTasks && energyLevel === 'low' && (
-        <div className="mt-4 p-4 bg-sky-50 rounded-xl border border-sky-200">
-          <h4 className="font-medium text-sky-800 mb-2 flex items-center gap-2">
-            <span className="text-lg">💡</span>
-            Små steg som fungerar idag
-          </h4>
-          <p className="text-sm text-sky-600 mb-3">
-            Här är några minimala uppgifter du kan göra även när energin är låg:
-          </p>
-          <div className="space-y-2">
-            {Object.entries(microAlternatives).slice(0, 2).map(([key, tasks]) => (
-              <div key={key} className="bg-white rounded-lg p-3 border border-sky-100">
-                <p className="text-xs font-medium text-sky-700 uppercase mb-1.5">
-                  {key === 'diary' ? 'Dagbok' : key === 'cv' ? 'CV' : 'Intresseguide'}
-                </p>
-                <ul className="space-y-1">
-                  {tasks.low.slice(0, 2).map((task, i) => (
-                    <li key={i} className="flex items-center gap-2 text-sm text-slate-600">
-                      <ChevronRight className="w-3 h-3 text-sky-400 shrink-0" />
-                      {task}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
+      <p className="text-center text-xs text-slate-400 mt-4">
+        Du kan alltid ändra detta senare i inställningarna
+      </p>
     </div>
   )
 }
 
-/**
- * Hook to get energy-appropriate content
- * Förbättrad med mer motiverande uppgifter och tydligare förklaringar
- */
-export function useEnergyAdaptedContent() {
-  const { energyLevel } = useSettingsStore()
-
-  const getVisibleWidgets = (allWidgets: string[]): string[] => {
-    switch (energyLevel) {
-      case 'low':
-        // Show only 2-3 essential widgets for low energy
-        return allWidgets.slice(0, 3)
-      case 'medium':
-        // Show 5-6 widgets
-        return allWidgets.slice(0, 6)
-      case 'high':
-        // Show all widgets
-        return allWidgets
-      default:
-        return allWidgets
-    }
+// Kompakt version för header/dropdown
+export function EnergyLevelBadge({ 
+  onClick 
+}: { 
+  onClick?: () => void 
+}) {
+  const { level, lastUpdated } = useEnergyStore()
+  
+  const colors = {
+    low: 'bg-rose-100 text-rose-700 border-rose-200',
+    medium: 'bg-amber-100 text-amber-700 border-amber-200',
+    high: 'bg-emerald-100 text-emerald-700 border-emerald-200'
   }
-
-  const getQuickTasks = (): { 
-    label: string
-    description: string
-    duration: string
-    action: string
-    whyHelpful: string
-  }[] => {
-    switch (energyLevel) {
-      case 'low':
-        return [
-          { 
-            label: 'Skriv ner en sak du är stolt över', 
-            description: 'Reflektera över något positivt',
-            duration: '2 min', 
-            action: '/diary',
-            whyHelpful: 'Att fokusera på det positiva stärker självförtroendet'
-          },
-          { 
-            label: 'Hur mår du just nu?', 
-            description: 'Markera dagens humör',
-            duration: '1 min', 
-            action: '/diary',
-            whyHelpful: 'Att tracka måendet hjälper dig förstå dina mönster'
-          },
-          { 
-            label: 'Titta på ett sparat jobb', 
-            description: 'Utforska utan press',
-            duration: '3 min', 
-            action: '/job-search',
-            whyHelpful: 'Att bara titta är ett steg i rätt riktning'
-          },
-          { 
-            label: 'Läs en inspirerande artikel', 
-            description: 'Ta del av motivation och tips',
-            duration: '5 min', 
-            action: '/knowledge-base',
-            whyHelpful: 'Inspiration kan ge ny energi och perspektiv'
-          },
-        ]
-      case 'medium':
-        return [
-          { 
-            label: 'Uppdatera din kontaktinfo', 
-            description: 'Se över dina uppgifter',
-            duration: '10 min', 
-            action: '/cv',
-            whyHelpful: 'Uppdaterad information ökar chanserna att bli kontaktad'
-          },
-          { 
-            label: 'Besvara 3 frågor i intresseguiden', 
-            description: 'Utforska dina intressen',
-            duration: '5 min', 
-            action: '/interest-guide',
-            whyHelpful: 'Att förstå dina intressen hjälper dig hitta rätt riktning'
-          },
-          { 
-            label: 'Sök efter nya jobb', 
-            description: 'Hitta möjligheter som passar dig',
-            duration: '10 min', 
-            action: '/job-search',
-            whyHelpful: 'Ju fler du hittar, desto större är chansen att hitta det rätta'
-          },
-          { 
-            label: 'Skriv några rader i dagboken', 
-            description: 'Reflektera över din resa',
-            duration: '5 min', 
-            action: '/diary',
-            whyHelpful: 'Reflektion hjälper dig se din utveckling över tid'
-          },
-        ]
-      case 'high':
-        return [
-          { 
-            label: 'Lägg till en arbetslivserfarenhet', 
-            description: 'Berika ditt CV med erfarenhet',
-            duration: '30 min', 
-            action: '/cv',
-            whyHelpful: 'Ett komplett CV ökar chanserna att bli kallad till intervju'
-          },
-          { 
-            label: 'Gör klart intresseguiden', 
-            description: 'Få insikter om din karriärväg',
-            duration: '15 min', 
-            action: '/interest-guide',
-            whyHelpful: 'Resultaten ger dig en klarare bild av vilka yrken som passar'
-          },
-          { 
-            label: 'Skriv ett personligt brev', 
-            description: 'Förbered en ansökan',
-            duration: '20 min', 
-            action: '/cover-letter',
-            whyHelpful: 'Ett bra brev kan öppna dörrar till drömjobbet'
-          },
-          { 
-            label: 'Spara 5 intressanta jobb', 
-            description: 'Bygg din jobbshortlist',
-            duration: '15 min', 
-            action: '/job-search',
-            whyHelpful: 'Att ha alternativ ger dig fler möjligheter att välja rätt'
-          },
-        ]
-    }
+  
+  const icons = {
+    low: <BatteryLow size={14} />,
+    medium: <BatteryMedium size={14} />,
+    high: <BatteryFull size={14} />
   }
-
-  const getEncouragingMessage = (): string => {
-    switch (energyLevel) {
-      case 'low':
-        return 'Det är helt okej att ta det lugnt idag. Att vila är också ett steg framåt. 💙'
-      case 'medium':
-        return 'Bra att du hittar din egen rytm! Du gör framsteg i din takt. 💪'
-      case 'high':
-        return 'Härligt att du har energi idag! Passa på att göra det som känns viktigt. 🚀'
-    }
-  }
-
-  const getEnergyColor = (): string => {
-    switch (energyLevel) {
-      case 'low':
-        return 'sky'
-      case 'medium':
-        return 'amber'
-      case 'high':
-        return 'rose'
-    }
-  }
-
-  return {
-    energyLevel,
-    getVisibleWidgets,
-    getQuickTasks,
-    getEncouragingMessage,
-    getEnergyColor,
-    isLowEnergy: energyLevel === 'low',
-    isMediumEnergy: energyLevel === 'medium',
-    isHighEnergy: energyLevel === 'high',
-  }
+  
+  return (
+    <button
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-medium transition-all hover:shadow-sm",
+        colors[level]
+      )}
+      title="Klicka för att ändra energinivå"
+    >
+      {icons[level]}
+      <span className="capitalize">{level === 'medium' ? 'Medel' : level}</span>
+    </button>
+  )
 }
 
-export default EnergyLevelSelector
+// Modal wrapper
+export function EnergyLevelModal({ 
+  isOpen, 
+  onClose 
+}: { 
+  isOpen: boolean
+  onClose: () => void 
+}) {
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+          onClick={onClose}
+        >
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0.9, opacity: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+          >
+            <EnergyLevelSelector onComplete={onClose} showLater={false} />
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  )
+}

@@ -142,6 +142,14 @@ export interface DashboardWidgetData {
       category: string
     }[]
   }
+  
+  // Välmående
+  wellness: {
+    moodToday: 1 | 2 | 3 | 4 | 5 | null
+    streakDays: number
+    completedActivities: number
+    lastEntryDate: string | null
+  }
 }
 
 export interface WidgetStat {

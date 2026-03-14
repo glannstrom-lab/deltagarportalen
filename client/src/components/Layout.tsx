@@ -37,7 +37,8 @@ export default function Layout() {
   const showBars = !['/login', '/register'].includes(location.pathname)
   
   // Bestäm om vi ska visa tillbaka-knapp (alla sidor utom dashboard)
-  const showBackButton = isMobile && location.pathname !== '/'
+  // Dashboard har nu egna flikar inbyggt i komponenten
+  const showBackButton = isMobile && location.pathname !== '/' && !location.pathname.startsWith('/dashboard')
 
   return (
     <>
@@ -56,11 +57,11 @@ export default function Layout() {
       
       {/* Huvudinnehåll */}
       <div className="flex-1 flex flex-col min-h-screen">
-        {/* TopBar - desktop */}
-        {showBars && !isMobile && <TopBar />}
+        {/* TopBar - desktop (dölj på dashboard som har egen header) */}
+        {showBars && !isMobile && !location.pathname.startsWith('/dashboard') && <TopBar />}
         
-        {/* Mobil TopBar med meny och profil */}
-        {showBars && isMobile && <MobileTopBar />}
+        {/* Mobil TopBar med meny och profil (dölj på dashboard) */}
+        {showBars && isMobile && location.pathname !== '/' && location.pathname !== '/activity' && location.pathname !== '/community' && location.pathname !== '/insights' && location.pathname !== '/learning' && <MobileTopBar />}
         
         {/* Main content */}
         <main 
