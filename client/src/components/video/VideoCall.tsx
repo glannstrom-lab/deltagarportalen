@@ -5,7 +5,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { Video, Phone, PhoneOff, Mic, MicOff, VideoOff, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 
 interface VideoCallProps {
   isOpen: boolean

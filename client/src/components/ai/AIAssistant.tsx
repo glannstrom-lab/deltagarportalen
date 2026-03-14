@@ -21,7 +21,7 @@ import {
   Heart
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { useAuthStore } from '@/stores/authStore'
 

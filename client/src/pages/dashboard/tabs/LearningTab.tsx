@@ -5,8 +5,8 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { BookOpen, Play, Clock, CheckCircle2, Award, Star, TrendingUp } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/Button'
+import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
 
 // Mock lektioner

@@ -5,7 +5,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Users, MessageCircle, Calendar, UserPlus, Heart, Trophy, ChevronRight } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { PeerSupport } from '@/components/community/PeerSupport'
 import { cn } from '@/lib/utils'
 

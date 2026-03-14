@@ -17,8 +17,8 @@ import {
   Trophy,
   X
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
+import { Button } from '@/components/ui/Button'
+import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
 import { Link } from 'react-router-dom'
 import { useDashboardData } from '@/hooks/useDashboardData'

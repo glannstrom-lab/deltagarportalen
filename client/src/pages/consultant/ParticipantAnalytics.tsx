@@ -22,9 +22,9 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/PageLayout'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Progress } from '@/components/ui/progress'
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
+import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
 
 // Mock-data för demo

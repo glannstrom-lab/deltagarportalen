@@ -17,7 +17,7 @@ import {
   ChevronRight,
   RotateCcw
 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useEnergyStore, type EnergyLevel } from '@/stores/energyStore'
 import { useDashboardData } from '@/hooks/useDashboardData'

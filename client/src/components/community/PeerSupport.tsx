@@ -24,8 +24,8 @@ import {
   Zap
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/Button'
+import { Input } from '@/components/ui/Input'
 import { useAuthStore } from '@/stores/authStore'
 
 interface PeerGroup {

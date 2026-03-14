@@ -5,7 +5,7 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Target, Calendar, CheckCircle2, Clock, ChevronRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 
 interface Plan {
   id: string

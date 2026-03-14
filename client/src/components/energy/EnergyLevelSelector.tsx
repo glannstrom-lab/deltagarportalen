@@ -10,7 +10,7 @@ import {
   getEnergyEmoji,
   useEnergyStore 
 } from '@/stores/energyStore'
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/Button'
 import { Sparkles, Battery, BatteryLow, BatteryMedium, BatteryFull } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
