@@ -1,6 +1,7 @@
 /**
  * Card Components
  * Standardiserade kort-komponenter för olika användningsområden
+ * UPPDATERAD: "Calm & Capable" färgpalett (Violet + Warm Stone)
  */
 
 import { cn } from '@/lib/utils'
@@ -66,21 +67,21 @@ export function CardHeader({
   return (
     <div className={cn(
       'flex items-start justify-between gap-4',
-      'pb-4 mb-4 border-b border-slate-100',
+      'pb-4 mb-4 border-b border-stone-100',
       className
     )}>
       <div className="flex items-start gap-3">
         {icon && (
-          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-indigo-50 flex items-center justify-center">
-            <span className="text-indigo-600">{icon}</span>
+          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center">
+            <span className="text-violet-600">{icon}</span>
           </div>
         )}
         <div className="flex-1 min-w-0">
           {title && (
-            <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
+            <h3 className="text-lg font-semibold text-stone-800">{title}</h3>
           )}
           {description && (
-            <p className="text-sm text-slate-500 mt-0.5">{description}</p>
+            <p className="text-sm text-stone-500 mt-0.5">{description}</p>
           )}
         </div>
       </div>
@@ -117,7 +118,7 @@ export function CardFooter({
   return (
     <div className={cn(
       'flex items-center gap-3',
-      'pt-4 mt-4 border-t border-slate-100',
+      'pt-4 mt-4 border-t border-stone-100',
       alignClasses[align],
       className
     )}>
@@ -147,10 +148,10 @@ export function CardSection({
       {(title || description) && (
         <div>
           {title && (
-            <h4 className="text-sm font-semibold text-slate-800">{title}</h4>
+            <h4 className="text-sm font-semibold text-stone-800">{title}</h4>
           )}
           {description && (
-            <p className="text-sm text-slate-500 mt-0.5">{description}</p>
+            <p className="text-sm text-stone-500 mt-0.5">{description}</p>
           )}
         </div>
       )}
@@ -170,7 +171,7 @@ interface StatCardProps {
     value: number
     isPositive: boolean
   }
-  color?: 'default' | 'indigo' | 'green' | 'amber' | 'blue' | 'purple'
+  color?: 'default' | 'violet' | 'green' | 'amber' | 'blue' | 'purple'
   className?: string
 }
 
@@ -183,9 +184,9 @@ export function StatCard({
   className 
 }: StatCardProps) {
   const colorClasses = {
-    default: 'bg-slate-50 text-slate-600',
-    indigo: 'bg-indigo-50 text-indigo-600',
-    green: 'bg-green-50 text-green-600',
+    default: 'bg-stone-50 text-stone-600',
+    violet: 'bg-violet-50 text-violet-600',
+    green: 'bg-emerald-50 text-emerald-600',
     amber: 'bg-amber-50 text-amber-600',
     blue: 'bg-blue-50 text-blue-600',
     purple: 'bg-purple-50 text-purple-600',
@@ -208,17 +209,17 @@ export function StatCard({
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-slate-800">{value}</span>
+            <span className="text-2xl font-bold text-stone-800">{value}</span>
             {trend && (
               <span className={cn(
                 'text-xs font-medium',
-                trend.isPositive ? 'text-green-600' : 'text-red-600'
+                trend.isPositive ? 'text-emerald-600' : 'text-red-600'
               )}>
                 {trend.isPositive ? '+' : ''}{trend.value}%
               </span>
             )}
           </div>
-          <p className="text-sm text-slate-500 truncate">{label}</p>
+          <p className="text-sm text-stone-500 truncate">{label}</p>
         </div>
       </div>
     </Card>
@@ -245,14 +246,14 @@ export function InfoCard({
 }: InfoCardProps) {
   const variantClasses = {
     info: 'bg-blue-50 border-blue-200 text-blue-800',
-    success: 'bg-green-50 border-green-200 text-green-800',
+    success: 'bg-emerald-50 border-emerald-200 text-emerald-800',
     warning: 'bg-amber-50 border-amber-200 text-amber-800',
     error: 'bg-red-50 border-red-200 text-red-800',
   }
   
   const iconColors = {
     info: 'text-blue-600',
-    success: 'text-green-600',
+    success: 'text-emerald-600',
     warning: 'text-amber-600',
     error: 'text-red-600',
   }
@@ -312,8 +313,8 @@ export function ActionCard({
         animations.press,
         animations.lift,
         isSelected 
-          ? 'border-indigo-500 ring-2 ring-indigo-500 ring-offset-2' 
-          : 'border-slate-200 hover:border-indigo-300 hover:shadow-md',
+          ? 'border-violet-500 ring-2 ring-violet-500 ring-offset-2' 
+          : 'border-stone-200 hover:border-violet-300 hover:shadow-md',
         className
       )}
       {...props}
@@ -322,22 +323,22 @@ export function ActionCard({
         {icon && (
           <div className={cn(
             'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0',
-            isSelected ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-600'
+            isSelected ? 'bg-violet-100 text-violet-600' : 'bg-stone-100 text-stone-600'
           )}>
             {icon}
           </div>
         )}
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-slate-800">{title}</h3>
+            <h3 className="font-semibold text-stone-800">{title}</h3>
             {badge && (
-              <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
+              <span className="px-2 py-0.5 bg-violet-100 text-violet-700 text-xs font-medium rounded-full">
                 {badge}
               </span>
             )}
           </div>
           {description && (
-            <p className="text-sm text-slate-500 mt-1">{description}</p>
+            <p className="text-sm text-stone-500 mt-1">{description}</p>
           )}
         </div>
       </div>
@@ -357,9 +358,9 @@ export function SkeletonCard({ className, rows = 3 }: SkeletonCardProps) {
   return (
     <Card className={cn('animate-pulse', className)}>
       <div className="space-y-3">
-        <div className="h-4 bg-slate-200 rounded w-3/4" />
+        <div className="h-4 bg-stone-200 rounded w-3/4" />
         {Array.from({ length: rows }).map((_, i) => (
-          <div key={i} className="h-3 bg-slate-200 rounded" />
+          <div key={i} className="h-3 bg-stone-200 rounded" />
         ))}
       </div>
     </Card>

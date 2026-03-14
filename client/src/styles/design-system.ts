@@ -1,48 +1,72 @@
 /**
  * Central Design System för Deltagarportalen
- * Definierar standardiserade färger, shadows, spacing och animationer
+ * "Calm & Capable" Palett - UPPDATERAD
+ * 
+ * Ändringar:
+ * - Indigo → Violet (mer mänsklig & inspirerande)
+ * - Slate → Warm Stone (mer inbjudande)
+ * - Justerade semantiska färger för bättre kontrast
  */
 
 import { cn } from '@/lib/utils'
 
 // ============================================
-// FÄRGSYSTEM
+// FÄRGSYSTEM - NYA "Calm & Capable" Färger
 // ============================================
 export const colors = {
-  // Primära färger
+  // NY: Primärfärg - Violet
   primary: {
-    50: 'bg-indigo-50',
-    100: 'bg-indigo-100',
-    200: 'bg-indigo-200',
-    500: 'bg-indigo-500',
-    600: 'bg-indigo-600',
-    700: 'bg-indigo-700',
-    text: 'text-indigo-600',
-    textLight: 'text-indigo-700',
-    border: 'border-indigo-200',
-    ring: 'ring-indigo-500',
+    50: 'bg-violet-50',
+    100: 'bg-violet-100',
+    200: 'bg-violet-200',
+    300: 'bg-violet-300',
+    500: 'bg-violet-500',
+    600: 'bg-violet-600',   // Huvudfärg
+    700: 'bg-violet-700',   // Hover
+    text: 'text-violet-600',
+    textLight: 'text-violet-700',
+    border: 'border-violet-200',
+    ring: 'ring-violet-500',
   },
-  // Neutrala färger
+  
+  // NY: Neutrala färger - Warm Stone (istället för Slate)
+  neutral: {
+    50: 'bg-stone-50',      // Huvudbakgrund
+    100: 'bg-stone-100',    // Sekundär bakgrund
+    200: 'bg-stone-200',    // Kanter
+    300: 'bg-stone-300',
+    400: 'text-stone-400',  // Platshållare
+    500: 'text-stone-500',  // Sekundär text
+    600: 'text-stone-600',  // Brödtext
+    700: 'text-stone-700',  // Rubriker
+    800: 'text-stone-800',  // Stark text
+    900: 'text-stone-900',
+    border: 'border-stone-200',
+    borderLight: 'border-stone-100',
+  },
+  
+  // BAKÅTKOMPATIBEL: Slate (mappad till stone)
   slate: {
-    50: 'bg-slate-50',
-    100: 'bg-slate-100',
-    200: 'bg-slate-200',
-    300: 'bg-slate-300',
-    400: 'text-slate-400',
-    500: 'text-slate-500',
-    600: 'text-slate-600',
-    700: 'text-slate-700',
-    800: 'text-slate-800',
-    900: 'text-slate-900',
-    border: 'border-slate-200',
-    borderLight: 'border-slate-100',
+    50: 'bg-stone-50',
+    100: 'bg-stone-100',
+    200: 'bg-stone-200',
+    300: 'bg-stone-300',
+    400: 'text-stone-400',
+    500: 'text-stone-500',
+    600: 'text-stone-600',
+    700: 'text-stone-700',
+    800: 'text-stone-800',
+    900: 'text-stone-900',
+    border: 'border-stone-200',
+    borderLight: 'border-stone-100',
   },
-  // Status-färger
+  
+  // UPPDATERAD: Status-färger med bättre kontrast
   success: {
-    bg: 'bg-green-50',
-    text: 'text-green-600',
-    border: 'border-green-200',
-    icon: 'text-green-600',
+    bg: 'bg-emerald-50',
+    text: 'text-emerald-600',    // Mörkare för WCAG AA
+    border: 'border-emerald-200',
+    icon: 'text-emerald-600',
   },
   warning: {
     bg: 'bg-amber-50',
@@ -55,6 +79,12 @@ export const colors = {
     text: 'text-red-600',
     border: 'border-red-200',
     icon: 'text-red-600',
+  },
+  info: {
+    bg: 'bg-blue-50',
+    text: 'text-blue-600',
+    border: 'border-blue-200',
+    icon: 'text-blue-600',
   },
 }
 
@@ -131,9 +161,9 @@ export const animations = {
   press: 'active:scale-[0.98] transition-transform duration-150',
   lift: 'hover:-translate-y-0.5 transition-transform duration-200',
   liftLarge: 'hover:-translate-y-1 transition-transform duration-200',
-  // Focus states
-  focusRing: 'focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500',
-  focusVisible: 'focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2',
+  // Focus states - UPPDATERAD med violet
+  focusRing: 'focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500',
+  focusVisible: 'focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',
   // Loading
   pulse: 'animate-pulse',
   spin: 'animate-spin',
@@ -145,31 +175,31 @@ export const animations = {
 // ============================================
 export const typography = {
   // Headers
-  h1: 'text-2xl sm:text-3xl font-bold text-slate-800',
-  h2: 'text-xl sm:text-2xl font-bold text-slate-800',
-  h3: 'text-lg font-semibold text-slate-800',
-  h4: 'text-base font-semibold text-slate-800',
-  // Body
-  body: 'text-base text-slate-600',
-  bodySmall: 'text-sm text-slate-600',
-  bodyLarge: 'text-lg text-slate-600',
+  h1: 'text-2xl sm:text-3xl font-bold text-stone-800',
+  h2: 'text-xl sm:text-2xl font-bold text-stone-800',
+  h3: 'text-lg font-semibold text-stone-800',
+  h4: 'text-base font-semibold text-stone-800',
+  // Body - UPPDATERAD med stone
+  body: 'text-base text-stone-600',
+  bodySmall: 'text-sm text-stone-600',
+  bodyLarge: 'text-lg text-stone-600',
   // Labels
-  label: 'text-sm font-medium text-slate-700 mb-1.5',
-  labelSmall: 'text-xs font-medium text-slate-600',
+  label: 'text-sm font-medium text-stone-700 mb-1.5',
+  labelSmall: 'text-xs font-medium text-stone-600',
   // Special
-  caption: 'text-xs text-slate-500',
+  caption: 'text-xs text-stone-500',
   button: 'text-sm font-medium',
-  overline: 'text-xs font-semibold uppercase tracking-wider text-slate-500',
+  overline: 'text-xs font-semibold uppercase tracking-wider text-stone-500',
 }
 
 // ============================================
 // KOMPONENT-KLASSER (Helper functions)
 // ============================================
 
-// Button varianter
+// Button varianter - UPPDATERADE med nya färger
 export const buttonVariants = {
   primary: cn(
-    'bg-indigo-600 text-white hover:bg-indigo-700',
+    'bg-violet-600 text-white hover:bg-violet-700',
     shadows.button,
     'hover:shadow',
     animations.press,
@@ -178,24 +208,24 @@ export const buttonVariants = {
     'inline-flex items-center justify-center gap-2'
   ),
   secondary: cn(
-    'bg-white border border-slate-200 text-slate-700',
-    'hover:bg-slate-50 hover:border-slate-300',
+    'bg-white border border-stone-200 text-stone-700',
+    'hover:bg-stone-50 hover:border-stone-300',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2'
   ),
   outline: cn(
-    'bg-transparent border-2 border-indigo-600 text-indigo-600',
-    'hover:bg-indigo-50',
+    'bg-transparent border-2 border-violet-600 text-violet-600',
+    'hover:bg-violet-50',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2'
   ),
   ghost: cn(
-    'bg-transparent text-slate-600',
-    'hover:bg-slate-100 hover:text-slate-900',
+    'bg-transparent text-stone-600',
+    'hover:bg-stone-100 hover:text-stone-900',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
@@ -212,19 +242,19 @@ export const buttonVariants = {
   icon: cn(
     'w-10 h-10 rounded-lg',
     'inline-flex items-center justify-center',
-    'text-slate-600 hover:bg-slate-100',
+    'text-stone-600 hover:bg-stone-100',
     animations.press,
     'transition-colors duration-200'
   ),
 }
 
-// Card varianter
+// Card varianter - UPPDATERADE med stone
 export const cardVariants = {
   default: cn(
     'bg-white',
     radius.card,
     shadows.card,
-    colors.slate.border,
+    colors.neutral.border,
     'border',
     spacing.card
   ),
@@ -232,7 +262,7 @@ export const cardVariants = {
     'bg-white',
     radius.card,
     shadows.card,
-    colors.slate.border,
+    colors.neutral.border,
     'border',
     spacing.card,
     'hover:shadow-md',
@@ -243,27 +273,27 @@ export const cardVariants = {
     'bg-white',
     radius.cardLarge,
     shadows.elevated,
-    colors.slate.border,
+    colors.neutral.border,
     'border',
     spacing.card
   ),
   flat: cn(
     'bg-white',
     radius.card,
-    colors.slate.border,
+    colors.neutral.border,
     'border',
     spacing.card
   ),
 }
 
-// Input styling
+// Input styling - UPPDATERAD med stone och violet
 export const inputBase = cn(
   'w-full',
   spacing.input,
-  colors.slate.border,
+  colors.neutral.border,
   'border',
   radius.input,
-  'text-slate-800 placeholder:text-slate-400',
+  'text-stone-800 placeholder:text-stone-400',
   'transition-all duration-200',
   animations.focusRing,
   'disabled:opacity-50 disabled:cursor-not-allowed'
@@ -275,11 +305,11 @@ export const labelBase = cn(
   typography.label
 )
 
-// Badge styling
+// Badge styling - UPPDATERAD
 export const badgeVariants = {
-  default: 'bg-slate-100 text-slate-700 px-2 py-0.5 text-xs font-medium rounded-full',
-  primary: 'bg-indigo-100 text-indigo-700 px-2 py-0.5 text-xs font-medium rounded-full',
-  success: 'bg-green-100 text-green-700 px-2 py-0.5 text-xs font-medium rounded-full',
+  default: 'bg-stone-100 text-stone-700 px-2 py-0.5 text-xs font-medium rounded-full',
+  primary: 'bg-violet-100 text-violet-700 px-2 py-0.5 text-xs font-medium rounded-full',
+  success: 'bg-emerald-100 text-emerald-700 px-2 py-0.5 text-xs font-medium rounded-full',
   warning: 'bg-amber-100 text-amber-700 px-2 py-0.5 text-xs font-medium rounded-full',
   error: 'bg-red-100 text-red-700 px-2 py-0.5 text-xs font-medium rounded-full',
 }
@@ -331,6 +361,24 @@ export const states = {
   invisible: 'invisible',
 }
 
+// ============================================
+// NY: Gradients för "Calm & Capable"
+// ============================================
+export const gradients = {
+  primary: 'bg-gradient-to-r from-violet-600 to-violet-700',
+  hero: 'bg-gradient-to-br from-violet-50 to-stone-50',
+  success: 'bg-gradient-to-r from-emerald-500 to-teal-600',
+  card: 'bg-gradient-to-b from-white to-stone-50',
+}
+
+// ============================================
+// NY: Focus states specifika
+// ============================================
+export const focusStates = {
+  primary: 'focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500',
+  neutral: 'focus:outline-none focus:ring-2 focus:ring-stone-400/30 focus:border-stone-400',
+}
+
 export default {
   colors,
   shadows,
@@ -347,4 +395,6 @@ export default {
   container,
   flex,
   states,
+  gradients,
+  focusStates,
 }

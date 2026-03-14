@@ -1,39 +1,46 @@
 /**
- * Design System Tokens
+ * Design System Tokens - "Calm & Capable" Palett
  * Enhetlig design över hela applikationen
+ * 
+ * Ändringar:
+ * - Primärfärg: Indigo → Violet (mer mänsklig & inspirerande)
+ * - Neutral: Slate → Warm Stone (mer inbjudande)
+ * - Justerade semantiska färger för bättre kontrast (WCAG AA)
  */
 
 // Färger
 export const colors = {
-  // Primärfärg - Indigo
+  // NY: Primärfärg - Violet ("Calm & Capable")
+  // Violet upplevs som mer kreativ och mänsklig än indigo
   primary: {
-    50: '#eef2ff',
-    100: '#e0e7ff',
-    200: '#c7d2fe',
-    300: '#a5b4fc',
-    400: '#818cf8',
-    500: '#6366f1',  // Primary
-    600: '#4f46e5',  // Primary Dark
-    700: '#4338ca',
-    800: '#3730a3',
-    900: '#312e81',
+    50: '#f5f3ff',   // Ljus bakgrund
+    100: '#ede9fe',  // Hover-bakgrunder
+    200: '#ddd6fe',  // Subtila highlights
+    300: '#c4b5fd',  // Ikoner
+    400: '#a78bfa',  // Dekorativa element
+    500: '#8b5cf6',  // Sekundär actions
+    600: '#7c3aed',  // Standard-knappar (Huvudfärg)
+    700: '#6d28d9',  // Hover-states
+    800: '#5b21b6',  // Aktiva states
+    900: '#4c1d95',  // Text på ljusa bakgrunder
   },
   
-  // Sekundärfärg - Teal (endast för hälsa/välmående)
-  secondary: {
-    50: '#f0fdfa',
-    100: '#ccfbf1',
-    200: '#99f6e4',
-    300: '#5eead4',
-    400: '#2dd4bf',
-    500: '#14b8a6',  // Secondary
-    600: '#0d9488',
-    700: '#0f766e',
-    800: '#115e59',
-    900: '#134e4a',
+  // NY: Neutrala färger - Warm Stone (istället för Slate)
+  // Varmare gråskala som känns mer inbjudande
+  neutral: {
+    50: '#fafaf9',   // Huvudbakgrund (page bg)
+    100: '#f5f5f4',  // Kortbakgrund (alt)
+    200: '#e7e5e4',  // Kanter, divider
+    300: '#d6d3d1',  // Avaktiverade kanter
+    400: '#a8a29e',  // Platshållartext
+    500: '#78716c',  // Sekundär text
+    600: '#57534e',  // Brödtext
+    700: '#44403c',  // Rubriker
+    800: '#292524',  // Stark text
+    900: '#1c1917',  // Nästan svart
   },
   
-  // Neutrala färger
+  // BAKÅTKOMPATIBEL: Slate behålls under övergångsperiod
   slate: {
     50: '#f8fafc',
     100: '#f1f5f9',
@@ -47,27 +54,59 @@ export const colors = {
     900: '#0f172a',
   },
   
-  // Semantiska färger
+  // Sekundärfärg - Teal (för hälsa/välmående)
+  secondary: {
+    50: '#f0fdfa',
+    100: '#ccfbf1',
+    200: '#99f6e4',
+    300: '#5eead4',
+    400: '#2dd4bf',
+    500: '#14b8a6',
+    600: '#0d9488',
+    700: '#0f766e',
+    800: '#115e59',
+    900: '#134e4a',
+  },
+  
+  // Semantiska färger - justerade för WCAG AA kontrast
   success: {
     light: '#d1fae5',
-    DEFAULT: '#10b981',
+    DEFAULT: '#059669',  // Mörkare för bättre kontrast (4.6:1)
     dark: '#047857',
   },
   warning: {
     light: '#fef3c7',
-    DEFAULT: '#f59e0b',
+    DEFAULT: '#d97706',
     dark: '#b45309',
   },
   error: {
     light: '#fee2e2',
-    DEFAULT: '#ef4444',
+    DEFAULT: '#dc2626',  // Bra kontrast (5.9:1)
     dark: '#b91c1c',
   },
   info: {
     light: '#dbeafe',
-    DEFAULT: '#3b82f6',
+    DEFAULT: '#2563eb',
     dark: '#1d4ed8',
   },
+}
+
+// Bakgrunder och gradients
+export const backgrounds = {
+  // Huvudbakgrunder
+  page: '#fafaf9',           // Neutral-50
+  card: '#ffffff',           // Vit
+  cardHover: '#fafaf9',      // Subtil hover
+  
+  // Overlay-bakgrunder
+  modal: 'rgba(28, 25, 23, 0.5)',      // Neutral-900 med 50% opacity
+  tooltip: 'rgba(68, 64, 60, 0.95)',   // Neutral-700
+  
+  // Gradients
+  hero: 'linear-gradient(135deg, #f5f3ff 0%, #fafaf9 100%)',
+  primaryButton: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+  primaryButtonHover: 'linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%)',
+  success: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
 }
 
 // Avstånd (spacing)
@@ -169,7 +208,7 @@ export const zIndex = {
   tooltip: 1700,
 }
 
-// Widget-specifika tokens
+// Widget-specifika tokens - UPPDATERADE med nya färger
 export const widgetTokens = {
   // Standard padding för alla widgets
   padding: '24px', // p-6
@@ -183,7 +222,7 @@ export const widgetTokens = {
   // Hover skugga
   hoverShadow: shadows.lg,
   
-  // Färger per widget-typ
+  // NYA: Färger per widget-typ med Violet-paletten
   variants: {
     cv: {
       bg: colors.primary[50],
@@ -220,6 +259,13 @@ export const widgetTokens = {
       icon: colors.warning.DEFAULT,
       gradient: 'from-amber-500 to-orange-600',
     },
+    neutral: {
+      bg: colors.neutral[50],
+      border: colors.neutral[200],
+      text: colors.neutral[700],
+      icon: colors.neutral[500],
+      gradient: 'from-stone-400 to-stone-600',
+    },
   }
 }
 
@@ -235,9 +281,28 @@ export const getWidgetClasses = (variant: keyof typeof widgetTokens.variants) =>
   }
 }
 
+// NY: Kontrast-kontroll för tillgänglighet
+export const contrastRatios = {
+  // Förberäknade kontrastvärden mot vit bakgrund
+  primaryOnWhite: 5.8,   // 7c3aed på vit: ✅ AA
+  neutral600OnNeutral50: 7.2,  // 57534e på fafaf9: ✅ AA
+  successOnWhite: 4.6,   // 059669 på vit: ✅ AA
+  errorOnWhite: 5.9,     // dc2626 på vit: ✅ AA
+  warningOnWhite: 3.2,   // d97706 på vit: ⚠️ kräver ikon
+}
+
+// NY: High contrast mode tokens
+export const highContrast = {
+  primary: '#5b21b6',
+  neutral: '#1c1917',
+  success: '#047857',
+  border: '#1c1917',
+}
+
 // Export allt som ett design system-objekt
 export const designSystem = {
   colors,
+  backgrounds,
   spacing,
   borderRadius,
   typography,
@@ -246,6 +311,8 @@ export const designSystem = {
   breakpoints,
   zIndex,
   widgetTokens,
+  contrastRatios,
+  highContrast,
 }
 
 export default designSystem

@@ -1,7 +1,7 @@
 /**
  * Button Component
  * Standardiserad knapp-komponent med olika varianter och storlekar
- * Följer design-systemet med konsekvent styling
+ * UPPDATERAD: "Calm & Capable" färgpalett (Violet + Warm Stone)
  */
 
 import { cn } from '@/lib/utils'
@@ -104,16 +104,16 @@ export function IconButton({
 }: IconButtonProps) {
   const variantClasses = {
     default: cn(
-      'bg-white border border-slate-200 text-slate-700',
-      'hover:bg-slate-50 hover:border-slate-300'
+      'bg-white border border-stone-200 text-stone-700',
+      'hover:bg-stone-50 hover:border-stone-300'
     ),
     ghost: cn(
-      'bg-transparent text-slate-600',
-      'hover:bg-slate-100 hover:text-slate-900'
+      'bg-transparent text-stone-600',
+      'hover:bg-stone-100 hover:text-stone-900'
     ),
     primary: cn(
-      'bg-indigo-600 text-white',
-      'hover:bg-indigo-700'
+      'bg-violet-600 text-white',
+      'hover:bg-violet-700'
     ),
   }
   
