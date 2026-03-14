@@ -1,9 +1,9 @@
 /**
- * Service Worker för Deltagarportalen
- * Ger offline-stöd och snabbare laddning
+ * Service Worker for Deltagarportalen
+ * Version 2 - Force update
  */
 
-const CACHE_NAME = 'deltagarportal-v1'
+const CACHE_NAME = 'deltagarportal-v2'
 const STATIC_ASSETS = [
   '/',
   '/index.html',
@@ -14,22 +14,25 @@ const STATIC_ASSETS = [
 
 // Installera service worker
 self.addEventListener('install', (event) => {
-  console.log('[SW] Installerar...')
+  console.log('[SW v2] Installerar...')
   
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
-        console.log('[SW] Cachar statiska resurser')
+        console.log('[SW v2] Cachar statiska resurser')
         return cache.addAll(STATIC_ASSETS)
       })
-      .then(() => self.skipWaiting())
-      .catch(err => console.error('[SW] Installationsfel:', err))
+      .then(() => {
+        console.log('[SW v2] Skip waiting')
+        return self.skipWaiting()
+      })
+      .catch(err => console.error('[SW v2] Installationsfel:', err))
   )
 })
 
 // Aktivera service worker
 self.addEventListener('activate', (event) => {
-  console.log('[SW] Aktiverar...')
+  console.log('[SW v2] Aktiverar...')
   
   event.waitUntil(
     caches.keys()
@@ -37,22 +40,25 @@ self.addEventListener('activate', (event) => {
         return Promise.all(
           cacheNames.map(cacheName => {
             if (cacheName !== CACHE_NAME) {
-              console.log('[SW] Raderar gammal cache:', cacheName)
+              console.log('[SW v2] Raderar gammal cache:', cacheName)
               return caches.delete(cacheName)
             }
           })
         )
       })
-      .then(() => self.clients.claim())
+      .then(() => {
+        console.log('[SW v2] Claiming clients')
+        return self.clients.claim()
+      })
   )
 })
 
-// Hantera fetch-requests
+// Hantera fetch-requests - NETWORK FIRST for all requests
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
   
-  // Strunta i Supabase-requests (de ska alltid gå till nätet)
+  // Strunta i Supabase-requests
   if (url.hostname.includes('supabase')) {
     return
   }
@@ -62,112 +68,34 @@ self.addEventListener('fetch', (event) => {
     return
   }
   
-  // Network-first strategi för HTML-sidor
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then(response => {
-          // Cacha svaret för offline
-          const clone = response.clone()
-          caches.open(CACHE_NAME).then(cache => cache.put(request, clone))
-          return response
-        })
-        .catch(() => {
-          // Fallback till cache om offline
-          return caches.match(request)
-            .then(cached => cached || caches.match('/index.html'))
-        })
-    )
-    return
-  }
-  
-  // Cache-first för statiska resurser (CSS, JS, bilder)
-  if (request.destination === 'style' || 
-      request.destination === 'script' || 
-      request.destination === 'image' ||
-      request.destination === 'font') {
-    event.respondWith(
-      caches.match(request)
-        .then(cached => {
-          if (cached) {
-            // Uppdatera cache i bakgrunden
-            fetch(request)
-              .then(response => {
-                caches.open(CACHE_NAME)
-                  .then(cache => cache.put(request, response))
-              })
-              .catch(() => {})
-            return cached
-          }
-          
-          return fetch(request)
-            .then(response => {
-              const clone = response.clone()
-              caches.open(CACHE_NAME).then(cache => cache.put(request, clone))
-              return response
-            })
-        })
-    )
-    return
-  }
-  
-  // Network-first för allt annat
+  // Alltid network-first för att få senaste versionen
   event.respondWith(
     fetch(request)
       .then(response => {
-        if (response.ok) {
+        // Uppdatera cache med ny version
+        if (response.status === 200) {
           const clone = response.clone()
           caches.open(CACHE_NAME).then(cache => cache.put(request, clone))
         }
         return response
       })
-      .catch(() => caches.match(request))
+      .catch(() => {
+        // Fallback till cache vid offline
+        return caches.match(request)
+          .then(cached => {
+            if (cached) {
+              console.log('[SW v2] Serving from cache:', request.url)
+              return cached
+            }
+            return caches.match('/index.html')
+          })
+      })
   )
 })
 
-// Bakgrundssynkronisering
-self.addEventListener('sync', (event) => {
-  if (event.tag === 'sync-activities') {
-    event.waitUntil(syncActivities())
-  }
-})
-
-async function syncActivities() {
-  // Här skulle vi synka påbörjade aktiviteter från IndexedDB
-  console.log('[SW] Synkar aktiviteter...')
-}
-
-// Push-notiser
-self.addEventListener('push', (event) => {
-  if (!event.data) return
-  
-  const data = event.data.json()
-  
-  event.waitUntil(
-    self.registration.showNotification(data.title, {
-      body: data.body,
-      icon: '/jobin-logga.png',
-      badge: '/vite.svg',
-      data: data.data,
-      actions: data.actions || []
-    })
-  )
-})
-
-// Klick på notifikation
-self.addEventListener('notificationclick', (event) => {
-  event.notification.close()
-  
-  event.waitUntil(
-    self.clients.openWindow(event.notification.data?.url || '/')
-  )
-})
-
-// Meddelanden från main thread
+// Lyssna på meddelanden från klienten
 self.addEventListener('message', (event) => {
-  if (event.data === 'skipWaiting') {
+  if (event.data === 'SKIP_WAITING') {
     self.skipWaiting()
   }
 })
-
-console.log('[SW] Service Worker laddad')
