@@ -18,10 +18,26 @@ const tabs = [
 
 export default function DashboardPage() {
   const location = useLocation()
+  
+  // Debug: logga location for att se vad vi faktiskt har
+  console.log('[Dashboard] location:', location)
+
+  // For hash routing, we need to check the full path including the hash
+  const fullPath = location.pathname + location.hash
+  console.log('[Dashboard] fullPath:', fullPath)
 
   const currentTab = tabs.find(tab => {
-    if (tab.path === '') return location.pathname === '/dashboard' || location.pathname === '/dashboard/'
-    return location.pathname.includes(`/dashboard/${tab.path}`)
+    if (tab.path === '') {
+      // Match /dashboard or /dashboard/ (with or without hash)
+      const isRoot = location.pathname === '/dashboard' || 
+                     location.pathname === '/dashboard/' ||
+                     fullPath === '/#/dashboard' ||
+                     fullPath === '/#/dashboard/' ||
+                     fullPath === '/#/dashboard/activity' === false // Not other tabs
+      return isRoot
+    }
+    return location.pathname.includes(`/dashboard/${tab.path}`) ||
+           fullPath.includes(`/dashboard/${tab.path}`)
   }) || tabs[0]
 
   return (
@@ -55,7 +71,7 @@ export default function DashboardPage() {
               return (
                 <Link
                   key={tab.id}
-                  to={`/dashboard/${tab.path}`}
+                  to={tab.path === '' ? '/dashboard' : `/dashboard/${tab.path}`}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -83,11 +99,11 @@ export default function DashboardPage() {
       <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 16px' }}>
         <Routes>
           <Route path="/" element={<OverviewTab />} />
-          <Route path="/activity" element={<ActivityTab />} />
-          <Route path="/community" element={<CommunityTab />} />
-          <Route path="/insights" element={<InsightsTab />} />
-          <Route path="/learning" element={<LearningTab />} />
-          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="activity" element={<ActivityTab />} />
+          <Route path="community" element={<CommunityTab />} />
+          <Route path="insights" element={<InsightsTab />} />
+          <Route path="learning" element={<LearningTab />} />
+          <Route path="*" element={<div style={{padding: 24}}>Route not found: {location.pathname}</div>} />
         </Routes>
       </main>
     </div>
