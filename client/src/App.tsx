@@ -238,13 +238,7 @@ function App() {
           </LazyRoute>
         } />
         {/* Redirect root to dashboard */}
-        <Route index element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
+        <Route index element={<Navigate to="/dashboard" replace />} />
         <Route path="cv/*" element={
           <LazyRoute>
             <RouteErrorBoundary>

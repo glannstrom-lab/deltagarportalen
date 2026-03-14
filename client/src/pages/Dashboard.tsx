@@ -14,7 +14,6 @@ import {
   Sparkles,
   ChevronRight
 } from 'lucide-react'
-import { PageLayout } from '@/components/layout/index'
 import { useEnergyStore } from '@/stores/energyStore'
 import { SuccessProvider } from '@/components/SuccessMoments'
 import { EnergyLevelSelector, EnergyLevelModal } from '@/components/energy/EnergyLevelSelector'
