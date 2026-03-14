@@ -7,6 +7,7 @@ import ErrorBoundary from './components/ErrorBoundary'
 import { MobileOptimizer } from './components/MobileOptimizer'
 import { FontProvider } from './components/FontProvider'
 import { UpdateNotification } from './components/UpdateNotification'
+import { ThemeProvider } from './contexts/ThemeContext'
 import './index.css'
 import './styles/mobile.css'
 
@@ -92,11 +93,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
         <HashRouter>
-          <FontProvider>
-            <MobileOptimizer />
-            <App />
-            <UpdateNotification />
-          </FontProvider>
+          <ThemeProvider>
+            <FontProvider>
+              <MobileOptimizer />
+              <App />
+              <UpdateNotification />
+            </FontProvider>
+          </ThemeProvider>
         </HashRouter>
       </QueryClientProvider>
     </ErrorBoundary>

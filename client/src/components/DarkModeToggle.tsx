@@ -1,77 +1,154 @@
-import { useEffect, useState } from 'react'
-import { Moon, Sun } from 'lucide-react'
+/**
+ * DarkModeToggle Component
+ * Växla mellan ljust och mörkt läge
+ * UPPDATERAD: Använder ThemeContext
+ */
 
-export function DarkModeToggle() {
-  const [isDark, setIsDark] = useState(false)
-  const [isSystemPreference, setIsSystemPreference] = useState(true)
+import { Moon, Sun, Monitor } from 'lucide-react'
+import { useTheme } from '@/contexts/ThemeContext'
+import { cn } from '@/lib/utils'
 
-  useEffect(() => {
-    // Kolla om användaren har en sparad preferens
-    const savedMode = localStorage.getItem('darkMode')
-    
-    if (savedMode !== null) {
-      setIsSystemPreference(false)
-      setIsDark(savedMode === 'true')
-    } else {
-      // Använd systempreferens
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-      setIsDark(prefersDark)
-      setIsSystemPreference(true)
-    }
-  }, [])
+interface DarkModeToggleProps {
+  variant?: 'button' | 'segmented' | 'simple'
+  size?: 'sm' | 'md' | 'lg'
+  showSystem?: boolean
+  className?: string
+}
 
-  useEffect(() => {
-    // Applicera dark mode class på html-elementet
-    if (isDark) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [isDark])
+export function DarkModeToggle({ 
+  variant = 'button',
+  size = 'md',
+  showSystem = true,
+  className
+}: DarkModeToggleProps) {
+  const { theme, setTheme, isDark } = useTheme()
 
-  const toggleDarkMode = () => {
-    const newValue = !isDark
-    setIsDark(newValue)
-    setIsSystemPreference(false)
-    localStorage.setItem('darkMode', newValue.toString())
+  const sizeClasses = {
+    sm: 'h-8 text-xs',
+    md: 'h-10 text-sm',
+    lg: 'h-12 text-base'
   }
 
-  const resetToSystem = () => {
-    localStorage.removeItem('darkMode')
-    setIsSystemPreference(true)
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
-    setIsDark(prefersDark)
+  const iconSizes = {
+    sm: 14,
+    md: 16,
+    lg: 20
   }
 
-  return (
-    <div className="flex items-center gap-2">
+  // Enkel knapp-variant
+  if (variant === 'simple') {
+    return (
       <button
-        onClick={toggleDarkMode}
-        className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all ${
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        className={cn(
+          'flex items-center justify-center rounded-lg transition-all duration-200',
+          'hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2',
+          sizeClasses[size],
           isDark 
-            ? 'bg-slate-700 text-slate-200' 
-            : 'bg-slate-100 text-slate-700'
-        } hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-teal-500`}
+            ? 'bg-stone-800 text-stone-200 hover:bg-stone-700' 
+            : 'bg-stone-100 text-stone-700 hover:bg-stone-200',
+          className
+        )}
+        aria-label={isDark ? 'Byt till ljust läge' : 'Byt till mörkt läge'}
+        title={isDark ? 'Ljust läge' : 'Mörkt läge'}
+      >
+        {isDark ? (
+          <Sun size={iconSizes[size]} aria-hidden="true" />
+        ) : (
+          <Moon size={iconSizes[size]} aria-hidden="true" />
+        )}
+      </button>
+    )
+  }
+
+  // Segmented control-variant
+  if (variant === 'segmented') {
+    return (
+      <div className={cn(
+        'inline-flex items-center rounded-lg border border-stone-200 dark:border-stone-700',
+        'bg-stone-100 dark:bg-stone-800 p-1',
+        className
+      )}>
+        <button
+          onClick={() => setTheme('light')}
+          className={cn(
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
+            theme === 'light'
+              ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+          )}
+          aria-pressed={theme === 'light'}
+        >
+          <Sun size={14} />
+          <span className="text-sm font-medium">Ljust</span>
+        </button>
+        
+        <button
+          onClick={() => setTheme('dark')}
+          className={cn(
+            'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
+            theme === 'dark'
+              ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
+              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+          )}
+          aria-pressed={theme === 'dark'}
+        >
+          <Moon size={14} />
+          <span className="text-sm font-medium">Mörkt</span>
+        </button>
+        
+        {showSystem && (
+          <button
+            onClick={() => setTheme('system')}
+            className={cn(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
+              theme === 'system'
+                ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+            )}
+            aria-pressed={theme === 'system'}
+          >
+            <Monitor size={14} />
+            <span className="text-sm font-medium">Auto</span>
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  // Standard button-variant
+  return (
+    <div className={cn('flex items-center gap-2', className)}>
+      <button
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        className={cn(
+          'flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200',
+          'hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-violet-500',
+          sizeClasses[size],
+          isDark 
+            ? 'bg-stone-800 text-stone-200' 
+            : 'bg-stone-100 text-stone-700'
+        )}
         aria-label={isDark ? 'Byt till ljust läge' : 'Byt till mörkt läge'}
         aria-pressed={isDark}
       >
         {isDark ? (
           <>
-            <Moon className="w-4 h-4" aria-hidden="true" />
-            <span className="text-sm font-medium">Mörkt</span>
+            <Moon size={iconSizes[size]} aria-hidden="true" />
+            <span className="font-medium">Mörkt</span>
           </>
         ) : (
           <>
-            <Sun className="w-4 h-4" aria-hidden="true" />
-            <span className="text-sm font-medium">Ljust</span>
+            <Sun size={iconSizes[size]} aria-hidden="true" />
+            <span className="font-medium">Ljust</span>
           </>
         )}
       </button>
       
-      {!isSystemPreference && (
+      {showSystem && theme !== 'system' && (
         <button
-          onClick={resetToSystem}
-          className="text-xs text-slate-400 hover:text-slate-600 underline"
+          onClick={() => setTheme('system')}
+          className="text-xs text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 underline"
           aria-label="Återställ till systeminställning"
         >
           System
@@ -81,33 +158,29 @@ export function DarkModeToggle() {
   )
 }
 
-// Hook för att hantera dark mode
-export function useDarkMode() {
-  const [isDark, setIsDark] = useState(false)
+// Compact variant för header/navbar
+export function DarkModeToggleCompact({ className }: { className?: string }) {
+  const { isDark, toggleDarkMode } = useTheme()
 
-  useEffect(() => {
-    const checkDarkMode = () => {
-      const savedMode = localStorage.getItem('darkMode')
-      if (savedMode !== null) {
-        setIsDark(savedMode === 'true')
-      } else {
-        setIsDark(window.matchMedia('(prefers-color-scheme: dark)').matches)
-      }
-    }
-
-    checkDarkMode()
-
-    // Lyssna på förändringar i systempreferens
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (localStorage.getItem('darkMode') === null) {
-        setIsDark(e.matches)
-      }
-    }
-
-    mediaQuery.addEventListener('change', handleChange)
-    return () => mediaQuery.removeEventListener('change', handleChange)
-  }, [])
-
-  return { isDark }
+  return (
+    <button
+      onClick={toggleDarkMode}
+      className={cn(
+        'p-2 rounded-lg transition-all duration-200',
+        'hover:bg-stone-100 dark:hover:bg-stone-800',
+        'focus:outline-none focus:ring-2 focus:ring-violet-500',
+        className
+      )}
+      aria-label={isDark ? 'Byt till ljust läge' : 'Byt till mörkt läge'}
+      title={isDark ? 'Ljust läge' : 'Mörkt läge'}
+    >
+      {isDark ? (
+        <Sun size={20} className="text-stone-200" />
+      ) : (
+        <Moon size={20} className="text-stone-600" />
+      )}
+    </button>
+  )
 }
+
+export default DarkModeToggle

@@ -69,14 +69,47 @@
 
 @layer base {
   :root {
-    /* CSS-variabler för runtime-användning */
+    /* CSS-variabler för runtime-användning - LIGHT MODE */
+    
+    /* Bakgrunder */
+    --bg-page: #fafaf9;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f5f5f4;
+    --bg-input: #ffffff;
+    --bg-sidebar: #ffffff;
+    --bg-header: rgba(255, 255, 255, 0.9);
+    --bg-overlay: rgba(28, 25, 23, 0.5);
+    --bg-tooltip: rgba(68, 64, 60, 0.95);
+    --bg-dropdown: #ffffff;
+    --bg-modal: #ffffff;
+    
+    /* Text */
+    --text-primary: #1c1917;
+    --text-secondary: #44403c;
+    --text-tertiary: #57534e;
+    --text-muted: #78716c;
+    --text-placeholder: #a8a29e;
+    --text-inverse: #fafaf9;
+    
+    /* Kanter */
+    --border-primary: #e7e5e4;
+    --border-secondary: #d6d3d1;
+    --border-focus: #7c3aed;
+    --border-hover: #a8a29e;
+    
+    /* Primärfärg (Violet) */
+    --color-primary-50: #f5f3ff;
+    --color-primary-100: #ede9fe;
+    --color-primary-200: #ddd6fe;
+    --color-primary-500: #8b5cf6;
     --color-primary-600: #7c3aed;
     --color-primary-700: #6d28d9;
-    --color-primary-800: #5b21b6;
     
+    /* Neutrala */
     --color-neutral-50: #fafaf9;
     --color-neutral-100: #f5f5f4;
     --color-neutral-200: #e7e5e4;
+    --color-neutral-300: #d6d3d1;
     --color-neutral-400: #a8a29e;
     --color-neutral-500: #78716c;
     --color-neutral-600: #57534e;
@@ -84,6 +117,7 @@
     --color-neutral-800: #292524;
     --color-neutral-900: #1c1917;
     
+    /* Semantiska */
     --color-success: #059669;
     --color-success-light: #d1fae5;
     --color-warning: #d97706;
@@ -93,34 +127,93 @@
     --color-info: #2563eb;
     --color-info-light: #dbeafe;
     
-    --bg-page: var(--color-neutral-50);
-    --bg-card: #ffffff;
-    --bg-hover: var(--color-neutral-100);
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
     --gradient-hero: linear-gradient(135deg, #f5f3ff 0%, #fafaf9 100%);
   }
-  
+
+  /* DARK MODE */
+  .dark {
+    color-scheme: dark;
+    
+    /* Bakgrunder - DARK */
+    --bg-page: #0c0a09;
+    --bg-card: #1c1917;
+    --bg-card-hover: #292524;
+    --bg-input: #292524;
+    --bg-sidebar: #1c1917;
+    --bg-header: rgba(28, 25, 23, 0.95);
+    --bg-overlay: rgba(0, 0, 0, 0.7);
+    --bg-tooltip: rgba(41, 37, 36, 0.98);
+    --bg-dropdown: #1c1917;
+    --bg-modal: #1c1917;
+    
+    /* Text - DARK */
+    --text-primary: #fafaf9;
+    --text-secondary: #e7e5e4;
+    --text-tertiary: #d6d3d1;
+    --text-muted: #a8a29e;
+    --text-placeholder: #78716c;
+    --text-inverse: #1c1917;
+    
+    /* Kanter - DARK */
+    --border-primary: #292524;
+    --border-secondary: #44403c;
+    --border-focus: #8b5cf6;
+    --border-hover: #57534e;
+    
+    /* Primärfärg (Violet) - DARK (ljusare för synlighet) */
+    --color-primary-50: #2e1065;
+    --color-primary-100: #4c1d95;
+    --color-primary-200: #5b21b6;
+    --color-primary-500: #a78bfa;
+    --color-primary-600: #8b5cf6;
+    --color-primary-700: #7c3aed;
+    
+    /* Neutrala - DARK */
+    --color-neutral-50: #1c1917;
+    --color-neutral-100: #292524;
+    --color-neutral-200: #44403c;
+    --color-neutral-300: #57534e;
+    --color-neutral-400: #78716c;
+    --color-neutral-500: #a8a29e;
+    --color-neutral-600: #d6d3d1;
+    --color-neutral-700: #e7e5e4;
+    --color-neutral-800: #f5f5f4;
+    --color-neutral-900: #fafaf9;
+    
+    /* Semantiska - DARK (ljusare för synlighet) */
+    --color-success: #34d399;
+    --color-success-light: #064e3b;
+    --color-warning: #fbbf24;
+    --color-warning-light: #78350f;
+    --color-error: #f87171;
+    --color-error-light: #7f1d1d;
+    --color-info: #60a5fa;
+    --color-info-light: #1e3a8a;
+    
+    /* Shadows - DARK (mer subtila) */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4), 0 2px 4px -2px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.5);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.6);
+    
+    /* Gradients - DARK */
+    --gradient-primary: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+    --gradient-hero: linear-gradient(135deg, #2e1065 0%, #0c0a09 100%);
+  }
+
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background-color: var(--bg-page);
-    color: var(--color-neutral-700);
-  }
-  
-  /* Dark mode support - uppdaterad med nya färger */
-  .dark {
-    color-scheme: dark;
-    --bg-page: #1c1917;
-    --bg-card: #292524;
-    --bg-hover: #44403c;
-    --color-neutral-700: #fafaf9;
-    --color-neutral-600: #f5f5f4;
-  }
-  
-  .dark body {
-    background-color: var(--bg-page);
-    color: var(--color-neutral-700);
+    color: var(--text-primary);
+    transition: background-color 0.2s ease, color 0.2s ease;
   }
   
   /* High contrast mode */
@@ -129,6 +222,13 @@
       --color-primary-600: #5b21b6;
       --color-neutral-600: #1c1917;
       --color-success: #047857;
+      --border-primary: #1c1917;
+    }
+    
+    .dark {
+      --color-primary-600: #a78bfa;
+      --color-neutral-600: #fafaf9;
+      --border-primary: #fafaf9;
     }
     
     .card,
@@ -177,36 +277,26 @@
 }
 
 @layer components {
-  /* Header styles - uppdaterad med nya färger */
+  /* Header styles - med dark mode */
   .header-glass {
-    background: rgba(255, 255, 255, 0.9);
+    background: var(--bg-header);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(231, 229, 228, 0.8);
+    border-bottom: 1px solid var(--border-primary);
   }
   
-  .dark .header-glass {
-    background: rgba(28, 25, 23, 0.9);
-    border-bottom-color: rgba(68, 64, 60, 0.8);
-  }
-
   /* Bottom bar styles */
   .bottom-bar {
-    background: rgba(255, 255, 255, 0.95);
+    background: var(--bg-header);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border-top: 1px solid rgba(231, 229, 228, 0.8);
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
+    border-top: 1px solid var(--border-primary);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   }
   
-  .dark .bottom-bar {
-    background: rgba(28, 25, 23, 0.95);
-    border-top-color: rgba(68, 64, 60, 0.8);
-  }
-  
-  /* Primary action button - UPPDATERAD med Violet */
+  /* Primary action button */
   .btn-primary-action {
-    background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+    background: var(--gradient-primary);
     color: white;
     font-weight: 500;
     padding: 0.625rem 1.25rem;
@@ -227,24 +317,17 @@
   .card {
     background-color: var(--bg-card);
     border-radius: 1.5rem;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-card);
     padding: 1.5rem;
-  }
-  
-  .dark .card {
-    background-color: var(--bg-card);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-primary);
   }
   
   .card-hover:hover {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
-  }
-  
-  .dark .card-hover:hover {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: var(--shadow-card-hover);
+    background-color: var(--bg-card-hover);
   }
 
-  /* Button components - uppdaterade färger */
+  /* Button components - använder CSS-variabler */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -273,14 +356,6 @@
   .btn-primary:hover {
     background-color: var(--color-primary-700);
   }
-  
-  .dark .btn-primary {
-    background-color: #0d9488;
-  }
-  
-  .dark .btn-primary:hover {
-    background-color: #0f766e;
-  }
 
   .btn-secondary {
     display: inline-flex;
@@ -290,24 +365,15 @@
     font-weight: 500;
     transition: all 0.2s;
     cursor: pointer;
-    border: 1px solid var(--color-neutral-200);
-    background-color: white;
-    color: var(--color-neutral-700);
+    border: 1px solid var(--border-primary);
+    background-color: var(--bg-card);
+    color: var(--text-primary);
     padding: 0.625rem 1.25rem;
   }
 
   .btn-secondary:hover {
-    background-color: var(--color-neutral-50);
-  }
-  
-  .dark .btn-secondary {
-    background-color: var(--color-neutral-800);
-    border-color: var(--color-neutral-700);
-    color: var(--color-neutral-200);
-  }
-  
-  .dark .btn-secondary:hover {
-    background-color: var(--color-neutral-700);
+    background-color: var(--bg-card-hover);
+    border-color: var(--border-secondary);
   }
 
   .btn-outline {
@@ -318,23 +384,14 @@
     font-weight: 500;
     transition: all 0.2s;
     cursor: pointer;
-    border: 1px solid var(--color-neutral-200);
+    border: 1px solid var(--border-primary);
     background-color: transparent;
-    color: var(--color-neutral-700);
+    color: var(--text-primary);
     padding: 0.625rem 1.25rem;
   }
 
   .btn-outline:hover {
-    background-color: var(--color-neutral-50);
-  }
-  
-  .dark .btn-outline {
-    border-color: var(--color-neutral-700);
-    color: var(--color-neutral-200);
-  }
-  
-  .dark .btn-outline:hover {
-    background-color: var(--color-neutral-800);
+    background-color: var(--bg-card-hover);
   }
 
   .btn-ghost {
@@ -347,66 +404,85 @@
     cursor: pointer;
     border: none;
     background-color: transparent;
-    color: var(--color-neutral-600);
+    color: var(--text-tertiary);
     padding: 0.625rem 1.25rem;
   }
 
   .btn-ghost:hover {
-    background-color: var(--color-neutral-100);
-  }
-  
-  .dark .btn-ghost {
-    color: var(--color-neutral-400);
-  }
-  
-  .dark .btn-ghost:hover {
-    background-color: var(--color-neutral-800);
-    color: var(--color-neutral-200);
+    background-color: var(--bg-card-hover);
+    color: var(--text-primary);
   }
 
-  /* Input component - uppdaterad med nya färger */
+  /* Input component */
   .input {
     width: 100%;
     padding: 0.625rem 1rem;
-    border: 1px solid var(--color-neutral-200);
+    border: 1px solid var(--border-primary);
     border-radius: 0.75rem;
-    background-color: white;
-    color: var(--color-neutral-800);
+    background-color: var(--bg-input);
+    color: var(--text-primary);
     font-size: 0.875rem;
     transition: all 0.2s;
   }
 
   .input:focus {
     outline: none;
-    border-color: var(--color-primary-600);
-    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-  }
-  
-  .dark .input {
-    background-color: var(--color-neutral-800);
-    border-color: var(--color-neutral-700);
-    color: var(--color-neutral-50);
-  }
-  
-  .dark .input:focus {
-    border-color: #0d9488;
-    box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
   }
 
   .input:disabled {
-    background-color: var(--color-neutral-100);
+    background-color: var(--bg-card-hover);
     cursor: not-allowed;
-  }
-  
-  .dark .input:disabled {
-    background-color: var(--color-neutral-800);
+    opacity: 0.6;
   }
 
   .input::placeholder {
-    color: var(--color-neutral-400);
+    color: var(--text-placeholder);
   }
   
-  /* NYA: Utility-klasser för neutral-färger */
+  /* NYA: Utility-klasser för temafärger */
+  .bg-page {
+    background-color: var(--bg-page);
+  }
+  
+  .bg-card {
+    background-color: var(--bg-card);
+  }
+  
+  .bg-card-hover {
+    background-color: var(--bg-card-hover);
+  }
+  
+  .bg-input {
+    background-color: var(--bg-input);
+  }
+  
+  .text-primary {
+    color: var(--text-primary);
+  }
+  
+  .text-secondary {
+    color: var(--text-secondary);
+  }
+  
+  .text-tertiary {
+    color: var(--text-tertiary);
+  }
+  
+  .text-muted {
+    color: var(--text-muted);
+  }
+  
+  .border-theme {
+    border-color: var(--border-primary);
+  }
+  
+  .border-theme-secondary {
+    border-color: var(--border-secondary);
+  }
+  
+  /* Neutrala färger (Stone) */
   .text-neutral-700 {
     color: var(--color-neutral-700);
   }
@@ -431,32 +507,7 @@
     border-color: var(--color-neutral-200);
   }
   
-  /* Dark mode för nya neutral-färger */
-  .dark .text-neutral-700 {
-    color: var(--color-neutral-100);
-  }
-  
-  .dark .text-neutral-600 {
-    color: var(--color-neutral-200);
-  }
-  
-  .dark .text-neutral-500 {
-    color: var(--color-neutral-300);
-  }
-  
-  .dark .bg-neutral-50 {
-    background-color: var(--color-neutral-900);
-  }
-  
-  .dark .bg-neutral-100 {
-    background-color: var(--color-neutral-800);
-  }
-  
-  .dark .border-neutral-200 {
-    border-color: var(--color-neutral-700);
-  }
-  
-  /* BAKÅTKOMPATIBEL: Slate-färger (mappade till neutral) */
+  /* Bakåtkompatibilitet: Slate */
   .text-slate-700 {
     color: var(--color-neutral-700);
   }
@@ -483,39 +534,6 @@
   
   .border-slate-200 {
     border-color: var(--color-neutral-200);
-  }
-  
-  /* Dark mode för slate (bakåtkompatibel) */
-  .dark .text-slate-800 {
-    color: #f1f5f9;
-  }
-  
-  .dark .text-slate-700 {
-    color: var(--color-neutral-200);
-  }
-  
-  .dark .text-slate-600 {
-    color: var(--color-neutral-300);
-  }
-  
-  .dark .text-slate-500 {
-    color: var(--color-neutral-400);
-  }
-  
-  .dark .bg-slate-50 {
-    background-color: var(--color-neutral-900);
-  }
-  
-  .dark .bg-slate-100 {
-    background-color: var(--color-neutral-800);
-  }
-  
-  .dark .border-slate-100 {
-    border-color: var(--color-neutral-800);
-  }
-  
-  .dark .border-slate-200 {
-    border-color: var(--color-neutral-700);
   }
 }
 
@@ -570,14 +588,27 @@
 
   /* Shadow utilities */
   .shadow-card {
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow-card);
   }
 
   .shadow-card-hover {
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-card-hover);
+  }
+  
+  /* Theme shadows */
+  .shadow-theme-sm {
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .shadow-theme-md {
+    box-shadow: var(--shadow-md);
+  }
+  
+  .shadow-theme-lg {
+    box-shadow: var(--shadow-lg);
   }
 
-  /* NY: Primary färg utilities */
+  /* Primary färg utilities */
   .text-primary-600 {
     color: var(--color-primary-600);
   }
@@ -602,14 +633,19 @@
     border-color: var(--color-primary-200);
   }
   
-  /* NY: Ring utilities */
+  /* Ring utilities */
   .ring-primary {
     --tw-ring-color: var(--color-primary-600);
   }
   
-  /* NY: Focus ring */
+  /* Focus ring */
   .focus-ring:focus {
     outline: none;
     box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.2);
+  }
+  
+  /* Transition utilities */
+  .transition-theme {
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
   }
 }
