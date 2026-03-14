@@ -1,6 +1,3 @@
-/**
- * Dashboard Page - Huvudsida med flikar (förenklad för debugging)
- */
 import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom'
 import { LayoutDashboard, Activity, Users, Brain, BookOpen } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
@@ -13,35 +10,47 @@ import InsightsTab from './dashboard/tabs/InsightsTab'
 import LearningTab from './dashboard/tabs/LearningTab'
 
 const tabs = [
-  { id: 'overview', label: 'Översikt', path: '', icon: LayoutDashboard },
+  { id: 'overview', label: 'Oversikt', path: '', icon: LayoutDashboard },
   { id: 'activity', label: 'Aktivitet', path: 'activity', icon: Activity },
   { id: 'community', label: 'Community', path: 'community', icon: Users },
   { id: 'insights', label: 'Insikter', path: 'insights', icon: Brain },
-  { id: 'learning', label: 'Lärande', path: 'learning', icon: BookOpen },
+  { id: 'learning', label: 'Larande', path: 'learning', icon: BookOpen },
 ]
 
 export default function DashboardPage() {
   const location = useLocation()
   const { user } = useAuthStore()
 
-  // Hitta aktiv flik
   const currentTab = tabs.find(tab => {
     if (tab.path === '') return location.pathname === '/dashboard' || location.pathname === '/dashboard/'
     return location.pathname.includes(`/dashboard/${tab.path}`)
   }) || tabs[0]
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div style={{ minHeight: '100vh', backgroundColor: '#f8fafc' }}>
       {/* Header */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between py-4">
-            <h1 className="text-xl font-bold text-slate-800">Deltagarportalen</h1>
-            <span className="text-sm text-slate-500">{user?.email}</span>
+      <div style={{ 
+        backgroundColor: 'white', 
+        borderBottom: '1px solid #e2e8f0',
+        position: 'sticky',
+        top: 0,
+        zIndex: 30
+      }}>
+        <div style={{ maxWidth: '1280px', margin: '0 auto', padding: '0 16px' }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            padding: '16px 0'
+          }}>
+            <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#1e293b' }}>
+              Deltagarportalen
+            </h1>
+            <span style={{ fontSize: '14px', color: '#64748b' }}>{user?.email}</span>
           </div>
 
           {/* Tab navigation */}
-          <nav className="flex gap-1 overflow-x-auto pb-2">
+          <nav style={{ display: 'flex', gap: '4px', overflowX: 'auto', paddingBottom: '8px' }}>
             {tabs.map((tab) => {
               const Icon = tab.icon
               const isActive = currentTab.id === tab.id
@@ -50,11 +59,19 @@ export default function DashboardPage() {
                 <Link
                   key={tab.id}
                   to={`/dashboard/${tab.path}`}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${
-                    isActive
-                      ? 'bg-slate-900 text-white'
-                      : 'text-slate-600 hover:bg-slate-100'
-                  }`}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '10px 16px',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: 500,
+                    whiteSpace: 'nowrap',
+                    textDecoration: 'none',
+                    backgroundColor: isActive ? '#0f172a' : 'transparent',
+                    color: isActive ? 'white' : '#475569'
+                  }}
                 >
                   <Icon size={18} />
                   <span>{tab.label}</span>
@@ -65,8 +82,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Main content - INGA animationer */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      {/* Main content */}
+      <main style={{ maxWidth: '1280px', margin: '0 auto', padding: '24px 16px' }}>
         <Routes>
           <Route path="/" element={<OverviewTab />} />
           <Route path="/activity" element={<ActivityTab />} />
