@@ -26,6 +26,7 @@ export default function JobTrackerPage() {
       title={pageTitle}
       description={pageDescription}
       customTabs={jobTrackerTabs}
+      tabVariant="glass"
       showTabs={true}
       className="space-y-6"
     >

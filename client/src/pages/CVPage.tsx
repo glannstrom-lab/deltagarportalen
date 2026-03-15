@@ -24,6 +24,7 @@ export default function CVPage() {
       title={pageTitle}
       description="Skapa, hantera och optimera ditt CV för att öka chanserna till drömjobbet"
       customTabs={cvTabs}
+      tabVariant="glass"
       showTabs={true}
       className="space-y-6"
     >

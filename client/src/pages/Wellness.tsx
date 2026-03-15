@@ -19,6 +19,7 @@ export default function WellnessPage() {
       title="Hälsa"
       description="Verktyg för ditt välmående"
       customTabs={wellnessTabs}
+      tabVariant="glass"
       showTabs={true}
       className="space-y-6"
     >

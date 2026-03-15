@@ -20,6 +20,7 @@ export default function CareerPage() {
       title="Karriär"
       description="Utforska yrken och planera din framtid"
       customTabs={careerTabs}
+      tabVariant="glass"
       showTabs={true}
       className="space-y-6"
     >

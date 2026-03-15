@@ -24,6 +24,7 @@ export default function CoverLetterPage() {
       title={pageTitle}
       description="Skapa professionella personliga brev som öppnar dörrar till nya möjligheter"
       customTabs={coverLetterTabs}
+      tabVariant="glass"
       showTabs={true}
       className="space-y-6"
     >

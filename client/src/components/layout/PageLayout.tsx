@@ -29,7 +29,7 @@ export function PageLayout({
   description,
   actions,
   customTabs,
-  tabVariant = 'minimal',
+  tabVariant = 'glass',
   showTabs = true,
   showHeader = true,
   className,
