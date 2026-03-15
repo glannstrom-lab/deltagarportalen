@@ -355,7 +355,7 @@ export function SmartQuickWinButton() {
                         )}
                       >
                         {/* Context badge */}
-                        <span className="inline-block text-[10px] font-medium px-2 py-0.5 rounded-full bg-white/70 mb-2">
+                        <span className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-white/70 mb-2">
                           {win.context}
                         </span>
                         

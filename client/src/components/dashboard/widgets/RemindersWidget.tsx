@@ -254,7 +254,7 @@ export function RemindersWidget({
                           {reminder.title}
                         </h4>
                         {reminder.priority === 'high' && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-200 text-amber-800 font-medium">
+                          <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-200 text-amber-800 font-medium">
                             Viktig
                           </span>
                         )}

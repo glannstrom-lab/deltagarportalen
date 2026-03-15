@@ -58,8 +58,13 @@ function WidgetWrapper({ children, onRemove }: { children: React.ReactNode, onRe
   return (
     <div className="relative group">
       {onRemove && (
-        <button onClick={onRemove} className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-200" title="Ta bort widget">
-          ×
+        <button 
+          onClick={onRemove} 
+          className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-200 md:opacity-0 opacity-100" 
+          title="Ta bort widget"
+          aria-label="Ta bort widget"
+        >
+          <span aria-hidden="true">×</span>
         </button>
       )}
       {children}
@@ -111,9 +116,22 @@ export default function OverviewTab() {
         case 'jobSearch': return { savedCount: data?.jobs?.savedCount }
         case 'wellness': return { completedActivities: data?.wellness?.completedActivities, streakDays: data?.wellness?.streakDays, moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null }
         case 'quests': return { completedQuests: data?.quests?.completed || 0, totalQuests: data?.quests?.total || 3, streakDays: data?.activity?.streakDays || 0 }
-        case 'exercises': return { completedCount: data?.exercises?.completedExercises || 0 }
-        case 'knowledge': return { readCount: data?.knowledge?.readCount || 0 }
-        case 'interests': return { hasResult: data?.interest?.hasResult }
+        case 'exercises': return { 
+          completedCount: data?.exercises?.completedExercises || 0,
+          totalExercises: data?.exercises?.totalExercises || 38,
+          completionRate: data?.exercises?.completionRate || 0
+        }
+        case 'knowledge': return { 
+          readCount: data?.knowledge?.readCount || 0,
+          savedCount: data?.knowledge?.savedCount || 0,
+          totalArticles: data?.knowledge?.totalArticles || 0
+        }
+        case 'interests': return { 
+          hasResult: data?.interest?.hasResult,
+          topRecommendations: data?.interest?.topRecommendations || [],
+          answeredQuestions: data?.interest?.answeredQuestions || 0,
+          totalQuestions: data?.interest?.totalQuestions || 36
+        }
         default: return {}
       }
     }
@@ -131,9 +149,9 @@ export default function OverviewTab() {
     <div className="space-y-8">
       {/* Välkomstsektion */}
       <AnimatedSection delay={100}>
-        <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl p-6 text-white">
-          <h1 className="text-2xl font-bold mb-2">Hej{user?.first_name ? `, ${user.first_name}` : ''}! 👋</h1>
-          <p className="text-violet-100">Välkommen till din personliga arbetsmarknadsportal.</p>
+        <div className="bg-gradient-to-r from-violet-600 to-purple-700 rounded-2xl p-6 text-white shadow-lg">
+          <h1 className="text-2xl font-bold mb-2 drop-shadow-sm">Hej{user?.first_name ? `, ${user.first_name}` : ''}! 👋</h1>
+          <p className="text-white/90 font-medium drop-shadow-sm">Välkommen till din personliga arbetsmarknadsportal.</p>
         </div>
       </AnimatedSection>
 
@@ -142,8 +160,15 @@ export default function OverviewTab() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900">Dina verktyg</h2>
-            <button onClick={() => setShowWidgetMenu(!showWidgetMenu)} className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white border-2 border-slate-200 text-slate-700 hover:border-violet-300 hover:text-violet-700 transition-all")}>
-              <Settings size={16} /><span>Anpassa</span><ChevronDown size={16} className={cn("transition-transform", showWidgetMenu && "rotate-180")} />
+            <button 
+              onClick={() => setShowWidgetMenu(!showWidgetMenu)} 
+              className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white border-2 border-slate-200 text-slate-700 hover:border-violet-300 hover:text-violet-700 transition-all")}
+              aria-label={showWidgetMenu ? "Stäng anpassningsmeny" : "Öppna anpassningsmeny"}
+              aria-expanded={showWidgetMenu}
+            >
+              <Settings size={16} aria-hidden="true" />
+              <span>Anpassa</span>
+              <ChevronDown size={16} className={cn("transition-transform", showWidgetMenu && "rotate-180")} aria-hidden="true" />
             </button>
           </div>
 
@@ -154,7 +179,13 @@ export default function OverviewTab() {
                 {ALL_WIDGETS.map(widget => {
                   const isActive = activeWidgets.includes(widget.id as WidgetId)
                   return (
-                    <button key={widget.id} onClick={() => isActive ? removeWidget(widget.id as WidgetId) : addWidget(widget.id as WidgetId)} className={cn("px-4 py-2 rounded-xl text-sm font-medium transition-all", isActive ? "bg-violet-100 text-violet-700 border-2 border-violet-200" : "bg-white text-slate-600 border-2 border-slate-200 hover:border-violet-200")}>
+                    <button 
+                      key={widget.id} 
+                      onClick={() => isActive ? removeWidget(widget.id as WidgetId) : addWidget(widget.id as WidgetId)} 
+                      className={cn("px-4 py-2 rounded-xl text-sm font-medium transition-all", isActive ? "bg-violet-100 text-violet-700 border-2 border-violet-200" : "bg-white text-slate-600 border-2 border-slate-200 hover:border-violet-200")}
+                      aria-label={isActive ? `Ta bort ${widget.label}` : `Lägg till ${widget.label}`}
+                      aria-pressed={isActive}
+                    >
                       {isActive ? '✓ ' : '+ '}{widget.label}
                     </button>
                   )
@@ -168,8 +199,13 @@ export default function OverviewTab() {
               <WidgetWrapper key={widgetId} onRemove={() => removeWidget(widgetId)}>{renderWidget(widgetId)}</WidgetWrapper>
             ))}
             
-            <button onClick={() => setShowWidgetMenu(true)} className={cn("flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-dashed border-slate-300 text-slate-400 hover:border-violet-300 hover:text-violet-500 transition-all min-h-[160px]")}>
-              <Plus size={32} /><span className="text-sm font-medium">Lägg till verktyg</span>
+            <button 
+              onClick={() => setShowWidgetMenu(true)} 
+              className={cn("flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-dashed border-slate-300 text-slate-400 hover:border-violet-300 hover:text-violet-500 transition-all min-h-[160px]")}
+              aria-label="Lägg till nytt verktyg"
+            >
+              <Plus size={32} aria-hidden="true" />
+              <span className="text-sm font-medium">Lägg till verktyg</span>
             </button>
           </div>
         </section>
@@ -180,7 +216,11 @@ export default function OverviewTab() {
           <div className="text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
             <h3 className="text-lg font-semibold text-slate-700 mb-2">Inga verktyg valda</h3>
             <p className="text-sm text-slate-500 mb-4">Klicka på "Anpassa" för att välja verktyg</p>
-            <button onClick={() => setShowWidgetMenu(true)} className="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700">Välj verktyg</button>
+            <button 
+              onClick={() => setShowWidgetMenu(true)} 
+              className="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700"
+              aria-label="Öppna verktygsmeny"
+            >Välj verktyg</button>
           </div>
         </AnimatedSection>
       )}

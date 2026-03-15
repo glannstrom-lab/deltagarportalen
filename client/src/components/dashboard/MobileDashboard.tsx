@@ -68,7 +68,7 @@ function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor,
         <div className="flex items-center gap-2">
           <h3 className="font-medium text-slate-800 text-sm truncate">{title}</h3>
           {badge && (
-            <span className={cn('text-[10px] px-1.5 py-0.5 rounded-full font-medium', badgeColor)}>
+            <span className={cn('text-xs px-1.5 py-0.5 rounded-full font-medium', badgeColor)}>
               {badge}
             </span>
           )}
@@ -296,7 +296,7 @@ export function MobileDashboard() {
                 <TrendingUp size={14} />
                 <span className="font-semibold">{data.cv.progress}%</span>
               </div>
-              <span className="text-[10px] text-indigo-600">CV</span>
+              <span className="text-xs text-indigo-600">CV</span>
             </div>
             {data.cv.atsScore > 0 && (
               <div className="text-center">
@@ -304,16 +304,16 @@ export function MobileDashboard() {
                   <Award size={14} />
                   <span className="font-semibold">{data.cv.atsScore}</span>
                 </div>
-                <span className="text-[10px] text-amber-600">ATS</span>
+                <span className="text-xs text-amber-600">ATS</span>
               </div>
             )}
             <div className="text-center">
               <span className="font-semibold text-indigo-700">{data.applications.total}</span>
-              <span className="text-[10px] text-indigo-600 block">Ansökningar</span>
+              <span className="text-xs text-indigo-600 block">Ansökningar</span>
             </div>
             <div className="text-center">
               <span className="font-semibold text-indigo-700">{data.jobs.savedCount}</span>
-              <span className="text-[10px] text-indigo-600 block">Sparade</span>
+              <span className="text-xs text-indigo-600 block">Sparade</span>
             </div>
           </div>
         </div>

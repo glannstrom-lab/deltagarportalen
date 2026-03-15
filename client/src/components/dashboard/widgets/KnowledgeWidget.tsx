@@ -106,12 +106,12 @@ function KnowledgeWidgetSmall({
         <BookOpen size={14} className="text-amber-500" />
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{readCount}</span>
-          <span className="text-[10px] text-slate-500">
+          <span className="text-xs text-slate-500">
             {readCount === 1 ? 'läst' : 'lästa'}
           </span>
         </div>
         {savedCount > 0 && (
-          <span className="text-[9px] bg-amber-100 text-amber-600 px-1 py-0.5 rounded ml-1">
+          <span className="text-xs bg-amber-100 text-amber-600 px-1 py-0.5 rounded ml-1">
             {savedCount} sparad
           </span>
         )}
@@ -246,10 +246,10 @@ function KnowledgeWidgetMedium({
                         {article.title}
                       </p>
                       <div className="flex items-center gap-2 mt-1">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${catStyle.bg} ${catStyle.text}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${catStyle.bg} ${catStyle.text}`}>
                           {article.category}
                         </span>
-                        <span className="text-[10px] text-slate-400 flex items-center gap-0.5">
+                        <span className="text-xs text-slate-400 flex items-center gap-0.5">
                           <Clock size={10} />
                           {article.readTime} min
                         </span>
@@ -274,7 +274,7 @@ function KnowledgeWidgetMedium({
             </div>
             <p className="text-sm font-medium text-slate-800 mb-1 line-clamp-1">{recommendedArticle.title}</p>
             <div className="flex items-center justify-between">
-              <span className={`text-[10px] px-2 py-0.5 rounded-full ${getCategoryStyle(recommendedArticle.category).bg} ${getCategoryStyle(recommendedArticle.category).text}`}>
+              <span className={`text-xs px-2 py-0.5 rounded-full ${getCategoryStyle(recommendedArticle.category).bg} ${getCategoryStyle(recommendedArticle.category).text}`}>
                 {recommendedArticle.category}
               </span>
               <span className="text-xs text-slate-400 flex items-center gap-1">
@@ -517,11 +517,11 @@ function KnowledgeWidgetLarge({
                       
                       {/* Category badge */}
                       <div className="flex items-center gap-2 mb-1.5">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${catStyle.bg} ${catStyle.text}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${catStyle.bg} ${catStyle.text}`}>
                           {article.category}
                         </span>
                         {article.isNew && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-medium">
+                          <span className="text-xs px-1.5 py-0.5 rounded-full bg-emerald-50 text-emerald-600 font-medium">
                             Ny
                           </span>
                         )}
@@ -534,7 +534,7 @@ function KnowledgeWidgetLarge({
                       
                       {/* Footer */}
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                        <span className="text-xs text-slate-400 flex items-center gap-1">
                           <Clock size={10} />
                           {article.readTime} min läsning
                         </span>
@@ -583,10 +583,10 @@ function KnowledgeWidgetLarge({
                         {article.title}
                       </p>
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${catStyle.bg} ${catStyle.text}`}>
+                        <span className={`text-xs px-1.5 py-0.5 rounded-full ${catStyle.bg} ${catStyle.text}`}>
                           {article.category}
                         </span>
-                        <span className="text-[10px] text-slate-400">
+                        <span className="text-xs text-slate-400">
                           {article.readTime} min kvar
                         </span>
                       </div>

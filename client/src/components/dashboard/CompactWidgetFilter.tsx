@@ -87,7 +87,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
                 )
               })}
             {visibleCount > 5 && (
-              <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-[10px] text-slate-500 font-medium">
+              <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-xs text-slate-500 font-medium">
                 +{visibleCount - 5}
               </div>
             )}
@@ -143,13 +143,13 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
                   )}
                 >
                   <Icon size={16} />
-                  <span className="text-[11px] leading-tight">{widget.label}</span>
+                  <span className="text-xs leading-tight">{widget.label}</span>
                 </button>
               )
             })}
           </div>
 
-          <p className="mt-3 text-[11px] text-slate-400">
+          <p className="mt-3 text-xs text-slate-400">
             Tips: Du kan ändra storlek på varje widget med ikonen uppe till höger på kortet.
           </p>
         </div>

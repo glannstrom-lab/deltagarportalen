@@ -60,12 +60,12 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
           <Trophy size={14} className="text-orange-500" />
           <span className="text-lg font-bold text-slate-800">{total}</span>
         </div>
-        <span className="text-[10px] text-slate-500">
+        <span className="text-xs text-slate-500">
           {total === 0 ? 'Inga' : total === 1 ? 'ansökan' : 'ansökningar'}
         </span>
       </div>
       {nextFollowUp && (
-        <p className="text-[9px] text-amber-600 mt-1">
+        <p className="text-xs text-amber-600 mt-1">
           Följ upp {formatDate(nextFollowUp.dueDate).toLowerCase()}
         </p>
       )}

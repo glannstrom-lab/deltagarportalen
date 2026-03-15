@@ -51,10 +51,10 @@ function ExercisesWidgetSmall({
         <Trophy size={14} className="text-emerald-500" />
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{completedCount}</span>
-          <span className="text-[10px] text-slate-500">/{totalExercises}</span>
+          <span className="text-xs text-slate-500">/{totalExercises}</span>
         </div>
         {streakDays > 0 && (
-          <span className="text-[9px] bg-orange-100 text-orange-600 px-1 py-0.5 rounded flex items-center gap-0.5">
+          <span className="text-xs bg-orange-100 text-orange-600 px-1 py-0.5 rounded flex items-center gap-0.5">
             <Flame size={8} />
             {streakDays}
           </span>
@@ -130,7 +130,7 @@ function ExercisesWidgetMedium({
             <div className="flex-1 min-w-0">
               <p className="text-xs text-slate-700 truncate">{lastCompleted.title}</p>
             </div>
-            <span className="text-[10px] text-slate-400">{getTimeAgo(lastCompleted.completedAt)}</span>
+            <span className="text-xs text-slate-400">{getTimeAgo(lastCompleted.completedAt)}</span>
           </div>
         )}
       </div>

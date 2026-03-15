@@ -4,6 +4,124 @@ import { cvApi, interestApi, coverLetterApi, activityApi, savedJobsApi } from '@
 import type { DashboardWidgetData } from '@/types/dashboard'
 import { supabase } from '@/lib/supabase'
 
+// ============================================
+// INTERFACES (replacing all `any` types)
+// ============================================
+
+/** Arbetsförmedlingen job data structure */
+interface JobData {
+  headline?: string
+  title?: string
+  employer?: {
+    name?: string
+  }
+  company?: string
+  workplace_address?: {
+    municipality?: string
+  }
+  location?: string
+  application_deadline?: string
+}
+
+/** Saved job from database */
+interface SavedJob {
+  id: string
+  job_id: string
+  job_data: JobData
+}
+
+/** Cover letter from database */
+interface CoverLetter {
+  id: string
+  title: string
+  company: string | null
+  created_at: string
+  job_title: string | null
+  is_completed?: boolean
+}
+
+/** Exercise answer from database */
+interface ExerciseAnswer {
+  is_completed: boolean
+}
+
+/** Calendar event from database */
+interface CalendarEvent {
+  id: string
+  title: string
+  date: string
+  time?: string
+  type: string
+}
+
+/** CV Version from database */
+interface CVVersion {
+  id: string
+  name: string
+  created_at: string
+  is_default: boolean
+}
+
+/** Occupation recommendation from interest guide */
+interface OccupationRecommendation {
+  name: string
+  match_percentage?: number
+  match?: number
+}
+
+/** Interest result from database */
+interface InterestResult {
+  recommended_occupations?: OccupationRecommendation[]
+  created_at?: string
+  riasec_profile?: {
+    dominant: string
+    secondary: string
+    scores: Record<string, number>
+  } | null
+  answers?: Record<string, unknown>
+}
+
+/** Quest item from database */
+interface Quest {
+  id: string
+  title: string
+  is_completed: boolean
+  points: number
+  category: string
+}
+
+/** Activity item from database */
+interface Activity {
+  activity_type: string
+  created_at: string
+}
+
+/** User streaks from database */
+interface UserStreaks {
+  current_streak: number
+}
+
+/** CV data structure */
+interface CVData {
+  updated_at?: string
+  summary?: string
+  work_experience?: unknown[]
+  workExperience?: unknown[]
+  template?: string
+  first_name?: string
+  last_name?: string
+  firstName?: string
+  lastName?: string
+  email?: string
+  personal_info?: {
+    first_name?: string
+    email?: string
+  }
+  education?: unknown[]
+  skills?: unknown[]
+  languages?: unknown[]
+}
+
 // Query keys för caching
 const DASHBOARD_QUERY_KEY = 'dashboard' as const
 
@@ -55,7 +173,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
   const hasCV = !!cv && (!!cv.summary || !!(cv.work_experience && cv.work_experience.length > 0))
 
   // Hämta nyligen sparade jobb (max 3)
-  const recentJobs = savedJobs.slice(0, 3).map((savedJob: any) => {
+  const recentJobs = savedJobs.slice(0, 3).map((savedJob: SavedJob) => {
     const jobData = savedJob.job_data || {}
     return {
       id: savedJob.job_id || savedJob.id,
@@ -67,7 +185,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
   })
 
   // Hämta nyligen skapade brev (max 3)
-  const recentLetters = coverLetters.slice(0, 3).map((letter: any) => ({
+  const recentLetters = coverLetters.slice(0, 3).map((letter: CoverLetter) => ({
     id: letter.id,
     title: letter.title || 'Nytt brev',
     company: letter.company || 'Okänt företag',
@@ -79,12 +197,12 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
   const streakDays = calculateStreak(activities)
 
   // Beräkna övningsprogress
-  const completedExercises = exerciseAnswers.filter((ea: any) => ea.is_completed).length
+  const completedExercises = exerciseAnswers.filter((ea: ExerciseAnswer) => ea.is_completed).length
 
   // Hämta kommande händelser
   const upcomingEvents = calendarEvents
-    .filter((e: any) => new Date(e.date) >= new Date())
-    .sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    .filter((e: CalendarEvent) => new Date(e.date) >= new Date())
+    .sort((a: CalendarEvent, b: CalendarEvent) => new Date(a.date).getTime() - new Date(b.date).getTime())
     .slice(0, 3)
 
   return {
@@ -96,7 +214,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
       lastEdited: cv?.updated_at || null,
       missingSections: getMissingSections(cv),
       // Mina CV data
-      savedCVs: cvVersions.map((v: any) => ({
+      savedCVs: cvVersions.map((v: CVVersion) => ({
         id: v.id,
         name: v.name,
         createdAt: v.created_at,
@@ -107,15 +225,15 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     },
     interest: {
       hasResult: !!interestResult,
-      topRecommendations: interestResult?.recommended_occupations?.slice(0, 3).map((o: any) => ({
+      topRecommendations: (interestResult as InterestResult | null)?.recommended_occupations?.slice(0, 3).map((o: OccupationRecommendation) => ({
         name: o.name,
         matchPercentage: o.match_percentage || o.match,
       })) || [],
-      completedAt: interestResult?.created_at || null,
+      completedAt: (interestResult as InterestResult | null)?.created_at || null,
       // RIASEC-data
-      riasecProfile: interestResult?.riasec_profile || null,
+      riasecProfile: (interestResult as InterestResult | null)?.riasec_profile || null,
       // Quiz-progress
-      answeredQuestions: interestResult?.answers ? Object.keys(interestResult.answers).length : 0,
+      answeredQuestions: (interestResult as InterestResult | null)?.answers ? Object.keys((interestResult as InterestResult).answers!).length : 0,
       totalQuestions: 36,
     },
     jobs: {
@@ -136,7 +254,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     coverLetters: {
       count: coverLetters.length,
       recentLetters,
-      drafts: coverLetters.filter((l: any) => !l.is_completed).length,
+      drafts: coverLetters.filter((l: CoverLetter) => !l.is_completed).length,
     },
     exercises: {
       totalExercises: 38, // Totalt antal övningar
@@ -145,20 +263,20 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
       streakDays,
     },
     calendar: {
-      upcomingEvents: upcomingEvents.map((e: any) => ({
+      upcomingEvents: upcomingEvents.map((e: CalendarEvent) => ({
         id: e.id,
         title: e.title,
         date: e.date,
         time: e.time,
         type: e.type,
       })),
-      eventsThisWeek: calendarEvents.filter((e: any) => {
+      eventsThisWeek: calendarEvents.filter((e: CalendarEvent) => {
         const eventDate = new Date(e.date)
         const now = new Date()
         const weekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
         return eventDate >= now && eventDate <= weekFromNow
       }).length,
-      hasConsultantMeeting: calendarEvents.some((e: any) => e.type === 'meeting'),
+      hasConsultantMeeting: calendarEvents.some((e: CalendarEvent) => e.type === 'meeting'),
     },
     activity: {
       weeklyApplications: applicationCount,
@@ -166,8 +284,8 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     },
     quests: {
       total: quests?.length || 3,
-      completed: quests?.filter((q: any) => q.is_completed).length || 0,
-      items: quests?.map((q: any) => ({
+      completed: quests?.filter((q: Quest) => q.is_completed).length || 0,
+      items: quests?.map((q: Quest) => ({
         id: q.id,
         title: q.title,
         completed: q.is_completed,
@@ -178,10 +296,10 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     wellness: {
       moodToday: null,
       streakDays: streakDays,
-      completedActivities: activities.filter((a: any) => 
+      completedActivities: activities.filter((a: Activity) => 
         a.activity_type === 'wellness' || a.activity_type === 'mood_logged'
       ).length,
-      lastEntryDate: activities.find((a: any) => a.activity_type === 'mood_logged')?.created_at || null,
+      lastEntryDate: activities.find((a: Activity) => a.activity_type === 'mood_logged')?.created_at || null,
     },
   }
   } catch (err) {
@@ -263,7 +381,7 @@ export function getDefaultDashboardData(): DashboardWidgetData {
 }
 
 // Hämta övningsprogress från Supabase
-async function fetchExerciseProgress() {
+async function fetchExerciseProgress(): Promise<ExerciseAnswer[]> {
   try {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return []
@@ -278,14 +396,14 @@ async function fetchExerciseProgress() {
       console.warn('Exercise answers not available:', error.message)
       return []
     }
-    return data || []
+    return (data as ExerciseAnswer[]) || []
   } catch {
     return []
   }
 }
 
 // Hämta kalenderhändelser från Supabase
-async function fetchCalendarEvents() {
+async function fetchCalendarEvents(): Promise<CalendarEvent[]> {
   try {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return []
@@ -300,14 +418,14 @@ async function fetchCalendarEvents() {
       console.warn('Calendar events not available:', error.message)
       return []
     }
-    return data || []
+    return (data as CalendarEvent[]) || []
   } catch {
     return []
   }
 }
 
 // Hämta quests från Supabase
-async function fetchQuests() {
+async function fetchQuests(): Promise<Quest[]> {
   try {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return []
@@ -323,14 +441,14 @@ async function fetchQuests() {
       console.warn('Quests not available:', error.message)
       return []
     }
-    return data || []
+    return (data as Quest[]) || []
   } catch {
     return []
   }
 }
 
 // Hämta user streaks från Supabase
-async function fetchUserStreaks() {
+async function fetchUserStreaks(): Promise<UserStreaks | null> {
   try {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) return null
@@ -346,7 +464,7 @@ async function fetchUserStreaks() {
       console.warn('User streaks not available:', error.message)
       return null
     }
-    return data
+    return data as UserStreaks | null
   } catch {
     return null
   }
@@ -407,18 +525,18 @@ export function useDashboardData(): UseDashboardDataReturn {
 }
 
 // Hjälpfunktioner
-function calculateCVProgress(cv: any): number {
+function calculateCVProgress(cv: CVData | null): number {
   if (!cv) return 0
   
   let score = 0
   const sections = [
-    { check: () => cv.first_name || cv.personal_info?.first_name, points: 10 },
+    { check: () => cv.first_name || cv.personal_info?.first_name || cv.firstName, points: 10 },
     { check: () => cv.email || cv.personal_info?.email, points: 5 },
     { check: () => cv.summary, points: 20 },
-    { check: () => cv.work_experience?.length > 0, points: 25 },
-    { check: () => cv.education?.length > 0, points: 15 },
-    { check: () => cv.skills?.length > 0, points: 15 },
-    { check: () => cv.languages?.length > 0, points: 10 },
+    { check: () => cv.work_experience?.length || cv.workExperience?.length, points: 25 },
+    { check: () => cv.education?.length, points: 15 },
+    { check: () => cv.skills?.length, points: 15 },
+    { check: () => cv.languages?.length, points: 10 },
   ]
 
   sections.forEach(section => {
@@ -428,21 +546,21 @@ function calculateCVProgress(cv: any): number {
   return Math.min(100, score)
 }
 
-function getMissingSections(cv: any): string[] {
+function getMissingSections(cv: CVData | null): string[] {
   if (!cv) return ['profile', 'summary', 'work_experience', 'education', 'skills']
   
   const missing: string[] = []
   
-  if (!cv.first_name && !cv.personal_info?.first_name) missing.push('profile')
+  if (!cv.first_name && !cv.personal_info?.first_name && !cv.firstName) missing.push('profile')
   if (!cv.summary) missing.push('summary')
-  if (!cv.work_experience?.length) missing.push('work_experience')
+  if (!(cv.work_experience?.length || cv.workExperience?.length)) missing.push('work_experience')
   if (!cv.education?.length) missing.push('education')
   if (!cv.skills?.length) missing.push('skills')
   
   return missing
 }
 
-function calculateStreak(activities: any[]): number {
+function calculateStreak(activities: Activity[]): number {
   if (!activities || activities.length === 0) return 0
   
   const sortedActivities = [...activities].sort((a, b) => 

@@ -142,12 +142,12 @@ function InterestWidgetSmall({
               />
             </svg>
             <div className="absolute inset-0 flex items-center justify-center">
-              <span className="text-[9px] font-bold text-slate-700">{progress}%</span>
+              <span className="text-xs font-bold text-slate-700">{progress}%</span>
             </div>
           </div>
           <div className="flex-1 min-w-0">
-            <span className="text-[10px] text-teal-600">Pågår...</span>
-            <p className="text-[10px] text-slate-500">{answeredQuestions}/{totalQuestions} frågor</p>
+            <span className="text-xs text-teal-600">Pågår...</span>
+            <p className="text-xs text-slate-500">{answeredQuestions}/{totalQuestions} frågor</p>
           </div>
         </div>
       </DashboardWidget>
@@ -171,16 +171,16 @@ function InterestWidgetSmall({
           <>
             <Star size={14} className="text-amber-500" />
             <div className="flex-1 min-w-0">
-              <span className="text-[10px] text-emerald-600">Test klart!</span>
+              <span className="text-xs text-emerald-600">Test klart!</span>
               {firstRecommendation && (
-                <p className="text-[10px] text-slate-600 truncate">{firstRecommendation.name}</p>
+                <p className="text-xs text-slate-600 truncate">{firstRecommendation.name}</p>
               )}
             </div>
           </>
         ) : (
           <>
             <Compass size={14} className="text-teal-500" />
-            <span className="text-[10px] text-slate-500">5 min • {totalQuestions} frågor</span>
+            <span className="text-xs text-slate-500">5 min • {totalQuestions} frågor</span>
           </>
         )}
       </div>

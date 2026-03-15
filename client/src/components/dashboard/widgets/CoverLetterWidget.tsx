@@ -118,12 +118,12 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
         <Mail size={14} className="text-rose-500" />
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{count}</span>
-          <span className="text-[10px] text-slate-500">
+          <span className="text-xs text-slate-500">
             {count === 1 ? 'brev' : 'brev'}
           </span>
         </div>
         {applicationsCount > 0 && (
-          <span className="text-[9px] bg-orange-100 text-orange-600 px-1 py-0.5 rounded ml-1">
+          <span className="text-xs bg-orange-100 text-orange-600 px-1 py-0.5 rounded ml-1">
             {applicationsCount} ansökn
           </span>
         )}
@@ -200,7 +200,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
                     <Icon size={14} className={step.text} />
                     <div>
                       <p className={`text-sm font-bold ${step.text}`}>{value}</p>
-                      <p className="text-[10px] text-slate-500">{step.label}</p>
+                      <p className="text-xs text-slate-500">{step.label}</p>
                     </div>
                   </div>
                 )

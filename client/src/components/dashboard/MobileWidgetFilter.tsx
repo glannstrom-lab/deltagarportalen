@@ -136,7 +136,7 @@ export const MobileWidgetFilter = memo(function MobileWidgetFilter({
                   )}
                 >
                   <Icon size={18} />
-                  <span className="text-[10px] leading-tight">{widget.label}</span>
+                  <span className="text-xs leading-tight">{widget.label}</span>
                   {isVisible && (
                     <div className="w-1.5 h-1.5 rounded-full bg-current absolute top-1 right-1" />
                   )}

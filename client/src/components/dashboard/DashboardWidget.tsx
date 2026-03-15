@@ -85,7 +85,7 @@ export function DashboardWidget({
       {/* Progress bar - Ultra thin */}
       {progress > 0 && (
         <div className="mb-1.5">
-          <div className="flex items-center justify-between text-[10px] mb-0.5">
+          <div className="flex items-center justify-between text-xs mb-0.5">
             <span className="text-slate-400">{progress}%</span>
           </div>
           <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
@@ -104,7 +104,7 @@ export function DashboardWidget({
         <div className="pt-1.5 mt-1.5 border-t border-slate-100">
           <Link
             to={to}
-            className="block w-full py-1 px-2 text-white text-[10px] font-medium rounded text-center"
+            className="block w-full py-1 px-2 text-white text-xs font-medium rounded text-center"
             style={{ backgroundColor: SIDEBAR_COLOR }}
           >
             {primaryAction.label}

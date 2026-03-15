@@ -92,15 +92,15 @@ function DiaryWidgetSmall({
         <Calendar size={14} className="text-rose-500" />
         <div className="flex-1 min-w-0">
           {upcomingEvents.length === 0 ? (
-            <span className="text-[10px] text-slate-500">Inga händelser</span>
+            <span className="text-xs text-slate-500">Inga händelser</span>
           ) : (
             <div className="flex items-center gap-1">
               <span className="text-sm font-bold text-slate-800">{upcomingEvents.length}</span>
-              <span className="text-[10px] text-slate-500">
+              <span className="text-xs text-slate-500">
                 {upcomingEvents.length === 1 ? 'kommande' : 'kommande'}
               </span>
               {streakDays > 0 && (
-                <span className="text-[9px] bg-amber-100 text-amber-600 px-1 py-0.5 rounded ml-1">
+                <span className="text-xs bg-amber-100 text-amber-600 px-1 py-0.5 rounded ml-1">
                   🔥 {streakDays}
                 </span>
               )}
@@ -301,7 +301,7 @@ function DiaryWidgetLarge({
                     <div className="w-14 text-center shrink-0">
                       <p className="text-xs font-bold text-rose-600">{getRelativeDate(event.date)}</p>
                       {event.time && (
-                        <p className="text-[10px] text-slate-500">{event.time}</p>
+                        <p className="text-xs text-slate-500">{event.time}</p>
                       )}
                     </div>
                     

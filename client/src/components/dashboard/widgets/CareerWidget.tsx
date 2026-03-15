@@ -52,12 +52,12 @@ function CareerWidgetSmall({
         <Briefcase size={14} className="text-indigo-500" />
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{exploredCount}</span>
-          <span className="text-[10px] text-slate-500">
+          <span className="text-xs text-slate-500">
             {exploredCount === 0 ? 'yrken' : exploredCount === 1 ? 'yrke' : 'yrken'}
           </span>
         </div>
         {firstRecommendation && (
-          <span className="text-[9px] bg-amber-100 text-amber-600 px-1 py-0.5 rounded truncate max-w-[80px]">
+          <span className="text-xs bg-amber-100 text-amber-600 px-1 py-0.5 rounded truncate max-w-[80px]">
             {firstRecommendation}
           </span>
         )}
