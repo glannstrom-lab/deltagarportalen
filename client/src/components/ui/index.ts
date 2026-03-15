@@ -10,6 +10,9 @@ export { BarChart } from './BarChart'
 // export { QuickActions } from './QuickActions'  // Removed - not used
 export { SearchBar } from './SearchBar'
 
+// Page Layout Components
+export { PageCard, PageCardLink, PageCardGrid } from './PageCard'
+
 // Skeletons
 export {
   Skeleton,

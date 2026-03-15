@@ -176,11 +176,11 @@ interface PageHeaderProps {
 export function PageHeader({ title, description, tabs, actions, className }: PageHeaderProps) {
   return (
     <div className={cn('space-y-5', className)}>
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-slate-800">{title}</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
           {description && (
-            <p className="text-slate-600 mt-1.5">{description}</p>
+            <p className="text-base text-slate-500 mt-1">{description}</p>
           )}
         </div>
         {actions && (

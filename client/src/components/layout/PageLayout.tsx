@@ -108,11 +108,15 @@ export function PageSection({
   className,
 }: PageSectionProps) {
   return (
-    <section className={cn('bg-white rounded-2xl border border-slate-200 overflow-hidden', className)}>
+    <section className={cn(
+      'bg-white rounded-2xl border-2 border-slate-200 overflow-hidden',
+      'hover:border-slate-300 transition-colors duration-300',
+      className
+    )}>
       {(title || actions) && (
-        <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between gap-4">
+        <div className="px-6 py-4 border-b-2 border-slate-100 flex items-center justify-between gap-4">
           <div>
-            {title && <h2 className="font-semibold text-slate-800">{title}</h2>}
+            {title && <h2 className="text-lg font-bold text-slate-900">{title}</h2>}
             {description && <p className="text-sm text-slate-500 mt-1">{description}</p>}
           </div>
           {actions && <div className="flex items-center gap-2">{actions}</div>}
