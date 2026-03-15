@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Clock, ArrowRight, Zap, Coffee, Target } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -8,7 +9,7 @@ interface QuickAction {
   description: string
   icon: React.ReactNode
   color: string
-  suggestions: string[]
+  suggestions: { label: string; link: string }[]
 }
 
 const quickActions: QuickAction[] = [
@@ -19,10 +20,10 @@ const quickActions: QuickAction[] = [
     icon: <Coffee size={20} />,
     color: 'emerald',
     suggestions: [
-      'Logga ditt humör',
-      'Uppdatera en CV-rad',
-      'Spara ett intressant jobb',
-      'Markera en quest klar'
+      { label: 'Logga ditt humör', link: '/wellness' },
+      { label: 'Uppdatera en CV-rad', link: '/cv' },
+      { label: 'Spara ett intressant jobb', link: '/job-search' },
+      { label: 'Markera en quest klar', link: '/quests' }
     ]
   },
   {
@@ -32,10 +33,10 @@ const quickActions: QuickAction[] = [
     icon: <Zap size={20} />,
     color: 'violet',
     suggestions: [
-      'Skriv en ansökan',
-      'Uppdatera CV-sektion',
-      'Gör en övning',
-      'Delta i communityt'
+      { label: 'Skriv en ansökan', link: '/job-tracker' },
+      { label: 'Uppdatera CV-sektion', link: '/cv' },
+      { label: 'Gör en övning', link: '/exercises' },
+      { label: 'Läs en artikel', link: '/knowledge-base' }
     ]
   },
   {
@@ -45,10 +46,10 @@ const quickActions: QuickAction[] = [
     icon: <Target size={20} />,
     color: 'blue',
     suggestions: [
-      'Färdigställ ansökan',
-      'Gör intresseguiden',
-      'Skriv personligt brev',
-      'Planera veckan'
+      { label: 'Färdigställ ansökan', link: '/job-tracker' },
+      { label: 'Gör intresseguiden', link: '/interest-guide' },
+      { label: 'Skriv personligt brev', link: '/cover-letter' },
+      { label: 'Planera veckan', link: '/diary' }
     ]
   }
 ]
@@ -84,8 +85,13 @@ const colorClasses: Record<string, {
 }
 
 export function QuickActions() {
+  const navigate = useNavigate()
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
   const [hoveredAction, setHoveredAction] = useState<number | null>(null)
+
+  const handleSuggestionClick = (link: string) => {
+    navigate(link)
+  }
 
   return (
     <div className="space-y-4">
@@ -172,6 +178,7 @@ export function QuickActions() {
               ?.suggestions.map((suggestion, idx) => (
                 <button
                   key={idx}
+                  onClick={() => handleSuggestionClick(suggestion.link)}
                   className={cn(
                     "text-left px-4 py-3 rounded-xl text-sm",
                     "bg-slate-50 hover:bg-violet-50 hover:text-violet-700",
@@ -181,7 +188,7 @@ export function QuickActions() {
                   )}
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
-                  {suggestion}
+                  {suggestion.label}
                 </button>
               ))}
           </div>

@@ -2,6 +2,7 @@
  * Energy Tab - Track energy levels and get activity suggestions
  */
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { 
   Zap, Sun, Battery, BatteryLow, BatteryMedium, BatteryFull,
   TrendingUp, Calendar, Clock, AlertCircle, CheckCircle2
@@ -16,34 +17,39 @@ interface EnergyLog {
   notes?: string
 }
 
-const activitySuggestions: Record<number, { title: string; icon: React.ElementType; description: string }[]> = {
+const activitySuggestions: Record<number, { title: string; icon: React.ElementType; description: string; link: string }[]> = {
   8: [
-    { title: 'Skriv personligt brev', icon: Zap, description: 'Perfekt tid för fokuserat skrivande' },
-    { title: 'Nätverka aktivt', icon: Zap, description: 'Kontakta nya personer på LinkedIn' },
-    { title: 'Förbered intervju', icon: Zap, description: 'Öva på vanliga frågor' },
+    { title: 'Skriv personligt brev', icon: Zap, description: 'Perfekt tid för fokuserat skrivande', link: '/cover-letter' },
+    { title: 'Nätverka aktivt', icon: Zap, description: 'Kontakta nya personer på LinkedIn', link: '/career/network' },
+    { title: 'Förbered intervju', icon: Zap, description: 'Öva på vanliga frågor', link: '/exercises' },
   ],
   6: [
-    { title: 'Sök jobb', icon: BatteryMedium, description: 'Gå igenom platsbanken' },
-    { title: 'Uppdatera CV', icon: BatteryMedium, description: 'Gör små förbättringar' },
-    { title: 'Gör en övning', icon: BatteryMedium, description: 'Kompetensutveckling' },
+    { title: 'Sök jobb', icon: BatteryMedium, description: 'Gå igenom platsbanken', link: '/job-search' },
+    { title: 'Uppdatera CV', icon: BatteryMedium, description: 'Gör små förbättringar', link: '/cv' },
+    { title: 'Gör en övning', icon: BatteryMedium, description: 'Kompetensutveckling', link: '/exercises' },
   ],
   4: [
-    { title: 'Läsa artiklar', icon: BatteryLow, description: 'Kunskapsbanken väntar' },
-    { title: 'Kolla mailen', icon: BatteryLow, description: 'Svara på eventuella svar' },
-    { title: 'Planera imorgon', icon: BatteryLow, description: 'Skriv en lista' },
+    { title: 'Läsa artiklar', icon: BatteryLow, description: 'Kunskapsbanken väntar', link: '/knowledge-base' },
+    { title: 'Skriv i dagboken', icon: BatteryLow, description: 'Reflektera över dagen', link: '/diary' },
+    { title: 'Planera imorgon', icon: BatteryLow, description: 'Skriv en lista', link: '/diary' },
   ],
   2: [
-    { title: 'Vila', icon: AlertCircle, description: 'Det är okej att vila' },
-    { title: 'Reflektera', icon: AlertCircle, description: 'Skriv ner tankar' },
-    { title: 'Meditation', icon: AlertCircle, description: '10 minuter mindfulness' },
+    { title: 'Vila', icon: AlertCircle, description: 'Det är okej att vila', link: '/wellness' },
+    { title: 'Reflektera', icon: AlertCircle, description: 'Skriv ner tankar', link: '/diary' },
+    { title: 'Andningsövning', icon: AlertCircle, description: '10 minuter mindfulness', link: '/wellness' },
   ],
 }
 
 export default function EnergyTab() {
+  const navigate = useNavigate()
   const [todayEnergy, setTodayEnergy] = useState<{ morning?: number; afternoon?: number; evening?: number }>({})
   const [energyHistory, setEnergyHistory] = useState<EnergyLog[]>([])
   const [selectedTime, setSelectedTime] = useState<'morning' | 'afternoon' | 'evening'>('morning')
   const [notes, setNotes] = useState('')
+
+  const handleSuggestionClick = (link: string) => {
+    navigate(link)
+  }
 
   // Load mock data
   useEffect(() => {
@@ -152,6 +158,7 @@ export default function EnergyTab() {
             return (
               <div
                 key={index}
+                onClick={() => handleSuggestionClick(suggestion.link)}
                 className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-transparent hover:border-indigo-200 transition-all cursor-pointer"
               >
                 <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm">
