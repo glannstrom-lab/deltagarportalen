@@ -20,6 +20,8 @@ const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSea
 const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
 const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWidget'))
 const CoverLetterWidget = lazy(() => import('@/components/dashboard/widgets/CoverLetterWidget'))
+const ApplicationsWidget = lazy(() => import('@/components/dashboard/widgets/ApplicationsWidget'))
+const CareerWidget = lazy(() => import('@/components/dashboard/widgets/CareerWidget'))
 
 // Widget lazy loading map
 const WIDGET_COMPONENTS = {
@@ -28,9 +30,11 @@ const WIDGET_COMPONENTS = {
   wellness: WellnessWidget,
   quests: QuestsWidget,
   coverLetter: CoverLetterWidget,
+  applications: ApplicationsWidget,
+  career: CareerWidget,
 }
 
-type WidgetId = 'cv' | 'jobSearch' | 'wellness' | 'quests' | 'coverLetter'
+type WidgetId = 'cv' | 'jobSearch' | 'wellness' | 'quests' | 'coverLetter' | 'applications' | 'career'
 
 // Animation wrapper component
 function AnimatedSection({ 
@@ -96,7 +100,7 @@ export default function OverviewTab() {
   const { data, loading } = useDashboardData()
   
   // Default widgets
-  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests', 'coverLetter'])
+  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests', 'coverLetter', 'applications', 'career'])
 
   // Loading state
   if (loading) {
@@ -141,6 +145,8 @@ export default function OverviewTab() {
           streakDays: data?.activity?.streakDays || 0
         }
         case 'coverLetter': return { count: data?.coverLetters?.count || 0 }
+        case 'applications': return { total: data?.applications?.total || 0 }
+        case 'career': return { exploredCount: data?.interest?.hasResult ? 1 : 0 }
         default: return {}
       }
     }
