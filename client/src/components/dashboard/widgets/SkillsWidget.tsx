@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { BarChart3, TrendingUp, ChevronRight, Target, Zap } from 'lucide-react'
+import { BarChart3, TrendingUp, ChevronRight, Target, Zap, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface SkillsWidgetProps {
@@ -7,7 +7,7 @@ interface SkillsWidgetProps {
   gapCount?: number
   matchScore?: number
   hasAnalysis?: boolean
-  size?: 'small' | 'medium'
+  size?: 'mini' | 'medium' | 'large'
 }
 
 export function SkillsWidget({
@@ -15,86 +15,98 @@ export function SkillsWidget({
   gapCount = 0,
   matchScore = 0,
   hasAnalysis = false,
-  size = 'small'
+  size = 'medium'
 }: SkillsWidgetProps) {
   const isGood = matchScore >= 70
 
-  if (size === 'small') {
+  // MINI
+  if (size === 'mini') {
     return (
       <Link
         to="/skills-gap-analysis"
-        className={cn(
-          "group block bg-white p-4 rounded-2xl border-2 transition-all duration-200",
-          "hover:border-cyan-300 hover:shadow-lg hover:-translate-y-0.5",
-          "focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2",
-          "border-slate-200"
+        className="group flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 hover:border-cyan-300 hover:shadow-md transition-all duration-200"
+      >
+        <div className="w-8 h-8 rounded-lg bg-cyan-100 text-cyan-600 flex items-center justify-center flex-shrink-0">
+          <BarChart3 size={16} />
+        </div>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold text-slate-800">Kompetens</p>
+          <p className={cn("text-xs", hasAnalysis ? (isGood ? "text-emerald-600" : "text-cyan-600") : "text-slate-500")}>
+            {hasAnalysis ? `${matchScore}%` : 'Analysera'}
+          </p>
+        </div>
+        {hasAnalysis && gapCount > 0 && (
+          <span className="px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded text-xs font-medium">
+            {gapCount}
+          </span>
         )}
+      </Link>
+    )
+  }
+
+  // MEDIUM
+  if (size === 'medium') {
+    return (
+      <Link
+        to="/skills-gap-analysis"
+        className="group block bg-white p-4 rounded-xl border border-slate-200 hover:border-cyan-300 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-cyan-100 text-cyan-600 flex items-center justify-center">
               <BarChart3 size={18} />
             </div>
-            <h3 className="font-semibold text-slate-800 text-sm">Kompetenser</h3>
+            <div>
+              <h3 className="font-semibold text-slate-800 text-sm">Kompetensanalys</h3>
+              <p className="text-xs text-slate-500">
+                {hasAnalysis ? 'Analyserad' : 'Hitta styrkor'}
+              </p>
+            </div>
           </div>
-          <ChevronRight
-            size={16}
-            className="text-slate-300 group-hover:text-cyan-500 group-hover:translate-x-0.5 transition-all"
-          />
+          <ChevronRight size={16} className="text-slate-300 group-hover:text-cyan-500 transition-colors" />
         </div>
 
         {hasAnalysis ? (
-          <div className="flex items-center gap-2">
-            <span className={cn(
-              "text-2xl font-bold",
-              isGood ? "text-emerald-600" : "text-slate-800"
-            )}>
+          <div className="flex items-center gap-3">
+            <span className={cn("text-2xl font-bold", isGood ? "text-emerald-600" : "text-cyan-600")}>
               {matchScore}%
             </span>
             <span className="text-sm text-slate-500">matchning</span>
             {gapCount > 0 && (
-              <span className="ml-auto inline-flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full bg-amber-100 text-amber-700 border border-amber-200">
+              <span className="ml-auto px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">
                 {gapCount} gap
               </span>
             )}
           </div>
         ) : (
-          <div className="flex items-center gap-2">
-            <Target size={16} className="text-cyan-500" />
-            <span className="text-sm text-slate-600">Analysera kompetenser</span>
+          <div className="flex items-center gap-2 text-cyan-600">
+            <Target size={16} />
+            <span className="text-sm">Starta analys</span>
           </div>
         )}
       </Link>
     )
   }
 
-  // Medium size
+  // LARGE
   return (
     <Link
       to="/skills-gap-analysis"
-      className={cn(
-        "group block bg-white p-5 rounded-2xl border-2 transition-all duration-200",
-        "hover:border-cyan-300 hover:shadow-xl hover:-translate-y-0.5",
-        "focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:ring-offset-2",
-        "border-slate-200"
-      )}
+      className="group block bg-white p-5 rounded-xl border border-slate-200 hover:border-cyan-300 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 text-cyan-600 flex items-center justify-center shadow-sm">
-            <BarChart3 size={22} />
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-100 to-teal-100 text-cyan-600 flex items-center justify-center">
+            <BarChart3 size={24} />
           </div>
           <div>
             <h3 className="font-bold text-slate-800">Kompetensanalys</h3>
-            <p className="text-xs text-slate-500">
-              {hasAnalysis ? 'Analyserad' : 'Hitta dina styrkor'}
+            <p className="text-sm text-slate-500">
+              {hasAnalysis ? 'Dina kompetenser analyserade' : 'Hitta dina styrkor'}
             </p>
           </div>
         </div>
-        <ChevronRight
-          size={18}
-          className="text-slate-300 group-hover:text-cyan-500 group-hover:translate-x-0.5 transition-all mt-1"
-        />
+        <ChevronRight size={18} className="text-slate-300 group-hover:text-cyan-500 mt-1 transition-colors" />
       </div>
 
       {/* Status card */}
@@ -102,10 +114,7 @@ export function SkillsWidget({
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-slate-600">Matchning med mål</span>
-            <span className={cn(
-              "text-lg font-bold",
-              isGood ? "text-emerald-600" : "text-cyan-600"
-            )}>
+            <span className={cn("text-lg font-bold", isGood ? "text-emerald-600" : "text-cyan-600")}>
               {matchScore}%
             </span>
           </div>
@@ -122,7 +131,7 @@ export function SkillsWidget({
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-4 p-4 rounded-xl bg-cyan-50 border border-cyan-100 mb-3">
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-cyan-50 border border-cyan-100 mb-4">
           <div className="w-12 h-12 rounded-xl bg-cyan-100 flex items-center justify-center">
             <Zap size={24} className="text-cyan-500" />
           </div>
@@ -134,24 +143,29 @@ export function SkillsWidget({
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 gap-3">
-        <div className="p-3 bg-cyan-50 rounded-xl">
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="p-3 bg-cyan-50 rounded-lg">
           <div className="flex items-center gap-2">
             <TrendingUp size={16} className="text-cyan-500" />
             <span className="text-lg font-bold text-slate-800">{analyzedSkills}</span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">Analyserade</p>
+          <p className="text-xs text-slate-500">Analyserade</p>
         </div>
-        <div className={cn(
-          "p-3 rounded-xl",
-          gapCount > 0 ? "bg-amber-50" : "bg-emerald-50"
-        )}>
+        <div className={cn("p-3 rounded-lg", gapCount > 0 ? "bg-amber-50" : "bg-emerald-50")}>
           <div className="flex items-center gap-2">
             <Target size={16} className={gapCount > 0 ? "text-amber-500" : "text-emerald-500"} />
             <span className="text-lg font-bold text-slate-800">{gapCount}</span>
           </div>
-          <p className="text-xs text-slate-500 mt-1">Gap att fylla</p>
+          <p className="text-xs text-slate-500">Gap att fylla</p>
         </div>
+      </div>
+
+      {/* Action */}
+      <div className="flex gap-2">
+        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-cyan-100 text-cyan-700 rounded-lg text-xs font-medium group-hover:bg-cyan-200 transition-colors">
+          <Play size={12} />
+          {hasAnalysis ? 'Se analys' : 'Starta analys'}
+        </span>
       </div>
     </Link>
   )

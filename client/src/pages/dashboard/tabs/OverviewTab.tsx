@@ -1,17 +1,16 @@
-import { useState, useEffect, lazy, Suspense, useCallback } from 'react'
+import { useState, useEffect, lazy, Suspense, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import {
-  Settings, ChevronDown, Plus, ChevronRight, Flame, Target,
+  Settings, Plus, ChevronRight, Flame, Target,
   FileText, Briefcase, Heart, BookOpen, Sparkles, ArrowRight,
-  CheckCircle2, Circle, Lightbulb, Zap, Star, TrendingUp,
-  Calendar, MessageSquare, Linkedin, BarChart3
+  CheckCircle2, Lightbulb, Zap, Star, X, GripVertical,
+  Calendar, MessageSquare, Linkedin, BarChart3, Maximize2, Minimize2
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
-import '@/styles/animations.css'
 
 // Lazy load widgets
 const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
@@ -26,7 +25,7 @@ const InterviewWidget = lazy(() => import('@/components/dashboard/widgets/Interv
 const LinkedInWidget = lazy(() => import('@/components/dashboard/widgets/LinkedInWidget'))
 const SkillsWidget = lazy(() => import('@/components/dashboard/widgets/SkillsWidget'))
 
-// Widget map
+// Widget configuration
 const WIDGET_COMPONENTS = {
   cv: CVWidget,
   jobSearch: JobSearchWidget,
@@ -42,46 +41,34 @@ const WIDGET_COMPONENTS = {
 }
 
 type WidgetId = keyof typeof WIDGET_COMPONENTS
+type WidgetSize = 'mini' | 'medium' | 'large'
 
-const ALL_WIDGETS = [
-  { id: 'cv', label: 'CV', icon: FileText, color: 'violet' },
-  { id: 'jobSearch', label: 'Jobbsök', icon: Briefcase, color: 'blue' },
-  { id: 'wellness', label: 'Välmående', icon: Heart, color: 'rose' },
-  { id: 'quests', label: 'Quests', icon: Target, color: 'amber' },
-  { id: 'exercises', label: 'Övningar', icon: Zap, color: 'emerald' },
-  { id: 'knowledge', label: 'Kunskapsbank', icon: BookOpen, color: 'amber' },
-  { id: 'interests', label: 'Intressen', icon: Sparkles, color: 'purple' },
-  { id: 'calendar', label: 'Kalender', icon: Calendar, color: 'rose' },
-  { id: 'interview', label: 'Intervjuträning', icon: MessageSquare, color: 'indigo' },
-  { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, color: 'blue' },
-  { id: 'skills', label: 'Kompetenser', icon: BarChart3, color: 'cyan' },
-] as const
-
-const DEFAULT_WIDGETS: WidgetId[] = ['cv', 'jobSearch', 'wellness', 'quests']
-
-// Animation wrapper
-function AnimatedSection({ children, delay = 0, className }: { children: React.ReactNode, delay?: number, className?: string }) {
-  const [isVisible, setIsVisible] = useState(false)
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), delay)
-    return () => clearTimeout(timer)
-  }, [delay])
-
-  return (
-    <div className={cn(className, "transition-all duration-500", isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4")} style={{ transitionDelay: `${delay}ms` }}>
-      {children}
-    </div>
-  )
+interface WidgetConfig {
+  id: WidgetId
+  size: WidgetSize
 }
 
-// Determine if user is new (for onboarding)
-function isNewUser(data: ReturnType<typeof useDashboardData>['data']): boolean {
-  if (!data) return true
-  const hasCV = data.cv?.hasCV || (data.cv?.progress || 0) > 10
-  const hasQuests = (data.quests?.completed || 0) > 0
-  const hasJobs = (data.jobs?.savedCount || 0) > 0
-  return !hasCV && !hasQuests && !hasJobs
+const WIDGET_INFO: Record<WidgetId, { label: string; icon: React.ElementType; color: string }> = {
+  cv: { label: 'CV', icon: FileText, color: 'violet' },
+  jobSearch: { label: 'Jobbsök', icon: Briefcase, color: 'blue' },
+  wellness: { label: 'Välmående', icon: Heart, color: 'rose' },
+  quests: { label: 'Quests', icon: Target, color: 'amber' },
+  exercises: { label: 'Övningar', icon: Zap, color: 'emerald' },
+  knowledge: { label: 'Kunskap', icon: BookOpen, color: 'amber' },
+  interests: { label: 'Intressen', icon: Sparkles, color: 'teal' },
+  calendar: { label: 'Kalender', icon: Calendar, color: 'rose' },
+  interview: { label: 'Intervju', icon: MessageSquare, color: 'indigo' },
+  linkedin: { label: 'LinkedIn', icon: Linkedin, color: 'blue' },
+  skills: { label: 'Kompetens', icon: BarChart3, color: 'cyan' },
 }
+
+const DEFAULT_WIDGETS: WidgetConfig[] = [
+  { id: 'cv', size: 'large' },
+  { id: 'quests', size: 'medium' },
+  { id: 'jobSearch', size: 'medium' },
+  { id: 'wellness', size: 'mini' },
+  { id: 'exercises', size: 'mini' },
+]
 
 // Get next recommended action
 function getNextAction(data: ReturnType<typeof useDashboardData>['data']): {
@@ -90,312 +77,296 @@ function getNextAction(data: ReturnType<typeof useDashboardData>['data']): {
   link: string
   icon: React.ElementType
   color: string
-  priority: 'high' | 'medium' | 'low'
+  buttonText: string
 } | null {
   if (!data) return null
 
-  // Priority 1: Create CV if not started
   if (!data.cv?.hasCV && (data.cv?.progress || 0) < 20) {
     return {
       title: 'Skapa ditt CV',
-      description: 'Första steget till ditt nya jobb',
+      description: 'Bygg ett professionellt CV som får arbetsgivare att uppmärksamma dig',
       link: '/cv',
       icon: FileText,
       color: 'violet',
-      priority: 'high'
+      buttonText: 'Börja nu'
     }
   }
 
-  // Priority 2: Complete CV if started but not done
   if (data.cv?.hasCV && (data.cv?.progress || 0) < 80) {
-    const missing = data.cv?.missingSections?.[0]
-    const sectionNames: Record<string, string> = {
-      summary: 'profil',
-      work_experience: 'arbetslivserfarenhet',
-      education: 'utbildning',
-      skills: 'kompetenser'
-    }
     return {
-      title: 'Fortsätt med ditt CV',
-      description: missing ? `Lägg till ${sectionNames[missing] || missing}` : `${data.cv.progress}% klart`,
+      title: 'Slutför ditt CV',
+      description: `Ditt CV är ${data.cv.progress}% klart. Lägg till mer information för bättre resultat`,
       link: '/cv',
       icon: FileText,
       color: 'violet',
-      priority: 'high'
+      buttonText: 'Fortsätt'
     }
   }
 
-  // Priority 3: Start job search
   if ((data.jobs?.savedCount || 0) === 0) {
     return {
-      title: 'Sök jobb',
-      description: 'Hitta jobb som passar dig',
+      title: 'Hitta ditt nästa jobb',
+      description: 'Sök bland tusentals lediga tjänster och spara de som passar dig',
       link: '/job-search',
       icon: Briefcase,
       color: 'blue',
-      priority: 'medium'
+      buttonText: 'Sök jobb'
     }
   }
 
-  // Priority 4: Complete quests
-  if ((data.quests?.completed || 0) < (data.quests?.total || 3)) {
-    const remaining = (data.quests?.total || 3) - (data.quests?.completed || 0)
-    return {
-      title: `${remaining} quest${remaining > 1 ? 's' : ''} kvar`,
-      description: 'Slutför dagens mål',
-      link: '/activity',
-      icon: Target,
-      color: 'amber',
-      priority: 'medium'
-    }
-  }
-
-  // Priority 5: Log wellness
   if (!data.wellness?.moodToday) {
     return {
       title: 'Hur mår du idag?',
-      description: 'Logga ditt humör',
+      description: 'Logga ditt humör för att följa ditt välmående över tid',
       link: '/wellness',
       icon: Heart,
       color: 'rose',
-      priority: 'low'
+      buttonText: 'Logga humör'
+    }
+  }
+
+  if (!data.interest?.hasResult) {
+    return {
+      title: 'Upptäck dina styrkor',
+      description: 'Ta intressetestet och få personliga yrkesrekommendationer',
+      link: '/interest-guide',
+      icon: Sparkles,
+      color: 'teal',
+      buttonText: 'Starta test'
     }
   }
 
   return null
 }
 
-// Onboarding component for new users
-function NewUserOnboarding({ userName }: { userName?: string }) {
-  const steps = [
-    {
-      id: 1,
-      title: 'Skapa ditt CV',
-      description: 'Bygg ett professionellt CV på några minuter',
-      icon: FileText,
-      link: '/cv',
-      color: 'from-violet-500 to-purple-600'
-    },
-    {
-      id: 2,
-      title: 'Hitta jobb',
-      description: 'Sök bland tusentals lediga tjänster',
-      icon: Briefcase,
-      link: '/job-search',
-      color: 'from-blue-500 to-cyan-600'
-    },
-    {
-      id: 3,
-      title: 'Lär dig mer',
-      description: 'Tips och guider för din jobbsökning',
-      icon: BookOpen,
-      link: '/knowledge-base',
-      color: 'from-amber-500 to-orange-600'
-    },
-  ]
+// Next Step Card Component
+function NextStepCard({ action }: { action: ReturnType<typeof getNextAction> }) {
+  if (!action) return null
+
+  const Icon = action.icon
 
   return (
-    <div className="space-y-6">
-      {/* Welcome hero */}
-      <AnimatedSection delay={100}>
-        <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-3xl p-8 text-white shadow-xl">
-          {/* Decorative elements */}
-          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-2xl" />
+    <Link
+      to={action.link}
+      className={cn(
+        "group block bg-white rounded-2xl border-2 p-5 transition-all duration-200",
+        "hover:shadow-lg hover:-translate-y-0.5",
+        action.color === 'violet' && "border-violet-200 hover:border-violet-300",
+        action.color === 'blue' && "border-blue-200 hover:border-blue-300",
+        action.color === 'rose' && "border-rose-200 hover:border-rose-300",
+        action.color === 'teal' && "border-teal-200 hover:border-teal-300",
+      )}
+    >
+      <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-3">
+        <Lightbulb size={14} className="text-amber-500" />
+        Nästa steg
+      </div>
 
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-5 h-5 text-amber-300" />
-              <span className="text-sm font-medium text-white/80">Välkommen till Jobin</span>
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-bold mb-3">
-              Hej{userName ? `, ${userName}` : ''}! 👋
-            </h1>
-            <p className="text-lg text-white/90 max-w-xl mb-6">
-              Här får du alla verktyg du behöver för att hitta ditt nästa jobb.
-              Kom igång med tre enkla steg.
-            </p>
-
-            {/* Quick stats placeholder */}
-            <div className="flex flex-wrap gap-4">
-              <div className="px-4 py-2 bg-white/15 backdrop-blur-sm rounded-xl">
-                <span className="text-2xl font-bold">3</span>
-                <span className="text-sm text-white/80 ml-2">steg till ditt CV</span>
-              </div>
-            </div>
-          </div>
+      <div className="flex items-center gap-4">
+        <div className={cn(
+          "w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0",
+          action.color === 'violet' && "bg-violet-100 text-violet-600",
+          action.color === 'blue' && "bg-blue-100 text-blue-600",
+          action.color === 'rose' && "bg-rose-100 text-rose-600",
+          action.color === 'teal' && "bg-teal-100 text-teal-600",
+        )}>
+          <Icon size={28} />
         </div>
-      </AnimatedSection>
 
-      {/* Getting started steps */}
-      <AnimatedSection delay={200}>
-        <div className="space-y-4">
-          <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-            <Lightbulb className="w-5 h-5 text-amber-500" />
-            Kom igång
-          </h2>
-
-          <div className="grid sm:grid-cols-3 gap-4">
-            {steps.map((step, index) => (
-              <Link
-                key={step.id}
-                to={step.link}
-                className="group relative bg-white rounded-2xl p-6 border-2 border-slate-200 hover:border-violet-300 hover:shadow-lg transition-all duration-300"
-              >
-                {/* Step number */}
-                <div className="absolute -top-3 -left-3 w-8 h-8 bg-slate-800 text-white rounded-full flex items-center justify-center text-sm font-bold shadow-lg">
-                  {step.id}
-                </div>
-
-                {/* Icon */}
-                <div className={cn(
-                  "w-14 h-14 rounded-2xl bg-gradient-to-br flex items-center justify-center mb-4 shadow-lg group-hover:scale-110 transition-transform",
-                  step.color
-                )}>
-                  <step.icon className="w-7 h-7 text-white" />
-                </div>
-
-                <h3 className="font-semibold text-slate-800 mb-1 group-hover:text-violet-700 transition-colors">
-                  {step.title}
-                </h3>
-                <p className="text-sm text-slate-500 mb-4">
-                  {step.description}
-                </p>
-
-                <div className="flex items-center text-sm font-medium text-violet-600 group-hover:text-violet-700">
-                  Börja nu
-                  <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
-                </div>
-              </Link>
-            ))}
-          </div>
+        <div className="flex-1 min-w-0">
+          <h2 className="text-lg font-bold text-slate-800 mb-1">{action.title}</h2>
+          <p className="text-sm text-slate-500 line-clamp-2">{action.description}</p>
         </div>
-      </AnimatedSection>
 
-      {/* Tips section */}
-      <AnimatedSection delay={300}>
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-2xl p-6 border border-amber-200">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Star className="w-6 h-6 text-amber-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-amber-900 mb-1">Visste du?</h3>
-              <p className="text-sm text-amber-800">
-                Arbetssökande med ett uppdaterat CV får i snitt 40% fler svar från arbetsgivare.
-                Börja med att skapa ditt CV så hjälper vi dig resten av vägen!
-              </p>
-            </div>
-          </div>
+        <div className={cn(
+          "flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all",
+          "group-hover:gap-3",
+          action.color === 'violet' && "bg-violet-600 text-white",
+          action.color === 'blue' && "bg-blue-600 text-white",
+          action.color === 'rose' && "bg-rose-600 text-white",
+          action.color === 'teal' && "bg-teal-600 text-white",
+        )}>
+          {action.buttonText}
+          <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
         </div>
-      </AnimatedSection>
-    </div>
+      </div>
+    </Link>
   )
 }
 
-// Improved Hero section
-function HeroSection({
-  userName,
-  streakDays,
-  questsCompleted,
-  questsTotal,
-  cvProgress,
-  nextAction
+// Compact Widget Selector
+function WidgetSelector({
+  activeWidgets,
+  onToggle,
+  onClose
 }: {
-  userName?: string
-  streakDays: number
-  questsCompleted: number
-  questsTotal: number
-  cvProgress: number
-  nextAction: ReturnType<typeof getNextAction>
+  activeWidgets: WidgetConfig[]
+  onToggle: (id: WidgetId) => void
+  onClose: () => void
 }) {
-  const getGreeting = () => {
-    const hour = new Date().getHours()
-    if (hour < 10) return 'God morgon'
-    if (hour < 18) return 'Hej'
-    return 'God kväll'
-  }
+  const activeIds = activeWidgets.map(w => w.id)
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
-      {/* Decorative background */}
-      <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-
-      <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        {/* Left: Greeting & Status */}
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold mb-1">
-            {getGreeting()}{userName ? `, ${userName}` : ''}! 👋
-          </h1>
-
-          {/* Status row */}
-          <div className="flex flex-wrap items-center gap-3 text-sm">
-            {questsTotal > 0 && (
-              <span className="flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full">
-                <Target className="w-4 h-4" />
-                {questsCompleted}/{questsTotal} quests
-              </span>
-            )}
-            {streakDays > 0 && (
-              <span className="flex items-center gap-1.5 px-3 py-1 bg-amber-500/30 backdrop-blur-sm rounded-full text-amber-100">
-                <Flame className="w-4 h-4 text-amber-300" />
-                {streakDays} dagar i rad
-              </span>
-            )}
-            {cvProgress > 0 && cvProgress < 100 && (
-              <span className="flex items-center gap-1.5 px-3 py-1 bg-white/15 backdrop-blur-sm rounded-full">
-                <FileText className="w-4 h-4" />
-                CV {cvProgress}%
-              </span>
-            )}
-          </div>
-        </div>
-
-        {/* Right: Next action CTA */}
-        {nextAction && (
-          <Link
-            to={nextAction.link}
-            className="flex items-center gap-3 px-4 py-3 bg-white/20 hover:bg-white/30 backdrop-blur-sm rounded-xl transition-all group"
-          >
-            <div className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center",
-              nextAction.color === 'violet' && "bg-violet-400/30",
-              nextAction.color === 'blue' && "bg-blue-400/30",
-              nextAction.color === 'amber' && "bg-amber-400/30",
-              nextAction.color === 'rose' && "bg-rose-400/30",
-            )}>
-              <nextAction.icon className="w-5 h-5" />
-            </div>
-            <div className="text-left">
-              <p className="font-semibold text-sm">{nextAction.title}</p>
-              <p className="text-xs text-white/70">{nextAction.description}</p>
-            </div>
-            <ChevronRight className="w-5 h-5 text-white/60 group-hover:translate-x-0.5 transition-transform" />
-          </Link>
-        )}
+    <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-white rounded-xl shadow-xl border border-slate-200 p-3">
+      <div className="flex items-center justify-between mb-2">
+        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Widgets</span>
+        <button onClick={onClose} className="p-1 hover:bg-slate-100 rounded-lg">
+          <X size={14} className="text-slate-400" />
+        </button>
+      </div>
+      <div className="grid grid-cols-3 gap-1.5">
+        {Object.entries(WIDGET_INFO).map(([id, info]) => {
+          const isActive = activeIds.includes(id as WidgetId)
+          const Icon = info.icon
+          return (
+            <button
+              key={id}
+              onClick={() => onToggle(id as WidgetId)}
+              className={cn(
+                "flex flex-col items-center gap-1 p-2 rounded-lg text-xs font-medium transition-all",
+                isActive
+                  ? "bg-violet-100 text-violet-700 ring-1 ring-violet-200"
+                  : "hover:bg-slate-50 text-slate-600"
+              )}
+            >
+              <Icon size={16} />
+              <span className="truncate w-full text-center">{info.label}</span>
+            </button>
+          )
+        })}
       </div>
     </div>
   )
 }
 
-// Widget wrapper with improved styling
-function WidgetWrapper({ children, onRemove, size = 'normal' }: { children: React.ReactNode, onRemove?: () => void, size?: 'normal' | 'large' }) {
+// Draggable Widget Wrapper
+function DraggableWidget({
+  config,
+  children,
+  onRemove,
+  onResize,
+  onDragStart,
+  onDragOver,
+  onDrop,
+  isDragging,
+  isEditing
+}: {
+  config: WidgetConfig
+  children: React.ReactNode
+  onRemove: () => void
+  onResize: (size: WidgetSize) => void
+  onDragStart: () => void
+  onDragOver: (e: React.DragEvent) => void
+  onDrop: () => void
+  isDragging: boolean
+  isEditing: boolean
+}) {
+  const sizes: WidgetSize[] = ['mini', 'medium', 'large']
+  const currentIndex = sizes.indexOf(config.size)
+
   return (
-    <div className={cn(
-      "relative group",
-      size === 'large' && "sm:col-span-2"
-    )}>
-      {onRemove && (
-        <button
-          onClick={onRemove}
-          className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-200"
-          title="Ta bort widget"
-          aria-label="Ta bort widget"
-        >
-          <span aria-hidden="true">×</span>
-        </button>
+    <div
+      draggable={isEditing}
+      onDragStart={onDragStart}
+      onDragOver={onDragOver}
+      onDrop={onDrop}
+      className={cn(
+        "relative transition-all duration-200",
+        config.size === 'mini' && "col-span-1",
+        config.size === 'medium' && "col-span-1 sm:col-span-2",
+        config.size === 'large' && "col-span-1 sm:col-span-2 lg:col-span-3",
+        isDragging && "opacity-50 scale-95",
+        isEditing && "cursor-grab active:cursor-grabbing"
       )}
-      {children}
+    >
+      {isEditing && (
+        <div className="absolute -top-1 -left-1 -right-1 -bottom-1 border-2 border-dashed border-violet-300 rounded-2xl pointer-events-none z-0" />
+      )}
+
+      {isEditing && (
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 bg-white rounded-full shadow-md border border-slate-200 px-2 py-1">
+          <button
+            onClick={() => onResize(sizes[Math.max(0, currentIndex - 1)])}
+            disabled={currentIndex === 0}
+            className="p-0.5 hover:bg-slate-100 rounded disabled:opacity-30"
+            title="Mindre"
+          >
+            <Minimize2 size={12} className="text-slate-500" />
+          </button>
+          <span className="text-[10px] font-medium text-slate-400 px-1">{config.size}</span>
+          <button
+            onClick={() => onResize(sizes[Math.min(2, currentIndex + 1)])}
+            disabled={currentIndex === 2}
+            className="p-0.5 hover:bg-slate-100 rounded disabled:opacity-30"
+            title="Större"
+          >
+            <Maximize2 size={12} className="text-slate-500" />
+          </button>
+        </div>
+      )}
+
+      {isEditing && (
+        <>
+          <button
+            onClick={onRemove}
+            className="absolute -top-2 -right-2 z-20 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-rose-600 transition-colors"
+            title="Ta bort"
+          >
+            <X size={12} />
+          </button>
+          <div className="absolute top-1/2 -left-3 -translate-y-1/2 z-20 p-1 bg-white rounded-lg shadow-md border border-slate-200 cursor-grab">
+            <GripVertical size={14} className="text-slate-400" />
+          </div>
+        </>
+      )}
+
+      <div className="relative z-10">
+        {children}
+      </div>
+    </div>
+  )
+}
+
+// Onboarding for new users
+function NewUserOnboarding({ userName }: { userName?: string }) {
+  const steps = [
+    { id: 1, title: 'Skapa ditt CV', description: 'Bygg ett professionellt CV', icon: FileText, link: '/cv', color: 'from-violet-500 to-purple-600' },
+    { id: 2, title: 'Hitta jobb', description: 'Sök bland lediga tjänster', icon: Briefcase, link: '/job-search', color: 'from-blue-500 to-cyan-600' },
+    { id: 3, title: 'Lär dig mer', description: 'Tips för jobbsökningen', icon: BookOpen, link: '/knowledge-base', color: 'from-amber-500 to-orange-600' },
+  ]
+
+  return (
+    <div className="space-y-6">
+      <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-2xl p-6 text-white">
+        <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-2">
+            <Sparkles className="w-4 h-4 text-amber-300" />
+            <span className="text-xs font-medium text-white/70">Välkommen till Jobin</span>
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Hej{userName ? `, ${userName}` : ''}! 👋</h1>
+          <p className="text-white/80 text-sm">Kom igång med tre enkla steg.</p>
+        </div>
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-3">
+        {steps.map((step) => (
+          <Link
+            key={step.id}
+            to={step.link}
+            className="group relative bg-white rounded-xl p-4 border border-slate-200 hover:border-violet-300 hover:shadow-md transition-all"
+          >
+            <div className="absolute -top-2 -left-2 w-6 h-6 bg-slate-800 text-white rounded-full flex items-center justify-center text-xs font-bold">
+              {step.id}
+            </div>
+            <div className={cn("w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center mb-3", step.color)}>
+              <step.icon className="w-5 h-5 text-white" />
+            </div>
+            <h3 className="font-semibold text-slate-800 text-sm mb-0.5">{step.title}</h3>
+            <p className="text-xs text-slate-500">{step.description}</p>
+          </Link>
+        ))}
+      </div>
     </div>
   )
 }
@@ -403,40 +374,45 @@ function WidgetWrapper({ children, onRemove, size = 'normal' }: { children: Reac
 export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading } = useDashboardData()
-  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(DEFAULT_WIDGETS)
-  const [showWidgetMenu, setShowWidgetMenu] = useState(false)
+  const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS)
+  const [showSelector, setShowSelector] = useState(false)
+  const [isEditing, setIsEditing] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [prefsLoaded, setPrefsLoaded] = useState(false)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const selectorRef = useRef<HTMLDivElement>(null)
 
-  // Check if new user
-  const showOnboarding = isNewUser(data)
+  const isNewUser = !data?.cv?.hasCV && (data?.cv?.progress || 0) < 10 && (data?.jobs?.savedCount || 0) === 0
   const nextAction = getNextAction(data)
 
-  // Load widget preferences from Supabase
+  // Close selector on outside click
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (selectorRef.current && !selectorRef.current.contains(e.target as Node)) {
+        setShowSelector(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  // Load preferences
   useEffect(() => {
     if (!user?.id || prefsLoaded) return
 
-    const loadPreferences = async () => {
+    const load = async () => {
       try {
-        const { data: prefs, error } = await supabase
+        const { data: prefs } = await supabase
           .from('user_preferences')
-          .select('dashboard_widgets')
+          .select('dashboard_widgets, dashboard_widget_config')
           .eq('user_id', user.id)
           .maybeSingle()
 
-        if (error) {
-          console.warn('Could not load preferences:', error.message)
-          setPrefsLoaded(true)
-          return
-        }
-
-        if (prefs?.dashboard_widgets && Array.isArray(prefs.dashboard_widgets)) {
-          const validWidgets = prefs.dashboard_widgets.filter(
-            (w: string): w is WidgetId => w in WIDGET_COMPONENTS
-          )
-          if (validWidgets.length > 0) {
-            setActiveWidgets(validWidgets)
-          }
+        if (prefs?.dashboard_widget_config) {
+          setWidgets(prefs.dashboard_widget_config)
+        } else if (prefs?.dashboard_widgets) {
+          // Migrate old format
+          setWidgets(prefs.dashboard_widgets.map((id: string) => ({ id, size: 'medium' as WidgetSize })))
         }
       } catch (err) {
         console.warn('Error loading preferences:', err)
@@ -444,16 +420,13 @@ export default function OverviewTab() {
         setPrefsLoaded(true)
       }
     }
-
-    loadPreferences()
+    load()
   }, [user?.id, prefsLoaded])
 
-  // Save widget preferences to Supabase
-  const savePreferences = useCallback(async (widgets: WidgetId[]) => {
+  // Save preferences
+  const savePreferences = useCallback(async (newWidgets: WidgetConfig[]) => {
     if (!user?.id) return
-
     setIsSaving(true)
-
     try {
       const { data: existing } = await supabase
         .from('user_preferences')
@@ -461,270 +434,256 @@ export default function OverviewTab() {
         .eq('user_id', user.id)
         .maybeSingle()
 
+      const payload = {
+        dashboard_widget_config: newWidgets,
+        dashboard_widgets: newWidgets.map(w => w.id),
+        updated_at: new Date().toISOString()
+      }
+
       if (existing) {
-        await supabase
-          .from('user_preferences')
-          .update({
-            dashboard_widgets: widgets,
-            updated_at: new Date().toISOString()
-          })
-          .eq('user_id', user.id)
+        await supabase.from('user_preferences').update(payload).eq('user_id', user.id)
       } else {
-        await supabase
-          .from('user_preferences')
-          .insert({
-            user_id: user.id,
-            dashboard_widgets: widgets
-          })
+        await supabase.from('user_preferences').insert({ user_id: user.id, ...payload })
       }
     } catch (err) {
-      console.error('Error saving preferences:', err)
+      console.error('Error saving:', err)
     } finally {
       setIsSaving(false)
     }
   }, [user?.id])
 
-  const addWidget = (widgetId: WidgetId) => {
-    if (!activeWidgets.includes(widgetId)) {
-      const newWidgets = [...activeWidgets, widgetId]
-      setActiveWidgets(newWidgets)
-      savePreferences(newWidgets)
-    }
-  }
-
-  const removeWidget = (widgetId: WidgetId) => {
-    const newWidgets = activeWidgets.filter(id => id !== widgetId)
-    setActiveWidgets(newWidgets)
+  const toggleWidget = (id: WidgetId) => {
+    const exists = widgets.find(w => w.id === id)
+    const newWidgets = exists
+      ? widgets.filter(w => w.id !== id)
+      : [...widgets, { id, size: 'medium' as WidgetSize }]
+    setWidgets(newWidgets)
     savePreferences(newWidgets)
   }
 
-  const renderWidget = (widgetId: WidgetId, size: 'small' | 'medium' = 'small') => {
-    const WidgetComponent = WIDGET_COMPONENTS[widgetId]
+  const removeWidget = (index: number) => {
+    const newWidgets = widgets.filter((_, i) => i !== index)
+    setWidgets(newWidgets)
+    savePreferences(newWidgets)
+  }
 
-    const getWidgetProps = () => {
-      switch (widgetId) {
-        case 'cv': return { hasCV: data?.cv?.hasCV, progress: data?.cv?.progress }
-        case 'jobSearch': return { savedCount: data?.jobs?.savedCount }
-        case 'wellness': return { completedActivities: data?.wellness?.completedActivities, streakDays: data?.wellness?.streakDays, moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null }
-        case 'quests': return { completedQuests: data?.quests?.completed || 0, totalQuests: data?.quests?.total || 3, streakDays: data?.activity?.streakDays || 0 }
-        case 'exercises': return {
-          completedCount: data?.exercises?.completedExercises || 0,
-          totalExercises: data?.exercises?.totalExercises || 38,
-          completionRate: data?.exercises?.completionRate || 0
-        }
-        case 'knowledge': return {
-          readCount: data?.knowledge?.readCount || 0,
-          savedCount: data?.knowledge?.savedCount || 0,
-          totalArticles: data?.knowledge?.totalArticles || 0
-        }
-        case 'interests': return {
-          hasResult: data?.interest?.hasResult,
-          topRecommendations: data?.interest?.topRecommendations || [],
-          answeredQuestions: data?.interest?.answeredQuestions || 0,
-          totalQuestions: data?.interest?.totalQuestions || 36
-        }
-        case 'calendar': return {
-          upcomingEvents: data?.calendar?.upcomingEvents || 0,
-          nextEvent: data?.calendar?.nextEvent || null,
-          eventsThisWeek: data?.calendar?.eventsThisWeek || 0
-        }
-        case 'interview': return {
-          completedSessions: data?.interview?.completedSessions || 0,
-          averageScore: data?.interview?.averageScore || 0,
-          lastPractice: data?.interview?.lastPractice || null
-        }
-        case 'linkedin': return {
-          profileScore: data?.linkedin?.profileScore || 0,
-          optimizedSections: data?.linkedin?.optimizedSections || 0,
-          hasAnalysis: data?.linkedin?.hasAnalysis || false
-        }
-        case 'skills': return {
-          analyzedSkills: data?.skills?.analyzedSkills || 0,
-          gapCount: data?.skills?.gapCount || 0,
-          matchScore: data?.skills?.matchScore || 0,
-          hasAnalysis: data?.skills?.hasAnalysis || false
-        }
-        default: return {}
+  const resizeWidget = (index: number, size: WidgetSize) => {
+    const newWidgets = [...widgets]
+    newWidgets[index] = { ...newWidgets[index], size }
+    setWidgets(newWidgets)
+    savePreferences(newWidgets)
+  }
+
+  const handleDragStart = (index: number) => {
+    setDraggedIndex(index)
+  }
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault()
+    if (draggedIndex === null || draggedIndex === index) return
+
+    const newWidgets = [...widgets]
+    const [dragged] = newWidgets.splice(draggedIndex, 1)
+    newWidgets.splice(index, 0, dragged)
+    setWidgets(newWidgets)
+    setDraggedIndex(index)
+  }
+
+  const handleDrop = () => {
+    setDraggedIndex(null)
+    savePreferences(widgets)
+  }
+
+  const getWidgetProps = (id: WidgetId) => {
+    switch (id) {
+      case 'cv': return { hasCV: data?.cv?.hasCV, progress: data?.cv?.progress || 0 }
+      case 'jobSearch': return { savedCount: data?.jobs?.savedCount || 0, newMatches: data?.jobs?.newMatches || 0 }
+      case 'wellness': return {
+        completedActivities: data?.wellness?.completedActivities || 0,
+        streakDays: data?.wellness?.streakDays || 0,
+        moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null
       }
+      case 'quests': return {
+        completedQuests: data?.quests?.completed || 0,
+        totalQuests: data?.quests?.total || 3,
+        streakDays: data?.activity?.streakDays || 0
+      }
+      case 'exercises': return {
+        completedCount: data?.exercises?.completedExercises || 0,
+        totalExercises: data?.exercises?.totalExercises || 38,
+        completionRate: data?.exercises?.completionRate || 0,
+        streakDays: data?.exercises?.streakDays || 0
+      }
+      case 'knowledge': return {
+        readCount: data?.knowledge?.readCount || 0,
+        savedCount: data?.knowledge?.savedCount || 0,
+        totalArticles: data?.knowledge?.totalArticles || 50
+      }
+      case 'interests': return {
+        hasResult: data?.interest?.hasResult || false,
+        topRecommendations: data?.interest?.topRecommendations || [],
+        answeredQuestions: data?.interest?.answeredQuestions || 0,
+        totalQuestions: data?.interest?.totalQuestions || 36
+      }
+      case 'calendar': return {
+        upcomingEvents: data?.calendar?.upcomingEvents || 0,
+        nextEvent: data?.calendar?.nextEvent || null,
+        eventsThisWeek: data?.calendar?.eventsThisWeek || 0
+      }
+      case 'interview': return {
+        completedSessions: data?.interview?.completedSessions || 0,
+        averageScore: data?.interview?.averageScore || 0
+      }
+      case 'linkedin': return {
+        profileScore: data?.linkedin?.profileScore || 0,
+        optimizedSections: data?.linkedin?.optimizedSections || 0,
+        hasAnalysis: data?.linkedin?.hasAnalysis || false
+      }
+      case 'skills': return {
+        analyzedSkills: data?.skills?.analyzedSkills || 0,
+        gapCount: data?.skills?.gapCount || 0,
+        matchScore: data?.skills?.matchScore || 0,
+        hasAnalysis: data?.skills?.hasAnalysis || false
+      }
+      default: return {}
     }
+  }
+
+  const renderWidget = (config: WidgetConfig) => {
+    const Component = WIDGET_COMPONENTS[config.id]
+    const props = getWidgetProps(config.id)
 
     return (
-      <ErrorBoundary fallback={<div className="bg-white rounded-2xl border-2 border-slate-200 p-5"><p className="text-sm text-slate-500">Kunde inte ladda widget</p></div>}>
+      <ErrorBoundary fallback={<div className="bg-white rounded-xl border border-slate-200 p-4 text-sm text-slate-500">Fel vid laddning</div>}>
         <Suspense fallback={
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
-            <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
-            <div className="h-8 bg-slate-200 rounded w-1/2"></div>
+          <div className={cn(
+            "bg-white rounded-xl border border-slate-200 animate-pulse",
+            config.size === 'mini' && "h-20",
+            config.size === 'medium' && "h-32",
+            config.size === 'large' && "h-48"
+          )}>
+            <div className="p-4">
+              <div className="h-3 bg-slate-200 rounded w-1/3 mb-2" />
+              <div className="h-5 bg-slate-200 rounded w-1/2" />
+            </div>
           </div>
         }>
-          <WidgetComponent {...getWidgetProps()} size={size} />
+          <Component {...props} size={config.size} />
         </Suspense>
       </ErrorBoundary>
     )
   }
 
-  // Loading state
+  // Loading
   if (loading || !prefsLoaded) {
     return (
-      <div className="space-y-6">
-        <div className="animate-pulse bg-gradient-to-r from-slate-200 to-slate-300 rounded-2xl h-32" />
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="space-y-4">
+        <div className="h-24 bg-slate-100 rounded-2xl animate-pulse" />
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
-              <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
-              <div className="h-8 bg-slate-200 rounded w-1/2"></div>
-            </div>
+            <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse col-span-2" />
           ))}
         </div>
       </div>
     )
   }
 
-  // New user onboarding view
-  if (showOnboarding) {
+  // New user
+  if (isNewUser) {
     return <NewUserOnboarding userName={user?.first_name} />
   }
 
-  // Regular dashboard view
   return (
-    <div className="space-y-6">
-      {/* Improved Hero Section */}
-      <AnimatedSection delay={100}>
-        <HeroSection
-          userName={user?.first_name}
-          streakDays={data?.activity?.streakDays || 0}
-          questsCompleted={data?.quests?.completed || 0}
-          questsTotal={data?.quests?.total || 3}
-          cvProgress={data?.cv?.progress || 0}
-          nextAction={nextAction}
-        />
-      </AnimatedSection>
+    <div className="space-y-4">
+      {/* Next Step Card */}
+      {nextAction && <NextStepCard action={nextAction} />}
 
-      {/* Primary Widgets - Larger cards for CV and Quests */}
-      <AnimatedSection delay={150}>
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-800 flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-violet-500" />
-              Din progress
-            </h2>
+      {/* Quick Stats Bar */}
+      <div className="flex items-center gap-3 text-sm">
+        {(data?.activity?.streakDays || 0) > 0 && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-700 rounded-full border border-orange-200">
+            <Flame size={14} className="text-orange-500" />
+            <span className="font-medium">{data?.activity?.streakDays} dagar i rad</span>
           </div>
+        )}
+        {(data?.quests?.completed || 0) > 0 && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200">
+            <Target size={14} className="text-amber-500" />
+            <span className="font-medium">{data?.quests?.completed}/{data?.quests?.total || 3} quests</span>
+          </div>
+        )}
+        {(data?.cv?.progress || 0) >= 100 && (
+          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
+            <CheckCircle2 size={14} className="text-emerald-500" />
+            <span className="font-medium">CV klart</span>
+          </div>
+        )}
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {/* CV Widget - Always show prominently */}
-            {activeWidgets.includes('cv') && (
-              <WidgetWrapper onRemove={() => removeWidget('cv')}>
-                {renderWidget('cv', 'medium')}
-              </WidgetWrapper>
+      {/* Toolbar */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          {isSaving && <span className="text-xs text-slate-400">Sparar...</span>}
+        </div>
+        <div className="flex items-center gap-2 relative" ref={selectorRef}>
+          <button
+            onClick={() => setIsEditing(!isEditing)}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+              isEditing ? "bg-violet-100 text-violet-700" : "text-slate-500 hover:bg-slate-100"
             )}
-
-            {/* Quests Widget - Always show prominently */}
-            {activeWidgets.includes('quests') && (
-              <WidgetWrapper onRemove={() => removeWidget('quests')}>
-                {renderWidget('quests', 'medium')}
-              </WidgetWrapper>
-            )}
-          </div>
-        </section>
-      </AnimatedSection>
-
-      {/* Secondary Widgets Grid */}
-      <AnimatedSection delay={200}>
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-800">Dina verktyg</h2>
-            <div className="flex items-center gap-2">
-              {isSaving && (
-                <span className="text-xs text-slate-400">Sparar...</span>
-              )}
-              <button
-                onClick={() => setShowWidgetMenu(!showWidgetMenu)}
-                className={cn(
-                  "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all",
-                  showWidgetMenu
-                    ? "bg-violet-100 text-violet-700"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                )}
-                aria-label={showWidgetMenu ? "Stäng anpassningsmeny" : "Öppna anpassningsmeny"}
-                aria-expanded={showWidgetMenu}
-              >
-                <Settings size={14} />
-                <span>Anpassa</span>
-                <ChevronDown size={14} className={cn("transition-transform", showWidgetMenu && "rotate-180")} />
-              </button>
-            </div>
-          </div>
-
-          {/* Widget selector menu */}
-          {showWidgetMenu && (
-            <div className="mb-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
-              <p className="text-sm text-slate-600 mb-3">Välj vilka verktyg du vill se:</p>
-              <div className="flex flex-wrap gap-2">
-                {ALL_WIDGETS.map(widget => {
-                  const isActive = activeWidgets.includes(widget.id as WidgetId)
-                  const Icon = widget.icon
-                  return (
-                    <button
-                      key={widget.id}
-                      onClick={() => isActive ? removeWidget(widget.id as WidgetId) : addWidget(widget.id as WidgetId)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all",
-                        isActive
-                          ? "bg-violet-100 text-violet-700 border border-violet-200"
-                          : "bg-white text-slate-600 border border-slate-200 hover:border-violet-200"
-                      )}
-                      aria-pressed={isActive}
-                    >
-                      <Icon size={14} />
-                      {widget.label}
-                      {isActive && <CheckCircle2 size={14} className="text-violet-600" />}
-                    </button>
-                  )
-                })}
-              </div>
-            </div>
+          >
+            <Settings size={14} />
+            {isEditing ? 'Klar' : 'Redigera'}
+          </button>
+          <button
+            onClick={() => setShowSelector(!showSelector)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-100 transition-all"
+          >
+            <Plus size={14} />
+            Lägg till
+          </button>
+          {showSelector && (
+            <WidgetSelector
+              activeWidgets={widgets}
+              onToggle={toggleWidget}
+              onClose={() => setShowSelector(false)}
+            />
           )}
+        </div>
+      </div>
 
-          {/* Widget grid - excluding cv and quests which are shown above */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {activeWidgets
-              .filter(id => id !== 'cv' && id !== 'quests')
-              .map(widgetId => (
-                <WidgetWrapper key={widgetId} onRemove={() => removeWidget(widgetId)}>
-                  {renderWidget(widgetId)}
-                </WidgetWrapper>
-              ))}
+      {/* Widget Grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+        {widgets.map((config, index) => (
+          <DraggableWidget
+            key={`${config.id}-${index}`}
+            config={config}
+            onRemove={() => removeWidget(index)}
+            onResize={(size) => resizeWidget(index, size)}
+            onDragStart={() => handleDragStart(index)}
+            onDragOver={(e) => handleDragOver(e, index)}
+            onDrop={handleDrop}
+            isDragging={draggedIndex === index}
+            isEditing={isEditing}
+          >
+            {renderWidget(config)}
+          </DraggableWidget>
+        ))}
 
-            {/* Add widget button */}
+        {widgets.length === 0 && (
+          <div className="col-span-full text-center py-12 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+            <Sparkles className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+            <p className="text-sm text-slate-500 mb-3">Inga widgets ännu</p>
             <button
-              onClick={() => setShowWidgetMenu(true)}
-              className="flex flex-col items-center justify-center gap-2 p-6 rounded-2xl border-2 border-dashed border-slate-300 text-slate-400 hover:border-violet-300 hover:text-violet-500 hover:bg-violet-50/50 transition-all min-h-[140px]"
-              aria-label="Lägg till nytt verktyg"
+              onClick={() => setShowSelector(true)}
+              className="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
             >
-              <Plus size={28} />
-              <span className="text-sm font-medium">Lägg till</span>
+              Lägg till widgets
             </button>
           </div>
-        </section>
-      </AnimatedSection>
-
-      {/* Empty state */}
-      {activeWidgets.length === 0 && (
-        <AnimatedSection delay={250}>
-          <div className="text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
-            <div className="w-16 h-16 bg-violet-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Sparkles className="w-8 h-8 text-violet-600" />
-            </div>
-            <h3 className="text-lg font-semibold text-slate-700 mb-2">Inga verktyg valda</h3>
-            <p className="text-sm text-slate-500 mb-4">Klicka på "Anpassa" för att välja verktyg</p>
-            <button
-              onClick={() => setShowWidgetMenu(true)}
-              className="px-6 py-2.5 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-700 transition-colors"
-            >
-              Välj verktyg
-            </button>
-          </div>
-        </AnimatedSection>
-      )}
+        )}
+      </div>
     </div>
   )
 }
