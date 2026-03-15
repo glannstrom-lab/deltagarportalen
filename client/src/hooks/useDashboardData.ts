@@ -384,8 +384,8 @@ export function useDashboardData(): UseDashboardDataReturn {
       setData(dashboardData)
     } catch (err) {
       console.error('Fel vid hämtning av dashboard-data:', err)
-      setError('Kunde inte ladda dashboard-data')
       // Use default data as fallback so UI still works
+      // Don't set error since fallback data allows UI to function
       setData(getDefaultDashboardData())
     } finally {
       setLoading(false)
