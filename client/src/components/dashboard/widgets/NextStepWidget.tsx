@@ -122,7 +122,7 @@ export function NextStepWidget() {
       title: 'Skicka en ansökan',
       description: `Du har ${data.jobs?.savedCount ?? 0} sparade jobb. Sök ett nu!`,
       action: 'Ansök nu',
-      link: '/job-tracker',
+      link: '/job-search',
       icon: <Target size={24} />,
       timeEstimate: '20 min',
       energyLevel: 'high',
@@ -272,7 +272,7 @@ export function NextStepWidgetCompact() {
     color = 'bg-blue-100 text-blue-700'
   } else {
     title = 'Sök jobb'
-    link = '/job-tracker'
+    link = '/job-search'
     color = 'bg-amber-100 text-amber-700'
   }
 

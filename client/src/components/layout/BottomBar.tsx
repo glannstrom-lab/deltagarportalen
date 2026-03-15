@@ -165,7 +165,7 @@ export function BottomBar() {
       return [
         {
           label: 'Sparade jobb',
-          path: '/job-tracker',
+          path: '/job-search',
           icon: Briefcase,
           description: 'Se dina sparade',
           priority: 'high'
@@ -444,7 +444,7 @@ export function BottomBar() {
 
               {/* Ansökningar */}
               <Link 
-                to="/job-tracker" 
+                to="/job-search" 
                 className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors"
               >
                 <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">

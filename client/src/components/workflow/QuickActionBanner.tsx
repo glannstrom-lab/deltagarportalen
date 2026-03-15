@@ -73,7 +73,7 @@ export function QuickActionBanner({
       },
       secondaryAction: {
         label: 'Se sparade jobb',
-        to: '/job-tracker'
+        to: '/job-search'
       },
       bgColor: 'bg-violet-50',
       borderColor: 'border-violet-200'

@@ -33,7 +33,7 @@ const quickActions: QuickAction[] = [
     icon: <Zap size={20} />,
     color: 'violet',
     suggestions: [
-      { label: 'Skriv en ansökan', link: '/job-tracker' },
+      { label: 'Skriv en ansökan', link: '/job-search' },
       { label: 'Uppdatera CV-sektion', link: '/cv' },
       { label: 'Gör en övning', link: '/exercises' },
       { label: 'Läs en artikel', link: '/knowledge-base' }
@@ -46,7 +46,7 @@ const quickActions: QuickAction[] = [
     icon: <Target size={20} />,
     color: 'blue',
     suggestions: [
-      { label: 'Färdigställ ansökan', link: '/job-tracker' },
+      { label: 'Färdigställ ansökan', link: '/job-search' },
       { label: 'Gör intresseguiden', link: '/interest-guide' },
       { label: 'Skriv personligt brev', link: '/cover-letter' },
       { label: 'Planera veckan', link: '/diary' }

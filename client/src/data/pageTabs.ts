@@ -23,7 +23,6 @@ import {
 
 // Import new tab configurations
 import { wellnessTabs } from './wellnessTabs'
-import { jobTrackerTabs } from './jobTrackerTabs'
 import { dashboardTabs } from './dashboardTabs'
 import { careerTabs } from './careerTabs'
 import { knowledgeTabs } from './knowledgeTabs'
@@ -83,7 +82,7 @@ export function getTabsForPath(path: string): Tab[] {
   if (path.startsWith('/cv')) return cvBuilderTabs
   if (path.startsWith('/cover-letter')) return coverLetterTabs
   if (path.startsWith('/job-search')) return jobSearchTabs
-  if (path.startsWith('/job-tracker')) return jobTrackerTabs
+  if (path.startsWith('/job-tracker')) return jobSearchTabs // Redirect old path to job search tabs
   if (path.startsWith('/career')) return careerTabs
   if (path.startsWith('/skills-gap')) return careerTabs
   if (path.startsWith('/career-plan')) return careerTabs

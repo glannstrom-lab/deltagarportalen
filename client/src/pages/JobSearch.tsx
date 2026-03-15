@@ -1,18 +1,18 @@
 import { useState, useEffect, useCallback } from 'react';
-import { 
-  Search, MapPin, Briefcase, Calendar, X, Building2, 
+import {
+  Search, MapPin, Briefcase, Calendar, X, Building2,
   ExternalLink, Filter, ChevronDown, SlidersHorizontal,
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
-  Bookmark, CheckCircle2, Send
+  Bookmark, CheckCircle2, Send, Bell, ClipboardList
 } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
+import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs } from '@/hooks/useSavedJobs';
 
 import { PageLayout } from '@/components/layout/index';
-import { 
-  LoadingState, 
-  ErrorState, 
+import {
+  LoadingState,
+  ErrorState,
   EmptySearch,
   Button,
   IconButton,
@@ -23,6 +23,15 @@ import {
 } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { CreateApplicationModal } from '@/components/workflow';
+
+// Tabs configuration
+const jobSearchTabs = [
+  { id: 'search', label: 'Sök jobb', path: '/job-search', icon: Search },
+  { id: 'saved', label: 'Sparade', path: '/job-search/saved', icon: Bookmark },
+  { id: 'applications', label: 'Ansökningar', path: '/job-search/applications', icon: ClipboardList },
+  { id: 'alerts', label: 'Bevakningar', path: '/job-search/alerts', icon: Bell },
+  { id: 'matches', label: 'Matchningar', path: '/job-search/matches', icon: Sparkles },
+];
 
 interface SearchFilters {
   query: string;
@@ -64,22 +73,21 @@ const REGIONS = [
 
 const JOBS_PER_PAGE = 20;
 
-export default function JobSearch() {
+// Main Search Tab Component
+function SearchTab() {
   const [jobs, setJobs] = useState<PlatsbankenJob[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalJobs, setTotalJobs] = useState(0);
   const [filters, setFilters] = useState<SearchFilters>(defaultFilters);
   const [selectedJob, setSelectedJob] = useState<PlatsbankenJob | null>(null);
-  const [showMobileFilters, setShowMobileFilters] = useState(false);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(true);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [showPopularQueries, setShowPopularQueries] = useState(false);
 
   // Saved jobs hook
   const { savedJobs, saveJob, removeJob, isSaved, getStats } = useSavedJobs()
-  const [showSavedOnly, setShowSavedOnly] = useState(false)
 
   // Create Application Modal state
   const [applicationModalJob, setApplicationModalJob] = useState<PlatsbankenJob | null>(null)
@@ -126,7 +134,7 @@ export default function JobSearch() {
         region: filters.region,
         employmentType: filters.employmentType,
         publishedWithin: filters.publishedWithin,
-        limit: 100, // Hämta fler för pagination
+        limit: 100,
       });
 
       setJobs(result.hits);
@@ -161,164 +169,102 @@ export default function JobSearch() {
   ].filter(Boolean).length;
 
   return (
-    <PageLayout
-      title="Sök jobb"
-      description={!loading && totalJobs > 0 ? `${totalJobs} lediga jobb från Arbetsförmedlingen` : 'Hitta lediga jobb från Arbetsförmedlingen'}
-      showTabs={false}
-      className="max-w-7xl mx-auto"
-    >
+    <div className="space-y-4">
+      {/* Collapsible Search & Filter Section */}
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+        {/* Header - Always visible, clickable to toggle */}
+        <button
+          onClick={() => setIsSearchExpanded(!isSearchExpanded)}
+          className="w-full flex items-center justify-between p-4 hover:bg-slate-50 transition-colors"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center">
+              <Filter className="w-5 h-5 text-white" />
+            </div>
+            <div className="text-left">
+              <h3 className="font-semibold text-slate-900">Sök & Filtrera</h3>
+              <p className="text-sm text-slate-500">
+                {filters.query || activeFilterCount > 0
+                  ? `${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${activeFilterCount} filter aktiva` : ''}`
+                  : 'Klicka för att söka jobb'}
+              </p>
+            </div>
+          </div>
+          <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isSearchExpanded ? 'rotate-180' : ''}`} />
+        </button>
 
-      {/* Sökruta */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-4">
-        {/* Huvudsök */}
-        <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-          <input
-            type="text"
-            placeholder="Vad vill du jobba med?"
-            value={filters.query}
-            onChange={(e) => {
-              try {
-                setFilters({ ...filters, query: e.target.value });
-                setShowSuggestions(true);
-              } catch (err) {
-                console.error('Error in search input onChange:', err);
-              }
-            }}
-            onFocus={() => setShowSuggestions(true)}
-            className="w-full pl-12 pr-4 py-4 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-base"
-          />
-          
-          {/* Autocomplete */}
-          {showSuggestions && suggestions.length > 0 && (
-            <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg">
-              {suggestions.map((suggestion, idx) => (
+        {/* Expandable Content */}
+        {isSearchExpanded && (
+          <div className="px-4 pb-4 border-t border-slate-100 space-y-4">
+            {/* Search Input */}
+            <div className="pt-4 relative">
+              <Search className="absolute left-3 top-1/2 mt-2 -translate-y-1/2 text-slate-400" size={20} />
+              <input
+                type="text"
+                placeholder="Vad vill du jobba med?"
+                value={filters.query}
+                onChange={(e) => {
+                  setFilters({ ...filters, query: e.target.value });
+                  setShowSuggestions(true);
+                }}
+                onFocus={() => setShowSuggestions(true)}
+                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+              />
+
+              {/* Autocomplete */}
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg">
+                  {suggestions.map((suggestion, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        setFilters({ ...filters, query: suggestion });
+                        setShowSuggestions(false);
+                      }}
+                      className="w-full text-left px-4 py-3 hover:bg-violet-50 first:rounded-t-xl last:rounded-b-xl border-b border-slate-100 last:border-0"
+                    >
+                      <Search size={16} className="inline mr-2 text-slate-400" />
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Quick Search Tags */}
+            <div className="flex flex-wrap gap-2">
+              {POPULAR_QUERIES.slice(0, 5).map((q) => (
                 <button
-                  key={idx}
-                  onClick={() => {
-                    setFilters({ ...filters, query: suggestion });
-                    setShowSuggestions(false);
-                  }}
-                  className="w-full text-left px-4 py-3 hover:bg-violet-50 first:rounded-t-xl last:rounded-b-xl border-b border-slate-100 last:border-0"
+                  key={q.label}
+                  onClick={() => setFilters({ ...filters, query: q.query })}
+                  className="px-3 py-1.5 bg-slate-50 hover:bg-violet-50 border border-slate-200 hover:border-violet-200 rounded-lg text-sm text-slate-700 hover:text-violet-700 transition-colors"
                 >
-                  <Search size={16} className="inline mr-2 text-slate-400" />
-                  {suggestion}
+                  {q.icon} {q.label}
                 </button>
               ))}
             </div>
-          )}
-        </div>
 
-        {/* Filterknappar rad */}
-        <div className="flex items-center gap-3 flex-wrap">
-          {/* Mobile filterknapp */}
-          <button
-            onClick={() => setShowMobileFilters(true)}
-            className={cn(
-              "lg:hidden flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-colors min-h-[48px]",
-              showMobileFilters || hasActiveFilters
-                ? "bg-violet-500 text-white" 
-                : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            )}
-          >
-            <SlidersHorizontal size={18} />
-            Filter
-            {hasActiveFilters && (
-              <span className="ml-1 w-5 h-5 bg-white/20 rounded-full text-xs flex items-center justify-center">
-                {[filters.municipality, filters.region, filters.employmentType, filters.publishedWithin !== 'all' ? '1' : ''].filter(Boolean).length}
-              </span>
-            )}
-          </button>
-
-          {/* Desktop: Visa filter knapp */}
-          <button
-            onClick={() => setShowMobileFilters(!showMobileFilters)}
-            className={cn(
-              "hidden lg:flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors",
-              showMobileFilters ? "bg-violet-100 text-violet-700" : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-            )}
-          >
-            <Filter size={18} />
-            Filtrera
-            {hasActiveFilters && (
-              <span className="ml-1 w-2 h-2 bg-violet-500 rounded-full" />
-            )}
-          </button>
-
-          {/* Snabbsökningar dropdown på mobil */}
-          <div className="relative flex-1 min-w-[140px] lg:hidden">
-            <button
-              onClick={() => setShowPopularQueries(!showPopularQueries)}
-              className="w-full flex items-center justify-between px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-700 min-h-[48px]"
-            >
-              <span className="flex items-center gap-2">
-                <Sparkles size={16} className="text-amber-500" />
-                Snabbsökningar
-              </span>
-              <ChevronDown size={16} className={cn("transition-transform", showPopularQueries && "rotate-180")} />
-            </button>
-            
-            {showPopularQueries && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg">
-                {POPULAR_QUERIES.map((q) => (
-                  <button
-                    key={q.label}
-                    onClick={() => {
-                      setFilters({ ...filters, query: q.query });
-                      setShowPopularQueries(false);
-                    }}
-                    className="w-full text-left px-4 py-3 hover:bg-slate-50 first:rounded-t-xl last:rounded-b-xl border-b border-slate-100 last:border-0"
-                  >
-                    <span className="mr-2">{q.icon}</span>
-                    {q.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Desktop snabbsökningar */}
-          <div className="hidden lg:flex items-center gap-2 overflow-x-auto flex-1">
-            {POPULAR_QUERIES.slice(0, 4).map((q) => (
-              <button
-                key={q.label}
-                onClick={() => setFilters({ ...filters, query: q.query })}
-                className="px-3 py-1.5 bg-slate-50 hover:bg-violet-50 border border-slate-200 hover:border-violet-200 rounded-lg text-sm text-slate-700 hover:text-violet-700 transition-colors whitespace-nowrap"
-              >
-                {q.icon} {q.label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Desktop filterpanel */}
-        <div className="hidden lg:block">
-          {showMobileFilters && (
-            <div className="mt-4 pt-4 border-t border-slate-100 grid grid-cols-4 gap-4">
-              {/* Kommun */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  <MapPin size={14} className="inline mr-1" />
-                  Stad/Kommun
-                </label>
-                <input
-                  type="text"
-                  placeholder="t.ex. Stockholm..."
+            {/* Location Filters */}
+            <div>
+              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                Plats
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <select
                   value={filters.municipality}
                   onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
-                />
-              </div>
-
-              {/* Län */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Län
-                </label>
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                >
+                  <option value="">Alla kommuner</option>
+                  {SWEDISH_MUNICIPALITIES.map((m) => (
+                    <option key={m.concept_id} value={m.label}>{m.label}</option>
+                  ))}
+                </select>
                 <select
                   value={filters.region}
                   onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
                   <option value="">Alla län</option>
                   {REGIONS.map((r) => (
@@ -326,163 +272,88 @@ export default function JobSearch() {
                   ))}
                 </select>
               </div>
+            </div>
 
-              {/* Anställningstyp */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  <Briefcase size={14} className="inline mr-1" />
-                  Anställningsform
-                </label>
+            {/* Job Type Filters */}
+            <div>
+              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
+                <Briefcase className="w-3 h-3" />
+                Jobbtyp
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <select
                   value={filters.employmentType}
                   onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
                   <option value="">Alla typer</option>
                   <option value="Heltid">Heltid</option>
                   <option value="Deltid">Deltid</option>
                 </select>
-              </div>
-
-              {/* Publicerad */}
-              <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
-                  <Calendar size={14} className="inline mr-1" />
-                  Publicerad
-                </label>
                 <select
                   value={filters.publishedWithin}
                   onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
-                  <option value="all">När som helst</option>
+                  <option value="all">Publicerad: När som helst</option>
                   <option value="today">Idag</option>
                   <option value="week">Senaste veckan</option>
                   <option value="month">Senaste månaden</option>
                 </select>
               </div>
             </div>
-          )}
-        </div>
+
+            {/* Active Filters & Clear */}
+            {hasActiveFilters && (
+              <div className="flex items-center justify-between pt-3 border-t border-slate-100">
+                <div className="flex flex-wrap gap-2">
+                  {filters.municipality && (
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-violet-100 text-violet-700 rounded text-sm">
+                      📍 {filters.municipality}
+                      <button onClick={() => setFilters({ ...filters, municipality: '' })} className="ml-1 hover:text-violet-900">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.region && (
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-violet-100 text-violet-700 rounded text-sm">
+                      🗺️ {REGIONS.find(r => r.code === filters.region)?.name}
+                      <button onClick={() => setFilters({ ...filters, region: '' })} className="ml-1 hover:text-violet-900">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.employmentType && (
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 rounded text-sm">
+                      💼 {filters.employmentType}
+                      <button onClick={() => setFilters({ ...filters, employmentType: '' })} className="ml-1 hover:text-blue-900">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.publishedWithin !== 'all' && (
+                    <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-sm">
+                      📅 {filters.publishedWithin === 'today' ? 'Idag' : filters.publishedWithin === 'week' ? 'Senaste veckan' : 'Senaste månaden'}
+                      <button onClick={() => setFilters({ ...filters, publishedWithin: 'all' })} className="ml-1 hover:text-green-900">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                </div>
+                <button
+                  onClick={() => setFilters(defaultFilters)}
+                  className="text-sm text-red-500 hover:text-red-700 font-medium"
+                >
+                  Rensa alla
+                </button>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Aktiva filter tags */}
-      {hasActiveFilters && (
-        <div className="mb-4 flex flex-wrap items-center gap-2">
-          <span className="text-sm text-slate-500">Aktiva filter:</span>
-          {filters.municipality && (
-            <span className="px-3 py-1.5 bg-violet-100 text-violet-700 text-sm rounded-full flex items-center gap-2">
-              📍 {filters.municipality}
-              <button onClick={() => setFilters({ ...filters, municipality: '' })} className="hover:bg-violet-200 rounded-full p-0.5">
-                <X size={14} />
-              </button>
-            </span>
-          )}
-          {filters.region && (
-            <span className="px-3 py-1.5 bg-violet-100 text-violet-700 text-sm rounded-full flex items-center gap-2">
-              🗺️ {REGIONS.find(r => r.code === filters.region)?.name}
-              <button onClick={() => setFilters({ ...filters, region: '' })} className="hover:bg-violet-200 rounded-full p-0.5">
-                <X size={14} />
-              </button>
-            </span>
-          )}
-          {filters.employmentType && (
-            <span className="px-3 py-1.5 bg-blue-100 text-blue-700 text-sm rounded-full flex items-center gap-2">
-              💼 {filters.employmentType}
-              <button onClick={() => setFilters({ ...filters, employmentType: '' })} className="hover:bg-blue-200 rounded-full p-0.5">
-                <X size={14} />
-              </button>
-            </span>
-          )}
-          {filters.publishedWithin !== 'all' && (
-            <span className="px-3 py-1.5 bg-green-100 text-green-700 text-sm rounded-full flex items-center gap-2">
-              📅 {filters.publishedWithin === 'today' ? 'Idag' : filters.publishedWithin === 'week' ? 'Senaste veckan' : 'Senaste månaden'}
-              <button onClick={() => setFilters({ ...filters, publishedWithin: 'all' })} className="hover:bg-green-200 rounded-full p-0.5">
-                <X size={14} />
-              </button>
-            </span>
-          )}
-          <button
-            onClick={() => setFilters(defaultFilters)}
-            className="text-sm text-red-500 hover:text-red-700 font-medium px-2"
-          >
-            Rensa alla
-          </button>
-        </div>
-      )}
-
-      {/* Filter Sheet för mobil */}
-      <FilterSheet
-        isOpen={showMobileFilters}
-        onClose={() => setShowMobileFilters(false)}
-        title="Filtrera jobb"
-        filterCount={activeFilterCount}
-        onClear={() => setFilters(defaultFilters)}
-        onApply={() => setShowMobileFilters(false)}
-      >
-        <div className="space-y-4">
-          <Input
-            label="Stad/Kommun"
-            placeholder="t.ex. Stockholm..."
-            value={filters.municipality}
-            onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
-            leftIcon={<MapPin size={16} />}
-          />
-          
-          <Select
-            label="Län"
-            value={filters.region}
-            onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-            options={[
-              { value: '', label: 'Alla län' },
-              ...REGIONS.map((r) => ({ value: r.code, label: r.name }))
-            ]}
-          />
-          
-          <Select
-            label="Anställningsform"
-            value={filters.employmentType}
-            onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-            options={[
-              { value: '', label: 'Alla typer' },
-              { value: 'Heltid', label: 'Heltid' },
-              { value: 'Deltid', label: 'Deltid' },
-            ]}
-          />
-          
-          <div>
-            <label className="block text-sm font-medium text-slate-700 mb-2">
-              <Calendar size={16} className="inline mr-1" />
-              Publicerad
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              {[
-                { value: 'all', label: 'När som' },
-                { value: 'today', label: 'Idag' },
-                { value: 'week', label: 'Senaste veckan' },
-                { value: 'month', label: 'Senaste månaden' },
-              ].map((opt) => (
-                <button
-                  key={opt.value}
-                  onClick={() => setFilters({ ...filters, publishedWithin: opt.value as any })}
-                  className={cn(
-                    "px-3 py-3 rounded-xl text-sm font-medium transition-colors",
-                    filters.publishedWithin === opt.value
-                      ? "bg-indigo-500 text-white"
-                      : "bg-slate-100 text-slate-700 hover:bg-slate-200"
-                  )}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </FilterSheet>
-
-      {/* Resultat */}
+      {/* Results */}
       <div>
-        {/* Jobblista */}
         {loading ? (
           <Card className="p-8 sm:p-12">
             <LoadingState title="Söker jobb..." message="Hämtar från Arbetsförmedlingen" />
@@ -493,6 +364,11 @@ export default function JobSearch() {
           </Card>
         ) : paginatedJobs.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
+            {/* Results count */}
+            <p className="text-sm text-slate-500">
+              Visar {paginatedJobs.length} av {totalJobs} jobb
+            </p>
+
             {paginatedJobs.map((job) => (
               <div
                 key={job.id}
@@ -500,15 +376,13 @@ export default function JobSearch() {
                 className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 hover:shadow-md hover:border-violet-300 transition-all cursor-pointer"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
-                  {/* Job info */}
                   <div className="flex-1 min-w-0">
                     <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-1 line-clamp-2">{job.headline}</h3>
                     <p className="text-slate-600 text-sm font-medium flex items-center gap-2">
                       <Building2 size={16} className="text-slate-400 flex-shrink-0" />
                       <span className="truncate">{job.employer?.name || 'Arbetsgivare ej angiven'}</span>
                     </p>
-                    
-                    {/* Tags rad */}
+
                     <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-slate-500">
                       <span className="flex items-center gap-1">
                         <MapPin size={14} />
@@ -521,17 +395,15 @@ export default function JobSearch() {
                           {job.employment_type.label}
                         </span>
                       )}
-                      <span className="text-slate-400 hidden sm:inline">
+                      <span className="text-slate-400">
                         {new Date(job.publication_date).toLocaleDateString('sv-SE')}
                       </span>
                     </div>
-                    
-                    {/* Description - hidden on mobile */}
+
                     <p className="text-slate-600 mt-3 line-clamp-2 text-sm hidden sm:block">
                       {job.description?.text?.substring(0, 200)}...
                     </p>
-                    
-                    {/* Action buttons */}
+
                     <div className="flex items-center gap-2 mt-3">
                       <button
                         onClick={(e) => {
@@ -552,7 +424,7 @@ export default function JobSearch() {
                         <Heart size={16} className={isSaved(job.id) ? "fill-current" : ""} />
                         {isSaved(job.id) ? 'Sparad' : 'Spara'}
                       </button>
-                      
+
                       <Link
                         to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}&desc=${encodeURIComponent(job.description?.text?.substring(0, 500) || '')}`}
                         onClick={(e) => e.stopPropagation()}
@@ -561,7 +433,7 @@ export default function JobSearch() {
                         <FileText size={16} />
                         Skriv brev
                       </Link>
-                      
+
                       <button
                         onClick={(e) => {
                           e.stopPropagation()
@@ -570,74 +442,31 @@ export default function JobSearch() {
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-500 text-white hover:bg-violet-600 transition-colors"
                       >
                         <Send size={16} />
-                        Skapa ansökan
+                        Ansök
                       </button>
                     </div>
-                  </div>
-                  
-                  {/* Action på mobil */}
-                  <div className="sm:hidden flex items-center justify-between pt-2 border-t border-slate-100">
-                    <div className="flex items-center gap-1">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          if (isSaved(job.id)) {
-                            removeJob(job.id)
-                          } else {
-                            saveJob(job)
-                          }
-                        }}
-                        className={cn(
-                          "p-2 rounded-lg transition-colors",
-                          isSaved(job.id) ? "text-rose-500" : "text-slate-400"
-                        )}
-                      >
-                        <Heart size={20} className={isSaved(job.id) ? "fill-current" : ""} />
-                      </button>
-                      <Link
-                        to={`/cover-letter?jobId=${job.id}&company=${encodeURIComponent(job.employer?.name || '')}&title=${encodeURIComponent(job.headline)}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="p-2 text-teal-500 rounded-lg"
-                      >
-                        <FileText size={20} />
-                      </Link>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setApplicationModalJob(job)
-                        }}
-                        className="p-2 text-violet-500 rounded-lg"
-                      >
-                        <Send size={20} />
-                      </button>
-                    </div>
-                    <span className="text-xs text-slate-400">
-                      {new Date(job.publication_date).toLocaleDateString('sv-SE')}
-                    </span>
                   </div>
                 </div>
               </div>
             ))}
-            
+
             {/* Pagination */}
             {totalPages > 1 && (
               <div className="flex items-center justify-center gap-2 pt-4">
                 <button
                   onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
                   disabled={currentPage === 1}
-                  className="p-2 rounded-lg border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                  className="p-2 rounded-lg border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
                 >
                   <ChevronLeft size={20} />
                 </button>
-                
                 <span className="px-4 py-2 text-sm text-slate-600">
                   Sida {currentPage} av {totalPages}
                 </span>
-                
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
                   disabled={currentPage === totalPages}
-                  className="p-2 rounded-lg border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50 min-h-[44px] min-w-[44px] flex items-center justify-center"
+                  className="p-2 rounded-lg border border-slate-200 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-50"
                 >
                   <ChevronRight size={20} />
                 </button>
@@ -654,8 +483,6 @@ export default function JobSearch() {
           </Card>
         )}
       </div>
-
-
 
       {/* Job Detail Modal */}
       {selectedJob && (
@@ -676,7 +503,7 @@ export default function JobSearch() {
                   <Building2 size={20} className="text-slate-400" />
                   <span className="font-medium">{selectedJob.employer?.name}</span>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
                   {selectedJob.workplace_address?.municipality && (
                     <span className="px-3 py-1 bg-slate-100 rounded-full text-sm text-slate-600">
@@ -691,15 +518,13 @@ export default function JobSearch() {
                 </div>
 
                 <div className="prose prose-slate max-w-none">
-                  <div 
+                  <div
                     className="text-slate-700 leading-relaxed"
                     dangerouslySetInnerHTML={{ __html: selectedJob.description?.text?.replace(/\n/g, '<br/>') || '' }}
                   />
                 </div>
 
-                {/* Action Buttons */}
                 <div className="space-y-3 pt-4 border-t border-slate-100">
-                  {/* Save & Cover Letter Row */}
                   <div className="grid grid-cols-2 gap-3">
                     <button
                       onClick={() => {
@@ -710,7 +535,7 @@ export default function JobSearch() {
                         }
                       }}
                       className={cn(
-                        "flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-colors min-h-[48px]",
+                        "flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-colors",
                         isSaved(selectedJob.id)
                           ? "bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200"
                           : "bg-slate-100 text-slate-700 hover:bg-slate-200"
@@ -719,36 +544,34 @@ export default function JobSearch() {
                       <Heart size={20} className={isSaved(selectedJob.id) ? "fill-current" : ""} />
                       {isSaved(selectedJob.id) ? 'Sparad' : 'Spara jobb'}
                     </button>
-                    
+
                     <Link
                       to={`/cover-letter?jobId=${selectedJob.id}&company=${encodeURIComponent(selectedJob.employer?.name || '')}&title=${encodeURIComponent(selectedJob.headline)}&desc=${encodeURIComponent(selectedJob.description?.text?.substring(0, 1000) || '')}`}
                       onClick={() => setSelectedJob(null)}
-                      className="flex items-center justify-center gap-2 py-3 bg-teal-50 text-teal-600 hover:bg-teal-100 rounded-xl font-medium transition-colors min-h-[48px] border border-teal-200"
+                      className="flex items-center justify-center gap-2 py-3 bg-teal-50 text-teal-600 hover:bg-teal-100 rounded-xl font-medium transition-colors border border-teal-200"
                     >
                       <FileText size={20} />
                       Skriv personligt brev
                     </Link>
                   </div>
 
-                  {/* Create Application Button */}
                   <button
                     onClick={() => {
                       setApplicationModalJob(selectedJob)
                       setSelectedJob(null)
                     }}
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors min-h-[48px]"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors"
                   >
                     <Send size={18} />
                     Skapa ansökan
                   </button>
 
-                  {/* Apply Button */}
                   {selectedJob.application_details?.url && (
                     <a
                       href={selectedJob.application_details.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors min-h-[48px]"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
                     >
                       <ExternalLink size={18} />
                       Ansök direkt på Arbetsförmedlingen
@@ -767,12 +590,117 @@ export default function JobSearch() {
           job={applicationModalJob}
           isOpen={!!applicationModalJob}
           onClose={() => setApplicationModalJob(null)}
-          onSuccess={() => {
-            // Refresh saved jobs stats
-            getStats()
-          }}
+          onSuccess={() => getStats()}
         />
       )}
+    </div>
+  );
+}
+
+// Placeholder tabs for future implementation
+function SavedJobsTab() {
+  const { savedJobs, removeJob } = useSavedJobs();
+
+  if (savedJobs.length === 0) {
+    return (
+      <Card className="p-12 text-center">
+        <Bookmark className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+        <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga sparade jobb</h3>
+        <p className="text-slate-500 mb-4">Spara jobb du är intresserad av för att enkelt hitta dem senare.</p>
+        <Link to="/job-search">
+          <Button>Sök jobb</Button>
+        </Link>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      <p className="text-slate-600">Du har {savedJobs.length} sparade jobb</p>
+      {savedJobs.map((job: any) => (
+        <Card key={job.id} className="p-4">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-semibold text-slate-900">{job.headline}</h3>
+              <p className="text-slate-600 text-sm">{job.employer?.name}</p>
+            </div>
+            <button
+              onClick={() => removeJob(job.id)}
+              className="text-red-500 hover:text-red-700"
+            >
+              <X size={20} />
+            </button>
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function ApplicationsTab() {
+  return (
+    <Card className="p-12 text-center">
+      <ClipboardList className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+      <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga ansökningar ännu</h3>
+      <p className="text-slate-500 mb-4">Håll koll på dina jobbansökningar här.</p>
+      <Link to="/job-search">
+        <Button>Sök jobb att ansöka till</Button>
+      </Link>
+    </Card>
+  );
+}
+
+function AlertsTab() {
+  return (
+    <Card className="p-12 text-center">
+      <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+      <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga bevakningar</h3>
+      <p className="text-slate-500 mb-4">Spara sökningar för att få notiser om nya jobb.</p>
+      <Link to="/job-search">
+        <Button>Skapa en bevakning</Button>
+      </Link>
+    </Card>
+  );
+}
+
+function MatchesTab() {
+  return (
+    <Card className="p-12 text-center">
+      <Sparkles className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+      <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga matchningar ännu</h3>
+      <p className="text-slate-500 mb-4">Slutför din profil för att få personliga jobbförslag.</p>
+      <div className="flex justify-center gap-3">
+        <Link to="/interest-guide">
+          <Button variant="outline">Gör intressetestet</Button>
+        </Link>
+        <Link to="/cv">
+          <Button>Skapa CV</Button>
+        </Link>
+      </div>
+    </Card>
+  );
+}
+
+// Main component with routing
+export default function JobSearch() {
+  const location = useLocation();
+
+  return (
+    <PageLayout
+      title="Sök jobb"
+      subtitle="Hitta lediga jobb från Arbetsförmedlingen"
+      tabs={jobSearchTabs}
+      tabVariant="glass"
+      className="max-w-7xl mx-auto"
+    >
+      <Routes>
+        <Route index element={<SearchTab />} />
+        <Route path="saved" element={<SavedJobsTab />} />
+        <Route path="applications" element={<ApplicationsTab />} />
+        <Route path="alerts" element={<AlertsTab />} />
+        <Route path="matches" element={<MatchesTab />} />
+        <Route path="*" element={<Navigate to="/job-search" replace />} />
+      </Routes>
     </PageLayout>
   );
 }

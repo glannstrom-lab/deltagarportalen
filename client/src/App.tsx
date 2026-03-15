@@ -35,7 +35,7 @@ const KnowledgeBase = lazy(() => import('./pages/KnowledgeBase'))
 const Article = lazy(() => import('./pages/Article'))
 const Profile = lazy(() => import('./pages/Profile'))
 const UnifiedProfile = lazy(() => import('./pages/UnifiedProfile'))
-const JobTracker = lazy(() => import('./pages/JobTracker'))
+// JobTracker removed - using JobSearch instead
 const JobSearch = lazy(() => import('./pages/JobSearch'))
 const Career = lazy(() => import('./pages/Career'))
 const Diary = lazy(() => import('./pages/Diary'))
@@ -296,7 +296,7 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="job-search" element={
+        <Route path="job-search/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <JobSearch />
@@ -304,13 +304,7 @@ function App() {
           </LazyRoute>
         } />
         <Route path="jobs" element={<Navigate to="/job-search" replace />} />
-        <Route path="job-tracker/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <JobTracker />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
+        <Route path="job-tracker/*" element={<Navigate to="/job-search" replace />} />
         <Route path="career/*" element={
           <LazyRoute>
             <RouteErrorBoundary>

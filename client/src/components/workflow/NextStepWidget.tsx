@@ -199,7 +199,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
             <QuickLink to="/job-search" icon={<Search size={14} />}>
               Sök
             </QuickLink>
-            <QuickLink to="/job-tracker" icon={<TrendingUp size={14} />}>
+            <QuickLink to="/job-search" icon={<TrendingUp size={14} />}>
               Tracker
             </QuickLink>
           </div>

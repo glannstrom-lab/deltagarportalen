@@ -37,7 +37,7 @@ const faqCategories = [
     icon: Briefcase,
     items: [
       { q: 'Hur söker jag jobb via portalen?', a: 'Använd jobbsöksfunktionen för att söka bland lediga jobb. Du kan filtrera på plats, yrke och anställningstyp.', link: '/job-search' },
-      { q: 'Vad är skillnaden mellan att spara och ansöka?', a: 'När du sparar ett jobb läggs det i din jobbtracker så du kan återkomma till det senare. Ansökan gör du vanligtvis via företagets hemsida.', link: '/job-tracker' },
+      { q: 'Vad är skillnaden mellan att spara och ansöka?', a: 'När du sparar ett jobb läggs det i din jobbtracker så du kan återkomma till det senare. Ansökan gör du vanligtvis via företagets hemsida.', link: '/job-search' },
       { q: 'Kan jag få notiser om nya jobb?', a: 'Ja, du kan ställa in jobbaviseringar i dina inställningar för att få mail när nya jobb som matchar dina kriterier publiceras.', link: '/settings' },
     ]
   },

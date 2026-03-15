@@ -120,7 +120,7 @@ export function RemindersWidget({
         title: 'Följ upp ansökan',
         message: 'Det har gått en vecka sedan du skickade en ansökan. Dags att följa upp?',
         action: 'Se ansökningar',
-        link: '/job-tracker',
+        link: '/job-search',
         icon: <Calendar size={20} />,
         color: 'blue',
       })

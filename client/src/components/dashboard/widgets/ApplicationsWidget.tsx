@@ -47,7 +47,7 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
     <DashboardWidget
       title="Ansökningar"
       icon={<Send size={14} />}
-      to="/job-tracker"
+      to="/job-search"
       color="orange"
       status={status}
       progress={total > 0 ? 100 : 0}
@@ -105,7 +105,7 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
     <DashboardWidget
       title="Ansökningar"
       icon={<Send size={22} />}
-      to="/job-tracker"
+      to="/job-search"
       color="orange"
       status={status}
       progress={total > 0 ? 100 : 0}
@@ -218,7 +218,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
     <DashboardWidget
       title="Ansökningar"
       icon={<Send size={24} />}
-      to="/job-tracker"
+      to="/job-search"
       color="orange"
       status={status}
       progress={total > 0 ? 100 : 0}

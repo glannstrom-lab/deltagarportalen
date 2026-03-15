@@ -136,7 +136,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
       title: 'Skicka en ansökan',
       description: `Du har ${data.jobs?.savedCount} sparade jobb att söka!`,
       action: 'Ansök nu',
-      link: '/job-tracker',
+      link: '/job-search',
       icon: <Target size={24} />,
       time: '20 min',
       color: colorSchemes.amber,

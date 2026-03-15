@@ -279,7 +279,7 @@ export default function DashboardNew() {
           title="Ansökningar"
           icon={Briefcase}
           color="orange"
-          to="/job-tracker"
+          to="/job-search"
           statusText={widgetData.jobTracker.activeApplications > 0
             ? `${widgetData.jobTracker.activeApplications} aktiva ansökningar`
             : 'Inga aktiva ansökningar'}

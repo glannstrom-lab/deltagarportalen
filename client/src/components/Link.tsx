@@ -81,7 +81,7 @@ export const paths = {
   admin: '/admin',
   // Legacy redirects
   jobs: '/job-search',
-  applications: '/job-tracker',
+  applications: '/job-search',
 } as const
 
 export default Link
