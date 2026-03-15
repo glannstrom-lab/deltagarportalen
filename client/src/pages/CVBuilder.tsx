@@ -194,9 +194,20 @@ export default function CVBuilder() {
   const { user } = useAuthStore()
   
   // NYA FEATURES: Auto-save och draft
-  const { saveStatus, lastSavedAt, hasUnsavedChanges } = useCVAutoSave(data)
+  const { saveStatus, lastSavedAt, hasUnsavedChanges, triggerSave } = useCVAutoSave(data)
   const { restoreDraft, clearDraft } = useCVDraft()
   const hasCheckedDraft = useRef(false)
+  const prevWorkExpRef = useRef(JSON.stringify(data.workExperience))
+  
+  // Auto-save när workExperience ändras
+  useEffect(() => {
+    const currentWorkExp = JSON.stringify(data.workExperience)
+    if (prevWorkExpRef.current !== currentWorkExp) {
+      alert('workExperience changed from ' + JSON.parse(prevWorkExpRef.current).length + ' to ' + data.workExperience.length)
+      triggerSave(data)
+      prevWorkExpRef.current = currentWorkExp
+    }
+  }, [data, triggerSave])
   
   // Fråga om att återställa draft vid mount - efter att server data laddats
   useEffect(() => {
@@ -586,7 +597,10 @@ export default function CVBuilder() {
         </h3>
         <ExperienceEditor
           experiences={data.workExperience || []}
-          onChange={(experiences) => setData({ ...data, workExperience: experiences })}
+          onChange={(experiences) => {
+            alert('ExperienceEditor onChange! New count: ' + experiences.length)
+            setData({ ...data, workExperience: experiences })
+          }}
         />
       </div>
 

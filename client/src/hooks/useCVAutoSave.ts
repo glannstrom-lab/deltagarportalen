@@ -3,7 +3,7 @@
  * Two-tier strategy: localStorage (immediate) + server (debounced)
  */
 
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { cvApi } from '@/services/supabaseApi'
 import { useCVStore } from '@/stores/cvStore'
@@ -13,34 +13,50 @@ interface UseCVAutoSaveReturn {
   saveStatus: 'idle' | 'saving' | 'saved' | 'error'
   lastSavedAt: Date | null
   hasUnsavedChanges: boolean
-  triggerSave: () => void
+  triggerSave: (data: CVData) => void
   pendingCount: number
   isOnline: boolean
 }
 
-export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
+export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   const queryClient = useQueryClient()
   const { markSaving, markSaved, markError, markUnsaved, setPendingCount, lastSavedAt, saveStatus, hasUnsavedChanges, pendingCount } = useCVStore()
   
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const pendingQueue = useRef<CVData[]>([])
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isFirstRender = useRef(true)
+  const lastSavedData = useRef<CVData | null>(null)
   
-  // VIKTIGT: Använd ref för att alltid ha senaste datan i debounced funktioner
-  const dataRef = useRef(data)
-  useEffect(() => {
-    dataRef.current = data
-  }, [data])
+  // Server mutation with retry
+  const { mutate: saveToServer } = useMutation({
+    mutationFn: cvApi.updateCV,
+    onSuccess: () => {
+      markSaved()
+      queryClient.invalidateQueries({ queryKey: ['cv'] })
+      setPendingCount(0)
+      localStorage.removeItem('cv-draft')
+      localStorage.setItem('cv-last-saved', Date.now().toString())
+      lastSavedData.current = currentData
+    },
+    onError: (error: any) => {
+      alert('Save FAILED: ' + (error?.message || 'Unknown error'))
+      markError()
+      if (currentData) {
+        pendingQueue.current.push(currentData)
+        setPendingCount(pendingQueue.current.length)
+      }
+    },
+    retry: (failureCount, error: any) => {
+      if (error?.status >= 400 && error?.status < 500) return false
+      return failureCount < 3
+    },
+    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
+  })
   
   // Track online status
   useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true)
-      // Try to flush queue when back online
-      if (pendingQueue.current.length > 0) {
-        flushQueue()
-      }
-    }
+    const handleOnline = () => setIsOnline(true)
     const handleOffline = () => setIsOnline(false)
     
     window.addEventListener('online', handleOnline)
@@ -52,64 +68,34 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
     }
   }, [])
   
-  // Server mutation with retry
-  const { mutate: saveToServer } = useMutation({
-    mutationFn: cvApi.updateCV,
-    onSuccess: () => {
-      alert('Save SUCCESS!')
-      markSaved()
-      queryClient.invalidateQueries({ queryKey: ['cv'] })
-      setPendingCount(0)
-      // Clear localStorage draft on successful save
-      localStorage.removeItem('cv-draft')
-      localStorage.setItem('cv-last-saved', Date.now().toString())
-    },
-    onError: (error: any) => {
-      alert('Save FAILED: ' + (error?.message || 'Unknown error'))
-      console.error('Auto-save failed:', error)
-      markError()
-      // Add to pending queue for retry
-      if (dataRef.current) {
-        pendingQueue.current.push(dataRef.current)
-        setPendingCount(pendingQueue.current.length)
+  // Save on beforeunload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current)
       }
-    },
-    onSettled: () => {
-      // Queue is processed
-    },
-    retry: (failureCount, error: any) => {
-      // Don't retry on 4xx errors (client errors)
-      if (error?.status >= 400 && error?.status < 500) return false
-      return failureCount < 3
-    },
-    retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),
-  })
-  
-  // Flush pending queue
-  const flushQueue = useCallback(() => {
-    if (pendingQueue.current.length === 0) return
-    
-    // Get most recent data
-    const latest = pendingQueue.current[pendingQueue.current.length - 1]
-    pendingQueue.current = []
-    setPendingCount(0)
-    saveToServer(latest)
-  }, [saveToServer, setPendingCount])
-  
-  // Immediate localStorage save
-  const saveToLocalStorage = useCallback((cvData: CVData) => {
-    try {
-      localStorage.setItem('cv-draft', JSON.stringify({
-        ...cvData,
-        _timestamp: Date.now(),
-      }))
-    } catch (e) {
-      console.error('Failed to save to localStorage:', e)
+      // Save to localStorage
+      try {
+        localStorage.setItem('cv-draft', JSON.stringify({
+          ...currentData,
+          _timestamp: Date.now(),
+        }))
+      } catch { }
     }
-  }, [])
+    
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [currentData])
   
-  // Debounced server save - använder ref för att alltid ha senaste datan
-  const triggerSave = useCallback(() => {
+  // Debounced save function that takes data as parameter
+  const triggerSave = (dataToSave: CVData) => {
+    // Skip first render (initial load)
+    if (isFirstRender.current) {
+      isFirstRender.current = false
+      lastSavedData.current = dataToSave
+      return
+    }
+    
     markUnsaved()
     
     // Clear existing timer
@@ -117,66 +103,29 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
       clearTimeout(debounceTimer.current)
     }
     
-    // Save to localStorage immediately (med senaste data från ref)
-    saveToLocalStorage(dataRef.current)
+    // Save to localStorage immediately
+    try {
+      localStorage.setItem('cv-draft', JSON.stringify({
+        ...dataToSave,
+        _timestamp: Date.now(),
+      }))
+    } catch { }
     
-    // Debounced server save - använd ref för att få senaste datan
+    // Debounced server save
     debounceTimer.current = setTimeout(() => {
-      const latestData = dataRef.current
+      alert('Auto-saving. workExperience count: ' + (dataToSave.workExperience?.length || 0))
       
       if (!isOnline) {
-        // Queue for later if offline
-        pendingQueue.current.push(latestData)
+        pendingQueue.current.push(dataToSave)
         setPendingCount(pendingQueue.current.length)
         markError()
         return
       }
       
       markSaving()
-      alert('Auto-saving to server. workExperience count: ' + (latestData.workExperience?.length || 0))
-      saveToServer(latestData)
-    }, 2000) // 2 second debounce
-  }, [isOnline, markSaving, markUnsaved, saveToLocalStorage, saveToServer])
-  
-  // Auto-save when data changes (men inte vid första renderingen)
-  const isFirstRender = useRef(true)
-  useEffect(() => {
-    // Hoppa över första renderingen (när data laddas från servern)
-    if (isFirstRender.current) {
-      isFirstRender.current = false
-      return
-    }
-    
-    triggerSave()
-    
-    return () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current)
-      }
-    }
-  }, [data, triggerSave])
-  
-  // Save on beforeunload
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      if (debounceTimer.current) {
-        clearTimeout(debounceTimer.current)
-      }
-      
-      // Try to sync to server if possible
-      if (dataRef.current && isOnline && saveStatus === 'saving') {
-        // Use sendBeacon for reliable delivery
-        const blob = new Blob([JSON.stringify(dataRef.current)], { type: 'application/json' })
-        navigator.sendBeacon?.('/api/cv', blob)
-      }
-      
-      // Ensure localStorage is saved
-      saveToLocalStorage(dataRef.current)
-    }
-    
-    window.addEventListener('beforeunload', handleBeforeUnload)
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [isOnline, saveStatus, saveToLocalStorage])
+      saveToServer(dataToSave)
+    }, 2000)
+  }
   
   return {
     saveStatus,
@@ -190,12 +139,11 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
 
 /**
  * Hook to restore draft from localStorage
- * Only returns draft if it contains meaningful unsaved data
  */
 export function useCVDraft() {
   const { setHasDraft } = useCVStore()
   
-  const restoreDraft = useCallback((): CVData | null => {
+  const restoreDraft = (): CVData | null => {
     try {
       const draft = localStorage.getItem('cv-draft')
       if (!draft) return null
@@ -214,26 +162,10 @@ export function useCVDraft() {
       const lastSaved = localStorage.getItem('cv-last-saved')
       if (lastSaved) {
         const lastSavedTime = parseInt(lastSaved)
-        // If server save happened after draft was created, draft is stale
         if (lastSavedTime > (_timestamp || 0)) {
           localStorage.removeItem('cv-draft')
           return null
         }
-      }
-      
-      // Check if draft has meaningful content (not just empty fields)
-      const hasContent = Object.entries(data).some(([key, value]) => {
-        // Skip metadata fields
-        if (key.startsWith('_')) return false
-        
-        if (typeof value === 'string') return value.trim().length > 0
-        if (Array.isArray(value)) return value.length > 0
-        return value != null
-      })
-      
-      if (!hasContent) {
-        localStorage.removeItem('cv-draft')
-        return null
       }
       
       setHasDraft(true)
@@ -241,13 +173,13 @@ export function useCVDraft() {
     } catch {
       return null
     }
-  }, [setHasDraft])
+  }
   
-  const clearDraft = useCallback(() => {
+  const clearDraft = () => {
     localStorage.removeItem('cv-draft')
     localStorage.removeItem('cv-last-saved')
     setHasDraft(false)
-  }, [setHasDraft])
+  }
   
   return { restoreDraft, clearDraft }
 }
