@@ -11,9 +11,9 @@ const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
 const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSearchWidget'))
 const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
 const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWidget'))
-const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget'))
-const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget'))
-const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget'))
+const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget').then(m => ({ default: m.ExercisesWidget })))
+const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget').then(m => ({ default: m.KnowledgeWidget })))
+const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget').then(m => ({ default: m.InterestWidget })))
 
 // Widget map - 7 fungerande widgets
 const WIDGET_COMPONENTS = {
