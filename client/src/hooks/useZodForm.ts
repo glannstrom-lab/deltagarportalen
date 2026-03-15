@@ -4,12 +4,12 @@
  */
 
 import { useState, useCallback } from 'react'
-import { z, ZodSchema } from 'zod'
+import { z } from 'zod'
 
 type FormErrors<T> = Partial<Record<keyof T, string>>
 
 interface UseZodFormOptions<T> {
-  schema: ZodSchema<T>
+  schema: z.ZodType<T>
   initialValues: T
   onSubmit: (values: T) => void | Promise<void>
 }
@@ -228,7 +228,7 @@ export function formatZodError(error: z.ZodError): Record<string, string> {
 }
 
 // Hjälpfunktion för att validera utan hook
-export function validateWithZod<T>(schema: ZodSchema<T>, data: unknown): 
+export function validateWithZod<T>(schema: z.ZodType<T>, data: unknown): 
   | { success: true; data: T }
   | { success: false; errors: Record<string, string> } {
   

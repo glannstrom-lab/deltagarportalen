@@ -8,12 +8,15 @@ import { PageTabs, PageHeader, type Tab } from './PageTabs'
 import { cn } from '@/lib/utils'
 import { getTabsForPath } from '@/data/pageTabs'
 
+type TabVariant = 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
+
 interface PageLayoutProps {
   children: React.ReactNode
   title?: string
   description?: string
   actions?: React.ReactNode
   customTabs?: Tab[]
+  tabVariant?: TabVariant
   showTabs?: boolean
   showHeader?: boolean
   className?: string
@@ -26,6 +29,7 @@ export function PageLayout({
   description,
   actions,
   customTabs,
+  tabVariant = 'minimal',
   showTabs = true,
   showHeader = true,
   className,
@@ -45,6 +49,7 @@ export function PageLayout({
           title={title || ''}
           description={description}
           tabs={shouldShowTabs ? tabs : undefined}
+          tabVariant={tabVariant}
           actions={actions}
         />
       )}

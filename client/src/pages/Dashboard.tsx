@@ -95,11 +95,13 @@ export default function DashboardPage() {
     }
   }
 
+  // Ändra tabVariant för att testa: 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
   return (
     <PageLayout
       title="Översikt"
       description="Din personliga dashboard och översikt"
       customTabs={tabs}
+      tabVariant="glass"
       showTabs={true}
       className="space-y-6"
     >
