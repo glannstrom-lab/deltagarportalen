@@ -3,12 +3,16 @@ import { persist } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
 
+export type UserRole = 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN'
+
 export interface Profile {
   id: string
   email: string
   first_name: string | null
   last_name: string | null
-  role: 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN'
+  role: UserRole  // Huvudroll (bakåtkompatibel)
+  roles: UserRole[]  // Alla roller användaren har
+  activeRole: UserRole  // Vilken roll som är aktiv just nu
   phone: string | null
   avatar_url: string | null
   consultant_id: string | null
@@ -24,7 +28,7 @@ interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
-  isSigningOut: boolean // Flag to prevent double signout
+  isSigningOut: boolean
   
   // Actions
   initialize: () => Promise<void>
@@ -34,10 +38,11 @@ interface AuthState {
     password: string
     firstName: string
     lastName: string
-    role?: 'USER' | 'CONSULTANT'
+    role?: UserRole
   }) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: string | null }>
+  setActiveRole: (role: UserRole) => void
   clearError: () => void
   setSigningOut: (value: boolean) => void
 }
@@ -56,7 +61,6 @@ export const useAuthStore = create<AuthState>()(
 
       // Initialize auth state from Supabase session
       initialize: async () => {
-        // Don't initialize if we're in the middle of signing out
         if (get().isSigningOut) {
           return
         }
@@ -64,7 +68,6 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isLoading: true, error: null })
           
-          // Get current session
           const { data: { session }, error: sessionError } = await supabase.auth.getSession()
           
           if (sessionError) {
@@ -72,14 +75,12 @@ export const useAuthStore = create<AuthState>()(
           }
 
           if (session) {
-            // Get user
             const { data: { user }, error: userError } = await supabase.auth.getUser()
             
             if (userError) {
               throw userError
             }
 
-            // Get profile
             const { data: profile, error: profileError } = await supabase
               .from('profiles')
               .select('*')
@@ -90,9 +91,16 @@ export const useAuthStore = create<AuthState>()(
               console.warn('Could not fetch profile:', profileError)
             }
 
+            // Se till att nya fält finns (bakåtkompatibilitet)
+            const enrichedProfile = profile ? {
+              ...profile,
+              roles: profile.roles || [profile.role || 'USER'],
+              activeRole: profile.activeRole || profile.role || 'USER',
+            } : null
+
             set({
               user: user || null,
-              profile: profile || null,
+              profile: enrichedProfile,
               session: session,
               isAuthenticated: !!user,
               isLoading: false,
@@ -130,7 +138,6 @@ export const useAuthStore = create<AuthState>()(
           })
 
           if (error) {
-            // Translate common errors
             let message = error.message
             if (error.message === 'Invalid login credentials') {
               message = 'Fel e-post eller lösenord'
@@ -142,16 +149,22 @@ export const useAuthStore = create<AuthState>()(
             throw new Error(message)
           }
 
-          // Fetch profile
           const { data: profile } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', data.user.id)
             .single()
 
+          // Se till att nya fält finns
+          const enrichedProfile = profile ? {
+            ...profile,
+            roles: profile.roles || [profile.role || 'USER'],
+            activeRole: profile.activeRole || profile.role || 'USER',
+          } : null
+
           set({
             user: data.user,
-            profile: profile || null,
+            profile: enrichedProfile,
             session: data.session,
             isAuthenticated: true,
             isLoading: false,
@@ -172,6 +185,8 @@ export const useAuthStore = create<AuthState>()(
         try {
           set({ isLoading: true, error: null })
           
+          const role = userData.role || 'USER'
+          
           const { data, error } = await supabase.auth.signUp({
             email: userData.email,
             password: userData.password,
@@ -179,7 +194,7 @@ export const useAuthStore = create<AuthState>()(
               data: {
                 first_name: userData.firstName,
                 last_name: userData.lastName,
-                role: userData.role || 'USER',
+                role: role,
               },
             },
           })
@@ -189,21 +204,26 @@ export const useAuthStore = create<AuthState>()(
           }
 
           if (!data.session) {
-            // Email confirmation required
             set({ isLoading: false })
             return { error: 'Konto skapat! Kontrollera din e-post för att bekräfta.' }
           }
 
-          // Auto-login if session exists
           const { data: profile } = await supabase
             .from('profiles')
             .select('*')
-            .eq('id', data.user!.id)
+            .eq('id', data.user?.id)
             .single()
+
+          // Se till att nya fält finns
+          const enrichedProfile = profile ? {
+            ...profile,
+            roles: profile.roles || [profile.role || 'USER'],
+            activeRole: profile.activeRole || profile.role || 'USER',
+          } : null
 
           set({
             user: data.user,
-            profile: profile || null,
+            profile: enrichedProfile,
             session: data.session,
             isAuthenticated: true,
             isLoading: false,
@@ -221,15 +241,8 @@ export const useAuthStore = create<AuthState>()(
 
       // Sign out
       signOut: async () => {
-        const { isSigningOut } = get()
-        
-        // Prevent double signout
-        if (isSigningOut) {
-          return
-        }
-
         try {
-          set({ isSigningOut: true, isLoading: true })
+          set({ isSigningOut: true })
           
           const { error } = await supabase.auth.signOut()
           
@@ -237,28 +250,22 @@ export const useAuthStore = create<AuthState>()(
             throw error
           }
 
-          // Clear state
           set({
             user: null,
             profile: null,
             session: null,
             isAuthenticated: false,
             isLoading: false,
-            error: null,
+            isSigningOut: false,
           })
         } catch (error: any) {
           console.error('Sign out error:', error)
-          set({ isLoading: false, error: error.message })
-        } finally {
-          // Reset signing out flag after a delay to prevent race conditions
-          setTimeout(() => {
-            set({ isSigningOut: false })
-          }, 500)
+          set({ isSigningOut: false })
         }
       },
 
-      // Update user profile
-      updateProfile: async (updates) => {
+      // Update profile
+      updateProfile: async (updates: Partial<Profile>) => {
         try {
           const { user } = get()
           if (!user) {
@@ -275,9 +282,9 @@ export const useAuthStore = create<AuthState>()(
           }
 
           // Update local state
-          set((state) => ({
-            profile: state.profile ? { ...state.profile, ...updates } : null,
-          }))
+          set({
+            profile: get().profile ? { ...get().profile!, ...updates } : null,
+          })
 
           return { error: null }
         } catch (error: any) {
@@ -285,53 +292,71 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      // Set active role
+      setActiveRole: (role: UserRole) => {
+        const { profile } = get()
+        if (!profile) return
+
+        // Verify user has this role
+        const userRoles = profile.roles || [profile.role]
+        if (!userRoles.includes(role)) {
+          console.error('User does not have role:', role)
+          return
+        }
+
+        // Update local state immediately for responsive UI
+        set({
+          profile: { ...profile, activeRole: role },
+        })
+
+        // Persist to database
+        supabase
+          .from('profiles')
+          .update({ activeRole: role })
+          .eq('id', profile.id)
+          .then(({ error }) => {
+            if (error) {
+              console.error('Failed to update activeRole:', error)
+            }
+          })
+      },
+
       // Clear error
-      clearError: () => set({ error: null }),
+      clearError: () => {
+        set({ error: null })
+      },
 
       // Set signing out flag
-      setSigningOut: (value: boolean) => set({ isSigningOut: value }),
+      setSigningOut: (value: boolean) => {
+        set({ isSigningOut: value })
+      },
     }),
     {
       name: 'auth-storage',
-      // Only persist minimal state
       partialize: (state) => ({
-        // Don't persist user/session - get from Supabase
-        // Only persist UI preferences if needed
+        user: state.user,
+        profile: state.profile,
+        session: state.session,
+        isAuthenticated: state.isAuthenticated,
       }),
     }
   )
 )
 
-// Listen for auth state changes
-supabase.auth.onAuthStateChange((event, session) => {
-  const store = useAuthStore.getState()
-  const { isSigningOut } = store
-  
-  if (event === 'SIGNED_IN' && session) {
-    // Only initialize if not currently signing out
-    if (!isSigningOut) {
-      store.initialize()
-    }
-  } else if (event === 'SIGNED_OUT') {
-    // Don't call signOut again if we're already signing out
-    if (!isSigningOut) {
-      // Just clear the state without calling supabase again
-      store.setSigningOut(true)
-      useAuthStore.setState({
-        user: null,
-        profile: null,
-        session: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      })
-      setTimeout(() => {
-        store.setSigningOut(false)
-      }, 500)
-    }
-  } else if (event === 'USER_UPDATED' && session) {
-    if (!isSigningOut) {
-      store.initialize()
-    }
-  }
-})
+// Helper hooks for role checking
+export const useActiveRole = () => {
+  return useAuthStore((state) => state.profile?.activeRole || state.profile?.role || 'USER')
+}
+
+export const useUserRoles = () => {
+  return useAuthStore((state) => state.profile?.roles || [state.profile?.role || 'USER'])
+}
+
+export const useHasRole = (role: UserRole) => {
+  const roles = useUserRoles()
+  return roles.includes(role)
+}
+
+export const useIsSuperAdmin = () => useHasRole('SUPERADMIN')
+export const useIsAdmin = () => useHasRole('ADMIN') || useHasRole('SUPERADMIN')
+export const useIsConsultant = () => useHasRole('CONSULTANT') || useIsAdmin()

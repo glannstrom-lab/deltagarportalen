@@ -10,6 +10,7 @@ import {
   Eye, EyeOff, Monitor
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
+import { RoleSelector } from '@/components/settings/RoleSelector'
 import { 
   Card, CardHeader, CardSection,
   Input, Button, Toggle,
@@ -180,6 +181,8 @@ export default function Settings() {
                     )}
                   />
                 </CardSection>
+
+                <RoleSelector />
 
                 <div className="flex justify-end pt-4 border-t border-stone-100 dark:border-stone-800">
                   <Button
