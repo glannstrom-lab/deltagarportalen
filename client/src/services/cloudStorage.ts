@@ -1111,6 +1111,145 @@ export const darkModeApi = {
 }
 
 // ============================================
+// MOOD LOGGING (Humör)
+// ============================================
+export type MoodType = 'great' | 'good' | 'okay' | 'bad' | 'terrible'
+
+export const moodApi = {
+  async getTodaysMood(): Promise<{ mood: MoodType; note?: string } | null> {
+    const user = await getCurrentUser()
+    if (!user) return null
+
+    const today = new Date().toISOString().split('T')[0]
+    const { data, error } = await supabase
+      .from('mood_logs')
+      .select('mood, note')
+      .eq('user_id', user.id)
+      .eq('logged_at', today)
+      .maybeSingle()
+
+    if (error) {
+      handleStorageError(error, 'hämta dagens humör')
+      return null
+    }
+    return data as { mood: MoodType; note?: string } | null
+  },
+
+  async logMood(mood: MoodType, note?: string): Promise<boolean> {
+    const user = await getCurrentUser()
+    if (!user) {
+      console.log('[CloudStorage] Ingen användare inloggad - humör sparas inte')
+      return false
+    }
+
+    const today = new Date().toISOString().split('T')[0]
+    const { error } = await supabase
+      .from('mood_logs')
+      .upsert({
+        user_id: user.id,
+        mood,
+        note,
+        logged_at: today
+      }, {
+        onConflict: 'user_id,logged_at'
+      })
+
+    if (error) {
+      handleStorageError(error, 'logga humör')
+      return false
+    }
+    return true
+  },
+
+  async getHistory(days: number = 30): Promise<{ mood: MoodType; note?: string; logged_at: string }[]> {
+    const user = await getCurrentUser()
+    if (!user) return []
+
+    const { data, error } = await supabase
+      .from('mood_logs')
+      .select('mood, note, logged_at')
+      .eq('user_id', user.id)
+      .order('logged_at', { ascending: false })
+      .limit(days)
+
+    if (error) {
+      handleStorageError(error, 'hämta humörhistorik')
+      return []
+    }
+    return (data as { mood: MoodType; note?: string; logged_at: string }[]) || []
+  },
+
+  async getStreak(): Promise<number> {
+    const user = await getCurrentUser()
+    if (!user) return 0
+
+    const { data, error } = await supabase
+      .rpc('get_mood_streak', { p_user_id: user.id })
+
+    if (error) {
+      handleStorageError(error, 'hämta humör-streak')
+      return 0
+    }
+    return data || 0
+  }
+}
+
+// ============================================
+// WELLNESS DATA (Aktiviteter & Reflektioner)
+// ============================================
+export const wellnessDataApi = {
+  async get(): Promise<{ activities?: Record<string, boolean>; reflections?: string[] } | null> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const data = localStorage.getItem('wellness_data')
+      return data ? JSON.parse(data) : null
+    }
+
+    const { data, error } = await supabase
+      .from('user_preferences')
+      .select('wellness_data')
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    if (error) {
+      handleStorageError(error, 'hämta wellness data')
+      const localData = localStorage.getItem('wellness_data')
+      return localData ? JSON.parse(localData) : null
+    }
+    return data?.wellness_data || null
+  },
+
+  async save(wellnessData: { activities?: Record<string, boolean>; reflections?: string[] }): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      localStorage.setItem('wellness_data', JSON.stringify(wellnessData))
+      return
+    }
+
+    const { error } = await supabase
+      .from('user_preferences')
+      .upsert({
+        user_id: user.id,
+        wellness_data: wellnessData,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      })
+
+    if (error) {
+      handleStorageError(error, 'spara wellness data')
+      localStorage.setItem('wellness_data', JSON.stringify(wellnessData))
+    }
+  }
+}
+
+// Legacy support for journalApi.getWellnessData/saveWellnessData
+Object.assign(journalApi, {
+  getWellnessData: wellnessDataApi.get,
+  saveWellnessData: wellnessDataApi.save
+})
+
+// ============================================
 // ONBOARDING PROGRESS
 // ============================================
 export const onboardingApi = {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { cvApi, interestApi, coverLetterApi, activityApi, savedJobsApi } from '@/services/supabaseApi'
+import { moodApi } from '@/services/cloudStorage'
 import type { DashboardWidgetData } from '@/types/dashboard'
 import { supabase } from '@/lib/supabase'
 
@@ -153,6 +154,8 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     calendarEvents,
     quests,
     userStreaks,
+    todaysMood,
+    moodStreak,
   ] = await Promise.all([
     cvApi.getCV().catch(() => null),
     cvApi.getATSAnalysis().catch(() => null),
@@ -166,6 +169,8 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     fetchCalendarEvents(),
     fetchQuests(),
     fetchUserStreaks(),
+    moodApi.getTodaysMood().catch(() => null),
+    moodApi.getStreak().catch(() => 0),
   ])
 
   // Beräkna CV-progress
@@ -294,9 +299,9 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
       })) || [],
     },
     wellness: {
-      moodToday: null,
-      streakDays: streakDays,
-      completedActivities: activities.filter((a: Activity) => 
+      moodToday: todaysMood?.mood || null,
+      streakDays: moodStreak || streakDays,
+      completedActivities: activities.filter((a: Activity) =>
         a.activity_type === 'wellness' || a.activity_type === 'mood_logged'
       ).length,
       lastEntryDate: activities.find((a: Activity) => a.activity_type === 'mood_logged')?.created_at || null,
