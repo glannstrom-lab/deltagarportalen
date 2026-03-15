@@ -292,9 +292,7 @@ export default function CVBuilder() {
         }
       }
       
-      alert('Loading CV from server...')
       const cv = await cvApi.getCV()
-      alert('Loaded CV. workExperience count: ' + (cv?.workExperience?.length || 0))
       
       if (cv) {
         setData(prev => {
@@ -598,10 +596,7 @@ export default function CVBuilder() {
         </h3>
         <ExperienceEditor
           experiences={data.workExperience || []}
-          onChange={(experiences) => {
-            alert('ExperienceEditor onChange! New count: ' + experiences.length)
-            setData({ ...data, workExperience: experiences })
-          }}
+          onChange={(experiences) => setData({ ...data, workExperience: experiences })}
         />
       </div>
 

@@ -113,7 +113,6 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
     
     // Debounced server save
     debounceTimer.current = setTimeout(() => {
-      alert('Auto-saving. workExperience count: ' + (dataToSave.workExperience?.length || 0))
       
       if (!isOnline) {
         pendingQueue.current.push(dataToSave)

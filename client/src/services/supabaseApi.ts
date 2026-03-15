@@ -290,8 +290,6 @@ export const cvApi = {
     
     if (!data) return null
     
-    alert('getCV: loaded from DB with work_experience count: ' + (data.work_experience?.length || 0))
-    
     // Transform snake_case to camelCase
     return {
       ...data,
@@ -306,8 +304,6 @@ export const cvApi = {
   async updateCV(cvData: Partial<CVData>) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
-    console.log('updateCV: received workExperience:', cvData.workExperience || cvData.work_experience)
     
     // Transform camelCase to snake_case
     const dbData: any = {
@@ -338,8 +334,6 @@ export const cvApi = {
       if (dbData[key] === undefined) delete dbData[key]
     })
     
-    console.log('updateCV: saving to DB with work_experience:', dbData.work_experience)
-    
     try {
       // Försök uppdatera först (om raden finns)
       const { data: existing } = await supabase
@@ -351,32 +345,22 @@ export const cvApi = {
       let result
       if (existing) {
         // Uppdatera befintlig rad
-        alert('Updating existing CV with work_experience count: ' + (dbData.work_experience?.length || 0))
         const { data, error } = await supabase
           .from('cvs')
           .update(dbData)
           .eq('user_id', user.id)
           .select()
           .single()
-        if (error) {
-          alert('Update ERROR: ' + error.message)
-          throw error
-        }
-        alert('Update SUCCESS! Returned work_experience count: ' + (data?.work_experience?.length || 0))
+        if (error) throw error
         result = data
       } else {
         // Skapa ny rad
-        alert('Creating new CV with work_experience count: ' + (dbData.work_experience?.length || 0))
         const { data, error } = await supabase
           .from('cvs')
           .insert(dbData)
           .select()
           .single()
-        if (error) {
-          alert('Insert ERROR: ' + error.message)
-          throw error
-        }
-        alert('Insert SUCCESS! Returned work_experience count: ' + (data?.work_experience?.length || 0))
+        if (error) throw error
         result = data
       }
       

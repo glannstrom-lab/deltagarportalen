@@ -1,176 +1,173 @@
 /**
- * Testkomponent för att diagnostisera CV-sparningsproblem
- * Visar knappar för att testa olika delar av sparflödet
+ * Diagnostik-komponent för CV-sparningsproblem
+ * Visar om allt är OK eller vad som behöver fixas
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { cvApi } from '@/services/supabaseApi'
 import { useAuthStore } from '@/stores/authStore'
+import { supabase } from '@/lib/supabase'
 
 export function CVSaveTest() {
   const { user } = useAuthStore()
-  const [results, setResults] = useState<string[]>([])
-  const [loading, setLoading] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'testing' | 'ok' | 'error'>('idle')
+  const [message, setMessage] = useState('')
+  const [details, setDetails] = useState<string[]>([])
 
-  const addResult = (msg: string) => {
-    setResults(prev => [...prev, `${new Date().toLocaleTimeString()}: ${msg}`])
-  }
+  const runDiagnostic = async () => {
+    setStatus('testing')
+    setDetails([])
+    const logs: string[] = []
 
-  const test1_SaveAndLoad = async () => {
-    setLoading(true)
-    addResult('=== TEST 1: Spara och ladda ===')
-    
     try {
-      // 1. Skapa testdata med 3 jobb
+      // Test 1: Spara 3 jobb
+      logs.push('📝 Test 1: Sparar 3 test-jobb...')
       const testData = {
         firstName: 'Test',
         lastName: 'Testsson',
         workExperience: [
-          { id: '1', company: 'Företag 1', title: 'Jobb 1', startDate: '2020-01', current: false },
-          { id: '2', company: 'Företag 2', title: 'Jobb 2', startDate: '2021-01', current: false },
-          { id: '3', company: 'Företag 3', title: 'Jobb 3', startDate: '2022-01', current: true },
+          { id: '1', company: 'Företag A', title: 'Jobb 1', startDate: '2020-01' },
+          { id: '2', company: 'Företag B', title: 'Jobb 2', startDate: '2021-01' },
+          { id: '3', company: 'Företag C', title: 'Jobb 3', startDate: '2022-01' },
         ]
       }
       
-      addResult(`Sparar ${testData.workExperience.length} jobb...`)
-      
-      // 2. Spara
       await cvApi.updateCV(testData)
-      addResult('✓ Sparat till Supabase')
+      logs.push('✅ Sparat till Supabase')
+
+      // Test 2: Vänta och ladda
+      logs.push('⏳ Väntar 1 sekund...')
+      await new Promise(r => setTimeout(r, 1000))
       
-      // 3. Vänta lite
-      await new Promise(r => setTimeout(r, 500))
-      
-      // 4. Ladda tillbaka
+      logs.push('📥 Laddar tillbaka data...')
       const loaded = await cvApi.getCV()
-      addResult(`✓ Laddat från Supabase: ${loaded?.workExperience?.length || 0} jobb`)
-      
-      // 5. Jämför
-      if (loaded?.workExperience?.length === testData.workExperience.length) {
-        addResult('✅ SUCCESS: Antal jobb matchar!')
-      } else {
-        addResult(`❌ FAIL: Förväntade ${testData.workExperience.length}, fick ${loaded?.workExperience?.length || 0}`)
-      }
-      
-    } catch (err: any) {
-      addResult(`❌ ERROR: ${err.message}`)
-    }
-    
-    setLoading(false)
-  }
+      const loadedCount = loaded?.workExperience?.length || 0
+      logs.push(`📊 Laddade ${loadedCount} jobb`)
 
-  const test2_CheckRawData = async () => {
-    setLoading(true)
-    addResult('=== TEST 2: Kolla rådata i databasen ===')
-    
-    try {
-      const { supabase } = await import('@/lib/supabase')
-      
-      const { data, error } = await supabase
-        .from('cvs')
-        .select('work_experience, updated_at')
-        .single()
-      
-      if (error) {
-        addResult(`❌ Supabase error: ${error.message}`)
+      // Test 3: Jämför
+      if (loadedCount === 3) {
+        setStatus('ok')
+        setMessage('✅ Allt fungerar! Dina CV:n sparas korrekt.')
+        logs.push('✅ TEST KLART: Sparning fungerar!')
       } else {
-        addResult(`✓ Rådata från DB:`)
-        addResult(`  - work_experience: ${JSON.stringify(data.work_experience)?.substring(0, 100)}...`)
-        addResult(`  - count: ${data.work_experience?.length || 0}`)
-        addResult(`  - updated_at: ${data.updated_at}`)
+        setStatus('error')
+        setMessage(`❌ Problem! Sparade 3 jobb men fick ${loadedCount}.`)
+        logs.push('❌ TEST FAILED: Data sparas inte korrekt')
+        
+        // Försök diagnostisera problemet
+        logs.push('')
+        logs.push('🔍 Försöker diagnostisera...')
+        
+        // Kolla direkt i databasen
+        const { data: rawData, error } = await supabase
+          .from('cvs')
+          .select('work_experience')
+          .single()
+        
+        if (error) {
+          logs.push(`❌ Supabase error: ${error.message}`)
+          logs.push('💡 Tips: Kör SQL-filen 20260316_fix_cv_save_issues.sql i Supabase')
+        } else {
+          const rawCount = rawData?.work_experience?.length || 0
+          logs.push(`📊 Rådata i DB: ${rawCount} jobb`)
+          
+          if (rawCount === 0) {
+            logs.push('💡 Problem: work_experience är tom i databasen')
+            logs.push('💡 Lösning: Kör SQL-filen 20260316_fix_cv_save_issues.sql')
+          } else if (rawCount === loadedCount) {
+            logs.push('💡 Problem: Datan sparas men laddas inte korrekt')
+          } else {
+            logs.push('💡 Problem: Inkonsistent data mellan spara/ladda')
+          }
+        }
       }
-    } catch (err: any) {
-      addResult(`❌ ERROR: ${err.message}`)
-    }
-    
-    setLoading(false)
-  }
 
-  const test3_ClearWorkExperience = async () => {
-    setLoading(true)
-    addResult('=== TEST 3: Rensa alla jobb ===')
-    
-    try {
+      // Cleanup: Rensa testdata
+      logs.push('')
+      logs.push('🧹 Rensar testdata...')
       await cvApi.updateCV({ workExperience: [] })
-      addResult('✓ Skickade tom workExperience-array')
-      
-      await new Promise(r => setTimeout(r, 500))
-      
-      const loaded = await cvApi.getCV()
-      addResult(`✓ Efter reload: ${loaded?.workExperience?.length || 0} jobb`)
-      
-      if ((loaded?.workExperience?.length || 0) === 0) {
-        addResult('✅ SUCCESS: Tömdes korrekt!')
-      } else {
-        addResult('❌ FAIL: Jobb finns fortfarande kvar!')
-      }
+      logs.push('✅ Testdata borttaget')
+
     } catch (err: any) {
-      addResult(`❌ ERROR: ${err.message}`)
+      setStatus('error')
+      setMessage('❌ Fel vid test')
+      logs.push(`❌ ERROR: ${err.message}`)
+      logs.push('💡 Tips: Kolla att du är inloggad och har nätverk')
     }
-    
-    setLoading(false)
+
+    setDetails(logs)
   }
 
   if (!user) {
-    return <div className="p-4 bg-amber-50 text-amber-700">Logga in först</div>
+    return (
+      <div className="p-4 bg-amber-50 border border-amber-200 rounded-xl">
+        <p className="text-amber-800">⚠️ Logga in för att testa CV-sparning</p>
+      </div>
+    )
   }
 
   return (
-    <div className="p-6 bg-white rounded-xl border-2 border-slate-200 space-y-4">
-      <h2 className="text-xl font-bold text-slate-800">CV-spar test</h2>
-      <p className="text-sm text-slate-500">
-        User ID: <code className="bg-slate-100 px-2 py-1 rounded">{user.id}</code>
+    <div className="p-5 bg-white rounded-2xl border-2 border-slate-200 shadow-sm">
+      <h3 className="text-lg font-bold text-slate-800 mb-2">CV-spar test</h3>
+      <p className="text-sm text-slate-500 mb-4">
+        Klicka för att testa om arbetslivserfarenhet sparas korrekt.
       </p>
-      
-      <div className="flex flex-wrap gap-2">
-        <button
-          onClick={test1_SaveAndLoad}
-          disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
-        >
-          Test 1: Spara 3 jobb & ladda
-        </button>
-        
-        <button
-          onClick={test2_CheckRawData}
-          disabled={loading}
-          className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:opacity-50"
-        >
-          Test 2: Kolla rådata i DB
-        </button>
-        
-        <button
-          onClick={test3_ClearWorkExperience}
-          disabled={loading}
-          className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:opacity-50"
-        >
-          Test 3: Rensa alla jobb
-        </button>
-        
-        <button
-          onClick={() => setResults([])}
-          className="px-4 py-2 bg-slate-200 text-slate-700 rounded-lg hover:bg-slate-300"
-        >
-          Rensa resultat
-        </button>
-      </div>
-      
-      <div className="mt-4 p-4 bg-slate-50 rounded-lg font-mono text-sm space-y-1 max-h-80 overflow-y-auto">
-        {results.length === 0 ? (
-          <span className="text-slate-400">Klicka på en knapp för att testa...</span>
+
+      <button
+        onClick={runDiagnostic}
+        disabled={status === 'testing'}
+        className={`
+          w-full py-3 px-4 rounded-xl font-medium transition-all
+          ${status === 'testing' 
+            ? 'bg-slate-100 text-slate-400 cursor-wait' 
+            : status === 'ok'
+              ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
+              : status === 'error'
+                ? 'bg-rose-100 text-rose-700 hover:bg-rose-200'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+          }
+        `}
+      >
+        {status === 'testing' ? (
+          <span className="flex items-center justify-center gap-2">
+            <span className="animate-spin">⏳</span> Testar...
+          </span>
+        ) : status === 'idle' ? (
+          '🔍 Kör diagnostik'
         ) : (
-          results.map((r, i) => (
-            <div key={i} className={
-              r.includes('❌') ? 'text-red-600' :
-              r.includes('✅') ? 'text-green-600 font-bold' :
-              r.includes('✓') ? 'text-green-600' :
-              'text-slate-700'
-            }>
-              {r}
-            </div>
-          ))
+          message
         )}
-      </div>
+      </button>
+
+      {details.length > 0 && (
+        <div className="mt-4 p-3 bg-slate-50 rounded-lg text-xs font-mono space-y-1 max-h-60 overflow-y-auto">
+          {details.map((log, i) => (
+            <div 
+              key={i} 
+              className={
+                log.includes('❌') ? 'text-rose-600' :
+                log.includes('✅') ? 'text-emerald-600' :
+                log.includes('💡') ? 'text-blue-600 font-medium' :
+                'text-slate-600'
+              }
+            >
+              {log}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {status === 'error' && (
+        <div className="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <p className="font-medium text-amber-800 mb-2">🛠️ Så här fixar du det:</p>
+          <ol className="list-decimal list-inside text-sm text-amber-700 space-y-1">
+            <li>Gå till <a href="https://app.supabase.com" target="_blank" className="underline">Supabase Dashboard</a></li>
+            <li>Välj ditt projekt → SQL Editor</li>
+            <li>Kör filen: <code className="bg-amber-100 px-1 rounded">20260316_fix_cv_save_issues.sql</code></li>
+            <li>Ladda om denna sida och testa igen</li>
+          </ol>
+        </div>
+      )}
     </div>
   )
 }
