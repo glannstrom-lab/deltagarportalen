@@ -2,7 +2,7 @@
  * Career Page - Main entry with tabs
  * 6 tabs: Utforska, Nätverk, Anpassning, Företag, Karriärplan, Kompetens
  */
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
 import { careerTabs } from '../data/careerTabs'
 
@@ -15,20 +15,10 @@ import PlanTab from './career/PlanTab'
 import SkillsTab from './career/SkillsTab'
 
 export default function CareerPage() {
-  const location = useLocation()
-  
-  // Get current tab label for title
-  const currentTab = careerTabs.find(tab => 
-    location.pathname === tab.path || location.pathname.startsWith(tab.path + '/')
-  )
-  
-  const pageTitle = currentTab?.label || 'Karriär'
-  const pageDescription = currentTab?.description || 'Utforska yrken och planera din framtid'
-
   return (
     <PageLayout
-      title={pageTitle}
-      description={pageDescription}
+      title="Karriär"
+      description="Utforska yrken och planera din framtid"
       customTabs={careerTabs}
       showTabs={true}
       className="space-y-6"

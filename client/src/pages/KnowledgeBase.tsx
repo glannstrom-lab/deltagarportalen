@@ -9,7 +9,7 @@ import { cn } from '@/lib/utils'
 import { Card, LoadingState } from '@/components/ui'
 import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
 import { useEnergyLevel } from '@/hooks/useEnergyLevel'
-import { PageLayout } from '@/components/layout/index'
+import { PageLayout, PageTabs } from '@/components/layout/index'
 
 // Lazy load tab components for better performance
 const ForYouTab = lazy(() => import('@/components/knowledge-base/tabs/ForYouTab'))
@@ -21,13 +21,13 @@ const ToolsTab = lazy(() => import('@/components/knowledge-base/tabs/ToolsTab'))
 const TrendingTab = lazy(() => import('@/components/knowledge-base/tabs/TrendingTab'))
 
 const tabs = [
-  { id: 'for-you', label: 'För dig', param: '', icon: Sparkles },
-  { id: 'getting-started', label: 'Komma igång', param: 'getting-started', icon: Rocket },
-  { id: 'topics', label: 'Ämnen', param: 'topics', icon: BookOpen },
-  { id: 'quick-help', label: 'Snabbhjälp', param: 'quick-help', icon: AlertCircle },
-  { id: 'my-journey', label: 'Min resa', param: 'my-journey', icon: Route },
-  { id: 'tools', label: 'Verktyg', param: 'tools', icon: Wrench },
-  { id: 'trending', label: 'Trendar', param: 'trending', icon: Flame },
+  { id: 'for-you', label: 'För dig', path: '/knowledge-base', icon: Sparkles },
+  { id: 'getting-started', label: 'Komma igång', path: '/knowledge-base?tab=getting-started', icon: Rocket },
+  { id: 'topics', label: 'Ämnen', path: '/knowledge-base?tab=topics', icon: BookOpen },
+  { id: 'quick-help', label: 'Snabbhjälp', path: '/knowledge-base?tab=quick-help', icon: AlertCircle },
+  { id: 'my-journey', label: 'Min resa', path: '/knowledge-base?tab=my-journey', icon: Route },
+  { id: 'tools', label: 'Verktyg', path: '/knowledge-base?tab=tools', icon: Wrench },
+  { id: 'trending', label: 'Trendar', path: '/knowledge-base?tab=trending', icon: Flame },
 ] as const
 
 type TabId = typeof tabs[number]['id']
@@ -221,31 +221,9 @@ export default function KnowledgeBase() {
         </div>
       </div>
       
-      {/* Tab navigation */}
-      <div className="mb-8 border-b border-slate-200">
-        <nav className="flex gap-1 overflow-x-auto scrollbar-hide" aria-label="Tabs">
-          {tabs.map((tab) => {
-            const Icon = tab.icon
-            const isActive = activeTabId === tab.id
-            
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => handleTabClick(tab)}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors whitespace-nowrap bg-transparent",
-                  isActive
-                    ? "border-violet-600 text-violet-600"
-                    : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
-                )}
-              >
-                <Icon className="w-4 h-4" />
-                <span>{tab.label}</span>
-              </button>
-            )
-          })}
-        </nav>
+      {/* Tab navigation - using consistent PageTabs component */}
+      <div className="mb-8">
+        <PageTabs tabs={tabs} />
       </div>
       
       {/* Tab content */}

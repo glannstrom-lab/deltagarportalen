@@ -26,9 +26,20 @@ export function PageTabs({ tabs, className, collapsible = true }: PageTabsProps)
   const location = useLocation()
   const [isExpanded, setIsExpanded] = useState(false)
   
-  const activeTab = tabs.find(tab => 
-    location.pathname === tab.path || location.pathname.startsWith(`${tab.path}/`)
-  )
+  // Helper to check if a tab is active (handles both path and query-based URLs)
+  const isTabActive = (tabPath: string) => {
+    // Handle query-based URLs (e.g., /knowledge-base?tab=topics)
+    if (tabPath.includes('?')) {
+      const [path, query] = tabPath.split('?')
+      const [key, value] = query.split('=')
+      const params = new URLSearchParams(location.search)
+      return location.pathname === path && params.get(key) === value
+    }
+    // Handle regular paths
+    return location.pathname === tabPath || location.pathname.startsWith(`${tabPath}/`)
+  }
+  
+  const activeTab = tabs.find(tab => isTabActive(tab.path))
   
   return (
     <>
@@ -41,7 +52,7 @@ export function PageTabs({ tabs, className, collapsible = true }: PageTabsProps)
       )}>
         {tabs.map((tab) => {
           const Icon = tab.icon
-          const isActive = location.pathname === tab.path || location.pathname.startsWith(`${tab.path}/`)
+          const isActive = isTabActive(tab.path)
           
           return (
             <Link
@@ -116,7 +127,7 @@ export function PageTabs({ tabs, className, collapsible = true }: PageTabsProps)
             <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-xl shadow-slate-200/50 overflow-hidden">
               {tabs.map((tab, index) => {
                 const Icon = tab.icon
-                const isActive = location.pathname === tab.path || location.pathname.startsWith(`${tab.path}/`)
+                const isActive = isTabActive(tab.path)
                 
                 return (
                   <Link
