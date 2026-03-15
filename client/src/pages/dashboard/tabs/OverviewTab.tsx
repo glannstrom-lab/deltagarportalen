@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -10,29 +10,53 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
-import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
-import { CVWidget } from '@/components/dashboard/widgets/CVWidget'
-import { JobSearchWidget } from '@/components/dashboard/widgets/JobSearchWidget'
-import { WellnessWidget } from '@/components/dashboard/widgets/WellnessWidget'
 import { NextStepCard } from '@/components/dashboard/NextStepCard'
-import { SkeletonWidgets, SkeletonNextStep, SkeletonHeader } from '@/components/dashboard/SkeletonWidget'
+import { SkeletonWidgets, SkeletonNextStep } from '@/components/dashboard/SkeletonWidget'
 import { EmptyState } from '@/components/dashboard/EmptyState'
 import { cn } from '@/lib/utils'
 import '@/styles/animations.css'
 
+// Lazy load widgets for better performance
+const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
+const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSearchWidget'))
+const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
+const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWidget'))
+const CoverLetterWidget = lazy(() => import('@/components/dashboard/widgets/CoverLetterWidget'))
+const ApplicationsWidget = lazy(() => import('@/components/dashboard/widgets/ApplicationsWidget'))
+const CareerWidget = lazy(() => import('@/components/dashboard/widgets/CareerWidget'))
+const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget'))
+const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget'))
+const DiaryWidget = lazy(() => import('@/components/dashboard/widgets/DiaryWidget'))
+const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget'))
+
+// Widget lazy loading map
+const WIDGET_COMPONENTS = {
+  cv: CVWidget,
+  jobSearch: JobSearchWidget,
+  wellness: WellnessWidget,
+  quests: QuestsWidget,
+  coverLetter: CoverLetterWidget,
+  applications: ApplicationsWidget,
+  career: CareerWidget,
+  exercises: ExercisesWidget,
+  knowledge: KnowledgeWidget,
+  diary: DiaryWidget,
+  interests: InterestWidget,
+}
+
 // Alla tillgängliga widget-typer
 const ALL_WIDGETS = [
-  { id: 'cv', label: 'CV', component: CVWidget },
-  { id: 'jobSearch', label: 'Jobbsök', component: JobSearchWidget },
-  { id: 'wellness', label: 'Välmående', component: WellnessWidget },
-  { id: 'quests', label: 'Quests', component: QuestsWidget },
-  { id: 'coverLetter', label: 'Personligt brev', component: CoverLetterWidget },
-  { id: 'applications', label: 'Ansökningar', component: ApplicationsWidget },
-  { id: 'career', label: 'Karriär', component: CareerWidget },
-  { id: 'exercises', label: 'Övningar', component: ExercisesWidget },
-  { id: 'knowledge', label: 'Kunskapsbank', component: KnowledgeWidget },
-  { id: 'diary', label: 'Dagbok', component: DiaryWidget },
-  { id: 'interests', label: 'Intressen', component: InterestsWidget },
+  { id: 'cv', label: 'CV' },
+  { id: 'jobSearch', label: 'Jobbsök' },
+  { id: 'wellness', label: 'Välmående' },
+  { id: 'quests', label: 'Quests' },
+  { id: 'coverLetter', label: 'Personligt brev' },
+  { id: 'applications', label: 'Ansökningar' },
+  { id: 'career', label: 'Karriär' },
+  { id: 'exercises', label: 'Övningar' },
+  { id: 'knowledge', label: 'Kunskapsbank' },
+  { id: 'diary', label: 'Dagbok' },
+  { id: 'interests', label: 'Intressen' },
 ] as const
 
 type WidgetId = typeof ALL_WIDGETS[number]['id']
@@ -150,8 +174,9 @@ export default function OverviewTab() {
     setActiveWidgets(activeWidgets.filter(id => id !== widgetId))
   }
 
-  // Render widget based on ID
+  // Render widget based on ID with Suspense
   const renderWidget = (widgetId: WidgetId) => {
+    const WidgetComponent = WIDGET_COMPONENTS[widgetId]
     const widgetData = {
       cv: { hasCV: data?.cv?.hasCV, progress: data?.cv?.progress },
       jobSearch: { savedCount: data?.jobs?.savedCount },
@@ -174,65 +199,37 @@ export default function OverviewTab() {
       interests: { hasResult: data?.interest?.hasResult },
     }
 
-    switch (widgetId) {
-      case 'cv':
-        return <CVWidget {...widgetData.cv} size="small" />
-      case 'jobSearch':
-        return <JobSearchWidget {...widgetData.jobSearch} size="small" />
-      case 'wellness':
-        return <WellnessWidget {...widgetData.wellness} size="small" />
-      case 'quests':
-        return <QuestsWidget {...widgetData.quests} size="small" />
-      case 'coverLetter':
-        return <CoverLetterWidget count={widgetData.coverLetter.count} size="small" />
-      case 'applications':
-        return <ApplicationsWidget total={widgetData.applications.total} size="small" />
-      case 'career':
-        return <CareerWidget exploredCount={widgetData.career.exploredCount} size="small" />
-      case 'exercises':
-        return <ExercisesWidget completedCount={widgetData.exercises.completedCount} size="small" />
-      case 'knowledge':
-        return <KnowledgeWidget readCount={widgetData.knowledge.readCount} size="small" />
-      case 'diary':
-        return <DiaryWidget entriesCount={widgetData.diary.entriesCount} size="small" />
-      case 'interests':
-        return <InterestsWidget hasResult={widgetData.interests.hasResult} size="small" />
-      default:
-        return null
+    const getWidgetProps = () => {
+      switch (widgetId) {
+        case 'cv': return widgetData.cv
+        case 'jobSearch': return widgetData.jobSearch
+        case 'wellness': return widgetData.wellness
+        case 'quests': return widgetData.quests
+        case 'coverLetter': return { count: widgetData.coverLetter.count }
+        case 'applications': return { total: widgetData.applications.total }
+        case 'career': return { exploredCount: widgetData.career.exploredCount }
+        case 'exercises': return { completedCount: widgetData.exercises.completedCount }
+        case 'knowledge': return { readCount: widgetData.knowledge.readCount }
+        case 'diary': return { entriesCount: widgetData.diary.entriesCount }
+        case 'interests': return { hasResult: widgetData.interests.hasResult }
+        default: return {}
+      }
     }
+
+    return (
+      <Suspense fallback={
+        <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
+          <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
+          <div className="h-8 bg-slate-200 rounded w-1/2"></div>
+        </div>
+      }>
+        <WidgetComponent {...getWidgetProps()} size="small" />
+      </Suspense>
+    )
   }
 
   return (
     <div className="space-y-8">
-      {/* Header */}
-      <AnimatedSection delay={0}>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">
-              Hej, {user?.firstName || 'där'}!
-            </h1>
-            <p className="text-base text-slate-500 mt-1">
-              Här är din översikt för idag
-            </p>
-          </div>
-          <Link 
-            to="/insights" 
-            className={cn(
-              "inline-flex items-center justify-center gap-2 px-5 py-2.5",
-              "bg-violet-100 text-violet-700 rounded-xl",
-              "text-sm font-semibold",
-              "hover:bg-violet-200 hover:shadow-lg hover:-translate-y-0.5",
-              "transition-all duration-200"
-            )}
-          >
-            <Sparkles size={18} />
-            <span className="hidden sm:inline">Mina insikter</span>
-            <span className="sm:hidden">Insikter</span>
-            <ChevronRight size={18} className="hidden sm:block" />
-          </Link>
-        </div>
-      </AnimatedSection>
-
       {/* Nästa steg - Kollapsad som standard */}
       <AnimatedSection delay={100}>
         {data && <NextStepCard data={data} />}
