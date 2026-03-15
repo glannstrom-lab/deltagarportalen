@@ -13,6 +13,7 @@ import { useDashboardData } from '@/hooks/useDashboardData'
 import { NextStepCard } from '@/components/dashboard/NextStepCard'
 import { SkeletonWidgets, SkeletonNextStep } from '@/components/dashboard/SkeletonWidget'
 import { EmptyState } from '@/components/dashboard/EmptyState'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
 import '@/styles/animations.css'
 
@@ -227,14 +228,20 @@ export default function OverviewTab() {
     }
 
     return (
-      <Suspense fallback={
-        <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
-          <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
-          <div className="h-8 bg-slate-200 rounded w-1/2"></div>
+      <ErrorBoundary fallback={
+        <div className="bg-white rounded-2xl border-2 border-slate-200 p-5">
+          <p className="text-sm text-slate-500">Kunde inte ladda widget</p>
         </div>
       }>
-        <WidgetComponent {...getWidgetProps()} size="small" />
-      </Suspense>
+        <Suspense fallback={
+          <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
+            <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
+            <div className="h-8 bg-slate-200 rounded w-1/2"></div>
+          </div>
+        }>
+          <WidgetComponent {...getWidgetProps()} size="small" />
+        </Suspense>
+      </ErrorBoundary>
     )
   }
 
