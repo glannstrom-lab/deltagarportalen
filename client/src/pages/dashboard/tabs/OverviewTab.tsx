@@ -22,6 +22,10 @@ const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWid
 const CoverLetterWidget = lazy(() => import('@/components/dashboard/widgets/CoverLetterWidget'))
 const ApplicationsWidget = lazy(() => import('@/components/dashboard/widgets/ApplicationsWidget'))
 const CareerWidget = lazy(() => import('@/components/dashboard/widgets/CareerWidget'))
+const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget'))
+const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget'))
+const DiaryWidget = lazy(() => import('@/components/dashboard/widgets/DiaryWidget'))
+const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget'))
 
 // Widget lazy loading map
 const WIDGET_COMPONENTS = {
@@ -32,9 +36,13 @@ const WIDGET_COMPONENTS = {
   coverLetter: CoverLetterWidget,
   applications: ApplicationsWidget,
   career: CareerWidget,
+  exercises: ExercisesWidget,
+  knowledge: KnowledgeWidget,
+  diary: DiaryWidget,
+  interests: InterestWidget,
 }
 
-type WidgetId = 'cv' | 'jobSearch' | 'wellness' | 'quests' | 'coverLetter' | 'applications' | 'career'
+type WidgetId = 'cv' | 'jobSearch' | 'wellness' | 'quests' | 'coverLetter' | 'applications' | 'career' | 'exercises' | 'knowledge' | 'diary' | 'interests'
 
 // Animation wrapper component
 function AnimatedSection({ 
@@ -100,7 +108,7 @@ export default function OverviewTab() {
   const { data, loading } = useDashboardData()
   
   // Default widgets
-  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests', 'coverLetter', 'applications', 'career'])
+  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests', 'coverLetter', 'applications', 'career', 'exercises', 'knowledge', 'diary', 'interests'])
 
   // Loading state
   if (loading) {
@@ -147,6 +155,15 @@ export default function OverviewTab() {
         case 'coverLetter': return { count: data?.coverLetters?.count || 0 }
         case 'applications': return { total: data?.applications?.total || 0 }
         case 'career': return { exploredCount: data?.interest?.hasResult ? 1 : 0 }
+        case 'exercises': return { completedCount: data?.exercises?.completedExercises || 0 }
+        case 'knowledge': return { readCount: data?.knowledge?.readCount || 0 }
+        case 'diary': return { 
+          upcomingEvents: data?.calendar?.upcomingEvents,
+          eventsThisWeek: data?.calendar?.eventsThisWeek,
+          hasConsultantMeeting: data?.calendar?.hasConsultantMeeting,
+          streakDays: data?.activity?.streakDays
+        }
+        case 'interests': return { hasResult: data?.interest?.hasResult }
         default: return {}
       }
     }
