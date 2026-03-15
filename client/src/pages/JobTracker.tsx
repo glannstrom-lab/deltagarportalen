@@ -1,40 +1,47 @@
 /**
- * JobTracker Page - Main entry with tabs
- * 2 tabs: Ansökningar, Analys
+ * JobTracker Page - Main entry with 5 tabs
+ * Sök jobb, Sparade, Ansökningar, Bevakningar, Matchningar
  */
-import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { lazy, Suspense } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
+import { LoadingState } from '@/components/ui'
 import { jobTrackerTabs } from '../data/jobTrackerTabs'
 
-// Tab components
-import ApplicationsTab from './job-tracker/ApplicationsTab'
-import AnalyticsTab from './job-tracker/AnalyticsTab'
+// Lazy load tab components
+const SearchTab = lazy(() => import('./job-tracker/SearchTab'))
+const SavedJobsTab = lazy(() => import('./job-tracker/SavedJobsTab'))
+const ApplicationsTab = lazy(() => import('./job-tracker/ApplicationsTab'))
+const AlertsTab = lazy(() => import('./job-tracker/AlertsTab'))
+const MatchesTab = lazy(() => import('./job-tracker/MatchesTab'))
+
+function TabLoading() {
+  return (
+    <div className="flex items-center justify-center py-12">
+      <LoadingState title="Laddar..." size="lg" />
+    </div>
+  )
+}
 
 export default function JobTrackerPage() {
-  const location = useLocation()
-  
-  // Get current tab label for title
-  const currentTab = jobTrackerTabs.find(tab => 
-    location.pathname === tab.path || location.pathname.startsWith(tab.path + '/')
-  )
-  
-  const pageTitle = currentTab?.label || 'Ansökningar'
-  const pageDescription = currentTab?.description || 'Håll koll på dina jobbansökningar'
-
   return (
     <PageLayout
-      title={pageTitle}
-      description={pageDescription}
-      customTabs={jobTrackerTabs}
+      title="Sök jobb"
+      subtitle="Hitta, spara och spåra jobbansökningar"
+      tabs={jobTrackerTabs}
       tabVariant="glass"
-      showTabs={true}
-      className="space-y-6"
     >
-      <Routes>
-        <Route path="/" element={<ApplicationsTab />} />
-        <Route path="/analytics" element={<AnalyticsTab />} />
-        <Route path="*" element={<Navigate to="/job-tracker" replace />} />
-      </Routes>
+      <Suspense fallback={<TabLoading />}>
+        <Routes>
+          <Route index element={<SearchTab />} />
+          <Route path="saved" element={<SavedJobsTab />} />
+          <Route path="applications" element={<ApplicationsTab />} />
+          <Route path="alerts" element={<AlertsTab />} />
+          <Route path="matches" element={<MatchesTab />} />
+          <Route path="analytics" element={<Navigate to="/job-tracker" replace />} />
+          <Route path="*" element={<Navigate to="/job-tracker" replace />} />
+        </Routes>
+      </Suspense>
     </PageLayout>
   )
 }

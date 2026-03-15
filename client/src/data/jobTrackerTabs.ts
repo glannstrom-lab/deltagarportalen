@@ -1,28 +1,46 @@
 /**
  * JobTracker Page Tabs Configuration
- * 2 tabs: Ansökningar, Analys
+ * 5 tabs: Sök jobb, Sparade, Ansökningar, Bevakningar, Matchningar
  */
 
 import type { Tab } from '@/components/layout/PageTabs'
 import {
-  List,
-  LineChart,
+  Search,
+  Bookmark,
+  ClipboardList,
+  Bell,
+  Sparkles,
 } from 'lucide-react'
 
 export const jobTrackerTabs: Tab[] = [
-  { 
-    id: 'applications', 
-    label: 'Ansökningar', 
-    path: '/job-tracker', 
-    icon: List,
-    description: 'Hantera dina jobbansökningar'
+  {
+    id: 'search',
+    label: 'Sök jobb',
+    path: '/job-tracker',
+    icon: Search,
   },
-  { 
-    id: 'analytics', 
-    label: 'Analys', 
-    path: '/job-tracker/analytics', 
-    icon: LineChart,
-    description: 'Insikter om ditt jobbsökande',
-    badge: 'Ny!'
+  {
+    id: 'saved',
+    label: 'Sparade',
+    path: '/job-tracker/saved',
+    icon: Bookmark,
+  },
+  {
+    id: 'applications',
+    label: 'Ansökningar',
+    path: '/job-tracker/applications',
+    icon: ClipboardList,
+  },
+  {
+    id: 'alerts',
+    label: 'Bevakningar',
+    path: '/job-tracker/alerts',
+    icon: Bell,
+  },
+  {
+    id: 'matches',
+    label: 'Matchningar',
+    path: '/job-tracker/matches',
+    icon: Sparkles,
   },
 ]
