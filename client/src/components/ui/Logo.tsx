@@ -43,7 +43,7 @@ export function Logo({
     return (
       <img 
         src="/logo-icon.png" 
-        alt="Deltagarportalen"
+        alt="Jobin"
         className={cn(
           'rounded-lg object-contain',
           sizes.container,
@@ -63,7 +63,7 @@ export function Logo({
         />
         {showText && (
           <span className="font-bold text-base tracking-tight text-white">
-            Deltagarportalen
+            Jobin
           </span>
         )}
       </div>
@@ -74,8 +74,8 @@ export function Logo({
   return (
     <div className={cn('flex flex-col items-center', className)}>
       <img 
-        src="/logo-deltagarportalen.png" 
-        alt="Deltagarportalen"
+        src="/logo-jobin.png" 
+        alt="Jobin"
         className={cn(
           'rounded-2xl shadow-lg object-contain bg-white',
           sizes.container
@@ -84,10 +84,10 @@ export function Logo({
       {showText && (
         <div className="mt-4 text-center">
           <h1 className={cn('font-bold text-white', sizes.text)}>
-            Deltagarportalen
+            Jobin
           </h1>
           <p className="text-teal-200 mt-1 text-sm">
-            Din väg till nytt jobb
+            Vägen till nytt jobb
           </p>
         </div>
       )}

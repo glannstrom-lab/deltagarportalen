@@ -85,11 +85,11 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center mb-8">
           <img 
-            src="/logo-deltagarportalen.png" 
-            alt="Deltagarportalen" 
+            src="/logo-jobin.png" 
+            alt="Jobin" 
             className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
           />
-          <h1 className="text-2xl font-bold text-white">Deltagarportalen</h1>
+          <h1 className="text-2xl font-bold text-white">Jobin</h1>
           <p className="text-teal-200 mt-1">Din väg till nytt jobb</p>
         </div>
 
@@ -222,7 +222,7 @@ export default function Login() {
         {/* Back Link */}
         <div className="mt-6 text-center">
           <Link to="/" className="text-indigo-200 hover:text-white text-sm">
-            ← Tillbaka till startsidan
+            ← Tillbaka till Jobin
           </Link>
         </div>
       </div>

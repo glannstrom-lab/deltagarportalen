@@ -9,7 +9,7 @@ const STATIC_ASSETS = [
   '/index.html',
   '/manifest.json',
   '/logo-icon.png',
-  '/logo-deltagarportalen.png'
+  '/logo-jobin.png'
 ]
 
 // Installera service worker

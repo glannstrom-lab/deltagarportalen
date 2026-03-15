@@ -1,6 +1,6 @@
 {
-  "name": "Deltagarportalen",
-  "short_name": "Deltagarportalen",
+  "name": "Jobin - Vägen till nytt jobb",
+  "short_name": "Jobin",
   "description": "Din personliga portal för jobbsökande - stöd och verktyg för din väg till nytt jobb",
   "start_url": "/",
   "display": "standalone",
@@ -15,7 +15,7 @@
       "type": "image/png"
     },
     {
-      "src": "/logo-deltagarportalen.png",
+      "src": "/logo-jobin.png",
       "sizes": "512x512",
       "type": "image/png"
     }

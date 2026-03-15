@@ -130,7 +130,7 @@ export function Sidebar() {
               className="w-8 h-8 rounded-lg shadow-md transition-transform duration-150 group-hover:scale-105 object-contain bg-white"
             />
             {isExpanded && (
-              <span className="text-white font-bold text-base tracking-tight">Deltagarportalen</span>
+              <span className="text-white font-bold text-base tracking-tight">Jobin</span>
             )}
           </Link>
 

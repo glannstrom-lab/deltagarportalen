@@ -214,10 +214,10 @@ export default function Landing() {
   const faqs = [
     {
       question: "Kostar det verkligen ingenting?",
-      answer: "Ja, Deltagarportalen är helt gratis för dig som söker jobb. Inga dolda avgifter, inga premiumnivåer – alla funktioner är tillgängliga för alla. Detta är möjligt tack vare samarbete med Arbetsförmedlingen och kommuner."
+      answer: "Ja, Jobin är helt gratis för dig som söker jobb. Inga dolda avgifter, inga premiumnivåer – alla funktioner är tillgängliga för alla. Detta är möjligt tack vare samarbete med Arbetsförmedlingen och kommuner."
     },
     {
-      question: "Jag har sökt jobb länge utan resultat. Kan Deltagarportalen verkligen hjälpa mig?",
+      question: "Jag har sökt jobb länge utan resultat. Kan Jobin verkligen hjälpa mig?",
       answer: "Absolut. Många av våra användare har varit långtidsarbetslösa och har med hjälp av våra strukturerade verktyg och personliga vägledning tagit sig tillbaka till arbete. Du är inte ensam, och det finns vägar framåt. Verktygen är speciellt utformade för att ge stöd även när det känns tufft."
     },
     {
@@ -244,7 +244,7 @@ export default function Landing() {
       gradient: "bg-gradient-to-br from-teal-500 to-teal-600"
     },
     {
-      quote: "Som arbetskonsulent använder jag Deltagarportalen dagligen med mina deltagare. Det sparar tid och ger dem verktyg de faktiskt kan använda själva.",
+      quote: "Som arbetskonsulent använder jag Jobin dagligen med mina deltagare. Det sparar tid och ger dem verktyg de faktiskt kan använda själva.",
       name: "Sofia",
       role: "Arbetskonsulent i Stockholm",
       gradient: "bg-gradient-to-br from-orange-500 to-orange-600"
@@ -270,7 +270,7 @@ export default function Landing() {
                 alt="" 
                 className="w-10 h-10 rounded-xl shadow-lg group-hover:shadow-xl transition-shadow object-contain bg-white"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">Deltagarportalen</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">Jobin</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -646,13 +646,13 @@ export default function Landing() {
                   Har du frågor eller behöver hjälp? Tveka inte att kontakta oss. Vi svarar vanligtvis inom 24 timmar.
                 </p>
                 <div className="space-y-4">
-                  <a href="mailto:support@deltagarportalen.se" className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow group">
+                  <a href="mailto:support@jobin.se" className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow group">
                     <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
                       <Mail className="w-6 h-6 text-indigo-600" />
                     </div>
                     <div>
                       <p className="font-medium text-slate-800">E-post</p>
-                      <p className="text-slate-600">support@deltagarportalen.se</p>
+                      <p className="text-slate-600">support@jobin.se</p>
                     </div>
                   </a>
                   <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
@@ -716,10 +716,10 @@ export default function Landing() {
                 <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
                   J
                 </div>
-                <span className="text-white font-bold text-xl">Deltagarportalen</span>
+                <span className="text-white font-bold text-xl">Jobin</span>
               </div>
               <p className="text-sm leading-relaxed mb-6">
-                Deltagarportalen är en gratis plattform för arbetssökande. Vi tror att alla förtjänar en ärlig chans på arbetsmarknaden.
+                Jobin är en gratis plattform för arbetssökande. Vi tror att alla förtjänar en ärlig chans på arbetsmarknaden.
               </p>
               <div className="flex gap-4">
                 <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-slate-700 transition-colors" aria-label="Twitter">
@@ -765,9 +765,9 @@ export default function Landing() {
               </ul>
             </div>
             
-            {/* Om Deltagarportalen */}
+            {/* Om Jobin */}
             <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Om Deltagarportalen</h4>
+              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Om Jobin</h4>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
@@ -776,7 +776,7 @@ export default function Landing() {
                   </Link>
                 </li>
                 <li>
-                  <a href="mailto:support@deltagarportalen.se" className="hover:text-white transition-colors flex items-center gap-1 group">
+                  <a href="mailto:support@jobin.se" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                     Kontakt
                   </a>
@@ -801,7 +801,7 @@ export default function Landing() {
               <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Hjälp</h4>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <a href="mailto:support@deltagarportalen.se" className="hover:text-white transition-colors flex items-center gap-1 group">
+                  <a href="mailto:support@jobin.se" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                     Support
                   </a>
@@ -842,7 +842,7 @@ export default function Landing() {
           </div>
           
           <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-            <p>&copy; 2026 Deltagarportalen. Alla rättigheter förbehållna.</p>
+            <p>&copy; 2026 Jobin. Alla rättigheter förbehållna.</p>
             <p className="flex items-center gap-2">
               Skapad med 
               <Heart className="w-4 h-4 text-red-500 fill-red-500" /> 

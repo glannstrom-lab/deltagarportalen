@@ -146,7 +146,7 @@ export function TopBar() {
           <Link to="/" className="lg:hidden flex items-center gap-2">
             <img 
               src="/logo-icon.png" 
-              alt="Deltagarportalen" 
+              alt="Jobin" 
               className="w-8 h-8 rounded-xl object-contain bg-white shadow-md"
             />
           </Link>
