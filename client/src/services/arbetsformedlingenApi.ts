@@ -50,6 +50,7 @@ export interface PlatsbankenJob {
   };
   publication_date: string;
   last_publication_date: string;
+  application_deadline?: string;
   salary_type?: {
     label: string;
   };
@@ -63,6 +64,9 @@ export interface JobSearchResponse {
   total: { value: number };
   hits: PlatsbankenJob[];
 }
+
+// Alias for backwards compatibility
+export type JobAd = PlatsbankenJob;
 
 // Populära sökningar
 export const POPULAR_QUERIES = [
@@ -407,14 +411,181 @@ export function analyzeSkillGap(userSkills: string[], jobRequirements: string[])
 // Alias för bakåtkompatibilitet
 export const searchPlatsbanken = searchJobs;
 
+// ============== MUNICIPALITIES & REGIONS ==============
+
+// Regions (Län)
+const SWEDISH_REGIONS = [
+  { concept_id: 'SE110', label: 'Stockholms län' },
+  { concept_id: 'SE121', label: 'Uppsala län' },
+  { concept_id: 'SE122', label: 'Södermanlands län' },
+  { concept_id: 'SE123', label: 'Östergötlands län' },
+  { concept_id: 'SE124', label: 'Örebro län' },
+  { concept_id: 'SE125', label: 'Västmanlands län' },
+  { concept_id: 'SE211', label: 'Jönköpings län' },
+  { concept_id: 'SE212', label: 'Kronobergs län' },
+  { concept_id: 'SE213', label: 'Kalmar län' },
+  { concept_id: 'SE214', label: 'Gotlands län' },
+  { concept_id: 'SE221', label: 'Blekinge län' },
+  { concept_id: 'SE224', label: 'Skåne län' },
+  { concept_id: 'SE231', label: 'Hallands län' },
+  { concept_id: 'SE232', label: 'Västra Götalands län' },
+  { concept_id: 'SE311', label: 'Värmlands län' },
+  { concept_id: 'SE312', label: 'Dalarnas län' },
+  { concept_id: 'SE313', label: 'Gävleborgs län' },
+  { concept_id: 'SE321', label: 'Västernorrlands län' },
+  { concept_id: 'SE322', label: 'Jämtlands län' },
+  { concept_id: 'SE331', label: 'Västerbottens län' },
+  { concept_id: 'SE332', label: 'Norrbottens län' },
+];
+
+// Popular municipalities
+const SWEDISH_MUNICIPALITIES = [
+  { concept_id: 'stockholm', label: 'Stockholm' },
+  { concept_id: 'goteborg', label: 'Göteborg' },
+  { concept_id: 'malmo', label: 'Malmö' },
+  { concept_id: 'uppsala', label: 'Uppsala' },
+  { concept_id: 'linkoping', label: 'Linköping' },
+  { concept_id: 'vasteras', label: 'Västerås' },
+  { concept_id: 'orebro', label: 'Örebro' },
+  { concept_id: 'helsingborg', label: 'Helsingborg' },
+  { concept_id: 'norrkoping', label: 'Norrköping' },
+  { concept_id: 'jonkoping', label: 'Jönköping' },
+  { concept_id: 'umea', label: 'Umeå' },
+  { concept_id: 'lund', label: 'Lund' },
+  { concept_id: 'boras', label: 'Borås' },
+  { concept_id: 'sundsvall', label: 'Sundsvall' },
+  { concept_id: 'gavle', label: 'Gävle' },
+  { concept_id: 'eskilstuna', label: 'Eskilstuna' },
+  { concept_id: 'karlstad', label: 'Karlstad' },
+  { concept_id: 'vaxjo', label: 'Växjö' },
+  { concept_id: 'halmstad', label: 'Halmstad' },
+  { concept_id: 'ostersund', label: 'Östersund' },
+  { concept_id: 'trollhattan', label: 'Trollhättan' },
+  { concept_id: 'lulea', label: 'Luleå' },
+  { concept_id: 'kalmar', label: 'Kalmar' },
+  { concept_id: 'falun', label: 'Falun' },
+  { concept_id: 'karlskrona', label: 'Karlskrona' },
+  { concept_id: 'kristianstad', label: 'Kristianstad' },
+  { concept_id: 'skelleftea', label: 'Skellefteå' },
+  { concept_id: 'uddevalla', label: 'Uddevalla' },
+  { concept_id: 'nykoping', label: 'Nyköping' },
+  { concept_id: 'molndal', label: 'Mölndal' },
+  { concept_id: 'sodertalje', label: 'Södertälje' },
+  { concept_id: 'taby', label: 'Täby' },
+  { concept_id: 'solna', label: 'Solna' },
+  { concept_id: 'nacka', label: 'Nacka' },
+  { concept_id: 'sollentuna', label: 'Sollentuna' },
+  { concept_id: 'sundbyberg', label: 'Sundbyberg' },
+  { concept_id: 'huddinge', label: 'Huddinge' },
+  { concept_id: 'haninge', label: 'Haninge' },
+];
+
+export async function getRegions(): Promise<{ success: boolean; data: typeof SWEDISH_REGIONS }> {
+  return { success: true, data: SWEDISH_REGIONS };
+}
+
+export async function getMunicipalities(): Promise<{ success: boolean; data: typeof SWEDISH_MUNICIPALITIES }> {
+  return { success: true, data: SWEDISH_MUNICIPALITIES };
+}
+
+// ============== SAFE SEARCH WRAPPER ==============
+
+export interface SearchFilters {
+  q?: string;
+  query?: string;
+  municipality?: string;
+  region?: string;
+  employment_type?: string;
+  employmentType?: string;
+  experience?: boolean | null;
+  remote?: boolean | null;
+  publishedWithin?: 'all' | 'today' | 'week' | 'month';
+  limit?: number;
+  offset?: number;
+}
+
+export interface SafeSearchResult {
+  success: boolean;
+  data: JobSearchResponse;
+  error?: string;
+  fromCache?: boolean;
+  isMockData?: boolean;
+}
+
+export async function searchJobsSafe(filters: SearchFilters): Promise<SafeSearchResult> {
+  try {
+    // Map filter names to what the API expects
+    const params: SearchParams = {
+      query: filters.q || filters.query,
+      municipality: filters.municipality,
+      region: filters.region,
+      employmentType: filters.employment_type || filters.employmentType,
+      publishedWithin: filters.publishedWithin === 'all' ? undefined : filters.publishedWithin,
+      limit: filters.limit || 50,
+    };
+
+    const result = await searchJobs(params);
+
+    // Apply local filtering for experience and remote
+    let filteredHits = result.hits;
+
+    // Filter for "no experience required" if specified
+    if (filters.experience === false) {
+      filteredHits = filteredHits.filter((job: any) => {
+        // Check if job description mentions no experience required
+        const desc = (job.description?.text || '').toLowerCase();
+        return desc.includes('ingen erfarenhet') ||
+               desc.includes('inga krav på erfarenhet') ||
+               desc.includes('nybörjare') ||
+               desc.includes('nyexaminerad') ||
+               !desc.includes('erfarenhet krävs');
+      });
+    }
+
+    // Filter for remote work if specified
+    if (filters.remote === true) {
+      filteredHits = filteredHits.filter((job: any) => {
+        const desc = (job.description?.text || '').toLowerCase();
+        return desc.includes('distans') ||
+               desc.includes('remote') ||
+               desc.includes('hemifrån') ||
+               job.remote_work?.option === 'yes';
+      });
+    }
+
+    return {
+      success: true,
+      data: {
+        total: { value: filteredHits.length },
+        hits: filteredHits,
+      },
+      fromCache: false,
+      isMockData: false,
+    };
+  } catch (error) {
+    console.error('[AF API] Safe search error:', error);
+    return {
+      success: false,
+      data: { total: { value: 0 }, hits: [] },
+      error: 'Kunde inte söka jobb. Försök igen senare.',
+      isMockData: true,
+    };
+  }
+}
+
+// ============== EXPORT ==============
+
 // Exportera allt
 export const afApi = {
   searchJobs,
+  searchJobsSafe,
   searchPlatsbanken,
   getJobDetails,
   getAutocomplete,
   getMarketStats: getMarketInsights,
   analyzeSkillGap,
+  getMunicipalities,
+  getRegions,
 };
 
 export default {

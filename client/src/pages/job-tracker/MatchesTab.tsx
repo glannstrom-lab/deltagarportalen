@@ -17,6 +17,7 @@ import {
   AlertCircle,
   ArrowRight,
   CheckCircle2,
+  Search,
 } from 'lucide-react'
 import { Button, LoadingState } from '@/components/ui'
 import { interestGuideApi, platsbankenApi } from '@/services/cloudStorage'

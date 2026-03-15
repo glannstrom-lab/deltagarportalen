@@ -16,6 +16,7 @@ import {
   AlertCircle,
   Briefcase,
   X,
+  Clock,
 } from 'lucide-react'
 import { afApi, type JobAd, type SearchFilters } from '@/services/arbetsformedlingenApi'
 import { JobCard } from '@/components/jobs/JobCard'
@@ -29,6 +30,7 @@ interface FilterState {
   employment_type: string
   experience: boolean | null
   remote: boolean | null
+  publishedWithin: 'all' | 'today' | 'week' | 'month'
 }
 
 export default function SearchTab() {
@@ -39,6 +41,7 @@ export default function SearchTab() {
     employment_type: '',
     experience: null,
     remote: null,
+    publishedWithin: 'all',
   })
 
   const [jobs, setJobs] = useState<JobAd[]>([])
@@ -195,6 +198,7 @@ export default function SearchTab() {
       employment_type: '',
       experience: null,
       remote: null,
+      publishedWithin: 'all',
     })
     setJobs([])
     setTotalJobs(0)
@@ -202,12 +206,29 @@ export default function SearchTab() {
     setIsMockData(false)
   }
 
+  // Count active filters
+  const activeFilterCount = [
+    filters.region,
+    filters.municipality,
+    filters.employment_type,
+    filters.experience !== null,
+    filters.remote !== null,
+    filters.publishedWithin !== 'all',
+  ].filter(Boolean).length
+
   const employmentTypes = [
     { value: '', label: 'Alla typer' },
     { value: 'Vanlig anställning', label: 'Tillsvidare' },
     { value: 'Tidsbegränsad anställning', label: 'Visstid' },
     { value: 'Heltid', label: 'Heltid' },
     { value: 'Deltid', label: 'Deltid' },
+  ]
+
+  const publishedWithinOptions = [
+    { value: 'all', label: 'Alla' },
+    { value: 'today', label: 'Idag' },
+    { value: 'week', label: 'Senaste veckan' },
+    { value: 'month', label: 'Senaste månaden' },
   ]
 
   const quickSearchTerms = ['Undersköterska', 'Lagerarbetare', 'Kundtjänst', 'Säljare', 'Kock']
@@ -247,10 +268,16 @@ export default function SearchTab() {
           <Button
             variant="outline"
             onClick={() => setShowFilters(!showFilters)}
-            className={showFilters ? 'bg-indigo-50 border-indigo-200' : ''}
+            className={`relative ${showFilters ? 'bg-indigo-50 border-indigo-200' : ''}`}
           >
             <Filter className="w-4 h-4 mr-2" />
             Filter
+            {activeFilterCount > 0 && (
+              <span className="absolute -top-2 -right-2 w-5 h-5 bg-indigo-600 text-white text-xs rounded-full flex items-center justify-center">
+                {activeFilterCount}
+              </span>
+            )}
+            <ChevronDown className={`w-4 h-4 ml-1 transition-transform ${showFilters ? 'rotate-180' : ''}`} />
           </Button>
 
           <Button onClick={handleSearch} disabled={loading}>
@@ -260,86 +287,186 @@ export default function SearchTab() {
 
         {/* Filters Panel */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-100">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Län</label>
-                <select
-                  value={filters.region}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, region: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="">Alla län</option>
-                  {regions.map((region) => (
-                    <option key={region.concept_id} value={region.label}>
-                      {region.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          <div className="mt-4 pt-4 border-t border-gray-100 animate-in slide-in-from-top-2 duration-200">
+            {/* Location Filters */}
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                Plats
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Län</label>
+                  <select
+                    value={filters.region}
+                    onChange={(e) => setFilters((prev) => ({ ...prev, region: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                  >
+                    <option value="">Alla län</option>
+                    {regions.map((region) => (
+                      <option key={region.concept_id} value={region.label}>
+                        {region.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Kommun</label>
-                <select
-                  value={filters.municipality}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, municipality: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                >
-                  <option value="">Alla kommuner</option>
-                  {municipalities.map((mun) => (
-                    <option key={mun.concept_id} value={mun.label}>
-                      {mun.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Anställningstyp</label>
-                <select
-                  value={filters.employment_type}
-                  onChange={(e) => setFilters((prev) => ({ ...prev, employment_type: e.target.value }))}
-                  className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
-                >
-                  {employmentTypes.map((type) => (
-                    <option key={type.value} value={type.value}>
-                      {type.label}
-                    </option>
-                  ))}
-                </select>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Kommun</label>
+                  <select
+                    value={filters.municipality}
+                    onChange={(e) => setFilters((prev) => ({ ...prev, municipality: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                  >
+                    <option value="">Alla kommuner</option>
+                    {municipalities.map((mun) => (
+                      <option key={mun.concept_id} value={mun.label}>
+                        {mun.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </div>
             </div>
 
-            <div className="flex flex-wrap gap-4 mt-4">
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={filters.experience === false}
-                  onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, experience: e.target.checked ? false : null }))
-                  }
-                  className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
-                />
-                <span className="text-sm text-gray-700">Ingen erfarenhet krävs</span>
-              </label>
+            {/* Job Type Filters */}
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2 flex items-center gap-1">
+                <Briefcase className="w-3 h-3" />
+                Jobbtyp
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Anställningstyp</label>
+                  <select
+                    value={filters.employment_type}
+                    onChange={(e) => setFilters((prev) => ({ ...prev, employment_type: e.target.value }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                  >
+                    {employmentTypes.map((type) => (
+                      <option key={type.value} value={type.value}>
+                        {type.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              <label className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={filters.remote === true}
-                  onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, remote: e.target.checked ? true : null }))
-                  }
-                  className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
-                />
-                <span className="text-sm text-gray-700">Distansarbete möjligt</span>
-              </label>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Publicerad</label>
+                  <select
+                    value={filters.publishedWithin}
+                    onChange={(e) => setFilters((prev) => ({ ...prev, publishedWithin: e.target.value as FilterState['publishedWithin'] }))}
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white"
+                  >
+                    {publishedWithinOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
             </div>
 
-            <div className="flex justify-end mt-4 pt-4 border-t border-gray-100">
-              <button onClick={clearFilters} className="text-sm text-gray-500 hover:text-gray-700">
-                Rensa filter
-              </button>
+            {/* Checkbox Filters */}
+            <div className="mb-4">
+              <h4 className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">
+                Ytterligare filter
+              </h4>
+              <div className="flex flex-wrap gap-3">
+                <label className={`flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border transition-colors ${
+                  filters.experience === false
+                    ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={filters.experience === false}
+                    onChange={(e) =>
+                      setFilters((prev) => ({ ...prev, experience: e.target.checked ? false : null }))
+                    }
+                    className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
+                  />
+                  <span className="text-sm">Ingen erfarenhet krävs</span>
+                </label>
+
+                <label className={`flex items-center gap-2 cursor-pointer px-3 py-2 rounded-lg border transition-colors ${
+                  filters.remote === true
+                    ? 'bg-green-50 border-green-200 text-green-700'
+                    : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={filters.remote === true}
+                    onChange={(e) =>
+                      setFilters((prev) => ({ ...prev, remote: e.target.checked ? true : null }))
+                    }
+                    className="w-4 h-4 text-green-600 rounded focus:ring-green-500"
+                  />
+                  <span className="text-sm">Distansarbete möjligt</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Active Filters Summary & Clear */}
+            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex flex-wrap gap-2">
+                {filters.region && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-sm text-gray-600">
+                    <MapPin className="w-3 h-3" />
+                    {filters.region}
+                    <button
+                      onClick={() => setFilters(prev => ({ ...prev, region: '' }))}
+                      className="ml-1 hover:text-gray-900"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {filters.municipality && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-sm text-gray-600">
+                    {filters.municipality}
+                    <button
+                      onClick={() => setFilters(prev => ({ ...prev, municipality: '' }))}
+                      className="ml-1 hover:text-gray-900"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {filters.employment_type && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-sm text-gray-600">
+                    <Briefcase className="w-3 h-3" />
+                    {employmentTypes.find(t => t.value === filters.employment_type)?.label}
+                    <button
+                      onClick={() => setFilters(prev => ({ ...prev, employment_type: '' }))}
+                      className="ml-1 hover:text-gray-900"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+                {filters.publishedWithin !== 'all' && (
+                  <span className="inline-flex items-center gap-1 px-2 py-1 bg-gray-100 rounded text-sm text-gray-600">
+                    <Calendar className="w-3 h-3" />
+                    {publishedWithinOptions.find(o => o.value === filters.publishedWithin)?.label}
+                    <button
+                      onClick={() => setFilters(prev => ({ ...prev, publishedWithin: 'all' }))}
+                      className="ml-1 hover:text-gray-900"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                )}
+              </div>
+              {activeFilterCount > 0 && (
+                <button
+                  onClick={clearFilters}
+                  className="text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                >
+                  Rensa alla filter
+                </button>
+              )}
             </div>
           </div>
         )}
