@@ -82,34 +82,29 @@ export default function OverviewTab() {
   const [showWidgetMenu, setShowWidgetMenu] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [prefsLoaded, setPrefsLoaded] = useState(false)
+  const [saveError, setSaveError] = useState<string | null>(null)
 
   // Load widget preferences from Supabase
   useEffect(() => {
-    if (!user?.id || prefsLoaded) {
-      console.log('Skipping load - user:', user?.id, 'prefsLoaded:', prefsLoaded)
-      return
-    }
-    
-    console.log('Loading preferences for user:', user.id)
+    if (!user?.id || prefsLoaded) return
     
     const loadPreferences = async () => {
       try {
+        // Try to get existing preferences
         const { data: prefs, error } = await supabase
           .from('user_preferences')
           .select('dashboard_widgets')
           .eq('user_id', user.id)
           .maybeSingle()
         
-        console.log('Loaded prefs:', prefs, 'error:', error)
-        
         if (error) {
-          console.warn('Could not load preferences:', error)
+          console.warn('Could not load preferences:', error.message)
+          // If table doesn't exist or other error, just use defaults
           setPrefsLoaded(true)
           return
         }
         
         if (prefs?.dashboard_widgets && Array.isArray(prefs.dashboard_widgets)) {
-          console.log('Setting widgets from DB:', prefs.dashboard_widgets)
           // Validate that all widgets exist in our map
           const validWidgets = prefs.dashboard_widgets.filter(
             (w: string): w is WidgetId => w in WIDGET_COMPONENTS
@@ -117,8 +112,6 @@ export default function OverviewTab() {
           if (validWidgets.length > 0) {
             setActiveWidgets(validWidgets)
           }
-        } else {
-          console.log('No saved widgets found, using defaults')
         }
       } catch (err) {
         console.warn('Error loading preferences:', err)
@@ -132,32 +125,49 @@ export default function OverviewTab() {
 
   // Save widget preferences to Supabase
   const savePreferences = useCallback(async (widgets: WidgetId[]) => {
-    if (!user?.id) {
-      console.log('Cannot save - no user id')
-      return
-    }
+    if (!user?.id) return
     
-    console.log('Saving widgets:', widgets)
     setIsSaving(true)
+    setSaveError(null)
+    
     try {
-      const { data, error } = await supabase
+      // First check if record exists
+      const { data: existing } = await supabase
         .from('user_preferences')
-        .upsert({
-          user_id: user.id,
-          dashboard_widgets: widgets,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        })
-        .select()
+        .select('id')
+        .eq('user_id', user.id)
+        .maybeSingle()
       
-      console.log('Save result:', data, 'error:', error)
+      let error
+      
+      if (existing) {
+        // Update existing record
+        const { error: updateError } = await supabase
+          .from('user_preferences')
+          .update({ 
+            dashboard_widgets: widgets,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', user.id)
+        error = updateError
+      } else {
+        // Insert new record
+        const { error: insertError } = await supabase
+          .from('user_preferences')
+          .insert({ 
+            user_id: user.id,
+            dashboard_widgets: widgets
+          })
+        error = insertError
+      }
       
       if (error) {
-        console.error('Failed to save preferences:', error)
+        console.error('Failed to save preferences:', error.message)
+        setSaveError('Kunde inte spara')
       }
     } catch (err) {
       console.error('Error saving preferences:', err)
+      setSaveError('Kunde inte spara')
     } finally {
       setIsSaving(false)
     }
@@ -252,6 +262,9 @@ export default function OverviewTab() {
             <div className="flex items-center gap-2">
               {isSaving && (
                 <span className="text-xs text-slate-400">Sparar...</span>
+              )}
+              {saveError && (
+                <span className="text-xs text-rose-500" title={saveError}>Fel vid sparning</span>
               )}
               <button 
                 onClick={() => setShowWidgetMenu(!showWidgetMenu)} 
