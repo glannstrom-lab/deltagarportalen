@@ -189,7 +189,15 @@ export function CVTemplates() {
   }
 
   const generateWordDoc = (template: CVTemplate) => {
-    // Create HTML content for Word
+    const colors = getGradientColors(template.color)
+    const primaryColor = colors.split(',')[0].trim()
+
+    // Determine layout style based on template
+    const isSidebar = template.id.includes('sidebar') || template.id.includes('creative') || template.id.includes('nature')
+    const isMinimal = template.id.includes('minimal') || template.id.includes('mono')
+    const isExecutive = template.id.includes('executive') || template.id.includes('corporate')
+
+    // Create HTML content for Word with improved styling
     const htmlContent = `
 <!DOCTYPE html>
 <html>
@@ -197,102 +205,321 @@ export function CVTemplates() {
 <meta charset="utf-8">
 <title>${template.name} - CV Mall</title>
 <style>
-body { font-family: 'Calibri', sans-serif; margin: 40px; }
-.header { 
-  background: linear-gradient(135deg, ${getGradientColors(template.color)}); 
-  padding: 30px; 
-  color: white; 
-  border-radius: 8px;
-  margin-bottom: 30px;
+@page { margin: 0; }
+body {
+  font-family: 'Calibri', 'Segoe UI', Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #1e293b;
+  line-height: 1.6;
+  font-size: 11pt;
 }
-.name { font-size: 32px; font-weight: bold; margin-bottom: 10px; }
-.title { font-size: 18px; opacity: 0.9; }
-.section { margin-bottom: 25px; }
-.section-title { 
-  font-size: 16px; 
-  font-weight: bold; 
-  color: #4f46e5; 
-  border-bottom: 2px solid #4f46e5;
-  padding-bottom: 5px;
+
+/* Header Styles */
+.header {
+  background: linear-gradient(135deg, ${colors});
+  padding: ${isMinimal ? '30px 40px' : '35px 40px'};
+  color: ${isMinimal ? '#1e293b' : 'white'};
+  ${isMinimal ? 'background: #f8fafc; border-bottom: 3px solid ' + primaryColor + ';' : ''}
+}
+.header-content {
+  max-width: 700px;
+  margin: 0 auto;
+}
+.name {
+  font-size: ${isExecutive ? '28pt' : '26pt'};
+  font-weight: bold;
+  margin-bottom: 5px;
+  letter-spacing: ${isExecutive ? '1px' : '0.5px'};
+  ${isExecutive ? "font-family: 'Georgia', 'Times New Roman', serif;" : ''}
+}
+.title {
+  font-size: 14pt;
+  opacity: ${isMinimal ? '1' : '0.9'};
   margin-bottom: 15px;
-  text-transform: uppercase;
+  ${isMinimal ? 'color: #64748b;' : ''}
+  ${isExecutive ? 'font-style: italic;' : ''}
 }
-.content { line-height: 1.6; }
+.contact-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  font-size: 10pt;
+}
+.contact-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Accent Bar */
+.accent-bar {
+  height: ${isExecutive ? '4px' : '3px'};
+  background: ${isExecutive ? '#d4af37' : primaryColor};
+}
+
+/* Content Area */
+.content {
+  padding: 30px 40px;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* Section Styles */
+.section {
+  margin-bottom: 25px;
+  page-break-inside: avoid;
+}
+.section-title {
+  font-size: 12pt;
+  font-weight: bold;
+  color: ${isExecutive ? '#1e3a5f' : primaryColor};
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding-bottom: 8px;
+  margin-bottom: 15px;
+  border-bottom: ${isExecutive ? '2px solid #d4af37' : '2px solid ' + primaryColor};
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Entry Styles (Jobs, Education) */
+.entry {
+  margin-bottom: 18px;
+  padding-left: 15px;
+  border-left: 2px solid #e2e8f0;
+}
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3px;
+}
+.entry-title {
+  font-weight: bold;
+  font-size: 11pt;
+  color: #1e293b;
+}
+.entry-date {
+  font-size: 9pt;
+  color: ${primaryColor};
+  background: ${isExecutive ? '#fef3c7' : '#eef2ff'};
+  padding: 3px 10px;
+  border-radius: 12px;
+  white-space: nowrap;
+}
+.entry-company {
+  font-size: 10pt;
+  color: ${primaryColor};
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+.entry-description {
+  font-size: 10pt;
+  color: #475569;
+  line-height: 1.5;
+}
+
+/* Summary Box */
+.summary-box {
+  background: #f8fafc;
+  padding: 18px 20px;
+  border-radius: 8px;
+  border-left: 4px solid ${primaryColor};
+  font-size: 10.5pt;
+  color: #334155;
+  line-height: 1.7;
+}
+
+/* Skills */
+.skills-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.skill-tag {
+  background: ${isExecutive ? '#fef3c7' : '#eef2ff'};
+  color: ${isExecutive ? '#92400e' : primaryColor};
+  padding: 5px 14px;
+  border-radius: ${isMinimal ? '4px' : '20px'};
+  font-size: 9pt;
+  font-weight: 500;
+  border: 1px solid ${isExecutive ? '#d4af37' : 'transparent'};
+}
+
+/* Two Column Layout */
+.two-column {
+  display: flex;
+  gap: 30px;
+}
+.column {
+  flex: 1;
+}
+
+/* Language & Certificate Items */
+.list-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+.list-item-name {
+  font-weight: 600;
+  color: #1e293b;
+}
+.list-item-detail {
+  color: #64748b;
+  font-size: 9pt;
+}
+
+/* Footer */
+.footer {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 9pt;
+  color: #94a3b8;
+  text-align: center;
+}
+
+/* Print Styles */
+@media print {
+  body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
 </style>
 </head>
 <body>
+  <!-- Header -->
   <div class="header">
-    <div class="name">[Ditt Namn]</div>
-    <div class="title">[Din Titel/Profession]</div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">Kontaktuppgifter</div>
-    <div class="content">
-      E-post: [din.email@exempel.se]<br>
-      Telefon: [070-123 45 67]<br>
-      Plats: [Stad, Land]
+    <div class="header-content">
+      <div class="name">[Ditt Namn]</div>
+      <div class="title">[Din Titel / Profession]</div>
+      <div class="contact-row">
+        <span class="contact-item">📧 [din.email@exempel.se]</span>
+        <span class="contact-item">📱 [070-123 45 67]</span>
+        <span class="contact-item">📍 [Stockholm]</span>
+      </div>
     </div>
   </div>
-  
-  <div class="section">
-    <div class="section-title">Sammanfattning</div>
-    <div class="content">
-      [Skriv en kort sammanfattning om dig själv, dina styrkor och vad du söker]
+
+  ${!isMinimal ? '<div class="accent-bar"></div>' : ''}
+
+  <div class="content">
+    <!-- Sammanfattning -->
+    <div class="section">
+      <div class="section-title">✨ Profil</div>
+      <div class="summary-box">
+        [Skriv en kort och engagerande sammanfattning om dig själv. Beskriv dina styrkor,
+        dina viktigaste erfarenheter och vad du söker i din nästa roll. 2-3 meningar räcker.]
+      </div>
     </div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">Arbetslivserfarenhet</div>
-    <div class="content">
-      <strong>[Jobbtitel]</strong> - [Företag]<br>
-      [Månad År] - [Månad År]<br>
-      [Beskriv dina arbetsuppgifter och resultat]<br><br>
-      
-      <strong>[Tidigare Jobbtitel]</strong> - [Tidigare Företag]<br>
-      [Månad År] - [Månad År]<br>
-      [Beskriv dina arbetsuppgifter]
+
+    <!-- Arbetslivserfarenhet -->
+    <div class="section">
+      <div class="section-title">💼 Arbetslivserfarenhet</div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">[Jobbtitel]</span>
+          <span class="entry-date">[Månad År] - Nu</span>
+        </div>
+        <div class="entry-company">[Företag], [Stad]</div>
+        <div class="entry-description">
+          • [Beskriv en nyckelprestation eller ansvarsområde]<br>
+          • [Beskriv en annan viktig uppgift eller resultat]<br>
+          • [Lägg till fler punkter vid behov]
+        </div>
+      </div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">[Tidigare Jobbtitel]</span>
+          <span class="entry-date">[Månad År] - [Månad År]</span>
+        </div>
+        <div class="entry-company">[Tidigare Företag], [Stad]</div>
+        <div class="entry-description">
+          • [Beskriv dina arbetsuppgifter och prestationer]
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">Utbildning</div>
-    <div class="content">
-      <strong>[Examen]</strong> - [Skola/Universitet]<br>
-      [År] - [År]<br><br>
-      
-      <strong>[Tidigare Utbildning]</strong> - [Skola]<br>
-      [År] - [År]
+
+    <!-- Utbildning -->
+    <div class="section">
+      <div class="section-title">🎓 Utbildning</div>
+
+      <div class="entry">
+        <div class="entry-header">
+          <span class="entry-title">[Examen / Program]</span>
+          <span class="entry-date">[År] - [År]</span>
+        </div>
+        <div class="entry-company">[Skola / Universitet]</div>
+      </div>
     </div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">Kompetenser</div>
-    <div class="content">
-      • [Kompetens 1]<br>
-      • [Kompetens 2]<br>
-      • [Kompetens 3]<br>
-      • [Kompetens 4]
+
+    <!-- Kompetenser -->
+    <div class="section">
+      <div class="section-title">⭐ Kompetenser</div>
+      <div class="skills-container">
+        <span class="skill-tag">[Kompetens 1]</span>
+        <span class="skill-tag">[Kompetens 2]</span>
+        <span class="skill-tag">[Kompetens 3]</span>
+        <span class="skill-tag">[Kompetens 4]</span>
+        <span class="skill-tag">[Kompetens 5]</span>
+        <span class="skill-tag">[Lägg till fler...]</span>
+      </div>
     </div>
-  </div>
-  
-  <div class="section">
-    <div class="section-title">Språk</div>
-    <div class="content">
-      Svenska - [Modersmål/Flytande]<br>
-      Engelska - [Nivå]<br>
-      [Annat språk] - [Nivå]
+
+    <!-- Språk & Certifikat -->
+    <div class="two-column">
+      <div class="column">
+        <div class="section">
+          <div class="section-title">🌍 Språk</div>
+          <div class="list-item">
+            <span class="list-item-name">Svenska</span>
+            <span class="list-item-detail">Modersmål</span>
+          </div>
+          <div class="list-item">
+            <span class="list-item-name">Engelska</span>
+            <span class="list-item-detail">Flytande</span>
+          </div>
+          <div class="list-item">
+            <span class="list-item-name">[Annat språk]</span>
+            <span class="list-item-detail">[Nivå]</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="column">
+        <div class="section">
+          <div class="section-title">🏆 Certifikat</div>
+          <div class="list-item">
+            <span class="list-item-name">[Certifikat namn]</span>
+            <span class="list-item-detail">[Utfärdare], [År]</span>
+          </div>
+          <div class="list-item">
+            <span class="list-item-name">[Annat certifikat]</span>
+            <span class="list-item-detail">[Utfärdare], [År]</span>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-  
-  <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; font-size: 12px; color: #6b7280;">
-    CV skapat med mallen "${template.name}" från Jobin
+
+    <div class="footer">
+      CV skapat med mallen "${template.name}" från Jobin<br>
+      <small style="color: #cbd5e1;">Tips: Ersätt all text inom [hakparenteser] med din egen information</small>
+    </div>
   </div>
 </body>
 </html>`
 
     // Create blob and download
-    const blob = new Blob([htmlContent], { type: 'application/msword' })
+    const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
@@ -357,48 +584,167 @@ body { font-family: 'Calibri', sans-serif; margin: 40px; }
             key={template.id}
             className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl transition-all duration-300"
           >
-            {/* Preview */}
+            {/* Preview - Realistic CV Mockup */}
             <div className={cn(
-              'h-48 bg-gradient-to-br relative overflow-hidden',
+              'h-56 bg-gradient-to-br relative overflow-hidden',
               template.preview
             )}>
-              {/* Mock CV Layout */}
-              <div className="absolute inset-4 bg-white/95 rounded-lg shadow-lg p-4 transform group-hover:scale-105 transition-transform duration-300">
-                <div className={cn(
-                  'h-8 rounded mb-3 bg-gradient-to-r',
-                  template.preview
-                )} />
-                <div className="space-y-2">
-                  <div className="h-2 bg-slate-200 rounded w-3/4" />
-                  <div className="h-2 bg-slate-200 rounded w-1/2" />
-                  <div className="h-2 bg-slate-200 rounded w-2/3" />
-                </div>
-                <div className="mt-4 space-y-2">
-                  <div className="h-1.5 bg-slate-100 rounded w-full" />
-                  <div className="h-1.5 bg-slate-100 rounded w-5/6" />
-                  <div className="h-1.5 bg-slate-100 rounded w-4/6" />
-                </div>
+              {/* Realistic CV Preview */}
+              <div className="absolute inset-3 bg-white rounded-lg shadow-2xl overflow-hidden transform group-hover:scale-[1.02] transition-transform duration-300">
+                {/* CV Layout varies by template */}
+                {template.id.includes('sidebar') || template.id.includes('creative') || template.id.includes('nature') ? (
+                  // Sidebar Layout
+                  <div className="flex h-full">
+                    <div className={cn('w-[35%] p-3 bg-gradient-to-b', template.preview)}>
+                      <div className="w-8 h-8 rounded-full bg-white/30 mx-auto mb-2" />
+                      <div className="h-1.5 bg-white/40 rounded w-3/4 mx-auto mb-1" />
+                      <div className="h-1 bg-white/30 rounded w-1/2 mx-auto mb-3" />
+                      <div className="space-y-1.5">
+                        <div className="h-1 bg-white/25 rounded w-full" />
+                        <div className="h-1 bg-white/25 rounded w-4/5" />
+                        <div className="h-1 bg-white/25 rounded w-3/5" />
+                      </div>
+                      <div className="mt-3 flex flex-wrap gap-1">
+                        <div className="h-2 w-6 bg-white/20 rounded-full" />
+                        <div className="h-2 w-8 bg-white/20 rounded-full" />
+                        <div className="h-2 w-5 bg-white/20 rounded-full" />
+                      </div>
+                    </div>
+                    <div className="flex-1 p-3 bg-white">
+                      <div className="h-2 bg-slate-200 rounded w-2/3 mb-2" />
+                      <div className="space-y-1">
+                        <div className="h-1 bg-slate-100 rounded w-full" />
+                        <div className="h-1 bg-slate-100 rounded w-5/6" />
+                      </div>
+                      <div className="mt-3 border-l-2 border-slate-200 pl-2 space-y-2">
+                        <div>
+                          <div className="h-1.5 bg-slate-300 rounded w-1/2 mb-1" />
+                          <div className="h-1 bg-slate-100 rounded w-full" />
+                        </div>
+                        <div>
+                          <div className="h-1.5 bg-slate-300 rounded w-2/5 mb-1" />
+                          <div className="h-1 bg-slate-100 rounded w-4/5" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : template.id.includes('minimal') || template.id.includes('mono') ? (
+                  // Minimal Layout
+                  <div className="h-full p-4">
+                    <div className="text-center mb-3">
+                      <div className="h-2.5 bg-slate-800 rounded w-1/3 mx-auto mb-1" />
+                      <div className="h-1.5 bg-slate-300 rounded w-1/4 mx-auto" />
+                    </div>
+                    <div className="h-px bg-slate-200 mb-3" />
+                    <div className="space-y-3">
+                      <div>
+                        <div className="h-1.5 bg-slate-400 rounded w-1/4 mb-1" />
+                        <div className="h-1 bg-slate-100 rounded w-full" />
+                        <div className="h-1 bg-slate-100 rounded w-5/6 mt-0.5" />
+                      </div>
+                      <div>
+                        <div className="h-1.5 bg-slate-400 rounded w-1/3 mb-1" />
+                        <div className="h-1 bg-slate-100 rounded w-full" />
+                      </div>
+                    </div>
+                  </div>
+                ) : template.id.includes('executive') || template.id.includes('corporate') ? (
+                  // Executive/Corporate Layout
+                  <div className="h-full">
+                    <div className={cn('p-3 bg-gradient-to-r', template.preview)}>
+                      <div className="h-2.5 bg-white/90 rounded w-2/5 mb-1" />
+                      <div className="h-1.5 bg-white/60 rounded w-1/4" />
+                      <div className="flex gap-2 mt-2">
+                        <div className="h-1 bg-white/40 rounded w-12" />
+                        <div className="h-1 bg-white/40 rounded w-10" />
+                      </div>
+                    </div>
+                    <div className="h-1 bg-amber-400" />
+                    <div className="p-3 space-y-2">
+                      <div className="h-1.5 bg-slate-300 rounded w-1/4 mb-1" />
+                      <div className="h-1 bg-slate-100 rounded w-full" />
+                      <div className="h-1 bg-slate-100 rounded w-4/5" />
+                      <div className="flex gap-1 mt-2">
+                        <div className="h-2 w-8 bg-amber-100 rounded border border-amber-300" />
+                        <div className="h-2 w-10 bg-amber-100 rounded border border-amber-300" />
+                      </div>
+                    </div>
+                  </div>
+                ) : template.id.includes('retro') || template.id.includes('story') ? (
+                  // Creative/Story Layout
+                  <div className="h-full">
+                    <div className={cn('h-12 bg-gradient-to-r flex items-center justify-center', template.preview)}>
+                      <div className="w-10 h-10 rounded-full bg-white/30 border-2 border-white/50" />
+                    </div>
+                    <div className="p-3 bg-white">
+                      <div className="h-2 bg-slate-300 rounded w-1/2 mx-auto mb-2" />
+                      <div className="flex justify-center gap-1 mb-3">
+                        <div className="h-1.5 w-6 bg-orange-200 rounded-full" />
+                        <div className="h-1.5 w-8 bg-pink-200 rounded-full" />
+                        <div className="h-1.5 w-5 bg-red-200 rounded-full" />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="p-1.5 bg-slate-50 rounded">
+                          <div className="h-1 bg-slate-200 rounded w-3/4 mb-1" />
+                          <div className="h-0.5 bg-slate-100 rounded w-full" />
+                        </div>
+                        <div className="p-1.5 bg-slate-50 rounded">
+                          <div className="h-1 bg-slate-200 rounded w-2/3 mb-1" />
+                          <div className="h-0.5 bg-slate-100 rounded w-full" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Default Modern Layout
+                  <div className="h-full">
+                    <div className={cn('p-3 bg-gradient-to-r', template.preview)}>
+                      <div className="h-2.5 bg-white/90 rounded w-1/2 mb-1" />
+                      <div className="h-1.5 bg-white/60 rounded w-1/3 mb-2" />
+                      <div className="flex gap-2">
+                        <div className="h-1 bg-white/40 rounded w-10" />
+                        <div className="h-1 bg-white/40 rounded w-12" />
+                        <div className="h-1 bg-white/40 rounded w-8" />
+                      </div>
+                    </div>
+                    <div className="p-3 space-y-3">
+                      <div>
+                        <div className="h-1.5 bg-indigo-400 rounded w-1/4 mb-1" />
+                        <div className="h-1 bg-slate-100 rounded w-full" />
+                        <div className="h-1 bg-slate-100 rounded w-5/6 mt-0.5" />
+                      </div>
+                      <div>
+                        <div className="h-1.5 bg-indigo-400 rounded w-1/3 mb-1" />
+                        <div className="flex gap-1">
+                          <div className="h-2 w-8 bg-indigo-100 rounded-full" />
+                          <div className="h-2 w-10 bg-indigo-100 rounded-full" />
+                          <div className="h-2 w-6 bg-indigo-100 rounded-full" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Badges */}
-              <div className="absolute top-3 left-3 flex gap-2">
+              <div className="absolute top-2 left-2 flex gap-1.5 z-10">
                 {template.isNew && (
-                  <span className="px-2 py-1 bg-green-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" />
+                  <span className="px-2 py-0.5 bg-green-500 text-white text-[10px] font-bold rounded-full flex items-center gap-1 shadow-lg">
+                    <Sparkles className="w-2.5 h-2.5" />
                     NY
                   </span>
                 )}
                 {template.isPopular && (
-                  <span className="px-2 py-1 bg-amber-500 text-white text-xs font-bold rounded-full flex items-center gap-1">
-                    <Star className="w-3 h-3" />
+                  <span className="px-2 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center gap-1 shadow-lg">
+                    <Star className="w-2.5 h-2.5" />
                     POPULÄR
                   </span>
                 )}
               </div>
 
               {/* Category Badge */}
-              <div className="absolute bottom-3 right-3">
-                <span className="px-3 py-1 bg-white/90 text-slate-700 text-xs font-medium rounded-full">
+              <div className="absolute bottom-2 right-2">
+                <span className="px-2.5 py-1 bg-white/95 text-slate-700 text-[10px] font-semibold rounded-full shadow-md backdrop-blur-sm">
                   {template.category}
                 </span>
               </div>
@@ -499,31 +845,75 @@ body { font-family: 'Calibri', sans-serif; margin: 40px; }
 
             {/* Preview Content */}
             <div className="p-6 overflow-y-auto max-h-[60vh]">
-              <div className="bg-slate-100 rounded-xl p-8">
-                {/* Mock CV */}
-                <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl mx-auto">
+              <div className="bg-slate-100 rounded-xl p-6">
+                {/* Realistic CV Preview */}
+                <div className="bg-white rounded-lg shadow-xl max-w-xl mx-auto overflow-hidden">
+                  {/* Header Section */}
                   <div className={cn(
-                    'h-24 rounded-lg mb-6 bg-gradient-to-r',
+                    'p-6 bg-gradient-to-r text-white',
                     previewTemplate.preview
-                  )} />
-                  
-                  <div className="space-y-6">
+                  )}>
+                    <h3 className="text-2xl font-bold mb-1">Anna Andersson</h3>
+                    <p className="text-white/80 mb-3">Projektledare</p>
+                    <div className="flex flex-wrap gap-3 text-sm text-white/70">
+                      <span>anna@exempel.se</span>
+                      <span>•</span>
+                      <span>070-123 45 67</span>
+                      <span>•</span>
+                      <span>Stockholm</span>
+                    </div>
+                  </div>
+
+                  {/* Content */}
+                  <div className="p-6 space-y-5">
+                    {/* Profile */}
                     <div>
-                      <div className="h-8 bg-slate-200 rounded w-1/2 mb-2" />
-                      <div className="h-4 bg-slate-100 rounded w-1/3" />
+                      <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <div className={cn('w-1 h-4 rounded bg-gradient-to-b', previewTemplate.preview)} />
+                        Profil
+                      </h4>
+                      <p className="text-sm text-slate-600 leading-relaxed">
+                        Erfaren projektledare med 8+ års erfarenhet av att leda
+                        tvärfunktionella team och leverera komplexa projekt i tid och budget.
+                      </p>
                     </div>
-                    
-                    <div className="space-y-3">
-                      <div className="h-3 bg-slate-200 rounded w-full" />
-                      <div className="h-3 bg-slate-200 rounded w-5/6" />
-                      <div className="h-3 bg-slate-200 rounded w-4/6" />
+
+                    {/* Experience */}
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-3 flex items-center gap-2">
+                        <div className={cn('w-1 h-4 rounded bg-gradient-to-b', previewTemplate.preview)} />
+                        Erfarenhet
+                      </h4>
+                      <div className="space-y-3">
+                        <div className="border-l-2 border-slate-200 pl-3">
+                          <div className="flex justify-between items-start">
+                            <span className="font-semibold text-slate-800">Senior Projektledare</span>
+                            <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded">2020 - Nu</span>
+                          </div>
+                          <p className="text-sm text-indigo-600">Tech AB, Stockholm</p>
+                        </div>
+                        <div className="border-l-2 border-slate-200 pl-3">
+                          <div className="flex justify-between items-start">
+                            <span className="font-semibold text-slate-800">Projektledare</span>
+                            <span className="text-xs text-slate-500 bg-slate-100 px-2 py-0.5 rounded">2017 - 2020</span>
+                          </div>
+                          <p className="text-sm text-indigo-600">Konsult AB</p>
+                        </div>
+                      </div>
                     </div>
-                    
-                    <div className="border-t pt-4">
-                      <div className="h-5 bg-slate-300 rounded w-1/4 mb-3" />
-                      <div className="space-y-2">
-                        <div className="h-3 bg-slate-100 rounded w-full" />
-                        <div className="h-3 bg-slate-100 rounded w-3/4" />
+
+                    {/* Skills */}
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-2">
+                        <div className={cn('w-1 h-4 rounded bg-gradient-to-b', previewTemplate.preview)} />
+                        Kompetenser
+                      </h4>
+                      <div className="flex flex-wrap gap-2">
+                        <span className={cn('text-xs px-3 py-1 rounded-full text-white bg-gradient-to-r', previewTemplate.preview)}>Agil</span>
+                        <span className={cn('text-xs px-3 py-1 rounded-full text-white bg-gradient-to-r', previewTemplate.preview)}>Scrum</span>
+                        <span className={cn('text-xs px-3 py-1 rounded-full text-white bg-gradient-to-r', previewTemplate.preview)}>Ledarskap</span>
+                        <span className="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600">JIRA</span>
+                        <span className="text-xs px-3 py-1 rounded-full bg-slate-100 text-slate-600">MS Project</span>
                       </div>
                     </div>
                   </div>
