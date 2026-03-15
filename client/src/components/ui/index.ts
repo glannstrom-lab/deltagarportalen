@@ -1,4 +1,5 @@
 // UI Components
+export { Logo } from './Logo'
 export { Progress } from './Progress'
 export { StatCard } from './StatCard'
 export { CalendarWidget } from './CalendarWidget'

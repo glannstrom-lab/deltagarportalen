@@ -8,8 +8,8 @@ const STATIC_ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
-  '/vite.svg',
-  '/jobin-logga.png'
+  '/logo-icon.png',
+  '/logo-deltagarportalen.png'
 ]
 
 // Installera service worker
