@@ -26,6 +26,12 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
   const pendingQueue = useRef<CVData[]>([])
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   
+  // VIKTIGT: Använd ref för att alltid ha senaste datan i debounced funktioner
+  const dataRef = useRef(data)
+  useEffect(() => {
+    dataRef.current = data
+  }, [data])
+  
   // Track online status
   useEffect(() => {
     const handleOnline = () => {
@@ -50,7 +56,6 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
   const { mutate: saveToServer } = useMutation({
     mutationFn: cvApi.updateCV,
     onSuccess: () => {
-      console.log('useCVAutoSave: Server save SUCCESS')
       markSaved()
       queryClient.invalidateQueries({ queryKey: ['cv'] })
       setPendingCount(0)
@@ -62,8 +67,8 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
       console.error('Auto-save failed:', error)
       markError()
       // Add to pending queue for retry
-      if (data) {
-        pendingQueue.current.push(data)
+      if (dataRef.current) {
+        pendingQueue.current.push(dataRef.current)
         setPendingCount(pendingQueue.current.length)
       }
     },
@@ -101,7 +106,7 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
     }
   }, [])
   
-  // Debounced server save
+  // Debounced server save - använder ref för att alltid ha senaste datan
   const triggerSave = useCallback(() => {
     markUnsaved()
     
@@ -110,23 +115,25 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
       clearTimeout(debounceTimer.current)
     }
     
-    // Save to localStorage immediately
-    saveToLocalStorage(data)
+    // Save to localStorage immediately (med senaste data från ref)
+    saveToLocalStorage(dataRef.current)
     
-    // Debounced server save
+    // Debounced server save - använd ref för att få senaste datan
     debounceTimer.current = setTimeout(() => {
+      const latestData = dataRef.current
+      
       if (!isOnline) {
         // Queue for later if offline
-        pendingQueue.current.push(data)
+        pendingQueue.current.push(latestData)
         setPendingCount(pendingQueue.current.length)
         markError()
         return
       }
       
       markSaving()
-      saveToServer(data)
+      saveToServer(latestData)
     }, 2000) // 2 second debounce
-  }, [data, isOnline, markSaving, markUnsaved, saveToLocalStorage, saveToServer])
+  }, [isOnline, markSaving, markUnsaved, saveToLocalStorage, saveToServer])
   
   // Auto-save when data changes (men inte vid första renderingen)
   const isFirstRender = useRef(true)
@@ -134,11 +141,9 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
     // Hoppa över första renderingen (när data laddas från servern)
     if (isFirstRender.current) {
       isFirstRender.current = false
-      console.log('useCVAutoSave: Skipping first render')
       return
     }
     
-    console.log('useCVAutoSave: Data changed, triggering save. workExperience count:', data.workExperience?.length)
     triggerSave()
     
     return () => {
@@ -156,19 +161,19 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
       }
       
       // Try to sync to server if possible
-      if (data && isOnline && saveStatus === 'saving') {
+      if (dataRef.current && isOnline && saveStatus === 'saving') {
         // Use sendBeacon for reliable delivery
-        const blob = new Blob([JSON.stringify(data)], { type: 'application/json' })
+        const blob = new Blob([JSON.stringify(dataRef.current)], { type: 'application/json' })
         navigator.sendBeacon?.('/api/cv', blob)
       }
       
       // Ensure localStorage is saved
-      saveToLocalStorage(data)
+      saveToLocalStorage(dataRef.current)
     }
     
     window.addEventListener('beforeunload', handleBeforeUnload)
     return () => window.removeEventListener('beforeunload', handleBeforeUnload)
-  }, [data, isOnline, saveStatus, saveToLocalStorage])
+  }, [isOnline, saveStatus, saveToLocalStorage])
   
   return {
     saveStatus,

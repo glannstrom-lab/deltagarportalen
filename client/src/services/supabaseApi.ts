@@ -305,8 +305,7 @@ export const cvApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
-    // Debug log
-    console.log('updateCV called with workExperience:', cvData.workExperience || cvData.work_experience)
+
     
     // Transform camelCase to snake_case
     const dbData: any = {
