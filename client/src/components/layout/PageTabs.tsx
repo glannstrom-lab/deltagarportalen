@@ -183,7 +183,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
   // Variant: Glass - Glassmorphism effect
   const GlassTabs = () => (
     <div className={cn(
-      'hidden md:flex items-center gap-1 p-1.5',
+      'flex items-center gap-1 p-1.5 overflow-x-auto',
       'bg-white/60 backdrop-blur-xl rounded-2xl',
       'border border-white/40 shadow-lg shadow-slate-200/50',
       className
@@ -297,10 +297,13 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
     </div>
   )
 
+  // Glass variant shows on all screens, no need for mobile dropdown
+  const showMobileDropdown = collapsible && variant !== 'glass'
+
   return (
     <>
       {renderDesktopTabs()}
-      {collapsible && <MobileDropdown />}
+      {showMobileDropdown && <MobileDropdown />}
     </>
   )
 }
