@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react'
 import type { Question } from '@/services/interestGuideData'
 import { Pause, Coffee, Save, RotateCcw } from 'lucide-react'
+import { interestGuideApi } from '@/services/cloudStorage'
 
 interface QuestionCardProps {
   question: Question
@@ -12,33 +13,31 @@ interface QuestionCardProps {
   onResume?: (questionIndex: number) => void
 }
 
-// Nyckel för localStorage
-const PROGRESS_KEY = 'interest-guide-progress'
-
-// Sparar progress
-export function saveProgress(questionIndex: number, answers: Record<string, number>) {
-  const progress = {
-    questionIndex,
-    answers,
-    timestamp: Date.now(),
-  }
-  localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress))
+// Sparar progress (cloud storage)
+export async function saveProgress(questionIndex: number, answers: Record<string, number>) {
+  await interestGuideApi.saveProgress({
+    current_step: questionIndex,
+    answers: answers,
+    is_completed: false
+  })
 }
 
-// Hämtar progress
-export function loadProgress(): { questionIndex: number; answers: Record<string, number>; timestamp: number } | null {
-  const saved = localStorage.getItem(PROGRESS_KEY)
-  if (!saved) return null
-  try {
-    return JSON.parse(saved)
-  } catch {
+// Hämtar progress (cloud storage)
+export async function loadProgress(): Promise<{ questionIndex: number; answers: Record<string, number>; timestamp: number } | null> {
+  const data = await interestGuideApi.getProgress()
+  if (!data || !data.answers || Object.keys(data.answers).length === 0) {
     return null
   }
+  return {
+    questionIndex: data.current_step || 0,
+    answers: data.answers,
+    timestamp: data.updated_at ? new Date(data.updated_at).getTime() : Date.now()
+  }
 }
 
-// Rensar progress
-export function clearProgress() {
-  localStorage.removeItem(PROGRESS_KEY)
+// Rensar progress (cloud storage)
+export async function clearProgress() {
+  await interestGuideApi.reset()
 }
 
 export function QuestionCard({ 

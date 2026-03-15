@@ -6,11 +6,11 @@
 
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { 
-  RotateCcw, 
-  FileText, 
-  Sparkles, 
-  BookHeart, 
+import {
+  RotateCcw,
+  FileText,
+  Sparkles,
+  BookHeart,
   Briefcase,
   ChevronRight,
   Clock,
@@ -18,7 +18,7 @@ import {
   Play
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { loadProgress as loadInterestProgress } from '@/components/interest-guide/QuestionCard'
+import { interestGuideApi } from '@/services/cloudStorage'
 
 interface InProgressActivity {
   id: string
@@ -37,74 +37,83 @@ export function ContinueWhereYouLeft() {
   const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
-    // Hämta alla påbörjade aktiviteter
-    const inProgress: InProgressActivity[] = []
+    const loadActivities = async () => {
+      // Hämta alla påbörjade aktiviteter
+      const inProgress: InProgressActivity[] = []
 
-    // CV-progress
-    const cvData = localStorage.getItem('cv-data')
-    if (cvData) {
-      try {
-        const cv = JSON.parse(cvData)
-        const cvProgress = calculateCVProgress(cv)
-        if (cvProgress > 0 && cvProgress < 100) {
-          inProgress.push({
-            id: 'cv',
-            type: 'cv',
-            title: 'Fortsätt med ditt CV',
-            description: `Du har fyllt i ${cvProgress}% av ditt CV`,
-            progress: cvProgress,
-            lastActive: new Date(cv.updatedAt || Date.now()),
-            path: '/cv',
-            icon: FileText
-          })
-        }
-      } catch {}
-    }
-
-    // Intresseguide-progress
-    const interestProgress = loadInterestProgress()
-    if (interestProgress) {
-      const hoursSince = (Date.now() - interestProgress.timestamp) / (1000 * 60 * 60)
-      // Visa bara om det är inom 48 timmar
-      if (hoursSince < 48) {
-        const answeredCount = Object.keys(interestProgress.answers).length
-        const totalQuestions = 24 // Antal frågor i intresseguiden
-        const progress = Math.round((answeredCount / totalQuestions) * 100)
-        
-        inProgress.push({
-          id: 'interest',
-          type: 'interest',
-          title: 'Fortsätt intresseguiden',
-          description: `Du har svarat på ${answeredCount} av ${totalQuestions} frågor`,
-          progress,
-          lastActive: new Date(interestProgress.timestamp),
-          path: '/interest-guide',
-          icon: Sparkles
-        })
+      // CV-progress
+      const cvData = localStorage.getItem('cv-data')
+      if (cvData) {
+        try {
+          const cv = JSON.parse(cvData)
+          const cvProgress = calculateCVProgress(cv)
+          if (cvProgress > 0 && cvProgress < 100) {
+            inProgress.push({
+              id: 'cv',
+              type: 'cv',
+              title: 'Fortsätt med ditt CV',
+              description: `Du har fyllt i ${cvProgress}% av ditt CV`,
+              progress: cvProgress,
+              lastActive: new Date(cv.updatedAt || Date.now()),
+              path: '/cv',
+              icon: FileText
+            })
+          }
+        } catch {}
       }
-    }
 
-    // Dagbok - påbörjad entry
-    const diaryDraft = localStorage.getItem('diary-draft')
-    if (diaryDraft) {
+      // Intresseguide-progress (from Supabase)
       try {
-        const draft = JSON.parse(diaryDraft)
-        inProgress.push({
-          id: 'diary',
-          type: 'diary',
-          title: 'Slutför dagboksinlägg',
-          description: 'Du påbörjade ett inlägg men har inte sparat det',
-          progress: 50,
-          lastActive: new Date(draft.timestamp || Date.now()),
-          path: '/diary',
-          icon: BookHeart
-        })
-      } catch {}
+        const interestData = await interestGuideApi.getProgress()
+        if (interestData && interestData.answers && !interestData.is_completed) {
+          const answeredCount = Object.keys(interestData.answers).length
+          if (answeredCount > 0) {
+            const totalQuestions = 24 // Antal frågor i intresseguiden
+            const progress = Math.round((answeredCount / totalQuestions) * 100)
+            const lastActive = interestData.updated_at
+              ? new Date(interestData.updated_at)
+              : new Date()
+
+            inProgress.push({
+              id: 'interest',
+              type: 'interest',
+              title: 'Fortsätt intresseguiden',
+              description: `Du har svarat på ${answeredCount} av ${totalQuestions} frågor`,
+              progress,
+              lastActive,
+              path: '/interest-guide',
+              icon: Sparkles
+            })
+          }
+        }
+      } catch (err) {
+        console.error('Failed to load interest guide progress:', err)
+      }
+
+      // Dagbok - påbörjad entry
+      const diaryDraft = localStorage.getItem('diary-draft')
+      if (diaryDraft) {
+        try {
+          const draft = JSON.parse(diaryDraft)
+          inProgress.push({
+            id: 'diary',
+            type: 'diary',
+            title: 'Slutför dagboksinlägg',
+            description: 'Du påbörjade ett inlägg men har inte sparat det',
+            progress: 50,
+            lastActive: new Date(draft.timestamp || Date.now()),
+            path: '/diary',
+            icon: BookHeart
+          })
+        } catch {}
+      }
+
+      // Sortera efter senast aktiv
+      const sorted = inProgress.sort((a, b) => b.lastActive.getTime() - a.lastActive.getTime())
+      setActivities(sorted.slice(0, 3)) // Max 3 aktiviteter
     }
 
-    // Sortera efter senast aktiv
-    const sorted = inProgress.sort((a, b) => b.lastActive.getTime() - a.lastActive.getTime())
-    setActivities(sorted.slice(0, 3)) // Max 3 aktiviteter
+    loadActivities()
   }, [])
 
   // Beräkna CV-progress
