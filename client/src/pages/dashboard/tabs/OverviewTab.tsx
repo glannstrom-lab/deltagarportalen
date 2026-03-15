@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { 
   LayoutDashboard, 
@@ -10,8 +10,23 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
 import '@/styles/animations.css'
+
+// Lazy load widgets for better performance
+const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
+const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSearchWidget'))
+const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
+
+// Widget lazy loading map - BARA 3 widgets först
+const WIDGET_COMPONENTS = {
+  cv: CVWidget,
+  jobSearch: JobSearchWidget,
+  wellness: WellnessWidget,
+}
+
+type WidgetId = 'cv' | 'jobSearch' | 'wellness'
 
 // Animation wrapper component
 function AnimatedSection({ 
@@ -46,16 +61,29 @@ function AnimatedSection({
   )
 }
 
-// Simple widget placeholder
-function SimpleWidget({ title, value, to }: { title: string, value: string | number, to: string }) {
+// Widget wrapper component
+function WidgetWrapper({ 
+  children, 
+  onRemove 
+}: { 
+  children: React.ReactNode
+  onRemove?: () => void 
+}) {
   return (
-    <Link 
-      to={to}
-      className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-violet-300 hover:shadow-lg transition-all"
-    >
-      <h3 className="font-semibold text-slate-800 mb-2">{title}</h3>
-      <p className="text-2xl font-bold text-slate-900">{value}</p>
-    </Link>
+    <div className="relative group">
+      {onRemove && (
+        <button
+          onClick={onRemove}
+          className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-rose-100 text-rose-600 rounded-full 
+                     flex items-center justify-center opacity-0 group-hover:opacity-100 
+                     transition-opacity hover:bg-rose-200"
+          title="Ta bort widget"
+        >
+          ×
+        </button>
+      )}
+      {children}
+    </div>
   )
 }
 
@@ -63,6 +91,9 @@ export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading } = useDashboardData()
   
+  // Default widgets - bara 3
+  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness'])
+
   // Loading state
   if (loading) {
     return (
@@ -71,8 +102,8 @@ export default function OverviewTab() {
           <div className="h-8 bg-slate-200 rounded w-48 mb-2" />
           <div className="h-4 bg-slate-200 rounded w-64" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1, 2, 3].map(i => (
             <div key={i} className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
               <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
               <div className="h-8 bg-slate-200 rounded w-1/2"></div>
@@ -80,6 +111,45 @@ export default function OverviewTab() {
           ))}
         </div>
       </div>
+    )
+  }
+
+  const removeWidget = (widgetId: WidgetId) => {
+    setActiveWidgets(activeWidgets.filter(id => id !== widgetId))
+  }
+
+  // Render widget based on ID with Suspense
+  const renderWidget = (widgetId: WidgetId) => {
+    const WidgetComponent = WIDGET_COMPONENTS[widgetId]
+    
+    const getWidgetProps = () => {
+      switch (widgetId) {
+        case 'cv': return { hasCV: data?.cv?.hasCV, progress: data?.cv?.progress }
+        case 'jobSearch': return { savedCount: data?.jobs?.savedCount }
+        case 'wellness': return { 
+          completedActivities: data?.wellness?.completedActivities,
+          streakDays: data?.wellness?.streakDays,
+          moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null
+        }
+        default: return {}
+      }
+    }
+
+    return (
+      <ErrorBoundary fallback={
+        <div className="bg-white rounded-2xl border-2 border-slate-200 p-5">
+          <p className="text-sm text-slate-500">Kunde inte ladda widget</p>
+        </div>
+      }>
+        <Suspense fallback={
+          <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
+            <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
+            <div className="h-8 bg-slate-200 rounded w-1/2"></div>
+          </div>
+        }>
+          <WidgetComponent {...getWidgetProps()} size="small" />
+        </Suspense>
+      </ErrorBoundary>
     )
   }
 
@@ -92,38 +162,26 @@ export default function OverviewTab() {
             Hej{user?.first_name ? `, ${user.first_name}` : ''}! 👋
           </h1>
           <p className="text-violet-100">
-            Välkommen till din personliga arbetsmarknadsportal. Här kan du hantera ditt CV, söka jobb och följa din progress.
+            Välkommen till din personliga arbetsmarknadsportal.
           </p>
         </div>
       </AnimatedSection>
 
-      {/* Enkla widgets */}
+      {/* Widgets Grid */}
       <AnimatedSection delay={200}>
         <section>
           <h2 className="text-lg font-bold text-slate-900 mb-4">
             Dina verktyg
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            <SimpleWidget 
-              title="CV" 
-              value={data?.cv?.hasCV ? `${data.cv.progress}%` : 'Saknas'} 
-              to="/cv" 
-            />
-            <SimpleWidget 
-              title="Sparade jobb" 
-              value={data?.jobs?.savedCount || 0} 
-              to="/job-search" 
-            />
-            <SimpleWidget 
-              title="Välmående" 
-              value={data?.wellness?.completedActivities || 0} 
-              to="/wellness" 
-            />
-            <SimpleWidget 
-              title="Quests" 
-              value={`${data?.quests?.completed || 0}/${data?.quests?.total || 3}`} 
-              to="/activity" 
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {activeWidgets.map(widgetId => (
+              <WidgetWrapper 
+                key={widgetId} 
+                onRemove={() => removeWidget(widgetId)}
+              >
+                {renderWidget(widgetId)}
+              </WidgetWrapper>
+            ))}
           </div>
         </section>
       </AnimatedSection>
