@@ -195,7 +195,12 @@ export default function OverviewTab() {
       career: { exploredCount: data?.interest?.hasResult ? 1 : 0 },
       exercises: { completedCount: data?.exercises?.completedExercises || 0 },
       knowledge: { readCount: data?.knowledge?.readCount || 0 },
-      diary: { entriesCount: data?.calendar?.upcomingEvents?.length || 0 },
+      diary: { 
+        upcomingEvents: data?.calendar?.upcomingEvents,
+        eventsThisWeek: data?.calendar?.eventsThisWeek,
+        hasConsultantMeeting: data?.calendar?.hasConsultantMeeting,
+        streakDays: data?.activity?.streakDays
+      },
       interests: { hasResult: data?.interest?.hasResult },
     }
 
@@ -210,7 +215,12 @@ export default function OverviewTab() {
         case 'career': return { exploredCount: widgetData.career.exploredCount }
         case 'exercises': return { completedCount: widgetData.exercises.completedCount }
         case 'knowledge': return { readCount: widgetData.knowledge.readCount }
-        case 'diary': return { entriesCount: widgetData.diary.entriesCount }
+        case 'diary': return { 
+        upcomingEvents: data?.calendar?.upcomingEvents,
+        eventsThisWeek: data?.calendar?.eventsThisWeek,
+        hasConsultantMeeting: data?.calendar?.hasConsultantMeeting,
+        streakDays: data?.activity?.streakDays
+      }
         case 'interests': return { hasResult: widgetData.interests.hasResult }
         default: return {}
       }
