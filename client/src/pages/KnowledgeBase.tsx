@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { Card, LoadingState } from '@/components/ui'
 import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
 import { useEnergyLevel } from '@/hooks/useEnergyLevel'
+import { PageLayout } from '@/components/layout/index'
 
 // Lazy load tab components for better performance
 const ForYouTab = lazy(() => import('@/components/knowledge-base/tabs/ForYouTab'))
@@ -189,12 +190,15 @@ export default function KnowledgeBase() {
   }
   
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <PageLayout
+      title="Kunskapsbank"
+      description="Artiklar och guider för ditt jobbsökande"
+      showTabs={false}
+    >
       {/* Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-slate-900">Kunskapsbank</h1>
-        <p className="text-slate-600 mt-2 max-w-2xl">
-          Artiklar, guider och verktyg för din jobbsökarresa. 
+        <p className="text-slate-600 max-w-2xl">
+          Artiklar, guider och verktyg för din jobbsökarresa.
           Oavsett om du är nybörjare eller erfaren hittar du något som hjälper dig framåt.
         </p>
         
@@ -248,6 +252,6 @@ export default function KnowledgeBase() {
       <div className="min-h-[400px]">
         {renderContent()}
       </div>
-    </div>
+    </PageLayout>
   )
 }

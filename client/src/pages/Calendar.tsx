@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Plus } from 'lucide-react'
+import { PageLayout } from '@/components/layout/index'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { WeekView } from '@/components/calendar/WeekView'
 import { DayView } from '@/components/calendar/DayView'
@@ -282,6 +283,11 @@ export default function Calendar() {
   }
 
   return (
+    <PageLayout
+      title="Kalender"
+      description="Dina händelser och möten"
+      showTabs={false}
+    >
     <div className="space-y-6">
       <CalendarHeader
         currentDate={currentDate}
@@ -350,5 +356,6 @@ export default function Calendar() {
         onDelete={handleDeleteEvent}
       />
     </div>
+    </PageLayout>
   )
 }

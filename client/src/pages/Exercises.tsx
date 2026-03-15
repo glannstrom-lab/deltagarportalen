@@ -22,6 +22,7 @@ import { AIAssistant } from '@/components/ai'
 import { supabase } from '@/lib/supabase'
 import { mockArticlesData, exerciseToArticleCategoryMap } from '@/services/articleData'
 import { Link } from 'react-router-dom'
+import { PageLayout } from '@/components/layout/index'
 
 // Extended category colors for all 38 categories
 const categoryColors: { [key: string]: string } = {
@@ -285,10 +286,16 @@ export default function Exercises() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-        <p className="ml-3 text-gray-600">Laddar dina svar...</p>
-      </div>
+      <PageLayout
+        title="Övningar"
+        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        showTabs={false}
+      >
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+          <p className="ml-3 text-gray-600">Laddar dina svar...</p>
+        </div>
+      </PageLayout>
     )
   }
 
@@ -298,7 +305,12 @@ export default function Exercises() {
     const categories = getUniqueCategories()
 
     return (
-      <div className="max-w-6xl mx-auto space-y-6">
+      <PageLayout
+        title="Övningar"
+        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        showTabs={false}
+      >
+      <div className="space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-indigo-100 mb-2">
@@ -484,6 +496,7 @@ export default function Exercises() {
           </div>
         )}
       </div>
+      </PageLayout>
     )
   }
 
@@ -493,6 +506,11 @@ export default function Exercises() {
 
   if (isCompleted) {
     return (
+      <PageLayout
+        title="Övningar"
+        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        showTabs={false}
+      >
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Back button */}
         <button 
@@ -564,10 +582,16 @@ export default function Exercises() {
           </Button>
         </div>
       </div>
+      </PageLayout>
     )
   }
 
   return (
+    <PageLayout
+      title="Övningar"
+      description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+      showTabs={false}
+    >
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Back button */}
       <button 
@@ -789,5 +813,6 @@ export default function Exercises() {
         )
       })()}
     </div>
+    </PageLayout>
   )
 }

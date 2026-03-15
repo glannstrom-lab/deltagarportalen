@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Plus, BookHeart, Calendar as CalendarIcon, TrendingUp, Sparkles } from 'lucide-react'
+import { PageLayout } from '@/components/layout/index'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { DailyTask } from '@/components/diary/DailyTask'
 import { WeekView } from '@/components/calendar/WeekView'
@@ -391,19 +392,12 @@ export default function Diary() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-            <BookHeart className="text-rose-500" size={28} />
-            Dagbok & Kalender
-          </h1>
-          <p className="text-slate-500 mt-1">
-            Håll koll på dina händelser och reflektera över din resa
-          </p>
-        </div>
-      </div>
+    <PageLayout
+      title="Dagbok"
+      description="Din personliga dagbok och kalender"
+      showTabs={false}
+    >
+      <div className="space-y-6">
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -723,6 +717,7 @@ export default function Diary() {
           </div>
         </div>
       )}
-    </div>
+      </div>
+    </PageLayout>
   )
 }

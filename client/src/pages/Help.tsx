@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { PageLayout } from '@/components/layout/index'
 import { 
   HelpCircle, 
   BookOpen, 
@@ -60,6 +61,11 @@ const quickLinks = [
 
 export default function Help() {
   return (
+    <PageLayout
+      title="Hjälp & Support"
+      description="Få hjälp med att använda Jobin"
+      showTabs={false}
+    >
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center mb-10">
@@ -162,5 +168,6 @@ export default function Help() {
         <p>Deltagarportalen v2.0</p>
       </div>
     </div>
+    </PageLayout>
   )
 }
