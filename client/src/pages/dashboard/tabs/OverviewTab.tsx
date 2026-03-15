@@ -85,7 +85,12 @@ export default function OverviewTab() {
 
   // Load widget preferences from Supabase
   useEffect(() => {
-    if (!user?.id || prefsLoaded) return
+    if (!user?.id || prefsLoaded) {
+      console.log('Skipping load - user:', user?.id, 'prefsLoaded:', prefsLoaded)
+      return
+    }
+    
+    console.log('Loading preferences for user:', user.id)
     
     const loadPreferences = async () => {
       try {
@@ -95,12 +100,16 @@ export default function OverviewTab() {
           .eq('user_id', user.id)
           .maybeSingle()
         
+        console.log('Loaded prefs:', prefs, 'error:', error)
+        
         if (error) {
           console.warn('Could not load preferences:', error)
+          setPrefsLoaded(true)
           return
         }
         
         if (prefs?.dashboard_widgets && Array.isArray(prefs.dashboard_widgets)) {
+          console.log('Setting widgets from DB:', prefs.dashboard_widgets)
           // Validate that all widgets exist in our map
           const validWidgets = prefs.dashboard_widgets.filter(
             (w: string): w is WidgetId => w in WIDGET_COMPONENTS
@@ -108,6 +117,8 @@ export default function OverviewTab() {
           if (validWidgets.length > 0) {
             setActiveWidgets(validWidgets)
           }
+        } else {
+          console.log('No saved widgets found, using defaults')
         }
       } catch (err) {
         console.warn('Error loading preferences:', err)
@@ -121,11 +132,15 @@ export default function OverviewTab() {
 
   // Save widget preferences to Supabase
   const savePreferences = useCallback(async (widgets: WidgetId[]) => {
-    if (!user?.id) return
+    if (!user?.id) {
+      console.log('Cannot save - no user id')
+      return
+    }
     
+    console.log('Saving widgets:', widgets)
     setIsSaving(true)
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('user_preferences')
         .upsert({
           user_id: user.id,
@@ -134,6 +149,9 @@ export default function OverviewTab() {
         }, {
           onConflict: 'user_id'
         })
+        .select()
+      
+      console.log('Save result:', data, 'error:', error)
       
       if (error) {
         console.error('Failed to save preferences:', error)
