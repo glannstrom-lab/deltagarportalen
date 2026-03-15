@@ -204,7 +204,7 @@ export default function CVBuilder() {
   useEffect(() => {
     const currentWorkExp = JSON.stringify(data.workExperience)
     if (prevWorkExpRef.current !== currentWorkExp) {
-      alert('workExperience changed from ' + JSON.parse(prevWorkExpRef.current).length + ' to ' + data.workExperience.length)
+      console.log('CVBuilder: workExperience changed, triggering auto-save')
       triggerSave(data)
       prevWorkExpRef.current = currentWorkExp
     }
@@ -286,8 +286,8 @@ export default function CVBuilder() {
     setSaving(true)
     try {
       await cvApi.updateCV(data)
-      alert('Sparat!')
-    } catch { alert('Kunde inte spara') }
+      showToast.success('CV sparat!')
+    } catch { showToast.error('Kunde inte spara') }
     finally { setSaving(false) }
   }
 

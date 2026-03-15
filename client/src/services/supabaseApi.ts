@@ -289,15 +289,16 @@ export const cvApi = {
     if (error) handleError(error)
     
     if (!data) return null
-    
-    // Transform snake_case to camelCase
+
+    // Transform snake_case to camelCase - VIKTIGT: exkludera snake_case fält för att undvika konflikter vid sparning
+    const { work_experience, color_scheme, first_name, last_name, profile_image, ...rest } = data
     return {
-      ...data,
-      workExperience: data.work_experience || [],
-      colorScheme: data.color_scheme,
-      firstName: data.first_name,
-      lastName: data.last_name,
-      profileImage: data.profile_image,
+      ...rest,
+      workExperience: work_experience || [],
+      colorScheme: color_scheme,
+      firstName: first_name,
+      lastName: last_name,
+      profileImage: profile_image,
     }
   },
 
@@ -305,19 +306,19 @@ export const cvApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
-    // Transform camelCase to snake_case
+    // Transform camelCase to snake_case - prioritera camelCase (UI-fält) över snake_case (DB-fält)
     const dbData: any = {
       user_id: user.id,
       updated_at: new Date().toISOString(),
-      first_name: cvData.first_name || cvData.firstName,
-      last_name: cvData.last_name || cvData.lastName,
+      first_name: cvData.firstName ?? cvData.first_name,
+      last_name: cvData.lastName ?? cvData.last_name,
       title: cvData.title,
       email: cvData.email,
       phone: cvData.phone,
       location: cvData.location,
       summary: cvData.summary,
-      profile_image: cvData.profile_image || cvData.profileImage,
-      work_experience: cvData.work_experience || cvData.workExperience,
+      profile_image: cvData.profileImage ?? cvData.profile_image,
+      work_experience: cvData.workExperience ?? cvData.work_experience,
       education: cvData.education,
       skills: cvData.skills,
       languages: cvData.languages,
@@ -325,7 +326,7 @@ export const cvApi = {
       links: cvData.links,
       "references": cvData.references,
       template: cvData.template,
-      color_scheme: cvData.color_scheme || cvData.colorScheme,
+      color_scheme: cvData.colorScheme ?? cvData.color_scheme,
       font: cvData.font,
     }
     

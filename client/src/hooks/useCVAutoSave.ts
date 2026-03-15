@@ -40,7 +40,7 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       lastSavedData.current = currentData
     },
     onError: (error: any) => {
-      alert('Save FAILED: ' + (error?.message || 'Unknown error'))
+      console.error('CV auto-save failed:', error?.message || 'Unknown error')
       markError()
       if (currentData) {
         pendingQueue.current.push(currentData)
