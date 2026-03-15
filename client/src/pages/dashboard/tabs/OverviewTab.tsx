@@ -1,100 +1,64 @@
 import { useState, useEffect, lazy, Suspense } from 'react'
-import { Link } from 'react-router-dom'
-import { 
-  LayoutDashboard, 
-  ChevronRight, 
-  Sparkles, 
-  Settings,
-  ChevronDown,
-  Plus
-} from 'lucide-react'
+import { Settings, ChevronDown, Plus } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
 import '@/styles/animations.css'
 
-// Lazy load widgets for better performance
+// Lazy load widgets - ENDAST de som fungerar
 const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
 const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSearchWidget'))
 const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
 const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWidget'))
-const CoverLetterWidget = lazy(() => import('@/components/dashboard/widgets/CoverLetterWidget'))
-const ApplicationsWidget = lazy(() => import('@/components/dashboard/widgets/ApplicationsWidget'))
-const CareerWidget = lazy(() => import('@/components/dashboard/widgets/CareerWidget'))
 const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget'))
 const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget'))
-const DiaryWidget = lazy(() => import('@/components/dashboard/widgets/DiaryWidget'))
 const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget'))
 
-// Widget lazy loading map
+// Widget map - 7 fungerande widgets
 const WIDGET_COMPONENTS = {
   cv: CVWidget,
   jobSearch: JobSearchWidget,
   wellness: WellnessWidget,
   quests: QuestsWidget,
-  coverLetter: CoverLetterWidget,
-  applications: ApplicationsWidget,
-  career: CareerWidget,
   exercises: ExercisesWidget,
   knowledge: KnowledgeWidget,
-  diary: DiaryWidget,
   interests: InterestWidget,
 }
 
-type WidgetId = 'cv' | 'jobSearch' | 'wellness' | 'quests' | 'coverLetter' | 'applications' | 'career' | 'exercises' | 'knowledge' | 'diary' | 'interests'
+type WidgetId = keyof typeof WIDGET_COMPONENTS
 
-// Animation wrapper component
-function AnimatedSection({ 
-  children, 
-  delay = 0, 
-  className 
-}: { 
-  children: React.ReactNode
-  delay?: number
-  className?: string 
-}) {
+const ALL_WIDGETS = [
+  { id: 'cv', label: 'CV' },
+  { id: 'jobSearch', label: 'Jobbsök' },
+  { id: 'wellness', label: 'Välmående' },
+  { id: 'quests', label: 'Quests' },
+  { id: 'exercises', label: 'Övningar' },
+  { id: 'knowledge', label: 'Kunskapsbank' },
+  { id: 'interests', label: 'Intressen' },
+] as const
+
+// Animation wrapper
+function AnimatedSection({ children, delay = 0, className }: { children: React.ReactNode, delay?: number, className?: string }) {
   const [isVisible, setIsVisible] = useState(false)
-
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), delay)
     return () => clearTimeout(timer)
   }, [delay])
 
   return (
-    <div 
-      className={cn(
-        className,
-        "transition-all duration-500",
-        isVisible 
-          ? "opacity-100 translate-y-0" 
-          : "opacity-0 translate-y-5"
-      )}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
+    <div className={cn(className, "transition-all duration-500", isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-5")} style={{ transitionDelay: `${delay}ms` }}>
       {children}
     </div>
   )
 }
 
-// Widget wrapper component
-function WidgetWrapper({ 
-  children, 
-  onRemove 
-}: { 
-  children: React.ReactNode
-  onRemove?: () => void 
-}) {
+// Widget wrapper
+function WidgetWrapper({ children, onRemove }: { children: React.ReactNode, onRemove?: () => void }) {
   return (
     <div className="relative group">
       {onRemove && (
-        <button
-          onClick={onRemove}
-          className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-rose-100 text-rose-600 rounded-full 
-                     flex items-center justify-center opacity-0 group-hover:opacity-100 
-                     transition-opacity hover:bg-rose-200"
-          title="Ta bort widget"
-        >
+        <button onClick={onRemove} className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-200" title="Ta bort widget">
           ×
         </button>
       )}
@@ -106,11 +70,9 @@ function WidgetWrapper({
 export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading } = useDashboardData()
-  
-  // Default widgets
-  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests', 'coverLetter', 'applications', 'career', 'exercises', 'knowledge', 'diary', 'interests'])
+  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests'])
+  const [showWidgetMenu, setShowWidgetMenu] = useState(false)
 
-  // Loading state
   if (loading) {
     return (
       <div className="space-y-6">
@@ -118,8 +80,8 @@ export default function OverviewTab() {
           <div className="h-8 bg-slate-200 rounded w-48 mb-2" />
           <div className="h-4 bg-slate-200 rounded w-64" />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {[1, 2, 3].map(i => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => (
             <div key={i} className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
               <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
               <div className="h-8 bg-slate-200 rounded w-1/2"></div>
@@ -130,11 +92,16 @@ export default function OverviewTab() {
     )
   }
 
+  const addWidget = (widgetId: WidgetId) => {
+    if (!activeWidgets.includes(widgetId)) {
+      setActiveWidgets([...activeWidgets, widgetId])
+    }
+  }
+
   const removeWidget = (widgetId: WidgetId) => {
     setActiveWidgets(activeWidgets.filter(id => id !== widgetId))
   }
 
-  // Render widget based on ID with Suspense
   const renderWidget = (widgetId: WidgetId) => {
     const WidgetComponent = WIDGET_COMPONENTS[widgetId]
     
@@ -142,44 +109,18 @@ export default function OverviewTab() {
       switch (widgetId) {
         case 'cv': return { hasCV: data?.cv?.hasCV, progress: data?.cv?.progress }
         case 'jobSearch': return { savedCount: data?.jobs?.savedCount }
-        case 'wellness': return { 
-          completedActivities: data?.wellness?.completedActivities,
-          streakDays: data?.wellness?.streakDays,
-          moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null
-        }
-        case 'quests': return { 
-          completedQuests: data?.quests?.completed || 0, 
-          totalQuests: data?.quests?.total || 3,
-          streakDays: data?.activity?.streakDays || 0
-        }
-        case 'coverLetter': return { count: data?.coverLetters?.count || 0 }
-        case 'applications': return { total: data?.applications?.total || 0 }
-        case 'career': return { exploredCount: data?.interest?.hasResult ? 1 : 0 }
+        case 'wellness': return { completedActivities: data?.wellness?.completedActivities, streakDays: data?.wellness?.streakDays, moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null }
+        case 'quests': return { completedQuests: data?.quests?.completed || 0, totalQuests: data?.quests?.total || 3, streakDays: data?.activity?.streakDays || 0 }
         case 'exercises': return { completedCount: data?.exercises?.completedExercises || 0 }
         case 'knowledge': return { readCount: data?.knowledge?.readCount || 0 }
-        case 'diary': return { 
-          upcomingEvents: data?.calendar?.upcomingEvents,
-          eventsThisWeek: data?.calendar?.eventsThisWeek,
-          hasConsultantMeeting: data?.calendar?.hasConsultantMeeting,
-          streakDays: data?.activity?.streakDays
-        }
         case 'interests': return { hasResult: data?.interest?.hasResult }
         default: return {}
       }
     }
 
     return (
-      <ErrorBoundary fallback={
-        <div className="bg-white rounded-2xl border-2 border-slate-200 p-5">
-          <p className="text-sm text-slate-500">Kunde inte ladda widget</p>
-        </div>
-      }>
-        <Suspense fallback={
-          <div className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
-            <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
-            <div className="h-8 bg-slate-200 rounded w-1/2"></div>
-          </div>
-        }>
+      <ErrorBoundary fallback={<div className="bg-white rounded-2xl border-2 border-slate-200 p-5"><p className="text-sm text-slate-500">Kunde inte ladda widget</p></div>}>
+        <Suspense fallback={<div className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse"><div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div><div className="h-8 bg-slate-200 rounded w-1/2"></div></div>}>
           <WidgetComponent {...getWidgetProps()} size="small" />
         </Suspense>
       </ErrorBoundary>
@@ -191,33 +132,58 @@ export default function OverviewTab() {
       {/* Välkomstsektion */}
       <AnimatedSection delay={100}>
         <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl p-6 text-white">
-          <h1 className="text-2xl font-bold mb-2">
-            Hej{user?.first_name ? `, ${user.first_name}` : ''}! 👋
-          </h1>
-          <p className="text-violet-100">
-            Välkommen till din personliga arbetsmarknadsportal.
-          </p>
+          <h1 className="text-2xl font-bold mb-2">Hej{user?.first_name ? `, ${user.first_name}` : ''}! 👋</h1>
+          <p className="text-violet-100">Välkommen till din personliga arbetsmarknadsportal.</p>
         </div>
       </AnimatedSection>
 
       {/* Widgets Grid */}
       <AnimatedSection delay={200}>
         <section>
-          <h2 className="text-lg font-bold text-slate-900 mb-4">
-            Dina verktyg
-          </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-slate-900">Dina verktyg</h2>
+            <button onClick={() => setShowWidgetMenu(!showWidgetMenu)} className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white border-2 border-slate-200 text-slate-700 hover:border-violet-300 hover:text-violet-700 transition-all")}>
+              <Settings size={16} /><span>Anpassa</span><ChevronDown size={16} className={cn("transition-transform", showWidgetMenu && "rotate-180")} />
+            </button>
+          </div>
+
+          {showWidgetMenu && (
+            <div className="mb-6 p-4 bg-slate-50 rounded-2xl border-2 border-slate-200">
+              <p className="text-sm text-slate-600 mb-3">Välj vilka verktyg du vill se:</p>
+              <div className="flex flex-wrap gap-2">
+                {ALL_WIDGETS.map(widget => {
+                  const isActive = activeWidgets.includes(widget.id as WidgetId)
+                  return (
+                    <button key={widget.id} onClick={() => isActive ? removeWidget(widget.id as WidgetId) : addWidget(widget.id as WidgetId)} className={cn("px-4 py-2 rounded-xl text-sm font-medium transition-all", isActive ? "bg-violet-100 text-violet-700 border-2 border-violet-200" : "bg-white text-slate-600 border-2 border-slate-200 hover:border-violet-200")}>
+                      {isActive ? '✓ ' : '+ '}{widget.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {activeWidgets.map(widgetId => (
-              <WidgetWrapper 
-                key={widgetId} 
-                onRemove={() => removeWidget(widgetId)}
-              >
-                {renderWidget(widgetId)}
-              </WidgetWrapper>
+              <WidgetWrapper key={widgetId} onRemove={() => removeWidget(widgetId)}>{renderWidget(widgetId)}</WidgetWrapper>
             ))}
+            
+            <button onClick={() => setShowWidgetMenu(true)} className={cn("flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-dashed border-slate-300 text-slate-400 hover:border-violet-300 hover:text-violet-500 transition-all min-h-[160px]")}>
+              <Plus size={32} /><span className="text-sm font-medium">Lägg till verktyg</span>
+            </button>
           </div>
         </section>
       </AnimatedSection>
+
+      {activeWidgets.length === 0 && (
+        <AnimatedSection delay={300}>
+          <div className="text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+            <h3 className="text-lg font-semibold text-slate-700 mb-2">Inga verktyg valda</h3>
+            <p className="text-sm text-slate-500 mb-4">Klicka på "Anpassa" för att välja verktyg</p>
+            <button onClick={() => setShowWidgetMenu(true)} className="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700">Välj verktyg</button>
+          </div>
+        </AnimatedSection>
+      )}
     </div>
   )
 }
