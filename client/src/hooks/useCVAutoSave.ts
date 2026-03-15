@@ -50,6 +50,7 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
   const { mutate: saveToServer } = useMutation({
     mutationFn: cvApi.updateCV,
     onSuccess: () => {
+      console.log('useCVAutoSave: Server save SUCCESS')
       markSaved()
       queryClient.invalidateQueries({ queryKey: ['cv'] })
       setPendingCount(0)
@@ -133,9 +134,11 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
     // Hoppa över första renderingen (när data laddas från servern)
     if (isFirstRender.current) {
       isFirstRender.current = false
+      console.log('useCVAutoSave: Skipping first render')
       return
     }
     
+    console.log('useCVAutoSave: Data changed, triggering save. workExperience count:', data.workExperience?.length)
     triggerSave()
     
     return () => {

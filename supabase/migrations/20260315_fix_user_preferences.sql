@@ -74,6 +74,6 @@ CREATE TRIGGER update_user_preferences_timestamp
 GRANT ALL ON user_preferences TO authenticated;
 GRANT ALL ON user_preferences TO anon;
 
--- Also grant sequence permissions
+-- Grant sequence permissions
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO authenticated;
 GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO anon;
