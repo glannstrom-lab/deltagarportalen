@@ -18,15 +18,19 @@ import '@/styles/animations.css'
 const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
 const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSearchWidget'))
 const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
+const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWidget'))
+const CoverLetterWidget = lazy(() => import('@/components/dashboard/widgets/CoverLetterWidget'))
 
-// Widget lazy loading map - BARA 3 widgets först
+// Widget lazy loading map
 const WIDGET_COMPONENTS = {
   cv: CVWidget,
   jobSearch: JobSearchWidget,
   wellness: WellnessWidget,
+  quests: QuestsWidget,
+  coverLetter: CoverLetterWidget,
 }
 
-type WidgetId = 'cv' | 'jobSearch' | 'wellness'
+type WidgetId = 'cv' | 'jobSearch' | 'wellness' | 'quests' | 'coverLetter'
 
 // Animation wrapper component
 function AnimatedSection({ 
@@ -91,8 +95,8 @@ export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading } = useDashboardData()
   
-  // Default widgets - bara 3
-  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness'])
+  // Default widgets
+  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests', 'coverLetter'])
 
   // Loading state
   if (loading) {
@@ -131,6 +135,12 @@ export default function OverviewTab() {
           streakDays: data?.wellness?.streakDays,
           moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null
         }
+        case 'quests': return { 
+          completedQuests: data?.quests?.completed || 0, 
+          totalQuests: data?.quests?.total || 3,
+          streakDays: data?.activity?.streakDays || 0
+        }
+        case 'coverLetter': return { count: data?.coverLetters?.count || 0 }
         default: return {}
       }
     }
