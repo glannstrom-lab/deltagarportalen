@@ -1,94 +1,138 @@
 import { Link } from 'react-router-dom'
-import { Briefcase, Bookmark, ChevronRight, Search } from 'lucide-react'
+import { Briefcase, Search, ChevronRight, Bookmark, MapPin, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface JobSearchWidgetProps {
   savedCount?: number
-  size?: 'small' | 'medium' | 'large'
+  newMatches?: number
+  recentJobs?: { id: string; title: string; company: string; location?: string }[]
+  size?: 'small' | 'medium'
 }
 
-export function JobSearchWidget({ 
+export function JobSearchWidget({
   savedCount = 0,
+  newMatches = 0,
+  recentJobs = [],
   size = 'small'
 }: JobSearchWidgetProps) {
   const hasJobs = savedCount > 0
-  
+
   if (size === 'small') {
     return (
-      <Link 
-        to="/job-search" 
+      <Link
+        to="/job-search"
         className={cn(
-          "group block bg-white p-4 rounded-xl border-2 transition-all duration-200",
+          "group block bg-white p-4 rounded-2xl border-2 transition-all duration-200",
           "hover:border-blue-300 hover:shadow-lg hover:-translate-y-0.5",
           "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-          hasJobs ? "border-slate-200" : "border-blue-200 bg-blue-50/30"
+          "border-slate-200"
         )}
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className={cn(
-              "w-8 h-8 rounded-lg flex items-center justify-center",
-              hasJobs ? "bg-blue-100 text-blue-700" : "bg-blue-200 text-blue-800"
-            )}>
-              {hasJobs ? <Bookmark size={16} /> : <Search size={16} />}
+            <div className="w-9 h-9 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+              {hasJobs ? <Bookmark size={18} /> : <Search size={18} />}
             </div>
-            <h3 className="font-semibold text-slate-800">Jobb</h3>
+            <h3 className="font-semibold text-slate-800 text-sm">Jobbsök</h3>
           </div>
-          <ChevronRight 
-            size={16} 
-            className="text-slate-400 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all" 
+          <ChevronRight
+            size={16}
+            className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all"
           />
         </div>
-        
-        <div className="flex items-center gap-2">
+
+        <div className="flex items-baseline gap-2 mb-2">
           <span className="text-2xl font-bold text-slate-800">{savedCount}</span>
-          <span className="text-xs text-slate-500">{savedCount === 1 ? 'sparad' : 'sparade'}</span>
+          <span className="text-sm text-slate-500">{savedCount === 1 ? 'sparat jobb' : 'sparade jobb'}</span>
         </div>
-        
+
+        {newMatches > 0 && (
+          <span className="inline-flex items-center text-xs font-medium px-2 py-1 rounded-full bg-blue-100 text-blue-700 border border-blue-200">
+            {newMatches} nya matchningar
+          </span>
+        )}
+
         {!hasJobs && (
-          <p className="mt-3 text-xs text-blue-700">
-            Hitta ditt nästa jobb
-          </p>
+          <p className="text-xs text-blue-600 mt-1">Hitta ditt nästa jobb</p>
         )}
       </Link>
     )
   }
 
+  // Medium size
   return (
-    <Link 
-      to="/job-search" 
+    <Link
+      to="/job-search"
       className={cn(
-        "group block bg-white p-5 rounded-xl border-2 transition-all duration-200",
-        "hover:border-blue-300 hover:shadow-lg hover:-translate-y-0.5",
+        "group block bg-white p-5 rounded-2xl border-2 transition-all duration-200",
+        "hover:border-blue-300 hover:shadow-xl hover:-translate-y-0.5",
         "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2",
-        hasJobs ? "border-slate-200" : "border-blue-200 bg-blue-50/30"
+        "border-slate-200"
       )}
     >
-      <div className="flex items-center gap-3 mb-4">
-        <div className={cn(
-          "w-12 h-12 rounded-xl flex items-center justify-center",
-          hasJobs ? "bg-blue-100 text-blue-700" : "bg-blue-200 text-blue-800"
-        )}>
-          {hasJobs ? <Briefcase size={24} /> : <Search size={24} />}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-100 to-cyan-100 text-blue-600 flex items-center justify-center shadow-sm">
+            <Briefcase size={22} />
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-800">Jobbsökning</h3>
+            <p className="text-xs text-slate-500">
+              {hasJobs ? `${savedCount} sparade jobb` : 'Börja söka jobb'}
+            </p>
+          </div>
         </div>
-        <div className="flex-1">
-          <h3 className="font-semibold text-slate-800">Sparade jobb</h3>
-          <p className="text-sm text-slate-500">{savedCount} {savedCount === 1 ? 'jobb' : 'jobb'} i din lista</p>
-        </div>
-        <ChevronRight 
-          size={20} 
-          className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all" 
+        <ChevronRight
+          size={18}
+          className="text-slate-300 group-hover:text-blue-500 group-hover:translate-x-0.5 transition-all mt-1"
         />
       </div>
-      
-      {savedCount === 0 ? (
-        <p className="text-sm text-blue-700 bg-blue-50 px-3 py-2 rounded-lg border border-blue-200">
-          Börja spara jobb som intresserar dig
-        </p>
+
+      {/* Stats */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="p-3 bg-blue-50 rounded-xl">
+          <div className="flex items-center gap-2">
+            <Bookmark size={16} className="text-blue-500" />
+            <span className="text-lg font-bold text-slate-800">{savedCount}</span>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">Sparade</p>
+        </div>
+        <div className="p-3 bg-cyan-50 rounded-xl">
+          <div className="flex items-center gap-2">
+            <Search size={16} className="text-cyan-500" />
+            <span className="text-lg font-bold text-slate-800">{newMatches}</span>
+          </div>
+          <p className="text-xs text-slate-500 mt-1">Nya matcher</p>
+        </div>
+      </div>
+
+      {/* Recent jobs */}
+      {recentJobs.length > 0 ? (
+        <div className="space-y-2">
+          <p className="text-xs font-medium text-slate-500">Senast sparade</p>
+          {recentJobs.slice(0, 2).map(job => (
+            <div key={job.id} className="p-2 bg-slate-50 rounded-lg">
+              <p className="text-sm font-medium text-slate-700 truncate">{job.title}</p>
+              <div className="flex items-center gap-2 text-xs text-slate-500 mt-0.5">
+                <span>{job.company}</span>
+                {job.location && (
+                  <>
+                    <span>•</span>
+                    <span className="flex items-center gap-0.5">
+                      <MapPin size={10} />
+                      {job.location}
+                    </span>
+                  </>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       ) : (
-        <p className="text-sm text-slate-600">
-          Klicka för att se dina sparade jobb
-        </p>
+        <div className="p-3 bg-blue-50 rounded-xl border border-blue-100">
+          <p className="text-sm font-medium text-blue-800">Börja söka jobb</p>
+          <p className="text-xs text-blue-600 mt-0.5">Vi hjälper dig hitta rätt tjänst</p>
+        </div>
       )}
     </Link>
   )

@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom'
 import {
   Settings, ChevronDown, Plus, ChevronRight, Flame, Target,
   FileText, Briefcase, Heart, BookOpen, Sparkles, ArrowRight,
-  CheckCircle2, Circle, Lightbulb, Zap, Star, TrendingUp
+  CheckCircle2, Circle, Lightbulb, Zap, Star, TrendingUp,
+  Calendar, MessageSquare, Linkedin, BarChart3
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
@@ -17,9 +18,13 @@ const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
 const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSearchWidget'))
 const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
 const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWidget'))
-const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget').then(m => ({ default: m.ExercisesWidget })))
-const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget').then(m => ({ default: m.KnowledgeWidget })))
-const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget').then(m => ({ default: m.InterestWidget })))
+const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget'))
+const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget'))
+const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget'))
+const CalendarWidget = lazy(() => import('@/components/dashboard/widgets/CalendarWidget'))
+const InterviewWidget = lazy(() => import('@/components/dashboard/widgets/InterviewWidget'))
+const LinkedInWidget = lazy(() => import('@/components/dashboard/widgets/LinkedInWidget'))
+const SkillsWidget = lazy(() => import('@/components/dashboard/widgets/SkillsWidget'))
 
 // Widget map
 const WIDGET_COMPONENTS = {
@@ -30,6 +35,10 @@ const WIDGET_COMPONENTS = {
   exercises: ExercisesWidget,
   knowledge: KnowledgeWidget,
   interests: InterestWidget,
+  calendar: CalendarWidget,
+  interview: InterviewWidget,
+  linkedin: LinkedInWidget,
+  skills: SkillsWidget,
 }
 
 type WidgetId = keyof typeof WIDGET_COMPONENTS
@@ -42,6 +51,10 @@ const ALL_WIDGETS = [
   { id: 'exercises', label: 'Övningar', icon: Zap, color: 'emerald' },
   { id: 'knowledge', label: 'Kunskapsbank', icon: BookOpen, color: 'amber' },
   { id: 'interests', label: 'Intressen', icon: Sparkles, color: 'purple' },
+  { id: 'calendar', label: 'Kalender', icon: Calendar, color: 'rose' },
+  { id: 'interview', label: 'Intervjuträning', icon: MessageSquare, color: 'indigo' },
+  { id: 'linkedin', label: 'LinkedIn', icon: Linkedin, color: 'blue' },
+  { id: 'skills', label: 'Kompetenser', icon: BarChart3, color: 'cyan' },
 ] as const
 
 const DEFAULT_WIDGETS: WidgetId[] = ['cv', 'jobSearch', 'wellness', 'quests']
@@ -509,6 +522,27 @@ export default function OverviewTab() {
           topRecommendations: data?.interest?.topRecommendations || [],
           answeredQuestions: data?.interest?.answeredQuestions || 0,
           totalQuestions: data?.interest?.totalQuestions || 36
+        }
+        case 'calendar': return {
+          upcomingEvents: data?.calendar?.upcomingEvents || 0,
+          nextEvent: data?.calendar?.nextEvent || null,
+          eventsThisWeek: data?.calendar?.eventsThisWeek || 0
+        }
+        case 'interview': return {
+          completedSessions: data?.interview?.completedSessions || 0,
+          averageScore: data?.interview?.averageScore || 0,
+          lastPractice: data?.interview?.lastPractice || null
+        }
+        case 'linkedin': return {
+          profileScore: data?.linkedin?.profileScore || 0,
+          optimizedSections: data?.linkedin?.optimizedSections || 0,
+          hasAnalysis: data?.linkedin?.hasAnalysis || false
+        }
+        case 'skills': return {
+          analyzedSkills: data?.skills?.analyzedSkills || 0,
+          gapCount: data?.skills?.gapCount || 0,
+          matchScore: data?.skills?.matchScore || 0,
+          hasAnalysis: data?.skills?.hasAnalysis || false
         }
         default: return {}
       }
