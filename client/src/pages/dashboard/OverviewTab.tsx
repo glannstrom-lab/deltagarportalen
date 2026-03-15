@@ -5,7 +5,7 @@
 import { useState, useCallback, useEffect, useMemo } from 'react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
-import { useEnergyStore, getWidgetsForEnergyLevel } from '@/stores/energyStore'
+// Energy store removed - widgets shown based on user progress only
 import { DashboardGrid, getWidgetGridClasses } from '@/components/dashboard/DashboardGrid'
 import { CompactWidgetFilter, type WidgetType } from '@/components/dashboard/CompactWidgetFilter'
 import { WidgetSizeSelector, type WidgetSize } from '@/components/dashboard/WidgetSizeSelector'
@@ -27,7 +27,6 @@ import {
 import { NextStepWidget } from '@/components/dashboard/widgets/NextStepWidget'
 import { GettingStartedChecklist } from '@/components/dashboard/GettingStartedChecklist'
 import { WeeklySummary } from '@/components/dashboard/WeeklySummary'
-import { QuickWinButton } from '@/components/dashboard/QuickWinButton'
 import { cn } from '@/lib/utils'
 
 // Alla tillgängliga widgets
@@ -75,27 +74,15 @@ const getDefaultWidgetSizes = (data: any): Record<WidgetType, WidgetSize> => {
 export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
-  const { level: energyLevel } = useEnergyStore()
-  
   // Widget-storlekar baserat på data
   const defaultWidgetSizes = useMemo(() => 
     getDefaultWidgetSizes(data),
     [data]
   )
   
-  // Synliga widgets - filtrerat baserat på energinivå
-  const defaultVisibleWidgets = useMemo(() => {
-    if (!data) return allWidgets
-    return getWidgetsForEnergyLevel(energyLevel, allWidgets)
-  }, [energyLevel, data])
-
-  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
+  // Synliga widgets - visa alla som standard
+  const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(allWidgets)
   const [widgetSizes, setWidgetSizes] = useState<Record<WidgetType, WidgetSize>>(defaultWidgetSizes)
-
-  // Uppdatera synliga widgets när energinivå ändras
-  useEffect(() => {
-    setVisibleWidgets(getWidgetsForEnergyLevel(energyLevel, allWidgets))
-  }, [energyLevel])
 
   // Uppdatera widget-storlekar när data laddas
   useEffect(() => {
@@ -340,8 +327,6 @@ export default function OverviewTab() {
         <WeeklySummary />
       )}
 
-      {/* Quick Win Button - alltid synlig */}
-      <QuickWinButton />
     </div>
   )
 }

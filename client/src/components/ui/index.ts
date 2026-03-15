@@ -7,7 +7,7 @@ export { ProgressBars } from './ProgressBars'
 export { CircleChart } from './CircleChart'
 export { LineChart } from './LineChart'
 export { BarChart } from './BarChart'
-export { QuickActions } from './QuickActions'
+// export { QuickActions } from './QuickActions'  // Removed - not used
 export { SearchBar } from './SearchBar'
 
 // Skeletons

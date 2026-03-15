@@ -8,7 +8,6 @@ import { CVWidget } from '@/components/dashboard/widgets/CVWidget'
 import { JobSearchWidget } from '@/components/dashboard/widgets/JobSearchWidget'
 import { WellnessWidget } from '@/components/dashboard/widgets/WellnessWidget'
 import { NextStepCard } from '@/components/dashboard/NextStepCard'
-import { QuickActions } from '@/components/dashboard/QuickActions'
 import { SkeletonStats, SkeletonWidgets, SkeletonNextStep, SkeletonHeader } from '@/components/dashboard/SkeletonWidget'
 import { EmptyState } from '@/components/dashboard/EmptyState'
 import { cn } from '@/lib/utils'
@@ -180,11 +179,6 @@ export default function OverviewTab() {
       {/* Nästa steg - Kollapsbar */}
       <AnimatedSection delay={100}>
         {data && <NextStepCard data={data} />}
-      </AnimatedSection>
-
-      {/* Quick Actions - Ny sektion! */}
-      <AnimatedSection delay={200}>
-        <QuickActions />
       </AnimatedSection>
 
       {/* Snabb-statistik - Förbättrad grid och typografi */}
