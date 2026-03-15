@@ -280,10 +280,9 @@ export default function CVBuilder() {
         }
       }
       
-      console.log('CVBuilder: Loading CV from server...')
+      alert('Loading CV from server...')
       const cv = await cvApi.getCV()
-      console.log('CVBuilder: Loaded CV:', cv)
-      console.log('CVBuilder: workExperience from server:', cv?.workExperience)
+      alert('Loaded CV. workExperience count: ' + (cv?.workExperience?.length || 0))
       
       if (cv) {
         setData(prev => {

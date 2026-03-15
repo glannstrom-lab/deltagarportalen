@@ -56,6 +56,7 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
   const { mutate: saveToServer } = useMutation({
     mutationFn: cvApi.updateCV,
     onSuccess: () => {
+      alert('Save SUCCESS!')
       markSaved()
       queryClient.invalidateQueries({ queryKey: ['cv'] })
       setPendingCount(0)
@@ -64,6 +65,7 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
       localStorage.setItem('cv-last-saved', Date.now().toString())
     },
     onError: (error: any) => {
+      alert('Save FAILED: ' + (error?.message || 'Unknown error'))
       console.error('Auto-save failed:', error)
       markError()
       // Add to pending queue for retry
@@ -131,6 +133,7 @@ export function useCVAutoSave(data: CVData): UseCVAutoSaveReturn {
       }
       
       markSaving()
+      alert('Auto-saving to server. workExperience count: ' + (latestData.workExperience?.length || 0))
       saveToServer(latestData)
     }, 2000) // 2 second debounce
   }, [isOnline, markSaving, markUnsaved, saveToLocalStorage, saveToServer])
