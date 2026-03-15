@@ -60,7 +60,7 @@ const colorSchemes = {
 }
 
 export function NextStepCard({ data }: NextStepCardProps) {
-  const [isExpanded, setIsExpanded] = useState(true)
+  const [isExpanded, setIsExpanded] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   
   if (!data) return null

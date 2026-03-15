@@ -1,6 +1,13 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { LayoutDashboard, Zap, TrendingUp, Target, ChevronRight, Sparkles } from 'lucide-react'
+import { 
+  LayoutDashboard, 
+  ChevronRight, 
+  Sparkles, 
+  Settings,
+  ChevronDown,
+  Plus
+} from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { QuestsWidget } from '@/components/dashboard/widgets/QuestsWidget'
@@ -8,64 +15,27 @@ import { CVWidget } from '@/components/dashboard/widgets/CVWidget'
 import { JobSearchWidget } from '@/components/dashboard/widgets/JobSearchWidget'
 import { WellnessWidget } from '@/components/dashboard/widgets/WellnessWidget'
 import { NextStepCard } from '@/components/dashboard/NextStepCard'
-import { SkeletonStats, SkeletonWidgets, SkeletonNextStep, SkeletonHeader } from '@/components/dashboard/SkeletonWidget'
+import { SkeletonWidgets, SkeletonNextStep, SkeletonHeader } from '@/components/dashboard/SkeletonWidget'
 import { EmptyState } from '@/components/dashboard/EmptyState'
 import { cn } from '@/lib/utils'
 import '@/styles/animations.css'
 
-// Color system for consistent theming
-const colorSystem = {
-  violet: {
-    bg: 'bg-violet-50',
-    bgHover: 'hover:bg-violet-100',
-    text: 'text-violet-700',
-    textDark: 'text-violet-900',
-    border: 'border-violet-200',
-    borderHover: 'hover:border-violet-300',
-    ring: 'focus:ring-violet-500',
-    shadow: 'shadow-violet-100'
-  },
-  blue: {
-    bg: 'bg-blue-50',
-    bgHover: 'hover:bg-blue-100',
-    text: 'text-blue-700',
-    textDark: 'text-blue-900',
-    border: 'border-blue-200',
-    borderHover: 'hover:border-blue-300',
-    ring: 'focus:ring-blue-500',
-    shadow: 'shadow-blue-100'
-  },
-  rose: {
-    bg: 'bg-rose-50',
-    bgHover: 'hover:bg-rose-100',
-    text: 'text-rose-700',
-    textDark: 'text-rose-900',
-    border: 'border-rose-200',
-    borderHover: 'hover:border-rose-300',
-    ring: 'focus:ring-rose-500',
-    shadow: 'shadow-rose-100'
-  },
-  amber: {
-    bg: 'bg-amber-50',
-    bgHover: 'hover:bg-amber-100',
-    text: 'text-amber-700',
-    textDark: 'text-amber-900',
-    border: 'border-amber-200',
-    borderHover: 'hover:border-amber-300',
-    ring: 'focus:ring-amber-500',
-    shadow: 'shadow-amber-100'
-  },
-  emerald: {
-    bg: 'bg-emerald-50',
-    bgHover: 'hover:bg-emerald-100',
-    text: 'text-emerald-700',
-    textDark: 'text-emerald-900',
-    border: 'border-emerald-200',
-    borderHover: 'hover:border-emerald-300',
-    ring: 'focus:ring-emerald-500',
-    shadow: 'shadow-emerald-100'
-  }
-}
+// Alla tillgängliga widget-typer
+const ALL_WIDGETS = [
+  { id: 'cv', label: 'CV', component: CVWidget },
+  { id: 'jobSearch', label: 'Jobbsök', component: JobSearchWidget },
+  { id: 'wellness', label: 'Välmående', component: WellnessWidget },
+  { id: 'quests', label: 'Quests', component: QuestsWidget },
+  { id: 'coverLetter', label: 'Personligt brev', component: CoverLetterWidget },
+  { id: 'applications', label: 'Ansökningar', component: ApplicationsWidget },
+  { id: 'career', label: 'Karriär', component: CareerWidget },
+  { id: 'exercises', label: 'Övningar', component: ExercisesWidget },
+  { id: 'knowledge', label: 'Kunskapsbank', component: KnowledgeWidget },
+  { id: 'diary', label: 'Dagbok', component: DiaryWidget },
+  { id: 'interests', label: 'Intressen', component: InterestsWidget },
+] as const
+
+type WidgetId = typeof ALL_WIDGETS[number]['id']
 
 // Animation wrapper component
 function AnimatedSection({ 
@@ -100,21 +70,47 @@ function AnimatedSection({
   )
 }
 
+// Widget wrapper component
+function WidgetWrapper({ 
+  children, 
+  onRemove 
+}: { 
+  children: React.ReactNode
+  onRemove?: () => void 
+}) {
+  return (
+    <div className="relative group">
+      {onRemove && (
+        <button
+          onClick={onRemove}
+          className="absolute -top-2 -right-2 z-10 w-6 h-6 bg-rose-100 text-rose-600 rounded-full 
+                     flex items-center justify-center opacity-0 group-hover:opacity-100 
+                     transition-opacity hover:bg-rose-200"
+          title="Ta bort widget"
+        >
+          ×
+        </button>
+      )}
+      {children}
+    </div>
+  )
+}
+
 export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading, error } = useDashboardData()
+  
+  // Default widgets som visas
+  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests'])
+  const [showWidgetMenu, setShowWidgetMenu] = useState(false)
 
-  // Loading state with staggered skeletons
+  // Loading state
   if (loading) {
     return (
       <div className="space-y-6">
         <SkeletonHeader />
         <SkeletonNextStep />
-        <SkeletonStats count={4} />
-        <div>
-          <div className="h-6 bg-slate-200 rounded w-32 mb-4 animate-pulse" />
-          <SkeletonWidgets count={4} />
-        </div>
+        <SkeletonWidgets count={4} />
       </div>
     )
   }
@@ -144,9 +140,71 @@ export default function OverviewTab() {
     )
   }
 
+  const addWidget = (widgetId: WidgetId) => {
+    if (!activeWidgets.includes(widgetId)) {
+      setActiveWidgets([...activeWidgets, widgetId])
+    }
+  }
+
+  const removeWidget = (widgetId: WidgetId) => {
+    setActiveWidgets(activeWidgets.filter(id => id !== widgetId))
+  }
+
+  // Render widget based on ID
+  const renderWidget = (widgetId: WidgetId) => {
+    const widgetData = {
+      cv: { hasCV: data?.cv?.hasCV, progress: data?.cv?.progress },
+      jobSearch: { savedCount: data?.jobs?.savedCount },
+      wellness: { 
+        completedActivities: data?.wellness?.completedActivities,
+        streakDays: data?.wellness?.streakDays,
+        moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null
+      },
+      quests: { 
+        completedQuests: data?.quests?.completed || 0, 
+        totalQuests: data?.quests?.total || 3,
+        streakDays: data?.activity?.streakDays || 0
+      },
+      coverLetter: { count: data?.coverLetters?.count || 0 },
+      applications: { total: data?.applications?.total || 0 },
+      career: { exploredCount: data?.interest?.hasResult ? 1 : 0 },
+      exercises: { completedCount: data?.exercises?.completedExercises || 0 },
+      knowledge: { readCount: data?.knowledge?.readCount || 0 },
+      diary: { entriesCount: data?.calendar?.upcomingEvents?.length || 0 },
+      interests: { hasResult: data?.interest?.hasResult },
+    }
+
+    switch (widgetId) {
+      case 'cv':
+        return <CVWidget {...widgetData.cv} size="small" />
+      case 'jobSearch':
+        return <JobSearchWidget {...widgetData.jobSearch} size="small" />
+      case 'wellness':
+        return <WellnessWidget {...widgetData.wellness} size="small" />
+      case 'quests':
+        return <QuestsWidget {...widgetData.quests} size="small" />
+      case 'coverLetter':
+        return <CoverLetterWidget count={widgetData.coverLetter.count} size="small" />
+      case 'applications':
+        return <ApplicationsWidget total={widgetData.applications.total} size="small" />
+      case 'career':
+        return <CareerWidget exploredCount={widgetData.career.exploredCount} size="small" />
+      case 'exercises':
+        return <ExercisesWidget completedCount={widgetData.exercises.completedCount} size="small" />
+      case 'knowledge':
+        return <KnowledgeWidget readCount={widgetData.knowledge.readCount} size="small" />
+      case 'diary':
+        return <DiaryWidget entriesCount={widgetData.diary.entriesCount} size="small" />
+      case 'interests':
+        return <InterestsWidget hasResult={widgetData.interests.hasResult} size="small" />
+      default:
+        return null
+    }
+  }
+
   return (
     <div className="space-y-8">
-      {/* Header - Tydlig typografi */}
+      {/* Header */}
       <AnimatedSection delay={0}>
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -164,8 +222,7 @@ export default function OverviewTab() {
               "bg-violet-100 text-violet-700 rounded-xl",
               "text-sm font-semibold",
               "hover:bg-violet-200 hover:shadow-lg hover:-translate-y-0.5",
-              "transition-all duration-200",
-              "focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
+              "transition-all duration-200"
             )}
           >
             <Sparkles size={18} />
@@ -176,99 +233,115 @@ export default function OverviewTab() {
         </div>
       </AnimatedSection>
 
-      {/* Nästa steg - Kollapsbar */}
+      {/* Nästa steg - Kollapsad som standard */}
       <AnimatedSection delay={100}>
         {data && <NextStepCard data={data} />}
       </AnimatedSection>
 
-      {/* Snabb-statistik - Förbättrad grid och typografi */}
-      <AnimatedSection delay={300}>
-        <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-slate-900">
-              Din veckoöversikt
-            </h2>
-            <Link 
-              to="/activity" 
-              className="text-sm font-medium text-violet-600 hover:text-violet-700 flex items-center gap-1"
-            >
-              Se allt
-              <ChevronRight size={16} />
-            </Link>
-          </div>
-          
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            <QuickStat 
-              icon={<Target size={20} />} 
-              label="CV-progress" 
-              value={`${data?.cv?.progress || 0}%`} 
-              color="violet"
-              trend={data?.cv?.progress === 100 ? 'Klar!' : undefined}
-              delay={0}
-            />
-            <QuickStat 
-              icon={<Zap size={20} />} 
-              label="Sparade jobb" 
-              value={data?.jobs?.savedCount || 0} 
-              color="blue"
-              delay={50}
-            />
-            <QuickStat 
-              icon={<TrendingUp size={20} />} 
-              label="Ansökningar" 
-              value={data?.applications?.total || 0} 
-              color="amber"
-              delay={100}
-            />
-            <QuickStat 
-              icon={<LayoutDashboard size={20} />} 
-              label="Quests idag" 
-              value={`${data?.quests?.completed || 0}/${data?.quests?.total || 3}`} 
-              color="emerald"
-              delay={150}
-            />
-          </div>
-        </section>
-      </AnimatedSection>
-
-      {/* Widgets Grid */}
-      <AnimatedSection delay={400}>
+      {/* Widgets Grid med expanderbar meny */}
+      <AnimatedSection delay={200}>
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900">
               Dina verktyg
             </h2>
+            <button
+              onClick={() => setShowWidgetMenu(!showWidgetMenu)}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium",
+                "bg-white border-2 border-slate-200 text-slate-700",
+                "hover:border-violet-300 hover:text-violet-700",
+                "transition-all duration-200"
+              )}
+            >
+              <Settings size={16} />
+              <span>Anpassa</span>
+              <ChevronDown 
+                size={16} 
+                className={cn("transition-transform", showWidgetMenu && "rotate-180")} 
+              />
+            </button>
           </div>
+
+          {/* Expanderbar meny för att välja widgets */}
+          {showWidgetMenu && (
+            <div className="mb-6 p-4 bg-slate-50 rounded-2xl border-2 border-slate-200">
+              <p className="text-sm text-slate-600 mb-3">
+                Välj vilka verktyg du vill se:
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {ALL_WIDGETS.map(widget => {
+                  const isActive = activeWidgets.includes(widget.id)
+                  return (
+                    <button
+                      key={widget.id}
+                      onClick={() => isActive ? removeWidget(widget.id) : addWidget(widget.id)}
+                      className={cn(
+                        "px-4 py-2 rounded-xl text-sm font-medium transition-all",
+                        isActive 
+                          ? "bg-violet-100 text-violet-700 border-2 border-violet-200" 
+                          : "bg-white text-slate-600 border-2 border-slate-200 hover:border-violet-200"
+                      )}
+                    >
+                      {isActive ? '✓ ' : '+ '}{widget.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <CVWidget 
-              hasCV={data?.cv?.hasCV} 
-              progress={data?.cv?.progress} 
-              size="small" 
-            />
-            <JobSearchWidget 
-              savedCount={data?.jobs?.savedCount} 
-              size="small" 
-            />
-            <WellnessWidget 
-              completedActivities={data?.wellness?.completedActivities}
-              streakDays={data?.wellness?.streakDays}
-              moodToday={data?.wellness?.moodToday ? String(data.wellness.moodToday) : null}
-              size="small" 
-            />
-            <QuestsWidget 
-              completedQuests={data?.quests?.completed || 0} 
-              totalQuests={data?.quests?.total || 3}
-              streakDays={data?.activity?.streakDays || 0}
-              size="small" 
-            />
+          {/* Widgets Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {activeWidgets.map(widgetId => (
+              <WidgetWrapper 
+                key={widgetId} 
+                onRemove={() => removeWidget(widgetId)}
+              >
+                {renderWidget(widgetId)}
+              </WidgetWrapper>
+            ))}
+            
+            {/* Add widget placeholder */}
+            <button
+              onClick={() => setShowWidgetMenu(true)}
+              className={cn(
+                "flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-dashed",
+                "border-slate-300 text-slate-400 hover:border-violet-300 hover:text-violet-500",
+                "transition-all duration-200 min-h-[160px]"
+              )}
+            >
+              <Plus size={32} />
+              <span className="text-sm font-medium">Lägg till verktyg</span>
+            </button>
           </div>
         </section>
       </AnimatedSection>
 
+      {/* Empty state if no widgets */}
+      {activeWidgets.length === 0 && (
+        <AnimatedSection delay={300}>
+          <div className="text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+            <LayoutDashboard size={48} className="mx-auto mb-4 text-slate-300" />
+            <h3 className="text-lg font-semibold text-slate-700 mb-2">
+              Inga verktyg valda
+            </h3>
+            <p className="text-sm text-slate-500 mb-4">
+              Klicka på "Anpassa" för att välja vilka verktyg du vill se här
+            </p>
+            <button
+              onClick={() => setShowWidgetMenu(true)}
+              className="px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors"
+            >
+              Välj verktyg
+            </button>
+          </div>
+        </AnimatedSection>
+      )}
+
       {/* Empty state if no data */}
       {!data?.cv?.hasCV && !data?.jobs?.savedCount && (
-        <AnimatedSection delay={500}>
+        <AnimatedSection delay={400}>
           <section className="pt-4">
             <EmptyState type="cv" />
           </section>
@@ -278,53 +351,108 @@ export default function OverviewTab() {
   )
 }
 
-interface QuickStatProps {
-  icon: React.ReactNode
-  label: string
-  value: string | number
-  color: 'violet' | 'blue' | 'amber' | 'emerald' | 'rose' | 'slate'
-  trend?: string
-  delay?: number
+// Placeholder widgets for pages that don't have widgets yet
+function CoverLetterWidget({ count, size }: { count: number, size: string }) {
+  return (
+    <Link to="/cover-letter" className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-rose-300 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center">
+          <span className="text-lg">✉️</span>
+        </div>
+        <h3 className="font-semibold text-slate-800">Personligt brev</h3>
+      </div>
+      <p className="text-2xl font-bold text-slate-900">{count}</p>
+      <p className="text-sm text-slate-500">sparade brev</p>
+    </Link>
+  )
 }
 
-function QuickStat({ icon, label, value, color, trend, delay = 0 }: QuickStatProps) {
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const timer = setTimeout(() => setIsVisible(true), delay)
-    return () => clearTimeout(timer)
-  }, [delay])
-
-  const colors = colorSystem[color as keyof typeof colorSystem] || colorSystem.violet
-  
+function ApplicationsWidget({ total, size }: { total: number, size: string }) {
   return (
-    <div 
-      className={cn(
-        "group bg-white p-4 sm:p-5 rounded-2xl border-2 transition-all duration-300",
-        "border-slate-200",
-        "hover:border-slate-300 hover:shadow-xl hover:-translate-y-1",
-        "focus-within:ring-2 focus-within:ring-violet-500 focus-within:ring-offset-2",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-      )}
-      style={{ transitionDelay: `${delay}ms` }}
-    >
-      <div className={cn(
-        "w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-3 transition-all duration-200",
-        colors.bg,
-        colors.text,
-        "group-hover:scale-110"
-      )}>
-        {icon}
+    <Link to="/job-tracker" className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-amber-300 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center">
+          <span className="text-lg">📋</span>
+        </div>
+        <h3 className="font-semibold text-slate-800">Ansökningar</h3>
       </div>
-      <div className="flex items-baseline gap-2 flex-wrap">
-        <p className="text-2xl sm:text-3xl font-bold text-slate-900">{value}</p>
-        {trend && (
-          <span className={cn("text-xs font-bold px-2 py-0.5 rounded-full", colors.bg, colors.text)}>
-            {trend}
-          </span>
-        )}
+      <p className="text-2xl font-bold text-slate-900">{total}</p>
+      <p className="text-sm text-slate-500">aktiva ansökningar</p>
+    </Link>
+  )
+}
+
+function CareerWidget({ exploredCount, size }: { exploredCount: number, size: string }) {
+  return (
+    <Link to="/career" className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-teal-300 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
+          <span className="text-lg">🎯</span>
+        </div>
+        <h3 className="font-semibold text-slate-800">Karriär</h3>
       </div>
-      <p className="text-sm font-medium text-slate-500 mt-1">{label}</p>
-    </div>
+      <p className="text-2xl font-bold text-slate-900">{exploredCount}</p>
+      <p className="text-sm text-slate-500">utforskade yrken</p>
+    </Link>
+  )
+}
+
+function ExercisesWidget({ completedCount, size }: { completedCount: number, size: string }) {
+  return (
+    <Link to="/exercises" className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-emerald-300 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+          <span className="text-lg">💪</span>
+        </div>
+        <h3 className="font-semibold text-slate-800">Övningar</h3>
+      </div>
+      <p className="text-2xl font-bold text-slate-900">{completedCount}</p>
+      <p className="text-sm text-slate-500">genomförda övningar</p>
+    </Link>
+  )
+}
+
+function KnowledgeWidget({ readCount, size }: { readCount: number, size: string }) {
+  return (
+    <Link to="/knowledge-base" className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-blue-300 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center">
+          <span className="text-lg">📚</span>
+        </div>
+        <h3 className="font-semibold text-slate-800">Kunskapsbank</h3>
+      </div>
+      <p className="text-2xl font-bold text-slate-900">{readCount}</p>
+      <p className="text-sm text-slate-500">lästa artiklar</p>
+    </Link>
+  )
+}
+
+function DiaryWidget({ entriesCount, size }: { entriesCount: number, size: string }) {
+  return (
+    <Link to="/diary" className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center">
+          <span className="text-lg">📝</span>
+        </div>
+        <h3 className="font-semibold text-slate-800">Dagbok</h3>
+      </div>
+      <p className="text-2xl font-bold text-slate-900">{entriesCount}</p>
+      <p className="text-sm text-slate-500">anteckningar</p>
+    </Link>
+  )
+}
+
+function InterestsWidget({ hasResult, size }: { hasResult: boolean, size: string }) {
+  return (
+    <Link to="/interest-guide" className="block bg-white p-5 rounded-2xl border-2 border-slate-200 hover:border-cyan-300 hover:shadow-lg transition-all group">
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-cyan-100 text-cyan-600 flex items-center justify-center">
+          <span className="text-lg">💡</span>
+        </div>
+        <h3 className="font-semibold text-slate-800">Intressen</h3>
+      </div>
+      <p className="text-lg font-bold text-slate-900">{hasResult ? 'Genomförd' : 'Ej gjord'}</p>
+      <p className="text-sm text-slate-500">intresseguide</p>
+    </Link>
   )
 }
