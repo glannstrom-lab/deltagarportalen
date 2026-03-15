@@ -2,7 +2,6 @@
  * Energy Tab - Track energy levels and get activity suggestions
  */
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
 import { 
   Zap, Sun, Battery, BatteryLow, BatteryMedium, BatteryFull,
   TrendingUp, Calendar, Clock, AlertCircle, CheckCircle2
@@ -17,39 +16,34 @@ interface EnergyLog {
   notes?: string
 }
 
-const activitySuggestions: Record<number, { title: string; icon: React.ElementType; description: string; link: string }[]> = {
+const activitySuggestions: Record<number, { title: string; icon: React.ElementType; description: string }[]> = {
   8: [
-    { title: 'Skriv personligt brev', icon: Zap, description: 'Perfekt tid för fokuserat skrivande', link: '/cover-letter' },
-    { title: 'Nätverka aktivt', icon: Zap, description: 'Kontakta nya personer på LinkedIn', link: '/career/network' },
-    { title: 'Förbered intervju', icon: Zap, description: 'Öva på vanliga frågor', link: '/exercises' },
+    { title: 'Skriv personligt brev', icon: Zap, description: 'Perfekt tid för fokuserat skrivande' },
+    { title: 'Nätverka aktivt', icon: Zap, description: 'Kontakta nya personer på LinkedIn' },
+    { title: 'Förbered intervju', icon: Zap, description: 'Öva på vanliga frågor' },
   ],
   6: [
-    { title: 'Sök jobb', icon: BatteryMedium, description: 'Gå igenom platsbanken', link: '/job-search' },
-    { title: 'Uppdatera CV', icon: BatteryMedium, description: 'Gör små förbättringar', link: '/cv' },
-    { title: 'Gör en övning', icon: BatteryMedium, description: 'Kompetensutveckling', link: '/exercises' },
+    { title: 'Sök jobb', icon: BatteryMedium, description: 'Gå igenom platsbanken' },
+    { title: 'Uppdatera CV', icon: BatteryMedium, description: 'Gör små förbättringar' },
+    { title: 'Gör en övning', icon: BatteryMedium, description: 'Kompetensutveckling' },
   ],
   4: [
-    { title: 'Läsa artiklar', icon: BatteryLow, description: 'Kunskapsbanken väntar', link: '/knowledge-base' },
-    { title: 'Skriv i dagboken', icon: BatteryLow, description: 'Reflektera över dagen', link: '/diary' },
-    { title: 'Planera imorgon', icon: BatteryLow, description: 'Skriv en lista', link: '/diary' },
+    { title: 'Läsa artiklar', icon: BatteryLow, description: 'Kunskapsbanken väntar' },
+    { title: 'Skriv i dagboken', icon: BatteryLow, description: 'Reflektera över dagen' },
+    { title: 'Planera imorgon', icon: BatteryLow, description: 'Skriv en lista' },
   ],
   2: [
-    { title: 'Vila', icon: AlertCircle, description: 'Det är okej att vila', link: '/wellness' },
-    { title: 'Reflektera', icon: AlertCircle, description: 'Skriv ner tankar', link: '/diary' },
-    { title: 'Andningsövning', icon: AlertCircle, description: '10 minuter mindfulness', link: '/wellness' },
+    { title: 'Vila', icon: AlertCircle, description: 'Det är okej att vila' },
+    { title: 'Reflektera', icon: AlertCircle, description: 'Skriv ner tankar' },
+    { title: 'Andningsövning', icon: AlertCircle, description: '10 minuter mindfulness' },
   ],
 }
 
 export default function EnergyTab() {
-  const navigate = useNavigate()
   const [todayEnergy, setTodayEnergy] = useState<{ morning?: number; afternoon?: number; evening?: number }>({})
   const [energyHistory, setEnergyHistory] = useState<EnergyLog[]>([])
   const [selectedTime, setSelectedTime] = useState<'morning' | 'afternoon' | 'evening'>('morning')
   const [notes, setNotes] = useState('')
-
-  const handleSuggestionClick = (link: string) => {
-    navigate(link)
-  }
 
   // Load mock data
   useEffect(() => {
@@ -158,8 +152,7 @@ export default function EnergyTab() {
             return (
               <div
                 key={index}
-                onClick={() => handleSuggestionClick(suggestion.link)}
-                className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-transparent hover:border-indigo-200 transition-all cursor-pointer"
+                className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-transparent"
               >
                 <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-sm">
                   <Icon className="w-6 h-6 text-indigo-600" />
