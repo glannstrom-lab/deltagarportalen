@@ -254,7 +254,7 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        <Route path="interest-guide" element={
+        <Route path="interest-guide/*" element={
           <LazyRoute>
             <RouteErrorBoundary>
               <InterestGuide />
