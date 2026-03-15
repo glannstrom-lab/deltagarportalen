@@ -4,5 +4,6 @@
 export { 
   EnergyLevelSelector,
   EnergyLevelBadge,
-  EnergyLevelModal
+  EnergyLevelModal,
+  useEnergyAdaptedContent
 } from './EnergyLevelSelector'
