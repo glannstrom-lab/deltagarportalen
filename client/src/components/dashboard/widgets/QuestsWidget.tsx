@@ -53,7 +53,7 @@ export function QuestsWidget({
           )}>
             {completedQuests}
           </span>
-          <span className="text-sm text-slate-500">/ {totalQuests}</span>
+          <span className="text-xs text-slate-500">/ {totalQuests}</span>
           
           {streakDays > 0 && (
             <span className={cn(

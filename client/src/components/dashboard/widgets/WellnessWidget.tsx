@@ -65,7 +65,7 @@ export function WellnessWidget({
           ) : (
             <div className="flex items-center gap-2 text-rose-700">
               <Plus size={16} />
-              <span className="text-sm font-medium">Logga humör</span>
+              <span className="text-xs font-medium">Logga humör</span>
             </div>
           )}
           

@@ -1,9 +1,10 @@
-import { useState, useEffect, lazy, Suspense } from 'react'
+import { useState, useEffect, lazy, Suspense, useCallback } from 'react'
 import { Settings, ChevronDown, Plus } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
+import { supabase } from '@/lib/supabase'
 import '@/styles/animations.css'
 
 // Lazy load widgets - ENDAST de som fungerar
@@ -37,6 +38,8 @@ const ALL_WIDGETS = [
   { id: 'knowledge', label: 'Kunskapsbank' },
   { id: 'interests', label: 'Intressen' },
 ] as const
+
+const DEFAULT_WIDGETS: WidgetId[] = ['cv', 'jobSearch', 'wellness', 'quests']
 
 // Animation wrapper
 function AnimatedSection({ children, delay = 0, className }: { children: React.ReactNode, delay?: number, className?: string }) {
@@ -75,36 +78,85 @@ function WidgetWrapper({ children, onRemove }: { children: React.ReactNode, onRe
 export default function OverviewTab() {
   const { user } = useAuthStore()
   const { data, loading } = useDashboardData()
-  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(['cv', 'jobSearch', 'wellness', 'quests'])
+  const [activeWidgets, setActiveWidgets] = useState<WidgetId[]>(DEFAULT_WIDGETS)
   const [showWidgetMenu, setShowWidgetMenu] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [prefsLoaded, setPrefsLoaded] = useState(false)
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <div className="animate-pulse">
-          <div className="h-8 bg-slate-200 rounded w-48 mb-2" />
-          <div className="h-4 bg-slate-200 rounded w-64" />
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
-              <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
-              <div className="h-8 bg-slate-200 rounded w-1/2"></div>
-            </div>
-          ))}
-        </div>
-      </div>
-    )
-  }
+  // Load widget preferences from Supabase
+  useEffect(() => {
+    if (!user?.id || prefsLoaded) return
+    
+    const loadPreferences = async () => {
+      try {
+        const { data: prefs, error } = await supabase
+          .from('user_preferences')
+          .select('dashboard_widgets')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        
+        if (error) {
+          console.warn('Could not load preferences:', error)
+          return
+        }
+        
+        if (prefs?.dashboard_widgets && Array.isArray(prefs.dashboard_widgets)) {
+          // Validate that all widgets exist in our map
+          const validWidgets = prefs.dashboard_widgets.filter(
+            (w: string): w is WidgetId => w in WIDGET_COMPONENTS
+          )
+          if (validWidgets.length > 0) {
+            setActiveWidgets(validWidgets)
+          }
+        }
+      } catch (err) {
+        console.warn('Error loading preferences:', err)
+      } finally {
+        setPrefsLoaded(true)
+      }
+    }
+    
+    loadPreferences()
+  }, [user?.id, prefsLoaded])
+
+  // Save widget preferences to Supabase
+  const savePreferences = useCallback(async (widgets: WidgetId[]) => {
+    if (!user?.id) return
+    
+    setIsSaving(true)
+    try {
+      const { error } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: user.id,
+          dashboard_widgets: widgets,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        })
+      
+      if (error) {
+        console.error('Failed to save preferences:', error)
+      }
+    } catch (err) {
+      console.error('Error saving preferences:', err)
+    } finally {
+      setIsSaving(false)
+    }
+  }, [user?.id])
 
   const addWidget = (widgetId: WidgetId) => {
     if (!activeWidgets.includes(widgetId)) {
-      setActiveWidgets([...activeWidgets, widgetId])
+      const newWidgets = [...activeWidgets, widgetId]
+      setActiveWidgets(newWidgets)
+      savePreferences(newWidgets)
     }
   }
 
   const removeWidget = (widgetId: WidgetId) => {
-    setActiveWidgets(activeWidgets.filter(id => id !== widgetId))
+    const newWidgets = activeWidgets.filter(id => id !== widgetId)
+    setActiveWidgets(newWidgets)
+    savePreferences(newWidgets)
   }
 
   const renderWidget = (widgetId: WidgetId) => {
@@ -145,6 +197,25 @@ export default function OverviewTab() {
     )
   }
 
+  if (loading || !prefsLoaded) {
+    return (
+      <div className="space-y-6">
+        <div className="animate-pulse">
+          <div className="h-8 bg-slate-200 rounded w-48 mb-2" />
+          <div className="h-4 bg-slate-200 rounded w-64" />
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="bg-white rounded-2xl border-2 border-slate-200 p-5 animate-pulse">
+              <div className="h-4 bg-slate-200 rounded w-1/3 mb-4"></div>
+              <div className="h-8 bg-slate-200 rounded w-1/2"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-8">
       {/* Välkomstsektion */}
@@ -160,16 +231,21 @@ export default function OverviewTab() {
         <section>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-slate-900">Dina verktyg</h2>
-            <button 
-              onClick={() => setShowWidgetMenu(!showWidgetMenu)} 
-              className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white border-2 border-slate-200 text-slate-700 hover:border-violet-300 hover:text-violet-700 transition-all")}
-              aria-label={showWidgetMenu ? "Stäng anpassningsmeny" : "Öppna anpassningsmeny"}
-              aria-expanded={showWidgetMenu}
-            >
-              <Settings size={16} aria-hidden="true" />
-              <span>Anpassa</span>
-              <ChevronDown size={16} className={cn("transition-transform", showWidgetMenu && "rotate-180")} aria-hidden="true" />
-            </button>
+            <div className="flex items-center gap-2">
+              {isSaving && (
+                <span className="text-xs text-slate-400">Sparar...</span>
+              )}
+              <button 
+                onClick={() => setShowWidgetMenu(!showWidgetMenu)} 
+                className={cn("flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium bg-white border-2 border-slate-200 text-slate-700 hover:border-violet-300 hover:text-violet-700 transition-all")}
+                aria-label={showWidgetMenu ? "Stäng anpassningsmeny" : "Öppna anpassningsmeny"}
+                aria-expanded={showWidgetMenu}
+              >
+                <Settings size={16} aria-hidden="true" />
+                <span>Anpassa</span>
+                <ChevronDown size={16} className={cn("transition-transform", showWidgetMenu && "rotate-180")} aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
           {showWidgetMenu && (

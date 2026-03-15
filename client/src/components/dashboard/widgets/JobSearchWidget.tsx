@@ -42,11 +42,11 @@ export function JobSearchWidget({
         
         <div className="flex items-center gap-2">
           <span className="text-2xl font-bold text-slate-800">{savedCount}</span>
-          <span className="text-sm text-slate-500">{savedCount === 1 ? 'sparad' : 'sparade'}</span>
+          <span className="text-xs text-slate-500">{savedCount === 1 ? 'sparad' : 'sparade'}</span>
         </div>
         
         {!hasJobs && (
-          <p className="mt-2 text-xs text-blue-700">
+          <p className="mt-3 text-xs text-blue-700">
             Hitta ditt nästa jobb
           </p>
         )}
