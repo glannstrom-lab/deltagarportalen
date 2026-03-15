@@ -218,53 +218,11 @@ export default function CVBuilder() {
     }
   }, [])
   
-  // Separat effect för draft restoration som körs EFTER data laddats från servern
+  // Rensa gammal localStorage draft vid mount för att undvika konflikter
   useEffect(() => {
-    // Vänta tills data har laddats från servern (förnamn eller efternamn finns = data laddad)
-    const isDataLoaded = data.firstName !== '' || data.lastName !== ''
-    
-    if (!isDataLoaded || hasCheckedDraft.current) return
-    
-    hasCheckedDraft.current = true
-    
-    const draft = restoreDraft()
-    if (!draft) return
-    
-    // Jämför draft med nuvarande data - använd samma fält för båda
-    const normalizeForCompare = (obj: any) => {
-      const relevantFields = ['firstName', 'lastName', 'title', 'summary', 'workExperience', 'education', 'skills', 'email', 'phone', 'location']
-      const normalized: any = {}
-      for (const key of relevantFields) {
-        const val = obj[key]
-        // Normalisera: tom sträng === undefined === null
-        if (val === undefined || val === null) {
-          normalized[key] = ''
-        } else if (Array.isArray(val)) {
-          normalized[key] = val.length === 0 ? '' : JSON.stringify(val)
-        } else {
-          normalized[key] = String(val)
-        }
-      }
-      return JSON.stringify(normalized)
-    }
-    
-    const draftContent = normalizeForCompare(draft)
-    const currentContent = normalizeForCompare(data)
-    
-    // Om draft är samma som nuvarande data, rensa det och fråga inte
-    if (draftContent === currentContent) {
-      clearDraft()
-      return
-    }
-    
-    // Fråga användaren
-    if (confirm('Du har ett osparat utkast som är nyare än din sparade version. Vill du återställa det?')) {
-      setData(prev => ({ ...prev, ...draft }))
-    } else {
-      // Om användaren inte vill återställa, rensa draftet
-      clearDraft()
-    }
-  }, [data.firstName, data.lastName]) // Kör när data laddats från servern
+    localStorage.removeItem('cv-draft')
+    localStorage.removeItem('cv-last-saved')
+  }, []) // Kör bara en gång vid mount
 
   const completedSteps = [
     1,
