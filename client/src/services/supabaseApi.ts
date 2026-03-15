@@ -290,6 +290,8 @@ export const cvApi = {
     
     if (!data) return null
     
+    console.log('getCV: loaded from DB with work_experience:', data.work_experience)
+    
     // Transform snake_case to camelCase
     return {
       ...data,
@@ -305,7 +307,7 @@ export const cvApi = {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
     
-
+    console.log('updateCV: received workExperience:', cvData.workExperience || cvData.work_experience)
     
     // Transform camelCase to snake_case
     const dbData: any = {
@@ -335,6 +337,8 @@ export const cvApi = {
     Object.keys(dbData).forEach(key => {
       if (dbData[key] === undefined) delete dbData[key]
     })
+    
+    console.log('updateCV: saving to DB with work_experience:', dbData.work_experience)
     
     try {
       // Försök uppdatera först (om raden finns)

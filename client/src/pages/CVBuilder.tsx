@@ -280,9 +280,17 @@ export default function CVBuilder() {
         }
       }
       
+      console.log('CVBuilder: Loading CV from server...')
       const cv = await cvApi.getCV()
+      console.log('CVBuilder: Loaded CV:', cv)
+      console.log('CVBuilder: workExperience from server:', cv?.workExperience)
+      
       if (cv) {
-        setData(prev => ({ ...prev, ...cv }))
+        setData(prev => {
+          const newData = { ...prev, ...cv }
+          console.log('CVBuilder: Setting data with workExperience:', newData.workExperience)
+          return newData
+        })
         // Viktigt: Markera att server-data är laddad så draft inte triggar
         localStorage.setItem('cv-last-saved', Date.now().toString())
         // Rensa eventuellt gammalt draft om det finns
@@ -291,7 +299,7 @@ export default function CVBuilder() {
           try {
             const parsed = JSON.parse(draft)
             // Om draft är äldre än 5 minuter, rensa det
-            if (Date.now() - (parsed._timestamp || 0) > 5 * 60 * 1000) {
+            if (Date.now() - (parsed._timestamp || 0) > 5 * 5 * 1000) {
               localStorage.removeItem('cv-draft')
             }
           } catch { }
