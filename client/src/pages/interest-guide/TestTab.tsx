@@ -2,7 +2,7 @@
  * Test Tab - The main interest guide quiz
  */
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   allQuestions,
   sections,
@@ -13,12 +13,12 @@ import { QuestionCard } from '@/components/interest-guide/QuestionCard'
 import { SectionDots } from '@/components/interest-guide/SectionDots'
 import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { Button, LoadingState, InfoCard } from '@/components/ui'
-import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2 } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChart3, RotateCcw, Briefcase } from 'lucide-react'
 import { interestGuideApi } from '@/services/cloudStorage'
 
 export default function TestTab() {
   const navigate = useNavigate()
-  const [screen, setScreen] = useState<'intro' | 'quiz'>('intro')
+  const [screen, setScreen] = useState<'intro' | 'quiz' | 'completed'>('intro')
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
   const [answers, setAnswers] = useState<Record<string, number>>({})
   const [hasSavedProgress, setHasSavedProgress] = useState(false)
@@ -41,10 +41,9 @@ export default function TestTab() {
             setCurrentQuestionIndex(data.current_step || 0)
           }
 
-          // If already completed, redirect to results
+          // If already completed, show completed state (don't redirect)
           if (data.is_completed) {
-            navigate('/interest-guide/results')
-            return
+            setScreen('completed')
           }
         }
       } catch (err) {
@@ -55,7 +54,7 @@ export default function TestTab() {
     }
 
     loadProgress()
-  }, [navigate])
+  }, [])
 
   // Auto-save progress
   useEffect(() => {
@@ -174,6 +173,68 @@ export default function TestTab() {
     return (
       <div className="flex items-center justify-center py-12">
         <LoadingState title="Laddar..." size="lg" />
+      </div>
+    )
+  }
+
+  // Completed screen - test is done, show options
+  if (screen === 'completed') {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <div className="text-center">
+          {/* Success icon */}
+          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
+            <CheckCircle2 className="w-10 h-10 text-white" />
+          </div>
+
+          <h1 className="text-3xl font-bold text-gray-900 mb-3">
+            Testet är klart!
+          </h1>
+          <p className="text-gray-600 mb-8 max-w-md mx-auto">
+            Du har redan genomfört intressetestet. Se dina resultat eller gör om testet för att uppdatera din profil.
+          </p>
+
+          {/* Action cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <Link
+              to="/interest-guide/results"
+              className="group p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border-2 border-indigo-100 hover:border-indigo-300 transition-all hover:shadow-lg"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <BarChart3 className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Se dina resultat</h3>
+              <p className="text-sm text-gray-500">Utforska din RIASEC-profil och personlighetsanalys</p>
+            </Link>
+
+            <Link
+              to="/interest-guide/occupations"
+              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-100 hover:border-amber-300 transition-all hover:shadow-lg"
+            >
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <Briefcase className="w-6 h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-gray-900 mb-1">Utforska yrken</h3>
+              <p className="text-sm text-gray-500">Se yrkesförslag baserat på din profil</p>
+            </Link>
+          </div>
+
+          {/* Redo test option */}
+          <div className="pt-6 border-t border-gray-200">
+            <p className="text-sm text-gray-500 mb-4">
+              Vill du uppdatera dina svar? Dina intressen kan förändras över tid.
+            </p>
+            <Button
+              variant="outline"
+              onClick={handleClearProgress}
+              disabled={isSaving}
+              className="gap-2"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Gör om testet
+            </Button>
+          </div>
+        </div>
       </div>
     )
   }

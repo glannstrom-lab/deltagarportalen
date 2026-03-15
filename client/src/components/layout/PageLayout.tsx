@@ -13,8 +13,10 @@ type TabVariant = 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
 interface PageLayoutProps {
   children: React.ReactNode
   title?: string
+  subtitle?: string
   description?: string
   actions?: React.ReactNode
+  tabs?: Tab[]
   customTabs?: Tab[]
   tabVariant?: TabVariant
   showTabs?: boolean
@@ -26,8 +28,10 @@ interface PageLayoutProps {
 export function PageLayout({
   children,
   title,
+  subtitle,
   description,
   actions,
+  tabs: tabsProp,
   customTabs,
   tabVariant = 'glass',
   showTabs = true,
@@ -36,7 +40,8 @@ export function PageLayout({
   contentClassName,
 }: PageLayoutProps) {
   const location = useLocation()
-  const tabs = customTabs || (showTabs ? getTabsForPath(location.pathname) : [])
+  // Support both "tabs" and "customTabs" props for flexibility
+  const tabs = tabsProp || customTabs || (showTabs ? getTabsForPath(location.pathname) : [])
   
   // Don't show tabs if there's only one tab
   const shouldShowTabs = tabs.length > 1 && showTabs
@@ -47,7 +52,7 @@ export function PageLayout({
       {showHeader && (title || shouldShowTabs) && (
         <PageHeader
           title={title || ''}
-          description={description}
+          description={subtitle || description}
           tabs={shouldShowTabs ? tabs : undefined}
           tabVariant={tabVariant}
           actions={actions}
