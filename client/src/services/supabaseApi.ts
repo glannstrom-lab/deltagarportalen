@@ -290,7 +290,7 @@ export const cvApi = {
     
     if (!data) return null
     
-    console.log('getCV: loaded from DB with work_experience:', data.work_experience)
+    alert('getCV: loaded from DB with work_experience count: ' + (data.work_experience?.length || 0))
     
     // Transform snake_case to camelCase
     return {
@@ -351,22 +351,32 @@ export const cvApi = {
       let result
       if (existing) {
         // Uppdatera befintlig rad
+        alert('Updating existing CV with work_experience count: ' + (dbData.work_experience?.length || 0))
         const { data, error } = await supabase
           .from('cvs')
           .update(dbData)
           .eq('user_id', user.id)
           .select()
           .single()
-        if (error) throw error
+        if (error) {
+          alert('Update ERROR: ' + error.message)
+          throw error
+        }
+        alert('Update SUCCESS! Returned work_experience count: ' + (data?.work_experience?.length || 0))
         result = data
       } else {
         // Skapa ny rad
+        alert('Creating new CV with work_experience count: ' + (dbData.work_experience?.length || 0))
         const { data, error } = await supabase
           .from('cvs')
           .insert(dbData)
           .select()
           .single()
-        if (error) throw error
+        if (error) {
+          alert('Insert ERROR: ' + error.message)
+          throw error
+        }
+        alert('Insert SUCCESS! Returned work_experience count: ' + (data?.work_experience?.length || 0))
         result = data
       }
       
