@@ -364,7 +364,10 @@
       "applications": "Applications",
       "alerts": "Alerts",
       "matches": "Matches"
-    }
+    },
+    "writeLetter": "Write letter",
+    "writePersonalLetter": "Write personal letter",
+    "somethingWentWrong": "Something went wrong"
   },
   "career": {
     "title": "Career",
@@ -519,6 +522,67 @@
       "cognitiveDesc": "Train memory and concentration",
       "crisis": "Crisis Support",
       "crisisDesc": "Help with mental health"
+    },
+    "health": {
+      "howAreYou": "How are you feeling today?",
+      "moodLoggedToday": "You have logged your mood today",
+      "logMoodToTrack": "Log your mood to track your well-being",
+      "days": "days",
+      "moodLogged": "Mood logged:",
+      "addNote": "Add note",
+      "notePlaceholder": "Want to write something about how you feel? (optional)",
+      "saveNote": "Save",
+      "dailyActivities": "Daily activities",
+      "xOfYCompleted": "{{completed}} of {{total}} completed",
+      "dailyReflection": "Daily reflection",
+      "reflectionPlaceholder": "What have you been thinking about today? How do you feel?",
+      "saveReflection": "Save reflection",
+      "previousReflections": "Previous reflections",
+      "moods": {
+        "great": "Great",
+        "good": "Good",
+        "okay": "Okay",
+        "bad": "Not so good",
+        "terrible": "Tough"
+      },
+      "tips": {
+        "mindfulness": {
+          "title": "Mindfulness for job seekers",
+          "description": "Take 5 minutes every day just to breathe and be present."
+        },
+        "exercise": {
+          "title": "Exercise regularly",
+          "description": "A short walk can do wonders for your mood and energy."
+        },
+        "sleep": {
+          "title": "Prioritize your sleep",
+          "description": "Good sleep is crucial for your performance. Aim for 7-9 hours."
+        },
+        "social": {
+          "title": "Maintain social connections",
+          "description": "Meet friends and family regularly to keep perspective."
+        }
+      },
+      "activities": {
+        "walk": "Take a walk",
+        "meditation": "Meditation 10 min",
+        "positiveThings": "Write 3 positive things",
+        "contactFriend": "Contact a friend"
+      },
+      "quotes": {
+        "quote1": {
+          "text": "Every step forward is a step closer to your goal",
+          "author": "Unknown"
+        },
+        "quote2": {
+          "text": "You are more than your job",
+          "author": "Unknown"
+        },
+        "quote3": {
+          "text": "Take it at your own pace",
+          "author": "Unknown"
+        }
+      }
     }
   },
   "knowledgeBase": {

@@ -72,7 +72,7 @@ const JOBS_PER_PAGE = 20;
 
 // Main Search Tab Component
 function SearchTab() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [jobs, setJobs] = useState<PlatsbankenJob[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -180,11 +180,11 @@ function SearchTab() {
               <Filter className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
-              <h3 className="font-semibold text-slate-900">Sök & Filtrera</h3>
+              <h3 className="font-semibold text-slate-900">{t('jobSearch.searchAndFilter')}</h3>
               <p className="text-sm text-slate-500">
                 {filters.query || activeFilterCount > 0
-                  ? `${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${activeFilterCount} filter aktiva` : ''}`
-                  : 'Klicka för att söka jobb'}
+                  ? `${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${t('jobSearch.filtersActive', { count: activeFilterCount })}` : ''}`
+                  : t('jobSearch.clickToSearch')}
               </p>
             </div>
           </div>
@@ -199,7 +199,7 @@ function SearchTab() {
               <Search className="absolute left-3 top-1/2 mt-2 -translate-y-1/2 text-slate-400" size={20} />
               <input
                 type="text"
-                placeholder="Vad vill du jobba med?"
+                placeholder={t('jobSearch.whatDoYouWantToWork')}
                 value={filters.query}
                 onChange={(e) => {
                   setFilters({ ...filters, query: e.target.value });
@@ -246,7 +246,7 @@ function SearchTab() {
             <div>
               <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
-                Plats
+                {t('jobSearch.location')}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <select
@@ -254,7 +254,7 @@ function SearchTab() {
                   onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
-                  <option value="">Alla kommuner</option>
+                  <option value="">{t('jobSearch.allMunicipalities')}</option>
                   {SWEDISH_MUNICIPALITIES.map((m) => (
                     <option key={m.concept_id} value={m.label}>{m.label}</option>
                   ))}
@@ -264,7 +264,7 @@ function SearchTab() {
                   onChange={(e) => setFilters({ ...filters, region: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
-                  <option value="">Alla län</option>
+                  <option value="">{t('jobSearch.allRegions')}</option>
                   {REGIONS.map((r) => (
                     <option key={r.code} value={r.code}>{r.name}</option>
                   ))}
@@ -276,7 +276,7 @@ function SearchTab() {
             <div>
               <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
                 <Briefcase className="w-3 h-3" />
-                Jobbtyp
+                {t('jobSearch.jobType')}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <select
@@ -284,19 +284,19 @@ function SearchTab() {
                   onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
-                  <option value="">Alla typer</option>
-                  <option value="Heltid">Heltid</option>
-                  <option value="Deltid">Deltid</option>
+                  <option value="">{t('jobSearch.allTypes')}</option>
+                  <option value="Heltid">{t('jobSearch.fullTime')}</option>
+                  <option value="Deltid">{t('jobSearch.partTime')}</option>
                 </select>
                 <select
                   value={filters.publishedWithin}
                   onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
                 >
-                  <option value="all">Publicerad: När som helst</option>
-                  <option value="today">Idag</option>
-                  <option value="week">Senaste veckan</option>
-                  <option value="month">Senaste månaden</option>
+                  <option value="all">{t('jobSearch.publishedAnytime')}</option>
+                  <option value="today">{t('jobSearch.today')}</option>
+                  <option value="week">{t('jobSearch.lastWeek')}</option>
+                  <option value="month">{t('jobSearch.lastMonth')}</option>
                 </select>
               </div>
             </div>
@@ -331,7 +331,7 @@ function SearchTab() {
                   )}
                   {filters.publishedWithin !== 'all' && (
                     <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-700 rounded text-sm">
-                      📅 {filters.publishedWithin === 'today' ? 'Idag' : filters.publishedWithin === 'week' ? 'Senaste veckan' : 'Senaste månaden'}
+                      📅 {filters.publishedWithin === 'today' ? t('jobSearch.today') : filters.publishedWithin === 'week' ? t('jobSearch.lastWeek') : t('jobSearch.lastMonth')}
                       <button onClick={() => setFilters({ ...filters, publishedWithin: 'all' })} className="ml-1 hover:text-green-900">
                         <X className="w-3 h-3" />
                       </button>
@@ -342,7 +342,7 @@ function SearchTab() {
                   onClick={() => setFilters(defaultFilters)}
                   className="text-sm text-red-500 hover:text-red-700 font-medium"
                 >
-                  Rensa alla
+                  {t('common.clearAll')}
                 </button>
               </div>
             )}
@@ -354,17 +354,17 @@ function SearchTab() {
       <div>
         {loading ? (
           <Card className="p-8 sm:p-12">
-            <LoadingState title="Söker jobb..." message="Hämtar från Arbetsförmedlingen" />
+            <LoadingState title={t('jobSearch.searchingJobs')} message={t('jobSearch.fetchingFromAF')} />
           </Card>
         ) : error ? (
           <Card className="p-8 sm:p-12">
-            <ErrorState title="Något gick fel" message={error} onRetry={performSearch} />
+            <ErrorState title={t('jobSearch.somethingWentWrong')} message={error} onRetry={performSearch} />
           </Card>
         ) : paginatedJobs.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
             {/* Results count */}
             <p className="text-sm text-slate-500">
-              Visar {paginatedJobs.length} av {totalJobs} jobb
+              {t('jobSearch.showingXofY', { shown: paginatedJobs.length, total: totalJobs })}
             </p>
 
             {paginatedJobs.map((job) => (
@@ -378,14 +378,14 @@ function SearchTab() {
                     <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-1 line-clamp-2">{job.headline}</h3>
                     <p className="text-slate-600 text-sm font-medium flex items-center gap-2">
                       <Building2 size={16} className="text-slate-400 flex-shrink-0" />
-                      <span className="truncate">{job.employer?.name || 'Arbetsgivare ej angiven'}</span>
+                      <span className="truncate">{job.employer?.name || t('common.employerNotSpecified')}</span>
                     </p>
 
                     <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-slate-500">
                       <span className="flex items-center gap-1">
                         <MapPin size={14} />
                         <span className="truncate max-w-[150px] sm:max-w-none">
-                          {job.workplace_address?.municipality || job.workplace_address?.city || 'Ort ej angiven'}
+                          {job.workplace_address?.municipality || job.workplace_address?.city || t('common.locationNotSpecified')}
                         </span>
                       </span>
                       {job.employment_type?.label && (
@@ -394,7 +394,7 @@ function SearchTab() {
                         </span>
                       )}
                       <span className="text-slate-400">
-                        {new Date(job.publication_date).toLocaleDateString('sv-SE')}
+                        {new Date(job.publication_date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                       </span>
                     </div>
 
@@ -420,7 +420,7 @@ function SearchTab() {
                         )}
                       >
                         <Heart size={16} className={isSaved(job.id) ? "fill-current" : ""} />
-                        {isSaved(job.id) ? 'Sparad' : 'Spara'}
+                        {isSaved(job.id) ? t('jobSearch.saved') : t('jobSearch.save')}
                       </button>
 
                       <Link
@@ -429,7 +429,7 @@ function SearchTab() {
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-teal-50 text-teal-600 hover:bg-teal-100 transition-colors"
                       >
                         <FileText size={16} />
-                        Skriv brev
+                        {t('jobSearch.writeLetter')}
                       </Link>
 
                       <button
@@ -440,7 +440,7 @@ function SearchTab() {
                         className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium bg-violet-500 text-white hover:bg-violet-600 transition-colors"
                       >
                         <Send size={16} />
-                        Ansök
+                        {t('jobSearch.apply')}
                       </button>
                     </div>
                   </div>
@@ -459,7 +459,7 @@ function SearchTab() {
                   <ChevronLeft size={20} />
                 </button>
                 <span className="px-4 py-2 text-sm text-slate-600">
-                  Sida {currentPage} av {totalPages}
+                  {t('jobSearch.pageXofY', { current: currentPage, total: totalPages })}
                 </span>
                 <button
                   onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
@@ -540,7 +540,7 @@ function SearchTab() {
                       )}
                     >
                       <Heart size={20} className={isSaved(selectedJob.id) ? "fill-current" : ""} />
-                      {isSaved(selectedJob.id) ? 'Sparad' : 'Spara jobb'}
+                      {isSaved(selectedJob.id) ? t('jobSearch.saved') : t('jobSearch.saveJob')}
                     </button>
 
                     <Link
@@ -549,7 +549,7 @@ function SearchTab() {
                       className="flex items-center justify-center gap-2 py-3 bg-teal-50 text-teal-600 hover:bg-teal-100 rounded-xl font-medium transition-colors border border-teal-200"
                     >
                       <FileText size={20} />
-                      Skriv personligt brev
+                      {t('jobSearch.writePersonalLetter')}
                     </Link>
                   </div>
 
@@ -561,7 +561,7 @@ function SearchTab() {
                     className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors"
                   >
                     <Send size={18} />
-                    Skapa ansökan
+                    {t('jobSearch.createApplication')}
                   </button>
 
                   {selectedJob.application_details?.url && (
@@ -572,7 +572,7 @@ function SearchTab() {
                       className="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
                     >
                       <ExternalLink size={18} />
-                      Ansök direkt på Arbetsförmedlingen
+                      {t('jobSearch.applyDirectlyAtAF')}
                     </a>
                   )}
                 </div>

@@ -364,7 +364,10 @@
       "applications": "Ansökningar",
       "alerts": "Bevakningar",
       "matches": "Matchningar"
-    }
+    },
+    "writeLetter": "Skriv brev",
+    "writePersonalLetter": "Skriv personligt brev",
+    "somethingWentWrong": "Något gick fel"
   },
   "career": {
     "title": "Karriär",
@@ -519,6 +522,67 @@
       "cognitiveDesc": "Träna minne och koncentration",
       "crisis": "Akut stöd",
       "crisisDesc": "Hjälp vid psykisk ohälsa"
+    },
+    "health": {
+      "howAreYou": "Hur mår du idag?",
+      "moodLoggedToday": "Du har loggat ditt humör idag",
+      "logMoodToTrack": "Logga ditt humör för att följa ditt välmående",
+      "days": "dagar",
+      "moodLogged": "Humör loggat:",
+      "addNote": "Lägg till anteckning",
+      "notePlaceholder": "Vill du skriva något om hur du mår? (valfritt)",
+      "saveNote": "Spara",
+      "dailyActivities": "Dagens aktiviteter",
+      "xOfYCompleted": "{{completed}} av {{total}} avklarade",
+      "dailyReflection": "Dagens reflektion",
+      "reflectionPlaceholder": "Vad har du tänkt på idag? Hur känner du dig?",
+      "saveReflection": "Spara reflektion",
+      "previousReflections": "Tidigare reflektioner",
+      "moods": {
+        "great": "Utmärkt",
+        "good": "Bra",
+        "okay": "Okej",
+        "bad": "Inte så bra",
+        "terrible": "Tufft"
+      },
+      "tips": {
+        "mindfulness": {
+          "title": "Mindfulness för arbetssökande",
+          "description": "Ta 5 minuter varje dag för att bara andas och vara närvarande."
+        },
+        "exercise": {
+          "title": "Rör på dig regelbundet",
+          "description": "En kort promenad kan göra underverk för ditt humör och din energi."
+        },
+        "sleep": {
+          "title": "Prioritera din sömn",
+          "description": "God sömn är avgörande för din prestation. Sikta på 7-9 timmar."
+        },
+        "social": {
+          "title": "Behåll sociala kontakter",
+          "description": "Träffa vänner och familj regelbundet för att behålla perspektivet."
+        }
+      },
+      "activities": {
+        "walk": "Gå en promenad",
+        "meditation": "Meditation 10 min",
+        "positiveThings": "Skriv 3 positiva saker",
+        "contactFriend": "Kontakta en vän"
+      },
+      "quotes": {
+        "quote1": {
+          "text": "Varje steg framåt är ett steg närmare ditt mål",
+          "author": "Okänd"
+        },
+        "quote2": {
+          "text": "Du är mer än ditt jobb",
+          "author": "Okänd"
+        },
+        "quote3": {
+          "text": "Ta det i din egen takt",
+          "author": "Okänd"
+        }
+      }
     }
   },
   "knowledgeBase": {

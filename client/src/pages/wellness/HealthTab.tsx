@@ -2,7 +2,8 @@
  * Health Tab - Main Wellness Content
  * Mood logging prominently at top, activities and tips below
  */
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Heart, Brain, Sun, Moon, Activity, Coffee,
   Sparkles, CheckCircle, PenLine, Quote, Loader2, Check
@@ -27,63 +28,40 @@ interface DailyActivity {
   icon: React.ElementType
 }
 
-const moodOptions: { value: MoodType; icon: string; label: string; color: string; bgColor: string }[] = [
-  { value: 'great', icon: '😄', label: 'Utmärkt', color: 'text-emerald-600', bgColor: 'bg-emerald-100 hover:bg-emerald-200 border-emerald-200' },
-  { value: 'good', icon: '🙂', label: 'Bra', color: 'text-blue-600', bgColor: 'bg-blue-100 hover:bg-blue-200 border-blue-200' },
-  { value: 'okay', icon: '😐', label: 'Okej', color: 'text-amber-600', bgColor: 'bg-amber-100 hover:bg-amber-200 border-amber-200' },
-  { value: 'bad', icon: '😔', label: 'Inte så bra', color: 'text-orange-600', bgColor: 'bg-orange-100 hover:bg-orange-200 border-orange-200' },
-  { value: 'terrible', icon: '😢', label: 'Tufft', color: 'text-rose-600', bgColor: 'bg-rose-100 hover:bg-rose-200 border-rose-200' },
+// Mood option definitions (labels will be translated in component)
+const moodOptionDefs: { value: MoodType; icon: string; labelKey: string; color: string; bgColor: string }[] = [
+  { value: 'great', icon: '😄', labelKey: 'wellness.health.moods.great', color: 'text-emerald-600', bgColor: 'bg-emerald-100 hover:bg-emerald-200 border-emerald-200' },
+  { value: 'good', icon: '🙂', labelKey: 'wellness.health.moods.good', color: 'text-blue-600', bgColor: 'bg-blue-100 hover:bg-blue-200 border-blue-200' },
+  { value: 'okay', icon: '😐', labelKey: 'wellness.health.moods.okay', color: 'text-amber-600', bgColor: 'bg-amber-100 hover:bg-amber-200 border-amber-200' },
+  { value: 'bad', icon: '😔', labelKey: 'wellness.health.moods.bad', color: 'text-orange-600', bgColor: 'bg-orange-100 hover:bg-orange-200 border-orange-200' },
+  { value: 'terrible', icon: '😢', labelKey: 'wellness.health.moods.terrible', color: 'text-rose-600', bgColor: 'bg-rose-100 hover:bg-rose-200 border-rose-200' },
 ]
 
-const wellnessTips: WellnessTip[] = [
-  {
-    id: '1',
-    category: 'mental',
-    title: 'Mindfulness för arbetssökande',
-    description: 'Ta 5 minuter varje dag för att bara andas och vara närvarande.',
-    icon: Brain,
-    color: 'bg-purple-100 text-purple-700'
-  },
-  {
-    id: '2',
-    category: 'physical',
-    title: 'Rör på dig regelbundet',
-    description: 'En kort promenad kan göra underverk för ditt humör och din energi.',
-    icon: Activity,
-    color: 'bg-green-100 text-green-700'
-  },
-  {
-    id: '3',
-    category: 'sleep',
-    title: 'Prioritera din sömn',
-    description: 'God sömn är avgörande för din prestation. Sikta på 7-9 timmar.',
-    icon: Moon,
-    color: 'bg-indigo-100 text-indigo-700'
-  },
-  {
-    id: '4',
-    category: 'social',
-    title: 'Behåll sociala kontakter',
-    description: 'Träffa vänner och familj regelbundet för att behålla perspektivet.',
-    icon: Coffee,
-    color: 'bg-amber-100 text-amber-700'
-  },
+// Wellness tip definitions (titles/descriptions will be translated in component)
+const wellnessTipDefs: { id: string; category: WellnessTip['category']; titleKey: string; descKey: string; icon: React.ElementType; color: string }[] = [
+  { id: '1', category: 'mental', titleKey: 'wellness.health.tips.mindfulness.title', descKey: 'wellness.health.tips.mindfulness.description', icon: Brain, color: 'bg-purple-100 text-purple-700' },
+  { id: '2', category: 'physical', titleKey: 'wellness.health.tips.exercise.title', descKey: 'wellness.health.tips.exercise.description', icon: Activity, color: 'bg-green-100 text-green-700' },
+  { id: '3', category: 'sleep', titleKey: 'wellness.health.tips.sleep.title', descKey: 'wellness.health.tips.sleep.description', icon: Moon, color: 'bg-indigo-100 text-indigo-700' },
+  { id: '4', category: 'social', titleKey: 'wellness.health.tips.social.title', descKey: 'wellness.health.tips.social.description', icon: Coffee, color: 'bg-amber-100 text-amber-700' },
 ]
 
-const initialActivities: DailyActivity[] = [
-  { id: '1', title: 'Gå en promenad', completed: false, icon: Activity },
-  { id: '2', title: 'Meditation 10 min', completed: false, icon: Brain },
-  { id: '3', title: 'Skriv 3 positiva saker', completed: false, icon: Sun },
-  { id: '4', title: 'Kontakta en vän', completed: false, icon: Coffee },
+// Activity definitions (titles will be translated in component)
+const activityDefs: { id: string; titleKey: string; icon: React.ElementType }[] = [
+  { id: '1', titleKey: 'wellness.health.activities.walk', icon: Activity },
+  { id: '2', titleKey: 'wellness.health.activities.meditation', icon: Brain },
+  { id: '3', titleKey: 'wellness.health.activities.positiveThings', icon: Sun },
+  { id: '4', titleKey: 'wellness.health.activities.contactFriend', icon: Coffee },
 ]
 
-const quotes = [
-  { text: "Varje steg framåt är ett steg närmare ditt mål", author: "Okänd" },
-  { text: "Du är mer än ditt jobb", author: "Okänd" },
-  { text: "Ta det i din egen takt", author: "Okänd" },
+// Quote definitions (will be translated in component)
+const quoteDefs = [
+  { textKey: 'wellness.health.quotes.quote1.text', authorKey: 'wellness.health.quotes.quote1.author' },
+  { textKey: 'wellness.health.quotes.quote2.text', authorKey: 'wellness.health.quotes.quote2.author' },
+  { textKey: 'wellness.health.quotes.quote3.text', authorKey: 'wellness.health.quotes.quote3.author' },
 ]
 
 export default function HealthTab() {
+  const { t } = useTranslation()
   const [currentMood, setCurrentMood] = useState<MoodType | null>(null)
   const [moodNote, setMoodNote] = useState('')
   const [showNoteInput, setShowNoteInput] = useState(false)
@@ -91,12 +69,38 @@ export default function HealthTab() {
   const [moodSaved, setMoodSaved] = useState(false)
   const [moodStreak, setMoodStreak] = useState(0)
 
-  const [activities, setActivities] = useState<DailyActivity[]>(initialActivities)
+  // Build translated options
+  const moodOptions = useMemo(() => moodOptionDefs.map(m => ({
+    ...m,
+    label: t(m.labelKey)
+  })), [t])
+
+  const wellnessTips = useMemo(() => wellnessTipDefs.map(tip => ({
+    ...tip,
+    title: t(tip.titleKey),
+    description: t(tip.descKey)
+  })), [t])
+
+  const initialActivities: DailyActivity[] = useMemo(() => activityDefs.map(a => ({
+    id: a.id,
+    title: t(a.titleKey),
+    completed: false,
+    icon: a.icon
+  })), [t])
+
+  const quote = useMemo(() => {
+    const idx = Math.floor(Math.random() * quoteDefs.length)
+    return {
+      text: t(quoteDefs[idx].textKey),
+      author: t(quoteDefs[idx].authorKey)
+    }
+  }, [t])
+
+  const [activities, setActivities] = useState<DailyActivity[]>(() => initialActivities)
   const [reflection, setReflection] = useState('')
   const [savedReflections, setSavedReflections] = useState<string[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
-  const [quote] = useState(quotes[Math.floor(Math.random() * quotes.length)])
 
   const loadData = useCallback(async () => {
     try {
@@ -227,16 +231,16 @@ export default function HealthTab() {
               <Heart className="w-6 h-6 text-rose-600" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800">Hur mår du idag?</h2>
+              <h2 className="text-lg font-bold text-slate-800">{t('wellness.health.howAreYou')}</h2>
               <p className="text-sm text-slate-500">
-                {moodSaved ? 'Du har loggat ditt humör idag' : 'Logga ditt humör för att följa ditt välmående'}
+                {moodSaved ? t('wellness.health.moodLoggedToday') : t('wellness.health.logMoodToTrack')}
               </p>
             </div>
           </div>
           {moodStreak > 0 && (
             <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 rounded-full">
               <span className="text-lg">🔥</span>
-              <span className="text-sm font-bold text-orange-700">{moodStreak} dagar</span>
+              <span className="text-sm font-bold text-orange-700">{moodStreak} {t('wellness.health.days')}</span>
             </div>
           )}
         </div>
@@ -278,7 +282,7 @@ export default function HealthTab() {
             <div className="flex items-center gap-2">
               <CheckCircle className="w-5 h-5 text-emerald-500" />
               <span className="text-sm font-medium text-slate-700">
-                Humör loggat: {selectedMoodOption.label}
+                {t('wellness.health.moodLogged')} {selectedMoodOption.label}
               </span>
             </div>
             {!showNoteInput && (
@@ -286,7 +290,7 @@ export default function HealthTab() {
                 onClick={() => setShowNoteInput(true)}
                 className="text-sm text-slate-600 hover:text-slate-800 underline"
               >
-                Lägg till anteckning
+                {t('wellness.health.addNote')}
               </button>
             )}
           </div>
@@ -298,7 +302,7 @@ export default function HealthTab() {
             <textarea
               value={moodNote}
               onChange={(e) => setMoodNote(e.target.value)}
-              placeholder="Vill du skriva något om hur du mår? (valfritt)"
+              placeholder={t('wellness.health.notePlaceholder')}
               className="w-full p-3 rounded-lg border border-slate-200 focus:border-rose-500 focus:ring-2 focus:ring-rose-200 resize-none text-sm"
               rows={2}
             />
@@ -308,14 +312,14 @@ export default function HealthTab() {
                 size="sm"
                 onClick={() => setShowNoteInput(false)}
               >
-                Avbryt
+                {t('common.cancel')}
               </Button>
               <Button
                 size="sm"
                 onClick={handleSaveMoodNote}
                 disabled={isSavingMood}
               >
-                {isSavingMood ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Spara'}
+                {isSavingMood ? <Loader2 className="w-4 h-4 animate-spin" /> : t('wellness.health.saveNote')}
               </Button>
             </div>
           </div>
@@ -339,9 +343,9 @@ export default function HealthTab() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-semibold text-slate-800">Dagens aktiviteter</h3>
+            <h3 className="text-lg font-semibold text-slate-800">{t('wellness.health.dailyActivities')}</h3>
             <p className="text-sm text-slate-500">
-              {completedCount} av {activities.length} avklarade
+              {t('wellness.health.xOfYCompleted', { completed: completedCount, total: activities.length })}
             </p>
           </div>
           <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
@@ -409,12 +413,12 @@ export default function HealthTab() {
       <Card className="p-6">
         <div className="flex items-center gap-3 mb-4">
           <PenLine className="w-5 h-5 text-indigo-600" />
-          <h3 className="text-lg font-semibold text-slate-800">Dagens reflektion</h3>
+          <h3 className="text-lg font-semibold text-slate-800">{t('wellness.health.dailyReflection')}</h3>
         </div>
         <textarea
           value={reflection}
           onChange={(e) => setReflection(e.target.value)}
-          placeholder="Vad har du tänkt på idag? Hur känner du dig?"
+          placeholder={t('wellness.health.reflectionPlaceholder')}
           className="w-full h-24 p-4 rounded-xl border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 resize-none text-sm"
         />
         <div className="flex justify-end mt-3">
@@ -423,13 +427,13 @@ export default function HealthTab() {
             disabled={!reflection.trim() || isSaving}
             size="sm"
           >
-            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Spara reflektion'}
+            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : t('wellness.health.saveReflection')}
           </Button>
         </div>
 
         {savedReflections.length > 0 && (
           <div className="mt-4 pt-4 border-t border-slate-100">
-            <p className="text-sm font-medium text-slate-700 mb-2">Tidigare reflektioner</p>
+            <p className="text-sm font-medium text-slate-700 mb-2">{t('wellness.health.previousReflections')}</p>
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {savedReflections.slice(-3).reverse().map((r, i) => (
                 <div key={i} className="p-3 bg-slate-50 rounded-lg text-sm text-slate-600">
