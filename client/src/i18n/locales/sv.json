@@ -1040,6 +1040,64 @@
       "companies": "Företag"
     }
   },
+  "coverLetterWidget": {
+    "letters": "Brev",
+    "lettersCount": "brev",
+    "applicationsShort": "{{count}} ansökn",
+    "coverLettersAndApplications": "Personliga brev & ansökningar",
+    "createNewLetter": "Skapa nytt brev",
+    "savedLetters": "sparade brev",
+    "applications": "ansökningar",
+    "registeredApplications": "Registrerade ansökningar",
+    "applicationPipeline": "Ansökningspipeline",
+    "recentLetters": "Senaste breven",
+    "createPersonalLetters": "Skapa personliga brev",
+    "wellWrittenLetterTip": "Ett välskrivet brev kan vara skillnaden mellan att bli kallad till intervju eller inte.",
+    "yourApplicationJourney": "Din ansökningsresa",
+    "newLetter": "Nytt brev",
+    "registerApplication": "Registrera ansökan",
+    "updateStatus": "Uppdatera status",
+    "yourRecentLetters": "Dina senaste brev",
+    "totalCount": "{{count}} totalt",
+    "createFirstLetter": "Skapa ditt första personliga brev",
+    "createFirstLetterDescription": "Ett välskrivet personligt brev kan vara skillnaden mellan att bli kallad till intervju eller inte. Vi hjälper dig skapa anpassade brev för varje jobb du söker.",
+    "pipeline": {
+      "applied": "Skickade",
+      "interview": "Intervju",
+      "offer": "Erbjudande"
+    },
+    "pipelineSubtext": {
+      "sent": "Skickade",
+      "inProgress": "På gång",
+      "goal": "Målet!"
+    },
+    "time": {
+      "justNow": "Just nu",
+      "minAgo": "{{count}} min sedan",
+      "hourAgo": "1 timme sedan",
+      "hoursAgo": "{{count}} timmar sedan",
+      "today": "Idag",
+      "yesterday": "Igår",
+      "daysAgo": "{{count}} dagar sedan",
+      "weeksAgo": "{{count}} veckor sedan"
+    },
+    "actions": {
+      "copy": "Kopiera",
+      "edit": "Redigera",
+      "send": "Skicka"
+    },
+    "benefits": {
+      "templates": "Professionella mallar",
+      "quickAndEasy": "Snabbt & enkelt",
+      "saveAndReuse": "Spara & återanvänd"
+    },
+    "tips": {
+      "tipTitle": "Tips!",
+      "customizeTip": "Anpassa alltid ditt brev för varje jobb. Nämn specifika detaljer från annonsen.",
+      "nextStepTitle": "Nästa steg",
+      "nextStepDescription": "Registrera var du skickat dina ansökningar för att hålla koll på läget."
+    }
+  },
   "interestWidget": {
     "interests": "Intressen",
     "interestTest": "Intressetest",

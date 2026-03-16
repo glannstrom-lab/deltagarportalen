@@ -1,12 +1,13 @@
 import { memo, useState } from 'react'
-import { 
-  Mail, 
-  FileText, 
-  Clock, 
-  Plus, 
-  Copy, 
-  ArrowRight, 
-  Send, 
+import { useTranslation } from 'react-i18next'
+import {
+  Mail,
+  FileText,
+  Clock,
+  Plus,
+  Copy,
+  ArrowRight,
+  Send,
   CheckCircle2,
   Edit3,
   TrendingUp,
@@ -38,11 +39,11 @@ interface CoverLetterWidgetProps {
   size?: WidgetSize
 }
 
-// Pipeline step configuration
+// Pipeline step configuration with translation keys
 const pipelineSteps = [
-  { 
-    key: 'applied', 
-    label: 'Skickade', 
+  {
+    key: 'applied',
+    labelKey: 'coverLetterWidget.pipeline.applied',
     color: 'blue',
     gradient: 'from-blue-500 to-blue-600',
     bg: 'bg-blue-50',
@@ -50,9 +51,9 @@ const pipelineSteps = [
     border: 'border-blue-200',
     icon: Send
   },
-  { 
-    key: 'interview', 
-    label: 'Intervju', 
+  {
+    key: 'interview',
+    labelKey: 'coverLetterWidget.pipeline.interview',
     color: 'amber',
     gradient: 'from-amber-500 to-orange-500',
     bg: 'bg-amber-50',
@@ -60,9 +61,9 @@ const pipelineSteps = [
     border: 'border-amber-200',
     icon: Target
   },
-  { 
-    key: 'offer', 
-    label: 'Erbjudande', 
+  {
+    key: 'offer',
+    labelKey: 'coverLetterWidget.pipeline.offer',
     color: 'emerald',
     gradient: 'from-emerald-500 to-teal-500',
     bg: 'bg-emerald-50',
@@ -72,28 +73,34 @@ const pipelineSteps = [
   },
 ]
 
-// Format date to relative text
-function formatRelativeDate(dateString: string): { text: string; color: string } {
-  const date = new Date(dateString)
-  const now = new Date()
-  const diffMs = now.getTime() - date.getTime()
-  const diffMins = Math.floor(diffMs / (1000 * 60))
-  const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
-  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
-  
-  if (diffMins < 5) return { text: 'Just nu', color: 'text-emerald-600' }
-  if (diffMins < 60) return { text: `${diffMins} min sedan`, color: 'text-emerald-600' }
-  if (diffHours < 2) return { text: '1 timme sedan', color: 'text-emerald-600' }
-  if (diffHours < 24) return { text: `${diffHours} timmar sedan`, color: 'text-slate-500' }
-  if (diffDays === 0) return { text: 'Idag', color: 'text-blue-600' }
-  if (diffDays === 1) return { text: 'Igår', color: 'text-slate-600' }
-  if (diffDays < 7) return { text: `${diffDays} dagar sedan`, color: 'text-slate-500' }
-  if (diffDays < 30) return { text: `${Math.floor(diffDays / 7)} veckor sedan`, color: 'text-slate-400' }
-  return { text: date.toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' }), color: 'text-slate-400' }
+// Hook for relative date formatting
+const useRelativeDate = () => {
+  const { t, i18n } = useTranslation()
+
+  return (dateString: string): { text: string; color: string } => {
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffMins = Math.floor(diffMs / (1000 * 60))
+    const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
+    const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24))
+
+    if (diffMins < 5) return { text: t('coverLetterWidget.time.justNow'), color: 'text-emerald-600' }
+    if (diffMins < 60) return { text: t('coverLetterWidget.time.minAgo', { count: diffMins }), color: 'text-emerald-600' }
+    if (diffHours < 2) return { text: t('coverLetterWidget.time.hourAgo'), color: 'text-emerald-600' }
+    if (diffHours < 24) return { text: t('coverLetterWidget.time.hoursAgo', { count: diffHours }), color: 'text-slate-500' }
+    if (diffDays === 0) return { text: t('coverLetterWidget.time.today'), color: 'text-blue-600' }
+    if (diffDays === 1) return { text: t('coverLetterWidget.time.yesterday'), color: 'text-slate-600' }
+    if (diffDays < 7) return { text: t('coverLetterWidget.time.daysAgo', { count: diffDays }), color: 'text-slate-500' }
+    if (diffDays < 30) return { text: t('coverLetterWidget.time.weeksAgo', { count: Math.floor(diffDays / 7) }), color: 'text-slate-400' }
+    const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
+    return { text: date.toLocaleDateString(locale, { month: 'short', day: 'numeric' }), color: 'text-slate-400' }
+  }
 }
 
 // SMALL - Ultra kompakt
 function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, onRetry }: Omit<CoverLetterWidgetProps, 'size' | 'recentLetters' | 'applicationsStatus'>) {
+  const { t } = useTranslation()
   const getStatus = (): WidgetStatus => {
     if (count === 0 && applicationsCount === 0) return 'empty'
     return 'complete'
@@ -104,7 +111,7 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
 
   return (
     <DashboardWidget
-      title="Brev"
+      title={t('coverLetterWidget.letters')}
       icon={<Mail size={14} />}
       to="/cover-letter"
       color="rose"
@@ -119,12 +126,12 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{count}</span>
           <span className="text-xs text-slate-500">
-            {count === 1 ? 'brev' : 'brev'}
+            {t('coverLetterWidget.lettersCount', { count })}
           </span>
         </div>
         {applicationsCount > 0 && (
           <span className="text-xs bg-orange-100 text-orange-600 px-1 py-0.5 rounded ml-1">
-            {applicationsCount} ansökn
+            {t('coverLetterWidget.applicationsShort', { count: applicationsCount })}
           </span>
         )}
       </div>
@@ -134,6 +141,8 @@ function CoverLetterWidgetSmall({ count, applicationsCount = 0, loading, error, 
 
 // MEDIUM - Enhanced with pipeline badges and letter list
 function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount = 0, applicationsStatus, loading, error, onRetry }: CoverLetterWidgetProps) {
+  const { t } = useTranslation()
+  const formatRelativeDate = useRelativeDate()
   const getStatus = (): WidgetStatus => {
     if (count === 0 && applicationsCount === 0) return 'empty'
     return 'complete'
@@ -143,7 +152,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
 
   return (
     <DashboardWidget
-      title="Personliga brev & ansökningar"
+      title={t('coverLetterWidget.coverLettersAndApplications')}
       icon={<Mail size={20} className="text-rose-600" />}
       to="/cover-letter"
       color="rose"
@@ -153,7 +162,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: 'Skapa nytt brev',
+        label: t('coverLetterWidget.createNewLetter'),
       }}
     >
       <div className="space-y-4">
@@ -165,17 +174,17 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
             </div>
             <div>
               <p className="text-xl font-bold text-slate-800">{count}</p>
-              <p className="text-xs text-slate-500">{count === 1 ? 'sparat brev' : 'sparade brev'}</p>
+              <p className="text-xs text-slate-500">{t('coverLetterWidget.savedLetters', { count })}</p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-3 p-3 bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl border border-orange-100">
             <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
               <Briefcase size={22} className="text-orange-500" />
             </div>
             <div>
               <p className="text-xl font-bold text-slate-800">{applicationsCount}</p>
-              <p className="text-xs text-slate-500">{applicationsCount === 1 ? 'ansökan' : 'ansökningar'}</p>
+              <p className="text-xs text-slate-500">{t('coverLetterWidget.applications', { count: applicationsCount })}</p>
             </div>
           </div>
         </div>
@@ -185,7 +194,7 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
           <div className="p-3 bg-slate-50 rounded-xl border border-slate-100">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2 flex items-center gap-1.5">
               <TrendingUp size={12} />
-              Ansökningspipeline
+              {t('coverLetterWidget.applicationPipeline')}
             </p>
             <div className="flex gap-2">
               {pipelineSteps.map((step) => {
@@ -193,14 +202,14 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
                 if (value === 0) return null
                 const Icon = step.icon
                 return (
-                  <div 
+                  <div
                     key={step.key}
                     className={`flex-1 flex items-center gap-2 px-3 py-2 ${step.bg} rounded-lg border ${step.border}`}
                   >
                     <Icon size={14} className={step.text} />
                     <div>
                       <p className={`text-sm font-bold ${step.text}`}>{value}</p>
-                      <p className="text-xs text-slate-500">{step.label}</p>
+                      <p className="text-xs text-slate-500">{t(step.labelKey)}</p>
                     </div>
                   </div>
                 )
@@ -214,13 +223,13 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
           <div className="space-y-2">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
               <Clock size={12} />
-              Senaste breven
+              {t('coverLetterWidget.recentLetters')}
             </p>
             <div className="space-y-2">
               {recentLetters.slice(0, 2).map((letter) => {
                 const dateInfo = formatRelativeDate(letter.createdAt)
                 return (
-                  <div 
+                  <div
                     key={letter.id}
                     className="group flex items-center gap-3 p-2.5 bg-white rounded-xl border border-slate-200 hover:border-rose-300 hover:shadow-sm transition-all cursor-pointer"
                   >
@@ -249,9 +258,9 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
                 <Sparkles size={20} className="text-rose-500" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-rose-900">Skapa personliga brev</p>
+                <p className="text-sm font-semibold text-rose-900">{t('coverLetterWidget.createPersonalLetters')}</p>
                 <p className="text-xs text-rose-700/80 mt-1 leading-relaxed">
-                  Ett välskrivet brev kan vara skillnaden mellan att bli kallad till intervju eller inte.
+                  {t('coverLetterWidget.wellWrittenLetterTip')}
                 </p>
               </div>
             </div>
@@ -264,6 +273,8 @@ function CoverLetterWidgetMedium({ count, recentLetters = [], applicationsCount 
 
 // LARGE - Full featured with visual pipeline and enhanced letter cards
 function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount = 0, applicationsStatus, loading, error, onRetry }: CoverLetterWidgetProps) {
+  const { t } = useTranslation()
+  const formatRelativeDate = useRelativeDate()
   const getStatus = (): WidgetStatus => {
     if (count === 0 && applicationsCount === 0) return 'empty'
     return 'complete'
@@ -281,7 +292,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
 
   return (
     <DashboardWidget
-      title="Personliga brev & ansökningar"
+      title={t('coverLetterWidget.coverLettersAndApplications')}
       icon={<Mail size={22} className="text-rose-600" />}
       to="/cover-letter"
       color="rose"
@@ -291,7 +302,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: 'Skapa nytt brev',
+        label: t('coverLetterWidget.createNewLetter'),
       }}
     >
       <div className="space-y-5">
@@ -306,7 +317,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
               <div>
                 <p className="text-4xl font-bold">{count}</p>
                 <p className="text-sm text-white/80 font-medium mt-1">
-                  {count === 1 ? 'Sparat brev' : 'Sparade brev'}
+                  {t('coverLetterWidget.savedLetters', { count })}
                 </p>
               </div>
             </div>
@@ -324,7 +335,7 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
               <div>
                 <p className="text-4xl font-bold">{applicationsCount}</p>
                 <p className="text-sm text-white/80 font-medium mt-1">
-                  {applicationsCount === 1 ? 'Registrerad ansökan' : 'Registrerade ansökningar'}
+                  {t('coverLetterWidget.registeredApplications', { count: applicationsCount })}
                 </p>
               </div>
             </div>
@@ -339,35 +350,35 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
           <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100">
             <p className="text-sm font-semibold text-slate-700 mb-4 flex items-center gap-2">
               <TrendingUp size={16} className="text-rose-500" />
-              Din ansökningsresa
+              {t('coverLetterWidget.yourApplicationJourney')}
             </p>
-            
+
             {/* Pipeline Steps */}
             <div className="relative">
               {/* Connecting line */}
               <div className="absolute top-8 left-12 right-12 h-1 bg-slate-200 rounded-full">
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-blue-500 via-amber-500 to-emerald-500 rounded-full transition-all duration-500"
-                  style={{ 
-                    width: `${Math.min(100, ((applicationsStatus.interview + applicationsStatus.offer) / Math.max(1, applicationsCount)) * 100)}%` 
+                  style={{
+                    width: `${Math.min(100, ((applicationsStatus.interview + applicationsStatus.offer) / Math.max(1, applicationsCount)) * 100)}%`
                   }}
                 />
               </div>
-              
+
               {/* Steps */}
               <div className="relative grid grid-cols-3 gap-4">
                 {pipelineSteps.map((step, index) => {
                   const value = applicationsStatus[step.key as keyof typeof applicationsStatus] || 0
                   const Icon = step.icon
                   const isActive = value > 0
-                  
+
                   return (
                     <div key={step.key} className="text-center">
                       <div className={`
                         relative w-16 h-16 mx-auto rounded-2xl flex items-center justify-center mb-2
                         transition-all duration-300
-                        ${isActive 
-                          ? `bg-gradient-to-br ${step.gradient} text-white shadow-lg shadow-${step.color}-200` 
+                        ${isActive
+                          ? `bg-gradient-to-br ${step.gradient} text-white shadow-lg shadow-${step.color}-200`
                           : 'bg-white border-2 border-slate-200 text-slate-400'
                         }
                       `}>
@@ -381,10 +392,10 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                         </div>
                       </div>
                       <p className={`text-sm font-semibold ${isActive ? step.text : 'text-slate-400'}`}>
-                        {step.label}
+                        {t(step.labelKey)}
                       </p>
                       <p className="text-xs text-slate-400 mt-0.5">
-                        {index === 0 ? 'Skickade' : index === 1 ? 'På gång' : 'Målet!'}
+                        {t(`coverLetterWidget.pipelineSubtext.${index === 0 ? 'sent' : index === 1 ? 'inProgress' : 'goal'}`)}
                       </p>
                     </div>
                   )
@@ -400,21 +411,21 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
             <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center group-hover:bg-rose-200 transition-colors">
               <Plus size={24} className="text-rose-600" />
             </div>
-            <span className="text-sm font-medium text-slate-700 group-hover:text-rose-700">Nytt brev</span>
+            <span className="text-sm font-medium text-slate-700 group-hover:text-rose-700">{t('coverLetterWidget.newLetter')}</span>
           </button>
 
           <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-orange-300 hover:bg-orange-50 transition-all">
             <div className="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center group-hover:bg-orange-200 transition-colors">
               <Send size={24} className="text-orange-600" />
             </div>
-            <span className="text-sm font-medium text-slate-700 group-hover:text-orange-700">Registrera ansökan</span>
+            <span className="text-sm font-medium text-slate-700 group-hover:text-orange-700">{t('coverLetterWidget.registerApplication')}</span>
           </button>
 
           <button className="group flex flex-col items-center gap-2 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-amber-300 hover:bg-amber-50 transition-all">
             <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center group-hover:bg-amber-200 transition-colors">
               <Target size={24} className="text-amber-600" />
             </div>
-            <span className="text-sm font-medium text-slate-700 group-hover:text-amber-700">Uppdatera status</span>
+            <span className="text-sm font-medium text-slate-700 group-hover:text-amber-700">{t('coverLetterWidget.updateStatus')}</span>
           </button>
         </div>
 
@@ -424,9 +435,9 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm font-semibold text-slate-700 flex items-center gap-2">
                 <FileText size={16} className="text-rose-500" />
-                Dina senaste brev
+                {t('coverLetterWidget.yourRecentLetters')}
               </p>
-              <span className="text-xs text-slate-400">{count} totalt</span>
+              <span className="text-xs text-slate-400">{t('coverLetterWidget.totalCount', { count })}</span>
             </div>
             
             <div className="grid grid-cols-2 gap-3">
@@ -466,19 +477,19 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                       <button 
                         onClick={(e) => handleCopy(e, letter.id)}
                         className="p-1.5 rounded-lg bg-slate-100 hover:bg-rose-100 text-slate-500 hover:text-rose-600 transition-colors"
-                        title="Kopiera"
+                        title={t('coverLetterWidget.actions.copy')}
                       >
                         {isCopied ? <CheckCircle2 size={14} className="text-emerald-500" /> : <Copy size={14} />}
                       </button>
                       <button 
                         className="p-1.5 rounded-lg bg-slate-100 hover:bg-blue-100 text-slate-500 hover:text-blue-600 transition-colors"
-                        title="Redigera"
+                        title={t('coverLetterWidget.actions.edit')}
                       >
                         <Edit3 size={14} />
                       </button>
                       <button 
                         className="p-1.5 rounded-lg bg-slate-100 hover:bg-orange-100 text-slate-500 hover:text-orange-600 transition-colors"
-                        title="Skicka"
+                        title={t('coverLetterWidget.actions.send')}
                       >
                         <Send size={14} />
                       </button>
@@ -503,32 +514,31 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                   <Mail size={32} className="text-white" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-xl font-bold mb-2">Skapa ditt första personliga brev</p>
+                  <p className="text-xl font-bold mb-2">{t('coverLetterWidget.createFirstLetter')}</p>
                   <p className="text-sm text-white/80 leading-relaxed max-w-md">
-                    Ett välskrivet personligt brev kan vara skillnaden mellan att bli kallad till intervju eller inte. 
-                    Vi hjälper dig skapa anpassade brev för varje jobb du söker.
+                    {t('coverLetterWidget.createFirstLetterDescription')}
                   </p>
-                  
+
                   {/* Benefits */}
                   <div className="flex flex-wrap gap-3 mt-4">
                     <span className="flex items-center gap-1.5 text-xs bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
                       <CheckCircle2 size={12} />
-                      Professionella mallar
+                      {t('coverLetterWidget.benefits.templates')}
                     </span>
                     <span className="flex items-center gap-1.5 text-xs bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
                       <CheckCircle2 size={12} />
-                      Snabbt & enkelt
+                      {t('coverLetterWidget.benefits.quickAndEasy')}
                     </span>
                     <span className="flex items-center gap-1.5 text-xs bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-full">
                       <CheckCircle2 size={12} />
-                      Spara & återanvänd
+                      {t('coverLetterWidget.benefits.saveAndReuse')}
                     </span>
                   </div>
-                  
+
                   {/* CTA Button */}
                   <button className="mt-5 px-5 py-2.5 bg-white text-rose-600 font-semibold rounded-xl hover:bg-rose-50 transition-colors shadow-lg flex items-center gap-2">
                     <Plus size={18} />
-                    Skapa nytt brev
+                    {t('coverLetterWidget.createNewLetter')}
                     <ArrowRight size={16} />
                   </button>
                 </div>
@@ -550,23 +560,23 @@ function CoverLetterWidgetLarge({ count, recentLetters = [], applicationsCount =
                   <Zap size={16} className="text-rose-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-rose-900 mb-0.5">Tips!</p>
+                  <p className="text-sm font-semibold text-rose-900 mb-0.5">{t('coverLetterWidget.tips.tipTitle')}</p>
                   <p className="text-xs text-rose-700 leading-relaxed">
-                    Anpassa alltid ditt brev för varje jobb. Nämn specifika detaljer från annonsen.
+                    {t('coverLetterWidget.tips.customizeTip')}
                   </p>
                 </div>
               </div>
             </div>
-            
+
             <div className="p-3 bg-gradient-to-br from-amber-50 to-yellow-50 rounded-xl border border-amber-100">
               <div className="flex items-start gap-2">
                 <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
                   <Target size={16} className="text-amber-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-amber-900 mb-0.5">Nästa steg</p>
+                  <p className="text-sm font-semibold text-amber-900 mb-0.5">{t('coverLetterWidget.tips.nextStepTitle')}</p>
                   <p className="text-xs text-amber-700 leading-relaxed">
-                    Registrera var du skickat dina ansökningar för att hålla koll på läget.
+                    {t('coverLetterWidget.tips.nextStepDescription')}
                   </p>
                 </div>
               </div>

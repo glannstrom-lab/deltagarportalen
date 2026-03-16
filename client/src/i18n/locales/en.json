@@ -1040,6 +1040,64 @@
       "companies": "Companies"
     }
   },
+  "coverLetterWidget": {
+    "letters": "Letters",
+    "lettersCount": "letters",
+    "applicationsShort": "{{count}} apps",
+    "coverLettersAndApplications": "Cover letters & applications",
+    "createNewLetter": "Create new letter",
+    "savedLetters": "saved letters",
+    "applications": "applications",
+    "registeredApplications": "Registered applications",
+    "applicationPipeline": "Application pipeline",
+    "recentLetters": "Recent letters",
+    "createPersonalLetters": "Create personal letters",
+    "wellWrittenLetterTip": "A well-written letter can make the difference between getting an interview or not.",
+    "yourApplicationJourney": "Your application journey",
+    "newLetter": "New letter",
+    "registerApplication": "Register application",
+    "updateStatus": "Update status",
+    "yourRecentLetters": "Your recent letters",
+    "totalCount": "{{count}} total",
+    "createFirstLetter": "Create your first cover letter",
+    "createFirstLetterDescription": "A well-written cover letter can make the difference between getting an interview or not. We help you create customized letters for each job you apply for.",
+    "pipeline": {
+      "applied": "Sent",
+      "interview": "Interview",
+      "offer": "Offer"
+    },
+    "pipelineSubtext": {
+      "sent": "Sent",
+      "inProgress": "In progress",
+      "goal": "Goal!"
+    },
+    "time": {
+      "justNow": "Just now",
+      "minAgo": "{{count}} min ago",
+      "hourAgo": "1 hour ago",
+      "hoursAgo": "{{count}} hours ago",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{count}} days ago",
+      "weeksAgo": "{{count}} weeks ago"
+    },
+    "actions": {
+      "copy": "Copy",
+      "edit": "Edit",
+      "send": "Send"
+    },
+    "benefits": {
+      "templates": "Professional templates",
+      "quickAndEasy": "Quick & easy",
+      "saveAndReuse": "Save & reuse"
+    },
+    "tips": {
+      "tipTitle": "Tip!",
+      "customizeTip": "Always customize your letter for each job. Mention specific details from the job posting.",
+      "nextStepTitle": "Next step",
+      "nextStepDescription": "Register where you've sent your applications to keep track of your progress."
+    }
+  },
   "interestWidget": {
     "interests": "Interests",
     "interestTest": "Interest Test",
