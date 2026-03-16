@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { TrendingUp, Target, Flame } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
@@ -18,6 +19,8 @@ export const ActivityWidget = memo(function ActivityWidget({
   error,
   onRetry,
 }: ActivityWidgetProps) {
+  const { t } = useTranslation()
+
   const getStatus = (): WidgetStatus => {
     if (weeklyApplications === 0 && streakDays === 0) return 'empty'
     return 'complete'
@@ -27,13 +30,13 @@ export const ActivityWidget = memo(function ActivityWidget({
 
   // Uppmuntrande meddelande baserat på aktivitet (utan streak-fokus)
   const getEncouragementMessage = () => {
-    if (weeklyApplications > 0) return 'Bra att du är aktiv!'
-    return 'Ta den tid du behöver - portalen finns här när du vill.'
+    if (weeklyApplications > 0) return t('activityWidget.goodActive')
+    return t('activityWidget.takeYourTime')
   }
 
   return (
     <DashboardWidget
-      title="Din aktivitet"
+      title={t('activityWidget.yourActivity')}
       icon={<TrendingUp size={20} />}
       to="/diary"
       color="rose"
@@ -43,13 +46,13 @@ export const ActivityWidget = memo(function ActivityWidget({
       error={error}
       onRetry={onRetry}
       stats={[
-        { 
-          label: 'Denna veckan', 
-          value: `${weeklyApplications} ansökningar` 
+        {
+          label: t('activityWidget.thisWeek'),
+          value: t('activityWidget.applicationsCount', { count: weeklyApplications })
         },
       ]}
       primaryAction={{
-        label: 'Se aktivitet',
+        label: t('activityWidget.seeActivity'),
       }}
     >
 
@@ -66,8 +69,7 @@ export const ActivityWidget = memo(function ActivityWidget({
       {weeklyApplications === 0 && streakDays === 0 && (
         <div className="mt-2 p-3 bg-rose-50 rounded-lg">
           <p className="text-sm text-rose-700">
-            Det är okej att ha perioder med lägre aktivitet. 
-            Det viktiga är att du kommer tillbaka när du känner dig redo.
+            {t('activityWidget.lowActivityMessage')}
           </p>
         </div>
       )}

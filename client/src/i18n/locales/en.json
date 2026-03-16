@@ -851,6 +851,39 @@
       }
     }
   },
+  "activityWidget": {
+    "yourActivity": "Your Activity",
+    "thisWeek": "This week",
+    "applicationsCount": "{{count}} applications",
+    "seeActivity": "See activity",
+    "goodActive": "Great that you're active!",
+    "takeYourTime": "Take the time you need - the portal is here when you want.",
+    "lowActivityMessage": "It's okay to have periods of lower activity. The important thing is that you come back when you feel ready."
+  },
+  "calendarWidget": {
+    "calendar": "Calendar",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "at": "at",
+    "eventsCount": "{{count}} events",
+    "upcomingCount": "{{count}} upcoming",
+    "upcomingEventsCount": "{{count}} upcoming events",
+    "noEvents": "No events",
+    "addEvent": "Add event",
+    "addInterviewsAndMeetings": "Add interviews and meetings",
+    "upcoming": "Upcoming",
+    "thisWeek": "This week",
+    "showCalendar": "Show calendar",
+    "weekdays": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    }
+  },
   "interestWidget": {
     "interests": "Interests",
     "interestTest": "Interest Test",

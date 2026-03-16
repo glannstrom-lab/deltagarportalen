@@ -851,6 +851,39 @@
       }
     }
   },
+  "activityWidget": {
+    "yourActivity": "Din aktivitet",
+    "thisWeek": "Denna veckan",
+    "applicationsCount": "{{count}} ansökningar",
+    "seeActivity": "Se aktivitet",
+    "goodActive": "Bra att du är aktiv!",
+    "takeYourTime": "Ta den tid du behöver - portalen finns här när du vill.",
+    "lowActivityMessage": "Det är okej att ha perioder med lägre aktivitet. Det viktiga är att du kommer tillbaka när du känner dig redo."
+  },
+  "calendarWidget": {
+    "calendar": "Kalender",
+    "today": "Idag",
+    "tomorrow": "Imorgon",
+    "at": "kl",
+    "eventsCount": "{{count}} händelser",
+    "upcomingCount": "{{count}} kommande",
+    "upcomingEventsCount": "{{count}} kommande händelser",
+    "noEvents": "Inga händelser",
+    "addEvent": "Lägg till händelse",
+    "addInterviewsAndMeetings": "Lägg till intervjuer och möten",
+    "upcoming": "Kommande",
+    "thisWeek": "Denna vecka",
+    "showCalendar": "Visa kalender",
+    "weekdays": {
+      "sun": "Sön",
+      "mon": "Mån",
+      "tue": "Tis",
+      "wed": "Ons",
+      "thu": "Tor",
+      "fri": "Fre",
+      "sat": "Lör"
+    }
+  },
   "interestWidget": {
     "interests": "Intressen",
     "interestTest": "Intressetest",
