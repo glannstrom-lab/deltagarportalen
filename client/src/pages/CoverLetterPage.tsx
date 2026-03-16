@@ -4,8 +4,9 @@
  */
 
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
-import { coverLetterTabs } from '@/data/coverLetterTabs'
+import { coverLetterTabDefs } from '@/data/coverLetterTabs'
 import { CoverLetterWrite } from '@/components/cover-letter/CoverLetterWrite'
 import { CoverLetterMyLetters } from '@/components/cover-letter/CoverLetterMyLetters'
 import { CoverLetterApplications } from '@/components/cover-letter/CoverLetterApplications'
@@ -14,15 +15,24 @@ import { CoverLetterStatistics } from '@/components/cover-letter/CoverLetterStat
 
 export default function CoverLetterPage() {
   const location = useLocation()
-  
+  const { t } = useTranslation()
+
+  // Build tabs with translated labels
+  const coverLetterTabs = coverLetterTabDefs.map((tab) => ({
+    ...tab,
+    label: t(tab.labelKey),
+  }))
+
   // Get current tab label for title
-  const currentTab = coverLetterTabs.find(tab => location.pathname === tab.path || location.pathname.startsWith(tab.path + '/'))
-  const pageTitle = currentTab?.label || 'Personligt brev'
+  const currentTab = coverLetterTabs.find(
+    (tab) => location.pathname === tab.path || location.pathname.startsWith(tab.path + '/')
+  )
+  const pageTitle = currentTab?.label || t('coverLetter.title')
 
   return (
     <PageLayout
       title={pageTitle}
-      description="Skapa professionella personliga brev som öppnar dörrar till nya möjligheter"
+      description={t('coverLetter.description')}
       customTabs={coverLetterTabs}
       tabVariant="glass"
       showTabs={true}

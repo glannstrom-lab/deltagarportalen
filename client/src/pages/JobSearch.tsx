@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-  Search, MapPin, Briefcase, Calendar, X, Building2,
-  ExternalLink, Filter, ChevronDown, SlidersHorizontal,
+  Search, MapPin, Briefcase, X, Building2,
+  ExternalLink, Filter, ChevronDown,
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
-  Bookmark, CheckCircle2, Send, Bell, ClipboardList
+  Bookmark, Send, Bell, ClipboardList
 } from 'lucide-react';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
@@ -15,22 +16,18 @@ import {
   ErrorState,
   EmptySearch,
   Button,
-  IconButton,
-  FilterSheet,
   Card,
-  Input,
-  Select
 } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { CreateApplicationModal } from '@/components/workflow';
 
-// Tabs configuration
-const jobSearchTabs = [
-  { id: 'search', label: 'Sök jobb', path: '/job-search', icon: Search },
-  { id: 'saved', label: 'Sparade', path: '/job-search/saved', icon: Bookmark },
-  { id: 'applications', label: 'Ansökningar', path: '/job-search/applications', icon: ClipboardList },
-  { id: 'alerts', label: 'Bevakningar', path: '/job-search/alerts', icon: Bell },
-  { id: 'matches', label: 'Matchningar', path: '/job-search/matches', icon: Sparkles },
+// Tab definitions with i18n keys
+const jobSearchTabDefs = [
+  { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
+  { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
+  { id: 'applications', labelKey: 'jobSearch.tabs.applications', path: '/job-search/applications', icon: ClipboardList },
+  { id: 'alerts', labelKey: 'jobSearch.tabs.alerts', path: '/job-search/alerts', icon: Bell },
+  { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
 ];
 
 interface SearchFilters {
@@ -75,6 +72,7 @@ const JOBS_PER_PAGE = 20;
 
 // Main Search Tab Component
 function SearchTab() {
+  const { t } = useTranslation();
   const [jobs, setJobs] = useState<PlatsbankenJob[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -141,7 +139,7 @@ function SearchTab() {
       setTotalJobs(result.total.value);
     } catch (err) {
       console.error('Search error:', err);
-      setError('Kunde inte söka jobb. Försök igen.');
+      setError(t('jobSearch.couldNotSearch'));
     } finally {
       setLoading(false);
     }
@@ -599,16 +597,17 @@ function SearchTab() {
 
 // Placeholder tabs for future implementation
 function SavedJobsTab() {
+  const { t } = useTranslation();
   const { savedJobs, removeJob } = useSavedJobs();
 
   if (savedJobs.length === 0) {
     return (
       <Card className="p-12 text-center">
         <Bookmark className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-        <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga sparade jobb</h3>
-        <p className="text-slate-500 mb-4">Spara jobb du är intresserad av för att enkelt hitta dem senare.</p>
+        <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noSavedJobsTitle')}</h3>
+        <p className="text-slate-500 mb-4">{t('jobSearch.noSavedJobsDesc')}</p>
         <Link to="/job-search">
-          <Button>Sök jobb</Button>
+          <Button>{t('jobSearch.title')}</Button>
         </Link>
       </Card>
     );
@@ -616,7 +615,7 @@ function SavedJobsTab() {
 
   return (
     <div className="space-y-4">
-      <p className="text-slate-600">Du har {savedJobs.length} sparade jobb</p>
+      <p className="text-slate-600">{t('jobSearch.youHaveXSavedJobs', { count: savedJobs.length })}</p>
       {savedJobs.map((job: any) => (
         <Card key={job.id} className="p-4">
           <div className="flex items-start justify-between">
@@ -638,43 +637,46 @@ function SavedJobsTab() {
 }
 
 function ApplicationsTab() {
+  const { t } = useTranslation();
   return (
     <Card className="p-12 text-center">
       <ClipboardList className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga ansökningar ännu</h3>
-      <p className="text-slate-500 mb-4">Håll koll på dina jobbansökningar här.</p>
+      <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noApplicationsTitle')}</h3>
+      <p className="text-slate-500 mb-4">{t('jobSearch.noApplicationsDesc')}</p>
       <Link to="/job-search">
-        <Button>Sök jobb att ansöka till</Button>
+        <Button>{t('jobSearch.searchJobsToApply')}</Button>
       </Link>
     </Card>
   );
 }
 
 function AlertsTab() {
+  const { t } = useTranslation();
   return (
     <Card className="p-12 text-center">
       <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga bevakningar</h3>
-      <p className="text-slate-500 mb-4">Spara sökningar för att få notiser om nya jobb.</p>
+      <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noAlertsTitle')}</h3>
+      <p className="text-slate-500 mb-4">{t('jobSearch.noAlertsDesc')}</p>
       <Link to="/job-search">
-        <Button>Skapa en bevakning</Button>
+        <Button>{t('jobSearch.createAlert')}</Button>
       </Link>
     </Card>
   );
 }
 
 function MatchesTab() {
+  const { t } = useTranslation();
   return (
     <Card className="p-12 text-center">
       <Sparkles className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga matchningar ännu</h3>
-      <p className="text-slate-500 mb-4">Slutför din profil för att få personliga jobbförslag.</p>
+      <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noMatchesTitle')}</h3>
+      <p className="text-slate-500 mb-4">{t('jobSearch.noMatchesDesc')}</p>
       <div className="flex justify-center gap-3">
         <Link to="/interest-guide">
-          <Button variant="outline">Gör intressetestet</Button>
+          <Button variant="outline">{t('jobSearch.takeInterestTest')}</Button>
         </Link>
         <Link to="/cv">
-          <Button>Skapa CV</Button>
+          <Button>{t('cv.createCV')}</Button>
         </Link>
       </div>
     </Card>
@@ -684,11 +686,18 @@ function MatchesTab() {
 // Main component with routing
 export default function JobSearch() {
   const location = useLocation();
+  const { t } = useTranslation();
+
+  // Build tabs with translated labels
+  const jobSearchTabs = jobSearchTabDefs.map((tab) => ({
+    ...tab,
+    label: t(tab.labelKey),
+  }));
 
   return (
     <PageLayout
-      title="Sök jobb"
-      subtitle="Hitta lediga jobb från Arbetsförmedlingen"
+      title={t('jobSearch.title')}
+      subtitle={t('jobSearch.subtitle')}
       tabs={jobSearchTabs}
       tabVariant="glass"
       className="max-w-7xl mx-auto"

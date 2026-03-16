@@ -4,8 +4,9 @@
  */
 
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
-import { cvTabs } from '@/data/cvTabs'
+import { cvTabDefs } from '@/data/cvTabs'
 import CVBuilder from './CVBuilder'
 import { MyCVs } from '@/components/cv/MyCVs'
 import { CVTemplates } from '@/components/cv/templates/CVTemplates'
@@ -14,15 +15,24 @@ import { CVTips } from '@/components/cv/CVTips'
 
 export default function CVPage() {
   const location = useLocation()
-  
+  const { t } = useTranslation()
+
+  // Build tabs with translated labels
+  const cvTabs = cvTabDefs.map((tab) => ({
+    ...tab,
+    label: t(tab.labelKey),
+  }))
+
   // Get current tab label for title
-  const currentTab = cvTabs.find(tab => location.pathname === tab.path || location.pathname.startsWith(tab.path + '/'))
-  const pageTitle = currentTab?.label || 'CV'
+  const currentTab = cvTabs.find(
+    (tab) => location.pathname === tab.path || location.pathname.startsWith(tab.path + '/')
+  )
+  const pageTitle = currentTab?.label || t('cv.title')
 
   return (
     <PageLayout
       title={pageTitle}
-      description="Skapa, hantera och optimera ditt CV för att öka chanserna till drömjobbet"
+      description={t('cv.description')}
       customTabs={cvTabs}
       tabVariant="glass"
       showTabs={true}
