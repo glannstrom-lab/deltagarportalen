@@ -1098,6 +1098,47 @@
       "nextStepDescription": "Registrera var du skickat dina ansökningar för att hålla koll på läget."
     }
   },
+  "applicationsWidget": {
+    "applications": "Ansökningar",
+    "applicationsCount": "ansökningar",
+    "followUp": "Följ upp",
+    "registerApplication": "Registrera ansökan",
+    "newApplication": "Ny ansökan",
+    "total": "totalt",
+    "responseRate": "svarsfrekvens",
+    "reminder": "Påminnelse",
+    "followUpCompany": "Följ upp {{company}}",
+    "trackApplications": "Håll koll på dina ansökningar",
+    "registerToFollowUp": "Registrera varje ansökan för att följa upp",
+    "trackDescription": "Registrera varje ansökan så du kan följa upp och se vilka som ger svar. Det hjälper dig att bli mer strukturerad i ditt jobbsökande.",
+    "yourPipeline": "Din ansöknings-pipeline",
+    "responseRatePercent": "{{rate}}% svarsfrekvens",
+    "upcomingFollowUp": "Kommande uppföljning",
+    "noUpcomingFollowUps": "Inga kommande uppföljningar just nu",
+    "time": {
+      "today": "Idag",
+      "tomorrow": "Imorgon",
+      "daysAgo": "{{count}} dagar sedan",
+      "inDays": "Om {{count}} dagar",
+      "daysAgoShort": "{{count}}d sen",
+      "inDaysShort": "Om {{count}}d"
+    },
+    "status": {
+      "waitingResponse": "{{count}} väntar svar",
+      "interviews": "{{count}} intervjuer",
+      "offers": "{{count}} erbjudanden!"
+    },
+    "pipeline": {
+      "waiting": "Väntar svar",
+      "interviews": "Intervjuer",
+      "offers": "Erbjudanden",
+      "rejected": "Avslag"
+    },
+    "benefits": {
+      "followUpInTime": "Följ upp i tid",
+      "seeStats": "Se statistik"
+    }
+  },
   "interestWidget": {
     "interests": "Intressen",
     "interestTest": "Intressetest",

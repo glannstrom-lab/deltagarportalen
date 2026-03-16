@@ -1098,6 +1098,47 @@
       "nextStepDescription": "Register where you've sent your applications to keep track of your progress."
     }
   },
+  "applicationsWidget": {
+    "applications": "Applications",
+    "applicationsCount": "applications",
+    "followUp": "Follow up",
+    "registerApplication": "Register application",
+    "newApplication": "New application",
+    "total": "total",
+    "responseRate": "response rate",
+    "reminder": "Reminder",
+    "followUpCompany": "Follow up {{company}}",
+    "trackApplications": "Track your applications",
+    "registerToFollowUp": "Register each application to follow up",
+    "trackDescription": "Register each application so you can follow up and see which ones respond. It helps you stay more organized in your job search.",
+    "yourPipeline": "Your application pipeline",
+    "responseRatePercent": "{{rate}}% response rate",
+    "upcomingFollowUp": "Upcoming follow-up",
+    "noUpcomingFollowUps": "No upcoming follow-ups right now",
+    "time": {
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "daysAgo": "{{count}} days ago",
+      "inDays": "In {{count}} days",
+      "daysAgoShort": "{{count}}d ago",
+      "inDaysShort": "In {{count}}d"
+    },
+    "status": {
+      "waitingResponse": "{{count}} waiting response",
+      "interviews": "{{count}} interviews",
+      "offers": "{{count}} offers!"
+    },
+    "pipeline": {
+      "waiting": "Waiting response",
+      "interviews": "Interviews",
+      "offers": "Offers",
+      "rejected": "Rejected"
+    },
+    "benefits": {
+      "followUpInTime": "Follow up in time",
+      "seeStats": "See statistics"
+    }
+  },
   "interestWidget": {
     "interests": "Interests",
     "interestTest": "Interest Test",

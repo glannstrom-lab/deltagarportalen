@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Send, Clock, CheckCircle2, XCircle, Trophy, Building2, Calendar, AlertCircle, TrendingUp } from 'lucide-react'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
@@ -25,6 +26,7 @@ interface ApplicationsWidgetProps {
 
 // SMALL - Totalt antal + nästa uppföljning
 function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry }: Omit<ApplicationsWidgetProps, 'size' | 'statusBreakdown'>) {
+  const { t } = useTranslation()
   const getStatus = (): WidgetStatus => {
     if (total === 0) return 'empty'
     return 'complete'
@@ -37,15 +39,15 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
     const today = new Date()
     const diffTime = date.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    if (diffDays === 0) return 'Idag'
-    if (diffDays === 1) return 'Imorgon'
-    if (diffDays < 0) return `${Math.abs(diffDays)}d sen`
-    return `Om ${diffDays}d`
+    if (diffDays === 0) return t('applicationsWidget.time.today')
+    if (diffDays === 1) return t('applicationsWidget.time.tomorrow')
+    if (diffDays < 0) return t('applicationsWidget.time.daysAgoShort', { count: Math.abs(diffDays) })
+    return t('applicationsWidget.time.inDaysShort', { count: diffDays })
   }
 
   return (
     <DashboardWidget
-      title="Ansökningar"
+      title={t('applicationsWidget.applications')}
       icon={<Send size={14} />}
       to="/job-search"
       color="orange"
@@ -61,12 +63,12 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
           <span className="text-lg font-bold text-slate-800">{total}</span>
         </div>
         <span className="text-xs text-slate-500">
-          {total === 0 ? 'Inga' : total === 1 ? 'ansökan' : 'ansökningar'}
+          {t('applicationsWidget.applicationsCount', { count: total })}
         </span>
       </div>
       {nextFollowUp && (
         <p className="text-xs text-amber-600 mt-1">
-          Följ upp {formatDate(nextFollowUp.dueDate).toLowerCase()}
+          {t('applicationsWidget.followUp')} {formatDate(nextFollowUp.dueDate).toLowerCase()}
         </p>
       )}
     </DashboardWidget>
@@ -75,6 +77,7 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
 
 // MEDIUM - Status-fördelning + uppföljning
 function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, interview: 0, rejected: 0, offer: 0 }, nextFollowUp, loading, error, onRetry }: ApplicationsWidgetProps) {
+  const { t } = useTranslation()
   const getStatus = (): WidgetStatus => {
     if (total === 0) return 'empty'
     return 'complete'
@@ -89,21 +92,21 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
     const today = new Date()
     const diffTime = date.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
-    if (diffDays === 0) return 'Idag'
-    if (diffDays === 1) return 'Imorgon'
-    if (diffDays < 0) return `${Math.abs(diffDays)} dagar sedan`
-    return `Om ${diffDays} dagar`
+
+    if (diffDays === 0) return t('applicationsWidget.time.today')
+    if (diffDays === 1) return t('applicationsWidget.time.tomorrow')
+    if (diffDays < 0) return t('applicationsWidget.time.daysAgo', { count: Math.abs(diffDays) })
+    return t('applicationsWidget.time.inDays', { count: diffDays })
   }
 
   // Beräkna svarsfrekvens
-  const responseRate = total > 0 
+  const responseRate = total > 0
     ? Math.round(((interview + rejected + offer) / total) * 100)
     : 0
 
   return (
     <DashboardWidget
-      title="Ansökningar"
+      title={t('applicationsWidget.applications')}
       icon={<Send size={22} />}
       to="/job-search"
       color="orange"
@@ -113,7 +116,7 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: total > 0 ? 'Följ upp' : 'Registrera ansökan',
+        label: total > 0 ? t('applicationsWidget.followUp') : t('applicationsWidget.registerApplication'),
       }}
     >
       <div className="space-y-3">
@@ -125,13 +128,13 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-800">{total}</p>
-              <p className="text-xs text-slate-500">totalt</p>
+              <p className="text-xs text-slate-500">{t('applicationsWidget.total')}</p>
             </div>
           </div>
           {responseRate > 0 && (
             <div className="text-right">
               <p className="text-lg font-semibold text-emerald-600">{responseRate}%</p>
-              <p className="text-xs text-slate-500">svarsfrekvens</p>
+              <p className="text-xs text-slate-500">{t('applicationsWidget.responseRate')}</p>
             </div>
           )}
         </div>
@@ -141,17 +144,17 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
           <div className="flex flex-wrap gap-2">
             {applied > 0 && (
               <span className="px-2 py-1 bg-blue-50 text-blue-700 text-xs rounded-lg">
-                {applied} väntar svar
+                {t('applicationsWidget.status.waitingResponse', { count: applied })}
               </span>
             )}
             {interview > 0 && (
               <span className="px-2 py-1 bg-amber-50 text-amber-700 text-xs rounded-lg">
-                {interview} intervjuer
+                {t('applicationsWidget.status.interviews', { count: interview })}
               </span>
             )}
             {offer > 0 && (
               <span className="px-2 py-1 bg-emerald-50 text-emerald-700 text-xs rounded-lg">
-                {offer} erbjudanden!
+                {t('applicationsWidget.status.offers', { count: offer })}
               </span>
             )}
           </div>
@@ -162,10 +165,10 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
           <div className="p-3 bg-amber-50 rounded-xl border border-amber-100">
             <div className="flex items-center gap-2 mb-1">
               <AlertCircle size={14} className="text-amber-500" />
-              <span className="text-xs font-medium text-amber-700">Påminnelse</span>
+              <span className="text-xs font-medium text-amber-700">{t('applicationsWidget.reminder')}</span>
             </div>
             <p className="text-sm text-amber-800">
-              Följ upp <strong>{nextFollowUp.company}</strong>
+              {t('applicationsWidget.followUpCompany', { company: nextFollowUp.company })}
             </p>
             <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
               <Calendar size={12} />
@@ -177,8 +180,8 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
         {/* Empty state */}
         {total === 0 && (
           <div className="p-3 bg-orange-50 rounded-lg">
-            <p className="text-sm text-orange-700">Håll koll på dina ansökningar</p>
-            <p className="text-xs text-orange-600 mt-1">Registrera varje ansökan för att följa upp</p>
+            <p className="text-sm text-orange-700">{t('applicationsWidget.trackApplications')}</p>
+            <p className="text-xs text-orange-600 mt-1">{t('applicationsWidget.registerToFollowUp')}</p>
           </div>
         )}
       </div>
@@ -188,6 +191,7 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
 
 // LARGE - Full pipeline-översikt
 function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interview: 0, rejected: 0, offer: 0 }, nextFollowUp, loading, error, onRetry }: ApplicationsWidgetProps) {
+  const { t } = useTranslation()
   const getStatus = (): WidgetStatus => {
     if (total === 0) return 'empty'
     return 'complete'
@@ -202,21 +206,21 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
     const today = new Date()
     const diffTime = date.getTime() - today.getTime()
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-    
-    if (diffDays === 0) return 'Idag'
-    if (diffDays === 1) return 'Imorgon'
-    if (diffDays < 0) return `${Math.abs(diffDays)} dagar sedan`
-    return `Om ${diffDays} dagar`
+
+    if (diffDays === 0) return t('applicationsWidget.time.today')
+    if (diffDays === 1) return t('applicationsWidget.time.tomorrow')
+    if (diffDays < 0) return t('applicationsWidget.time.daysAgo', { count: Math.abs(diffDays) })
+    return t('applicationsWidget.time.inDays', { count: diffDays })
   }
 
   // Beräkna svarsfrekvens
-  const responseRate = total > 0 
+  const responseRate = total > 0
     ? Math.round(((interview + rejected + offer) / total) * 100)
     : 0
 
   return (
     <DashboardWidget
-      title="Ansökningar"
+      title={t('applicationsWidget.applications')}
       icon={<Send size={24} />}
       to="/job-search"
       color="orange"
@@ -226,7 +230,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: 'Ny ansökan',
+        label: t('applicationsWidget.newApplication'),
       }}
     >
       <div className="space-y-4">
@@ -235,22 +239,22 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
           <div className="p-3 bg-blue-50 rounded-xl text-center">
             <Clock size={20} className="text-blue-500 mx-auto mb-1" />
             <p className="text-xl font-bold text-blue-700">{applied}</p>
-            <p className="text-xs text-blue-600">Väntar svar</p>
+            <p className="text-xs text-blue-600">{t('applicationsWidget.pipeline.waiting')}</p>
           </div>
           <div className="p-3 bg-amber-50 rounded-xl text-center">
             <Building2 size={20} className="text-amber-500 mx-auto mb-1" />
             <p className="text-xl font-bold text-amber-700">{interview}</p>
-            <p className="text-xs text-amber-600">Intervjuer</p>
+            <p className="text-xs text-amber-600">{t('applicationsWidget.pipeline.interviews')}</p>
           </div>
           <div className="p-3 bg-emerald-50 rounded-xl text-center">
             <Trophy size={20} className="text-emerald-500 mx-auto mb-1" />
             <p className="text-xl font-bold text-emerald-700">{offer}</p>
-            <p className="text-xs text-emerald-600">Erbjudanden</p>
+            <p className="text-xs text-emerald-600">{t('applicationsWidget.pipeline.offers')}</p>
           </div>
           <div className="p-3 bg-slate-100 rounded-xl text-center">
             <XCircle size={20} className="text-slate-500 mx-auto mb-1" />
             <p className="text-xl font-bold text-slate-700">{rejected}</p>
-            <p className="text-xs text-slate-600">Avslag</p>
+            <p className="text-xs text-slate-600">{t('applicationsWidget.pipeline.rejected')}</p>
           </div>
         </div>
 
@@ -258,8 +262,8 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
         {total > 0 && (
           <div className="space-y-2">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-slate-600">Din ansöknings-pipeline</span>
-              <span className="font-medium text-slate-800">{responseRate}% svarsfrekvens</span>
+              <span className="text-slate-600">{t('applicationsWidget.yourPipeline')}</span>
+              <span className="font-medium text-slate-800">{t('applicationsWidget.responseRatePercent', { rate: responseRate })}</span>
             </div>
             <div className="flex h-3 rounded-full overflow-hidden">
               {applied > 0 && (
@@ -286,7 +290,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
                 <Calendar size={24} className="text-amber-500" />
               </div>
               <div className="flex-1">
-                <p className="text-sm text-amber-600">Kommande uppföljning</p>
+                <p className="text-sm text-amber-600">{t('applicationsWidget.upcomingFollowUp')}</p>
                 <p className="font-semibold text-amber-800">{nextFollowUp.company}</p>
                 <p className="text-sm text-amber-700">{nextFollowUp.jobTitle}</p>
               </div>
@@ -299,7 +303,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
           <div className="p-4 bg-slate-50 rounded-xl">
             <div className="flex items-center gap-2 text-slate-600">
               <CheckCircle2 size={18} className="text-emerald-500" />
-              <p className="text-sm">Inga kommande uppföljningar just nu</p>
+              <p className="text-sm">{t('applicationsWidget.noUpcomingFollowUps')}</p>
             </div>
           </div>
         ) : null}
@@ -312,19 +316,18 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
                 <Send size={28} className="text-orange-600" />
               </div>
               <div className="flex-1">
-                <p className="text-lg font-semibold text-orange-900 mb-2">Håll koll på dina ansökningar</p>
+                <p className="text-lg font-semibold text-orange-900 mb-2">{t('applicationsWidget.trackApplications')}</p>
                 <p className="text-sm text-orange-700 mb-4">
-                  Registrera varje ansökan så du kan följa upp och se vilka som ger svar. 
-                  Det hjälper dig att bli mer strukturerad i ditt jobbsökande.
+                  {t('applicationsWidget.trackDescription')}
                 </p>
                 <div className="flex items-center gap-4 text-sm text-orange-600">
                   <span className="flex items-center gap-1">
                     <Clock size={14} />
-                    Följ upp i tid
+                    {t('applicationsWidget.benefits.followUpInTime')}
                   </span>
                   <span className="flex items-center gap-1">
                     <TrendingUp size={14} />
-                    Se statistik
+                    {t('applicationsWidget.benefits.seeStats')}
                   </span>
                 </div>
               </div>
