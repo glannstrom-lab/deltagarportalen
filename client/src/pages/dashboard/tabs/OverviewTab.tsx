@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardDataQuery } from '@/hooks/useDashboardData'
+import type { DashboardWidgetData } from '@/types/dashboard'
 import { useClickOutside } from '@/hooks/useClickOutside'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
@@ -49,18 +50,28 @@ interface WidgetConfig {
   size: WidgetSize
 }
 
-const WIDGET_INFO: Record<WidgetId, { label: string; icon: React.ElementType; color: string }> = {
-  cv: { label: 'CV', icon: FileText, color: 'violet' },
-  jobSearch: { label: 'Jobbsök', icon: Briefcase, color: 'blue' },
-  wellness: { label: 'Välmående', icon: Heart, color: 'rose' },
-  quests: { label: 'Quests', icon: Target, color: 'amber' },
-  exercises: { label: 'Övningar', icon: Zap, color: 'emerald' },
-  knowledge: { label: 'Kunskap', icon: BookOpen, color: 'amber' },
-  interests: { label: 'Intressen', icon: Sparkles, color: 'teal' },
-  calendar: { label: 'Kalender', icon: Calendar, color: 'rose' },
-  interview: { label: 'Intervju', icon: MessageSquare, color: 'indigo' },
-  linkedin: { label: 'LinkedIn', icon: Linkedin, color: 'blue' },
-  skills: { label: 'Kompetens', icon: BarChart3, color: 'cyan' },
+// Widget categories for grouping
+type WidgetCategory = 'profile' | 'jobsearch' | 'activity' | 'learning'
+
+const WIDGET_CATEGORIES: Record<WidgetCategory, { label: string; order: number }> = {
+  profile: { label: 'Din profil', order: 1 },
+  jobsearch: { label: 'Jobbsökning', order: 2 },
+  activity: { label: 'Daglig aktivitet', order: 3 },
+  learning: { label: 'Lärande & utveckling', order: 4 },
+}
+
+const WIDGET_INFO: Record<WidgetId, { label: string; icon: React.ElementType; color: string; category: WidgetCategory }> = {
+  cv: { label: 'CV', icon: FileText, color: 'violet', category: 'profile' },
+  interests: { label: 'Intressen', icon: Sparkles, color: 'teal', category: 'profile' },
+  skills: { label: 'Kompetens', icon: BarChart3, color: 'cyan', category: 'profile' },
+  linkedin: { label: 'LinkedIn', icon: Linkedin, color: 'blue', category: 'profile' },
+  jobSearch: { label: 'Jobbsök', icon: Briefcase, color: 'blue', category: 'jobsearch' },
+  interview: { label: 'Intervju', icon: MessageSquare, color: 'indigo', category: 'jobsearch' },
+  quests: { label: 'Quests', icon: Target, color: 'amber', category: 'activity' },
+  wellness: { label: 'Välmående', icon: Heart, color: 'rose', category: 'activity' },
+  calendar: { label: 'Kalender', icon: Calendar, color: 'rose', category: 'activity' },
+  exercises: { label: 'Övningar', icon: Zap, color: 'emerald', category: 'learning' },
+  knowledge: { label: 'Kunskap', icon: BookOpen, color: 'amber', category: 'learning' },
 }
 
 const DEFAULT_WIDGETS: WidgetConfig[] = [
@@ -73,7 +84,7 @@ const DEFAULT_WIDGETS: WidgetConfig[] = [
 ]
 
 // Get next recommended action
-function getNextAction(data: ReturnType<typeof useDashboardData>['data']): {
+function getNextAction(data: DashboardWidgetData | undefined): {
   title: string
   description: string
   link: string
@@ -196,7 +207,7 @@ function NextStepCard({ action }: { action: ReturnType<typeof getNextAction> }) 
   )
 }
 
-// Compact Widget Selector
+// Compact Widget Selector with category grouping
 function WidgetSelector({
   activeWidgets,
   onToggle,
@@ -208,10 +219,17 @@ function WidgetSelector({
 }) {
   const activeIds = activeWidgets.map(w => w.id)
 
+  // Group widgets by category
+  const widgetsByCategory = Object.entries(WIDGET_INFO).reduce((acc, [id, info]) => {
+    if (!acc[info.category]) acc[info.category] = []
+    acc[info.category].push({ id: id as WidgetId, ...info })
+    return acc
+  }, {} as Record<WidgetCategory, Array<{ id: WidgetId; label: string; icon: React.ElementType; color: string; category: WidgetCategory }>>)
+
   return (
-    <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-white rounded-xl shadow-xl border border-slate-200 p-3">
-      <div className="flex items-center justify-between mb-2">
-        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Widgets</span>
+    <div className="absolute right-0 top-full mt-2 z-50 w-80 bg-white rounded-xl shadow-xl border border-slate-200 p-3 max-h-96 overflow-y-auto">
+      <div className="flex items-center justify-between mb-3">
+        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Lägg till widgets</span>
         <button
           onClick={onClose}
           className="p-1 hover:bg-slate-100 rounded-lg"
@@ -220,28 +238,41 @@ function WidgetSelector({
           <X size={14} className="text-slate-400" />
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-1.5">
-        {Object.entries(WIDGET_INFO).map(([id, info]) => {
-          const isActive = activeIds.includes(id as WidgetId)
-          const Icon = info.icon
-          return (
-            <button
-              key={id}
-              onClick={() => onToggle(id as WidgetId)}
-              className={cn(
-                "flex flex-col items-center gap-1 p-2 rounded-lg text-xs font-medium transition-all",
-                isActive
-                  ? "bg-violet-100 text-violet-700 ring-1 ring-violet-200"
-                  : "hover:bg-slate-50 text-slate-600"
-              )}
-              aria-label={isActive ? `Ta bort ${info.label} widget` : `Lägg till ${info.label} widget`}
-              aria-pressed={isActive}
-            >
-              <Icon size={16} aria-hidden="true" />
-              <span className="truncate w-full text-center">{info.label}</span>
-            </button>
-          )
-        })}
+      <div className="space-y-3">
+        {Object.entries(WIDGET_CATEGORIES)
+          .sort(([, a], [, b]) => a.order - b.order)
+          .map(([categoryKey, categoryInfo]) => {
+            const categoryWidgets = widgetsByCategory[categoryKey as WidgetCategory] || []
+            if (categoryWidgets.length === 0) return null
+
+            return (
+              <div key={categoryKey}>
+                <p className="text-xs font-medium text-slate-400 mb-1.5 px-1">{categoryInfo.label}</p>
+                <div className="grid grid-cols-4 gap-1.5">
+                  {categoryWidgets.map(({ id, label, icon: Icon }) => {
+                    const isActive = activeIds.includes(id)
+                    return (
+                      <button
+                        key={id}
+                        onClick={() => onToggle(id)}
+                        className={cn(
+                          "flex flex-col items-center gap-1 p-2 rounded-lg text-xs font-medium transition-all",
+                          isActive
+                            ? "bg-violet-100 text-violet-700 ring-1 ring-violet-200"
+                            : "hover:bg-slate-50 text-slate-600"
+                        )}
+                        aria-label={isActive ? `Ta bort ${label} widget` : `Lägg till ${label} widget`}
+                        aria-pressed={isActive}
+                      >
+                        <Icon size={16} aria-hidden="true" />
+                        <span className="truncate w-full text-center">{label}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
       </div>
     </div>
   )
@@ -666,37 +697,80 @@ export default function OverviewTab() {
         </div>
       </div>
 
-      {/* Widget Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-        {widgets.map((config, index) => (
-          <DraggableWidget
-            key={`${config.id}-${index}`}
-            config={config}
-            onRemove={() => removeWidget(index)}
-            onResize={(size) => resizeWidget(index, size)}
-            onDragStart={() => handleDragStart(index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDrop={handleDrop}
-            isDragging={draggedIndex === index}
-            isEditing={isEditing}
-          >
-            {renderWidget(config)}
-          </DraggableWidget>
-        ))}
-
-        {widgets.length === 0 && (
-          <div className="col-span-full text-center py-12 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-            <Sparkles className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-            <p className="text-sm text-slate-500 mb-3">Inga widgets ännu</p>
-            <button
-              onClick={() => setShowSelector(true)}
-              className="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
+      {/* Widget Grid - Grouped by category when not editing */}
+      {isEditing ? (
+        // Flat grid when editing (for drag-and-drop)
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+          {widgets.map((config, index) => (
+            <DraggableWidget
+              key={`${config.id}-${index}`}
+              config={config}
+              onRemove={() => removeWidget(index)}
+              onResize={(size) => resizeWidget(index, size)}
+              onDragStart={() => handleDragStart(index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDrop={handleDrop}
+              isDragging={draggedIndex === index}
+              isEditing={isEditing}
             >
-              Lägg till widgets
-            </button>
-          </div>
-        )}
-      </div>
+              {renderWidget(config)}
+            </DraggableWidget>
+          ))}
+        </div>
+      ) : (
+        // Grouped by category when viewing
+        <div className="space-y-6">
+          {Object.entries(WIDGET_CATEGORIES)
+            .sort(([, a], [, b]) => a.order - b.order)
+            .map(([categoryKey, categoryInfo]) => {
+              const categoryWidgets = widgets.filter(
+                w => WIDGET_INFO[w.id].category === categoryKey
+              )
+              if (categoryWidgets.length === 0) return null
+
+              return (
+                <section key={categoryKey}>
+                  <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">
+                    {categoryInfo.label}
+                  </h2>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+                    {categoryWidgets.map((config) => {
+                      const index = widgets.findIndex(w => w.id === config.id)
+                      return (
+                        <DraggableWidget
+                          key={`${config.id}-${index}`}
+                          config={config}
+                          onRemove={() => removeWidget(index)}
+                          onResize={(size) => resizeWidget(index, size)}
+                          onDragStart={() => handleDragStart(index)}
+                          onDragOver={(e) => handleDragOver(e, index)}
+                          onDrop={handleDrop}
+                          isDragging={draggedIndex === index}
+                          isEditing={isEditing}
+                        >
+                          {renderWidget(config)}
+                        </DraggableWidget>
+                      )
+                    })}
+                  </div>
+                </section>
+              )
+            })}
+        </div>
+      )}
+
+      {widgets.length === 0 && (
+        <div className="text-center py-12 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+          <Sparkles className="w-8 h-8 text-slate-300 mx-auto mb-2" aria-hidden="true" />
+          <p className="text-sm text-slate-500 mb-3">Inga widgets ännu</p>
+          <button
+            onClick={() => setShowSelector(true)}
+            className="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
+          >
+            Lägg till widgets
+          </button>
+        </div>
+      )}
     </div>
   )
 }
