@@ -1,7 +1,15 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { ArrowLeft, FileText, Scale, Users, AlertCircle, CheckCircle } from 'lucide-react'
 
 export default function Terms() {
+  const { t, i18n } = useTranslation()
+
+  const formatDate = () => {
+    const locale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
+    return new Date().toLocaleDateString(locale)
+  }
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Header */}
@@ -14,12 +22,12 @@ export default function Terms() {
               </div>
               <span className="text-xl font-bold text-indigo-600">Jobin</span>
             </Link>
-            <Link 
+            <Link
               to="/"
               className="flex items-center gap-2 text-slate-600 hover:text-indigo-600 font-medium transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              Tillbaka till startsidan
+              {t('terms.backToHome')}
             </Link>
           </div>
         </div>
@@ -31,48 +39,45 @@ export default function Terms() {
           <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
             <FileText className="w-8 h-8 text-indigo-600" />
           </div>
-          <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">Användarvillkor</h1>
-          <p className="text-slate-600">Regler och riktlinjer för att använda Jobin</p>
+          <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">{t('terms.title')}</h1>
+          <p className="text-slate-600">{t('terms.subtitle')}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 lg:p-12 space-y-10">
           <section>
             <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-indigo-600" />
-              Acceptans av villkor
+              {t('terms.acceptance.title')}
             </h2>
             <p className="text-slate-600 leading-relaxed">
-              Genom att skapa ett konto och använda Jobin godkänner du dessa användarvillkor. 
-              Om du inte accepterar villkoren, vänligen använd inte våra tjänster. 
-              Vi förbehåller oss rätten att uppdatera dessa villkor, och fortsatt användning 
-              efter ändringar innebär att du accepterar de nya villkoren.
+              {t('terms.acceptance.text')}
             </p>
           </section>
 
           <section>
             <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
               <Users className="w-5 h-5 text-indigo-600" />
-              Användarkonto
+              {t('terms.account.title')}
             </h2>
             <p className="text-slate-600 leading-relaxed mb-4">
-              För att använda Jobin behöver du skapa ett konto. Du ansvarar för att:
+              {t('terms.account.intro')}
             </p>
             <ul className="space-y-2 text-slate-600">
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Informationen du anger är sann, korrekt och aktuell</span>
+                <span>{t('terms.account.truthful')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Du skyddar ditt lösenord och inte delar det med andra</span>
+                <span>{t('terms.account.password')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Du omedelbart meddelar oss om obehörig åtkomst till ditt konto</span>
+                <span>{t('terms.account.notify')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Du endast skapar ett konto per person</span>
+                <span>{t('terms.account.oneAccount')}</span>
               </li>
             </ul>
           </section>
@@ -80,31 +85,31 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
               <Scale className="w-5 h-5 text-indigo-600" />
-              Acceptabel användning
+              {t('terms.usage.title')}
             </h2>
             <p className="text-slate-600 leading-relaxed mb-4">
-              När du använder Jobin förbinder du dig att inte:
+              {t('terms.usage.intro')}
             </p>
             <ul className="space-y-2 text-slate-600">
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Använda plattformen för olagliga ändamål</span>
+                <span>{t('terms.usage.illegal')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Publicera falsk eller vilseledande information</span>
+                <span>{t('terms.usage.false')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Trakassera, hota eller diskriminera andra användare</span>
+                <span>{t('terms.usage.harass')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Försöka kringgå säkerhetsåtgärder eller hacka systemet</span>
+                <span>{t('terms.usage.hack')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-red-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Använda automatiserade system (botar) utan tillstånd</span>
+                <span>{t('terms.usage.bots')}</span>
               </li>
             </ul>
           </section>
@@ -112,23 +117,23 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
               <FileText className="w-5 h-5 text-indigo-600" />
-              Innehåll och upphovsrätt
+              {t('terms.content.title')}
             </h2>
             <p className="text-slate-600 leading-relaxed mb-4">
-              När du laddar upp innehåll till Jobin (t.ex. CV, personligt brev):
+              {t('terms.content.intro')}
             </p>
             <ul className="space-y-2 text-slate-600">
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Du behåller äganderätten till ditt innehåll</span>
+                <span>{t('terms.content.ownership')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Du ger oss rätt att lagra och visa innehållet för att tillhandahålla tjänsten</span>
+                <span>{t('terms.content.license')}</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="w-1.5 h-1.5 bg-indigo-500 rounded-full mt-2 flex-shrink-0" />
-                <span>Du får endast ladda upp innehåll som du har rätt att använda</span>
+                <span>{t('terms.content.rights')}</span>
               </li>
             </ul>
           </section>
@@ -136,30 +141,24 @@ export default function Terms() {
           <section>
             <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-3">
               <AlertCircle className="w-5 h-5 text-indigo-600" />
-              Ansvarsbegränsning
+              {t('terms.liability.title')}
             </h2>
             <p className="text-slate-600 leading-relaxed">
-              Jobin tillhandahålls "i befintligt skick" utan garantier. Vi strävar efter 
-              att hålla tjänsten tillgänglig och säker, men kan inte garantera oavbruten 
-              drift. Vi ansvarar inte för eventuella förluster som uppstår vid användning 
-              av plattformen. Rekommendationer och råd som ges genom plattformen är 
-              vägledande och ska inte ses som professionell rådgivning.
+              {t('terms.liability.text')}
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-800 mb-4">Avslut av konto</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-4">{t('terms.termination.title')}</h2>
             <p className="text-slate-600 leading-relaxed">
-              Du kan när som helst välja att avsluta ditt konto. Vid avslut raderas 
-              dina personuppgifter enligt vår integritetspolicy. Vi förbehåller oss 
-              rätten att stänga av konton som bryter mot dessa villkor.
+              {t('terms.termination.text')}
             </p>
           </section>
 
           <section>
-            <h2 className="text-xl font-bold text-slate-800 mb-4">Kontakt</h2>
+            <h2 className="text-xl font-bold text-slate-800 mb-4">{t('terms.contact.title')}</h2>
             <p className="text-slate-600 leading-relaxed">
-              Har du frågor om våra användarvillkor? Kontakta oss på{' '}
+              {t('terms.contact.text')}{' '}
               <a href="mailto:support@jobin.se" className="text-indigo-600 hover:underline">
                 support@jobin.se
               </a>
@@ -168,7 +167,7 @@ export default function Terms() {
 
           <div className="border-t border-slate-200 pt-8">
             <p className="text-sm text-slate-500">
-              Senast uppdaterad: {new Date().toLocaleDateString('sv-SE')}
+              {t('terms.lastUpdated')} {formatDate()}
             </p>
           </div>
         </div>
@@ -178,7 +177,7 @@ export default function Terms() {
       <footer className="bg-slate-900 text-slate-400 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm">
-            &copy; 2026 Jobin. Alla rättigheter förbehållna.
+            &copy; {t('terms.copyright')}
           </p>
         </div>
       </footer>

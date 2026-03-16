@@ -1516,5 +1516,103 @@
       "madeWith": "Skapad med",
       "forJobSeekers": "för arbetssökande i Sverige"
     }
+  },
+  "privacy": {
+    "backToHome": "Tillbaka till startsidan",
+    "title": "Integritetspolicy",
+    "subtitle": "Så här hanterar vi dina personuppgifter",
+    "whatWeCollect": {
+      "title": "Vilken information samlar vi in?",
+      "intro": "För att kunna erbjuda dig en personlig och effektiv jobbsökarupplevelse samlar vi in följande information:",
+      "contact": "Kontaktuppgifter:",
+      "contactDesc": "Namn, e-postadress och telefonnummer",
+      "profile": "Profilinformation:",
+      "profileDesc": "CV, personligt brev, kompetenser och erfarenheter",
+      "activity": "Aktivitetsdata:",
+      "activityDesc": "Sparade jobb, ansökningar och dagboksanteckningar",
+      "usage": "Användningsdata:",
+      "usageDesc": "Hur du använder plattformen för att förbättra våra tjänster"
+    },
+    "howWeProtect": {
+      "title": "Hur skyddar vi din information?",
+      "intro": "Vi tar säkerheten på största allvar och använder flera lager av skydd:",
+      "ssl": "All data överförs via krypterad SSL/TLS-anslutning",
+      "hash": "Lösenord lagras krypterat med moderna hashningsalgoritmer",
+      "audits": "Regelbundna säkerhetsgranskningar och uppdateringar",
+      "access": "Begränsad åtkomst till personuppgifter inom organisationen"
+    },
+    "howWeUse": {
+      "title": "Hur använder vi din information?",
+      "intro": "Din information används för att:",
+      "manage": "Skapa och hantera ditt konto",
+      "personalize": "Personalisera din jobbsökarupplevelse",
+      "recommend": "Skicka relevanta jobbrekommendationer och påminnelser",
+      "improve": "Förbättra våra tjänster baserat på användarmönster"
+    },
+    "yourRights": {
+      "title": "Dina rättigheter",
+      "intro": "Enligt GDPR har du följande rättigheter:",
+      "access": "Rätt till tillgång:",
+      "accessDesc": "Begära en kopia av dina personuppgifter",
+      "correction": "Rätt till rättelse:",
+      "correctionDesc": "Uppdatera eller korrigera felaktig information",
+      "deletion": "Rätt till radering:",
+      "deletionDesc": "Begära att vi tar bort dina uppgifter",
+      "portability": "Rätt till dataportabilitet:",
+      "portabilityDesc": "Få ut din data i ett maskinläsbart format"
+    },
+    "contact": {
+      "title": "Kontakta oss",
+      "text": "Har du frågor om vår integritetspolicy eller hur vi hanterar dina uppgifter? Kontakta oss på"
+    },
+    "lastUpdated": "Senast uppdaterad:",
+    "copyright": "2026 Jobin. Alla rättigheter förbehållna."
+  },
+  "terms": {
+    "backToHome": "Tillbaka till startsidan",
+    "title": "Användarvillkor",
+    "subtitle": "Regler och riktlinjer för att använda Jobin",
+    "acceptance": {
+      "title": "Acceptans av villkor",
+      "text": "Genom att skapa ett konto och använda Jobin godkänner du dessa användarvillkor. Om du inte accepterar villkoren, vänligen använd inte våra tjänster. Vi förbehåller oss rätten att uppdatera dessa villkor, och fortsatt användning efter ändringar innebär att du accepterar de nya villkoren."
+    },
+    "account": {
+      "title": "Användarkonto",
+      "intro": "För att använda Jobin behöver du skapa ett konto. Du ansvarar för att:",
+      "truthful": "Informationen du anger är sann, korrekt och aktuell",
+      "password": "Du skyddar ditt lösenord och inte delar det med andra",
+      "notify": "Du omedelbart meddelar oss om obehörig åtkomst till ditt konto",
+      "oneAccount": "Du endast skapar ett konto per person"
+    },
+    "usage": {
+      "title": "Acceptabel användning",
+      "intro": "När du använder Jobin förbinder du dig att inte:",
+      "illegal": "Använda plattformen för olagliga ändamål",
+      "false": "Publicera falsk eller vilseledande information",
+      "harass": "Trakassera, hota eller diskriminera andra användare",
+      "hack": "Försöka kringgå säkerhetsåtgärder eller hacka systemet",
+      "bots": "Använda automatiserade system (botar) utan tillstånd"
+    },
+    "content": {
+      "title": "Innehåll och upphovsrätt",
+      "intro": "När du laddar upp innehåll till Jobin (t.ex. CV, personligt brev):",
+      "ownership": "Du behåller äganderätten till ditt innehåll",
+      "license": "Du ger oss rätt att lagra och visa innehållet för att tillhandahålla tjänsten",
+      "rights": "Du får endast ladda upp innehåll som du har rätt att använda"
+    },
+    "liability": {
+      "title": "Ansvarsbegränsning",
+      "text": "Jobin tillhandahålls \"i befintligt skick\" utan garantier. Vi strävar efter att hålla tjänsten tillgänglig och säker, men kan inte garantera oavbruten drift. Vi ansvarar inte för eventuella förluster som uppstår vid användning av plattformen. Rekommendationer och råd som ges genom plattformen är vägledande och ska inte ses som professionell rådgivning."
+    },
+    "termination": {
+      "title": "Avslut av konto",
+      "text": "Du kan när som helst välja att avsluta ditt konto. Vid avslut raderas dina personuppgifter enligt vår integritetspolicy. Vi förbehåller oss rätten att stänga av konton som bryter mot dessa villkor."
+    },
+    "contact": {
+      "title": "Kontakt",
+      "text": "Har du frågor om våra användarvillkor? Kontakta oss på"
+    },
+    "lastUpdated": "Senast uppdaterad:",
+    "copyright": "2026 Jobin. Alla rättigheter förbehållna."
   }
 }

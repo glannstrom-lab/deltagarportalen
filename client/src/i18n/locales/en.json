@@ -1516,5 +1516,103 @@
       "madeWith": "Made with",
       "forJobSeekers": "for job seekers in Sweden"
     }
+  },
+  "privacy": {
+    "backToHome": "Back to home page",
+    "title": "Privacy Policy",
+    "subtitle": "How we handle your personal data",
+    "whatWeCollect": {
+      "title": "What information do we collect?",
+      "intro": "To provide you with a personalized and effective job-seeking experience, we collect the following information:",
+      "contact": "Contact information:",
+      "contactDesc": "Name, email address, and phone number",
+      "profile": "Profile information:",
+      "profileDesc": "CV, cover letter, skills, and experiences",
+      "activity": "Activity data:",
+      "activityDesc": "Saved jobs, applications, and diary entries",
+      "usage": "Usage data:",
+      "usageDesc": "How you use the platform to improve our services"
+    },
+    "howWeProtect": {
+      "title": "How do we protect your information?",
+      "intro": "We take security very seriously and use multiple layers of protection:",
+      "ssl": "All data is transferred via encrypted SSL/TLS connection",
+      "hash": "Passwords are stored encrypted with modern hashing algorithms",
+      "audits": "Regular security audits and updates",
+      "access": "Limited access to personal data within the organization"
+    },
+    "howWeUse": {
+      "title": "How do we use your information?",
+      "intro": "Your information is used to:",
+      "manage": "Create and manage your account",
+      "personalize": "Personalize your job-seeking experience",
+      "recommend": "Send relevant job recommendations and reminders",
+      "improve": "Improve our services based on usage patterns"
+    },
+    "yourRights": {
+      "title": "Your rights",
+      "intro": "Under GDPR, you have the following rights:",
+      "access": "Right of access:",
+      "accessDesc": "Request a copy of your personal data",
+      "correction": "Right to rectification:",
+      "correctionDesc": "Update or correct inaccurate information",
+      "deletion": "Right to erasure:",
+      "deletionDesc": "Request that we delete your data",
+      "portability": "Right to data portability:",
+      "portabilityDesc": "Get your data in a machine-readable format"
+    },
+    "contact": {
+      "title": "Contact us",
+      "text": "Do you have questions about our privacy policy or how we handle your data? Contact us at"
+    },
+    "lastUpdated": "Last updated:",
+    "copyright": "2026 Jobin. All rights reserved."
+  },
+  "terms": {
+    "backToHome": "Back to home page",
+    "title": "Terms of Use",
+    "subtitle": "Rules and guidelines for using Jobin",
+    "acceptance": {
+      "title": "Acceptance of terms",
+      "text": "By creating an account and using Jobin, you agree to these terms of use. If you do not accept the terms, please do not use our services. We reserve the right to update these terms, and continued use after changes means you accept the new terms."
+    },
+    "account": {
+      "title": "User account",
+      "intro": "To use Jobin, you need to create an account. You are responsible for:",
+      "truthful": "The information you provide is true, accurate, and current",
+      "password": "Protecting your password and not sharing it with others",
+      "notify": "Immediately notifying us of unauthorized access to your account",
+      "oneAccount": "Only creating one account per person"
+    },
+    "usage": {
+      "title": "Acceptable use",
+      "intro": "When using Jobin, you agree not to:",
+      "illegal": "Use the platform for illegal purposes",
+      "false": "Post false or misleading information",
+      "harass": "Harass, threaten, or discriminate against other users",
+      "hack": "Attempt to bypass security measures or hack the system",
+      "bots": "Use automated systems (bots) without permission"
+    },
+    "content": {
+      "title": "Content and copyright",
+      "intro": "When you upload content to Jobin (e.g., CV, cover letter):",
+      "ownership": "You retain ownership of your content",
+      "license": "You grant us the right to store and display the content to provide the service",
+      "rights": "You may only upload content that you have the right to use"
+    },
+    "liability": {
+      "title": "Limitation of liability",
+      "text": "Jobin is provided \"as is\" without warranties. We strive to keep the service available and secure, but cannot guarantee uninterrupted operation. We are not responsible for any losses that arise from using the platform. Recommendations and advice given through the platform are for guidance only and should not be considered professional advice."
+    },
+    "termination": {
+      "title": "Account termination",
+      "text": "You may choose to close your account at any time. Upon termination, your personal data will be deleted according to our privacy policy. We reserve the right to suspend accounts that violate these terms."
+    },
+    "contact": {
+      "title": "Contact",
+      "text": "Do you have questions about our terms of use? Contact us at"
+    },
+    "lastUpdated": "Last updated:",
+    "copyright": "2026 Jobin. All rights reserved."
   }
 }
