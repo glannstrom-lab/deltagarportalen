@@ -1,9 +1,13 @@
+import { useTranslation } from 'react-i18next'
+
 interface LoadingStateProps {
   message?: string
   size?: 'sm' | 'md' | 'lg'
 }
 
-export function LoadingState({ message = 'Laddar...', size = 'md' }: LoadingStateProps) {
+export function LoadingState({ message, size = 'md' }: LoadingStateProps) {
+  const { t } = useTranslation()
+  const displayMessage = message || t('common.loading')
   const sizeClasses = {
     sm: 'h-32',
     md: 'h-64',
@@ -25,7 +29,7 @@ export function LoadingState({ message = 'Laddar...', size = 'md' }: LoadingStat
           className={`absolute inset-0 ${spinnerSizes[size]} rounded-full border-4 border-transparent border-t-violet-600 dark:border-t-violet-400 animate-spin`}
         />
       </div>
-      <p className="text-stone-500 dark:text-stone-400 text-sm font-medium">{message}</p>
+      <p className="text-stone-500 dark:text-stone-400 text-sm font-medium">{displayMessage}</p>
     </div>
   )
 }

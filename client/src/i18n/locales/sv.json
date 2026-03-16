@@ -1,6 +1,7 @@
 {
   "common": {
     "save": "Spara",
+    "saveChanges": "Spara ändringar",
     "cancel": "Avbryt",
     "close": "Stäng",
     "edit": "Redigera",
@@ -24,7 +25,22 @@
     "none": "Ingen",
     "more": "Mer",
     "less": "Mindre",
-    "days": "dagar"
+    "days": "dagar",
+    "create": "Skapa",
+    "update": "Uppdatera",
+    "view": "Visa",
+    "download": "Ladda ner",
+    "upload": "Ladda upp",
+    "tryAgain": "Försök igen",
+    "learnMore": "Läs mer",
+    "seeAll": "Se alla",
+    "showMore": "Visa mer",
+    "showLess": "Visa mindre",
+    "selected": "Vald",
+    "activate": "Aktivera",
+    "deactivate": "Inaktivera",
+    "enabled": "Aktiverad",
+    "disabled": "Inaktiverad"
   },
   "nav": {
     "dashboard": "Översikt",
@@ -76,13 +92,21 @@
   },
   "dashboard": {
     "title": "Översikt",
+    "description": "Din personliga dashboard och översikt",
     "welcome": "Välkommen",
     "welcomeBack": "Välkommen tillbaka",
     "todaysTasks": "Dagens uppgifter",
     "recentActivity": "Senaste aktivitet",
     "quickActions": "Snabbåtgärder",
     "progress": "Din framsteg",
-    "streak": "{{count}} dagar i rad"
+    "streak": "{{count}} dagar i rad",
+    "tabs": {
+      "overview": "Översikt",
+      "activity": "Aktivitet",
+      "community": "Community",
+      "insights": "Insikter",
+      "learning": "Lärande"
+    }
   },
   "cv": {
     "title": "CV",
@@ -93,11 +117,36 @@
     "skills": "Kompetenser",
     "languages": "Språk",
     "download": "Ladda ner CV",
-    "preview": "Förhandsgranska"
+    "preview": "Förhandsgranska",
+    "createCV": "Skapa CV",
+    "chooseTemplate": "Välj en mall",
+    "templateDescription": "6 moderna designer. Alla med förvalda färger och typsnitt.",
+    "profilePicture": "Profilbild",
+    "profilePictureDesc": "Lägg till en professionell profilbild för att göra ditt CV mer personligt",
+    "summary": "Sammanfattning",
+    "summaryPlaceholder": "Beskriv din bakgrund och vad du söker",
+    "certificates": "Certifikat",
+    "links": "Länkar",
+    "versions": "Versioner",
+    "noVersions": "Inga sparade versioner",
+    "versionName": "Namn på version...",
+    "saveManually": "Spara manuellt (auto-save är aktivt)"
   },
   "coverLetter": {
     "title": "Personligt brev",
-    "subtitle": "Skapa personliga brev för dina ansökningar"
+    "subtitle": "Skapa personliga brev för dina ansökningar",
+    "savedLetters": "Dina sparade brev",
+    "yourApplications": "Dina ansökningar",
+    "cvInfo": "Din information från CV",
+    "noCvInfo": "Ingen information hittades från ditt CV",
+    "goodMatch": "Bra matchning! Dina erfarenheter passar väl för detta jobb.",
+    "creating": "Skapar ditt brev...",
+    "editLetter": "Redigera ditt brev:",
+    "saved": "Sparat!",
+    "saveLetter": "Spara brevet",
+    "couldNotSave": "Kunde inte spara just nu...",
+    "couldNotDelete": "Kunde inte ta bort brevet...",
+    "fillInInfo": "Fyll i åtminstone företag, jobbtitel eller jobbannons för att komma igång."
   },
   "jobSearch": {
     "title": "Sök jobb",
@@ -106,15 +155,26 @@
     "results": "Resultat",
     "noResults": "Inga jobb hittades",
     "apply": "Ansök",
-    "save": "Spara"
+    "save": "Spara",
+    "saved": "Sparade",
+    "applications": "Ansökningar",
+    "alerts": "Bevakningar",
+    "matches": "Matchningar",
+    "savedJobs": "Sparade jobb",
+    "searchToSave": "Sök jobb att spara",
+    "exploreJobs": "Utforska jobb"
   },
   "career": {
     "title": "Karriär",
-    "subtitle": "Planera din karriärväg"
+    "subtitle": "Planera din karriärväg",
+    "myCareerPlan": "Min Karriärplan",
+    "yourCareerPlan": "Din personliga karriärplan",
+    "createPlan": "Skapa min karriärplan"
   },
   "interestGuide": {
     "title": "Intresseguide",
-    "subtitle": "Upptäck dina intressen och styrkor"
+    "subtitle": "Upptäck dina intressen och styrkor",
+    "discover": "Upptäck yrken som passar dig genom att besvara frågor om dina intressen och personlighet"
   },
   "exercises": {
     "title": "Övningar",
@@ -138,30 +198,166 @@
   },
   "settings": {
     "title": "Inställningar",
-    "appearance": "Utseende",
-    "notifications": "Notifikationer",
-    "accessibility": "Tillgänglighet",
-    "language": "Språk",
-    "account": "Konto"
+    "description": "Anpassa portalen efter dina behov",
+    "sections": {
+      "profile": "Profil",
+      "profileDesc": "Hantera dina personuppgifter",
+      "accessibility": "Tillgänglighet",
+      "accessibilityDesc": "Anpassa efter dina behov",
+      "notifications": "Notifikationer",
+      "notificationsDesc": "Välj hur du vill bli kontaktad",
+      "appearance": "Utseende",
+      "appearanceDesc": "Anpassa portalens utseende",
+      "privacy": "Integritet",
+      "privacyDesc": "Hantera dina sekretessinställningar",
+      "security": "Säkerhet",
+      "securityDesc": "Ändra lösenord och tvåfaktorsauth"
+    },
+    "profile": {
+      "title": "Profilinställningar",
+      "description": "Hantera dina personuppgifter och profilbild",
+      "changePhoto": "Byt profilbild",
+      "photoHint": "JPG, PNG eller GIF. Max 2MB.",
+      "personalInfo": "Personlig information",
+      "firstName": "Förnamn",
+      "lastName": "Efternamn",
+      "contactInfo": "Kontaktuppgifter",
+      "email": "E-post",
+      "emailHint": "E-post kan inte ändras här",
+      "phone": "Telefon",
+      "aboutMe": "Om mig",
+      "aboutMePlaceholder": "Berätta kort om dig själv...",
+      "loadingProfile": "Laddar profil...",
+      "errorLoading": "Fel vid laddning av profil:",
+      "errorSaving": "Fel vid sparande av profil:"
+    },
+    "accessibility": {
+      "title": "Tillgänglighet",
+      "description": "Anpassa portalen efter dina behov och preferenser",
+      "highContrast": "Hög kontrast",
+      "highContrastDesc": "Ökar kontrasten för bättre läsbarhet",
+      "largeText": "Större text",
+      "largeTextDesc": "Ökar textstorleken i hela appen",
+      "calmMode": "Lugnt läge",
+      "calmModeDesc": "Reducerar animationer och distraktioner"
+    },
+    "notifications": {
+      "title": "Notifikationer",
+      "description": "Välj hur du vill bli kontaktad om uppdateringar",
+      "email": "E-postnotifikationer",
+      "emailDesc": "Få uppdateringar via e-post",
+      "push": "Push-notifikationer",
+      "pushDesc": "Få notiser i webbläsaren",
+      "weekly": "Veckosammanfattning",
+      "weeklyDesc": "Få en veckovis sammanfattning"
+    },
+    "appearance": {
+      "title": "Utseende",
+      "description": "Anpassa portalens utseende efter din smak",
+      "theme": "Tema",
+      "light": "Ljust",
+      "lightDesc": "Perfekt för dagtid",
+      "dark": "Mörkt",
+      "darkDesc": "Skonsamt för ögonen",
+      "system": "System",
+      "systemDesc": "Följer din enhet",
+      "systemCurrent": "Systemet är för närvarande inställt på",
+      "preview": "Förhandsgranskning",
+      "exampleCard": "Exempel-kort",
+      "previewText": "Så här ser det ut i {{mode}} läge",
+      "lightMode": "ljust",
+      "darkMode": "mörkt",
+      "primaryButton": "Primär knapp",
+      "secondaryButton": "Sekundär",
+      "autoSaveInfo": "Ditt val sparas automatiskt och gäller för alla dina enheter. Om du väljer \"System\" följer portalen din enhets inställningar."
+    },
+    "privacy": {
+      "title": "Integritet",
+      "description": "Hantera dina sekretessinställningar",
+      "shareActivity": "Dela aktivitet",
+      "shareActivityDesc": "Tillåt delning av anonymiserad användningsstatistik för att förbättra tjänsten.",
+      "learnMore": "Läs mer om dataintegritet",
+      "profileVisibility": "Profilsynlighet",
+      "profileVisibilityDesc": "Välj vem som kan se din profil.",
+      "onlyMe": "Endast jag",
+      "caseworkers": "Arbetsförmedlare",
+      "everyone": "Alla"
+    },
+    "security": {
+      "title": "Säkerhet",
+      "description": "Hantera lösenord och säkerhetsinställningar",
+      "changePassword": "Ändra lösenord",
+      "currentPassword": "Nuvarande lösenord",
+      "currentPasswordPlaceholder": "Ange ditt nuvarande lösenord",
+      "newPassword": "Nytt lösenord",
+      "newPasswordPlaceholder": "Ange nytt lösenord (minst 8 tecken)",
+      "confirmPassword": "Bekräfta nytt lösenord",
+      "confirmPasswordPlaceholder": "Upprepa det nya lösenordet",
+      "updatePassword": "Uppdatera lösenord",
+      "twoFactor": "Tvåfaktorsautentisering",
+      "twoFactorDesc": "Lägg till extra säkerhet"
+    }
   },
   "auth": {
     "login": "Logga in",
+    "loginToContinue": "Logga in för att fortsätta",
     "logout": "Logga ut",
     "register": "Registrera",
+    "createAccount": "Skapa ditt konto",
     "forgotPassword": "Glömt lösenord?",
     "email": "E-post",
     "password": "Lösenord",
-    "confirmPassword": "Bekräfta lösenord"
+    "confirmPassword": "Bekräfta lösenord",
+    "welcomeBack": "Välkommen tillbaka!",
+    "yourPath": "Din väg till nytt jobb",
+    "pathStartsHere": "Din väg till nytt jobb börjar här",
+    "firstStep": "Ta det första steget mot din nya karriär",
+    "passwordRules": {
+      "minLength": "Minst 8 tecken",
+      "uppercase": "En stor bokstav (A-Z)",
+      "lowercase": "En liten bokstav (a-z)",
+      "number": "En siffra (0-9)"
+    },
+    "errors": {
+      "userExists": "En användare med denna e-postadress finns redan...",
+      "createFailed": "Det gick inte att skapa kontot. Försök igen om en stund."
+    }
   },
   "errors": {
     "generic": "Något gick inte som planerat. Vi hjälper dig att komma vidare.",
     "connection": "Vi har problem med uppkopplingen. Ditt arbete sparas lokalt.",
     "timeout": "Det tog längre tid än väntat. Vi försöker igen...",
-    "notFound": "Sidan kunde inte hittas."
+    "notFound": "Sidan kunde inte hittas.",
+    "somethingWentWrong": "Något gick fel",
+    "couldNotLoad": "Kunde inte ladda",
+    "couldNotSave": "Kunde inte spara"
   },
   "empty": {
     "noJobs": "Inga jobb hittades just nu. Nya möjligheter kommer!",
     "noApplications": "Du har inte sökt några jobb ännu. När du är redo finns vi här.",
-    "noResults": "Vi hittade inget denna gång. Låt oss justera sökningen tillsammans."
+    "noResults": "Vi hittade inget denna gång. Låt oss justera sökningen tillsammans.",
+    "noResultsFound": "Inga resultat hittades",
+    "noResultsQuery": "Vi hittade inga jobb som matchar \"{{query}}\". Prova att ändra din sökning eller använd filter.",
+    "clearSearch": "Rensa sökning",
+    "noApplicationsYet": "Inga ansökningar än",
+    "noApplicationsDesc": "Du har inte skickat några ansökningar ännu. Börja söka jobb och spåra dina ansökningar här.",
+    "noSavedJobs": "Inga sparade jobb",
+    "noSavedJobsDesc": "När du hittar intressanta jobb kan du spara dem här för att gå tillbaka till dem senare.",
+    "noNotifications": "Inga notifikationer",
+    "noNotificationsDesc": "När du skapar jobbbevakningar visas nya matchningar här.",
+    "createAlert": "Skapa bevakning",
+    "noCvYet": "Inget CV än",
+    "noCvDesc": "Skapa ett professionellt CV för att öka dina chanser att få jobb."
+  },
+  "help": {
+    "title": "Hjälp & Support",
+    "faq": {
+      "multipleCV": "Kan jag ha flera CV-versioner?",
+      "multipleCVAnswer": "Ja! Du kan spara flera versioner av ditt CV...",
+      "jobAlerts": "Kan jag få notiser om nya jobb?",
+      "jobAlertsAnswer": "Ja, du kan ställa in jobbaviseringar...",
+      "saveArticles": "Kan jag spara artiklar?",
+      "saveArticlesAnswer": "Ja! Klicka på bokmärkes-ikonen..."
+    }
   }
 }

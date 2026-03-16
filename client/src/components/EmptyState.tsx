@@ -1,15 +1,16 @@
 import type { ReactNode } from 'react'
-import { 
-  Search, 
-  FileText, 
-  Briefcase, 
-  Calendar, 
-  Heart, 
+import { useTranslation } from 'react-i18next'
+import {
+  Search,
+  FileText,
+  Briefcase,
+  Calendar,
+  Heart,
   Mail,
   Compass,
   Inbox,
   AlertCircle,
-  Plus
+  Plus,
 } from 'lucide-react'
 
 interface EmptyStateProps {
@@ -108,84 +109,90 @@ export default function EmptyState({
 
 // Preset empty states for common scenarios
 export function EmptySearch({ query, onClear }: { query: string; onClear: () => void }) {
+  const { t } = useTranslation()
   return (
     <EmptyState
       icon="search"
-      title="Inga resultat hittades"
-      description={`Vi hittade inga jobb som matchar "${query}". Prova att ändra din sökning eller använd filter.`}
+      title={t('empty.noResultsFound')}
+      description={t('empty.noResultsQuery', { query })}
       action={{
-        label: 'Rensa sökning',
-        onClick: onClear
+        label: t('empty.clearSearch'),
+        onClick: onClear,
       }}
     />
   )
 }
 
 export function EmptyApplications() {
+  const { t } = useTranslation()
   return (
     <EmptyState
       icon="job"
-      title="Inga ansökningar än"
-      description="Du har inte skickat några ansökningar ännu. Börja söka jobb och spåra dina ansökningar här."
+      title={t('empty.noApplicationsYet')}
+      description={t('empty.noApplicationsDesc')}
       action={{
-        label: 'Sök jobb',
-        onClick: () => window.location.href = '/job-search'
+        label: t('jobSearch.title'),
+        onClick: () => (window.location.href = '/job-search'),
       }}
     />
   )
 }
 
 export function EmptySavedJobs() {
+  const { t } = useTranslation()
   return (
     <EmptyState
       icon="heart"
-      title="Inga sparade jobb"
-      description="När du hittar intressanta jobb kan du spara dem här för att gå tillbaka till dem senare."
+      title={t('empty.noSavedJobs')}
+      description={t('empty.noSavedJobsDesc')}
       action={{
-        label: 'Utforska jobb',
-        onClick: () => window.location.href = '/job-search'
+        label: t('jobSearch.exploreJobs'),
+        onClick: () => (window.location.href = '/job-search'),
       }}
     />
   )
 }
 
 export function EmptyNotifications() {
+  const { t } = useTranslation()
   return (
     <EmptyState
       icon="inbox"
-      title="Inga notifikationer"
-      description="När du skapar jobbbevakningar visas nya matchningar här."
+      title={t('empty.noNotifications')}
+      description={t('empty.noNotificationsDesc')}
       action={{
-        label: 'Skapa bevakning',
-        onClick: () => {}
+        label: t('empty.createAlert'),
+        onClick: () => {},
       }}
     />
   )
 }
 
 export function EmptyCV() {
+  const { t } = useTranslation()
   return (
     <EmptyState
       icon="document"
-      title="Inget CV än"
-      description="Skapa ett professionellt CV för att öka dina chanser att få jobb."
+      title={t('empty.noCvYet')}
+      description={t('empty.noCvDesc')}
       action={{
-        label: 'Skapa CV',
-        onClick: () => window.location.href = '/cv'
+        label: t('cv.createCV'),
+        onClick: () => (window.location.href = '/cv'),
       }}
     />
   )
 }
 
 export function ErrorState({ message, onRetry }: { message: string; onRetry: () => void }) {
+  const { t } = useTranslation()
   return (
     <EmptyState
       icon="alert"
-      title="Något gick fel"
+      title={t('errors.somethingWentWrong')}
       description={message}
       action={{
-        label: 'Försök igen',
-        onClick: onRetry
+        label: t('common.tryAgain'),
+        onClick: onRetry,
       }}
     />
   )

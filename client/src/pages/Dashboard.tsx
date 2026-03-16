@@ -2,8 +2,8 @@
  * Dashboard Page - Main overview with tabs
  * Now uses PageLayout for consistent design
  */
-import { useLocation, Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { LayoutDashboard, Zap, Users, Lightbulb, BookOpen } from 'lucide-react'
 import OverviewTab from './dashboard/tabs/OverviewTab'
 import ActivityTab from './dashboard/tabs/ActivityTab'
@@ -16,6 +16,7 @@ import type { Tab } from '@/components/layout/PageTabs'
 
 export default function DashboardPage() {
   const location = useLocation()
+  const { t } = useTranslation()
   const { data } = useDashboardData()
 
   // Beräkna badges baserat på data
@@ -35,39 +36,39 @@ export default function DashboardPage() {
   }
 
   const tabs: Tab[] = [
-    { 
-      id: 'overview', 
-      label: 'Översikt', 
-      path: '/', 
-      icon: LayoutDashboard 
+    {
+      id: 'overview',
+      label: t('dashboard.tabs.overview'),
+      path: '/',
+      icon: LayoutDashboard,
     },
-    { 
-      id: 'activity', 
-      label: 'Aktivitet', 
-      path: '/activity', 
+    {
+      id: 'activity',
+      label: t('dashboard.tabs.activity'),
+      path: '/activity',
       icon: Zap,
-      badge: getTabBadge('activity')
+      badge: getTabBadge('activity'),
     },
-    { 
-      id: 'community', 
-      label: 'Community', 
-      path: '/community', 
+    {
+      id: 'community',
+      label: t('dashboard.tabs.community'),
+      path: '/community',
       icon: Users,
-      badge: getTabBadge('community')
+      badge: getTabBadge('community'),
     },
-    { 
-      id: 'insights', 
-      label: 'Insikter', 
-      path: '/insights', 
+    {
+      id: 'insights',
+      label: t('dashboard.tabs.insights'),
+      path: '/insights',
       icon: Lightbulb,
-      badge: getTabBadge('insights')
+      badge: getTabBadge('insights'),
     },
-    { 
-      id: 'learning', 
-      label: 'Lärande', 
-      path: '/learning', 
+    {
+      id: 'learning',
+      label: t('dashboard.tabs.learning'),
+      path: '/learning',
       icon: BookOpen,
-      badge: getTabBadge('learning')
+      badge: getTabBadge('learning'),
     },
   ]
 
@@ -98,8 +99,8 @@ export default function DashboardPage() {
   // Ändra tabVariant för att testa: 'minimal' | 'pills' | 'floating' | 'underline' | 'glass'
   return (
     <PageLayout
-      title="Översikt"
-      description="Din personliga dashboard och översikt"
+      title={t('dashboard.title')}
+      description={t('dashboard.description')}
       customTabs={tabs}
       tabVariant="glass"
       showTabs={true}
