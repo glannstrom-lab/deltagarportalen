@@ -1,73 +1,63 @@
 /**
  * Crisis Support Tab - Emergency help for mental health
  */
-import { useState } from 'react'
-import { 
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
   Siren, Phone, MessageCircle, Heart, Wind, Eye, Ear, Hand,
   ExternalLink, AlertTriangle, ChevronRight, X
 } from 'lucide-react'
 import { Card, Button } from '@/components/ui'
 
-const emergencyContacts = [
-  {
-    name: 'Jourtelefon 1177',
-    number: '1177',
-    description: 'Sjukvårdsrådgivning dygnet runt',
-    available: 'Dygnet runt',
-    color: 'bg-blue-500',
-  },
-  {
-    name: 'Barn- och ungdomspsykiatri (BUP)',
-    number: '08-123 150 00',
-    description: 'Akut hjälp för barn och unga',
-    available: 'Dygnet runt',
-    color: 'bg-green-500',
-  },
-  {
-    name: 'Sjukvårdsupplysningen',
-    number: '08-320 100',
-    description: 'Råd och vägledning',
-    available: 'Dygnet runt',
-    color: 'bg-purple-500',
-  },
-  {
-    name: '112',
-    number: '112',
-    description: 'Vid akut livsfara',
-    available: 'Dygnet runt',
-    color: 'bg-red-600',
-  },
+// Contact definitions with i18n keys
+const emergencyContactDefs = [
+  { nameKey: 'wellness.crisis.contacts.1177.name', number: '1177', descKey: 'wellness.crisis.contacts.1177.description', color: 'bg-blue-500' },
+  { nameKey: 'wellness.crisis.contacts.bup.name', number: '08-123 150 00', descKey: 'wellness.crisis.contacts.bup.description', color: 'bg-green-500' },
+  { nameKey: 'wellness.crisis.contacts.healthcare.name', number: '08-320 100', descKey: 'wellness.crisis.contacts.healthcare.description', color: 'bg-purple-500' },
+  { nameKey: 'wellness.crisis.contacts.112.name', number: '112', descKey: 'wellness.crisis.contacts.112.description', color: 'bg-red-600' },
 ]
 
-const breathingSteps = [
-  { text: 'Andas in genom näsan', duration: 4000, icon: Wind },
-  { text: 'Håll andan', duration: 4000, icon: Hand },
-  { text: 'Andas ut genom munnen', duration: 6000, icon: Wind },
-  { text: 'Vila', duration: 2000, icon: Heart },
+// Breathing step definitions with i18n keys
+const breathingStepDefs = [
+  { textKey: 'wellness.crisis.breatheIn', duration: 4000, icon: Wind },
+  { textKey: 'wellness.crisis.holdBreath', duration: 4000, icon: Hand },
+  { textKey: 'wellness.crisis.breatheOut', duration: 6000, icon: Wind },
+  { textKey: 'wellness.crisis.rest', duration: 2000, icon: Heart },
 ]
 
-const groundingTechniques = [
-  {
-    title: '5-4-3-2-1-tekniken',
-    description: 'Identifiera 5 saker du ser, 4 du kan röra vid, 3 du hör, 2 du luktar, 1 du smakar',
-    icon: Eye,
-  },
-  {
-    title: 'Kalla vatten',
-    description: 'Håll händerna under kallt vatten eller lägg en kall handduk i pannan',
-    icon: Hand,
-  },
-  {
-    title: 'Lyssna aktivt',
-    description: 'Identifiera alla ljud du kan höra just nu, en efter en',
-    icon: Ear,
-  },
+// Grounding technique definitions with i18n keys
+const groundingTechniqueDefs = [
+  { titleKey: 'wellness.crisis.technique54321.title', descKey: 'wellness.crisis.technique54321.description', icon: Eye },
+  { titleKey: 'wellness.crisis.coldWater.title', descKey: 'wellness.crisis.coldWater.description', icon: Hand },
+  { titleKey: 'wellness.crisis.activeListening.title', descKey: 'wellness.crisis.activeListening.description', icon: Ear },
 ]
 
 export default function CrisisTab() {
+  const { t } = useTranslation()
   const [activeExercise, setActiveExercise] = useState<'breathing' | 'grounding' | null>(null)
   const [breathingStep, setBreathingStep] = useState(0)
   const [showChat, setShowChat] = useState(false)
+
+  // Build translated arrays
+  const emergencyContacts = useMemo(() => emergencyContactDefs.map(c => ({
+    name: t(c.nameKey),
+    number: c.number,
+    description: t(c.descKey),
+    available: t('wellness.crisis.roundTheClock'),
+    color: c.color,
+  })), [t])
+
+  const breathingSteps = useMemo(() => breathingStepDefs.map(s => ({
+    text: t(s.textKey),
+    duration: s.duration,
+    icon: s.icon,
+  })), [t])
+
+  const groundingTechniques = useMemo(() => groundingTechniqueDefs.map(g => ({
+    title: t(g.titleKey),
+    description: t(g.descKey),
+    icon: g.icon,
+  })), [t])
 
   const startBreathing = () => {
     setActiveExercise('breathing')
@@ -78,7 +68,7 @@ export default function CrisisTab() {
       step = (step + 1) % breathingSteps.length
       setBreathingStep(step)
     }, breathingSteps[step].duration)
-    
+
     // Stop after 2 minutes
     setTimeout(() => {
       clearInterval(interval)
@@ -95,17 +85,16 @@ export default function CrisisTab() {
             <Siren className="w-6 h-6 text-red-600" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-red-800 mb-2">Behöver du akut hjälp?</h2>
+            <h2 className="text-xl font-bold text-red-800 mb-2">{t('wellness.crisis.needUrgentHelp')}</h2>
             <p className="text-red-700 mb-4">
-              Om du har tankar på att skada dig själv eller andra, kontakta omedelbart 
-              112 eller åk till närmaste akutmottagning.
+              {t('wellness.crisis.urgentHelpDescription')}
             </p>
-            <a 
-              href="tel:112" 
+            <a
+              href="tel:112"
               className="inline-flex items-center gap-2 px-6 py-3 bg-red-600 text-white font-semibold rounded-xl hover:bg-red-700 transition-colors"
             >
               <Phone className="w-5 h-5" />
-              Ring 112
+              {t('wellness.crisis.call112')}
             </a>
           </div>
         </div>
@@ -115,9 +104,9 @@ export default function CrisisTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <Wind className="w-5 h-5 text-indigo-600" />
-          Andningsövning
+          {t('wellness.crisis.breathingExercise')}
         </h3>
-        
+
         {activeExercise === 'breathing' ? (
           <div className="text-center py-8">
             <div className="w-32 h-32 mx-auto mb-6 rounded-full bg-indigo-100 flex items-center justify-center animate-pulse">
@@ -130,24 +119,23 @@ export default function CrisisTab() {
               {breathingSteps[breathingStep].text}
             </p>
             <p className="text-sm text-slate-500">
-              Steg {breathingStep + 1} av {breathingSteps.length}
+              {breathingStep + 1} / {breathingSteps.length}
             </p>
-            <Button 
-              variant="outline" 
-              className="mt-4" 
+            <Button
+              variant="outline"
+              className="mt-4"
               onClick={() => setActiveExercise(null)}
             >
-              Avbryt
+              {t('wellness.crisis.stopBreathing')}
             </Button>
           </div>
         ) : (
           <div>
             <p className="text-slate-600 mb-4">
-              En enkel andningsövning kan hjälpa dig att lugna ner dig vid ångest eller panik.
-              Följ instruktionerna i 2 minuter.
+              {t('wellness.crisis.breathingExercise')}
             </p>
             <Button onClick={startBreathing}>
-              Starta andningsövning
+              {t('wellness.crisis.startBreathing')}
             </Button>
           </div>
         )}
@@ -157,7 +145,7 @@ export default function CrisisTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <Eye className="w-5 h-5 text-indigo-600" />
-          Markövningar (Grounding)
+          {t('wellness.crisis.groundingTechniques')}
         </h3>
         <div className="space-y-3">
           {groundingTechniques.map((technique, index) => {
@@ -184,7 +172,7 @@ export default function CrisisTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <Phone className="w-5 h-5 text-indigo-600" />
-          Viktiga telefonnummer
+          {t('wellness.crisis.emergencyContacts')}
         </h3>
         <div className="space-y-3">
           {emergencyContacts.map((contact, index) => (

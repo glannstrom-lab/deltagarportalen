@@ -1,8 +1,9 @@
 /**
  * Energy Tab - Track energy levels and get activity suggestions
  */
-import { useState, useEffect } from 'react'
-import { 
+import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
   Zap, Sun, Battery, BatteryLow, BatteryMedium, BatteryFull,
   TrendingUp, Calendar, Clock, AlertCircle, CheckCircle2
 } from 'lucide-react'
@@ -16,30 +17,32 @@ interface EnergyLog {
   notes?: string
 }
 
-const activitySuggestions: Record<number, { title: string; icon: React.ElementType; description: string }[]> = {
+// Activity suggestion definitions with i18n keys
+const activitySuggestionDefs: Record<number, { titleKey: string; icon: React.ElementType; descKey: string }[]> = {
   8: [
-    { title: 'Skriv personligt brev', icon: Zap, description: 'Perfekt tid för fokuserat skrivande' },
-    { title: 'Nätverka aktivt', icon: Zap, description: 'Kontakta nya personer på LinkedIn' },
-    { title: 'Förbered intervju', icon: Zap, description: 'Öva på vanliga frågor' },
+    { titleKey: 'wellness.energy.activities.writeLetter.title', icon: Zap, descKey: 'wellness.energy.activities.writeLetter.description' },
+    { titleKey: 'wellness.energy.activities.network.title', icon: Zap, descKey: 'wellness.energy.activities.network.description' },
+    { titleKey: 'wellness.energy.activities.prepareInterview.title', icon: Zap, descKey: 'wellness.energy.activities.prepareInterview.description' },
   ],
   6: [
-    { title: 'Sök jobb', icon: BatteryMedium, description: 'Gå igenom platsbanken' },
-    { title: 'Uppdatera CV', icon: BatteryMedium, description: 'Gör små förbättringar' },
-    { title: 'Gör en övning', icon: BatteryMedium, description: 'Kompetensutveckling' },
+    { titleKey: 'wellness.energy.activities.searchJobs.title', icon: BatteryMedium, descKey: 'wellness.energy.activities.searchJobs.description' },
+    { titleKey: 'wellness.energy.activities.updateCV.title', icon: BatteryMedium, descKey: 'wellness.energy.activities.updateCV.description' },
+    { titleKey: 'wellness.energy.activities.doExercise.title', icon: BatteryMedium, descKey: 'wellness.energy.activities.doExercise.description' },
   ],
   4: [
-    { title: 'Läsa artiklar', icon: BatteryLow, description: 'Kunskapsbanken väntar' },
-    { title: 'Skriv i dagboken', icon: BatteryLow, description: 'Reflektera över dagen' },
-    { title: 'Planera imorgon', icon: BatteryLow, description: 'Skriv en lista' },
+    { titleKey: 'wellness.energy.activities.readArticles.title', icon: BatteryLow, descKey: 'wellness.energy.activities.readArticles.description' },
+    { titleKey: 'wellness.energy.activities.writeDiary.title', icon: BatteryLow, descKey: 'wellness.energy.activities.writeDiary.description' },
+    { titleKey: 'wellness.energy.activities.planTomorrow.title', icon: BatteryLow, descKey: 'wellness.energy.activities.planTomorrow.description' },
   ],
   2: [
-    { title: 'Vila', icon: AlertCircle, description: 'Det är okej att vila' },
-    { title: 'Reflektera', icon: AlertCircle, description: 'Skriv ner tankar' },
-    { title: 'Andningsövning', icon: AlertCircle, description: '10 minuter mindfulness' },
+    { titleKey: 'wellness.energy.activities.rest.title', icon: AlertCircle, descKey: 'wellness.energy.activities.rest.description' },
+    { titleKey: 'wellness.energy.activities.reflect.title', icon: AlertCircle, descKey: 'wellness.energy.activities.reflect.description' },
+    { titleKey: 'wellness.energy.activities.breathing.title', icon: AlertCircle, descKey: 'wellness.energy.activities.breathing.description' },
   ],
 }
 
 export default function EnergyTab() {
+  const { t, i18n } = useTranslation()
   const [todayEnergy, setTodayEnergy] = useState<{ morning?: number; afternoon?: number; evening?: number }>({})
   const [energyHistory, setEnergyHistory] = useState<EnergyLog[]>([])
   const [selectedTime, setSelectedTime] = useState<'morning' | 'afternoon' | 'evening'>('morning')
@@ -59,11 +62,24 @@ export default function EnergyTab() {
   }, [])
 
   const getEnergyLevel = (value: number) => {
-    if (value >= 7) return { label: 'Hög', color: 'text-green-600', bg: 'bg-green-100', icon: BatteryFull }
-    if (value >= 5) return { label: 'Medel', color: 'text-yellow-600', bg: 'bg-yellow-100', icon: BatteryMedium }
-    if (value >= 3) return { label: 'Låg', color: 'text-orange-600', bg: 'bg-orange-100', icon: BatteryLow }
-    return { label: 'Mycket låg', color: 'text-red-600', bg: 'bg-red-100', icon: Battery }
+    if (value >= 7) return { label: t('wellness.energy.high'), color: 'text-green-600', bg: 'bg-green-100', icon: BatteryFull }
+    if (value >= 5) return { label: t('wellness.energy.medium'), color: 'text-yellow-600', bg: 'bg-yellow-100', icon: BatteryMedium }
+    if (value >= 3) return { label: t('wellness.energy.low'), color: 'text-orange-600', bg: 'bg-orange-100', icon: BatteryLow }
+    return { label: t('wellness.energy.veryLow'), color: 'text-red-600', bg: 'bg-red-100', icon: Battery }
   }
+
+  // Build translated suggestions
+  const activitySuggestions = useMemo(() => {
+    const result: Record<number, { title: string; icon: React.ElementType; description: string }[]> = {}
+    for (const [key, defs] of Object.entries(activitySuggestionDefs)) {
+      result[parseInt(key)] = defs.map(def => ({
+        title: t(def.titleKey),
+        icon: def.icon,
+        description: t(def.descKey)
+      }))
+    }
+    return result
+  }, [t])
 
   const currentEnergy = todayEnergy[selectedTime] || 5
   const level = getEnergyLevel(currentEnergy)
@@ -80,15 +96,15 @@ export default function EnergyTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <Zap className="w-5 h-5 text-yellow-500" />
-          Hur är din energi idag?
+          {t('wellness.energy.howIsYourEnergy')}
         </h3>
 
         {/* Time selector */}
         <div className="flex gap-2 mb-6">
           {[
-            { key: 'morning', label: 'Morgon', icon: Sun },
-            { key: 'afternoon', label: 'Eftermiddag', icon: Clock },
-            { key: 'evening', label: 'Kväll', icon: Clock },
+            { key: 'morning', label: t('wellness.energy.morning'), icon: Sun },
+            { key: 'afternoon', label: t('wellness.energy.afternoon'), icon: Clock },
+            { key: 'evening', label: t('wellness.energy.evening'), icon: Clock },
           ].map(({ key, label, icon: Icon }) => (
             <button
               key={key}
@@ -108,9 +124,9 @@ export default function EnergyTab() {
         {/* Energy slider */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-500">Mycket låg</span>
+            <span className="text-sm text-slate-500">{t('wellness.energy.veryLow')}</span>
             <span className={`text-lg font-bold ${level.color}`}>{currentEnergy}/10 - {level.label}</span>
-            <span className="text-sm text-slate-500">Mycket hög</span>
+            <span className="text-sm text-slate-500">{t('wellness.energy.high')}</span>
           </div>
           <input
             type="range"
@@ -126,13 +142,13 @@ export default function EnergyTab() {
         <textarea
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="Vill du lägga till en anteckning? (t.ex. 'Sov dåligt', 'Känner mig motiverad')"
+          placeholder={t('wellness.energy.notesPlaceholder')}
           className="w-full p-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 resize-none mb-4"
           rows={2}
         />
 
         <Button onClick={saveEnergy} className="w-full">
-          Spara energinivå
+          {t('wellness.energy.saveEnergy')}
         </Button>
       </Card>
 
@@ -140,10 +156,10 @@ export default function EnergyTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-2 flex items-center gap-2">
           <CheckCircle2 className="w-5 h-5 text-indigo-600" />
-          Aktiviteter för din energinivå
+          {t('wellness.energy.suggestions')}
         </h3>
         <p className="text-sm text-slate-500 mb-4">
-          Baserat på att du har <span className={level.color}>{level.label.toLowerCase()}</span> energi
+          {t('wellness.energy.suggestions')} (<span className={level.color}>{level.label.toLowerCase()}</span>)
         </p>
 
         <div className="space-y-3">
@@ -171,20 +187,20 @@ export default function EnergyTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-indigo-600" />
-          Din energi över tid
+          {t('wellness.energy.weekHistory')}
         </h3>
 
         <div className="space-y-3">
           {energyHistory.map((log) => (
             <div key={log.date} className="flex items-center gap-4 p-3 rounded-lg bg-slate-50">
               <span className="text-sm font-medium text-slate-600 w-24">
-                {new Date(log.date).toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric' })}
+                {new Date(log.date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { weekday: 'short', day: 'numeric' })}
               </span>
               <div className="flex-1 flex gap-2">
                 {[
-                  { time: 'Morgon', value: log.morning },
-                  { time: 'Efterm.', value: log.afternoon },
-                  { time: 'Kväll', value: log.evening },
+                  { time: t('wellness.energy.morning'), value: log.morning },
+                  { time: t('wellness.energy.afternoon'), value: log.afternoon },
+                  { time: t('wellness.energy.evening'), value: log.evening },
                 ].map(({ time, value }) => {
                   const l = getEnergyLevel(value)
                   const Icon = l.icon

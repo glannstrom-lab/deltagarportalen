@@ -583,6 +583,70 @@
           "author": "Unknown"
         }
       }
+    },
+    "energy": {
+      "howIsYourEnergy": "How is your energy today?",
+      "morning": "Morning",
+      "afternoon": "Afternoon",
+      "evening": "Evening",
+      "saveEnergy": "Save",
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low",
+      "veryLow": "Very low",
+      "energyLogged": "Energy level saved!",
+      "suggestions": "Suggestions based on your energy",
+      "activities": {
+        "writeLetter": { "title": "Write cover letter", "description": "Perfect time for focused writing" },
+        "network": { "title": "Network actively", "description": "Contact new people on LinkedIn" },
+        "prepareInterview": { "title": "Prepare for interview", "description": "Practice common questions" },
+        "searchJobs": { "title": "Search for jobs", "description": "Browse job listings" },
+        "updateCV": { "title": "Update CV", "description": "Make small improvements" },
+        "doExercise": { "title": "Do an exercise", "description": "Skills development" },
+        "readArticles": { "title": "Read articles", "description": "Knowledge base awaits" },
+        "writeDiary": { "title": "Write in diary", "description": "Reflect on the day" },
+        "planTomorrow": { "title": "Plan tomorrow", "description": "Write a to-do list" },
+        "rest": { "title": "Rest", "description": "It's okay to rest" },
+        "reflect": { "title": "Reflect", "description": "Write down your thoughts" },
+        "breathing": { "title": "Breathing exercise", "description": "10 minutes of mindfulness" }
+      },
+      "weekHistory": "Weekly energy",
+      "noNotes": "No notes",
+      "notesPlaceholder": "Add notes about how you're feeling..."
+    },
+    "crisis": {
+      "needUrgentHelp": "Do you need urgent help?",
+      "urgentHelpDescription": "If you have thoughts of harming yourself or others, contact one of the lines below immediately.",
+      "call112": "Call 112",
+      "roundTheClock": "24/7",
+      "emergencyContacts": "Emergency contacts",
+      "immediateHelp": "Quick help",
+      "breathingExercise": "Breathing exercise",
+      "startBreathing": "Start breathing exercise",
+      "stopBreathing": "Stop",
+      "breatheIn": "Breathe in through your nose",
+      "holdBreath": "Hold your breath",
+      "breatheOut": "Breathe out through your mouth",
+      "rest": "Rest",
+      "groundingTechniques": "Grounding techniques",
+      "technique54321": {
+        "title": "5-4-3-2-1 technique",
+        "description": "Identify 5 things you see, 4 you can touch, 3 you hear, 2 you smell, 1 you taste"
+      },
+      "coldWater": {
+        "title": "Cold water",
+        "description": "Hold your hands under cold water or put a cold towel on your forehead"
+      },
+      "activeListening": {
+        "title": "Active listening",
+        "description": "Identify all the sounds you can hear right now, one by one"
+      },
+      "contacts": {
+        "1177": { "name": "Health line 1177", "description": "Healthcare advice 24/7" },
+        "bup": { "name": "Child and Youth Psychiatry (BUP)", "description": "Emergency help for children and youth" },
+        "healthcare": { "name": "Healthcare information", "description": "Advice and guidance" },
+        "112": { "name": "112", "description": "In case of life-threatening emergency" }
+      }
     }
   },
   "knowledgeBase": {

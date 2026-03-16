@@ -583,6 +583,70 @@
           "author": "Okänd"
         }
       }
+    },
+    "energy": {
+      "howIsYourEnergy": "Hur är din energi idag?",
+      "morning": "Morgon",
+      "afternoon": "Eftermiddag",
+      "evening": "Kväll",
+      "saveEnergy": "Spara",
+      "high": "Hög",
+      "medium": "Medel",
+      "low": "Låg",
+      "veryLow": "Mycket låg",
+      "energyLogged": "Energinivå sparad!",
+      "suggestions": "Förslag baserat på din energi",
+      "activities": {
+        "writeLetter": { "title": "Skriv personligt brev", "description": "Perfekt tid för fokuserat skrivande" },
+        "network": { "title": "Nätverka aktivt", "description": "Kontakta nya personer på LinkedIn" },
+        "prepareInterview": { "title": "Förbered intervju", "description": "Öva på vanliga frågor" },
+        "searchJobs": { "title": "Sök jobb", "description": "Gå igenom platsbanken" },
+        "updateCV": { "title": "Uppdatera CV", "description": "Gör små förbättringar" },
+        "doExercise": { "title": "Gör en övning", "description": "Kompetensutveckling" },
+        "readArticles": { "title": "Läsa artiklar", "description": "Kunskapsbanken väntar" },
+        "writeDiary": { "title": "Skriv i dagboken", "description": "Reflektera över dagen" },
+        "planTomorrow": { "title": "Planera imorgon", "description": "Skriv en lista" },
+        "rest": { "title": "Vila", "description": "Det är okej att vila" },
+        "reflect": { "title": "Reflektera", "description": "Skriv ner tankar" },
+        "breathing": { "title": "Andningsövning", "description": "10 minuter mindfulness" }
+      },
+      "weekHistory": "Veckans energi",
+      "noNotes": "Inga anteckningar",
+      "notesPlaceholder": "Lägg till anteckningar om hur du mår..."
+    },
+    "crisis": {
+      "needUrgentHelp": "Behöver du akut hjälp?",
+      "urgentHelpDescription": "Om du har tankar på att skada dig själv eller andra, kontakta omedelbart någon av linjerna nedan.",
+      "call112": "Ring 112",
+      "roundTheClock": "Dygnet runt",
+      "emergencyContacts": "Akutkontakter",
+      "immediateHelp": "Snabb hjälp",
+      "breathingExercise": "Andningsövning",
+      "startBreathing": "Starta andningsövning",
+      "stopBreathing": "Avbryt",
+      "breatheIn": "Andas in genom näsan",
+      "holdBreath": "Håll andan",
+      "breatheOut": "Andas ut genom munnen",
+      "rest": "Vila",
+      "groundingTechniques": "Jordningstekniker",
+      "technique54321": {
+        "title": "5-4-3-2-1-tekniken",
+        "description": "Identifiera 5 saker du ser, 4 du kan röra vid, 3 du hör, 2 du luktar, 1 du smakar"
+      },
+      "coldWater": {
+        "title": "Kalla vatten",
+        "description": "Håll händerna under kallt vatten eller lägg en kall handduk i pannan"
+      },
+      "activeListening": {
+        "title": "Lyssna aktivt",
+        "description": "Identifiera alla ljud du kan höra just nu, en efter en"
+      },
+      "contacts": {
+        "1177": { "name": "Jourtelefon 1177", "description": "Sjukvårdsrådgivning dygnet runt" },
+        "bup": { "name": "Barn- och ungdomspsykiatri (BUP)", "description": "Akut hjälp för barn och unga" },
+        "healthcare": { "name": "Sjukvårdsupplysningen", "description": "Råd och vägledning" },
+        "112": { "name": "112", "description": "Vid akut livsfara" }
+      }
     }
   },
   "knowledgeBase": {
