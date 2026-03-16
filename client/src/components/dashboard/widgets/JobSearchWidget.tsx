@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Briefcase, Search, ChevronRight, Bookmark, MapPin, ExternalLink } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -15,6 +16,7 @@ export function JobSearchWidget({
   recentJobs = [],
   size = 'medium'
 }: JobSearchWidgetProps) {
+  const { t } = useTranslation()
   const hasJobs = savedCount > 0
 
   // MINI
@@ -28,8 +30,8 @@ export function JobSearchWidget({
           {hasJobs ? <Bookmark size={16} /> : <Search size={16} />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Jobb</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{savedCount} sparade</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('jobSearchWidget.jobs')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('jobSearchWidget.savedCount', { count: savedCount })}</p>
         </div>
         {newMatches > 0 && (
           <span className="px-1.5 py-0.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded text-xs font-medium">
@@ -53,9 +55,9 @@ export function JobSearchWidget({
               <Briefcase size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Jobbsökning</h3>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('jobSearchWidget.jobSearch')}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {hasJobs ? `${savedCount} sparade` : 'Hitta ditt jobb'}
+                {hasJobs ? t('jobSearchWidget.savedCount', { count: savedCount }) : t('jobSearchWidget.findYourJob')}
               </p>
             </div>
           </div>
@@ -64,10 +66,10 @@ export function JobSearchWidget({
 
         <div className="flex items-center gap-3">
           <span className="text-2xl font-bold text-slate-800 dark:text-slate-100">{savedCount}</span>
-          <span className="text-sm text-slate-500 dark:text-slate-400">sparade jobb</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">{t('jobSearchWidget.savedJobs')}</span>
           {newMatches > 0 && (
             <span className="ml-auto px-2 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-full text-xs font-medium">
-              {newMatches} nya
+              {t('jobSearchWidget.newCount', { count: newMatches })}
             </span>
           )}
         </div>
@@ -92,9 +94,9 @@ export function JobSearchWidget({
             <Briefcase size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Jobbsökning</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('jobSearchWidget.jobSearch')}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {hasJobs ? `${savedCount} sparade jobb` : 'Börja söka jobb'}
+              {hasJobs ? t('jobSearchWidget.savedJobsCount', { count: savedCount }) : t('jobSearchWidget.startSearching')}
             </p>
           </div>
         </div>
@@ -108,21 +110,21 @@ export function JobSearchWidget({
             <Bookmark size={16} className="text-blue-500 dark:text-blue-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{savedCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Sparade</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('jobSearchWidget.saved')}</p>
         </div>
         <div className="p-3 bg-cyan-50 dark:bg-cyan-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Search size={16} className="text-cyan-500 dark:text-cyan-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{newMatches}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Nya matcher</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('jobSearchWidget.newMatches')}</p>
         </div>
       </div>
 
       {/* Recent Jobs */}
       {hasJobs && (
         <div className="space-y-2 mb-4">
-          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">Senast sparade</p>
+          <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{t('jobSearchWidget.recentlySaved')}</p>
           {sampleJobs.slice(0, 2).map(job => (
             <div key={job.id} className="flex items-center gap-3 p-2 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
               <div className="w-8 h-8 bg-white dark:bg-slate-700 rounded-lg flex items-center justify-center border border-slate-100 dark:border-slate-600">
@@ -152,12 +154,12 @@ export function JobSearchWidget({
       <div className="flex gap-2">
         <span className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 rounded-lg text-xs font-medium group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60 transition-colors">
           <Search size={12} />
-          Sök jobb
+          {t('jobSearchWidget.searchJobs')}
         </span>
         {hasJobs && (
           <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-lg text-xs font-medium">
             <ExternalLink size={12} />
-            Visa sparade
+            {t('jobSearchWidget.showSaved')}
           </span>
         )}
       </div>

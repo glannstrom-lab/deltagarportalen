@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { MessageSquare, Mic, ChevronRight, Trophy, Star, Play, TrendingUp } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +18,7 @@ export function InterviewWidget({
   totalQuestions = 50,
   size = 'medium'
 }: InterviewWidgetProps) {
+  const { t } = useTranslation()
   const hasStarted = completedSessions > 0
 
   // MINI
@@ -30,9 +32,9 @@ export function InterviewWidget({
           <MessageSquare size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Intervju</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('interviewWidget.interview')}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">
-            {hasStarted ? `${completedSessions} övningar` : 'Öva nu'}
+            {hasStarted ? t('interviewWidget.sessionsCount', { count: completedSessions }) : t('interviewWidget.practiceNow')}
           </p>
         </div>
         {averageScore > 0 && (
@@ -57,9 +59,9 @@ export function InterviewWidget({
               <MessageSquare size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Intervjuträning</h3>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('interviewWidget.interviewTraining')}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {hasStarted ? `${completedSessions} genomförda` : 'AI-simulator'}
+                {hasStarted ? t('interviewWidget.completedCount', { count: completedSessions }) : t('interviewWidget.aiSimulator')}
               </p>
             </div>
           </div>
@@ -70,12 +72,12 @@ export function InterviewWidget({
           {hasStarted ? (
             <>
               <span className="text-2xl font-bold text-indigo-600 dark:text-indigo-400">{averageScore}%</span>
-              <span className="text-sm text-slate-500 dark:text-slate-400">snittbetyg</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{t('interviewWidget.averageScore')}</span>
             </>
           ) : (
             <div className="flex items-center gap-2 text-indigo-600 dark:text-indigo-400">
               <Mic size={16} />
-              <span className="text-sm">Starta träning</span>
+              <span className="text-sm">{t('interviewWidget.startTraining')}</span>
             </div>
           )}
         </div>
@@ -95,9 +97,9 @@ export function InterviewWidget({
             <MessageSquare size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Intervjuträning</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('interviewWidget.interviewTraining')}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {hasStarted ? `${completedSessions} övningar genomförda` : 'Öva på intervjufrågor'}
+              {hasStarted ? t('interviewWidget.practicesCompleted', { count: completedSessions }) : t('interviewWidget.practiceQuestions')}
             </p>
           </div>
         </div>
@@ -111,8 +113,8 @@ export function InterviewWidget({
             <Trophy size={24} className="text-indigo-500 dark:text-indigo-400" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">Bra jobbat!</p>
-            <p className="text-xs text-indigo-600 dark:text-indigo-400">Snittbetyg: {averageScore}%</p>
+            <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">{t('interviewWidget.greatJob')}</p>
+            <p className="text-xs text-indigo-600 dark:text-indigo-400">{t('interviewWidget.averageScoreLabel', { score: averageScore })}</p>
           </div>
         </div>
       ) : (
@@ -121,8 +123,8 @@ export function InterviewWidget({
             <Mic size={24} className="text-indigo-500 dark:text-indigo-400" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">Börja träna</p>
-            <p className="text-xs text-indigo-600 dark:text-indigo-400">AI-driven intervjusimulator</p>
+            <p className="text-sm font-semibold text-indigo-800 dark:text-indigo-300">{t('interviewWidget.startPracticing')}</p>
+            <p className="text-xs text-indigo-600 dark:text-indigo-400">{t('interviewWidget.aiDrivenSimulator')}</p>
           </div>
         </div>
       )}
@@ -134,14 +136,14 @@ export function InterviewWidget({
             <MessageSquare size={16} className="text-indigo-500 dark:text-indigo-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{completedSessions}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Övningar</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('interviewWidget.exercises')}</p>
         </div>
         <div className="p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Star size={16} className="text-purple-500 dark:text-purple-400 fill-current" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{averageScore || '-'}%</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Snittbetyg</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('interviewWidget.averageScore')}</p>
         </div>
       </div>
 
@@ -149,7 +151,7 @@ export function InterviewWidget({
       <div className="flex gap-2">
         <span className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-100 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-400 rounded-lg text-xs font-medium group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/60 transition-colors">
           <Play size={12} />
-          {hasStarted ? 'Fortsätt träna' : 'Starta träning'}
+          {hasStarted ? t('interviewWidget.continueTraining') : t('interviewWidget.startTraining')}
         </span>
       </div>
     </Link>

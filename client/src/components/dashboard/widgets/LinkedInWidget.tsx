@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Linkedin, TrendingUp, ChevronRight, CheckCircle2, Sparkles, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +18,7 @@ export function LinkedInWidget({
   hasAnalysis = false,
   size = 'medium'
 }: LinkedInWidgetProps) {
+  const { t } = useTranslation()
   const isOptimized = profileScore >= 80
 
   // MINI
@@ -39,7 +41,7 @@ export function LinkedInWidget({
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">LinkedIn</p>
           <p className={cn("text-xs", hasAnalysis ? (isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400") : "text-slate-500 dark:text-slate-400")}>
-            {hasAnalysis ? `${profileScore}%` : 'Analysera'}
+            {hasAnalysis ? `${profileScore}%` : t('linkedInWidget.analyze')}
           </p>
         </div>
         {hasAnalysis && isOptimized && (
@@ -71,7 +73,7 @@ export function LinkedInWidget({
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">LinkedIn</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {hasAnalysis ? 'Profil analyserad' : 'Optimera profilen'}
+                {hasAnalysis ? t('linkedInWidget.profileAnalyzed') : t('linkedInWidget.optimizeProfile')}
               </p>
             </div>
           </div>
@@ -83,12 +85,12 @@ export function LinkedInWidget({
             <span className={cn("text-2xl font-bold", isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400")}>
               {profileScore}%
             </span>
-            <span className="text-sm text-slate-500 dark:text-slate-400">profilstyrka</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">{t('linkedInWidget.profileStrength')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
             <Sparkles size={16} />
-            <span className="text-sm">Starta analys</span>
+            <span className="text-sm">{t('linkedInWidget.startAnalysis')}</span>
           </div>
         )}
       </Link>
@@ -116,9 +118,9 @@ export function LinkedInWidget({
             <Linkedin size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">LinkedIn-optimering</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('linkedInWidget.linkedInOptimization')}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {hasAnalysis ? 'Profil analyserad' : 'Analysera din profil'}
+              {hasAnalysis ? t('linkedInWidget.profileAnalyzed') : t('linkedInWidget.analyzeYourProfile')}
             </p>
           </div>
         </div>
@@ -129,7 +131,7 @@ export function LinkedInWidget({
       {hasAnalysis ? (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">Profilstyrka</span>
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('linkedInWidget.profileStrength')}</span>
             <span className={cn("text-lg font-bold", isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400")}>
               {profileScore}%
             </span>
@@ -152,8 +154,8 @@ export function LinkedInWidget({
             <Sparkles size={24} className="text-blue-500 dark:text-blue-400" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">Analysera din profil</p>
-            <p className="text-xs text-blue-600 dark:text-blue-400">Få tips för att synas bättre</p>
+            <p className="text-sm font-semibold text-blue-800 dark:text-blue-300">{t('linkedInWidget.analyzeYourProfile')}</p>
+            <p className="text-xs text-blue-600 dark:text-blue-400">{t('linkedInWidget.getTipsForVisibility')}</p>
           </div>
         </div>
       )}
@@ -165,14 +167,14 @@ export function LinkedInWidget({
             <TrendingUp size={16} className={isOptimized ? "text-emerald-500 dark:text-emerald-400" : "text-blue-500 dark:text-blue-400"} />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{profileScore}%</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Profilstyrka</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('linkedInWidget.profileStrength')}</p>
         </div>
         <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
             <CheckCircle2 size={16} className="text-slate-500 dark:text-slate-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{optimizedSections}/{totalSections}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Sektioner</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('linkedInWidget.sections')}</p>
         </div>
       </div>
 
@@ -185,7 +187,7 @@ export function LinkedInWidget({
             : "bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60"
         )}>
           <Play size={12} />
-          {hasAnalysis ? 'Se förslag' : 'Starta analys'}
+          {hasAnalysis ? t('linkedInWidget.viewSuggestions') : t('linkedInWidget.startAnalysis')}
         </span>
       </div>
     </Link>

@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { FileText, ChevronRight, CheckCircle2, Sparkles, Edit, Download, Eye } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -13,6 +14,7 @@ export function CVWidget({
   progress = 0,
   size = 'medium'
 }: CVWidgetProps) {
+  const { t } = useTranslation()
   const isComplete = progress >= 100
 
   // MINI - Ultra compact
@@ -35,7 +37,7 @@ export function CVWidget({
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">CV</p>
           <p className={cn("text-xs", isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400")}>
-            {isComplete ? 'Komplett' : `${progress}%`}
+            {isComplete ? t('cvWidget.complete') : `${progress}%`}
           </p>
         </div>
         <ChevronRight size={14} className="text-slate-300 dark:text-slate-600 group-hover:text-violet-500 dark:group-hover:text-violet-400 transition-colors" />
@@ -63,9 +65,9 @@ export function CVWidget({
               {isComplete ? <CheckCircle2 size={18} /> : <FileText size={18} />}
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Ditt CV</h3>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('cvWidget.yourCV')}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {isComplete ? 'Redo att skicka' : hasCV ? 'Under arbete' : 'Kom igång'}
+                {isComplete ? t('cvWidget.readyToSend') : hasCV ? t('cvWidget.inProgress') : t('cvWidget.getStarted')}
               </p>
             </div>
           </div>
@@ -114,9 +116,9 @@ export function CVWidget({
             {isComplete ? <CheckCircle2 size={24} /> : <FileText size={24} />}
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Ditt CV</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('cvWidget.yourCV')}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {isComplete ? 'Redo att användas' : hasCV ? 'Fortsätt där du slutade' : 'Skapa ditt professionella CV'}
+              {isComplete ? t('cvWidget.readyToUse') : hasCV ? t('cvWidget.continueWhereYouLeft') : t('cvWidget.createProfessionalCV')}
             </p>
           </div>
         </div>
@@ -126,7 +128,7 @@ export function CVWidget({
       {/* Progress Section */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600 dark:text-slate-400">Progress</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">{t('cvWidget.progress')}</span>
           <span className={cn(
             "text-lg font-bold",
             isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-violet-600 dark:text-violet-400"
@@ -152,16 +154,16 @@ export function CVWidget({
         <div className="flex items-center gap-3 p-3 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg border border-emerald-100 dark:border-emerald-800 mb-4">
           <Sparkles size={20} className="text-emerald-500 dark:text-emerald-400" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">Ditt CV är komplett!</p>
-            <p className="text-xs text-emerald-600 dark:text-emerald-400">Redo att skickas till arbetsgivare</p>
+            <p className="text-sm font-medium text-emerald-800 dark:text-emerald-300">{t('cvWidget.cvComplete')}</p>
+            <p className="text-xs text-emerald-600 dark:text-emerald-400">{t('cvWidget.readyToSendToEmployers')}</p>
           </div>
         </div>
       ) : !hasCV ? (
         <div className="flex items-center gap-3 p-3 bg-violet-50 dark:bg-violet-900/20 rounded-lg border border-violet-100 dark:border-violet-800 mb-4">
           <Sparkles size={20} className="text-violet-500 dark:text-violet-400" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-violet-800 dark:text-violet-300">Skapa ditt CV</p>
-            <p className="text-xs text-violet-600 dark:text-violet-400">Det tar bara några minuter</p>
+            <p className="text-sm font-medium text-violet-800 dark:text-violet-300">{t('cvWidget.createYourCV')}</p>
+            <p className="text-xs text-violet-600 dark:text-violet-400">{t('cvWidget.onlyTakesMinutes')}</p>
           </div>
         </div>
       ) : null}
@@ -170,17 +172,17 @@ export function CVWidget({
       <div className="flex gap-2">
         <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300 group-hover:bg-violet-100 dark:group-hover:bg-violet-900/40 group-hover:text-violet-700 dark:group-hover:text-violet-400 transition-colors">
           <Edit size={12} />
-          {hasCV ? 'Redigera' : 'Skapa'}
+          {hasCV ? t('cvWidget.edit') : t('cvWidget.create')}
         </span>
         {hasCV && (
           <>
             <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300">
               <Eye size={12} />
-              Förhandsgranska
+              {t('cvWidget.preview')}
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-700 rounded-lg text-xs font-medium text-slate-600 dark:text-slate-300">
               <Download size={12} />
-              Ladda ner
+              {t('cvWidget.download')}
             </span>
           </>
         )}
