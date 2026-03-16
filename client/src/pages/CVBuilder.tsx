@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cvApi } from '@/services/api'
 import { 
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
@@ -175,6 +176,7 @@ function Input({ label, value, onChange, type = "text", placeholder }: {
 // HUVUDKOMPONENT
 // ============================================
 export default function CVBuilder() {
+  const { t, i18n } = useTranslation()
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
@@ -243,7 +245,7 @@ export default function CVBuilder() {
           const { data: versionData } = JSON.parse(editVersion)
           setData(prev => ({ ...prev, ...versionData }))
           localStorage.removeItem('cv-edit-version')
-          showToast.success('Laddade sparad CV-version')
+          showToast.success(t('cvBuilder.messages.loadedCVVersion'))
           return
         } catch (e) {
           console.error('Fel vid laddning av version:', e)
@@ -286,8 +288,8 @@ export default function CVBuilder() {
     setSaving(true)
     try {
       await cvApi.updateCV(data)
-      showToast.success('CV sparat!')
-    } catch { showToast.error('Kunde inte spara') }
+      showToast.success(t('cvBuilder.messages.cvSaved'))
+    } catch { showToast.error(t('cvBuilder.messages.couldNotSave')) }
     finally { setSaving(false) }
   }
 
@@ -298,21 +300,21 @@ export default function CVBuilder() {
       await loadVersions()
       setVersionName('')
       setShowSaveVersion(false)
-      alert('Version sparad!')
-    } catch { alert('Kunde inte spara version') }
+      alert(t('cvBuilder.messages.versionSaved'))
+    } catch { alert(t('cvBuilder.messages.couldNotSaveVersion')) }
   }
 
   const restoreVersion = async (versionId: string) => {
-    if (!confirm('Detta ersätter ditt nuvarande CV. Fortsätta?')) return
+    if (!confirm(t('cvBuilder.messages.replaceConfirm'))) return
     try {
       const restored = await cvApi.restoreVersion(versionId)
       setData(prev => ({ ...prev, ...restored }))
-      alert('Version återställd!')
-    } catch { alert('Kunde inte återställa') }
+      alert(t('cvBuilder.messages.versionRestored'))
+    } catch { alert(t('cvBuilder.messages.couldNotRestore')) }
   }
 
   const loadDemoData = () => {
-    if (!confirm('Fylla i med exempeldata?')) return
+    if (!confirm(t('cvBuilder.messages.fillDemoData'))) return
     setData({
       ...data,
       firstName: 'Anna', lastName: 'Andersson', title: 'Projektledare',
@@ -347,8 +349,8 @@ export default function CVBuilder() {
   const renderStep1 = () => (
     <div className="space-y-8">
       <div className="text-center">
-        <h3 className="text-2xl font-bold text-slate-800 mb-2">Välj en mall</h3>
-        <p className="text-slate-500">6 moderna designer. Alla med förvalda färger och typsnitt.</p>
+        <h3 className="text-2xl font-bold text-slate-800 mb-2">{t('cvBuilder.templates.chooseTemplate')}</h3>
+        <p className="text-slate-500">{t('cvBuilder.templates.templateDescription')}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -428,7 +430,7 @@ export default function CVBuilder() {
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <h4 className="font-bold text-lg text-slate-800">{t.name}</h4>
-                  {selected && <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">Vald</span>}
+                  {selected && <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
                 <p className="text-sm text-slate-500 mb-3">{t.desc}</p>
                 
@@ -457,11 +459,10 @@ export default function CVBuilder() {
             </div>
             <div>
               <p className="font-medium text-indigo-900">
-                {TEMPLATES.find(t => t.id === data.template)?.name} är vald
+                {TEMPLATES.find(tpl => tpl.id === data.template)?.name} {t('cvBuilder.templates.isSelected')}
               </p>
               <p className="text-sm text-indigo-700 mt-1">
-                Mallen innehåller förvalda färger och typsnitt. Gå vidare för att fylla i ditt CV, 
-                eller klicka på Förhandsgranska för att se resultatet.
+                {t('cvBuilder.templates.selectedInfo')}
               </p>
             </div>
           </div>
@@ -474,45 +475,45 @@ export default function CVBuilder() {
   const renderStep2 = () => (
     <div className="space-y-4">
       <Card>
-        <h3 className="font-semibold text-slate-800 mb-4">Profilbild</h3>
+        <h3 className="font-semibold text-slate-800 mb-4">{t('cvBuilder.profileImage.title')}</h3>
         <p className="text-sm text-slate-500 mb-4">
-          Lägg till en professionell profilbild för att göra ditt CV mer personligt
+          {t('cvBuilder.profileImage.description')}
         </p>
         <CompactImageUpload
           value={data.profileImage}
           onChange={(url) => setData({ ...data, profileImage: url })}
           onUpload={async (file) => {
             if (!user?.id) {
-              alert('Du måste vara inloggad för att ladda upp bilder')
+              alert(t('cvBuilder.profileImage.mustBeLoggedIn'))
               return null
             }
             const result = await uploadImage(file)
             if (result.error) {
-              alert('Uppladdning misslyckades: ' + result.error)
+              alert(t('cvBuilder.profileImage.uploadFailed') + result.error)
               return null
             }
             return result.url
           }}
         />
       </Card>
-      
+
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="Förnamn *" value={data.firstName} onChange={(v) => setData({ ...data, firstName: v })} placeholder="Anna" />
-          <Input label="Efternamn *" value={data.lastName} onChange={(v) => setData({ ...data, lastName: v })} placeholder="Andersson" />
+          <Input label={t('cvBuilder.fields.firstName')} value={data.firstName} onChange={(v) => setData({ ...data, firstName: v })} placeholder={t('cvBuilder.placeholders.firstName')} />
+          <Input label={t('cvBuilder.fields.lastName')} value={data.lastName} onChange={(v) => setData({ ...data, lastName: v })} placeholder={t('cvBuilder.placeholders.lastName')} />
         </div>
       </Card>
       <Card>
-        <Input label="Yrkestitel" value={data.title} onChange={(v) => setData({ ...data, title: v })} placeholder="Erfaren säljare" />
+        <Input label={t('cvBuilder.fields.jobTitle')} value={data.title} onChange={(v) => setData({ ...data, title: v })} placeholder={t('cvBuilder.placeholders.jobTitle')} />
       </Card>
       <Card>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Input label="E-post" type="email" value={data.email} onChange={(v) => setData({ ...data, email: v })} placeholder="anna@email.se" />
-          <Input label="Telefon" type="tel" value={data.phone} onChange={(v) => setData({ ...data, phone: v })} placeholder="070-123 45 67" />
+          <Input label={t('cvBuilder.fields.email')} type="email" value={data.email} onChange={(v) => setData({ ...data, email: v })} placeholder={t('cvBuilder.placeholders.email')} />
+          <Input label={t('cvBuilder.fields.phone')} type="tel" value={data.phone} onChange={(v) => setData({ ...data, phone: v })} placeholder={t('cvBuilder.placeholders.phone')} />
         </div>
       </Card>
       <Card>
-        <Input label="Ort" value={data.location} onChange={(v) => setData({ ...data, location: v })} placeholder="Stockholm" />
+        <Input label={t('cvBuilder.fields.location')} value={data.location} onChange={(v) => setData({ ...data, location: v })} placeholder={t('cvBuilder.placeholders.location')} />
       </Card>
     </div>
   )
@@ -521,24 +522,24 @@ export default function CVBuilder() {
   const renderStep3 = () => (
     <div className="space-y-4">
       <Card>
-        <h3 className="font-semibold text-slate-800 mb-2">Sammanfattning</h3>
-        <p className="text-sm text-slate-500 mb-4">Beskriv din bakgrund och vad du söker</p>
+        <h3 className="font-semibold text-slate-800 mb-2">{t('cvBuilder.summary.title')}</h3>
+        <p className="text-sm text-slate-500 mb-4">{t('cvBuilder.summary.description')}</p>
         <RichTextEditor
           value={data.summary || ''}
           onChange={(v) => setData({ ...data, summary: v })}
-          placeholder="Jag är en driven..."
+          placeholder={t('cvBuilder.summary.placeholder')}
           maxLength={1000}
           minHeight="150px"
-          helpText="Tips: Använd aktiva verb och nämn vad som gör dig unik. 3-5 meningar är lagom."
+          helpText={t('cvBuilder.summary.helpText')}
         />
         <div className="mt-4">
           <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
         </div>
       </Card>
-      
+
       <ContextualHelp context="summary" data={data.summary} />
-      
-      <AIHelpButton field="summary" onFill={() => setData({ ...data, summary: 'Erfaren [yrke] med [X] års erfarenhet inom [område]. Jag brinner för [intresse] och vill nu ta nästa steg i min karriär.' })} />
+
+      <AIHelpButton field="summary" onFill={() => setData({ ...data, summary: t('cvBuilder.summary.aiTemplate') })} />
     </div>
   )
 
@@ -546,11 +547,11 @@ export default function CVBuilder() {
   const renderStep4 = () => (
     <div className="space-y-6">
       <ContextualHelp context="experience" />
-      
+
       <div>
         <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <Briefcase className="w-5 h-5 text-purple-500" />
-          Arbetslivserfarenhet
+          {t('cvBuilder.sections.workExperience')}
         </h3>
         <ExperienceEditor
           experiences={data.workExperience || []}
@@ -561,7 +562,7 @@ export default function CVBuilder() {
       <div>
         <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <GraduationCap className="w-5 h-5 text-purple-500" />
-          Utbildning
+          {t('cvBuilder.sections.education')}
         </h3>
         <EducationEditor
           education={data.education || []}
@@ -575,11 +576,11 @@ export default function CVBuilder() {
   const renderStep5 = () => (
     <div className="space-y-6">
       <ContextualHelp context="skills" />
-      
+
       <div>
         <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <Award className="w-5 h-5 text-purple-500" />
-          Kompetenser
+          {t('cvBuilder.sections.skills')}
         </h3>
         <SkillsEditor
           skills={data.skills || []}
@@ -589,19 +590,19 @@ export default function CVBuilder() {
 
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800">Språk</h3>
-          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'God' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
+          <h3 className="font-semibold text-slate-800">{t('cvBuilder.sections.languages')}</h3>
+          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: t('cvBuilder.languageLevels.good') }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
             {data.languages.map((lang) => (
               <div key={lang.id} className="flex items-center gap-3">
-                <input type="text" value={lang.language} onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)} placeholder="Språk" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <input type="text" value={lang.language} onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)} placeholder={t('cvBuilder.sections.languages')} className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 <select value={lang.level} onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)} className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-32">
-                  <option value="Grundläggande">Grundläggande</option>
-                  <option value="God">God</option>
-                  <option value="Flytande">Flytande</option>
-                  <option value="Modersmål">Modersmål</option>
+                  <option value={t('cvBuilder.languageLevels.basic')}>{t('cvBuilder.languageLevels.basic')}</option>
+                  <option value={t('cvBuilder.languageLevels.good')}>{t('cvBuilder.languageLevels.good')}</option>
+                  <option value={t('cvBuilder.languageLevels.fluent')}>{t('cvBuilder.languageLevels.fluent')}</option>
+                  <option value={t('cvBuilder.languageLevels.native')}>{t('cvBuilder.languageLevels.native')}</option>
                 </select>
                 <button onClick={() => remove(data.languages, lang.id, 'languages')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
@@ -612,14 +613,14 @@ export default function CVBuilder() {
 
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800">Certifikat</h3>
-          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
+          <h3 className="font-semibold text-slate-800">{t('cvBuilder.sections.certificates')}</h3>
+          <button onClick={() => add(data.certificates, { id: Date.now().toString(), name: '', issuer: '', date: '' }, 'certificates')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.certificates.length > 0 && (
           <div className="space-y-2">
             {data.certificates.map((cert) => (
               <div key={cert.id} className="flex items-center gap-3">
-                <input type="text" value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder="Certifikatnamn" className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <input type="text" value={cert.name} onChange={(e) => update(data.certificates, cert.id, 'certificates', 'name', e.target.value)} placeholder={t('cvBuilder.sections.certificates')} className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 <button onClick={() => remove(data.certificates, cert.id, 'certificates')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
             ))}
@@ -629,14 +630,14 @@ export default function CVBuilder() {
 
       <Card>
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800">Länkar</h3>
-          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> Lägg till</button>
+          <h3 className="font-semibold text-slate-800">{t('cvBuilder.sections.links')}</h3>
+          <button onClick={() => add(data.links, { id: Date.now().toString(), type: 'website', url: '', label: '' }, 'links')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.links.length > 0 && (
           <div className="space-y-2">
             {data.links.map((link) => (
               <div key={link.id} className="flex items-center gap-3">
-                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder="Titel" className="w-1/3 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
+                <input type="text" value={link.label} onChange={(e) => update(data.links, link.id, 'links', 'label', e.target.value)} placeholder={t('cvBuilder.sections.links')} className="w-1/3 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 <input type="url" value={link.url} onChange={(e) => update(data.links, link.id, 'links', 'url', e.target.value)} placeholder="https://..." className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
                 <button onClick={() => remove(data.links, link.id, 'links')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
               </div>
@@ -665,7 +666,7 @@ export default function CVBuilder() {
       {/* Header med auto-save indikator */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">Skapa CV</h1>
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{t('cvBuilder.title')}</h1>
           <div className="flex items-center gap-2 mt-1">
             <SaveIndicator />
           </div>
@@ -673,20 +674,20 @@ export default function CVBuilder() {
         <div className="flex items-center gap-2 flex-wrap">
           <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-amber-600 hover:bg-amber-50 border border-amber-200 rounded-lg transition-colors">
             <Sparkles className="w-4 h-4" />
-            <span className="hidden sm:inline">Exempeldata</span>
+            <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
           </button>
           <button onClick={() => setShowLinkedInImport(true)} className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm border border-[#0077B5] text-[#0077B5] rounded-lg hover:bg-[#0077B5]/5">
-            <Linkedin className="w-4 h-4" /> Importera
+            <Linkedin className="w-4 h-4" /> {t('cvBuilder.actions.import')}
           </button>
           {/* Manuell spara-knapp - backup om auto-save misslyckas */}
-          <button 
-            onClick={save} 
-            disabled={saving} 
+          <button
+            onClick={save}
+            disabled={saving}
             className="flex items-center gap-2 px-4 py-2 bg-[#4f46e5] text-white rounded-lg hover:bg-[#4338ca] disabled:opacity-50 text-sm font-medium"
-            title="Spara manuellt (auto-save är aktivt)"
+            title={t('cvBuilder.actions.saveManually')}
           >
             <Save className="w-4 h-4" />
-            {saving ? 'Sparar...' : 'Spara nu'}
+            {saving ? t('cvBuilder.actions.saving') : t('cvBuilder.actions.saveNow')}
           </button>
           <div className="w-px h-6 bg-slate-300 mx-1" />
           <CVShare onShare={async () => await cvApi.shareCV()} variant="compact" />
@@ -717,7 +718,7 @@ export default function CVBuilder() {
         <div className="fixed inset-0 z-50 bg-slate-900/50 lg:hidden">
           <div className="absolute inset-x-0 bottom-0 top-16 bg-slate-100 rounded-t-3xl overflow-hidden flex flex-col">
             <div className="flex items-center justify-between p-4 bg-white border-b">
-              <h2 className="font-semibold">Förhandsvisning</h2>
+              <h2 className="font-semibold">{t('cvBuilder.actions.preview')}</h2>
               <button onClick={() => setShowPreview(false)} className="p-2 hover:bg-slate-100 rounded-full"><X className="w-6 h-6" /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-4">
@@ -739,13 +740,13 @@ export default function CVBuilder() {
           <div className="flex items-center justify-between mt-6">
             <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 font-medium">
               <ChevronLeft className="w-5 h-5" />
-              <span className="hidden sm:inline">Föregående</span>
+              <span className="hidden sm:inline">{t('cvBuilder.actions.previous')}</span>
             </button>
             <button onClick={() => setShowPreview(true)} className="lg:hidden flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 font-medium">
-              <Eye className="w-4 h-4" /> Visa CV
+              <Eye className="w-4 h-4" /> {t('cvBuilder.actions.showCV')}
             </button>
             <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 font-medium">
-              <span className="hidden sm:inline">Nästa</span>
+              <span className="hidden sm:inline">{t('cvBuilder.actions.next')}</span>
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
@@ -765,15 +766,15 @@ export default function CVBuilder() {
 
           {/* Help - Show onboarding again */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-            <h3 className="font-semibold text-slate-800 mb-2">Behöver du hjälp?</h3>
+            <h3 className="font-semibold text-slate-800 mb-2">{t('cvBuilder.help.title')}</h3>
             <p className="text-sm text-slate-500 mb-3">
-              Se guiden igen för tips om hur du skapar ett bra CV.
+              {t('cvBuilder.help.description')}
             </p>
             <button
               onClick={() => setShowOnboarding(true)}
               className="w-full px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
             >
-              Visa guide igen
+              {t('cvBuilder.help.showGuide')}
             </button>
           </div>
 
@@ -784,10 +785,10 @@ export default function CVBuilder() {
                 <div className="w-8 h-8 bg-violet-500 rounded-lg flex items-center justify-center">
                   <Lightbulb className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="font-semibold text-violet-900">AI-skrivhjälp</h3>
+                <h3 className="font-semibold text-violet-900">{t('cvBuilder.help.aiWriting')}</h3>
               </div>
               <p className="text-sm text-violet-700 mb-3">
-                Få hjälp att förbättra din sammanfattning
+                {t('cvBuilder.help.aiWritingDesc')}
               </p>
               <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
             </div>
@@ -795,44 +796,44 @@ export default function CVBuilder() {
 
           {/* Versions */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
-            <h3 className="font-semibold text-slate-800 mb-3">Versioner</h3>
+            <h3 className="font-semibold text-slate-800 mb-3">{t('cvBuilder.versions.title')}</h3>
             {showSaveVersion ? (
               <div className="space-y-2 mb-3">
-                <input 
-                  type="text" 
-                  value={versionName} 
+                <input
+                  type="text"
+                  value={versionName}
                   onChange={(e) => setVersionName(e.target.value)}
-                  placeholder="Namn på version..."
+                  placeholder={t('cvBuilder.versions.versionNamePlaceholder')}
                   className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
                 />
                 <div className="flex gap-2">
-                  <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-[#4f46e5] text-white text-sm rounded-lg">Spara</button>
-                  <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-slate-300 text-sm rounded-lg">Avbryt</button>
+                  <button onClick={saveVersion} className="flex-1 px-3 py-2 bg-[#4f46e5] text-white text-sm rounded-lg">{t('cvBuilder.versions.save')}</button>
+                  <button onClick={() => setShowSaveVersion(false)} className="flex-1 px-3 py-2 border border-slate-300 text-sm rounded-lg">{t('cvBuilder.versions.cancel')}</button>
                 </div>
               </div>
             ) : (
-              <button 
+              <button
                 onClick={() => setShowSaveVersion(true)}
                 className="w-full mb-3 px-4 py-2 border border-[#4f46e5] text-[#4f46e5] rounded-lg text-sm hover:bg-[#4f46e5]/5"
               >
-                + Spara nuvarande version
+                {t('cvBuilder.versions.saveCurrentVersion')}
               </button>
             )}
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {versions.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-2">Inga sparade versioner</p>
+                <p className="text-sm text-slate-400 text-center py-2">{t('cvBuilder.versions.noVersions')}</p>
               ) : (
                 versions.map((v) => (
                   <div key={v.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
                     <div>
                       <p className="text-sm font-medium text-slate-800">{v.name}</p>
-                      <p className="text-xs text-slate-500">{new Date(v.createdAt).toLocaleDateString('sv-SE')}</p>
+                      <p className="text-xs text-slate-500">{new Date(v.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}</p>
                     </div>
-                    <button 
+                    <button
                       onClick={() => restoreVersion(v.id)}
                       className="text-xs text-[#4f46e5] hover:bg-[#4f46e5]/10 px-2 py-1 rounded"
                     >
-                      Återställ
+                      {t('cvBuilder.actions.restore')}
                     </button>
                   </div>
                 ))

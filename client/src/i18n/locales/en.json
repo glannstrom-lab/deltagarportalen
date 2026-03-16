@@ -1730,5 +1730,139 @@
     "needMoreHelp": "Need more help?",
     "helpDescription": "If you have questions or need support, don't hesitate to contact your employment consultant. We're here for you!",
     "bookMeeting": "Book a meeting"
+  },
+  "cvBuilder": {
+    "title": "Create CV",
+    "steps": {
+      "design": "Design",
+      "designDesc": "Template and colors",
+      "about": "About you",
+      "aboutDesc": "Contact details",
+      "profile": "Profile",
+      "profileDesc": "Summary",
+      "experience": "Experience",
+      "experienceDesc": "Jobs & education",
+      "skills": "Skills",
+      "skillsDesc": "Skills & other"
+    },
+    "templates": {
+      "chooseTemplate": "Choose a template",
+      "templateDescription": "6 modern designs. All with preset colors and fonts.",
+      "sidebar": {
+        "name": "Sidebar",
+        "desc": "Modern layout with sidebar for contact and skills",
+        "features": ["Sidebar", "Rounded photo", "Skills in sidebar"]
+      },
+      "centered": {
+        "name": "Centered",
+        "desc": "Hero design with large photo and gradient",
+        "features": ["Gradient header", "Centered photo", "Timeline"]
+      },
+      "minimal": {
+        "name": "Minimal",
+        "desc": "Airy design with lots of whitespace",
+        "features": ["Clean & airy", "Simple typography", "Content focus"]
+      },
+      "creative": {
+        "name": "Creative",
+        "desc": "Colorful two-column layout",
+        "features": ["Colorful", "Progress bars", "Card layout"]
+      },
+      "executive": {
+        "name": "Executive",
+        "desc": "Elegant with serif fonts for leaders",
+        "features": ["Serif headings", "Gold accents", "Classic"]
+      },
+      "nordic": {
+        "name": "Nordic",
+        "desc": "Scandinavian design with soft colors",
+        "features": ["Soft colors", "Light theme", "Clean"]
+      },
+      "selected": "Selected",
+      "isSelected": "is selected",
+      "selectedInfo": "The template includes preset colors and fonts. Continue to fill in your CV, or click Preview to see the result."
+    },
+    "profileImage": {
+      "title": "Profile picture",
+      "description": "Add a professional profile picture to make your CV more personal",
+      "mustBeLoggedIn": "You must be logged in to upload images",
+      "uploadFailed": "Upload failed: "
+    },
+    "fields": {
+      "firstName": "First name *",
+      "lastName": "Last name *",
+      "jobTitle": "Job title",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "City"
+    },
+    "placeholders": {
+      "firstName": "Anna",
+      "lastName": "Anderson",
+      "jobTitle": "Experienced salesperson",
+      "email": "anna@email.com",
+      "phone": "555-123-4567",
+      "location": "New York"
+    },
+    "summary": {
+      "title": "Summary",
+      "description": "Describe your background and what you're looking for",
+      "placeholder": "I am a driven...",
+      "helpText": "Tip: Use active verbs and mention what makes you unique. 3-5 sentences is ideal.",
+      "aiTemplate": "Experienced [profession] with [X] years of experience in [field]. I'm passionate about [interest] and am now looking to take the next step in my career."
+    },
+    "sections": {
+      "workExperience": "Work experience",
+      "education": "Education",
+      "skills": "Skills",
+      "languages": "Languages",
+      "certificates": "Certificates",
+      "links": "Links"
+    },
+    "languageLevels": {
+      "basic": "Basic",
+      "good": "Good",
+      "fluent": "Fluent",
+      "native": "Native"
+    },
+    "actions": {
+      "add": "Add",
+      "previous": "Previous",
+      "next": "Next",
+      "showCV": "Show CV",
+      "saveNow": "Save now",
+      "saving": "Saving...",
+      "saveManually": "Save manually (auto-save is active)",
+      "import": "Import",
+      "exampleData": "Example data",
+      "preview": "Preview",
+      "restore": "Restore"
+    },
+    "versions": {
+      "title": "Versions",
+      "saveCurrentVersion": "+ Save current version",
+      "versionNamePlaceholder": "Version name...",
+      "noVersions": "No saved versions",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "help": {
+      "title": "Need help?",
+      "description": "See the guide again for tips on creating a great CV.",
+      "showGuide": "Show guide again",
+      "aiWriting": "AI writing help",
+      "aiWritingDesc": "Get help improving your summary"
+    },
+    "messages": {
+      "cvSaved": "CV saved!",
+      "couldNotSave": "Could not save",
+      "versionSaved": "Version saved!",
+      "couldNotSaveVersion": "Could not save version",
+      "versionRestored": "Version restored!",
+      "couldNotRestore": "Could not restore",
+      "replaceConfirm": "This will replace your current CV. Continue?",
+      "fillDemoData": "Fill in with example data?",
+      "loadedCVVersion": "Loaded saved CV version"
+    }
   }
 }

@@ -1730,5 +1730,139 @@
     "needMoreHelp": "Behöver du mer hjälp?",
     "helpDescription": "Om du har frågor eller behöver stöd, tveka inte att kontakta din arbetskonsulent. Vi finns här för dig!",
     "bookMeeting": "Boka ett möte"
+  },
+  "cvBuilder": {
+    "title": "Skapa CV",
+    "steps": {
+      "design": "Design",
+      "designDesc": "Mall och färger",
+      "about": "Om dig",
+      "aboutDesc": "Kontaktuppgifter",
+      "profile": "Profil",
+      "profileDesc": "Sammanfattning",
+      "experience": "Erfarenhet",
+      "experienceDesc": "Jobb & utbildning",
+      "skills": "Kompetenser",
+      "skillsDesc": "Skills & övrigt"
+    },
+    "templates": {
+      "chooseTemplate": "Välj en mall",
+      "templateDescription": "6 moderna designer. Alla med förvalda färger och typsnitt.",
+      "sidebar": {
+        "name": "Sidokolumn",
+        "desc": "Modern layout med sidopanel för kontakt och skills",
+        "features": ["Sidokolumn", "Rundat foto", "Skills i sidopanel"]
+      },
+      "centered": {
+        "name": "Centrerad",
+        "desc": "Hero-design med stort foto och gradient",
+        "features": ["Gradient header", "Centrerat foto", "Timeline"]
+      },
+      "minimal": {
+        "name": "Minimal",
+        "desc": "Luftig design med mycket whitespace",
+        "features": ["Clean & luftig", "Enkel typografi", "Fokus på innehåll"]
+      },
+      "creative": {
+        "name": "Kreativ",
+        "desc": "Färgstark två-kolumns layout",
+        "features": ["Färgstark", "Progress bars", "Kort-layout"]
+      },
+      "executive": {
+        "name": "Executive",
+        "desc": "Elegant med serif-typsnitt för ledare",
+        "features": ["Serif rubriker", "Guld-accenter", "Klassisk"]
+      },
+      "nordic": {
+        "name": "Nordisk",
+        "desc": "Skandinavisk design med mjuka färger",
+        "features": ["Mjuka färger", "Ljust tema", "Clean"]
+      },
+      "selected": "Vald",
+      "isSelected": "är vald",
+      "selectedInfo": "Mallen innehåller förvalda färger och typsnitt. Gå vidare för att fylla i ditt CV, eller klicka på Förhandsgranska för att se resultatet."
+    },
+    "profileImage": {
+      "title": "Profilbild",
+      "description": "Lägg till en professionell profilbild för att göra ditt CV mer personligt",
+      "mustBeLoggedIn": "Du måste vara inloggad för att ladda upp bilder",
+      "uploadFailed": "Uppladdning misslyckades: "
+    },
+    "fields": {
+      "firstName": "Förnamn *",
+      "lastName": "Efternamn *",
+      "jobTitle": "Yrkestitel",
+      "email": "E-post",
+      "phone": "Telefon",
+      "location": "Ort"
+    },
+    "placeholders": {
+      "firstName": "Anna",
+      "lastName": "Andersson",
+      "jobTitle": "Erfaren säljare",
+      "email": "anna@email.se",
+      "phone": "070-123 45 67",
+      "location": "Stockholm"
+    },
+    "summary": {
+      "title": "Sammanfattning",
+      "description": "Beskriv din bakgrund och vad du söker",
+      "placeholder": "Jag är en driven...",
+      "helpText": "Tips: Använd aktiva verb och nämn vad som gör dig unik. 3-5 meningar är lagom.",
+      "aiTemplate": "Erfaren [yrke] med [X] års erfarenhet inom [område]. Jag brinner för [intresse] och vill nu ta nästa steg i min karriär."
+    },
+    "sections": {
+      "workExperience": "Arbetslivserfarenhet",
+      "education": "Utbildning",
+      "skills": "Kompetenser",
+      "languages": "Språk",
+      "certificates": "Certifikat",
+      "links": "Länkar"
+    },
+    "languageLevels": {
+      "basic": "Grundläggande",
+      "good": "God",
+      "fluent": "Flytande",
+      "native": "Modersmål"
+    },
+    "actions": {
+      "add": "Lägg till",
+      "previous": "Föregående",
+      "next": "Nästa",
+      "showCV": "Visa CV",
+      "saveNow": "Spara nu",
+      "saving": "Sparar...",
+      "saveManually": "Spara manuellt (auto-save är aktivt)",
+      "import": "Importera",
+      "exampleData": "Exempeldata",
+      "preview": "Förhandsvisning",
+      "restore": "Återställ"
+    },
+    "versions": {
+      "title": "Versioner",
+      "saveCurrentVersion": "+ Spara nuvarande version",
+      "versionNamePlaceholder": "Namn på version...",
+      "noVersions": "Inga sparade versioner",
+      "save": "Spara",
+      "cancel": "Avbryt"
+    },
+    "help": {
+      "title": "Behöver du hjälp?",
+      "description": "Se guiden igen för tips om hur du skapar ett bra CV.",
+      "showGuide": "Visa guide igen",
+      "aiWriting": "AI-skrivhjälp",
+      "aiWritingDesc": "Få hjälp att förbättra din sammanfattning"
+    },
+    "messages": {
+      "cvSaved": "CV sparat!",
+      "couldNotSave": "Kunde inte spara",
+      "versionSaved": "Version sparad!",
+      "couldNotSaveVersion": "Kunde inte spara version",
+      "versionRestored": "Version återställd!",
+      "couldNotRestore": "Kunde inte återställa",
+      "replaceConfirm": "Detta ersätter ditt nuvarande CV. Fortsätta?",
+      "fillDemoData": "Fylla i med exempeldata?",
+      "loadedCVVersion": "Laddade sparad CV-version"
+    }
   }
 }
