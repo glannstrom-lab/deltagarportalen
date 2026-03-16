@@ -3,9 +3,10 @@
  */
 import { lazy, Suspense } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { LoadingState } from '@/components/ui'
-import { interestGuideTabs } from '@/data/interestGuideTabs'
+import { interestGuideTabDefs } from '@/data/interestGuideTabs'
 
 // Lazy load tab components
 const TestTab = lazy(() => import('./interest-guide/TestTab'))
@@ -15,18 +16,27 @@ const ExploreTab = lazy(() => import('./interest-guide/ExploreTab'))
 const HistoryTab = lazy(() => import('./interest-guide/HistoryTab'))
 
 function TabLoading() {
+  const { t } = useTranslation()
   return (
     <div className="flex items-center justify-center py-12">
-      <LoadingState title="Laddar..." size="lg" />
+      <LoadingState title={t('common.loading')} size="lg" />
     </div>
   )
 }
 
 export default function InterestGuide() {
+  const { t } = useTranslation()
+
+  // Build tabs with translated labels
+  const interestGuideTabs = interestGuideTabDefs.map((tab) => ({
+    ...tab,
+    label: t(tab.labelKey),
+  }))
+
   return (
     <PageLayout
-      title="Intresseguide"
-      subtitle="Upptäck yrken som passar dig genom att besvara frågor om dina intressen och personlighet"
+      title={t('interestGuide.title')}
+      subtitle={t('interestGuide.discover')}
       tabs={interestGuideTabs}
       tabVariant="glass"
     >

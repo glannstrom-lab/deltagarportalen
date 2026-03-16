@@ -1,9 +1,10 @@
 import { useState, useEffect, useCallback } from 'react'
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  CheckCircle, 
-  Clock, 
+import { useTranslation } from 'react-i18next'
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle,
+  Clock,
   Signal,
   RotateCcw,
   BookOpen,
@@ -61,6 +62,7 @@ interface ExerciseAnswer {
 }
 
 export default function Exercises() {
+  const { t } = useTranslation()
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState<ExerciseProgress>({})
@@ -287,13 +289,13 @@ export default function Exercises() {
   if (loading) {
     return (
       <PageLayout
-        title="Övningar"
-        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        title={t('exercises.title')}
+        description={t('exercises.description')}
         showTabs={false}
       >
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-          <p className="ml-3 text-gray-600">Laddar dina svar...</p>
+          <p className="ml-3 text-gray-600">{t('exercises.loadingAnswers')}</p>
         </div>
       </PageLayout>
     )
@@ -306,8 +308,8 @@ export default function Exercises() {
 
     return (
       <PageLayout
-        title="Övningar"
-        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
+        title={t('exercises.title')}
+        description={t('exercises.description')}
         showTabs={false}
       >
       <div className="space-y-6">
@@ -316,7 +318,7 @@ export default function Exercises() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-indigo-100 mb-2">
             <BookOpen className="w-7 h-7 text-indigo-600" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Övningar</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t('exercises.title')}</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Arbeta dig igenom praktiska övningar för att utveckla dina jobbsökar-skills. 
             Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.
@@ -326,7 +328,7 @@ export default function Exercises() {
           <div className="flex items-center justify-center gap-2 text-sm">
             <Cloud className={`w-4 h-4 ${saving ? 'text-amber-500 animate-pulse' : 'text-green-500'}`} />
             <span className={saving ? 'text-amber-600' : 'text-green-600'}>
-              {saving ? 'Sparar...' : 'Synkad med molnet'}
+              {saving ? t('exercises.saving') : t('exercises.cloudSynced')}
             </span>
           </div>
 
@@ -351,27 +353,27 @@ export default function Exercises() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <Card className="p-4 text-center bg-indigo-50 border-indigo-100">
             <p className="text-2xl font-bold text-indigo-700">{exercises.length}</p>
-            <p className="text-sm text-indigo-600">Övningar totalt</p>
+            <p className="text-sm text-indigo-600">{t('exercises.stats.totalExercises')}</p>
           </Card>
           <Card className="p-4 text-center bg-green-50 border-green-100">
             <p className="text-2xl font-bold text-green-700">
               {Object.keys(answers).length}
             </p>
-            <p className="text-sm text-green-600">Påbörjade</p>
+            <p className="text-sm text-green-600">{t('exercises.stats.started')}</p>
           </Card>
           <Card className="p-4 text-center bg-amber-50 border-amber-100">
             <p className="text-2xl font-bold text-amber-700">
-              {Object.entries(answers).filter(([_, ans]) => 
+              {Object.entries(answers).filter(([_, ans]) =>
                 Object.values(ans).filter(v => v && v.trim()).length > 0
               ).length}
             </p>
-            <p className="text-sm text-amber-600">Aktiva</p>
+            <p className="text-sm text-amber-600">{t('exercises.stats.active')}</p>
           </Card>
           <Card className="p-4 text-center bg-purple-50 border-purple-100">
             <p className="text-2xl font-bold text-purple-700">
               {exercises.length - Object.keys(answers).length}
             </p>
-            <p className="text-sm text-purple-600">Ej påbörjade</p>
+            <p className="text-sm text-purple-600">{t('exercises.stats.notStarted')}</p>
           </Card>
         </div>
 
@@ -380,32 +382,32 @@ export default function Exercises() {
           <button
             onClick={() => setFilter('alla')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === 'alla' 
-                ? 'bg-indigo-600 text-white' 
+              filter === 'alla'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Alla övningar
+            {t('exercises.filters.all')}
           </button>
           <button
             onClick={() => setFilter('påbörjade')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === 'påbörjade' 
-                ? 'bg-indigo-600 text-white' 
+              filter === 'påbörjade'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Påbörjade
+            {t('exercises.filters.started')}
           </button>
           <button
             onClick={() => setFilter('ej-påbörjade')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-              filter === 'ej-påbörjade' 
-                ? 'bg-indigo-600 text-white' 
+              filter === 'ej-påbörjade'
+                ? 'bg-indigo-600 text-white'
                 : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
-            Ej påbörjade
+            {t('exercises.filters.notStarted')}
           </button>
           {categories.map(cat => (
             <button
@@ -492,7 +494,7 @@ export default function Exercises() {
 
         {filtered.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">Inga övningar matchar det valda filtret.</p>
+            <p className="text-gray-500">{t('exercises.noMatch')}</p>
           </div>
         )}
       </div>

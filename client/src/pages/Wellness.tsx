@@ -3,8 +3,9 @@
  * 5 tabs: Hälsa, Energi, Rutiner, Kognitiv träning, Akut stöd
  */
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
-import { wellnessTabs } from '../data/wellnessTabs'
+import { wellnessTabDefs } from '../data/wellnessTabs'
 
 // Tab components
 import HealthTab from './wellness/HealthTab'
@@ -14,10 +15,19 @@ import CognitiveTab from './wellness/CognitiveTab'
 import CrisisTab from './wellness/CrisisTab'
 
 export default function WellnessPage() {
+  const { t } = useTranslation()
+
+  // Build tabs with translated labels
+  const wellnessTabs = wellnessTabDefs.map((tab) => ({
+    ...tab,
+    label: t(tab.labelKey),
+    description: tab.descriptionKey ? t(tab.descriptionKey) : undefined,
+  }))
+
   return (
     <PageLayout
-      title="Hälsa"
-      description="Verktyg för ditt välmående"
+      title={t('wellness.title')}
+      description={t('wellness.description')}
       customTabs={wellnessTabs}
       tabVariant="glass"
       showTabs={true}

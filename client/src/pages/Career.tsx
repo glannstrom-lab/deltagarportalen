@@ -3,8 +3,9 @@
  * 6 tabs: Utforska, Nätverk, Anpassning, Företag, Karriärplan, Kompetens
  */
 import { Routes, Route, Navigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
-import { careerTabs } from '../data/careerTabs'
+import { careerTabDefs } from '../data/careerTabs'
 
 // Tab components
 import ExploreTab from './career/ExploreTab'
@@ -15,10 +16,20 @@ import PlanTab from './career/PlanTab'
 import SkillsTab from './career/SkillsTab'
 
 export default function CareerPage() {
+  const { t } = useTranslation()
+
+  // Build tabs with translated labels
+  const careerTabs = careerTabDefs.map((tab) => ({
+    ...tab,
+    label: t(tab.labelKey),
+    description: tab.descriptionKey ? t(tab.descriptionKey) : undefined,
+    badge: tab.badgeKey ? t(tab.badgeKey) : undefined,
+  }))
+
   return (
     <PageLayout
-      title="Karriär"
-      description="Utforska yrken och planera din framtid"
+      title={t('career.title')}
+      description={t('career.description')}
       customTabs={careerTabs}
       tabVariant="glass"
       showTabs={true}

@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus, BookHeart, Calendar as CalendarIcon, TrendingUp, Sparkles } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
@@ -163,6 +164,7 @@ const getMoodColor = (mood: number) => {
 }
 
 export default function Diary() {
+  const { t, i18n } = useTranslation()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [view, setView] = useState<CalendarView>('month')
   const [events, setEvents] = useState<CalendarEvent[]>(mockEvents)
@@ -181,9 +183,9 @@ export default function Diary() {
   // Formatera datum
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr)
-    return date.toLocaleDateString('sv-SE', { 
-      weekday: 'short', 
-      day: 'numeric', 
+    return date.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', {
+      weekday: 'short',
+      day: 'numeric',
       month: 'short'
     })
   }
@@ -421,8 +423,8 @@ export default function Diary() {
 
   return (
     <PageLayout
-      title="Dagbok"
-      description="Din personliga dagbok och kalender"
+      title={t('diary.title')}
+      description={t('diary.description')}
       showTabs={false}
     >
       <div className="space-y-6">
@@ -432,28 +434,28 @@ export default function Diary() {
         <div className="bg-white rounded-xl p-4 border border-slate-200">
           <div className="flex items-center gap-2 text-slate-500 text-sm mb-1">
             <BookHeart size={16} />
-            <span>Dagboksinlägg</span>
+            <span>{t('diary.stats.diaryEntries')}</span>
           </div>
           <p className="text-2xl font-bold text-slate-900">{totalEntries}</p>
         </div>
         <div className="bg-white rounded-xl p-4 border border-slate-200">
           <div className="flex items-center gap-2 text-slate-500 text-sm mb-1">
             <TrendingUp size={16} />
-            <span>Ord skrivna</span>
+            <span>{t('diary.stats.wordsWritten')}</span>
           </div>
           <p className="text-2xl font-bold text-slate-900">{totalWords}</p>
         </div>
         <div className="bg-white rounded-xl p-4 border border-slate-200">
           <div className="flex items-center gap-2 text-slate-500 text-sm mb-1">
             <Sparkles size={16} />
-            <span>Dagar i rad</span>
+            <span>{t('diary.stats.daysInRow')}</span>
           </div>
           <p className="text-2xl font-bold text-slate-900">{streakDays} 🔥</p>
         </div>
         <div className="bg-white rounded-xl p-4 border border-slate-200">
           <div className="flex items-center gap-2 text-slate-500 text-sm mb-1">
             <CalendarIcon size={16} />
-            <span>Snitt-humör</span>
+            <span>{t('diary.stats.avgMood')}</span>
           </div>
           <p className="text-2xl font-bold text-slate-900">{avgMood}/5</p>
         </div>
@@ -471,7 +473,7 @@ export default function Diary() {
         <div className="lg:col-span-2 space-y-6">
           {/* Calendar */}
           <div>
-            <h2 className="text-lg font-semibold text-slate-900 mb-4">Kalender</h2>
+            <h2 className="text-lg font-semibold text-slate-900 mb-4">{t('diary.calendar')}</h2>
             {view === 'month' && renderMonthView()}
             {view === 'week' && (
               <WeekView
@@ -494,13 +496,13 @@ export default function Diary() {
           {/* Recent Diary Entries */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-semibold text-slate-900">Senaste dagboksinläggen</h2>
-              <button 
+              <h2 className="text-lg font-semibold text-slate-900">{t('diary.recentEntries')}</h2>
+              <button
                 onClick={() => setIsWritingMode(true)}
                 className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors text-sm font-medium flex items-center gap-2"
               >
                 <Plus size={16} />
-                Nytt inlägg
+                {t('diary.newEntry')}
               </button>
             </div>
             
@@ -547,13 +549,13 @@ export default function Diary() {
               {diaryEntries.length === 0 && (
                 <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
                   <BookHeart size={48} className="text-slate-300 mx-auto mb-3" />
-                  <p className="text-slate-500 mb-2">Inga dagboksinlägg än</p>
-                  <p className="text-sm text-slate-400 mb-4">Börja skriva för att spara dina tankar och reflektioner</p>
-                  <button 
+                  <p className="text-slate-500 mb-2">{t('diary.noEntriesYet')}</p>
+                  <p className="text-sm text-slate-400 mb-4">{t('diary.startWriting')}</p>
+                  <button
                     onClick={() => setIsWritingMode(true)}
                     className="px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors text-sm font-medium"
                   >
-                    Skriv ditt första inlägg
+                    {t('diary.writeFirst')}
                   </button>
                 </div>
               )}
@@ -575,7 +577,7 @@ export default function Diary() {
             className="w-full py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium flex items-center justify-center gap-2"
           >
             <Plus size={20} />
-            Ny händelse
+            {t('diary.newEvent')}
           </button>
 
           {/* Mood Tracker */}
@@ -666,7 +668,7 @@ export default function Diary() {
           >
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-bold text-slate-900">Nytt dagboksinlägg</h2>
+                <h2 className="text-xl font-bold text-slate-900">{t('diary.modal.newEntry')}</h2>
                 <button 
                   onClick={() => setIsWritingMode(false)}
                   className="text-slate-400 hover:text-slate-600"
@@ -678,19 +680,19 @@ export default function Diary() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Titel
+                    {t('diary.modal.title')}
                   </label>
                   <input
                     ref={diaryTitleRef}
                     type="text"
-                    placeholder="Vad handlar dagen om?"
+                    placeholder={t('diary.modal.titlePlaceholder')}
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Hur mår du idag?
+                    {t('diary.modal.howAreYou')}
                   </label>
                   <div className="flex gap-2">
                     {[1, 2, 3, 4, 5].map((mood) => (
@@ -709,23 +711,23 @@ export default function Diary() {
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Din text
+                    {t('diary.modal.yourText')}
                   </label>
                   <textarea
                     ref={diaryContentRef}
                     rows={8}
-                    placeholder="Skriv om din dag, dina tankar, känslor eller framsteg..."
+                    placeholder={t('diary.modal.textPlaceholder')}
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
-                    Taggar (valfritt)
+                    {t('diary.modal.tagsOptional')}
                   </label>
                   <input
                     type="text"
-                    placeholder="t.ex. intervju, positivt, utmaning (separera med komma)"
+                    placeholder={t('diary.modal.tagsPlaceholder')}
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                   />
                 </div>
@@ -736,13 +738,13 @@ export default function Diary() {
                   onClick={() => setIsWritingMode(false)}
                   className="flex-1 py-3 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-medium"
                 >
-                  Avbryt
+                  {t('diary.modal.cancel')}
                 </button>
                 <button
                   onClick={handleSaveDiaryEntry}
                   className="flex-1 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-colors font-medium"
                 >
-                  Spara inlägg
+                  {t('diary.modal.saveEntry')}
                 </button>
               </div>
             </div>

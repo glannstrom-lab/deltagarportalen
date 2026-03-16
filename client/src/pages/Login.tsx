@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import { useZodForm } from '../hooks/useZodForm'
 import { loginSchema, type LoginInput } from '../lib/validations'
 import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from 'lucide-react'
 
 export default function Login() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { signIn, isAuthenticated, isLoading: authLoading, error: authError, clearError } = useAuthStore()
   
@@ -84,19 +86,19 @@ export default function Login() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <img 
-            src="/logo-jobin.png" 
-            alt="Jobin" 
+          <img
+            src="/logo-jobin.png"
+            alt="Jobin"
             className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
           />
           <h1 className="text-2xl font-bold text-white">Jobin</h1>
-          <p className="text-violet-200 mt-1">Din väg till nytt jobb</p>
+          <p className="text-violet-200 mt-1">{t('auth.yourPath')}</p>
         </div>
 
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Välkommen tillbaka!</h2>
-          <p className="text-slate-500 text-center mb-6">Logga in för att fortsätta</p>
+          <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">{t('auth.welcomeBack')}</h2>
+          <p className="text-slate-500 text-center mb-6">{t('auth.loginToContinue')}</p>
 
           {(authError || errors.email || errors.password) && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
@@ -110,7 +112,7 @@ export default function Login() {
             {/* Email */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-slate-700 mb-1">
-                E-postadress
+                {t('auth.email')}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
@@ -126,7 +128,7 @@ export default function Login() {
                       ? 'border-red-300 focus:border-red-500'
                       : 'border-stone-300'
                   }`}
-                  placeholder="namn@exempel.se"
+                  placeholder={t('auth.emailPlaceholder')}
                   autoComplete="email"
                 />
               </div>
@@ -138,7 +140,7 @@ export default function Login() {
             {/* Password */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-1">
-                Lösenord
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
@@ -154,7 +156,7 @@ export default function Login() {
                       ? 'border-red-300 focus:border-red-500'
                       : 'border-stone-300'
                   }`}
-                  placeholder="Ange ditt lösenord"
+                  placeholder={t('auth.passwordPlaceholder')}
                   autoComplete="current-password"
                 />
                 <button
@@ -179,11 +181,11 @@ export default function Login() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  <span>Loggar in...</span>
+                  <span>{t('auth.loggingIn')}</span>
                 </>
               ) : (
                 <>
-                  <span>Logga in</span>
+                  <span>{t('auth.login')}</span>
                   <ArrowRight size={20} />
                 </>
               )}
@@ -193,9 +195,9 @@ export default function Login() {
           {/* Register Link */}
           <div className="mt-6 text-center">
             <p className="text-stone-600">
-              Har du inget konto?{' '}
+              {t('auth.noAccount')}{' '}
               <Link to="/register" className="text-violet-600 hover:text-violet-700 font-semibold">
-                Skapa ett konto
+                {t('auth.createAccountLink')}
               </Link>
             </p>
           </div>
@@ -203,7 +205,7 @@ export default function Login() {
           {/* Demo Login Divider */}
           <div className="mt-6 flex items-center gap-4">
             <div className="flex-1 h-px bg-slate-200"></div>
-            <span className="text-slate-400 text-sm">eller</span>
+            <span className="text-slate-400 text-sm">{t('auth.or')}</span>
             <div className="flex-1 h-px bg-slate-200"></div>
           </div>
 
@@ -215,14 +217,14 @@ export default function Login() {
             className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
           >
             <span>🚀</span>
-            <span>{isSubmitting ? 'Skapar demo...' : 'Utforska med demokonto'}</span>
+            <span>{isSubmitting ? t('auth.creatingDemo') : t('auth.demoAccount')}</span>
           </button>
         </div>
 
         {/* Back Link */}
         <div className="mt-6 text-center">
           <Link to="/" className="text-violet-200 hover:text-white text-sm">
-            ← Tillbaka till Jobin
+            ← {t('auth.backToJobin')}
           </Link>
         </div>
       </div>

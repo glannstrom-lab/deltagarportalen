@@ -5,7 +5,8 @@
 
 import { useState, useEffect, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { 
+import { useTranslation } from 'react-i18next'
+import {
   Briefcase, 
   BookOpen, 
   FileText, 
@@ -376,6 +377,7 @@ function generateCoverLetterPDF(letter: CoverLetter) {
 
 // Main Component
 export default function Resources() {
+  const { t, i18n } = useTranslation()
   const [searchParams, setSearchParams] = useSearchParams()
   const activeTab = searchParams.get('tab') || 'all'
   
@@ -458,15 +460,24 @@ export default function Resources() {
   const totalItems = savedJobs.length + bookmarkedArticles.length + coverLetters.length + uploadedFiles.length + (hasCV ? 1 : 0)
 
   const tabs = [
-    { id: 'all', label: 'Allt', count: totalItems },
-    { id: 'documents', label: 'Dokument', count: coverLetters.length + (hasCV ? 1 : 0) },
-    { id: 'jobs', label: 'Jobb', count: savedJobs.length },
-    { id: 'articles', label: 'Artiklar', count: bookmarkedArticles.length },
+    { id: 'all', label: t('resources.tabs.all'), count: totalItems },
+    { id: 'documents', label: t('resources.tabs.documents'), count: coverLetters.length + (hasCV ? 1 : 0) },
+    { id: 'jobs', label: t('resources.tabs.jobs'), count: savedJobs.length },
+    { id: 'articles', label: t('resources.tabs.articles'), count: bookmarkedArticles.length },
   ]
+
+  // Status labels with translations
+  const statusLabelsTranslated: Record<string, { label: string; color: string; bg: string; icon: any }> = {
+    'SAVED': { label: t('resources.status.saved'), color: 'text-slate-600', bg: 'bg-slate-100', icon: Bookmark },
+    'APPLIED': { label: t('resources.status.applied'), color: 'text-blue-600', bg: 'bg-blue-100', icon: CheckCircle2 },
+    'INTERVIEW': { label: t('resources.status.interview'), color: 'text-purple-600', bg: 'bg-purple-100', icon: Sparkles },
+    'REJECTED': { label: t('resources.status.rejected'), color: 'text-red-600', bg: 'bg-red-100', icon: X },
+    'ACCEPTED': { label: t('resources.status.accepted'), color: 'text-green-600', bg: 'bg-green-100', icon: Award },
+  }
 
   if (loading) {
     return (
-      <PageLayout title="Mina resurser" description="Alla dina sparade dokument, jobb och resurser på ett ställe">
+      <PageLayout title={t('resources.title')} description={t('resources.description')}>
         <div className="flex items-center justify-center py-20">
           <Loader2 className="animate-spin text-violet-600" size={48} />
         </div>
@@ -475,35 +486,35 @@ export default function Resources() {
   }
 
   return (
-    <PageLayout 
-      title="Mina resurser" 
-      description="Alla dina sparade dokument, jobb och resurser på ett ställe"
+    <PageLayout
+      title={t('resources.title')}
+      description={t('resources.description')}
     >
       {/* Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <StatCard 
-          label="Sparade jobb" 
-          value={savedJobs.length} 
+        <StatCard
+          label={t('resources.stats.savedJobs')}
+          value={savedJobs.length}
           icon={BriefcaseIcon}
           color="bg-blue-500"
           link="/job-search"
         />
-        <StatCard 
-          label="Dokument" 
-          value={coverLetters.length + (hasCV ? 1 : 0)} 
+        <StatCard
+          label={t('resources.stats.documents')}
+          value={coverLetters.length + (hasCV ? 1 : 0)}
           icon={DocumentText}
           color="bg-purple-500"
         />
-        <StatCard 
-          label="Bokmärken" 
-          value={bookmarkedArticles.length} 
+        <StatCard
+          label={t('resources.stats.bookmarks')}
+          value={bookmarkedArticles.length}
           icon={BookOpen}
           color="bg-teal-500"
           link="/knowledge-base"
         />
-        <StatCard 
-          label="Filer" 
-          value={uploadedFiles.length} 
+        <StatCard
+          label={t('resources.stats.files')}
+          value={uploadedFiles.length}
           icon={Folder}
           color="bg-amber-500"
         />
@@ -542,7 +553,7 @@ export default function Resources() {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
               <input
                 type="text"
-                placeholder="Sök..."
+                placeholder={t('resources.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none w-full md:w-64"
@@ -578,15 +589,15 @@ export default function Resources() {
                     <CheckCircle2 className="w-8 h-8 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-800">Mitt CV</h2>
+                    <h2 className="text-xl font-bold text-slate-800">{t('resources.myCV')}</h2>
                     <p className="text-slate-600">
                       {cvData.first_name} {cvData.last_name}
                       {cvData.title && ` • ${cvData.title}`}
                     </p>
                     <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
-                      <span>{cvData.work_experience?.length || 0} erfarenheter</span>
-                      <span>{cvData.education?.length || 0} utbildningar</span>
-                      <span>{cvData.skills?.length || 0} kompetenser</span>
+                      <span>{cvData.work_experience?.length || 0} {t('resources.experiences')}</span>
+                      <span>{cvData.education?.length || 0} {t('resources.educations')}</span>
+                      <span>{cvData.skills?.length || 0} {t('resources.skills')}</span>
                     </div>
                   </div>
                 </div>
@@ -596,21 +607,21 @@ export default function Resources() {
                     className="flex items-center gap-2 px-4 py-2.5 bg-white text-amber-700 rounded-xl font-medium hover:bg-amber-50 border border-amber-200 transition-colors shadow-sm"
                   >
                     <Edit2 className="w-4 h-4" />
-                    Redigera
+                    {t('resources.edit')}
                   </Link>
                   <button
                     onClick={() => setPreviewModal({type: 'cv', data: cvData})}
                     className="flex items-center gap-2 px-4 py-2.5 bg-white text-amber-700 rounded-xl font-medium hover:bg-amber-50 border border-amber-200 transition-colors shadow-sm"
                   >
                     <Eye className="w-4 h-4" />
-                    Visa
+                    {t('resources.view')}
                   </button>
                   <button
                     onClick={handleDownloadCV}
                     className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-colors shadow-md"
                   >
                     <FileDown className="w-4 h-4" />
-                    Ladda ner PDF
+                    {t('resources.downloadPDF')}
                   </button>
                 </div>
               </div>
@@ -627,11 +638,11 @@ export default function Resources() {
                   <Heart className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800">Din intresseguide</h2>
+                  <h2 className="text-xl font-bold text-slate-800">{t('resources.interestGuide')}</h2>
                   <p className="text-slate-600">
-                    Slutförd {new Date(interestResult.completed_at).toLocaleDateString('sv-SE')}
+                    {t('resources.completed')} {new Date(interestResult.completed_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                     {interestResult.recommended_jobs && (
-                      <span> • {interestResult.recommended_jobs.length} yrkesförslag</span>
+                      <span> • {interestResult.recommended_jobs.length} {t('resources.jobSuggestions')}</span>
                     )}
                   </p>
                 </div>
@@ -641,13 +652,13 @@ export default function Resources() {
                   to="/interest-guide"
                   className="px-4 py-2.5 bg-white text-pink-700 rounded-xl font-medium hover:bg-pink-50 border border-pink-200 transition-colors"
                 >
-                  Se resultat
+                  {t('resources.seeResults')}
                 </Link>
                 <Link
                   to="/career"
                   className="px-4 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-purple-600 transition-colors shadow-md"
                 >
-                  Utforska yrken
+                  {t('resources.exploreJobs')}
                 </Link>
               </div>
             </div>
@@ -660,13 +671,13 @@ export default function Resources() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
                 <FileText className="text-purple-600" size={24} />
-                Personliga brev
+                {t('resources.coverLetters')}
               </h3>
-              <Link 
-                to="/cover-letter" 
+              <Link
+                to="/cover-letter"
                 className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
               >
-                Skapa nytt
+                {t('resources.createNew')}
                 <Plus size={16} />
               </Link>
             </div>
@@ -676,8 +687,8 @@ export default function Resources() {
                   key={letter.id}
                   title={letter.title}
                   subtitle={letter.company ? `${letter.company}${letter.job_title ? ` • ${letter.job_title}` : ''}` : undefined}
-                  type={letter.ai_generated ? 'AI-genererad' : 'Manuell'}
-                  date={new Date(letter.created_at).toLocaleDateString('sv-SE')}
+                  type={letter.ai_generated ? t('resources.aiGenerated') : t('resources.manual')}
+                  date={new Date(letter.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                   icon={FileText}
                   color="bg-gradient-to-br from-purple-500 to-indigo-500"
                   actions={
@@ -687,7 +698,7 @@ export default function Resources() {
                         className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
                       >
                         <Eye size={16} />
-                        Läs
+                        {t('resources.read')}
                       </button>
                       <button
                         onClick={() => handleDownloadLetter(letter)}
@@ -710,33 +721,33 @@ export default function Resources() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
                 <BriefcaseIcon className="text-blue-600" size={24} />
-                Sparade jobb
+                {t('resources.savedJobs')}
                 <span className="text-sm font-normal text-slate-500">({filteredJobs.length})</span>
               </h3>
-              <Link 
-                to="/job-tracker" 
+              <Link
+                to="/job-tracker"
                 className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
               >
-                Jobbtracker
+                {t('resources.jobTracker')}
                 <ChevronRight size={16} />
               </Link>
             </div>
             <div className="space-y-3">
               {filteredJobs.slice(0, activeTab === 'all' ? 5 : undefined).map((job) => {
-                const StatusIcon = statusLabels[job.status]?.icon || Bookmark
+                const StatusIcon = statusLabelsTranslated[job.status]?.icon || Bookmark
                 return (
                   <div 
                     key={job.id} 
                     className="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-lg transition-all group"
                   >
                     <div className="flex items-start gap-4">
-                      <div className={`w-12 h-12 ${statusLabels[job.status]?.bg || 'bg-slate-100'} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                        <StatusIcon className={`w-6 h-6 ${statusLabels[job.status]?.color || 'text-slate-600'}`} />
+                      <div className={`w-12 h-12 ${statusLabelsTranslated[job.status]?.bg || 'bg-slate-100'} rounded-xl flex items-center justify-center flex-shrink-0`}>
+                        <StatusIcon className={`w-6 h-6 ${statusLabelsTranslated[job.status]?.color || 'text-slate-600'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-4">
                           <div>
-                            <h4 className="font-semibold text-slate-800 text-lg">{job.job_data?.headline || 'Jobbannons'}</h4>
+                            <h4 className="font-semibold text-slate-800 text-lg">{job.job_data?.headline || t('resources.jobAd')}</h4>
                             <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mt-1">
                               {job.job_data?.employer?.name && (
                                 <span className="flex items-center gap-1">
@@ -752,13 +763,13 @@ export default function Resources() {
                               )}
                             </div>
                           </div>
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full ${statusLabels[job.status]?.bg} ${statusLabels[job.status]?.color}`}>
-                            {statusLabels[job.status]?.label}
+                          <span className={`px-3 py-1 text-xs font-medium rounded-full ${statusLabelsTranslated[job.status]?.bg} ${statusLabelsTranslated[job.status]?.color}`}>
+                            {statusLabelsTranslated[job.status]?.label}
                           </span>
                         </div>
                         {job.notes && (
                           <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl mt-3">
-                            <span className="font-medium">Anteckningar:</span> {job.notes}
+                            <span className="font-medium">{t('resources.notes')}:</span> {job.notes}
                           </p>
                         )}
                         <div className="flex items-center gap-2 mt-4">
@@ -767,7 +778,7 @@ export default function Resources() {
                             className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           >
                             <Eye size={16} />
-                            Visa detaljer
+                            {t('resources.viewDetails')}
                           </button>
                           {job.job_data?.webpage_url && (
                             <a
@@ -777,7 +788,7 @@ export default function Resources() {
                               className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                             >
                               <ExternalLink size={16} />
-                              Öppna annons
+                              {t('resources.openAd')}
                             </a>
                           )}
                           <button
@@ -802,14 +813,14 @@ export default function Resources() {
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
                 <BookOpen className="text-teal-600" size={24} />
-                Bokmärkta artiklar
+                {t('resources.bookmarkedArticles')}
                 <span className="text-sm font-normal text-slate-500">({bookmarkedArticles.length})</span>
               </h3>
-              <Link 
-                to="/knowledge-base" 
+              <Link
+                to="/knowledge-base"
                 className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
               >
-                Utforska
+                {t('resources.explore')}
                 <ChevronRight size={16} />
               </Link>
             </div>
@@ -831,7 +842,7 @@ export default function Resources() {
                     {article.readingTime && (
                       <span className="text-xs text-slate-500 flex items-center gap-1 mt-1">
                         <Clock size={12} />
-                        {article.readingTime} min läsning
+                        {article.readingTime} {t('resources.minReading')}
                       </span>
                     )}
                   </div>
@@ -856,7 +867,7 @@ export default function Resources() {
           <section>
             <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
               <Folder className="text-amber-600" size={24} />
-              Uppladdade filer
+              {t('resources.uploadedFiles')}
             </h3>
             <div className="grid md:grid-cols-3 gap-4">
               {uploadedFiles.map((file) => (
@@ -871,7 +882,7 @@ export default function Resources() {
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-slate-800 truncate">{file.name}</p>
                       <p className="text-xs text-slate-500">
-                        {file.type === 'CV' ? 'CV' : file.type === 'COVER_LETTER' ? 'Personligt brev' : 'Övrigt'}
+                        {file.type === 'CV' ? 'CV' : file.type === 'COVER_LETTER' ? t('resources.coverLetter') : t('resources.other')}
                       </p>
                     </div>
                     <button
@@ -893,22 +904,22 @@ export default function Resources() {
             <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Bookmark className="w-10 h-10 text-slate-400" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-800 mb-2">Inga sparade resurser ännu</h3>
+            <h3 className="text-xl font-semibold text-slate-800 mb-2">{t('resources.noResourcesTitle')}</h3>
             <p className="text-slate-600 max-w-md mx-auto mb-6">
-              När du sparar jobb, skapar dokument eller bokmärker artiklar kommer de att visas här.
+              {t('resources.noResourcesDesc')}
             </p>
             <div className="flex flex-wrap justify-center gap-3">
-              <Link 
-                to="/cv" 
+              <Link
+                to="/cv"
                 className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-violet-700 transition-all shadow-md"
               >
-                Skapa CV
+                {t('resources.createCV')}
               </Link>
-              <Link 
-                to="/job-search" 
+              <Link
+                to="/job-search"
                 className="px-6 py-3 bg-white text-slate-700 border border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition-all"
               >
-                Sök jobb
+                {t('resources.searchJobs')}
               </Link>
             </div>
           </div>
@@ -921,7 +932,7 @@ export default function Resources() {
           <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-auto">
             <div className="sticky top-0 bg-white border-b border-slate-200 p-4 flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-800">
-                {previewModal.type === 'cv' && 'Förhandsgranskning - CV'}
+                {previewModal.type === 'cv' && `${t('resources.preview')} - CV`}
                 {previewModal.type === 'letter' && previewModal.data.title}
                 {previewModal.type === 'job' && previewModal.data.job_data?.headline}
               </h3>
@@ -945,7 +956,7 @@ export default function Resources() {
                   </div>
                   {previewModal.data.summary && (
                     <div>
-                      <h3 className="font-semibold text-slate-700 mb-2">Sammanfattning</h3>
+                      <h3 className="font-semibold text-slate-700 mb-2">{t('resources.summary')}</h3>
                       <p className="text-slate-600">{previewModal.data.summary}</p>
                     </div>
                   )}

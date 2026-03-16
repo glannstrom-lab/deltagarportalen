@@ -1,21 +1,23 @@
 import { useState, useMemo } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import { useZodForm } from '../hooks/useZodForm'
 import { registerSchema } from '../lib/validations'
 import { Eye, EyeOff, Loader2, Mail, Lock, User, ArrowRight, Check, X } from 'lucide-react'
 
-// Valideringsregler för lösenord (för UI-visning)
-const passwordRules = [
-  { id: 'length', label: 'Minst 8 tecken', test: (pwd: string) => pwd.length >= 8 },
-  { id: 'uppercase', label: 'En stor bokstav (A-Z)', test: (pwd: string) => /[A-Z]/.test(pwd) },
-  { id: 'lowercase', label: 'En liten bokstav (a-z)', test: (pwd: string) => /[a-z]/.test(pwd) },
-  { id: 'number', label: 'En siffra (0-9)', test: (pwd: string) => /[0-9]/.test(pwd) },
-]
-
 export default function Register() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { signUp } = useAuthStore()
+
+  // Password validation rules with translated labels
+  const passwordRules = useMemo(() => [
+    { id: 'length', label: t('auth.passwordRules.minLength'), test: (pwd: string) => pwd.length >= 8 },
+    { id: 'uppercase', label: t('auth.passwordRules.uppercase'), test: (pwd: string) => /[A-Z]/.test(pwd) },
+    { id: 'lowercase', label: t('auth.passwordRules.lowercase'), test: (pwd: string) => /[a-z]/.test(pwd) },
+    { id: 'number', label: t('auth.passwordRules.number'), test: (pwd: string) => /[0-9]/.test(pwd) },
+  ], [t])
   const [showPassword, setShowPassword] = useState(false)
   const [submitError, setSubmitError] = useState('')
 
@@ -50,8 +52,8 @@ export default function Register() {
         })
 
         if (signUpError) {
-          if (signUpError.includes('finns redan')) {
-            throw new Error('En användare med denna e-postadress finns redan. Logga in istället.')
+          if (signUpError.includes('finns redan') || signUpError.includes('already exists')) {
+            throw new Error(t('auth.errors.userExists'))
           }
           throw new Error(signUpError)
         }
@@ -59,7 +61,7 @@ export default function Register() {
         // Navigera till dashboard
         navigate('/')
       } catch (err: any) {
-        setSubmitError(err.message || 'Det gick inte att skapa kontot. Försök igen om en stund.')
+        setSubmitError(err.message || t('auth.errors.createFailed'))
       }
     },
   })
@@ -83,19 +85,19 @@ export default function Register() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <img 
-            src="/logo-jobin.png" 
-            alt="Jobin" 
+          <img
+            src="/logo-jobin.png"
+            alt="Jobin"
             className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
           />
           <h1 className="text-2xl font-bold text-white">Jobin</h1>
-          <p className="text-teal-200 mt-1">Din väg till nytt jobb börjar här</p>
+          <p className="text-teal-200 mt-1">{t('auth.pathStartsHere')}</p>
         </div>
 
         {/* Register Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">Skapa ditt konto</h2>
-          <p className="text-slate-500 text-center mb-6">Ta det första steget mot din nya karriär</p>
+          <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">{t('auth.createAccount')}</h2>
+          <p className="text-slate-500 text-center mb-6">{t('auth.firstStep')}</p>
 
           {/* Error Message */}
           {submitError && (
@@ -111,7 +113,7 @@ export default function Register() {
           {/* Validation Summary */}
           {(Object.keys(errors).length > 0 && Object.keys(touched).length > 0) && (
             <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <p className="text-amber-800 text-sm font-medium mb-1">Vänligen korrigera följande:</p>
+              <p className="text-amber-800 text-sm font-medium mb-1">{t('auth.pleaseCorrect')}:</p>
               <ul className="text-amber-700 text-sm list-disc list-inside">
                 {Object.entries(errors).map(([field, error]) => (
                   touched[field as keyof typeof touched] && <li key={field}>{error}</li>
@@ -124,11 +126,11 @@ export default function Register() {
             {/* Name Fields */}
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label 
+                <label
                   htmlFor="firstName"
                   className="block text-sm font-medium text-slate-700 mb-1"
                 >
-                  Förnamn
+                  {t('auth.firstName')}
                 </label>
                 <div className="relative">
                   <User 
@@ -157,11 +159,11 @@ export default function Register() {
                 )}
               </div>
               <div>
-                <label 
+                <label
                   htmlFor="lastName"
                   className="block text-sm font-medium text-slate-700 mb-1"
                 >
-                  Efternamn
+                  {t('auth.lastName')}
                 </label>
                 <input
                   id="lastName"
@@ -186,11 +188,11 @@ export default function Register() {
 
             {/* Email */}
             <div>
-              <label 
+              <label
                 htmlFor="email"
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
-                E-postadress
+                {t('auth.email')}
               </label>
               <div className="relative">
                 <Mail 
@@ -221,11 +223,11 @@ export default function Register() {
 
             {/* Password */}
             <div>
-              <label 
+              <label
                 htmlFor="password"
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
-                Lösenord
+                {t('auth.password')}
               </label>
               <div className="relative">
                 <Lock 
@@ -245,14 +247,14 @@ export default function Register() {
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-slate-300'
                   }`}
-                  placeholder="Välj ett säkert lösenord"
+                  placeholder={t('auth.newPasswordPlaceholder')}
                   autoComplete="new-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
-                  aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
+                  aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
@@ -263,7 +265,7 @@ export default function Register() {
 
               {/* Password Strength Indicator */}
               <div className="mt-3 p-3 bg-slate-50 rounded-lg space-y-2">
-                <p className="text-sm font-medium text-slate-700">Ditt lösenord behöver:</p>
+                <p className="text-sm font-medium text-slate-700">{t('auth.passwordNeeds')}:</p>
                 <ul className="space-y-1">
                   {passwordRules.map((rule) => {
                     const isPassed = rule.test(values.password)
@@ -290,7 +292,7 @@ export default function Register() {
                 </ul>
                 {isPasswordValid && (
                   <p className="text-sm text-green-600 font-medium mt-2">
-                    ✨ Perfekt! Ditt lösenord är säkert.
+                    ✨ {t('auth.passwordSecure')}
                   </p>
                 )}
               </div>
@@ -298,11 +300,11 @@ export default function Register() {
 
             {/* Confirm Password */}
             <div>
-              <label 
+              <label
                 htmlFor="confirmPassword"
                 className="block text-sm font-medium text-slate-700 mb-1"
               >
-                Bekräfta lösenord
+                {t('auth.confirmPassword')}
               </label>
               <div className="relative">
                 <Lock 
@@ -322,7 +324,7 @@ export default function Register() {
                       ? 'border-red-300 focus:border-red-500' 
                       : 'border-slate-300'
                   }`}
-                  placeholder="Upprepa lösenordet"
+                  placeholder={t('auth.confirmPasswordPlaceholder')}
                   autoComplete="new-password"
                 />
               </div>
@@ -332,7 +334,7 @@ export default function Register() {
               {values.confirmPassword && values.password === values.confirmPassword && !errors.confirmPassword && (
                 <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
                   <Check size={16} />
-                  Lösenorden matchar
+                  {t('auth.passwordsMatch')}
                 </p>
               )}
             </div>
@@ -346,11 +348,11 @@ export default function Register() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  <span>Skapar ditt konto...</span>
+                  <span>{t('auth.creatingAccount')}</span>
                 </>
               ) : (
                 <>
-                  <span>Skapa konto</span>
+                  <span>{t('auth.register')}</span>
                   <ArrowRight size={20} />
                 </>
               )}
@@ -360,24 +362,24 @@ export default function Register() {
           {/* Login Link */}
           <div className="mt-6 text-center">
             <p className="text-slate-600">
-              Har du redan ett konto?{' '}
-              <Link 
-                to="/login" 
+              {t('auth.hasAccount')}{' '}
+              <Link
+                to="/login"
                 className="text-teal-600 hover:text-teal-700 font-semibold"
               >
-                Logga in här
+                {t('auth.loginHere')}
               </Link>
             </p>
           </div>
         </div>
 
-        {/* Tillbaka-länk */}
+        {/* Back Link */}
         <div className="mt-6 text-center">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="text-teal-200 hover:text-white text-sm"
           >
-            ← Tillbaka till startsidan
+            ← {t('auth.backToHome')}
           </Link>
         </div>
       </div>
