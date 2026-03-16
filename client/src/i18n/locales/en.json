@@ -1357,5 +1357,164 @@
         "Be open about being new to the role - but show potential"
       ]
     }
+  },
+  "landing": {
+    "nav": {
+      "features": "Features",
+      "howItWorks": "How it works",
+      "faq": "FAQ",
+      "login": "Log in",
+      "getStarted": "Get started",
+      "openMenu": "Open menu",
+      "getStartedFree": "Get started free"
+    },
+    "hero": {
+      "badge": "New: AI-powered CV generator",
+      "titleStart": "Your path to",
+      "titleHighlight": "employment",
+      "titleEnd": "starts here",
+      "description": "Whether you've been job searching for a while or facing a new career path, the tools to move forward are here. With personal guidance, smart tools, and support all the way, you don't have to take this journey alone.",
+      "cta": "Get started free",
+      "watchVideo": "See how it works",
+      "free": "Completely free",
+      "secure": "Safe and secure",
+      "quickStart": "Get started in 2 minutes",
+      "yourOverview": "Your overview",
+      "cvProgress": "CV progress",
+      "interestGuide": "Interest guide",
+      "savedJobs": "Saved jobs",
+      "jobListings": "listings",
+      "interviews": "Interviews",
+      "thisWeek": "this week",
+      "cvApproved": "CV approved by ATS!",
+      "newJobMatches": "3 new job matches"
+    },
+    "stats": {
+      "jobSeekersHelped": "job seekers have been helped",
+      "findJobWithin6Months": "find a job within 6 months",
+      "activeJobListings": "active job listings",
+      "userRating": "user rating"
+    },
+    "trust": {
+      "partnersTitle": "Partners with",
+      "arbetsformedlingen": "Swedish Public Employment Service",
+      "platsbanken": "Platsbanken",
+      "municipalities": "Swedish municipalities"
+    },
+    "steps": {
+      "sectionLabel": "The process",
+      "title": "This is how it works",
+      "description": "Three simple steps on your way to a new job. We guide you through every part.",
+      "step1Title": "Discover your strengths",
+      "step1Description": "Take our interest guide and understand what you're good at. Get suggestions for careers that suit you.",
+      "step2Title": "Create your CV",
+      "step2Description": "Use our AI-powered CV generator. Optimize for ATS, import from LinkedIn, export as PDF.",
+      "step3Title": "Find and apply for jobs",
+      "step3Description": "Search among thousands of jobs, prepare with interview training, and keep track of your applications."
+    },
+    "features": {
+      "sectionLabel": "Features",
+      "title": "Everything you need in one platform",
+      "description": "From discovering what you want to do to landing your dream job – we have the tools to help you.",
+      "cv": {
+        "title": "A CV that actually gets read",
+        "description": "Create a professional CV with the help of AI – optimized for both recruiters and computers. Import from LinkedIn, get instant feedback, and export as PDF when you're satisfied.",
+        "feature1": "AI writing assistance for every section",
+        "feature2": "ATS compatibility analysis",
+        "feature3": "LinkedIn import",
+        "feature4": "Professional PDF templates",
+        "feature5": "Share with your employment consultant"
+      },
+      "interests": {
+        "title": "Discover what you're good at",
+        "description": "Our personality test helps you understand your strengths and interests. Get suggestions for careers that suit you."
+      },
+      "jobs": {
+        "title": "More jobs, less searching",
+        "description": "Search among thousands of jobs from all over Sweden with smart filters. See directly on the map where the jobs are."
+      },
+      "interview": {
+        "title": "Prepare for the interview",
+        "description": "Practice with our interview trainer, learn the STAR method, and go into the interview with confidence."
+      },
+      "wellness": {
+        "title": "Feel good along the way",
+        "description": "Your wellbeing is most important. With a diary, reflection exercises, and supportive tools, you maintain balance."
+      },
+      "coach": {
+        "title": "Career coach",
+        "description": "Get personalized advice on salary development, skill building, and how to navigate your career forward."
+      }
+    },
+    "testimonials": {
+      "sectionLabel": "Reviews",
+      "title": "What our users say",
+      "description": "Real stories from people who found their way back to working life.",
+      "quote1": "After 8 months of searching, I finally got structure in my CV. Two weeks later I had my first interview in a long time.",
+      "name1": "Anna, 34",
+      "role1": "Found a job as a customer service representative",
+      "quote2": "The personality test gave me words for things I had always felt but couldn't articulate. It opened completely new doors for me.",
+      "name2": "Marcus, 41",
+      "role2": "Changed career to UX design",
+      "quote3": "As an employment consultant, I use Jobin daily with my participants. It saves time and gives them tools they can actually use themselves.",
+      "name3": "Sofia",
+      "role3": "Employment consultant in Stockholm",
+      "quote4": "I never thought I would dare to go to an interview again. The interview training gave me the courage to actually apply for that job.",
+      "name4": "Erik, 52",
+      "role4": "Back to work after sick leave"
+    },
+    "faq": {
+      "sectionLabel": "FAQ",
+      "title": "Frequently asked questions",
+      "description": "What you might wonder about before getting started.",
+      "q1": "Is it really free?",
+      "a1": "Yes, Jobin is completely free for job seekers. No hidden fees, no premium levels – all features are available to everyone. This is possible thanks to collaboration with the Swedish Public Employment Service and municipalities.",
+      "q2": "I've been job searching for a long time without results. Can Jobin really help me?",
+      "a2": "Absolutely. Many of our users have been long-term unemployed and have, with the help of our structured tools and personal guidance, gotten back to work. You're not alone, and there are paths forward. The tools are specially designed to provide support even when things feel tough.",
+      "q3": "I don't even know what I want to work with. Where should I start?",
+      "a3": "Start with our interest guide! It helps you explore your strengths and interests, and gives suggestions for careers that might suit you. No pressure – just discovery. Many users have discovered new career paths they never thought of before.",
+      "q4": "Is my personal information safe?",
+      "a4": "Yes, we take your privacy very seriously. Your information is stored securely with modern encryption and is never shared with third parties without your consent. You always own your data and can delete your account at any time. We follow GDPR and have clear procedures for data security."
+    },
+    "contact": {
+      "sectionLabel": "Contact",
+      "title": "We're here for you",
+      "description": "Do you have questions or need help? Don't hesitate to contact us. We usually respond within 24 hours.",
+      "email": "Email",
+      "openingHours": "Opening hours",
+      "openingHoursValue": "Monday - Friday, 08:00 - 17:00",
+      "readyToStart": "Ready to start?",
+      "createAccountDescription": "Create an account and get started in just a few minutes.",
+      "createFreeAccount": "Create free account"
+    },
+    "cta": {
+      "title": "Ready to find your job?",
+      "description": "Your new start is just a few clicks away. No matter where you are in life right now, there's a path forward. Take the first step today – we're with you all the way.",
+      "button": "Create free account",
+      "noCard": "No credit card required. No commitment. Just opportunities."
+    },
+    "footer": {
+      "brand": "Jobin is a free platform for job seekers. We believe everyone deserves a fair chance in the job market.",
+      "featuresTitle": "Features",
+      "cvGenerator": "CV generator",
+      "interestGuide": "Interest guide",
+      "jobSearch": "Job search",
+      "interviewTraining": "Interview training",
+      "aboutTitle": "About Jobin",
+      "aboutUs": "About us",
+      "contact": "Contact",
+      "privacyPolicy": "Privacy policy",
+      "termsOfUse": "Terms of use",
+      "helpTitle": "Help",
+      "support": "Support",
+      "faq": "FAQ",
+      "guides": "Guides",
+      "accountTitle": "Account",
+      "login": "Log in",
+      "createAccount": "Create account",
+      "copyright": "2026 Jobin. All rights reserved.",
+      "madeWith": "Made with",
+      "forJobSeekers": "for job seekers in Sweden"
+    }
   }
 }

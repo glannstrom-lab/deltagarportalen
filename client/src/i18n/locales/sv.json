@@ -1357,5 +1357,164 @@
         "Var öppen med att du är ny i rollen - men visa på potential"
       ]
     }
+  },
+  "landing": {
+    "nav": {
+      "features": "Funktioner",
+      "howItWorks": "Så funkar det",
+      "faq": "Vanliga frågor",
+      "login": "Logga in",
+      "getStarted": "Kom igång",
+      "openMenu": "Öppna meny",
+      "getStartedFree": "Kom igång gratis"
+    },
+    "hero": {
+      "badge": "Nytt: AI-stödd CV-generator",
+      "titleStart": "Din väg till",
+      "titleHighlight": "jobbet",
+      "titleEnd": "börjar här",
+      "description": "Oavsett om du sökt jobb länge eller står inför en ny karriär, finns verktygen som hjälper dig framåt. Med personlig vägledning, smarta verktyg och stöd hela vägen behöver du inte gå den här resan ensam.",
+      "cta": "Kom igång gratis",
+      "watchVideo": "Se hur det fungerar",
+      "free": "Helt gratis",
+      "secure": "Säker och trygg",
+      "quickStart": "Kom igång på 2 minuter",
+      "yourOverview": "Din översikt",
+      "cvProgress": "CV-progress",
+      "interestGuide": "Intresseguide",
+      "savedJobs": "Sparade jobb",
+      "jobListings": "annonser",
+      "interviews": "Intervjuer",
+      "thisWeek": "denna vecka",
+      "cvApproved": "CV godkänt av ATS!",
+      "newJobMatches": "3 nya jobbmatchningar"
+    },
+    "stats": {
+      "jobSeekersHelped": "arbetssökande har fått hjälp",
+      "findJobWithin6Months": "hittar jobb inom 6 månader",
+      "activeJobListings": "aktiva jobbannonser",
+      "userRating": "omdöme från användare"
+    },
+    "trust": {
+      "partnersTitle": "Samarbetar med",
+      "arbetsformedlingen": "Arbetsförmedlingen",
+      "platsbanken": "Platsbanken",
+      "municipalities": "Sveriges kommuner"
+    },
+    "steps": {
+      "sectionLabel": "Processen",
+      "title": "Så här fungerar det",
+      "description": "Tre enkla steg på din väg till nytt jobb. Vi guidar dig genom varje del.",
+      "step1Title": "Upptäck dina styrkor",
+      "step1Description": "Gör vår intresseguide och förstå vad du är bra på. Få förslag på yrken som passar just dig.",
+      "step2Title": "Skapa ditt CV",
+      "step2Description": "Använd vår AI-stödda CV-generator. Optimera för ATS, importera från LinkedIn, exportera som PDF.",
+      "step3Title": "Hitta och sök jobb",
+      "step3Description": "Sök bland tusentals jobb, förbered dig med intervjuträningen och håll koll på dina ansökningar."
+    },
+    "features": {
+      "sectionLabel": "Funktioner",
+      "title": "Allt du behöver i en plattform",
+      "description": "Från att upptäcka vad du vill göra till att landa drömjobbet – vi har verktygen som hjälper dig.",
+      "cv": {
+        "title": "CV som faktiskt blir läst",
+        "description": "Skapa ett professionellt CV med hjälp av AI – optimerat för både rekryterare och datorer. Importera från LinkedIn, få feedback direkt och exportera som PDF när du är nöjd.",
+        "feature1": "AI-skrivhjälp för varje sektion",
+        "feature2": "ATS-kompatibilitetsanalys",
+        "feature3": "LinkedIn-import",
+        "feature4": "Professionella PDF-mallar",
+        "feature5": "Dela med arbetskonsulent"
+      },
+      "interests": {
+        "title": "Upptäck vad du är bra på",
+        "description": "Vårt personlighetstest hjälper dig förstå dina styrkor och intressen. Få förslag på yrken som passar just dig."
+      },
+      "jobs": {
+        "title": "Fler jobb, mindre letande",
+        "description": "Sök bland tusentals jobb från hela Sverige med smarta filter. Se direkt på kartan var jobben finns."
+      },
+      "interview": {
+        "title": "Förbered dig inför intervjun",
+        "description": "Öva med vår intervjutränerare, lär dig STAR-metoden och gå in på intervjun med självförtroende."
+      },
+      "wellness": {
+        "title": "Må bra under tiden",
+        "description": "Din välmående är viktigast. Med dagbok, reflektionsövningar och stödjande verktyg håller du balansen."
+      },
+      "coach": {
+        "title": "Karriärcoachen",
+        "description": "Få personliga råd om löneutveckling, kompetensutveckling och hur du navigerar din karriär framåt."
+      }
+    },
+    "testimonials": {
+      "sectionLabel": "Omdömen",
+      "title": "Det här säger våra användare",
+      "description": "Verkliga historier från människor som hittat sin väg tillbaka till arbetslivet.",
+      "quote1": "Efter 8 månaders sökande fick jag äntligen struktur på mitt CV. Två veckor senare hade jag mitt första intervju på länge.",
+      "name1": "Anna, 34",
+      "role1": "Hittade jobb som kundtjänstmedarbetare",
+      "quote2": "Personlighetstestet gav mig ord på saker jag alltid känt men inte kunnat formulera. Det öppnade helt nya dörrar för mig.",
+      "name2": "Marcus, 41",
+      "role2": "Bytte karriär till UX-design",
+      "quote3": "Som arbetskonsulent använder jag Jobin dagligen med mina deltagare. Det sparar tid och ger dem verktyg de faktiskt kan använda själva.",
+      "name3": "Sofia",
+      "role3": "Arbetskonsulent i Stockholm",
+      "quote4": "Jag trodde aldrig jag skulle våga gå på intervju igen. Intervjuträningen gav mig modet att faktiskt söka det där jobbet.",
+      "name4": "Erik, 52",
+      "role4": "Tillbaka i arbete efter sjukskrivning"
+    },
+    "faq": {
+      "sectionLabel": "FAQ",
+      "title": "Vanliga frågor",
+      "description": "Det du kanske undrar över innan du kommer igång.",
+      "q1": "Kostar det verkligen ingenting?",
+      "a1": "Ja, Jobin är helt gratis för dig som söker jobb. Inga dolda avgifter, inga premiumnivåer – alla funktioner är tillgängliga för alla. Detta är möjligt tack vare samarbete med Arbetsförmedlingen och kommuner.",
+      "q2": "Jag har sökt jobb länge utan resultat. Kan Jobin verkligen hjälpa mig?",
+      "a2": "Absolut. Många av våra användare har varit långtidsarbetslösa och har med hjälp av våra strukturerade verktyg och personliga vägledning tagit sig tillbaka till arbete. Du är inte ensam, och det finns vägar framåt. Verktygen är speciellt utformade för att ge stöd även när det känns tufft.",
+      "q3": "Jag vet inte ens vad jag vill jobba med. Var ska jag börja?",
+      "a3": "Börja med vår intresseguide! Den hjälper dig utforska dina styrkor och intressen, och ger förslag på yrken som kan passa dig. Ingen press – bara upptäckande. Många användare har upptäckt nya karriärvägar de aldrig tänkt på tidigare.",
+      "q4": "Är mina personuppgifter säkra?",
+      "a4": "Ja, vi tar din integritet på största allvar. Dina uppgifter sparas säkert med modern kryptering och delas aldrig med tredje part utan ditt samtycke. Du äger alltid dina data och kan när som helst ta bort ditt konto. Vi följer GDPR och har tydliga rutiner för datasäkerhet."
+    },
+    "contact": {
+      "sectionLabel": "Kontakt",
+      "title": "Vi finns här för dig",
+      "description": "Har du frågor eller behöver hjälp? Tveka inte att kontakta oss. Vi svarar vanligtvis inom 24 timmar.",
+      "email": "E-post",
+      "openingHours": "Öppettider",
+      "openingHoursValue": "Måndag - Fredag, 08:00 - 17:00",
+      "readyToStart": "Redo att börja?",
+      "createAccountDescription": "Skapa ett konto och kom igång på bara några minuter.",
+      "createFreeAccount": "Skapa konto gratis"
+    },
+    "cta": {
+      "title": "Redo att hitta ditt jobb?",
+      "description": "Din nya start är bara några klick bort. Oavsett var du är i livet just nu, finns det en väg framåt. Ta det första steget idag – vi är med dig hela vägen.",
+      "button": "Skapa gratis konto",
+      "noCard": "Inga kortuppgifter krävs. Ingen bindningstid. Bara möjligheter."
+    },
+    "footer": {
+      "brand": "Jobin är en gratis plattform för arbetssökande. Vi tror att alla förtjänar en ärlig chans på arbetsmarknaden.",
+      "featuresTitle": "Funktioner",
+      "cvGenerator": "CV-generator",
+      "interestGuide": "Intresseguide",
+      "jobSearch": "Jobbsök",
+      "interviewTraining": "Intervjuträning",
+      "aboutTitle": "Om Jobin",
+      "aboutUs": "Om oss",
+      "contact": "Kontakt",
+      "privacyPolicy": "Integritetspolicy",
+      "termsOfUse": "Användarvillkor",
+      "helpTitle": "Hjälp",
+      "support": "Support",
+      "faq": "FAQ",
+      "guides": "Guider",
+      "accountTitle": "Konto",
+      "login": "Logga in",
+      "createAccount": "Skapa konto",
+      "copyright": "2026 Jobin. Alla rättigheter förbehållna.",
+      "madeWith": "Skapad med",
+      "forJobSeekers": "för arbetssökande i Sverige"
+    }
   }
 }

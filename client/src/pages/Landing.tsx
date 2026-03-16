@@ -1,14 +1,15 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
-import { 
-  Check, 
-  Shield, 
-  Clock, 
-  ArrowRight, 
-  FileText, 
-  Lightbulb, 
-  Briefcase, 
-  Mic, 
+import {
+  Check,
+  Shield,
+  Clock,
+  ArrowRight,
+  FileText,
+  Lightbulb,
+  Briefcase,
+  Mic,
   Heart,
   Menu,
   ChevronDown,
@@ -201,6 +202,7 @@ function StatsCard({ value, label, icon: Icon, suffix = '' }: {
 }
 
 export default function Landing() {
+  const { t } = useTranslation()
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
@@ -213,46 +215,46 @@ export default function Landing() {
 
   const faqs = [
     {
-      question: "Kostar det verkligen ingenting?",
-      answer: "Ja, Jobin är helt gratis för dig som söker jobb. Inga dolda avgifter, inga premiumnivåer – alla funktioner är tillgängliga för alla. Detta är möjligt tack vare samarbete med Arbetsförmedlingen och kommuner."
+      question: t('landing.faq.q1'),
+      answer: t('landing.faq.a1')
     },
     {
-      question: "Jag har sökt jobb länge utan resultat. Kan Jobin verkligen hjälpa mig?",
-      answer: "Absolut. Många av våra användare har varit långtidsarbetslösa och har med hjälp av våra strukturerade verktyg och personliga vägledning tagit sig tillbaka till arbete. Du är inte ensam, och det finns vägar framåt. Verktygen är speciellt utformade för att ge stöd även när det känns tufft."
+      question: t('landing.faq.q2'),
+      answer: t('landing.faq.a2')
     },
     {
-      question: "Jag vet inte ens vad jag vill jobba med. Var ska jag börja?",
-      answer: "Börja med vår intresseguide! Den hjälper dig utforska dina styrkor och intressen, och ger förslag på yrken som kan passa dig. Ingen press – bara upptäckande. Många användare har upptäckt nya karriärvägar de aldrig tänkt på tidigare."
+      question: t('landing.faq.q3'),
+      answer: t('landing.faq.a3')
     },
     {
-      question: "Är mina personuppgifter säkra?",
-      answer: "Ja, vi tar din integritet på största allvar. Dina uppgifter sparas säkert med modern kryptering och delas aldrig med tredje part utan ditt samtycke. Du äger alltid dina data och kan när som helst ta bort ditt konto. Vi följer GDPR och har tydliga rutiner för datasäkerhet."
+      question: t('landing.faq.q4'),
+      answer: t('landing.faq.a4')
     }
   ]
 
   const testimonials = [
     {
-      quote: "Efter 8 månaders sökande fick jag äntligen struktur på mitt CV. Två veckor senare hade jag mitt första intervju på länge.",
-      name: "Anna, 34",
-      role: "Hittade jobb som kundtjänstmedarbetare",
+      quote: t('landing.testimonials.quote1'),
+      name: t('landing.testimonials.name1'),
+      role: t('landing.testimonials.role1'),
       gradient: "bg-gradient-to-br from-violet-500 to-violet-600"
     },
     {
-      quote: "Personlighetstestet gav mig ord på saker jag alltid känt men inte kunnat formulera. Det öppnade helt nya dörrar för mig.",
-      name: "Marcus, 41",
-      role: "Bytte karriär till UX-design",
+      quote: t('landing.testimonials.quote2'),
+      name: t('landing.testimonials.name2'),
+      role: t('landing.testimonials.role2'),
       gradient: "bg-gradient-to-br from-teal-500 to-teal-600"
     },
     {
-      quote: "Som arbetskonsulent använder jag Jobin dagligen med mina deltagare. Det sparar tid och ger dem verktyg de faktiskt kan använda själva.",
-      name: "Sofia",
-      role: "Arbetskonsulent i Stockholm",
+      quote: t('landing.testimonials.quote3'),
+      name: t('landing.testimonials.name3'),
+      role: t('landing.testimonials.role3'),
       gradient: "bg-gradient-to-br from-orange-500 to-orange-600"
     },
     {
-      quote: "Jag trodde aldrig jag skulle våga gå på intervju igen. Intervjuträningen gav mig modet att faktiskt söka det där jobbet.",
-      name: "Erik, 52",
-      role: "Tillbaka i arbete efter sjukskrivning",
+      quote: t('landing.testimonials.quote4'),
+      name: t('landing.testimonials.name4'),
+      role: t('landing.testimonials.role4'),
       gradient: "bg-gradient-to-br from-pink-500 to-pink-600"
     }
   ]
@@ -276,36 +278,36 @@ export default function Landing() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               <a href="#funktioner" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
-                Funktioner
+                {t('landing.nav.features')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
               </a>
               <a href="#hur-det-funkar" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
-                Så funkar det
+                {t('landing.nav.howItWorks')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
               </a>
               <a href="#faq" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
-                Vanliga frågor
+                {t('landing.nav.faq')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
               </a>
-              <Link 
-                to="/login" 
+              <Link
+                to="/login"
                 className="text-slate-600 hover:text-violet-600 font-medium transition-colors"
               >
-                Logga in
+                {t('landing.nav.login')}
               </Link>
-              <Link 
-                to="/register" 
+              <Link
+                to="/register"
                 className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white px-5 py-2.5 rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5"
               >
-                Kom igång
+                {t('landing.nav.getStarted')}
               </Link>
             </div>
 
             {/* Mobile Menu Button */}
-            <button 
+            <button
               className="md:hidden p-2 hover:bg-slate-100 rounded-lg transition-colors"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Öppna meny"
+              aria-label={t('landing.nav.openMenu')}
             >
               <Menu className="w-6 h-6 text-slate-600" />
             </button>
@@ -314,23 +316,23 @@ export default function Landing() {
           {/* Mobile Menu */}
           <div className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className="py-4 border-t border-slate-100 space-y-2">
-              <a href="#funktioner" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Funktioner</a>
-              <a href="#hur-det-funkar" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Så funkar det</a>
-              <a href="#faq" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Vanliga frågor</a>
+              <a href="#funktioner" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('landing.nav.features')}</a>
+              <a href="#hur-det-funkar" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('landing.nav.howItWorks')}</a>
+              <a href="#faq" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('landing.nav.faq')}</a>
               <div className="pt-2 flex flex-col gap-2">
-                <Link 
-                  to="/login" 
+                <Link
+                  to="/login"
                   className="text-slate-600 hover:text-violet-600 font-medium py-2 px-2 text-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Logga in
+                  {t('landing.nav.login')}
                 </Link>
-                <Link 
-                  to="/register" 
+                <Link
+                  to="/register"
                   className="bg-teal-500 text-white px-5 py-3 rounded-xl font-semibold text-center hover:bg-teal-600 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Kom igång gratis
+                  {t('landing.nav.getStartedFree')}
                 </Link>
               </div>
             </div>
@@ -354,53 +356,53 @@ export default function Landing() {
             <div className="text-center lg:text-left">
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-100 to-teal-50 text-teal-700 px-4 py-2 rounded-full text-sm font-medium mb-6 border border-teal-200">
                 <Sparkles className="w-4 h-4" />
-                Nytt: AI-stödd CV-generator
+                {t('landing.hero.badge')}
               </div>
-              
+
               <h1 className="text-4xl lg:text-5xl xl:text-7xl font-bold text-slate-900 mb-6 leading-tight tracking-tight">
-                Din väg till{' '}
+                {t('landing.hero.titleStart')}{' '}
                 <span className="relative inline-block">
-                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">jobbet</span>
+                  <span className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-orange-600">{t('landing.hero.titleHighlight')}</span>
                   <svg className="absolute -bottom-2 left-0 w-full" viewBox="0 0 200 12" fill="none">
                     <path d="M2 8C50 2 150 2 198 8" stroke="#f97316" strokeWidth="4" strokeLinecap="round"/>
                   </svg>
                 </span>
-                {' '}börjar här
+                {' '}{t('landing.hero.titleEnd')}
               </h1>
-              
+
               <p className="text-lg lg:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                Oavsett om du sökt jobb länge eller står inför en ny karriär, finns verktygen som hjälper dig framåt. Med personlig vägledning, smarta verktyg och stöd hela vägen behöver du inte gå den här resan ensam.
+                {t('landing.hero.description')}
               </p>
-              
+
               <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-10">
-                <Link 
+                <Link
                   to="/register"
                   className="group bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
                 >
-                  Kom igång gratis
+                  {t('landing.hero.cta')}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <a 
+                <a
                   href="#funktioner"
                   className="group bg-white text-violet-600 border-2 border-violet-100 hover:border-violet-300 px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center justify-center transition-all hover:shadow-lg hover:bg-violet-50"
                 >
                   <Play className="w-5 h-5 mr-2 fill-violet-600" />
-                  Se hur det fungerar
+                  {t('landing.hero.watchVideo')}
                 </a>
               </div>
-              
+
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-slate-500">
                 <span className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm">
                   <Check className="w-5 h-5 text-green-500" />
-                  Helt gratis
+                  {t('landing.hero.free')}
                 </span>
                 <span className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm">
                   <Shield className="w-5 h-5 text-green-500" />
-                  Säker och trygg
+                  {t('landing.hero.secure')}
                 </span>
                 <span className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm">
                   <Clock className="w-5 h-5 text-green-500" />
-                  Kom igång på 2 minuter
+                  {t('landing.hero.quickStart')}
                 </span>
               </div>
             </div>
@@ -414,13 +416,13 @@ export default function Landing() {
                     <span className="w-3 h-3 rounded-full bg-amber-400" />
                     <span className="w-3 h-3 rounded-full bg-green-400" />
                   </div>
-                  <span className="text-sm text-slate-400 font-medium">Din översikt</span>
+                  <span className="text-sm text-slate-400 font-medium">{t('landing.hero.yourOverview')}</span>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="bg-gradient-to-br from-violet-50 to-white rounded-xl p-4 border border-slate-100">
                     <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center text-lg mb-3">📝</div>
-                    <p className="text-xs text-slate-500 mb-1">CV-progress</p>
+                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.cvProgress')}</p>
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-slate-800">85%</p>
                       <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
@@ -430,33 +432,33 @@ export default function Landing() {
                   </div>
                   <div className="bg-gradient-to-br from-teal-50 to-white rounded-xl p-4 border border-slate-100">
                     <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center text-lg mb-3">💡</div>
-                    <p className="text-xs text-slate-500 mb-1">Intresseguide</p>
+                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.interestGuide')}</p>
                     <p className="font-semibold text-slate-800">Social (S)</p>
                   </div>
                   <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-4 border border-slate-100">
                     <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg mb-3">💼</div>
-                    <p className="text-xs text-slate-500 mb-1">Sparade jobb</p>
-                    <p className="font-semibold text-slate-800">12 annonser</p>
+                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.savedJobs')}</p>
+                    <p className="font-semibold text-slate-800">12 {t('landing.hero.jobListings')}</p>
                   </div>
                   <div className="bg-gradient-to-br from-pink-50 to-white rounded-xl p-4 border border-slate-100">
                     <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center text-lg mb-3">🎯</div>
-                    <p className="text-xs text-slate-500 mb-1">Intervjuer</p>
-                    <p className="font-semibold text-slate-800">2 denna vecka</p>
+                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.interviews')}</p>
+                    <p className="font-semibold text-slate-800">2 {t('landing.hero.thisWeek')}</p>
                   </div>
                 </div>
               </div>
-              
+
               {/* Floating badges */}
               <div className="absolute -top-4 -right-4 bg-white rounded-xl p-4 shadow-xl border border-slate-100 animate-pulse">
                 <span className="flex items-center gap-2 text-sm font-medium text-green-600">
                   <span>🎉</span>
-                  CV godkänt av ATS!
+                  {t('landing.hero.cvApproved')}
                 </span>
               </div>
               <div className="absolute bottom-8 -left-8 bg-white rounded-xl p-4 shadow-xl border border-slate-100">
                 <span className="flex items-center gap-2 text-sm font-medium text-violet-600">
                   <span>⭐</span>
-                  3 nya jobbmatchningar
+                  {t('landing.hero.newJobMatches')}
                 </span>
               </div>
             </div>
@@ -468,10 +470,10 @@ export default function Landing() {
       <section className="py-16 bg-gradient-to-r from-violet-600 to-violet-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            <StatsCard value={12450} label="arbetssökande har fått hjälp" icon={Users} suffix="+" />
-            <StatsCard value={89} label="hittar jobb inom 6 månader" icon={TrendingUp} suffix="%" />
-            <StatsCard value={156000} label="aktiva jobbannonser" icon={Briefcase} suffix="+" />
-            <StatsCard value={48} label="omdöme från användare" icon={Star} suffix="/5" />
+            <StatsCard value={12450} label={t('landing.stats.jobSeekersHelped')} icon={Users} suffix="+" />
+            <StatsCard value={89} label={t('landing.stats.findJobWithin6Months')} icon={TrendingUp} suffix="%" />
+            <StatsCard value={156000} label={t('landing.stats.activeJobListings')} icon={Briefcase} suffix="+" />
+            <StatsCard value={48} label={t('landing.stats.userRating')} icon={Star} suffix="/5" />
           </div>
         </div>
       </section>
@@ -480,20 +482,20 @@ export default function Landing() {
       <section className="bg-white border-y border-slate-200 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-slate-500 text-sm uppercase tracking-wider mb-6 font-medium">
-            Samarbetar med
+            {t('landing.trust.partnersTitle')}
           </p>
           <div className="flex items-center justify-center gap-12 flex-wrap">
             <span className="flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-colors">
               <Briefcase className="w-6 h-6" />
-              <span className="font-semibold">Arbetsförmedlingen</span>
+              <span className="font-semibold">{t('landing.trust.arbetsformedlingen')}</span>
             </span>
             <span className="flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-colors">
               <FileText className="w-6 h-6" />
-              <span className="font-semibold">Platsbanken</span>
+              <span className="font-semibold">{t('landing.trust.platsbanken')}</span>
             </span>
             <span className="flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-colors">
               <Check className="w-6 h-6" />
-              <span className="font-semibold">Sveriges kommuner</span>
+              <span className="font-semibold">{t('landing.trust.municipalities')}</span>
             </span>
           </div>
         </div>
@@ -503,28 +505,28 @@ export default function Landing() {
       <section id="hur-det-funkar" className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Processen</span>
-            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Så här fungerar det</h2>
-            <p className="text-slate-600 text-lg">Tre enkla steg på din väg till nytt jobb. Vi guidar dig genom varje del.</p>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.steps.sectionLabel')}</span>
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.steps.title')}</h2>
+            <p className="text-slate-600 text-lg">{t('landing.steps.description')}</p>
           </div>
-          
+
           <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            <StepCard 
+            <StepCard
               number={1}
-              title="Upptäck dina styrkor"
-              description="Gör vår intresseguide och förstå vad du är bra på. Få förslag på yrken som passar just dig."
+              title={t('landing.steps.step1Title')}
+              description={t('landing.steps.step1Description')}
               showArrow
             />
-            <StepCard 
+            <StepCard
               number={2}
-              title="Skapa ditt CV"
-              description="Använd vår AI-stödda CV-generator. Optimera för ATS, importera från LinkedIn, exportera som PDF."
+              title={t('landing.steps.step2Title')}
+              description={t('landing.steps.step2Description')}
               showArrow
             />
-            <StepCard 
+            <StepCard
               number={3}
-              title="Hitta och sök jobb"
-              description="Sök bland tusentals jobb, förbered dig med intervjuträningen och håll koll på dina ansökningar."
+              title={t('landing.steps.step3Title')}
+              description={t('landing.steps.step3Description')}
             />
           </div>
         </div>
@@ -534,61 +536,61 @@ export default function Landing() {
       <section id="funktioner" className="py-20 lg:py-28 bg-gradient-to-b from-white via-violet-50/30 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Funktioner</span>
-            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Allt du behöver i en plattform</h2>
-            <p className="text-slate-600 text-lg">Från att upptäcka vad du vill göra till att landa drömjobbet – vi har verktygen som hjälper dig.</p>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.features.sectionLabel')}</span>
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.features.title')}</h2>
+            <p className="text-slate-600 text-lg">{t('landing.features.description')}</p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            <FeatureCard 
+            <FeatureCard
               icon={FileText}
               iconBg="bg-violet-100"
               iconColor="text-violet-600"
-              title="CV som faktiskt blir läst"
-              description="Skapa ett professionellt CV med hjälp av AI – optimerat för både rekryterare och datorer. Importera från LinkedIn, få feedback direkt och exportera som PDF när du är nöjd."
+              title={t('landing.features.cv.title')}
+              description={t('landing.features.cv.description')}
               features={[
-                "AI-skrivhjälp för varje sektion",
-                "ATS-kompatibilitetsanalys",
-                "LinkedIn-import",
-                "Professionella PDF-mallar",
-                "Dela med arbetskonsulent"
+                t('landing.features.cv.feature1'),
+                t('landing.features.cv.feature2'),
+                t('landing.features.cv.feature3'),
+                t('landing.features.cv.feature4'),
+                t('landing.features.cv.feature5')
               ]}
               large
             />
-            <FeatureCard 
+            <FeatureCard
               icon={Lightbulb}
               iconBg="bg-teal-100"
               iconColor="text-teal-600"
-              title="Upptäck vad du är bra på"
-              description="Vårt personlighetstest hjälper dig förstå dina styrkor och intressen. Få förslag på yrken som passar just dig."
+              title={t('landing.features.interests.title')}
+              description={t('landing.features.interests.description')}
             />
-            <FeatureCard 
+            <FeatureCard
               icon={Briefcase}
               iconBg="bg-orange-100"
               iconColor="text-orange-600"
-              title="Fler jobb, mindre letande"
-              description="Sök bland tusentals jobb från hela Sverige med smarta filter. Se direkt på kartan var jobben finns."
+              title={t('landing.features.jobs.title')}
+              description={t('landing.features.jobs.description')}
             />
-            <FeatureCard 
+            <FeatureCard
               icon={Mic}
               iconBg="bg-pink-100"
               iconColor="text-pink-600"
-              title="Förbered dig inför intervjun"
-              description="Öva med vår intervjutränerare, lär dig STAR-metoden och gå in på intervjun med självförtroende."
+              title={t('landing.features.interview.title')}
+              description={t('landing.features.interview.description')}
             />
-            <FeatureCard 
+            <FeatureCard
               icon={Heart}
               iconBg="bg-green-100"
               iconColor="text-green-600"
-              title="Må bra under tiden"
-              description="Din välmående är viktigast. Med dagbok, reflektionsövningar och stödjande verktyg håller du balansen."
+              title={t('landing.features.wellness.title')}
+              description={t('landing.features.wellness.description')}
             />
-            <FeatureCard 
+            <FeatureCard
               icon={Zap}
               iconBg="bg-amber-100"
               iconColor="text-amber-600"
-              title="Karriärcoachen"
-              description="Få personliga råd om löneutveckling, kompetensutveckling och hur du navigerar din karriär framåt."
+              title={t('landing.features.coach.title')}
+              description={t('landing.features.coach.description')}
             />
           </div>
         </div>
@@ -598,14 +600,14 @@ export default function Landing() {
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Omdömen</span>
-            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Det här säger våra användare</h2>
-            <p className="text-slate-600 text-lg">Verkliga historier från människor som hittat sin väg tillbaka till arbetslivet.</p>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.testimonials.sectionLabel')}</span>
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.testimonials.title')}</h2>
+            <p className="text-slate-600 text-lg">{t('landing.testimonials.description')}</p>
           </div>
-          
+
           <div className="grid md:grid-cols-2 gap-6 lg:gap-8">
-            {testimonials.map((t, idx) => (
-              <TestimonialCard key={idx} {...t} />
+            {testimonials.map((testimonial, idx) => (
+              <TestimonialCard key={idx} {...testimonial} />
             ))}
           </div>
         </div>
@@ -615,9 +617,9 @@ export default function Landing() {
       <section id="faq" className="py-20 lg:py-28 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">FAQ</span>
-            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Vanliga frågor</h2>
-            <p className="text-slate-600 text-lg">Det du kanske undrar över innan du kommer igång.</p>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.faq.sectionLabel')}</span>
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.faq.title')}</h2>
+            <p className="text-slate-600 text-lg">{t('landing.faq.description')}</p>
           </div>
           
           <div>
@@ -640,10 +642,10 @@ export default function Landing() {
           <div className="bg-gradient-to-br from-slate-50 to-violet-50 rounded-3xl p-8 lg:p-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Kontakt</span>
-                <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 tracking-tight">Vi finns här för dig</h2>
+                <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.contact.sectionLabel')}</span>
+                <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.contact.title')}</h2>
                 <p className="text-slate-600 text-lg mb-8">
-                  Har du frågor eller behöver hjälp? Tveka inte att kontakta oss. Vi svarar vanligtvis inom 24 timmar.
+                  {t('landing.contact.description')}
                 </p>
                 <div className="space-y-4">
                   <a href="mailto:support@jobin.se" className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow group">
@@ -651,7 +653,7 @@ export default function Landing() {
                       <Mail className="w-6 h-6 text-violet-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-800">E-post</p>
+                      <p className="font-medium text-slate-800">{t('landing.contact.email')}</p>
                       <p className="text-slate-600">support@jobin.se</p>
                     </div>
                   </a>
@@ -660,8 +662,8 @@ export default function Landing() {
                       <Clock className="w-6 h-6 text-teal-600" />
                     </div>
                     <div>
-                      <p className="font-medium text-slate-800">Öppettider</p>
-                      <p className="text-slate-600">Måndag - Fredag, 08:00 - 17:00</p>
+                      <p className="font-medium text-slate-800">{t('landing.contact.openingHours')}</p>
+                      <p className="text-slate-600">{t('landing.contact.openingHoursValue')}</p>
                     </div>
                   </div>
                 </div>
@@ -669,13 +671,13 @@ export default function Landing() {
               <div className="text-center lg:text-right">
                 <div className="inline-block bg-white rounded-2xl p-8 shadow-lg">
                   <Target className="w-16 h-16 text-violet-600 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">Redo att börja?</h3>
-                  <p className="text-slate-600 mb-6">Skapa ett konto och kom igång på bara några minuter.</p>
-                  <Link 
+                  <h3 className="text-xl font-bold text-slate-800 mb-2">{t('landing.contact.readyToStart')}</h3>
+                  <p className="text-slate-600 mb-6">{t('landing.contact.createAccountDescription')}</p>
+                  <Link
                     to="/register"
                     className="inline-flex items-center gap-2 bg-violet-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-violet-700 transition-colors"
                   >
-                    Skapa konto gratis
+                    {t('landing.contact.createFreeAccount')}
                     <ArrowRight className="w-4 h-4" />
                   </Link>
                 </div>
@@ -689,19 +691,19 @@ export default function Landing() {
       <section className="py-20 lg:py-28 bg-gradient-to-br from-violet-600 via-violet-700 to-violet-800 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6 tracking-tight">Redo att hitta ditt jobb?</h2>
+          <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6 tracking-tight">{t('landing.cta.title')}</h2>
           <p className="text-white/90 text-lg mb-10 max-w-2xl mx-auto">
-            Din nya start är bara några klick bort. Oavsett var du är i livet just nu, finns det en väg framåt. Ta det första steget idag – vi är med dig hela vägen.
+            {t('landing.cta.description')}
           </p>
-          <Link 
+          <Link
             to="/register"
             className="inline-flex items-center gap-2 bg-white text-violet-600 hover:bg-slate-50 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1"
           >
-            Skapa gratis konto
+            {t('landing.cta.button')}
             <ArrowRight className="w-5 h-5" />
           </Link>
           <p className="text-white/70 text-sm mt-6">
-            Inga kortuppgifter krävs. Ingen bindningstid. Bara möjligheter.
+            {t('landing.cta.noCard')}
           </p>
         </div>
       </section>
@@ -719,7 +721,7 @@ export default function Landing() {
                 <span className="text-white font-bold text-xl">Jobin</span>
               </div>
               <p className="text-sm leading-relaxed mb-6">
-                Jobin är en gratis plattform för arbetssökande. Vi tror att alla förtjänar en ärlig chans på arbetsmarknaden.
+                {t('landing.footer.brand')}
               </p>
               <div className="flex gap-4">
                 <a href="#" className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-slate-700 transition-colors" aria-label="Twitter">
@@ -733,89 +735,89 @@ export default function Landing() {
                 </a>
               </div>
             </div>
-            
+
             {/* Funktioner */}
             <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Funktioner</h4>
+              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">{t('landing.footer.featuresTitle')}</h4>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    CV-generator
+                    {t('landing.footer.cvGenerator')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Intresseguide
+                    {t('landing.footer.interestGuide')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Jobbsök
+                    {t('landing.footer.jobSearch')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Intervjuträning
+                    {t('landing.footer.interviewTraining')}
                   </Link>
                 </li>
               </ul>
             </div>
-            
+
             {/* Om Jobin */}
             <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Om Jobin</h4>
+              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">{t('landing.footer.aboutTitle')}</h4>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Om oss
+                    {t('landing.footer.aboutUs')}
                   </Link>
                 </li>
                 <li>
                   <a href="mailto:support@jobin.se" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Kontakt
+                    {t('landing.footer.contact')}
                   </a>
                 </li>
                 <li>
                   <Link to="/privacy" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Integritetspolicy
+                    {t('landing.footer.privacyPolicy')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/terms" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Användarvillkor
+                    {t('landing.footer.termsOfUse')}
                   </Link>
                 </li>
               </ul>
             </div>
-            
+
             {/* Hjälp */}
             <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Hjälp</h4>
+              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">{t('landing.footer.helpTitle')}</h4>
               <ul className="space-y-3 text-sm">
                 <li>
                   <a href="mailto:support@jobin.se" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Support
+                    {t('landing.footer.support')}
                   </a>
                 </li>
                 <li>
                   <a href="#faq" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    FAQ
+                    {t('landing.footer.faq')}
                   </a>
                 </li>
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Guider
+                    {t('landing.footer.guides')}
                   </Link>
                 </li>
               </ul>
@@ -823,30 +825,30 @@ export default function Landing() {
 
             {/* Logga in */}
             <div>
-              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">Konto</h4>
+              <h4 className="text-white font-semibold mb-4 text-sm uppercase tracking-wide">{t('landing.footer.accountTitle')}</h4>
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link to="/login" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Logga in
+                    {t('landing.footer.login')}
                   </Link>
                 </li>
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
-                    Skapa konto
+                    {t('landing.footer.createAccount')}
                   </Link>
                 </li>
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-slate-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-sm">
-            <p>&copy; 2026 Jobin. Alla rättigheter förbehållna.</p>
+            <p>&copy; {t('landing.footer.copyright')}</p>
             <p className="flex items-center gap-2">
-              Skapad med 
-              <Heart className="w-4 h-4 text-red-500 fill-red-500" /> 
-              för arbetssökande i Sverige
+              {t('landing.footer.madeWith')}
+              <Heart className="w-4 h-4 text-red-500 fill-red-500" />
+              {t('landing.footer.forJobSeekers')}
             </p>
           </div>
         </div>
