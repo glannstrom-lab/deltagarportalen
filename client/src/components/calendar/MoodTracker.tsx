@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Smile, Battery, AlertTriangle, TrendingUp } from 'lucide-react'
 import type { MoodEntry, MoodLevel } from '@/services/calendarData'
 import { getMoodEmoji, getMoodLabel, getEnergyEmoji } from '@/services/calendarData'
+import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 
 interface MoodTrackerProps {
   entries: MoodEntry[]
@@ -14,6 +15,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
   const [energy, setEnergy] = useState<1 | 2 | 3 | 4 | 5>(3)
   const [stress, setStress] = useState<1 | 2 | 3 | 4 | 5>(3)
   const [note, setNote] = useState('')
+  const { trackMoodLogged } = useAchievementTracker()
 
   const handleSubmit = () => {
     onAddEntry({
@@ -23,6 +25,10 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
       stressLevel: stress,
       note: note || undefined,
     })
+
+    // Track mood logged achievement
+    trackMoodLogged(getMoodLabel(mood))
+
     setIsExpanded(false)
     setNote('')
   }

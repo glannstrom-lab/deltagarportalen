@@ -8,6 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { cvApi } from '@/services/supabaseApi'
 import { useCVStore } from '@/stores/cvStore'
 import type { CVData } from '@/services/supabaseApi'
+import { useAchievementTracker } from './useAchievementTracker'
 
 interface UseCVAutoSaveReturn {
   saveStatus: 'idle' | 'saving' | 'saved' | 'error'
@@ -21,12 +22,14 @@ interface UseCVAutoSaveReturn {
 export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
   const queryClient = useQueryClient()
   const { markSaving, markSaved, markError, markUnsaved, setPendingCount, lastSavedAt, saveStatus, hasUnsavedChanges, pendingCount } = useCVStore()
-  
+  const { trackCVUpdate } = useAchievementTracker()
+
   const [isOnline, setIsOnline] = useState(navigator.onLine)
   const pendingQueue = useRef<CVData[]>([])
   const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const isFirstRender = useRef(true)
   const lastSavedData = useRef<CVData | null>(null)
+  const lastTrackedTime = useRef<number>(0)
   
   // Server mutation with retry
   const { mutate: saveToServer } = useMutation({
@@ -38,6 +41,13 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       localStorage.removeItem('cv-draft')
       localStorage.setItem('cv-last-saved', Date.now().toString())
       lastSavedData.current = currentData
+
+      // Track CV update achievement (throttled to once per 30 seconds)
+      const now = Date.now()
+      if (now - lastTrackedTime.current > 30000) {
+        lastTrackedTime.current = now
+        trackCVUpdate()
+      }
     },
     onError: (error: any) => {
       console.error('CV auto-save failed:', error?.message || 'Unknown error')

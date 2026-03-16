@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { Plus, BookHeart, Calendar as CalendarIcon, TrendingUp, Sparkles } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
@@ -8,13 +8,14 @@ import { DayView } from '@/components/calendar/DayView'
 import { EventModal } from '@/components/calendar/EventModal'
 import { CalendarStats } from '@/components/calendar/CalendarStats'
 import { MoodTracker } from '@/components/calendar/MoodTracker'
-import type { 
-  CalendarEvent, 
-  CalendarView, 
-  CalendarGoal, 
+import type {
+  CalendarEvent,
+  CalendarView,
+  CalendarGoal,
   MoodEntry
 } from '@/services/calendarData'
 import { eventTypeConfig } from '@/services/calendarData'
+import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 
 // Mock data - behålls från Calendar
 const mockEvents: CalendarEvent[] = [
@@ -172,6 +173,10 @@ export default function Diary() {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDiaryEntry, setSelectedDiaryEntry] = useState<DiaryEntry | null>(null)
   const [isWritingMode, setIsWritingMode] = useState(false)
+  const { trackDiaryEntry } = useAchievementTracker()
+  const diaryTitleRef = useRef<HTMLInputElement>(null)
+  const diaryContentRef = useRef<HTMLTextAreaElement>(null)
+  const diaryMoodRef = useRef<number>(3)
 
   // Formatera datum
   const formatDate = (dateStr: string) => {
@@ -232,6 +237,29 @@ export default function Diary() {
   const handleAddMood = (entry: MoodEntry) => {
     const filtered = moodEntries.filter(e => e.date !== entry.date)
     setMoodEntries([...filtered, entry])
+  }
+
+  const handleSaveDiaryEntry = () => {
+    const title = diaryTitleRef.current?.value || 'Utan titel'
+    const content = diaryContentRef.current?.value || ''
+
+    if (!content.trim()) return
+
+    const newEntry: DiaryEntry = {
+      id: `d${Date.now()}`,
+      date: new Date().toISOString().split('T')[0],
+      title,
+      content,
+      mood: diaryMoodRef.current as 1 | 2 | 3 | 4 | 5,
+      tags: [],
+      wordCount: content.split(/\s+/).filter(w => w).length
+    }
+
+    setDiaryEntries([newEntry, ...diaryEntries])
+    setIsWritingMode(false)
+
+    // Track diary entry achievement
+    trackDiaryEntry()
   }
 
   // Month view render
@@ -652,13 +680,14 @@ export default function Diary() {
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Titel
                   </label>
-                  <input 
+                  <input
+                    ref={diaryTitleRef}
                     type="text"
                     placeholder="Vad handlar dagen om?"
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Hur mår du idag?
@@ -667,7 +696,9 @@ export default function Diary() {
                     {[1, 2, 3, 4, 5].map((mood) => (
                       <button
                         key={mood}
-                        className="flex-1 py-3 rounded-xl border-2 border-slate-200 hover:border-violet-400 transition-colors flex flex-col items-center gap-1"
+                        type="button"
+                        onClick={() => { diaryMoodRef.current = mood }}
+                        className="flex-1 py-3 rounded-xl border-2 border-slate-200 hover:border-violet-400 focus:border-violet-500 transition-colors flex flex-col items-center gap-1"
                       >
                         <span className="text-2xl">{getMoodEmoji(mood)}</span>
                         <span className="text-xs text-slate-500">{mood}</span>
@@ -675,39 +706,40 @@ export default function Diary() {
                     ))}
                   </div>
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Din text
                   </label>
-                  <textarea 
+                  <textarea
+                    ref={diaryContentRef}
                     rows={8}
                     placeholder="Skriv om din dag, dina tankar, känslor eller framsteg..."
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent resize-none"
                   />
                 </div>
-                
+
                 <div>
                   <label className="block text-sm font-medium text-slate-700 mb-2">
                     Taggar (valfritt)
                   </label>
-                  <input 
+                  <input
                     type="text"
                     placeholder="t.ex. intervju, positivt, utmaning (separera med komma)"
                     className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent"
                   />
                 </div>
               </div>
-              
+
               <div className="flex gap-3 mt-6 pt-4 border-t border-slate-100">
-                <button 
+                <button
                   onClick={() => setIsWritingMode(false)}
                   className="flex-1 py-3 border border-slate-200 text-slate-700 rounded-xl hover:bg-slate-50 transition-colors font-medium"
                 >
                   Avbryt
                 </button>
-                <button 
-                  onClick={() => setIsWritingMode(false)}
+                <button
+                  onClick={handleSaveDiaryEntry}
                   className="flex-1 py-3 bg-violet-600 text-white rounded-xl hover:bg-violet-700 transition-colors font-medium"
                 >
                   Spara inlägg

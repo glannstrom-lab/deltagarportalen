@@ -13,6 +13,7 @@ import {
 } from '@/services/linkedinService';
 import type { LinkedInProfile } from '@/services/linkedinService';
 import { LoadingState } from '@/components/ui/LoadingState';
+import { useAchievementTracker } from '@/hooks/useAchievementTracker';
 
 interface LinkedInImportProps {
   onImport: (cvData: any) => void;
@@ -26,6 +27,7 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
   const [isConnecting, setIsConnecting] = useState(false);
   const [previewProfile, setPreviewProfile] = useState<LinkedInProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { trackLinkedInAnalyzed } = useAchievementTracker();
 
   const handleConnect = async () => {
     setIsConnecting(true);
@@ -52,7 +54,7 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
     if (!previewProfile) return;
 
     const cvData = convertLinkedInToCV(previewProfile);
-    
+
     // Om det finns befintlig data, slå samman
     if (existingData) {
       onImport({
@@ -64,6 +66,9 @@ export const LinkedInImport: React.FC<LinkedInImportProps> = ({
     } else {
       onImport(cvData);
     }
+
+    // Track LinkedIn analyzed achievement
+    trackLinkedInAnalyzed();
   };
 
   const handleCancel = () => {

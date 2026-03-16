@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { MessageCircle, Send, User, Bot, RefreshCw, Mic, MicOff, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 
 interface FragaSvar {
   fraga: string
@@ -18,6 +19,7 @@ export default function InterviewSimulator() {
   const [historik, setHistorik] = useState<FragaSvar[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [antalFragor, setAntalFragor] = useState(0)
+  const { trackInterviewCompleted } = useAchievementTracker()
 
   const startaIntervju = async () => {
     if (!roll.trim()) return
@@ -86,6 +88,11 @@ export default function InterviewSimulator() {
   }
 
   const avslutaIntervju = () => {
+    // Track interview completion if at least 3 questions were answered
+    if (antalFragor >= 3) {
+      trackInterviewCompleted()
+    }
+
     setHarStartat(false)
     setRoll('')
     setForetag('')

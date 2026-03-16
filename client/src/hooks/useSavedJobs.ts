@@ -6,6 +6,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { savedJobsApi } from '@/services/supabaseApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
+import { useAchievementTracker } from './useAchievementTracker'
 
 export interface SavedJob {
   id: string
@@ -19,6 +20,7 @@ export function useSavedJobs() {
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { trackJobSaved, trackJobApplied } = useAchievementTracker()
 
   // Load from Supabase on mount
   useEffect(() => {
@@ -48,7 +50,7 @@ export function useSavedJobs() {
     try {
       // Spara till Supabase
       await savedJobsApi.save(job.id, job)
-      
+
       // Uppdatera lokalt state
       setSavedJobs(prev => {
         if (prev.some(saved => saved.id === job.id)) {
@@ -62,13 +64,17 @@ export function useSavedJobs() {
         }
         return [newSavedJob, ...prev]
       })
+
+      // Track achievement
+      trackJobSaved(job.headline, job.employer?.name)
+
       return true
     } catch (err) {
       console.error('Error saving job:', err)
       setError('Kunde inte spara jobb')
       return false
     }
-  }, [])
+  }, [trackJobSaved])
 
   const removeJob = useCallback(async (jobId: string) => {
     try {
@@ -85,18 +91,25 @@ export function useSavedJobs() {
   const updateJobStatus = useCallback(async (jobId: string, status: SavedJob['status']) => {
     try {
       await savedJobsApi.updateStatus(jobId, status.toUpperCase())
-      setSavedJobs(prev => 
-        prev.map(job => 
-          job.id === jobId ? { ...job, status } : job
+      const job = savedJobs.find(j => j.id === jobId)
+      setSavedJobs(prev =>
+        prev.map(j =>
+          j.id === jobId ? { ...j, status } : j
         )
       )
+
+      // Track achievement when status changes to 'applied'
+      if (status === 'applied' && job) {
+        trackJobApplied(job.jobData.headline, job.jobData.employer?.name)
+      }
+
       return true
     } catch (err) {
       console.error('Error updating job status:', err)
       setError('Kunde inte uppdatera status')
       return false
     }
-  }, [])
+  }, [savedJobs, trackJobApplied])
 
   const addNotes = useCallback((jobId: string, notes: string) => {
     setSavedJobs(prev => 

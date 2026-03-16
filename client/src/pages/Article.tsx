@@ -1,19 +1,19 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { articleApi } from '../services/api'
-import { 
-  ReadingProgress, 
+import {
+  ReadingProgress,
   ArticleChecklist,
   TextToSpeech,
   ReadingTime,
   DifficultyBadge,
   EnhancedArticleCard,
 } from '../components/knowledge-base'
-import { 
-  ArrowLeft, 
-  Calendar, 
-  Tag, 
-  User, 
+import {
+  ArrowLeft,
+  Calendar,
+  Tag,
+  User,
   Share2,
   Bookmark,
   ExternalLink,
@@ -23,6 +23,7 @@ import {
 import { getRelatedArticles } from '../services/articleData'
 import { exercises } from '../data/exercises'
 import { articleBookmarksApi } from '../services/cloudStorage'
+import { useAchievementTracker } from '../hooks/useAchievementTracker'
 
 export default function Article() {
   const { id } = useParams()
@@ -32,6 +33,8 @@ export default function Article() {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal')
+  const { trackArticleRead, trackArticleSaved } = useAchievementTracker()
+  const hasTrackedRead = useRef(false)
 
   useEffect(() => {
     console.log('Article - ID from params:', id)
@@ -49,6 +52,12 @@ export default function Article() {
     try {
       const data = await articleApi.getById(id!)
       setArticle(data)
+
+      // Track article read (only once per article view)
+      if (!hasTrackedRead.current && data?.title) {
+        hasTrackedRead.current = true
+        trackArticleRead(data.title)
+      }
     } catch (error) {
       console.error('Fel vid laddning:', error)
     } finally {
@@ -74,6 +83,8 @@ export default function Article() {
         await articleBookmarksApi.remove(id!)
       } else {
         await articleBookmarksApi.add(id!)
+        // Track article saved achievement
+        trackArticleSaved(article?.title)
       }
       setIsBookmarked(!isBookmarked)
     } catch (error) {
@@ -85,6 +96,8 @@ export default function Article() {
         newBookmarks = bookmarks.filter((b: string) => b !== id)
       } else {
         newBookmarks = [...bookmarks, id]
+        // Track article saved achievement (fallback)
+        trackArticleSaved(article?.title)
       }
       localStorage.setItem('article-bookmarks', JSON.stringify(newBookmarks))
       setIsBookmarked(!isBookmarked)
