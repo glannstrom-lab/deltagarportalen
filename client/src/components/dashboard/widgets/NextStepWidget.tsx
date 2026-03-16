@@ -3,10 +3,11 @@
  * Dynamiskt baserat på användarens progress
  */
 import { motion } from 'framer-motion'
-import { 
-  ArrowRight, 
-  FileText, 
-  Compass, 
+import { useTranslation } from 'react-i18next'
+import {
+  ArrowRight,
+  FileText,
+  Compass,
   Briefcase,
   Mail,
   Target,
@@ -21,26 +22,29 @@ import { cn } from '@/lib/utils'
 
 interface NextStep {
   id: string
-  title: string
-  description: string
-  action: string
+  titleKey: string
+  descriptionKey: string
+  actionKey: string
   link: string
   icon: React.ReactNode
-  timeEstimate: string
+  timeEstimateKey: string
   energyLevel: EnergyLevel
   priority: number
   color: string
   gradient: string
+  // For dynamic interpolation
+  interpolation?: Record<string, string | number>
 }
 
 export function NextStepWidget() {
+  const { t } = useTranslation()
   const { data, loading } = useDashboardData()
   const { level: userEnergy } = useEnergyStore()
 
   if (loading || !data) {
     return (
       <DashboardWidget
-        title="Nästa steg"
+        title={t('nextStepWidget.nextStep')}
         icon={<Target size={22} />}
         to="#"
         color="indigo"
@@ -50,16 +54,16 @@ export function NextStepWidget() {
     )
   }
 
-  // Define all possible next steps
+  // Define all possible next steps with translation keys
   const allSteps: NextStep[] = [
     {
       id: 'start-cv',
-      title: 'Skapa ditt CV',
-      description: 'Börja med grundinformation för att komma igång',
-      action: 'Starta nu',
+      titleKey: 'nextStepWidget.steps.startCv.title',
+      descriptionKey: 'nextStepWidget.steps.startCv.description',
+      actionKey: 'nextStepWidget.steps.startCv.action',
       link: '/cv',
       icon: <FileText size={24} />,
-      timeEstimate: '15 min',
+      timeEstimateKey: 'nextStepWidget.time.15min',
       energyLevel: 'medium',
       priority: 100,
       color: 'text-violet-700',
@@ -67,25 +71,26 @@ export function NextStepWidget() {
     },
     {
       id: 'complete-cv',
-      title: 'Färdigställ ditt CV',
-      description: `Du har ${data.cv.progress}% klart. Lägg till mer information för att nå 100%`,
-      action: 'Fortsätt bygga',
+      titleKey: 'nextStepWidget.steps.completeCv.title',
+      descriptionKey: 'nextStepWidget.steps.completeCv.description',
+      actionKey: 'nextStepWidget.steps.completeCv.action',
       link: '/cv',
       icon: <FileText size={24} />,
-      timeEstimate: '10 min',
+      timeEstimateKey: 'nextStepWidget.time.10min',
       energyLevel: 'medium',
       priority: 90,
       color: 'text-violet-700',
-      gradient: 'from-violet-500 to-purple-600'
+      gradient: 'from-violet-500 to-purple-600',
+      interpolation: { progress: data.cv.progress }
     },
     {
       id: 'interest-guide',
-      title: 'Gör intresseguiden',
-      description: 'Upptäck vilka yrken som passar dina intressen',
-      action: 'Starta guiden',
+      titleKey: 'nextStepWidget.steps.interestGuide.title',
+      descriptionKey: 'nextStepWidget.steps.interestGuide.description',
+      actionKey: 'nextStepWidget.steps.interestGuide.action',
       link: '/interest-guide',
       icon: <Compass size={24} />,
-      timeEstimate: '5 min',
+      timeEstimateKey: 'nextStepWidget.time.5min',
       energyLevel: 'low',
       priority: 80,
       color: 'text-teal-700',
@@ -93,12 +98,12 @@ export function NextStepWidget() {
     },
     {
       id: 'save-job',
-      title: 'Spara ett jobb',
-      description: 'Hitta och spara ditt första jobb att söka',
-      action: 'Hitta jobb',
+      titleKey: 'nextStepWidget.steps.saveJob.title',
+      descriptionKey: 'nextStepWidget.steps.saveJob.description',
+      actionKey: 'nextStepWidget.steps.saveJob.action',
       link: '/job-search',
       icon: <Briefcase size={24} />,
-      timeEstimate: '2 min',
+      timeEstimateKey: 'nextStepWidget.time.2min',
       energyLevel: 'low',
       priority: 70,
       color: 'text-blue-700',
@@ -106,12 +111,12 @@ export function NextStepWidget() {
     },
     {
       id: 'create-cover-letter',
-      title: 'Skapa personligt brev',
-      description: 'Skriv ett brev som kompletterar ditt CV',
-      action: 'Skriv brev',
+      titleKey: 'nextStepWidget.steps.createCoverLetter.title',
+      descriptionKey: 'nextStepWidget.steps.createCoverLetter.description',
+      actionKey: 'nextStepWidget.steps.createCoverLetter.action',
       link: '/cover-letter',
       icon: <Mail size={24} />,
-      timeEstimate: '10 min',
+      timeEstimateKey: 'nextStepWidget.time.10min',
       energyLevel: 'medium',
       priority: 60,
       color: 'text-rose-700',
@@ -119,25 +124,26 @@ export function NextStepWidget() {
     },
     {
       id: 'apply-job',
-      title: 'Skicka en ansökan',
-      description: `Du har ${data.jobs?.savedCount ?? 0} sparade jobb. Sök ett nu!`,
-      action: 'Ansök nu',
+      titleKey: 'nextStepWidget.steps.applyJob.title',
+      descriptionKey: 'nextStepWidget.steps.applyJob.description',
+      actionKey: 'nextStepWidget.steps.applyJob.action',
       link: '/job-search',
       icon: <Target size={24} />,
-      timeEstimate: '20 min',
+      timeEstimateKey: 'nextStepWidget.time.20min',
       energyLevel: 'high',
       priority: 50,
       color: 'text-amber-700',
-      gradient: 'from-amber-500 to-orange-600'
+      gradient: 'from-amber-500 to-orange-600',
+      interpolation: { count: data.jobs?.savedCount ?? 0 }
     },
     {
       id: 'daily-quest',
-      title: 'Avsluta en daglig quest',
-      description: 'Gör dagens uppgifter för att bygga din streak',
-      action: 'Se quests',
+      titleKey: 'nextStepWidget.steps.dailyQuest.title',
+      descriptionKey: 'nextStepWidget.steps.dailyQuest.description',
+      actionKey: 'nextStepWidget.steps.dailyQuest.action',
       link: '/quests',
       icon: <Zap size={24} />,
-      timeEstimate: '5 min',
+      timeEstimateKey: 'nextStepWidget.time.5min',
       energyLevel: 'low',
       priority: 40,
       color: 'text-yellow-700',
@@ -207,11 +213,11 @@ export function NextStepWidget() {
             <div className="flex items-center justify-between mb-4">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-medium">
                 <Target size={12} />
-                Rekommenderat nästa steg
+                {t('nextStepWidget.recommendedNextStep')}
               </span>
               <span className="text-white/80 text-sm flex items-center gap-1">
                 {getEnergyEmoji(nextStep.energyLevel)}
-                <span className="capitalize">{nextStep.energyLevel}</span> energi
+                <span className="capitalize">{t(`nextStepWidget.energy.${nextStep.energyLevel}`)}</span> {t('nextStepWidget.energy.label')}
               </span>
             </div>
 
@@ -222,18 +228,18 @@ export function NextStepWidget() {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-xl font-bold text-white mb-1">
-                  {nextStep.title}
+                  {t(nextStep.titleKey)}
                 </h3>
                 <p className="text-white/90 text-sm mb-3">
-                  {nextStep.description}
+                  {t(nextStep.descriptionKey, nextStep.interpolation)}
                 </p>
                 <div className="flex items-center gap-3">
                   <span className="inline-flex items-center gap-1 text-xs text-white/80">
                     <Clock size={12} />
-                    {nextStep.timeEstimate}
+                    {t(nextStep.timeEstimateKey)}
                   </span>
                   <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white text-violet-700 text-sm font-semibold group-hover:bg-white/90 transition-colors">
-                    {nextStep.action}
+                    {t(nextStep.actionKey)}
                     <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
                   </span>
                 </div>
@@ -248,30 +254,31 @@ export function NextStepWidget() {
 
 // Small variant for compact spaces
 export function NextStepWidgetCompact() {
+  const { t } = useTranslation()
   const { data } = useDashboardData()
   const { level: userEnergy } = useEnergyStore()
 
   if (!data) return null
 
   // Simplified logic for compact version
-  let title: string
+  let titleKey: string
   let link: string
   let color: string
 
   if (!data.cv.hasCV) {
-    title = 'Skapa CV'
+    titleKey = 'nextStepWidget.compact.createCv'
     link = '/cv'
     color = 'bg-violet-100 text-violet-700'
   } else if (!data.interest.hasResult) {
-    title = 'Intresseguide'
+    titleKey = 'nextStepWidget.compact.interestGuide'
     link = '/interest-guide'
     color = 'bg-teal-100 text-teal-700'
   } else if (data.jobs.savedCount === 0) {
-    title = 'Spara ett jobb'
+    titleKey = 'nextStepWidget.compact.saveJob'
     link = '/job-search'
     color = 'bg-blue-100 text-blue-700'
   } else {
-    title = 'Sök jobb'
+    titleKey = 'nextStepWidget.compact.searchJob'
     link = '/job-search'
     color = 'bg-amber-100 text-amber-700'
   }
@@ -285,7 +292,7 @@ export function NextStepWidgetCompact() {
       )}
     >
       <Target size={16} />
-      <span>Nästa: {title}</span>
+      <span>{t('nextStepWidget.next')}: {t(titleKey)}</span>
       <ArrowRight size={14} className="ml-auto" />
     </Link>
   )

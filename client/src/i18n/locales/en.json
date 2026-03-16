@@ -851,6 +851,67 @@
       }
     }
   },
+  "nextStepWidget": {
+    "nextStep": "Next Step",
+    "recommendedNextStep": "Recommended next step",
+    "next": "Next",
+    "energy": {
+      "low": "low",
+      "medium": "medium",
+      "high": "high",
+      "label": "energy"
+    },
+    "time": {
+      "2min": "2 min",
+      "5min": "5 min",
+      "10min": "10 min",
+      "15min": "15 min",
+      "20min": "20 min"
+    },
+    "steps": {
+      "startCv": {
+        "title": "Create your CV",
+        "description": "Start with basic information to get going",
+        "action": "Start now"
+      },
+      "completeCv": {
+        "title": "Complete your CV",
+        "description": "You have {{progress}}% done. Add more information to reach 100%",
+        "action": "Continue building"
+      },
+      "interestGuide": {
+        "title": "Take the interest guide",
+        "description": "Discover which careers match your interests",
+        "action": "Start guide"
+      },
+      "saveJob": {
+        "title": "Save a job",
+        "description": "Find and save your first job to apply for",
+        "action": "Find jobs"
+      },
+      "createCoverLetter": {
+        "title": "Create cover letter",
+        "description": "Write a letter that complements your CV",
+        "action": "Write letter"
+      },
+      "applyJob": {
+        "title": "Send an application",
+        "description": "You have {{count}} saved jobs. Apply for one now!",
+        "action": "Apply now"
+      },
+      "dailyQuest": {
+        "title": "Complete a daily quest",
+        "description": "Do today's tasks to build your streak",
+        "action": "See quests"
+      }
+    },
+    "compact": {
+      "createCv": "Create CV",
+      "interestGuide": "Interest Guide",
+      "saveJob": "Save a job",
+      "searchJob": "Search jobs"
+    }
+  },
   "activityWidget": {
     "yourActivity": "Your Activity",
     "thisWeek": "This week",

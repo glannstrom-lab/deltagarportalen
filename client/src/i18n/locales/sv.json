@@ -851,6 +851,67 @@
       }
     }
   },
+  "nextStepWidget": {
+    "nextStep": "Nästa steg",
+    "recommendedNextStep": "Rekommenderat nästa steg",
+    "next": "Nästa",
+    "energy": {
+      "low": "låg",
+      "medium": "medel",
+      "high": "hög",
+      "label": "energi"
+    },
+    "time": {
+      "2min": "2 min",
+      "5min": "5 min",
+      "10min": "10 min",
+      "15min": "15 min",
+      "20min": "20 min"
+    },
+    "steps": {
+      "startCv": {
+        "title": "Skapa ditt CV",
+        "description": "Börja med grundinformation för att komma igång",
+        "action": "Starta nu"
+      },
+      "completeCv": {
+        "title": "Färdigställ ditt CV",
+        "description": "Du har {{progress}}% klart. Lägg till mer information för att nå 100%",
+        "action": "Fortsätt bygga"
+      },
+      "interestGuide": {
+        "title": "Gör intresseguiden",
+        "description": "Upptäck vilka yrken som passar dina intressen",
+        "action": "Starta guiden"
+      },
+      "saveJob": {
+        "title": "Spara ett jobb",
+        "description": "Hitta och spara ditt första jobb att söka",
+        "action": "Hitta jobb"
+      },
+      "createCoverLetter": {
+        "title": "Skapa personligt brev",
+        "description": "Skriv ett brev som kompletterar ditt CV",
+        "action": "Skriv brev"
+      },
+      "applyJob": {
+        "title": "Skicka en ansökan",
+        "description": "Du har {{count}} sparade jobb. Sök ett nu!",
+        "action": "Ansök nu"
+      },
+      "dailyQuest": {
+        "title": "Avsluta en daglig quest",
+        "description": "Gör dagens uppgifter för att bygga din streak",
+        "action": "Se quests"
+      }
+    },
+    "compact": {
+      "createCv": "Skapa CV",
+      "interestGuide": "Intresseguide",
+      "saveJob": "Spara ett jobb",
+      "searchJob": "Sök jobb"
+    }
+  },
   "activityWidget": {
     "yourActivity": "Din aktivitet",
     "thisWeek": "Denna veckan",
