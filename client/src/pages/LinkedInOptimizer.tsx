@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Linkedin, Copy, Check, Sparkles, RefreshCw, User, FileText, Share2, MessageSquare } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
 export default function LinkedInOptimizer() {
+  const { t } = useTranslation()
   const [aktivTab, setAktivTab] = useState<'headline' | 'about' | 'post' | 'connection'>('headline')
   const [formData, setFormData] = useState({
     headline: { yrke: '', erfarenhet: '' },
@@ -38,7 +40,7 @@ export default function LinkedInOptimizer() {
         post: `Idag vill jag dela med mig av mina tankar om ${formData.post.amne}. Vad tycker ni?`,
         connection: `Hej ${formData.connection.namn}! Jag såg att du arbetar som ${formData.connection.roll} och skulle gärna vilja connecta. ${formData.connection.syfte}`
       }
-      setResultat(fallbacks[aktivTab] || 'Kunde inte generera text. Försök igen.')
+      setResultat(fallbacks[aktivTab] || t('linkedInOptimizer.errors.generateFailed'))
     } finally {
       setIsLoading(false)
     }
@@ -51,10 +53,10 @@ export default function LinkedInOptimizer() {
   }
 
   const tabs = [
-    { id: 'headline', label: 'Headline', icon: User, beskrivning: 'Skapa en catchy profilrubrik' },
-    { id: 'about', label: 'About', icon: FileText, beskrivning: 'Skriv en övertygande bio' },
-    { id: 'post', label: 'Inlägg', icon: Share2, beskrivning: 'Skapa engagerande inlägg' },
-    { id: 'connection', label: 'Kontakt', icon: MessageSquare, beskrivning: 'Nätverka smart' }
+    { id: 'headline', label: t('linkedInOptimizer.tabs.headline.label'), icon: User, beskrivning: t('linkedInOptimizer.tabs.headline.description') },
+    { id: 'about', label: t('linkedInOptimizer.tabs.about.label'), icon: FileText, beskrivning: t('linkedInOptimizer.tabs.about.description') },
+    { id: 'post', label: t('linkedInOptimizer.tabs.post.label'), icon: Share2, beskrivning: t('linkedInOptimizer.tabs.post.description') },
+    { id: 'connection', label: t('linkedInOptimizer.tabs.connection.label'), icon: MessageSquare, beskrivning: t('linkedInOptimizer.tabs.connection.description') }
   ]
 
   return (
@@ -64,9 +66,9 @@ export default function LinkedInOptimizer() {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 mb-2">
           <Linkedin className="w-7 h-7 text-blue-700" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800">LinkedIn-optimerare</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{t('linkedInOptimizer.title')}</h1>
         <p className="text-slate-600 max-w-2xl mx-auto">
-          Gör din LinkedIn-profil mer synlig och professionell med AI-genererade texter.
+          {t('linkedInOptimizer.description')}
         </p>
       </div>
 
@@ -93,18 +95,18 @@ export default function LinkedInOptimizer() {
       <Card className="p-6">
         {aktivTab === 'headline' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-slate-800">Skapa Headline</h2>
-            <p className="text-sm text-slate-600">Din headline syns direkt under ditt namn. Gör den beskrivande och catchy!</p>
+            <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.headline.title')}</h2>
+            <p className="text-sm text-slate-600">{t('linkedInOptimizer.headline.description')}</p>
             <input
               type="text"
-              placeholder="Din yrkestitel (t.ex. Projektledare)"
+              placeholder={t('linkedInOptimizer.headline.jobTitlePlaceholder')}
               value={formData.headline.yrke}
               onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, yrke: e.target.value } })}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
             />
             <input
               type="text"
-              placeholder="Specialisering (t.ex. Digitala transformationer)"
+              placeholder={t('linkedInOptimizer.headline.specializationPlaceholder')}
               value={formData.headline.erfarenhet}
               onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
@@ -114,17 +116,17 @@ export default function LinkedInOptimizer() {
 
         {aktivTab === 'about' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-slate-800">Skriv About-sektion</h2>
-            <p className="text-sm text-slate-600">Berätta vem du är och vad du gör. Max 2000 tecken.</p>
+            <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.about.title')}</h2>
+            <p className="text-sm text-slate-600">{t('linkedInOptimizer.about.description')}</p>
             <textarea
-              placeholder="Din bakgrund och erfarenhet..."
+              placeholder={t('linkedInOptimizer.about.backgroundPlaceholder')}
               value={formData.about.bakgrund}
               onChange={(e) => setFormData({ ...formData, about: { ...formData.about, bakgrund: e.target.value } })}
               rows={3}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none resize-y"
             />
             <textarea
-              placeholder="Dina styrkor och vad du brinner för..."
+              placeholder={t('linkedInOptimizer.about.strengthsPlaceholder')}
               value={formData.about.styrkor}
               onChange={(e) => setFormData({ ...formData, about: { ...formData.about, styrkor: e.target.value } })}
               rows={3}
@@ -132,7 +134,7 @@ export default function LinkedInOptimizer() {
             />
             <input
               type="text"
-              placeholder="Dina karriärmål..."
+              placeholder={t('linkedInOptimizer.about.goalsPlaceholder')}
               value={formData.about.mal}
               onChange={(e) => setFormData({ ...formData, about: { ...formData.about, mal: e.target.value } })}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
@@ -142,10 +144,10 @@ export default function LinkedInOptimizer() {
 
         {aktivTab === 'post' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-slate-800">Skapa LinkedIn-inlägg</h2>
-            <p className="text-sm text-slate-600">Engagerande inlägg ökar din synlighet. Max 1300 tecken.</p>
+            <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.post.title')}</h2>
+            <p className="text-sm text-slate-600">{t('linkedInOptimizer.post.description')}</p>
             <textarea
-              placeholder="Vad vill du skriva om? (t.ex. 'Erfarenheter från mitt senaste projekt')"
+              placeholder={t('linkedInOptimizer.post.topicPlaceholder')}
               value={formData.post.amne}
               onChange={(e) => setFormData({ ...formData, post: { ...formData.post, amne: e.target.value } })}
               rows={4}
@@ -156,34 +158,34 @@ export default function LinkedInOptimizer() {
               onChange={(e) => setFormData({ ...formData, post: { ...formData.post, ton: e.target.value } })}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
             >
-              <option value="professionell">Professionell</option>
-              <option value="personlig">Personlig & reflekterande</option>
-              <option value="entusiastisk">Entusiastisk</option>
-              <option value="formell">Formell</option>
+              <option value="professionell">{t('linkedInOptimizer.post.tones.professional')}</option>
+              <option value="personlig">{t('linkedInOptimizer.post.tones.personal')}</option>
+              <option value="entusiastisk">{t('linkedInOptimizer.post.tones.enthusiastic')}</option>
+              <option value="formell">{t('linkedInOptimizer.post.tones.formal')}</option>
             </select>
           </div>
         )}
 
         {aktivTab === 'connection' && (
           <div className="space-y-4">
-            <h2 className="text-lg font-semibold text-slate-800">Nätverka - Kontaktmeddelande</h2>
-            <p className="text-sm text-slate-600">Ett personligt meddelande ökar chansen att bli accepterad.</p>
+            <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.connection.title')}</h2>
+            <p className="text-sm text-slate-600">{t('linkedInOptimizer.connection.description')}</p>
             <input
               type="text"
-              placeholder="Personens namn"
+              placeholder={t('linkedInOptimizer.connection.namePlaceholder')}
               value={formData.connection.namn}
               onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, namn: e.target.value } })}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
             />
             <input
               type="text"
-              placeholder="Personens roll (t.ex. HR-chef på Volvo)"
+              placeholder={t('linkedInOptimizer.connection.rolePlaceholder')}
               value={formData.connection.roll}
               onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, roll: e.target.value } })}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
             />
             <textarea
-              placeholder="Varför vill du connecta? (t.ex. 'Jag beundrar ditt arbete inom...')"
+              placeholder={t('linkedInOptimizer.connection.purposePlaceholder')}
               value={formData.connection.syfte}
               onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, syfte: e.target.value } })}
               rows={3}
@@ -202,7 +204,7 @@ export default function LinkedInOptimizer() {
           ) : (
             <>
               <Sparkles className="w-5 h-5 mr-2" />
-              Generera med AI
+              {t('linkedInOptimizer.generate')}
             </>
           )}
         </Button>
@@ -212,20 +214,20 @@ export default function LinkedInOptimizer() {
       {resultat && (
         <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-800">Din LinkedIn-text</h3>
+            <h3 className="font-semibold text-slate-800">{t('linkedInOptimizer.result.title')}</h3>
             <button
               onClick={kopiera}
               className="flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
             >
               {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-              {copied ? 'Kopierat!' : 'Kopiera'}
+              {copied ? t('linkedInOptimizer.result.copied') : t('linkedInOptimizer.result.copy')}
             </button>
           </div>
           <div className="bg-white p-4 rounded-lg border border-blue-100">
             <p className="text-slate-700 whitespace-pre-wrap">{resultat}</p>
           </div>
           <p className="text-xs text-slate-500 mt-3">
-            💡 Tips: Anpassa texten efter din personliga stil innan du publicerar!
+            💡 {t('linkedInOptimizer.result.tip')}
           </p>
         </Card>
       )}

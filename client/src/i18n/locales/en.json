@@ -1959,6 +1959,69 @@
       "defaultFilename": "Cover-letter"
     }
   },
+  "linkedInOptimizer": {
+    "title": "LinkedIn Optimizer",
+    "description": "Make your LinkedIn profile more visible and professional with AI-generated texts.",
+    "tabs": {
+      "headline": {
+        "label": "Headline",
+        "description": "Create a catchy profile headline"
+      },
+      "about": {
+        "label": "About",
+        "description": "Write a compelling bio"
+      },
+      "post": {
+        "label": "Post",
+        "description": "Create engaging posts"
+      },
+      "connection": {
+        "label": "Connect",
+        "description": "Network smart"
+      }
+    },
+    "headline": {
+      "title": "Create Headline",
+      "description": "Your headline appears right below your name. Make it descriptive and catchy!",
+      "jobTitlePlaceholder": "Your job title (e.g. Project Manager)",
+      "specializationPlaceholder": "Specialization (e.g. Digital Transformations)"
+    },
+    "about": {
+      "title": "Write About Section",
+      "description": "Tell who you are and what you do. Max 2000 characters.",
+      "backgroundPlaceholder": "Your background and experience...",
+      "strengthsPlaceholder": "Your strengths and passions...",
+      "goalsPlaceholder": "Your career goals..."
+    },
+    "post": {
+      "title": "Create LinkedIn Post",
+      "description": "Engaging posts increase your visibility. Max 1300 characters.",
+      "topicPlaceholder": "What do you want to write about? (e.g. 'Lessons from my latest project')",
+      "tones": {
+        "professional": "Professional",
+        "personal": "Personal & reflective",
+        "enthusiastic": "Enthusiastic",
+        "formal": "Formal"
+      }
+    },
+    "connection": {
+      "title": "Network - Connection Message",
+      "description": "A personal message increases the chance of being accepted.",
+      "namePlaceholder": "Person's name",
+      "rolePlaceholder": "Person's role (e.g. HR Manager at Volvo)",
+      "purposePlaceholder": "Why do you want to connect? (e.g. 'I admire your work in...')"
+    },
+    "generate": "Generate with AI",
+    "result": {
+      "title": "Your LinkedIn Text",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "tip": "Tip: Customize the text to your personal style before publishing!"
+    },
+    "errors": {
+      "generateFailed": "Could not generate text. Please try again."
+    }
+  },
   "cvBuilder": {
     "title": "Create CV",
     "steps": {
