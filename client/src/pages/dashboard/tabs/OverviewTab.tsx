@@ -7,7 +7,7 @@ import {
   Calendar, MessageSquare, Linkedin, BarChart3, Maximize2, Minimize2
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
-import { useDashboardData } from '@/hooks/useDashboardData'
+import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import { useClickOutside } from '@/hooks/useClickOutside'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
@@ -389,7 +389,7 @@ function NewUserOnboarding({ userName }: { userName?: string }) {
 
 export default function OverviewTab() {
   const { user } = useAuthStore()
-  const { data, loading } = useDashboardData()
+  const { data, isLoading } = useDashboardDataQuery()
   const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS)
   const [showSelector, setShowSelector] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -583,7 +583,7 @@ export default function OverviewTab() {
   }
 
   // Loading
-  if (loading || !prefsLoaded) {
+  if (isLoading || !prefsLoaded) {
     return (
       <div className="space-y-4">
         <div className="h-24 bg-slate-100 rounded-2xl animate-pulse" />
