@@ -982,6 +982,46 @@
       "sat": "Sat"
     }
   },
+  "diaryWidget": {
+    "calendar": "Calendar",
+    "today": "Today",
+    "tomorrow": "Tomorrow",
+    "noEvents": "No events",
+    "upcoming": "upcoming",
+    "upcomingEvents": "upcoming events",
+    "thisWeek": "this week",
+    "seeSchedule": "See schedule",
+    "add": "Add",
+    "nextUp": "Next up",
+    "noPlannedEvents": "No planned events",
+    "addInterviewsAndMeetings": "Add interviews and meetings",
+    "consultantMeetingBooked": "Consultant meeting booked",
+    "consultantMeetingDescription": "You have a meeting with your career consultant",
+    "openCalendar": "Open calendar",
+    "daysInRow": "Days in a row",
+    "upcomingEventsHeader": "Upcoming events",
+    "calendarEmpty": "Your calendar is empty",
+    "addEventsDescription": "Add interviews, meetings and deadlines to keep track of your job search",
+    "eventTypes": {
+      "interview": "Interview",
+      "meeting": "Meeting",
+      "deadline": "Deadline",
+      "preparation": "Preparation",
+      "event": "Event",
+      "interviews": "Interviews",
+      "meetings": "Meetings",
+      "deadlines": "Deadlines"
+    },
+    "weekdays": {
+      "sun": "Sun",
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat"
+    }
+  },
   "interestWidget": {
     "interests": "Interests",
     "interestTest": "Interest Test",

@@ -982,6 +982,46 @@
       "sat": "Lör"
     }
   },
+  "diaryWidget": {
+    "calendar": "Kalender",
+    "today": "Idag",
+    "tomorrow": "Imorgon",
+    "noEvents": "Inga händelser",
+    "upcoming": "kommande",
+    "upcomingEvents": "kommande händelser",
+    "thisWeek": "denna vecka",
+    "seeSchedule": "Se schema",
+    "add": "Lägg till",
+    "nextUp": "Nästkommande",
+    "noPlannedEvents": "Inga planerade händelser",
+    "addInterviewsAndMeetings": "Lägg till intervjuer och möten",
+    "consultantMeetingBooked": "Konsulentmöte inbokat",
+    "consultantMeetingDescription": "Du har ett möte med din arbetskonsulent",
+    "openCalendar": "Öppna kalender",
+    "daysInRow": "Dagar i rad",
+    "upcomingEventsHeader": "Kommande händelser",
+    "calendarEmpty": "Din kalender är tom",
+    "addEventsDescription": "Lägg till intervjuer, möten och deadlines för att hålla koll på ditt jobbsökande",
+    "eventTypes": {
+      "interview": "Intervju",
+      "meeting": "Möte",
+      "deadline": "Deadline",
+      "preparation": "Förberedelse",
+      "event": "Händelse",
+      "interviews": "Intervjuer",
+      "meetings": "Möten",
+      "deadlines": "Deadlines"
+    },
+    "weekdays": {
+      "sun": "Sön",
+      "mon": "Mån",
+      "tue": "Tis",
+      "wed": "Ons",
+      "thu": "Tor",
+      "fri": "Fre",
+      "sat": "Lör"
+    }
+  },
   "interestWidget": {
     "interests": "Intressen",
     "interestTest": "Intressetest",
