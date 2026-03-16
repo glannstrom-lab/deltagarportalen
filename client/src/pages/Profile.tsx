@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { userApi } from '../services/api'
-import { 
+import {
   User, Save, CheckCircle, Camera, Phone, MapPin, Mail,
   FileText, Sparkles, Lightbulb
 } from 'lucide-react'
@@ -20,6 +21,7 @@ import {
 import { cn } from '@/lib/utils'
 
 export default function Profile() {
+  const { t, i18n } = useTranslation()
   const [profile, setProfile] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
@@ -51,8 +53,8 @@ export default function Profile() {
         bio: data.bio || ''
       })
     } catch (err: any) {
-      console.error('Fel vid laddning:', err)
-      setError('Kunde inte ladda profilen. Försök igen.')
+      console.error('Error loading profile:', err)
+      setError(t('profile.errorLoading'))
     } finally {
       setLoading(false)
     }
@@ -66,8 +68,8 @@ export default function Profile() {
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err: any) {
-      console.error('Fel vid sparande:', err)
-      setError('Kunde inte spara ändringarna. Försök igen.')
+      console.error('Error saving profile:', err)
+      setError(t('profile.errorSaving'))
     } finally {
       setSaving(false)
     }
@@ -79,10 +81,10 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <PageLayout title="Din profil" showTabs={false}>
-        <LoadingState 
-          title="Laddar profil..."
-          message="Hämtar dina uppgifter"
+      <PageLayout title={t('profile.title')} showTabs={false}>
+        <LoadingState
+          title={t('profile.loading')}
+          message={t('profile.loadingMessage')}
           fullHeight
         />
       </PageLayout>
@@ -91,9 +93,9 @@ export default function Profile() {
 
   if (error && !profile) {
     return (
-      <PageLayout title="Din profil" showTabs={false}>
-        <ErrorState 
-          title="Kunde inte ladda profilen"
+      <PageLayout title={t('profile.title')} showTabs={false}>
+        <ErrorState
+          title={t('profile.errorLoadingTitle')}
           message={error}
           onRetry={loadProfile}
         />
@@ -103,8 +105,8 @@ export default function Profile() {
 
   return (
     <PageLayout
-      title="Din profil"
-      description="Hantera dina kontouppgifter och personliga information."
+      title={t('profile.title')}
+      description={t('profile.description')}
       showTabs={false}
       className="max-w-3xl mx-auto"
     >
@@ -123,8 +125,8 @@ export default function Profile() {
                 'rounded-full flex items-center justify-center shadow-md',
                 'transition-colors'
               )}
-              title="Ladda upp profilbild (kommer snart)"
-              onClick={() => alert('Profilbildsuppladdning kommer snart!')}
+              title={t('profile.uploadPhotoSoon')}
+              onClick={() => alert(t('profile.uploadPhotoSoon'))}
             >
               <Camera size={14} />
             </button>
@@ -135,10 +137,10 @@ export default function Profile() {
             </h2>
             <div className="flex items-center justify-center sm:justify-start gap-2 text-slate-500 mt-1">
               <Mail size={14} />
-              <span>{profile?.email || 'Ingen e-post'}</span>
+              <span>{profile?.email || t('profile.noEmail')}</span>
             </div>
             <p className="text-sm text-slate-400 mt-2">
-              Medlem sedan {new Date(profile?.created_at).toLocaleDateString('sv-SE')}
+              {t('profile.memberSince')} {new Date(profile?.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
             </p>
           </div>
         </div>
@@ -146,53 +148,53 @@ export default function Profile() {
         {/* Form */}
         <div className="space-y-6">
           {/* Name Fields */}
-          <CardSection title="Personlig information">
+          <CardSection title={t('profile.personalInfo')}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Förnamn"
+                label={t('profile.firstName')}
                 value={formData.first_name}
                 onChange={(e) => handleChange('first_name', e.target.value)}
-                placeholder="Ditt förnamn"
+                placeholder={t('profile.firstNamePlaceholder')}
                 leftIcon={<User size={16} />}
               />
               <Input
-                label="Efternamn"
+                label={t('profile.lastName')}
                 value={formData.last_name}
                 onChange={(e) => handleChange('last_name', e.target.value)}
-                placeholder="Ditt efternamn"
+                placeholder={t('profile.lastNamePlaceholder')}
                 leftIcon={<User size={16} />}
               />
             </div>
           </CardSection>
 
           {/* Contact Fields */}
-          <CardSection title="Kontaktuppgifter">
+          <CardSection title={t('profile.contactInfo')}>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Input
-                label="Telefonnummer"
+                label={t('profile.phone')}
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+46 70 123 45 67"
+                placeholder={t('profile.phonePlaceholder')}
                 leftIcon={<Phone size={16} />}
               />
               <Input
-                label="Ort / Plats"
+                label={t('profile.location')}
                 value={formData.location}
                 onChange={(e) => handleChange('location', e.target.value)}
-                placeholder="Stockholm"
+                placeholder={t('profile.locationPlaceholder')}
                 leftIcon={<MapPin size={16} />}
               />
             </div>
           </CardSection>
 
           {/* Bio Field */}
-          <CardSection title="Om mig">
+          <CardSection title={t('profile.aboutMe')}>
             <Textarea
               value={formData.bio}
               onChange={(e) => handleChange('bio', e.target.value)}
-              placeholder="Berätta kort om dig själv..."
-              hint="Max 500 tecken (visas på din offentliga profil)"
+              placeholder={t('profile.bioPlaceholder')}
+              hint={t('profile.bioHint')}
               maxLength={500}
             />
           </CardSection>
@@ -200,26 +202,26 @@ export default function Profile() {
           {/* Email Field (Read-only) */}
           <CardSection>
             <Input
-              label="E-post"
+              label={t('profile.email')}
               type="email"
               value={profile?.email || ''}
               disabled
               leftIcon={<Mail size={16} />}
-              hint="E-postadressen kan inte ändras. Kontakta support om du behöver byta."
+              hint={t('profile.emailHint')}
             />
           </CardSection>
 
           {/* Error Message */}
           {error && (
-            <InfoCard variant="error" title="Ett fel uppstod">
+            <InfoCard variant="error" title={t('profile.errorOccurred')}>
               {error}
             </InfoCard>
           )}
 
           {/* Success Message */}
           {saved && (
-            <InfoCard variant="success" title="Sparat!">
-              Dina ändringar har sparats.
+            <InfoCard variant="success" title={t('profile.savedTitle')}>
+              {t('profile.savedMessage')}
             </InfoCard>
           )}
 
@@ -229,11 +231,11 @@ export default function Profile() {
               variant="primary"
               onClick={handleSave}
               isLoading={saving}
-              loadingText="Sparar..."
+              loadingText={t('profile.saving')}
               leftIcon={saved ? <CheckCircle size={18} /> : <Save size={18} />}
               touchOptimized
             >
-              {saved ? 'Sparat!' : 'Spara ändringar'}
+              {saved ? t('profile.savedTitle') : t('profile.saveChanges')}
             </Button>
           </div>
         </div>
@@ -243,34 +245,34 @@ export default function Profile() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard
           value={profile?._count?.cv !== undefined ? profile._count.cv : '—'}
-          label="CV-uppdateringar"
+          label={t('profile.cvUpdates')}
           icon={<FileText className="w-5 h-5" />}
           color="indigo"
         />
         <StatCard
           value={profile?._count?.coverLetters !== undefined ? profile._count.coverLetters : '—'}
-          label="Personliga brev"
+          label={t('profile.coverLetters')}
           icon={<FileText className="w-5 h-5" />}
           color="purple"
         />
         <StatCard
           value={profile?.interestResult ? '✓' : '—'}
-          label="Intresseguide"
+          label={t('profile.interestGuide')}
           icon={<Sparkles className="w-5 h-5" />}
           color="amber"
         />
       </div>
 
       {/* Quick Tips */}
-      <InfoCard 
-        variant="info" 
+      <InfoCard
+        variant="info"
         icon={<Lightbulb className="w-5 h-5" />}
-        title="Tips för en bra profil"
+        title={t('profile.tipsTitle')}
       >
         <ul className="text-sm space-y-1 list-disc list-inside">
-          <li>Fyll i alla fält för att arbetsförmedlare ska kunna kontakta dig</li>
-          <li>En kort bio hjälper arbetsgivare att lära känna dig</li>
-          <li>Uppdatera din profil regelbundet med aktuell information</li>
+          <li>{t('profile.tip1')}</li>
+          <li>{t('profile.tip2')}</li>
+          <li>{t('profile.tip3')}</li>
         </ul>
       </InfoCard>
     </PageLayout>

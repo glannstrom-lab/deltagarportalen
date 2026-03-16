@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { articleApi } from '../services/api'
 import {
@@ -26,6 +27,7 @@ import { articleBookmarksApi } from '../services/cloudStorage'
 import { useAchievementTracker } from '../hooks/useAchievementTracker'
 
 export default function Article() {
+  const { t, i18n } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
   const [article, setArticle] = useState<any>(null)
@@ -59,7 +61,7 @@ export default function Article() {
         trackArticleRead(data.title)
       }
     } catch (error) {
-      console.error('Fel vid laddning:', error)
+      console.error('Error loading article:', error)
     } finally {
       setLoading(false)
     }
@@ -70,8 +72,8 @@ export default function Article() {
       const isSaved = await articleBookmarksApi.isBookmarked(id!)
       setIsBookmarked(isSaved)
     } catch (error) {
-      console.error('Fel vid koll av bokmärke:', error)
-      // Fallback till localStorage om molnet inte fungerar
+      console.error('Error checking bookmark:', error)
+      // Fallback to localStorage if cloud fails
       const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
       setIsBookmarked(bookmarks.includes(id))
     }
@@ -88,8 +90,8 @@ export default function Article() {
       }
       setIsBookmarked(!isBookmarked)
     } catch (error) {
-      console.error('Fel vid toggle av bokmärke:', error)
-      // Fallback till localStorage
+      console.error('Error toggling bookmark:', error)
+      // Fallback to localStorage
       const bookmarks = JSON.parse(localStorage.getItem('article-bookmarks') || '[]')
       let newBookmarks
       if (bookmarks.includes(id)) {
@@ -110,7 +112,7 @@ export default function Article() {
       setShowCopied(true)
       setTimeout(() => setShowCopied(false), 2000)
     } catch (err) {
-      console.error('Kunde inte kopiera:', err)
+      console.error('Could not copy:', err)
     }
   }
 
@@ -149,15 +151,15 @@ export default function Article() {
   if (!id || id === ':id' || !id.match(/^[a-z0-9-]+$/)) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-500 mb-2">Ogiltig artikellänk</p>
+        <p className="text-slate-500 mb-2">{t('article.invalidLink')}</p>
         <p className="text-slate-400 text-sm mb-4">
-          {!id || id === ':id' 
-            ? 'Artikel-ID saknas eller är ogiltigt'
-            : `Ogiltigt ID-format: "${id}"`
+          {!id || id === ':id'
+            ? t('article.idMissingOrInvalid')
+            : t('article.invalidIdFormat', { id })
           }
         </p>
         <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
-          Tillbaka till kunskapsbanken
+          {t('article.backToKnowledgeBase')}
         </Link>
       </div>
     )
@@ -166,12 +168,12 @@ export default function Article() {
   if (!article) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-500">Artikeln hittades inte</p>
+        <p className="text-slate-500">{t('article.notFound')}</p>
         <p className="text-slate-400 text-sm mt-1 mb-4">
           ID: {id}
         </p>
         <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
-          Tillbaka till kunskapsbanken
+          {t('article.backToKnowledgeBase')}
         </Link>
       </div>
     )
@@ -197,7 +199,7 @@ export default function Article() {
         className="flex items-center gap-2 text-slate-600 hover:text-teal-700 mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
-        Tillbaka till kunskapsbanken
+        {t('article.backToKnowledgeBase')}
       </button>
 
       {/* Article header */}
@@ -225,7 +227,7 @@ export default function Article() {
           )}
           <span className="flex items-center gap-1.5">
             <Calendar size={16} />
-            {new Date(article.createdAt).toLocaleDateString('sv-SE')}
+            {new Date(article.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
           </span>
           {article.readingTime && (
             <ReadingTime minutes={article.readingTime} variant="compact" />
@@ -256,7 +258,7 @@ export default function Article() {
                 className={`px-2 py-1 rounded text-sm font-medium transition-colors ${
                   fontSize === 'normal' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
                 }`}
-                title="Normal textstorlek"
+                title={t('article.fontSizeNormal')}
               >
                 A
               </button>
@@ -265,7 +267,7 @@ export default function Article() {
                 className={`px-2 py-1 rounded text-base font-medium transition-colors ${
                   fontSize === 'large' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
                 }`}
-                title="Stor textstorlek"
+                title={t('article.fontSizeLarge')}
               >
                 A
               </button>
@@ -274,7 +276,7 @@ export default function Article() {
                 className={`px-2 py-1 rounded text-lg font-medium transition-colors ${
                   fontSize === 'xlarge' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
                 }`}
-                title="Extra stor textstorlek"
+                title={t('article.fontSizeXLarge')}
               >
                 A
               </button>
@@ -284,11 +286,11 @@ export default function Article() {
             <button
               onClick={toggleBookmark}
               className={`p-2 rounded-lg transition-colors ${
-                isBookmarked 
-                  ? 'bg-teal-100 text-teal-700' 
+                isBookmarked
+                  ? 'bg-teal-100 text-teal-700'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
-              title={isBookmarked ? 'Ta bort bokmärke' : 'Spara bokmärke'}
+              title={isBookmarked ? t('article.removeBookmark') : t('article.saveBookmark')}
             >
               <Bookmark size={20} fill={isBookmarked ? 'currentColor' : 'none'} />
             </button>
@@ -297,12 +299,12 @@ export default function Article() {
             <button
               onClick={shareArticle}
               className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors relative"
-              title="Dela artikel"
+              title={t('article.shareArticle')}
             >
               <Share2 size={20} />
               {showCopied && (
                 <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                  Kopierad!
+                  {t('article.copied')}
                 </span>
               )}
             </button>
@@ -381,7 +383,7 @@ export default function Article() {
           <div className="mt-8 p-4 bg-slate-50 rounded-xl">
             <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
               <Lightbulb size={18} className="text-amber-500" />
-              Nästa steg
+              {t('article.nextSteps')}
             </h4>
             <div className="flex flex-wrap gap-3">
               {actions.map((action: any, index: number) => (
@@ -424,13 +426,13 @@ export default function Article() {
           {article.helpfulnessRating && (
             <span className="flex items-center gap-1">
               <span className="text-amber-500">★</span>
-              {article.helpfulnessRating}/5 användarbetyg
+              {t('article.userRating', { rating: article.helpfulnessRating })}
             </span>
           )}
           {article.bookmarkCount !== undefined && article.bookmarkCount > 0 && (
             <span className="flex items-center gap-1">
               <Bookmark size={14} />
-              {article.bookmarkCount} har sparat
+              {t('article.savedCount', { count: article.bookmarkCount })}
             </span>
           )}
           {article.difficulty && (
@@ -444,7 +446,7 @@ export default function Article() {
         <section className="mb-8">
           <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
             <Dumbbell className="text-indigo-600" size={24} />
-            Relaterade övningar
+            {t('article.relatedExercises')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {relatedExercises.map((exercise) => {
@@ -487,7 +489,7 @@ export default function Article() {
       {/* Related articles */}
       {relatedArticles.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-4">Relaterade artiklar</h2>
+          <h2 className="text-xl font-bold text-slate-800 mb-4">{t('article.relatedArticles')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {relatedArticles.map((relatedArticle) => (
               <EnhancedArticleCard 
@@ -506,16 +508,15 @@ export default function Article() {
             <Lightbulb size={24} className="text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 mb-1">Behöver du mer hjälp?</h3>
+            <h3 className="font-semibold text-slate-800 mb-1">{t('article.needMoreHelp')}</h3>
             <p className="text-slate-600 text-sm mb-3">
-              Om du har frågor eller behöver stöd, tveka inte att kontakta din arbetskonsulent.
-              Vi finns här för dig!
+              {t('article.helpDescription')}
             </p>
-            <Link 
+            <Link
               to="/diary"
               className="inline-flex items-center gap-2 text-teal-700 font-medium hover:underline"
             >
-              Boka ett möte
+              {t('article.bookMeeting')}
               <ExternalLink size={16} />
             </Link>
           </div>
