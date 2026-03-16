@@ -921,6 +921,43 @@
     "takeYourTime": "Ta den tid du behöver - portalen finns här när du vill.",
     "lowActivityMessage": "Det är okej att ha perioder med lägre aktivitet. Det viktiga är att du kommer tillbaka när du känner dig redo."
   },
+  "remindersWidget": {
+    "title": "Påminnelser",
+    "important": "Viktig",
+    "importantCount": "{{count}} viktig",
+    "remindersCount": "{{count}} påminnelser",
+    "allDone": "Allt klart!",
+    "allUpToDate": "Allt är uppdaterat!",
+    "noReminders": "Du har inga påminnelser just nu",
+    "percentComplete": "{{percent}}% klart",
+    "moreReminders": "+{{count}} till påminnelser",
+    "cvInProgress": {
+      "title": "CV påbörjat",
+      "messageDaysAgo": "Du började ditt CV för {{days}} dagar sedan. En liten stund till så är du klar!",
+      "messageProgress": "Du har kommit {{progress}}% igång. Fortsätt så!",
+      "action": "Fortsätt bygga"
+    },
+    "streakRisk": {
+      "title": "🔥 {{days}} dagar i rad!",
+      "message": "Logga in idag för att behålla din streak. Du kan göra något litet!",
+      "action": "Rädda streaken"
+    },
+    "milestoneCv": {
+      "title": "🎯 Så nära!",
+      "message": "Bara 10% kvar på ditt CV. Du kan klara det idag!",
+      "action": "Kör sista biten"
+    },
+    "followUp": {
+      "title": "Följ upp ansökan",
+      "message": "Det har gått en vecka sedan du skickade en ansökan. Dags att följa upp?",
+      "action": "Se ansökningar"
+    },
+    "interestIncomplete": {
+      "title": "Intresseguide påbörjad",
+      "message": "Du har svarat på {{answered}} frågor. Bara {{remaining}} kvar!",
+      "action": "Fortsätt testet"
+    }
+  },
   "calendarWidget": {
     "calendar": "Kalender",
     "today": "Idag",

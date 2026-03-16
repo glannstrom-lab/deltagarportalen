@@ -4,10 +4,11 @@
  */
 import { useMemo, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  Bell, 
-  Clock, 
-  Flame, 
+import { useTranslation } from 'react-i18next'
+import {
+  Bell,
+  Clock,
+  Flame,
   AlertTriangle,
   ChevronRight,
   CheckCircle2,
@@ -28,50 +29,53 @@ interface Reminder {
   id: string
   type: 'in-progress' | 'streak-risk' | 'milestone' | 'follow-up'
   priority: 'high' | 'medium' | 'low'
-  title: string
-  message: string
-  action: string
+  titleKey: string
+  messageKey: string
+  actionKey: string
   link: string
   dueDate?: string
   progress?: number
   icon: React.ReactNode
   color: string
+  interpolation?: Record<string, string | number>
 }
 
-export function RemindersWidget({ 
+export function RemindersWidget({
   size = 'medium',
-  loading 
-}: { 
+  loading
+}: {
   size?: 'small' | 'medium' | 'large'
-  loading?: boolean 
+  loading?: boolean
 }) {
+  const { t } = useTranslation()
   const { data } = useDashboardData()
   const [dismissed, setDismissed] = useState<string[]>([])
 
   const reminders = useMemo<Reminder[]>(() => {
     if (!data) return []
-    
+
     const list: Reminder[] = []
-    
+
     // 1. Pågående uppgifter
     if (data.cv?.hasCV && data.cv.progress > 0 && data.cv.progress < 100) {
-      const lastEdited = data.cv.lastEdited 
+      const lastEdited = data.cv.lastEdited
         ? differenceInDays(new Date(), parseISO(data.cv.lastEdited))
         : 0
-      
+
       list.push({
         id: 'cv-in-progress',
         type: 'in-progress',
         priority: lastEdited > 2 ? 'high' : 'medium',
-        title: 'CV påbörjat',
-        message: lastEdited > 2 
-          ? `Du började ditt CV för ${lastEdited} dagar sedan. En liten stund till så är du klar!`
-          : `Du har kommit ${data.cv.progress}% igång. Fortsätt så!`,
-        action: 'Fortsätt bygga',
+        titleKey: 'remindersWidget.cvInProgress.title',
+        messageKey: lastEdited > 2
+          ? 'remindersWidget.cvInProgress.messageDaysAgo'
+          : 'remindersWidget.cvInProgress.messageProgress',
+        actionKey: 'remindersWidget.cvInProgress.action',
         link: '/cv',
         progress: data.cv.progress,
         icon: <RotateCcw size={20} />,
         color: 'violet',
+        interpolation: { days: lastEdited, progress: data.cv.progress }
       })
     }
 
@@ -79,18 +83,19 @@ export function RemindersWidget({
     const lastLogin = localStorage.getItem('lastLoginDate')
     const today = new Date().toDateString()
     const yesterday = new Date(Date.now() - 86400000).toDateString()
-    
+
     if (lastLogin === yesterday && data.activity?.streakDays && data.activity.streakDays > 0) {
       list.push({
         id: 'streak-risk',
         type: 'streak-risk',
         priority: 'high',
-        title: `🔥 ${data.activity.streakDays} dagar i rad!`,
-        message: 'Logga in idag för att behålla din streak. Du kan göra något litet!',
-        action: 'Rädda streaken',
+        titleKey: 'remindersWidget.streakRisk.title',
+        messageKey: 'remindersWidget.streakRisk.message',
+        actionKey: 'remindersWidget.streakRisk.action',
         link: '/dashboard',
         icon: <Flame size={20} />,
         color: 'orange',
+        interpolation: { days: data.activity.streakDays }
       })
     }
 
@@ -100,9 +105,9 @@ export function RemindersWidget({
         id: 'milestone-cv',
         type: 'milestone',
         priority: 'medium',
-        title: '🎯 Så nära!',
-        message: 'Bara 10% kvar på ditt CV. Du kan klara det idag!',
-        action: 'Kör sista biten',
+        titleKey: 'remindersWidget.milestoneCv.title',
+        messageKey: 'remindersWidget.milestoneCv.message',
+        actionKey: 'remindersWidget.milestoneCv.action',
         link: '/cv',
         progress: 90,
         icon: <TrendingUp size={20} />,
@@ -117,9 +122,9 @@ export function RemindersWidget({
         id: 'follow-up',
         type: 'follow-up',
         priority: 'low',
-        title: 'Följ upp ansökan',
-        message: 'Det har gått en vecka sedan du skickade en ansökan. Dags att följa upp?',
-        action: 'Se ansökningar',
+        titleKey: 'remindersWidget.followUp.title',
+        messageKey: 'remindersWidget.followUp.message',
+        actionKey: 'remindersWidget.followUp.action',
         link: '/job-search',
         icon: <Calendar size={20} />,
         color: 'blue',
@@ -127,20 +132,21 @@ export function RemindersWidget({
     }
 
     // 5. Intresseguide påbörjad men ej klar
-    if (data.interest?.answeredQuestions && data.interest.answeredQuestions > 0 
+    if (data.interest?.answeredQuestions && data.interest.answeredQuestions > 0
         && !data.interest.hasResult) {
       const remaining = data.interest.totalQuestions - data.interest.answeredQuestions
       list.push({
         id: 'interest-incomplete',
         type: 'in-progress',
         priority: 'medium',
-        title: 'Intresseguide påbörjad',
-        message: `Du har svarat på ${data.interest.answeredQuestions} frågor. Bara ${remaining} kvar!`,
-        action: 'Fortsätt testet',
+        titleKey: 'remindersWidget.interestIncomplete.title',
+        messageKey: 'remindersWidget.interestIncomplete.message',
+        actionKey: 'remindersWidget.interestIncomplete.action',
         link: '/interest-guide',
         progress: (data.interest.answeredQuestions / data.interest.totalQuestions) * 100,
         icon: <Play size={20} />,
         color: 'teal',
+        interpolation: { answered: data.interest.answeredQuestions, remaining }
       })
     }
 
@@ -160,10 +166,10 @@ export function RemindersWidget({
   // Small variant
   if (size === 'small') {
     const highPriority = reminders.filter(r => r.priority === 'high')
-    
+
     return (
       <DashboardWidget
-        title="Påminnelser"
+        title={t('remindersWidget.title')}
         icon={<Bell size={14} />}
         to="#"
         color="amber"
@@ -174,20 +180,20 @@ export function RemindersWidget({
             <>
               <AlertTriangle size={14} className="text-amber-500" />
               <span className="text-sm font-medium text-amber-700">
-                {highPriority.length} viktig
+                {t('remindersWidget.importantCount', { count: highPriority.length })}
               </span>
             </>
           ) : reminders.length > 0 ? (
             <>
               <Bell size={14} className="text-slate-400" />
               <span className="text-sm text-slate-600">
-                {reminders.length} påminnelser
+                {t('remindersWidget.remindersCount', { count: reminders.length })}
               </span>
             </>
           ) : (
             <>
               <CheckCircle2 size={14} className="text-emerald-500" />
-              <span className="text-sm text-slate-500">Allt klart!</span>
+              <span className="text-sm text-slate-500">{t('remindersWidget.allDone')}</span>
             </>
           )}
         </div>
@@ -198,7 +204,7 @@ export function RemindersWidget({
   // Medium/Large variant
   return (
     <DashboardWidget
-      title="Påminnelser"
+      title={t('remindersWidget.title')}
       icon={<Bell size={22} />}
       to="#"
       color="amber"
@@ -210,9 +216,9 @@ export function RemindersWidget({
             <div className="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 size={24} className="text-emerald-600" />
             </div>
-            <p className="text-slate-600 font-medium">Allt är uppdaterat!</p>
+            <p className="text-slate-600 font-medium">{t('remindersWidget.allUpToDate')}</p>
             <p className="text-sm text-slate-400 mt-1">
-              Du har inga påminnelser just nu
+              {t('remindersWidget.noReminders')}
             </p>
           </div>
         ) : (
@@ -228,7 +234,7 @@ export function RemindersWidget({
                   to={reminder.link}
                   className={cn(
                     "block p-3 rounded-xl border transition-all group relative",
-                    reminder.priority === 'high' 
+                    reminder.priority === 'high'
                       ? 'bg-amber-50 border-amber-200 hover:bg-amber-100'
                       : 'bg-slate-50 border-slate-200 hover:bg-slate-100'
                   )}
@@ -251,18 +257,18 @@ export function RemindersWidget({
                     <div className="flex-1 min-w-0 pr-6">
                       <div className="flex items-center gap-2 mb-0.5">
                         <h4 className="font-semibold text-slate-800">
-                          {reminder.title}
+                          {t(reminder.titleKey, reminder.interpolation)}
                         </h4>
                         {reminder.priority === 'high' && (
                           <span className="text-xs px-1.5 py-0.5 rounded-full bg-amber-200 text-amber-800 font-medium">
-                            Viktig
+                            {t('remindersWidget.important')}
                           </span>
                         )}
                       </div>
                       <p className="text-sm text-slate-600 mb-2">
-                        {reminder.message}
+                        {t(reminder.messageKey, reminder.interpolation)}
                       </p>
-                      
+
                       {/* Progress bar if applicable */}
                       {reminder.progress !== undefined && (
                         <div className="mb-3">
@@ -278,13 +284,13 @@ export function RemindersWidget({
                             />
                           </div>
                           <p className="text-xs text-slate-400 mt-1">
-                            {reminder.progress}% klart
+                            {t('remindersWidget.percentComplete', { percent: Math.round(reminder.progress) })}
                           </p>
                         </div>
                       )}
 
                       <div className="flex items-center gap-2 text-sm font-medium text-violet-600">
-                        <span>{reminder.action}</span>
+                        <span>{t(reminder.actionKey)}</span>
                         <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
                       </div>
                     </div>
@@ -295,7 +301,7 @@ export function RemindersWidget({
 
             {reminders.length > (size === 'large' ? 5 : 3) && (
               <p className="text-center text-sm text-slate-400 pt-2">
-                +{reminders.length - (size === 'large' ? 5 : 3)} till påminnelser
+                {t('remindersWidget.moreReminders', { count: reminders.length - (size === 'large' ? 5 : 3) })}
               </p>
             )}
           </>

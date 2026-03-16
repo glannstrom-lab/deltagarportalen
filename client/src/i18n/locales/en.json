@@ -921,6 +921,43 @@
     "takeYourTime": "Take the time you need - the portal is here when you want.",
     "lowActivityMessage": "It's okay to have periods of lower activity. The important thing is that you come back when you feel ready."
   },
+  "remindersWidget": {
+    "title": "Reminders",
+    "important": "Important",
+    "importantCount": "{{count}} important",
+    "remindersCount": "{{count}} reminders",
+    "allDone": "All done!",
+    "allUpToDate": "Everything is up to date!",
+    "noReminders": "You have no reminders right now",
+    "percentComplete": "{{percent}}% complete",
+    "moreReminders": "+{{count}} more reminders",
+    "cvInProgress": {
+      "title": "CV in progress",
+      "messageDaysAgo": "You started your CV {{days}} days ago. Just a little more and you're done!",
+      "messageProgress": "You're {{progress}}% done. Keep going!",
+      "action": "Continue building"
+    },
+    "streakRisk": {
+      "title": "🔥 {{days}} days in a row!",
+      "message": "Log in today to keep your streak. You can do something small!",
+      "action": "Save the streak"
+    },
+    "milestoneCv": {
+      "title": "🎯 So close!",
+      "message": "Just 10% left on your CV. You can finish it today!",
+      "action": "Finish the last bit"
+    },
+    "followUp": {
+      "title": "Follow up application",
+      "message": "It's been a week since you sent an application. Time to follow up?",
+      "action": "See applications"
+    },
+    "interestIncomplete": {
+      "title": "Interest guide started",
+      "message": "You've answered {{answered}} questions. Only {{remaining}} left!",
+      "action": "Continue test"
+    }
+  },
   "calendarWidget": {
     "calendar": "Calendar",
     "today": "Today",
