@@ -2074,6 +2074,83 @@
       }
     }
   },
+  "unifiedProfile": {
+    "tabs": {
+      "profile": "Profil",
+      "career": "Karriär",
+      "settings": "Inställningar"
+    },
+    "edit": "Redigera",
+    "save": "Spara",
+    "profileCompleteness": "Profilkompletthet",
+    "completenessHint": {
+      "incomplete": "Fyll i mer information för att förbättra dina chanser till jobb",
+      "complete": "Bra jobbat! Din profil är komplett"
+    },
+    "profileImage": "Profilbild",
+    "sections": {
+      "basicInfo": "Grundinformation",
+      "skills": "Kompetenser",
+      "experience": "Arbetslivserfarenhet",
+      "education": "Utbildning",
+      "interests": "Mina Intressen (RIASEC)",
+      "recommendedJobs": "Rekommenderade Yrken",
+      "careerGoals": "Karriärmål",
+      "preferredRoles": "Föredragna Roller",
+      "activity": "Aktivitet",
+      "dataUsage": "Dataanvändning"
+    },
+    "fields": {
+      "firstName": "Förnamn",
+      "lastName": "Efternamn",
+      "email": "E-post",
+      "phone": "Telefon",
+      "location": "Ort",
+      "locationPlaceholder": "t.ex. Stockholm",
+      "summary": "Sammanfattning",
+      "summaryPlaceholder": "Beskriv kortfattat vem du är och vad du söker..."
+    },
+    "notSpecified": "Inte angivet",
+    "noSkills": "Inga kompetenser tillagda ännu.",
+    "addInCVBuilder": "Lägg till i CV-byggaren",
+    "noExperience": "Ingen erfarenhet tillagd ännu.",
+    "noEducation": "Ingen utbildning tillagd ännu.",
+    "seeAllExperiences": "Se alla {{count}} erfarenheter",
+    "riasec": {
+      "realistic": "Realistisk",
+      "investigative": "Undersökande",
+      "artistic": "Konstnärlig",
+      "social": "Social",
+      "enterprising": "Företagsam",
+      "conventional": "Konventionell"
+    },
+    "retakeInterestGuide": "Gör om intresseguiden →",
+    "noInterestGuide": "Du har inte gjort intresseguiden ännu",
+    "takeInterestGuide": "Gör intresseguiden",
+    "careerGoalsLabels": {
+      "shortTerm": "Kortsiktigt",
+      "longTerm": "Långsiktigt",
+      "notSpecified": "Inte angivet ännu"
+    },
+    "noPreferredRoles": "Inga föredragna roller angivna ännu.",
+    "stats": {
+      "applications": "Ansökningar",
+      "coverLetters": "Personliga brev",
+      "cvUpdate": "CV-uppdatering",
+      "never": "Aldrig"
+    },
+    "dataUsageLabels": {
+      "cvBuilder": "CV-byggare",
+      "coverLetter": "Personligt brev",
+      "jobTracker": "Jobbtracker",
+      "active": "Aktiv",
+      "empty": "Tom",
+      "saved": "{{count}} sparade",
+      "noLetters": "Inga brev",
+      "noApplications": "Inga ansökningar",
+      "applicationsCount": "{{count}} ansökningar"
+    }
+  },
   "cvBuilder": {
     "title": "Skapa CV",
     "steps": {

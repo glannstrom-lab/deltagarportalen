@@ -2074,6 +2074,83 @@
       }
     }
   },
+  "unifiedProfile": {
+    "tabs": {
+      "profile": "Profile",
+      "career": "Career",
+      "settings": "Settings"
+    },
+    "edit": "Edit",
+    "save": "Save",
+    "profileCompleteness": "Profile completeness",
+    "completenessHint": {
+      "incomplete": "Fill in more information to improve your chances of getting a job",
+      "complete": "Great job! Your profile is complete"
+    },
+    "profileImage": "Profile picture",
+    "sections": {
+      "basicInfo": "Basic information",
+      "skills": "Skills",
+      "experience": "Work experience",
+      "education": "Education",
+      "interests": "My Interests (RIASEC)",
+      "recommendedJobs": "Recommended Jobs",
+      "careerGoals": "Career Goals",
+      "preferredRoles": "Preferred Roles",
+      "activity": "Activity",
+      "dataUsage": "Data Usage"
+    },
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "location": "City",
+      "locationPlaceholder": "e.g. Stockholm",
+      "summary": "Summary",
+      "summaryPlaceholder": "Briefly describe who you are and what you're looking for..."
+    },
+    "notSpecified": "Not specified",
+    "noSkills": "No skills added yet.",
+    "addInCVBuilder": "Add in CV Builder",
+    "noExperience": "No experience added yet.",
+    "noEducation": "No education added yet.",
+    "seeAllExperiences": "See all {{count}} experiences",
+    "riasec": {
+      "realistic": "Realistic",
+      "investigative": "Investigative",
+      "artistic": "Artistic",
+      "social": "Social",
+      "enterprising": "Enterprising",
+      "conventional": "Conventional"
+    },
+    "retakeInterestGuide": "Retake interest guide →",
+    "noInterestGuide": "You haven't taken the interest guide yet",
+    "takeInterestGuide": "Take interest guide",
+    "careerGoalsLabels": {
+      "shortTerm": "Short-term",
+      "longTerm": "Long-term",
+      "notSpecified": "Not specified yet"
+    },
+    "noPreferredRoles": "No preferred roles specified yet.",
+    "stats": {
+      "applications": "Applications",
+      "coverLetters": "Cover letters",
+      "cvUpdate": "CV update",
+      "never": "Never"
+    },
+    "dataUsageLabels": {
+      "cvBuilder": "CV Builder",
+      "coverLetter": "Cover letter",
+      "jobTracker": "Job tracker",
+      "active": "Active",
+      "empty": "Empty",
+      "saved": "{{count}} saved",
+      "noLetters": "No letters",
+      "noApplications": "No applications",
+      "applicationsCount": "{{count}} applications"
+    }
+  },
   "cvBuilder": {
     "title": "Create CV",
     "steps": {

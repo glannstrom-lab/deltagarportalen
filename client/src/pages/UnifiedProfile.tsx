@@ -6,8 +6,9 @@
  */
 
 import { useState, useEffect, useRef } from 'react'
-import { 
-  User, Briefcase, MapPin, Mail, Phone, 
+import { useTranslation } from 'react-i18next'
+import {
+  User, Briefcase, MapPin, Mail, Phone,
   Edit2, Save, X, Camera, CheckCircle2,
   Target, Sparkles, GraduationCap, Award,
   TrendingUp, ChevronRight, Loader2
@@ -18,6 +19,7 @@ import { unifiedProfileApi, type UnifiedProfileData } from '@/services/unifiedPr
 import { ImageUpload } from '@/components/ImageUpload'
 
 export default function UnifiedProfilePage() {
+  const { t, i18n } = useTranslation()
   const [profile, setProfile] = useState<Partial<UnifiedProfileData>>({})
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
@@ -138,7 +140,7 @@ export default function UnifiedProfilePage() {
                   className="flex items-center gap-2 px-4 py-2 bg-slate-100 text-slate-700 rounded-lg hover:bg-slate-200 transition-colors"
                 >
                   <Edit2 size={16} />
-                  Redigera
+                  {t('unifiedProfile.edit')}
                 </button>
               ) : (
                 <div className="flex items-center gap-2">
@@ -157,7 +159,7 @@ export default function UnifiedProfilePage() {
                     className="flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 disabled:opacity-50 transition-colors"
                   >
                     {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
-                    Spara
+                    {t('unifiedProfile.save')}
                   </button>
                 </div>
               )}
@@ -168,7 +170,7 @@ export default function UnifiedProfilePage() {
           <div className="mt-6 pt-6 border-t border-slate-100">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium text-slate-700">
-                Profilkompletthet
+                {t('unifiedProfile.profileCompleteness')}
               </span>
               <span className={cn(
                 "text-sm font-bold",
@@ -179,7 +181,7 @@ export default function UnifiedProfilePage() {
               </span>
             </div>
             <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-              <div 
+              <div
                 className={cn(
                   "h-full transition-all duration-500",
                   completeness >= 80 ? "bg-green-500" :
@@ -189,9 +191,9 @@ export default function UnifiedProfilePage() {
               />
             </div>
             <p className="text-xs text-slate-500 mt-1.5">
-              {completeness < 100 
-                ? "Fyll i mer information för att förbättra dina chanser till jobb"
-                : "Bra jobbat! Din profil är komplett"
+              {completeness < 100
+                ? t('unifiedProfile.completenessHint.incomplete')
+                : t('unifiedProfile.completenessHint.complete')
               }
             </p>
           </div>
@@ -201,9 +203,9 @@ export default function UnifiedProfilePage() {
       {/* Tabs */}
       <div className="flex items-center gap-2 mb-6 border-b border-slate-200">
         {[
-          { id: 'profile', label: 'Profil', icon: User },
-          { id: 'career', label: 'Karriär', icon: Target },
-          { id: 'settings', label: 'Inställningar', icon: Award },
+          { id: 'profile', label: t('unifiedProfile.tabs.profile'), icon: User },
+          { id: 'career', label: t('unifiedProfile.tabs.career'), icon: Target },
+          { id: 'settings', label: t('unifiedProfile.tabs.settings'), icon: Award },
         ].map((tab) => (
           <button
             key={tab.id}
@@ -226,44 +228,44 @@ export default function UnifiedProfilePage() {
         {activeTab === 'profile' && (
           <>
             {/* Core Info */}
-            <Section title="Grundinformation" icon={User}>
+            <Section title={t('unifiedProfile.sections.basicInfo')} icon={User}>
               {isEditing ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <Input
-                    label="Förnamn"
+                    label={t('unifiedProfile.fields.firstName')}
                     value={editedCore.firstName || ''}
                     onChange={(v) => setEditedCore(prev => ({ ...prev, firstName: v }))}
                   />
                   <Input
-                    label="Efternamn"
+                    label={t('unifiedProfile.fields.lastName')}
                     value={editedCore.lastName || ''}
                     onChange={(v) => setEditedCore(prev => ({ ...prev, lastName: v }))}
                   />
                   <Input
-                    label="E-post"
+                    label={t('unifiedProfile.fields.email')}
                     type="email"
                     value={editedCore.email || ''}
                     onChange={(v) => setEditedCore(prev => ({ ...prev, email: v }))}
                   />
                   <Input
-                    label="Telefon"
+                    label={t('unifiedProfile.fields.phone')}
                     value={editedCore.phone || ''}
                     onChange={(v) => setEditedCore(prev => ({ ...prev, phone: v }))}
                   />
                   <Input
-                    label="Ort"
+                    label={t('unifiedProfile.fields.location')}
                     value={editedCore.location || ''}
                     onChange={(v) => setEditedCore(prev => ({ ...prev, location: v }))}
-                    placeholder="t.ex. Stockholm"
+                    placeholder={t('unifiedProfile.fields.locationPlaceholder')}
                   />
                   <div className="sm:col-span-2">
                     <label className="block text-sm font-medium text-slate-700 mb-1.5">
-                      Sammanfattning
+                      {t('unifiedProfile.fields.summary')}
                     </label>
                     <textarea
                       value={editedCore.summary || ''}
                       onChange={(e) => setEditedCore(prev => ({ ...prev, summary: e.target.value }))}
-                      placeholder="Beskriv kortfattat vem du är och vad du söker..."
+                      placeholder={t('unifiedProfile.fields.summaryPlaceholder')}
                       rows={3}
                       className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
                     />
@@ -271,23 +273,23 @@ export default function UnifiedProfilePage() {
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <InfoItem label="Förnamn" value={core?.firstName} />
-                  <InfoItem label="Efternamn" value={core?.lastName} />
-                  <InfoItem label="E-post" value={core?.email} />
-                  <InfoItem label="Telefon" value={core?.phone} />
-                  <InfoItem label="Ort" value={core?.location} />
+                  <InfoItem label={t('unifiedProfile.fields.firstName')} value={core?.firstName} notSpecifiedText={t('unifiedProfile.notSpecified')} />
+                  <InfoItem label={t('unifiedProfile.fields.lastName')} value={core?.lastName} notSpecifiedText={t('unifiedProfile.notSpecified')} />
+                  <InfoItem label={t('unifiedProfile.fields.email')} value={core?.email} notSpecifiedText={t('unifiedProfile.notSpecified')} />
+                  <InfoItem label={t('unifiedProfile.fields.phone')} value={core?.phone} notSpecifiedText={t('unifiedProfile.notSpecified')} />
+                  <InfoItem label={t('unifiedProfile.fields.location')} value={core?.location} notSpecifiedText={t('unifiedProfile.notSpecified')} />
                   <div className="sm:col-span-2">
-                    <InfoItem label="Sammanfattning" value={core?.summary} />
+                    <InfoItem label={t('unifiedProfile.fields.summary')} value={core?.summary} notSpecifiedText={t('unifiedProfile.notSpecified')} />
                   </div>
                 </div>
               )}
             </Section>
 
             {/* Skills */}
-            <Section title="Kompetenser" icon={Sparkles}>
+            <Section title={t('unifiedProfile.sections.skills')} icon={Sparkles}>
               <div className="flex flex-wrap gap-2">
                 {professional?.skills?.map((skill, idx) => (
-                  <span 
+                  <span
                     key={idx}
                     className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-sm"
                   >
@@ -296,9 +298,9 @@ export default function UnifiedProfilePage() {
                 ))}
                 {(!professional?.skills || professional.skills.length === 0) && (
                   <p className="text-slate-500 text-sm">
-                    Inga kompetenser tillagda ännu.{' '}
+                    {t('unifiedProfile.noSkills')}{' '}
                     <Link to="/cv" className="text-violet-600 hover:underline">
-                      Lägg till i CV-byggaren
+                      {t('unifiedProfile.addInCVBuilder')}
                     </Link>
                   </p>
                 )}
@@ -306,7 +308,7 @@ export default function UnifiedProfilePage() {
             </Section>
 
             {/* Experience Preview */}
-            <Section title="Arbetslivserfarenhet" icon={Briefcase}>
+            <Section title={t('unifiedProfile.sections.experience')} icon={Briefcase}>
               {professional?.workExperience && professional.workExperience.length > 0 ? (
                 <div className="space-y-3">
                   {professional.workExperience.slice(0, 3).map((exp, idx) => (
@@ -321,27 +323,27 @@ export default function UnifiedProfilePage() {
                     </div>
                   ))}
                   {professional.workExperience.length > 3 && (
-                    <Link 
+                    <Link
                       to="/cv"
                       className="text-sm text-violet-600 hover:underline flex items-center gap-1"
                     >
-                      Se alla {professional.workExperience.length} erfarenheter
+                      {t('unifiedProfile.seeAllExperiences', { count: professional.workExperience.length })}
                       <ChevronRight size={14} />
                     </Link>
                   )}
                 </div>
               ) : (
                 <p className="text-slate-500 text-sm">
-                  Ingen erfarenhet tillagd ännu.{' '}
+                  {t('unifiedProfile.noExperience')}{' '}
                   <Link to="/cv" className="text-violet-600 hover:underline">
-                    Lägg till i CV-byggaren
+                    {t('unifiedProfile.addInCVBuilder')}
                   </Link>
                 </p>
               )}
             </Section>
 
             {/* Education Preview */}
-            <Section title="Utbildning" icon={GraduationCap}>
+            <Section title={t('unifiedProfile.sections.education')} icon={GraduationCap}>
               {professional?.education && professional.education.length > 0 ? (
                 <div className="space-y-3">
                   {professional.education.slice(0, 2).map((edu, idx) => (
@@ -358,9 +360,9 @@ export default function UnifiedProfilePage() {
                 </div>
               ) : (
                 <p className="text-slate-500 text-sm">
-                  Ingen utbildning tillagd ännu.{' '}
+                  {t('unifiedProfile.noEducation')}{' '}
                   <Link to="/cv" className="text-violet-600 hover:underline">
-                    Lägg till i CV-byggaren
+                    {t('unifiedProfile.addInCVBuilder')}
                   </Link>
                 </p>
               )}
@@ -371,30 +373,25 @@ export default function UnifiedProfilePage() {
         {activeTab === 'career' && (
           <>
             {/* Interest Guide Results */}
-            <Section title="Mina Intressen (RIASEC)" icon={Sparkles}>
+            <Section title={t('unifiedProfile.sections.interests')} icon={Sparkles}>
               {career?.riasecScores ? (
                 <div className="space-y-4">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     {Object.entries(career.riasecScores).map(([type, score]) => (
-                      <div 
+                      <div
                         key={type}
                         className="bg-slate-50 rounded-lg p-3"
                       >
                         <div className="flex items-center justify-between mb-1">
                           <span className="text-sm font-medium capitalize text-slate-700">
-                            {type === 'realistic' ? 'Realistisk' :
-                             type === 'investigative' ? 'Undersökande' :
-                             type === 'artistic' ? 'Konstnärlig' :
-                             type === 'social' ? 'Social' :
-                             type === 'enterprising' ? 'Företagsam' :
-                             'Konventionell'}
+                            {t(`unifiedProfile.riasec.${type}`)}
                           </span>
                           <span className="text-sm font-bold text-violet-600">
                             {Math.round(score * 100)}%
                           </span>
                         </div>
                         <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                          <div 
+                          <div
                             className="h-full bg-violet-500 rounded-full"
                             style={{ width: `${score * 100}%` }}
                           />
@@ -402,24 +399,24 @@ export default function UnifiedProfilePage() {
                       </div>
                     ))}
                   </div>
-                  <Link 
+                  <Link
                     to="/interest-guide"
                     className="text-sm text-violet-600 hover:underline"
                   >
-                    Gör om intresseguiden →
+                    {t('unifiedProfile.retakeInterestGuide')}
                   </Link>
                 </div>
               ) : (
                 <div className="text-center py-8 bg-slate-50 rounded-xl">
                   <Sparkles size={32} className="mx-auto mb-3 text-slate-400" />
                   <p className="text-slate-600 mb-3">
-                    Du har inte gjort intresseguiden ännu
+                    {t('unifiedProfile.noInterestGuide')}
                   </p>
-                  <Link 
+                  <Link
                     to="/interest-guide"
                     className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600"
                   >
-                    Gör intresseguiden
+                    {t('unifiedProfile.takeInterestGuide')}
                   </Link>
                 </div>
               )}
@@ -427,7 +424,7 @@ export default function UnifiedProfilePage() {
 
             {/* Top Occupations */}
             {career?.topOccupations && career.topOccupations.length > 0 && (
-              <Section title="Rekommenderade Yrken" icon={Target}>
+              <Section title={t('unifiedProfile.sections.recommendedJobs')} icon={Target}>
                 <div className="flex flex-wrap gap-2">
                   {career.topOccupations.map((occupation, idx) => (
                     <Link
@@ -443,29 +440,29 @@ export default function UnifiedProfilePage() {
             )}
 
             {/* Career Goals */}
-            <Section title="Karriärmål" icon={TrendingUp}>
+            <Section title={t('unifiedProfile.sections.careerGoals')} icon={TrendingUp}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-slate-50 rounded-xl p-4">
-                  <h4 className="text-sm font-medium text-slate-500 mb-1">Kortsiktigt</h4>
+                  <h4 className="text-sm font-medium text-slate-500 mb-1">{t('unifiedProfile.careerGoalsLabels.shortTerm')}</h4>
                   <p className="text-slate-900">
-                    {career?.careerGoals?.shortTerm || 'Inte angivet ännu'}
+                    {career?.careerGoals?.shortTerm || t('unifiedProfile.careerGoalsLabels.notSpecified')}
                   </p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-4">
-                  <h4 className="text-sm font-medium text-slate-500 mb-1">Långsiktigt</h4>
+                  <h4 className="text-sm font-medium text-slate-500 mb-1">{t('unifiedProfile.careerGoalsLabels.longTerm')}</h4>
                   <p className="text-slate-900">
-                    {career?.careerGoals?.longTerm || 'Inte angivet ännu'}
+                    {career?.careerGoals?.longTerm || t('unifiedProfile.careerGoalsLabels.notSpecified')}
                   </p>
                 </div>
               </div>
             </Section>
 
             {/* Preferred Roles */}
-            <Section title="Föredragna Roller" icon={CheckCircle2}>
+            <Section title={t('unifiedProfile.sections.preferredRoles')} icon={CheckCircle2}>
               {career?.preferredRoles && career.preferredRoles.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {career.preferredRoles.map((role, idx) => (
-                    <span 
+                    <span
                       key={idx}
                       className="px-3 py-1.5 bg-teal-100 text-teal-700 rounded-full text-sm"
                     >
@@ -475,7 +472,7 @@ export default function UnifiedProfilePage() {
                 </div>
               ) : (
                 <p className="text-slate-500 text-sm">
-                  Inga föredragna roller angivna ännu.
+                  {t('unifiedProfile.noPreferredRoles')}
                 </p>
               )}
             </Section>
@@ -485,23 +482,23 @@ export default function UnifiedProfilePage() {
         {activeTab === 'settings' && (
           <>
             {/* Usage Stats */}
-            <Section title="Aktivitet" icon={TrendingUp}>
+            <Section title={t('unifiedProfile.sections.activity')} icon={TrendingUp}>
               <div className="grid grid-cols-3 gap-4">
-                <StatCard 
-                  label="Ansökningar"
+                <StatCard
+                  label={t('unifiedProfile.stats.applications')}
                   value={usage?.applicationsCount || 0}
                   link="/job-tracker"
                 />
-                <StatCard 
-                  label="Personliga brev"
+                <StatCard
+                  label={t('unifiedProfile.stats.coverLetters')}
                   value={usage?.coverLettersCount || 0}
                   link="/cover-letter"
                 />
-                <StatCard 
-                  label="CV-uppdatering"
-                  value={usage?.cvLastUpdated 
-                    ? new Date(usage.cvLastUpdated).toLocaleDateString('sv-SE', { month: 'short', day: 'numeric' })
-                    : 'Aldrig'
+                <StatCard
+                  label={t('unifiedProfile.stats.cvUpdate')}
+                  value={usage?.cvLastUpdated
+                    ? new Date(usage.cvLastUpdated).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { month: 'short', day: 'numeric' })
+                    : t('unifiedProfile.stats.never')
                   }
                   link="/cv"
                   isDate={!!usage?.cvLastUpdated}
@@ -510,33 +507,33 @@ export default function UnifiedProfilePage() {
             </Section>
 
             {/* Data Usage */}
-            <Section title="Dataanvändning" icon={CheckCircle2}>
+            <Section title={t('unifiedProfile.sections.dataUsage')} icon={CheckCircle2}>
               <div className="space-y-3">
                 <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 size={20} className="text-green-600" />
-                    <span className="text-slate-700">CV-byggare</span>
+                    <span className="text-slate-700">{t('unifiedProfile.dataUsageLabels.cvBuilder')}</span>
                   </div>
                   <span className="text-sm text-green-700 font-medium">
-                    {professional?.workExperience && professional.workExperience.length > 0 ? 'Aktiv' : 'Tom'}
+                    {professional?.workExperience && professional.workExperience.length > 0 ? t('unifiedProfile.dataUsageLabels.active') : t('unifiedProfile.dataUsageLabels.empty')}
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 size={20} className="text-green-600" />
-                    <span className="text-slate-700">Personligt brev</span>
+                    <span className="text-slate-700">{t('unifiedProfile.dataUsageLabels.coverLetter')}</span>
                   </div>
                   <span className="text-sm text-green-700 font-medium">
-                    {usage?.coverLettersCount ? `${usage.coverLettersCount} sparade` : 'Inga brev'}
+                    {usage?.coverLettersCount ? t('unifiedProfile.dataUsageLabels.saved', { count: usage.coverLettersCount }) : t('unifiedProfile.dataUsageLabels.noLetters')}
                   </span>
                 </div>
                 <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
                   <div className="flex items-center gap-3">
                     <CheckCircle2 size={20} className="text-green-600" />
-                    <span className="text-slate-700">Jobbtracker</span>
+                    <span className="text-slate-700">{t('unifiedProfile.dataUsageLabels.jobTracker')}</span>
                   </div>
                   <span className="text-sm text-green-700 font-medium">
-                    {usage?.applicationsCount ? `${usage.applicationsCount} ansökningar` : 'Inga ansökningar'}
+                    {usage?.applicationsCount ? t('unifiedProfile.dataUsageLabels.applicationsCount', { count: usage.applicationsCount }) : t('unifiedProfile.dataUsageLabels.noApplications')}
                   </span>
                 </div>
               </div>
@@ -572,14 +569,14 @@ function Section({
   )
 }
 
-function InfoItem({ label, value }: { label: string; value?: string }) {
+function InfoItem({ label, value, notSpecifiedText = 'Not specified' }: { label: string; value?: string; notSpecifiedText?: string }) {
   return (
     <div>
       <label className="block text-sm font-medium text-slate-500 mb-0.5">
         {label}
       </label>
       <p className="text-slate-900">
-        {value || <span className="text-slate-400 italic">Inte angivet</span>}
+        {value || <span className="text-slate-400 italic">{notSpecifiedText}</span>}
       </p>
     </div>
   )
