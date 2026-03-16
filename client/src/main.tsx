@@ -8,6 +8,7 @@ import { MobileOptimizer } from './components/MobileOptimizer'
 import { FontProvider } from './components/FontProvider'
 import { UpdateNotification } from './components/UpdateNotification'
 import { ThemeProvider } from './contexts/ThemeContext'
+import './i18n/config' // Initiera i18n
 import './index.css'
 import './styles/mobile.css'
 

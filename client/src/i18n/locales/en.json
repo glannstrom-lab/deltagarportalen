@@ -1,0 +1,167 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "close": "Close",
+    "edit": "Edit",
+    "delete": "Delete",
+    "add": "Add",
+    "search": "Search",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "success": "Done!",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous",
+    "submit": "Submit",
+    "reset": "Reset",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "and": "and",
+    "all": "All",
+    "none": "None",
+    "more": "More",
+    "less": "Less",
+    "days": "days"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "cv": "CV",
+    "coverLetter": "Cover Letter",
+    "jobSearch": "Job Search",
+    "career": "Career",
+    "interestGuide": "Interest Guide",
+    "exercises": "Exercises",
+    "diary": "Diary",
+    "wellness": "Wellness",
+    "knowledgeBase": "Knowledge Base",
+    "resources": "Resources",
+    "settings": "Settings",
+    "logout": "Log out",
+    "adminPanel": "Admin Panel",
+    "myParticipants": "My Participants"
+  },
+  "roles": {
+    "activeRole": "Active role",
+    "superadmin": "Superadmin",
+    "admin": "Admin",
+    "consultant": "Consultant",
+    "participant": "Participant"
+  },
+  "sidebar": {
+    "minimize": "Minimize sidebar",
+    "expand": "Expand sidebar",
+    "consultantSection": "Consultant",
+    "adminSection": "Admin"
+  },
+  "topbar": {
+    "searchPlaceholder": "Search jobs, articles...",
+    "searchJobs": "Search jobs...",
+    "searchArticles": "Search articles...",
+    "lightMode": "Light mode",
+    "darkMode": "Dark mode",
+    "help": "Help & Support",
+    "notifications": "Notifications",
+    "noNotifications": "No new notifications",
+    "markAllRead": "Mark all as read",
+    "unreadNotifications": "{{count}} unread",
+    "profile": "My profile"
+  },
+  "language": {
+    "select": "Select language",
+    "swedish": "Svenska",
+    "english": "English"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome",
+    "welcomeBack": "Welcome back",
+    "todaysTasks": "Today's tasks",
+    "recentActivity": "Recent activity",
+    "quickActions": "Quick actions",
+    "progress": "Your progress",
+    "streak": "{{count}} day streak"
+  },
+  "cv": {
+    "title": "CV",
+    "subtitle": "Create and manage your CV",
+    "personalInfo": "Personal information",
+    "experience": "Work experience",
+    "education": "Education",
+    "skills": "Skills",
+    "languages": "Languages",
+    "download": "Download CV",
+    "preview": "Preview"
+  },
+  "coverLetter": {
+    "title": "Cover Letter",
+    "subtitle": "Create personalized cover letters for your applications"
+  },
+  "jobSearch": {
+    "title": "Job Search",
+    "subtitle": "Find your next opportunity",
+    "filters": "Filters",
+    "results": "Results",
+    "noResults": "No jobs found",
+    "apply": "Apply",
+    "save": "Save"
+  },
+  "career": {
+    "title": "Career",
+    "subtitle": "Plan your career path"
+  },
+  "interestGuide": {
+    "title": "Interest Guide",
+    "subtitle": "Discover your interests and strengths"
+  },
+  "exercises": {
+    "title": "Exercises",
+    "subtitle": "Practical exercises for job searching"
+  },
+  "diary": {
+    "title": "Diary",
+    "subtitle": "Reflect on your job search journey"
+  },
+  "wellness": {
+    "title": "Wellness",
+    "subtitle": "Take care of yourself during job searching"
+  },
+  "knowledgeBase": {
+    "title": "Knowledge Base",
+    "subtitle": "Articles and guides for job seekers"
+  },
+  "resources": {
+    "title": "Resources",
+    "subtitle": "Useful tools and links"
+  },
+  "settings": {
+    "title": "Settings",
+    "appearance": "Appearance",
+    "notifications": "Notifications",
+    "accessibility": "Accessibility",
+    "language": "Language",
+    "account": "Account"
+  },
+  "auth": {
+    "login": "Log in",
+    "logout": "Log out",
+    "register": "Register",
+    "forgotPassword": "Forgot password?",
+    "email": "Email",
+    "password": "Password",
+    "confirmPassword": "Confirm password"
+  },
+  "errors": {
+    "generic": "Something didn't go as planned. We'll help you move forward.",
+    "connection": "We're having connection issues. Your work is saved locally.",
+    "timeout": "It took longer than expected. Trying again...",
+    "notFound": "Page not found."
+  },
+  "empty": {
+    "noJobs": "No jobs found right now. New opportunities are coming!",
+    "noApplications": "You haven't applied to any jobs yet. We're here when you're ready.",
+    "noResults": "We didn't find anything this time. Let's adjust the search together."
+  }
+}

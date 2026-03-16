@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { navItems, adminNavItems, consultantNavItems } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
@@ -10,6 +11,7 @@ interface SidebarProps {
 
 export function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation()
+  const { t } = useTranslation()
   const { profile, signOut } = useAuthStore()
   const [isExpanded, setIsExpanded] = useState(true)
 
@@ -101,7 +103,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
-          aria-label={isExpanded ? 'Minimera sidomenyn' : 'Expandera sidomenyn'}
+          aria-label={isExpanded ? t('sidebar.minimize') : t('sidebar.expand')}
           aria-expanded={isExpanded}
         >
           <svg
@@ -127,7 +129,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                 key={item.path}
                 to={item.path}
                 icon={item.icon}
-                label={item.label}
+                label={t(item.labelKey)}
                 isActive={isActive}
               />
             )
@@ -139,7 +141,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
             {isExpanded && (
               <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
-                Konsulent
+                {t('sidebar.consultantSection')}
               </p>
             )}
             <div className={cn(!isExpanded && 'space-y-0.5')}>
@@ -150,7 +152,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                     key={item.path}
                     to={item.path}
                     icon={item.icon}
-                    label={item.label}
+                    label={t(item.labelKey)}
                     isActive={isActive}
                     variant="consultant"
                   />
@@ -165,7 +167,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
             {isExpanded && (
               <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
-                Admin
+                {t('sidebar.adminSection')}
               </p>
             )}
             <div className={cn(!isExpanded && 'space-y-0.5')}>
@@ -176,7 +178,7 @@ export function Sidebar({ onClose }: SidebarProps) {
                     key={item.path}
                     to={item.path}
                     icon={item.icon}
-                    label={item.label}
+                    label={t(item.labelKey)}
                     isActive={isActive}
                     variant="admin"
                   />
@@ -192,11 +194,11 @@ export function Sidebar({ onClose }: SidebarProps) {
         {/* Visa aktiv roll */}
         {isExpanded && (
           <div className="mb-2 px-3 py-1.5 bg-white/5 rounded-lg">
-            <p className="text-xs text-white/40 uppercase tracking-wider">Aktiv roll</p>
+            <p className="text-xs text-white/40 uppercase tracking-wider">{t('roles.activeRole')}</p>
             <p className="text-xs font-medium text-white">
-              {activeRole === 'SUPERADMIN' ? 'Superadmin' :
-               activeRole === 'ADMIN' ? 'Admin' :
-               activeRole === 'CONSULTANT' ? 'Konsulent' : 'Deltagare'}
+              {activeRole === 'SUPERADMIN' ? t('roles.superadmin') :
+               activeRole === 'ADMIN' ? t('roles.admin') :
+               activeRole === 'CONSULTANT' ? t('roles.consultant') : t('roles.participant')}
             </p>
           </div>
         )}
@@ -231,7 +233,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
             </svg>
           )}
-          label="Inställningar"
+          label={t('nav.settings')}
           isActive={location.pathname === '/settings'}
         />
 
@@ -241,16 +243,16 @@ export function Sidebar({ onClose }: SidebarProps) {
             'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-red-200/50 hover:text-red-200 hover:bg-red-500/10 group relative',
             !isExpanded && 'justify-center px-2'
           )}
-          aria-label="Logga ut"
+          aria-label={t('nav.logout')}
         >
           <svg className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-6 h-6')} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           {isExpanded ? (
-            <span className="text-sm font-medium">Logga ut</span>
+            <span className="text-sm font-medium">{t('nav.logout')}</span>
           ) : (
             <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity" role="tooltip">
-              Logga ut
+              {t('nav.logout')}
             </div>
           )}
         </button>

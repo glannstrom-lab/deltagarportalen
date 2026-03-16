@@ -1,0 +1,167 @@
+{
+  "common": {
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "close": "Stäng",
+    "edit": "Redigera",
+    "delete": "Ta bort",
+    "add": "Lägg till",
+    "search": "Sök",
+    "loading": "Laddar...",
+    "error": "Något gick fel",
+    "success": "Klart!",
+    "confirm": "Bekräfta",
+    "back": "Tillbaka",
+    "next": "Nästa",
+    "previous": "Föregående",
+    "submit": "Skicka",
+    "reset": "Återställ",
+    "yes": "Ja",
+    "no": "Nej",
+    "or": "eller",
+    "and": "och",
+    "all": "Alla",
+    "none": "Ingen",
+    "more": "Mer",
+    "less": "Mindre",
+    "days": "dagar"
+  },
+  "nav": {
+    "dashboard": "Översikt",
+    "cv": "CV",
+    "coverLetter": "Personligt brev",
+    "jobSearch": "Sök jobb",
+    "career": "Karriär",
+    "interestGuide": "Intresseguide",
+    "exercises": "Övningar",
+    "diary": "Dagbok",
+    "wellness": "Hälsa",
+    "knowledgeBase": "Kunskapsbank",
+    "resources": "Resurser",
+    "settings": "Inställningar",
+    "logout": "Logga ut",
+    "adminPanel": "Admin Panel",
+    "myParticipants": "Mina Deltagare"
+  },
+  "roles": {
+    "activeRole": "Aktiv roll",
+    "superadmin": "Superadmin",
+    "admin": "Admin",
+    "consultant": "Konsulent",
+    "participant": "Deltagare"
+  },
+  "sidebar": {
+    "minimize": "Minimera sidomenyn",
+    "expand": "Expandera sidomenyn",
+    "consultantSection": "Konsulent",
+    "adminSection": "Admin"
+  },
+  "topbar": {
+    "searchPlaceholder": "Sök jobb, artiklar...",
+    "searchJobs": "Sök jobb...",
+    "searchArticles": "Sök artiklar...",
+    "lightMode": "Ljust läge",
+    "darkMode": "Mörkt läge",
+    "help": "Hjälp & Support",
+    "notifications": "Notifikationer",
+    "noNotifications": "Inga nya notifikationer",
+    "markAllRead": "Markera alla lästa",
+    "unreadNotifications": "{{count}} olästa",
+    "profile": "Min profil"
+  },
+  "language": {
+    "select": "Välj språk",
+    "swedish": "Svenska",
+    "english": "English"
+  },
+  "dashboard": {
+    "title": "Översikt",
+    "welcome": "Välkommen",
+    "welcomeBack": "Välkommen tillbaka",
+    "todaysTasks": "Dagens uppgifter",
+    "recentActivity": "Senaste aktivitet",
+    "quickActions": "Snabbåtgärder",
+    "progress": "Din framsteg",
+    "streak": "{{count}} dagar i rad"
+  },
+  "cv": {
+    "title": "CV",
+    "subtitle": "Skapa och hantera ditt CV",
+    "personalInfo": "Personuppgifter",
+    "experience": "Arbetslivserfarenhet",
+    "education": "Utbildning",
+    "skills": "Kompetenser",
+    "languages": "Språk",
+    "download": "Ladda ner CV",
+    "preview": "Förhandsgranska"
+  },
+  "coverLetter": {
+    "title": "Personligt brev",
+    "subtitle": "Skapa personliga brev för dina ansökningar"
+  },
+  "jobSearch": {
+    "title": "Sök jobb",
+    "subtitle": "Hitta din nästa möjlighet",
+    "filters": "Filter",
+    "results": "Resultat",
+    "noResults": "Inga jobb hittades",
+    "apply": "Ansök",
+    "save": "Spara"
+  },
+  "career": {
+    "title": "Karriär",
+    "subtitle": "Planera din karriärväg"
+  },
+  "interestGuide": {
+    "title": "Intresseguide",
+    "subtitle": "Upptäck dina intressen och styrkor"
+  },
+  "exercises": {
+    "title": "Övningar",
+    "subtitle": "Praktiska övningar för jobbsökning"
+  },
+  "diary": {
+    "title": "Dagbok",
+    "subtitle": "Reflektera över din jobbsökarresa"
+  },
+  "wellness": {
+    "title": "Hälsa",
+    "subtitle": "Ta hand om dig själv under jobbsökandet"
+  },
+  "knowledgeBase": {
+    "title": "Kunskapsbank",
+    "subtitle": "Artiklar och guider för jobbsökare"
+  },
+  "resources": {
+    "title": "Resurser",
+    "subtitle": "Användbara verktyg och länkar"
+  },
+  "settings": {
+    "title": "Inställningar",
+    "appearance": "Utseende",
+    "notifications": "Notifikationer",
+    "accessibility": "Tillgänglighet",
+    "language": "Språk",
+    "account": "Konto"
+  },
+  "auth": {
+    "login": "Logga in",
+    "logout": "Logga ut",
+    "register": "Registrera",
+    "forgotPassword": "Glömt lösenord?",
+    "email": "E-post",
+    "password": "Lösenord",
+    "confirmPassword": "Bekräfta lösenord"
+  },
+  "errors": {
+    "generic": "Något gick inte som planerat. Vi hjälper dig att komma vidare.",
+    "connection": "Vi har problem med uppkopplingen. Ditt arbete sparas lokalt.",
+    "timeout": "Det tog längre tid än väntat. Vi försöker igen...",
+    "notFound": "Sidan kunde inte hittas."
+  },
+  "empty": {
+    "noJobs": "Inga jobb hittades just nu. Nya möjligheter kommer!",
+    "noApplications": "Du har inte sökt några jobb ännu. När du är redo finns vi här.",
+    "noResults": "Vi hittade inget denna gång. Låt oss justera sökningen tillsammans."
+  }
+}

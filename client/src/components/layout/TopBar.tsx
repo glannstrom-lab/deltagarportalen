@@ -1,22 +1,24 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { 
-  Search, 
-  Moon, 
-  Sun, 
-  Bell, 
-  User, 
-  LogOut, 
+import {
+  Search,
+  Moon,
+  Sun,
+  Bell,
+  User,
+  LogOut,
   Settings,
   HelpCircle,
   ChevronDown,
   Flame,
 } from 'lucide-react'
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import CrisisSupport from '@/components/CrisisSupport'
+import { LanguageSelector } from '@/components/ui/LanguageSelector'
 
 interface UserProfile {
   first_name: string
@@ -35,6 +37,7 @@ interface Notification {
 
 export function TopBar() {
   const { isDark, toggleDarkMode } = useTheme()
+  const { t, i18n } = useTranslation()
   const [currentDate, setCurrentDate] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [showUserMenu, setShowUserMenu] = useState(false)
@@ -47,24 +50,28 @@ export function TopBar() {
   const { signOut, user } = useAuthStore()
 
   useEffect(() => {
-    // Formatera datum på svenska
-    const date = new Date()
-    const options: Intl.DateTimeFormatOptions = { 
-      weekday: 'short', 
-      day: 'numeric',
-      month: 'short'
+    // Formatera datum baserat på aktuellt språk
+    const updateDate = () => {
+      const date = new Date()
+      const options: Intl.DateTimeFormatOptions = {
+        weekday: 'short',
+        day: 'numeric',
+        month: 'short',
+      }
+      const locale = i18n.language === 'sv' ? 'sv-SE' : 'en-GB'
+      setCurrentDate(date.toLocaleDateString(locale, options))
     }
-    setCurrentDate(date.toLocaleDateString('sv-SE', options))
+    updateDate()
 
     // Ladda profil
     loadProfile()
-    
+
     // Ladda notifikationer
     loadNotifications()
-    
+
     // Ladda streak
     loadStreak()
-  }, [])
+  }, [i18n.language])
 
   const loadProfile = async () => {
     if (!user) return
@@ -132,9 +139,9 @@ export function TopBar() {
   // Bestäm vilken sökplaceholder som ska visas baserat på sida
   const getSearchPlaceholder = () => {
     const path = location.pathname
-    if (path.includes('knowledge')) return 'Sök artiklar...'
-    if (path.includes('job')) return 'Sök jobb...'
-    return 'Sök jobb, artiklar...'
+    if (path.includes('knowledge')) return t('topbar.searchArticles')
+    if (path.includes('job')) return t('topbar.searchJobs')
+    return t('topbar.searchPlaceholder')
   }
 
   return (
@@ -156,7 +163,7 @@ export function TopBar() {
             {streak > 1 && (
               <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium">
                 <Flame size={12} />
-                <span>{streak} dagar</span>
+                <span>{streak} {t('common.days')}</span>
               </div>
             )}
           </div>
@@ -182,11 +189,14 @@ export function TopBar() {
         <div className="flex items-center gap-1 sm:gap-2">
 
 
+          {/* Language Selector */}
+          <LanguageSelector />
+
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
             className="p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-            title={isDark ? 'Ljust läge' : 'Mörkt läge'}
+            title={isDark ? t('topbar.lightMode') : t('topbar.darkMode')}
           >
             {isDark ? (
               <Sun size={20} className="text-amber-500" />
@@ -199,7 +209,7 @@ export function TopBar() {
           <Link
             to="/help"
             className="hidden sm:flex p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-            title="Hjälp & Support"
+            title={t('topbar.help')}
           >
             <HelpCircle size={20} className="text-stone-500 dark:text-stone-400" />
           </Link>
@@ -220,7 +230,7 @@ export function TopBar() {
                 "p-2.5 rounded-xl transition-colors relative",
                 showNotifications ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
               )}
-              aria-label={`Notifikationer${unreadCount > 0 ? ` (${unreadCount} olästa)` : ''}`}
+              aria-label={`${t('topbar.notifications')}${unreadCount > 0 ? ` (${t('topbar.unreadNotifications', { count: unreadCount })})` : ''}`}
               aria-expanded={showNotifications}
               aria-haspopup="true"
             >
@@ -241,19 +251,19 @@ export function TopBar() {
                 />
                 <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-100 dark:border-stone-700 p-2 z-50">
                   <div className="flex items-center justify-between px-3 py-2 border-b border-stone-100 dark:border-stone-700">
-                    <h3 className="font-semibold text-stone-800 dark:text-stone-100">Notifikationer</h3>
+                    <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('topbar.notifications')}</h3>
                     {unreadCount > 0 && (
-                      <button 
+                      <button
                         onClick={() => setNotifications([])}
                         className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700"
                       >
-                        Markera alla lästa
+                        {t('topbar.markAllRead')}
                       </button>
                     )}
                   </div>
                   <div className="max-h-64 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <p className="text-center text-stone-500 dark:text-stone-400 text-sm py-6">Inga nya notifikationer</p>
+                      <p className="text-center text-stone-500 dark:text-stone-400 text-sm py-6">{t('topbar.noNotifications')}</p>
                     ) : (
                       notifications.map(n => (
                         <button
@@ -311,24 +321,24 @@ export function TopBar() {
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors mt-1"
                   >
                     <User size={18} className="text-stone-500 dark:text-stone-400" />
-                    <span className="text-stone-700 dark:text-stone-200">Min profil</span>
+                    <span className="text-stone-700 dark:text-stone-200">{t('topbar.profile')}</span>
                   </Link>
-                  
+
                   <Link
                     to="/settings"
                     onClick={() => setShowUserMenu(false)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
                   >
                     <Settings size={18} className="text-stone-500 dark:text-stone-400" />
-                    <span className="text-stone-700 dark:text-stone-200">Inställningar</span>
+                    <span className="text-stone-700 dark:text-stone-200">{t('nav.settings')}</span>
                   </Link>
-                  
+
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors mt-1 text-red-600"
                   >
                     <LogOut size={18} />
-                    <span>Logga ut</span>
+                    <span>{t('nav.logout')}</span>
                   </button>
                 </div>
               </>

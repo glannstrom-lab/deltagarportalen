@@ -3,7 +3,6 @@ import {
   FileText,
   Briefcase,
   Compass,
-  Calendar,
   BookOpen,
   Dumbbell,
   Mail,
@@ -16,26 +15,27 @@ import {
 } from 'lucide-react'
 
 // Standard navigation för deltagare
+// labelKey är nyckeln i översättningsfilen (nav.X)
 export const navItems = [
-  { path: '/', label: 'Översikt', icon: LayoutDashboard },
-  { path: '/cv', label: 'CV', icon: FileText },
-  { path: '/cover-letter', label: 'Personligt brev', icon: Mail },
-  { path: '/job-search', label: 'Sök jobb', icon: Briefcase },
-  { path: '/career', label: 'Karriär', icon: Target },
-  { path: '/interest-guide', label: 'Intresseguide', icon: Compass },
-  { path: '/exercises', label: 'Övningar', icon: Dumbbell },
-  { path: '/diary', label: 'Dagbok', icon: Heart },
-  { path: '/wellness', label: 'Hälsa', icon: Sparkles },
-  { path: '/knowledge-base', label: 'Kunskapsbank', icon: BookOpen },
-  { path: '/resources', label: 'Resurser', icon: Bookmark },
+  { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
+  { path: '/cv', labelKey: 'nav.cv', icon: FileText },
+  { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
+  { path: '/job-search', labelKey: 'nav.jobSearch', icon: Briefcase },
+  { path: '/career', labelKey: 'nav.career', icon: Target },
+  { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
+  { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
+  { path: '/diary', labelKey: 'nav.diary', icon: Heart },
+  { path: '/wellness', labelKey: 'nav.wellness', icon: Sparkles },
+  { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
+  { path: '/resources', labelKey: 'nav.resources', icon: Bookmark },
 ]
 
 // Admin navigation (visas för SUPERADMIN och ADMIN)
 export const adminNavItems = [
-  { path: '/admin', label: 'Admin Panel', icon: Shield },
+  { path: '/admin', labelKey: 'nav.adminPanel', icon: Shield },
 ]
 
 // Konsulent navigation (visas för CONSULTANT)
 export const consultantNavItems = [
-  { path: '/consultant', label: 'Mina Deltagare', icon: Users },
+  { path: '/consultant', labelKey: 'nav.myParticipants', icon: Users },
 ]
