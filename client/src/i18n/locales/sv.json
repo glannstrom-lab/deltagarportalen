@@ -1638,5 +1638,36 @@
     "fallbackQ1": "Tack för presentationen! Beskriv en situation där du hanterat en konflikt.",
     "fallbackQ2": "Bra! Vilka är dina styrkor och svagheter?",
     "fallbackQ3": "Varför vill du just jobba hos oss?"
+  },
+  "calendar": {
+    "title": "Kalender",
+    "description": "Dina händelser och möten",
+    "days": {
+      "mon": "Mån",
+      "tue": "Tis",
+      "wed": "Ons",
+      "thu": "Tor",
+      "fri": "Fre",
+      "sat": "Lör",
+      "sun": "Sön"
+    },
+    "moreEvents": "+{{count}} till",
+    "upcomingEvents": "Kommande händelser",
+    "noEventsPlanned": "Inga händelser planerade",
+    "newEvent": "Ny händelse",
+    "mockData": {
+      "jobInterview": "Jobbintervju - Tech Solutions",
+      "secondInterview": "Andra intervjun med tekniska frågor",
+      "updateCV": "Uppdatera CV",
+      "prepTechQuestions": "Förbereda tekniska frågor",
+      "researchCompany": "Kolla upp företaget",
+      "consultantMeeting": "Möte med arbetskonsulent",
+      "weeklyFollowUp": "Veckovis uppföljning av jobbsökande",
+      "applicationDeadline": "Sista ansökningsdag - Digital Agency",
+      "writeCoverLetter": "Skriva personligt brev",
+      "updatePortfolio": "Uppdatera portfolio",
+      "interviewPrep": "Förberedelse inför intervju",
+      "reviewQuestions": "Gå igenom vanliga intervjufrågor"
+    }
   }
 }

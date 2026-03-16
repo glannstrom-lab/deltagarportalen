@@ -1638,5 +1638,36 @@
     "fallbackQ1": "Thanks for the introduction! Describe a situation where you handled a conflict.",
     "fallbackQ2": "Great! What are your strengths and weaknesses?",
     "fallbackQ3": "Why do you want to work for us specifically?"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "description": "Your events and meetings",
+    "days": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "moreEvents": "+{{count}} more",
+    "upcomingEvents": "Upcoming events",
+    "noEventsPlanned": "No events planned",
+    "newEvent": "New event",
+    "mockData": {
+      "jobInterview": "Job Interview - Tech Solutions",
+      "secondInterview": "Second interview with technical questions",
+      "updateCV": "Update CV",
+      "prepTechQuestions": "Prepare technical questions",
+      "researchCompany": "Research the company",
+      "consultantMeeting": "Meeting with employment consultant",
+      "weeklyFollowUp": "Weekly follow-up on job seeking",
+      "applicationDeadline": "Application deadline - Digital Agency",
+      "writeCoverLetter": "Write cover letter",
+      "updatePortfolio": "Update portfolio",
+      "interviewPrep": "Interview preparation",
+      "reviewQuestions": "Review common interview questions"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
@@ -7,10 +8,10 @@ import { DayView } from '@/components/calendar/DayView'
 import { EventModal } from '@/components/calendar/EventModal'
 import { CalendarStats } from '@/components/calendar/CalendarStats'
 import { MoodTracker } from '@/components/calendar/MoodTracker'
-import type { 
-  CalendarEvent, 
-  CalendarView, 
-  CalendarGoal, 
+import type {
+  CalendarEvent,
+  CalendarView,
+  CalendarGoal,
   MoodEntry
 } from '@/services/calendarData'
 import { eventTypeConfig } from '@/services/calendarData'
@@ -96,6 +97,7 @@ const mockMoodEntries: MoodEntry[] = [
 ]
 
 export default function Calendar() {
+  const { t, i18n } = useTranslation()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [view, setView] = useState<CalendarView>('month')
   const [events, setEvents] = useState<CalendarEvent[]>(mockEvents)
@@ -157,7 +159,15 @@ export default function Calendar() {
     const daysInMonth = lastDay.getDate()
     const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1
 
-    const days = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+    const days = [
+      t('calendar.days.mon'),
+      t('calendar.days.tue'),
+      t('calendar.days.wed'),
+      t('calendar.days.thu'),
+      t('calendar.days.fri'),
+      t('calendar.days.sat'),
+      t('calendar.days.sun')
+    ]
 
     const getEventsForDate = (dateStr: string) => {
       return events.filter(event => event.date === dateStr)
@@ -212,7 +222,7 @@ export default function Calendar() {
                     })}
                     {dayEvents.length > 3 && (
                       <div className="text-xs text-slate-500 px-1.5">
-                        +{dayEvents.length - 3} till
+                        {t('calendar.moreEvents', { count: dayEvents.length - 3 })}
                       </div>
                     )}
                   </div>
@@ -234,7 +244,7 @@ export default function Calendar() {
     return (
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
         <div className="p-4 border-b border-slate-200">
-          <h3 className="font-semibold text-slate-900">Kommande händelser</h3>
+          <h3 className="font-semibold text-slate-900">{t('calendar.upcomingEvents')}</h3>
         </div>
         <div className="divide-y divide-slate-100">
           {sortedEvents.map((event) => {
@@ -261,7 +271,7 @@ export default function Calendar() {
                     </span>
                   </div>
                   <p className="text-sm text-slate-500 mt-1">
-                    {date.toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
+                    {date.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
                     {' · '}
                     {event.time}
                   </p>
@@ -274,7 +284,7 @@ export default function Calendar() {
           })}
           {sortedEvents.length === 0 && (
             <div className="p-8 text-center text-slate-400">
-              Inga händelser planerade
+              {t('calendar.noEventsPlanned')}
             </div>
           )}
         </div>
@@ -284,8 +294,8 @@ export default function Calendar() {
 
   return (
     <PageLayout
-      title="Kalender"
-      description="Dina händelser och möten"
+      title={t('calendar.title')}
+      description={t('calendar.description')}
       showTabs={false}
     >
     <div className="space-y-6">
@@ -329,7 +339,7 @@ export default function Calendar() {
             className="w-full py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium flex items-center justify-center gap-2"
           >
             <Plus size={20} />
-            Ny händelse
+            {t('calendar.newEvent')}
           </button>
 
           {/* Mood Tracker */}
