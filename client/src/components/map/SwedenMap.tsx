@@ -280,7 +280,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                       {/* Jobb-räknare för stora regioner */}
                       {region.jobCount > 500 && (
                         <span className={cn(
-                          "text-[10px] font-bold",
+                          "text-xs font-bold",
                           getTextColor(region.jobCount)
                         )}>
                           {region.jobCount > 999 ? '1k+' : region.jobCount}

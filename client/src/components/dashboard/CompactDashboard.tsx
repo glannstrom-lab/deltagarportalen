@@ -118,7 +118,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
             {title}
           </h3>
           {badge && (
-            <span className={cn('text-[11px] px-2 py-0.5 rounded-full font-medium', badgeColor)}>
+            <span className={cn('text-xs px-2 py-0.5 rounded-full font-medium', badgeColor)}>
               {badge}
             </span>
           )}

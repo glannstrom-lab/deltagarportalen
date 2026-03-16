@@ -169,7 +169,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
                         {option.features.map((feature, i) => (
                           <span 
                             key={i}
-                            className="text-[10px] px-2 py-1 rounded-full bg-white/60 text-slate-600"
+                            className="text-xs px-2 py-1 rounded-full bg-white/60 text-slate-600"
                           >
                             {feature}
                           </span>

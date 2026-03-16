@@ -50,11 +50,11 @@ export default function InsightsTab() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold">Din prognos</h3>
-            <p className="text-violet-100 text-sm">Baserat på din aktivitet</p>
+            <p className="text-white/90 text-sm">Baserat på din aktivitet</p>
           </div>
           <div className="text-right">
             <p className="text-4xl font-bold">{aiInsights.prediction}%</p>
-            <p className="text-sm text-violet-100">chans till intervju</p>
+            <p className="text-sm text-white/90">chans till intervju</p>
           </div>
         </div>
         
@@ -69,15 +69,15 @@ export default function InsightsTab() {
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <p className="text-2xl font-bold">{aiInsights.daysToInterview}</p>
-            <p className="text-xs text-violet-100">dagar till intervju</p>
+            <p className="text-xs text-white/90">dagar till intervju</p>
           </div>
           <div>
             <p className="text-2xl font-bold">{aiInsights.bestTime}</p>
-            <p className="text-xs text-violet-100">bästa tiden</p>
+            <p className="text-xs text-white/90">bästa tiden</p>
           </div>
           <div>
             <p className="text-2xl font-bold">{aiInsights.optimalEnergy}</p>
-            <p className="text-xs text-violet-100">optimal energi</p>
+            <p className="text-xs text-white/90">optimal energi</p>
           </div>
         </div>
       </div>

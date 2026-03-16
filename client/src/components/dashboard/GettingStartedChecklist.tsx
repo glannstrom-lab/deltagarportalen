@@ -228,7 +228,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
             </div>
             <div>
               <h2 className="text-xl font-bold">Välkommen! 👋</h2>
-              <p className="text-violet-100 text-sm">
+              <p className="text-white/90 text-sm">
                 Följ dessa steg för att komma igång
               </p>
             </div>
@@ -237,8 +237,9 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
             <button
               onClick={handleDismiss}
               className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
+              aria-label="Stäng välkomstguiden"
             >
-              <X size={18} />
+              <X size={18} aria-hidden="true" />
             </button>
           )}
         </div>

@@ -279,7 +279,7 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
                     style={{ width: `${(badge.progress / (badge.total || 1)) * 100}%` }}
                   />
                 </div>
-                <p className="text-[10px] text-slate-400 text-center mt-0.5">
+                <p className="text-xs text-slate-400 text-center mt-0.5">
                   {badge.progress}/{badge.total}
                 </p>
               </div>

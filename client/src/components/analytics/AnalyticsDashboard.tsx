@@ -374,23 +374,23 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="text-6xl font-bold mb-2">{predictions.jobProbability}%</div>
-                <p className="text-violet-100">Sannolikhet för jobb inom 30 dagar</p>
+                <p className="text-white/90">Sannolikhet för jobb inom 30 dagar</p>
               </div>
               
               <div className="text-center">
                 <div className="text-6xl font-bold mb-2">~{predictions.estimatedWeeks}</div>
-                <p className="text-violet-100">Beräknade veckor kvar</p>
+                <p className="text-white/90">Beräknade veckor kvar</p>
               </div>
               
               <div className="text-center">
                 <div className="text-6xl font-bold mb-2">
                   {predictions.confidence === 'high' ? 'Hög' : predictions.confidence === 'medium' ? 'Medel' : 'Låg'}
                 </div>
-                <p className="text-violet-100">Konfidens i prediktion</p>
+                <p className="text-white/90">Konfidens i prediktion</p>
               </div>
             </div>
             
-            <p className="text-center text-violet-100 mt-6 text-sm">
+            <p className="text-center text-white/90 mt-6 text-sm">
               Prediktionen baseras på din aktivitet, marknadsdata och liknande användares resultat
             </p>
           </div>

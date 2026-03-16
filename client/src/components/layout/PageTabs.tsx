@@ -66,7 +66,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
-                'px-1.5 py-0.5 text-[10px] rounded-full font-bold',
+                'px-1.5 py-0.5 text-xs rounded-full font-bold',
                 isActive ? 'bg-violet-100 text-violet-700' : 'bg-slate-200 text-slate-600'
               )}>
                 {tab.badge}
@@ -100,7 +100,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
-                'px-1.5 py-0.5 text-[10px] rounded-full font-bold',
+                'px-1.5 py-0.5 text-xs rounded-full font-bold',
                 isActive ? 'bg-white/20 text-white' : 'bg-violet-100 text-violet-700'
               )}>
                 {tab.badge}
@@ -134,7 +134,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
-                'px-1.5 py-0.5 text-[10px] rounded-full font-bold',
+                'px-1.5 py-0.5 text-xs rounded-full font-bold',
                 isActive ? 'bg-white/20 text-white' : 'bg-violet-100 text-violet-700'
               )}>
                 {tab.badge}
@@ -165,7 +165,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-violet-500' : 'text-slate-400 group-hover:text-slate-600')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
-              <span className="px-1.5 py-0.5 text-[10px] rounded-full font-bold bg-violet-100 text-violet-700">
+              <span className="px-1.5 py-0.5 text-xs rounded-full font-bold bg-violet-100 text-violet-700">
                 {tab.badge}
               </span>
             )}
@@ -207,7 +207,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
-                'px-1.5 py-0.5 text-[10px] rounded-full font-bold',
+                'px-1.5 py-0.5 text-xs rounded-full font-bold',
                 isActive ? 'bg-white/25 text-white' : 'bg-violet-100 text-violet-700'
               )}>
                 {tab.badge}

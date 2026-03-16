@@ -220,10 +220,13 @@ export function TopBar() {
                 "p-2.5 rounded-xl transition-colors relative",
                 showNotifications ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
               )}
+              aria-label={`Notifikationer${unreadCount > 0 ? ` (${unreadCount} olästa)` : ''}`}
+              aria-expanded={showNotifications}
+              aria-haspopup="true"
             >
-              <Bell size={20} className={showNotifications ? "text-violet-600 dark:text-violet-400" : "text-stone-500 dark:text-stone-400"} />
+              <Bell size={20} className={showNotifications ? "text-violet-600 dark:text-violet-400" : "text-stone-500 dark:text-stone-400"} aria-hidden="true" />
               {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center" aria-hidden="true">
                   {unreadCount > 9 ? '9+' : unreadCount}
                 </span>
               )}

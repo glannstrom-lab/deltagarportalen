@@ -8,6 +8,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
+import { useClickOutside } from '@/hooks/useClickOutside'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
@@ -64,6 +65,7 @@ const WIDGET_INFO: Record<WidgetId, { label: string; icon: React.ElementType; co
 
 const DEFAULT_WIDGETS: WidgetConfig[] = [
   { id: 'cv', size: 'large' },
+  { id: 'interests', size: 'medium' },  // Strategically important for user journey
   { id: 'quests', size: 'medium' },
   { id: 'jobSearch', size: 'medium' },
   { id: 'wellness', size: 'mini' },
@@ -210,7 +212,11 @@ function WidgetSelector({
     <div className="absolute right-0 top-full mt-2 z-50 w-72 bg-white rounded-xl shadow-xl border border-slate-200 p-3">
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Widgets</span>
-        <button onClick={onClose} className="p-1 hover:bg-slate-100 rounded-lg">
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-slate-100 rounded-lg"
+          aria-label="Stäng widget-menyn"
+        >
           <X size={14} className="text-slate-400" />
         </button>
       </div>
@@ -228,8 +234,10 @@ function WidgetSelector({
                   ? "bg-violet-100 text-violet-700 ring-1 ring-violet-200"
                   : "hover:bg-slate-50 text-slate-600"
               )}
+              aria-label={isActive ? `Ta bort ${info.label} widget` : `Lägg till ${info.label} widget`}
+              aria-pressed={isActive}
             >
-              <Icon size={16} />
+              <Icon size={16} aria-hidden="true" />
               <span className="truncate w-full text-center">{info.label}</span>
             </button>
           )
@@ -288,19 +296,21 @@ function DraggableWidget({
           <button
             onClick={() => onResize(sizes[Math.max(0, currentIndex - 1)])}
             disabled={currentIndex === 0}
-            className="p-0.5 hover:bg-slate-100 rounded disabled:opacity-30"
+            className="p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
             title="Mindre"
+            aria-label="Minska widget-storlek"
           >
-            <Minimize2 size={12} className="text-slate-500" />
+            <Minimize2 size={14} className="text-slate-500" aria-hidden="true" />
           </button>
-          <span className="text-[10px] font-medium text-slate-400 px-1">{config.size}</span>
+          <span className="text-xs font-medium text-slate-400 px-1">{config.size}</span>
           <button
             onClick={() => onResize(sizes[Math.min(2, currentIndex + 1)])}
             disabled={currentIndex === 2}
-            className="p-0.5 hover:bg-slate-100 rounded disabled:opacity-30"
+            className="p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
             title="Större"
+            aria-label="Öka widget-storlek"
           >
-            <Maximize2 size={12} className="text-slate-500" />
+            <Maximize2 size={14} className="text-slate-500" aria-hidden="true" />
           </button>
         </div>
       )}
@@ -309,13 +319,19 @@ function DraggableWidget({
         <>
           <button
             onClick={onRemove}
-            className="absolute -top-2 -right-2 z-20 w-5 h-5 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-md hover:bg-rose-600 transition-colors"
+            className="absolute -top-3 -right-3 z-20 w-8 h-8 md:w-6 md:h-6 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-rose-600 active:scale-95 transition-all touch-manipulation"
             title="Ta bort"
+            aria-label="Ta bort widget"
           >
-            <X size={12} />
+            <X size={16} className="md:w-3 md:h-3" aria-hidden="true" />
           </button>
-          <div className="absolute top-1/2 -left-3 -translate-y-1/2 z-20 p-1 bg-white rounded-lg shadow-md border border-slate-200 cursor-grab">
-            <GripVertical size={14} className="text-slate-400" />
+          <div
+            className="absolute top-1/2 -left-4 -translate-y-1/2 z-20 p-2 bg-white rounded-xl shadow-md border border-slate-200 cursor-grab active:cursor-grabbing touch-manipulation"
+            role="button"
+            aria-label="Dra för att flytta widget"
+            tabIndex={0}
+          >
+            <GripVertical size={16} className="text-slate-400" aria-hidden="true" />
           </div>
         </>
       )}
@@ -386,15 +402,7 @@ export default function OverviewTab() {
   const nextAction = getNextAction(data)
 
   // Close selector on outside click
-  useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
-      if (selectorRef.current && !selectorRef.current.contains(e.target as Node)) {
-        setShowSelector(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  useClickOutside(selectorRef, () => setShowSelector(false), showSelector)
 
   // Load preferences
   useEffect(() => {
@@ -632,15 +640,20 @@ export default function OverviewTab() {
               "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
               isEditing ? "bg-violet-100 text-violet-700" : "text-slate-500 hover:bg-slate-100"
             )}
+            aria-label={isEditing ? 'Avsluta redigering av widgets' : 'Redigera widgets'}
+            aria-pressed={isEditing}
           >
-            <Settings size={14} />
+            <Settings size={14} aria-hidden="true" />
             {isEditing ? 'Klar' : 'Redigera'}
           </button>
           <button
             onClick={() => setShowSelector(!showSelector)}
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-100 transition-all"
+            aria-label="Lägg till widget"
+            aria-expanded={showSelector}
+            aria-haspopup="true"
           >
-            <Plus size={14} />
+            <Plus size={14} aria-hidden="true" />
             Lägg till
           </button>
           {showSelector && (

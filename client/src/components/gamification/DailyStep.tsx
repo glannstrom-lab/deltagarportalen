@@ -898,7 +898,7 @@ export function DailyStep({
               >
                 {dayStatusIcons[day.status] || day.day.charAt(0)}
               </div>
-              <span className="text-[10px] text-slate-400 mt-1">{day.day}</span>
+              <span className="text-xs text-slate-400 mt-1">{day.day}</span>
             </div>
           ))}
         </div>

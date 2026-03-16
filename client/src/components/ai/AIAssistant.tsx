@@ -207,7 +207,7 @@ export function AIAssistant() {
                       <h2 className="text-xl font-bold">
                         {getGreeting()}, {user?.firstName || 'där'}!
                       </h2>
-                      <p className="text-violet-100 text-sm">
+                      <p className="text-white/90 text-sm">
                         Jag har analyserat din aktivitet
                       </p>
                     </div>

@@ -101,12 +101,15 @@ export function Sidebar({ onClose }: SidebarProps) {
         <button
           onClick={() => setIsExpanded(!isExpanded)}
           className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+          aria-label={isExpanded ? 'Minimera sidomenyn' : 'Expandera sidomenyn'}
+          aria-expanded={isExpanded}
         >
           <svg
             className={cn('w-5 h-5 transition-transform', !isExpanded && 'rotate-180')}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
+            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
           </svg>
@@ -135,7 +138,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         {isConsultant && !isUser && (
           <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
             {isExpanded && (
-              <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
                 Konsulent
               </p>
             )}
@@ -161,7 +164,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         {isAdmin && (
           <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
             {isExpanded && (
-              <p className="text-[10px] font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
                 Admin
               </p>
             )}
@@ -189,7 +192,7 @@ export function Sidebar({ onClose }: SidebarProps) {
         {/* Visa aktiv roll */}
         {isExpanded && (
           <div className="mb-2 px-3 py-1.5 bg-white/5 rounded-lg">
-            <p className="text-[10px] text-white/40 uppercase tracking-wider">Aktiv roll</p>
+            <p className="text-xs text-white/40 uppercase tracking-wider">Aktiv roll</p>
             <p className="text-xs font-medium text-white">
               {activeRole === 'SUPERADMIN' ? 'Superadmin' :
                activeRole === 'ADMIN' ? 'Admin' :
@@ -213,7 +216,7 @@ export function Sidebar({ onClose }: SidebarProps) {
               <p className="text-white text-sm font-medium truncate">
                 {user?.first_name || user?.email}
               </p>
-              <p className="text-white/40 text-[11px] truncate leading-tight">
+              <p className="text-white/40 text-xs truncate leading-tight">
                 {user?.email}
               </p>
             </div>
@@ -238,14 +241,15 @@ export function Sidebar({ onClose }: SidebarProps) {
             'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-red-200/50 hover:text-red-200 hover:bg-red-500/10 group relative',
             !isExpanded && 'justify-center px-2'
           )}
+          aria-label="Logga ut"
         >
-          <svg className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-6 h-6')} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-6 h-6')} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
           </svg>
           {isExpanded ? (
             <span className="text-sm font-medium">Logga ut</span>
           ) : (
-            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity">
+            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity" role="tooltip">
               Logga ut
             </div>
           )}

@@ -729,13 +729,13 @@ body {
               {/* Badges */}
               <div className="absolute top-2 left-2 flex gap-1.5 z-10">
                 {template.isNew && (
-                  <span className="px-2 py-0.5 bg-green-500 text-white text-[10px] font-bold rounded-full flex items-center gap-1 shadow-lg">
+                  <span className="px-2 py-0.5 bg-green-500 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg">
                     <Sparkles className="w-2.5 h-2.5" />
                     NY
                   </span>
                 )}
                 {template.isPopular && (
-                  <span className="px-2 py-0.5 bg-amber-500 text-white text-[10px] font-bold rounded-full flex items-center gap-1 shadow-lg">
+                  <span className="px-2 py-0.5 bg-amber-500 text-white text-xs font-bold rounded-full flex items-center gap-1 shadow-lg">
                     <Star className="w-2.5 h-2.5" />
                     POPULÄR
                   </span>
@@ -744,7 +744,7 @@ body {
 
               {/* Category Badge */}
               <div className="absolute bottom-2 right-2">
-                <span className="px-2.5 py-1 bg-white/95 text-slate-700 text-[10px] font-semibold rounded-full shadow-md backdrop-blur-sm">
+                <span className="px-2.5 py-1 bg-white/95 text-slate-700 text-xs font-semibold rounded-full shadow-md backdrop-blur-sm">
                   {template.category}
                 </span>
               </div>
