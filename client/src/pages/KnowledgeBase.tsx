@@ -61,7 +61,9 @@ export default function KnowledgeBase() {
   const getTabFromQuery = useCallback((): TabId => {
     const params = new URLSearchParams(location.search)
     const tabParam = params.get('tab')
-    const matchedTab = tabs.find(t => t.param === tabParam)
+    if (!tabParam) return 'for-you'
+    // Find tab by matching the id with the tab param
+    const matchedTab = tabs.find(t => t.id === tabParam)
     return matchedTab ? matchedTab.id : 'for-you'
   }, [location.search])
   
@@ -76,22 +78,24 @@ export default function KnowledgeBase() {
     }
   }, [location.search, getTabFromQuery, activeTabId])
   
+  // Note: Tab navigation is handled by PageTabs via Link components
+  // This function is kept for potential programmatic navigation
   const handleTabClick = (tab: typeof tabs[number]) => {
     if (tab.id === activeTabId) return
-    
+
     // Update URL query param
     const params = new URLSearchParams(location.search)
-    if (tab.param) {
-      params.set('tab', tab.param)
+    if (tab.id !== 'for-you') {
+      params.set('tab', tab.id)
     } else {
       params.delete('tab')
     }
-    
+
     navigate({
       pathname: location.pathname,
       search: params.toString(),
     }, { replace: true })
-    
+
     setActiveTabId(tab.id)
   }
   
