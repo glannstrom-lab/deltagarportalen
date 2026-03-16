@@ -601,6 +601,76 @@
       "occupations": "Occupations",
       "explore": "Explore",
       "history": "History"
+    },
+    "test": {
+      "loading": "Loading...",
+      "testComplete": "Test complete!",
+      "alreadyCompleted": "You have already completed the interest test. See your results or redo the test to update your profile.",
+      "seeResults": "See your results",
+      "exploreProfile": "Explore your RIASEC profile and personality analysis",
+      "exploreOccupations": "Explore occupations",
+      "seeOccupationSuggestions": "See occupation suggestions based on your profile",
+      "wantToUpdate": "Want to update your answers? Your interests can change over time.",
+      "redoTest": "Redo test",
+      "clearAndRestart": "Clear all saved data and start over",
+      "interestTest": "Interest Test",
+      "questionOf": "Question {{current}} of {{total}}",
+      "saved": "Saved",
+      "saving": "Saving...",
+      "yourProgress": "Your progress",
+      "previous": "Previous",
+      "seeMyResult": "See my result",
+      "nextQuestion": "Next question",
+      "questionInSection": "Question {{current}} of {{total}}",
+      "cancelAndRestart": "Cancel and start over",
+      "couldNotSaveResult": "Could not save result",
+      "couldNotClearProgress": "Could not clear saved data",
+      "sections": {
+        "riasec": {
+          "title": "Your work interests",
+          "description": "What types of work appeal to you most?"
+        },
+        "bigfive": {
+          "title": "Your personality",
+          "description": "How would you describe yourself as a person?"
+        },
+        "strong": {
+          "title": "What interests you?",
+          "description": "Which areas do you find interesting?"
+        },
+        "icf": {
+          "title": "Your conditions",
+          "description": "How do you experience your conditions for work?"
+        }
+      }
+    }
+  },
+  "quests": {
+    "pointsToday": "points today",
+    "daysInRow": "days in a row",
+    "totalCompleted": "total completed",
+    "todaysProgress": "Today's progress",
+    "ofQuestsCompleted": "{{completed}} of {{total}} quests completed",
+    "todaysQuests": "Today's quests",
+    "noQuestsYet": "No quests assigned yet.",
+    "comeBackTomorrow": "Come back tomorrow!",
+    "completed": "Completed!",
+    "min": "min",
+    "points": "points",
+    "greatJob": "Great job! 🎉",
+    "allQuestsComplete": "You have completed all of today's quests. Take a well-deserved break!",
+    "tip": "Tip",
+    "tipText": "Choose quests based on your energy level today. It's okay to just do a small part - everything counts!",
+    "categories": {
+      "cv": "CV & Profile",
+      "apply": "Job Search",
+      "network": "Networking",
+      "wellness": "Wellness"
+    },
+    "energy": {
+      "low": "Low energy",
+      "medium": "Medium",
+      "high": "High energy"
     }
   },
   "exercises": {

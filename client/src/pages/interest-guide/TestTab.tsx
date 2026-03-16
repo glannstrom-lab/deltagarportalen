@@ -2,6 +2,7 @@
  * Test Tab - The main interest guide quiz
  */
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   allQuestions,
@@ -17,6 +18,7 @@ import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChar
 import { interestGuideApi } from '@/services/cloudStorage'
 
 export default function TestTab() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [screen, setScreen] = useState<'intro' | 'quiz' | 'completed'>('intro')
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0)
@@ -132,7 +134,7 @@ export default function TestTab() {
         navigate('/interest-guide/results')
       } catch (err) {
         console.error('Failed to save final result:', err)
-        setError('Kunde inte spara resultatet')
+        setError(t('interestGuide.test.couldNotSaveResult'))
       } finally {
         setIsSaving(false)
       }
@@ -156,7 +158,7 @@ export default function TestTab() {
       setScreen('intro')
     } catch (err) {
       console.error('Failed to clear progress:', err)
-      setError('Kunde inte rensa sparad data')
+      setError(t('interestGuide.test.couldNotClearProgress'))
     } finally {
       setIsSaving(false)
     }
@@ -172,7 +174,7 @@ export default function TestTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <LoadingState title="Laddar..." size="lg" />
+        <LoadingState title={t('interestGuide.test.loading')} size="lg" />
       </div>
     )
   }
@@ -188,10 +190,10 @@ export default function TestTab() {
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-3">
-            Testet är klart!
+            {t('interestGuide.test.testComplete')}
           </h1>
           <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Du har redan genomfört intressetestet. Se dina resultat eller gör om testet för att uppdatera din profil.
+            {t('interestGuide.test.alreadyCompleted')}
           </p>
 
           {/* Action cards */}
@@ -203,8 +205,8 @@ export default function TestTab() {
               <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Se dina resultat</h3>
-              <p className="text-sm text-gray-500">Utforska din RIASEC-profil och personlighetsanalys</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('interestGuide.test.seeResults')}</h3>
+              <p className="text-sm text-gray-500">{t('interestGuide.test.exploreProfile')}</p>
             </Link>
 
             <Link
@@ -214,15 +216,15 @@ export default function TestTab() {
               <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Briefcase className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">Utforska yrken</h3>
-              <p className="text-sm text-gray-500">Se yrkesförslag baserat på din profil</p>
+              <h3 className="font-semibold text-gray-900 mb-1">{t('interestGuide.test.exploreOccupations')}</h3>
+              <p className="text-sm text-gray-500">{t('interestGuide.test.seeOccupationSuggestions')}</p>
             </Link>
           </div>
 
           {/* Redo test option */}
           <div className="pt-6 border-t border-gray-200">
             <p className="text-sm text-gray-500 mb-4">
-              Vill du uppdatera dina svar? Dina intressen kan förändras över tid.
+              {t('interestGuide.test.wantToUpdate')}
             </p>
             <Button
               variant="outline"
@@ -231,7 +233,7 @@ export default function TestTab() {
               className="gap-2"
             >
               <RotateCcw className="w-4 h-4" />
-              Gör om testet
+              {t('interestGuide.test.redoTest')}
             </Button>
           </div>
         </div>
@@ -262,7 +264,7 @@ export default function TestTab() {
               className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1 mx-auto disabled:opacity-50 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
-              Rensa all sparad data och börja om
+              {t('interestGuide.test.clearAndRestart')}
             </button>
           </div>
         )}
@@ -277,20 +279,20 @@ export default function TestTab() {
 
   const getSectionTitle = () => {
     switch (currentSection?.id) {
-      case 'riasec': return 'Dina arbetsintressen'
-      case 'bigfive': return 'Din personlighet'
-      case 'strong': return 'Vad intresserar dig?'
-      case 'icf': return 'Dina förutsättningar'
+      case 'riasec': return t('interestGuide.test.sections.riasec.title')
+      case 'bigfive': return t('interestGuide.test.sections.bigfive.title')
+      case 'strong': return t('interestGuide.test.sections.strong.title')
+      case 'icf': return t('interestGuide.test.sections.icf.title')
       default: return currentSection?.name
     }
   }
 
   const getSectionDescription = () => {
     switch (currentSection?.id) {
-      case 'riasec': return 'Vilka typer av arbete tilltalar dig mest?'
-      case 'bigfive': return 'Hur skulle du beskriva dig själv som person?'
-      case 'strong': return 'Vilka områden tycker du är intressanta?'
-      case 'icf': return 'Hur upplever du dina förutsättningar för arbete?'
+      case 'riasec': return t('interestGuide.test.sections.riasec.description')
+      case 'bigfive': return t('interestGuide.test.sections.bigfive.description')
+      case 'strong': return t('interestGuide.test.sections.strong.description')
+      case 'icf': return t('interestGuide.test.sections.icf.description')
       default: return currentSection?.subtitle
     }
   }
@@ -310,8 +312,8 @@ export default function TestTab() {
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-gray-900">Intressetest</h1>
-            <p className="text-xs text-gray-500">Fråga {currentQuestionIndex + 1} av {allQuestions.length}</p>
+            <h1 className="font-bold text-gray-900">{t('interestGuide.test.interestTest')}</h1>
+            <p className="text-xs text-gray-500">{t('interestGuide.test.questionOf', { current: currentQuestionIndex + 1, total: allQuestions.length })}</p>
           </div>
         </div>
 
@@ -319,13 +321,13 @@ export default function TestTab() {
           {showSaveIndicator && (
             <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
               <CheckCircle2 className="w-3 h-3" />
-              Sparat
+              {t('interestGuide.test.saved')}
             </span>
           )}
           {isSaving && (
             <span className="flex items-center gap-1 text-xs text-gray-500">
               <Loader2 className="w-3 h-3 animate-spin" />
-              Sparar...
+              {t('interestGuide.test.saving')}
             </span>
           )}
         </div>
@@ -334,7 +336,7 @@ export default function TestTab() {
       {/* Progress bar */}
       <div className="mb-6">
         <div className="flex justify-between text-xs text-gray-500 mb-2">
-          <span>Din progress</span>
+          <span>{t('interestGuide.test.yourProgress')}</span>
           <span className="font-medium text-indigo-600">{progress}%</span>
         </div>
         <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
@@ -383,7 +385,7 @@ export default function TestTab() {
           className="gap-2 px-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          Föregående
+          {t('interestGuide.test.previous')}
         </Button>
 
         <Button
@@ -395,11 +397,11 @@ export default function TestTab() {
           {isSaving ? (
             <>
               <Loader2 className="w-4 h-4 animate-spin" />
-              Sparar...
+              {t('interestGuide.test.saving')}
             </>
           ) : (
             <>
-              {isLastQuestion ? 'Se mitt resultat' : 'Nästa fråga'}
+              {isLastQuestion ? t('interestGuide.test.seeMyResult') : t('interestGuide.test.nextQuestion')}
               <ArrowRight className="w-4 h-4" />
             </>
           )}
@@ -409,7 +411,7 @@ export default function TestTab() {
       {/* Section progress */}
       <div className="mt-8 text-center">
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 text-xs text-gray-500">
-          <span>Fråga {questionInSectionIndex + 1} av {currentSectionQuestions.length}</span>
+          <span>{t('interestGuide.test.questionInSection', { current: questionInSectionIndex + 1, total: currentSectionQuestions.length })}</span>
           <span className="text-gray-300">|</span>
           <span>{currentSection?.name}</span>
         </div>
@@ -422,7 +424,7 @@ export default function TestTab() {
           disabled={isSaving}
           className="text-xs text-gray-400 hover:text-red-500 transition-colors"
         >
-          Avbryt och börja om
+          {t('interestGuide.test.cancelAndRestart')}
         </button>
       </div>
     </div>

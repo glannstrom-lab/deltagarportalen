@@ -601,6 +601,76 @@
       "occupations": "Yrken",
       "explore": "Utforska",
       "history": "Historik"
+    },
+    "test": {
+      "loading": "Laddar...",
+      "testComplete": "Testet är klart!",
+      "alreadyCompleted": "Du har redan genomfört intressetestet. Se dina resultat eller gör om testet för att uppdatera din profil.",
+      "seeResults": "Se dina resultat",
+      "exploreProfile": "Utforska din RIASEC-profil och personlighetsanalys",
+      "exploreOccupations": "Utforska yrken",
+      "seeOccupationSuggestions": "Se yrkesförslag baserat på din profil",
+      "wantToUpdate": "Vill du uppdatera dina svar? Dina intressen kan förändras över tid.",
+      "redoTest": "Gör om testet",
+      "clearAndRestart": "Rensa all sparad data och börja om",
+      "interestTest": "Intressetest",
+      "questionOf": "Fråga {{current}} av {{total}}",
+      "saved": "Sparat",
+      "saving": "Sparar...",
+      "yourProgress": "Din progress",
+      "previous": "Föregående",
+      "seeMyResult": "Se mitt resultat",
+      "nextQuestion": "Nästa fråga",
+      "questionInSection": "Fråga {{current}} av {{total}}",
+      "cancelAndRestart": "Avbryt och börja om",
+      "couldNotSaveResult": "Kunde inte spara resultatet",
+      "couldNotClearProgress": "Kunde inte rensa sparad data",
+      "sections": {
+        "riasec": {
+          "title": "Dina arbetsintressen",
+          "description": "Vilka typer av arbete tilltalar dig mest?"
+        },
+        "bigfive": {
+          "title": "Din personlighet",
+          "description": "Hur skulle du beskriva dig själv som person?"
+        },
+        "strong": {
+          "title": "Vad intresserar dig?",
+          "description": "Vilka områden tycker du är intressanta?"
+        },
+        "icf": {
+          "title": "Dina förutsättningar",
+          "description": "Hur upplever du dina förutsättningar för arbete?"
+        }
+      }
+    }
+  },
+  "quests": {
+    "pointsToday": "poäng idag",
+    "daysInRow": "dagar i rad",
+    "totalCompleted": "totalt avklarade",
+    "todaysProgress": "Dagens progress",
+    "ofQuestsCompleted": "{{completed}} av {{total}} quests avklarade",
+    "todaysQuests": "Dagens uppdrag",
+    "noQuestsYet": "Inga quests tilldelade än.",
+    "comeBackTomorrow": "Kom tillbaka imorgon!",
+    "completed": "Avklarad!",
+    "min": "min",
+    "points": "poäng",
+    "greatJob": "Bra jobbat! 🎉",
+    "allQuestsComplete": "Du har avslutat alla dagens quests. Ta en välförtjänt paus!",
+    "tip": "Tips",
+    "tipText": "Välj quests baserat på din energinivå idag. Det är okej att bara göra en liten del - allt räknas!",
+    "categories": {
+      "cv": "CV & Profil",
+      "apply": "Jobbsökning",
+      "network": "Nätverkande",
+      "wellness": "Välmående"
+    },
+    "energy": {
+      "low": "Låg energi",
+      "medium": "Medium",
+      "high": "Hög energi"
     }
   },
   "exercises": {

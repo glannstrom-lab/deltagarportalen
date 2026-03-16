@@ -1,7 +1,8 @@
 /**
  * Quests Tab - Daily quests and challenges
  */
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
 import { CheckCircle2, Circle, Zap, Trophy, Flame, ChevronRight } from 'lucide-react'
@@ -31,20 +32,22 @@ const categoryIcons: Record<string, string> = {
   wellness: '✨',
 }
 
-const categoryLabels: Record<string, string> = {
-  cv: 'CV & Profil',
-  apply: 'Jobbsökning',
-  network: 'Nätverkande',
-  wellness: 'Välmående',
-}
-
-const energyLabels: Record<string, { text: string; color: string }> = {
-  low: { text: 'Låg energi', color: 'text-emerald-600 bg-emerald-50' },
-  medium: { text: 'Medium', color: 'text-yellow-600 bg-yellow-50' },
-  high: { text: 'Hög energi', color: 'text-rose-600 bg-rose-50' },
-}
-
 export default function QuestsTab() {
+  const { t } = useTranslation()
+
+  // Build translated labels
+  const categoryLabels = useMemo(() => ({
+    cv: t('quests.categories.cv'),
+    apply: t('quests.categories.apply'),
+    network: t('quests.categories.network'),
+    wellness: t('quests.categories.wellness'),
+  }), [t])
+
+  const energyLabels = useMemo(() => ({
+    low: { text: t('quests.energy.low'), color: 'text-emerald-600 bg-emerald-50' },
+    medium: { text: t('quests.energy.medium'), color: 'text-yellow-600 bg-yellow-50' },
+    high: { text: t('quests.energy.high'), color: 'text-rose-600 bg-rose-50' },
+  }), [t])
   const { user } = useAuthStore()
   const [quests, setQuests] = useState<Quest[]>([])
   const [stats, setStats] = useState<QuestStats>({ current_streak: 0, total_points: 0, quests_completed: 0 })
@@ -179,7 +182,7 @@ export default function QuestsTab() {
             <Zap size={20} className="text-yellow-600" />
           </div>
           <p className="text-2xl font-bold text-yellow-800">{totalPoints}</p>
-          <p className="text-sm text-yellow-600">poäng idag</p>
+          <p className="text-sm text-yellow-600">{t('quests.pointsToday')}</p>
         </div>
 
         <div className="p-4 bg-gradient-to-br from-orange-50 to-red-50 rounded-2xl border border-orange-200">
@@ -187,7 +190,7 @@ export default function QuestsTab() {
             <Flame size={20} className="text-orange-600" />
           </div>
           <p className="text-2xl font-bold text-orange-800">{stats.current_streak}</p>
-          <p className="text-sm text-orange-600">dagar i rad</p>
+          <p className="text-sm text-orange-600">{t('quests.daysInRow')}</p>
         </div>
 
         <div className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-200">
@@ -195,14 +198,14 @@ export default function QuestsTab() {
             <Trophy size={20} className="text-emerald-600" />
           </div>
           <p className="text-2xl font-bold text-emerald-800">{stats.quests_completed}</p>
-          <p className="text-sm text-emerald-600">totalt avklarade</p>
+          <p className="text-sm text-emerald-600">{t('quests.totalCompleted')}</p>
         </div>
       </div>
 
       {/* Progress */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-800">Dagens progress</h3>
+          <h3 className="font-semibold text-slate-800">{t('quests.todaysProgress')}</h3>
           <span className="text-lg font-bold text-yellow-600">{progress}%</span>
         </div>
         <div className="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
@@ -212,18 +215,18 @@ export default function QuestsTab() {
           />
         </div>
         <p className="text-sm text-slate-500 mt-3">
-          {completedCount} av {quests.length} quests avklarade
+          {t('quests.ofQuestsCompleted', { completed: completedCount, total: quests.length })}
         </p>
       </div>
 
       {/* Quests List */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-slate-800 text-lg">Dagens uppdrag</h3>
+        <h3 className="font-semibold text-slate-800 text-lg">{t('quests.todaysQuests')}</h3>
 
         {quests.length === 0 ? (
           <div className="p-8 bg-slate-50 rounded-2xl text-center">
-            <p className="text-slate-600">Inga quests tilldelade än.</p>
-            <p className="text-sm text-slate-500 mt-1">Kom tillbaka imorgon!</p>
+            <p className="text-slate-600">{t('quests.noQuestsYet')}</p>
+            <p className="text-sm text-slate-500 mt-1">{t('quests.comeBackTomorrow')}</p>
           </div>
         ) : (
           quests.map((quest) => {
@@ -291,8 +294,8 @@ export default function QuestsTab() {
                     </p>
 
                     <div className="flex items-center gap-4 mt-3 text-sm">
-                      <span className="text-slate-500">⏱ {quest.estimated_minutes} min</span>
-                      <span className="text-yellow-600 font-medium">+{quest.points} poäng</span>
+                      <span className="text-slate-500">⏱ {quest.estimated_minutes} {t('quests.min')}</span>
+                      <span className="text-yellow-600 font-medium">+{quest.points} {t('quests.points')}</span>
                     </div>
                   </div>
                 </div>
@@ -301,7 +304,7 @@ export default function QuestsTab() {
                 {quest.is_completed && (
                   <div className="absolute top-4 right-4">
                     <span className="text-xs font-medium text-emerald-600 bg-emerald-100 px-2 py-1 rounded-full">
-                      Avklarad!
+                      {t('quests.completed')}
                     </span>
                   </div>
                 )}
@@ -317,9 +320,9 @@ export default function QuestsTab() {
           <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm mx-auto mb-4">
             <Trophy size={32} className="text-emerald-500" />
           </div>
-          <h3 className="text-xl font-bold text-emerald-900">Bra jobbat! 🎉</h3>
+          <h3 className="text-xl font-bold text-emerald-900">{t('quests.greatJob')}</h3>
           <p className="text-emerald-700 mt-2">
-            Du har avslutat alla dagens quests. Ta en välförtjänt paus!
+            {t('quests.allQuestsComplete')}
           </p>
         </div>
       )}
@@ -328,11 +331,10 @@ export default function QuestsTab() {
       <div className="p-4 bg-blue-50 rounded-xl border border-blue-100">
         <h4 className="font-medium text-blue-900 flex items-center gap-2">
           <ChevronRight size={16} />
-          Tips
+          {t('quests.tip')}
         </h4>
         <p className="text-sm text-blue-700 mt-1">
-          Välj quests baserat på din energinivå idag. Det är okej att bara göra en liten del -
-          allt räknas!
+          {t('quests.tipText')}
         </p>
       </div>
     </div>
