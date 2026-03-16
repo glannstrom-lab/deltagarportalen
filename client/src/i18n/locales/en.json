@@ -851,6 +851,27 @@
       }
     }
   },
+  "interestWidget": {
+    "interests": "Interests",
+    "interestTest": "Interest Test",
+    "done": "Done!",
+    "fiveMin": "5 min",
+    "resultReady": "Results ready!",
+    "continueTest": "Continue test",
+    "findCareer": "Find your career",
+    "findDreamJob": "Find your dream job",
+    "yourResultsReady": "Your results are ready!",
+    "matches": "matches",
+    "timeAndQuestions": "5 min • {{questions}} questions",
+    "yourTopMatches": "Your top matches",
+    "yourProgress": "Your progress",
+    "startTest": "Start test",
+    "personalRecommendations": "5 min • Personal career recommendations",
+    "answered": "Answered",
+    "totalQuestions": "Total questions",
+    "seeResults": "See results",
+    "continue": "Continue"
+  },
   "wellnessWidget": {
     "wellness": "Wellness",
     "yourWellness": "Your Wellness",

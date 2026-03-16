@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Compass, Star, ChevronRight, Target, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +18,7 @@ export function InterestWidget({
   totalQuestions = 36,
   size = 'medium'
 }: InterestWidgetProps) {
+  const { t } = useTranslation()
   const progress = Math.round((answeredQuestions / totalQuestions) * 100)
   const isInProgress = answeredQuestions > 0 && !hasResult
   const firstRecommendation = topRecommendations[0]
@@ -39,9 +41,9 @@ export function InterestWidget({
           {hasResult ? <Star size={16} /> : <Compass size={16} />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Intressen</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('interestWidget.interests')}</p>
           <p className={cn("text-xs", hasResult ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400")}>
-            {hasResult ? 'Klart!' : isInProgress ? `${progress}%` : '5 min'}
+            {hasResult ? t('interestWidget.done') : isInProgress ? `${progress}%` : t('interestWidget.fiveMin')}
           </p>
         </div>
         {hasResult && topRecommendations.length > 0 && (
@@ -73,9 +75,9 @@ export function InterestWidget({
               {hasResult ? <Star size={18} /> : <Compass size={18} />}
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Intressetest</h3>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('interestWidget.interestTest')}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {hasResult ? 'Resultat klart!' : isInProgress ? 'Fortsätt testet' : 'Hitta din karriär'}
+                {hasResult ? t('interestWidget.resultReady') : isInProgress ? t('interestWidget.continueTest') : t('interestWidget.findCareer')}
               </p>
             </div>
           </div>
@@ -95,12 +97,12 @@ export function InterestWidget({
         ) : hasResult ? (
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{topRecommendations.length}</span>
-            <span className="text-sm text-slate-500 dark:text-slate-400">matchningar</span>
+            <span className="text-sm text-slate-500 dark:text-slate-400">{t('interestWidget.matches')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400">
             <Target size={16} />
-            <span className="text-sm">5 min • {totalQuestions} frågor</span>
+            <span className="text-sm">{t('interestWidget.timeAndQuestions', { questions: totalQuestions })}</span>
           </div>
         )}
       </Link>
@@ -128,9 +130,9 @@ export function InterestWidget({
             {hasResult ? <Star size={24} /> : <Compass size={24} />}
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Intressetest</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('interestWidget.interestTest')}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {hasResult ? 'Dina resultat är klara!' : isInProgress ? 'Fortsätt testet' : 'Hitta ditt drömyrke'}
+              {hasResult ? t('interestWidget.yourResultsReady') : isInProgress ? t('interestWidget.continueTest') : t('interestWidget.findDreamJob')}
             </p>
           </div>
         </div>
@@ -140,7 +142,7 @@ export function InterestWidget({
       {/* Status Card */}
       {hasResult ? (
         <div className="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800 mb-4">
-          <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300 mb-2">Dina topp-matchningar</p>
+          <p className="text-sm font-semibold text-emerald-800 dark:text-emerald-300 mb-2">{t('interestWidget.yourTopMatches')}</p>
           <div className="space-y-2">
             {topRecommendations.slice(0, 3).map((rec, i) => (
               <div key={i} className="flex items-center justify-between">
@@ -155,7 +157,7 @@ export function InterestWidget({
       ) : isInProgress ? (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Din progress</span>
+            <span className="text-sm text-slate-600 dark:text-slate-400">{t('interestWidget.yourProgress')}</span>
             <span className="text-lg font-bold text-teal-600 dark:text-teal-400">{progress}%</span>
           </div>
           <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -170,8 +172,8 @@ export function InterestWidget({
           <div className="flex items-center gap-3">
             <Target size={24} className="text-teal-500 dark:text-teal-400" />
             <div>
-              <p className="text-sm font-semibold text-teal-800 dark:text-teal-300">Starta testet</p>
-              <p className="text-xs text-teal-600 dark:text-teal-400">5 min • Personliga yrkesrekommendationer</p>
+              <p className="text-sm font-semibold text-teal-800 dark:text-teal-300">{t('interestWidget.startTest')}</p>
+              <p className="text-xs text-teal-600 dark:text-teal-400">{t('interestWidget.personalRecommendations')}</p>
             </div>
           </div>
         </div>
@@ -186,14 +188,14 @@ export function InterestWidget({
               {hasResult ? topRecommendations.length : answeredQuestions}
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{hasResult ? 'Matchningar' : 'Besvarade'}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{hasResult ? t('interestWidget.matches') : t('interestWidget.answered')}</p>
         </div>
         <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
             <Compass size={16} className="text-slate-500 dark:text-slate-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{totalQuestions}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Totalt frågor</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('interestWidget.totalQuestions')}</p>
         </div>
       </div>
 
@@ -206,7 +208,7 @@ export function InterestWidget({
             : "bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-400 group-hover:bg-teal-200 dark:group-hover:bg-teal-900/60"
         )}>
           <Play size={12} />
-          {hasResult ? 'Se resultat' : isInProgress ? 'Fortsätt' : 'Starta test'}
+          {hasResult ? t('interestWidget.seeResults') : isInProgress ? t('interestWidget.continue') : t('interestWidget.startTest')}
         </span>
       </div>
     </Link>

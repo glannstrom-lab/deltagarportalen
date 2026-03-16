@@ -851,6 +851,27 @@
       }
     }
   },
+  "interestWidget": {
+    "interests": "Intressen",
+    "interestTest": "Intressetest",
+    "done": "Klart!",
+    "fiveMin": "5 min",
+    "resultReady": "Resultat klart!",
+    "continueTest": "Fortsätt testet",
+    "findCareer": "Hitta din karriär",
+    "findDreamJob": "Hitta ditt drömyrke",
+    "yourResultsReady": "Dina resultat är klara!",
+    "matches": "matchningar",
+    "timeAndQuestions": "5 min • {{questions}} frågor",
+    "yourTopMatches": "Dina topp-matchningar",
+    "yourProgress": "Din progress",
+    "startTest": "Starta test",
+    "personalRecommendations": "5 min • Personliga yrkesrekommendationer",
+    "answered": "Besvarade",
+    "totalQuestions": "Totalt frågor",
+    "seeResults": "Se resultat",
+    "continue": "Fortsätt"
+  },
   "wellnessWidget": {
     "wellness": "Välmående",
     "yourWellness": "Ditt välmående",
