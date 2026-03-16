@@ -1,8 +1,9 @@
 /**
  * Routines Tab - Build sustainable daily routines
  */
-import { useState } from 'react'
-import { 
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
   CalendarDays, Clock, Sun, Moon, Coffee, Briefcase,
   Plus, Trash2, CheckCircle2, Play, Pause
 } from 'lucide-react'
@@ -17,17 +18,29 @@ interface Routine {
   days: string[]
 }
 
-const defaultRoutines: Routine[] = [
-  { id: '1', title: 'Morgonpromenad', time: '08:00', icon: Sun, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
-  { id: '2', title: 'Jobbsök 30 min', time: '09:00', icon: Briefcase, completed: true, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
-  { id: '3', title: 'Fika-paus', time: '10:30', icon: Coffee, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
-  { id: '4', title: 'Reflektera över dagen', time: '19:00', icon: Moon, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+// Routine definitions with i18n keys
+const defaultRoutineDefs = [
+  { id: '1', titleKey: 'wellness.routines.defaultRoutines.morningWalk', time: '08:00', icon: Sun, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
+  { id: '2', titleKey: 'wellness.routines.defaultRoutines.jobSearch', time: '09:00', icon: Briefcase, completed: true, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
+  { id: '3', titleKey: 'wellness.routines.defaultRoutines.coffeeBreak', time: '10:30', icon: Coffee, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'] },
+  { id: '4', titleKey: 'wellness.routines.defaultRoutines.reflectDay', time: '19:00', icon: Moon, completed: false, days: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
 ]
 
-const daysOfWeek = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+const dayKeys = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'] as const
 
 export default function RoutinesTab() {
-  const [routines, setRoutines] = useState<Routine[]>(defaultRoutines)
+  const { t } = useTranslation()
+
+  // Build translated days of week
+  const daysOfWeek = useMemo(() => dayKeys.map(k => t(`wellness.routines.days.${k}`)), [t])
+
+  // Build translated default routines
+  const defaultRoutines = useMemo(() => defaultRoutineDefs.map(r => ({
+    ...r,
+    title: t(r.titleKey)
+  })), [t])
+
+  const [routines, setRoutines] = useState<Routine[]>(() => defaultRoutines)
   const [isAdding, setIsAdding] = useState(false)
   const [newRoutine, setNewRoutine] = useState({ title: '', time: '09:00' })
   const [activeTimer, setActiveTimer] = useState<string | null>(null)
@@ -75,8 +88,8 @@ export default function RoutinesTab() {
       <Card className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-slate-800">Dagens rutiner</h3>
-            <p className="text-slate-500">{completedToday} av {routines.length} avklarade</p>
+            <h3 className="text-lg font-semibold text-slate-800">{t('wellness.routines.todaysRoutines')}</h3>
+            <p className="text-slate-500">{t('wellness.routines.xOfYCompleted', { completed: completedToday, total: routines.length })}</p>
           </div>
           <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center">
             <span className="text-2xl font-bold text-indigo-600">
@@ -96,7 +109,7 @@ export default function RoutinesTab() {
 
       {/* Weekly Calendar */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Veckoöversikt</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('wellness.routines.weekOverview')}</h3>
         <div className="grid grid-cols-7 gap-2">
           {daysOfWeek.map((day, index) => (
             <div key={day} className="text-center">
@@ -120,10 +133,10 @@ export default function RoutinesTab() {
       {/* Routines List */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-800">Dina rutiner</h3>
+          <h3 className="text-lg font-semibold text-slate-800">{t('wellness.routines.yourRoutines')}</h3>
           <Button variant="outline" size="sm" onClick={() => setIsAdding(true)}>
             <Plus className="w-4 h-4 mr-1" />
-            Lägg till
+            {t('wellness.routines.add')}
           </Button>
         </div>
 
@@ -193,7 +206,7 @@ export default function RoutinesTab() {
                 type="text"
                 value={newRoutine.title}
                 onChange={(e) => setNewRoutine(prev => ({ ...prev, title: e.target.value }))}
-                placeholder="Namn på rutin..."
+                placeholder={t('wellness.routines.routineNamePlaceholder')}
                 className="flex-1 px-3 py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
               />
               <input
@@ -204,8 +217,8 @@ export default function RoutinesTab() {
               />
             </div>
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={addRoutine}>Spara</Button>
-              <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>Avbryt</Button>
+              <Button size="sm" onClick={addRoutine}>{t('common.save')}</Button>
+              <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>{t('common.cancel')}</Button>
             </div>
           </div>
         )}
@@ -213,26 +226,27 @@ export default function RoutinesTab() {
 
       {/* Suggested Routines */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Föreslagna rutiner</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
         <div className="space-y-3">
           {[
-            { title: 'Morgonstretching 10 min', time: '07:30', icon: Sun },
-            { title: 'Lunchpromenad', time: '12:00', icon: Coffee },
-            { title: 'Veckans mål-granskning', time: 'Sön 18:00', icon: CalendarDays },
+            { titleKey: 'wellness.routines.suggestions.morningStretch', time: '07:30', icon: Sun },
+            { titleKey: 'wellness.routines.suggestions.lunchWalk', time: '12:00', icon: Coffee },
+            { titleKey: 'wellness.routines.suggestions.weeklyReview', time: '18:00', icon: CalendarDays },
           ].map((suggestion, index) => {
+            const title = t(suggestion.titleKey)
             const Icon = suggestion.icon
             return (
               <div
                 key={index}
                 className="flex items-center gap-4 p-3 rounded-lg border border-dashed border-slate-300 hover:border-indigo-300 hover:bg-indigo-50 transition-all cursor-pointer"
                 onClick={() => {
-                  setNewRoutine({ title: suggestion.title, time: suggestion.time.includes(':') ? suggestion.time : '09:00' })
+                  setNewRoutine({ title, time: suggestion.time.includes(':') ? suggestion.time : '09:00' })
                   setIsAdding(true)
                 }}
               >
                 <Icon className="w-5 h-5 text-slate-400" />
                 <div className="flex-1">
-                  <p className="font-medium text-slate-700">{suggestion.title}</p>
+                  <p className="font-medium text-slate-700">{title}</p>
                   <p className="text-sm text-slate-500">{suggestion.time}</p>
                 </div>
                 <Plus className="w-4 h-4 text-slate-400" />

@@ -1,8 +1,9 @@
 /**
  * Cognitive Training Tab - Exercise memory and concentration
  */
-import { useState, useEffect } from 'react'
-import { 
+import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
   Brain, Clock, Target, RotateCcw, CheckCircle2, AlertCircle,
   ChevronRight, Trophy, Sparkles
 } from 'lucide-react'
@@ -18,70 +19,58 @@ interface Exercise {
   completed: boolean
 }
 
-const exercises: Exercise[] = [
-  {
-    id: '1',
-    title: 'Namn-minne',
-    description: 'Öva på att komma ihåg namn och ansikten',
-    duration: 5,
-    difficulty: 'easy',
-    category: 'memory',
-    completed: false,
-  },
-  {
-    id: '2',
-    title: 'Fokus-övning',
-    description: 'Träna koncentration i 10 minuter utan avbrott',
-    duration: 10,
-    difficulty: 'medium',
-    category: 'concentration',
-    completed: false,
-  },
-  {
-    id: '3',
-    title: 'Prioriterings-träning',
-    description: 'Sortera uppgifter efter vikt och brådska',
-    duration: 15,
-    difficulty: 'medium',
-    category: 'problem-solving',
-    completed: false,
-  },
-  {
-    id: '4',
-    title: 'Arbetsminne',
-    description: 'Kom ihåg instruktioner medan du gör något annat',
-    duration: 10,
-    difficulty: 'hard',
-    category: 'memory',
-    completed: false,
-  },
-  {
-    id: '5',
-    title: 'Distraherad läsning',
-    description: 'Läsa och förstå text med bakgrundsljud',
-    duration: 15,
-    difficulty: 'hard',
-    category: 'concentration',
-    completed: false,
-  },
+// Exercise definitions with i18n keys
+const exerciseDefs = [
+  { id: '1', titleKey: 'wellness.cognitive.exercises.namememory.title', descKey: 'wellness.cognitive.exercises.namememory.description', duration: 5, difficulty: 'easy' as const, category: 'memory' as const },
+  { id: '2', titleKey: 'wellness.cognitive.exercises.focus.title', descKey: 'wellness.cognitive.exercises.focus.description', duration: 10, difficulty: 'medium' as const, category: 'concentration' as const },
+  { id: '3', titleKey: 'wellness.cognitive.exercises.prioritization.title', descKey: 'wellness.cognitive.exercises.prioritization.description', duration: 15, difficulty: 'medium' as const, category: 'problem-solving' as const },
+  { id: '4', titleKey: 'wellness.cognitive.exercises.workingmemory.title', descKey: 'wellness.cognitive.exercises.workingmemory.description', duration: 10, difficulty: 'hard' as const, category: 'memory' as const },
+  { id: '5', titleKey: 'wellness.cognitive.exercises.distractedreading.title', descKey: 'wellness.cognitive.exercises.distractedreading.description', duration: 15, difficulty: 'hard' as const, category: 'concentration' as const },
 ]
 
-const difficultyConfig = {
-  easy: { label: 'Lätt', color: 'text-green-600', bg: 'bg-green-100' },
-  medium: { label: 'Medel', color: 'text-yellow-600', bg: 'bg-yellow-100' },
-  hard: { label: 'Svår', color: 'text-red-600', bg: 'bg-red-100' },
+// Config definitions with i18n keys
+const difficultyDefs = {
+  easy: { labelKey: 'wellness.cognitive.difficulty.easy', color: 'text-green-600', bg: 'bg-green-100' },
+  medium: { labelKey: 'wellness.cognitive.difficulty.medium', color: 'text-yellow-600', bg: 'bg-yellow-100' },
+  hard: { labelKey: 'wellness.cognitive.difficulty.hard', color: 'text-red-600', bg: 'bg-red-100' },
 }
 
-const categoryConfig = {
-  memory: { label: 'Minne', icon: Brain },
-  concentration: { label: 'Koncentration', icon: Target },
-  'problem-solving': { label: 'Problemlösning', icon: Sparkles },
+const categoryDefs = {
+  memory: { labelKey: 'wellness.cognitive.categories.memory', icon: Brain },
+  concentration: { labelKey: 'wellness.cognitive.categories.concentration', icon: Target },
+  'problem-solving': { labelKey: 'wellness.cognitive.categories.problemSolving', icon: Sparkles },
 }
 
 export default function CognitiveTab() {
+  const { t } = useTranslation()
   const [activeExercise, setActiveExercise] = useState<string | null>(null)
   const [completedExercises, setCompletedExercises] = useState<string[]>([])
   const [streak, setStreak] = useState(3)
+
+  // Build translated exercises
+  const exercises = useMemo(() => exerciseDefs.map(e => ({
+    ...e,
+    title: t(e.titleKey),
+    description: t(e.descKey),
+    completed: false
+  })), [t])
+
+  // Build translated configs
+  const difficultyConfig = useMemo(() => {
+    const result: Record<string, { label: string; color: string; bg: string }> = {}
+    for (const [key, def] of Object.entries(difficultyDefs)) {
+      result[key] = { label: t(def.labelKey), color: def.color, bg: def.bg }
+    }
+    return result
+  }, [t])
+
+  const categoryConfig = useMemo(() => {
+    const result: Record<string, { label: string; icon: React.ElementType }> = {}
+    for (const [key, def] of Object.entries(categoryDefs)) {
+      result[key] = { label: t(def.labelKey), icon: def.icon }
+    }
+    return result
+  }, [t])
 
   const startExercise = (id: string) => {
     setActiveExercise(id)
@@ -104,12 +93,12 @@ export default function CognitiveTab() {
       <Card className="p-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-slate-800">Kognitiv träning</h3>
-            <p className="text-slate-500">Övningar för att stärka ditt minne och din koncentration</p>
+            <h3 className="text-lg font-semibold text-slate-800">{t('wellness.cognitive.title')}</h3>
+            <p className="text-slate-500">{t('wellness.cognitive.description')}</p>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-orange-100 rounded-full">
             <Trophy className="w-5 h-5 text-orange-600" />
-            <span className="font-bold text-orange-600">{streak} dagar</span>
+            <span className="font-bold text-orange-600">{streak} {t('wellness.cognitive.days')}</span>
           </div>
         </div>
 
@@ -153,14 +142,14 @@ export default function CognitiveTab() {
           <div className="bg-slate-50 rounded-xl p-6 text-center">
             <Clock className="w-12 h-12 text-indigo-600 mx-auto mb-4" />
             <p className="text-3xl font-bold text-slate-800 mb-2">10:00</p>
-            <p className="text-slate-600 mb-4">Övning pågår...</p>
+            <p className="text-slate-600 mb-4">{t('wellness.cognitive.exerciseInProgress')}</p>
             <div className="flex gap-2 justify-center">
               <Button variant="outline" onClick={() => setActiveExercise(null)}>
-                Pausa
+                {t('wellness.cognitive.pause')}
               </Button>
               <Button onClick={() => completeExercise(activeExercise)}>
                 <CheckCircle2 className="w-4 h-4 mr-1" />
-                Klar
+                {t('wellness.cognitive.done')}
               </Button>
             </div>
           </div>
@@ -169,7 +158,7 @@ export default function CognitiveTab() {
 
       {/* Exercises List */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Tillgängliga övningar</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('wellness.cognitive.availableExercises')}</h3>
         <div className="space-y-3">
           {exercises.map((exercise) => {
             const difficulty = difficultyConfig[exercise.difficulty]
@@ -207,7 +196,7 @@ export default function CognitiveTab() {
                     </span>
                     <span className="text-xs text-slate-500 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
-                      {exercise.duration} min
+                      {exercise.duration} {t('wellness.cognitive.min')}
                     </span>
                   </div>
                 </div>
@@ -218,7 +207,7 @@ export default function CognitiveTab() {
                   disabled={isCompleted}
                   onClick={() => startExercise(exercise.id)}
                 >
-                  {isCompleted ? 'Avklarad' : 'Starta'}
+                  {isCompleted ? t('wellness.cognitive.completed') : t('wellness.cognitive.start')}
                   {!isCompleted && <ChevronRight className="w-4 h-4 ml-1" />}
                 </Button>
               </div>
@@ -232,12 +221,12 @@ export default function CognitiveTab() {
         <div className="flex items-start gap-4">
           <AlertCircle className="w-6 h-6 text-indigo-600 flex-shrink-0 mt-1" />
           <div>
-            <h4 className="font-semibold text-slate-800 mb-2">Tips för kognitiv träning</h4>
+            <h4 className="font-semibold text-slate-800 mb-2">{t('wellness.cognitive.tips.title')}</h4>
             <ul className="space-y-2 text-sm text-slate-600">
-              <li>• Öva regelbundet - 10 minuter om dagen är bättre än en timme i veckan</li>
-              <li>• Utmana dig själv, men inte så mycket att det blir frustrerande</li>
-              <li>• Kombinera med fysisk aktivitet för bästa effekt</li>
-              <li>• Sömn är avgörande för kognitiv återhämtning</li>
+              <li>• {t('wellness.cognitive.tips.tip1')}</li>
+              <li>• {t('wellness.cognitive.tips.tip2')}</li>
+              <li>• {t('wellness.cognitive.tips.tip3')}</li>
+              <li>• {t('wellness.cognitive.tips.tip4')}</li>
             </ul>
           </div>
         </div>

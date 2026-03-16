@@ -647,6 +647,71 @@
         "healthcare": { "name": "Sjukvårdsupplysningen", "description": "Råd och vägledning" },
         "112": { "name": "112", "description": "Vid akut livsfara" }
       }
+    },
+    "routines": {
+      "todaysRoutines": "Dagens rutiner",
+      "xOfYCompleted": "{{completed}} av {{total}} avklarade",
+      "weekOverview": "Veckoöversikt",
+      "yourRoutines": "Dina rutiner",
+      "add": "Lägg till",
+      "routineNamePlaceholder": "Namn på rutin...",
+      "suggestedRoutines": "Föreslagna rutiner",
+      "days": {
+        "mon": "Mån",
+        "tue": "Tis",
+        "wed": "Ons",
+        "thu": "Tor",
+        "fri": "Fre",
+        "sat": "Lör",
+        "sun": "Sön"
+      },
+      "defaultRoutines": {
+        "morningWalk": "Morgonpromenad",
+        "jobSearch": "Jobbsök 30 min",
+        "coffeeBreak": "Fika-paus",
+        "reflectDay": "Reflektera över dagen"
+      },
+      "suggestions": {
+        "morningStretch": "Morgonstretching 10 min",
+        "lunchWalk": "Lunchpromenad",
+        "weeklyReview": "Veckans mål-granskning"
+      }
+    },
+    "cognitive": {
+      "title": "Kognitiv träning",
+      "description": "Övningar för att stärka ditt minne och din koncentration",
+      "days": "dagar",
+      "exerciseInProgress": "Övning pågår...",
+      "pause": "Pausa",
+      "done": "Klar",
+      "availableExercises": "Tillgängliga övningar",
+      "completed": "Avklarad",
+      "start": "Starta",
+      "min": "min",
+      "tips": {
+        "title": "Tips för kognitiv träning",
+        "tip1": "Öva regelbundet - 10 minuter om dagen är bättre än en timme i veckan",
+        "tip2": "Utmana dig själv, men inte så mycket att det blir frustrerande",
+        "tip3": "Kombinera med fysisk aktivitet för bästa effekt",
+        "tip4": "Sömn är avgörande för kognitiv återhämtning"
+      },
+      "difficulty": {
+        "easy": "Lätt",
+        "medium": "Medel",
+        "hard": "Svår"
+      },
+      "categories": {
+        "memory": "Minne",
+        "concentration": "Koncentration",
+        "problemSolving": "Problemlösning"
+      },
+      "exercises": {
+        "namememory": { "title": "Namn-minne", "description": "Öva på att komma ihåg namn och ansikten" },
+        "focus": { "title": "Fokus-övning", "description": "Träna koncentration i 10 minuter utan avbrott" },
+        "prioritization": { "title": "Prioriterings-träning", "description": "Sortera uppgifter efter vikt och brådska" },
+        "workingmemory": { "title": "Arbetsminne", "description": "Kom ihåg instruktioner medan du gör något annat" },
+        "distractedreading": { "title": "Distraherad läsning", "description": "Läsa och förstå text med bakgrundsljud" }
+      }
     }
   },
   "knowledgeBase": {

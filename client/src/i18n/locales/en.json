@@ -647,6 +647,71 @@
         "healthcare": { "name": "Healthcare information", "description": "Advice and guidance" },
         "112": { "name": "112", "description": "In case of life-threatening emergency" }
       }
+    },
+    "routines": {
+      "todaysRoutines": "Today's routines",
+      "xOfYCompleted": "{{completed}} of {{total}} completed",
+      "weekOverview": "Week overview",
+      "yourRoutines": "Your routines",
+      "add": "Add",
+      "routineNamePlaceholder": "Routine name...",
+      "suggestedRoutines": "Suggested routines",
+      "days": {
+        "mon": "Mon",
+        "tue": "Tue",
+        "wed": "Wed",
+        "thu": "Thu",
+        "fri": "Fri",
+        "sat": "Sat",
+        "sun": "Sun"
+      },
+      "defaultRoutines": {
+        "morningWalk": "Morning walk",
+        "jobSearch": "Job search 30 min",
+        "coffeeBreak": "Coffee break",
+        "reflectDay": "Reflect on the day"
+      },
+      "suggestions": {
+        "morningStretch": "Morning stretch 10 min",
+        "lunchWalk": "Lunch walk",
+        "weeklyReview": "Weekly goals review"
+      }
+    },
+    "cognitive": {
+      "title": "Cognitive training",
+      "description": "Exercises to strengthen your memory and concentration",
+      "days": "days",
+      "exerciseInProgress": "Exercise in progress...",
+      "pause": "Pause",
+      "done": "Done",
+      "availableExercises": "Available exercises",
+      "completed": "Completed",
+      "start": "Start",
+      "min": "min",
+      "tips": {
+        "title": "Tips for cognitive training",
+        "tip1": "Practice regularly - 10 minutes a day is better than an hour a week",
+        "tip2": "Challenge yourself, but not so much that it becomes frustrating",
+        "tip3": "Combine with physical activity for best results",
+        "tip4": "Sleep is crucial for cognitive recovery"
+      },
+      "difficulty": {
+        "easy": "Easy",
+        "medium": "Medium",
+        "hard": "Hard"
+      },
+      "categories": {
+        "memory": "Memory",
+        "concentration": "Concentration",
+        "problemSolving": "Problem solving"
+      },
+      "exercises": {
+        "namememory": { "title": "Name memory", "description": "Practice remembering names and faces" },
+        "focus": { "title": "Focus exercise", "description": "Train concentration for 10 minutes without interruption" },
+        "prioritization": { "title": "Prioritization training", "description": "Sort tasks by importance and urgency" },
+        "workingmemory": { "title": "Working memory", "description": "Remember instructions while doing something else" },
+        "distractedreading": { "title": "Distracted reading", "description": "Read and understand text with background noise" }
+      }
     }
   },
   "knowledgeBase": {
