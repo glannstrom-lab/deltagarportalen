@@ -1022,6 +1022,24 @@
       "sat": "Lör"
     }
   },
+  "careerWidget": {
+    "career": "Karriär",
+    "occupations": "yrken",
+    "explore": "Utforska",
+    "findPath": "Hitta väg",
+    "exploredOccupations": "utforskade yrken",
+    "savedPaths": "sparade vägar",
+    "recommendedForYou": "Rekommenderas för dig",
+    "careerTools": "Karriärverktyg",
+    "exploreOccupations": "Utforska yrken",
+    "discoverOpportunities": "Upptäck yrkesmöjligheter",
+    "exploreAndFindPath": "Utforska yrken och hitta din väg",
+    "tabs": {
+      "network": "Nätverk",
+      "adaptation": "Anpassning",
+      "companies": "Företag"
+    }
+  },
   "interestWidget": {
     "interests": "Intressen",
     "interestTest": "Intressetest",

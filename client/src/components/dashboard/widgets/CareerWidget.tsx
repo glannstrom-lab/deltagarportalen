@@ -1,4 +1,5 @@
 import { memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Route, Briefcase, Target, Sparkles, Users, Accessibility, Building2, ChevronRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { DashboardWidget } from '../DashboardWidget'
@@ -21,13 +22,14 @@ interface CareerWidgetProps {
 }
 
 // SMALL - Ultra kompakt
-function CareerWidgetSmall({ 
-  exploredCount = 0, 
-  recommendedOccupations = [], 
-  loading, 
-  error, 
-  onRetry 
+function CareerWidgetSmall({
+  exploredCount = 0,
+  recommendedOccupations = [],
+  loading,
+  error,
+  onRetry
 }: Omit<CareerWidgetProps, 'size' | 'savedPaths' | 'riasecProfile'>) {
+  const { t } = useTranslation()
   const getStatus = (): WidgetStatus => {
     if (exploredCount === 0) return 'empty'
     return 'complete'
@@ -38,7 +40,7 @@ function CareerWidgetSmall({
 
   return (
     <DashboardWidget
-      title="Karriär"
+      title={t('careerWidget.career')}
       icon={<Route size={14} />}
       to="/career"
       color="indigo"
@@ -53,7 +55,7 @@ function CareerWidgetSmall({
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{exploredCount}</span>
           <span className="text-xs text-slate-500">
-            {exploredCount === 0 ? 'yrken' : exploredCount === 1 ? 'yrke' : 'yrken'}
+            {t('careerWidget.occupations', { count: exploredCount })}
           </span>
         </div>
         {firstRecommendation && (
@@ -67,15 +69,16 @@ function CareerWidgetSmall({
 }
 
 // MEDIUM - Balanserad överblick
-function CareerWidgetMedium({ 
-  exploredCount = 0, 
-  savedPaths = [], 
-  recommendedOccupations = [], 
+function CareerWidgetMedium({
+  exploredCount = 0,
+  savedPaths = [],
+  recommendedOccupations = [],
   riasecProfile,
-  loading, 
-  error, 
-  onRetry 
+  loading,
+  error,
+  onRetry
 }: CareerWidgetProps) {
+  const { t } = useTranslation()
   const getStatus = (): WidgetStatus => {
     if (exploredCount === 0) return 'empty'
     return 'complete'
@@ -85,7 +88,7 @@ function CareerWidgetMedium({
 
   return (
     <DashboardWidget
-      title="Karriär"
+      title={t('careerWidget.career')}
       icon={<Route size={20} />}
       to="/career"
       color="indigo"
@@ -95,7 +98,7 @@ function CareerWidgetMedium({
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: exploredCount > 0 ? 'Utforska' : 'Hitta väg',
+        label: exploredCount > 0 ? t('careerWidget.explore') : t('careerWidget.findPath'),
       }}
     >
       <div className="space-y-3">
@@ -103,15 +106,15 @@ function CareerWidgetMedium({
           <Briefcase size={22} className="text-indigo-500" />
           <div>
             <p className="text-2xl font-bold text-slate-800">{exploredCount}</p>
-            <p className="text-xs text-slate-500">utforskade yrken</p>
+            <p className="text-xs text-slate-500">{t('careerWidget.exploredOccupations')}</p>
           </div>
         </div>
 
         {recommendedOccupations.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {recommendedOccupations.slice(0, 3).map((occ, i) => (
-              <span 
-                key={i} 
+              <span
+                key={i}
                 className="px-2 py-0.5 bg-indigo-50 text-indigo-700 text-xs rounded-md border border-indigo-100"
               >
                 {occ.name}
@@ -125,15 +128,16 @@ function CareerWidgetMedium({
 }
 
 // LARGE - Fullständig överblick med nya tabs
-function CareerWidgetLarge({ 
-  exploredCount = 0, 
-  savedPaths = [], 
-  recommendedOccupations = [], 
+function CareerWidgetLarge({
+  exploredCount = 0,
+  savedPaths = [],
+  recommendedOccupations = [],
   riasecProfile,
-  loading, 
-  error, 
-  onRetry 
+  loading,
+  error,
+  onRetry
 }: CareerWidgetProps) {
+  const { t } = useTranslation()
   const getStatus = (): WidgetStatus => {
     if (exploredCount === 0) return 'empty'
     return 'complete'
@@ -143,14 +147,14 @@ function CareerWidgetLarge({
 
   // Nya career tabs som snabblänkar
   const careerTabs = [
-    { id: 'network', label: 'Nätverk', icon: Users, path: '/career/network', color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
-    { id: 'adaptation', label: 'Anpassning', icon: Accessibility, path: '/career/adaptation', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
-    { id: 'companies', label: 'Företag', icon: Building2, path: '/career/companies', color: 'text-blue-600 bg-blue-50 border-blue-200' },
+    { id: 'network', labelKey: 'careerWidget.tabs.network', icon: Users, path: '/career/network', color: 'text-cyan-600 bg-cyan-50 border-cyan-200' },
+    { id: 'adaptation', labelKey: 'careerWidget.tabs.adaptation', icon: Accessibility, path: '/career/adaptation', color: 'text-emerald-600 bg-emerald-50 border-emerald-200' },
+    { id: 'companies', labelKey: 'careerWidget.tabs.companies', icon: Building2, path: '/career/companies', color: 'text-blue-600 bg-blue-50 border-blue-200' },
   ]
 
   return (
     <DashboardWidget
-      title="Karriär"
+      title={t('careerWidget.career')}
       icon={<Route size={22} />}
       to="/career"
       color="indigo"
@@ -160,7 +164,7 @@ function CareerWidgetLarge({
       error={error}
       onRetry={onRetry}
       primaryAction={{
-        label: 'Utforska yrken',
+        label: t('careerWidget.exploreOccupations'),
       }}
     >
       <div className="space-y-4">
@@ -170,11 +174,11 @@ function CareerWidgetLarge({
           </div>
           <div>
             <p className="text-3xl font-bold text-slate-800">{exploredCount}</p>
-            <p className="text-sm text-slate-500">utforskade yrken</p>
+            <p className="text-sm text-slate-500">{t('careerWidget.exploredOccupations')}</p>
           </div>
           <div className="ml-auto text-right">
             <p className="text-2xl font-bold text-slate-800">{savedPaths.length}</p>
-            <p className="text-sm text-slate-500">sparade vägar</p>
+            <p className="text-sm text-slate-500">{t('careerWidget.savedPaths')}</p>
           </div>
         </div>
 
@@ -182,12 +186,12 @@ function CareerWidgetLarge({
           <div className="space-y-2">
             <p className="text-sm font-medium text-slate-700 flex items-center gap-2">
               <Sparkles size={14} className="text-amber-500" />
-              Rekommenderas för dig
+              {t('careerWidget.recommendedForYou')}
             </p>
             <div className="flex flex-wrap gap-2">
               {recommendedOccupations.slice(0, 4).map((occ, i) => (
-                <span 
-                  key={i} 
+                <span
+                  key={i}
                   className="px-3 py-1.5 bg-indigo-50 text-indigo-700 text-sm rounded-lg border border-indigo-100"
                 >
                   {occ.name}
@@ -199,7 +203,7 @@ function CareerWidgetLarge({
 
         {/* Snabblänkar till nya career tabs */}
         <div className="space-y-2">
-          <p className="text-sm font-medium text-slate-700">Karriärverktyg:</p>
+          <p className="text-sm font-medium text-slate-700">{t('careerWidget.careerTools')}:</p>
           <div className="grid grid-cols-3 gap-2">
             {careerTabs.map((tab) => (
               <Link
@@ -208,7 +212,7 @@ function CareerWidgetLarge({
                 className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all hover:shadow-sm ${tab.color}`}
               >
                 <tab.icon size={18} />
-                <span className="text-xs font-medium">{tab.label}</span>
+                <span className="text-xs font-medium">{t(tab.labelKey)}</span>
               </Link>
             ))}
           </div>
@@ -219,8 +223,8 @@ function CareerWidgetLarge({
             <div className="flex items-center gap-3">
               <Target size={24} className="text-indigo-500" />
               <div>
-                <p className="font-semibold text-indigo-900">Upptäck yrkesmöjligheter</p>
-                <p className="text-sm text-indigo-600">Utforska yrken och hitta din väg</p>
+                <p className="font-semibold text-indigo-900">{t('careerWidget.discoverOpportunities')}</p>
+                <p className="text-sm text-indigo-600">{t('careerWidget.exploreAndFindPath')}</p>
               </div>
             </div>
           </div>
