@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MessageCircle, Send, User, Bot, RefreshCw, Mic, MicOff, ThumbsUp, ThumbsDown } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -11,6 +12,7 @@ interface FragaSvar {
 }
 
 export default function InterviewSimulator() {
+  const { t } = useTranslation()
   const [roll, setRoll] = useState('')
   const [foretag, setForetag] = useState('')
   const [harStartat, setHarStartat] = useState(false)
@@ -25,19 +27,20 @@ export default function InterviewSimulator() {
     if (!roll.trim()) return
     setHarStartat(true)
     setIsLoading(true)
-    
+
     try {
       const response = await fetch('/api/ai/intervju-simulator', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ roll, foretag, tidigareFragor: [] })
       })
-      
+
       if (!response.ok) throw new Error('AI error')
       const data = await response.json()
       setNuvarandeFraga(data.resultat)
     } catch (error) {
-      setNuvarandeFraga(`Välkommen till intervjun för ${roll}${foretag ? ` på ${foretag}` : ''}! Berätta lite om dig själv och varför du söker denna roll.`)
+      const companyPart = foretag ? t('interviewSimulator.atCompany', { company: foretag }) : ''
+      setNuvarandeFraga(t('interviewSimulator.welcomeMessage', { role: roll, company: companyPart }))
     } finally {
       setIsLoading(false)
     }
@@ -45,13 +48,13 @@ export default function InterviewSimulator() {
 
   const svara = async () => {
     if (!anvandarSvar.trim() || isLoading) return
-    
+
     setIsLoading(true)
     const nyFragaSvar: FragaSvar = {
       fraga: nuvarandeFraga,
       svar: anvandarSvar
     }
-    
+
     try {
       const response = await fetch('/api/ai/intervju-simulator', {
         method: 'POST',
@@ -63,21 +66,21 @@ export default function InterviewSimulator() {
           tidigareFragor: [...historik, nyFragaSvar]
         })
       })
-      
+
       if (!response.ok) throw new Error('AI error')
       const data = await response.json()
-      
-      setHistorik([...historik, { ...nyFragaSvar, feedback: 'Bra svar! Här är nästa fråga...' }])
+
+      setHistorik([...historik, { ...nyFragaSvar, feedback: t('interviewSimulator.goodAnswerNext') }])
       setNuvarandeFraga(data.resultat)
       setAnvandarSvar('')
       setAntalFragor(prev => prev + 1)
     } catch (error) {
-      const fallbackFraga = antalFragor === 0 
-        ? 'Tack för presentationen! Beskriv en situation där du hanterat en konflikt.'
+      const fallbackFraga = antalFragor === 0
+        ? t('interviewSimulator.fallbackQ1')
         : antalFragor === 1
-        ? 'Bra! Vilka är dina styrkor och svagheter?'
-        : 'Varför vill du just jobba hos oss?'
-      
+        ? t('interviewSimulator.fallbackQ2')
+        : t('interviewSimulator.fallbackQ3')
+
       setHistorik([...historik, nyFragaSvar])
       setNuvarandeFraga(fallbackFraga)
       setAnvandarSvar('')
@@ -109,31 +112,31 @@ export default function InterviewSimulator() {
           <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 mb-2">
             <MessageCircle className="w-7 h-7 text-amber-600" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-800">Intervju-simulator</h1>
+          <h1 className="text-2xl font-bold text-slate-800">{t('interviewSimulator.title')}</h1>
           <p className="text-slate-600">
-            Öva på intervjuer med AI. Få feedback på dina svar och bli bättre förberedd.
+            {t('interviewSimulator.description')}
           </p>
         </div>
 
         <Card className="p-6">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Vilken roll ska du intervjua för?</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">{t('interviewSimulator.roleLabel')}</label>
               <input
                 type="text"
                 value={roll}
                 onChange={(e) => setRoll(e.target.value)}
-                placeholder="t.ex. Projektledare, Säljare, Utvecklare..."
+                placeholder={t('interviewSimulator.rolePlaceholder')}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">Företag (valfritt)</label>
+              <label className="block text-sm font-medium text-slate-700 mb-2">{t('interviewSimulator.companyLabel')}</label>
               <input
                 type="text"
                 value={foretag}
                 onChange={(e) => setForetag(e.target.value)}
-                placeholder="t.ex. Volvo, Spotify..."
+                placeholder={t('interviewSimulator.companyPlaceholder')}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none"
               />
             </div>
@@ -142,7 +145,7 @@ export default function InterviewSimulator() {
               disabled={!roll.trim() || isLoading}
               className="w-full bg-gradient-to-r from-amber-600 to-orange-600"
             >
-              {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : 'Starta intervjun'}
+              {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : t('interviewSimulator.startInterview')}
             </Button>
           </div>
         </Card>
@@ -155,11 +158,11 @@ export default function InterviewSimulator() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-bold text-slate-800">Intervju: {roll}</h1>
-          <p className="text-sm text-slate-500">{foretag || 'Generisk övning'}</p>
+          <h1 className="text-xl font-bold text-slate-800">{t('interviewSimulator.interview')} {roll}</h1>
+          <p className="text-sm text-slate-500">{foretag || t('interviewSimulator.genericPractice')}</p>
         </div>
         <Button variant="outline" onClick={avslutaIntervju}>
-          Avsluta
+          {t('interviewSimulator.end')}
         </Button>
       </div>
 
@@ -174,8 +177,8 @@ export default function InterviewSimulator() {
                     <User className="w-4 h-4 text-amber-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 mb-1">Intervjuare:</p>
-                    <p className="text-slate-800">{fs.frag}</p>
+                    <p className="text-sm font-medium text-slate-600 mb-1">{t('interviewSimulator.interviewer')}</p>
+                    <p className="text-slate-800">{fs.fraga}</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
@@ -183,7 +186,7 @@ export default function InterviewSimulator() {
                     <Bot className="w-4 h-4 text-emerald-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 mb-1">Ditt svar:</p>
+                    <p className="text-sm font-medium text-slate-600 mb-1">{t('interviewSimulator.yourAnswer')}</p>
                     <p className="text-slate-800">{fs.svar}</p>
                   </div>
                 </div>
@@ -200,7 +203,7 @@ export default function InterviewSimulator() {
             <User className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-amber-700 mb-2">Intervjuare frågar:</p>
+            <p className="text-sm font-medium text-amber-700 mb-2">{t('interviewSimulator.interviewerAsks')}</p>
             <p className="text-lg text-slate-800">{nuvarandeFraga}</p>
           </div>
         </div>
@@ -216,7 +219,7 @@ export default function InterviewSimulator() {
             <textarea
               value={anvandarSvar}
               onChange={(e) => setAnvandarSvar(e.target.value)}
-              placeholder="Skriv ditt svar här..."
+              placeholder={t('interviewSimulator.writeAnswerHere')}
               rows={4}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none resize-y"
             />
@@ -226,7 +229,7 @@ export default function InterviewSimulator() {
                 disabled={!anvandarSvar.trim() || isLoading}
                 className="bg-gradient-to-r from-amber-600 to-orange-600"
               >
-                {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 mr-2" /> Svara</>}
+                {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 mr-2" /> {t('interviewSimulator.answer')}</>}
               </Button>
             </div>
           </div>
@@ -236,7 +239,7 @@ export default function InterviewSimulator() {
       {/* Tips */}
       <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
         <p className="text-sm text-blue-700">
-          💡 Tips: Använd STAR-metoden (Situation, Task, Action, Result) när du svarar på beteendefrågor!
+          {t('interviewSimulator.tip')}
         </p>
       </div>
     </div>

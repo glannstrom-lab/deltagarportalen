@@ -1614,5 +1614,29 @@
     },
     "lastUpdated": "Senast uppdaterad:",
     "copyright": "2026 Jobin. Alla rättigheter förbehållna."
+  },
+  "interviewSimulator": {
+    "title": "Intervju-simulator",
+    "description": "Öva på intervjuer med AI. Få feedback på dina svar och bli bättre förberedd.",
+    "roleLabel": "Vilken roll ska du intervjua för?",
+    "rolePlaceholder": "t.ex. Projektledare, Säljare, Utvecklare...",
+    "companyLabel": "Företag (valfritt)",
+    "companyPlaceholder": "t.ex. Volvo, Spotify...",
+    "startInterview": "Starta intervjun",
+    "interview": "Intervju:",
+    "genericPractice": "Generisk övning",
+    "end": "Avsluta",
+    "interviewer": "Intervjuare:",
+    "yourAnswer": "Ditt svar:",
+    "interviewerAsks": "Intervjuare frågar:",
+    "writeAnswerHere": "Skriv ditt svar här...",
+    "answer": "Svara",
+    "tip": "Tips: Använd STAR-metoden (Situation, Task, Action, Result) när du svarar på beteendefrågor!",
+    "welcomeMessage": "Välkommen till intervjun för {{role}}{{company}}! Berätta lite om dig själv och varför du söker denna roll.",
+    "atCompany": " på {{company}}",
+    "goodAnswerNext": "Bra svar! Här är nästa fråga...",
+    "fallbackQ1": "Tack för presentationen! Beskriv en situation där du hanterat en konflikt.",
+    "fallbackQ2": "Bra! Vilka är dina styrkor och svagheter?",
+    "fallbackQ3": "Varför vill du just jobba hos oss?"
   }
 }

@@ -1614,5 +1614,29 @@
     },
     "lastUpdated": "Last updated:",
     "copyright": "2026 Jobin. All rights reserved."
+  },
+  "interviewSimulator": {
+    "title": "Interview Simulator",
+    "description": "Practice interviews with AI. Get feedback on your answers and become better prepared.",
+    "roleLabel": "What role are you interviewing for?",
+    "rolePlaceholder": "e.g. Project Manager, Sales Rep, Developer...",
+    "companyLabel": "Company (optional)",
+    "companyPlaceholder": "e.g. Google, Microsoft...",
+    "startInterview": "Start interview",
+    "interview": "Interview:",
+    "genericPractice": "Generic practice",
+    "end": "End",
+    "interviewer": "Interviewer:",
+    "yourAnswer": "Your answer:",
+    "interviewerAsks": "Interviewer asks:",
+    "writeAnswerHere": "Write your answer here...",
+    "answer": "Answer",
+    "tip": "Tip: Use the STAR method (Situation, Task, Action, Result) when answering behavioral questions!",
+    "welcomeMessage": "Welcome to the interview for {{role}}{{company}}! Tell me a little about yourself and why you're applying for this role.",
+    "atCompany": " at {{company}}",
+    "goodAnswerNext": "Good answer! Here's the next question...",
+    "fallbackQ1": "Thanks for the introduction! Describe a situation where you handled a conflict.",
+    "fallbackQ2": "Great! What are your strengths and weaknesses?",
+    "fallbackQ3": "Why do you want to work for us specifically?"
   }
 }
