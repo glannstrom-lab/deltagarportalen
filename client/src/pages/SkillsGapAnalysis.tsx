@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Target, Search, TrendingUp, AlertCircle, CheckCircle, BookOpen, Sparkles, RefreshCw } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
 export default function SkillsGapAnalysis() {
+  const { t } = useTranslation()
   const [cvText, setCvText] = useState('')
   const [dromjobb, setDromjobb] = useState('')
   const [analys, setAnalys] = useState<any>(null)
@@ -40,9 +42,9 @@ export default function SkillsGapAnalysis() {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-purple-100 to-pink-100 mb-2">
           <Target className="w-7 h-7 text-purple-600" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800">Kompetensgap-analys</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{t('skillsGapAnalysis.title')}</h1>
         <p className="text-slate-600 max-w-2xl mx-auto">
-          Jämför ditt nuvarande CV med ditt drömjobb och få en konkret plan för vad du behöver utveckla.
+          {t('skillsGapAnalysis.description')}
         </p>
       </div>
 
@@ -53,17 +55,17 @@ export default function SkillsGapAnalysis() {
             <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center">
               <CheckCircle className="w-5 h-5 text-slate-600" />
             </div>
-            <h2 className="font-semibold text-slate-800">Din nuvarande profil</h2>
+            <h2 className="font-semibold text-slate-800">{t('skillsGapAnalysis.currentProfile.title')}</h2>
           </div>
           <textarea
             value={cvText}
             onChange={(e) => setCvText(e.target.value)}
-            placeholder="Klistra in ditt CV här (eller skriv en kort sammanfattning av din bakgrund, erfarenhet och kompetenser)..."
+            placeholder={t('skillsGapAnalysis.currentProfile.placeholder')}
             rows={10}
             className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none resize-y"
           />
           <p className="text-xs text-slate-500 mt-2">
-            💡 Ju mer detaljerad information, desto bättre analys!
+            💡 {t('skillsGapAnalysis.currentProfile.tip')}
           </p>
         </Card>
 
@@ -72,17 +74,17 @@ export default function SkillsGapAnalysis() {
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
               <Search className="w-5 h-5 text-white" />
             </div>
-            <h2 className="font-semibold text-slate-800">Ditt drömjobb</h2>
+            <h2 className="font-semibold text-slate-800">{t('skillsGapAnalysis.dreamJob.title')}</h2>
           </div>
           <textarea
             value={dromjobb}
             onChange={(e) => setDromjobb(e.target.value)}
-            placeholder="Klistra in en jobbannons för ditt drömjobb, eller beskriv rollen...\n\nExempel:\nVi söker en erfaren Projektledare med..."
+            placeholder={t('skillsGapAnalysis.dreamJob.placeholder')}
             rows={10}
             className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none resize-y"
           />
           <p className="text-xs text-slate-500 mt-2">
-            💡 Använd en riktig jobbannons för bästa resultat!
+            💡 {t('skillsGapAnalysis.dreamJob.tip')}
           </p>
         </Card>
       </div>
@@ -99,7 +101,7 @@ export default function SkillsGapAnalysis() {
           ) : (
             <>
               <Sparkles className="w-6 h-6 mr-2" />
-              Analysera gapet
+              {t('skillsGapAnalysis.analyzeGap')}
             </>
           )}
         </Button>
@@ -110,29 +112,29 @@ export default function SkillsGapAnalysis() {
         <Card className="p-6 bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
           <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
             <TrendingUp className="w-6 h-6 text-purple-600" />
-            Din kompetensanalys
+            {t('skillsGapAnalysis.result.title')}
           </h2>
           <div className="bg-white p-6 rounded-lg border border-purple-100">
             <pre className="whitespace-pre-wrap text-slate-700 font-sans leading-relaxed">
               {analys.text}
             </pre>
           </div>
-          
+
           <div className="mt-6 grid md:grid-cols-3 gap-4">
             <div className="bg-white p-4 rounded-lg border border-purple-100">
               <BookOpen className="w-8 h-8 text-purple-500 mb-2" />
-              <h3 className="font-semibold text-slate-800 mb-1">Utbildning</h3>
-              <p className="text-sm text-slate-600">Överväg kurser eller certifieringar</p>
+              <h3 className="font-semibold text-slate-800 mb-1">{t('skillsGapAnalysis.result.education.title')}</h3>
+              <p className="text-sm text-slate-600">{t('skillsGapAnalysis.result.education.description')}</p>
             </div>
             <div className="bg-white p-4 rounded-lg border border-purple-100">
               <TrendingUp className="w-8 h-8 text-pink-500 mb-2" />
-              <h3 className="font-semibold text-slate-800 mb-1">Erfarenhet</h3>
-              <p className="text-sm text-slate-600">Bygg portfolio med projekt</p>
+              <h3 className="font-semibold text-slate-800 mb-1">{t('skillsGapAnalysis.result.experience.title')}</h3>
+              <p className="text-sm text-slate-600">{t('skillsGapAnalysis.result.experience.description')}</p>
             </div>
             <div className="bg-white p-4 rounded-lg border border-purple-100">
               <AlertCircle className="w-8 h-8 text-amber-500 mb-2" />
-              <h3 className="font-semibold text-slate-800 mb-1">Tidslinje</h3>
-              <p className="text-sm text-slate-600">Sätt realistiska mål</p>
+              <h3 className="font-semibold text-slate-800 mb-1">{t('skillsGapAnalysis.result.timeline.title')}</h3>
+              <p className="text-sm text-slate-600">{t('skillsGapAnalysis.result.timeline.description')}</p>
             </div>
           </div>
         </Card>

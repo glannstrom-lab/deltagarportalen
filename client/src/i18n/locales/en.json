@@ -2022,6 +2022,58 @@
       "generateFailed": "Could not generate text. Please try again."
     }
   },
+  "careerPlan": {
+    "title": "My Career Plan",
+    "description": "Create a structured plan from where you are now to your career goal, with concrete steps and timeline.",
+    "whereAreYou": "Where are you now?",
+    "whereAreYouPlaceholder": "Describe your current situation (e.g. 'Working as a retail salesperson, want to switch to office work')",
+    "whereToGo": "Where do you want to go?",
+    "whereToGoPlaceholder": "Describe your goal (e.g. 'Become a project manager in IT with focus on agile methods')",
+    "timeline": "Timeline",
+    "timeframes": {
+      "3months": "3 months (Intensive)",
+      "6months": "6 months (Recommended)",
+      "12months": "12 months (Long-term)"
+    },
+    "obstacles": "Potential obstacles",
+    "obstaclesPlaceholder": "(Optional) e.g. 'Lack experience in...'",
+    "createPlan": "Create my career plan",
+    "result": {
+      "title": "Your personal career plan",
+      "timeframe": "Timeline: {{timeframe}}",
+      "updateMonthly": "Update the plan monthly"
+    }
+  },
+  "skillsGapAnalysis": {
+    "title": "Skills Gap Analysis",
+    "description": "Compare your current CV with your dream job and get a concrete plan for what you need to develop.",
+    "currentProfile": {
+      "title": "Your current profile",
+      "placeholder": "Paste your CV here (or write a short summary of your background, experience and skills)...",
+      "tip": "The more detailed information, the better analysis!"
+    },
+    "dreamJob": {
+      "title": "Your dream job",
+      "placeholder": "Paste a job posting for your dream job, or describe the role...\n\nExample:\nWe are looking for an experienced Project Manager with...",
+      "tip": "Use a real job posting for best results!"
+    },
+    "analyzeGap": "Analyze the gap",
+    "result": {
+      "title": "Your skills analysis",
+      "education": {
+        "title": "Education",
+        "description": "Consider courses or certifications"
+      },
+      "experience": {
+        "title": "Experience",
+        "description": "Build portfolio with projects"
+      },
+      "timeline": {
+        "title": "Timeline",
+        "description": "Set realistic goals"
+      }
+    }
+  },
   "cvBuilder": {
     "title": "Create CV",
     "steps": {

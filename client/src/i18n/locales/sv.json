@@ -2022,6 +2022,58 @@
       "generateFailed": "Kunde inte generera text. Försök igen."
     }
   },
+  "careerPlan": {
+    "title": "Min Karriärplan",
+    "description": "Skapa en strukturerad plan från där du är nu till ditt karriärmål, med konkreta steg och tidslinje.",
+    "whereAreYou": "Var är du nu?",
+    "whereAreYouPlaceholder": "Beskriv din nuvarande situation (t.ex. 'Arbetar som butikssäljare, vill byta till kontorsjobb')",
+    "whereToGo": "Vart vill du?",
+    "whereToGoPlaceholder": "Beskriv ditt mål (t.ex. 'Bli projektledare inom IT med fokus på agila metoder')",
+    "timeline": "Tidsplan",
+    "timeframes": {
+      "3months": "3 månader (Intensivt)",
+      "6months": "6 månader (Rekommenderat)",
+      "12months": "12 månader (Långsiktigt)"
+    },
+    "obstacles": "Eventuella hinder",
+    "obstaclesPlaceholder": "(Valfritt) t.ex. 'Saknar erfarenhet inom...'",
+    "createPlan": "Skapa min karriärplan",
+    "result": {
+      "title": "Din personliga karriärplan",
+      "timeframe": "Tidsplan: {{timeframe}}",
+      "updateMonthly": "Uppdatera planen månadsvis"
+    }
+  },
+  "skillsGapAnalysis": {
+    "title": "Kompetensgap-analys",
+    "description": "Jämför ditt nuvarande CV med ditt drömjobb och få en konkret plan för vad du behöver utveckla.",
+    "currentProfile": {
+      "title": "Din nuvarande profil",
+      "placeholder": "Klistra in ditt CV här (eller skriv en kort sammanfattning av din bakgrund, erfarenhet och kompetenser)...",
+      "tip": "Ju mer detaljerad information, desto bättre analys!"
+    },
+    "dreamJob": {
+      "title": "Ditt drömjobb",
+      "placeholder": "Klistra in en jobbannons för ditt drömjobb, eller beskriv rollen...\n\nExempel:\nVi söker en erfaren Projektledare med...",
+      "tip": "Använd en riktig jobbannons för bästa resultat!"
+    },
+    "analyzeGap": "Analysera gapet",
+    "result": {
+      "title": "Din kompetensanalys",
+      "education": {
+        "title": "Utbildning",
+        "description": "Överväg kurser eller certifieringar"
+      },
+      "experience": {
+        "title": "Erfarenhet",
+        "description": "Bygg portfolio med projekt"
+      },
+      "timeline": {
+        "title": "Tidslinje",
+        "description": "Sätt realistiska mål"
+      }
+    }
+  },
   "cvBuilder": {
     "title": "Skapa CV",
     "steps": {

@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MapPin, Flag, Calendar, Target, Sparkles, RefreshCw, CheckCircle, Clock } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 
 export default function CareerPlan() {
+  const { t } = useTranslation()
   const [nuvarande, setNuvarande] = useState('')
   const [mal, setMal] = useState('')
   const [tidsram, setTidsram] = useState('6 månader')
@@ -39,9 +41,9 @@ export default function CareerPlan() {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 mb-2">
           <MapPin className="w-7 h-7 text-emerald-600" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800">Min Karriärplan</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{t('careerPlan.title')}</h1>
         <p className="text-slate-600 max-w-2xl mx-auto">
-          Skapa en strukturerad plan från där du är nu till ditt karriärmål, med konkreta steg och tidslinje.
+          {t('careerPlan.description')}
         </p>
       </div>
 
@@ -51,12 +53,12 @@ export default function CareerPlan() {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
               <MapPin className="w-4 h-4 text-slate-400" />
-              Var är du nu?
+              {t('careerPlan.whereAreYou')}
             </label>
             <textarea
               value={nuvarande}
               onChange={(e) => setNuvarande(e.target.value)}
-              placeholder="Beskriv din nuvarande situation (t.ex. 'Arbetar som butikssäljare, vill byta till kontorsjobb')"
+              placeholder={t('careerPlan.whereAreYouPlaceholder')}
               rows={3}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none resize-y"
             />
@@ -65,12 +67,12 @@ export default function CareerPlan() {
           <div>
             <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
               <Flag className="w-4 h-4 text-emerald-500" />
-              Vart vill du?
+              {t('careerPlan.whereToGo')}
             </label>
             <textarea
               value={mal}
               onChange={(e) => setMal(e.target.value)}
-              placeholder="Beskriv ditt mål (t.ex. 'Bli projektledare inom IT med fokus på agila metoder')"
+              placeholder={t('careerPlan.whereToGoPlaceholder')}
               rows={3}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none resize-y"
             />
@@ -80,29 +82,29 @@ export default function CareerPlan() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
                 <Calendar className="w-4 h-4 text-slate-400" />
-                Tidsplan
+                {t('careerPlan.timeline')}
               </label>
               <select
                 value={tidsram}
                 onChange={(e) => setTidsram(e.target.value)}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none"
               >
-                <option value="3 månader">3 månader (Intensivt)</option>
-                <option value="6 månader">6 månader (Rekommenderat)</option>
-                <option value="12 månader">12 månader (Långsiktigt)</option>
+                <option value="3 månader">{t('careerPlan.timeframes.3months')}</option>
+                <option value="6 månader">{t('careerPlan.timeframes.6months')}</option>
+                <option value="12 månader">{t('careerPlan.timeframes.12months')}</option>
               </select>
             </div>
 
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
                 <Target className="w-4 h-4 text-slate-400" />
-                Eventuella hinder
+                {t('careerPlan.obstacles')}
               </label>
               <input
                 type="text"
                 value={hinder}
                 onChange={(e) => setHinder(e.target.value)}
-                placeholder="(Valfritt) t.ex. 'Saknar erfarenhet inom...'"
+                placeholder={t('careerPlan.obstaclesPlaceholder')}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none"
               />
             </div>
@@ -118,7 +120,7 @@ export default function CareerPlan() {
             ) : (
               <>
                 <Sparkles className="w-5 h-5 mr-2" />
-                Skapa min karriärplan
+                {t('careerPlan.createPlan')}
               </>
             )}
           </Button>
@@ -130,9 +132,9 @@ export default function CareerPlan() {
         <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
           <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
             <CheckCircle className="w-6 h-6 text-emerald-600" />
-            Din personliga karriärplan
+            {t('careerPlan.result.title')}
           </h2>
-          
+
           <div className="bg-white p-6 rounded-lg border border-emerald-100">
             <pre className="whitespace-pre-wrap text-slate-700 font-sans leading-relaxed">
               {plan}
@@ -142,10 +144,10 @@ export default function CareerPlan() {
           <div className="mt-6 flex items-center justify-center gap-4 text-sm text-slate-600">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4" />
-              <span>Tidsplan: {tidsram}</span>
+              <span>{t('careerPlan.result.timeframe', { timeframe: tidsram })}</span>
             </div>
             <span>•</span>
-            <div>Uppdatera planen månadsvis</div>
+            <div>{t('careerPlan.result.updateMonthly')}</div>
           </div>
         </Card>
       )}
