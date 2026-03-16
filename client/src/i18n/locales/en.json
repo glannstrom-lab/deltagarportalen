@@ -505,7 +505,8 @@
       "fri": "Fri",
       "sat": "Sat",
       "sun": "Sun"
-    }
+    },
+    "noTitle": "No title"
   },
   "wellness": {
     "title": "Wellness",

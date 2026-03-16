@@ -242,7 +242,7 @@ export default function Diary() {
   }
 
   const handleSaveDiaryEntry = () => {
-    const title = diaryTitleRef.current?.value || 'Utan titel'
+    const title = diaryTitleRef.current?.value || t('diary.noTitle')
     const content = diaryContentRef.current?.value || ''
 
     if (!content.trim()) return
@@ -273,7 +273,15 @@ export default function Diary() {
     const daysInMonth = lastDay.getDate()
     const startingDay = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1
 
-    const days = ['Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör', 'Sön']
+    const days = [
+      t('diary.days.mon'),
+      t('diary.days.tue'),
+      t('diary.days.wed'),
+      t('diary.days.thu'),
+      t('diary.days.fri'),
+      t('diary.days.sat'),
+      t('diary.days.sun')
+    ]
 
     const getEventsForDate = (dateStr: string) => {
       return events.filter(event => event.date === dateStr)

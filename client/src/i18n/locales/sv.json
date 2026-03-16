@@ -505,7 +505,8 @@
       "fri": "Fre",
       "sat": "Lör",
       "sun": "Sön"
-    }
+    },
+    "noTitle": "Utan titel"
   },
   "wellness": {
     "title": "Hälsa",

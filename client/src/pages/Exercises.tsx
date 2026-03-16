@@ -102,7 +102,7 @@ export default function Exercises() {
 
         if (error) {
           console.error('Error loading answers:', error)
-          setError('Kunde inte ladda dina svar från molnet')
+          setError(t('exercises.couldNotLoadCloud'))
           return
         }
 
@@ -115,7 +115,7 @@ export default function Exercises() {
         setAnswers(progress)
       } catch (err) {
         console.error('Failed to load answers:', err)
-        setError('Ett fel uppstod vid laddning av dina svar')
+        setError(t('exercises.errorLoadingAnswers'))
       } finally {
         setLoading(false)
       }
@@ -147,11 +147,11 @@ export default function Exercises() {
 
       if (error) {
         console.error('Error saving answers:', error)
-        setError('Kunde inte spara till molnet')
+        setError(t('exercises.couldNotSaveCloud'))
       }
     } catch (err) {
       console.error('Failed to save answers:', err)
-      setError('Ett fel uppstod vid sparning')
+      setError(t('exercises.errorSaving'))
     } finally {
       setSaving(false)
     }
@@ -257,8 +257,8 @@ export default function Exercises() {
 
   const handleClearProgress = async () => {
     if (!selectedExercise || !user) return
-    if (!confirm('Är du säker på att du vill rensa alla dina svar för denna övning?')) return
-    
+    if (!confirm(t('exercises.clearProgressConfirm'))) return
+
     // Delete from cloud
     const { error } = await supabase
       .from('exercise_answers')
@@ -268,7 +268,7 @@ export default function Exercises() {
 
     if (error) {
       console.error('Error deleting answers:', error)
-      setError('Kunde inte rensa dina svar')
+      setError(t('exercises.couldNotClear'))
       return
     }
     
