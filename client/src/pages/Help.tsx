@@ -69,8 +69,8 @@ export default function Help() {
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center mb-10">
-        <div className="w-16 h-16 bg-indigo-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <HelpCircle className="w-8 h-8 text-indigo-600" />
+        <div className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <HelpCircle className="w-8 h-8 text-violet-600" />
         </div>
         <h1 className="text-3xl font-bold text-slate-800 mb-2">Hjälp & Support</h1>
         <p className="text-slate-600 max-w-lg mx-auto">
@@ -86,10 +86,10 @@ export default function Help() {
             <Link
               key={item.title}
               to={item.link}
-              className="bg-white rounded-xl border border-slate-200 p-4 hover:shadow-md hover:border-indigo-200 transition-all text-center"
+              className="bg-white rounded-xl border border-slate-200 p-4 hover:shadow-md hover:border-violet-200 transition-all text-center"
             >
-              <div className="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <Icon className="w-5 h-5 text-indigo-600" />
+              <div className="w-10 h-10 bg-violet-50 rounded-lg flex items-center justify-center mx-auto mb-2">
+                <Icon className="w-5 h-5 text-violet-600" />
               </div>
               <h3 className="font-medium text-slate-800 text-sm">{item.title}</h3>
               <p className="text-xs text-slate-500 mt-0.5">{item.desc}</p>
@@ -105,7 +105,7 @@ export default function Help() {
           return (
             <section key={category.title} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
               <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center gap-3">
-                <Icon className="w-5 h-5 text-indigo-600" />
+                <Icon className="w-5 h-5 text-violet-600" />
                 <h2 className="font-semibold text-slate-800">{category.title}</h2>
               </div>
               <div className="divide-y divide-slate-100">
@@ -116,7 +116,7 @@ export default function Help() {
                     {item.link && (
                       <Link 
                         to={item.link}
-                        className="inline-flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                        className="inline-flex items-center gap-1 text-sm text-violet-600 hover:text-violet-700 font-medium"
                       >
                         Gå till {category.title.toLowerCase()}
                         <ChevronRight className="w-4 h-4" />
@@ -131,7 +131,7 @@ export default function Help() {
       </div>
 
       {/* Contact Section */}
-      <section className="mt-10 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl border border-indigo-100 p-6">
+      <section className="mt-10 bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl border border-violet-100 p-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="flex-1 text-center md:text-left">
             <h2 className="text-xl font-semibold text-slate-800 mb-2">
@@ -143,7 +143,7 @@ export default function Help() {
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <Link
                 to="/diary"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
                 Boka möte
@@ -158,7 +158,7 @@ export default function Help() {
             </div>
           </div>
           <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-            <MessageCircle className="w-8 h-8 text-indigo-600" />
+            <MessageCircle className="w-8 h-8 text-violet-600" />
           </div>
         </div>
       </section>

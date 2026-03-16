@@ -129,6 +129,7 @@ export function IconButton({
       className={cn(
         'inline-flex items-center justify-center rounded-lg',
         'transition-all duration-200',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',
         animations.press,
         variantClasses[variant],
         sizeClasses[size],

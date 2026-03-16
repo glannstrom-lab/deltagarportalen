@@ -36,15 +36,15 @@ function FAQItem({ question, answer, isOpen, onClick }: {
   onClick: () => void 
 }) {
   return (
-    <div className={`bg-white rounded-2xl mb-4 overflow-hidden shadow-lg transition-all duration-300 ${isOpen ? 'ring-2 ring-indigo-200 shadow-xl' : 'hover:shadow-md'}`}>
+    <div className={`bg-white rounded-2xl mb-4 overflow-hidden shadow-lg transition-all duration-300 ${isOpen ? 'ring-2 ring-violet-200 shadow-xl' : 'hover:shadow-md'}`}>
       <button
         onClick={onClick}
         className="w-full px-6 py-5 text-left flex justify-between items-center hover:bg-slate-50 transition-colors group"
         aria-expanded={isOpen}
       >
-        <span className="font-semibold text-slate-800 pr-4 group-hover:text-indigo-600 transition-colors">{question}</span>
-        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-indigo-100 rotate-180' : 'bg-slate-100'}`}>
-          <ChevronDown className={`w-5 h-5 transition-colors ${isOpen ? 'text-indigo-600' : 'text-slate-400'}`} />
+        <span className="font-semibold text-slate-800 pr-4 group-hover:text-violet-600 transition-colors">{question}</span>
+        <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-violet-100 rotate-180' : 'bg-slate-100'}`}>
+          <ChevronDown className={`w-5 h-5 transition-colors ${isOpen ? 'text-violet-600' : 'text-slate-400'}`} />
         </div>
       </button>
       <div 
@@ -75,11 +75,11 @@ function FeatureCard({
   large?: boolean
 }) {
   return (
-    <div className={`bg-white rounded-2xl p-6 lg:p-8 shadow-card hover:shadow-card-hover transition-all duration-300 border border-slate-100 hover:-translate-y-2 hover:border-indigo-100 group ${large ? 'md:row-span-2' : ''}`}>
+    <div className={`bg-white rounded-2xl p-6 lg:p-8 shadow-card hover:shadow-card-hover transition-all duration-300 border border-slate-100 hover:-translate-y-2 hover:border-violet-100 group ${large ? 'md:row-span-2' : ''}`}>
       <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110 ${iconBg}`}>
         <Icon className={`w-7 h-7 ${iconColor}`} />
       </div>
-      <h3 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-indigo-600 transition-colors">{title}</h3>
+      <h3 className="text-xl font-bold text-slate-800 mb-3 group-hover:text-violet-600 transition-colors">{title}</h3>
       <p className="text-slate-600 mb-5 leading-relaxed">{description}</p>
       {features && (
         <ul className="space-y-3">
@@ -106,13 +106,13 @@ function StepCard({ number, title, description, showArrow }: {
 }) {
   return (
     <div className="relative bg-gradient-to-br from-slate-50 to-white rounded-2xl p-8 text-center border border-slate-100 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-2 group">
-      <div className="w-16 h-16 bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+      <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-violet-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
         {number}
       </div>
       <h3 className="text-xl font-bold text-slate-800 mb-3">{title}</h3>
       <p className="text-slate-600 leading-relaxed">{description}</p>
       {showArrow && (
-        <div className="hidden lg:block absolute top-1/2 -right-6 transform -translate-y-1/2 text-indigo-300">
+        <div className="hidden lg:block absolute top-1/2 -right-6 transform -translate-y-1/2 text-violet-300">
           <ArrowRight className="w-8 h-8" />
         </div>
       )}
@@ -235,7 +235,7 @@ export default function Landing() {
       quote: "Efter 8 månaders sökande fick jag äntligen struktur på mitt CV. Två veckor senare hade jag mitt första intervju på länge.",
       name: "Anna, 34",
       role: "Hittade jobb som kundtjänstmedarbetare",
-      gradient: "bg-gradient-to-br from-indigo-500 to-indigo-600"
+      gradient: "bg-gradient-to-br from-violet-500 to-violet-600"
     },
     {
       quote: "Personlighetstestet gav mig ord på saker jag alltid känt men inte kunnat formulera. Det öppnade helt nya dörrar för mig.",
@@ -270,26 +270,26 @@ export default function Landing() {
                 alt="" 
                 className="w-10 h-10 rounded-xl shadow-lg group-hover:shadow-xl transition-shadow object-contain bg-white"
               />
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-600 to-indigo-500 bg-clip-text text-transparent">Jobin</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-violet-600 to-violet-500 bg-clip-text text-transparent">Jobin</span>
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#funktioner" className="text-slate-600 hover:text-indigo-600 font-medium transition-colors relative group">
+              <a href="#funktioner" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
                 Funktioner
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
               </a>
-              <a href="#hur-det-funkar" className="text-slate-600 hover:text-indigo-600 font-medium transition-colors relative group">
+              <a href="#hur-det-funkar" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
                 Så funkar det
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
               </a>
-              <a href="#faq" className="text-slate-600 hover:text-indigo-600 font-medium transition-colors relative group">
+              <a href="#faq" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
                 Vanliga frågor
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-600 transition-all duration-300 group-hover:w-full" />
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
               </a>
               <Link 
                 to="/login" 
-                className="text-slate-600 hover:text-indigo-600 font-medium transition-colors"
+                className="text-slate-600 hover:text-violet-600 font-medium transition-colors"
               >
                 Logga in
               </Link>
@@ -314,13 +314,13 @@ export default function Landing() {
           {/* Mobile Menu */}
           <div className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className="py-4 border-t border-slate-100 space-y-2">
-              <a href="#funktioner" className="block text-slate-600 hover:text-indigo-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Funktioner</a>
-              <a href="#hur-det-funkar" className="block text-slate-600 hover:text-indigo-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Så funkar det</a>
-              <a href="#faq" className="block text-slate-600 hover:text-indigo-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Vanliga frågor</a>
+              <a href="#funktioner" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Funktioner</a>
+              <a href="#hur-det-funkar" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Så funkar det</a>
+              <a href="#faq" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>Vanliga frågor</a>
               <div className="pt-2 flex flex-col gap-2">
                 <Link 
                   to="/login" 
-                  className="text-slate-600 hover:text-indigo-600 font-medium py-2 px-2 text-center"
+                  className="text-slate-600 hover:text-violet-600 font-medium py-2 px-2 text-center"
                   onClick={() => setMobileMenuOpen(false)}
                 >
                   Logga in
@@ -341,9 +341,9 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
         {/* Background */}
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-teal-50" />
+        <div className="absolute inset-0 bg-gradient-to-br from-violet-50 via-white to-teal-50" />
         <div className="absolute top-0 right-0 w-1/2 h-full opacity-40 pointer-events-none">
-          <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-indigo-200 rounded-full blur-3xl" />
+          <div className="absolute top-[-10%] right-[-10%] w-[800px] h-[800px] bg-violet-200 rounded-full blur-3xl" />
           <div className="absolute bottom-[10%] left-[20%] w-[500px] h-[500px] bg-teal-200 rounded-full blur-3xl" />
         </div>
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%236366f1%22%20fill-opacity%3D%220.03%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')] opacity-50" />
@@ -382,9 +382,9 @@ export default function Landing() {
                 </Link>
                 <a 
                   href="#funktioner"
-                  className="group bg-white text-indigo-600 border-2 border-indigo-100 hover:border-indigo-300 px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center justify-center transition-all hover:shadow-lg hover:bg-indigo-50"
+                  className="group bg-white text-violet-600 border-2 border-violet-100 hover:border-violet-300 px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center justify-center transition-all hover:shadow-lg hover:bg-violet-50"
                 >
-                  <Play className="w-5 h-5 mr-2 fill-indigo-600" />
+                  <Play className="w-5 h-5 mr-2 fill-violet-600" />
                   Se hur det fungerar
                 </a>
               </div>
@@ -418,13 +418,13 @@ export default function Landing() {
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-indigo-50 to-white rounded-xl p-4 border border-slate-100">
-                    <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center text-lg mb-3">📝</div>
+                  <div className="bg-gradient-to-br from-violet-50 to-white rounded-xl p-4 border border-slate-100">
+                    <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center text-lg mb-3">📝</div>
                     <p className="text-xs text-slate-500 mb-1">CV-progress</p>
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-slate-800">85%</p>
                       <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div className="h-full bg-indigo-500 rounded-full" style={{ width: '85%' }} />
+                        <div className="h-full bg-violet-500 rounded-full" style={{ width: '85%' }} />
                       </div>
                     </div>
                   </div>
@@ -454,7 +454,7 @@ export default function Landing() {
                 </span>
               </div>
               <div className="absolute bottom-8 -left-8 bg-white rounded-xl p-4 shadow-xl border border-slate-100">
-                <span className="flex items-center gap-2 text-sm font-medium text-indigo-600">
+                <span className="flex items-center gap-2 text-sm font-medium text-violet-600">
                   <span>⭐</span>
                   3 nya jobbmatchningar
                 </span>
@@ -465,7 +465,7 @@ export default function Landing() {
       </section>
 
       {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-r from-indigo-600 to-indigo-700">
+      <section className="py-16 bg-gradient-to-r from-violet-600 to-violet-700">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
             <StatsCard value={12450} label="arbetssökande har fått hjälp" icon={Users} suffix="+" />
@@ -503,7 +503,7 @@ export default function Landing() {
       <section id="hur-det-funkar" className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block text-indigo-600 font-semibold text-sm uppercase tracking-wider mb-3">Processen</span>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Processen</span>
             <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Så här fungerar det</h2>
             <p className="text-slate-600 text-lg">Tre enkla steg på din väg till nytt jobb. Vi guidar dig genom varje del.</p>
           </div>
@@ -531,10 +531,10 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="funktioner" className="py-20 lg:py-28 bg-gradient-to-b from-white via-indigo-50/30 to-white">
+      <section id="funktioner" className="py-20 lg:py-28 bg-gradient-to-b from-white via-violet-50/30 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block text-indigo-600 font-semibold text-sm uppercase tracking-wider mb-3">Funktioner</span>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Funktioner</span>
             <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Allt du behöver i en plattform</h2>
             <p className="text-slate-600 text-lg">Från att upptäcka vad du vill göra till att landa drömjobbet – vi har verktygen som hjälper dig.</p>
           </div>
@@ -542,8 +542,8 @@ export default function Landing() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
             <FeatureCard 
               icon={FileText}
-              iconBg="bg-indigo-100"
-              iconColor="text-indigo-600"
+              iconBg="bg-violet-100"
+              iconColor="text-violet-600"
               title="CV som faktiskt blir läst"
               description="Skapa ett professionellt CV med hjälp av AI – optimerat för både rekryterare och datorer. Importera från LinkedIn, få feedback direkt och exportera som PDF när du är nöjd."
               features={[
@@ -598,7 +598,7 @@ export default function Landing() {
       <section className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-block text-indigo-600 font-semibold text-sm uppercase tracking-wider mb-3">Omdömen</span>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Omdömen</span>
             <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Det här säger våra användare</h2>
             <p className="text-slate-600 text-lg">Verkliga historier från människor som hittat sin väg tillbaka till arbetslivet.</p>
           </div>
@@ -615,7 +615,7 @@ export default function Landing() {
       <section id="faq" className="py-20 lg:py-28 bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <span className="inline-block text-indigo-600 font-semibold text-sm uppercase tracking-wider mb-3">FAQ</span>
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">FAQ</span>
             <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">Vanliga frågor</h2>
             <p className="text-slate-600 text-lg">Det du kanske undrar över innan du kommer igång.</p>
           </div>
@@ -637,18 +637,18 @@ export default function Landing() {
       {/* Contact Section */}
       <section id="kontakt" className="py-20 lg:py-28 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-br from-slate-50 to-indigo-50 rounded-3xl p-8 lg:p-12">
+          <div className="bg-gradient-to-br from-slate-50 to-violet-50 rounded-3xl p-8 lg:p-12">
             <div className="grid lg:grid-cols-2 gap-12 items-center">
               <div>
-                <span className="inline-block text-indigo-600 font-semibold text-sm uppercase tracking-wider mb-3">Kontakt</span>
+                <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">Kontakt</span>
                 <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4 tracking-tight">Vi finns här för dig</h2>
                 <p className="text-slate-600 text-lg mb-8">
                   Har du frågor eller behöver hjälp? Tveka inte att kontakta oss. Vi svarar vanligtvis inom 24 timmar.
                 </p>
                 <div className="space-y-4">
                   <a href="mailto:support@jobin.se" className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow group">
-                    <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                      <Mail className="w-6 h-6 text-indigo-600" />
+                    <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center group-hover:bg-violet-200 transition-colors">
+                      <Mail className="w-6 h-6 text-violet-600" />
                     </div>
                     <div>
                       <p className="font-medium text-slate-800">E-post</p>
@@ -668,12 +668,12 @@ export default function Landing() {
               </div>
               <div className="text-center lg:text-right">
                 <div className="inline-block bg-white rounded-2xl p-8 shadow-lg">
-                  <Target className="w-16 h-16 text-indigo-600 mx-auto mb-4" />
+                  <Target className="w-16 h-16 text-violet-600 mx-auto mb-4" />
                   <h3 className="text-xl font-bold text-slate-800 mb-2">Redo att börja?</h3>
                   <p className="text-slate-600 mb-6">Skapa ett konto och kom igång på bara några minuter.</p>
                   <Link 
                     to="/register"
-                    className="inline-flex items-center gap-2 bg-indigo-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-indigo-700 transition-colors"
+                    className="inline-flex items-center gap-2 bg-violet-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-violet-700 transition-colors"
                   >
                     Skapa konto gratis
                     <ArrowRight className="w-4 h-4" />
@@ -686,7 +686,7 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 lg:py-28 bg-gradient-to-br from-indigo-600 via-indigo-700 to-indigo-800 text-center relative overflow-hidden">
+      <section className="py-20 lg:py-28 bg-gradient-to-br from-violet-600 via-violet-700 to-violet-800 text-center relative overflow-hidden">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg%20width%3D%2260%22%20height%3D%2260%22%20viewBox%3D%220%200%2060%2060%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%3Cg%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.05%22%3E%3Cpath%20d%3D%22M36%2034v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6%2034v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6%204V0H4v4H0v2h4v4h2V6h4V4H6z%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E')]" />
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <h2 className="text-3xl lg:text-5xl font-bold text-white mb-6 tracking-tight">Redo att hitta ditt jobb?</h2>
@@ -695,7 +695,7 @@ export default function Landing() {
           </p>
           <Link 
             to="/register"
-            className="inline-flex items-center gap-2 bg-white text-indigo-600 hover:bg-slate-50 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1"
+            className="inline-flex items-center gap-2 bg-white text-violet-600 hover:bg-slate-50 px-8 py-4 rounded-xl font-semibold text-lg shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1"
           >
             Skapa gratis konto
             <ArrowRight className="w-5 h-5" />
@@ -713,7 +713,7 @@ export default function Landing() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-3 lg:col-span-1">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
+                <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl flex items-center justify-center text-white font-bold text-lg">
                   J
                 </div>
                 <span className="text-white font-bold text-xl">Jobin</span>

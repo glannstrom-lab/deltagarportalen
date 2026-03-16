@@ -54,22 +54,22 @@ export default function EmptyState({
     <div className="flex flex-col items-center justify-center py-16 px-4 text-center animate-fade-in-up">
       {/* Icon */}
       <div className="relative mb-6">
-        <div className="w-24 h-24 bg-gradient-to-br from-teal-100 to-teal-50 rounded-full flex items-center justify-center">
-          <IconComponent className="w-12 h-12 text-teal-600" />
+        <div className="w-24 h-24 bg-gradient-to-br from-violet-100 to-violet-50 dark:from-violet-900/40 dark:to-violet-900/20 rounded-full flex items-center justify-center">
+          <IconComponent className="w-12 h-12 text-violet-600 dark:text-violet-400" />
         </div>
-        <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-amber-100 rounded-full flex items-center justify-center">
-          <Plus className="w-5 h-5 text-amber-600" />
+        <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center">
+          <Plus className="w-5 h-5 text-amber-600 dark:text-amber-400" />
         </div>
       </div>
 
       {/* Title */}
-      <h3 className="text-xl font-semibold text-slate-900 mb-2">
+      <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100 mb-2">
         {title}
       </h3>
 
       {/* Description */}
       {description && (
-        <p className="text-slate-500 max-w-md mb-6">
+        <p className="text-slate-500 dark:text-slate-400 max-w-md mb-6">
           {description}
         </p>
       )}
@@ -86,17 +86,17 @@ export default function EmptyState({
         {action && (
           <button
             onClick={action.onClick}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-all hover:shadow-lg hover:shadow-teal-500/25 active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-violet-600 text-white rounded-xl font-medium hover:bg-violet-700 transition-all hover:shadow-lg hover:shadow-violet-500/25 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
           >
             {action.icon}
             {action.label}
           </button>
         )}
-        
+
         {secondaryAction && (
           <button
             onClick={secondaryAction.onClick}
-            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-slate-600 hover:bg-slate-100 rounded-xl font-medium transition-colors"
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
           >
             {secondaryAction.label}
           </button>

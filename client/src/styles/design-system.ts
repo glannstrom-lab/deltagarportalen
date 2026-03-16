@@ -196,7 +196,7 @@ export const typography = {
 // KOMPONENT-KLASSER (Helper functions)
 // ============================================
 
-// Button varianter - UPPDATERADE med nya färger
+// Button varianter - UPPDATERADE med nya färger och förbättrad tillgänglighet
 export const buttonVariants = {
   primary: cn(
     'bg-violet-600 text-white hover:bg-violet-700',
@@ -205,7 +205,8 @@ export const buttonVariants = {
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
-    'inline-flex items-center justify-center gap-2'
+    'inline-flex items-center justify-center gap-2',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
   ),
   secondary: cn(
     'bg-white border border-stone-200 text-stone-700',
@@ -213,7 +214,8 @@ export const buttonVariants = {
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
-    'inline-flex items-center justify-center gap-2'
+    'inline-flex items-center justify-center gap-2',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
   ),
   outline: cn(
     'bg-transparent border-2 border-violet-600 text-violet-600',
@@ -221,7 +223,8 @@ export const buttonVariants = {
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
-    'inline-flex items-center justify-center gap-2'
+    'inline-flex items-center justify-center gap-2',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
   ),
   ghost: cn(
     'bg-transparent text-stone-600',
@@ -229,7 +232,8 @@ export const buttonVariants = {
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
-    'inline-flex items-center justify-center gap-2'
+    'inline-flex items-center justify-center gap-2',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
   ),
   danger: cn(
     'bg-red-50 text-red-600 border border-red-200',
@@ -237,14 +241,16 @@ export const buttonVariants = {
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
-    'inline-flex items-center justify-center gap-2'
+    'inline-flex items-center justify-center gap-2',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2'
   ),
   icon: cn(
     'w-10 h-10 rounded-lg',
     'inline-flex items-center justify-center',
     'text-stone-600 hover:bg-stone-100',
     animations.press,
-    'transition-colors duration-200'
+    'transition-colors duration-200',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
   ),
 }
 

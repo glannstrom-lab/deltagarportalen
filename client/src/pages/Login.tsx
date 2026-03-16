@@ -73,14 +73,14 @@ export default function Login() {
   // Show loading while checking auth state
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-slate-800 flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-violet-600 to-stone-800 flex items-center justify-center">
         <Loader2 className="animate-spin text-white" size={48} />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 to-slate-800 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-violet-600 to-stone-800 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -90,7 +90,7 @@ export default function Login() {
             className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
           />
           <h1 className="text-2xl font-bold text-white">Jobin</h1>
-          <p className="text-teal-200 mt-1">Din väg till nytt jobb</p>
+          <p className="text-violet-200 mt-1">Din väg till nytt jobb</p>
         </div>
 
         {/* Login Card */}
@@ -121,10 +121,10 @@ export default function Login() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                    touched.email && errors.email 
-                      ? 'border-red-300 focus:border-red-500' 
-                      : 'border-slate-300'
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+                    touched.email && errors.email
+                      ? 'border-red-300 focus:border-red-500'
+                      : 'border-stone-300'
                   }`}
                   placeholder="namn@exempel.se"
                   autoComplete="email"
@@ -149,10 +149,10 @@ export default function Login() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
-                    touched.password && errors.password 
-                      ? 'border-red-300 focus:border-red-500' 
-                      : 'border-slate-300'
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+                    touched.password && errors.password
+                      ? 'border-red-300 focus:border-red-500'
+                      : 'border-stone-300'
                   }`}
                   placeholder="Ange ditt lösenord"
                   autoComplete="current-password"
@@ -174,7 +174,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full bg-violet-600 text-white py-3 rounded-lg font-semibold hover:bg-violet-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2"
             >
               {isSubmitting ? (
                 <>
@@ -192,9 +192,9 @@ export default function Login() {
 
           {/* Register Link */}
           <div className="mt-6 text-center">
-            <p className="text-slate-600">
+            <p className="text-stone-600">
               Har du inget konto?{' '}
-              <Link to="/register" className="text-indigo-600 hover:text-indigo-700 font-semibold">
+              <Link to="/register" className="text-violet-600 hover:text-violet-700 font-semibold">
                 Skapa ett konto
               </Link>
             </p>
@@ -221,7 +221,7 @@ export default function Login() {
 
         {/* Back Link */}
         <div className="mt-6 text-center">
-          <Link to="/" className="text-indigo-200 hover:text-white text-sm">
+          <Link to="/" className="text-violet-200 hover:text-white text-sm">
             ← Tillbaka till Jobin
           </Link>
         </div>
