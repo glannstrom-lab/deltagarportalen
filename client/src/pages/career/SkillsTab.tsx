@@ -1,8 +1,9 @@
 /**
  * Skills Tab - Skills gap analysis (redirects to SkillsGapAnalysis)
  */
-import { useState } from 'react'
-import { 
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
   Target, Search, CheckCircle, AlertCircle, BookOpen,
   Sparkles, TrendingUp, Award
 } from 'lucide-react'
@@ -19,11 +20,12 @@ interface Course {
   title: string
   provider: string
   duration: string
-  type: 'online' | 'classroom' | 'hybrid'
+  type: string
   cost: string
 }
 
 export default function SkillsTab() {
+  const { t, i18n } = useTranslation()
   const [cvText, setCvText] = useState('')
   const [dreamJob, setDreamJob] = useState('')
   const [showResults, setShowResults] = useState(false)
@@ -33,18 +35,38 @@ export default function SkillsTab() {
     setShowResults(true)
   }
 
-  const skills: Skill[] = [
-    { name: 'Projektledning', current: 3, target: 5, gap: 'medium' },
-    { name: 'Agila metoder', current: 2, target: 4, gap: 'medium' },
-    { name: 'Kommunikation', current: 4, target: 5, gap: 'small' },
-    { name: 'Dataanalys', current: 1, target: 3, gap: 'large' },
-  ]
+  // Translated mock skills
+  const skills = useMemo((): Skill[] => [
+    { name: i18n.language === 'en' ? 'Project Management' : 'Projektledning', current: 3, target: 5, gap: 'medium' },
+    { name: i18n.language === 'en' ? 'Agile Methods' : 'Agila metoder', current: 2, target: 4, gap: 'medium' },
+    { name: i18n.language === 'en' ? 'Communication' : 'Kommunikation', current: 4, target: 5, gap: 'small' },
+    { name: i18n.language === 'en' ? 'Data Analysis' : 'Dataanalys', current: 1, target: 3, gap: 'large' },
+  ], [i18n.language])
 
-  const courses: Course[] = [
-    { title: 'Certifierad Projektledare', provider: 'Komvux', duration: '6 månader', type: 'classroom', cost: 'Gratis' },
-    { title: 'Agil Projektledning', provider: 'LinkedIn Learning', duration: '20 timmar', type: 'online', cost: ' ingår i Premium' },
-    { title: 'Dataanalys för nybörjare', provider: 'Coursera', duration: '8 veckor', type: 'online', cost: 'Gratis att granska' },
-  ]
+  // Translated mock courses
+  const courses = useMemo((): Course[] => [
+    {
+      title: i18n.language === 'en' ? 'Certified Project Manager' : 'Certifierad Projektledare',
+      provider: 'Komvux',
+      duration: i18n.language === 'en' ? '6 months' : '6 månader',
+      type: i18n.language === 'en' ? 'classroom' : 'classroom',
+      cost: i18n.language === 'en' ? 'Free' : 'Gratis'
+    },
+    {
+      title: i18n.language === 'en' ? 'Agile Project Management' : 'Agil Projektledning',
+      provider: 'LinkedIn Learning',
+      duration: i18n.language === 'en' ? '20 hours' : '20 timmar',
+      type: 'online',
+      cost: i18n.language === 'en' ? 'Included in Premium' : 'Ingår i Premium'
+    },
+    {
+      title: i18n.language === 'en' ? 'Data Analysis for Beginners' : 'Dataanalys för nybörjare',
+      provider: 'Coursera',
+      duration: i18n.language === 'en' ? '8 weeks' : '8 veckor',
+      type: 'online',
+      cost: i18n.language === 'en' ? 'Free to audit' : 'Gratis att granska'
+    },
+  ], [i18n.language])
 
   const getGapColor = (gap: string) => {
     switch (gap) {
@@ -64,9 +86,9 @@ export default function SkillsTab() {
             <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Target className="w-8 h-8 text-purple-600" />
             </div>
-            <h3 className="text-xl font-bold text-slate-800">Kompetensgap-analys</h3>
+            <h3 className="text-xl font-bold text-slate-800">{t('career.skills.skillsGapAnalysis')}</h3>
             <p className="text-slate-600 mt-2">
-              Jämför dina nuvarande kompetenser med vad ditt drömjobb kräver.
+              {t('career.skills.compareSkills')}
             </p>
           </div>
 
@@ -74,12 +96,12 @@ export default function SkillsTab() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
                 <CheckCircle className="w-4 h-4 text-slate-400" />
-                Din nuvarande profil
+                {t('career.skills.yourProfile')}
               </label>
               <textarea
                 value={cvText}
                 onChange={(e) => setCvText(e.target.value)}
-                placeholder="Klistra in ditt CV här (eller skriv en kort sammanfattning av din bakgrund...)"
+                placeholder={t('career.skills.profilePlaceholder')}
                 rows={8}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-y"
               />
@@ -88,25 +110,25 @@ export default function SkillsTab() {
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
                 <Search className="w-4 h-4 text-purple-500" />
-                Ditt drömjobb
+                {t('career.skills.dreamJob')}
               </label>
               <textarea
                 value={dreamJob}
                 onChange={(e) => setDreamJob(e.target.value)}
-                placeholder="Klistra in en jobbannons för ditt drömjobb, eller beskriv rollen..."
+                placeholder={t('career.skills.dreamJobPlaceholder')}
                 rows={8}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-y"
               />
             </div>
           </div>
 
-          <Button 
+          <Button
             onClick={analyze}
             disabled={!cvText.trim() || !dreamJob.trim()}
             className="w-full mt-6"
           >
             <Sparkles className="w-4 h-4 mr-2" />
-            Analysera kompetensgap
+            {t('career.skills.analyzeGap')}
           </Button>
         </Card>
       </div>
@@ -119,8 +141,8 @@ export default function SkillsTab() {
       <Card className="p-6">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-bold text-slate-800">Analysresultat</h3>
-            <p className="text-slate-600">Matchning: 65%</p>
+            <h3 className="text-lg font-bold text-slate-800">{t('career.skills.analysisResults')}</h3>
+            <p className="text-slate-600">{t('career.skills.matching')}: 65%</p>
           </div>
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
             <span className="text-2xl font-bold text-white">65%</span>
@@ -134,31 +156,31 @@ export default function SkillsTab() {
         <div className="flex items-center gap-4 p-4 bg-amber-50 rounded-lg">
           <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
           <p className="text-sm text-amber-800">
-            Du har en god grund! Fokusera på att utveckla de markerade kompetenserna för att öka dina chanser.
+            {t('career.skills.goodFoundation')}
           </p>
         </div>
       </Card>
 
       {/* Skills Gap */}
       <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Kompetensjämförelse</h3>
+        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('career.skills.skillsComparison')}</h3>
         <div className="space-y-4">
           {skills.map((skill) => (
             <div key={skill.name} className="p-4 rounded-xl bg-slate-50">
               <div className="flex items-center justify-between mb-2">
                 <span className="font-medium text-slate-800">{skill.name}</span>
                 <span className={`text-xs px-2 py-1 rounded-full ${getGapColor(skill.gap)}`}>
-                  Gap: {skill.target - skill.current} nivåer
+                  {t('career.skills.gap')}: {skill.target - skill.current} {t('career.skills.levels')}
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
                   <div className="flex items-center justify-between text-sm text-slate-500 mb-1">
-                    <span>Nuvarande: {skill.current}/5</span>
-                    <span>Mål: {skill.target}/5</span>
+                    <span>{t('career.skills.current')}: {skill.current}/5</span>
+                    <span>{t('career.skills.target')}: {skill.target}/5</span>
                   </div>
                   <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-purple-500 rounded-full"
                       style={{ width: `${(skill.current / 5) * 100}%` }}
                     />
@@ -174,7 +196,7 @@ export default function SkillsTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <BookOpen className="w-5 h-5 text-purple-600" />
-          Rekommenderade utbildningar
+          {t('career.skills.recommendedCourses')}
         </h3>
         <div className="space-y-3">
           {courses.map((course, index) => (
@@ -192,7 +214,7 @@ export default function SkillsTab() {
               <div className="text-right">
                 <span className="text-sm font-medium text-green-600">{course.cost}</span>
                 <Button size="sm" variant="outline" className="mt-1 block">
-                  Läs mer
+                  {t('common.learnMore')}
                 </Button>
               </div>
             </div>
@@ -204,7 +226,7 @@ export default function SkillsTab() {
       <Card className="p-6">
         <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
           <TrendingUp className="w-5 h-5 text-purple-600" />
-          Din handlingsplan
+          {t('career.skills.yourActionPlan')}
         </h3>
         <div className="space-y-3">
           <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
@@ -212,8 +234,12 @@ export default function SkillsTab() {
               <span className="text-xs font-bold text-purple-600">1</span>
             </div>
             <div>
-              <p className="font-medium text-slate-800">Prioritera projektledning</p>
-              <p className="text-sm text-slate-600">Påbörja certifiering inom 2 veckor</p>
+              <p className="font-medium text-slate-800">
+                {i18n.language === 'en' ? 'Prioritize project management' : 'Prioritera projektledning'}
+              </p>
+              <p className="text-sm text-slate-600">
+                {i18n.language === 'en' ? 'Start certification within 2 weeks' : 'Påbörja certifiering inom 2 veckor'}
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
@@ -221,8 +247,12 @@ export default function SkillsTab() {
               <span className="text-xs font-bold text-purple-600">2</span>
             </div>
             <div>
-              <p className="font-medium text-slate-800">Lär dig agila metoder</p>
-              <p className="text-sm text-slate-600">Online-kurs, 20 timmar</p>
+              <p className="font-medium text-slate-800">
+                {i18n.language === 'en' ? 'Learn agile methods' : 'Lär dig agila metoder'}
+              </p>
+              <p className="text-sm text-slate-600">
+                {i18n.language === 'en' ? 'Online course, 20 hours' : 'Online-kurs, 20 timmar'}
+              </p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
@@ -230,18 +260,22 @@ export default function SkillsTab() {
               <span className="text-xs font-bold text-purple-600">3</span>
             </div>
             <div>
-              <p className="font-medium text-slate-800">Bygg portfolio</p>
-              <p className="text-sm text-slate-600">Visa upp dina nya kompetenser</p>
+              <p className="font-medium text-slate-800">
+                {i18n.language === 'en' ? 'Build portfolio' : 'Bygg portfolio'}
+              </p>
+              <p className="text-sm text-slate-600">
+                {i18n.language === 'en' ? 'Showcase your new skills' : 'Visa upp dina nya kompetenser'}
+              </p>
             </div>
           </div>
         </div>
 
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-full mt-4"
           onClick={() => setShowResults(false)}
         >
-          Gör ny analys
+          {t('career.skills.newAnalysis')}
         </Button>
       </Card>
     </div>

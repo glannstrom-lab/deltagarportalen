@@ -1,65 +1,109 @@
 /**
  * Explore Tab - Explore occupations (existing content)
  */
-import { useState } from 'react'
-import { 
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import {
   Search, Compass, Briefcase, GraduationCap, DollarSign,
   TrendingUp, MapPin, Clock, Star, Filter, ChevronRight
 } from 'lucide-react'
 import { Card, Button, Input } from '@/components/ui'
 
-const occupations = [
+// Occupation definitions with i18n - these would typically come from an API
+const occupationDefs = [
   {
     id: '1',
-    title: 'Systemutvecklare',
-    category: 'IT',
+    titleKey: 'Systemutvecklare',
+    categoryKey: 'it',
     salary: '45 000 - 65 000 kr',
-    demand: 'Hög',
-    education: 'Högskoleutbildning',
+    demandKey: 'high',
+    educationKey: 'university',
     match: 95,
-    description: 'Utvecklar och underhåller programvarusystem.'
+    descriptionKey: 'developerDesc'
   },
   {
     id: '2',
-    title: 'Projektledare',
-    category: 'Administration',
+    titleKey: 'Projektledare',
+    categoryKey: 'administration',
     salary: '40 000 - 60 000 kr',
-    demand: 'Medel',
-    education: 'Högskoleutbildning',
+    demandKey: 'medium',
+    educationKey: 'university',
     match: 88,
-    description: 'Leder och koordinerar projekt från start till mål.'
+    descriptionKey: 'pmDesc'
   },
   {
     id: '3',
-    title: 'Sjuksköterska',
-    category: 'Vård',
+    titleKey: 'Sjuksköterska',
+    categoryKey: 'healthcare',
     salary: '35 000 - 50 000 kr',
-    demand: 'Mycket hög',
-    education: 'Universitetsutbildning',
+    demandKey: 'veryHigh',
+    educationKey: 'university',
     match: 82,
-    description: 'Ger omvårdnad och behandling till patienter.'
+    descriptionKey: 'nurseDesc'
   },
   {
     id: '4',
-    title: 'Ekonomiassistent',
-    category: 'Ekonomi',
+    titleKey: 'Ekonomiassistent',
+    categoryKey: 'economy',
     salary: '30 000 - 40 000 kr',
-    demand: 'Medel',
-    education: 'Gymnasium/Yrkeshögskola',
+    demandKey: 'medium',
+    educationKey: 'vocational',
     match: 78,
-    description: 'Hanterar fakturering, bokföring och ekonomiadministration.'
+    descriptionKey: 'accountantDesc'
   },
 ]
 
-const categories = ['Alla', 'IT', 'Vård', 'Ekonomi', 'Administration', 'Bygg', 'Utbildning']
+const categoryKeys = ['all', 'it', 'healthcare', 'economy', 'administration', 'construction', 'education'] as const
 
 export default function ExploreTab() {
+  const { t, i18n } = useTranslation()
   const [searchQuery, setSearchQuery] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('Alla')
+  const [selectedCategory, setSelectedCategory] = useState('all')
+
+  // Build translated categories
+  const categories = useMemo(() => categoryKeys.map(key => ({
+    key,
+    label: t(`career.explore.categories.${key}`)
+  })), [t])
+
+  // Demand labels
+  const demandLabels = useMemo(() => ({
+    veryHigh: i18n.language === 'en' ? 'Very High' : 'Mycket hög',
+    high: i18n.language === 'en' ? 'High' : 'Hög',
+    medium: i18n.language === 'en' ? 'Medium' : 'Medel',
+    low: i18n.language === 'en' ? 'Low' : 'Låg'
+  }), [i18n.language])
+
+  // Education labels
+  const educationLabels = useMemo(() => ({
+    university: i18n.language === 'en' ? 'University degree' : 'Högskoleutbildning',
+    vocational: i18n.language === 'en' ? 'Vocational/High school' : 'Gymnasium/Yrkeshögskola'
+  }), [i18n.language])
+
+  // Occupation titles/descriptions (mock data - in real app these come from API)
+  const occupationTexts = useMemo(() => ({
+    developerDesc: i18n.language === 'en' ? 'Develops and maintains software systems.' : 'Utvecklar och underhåller programvarusystem.',
+    pmDesc: i18n.language === 'en' ? 'Leads and coordinates projects from start to finish.' : 'Leder och koordinerar projekt från start till mål.',
+    nurseDesc: i18n.language === 'en' ? 'Provides care and treatment to patients.' : 'Ger omvårdnad och behandling till patienter.',
+    accountantDesc: i18n.language === 'en' ? 'Handles invoicing, accounting and financial administration.' : 'Hanterar fakturering, bokföring och ekonomiadministration.'
+  }), [i18n.language])
+
+  // Build translated occupations
+  const occupations = useMemo(() => occupationDefs.map(o => ({
+    id: o.id,
+    title: o.titleKey, // Title stays same (proper noun)
+    category: o.categoryKey,
+    categoryLabel: t(`career.explore.categories.${o.categoryKey}`),
+    salary: o.salary,
+    demand: demandLabels[o.demandKey as keyof typeof demandLabels],
+    education: educationLabels[o.educationKey as keyof typeof educationLabels],
+    match: o.match,
+    description: occupationTexts[o.descriptionKey as keyof typeof occupationTexts]
+  })), [t, demandLabels, educationLabels, occupationTexts])
 
   const filteredOccupations = occupations.filter(occ => {
     const matchesSearch = occ.title.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === 'Alla' || occ.category === selectedCategory
+    const matchesCategory = selectedCategory === 'all' || occ.category === selectedCategory
     return matchesSearch && matchesCategory
   })
 
@@ -71,7 +115,7 @@ export default function ExploreTab() {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <Input
             type="text"
-            placeholder="Sök efter yrken..."
+            placeholder={t('career.explore.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-12 py-6 text-lg"
@@ -83,15 +127,15 @@ export default function ExploreTab() {
       <div className="flex flex-wrap gap-2">
         {categories.map((category) => (
           <button
-            key={category}
-            onClick={() => setSelectedCategory(category)}
+            key={category.key}
+            onClick={() => setSelectedCategory(category.key)}
             className={`px-4 py-2 rounded-full font-medium transition-all ${
-              selectedCategory === category
+              selectedCategory === category.key
                 ? 'bg-indigo-600 text-white'
                 : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
-            {category}
+            {category.label}
           </button>
         ))}
       </div>
@@ -117,7 +161,7 @@ export default function ExploreTab() {
                   </div>
                   <div className="flex items-center gap-1 text-slate-600">
                     <TrendingUp className="w-4 h-4" />
-                    Efterfrågan: {occupation.demand}
+                    {t('career.explore.demand')}: {occupation.demand}
                   </div>
                   <div className="flex items-center gap-1 text-slate-600">
                     <GraduationCap className="w-4 h-4" />
@@ -125,9 +169,9 @@ export default function ExploreTab() {
                   </div>
                 </div>
               </div>
-              
+
               <Button variant="outline" className="flex items-center gap-1">
-                Läs mer
+                {t('career.explore.readMore')}
                 <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -138,8 +182,8 @@ export default function ExploreTab() {
       {filteredOccupations.length === 0 && (
         <div className="text-center py-12">
           <Compass className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-700">Inga yrken hittades</h3>
-          <p className="text-slate-500">Prova att ändra din sökning eller filter</p>
+          <h3 className="text-lg font-semibold text-slate-700">{t('career.explore.noOccupationsFound')}</h3>
+          <p className="text-slate-500">{t('career.explore.tryDifferentSearch')}</p>
         </div>
       )}
     </div>

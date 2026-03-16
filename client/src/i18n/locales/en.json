@@ -390,7 +390,206 @@
       "skills": "Skills",
       "skillsDesc": "Analyze and develop skills"
     },
-    "new": "New!"
+    "new": "New!",
+    "explore": {
+      "searchPlaceholder": "Search for occupations...",
+      "categories": {
+        "all": "All",
+        "it": "IT",
+        "healthcare": "Healthcare",
+        "economy": "Economy",
+        "administration": "Administration",
+        "construction": "Construction",
+        "education": "Education"
+      },
+      "match": "match",
+      "demand": "Demand",
+      "readMore": "Read more",
+      "noOccupationsFound": "No occupations found",
+      "tryDifferentSearch": "Try changing your search or filters"
+    },
+    "network": {
+      "contacts": "Contacts",
+      "activeThisMonth": "Active this month",
+      "highPriority": "High priority",
+      "myNetwork": "My network",
+      "addContact": "Add contact",
+      "name": "Name",
+      "relationPlaceholder": "Relationship (e.g. Former colleague)",
+      "companyOptional": "Company (optional)",
+      "save": "Save",
+      "cancel": "Cancel",
+      "today": "Today",
+      "daysAgo": "days ago",
+      "messageTemplates": "Message templates",
+      "copyText": "Copy text",
+      "syncWithLinkedIn": "Sync with LinkedIn",
+      "importContacts": "Import your contacts automatically",
+      "connect": "Connect",
+      "templates": {
+        "reconnect": "Reconnect",
+        "reconnectText": "Hi! It's been a while since we last talked. How are you? I'm currently looking for new challenges and wanted to hear how things are going for you.",
+        "askAdvice": "Ask for advice",
+        "askAdviceText": "Hi! I hope all is well with you. I'm in a career transition and would appreciate your insights about [industry/area]. Would you have time for a brief chat?",
+        "internship": "Internship inquiry",
+        "internshipText": "Hi! I've seen that [company] is doing exciting things in [area]. I'm looking for internship opportunities and would love to hear more about your operations."
+      }
+    },
+    "adaptation": {
+      "workAdaptation": "Work Adaptation",
+      "introText": "Here you can identify what adaptations would help you in working life. You can then create a document to share with employers, the Social Insurance Agency, or the Employment Service.",
+      "identifyNeeds": "Identify your needs",
+      "selectHelpful": "Mark the adaptations that would help you. You can select multiple in each category.",
+      "youSelected": "You have selected {{count}} adaptations",
+      "generateDoc": "Generate a document to share with your employer",
+      "createDocument": "Create document",
+      "categories": {
+        "physical": {
+          "title": "Physical adaptations",
+          "description": "Adaptations that facilitate physical work tasks",
+          "options": {
+            "chair": "Ergonomic office chair",
+            "desk": "Height-adjustable desk",
+            "lighting": "Improved lighting",
+            "hearing": "Hearing aids",
+            "vision": "Vision aids",
+            "soundproofing": "Sound dampening"
+          }
+        },
+        "cognitive": {
+          "title": "Cognitive adaptations",
+          "description": "Support for memory, concentration, and planning",
+          "options": {
+            "writtenInstructions": "Written instructions",
+            "reminders": "Reminder systems",
+            "structuredTasks": "Structured work tasks",
+            "notes": "Notes allowed",
+            "checklists": "Clear routines and checklists",
+            "quietEnvironment": "Less distracting environment"
+          }
+        },
+        "organizational": {
+          "title": "Organizational adaptations",
+          "description": "Changes in work organization and schedules",
+          "options": {
+            "flextime": "Flexible working hours",
+            "partTime": "Part-time option",
+            "remote": "Work from home",
+            "shorterDays": "Shorter workdays",
+            "longerBreaks": "Longer breaks",
+            "gradualReturn": "Gradual return"
+          }
+        },
+        "social": {
+          "title": "Social adaptations",
+          "description": "Support for collaboration and communication",
+          "options": {
+            "feedback": "Clear feedback",
+            "checkins": "Regular check-ins",
+            "mentor": "Mentor/buddy",
+            "smallTeam": "Smaller team",
+            "expectations": "Clear expectations",
+            "conflict": "Conflict resolution"
+          }
+        }
+      },
+      "yourRights": "Your rights",
+      "rightsText": "Employers are responsible under workplace legislation to adapt the workplace for employees with disabilities.",
+      "fkSupport": "Support from Social Insurance",
+      "fkSupportText": "The Social Insurance Agency can contribute to work aids and support to facilitate your return to work.",
+      "dialogTemplates": "Conversation templates",
+      "templates": {
+        "employer": {
+          "title": "Talk to employer",
+          "description": "How to discuss adaptations"
+        },
+        "fk": {
+          "title": "Apply for support",
+          "description": "Example application to Social Insurance"
+        },
+        "consultant": {
+          "title": "Contact work consultant",
+          "description": "Request meeting for work adaptation"
+        }
+      }
+    },
+    "companies": {
+      "searchPlaceholder": "Search for companies...",
+      "industry": "Industry",
+      "location": "Location",
+      "industries": {
+        "all": "All",
+        "it": "IT & Technology",
+        "healthcare": "Healthcare",
+        "energy": "Energy & Environment",
+        "retail": "Retail",
+        "manufacturing": "Manufacturing"
+      },
+      "locations": {
+        "all": "All",
+        "stockholm": "Stockholm",
+        "gothenburg": "Gothenburg",
+        "malmo": "Malmö",
+        "uppsala": "Uppsala",
+        "remote": "Remote"
+      },
+      "youFollow": "You follow {{count}} companies",
+      "getNotifications": "Get notifications about new jobs and updates",
+      "seeFollowed": "See followed companies",
+      "employees": "employees",
+      "reviews": "reviews",
+      "openPositions": "open positions",
+      "viewJobs": "View jobs",
+      "readMore": "Read more",
+      "noCompaniesFound": "No companies found",
+      "tryDifferentFilters": "Try changing your filters",
+      "tips": {
+        "title": "Tips for finding the right employer",
+        "tip1": "Follow companies you're interested in to get updates on new jobs",
+        "tip2": "Read reviews from former employees to get insights into company culture",
+        "tip3": "Check the company's sustainability work and values",
+        "tip4": "See if the company offers the benefits that matter to you"
+      }
+    },
+    "plan": {
+      "createCareerPlan": "Create your career plan",
+      "describeWhere": "Describe where you are now and where you want to go, and we'll help you create a structured plan.",
+      "whereAreYou": "Where are you now?",
+      "currentPlaceholder": "Describe your current situation (e.g. 'Working as a sales associate, want to switch to office work')",
+      "whereWantToGo": "Where do you want to go?",
+      "goalPlaceholder": "Describe your goal (e.g. 'Become a project manager in IT with focus on agile methods')",
+      "generatePlan": "Generate career plan",
+      "whyCareerPlan": "Why a career plan?",
+      "reason1": "Gives structure and direction in your job search",
+      "reason2": "Helps you break down big goals into manageable steps",
+      "reason3": "Makes it easier to follow up and adjust course",
+      "yourCareerPlan": "Your career plan",
+      "from": "From",
+      "to": "To",
+      "progress": "Progress",
+      "xOfYMilestones": "{{completed}} of {{total}} milestones",
+      "updatePlan": "Update plan"
+    },
+    "skills": {
+      "skillsGapAnalysis": "Skills Gap Analysis",
+      "compareSkills": "Compare your current skills with what your dream job requires.",
+      "yourProfile": "Your current profile",
+      "profilePlaceholder": "Paste your CV here (or write a short summary of your background...)",
+      "dreamJob": "Your dream job",
+      "dreamJobPlaceholder": "Paste a job ad for your dream job, or describe the role...",
+      "analyzeGap": "Analyze skills gap",
+      "analysisResults": "Analysis results",
+      "matching": "Matching",
+      "goodFoundation": "You have a good foundation! Focus on developing the highlighted skills to increase your chances.",
+      "skillsComparison": "Skills comparison",
+      "gap": "Gap",
+      "levels": "levels",
+      "current": "Current",
+      "target": "Target",
+      "recommendedCourses": "Recommended courses",
+      "yourActionPlan": "Your action plan",
+      "newAnalysis": "New analysis"
+    }
   },
   "interestGuide": {
     "title": "Interest Guide",

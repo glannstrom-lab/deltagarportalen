@@ -390,7 +390,206 @@
       "skills": "Kompetens",
       "skillsDesc": "Analysera och utveckla kompetenser"
     },
-    "new": "Ny!"
+    "new": "Ny!",
+    "explore": {
+      "searchPlaceholder": "Sök efter yrken...",
+      "categories": {
+        "all": "Alla",
+        "it": "IT",
+        "healthcare": "Vård",
+        "economy": "Ekonomi",
+        "administration": "Administration",
+        "construction": "Bygg",
+        "education": "Utbildning"
+      },
+      "match": "match",
+      "demand": "Efterfrågan",
+      "readMore": "Läs mer",
+      "noOccupationsFound": "Inga yrken hittades",
+      "tryDifferentSearch": "Prova att ändra din sökning eller filter"
+    },
+    "network": {
+      "contacts": "Kontakter",
+      "activeThisMonth": "Aktiva denna månad",
+      "highPriority": "Hög prioritet",
+      "myNetwork": "Mitt nätverk",
+      "addContact": "Lägg till kontakt",
+      "name": "Namn",
+      "relationPlaceholder": "Relation (t.ex. Tidigare kollega)",
+      "companyOptional": "Företag (valfritt)",
+      "save": "Spara",
+      "cancel": "Avbryt",
+      "today": "Idag",
+      "daysAgo": "dagar sedan",
+      "messageTemplates": "Färdiga meddelanden",
+      "copyText": "Kopiera text",
+      "syncWithLinkedIn": "Synkronisera med LinkedIn",
+      "importContacts": "Importera dina kontakter automatiskt",
+      "connect": "Anslut",
+      "templates": {
+        "reconnect": "Återuppta kontakt",
+        "reconnectText": "Hej! Det var länge sedan vi pratades sist. Hur mår du? Jag söker för närvarande nya utmaningar och tänkte höra hur det går för dig.",
+        "askAdvice": "Be om råd",
+        "askAdviceText": "Hej! Jag hoppas allt är bra med dig. Jag är i en övergång i karriären och skulle uppskatta dina insikter om [bransch/område]. Skulle du ha tid för en kort pratstund?",
+        "internship": "Förfrågan om praktik",
+        "internshipText": "Hej! Jag har sett att [företag] gör spännande saker inom [område]. Jag söker praktikmöjligheter och skulle gärna vilja höra mer om era verksamhet."
+      }
+    },
+    "adaptation": {
+      "workAdaptation": "Arbetsanpassning",
+      "introText": "Här kan du identifiera vilka anpassningar som skulle hjälpa dig i arbetslivet. Du kan sedan skapa ett dokument att dela med arbetsgivare, Försäkringskassan eller Arbetsförmedlingen.",
+      "identifyNeeds": "Identifiera dina behov",
+      "selectHelpful": "Markera de anpassningar som skulle hjälpa dig. Du kan välja flera i varje kategori.",
+      "youSelected": "Du har valt {{count}} anpassningar",
+      "generateDoc": "Generera ett dokument att dela med din arbetsgivare",
+      "createDocument": "Skapa dokument",
+      "categories": {
+        "physical": {
+          "title": "Fysiska anpassningar",
+          "description": "Anpassningar som underlättar fysiska arbetsuppgifter",
+          "options": {
+            "chair": "Ergonomisk arbetsstol",
+            "desk": "Höj- och sänkbart skrivbord",
+            "lighting": "Förbättrad belysning",
+            "hearing": "Hörselhjälpmedel",
+            "vision": "Synhjälpmedel",
+            "soundproofing": "Taktdämpning"
+          }
+        },
+        "cognitive": {
+          "title": "Kognitiva anpassningar",
+          "description": "Stöd för minne, koncentration och planering",
+          "options": {
+            "writtenInstructions": "Skriftliga instruktioner",
+            "reminders": "Påminnelse-system",
+            "structuredTasks": "Strukturerade arbetsuppgifter",
+            "notes": "Minnesanteckningar tillåtna",
+            "checklists": "Tydliga rutiner och checklistor",
+            "quietEnvironment": "Mindre störande miljö"
+          }
+        },
+        "organizational": {
+          "title": "Organisatoriska anpassningar",
+          "description": "Förändringar i arbetsorganisation och tider",
+          "options": {
+            "flextime": "Flexibel arbetstid",
+            "partTime": "Möjlighet till deltid",
+            "remote": "Arbeta hemifrån",
+            "shorterDays": "Kortare arbetsdag",
+            "longerBreaks": "Längre raster",
+            "gradualReturn": "Gradvis återgång"
+          }
+        },
+        "social": {
+          "title": "Sociala anpassningar",
+          "description": "Stöd för samarbete och kommunikation",
+          "options": {
+            "feedback": "Tydlig feedback",
+            "checkins": "Regelbundna avstämningar",
+            "mentor": "Mentor/buddy",
+            "smallTeam": "Mindre team",
+            "expectations": "Tydliga förväntningar",
+            "conflict": "Konflikthantering"
+          }
+        }
+      },
+      "yourRights": "Dina rättigheter",
+      "rightsText": "Arbetsgivare har enligt arbetsmiljölagen ansvar att anpassa arbetsplatsen för arbetstagare med funktionsnedsättning.",
+      "fkSupport": "Stöd från Försäkringskassan",
+      "fkSupportText": "Försäkringskassan kan bidra till arbetshjälpmedel och stöd för att underlätta din återgång till arbete.",
+      "dialogTemplates": "Mallar för samtal",
+      "templates": {
+        "employer": {
+          "title": "Prata med arbetsgivare",
+          "description": "Hur du för dialogen om anpassningar"
+        },
+        "fk": {
+          "title": "Ansök om stöd från FK",
+          "description": "Exempel på ansökan till Försäkringskassan"
+        },
+        "consultant": {
+          "title": "Kontakta arbetskonsulent",
+          "description": "Begära möte för arbetsanpassning"
+        }
+      }
+    },
+    "companies": {
+      "searchPlaceholder": "Sök efter företag...",
+      "industry": "Bransch",
+      "location": "Plats",
+      "industries": {
+        "all": "Alla",
+        "it": "IT & Teknik",
+        "healthcare": "Vård & Omsorg",
+        "energy": "Energi & Miljö",
+        "retail": "Handel",
+        "manufacturing": "Tillverkning"
+      },
+      "locations": {
+        "all": "Alla",
+        "stockholm": "Stockholm",
+        "gothenburg": "Göteborg",
+        "malmo": "Malmö",
+        "uppsala": "Uppsala",
+        "remote": "Remote"
+      },
+      "youFollow": "Du följer {{count}} företag",
+      "getNotifications": "Få notifikationer om nya jobb och uppdateringar",
+      "seeFollowed": "Se följda företag",
+      "employees": "anställda",
+      "reviews": "omdömen",
+      "openPositions": "lediga jobb",
+      "viewJobs": "Se jobb",
+      "readMore": "Läs mer",
+      "noCompaniesFound": "Inga företag hittades",
+      "tryDifferentFilters": "Prova att ändra dina filter",
+      "tips": {
+        "title": "Tips för att hitta rätt arbetsgivare",
+        "tip1": "Följ företag du är intresserad av för att få uppdateringar om nya jobb",
+        "tip2": "Läs omdömen från tidigare anställda för att få insikter om företagskulturen",
+        "tip3": "Kolla företagets hållbarhetsarbete och värderingar",
+        "tip4": "Se om företaget erbjuder de förmåner som är viktiga för dig"
+      }
+    },
+    "plan": {
+      "createCareerPlan": "Skapa din karriärplan",
+      "describeWhere": "Beskriv var du är nu och vart du vill komma, så hjälper vi dig att skapa en strukturerad plan.",
+      "whereAreYou": "Var är du nu?",
+      "currentPlaceholder": "Beskriv din nuvarande situation (t.ex. 'Arbetar som butikssäljare, vill byta till kontorsjobb')",
+      "whereWantToGo": "Vart vill du?",
+      "goalPlaceholder": "Beskriv ditt mål (t.ex. 'Bli projektledare inom IT med fokus på agila metoder')",
+      "generatePlan": "Generera karriärplan",
+      "whyCareerPlan": "Varför en karriärplan?",
+      "reason1": "Ger struktur och riktning i ditt jobbsökande",
+      "reason2": "Hjälper dig att bryta ner stora mål till hanterbara steg",
+      "reason3": "Gör det lättare att följa upp och justera kursen",
+      "yourCareerPlan": "Din karriärplan",
+      "from": "Från",
+      "to": "Till",
+      "progress": "Framsteg",
+      "xOfYMilestones": "{{completed}} av {{total}} delmål",
+      "updatePlan": "Uppdatera plan"
+    },
+    "skills": {
+      "skillsGapAnalysis": "Kompetensgap-analys",
+      "compareSkills": "Jämför dina nuvarande kompetenser med vad ditt drömjobb kräver.",
+      "yourProfile": "Din nuvarande profil",
+      "profilePlaceholder": "Klistra in ditt CV här (eller skriv en kort sammanfattning av din bakgrund...)",
+      "dreamJob": "Ditt drömjobb",
+      "dreamJobPlaceholder": "Klistra in en jobbannons för ditt drömjobb, eller beskriv rollen...",
+      "analyzeGap": "Analysera kompetensgap",
+      "analysisResults": "Analysresultat",
+      "matching": "Matchning",
+      "goodFoundation": "Du har en god grund! Fokusera på att utveckla de markerade kompetenserna för att öka dina chanser.",
+      "skillsComparison": "Kompetensjämförelse",
+      "gap": "Gap",
+      "levels": "nivåer",
+      "current": "Nuvarande",
+      "target": "Mål",
+      "recommendedCourses": "Rekommenderade utbildningar",
+      "yourActionPlan": "Din handlingsplan",
+      "newAnalysis": "Gör ny analys"
+    }
   },
   "interestGuide": {
     "title": "Intresseguide",
