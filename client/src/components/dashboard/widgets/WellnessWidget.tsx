@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Heart, ChevronRight, Plus, Flame, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -9,12 +10,13 @@ interface WellnessWidgetProps {
   size?: 'mini' | 'medium' | 'large'
 }
 
-const moodConfig: Record<string, { icon: string; color: string; bgColor: string; label: string }> = {
-  great: { icon: '😄', color: 'text-emerald-600', bgColor: 'bg-emerald-100', label: 'Utmärkt' },
-  good: { icon: '🙂', color: 'text-blue-600', bgColor: 'bg-blue-100', label: 'Bra' },
-  okay: { icon: '😐', color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Okej' },
-  bad: { icon: '😔', color: 'text-orange-600', bgColor: 'bg-orange-100', label: 'Inte så bra' },
-  terrible: { icon: '😢', color: 'text-rose-600', bgColor: 'bg-rose-100', label: 'Tufft' }
+// Mood config - labels are resolved at render time using translation keys
+const moodConfig: Record<string, { icon: string; color: string; bgColor: string; labelKey: string }> = {
+  great: { icon: '😄', color: 'text-emerald-600', bgColor: 'bg-emerald-100', labelKey: 'wellnessWidget.mood.great' },
+  good: { icon: '🙂', color: 'text-blue-600', bgColor: 'bg-blue-100', labelKey: 'wellnessWidget.mood.good' },
+  okay: { icon: '😐', color: 'text-amber-600', bgColor: 'bg-amber-100', labelKey: 'wellnessWidget.mood.okay' },
+  bad: { icon: '😔', color: 'text-orange-600', bgColor: 'bg-orange-100', labelKey: 'wellnessWidget.mood.bad' },
+  terrible: { icon: '😢', color: 'text-rose-600', bgColor: 'bg-rose-100', labelKey: 'wellnessWidget.mood.terrible' }
 }
 
 export function WellnessWidget({
@@ -23,6 +25,7 @@ export function WellnessWidget({
   moodToday = null,
   size = 'medium'
 }: WellnessWidgetProps) {
+  const { t } = useTranslation()
   const moodInfo = moodToday ? moodConfig[moodToday] : null
   const hasMood = !!moodToday
 
@@ -37,9 +40,9 @@ export function WellnessWidget({
           {moodInfo ? <span className="text-lg">{moodInfo.icon}</span> : <Heart size={16} />}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Välmående</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('wellnessWidget.wellness')}</p>
           <p className={cn("text-xs", moodInfo ? moodInfo.color : "text-slate-500 dark:text-slate-400")}>
-            {moodInfo ? moodInfo.label : 'Logga humör'}
+            {moodInfo ? t(moodInfo.labelKey) : t('wellnessWidget.logMood')}
           </p>
         </div>
         {streakDays > 0 && (
@@ -65,8 +68,8 @@ export function WellnessWidget({
               <Heart size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Välmående</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Hur mår du idag?</p>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('wellnessWidget.wellness')}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.howAreYou')}</p>
             </div>
           </div>
           <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors" />
@@ -81,13 +84,13 @@ export function WellnessWidget({
                 moodInfo.bgColor,
                 moodInfo.color
               )}>
-                {moodInfo.label}
+                {t(moodInfo.labelKey)}
               </span>
             </div>
           ) : (
             <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400">
               <Plus size={16} />
-              <span className="text-sm font-medium">Logga humör</span>
+              <span className="text-sm font-medium">{t('wellnessWidget.logMood')}</span>
             </div>
           )}
           {streakDays > 0 && (
@@ -115,14 +118,14 @@ export function WellnessWidget({
             <Heart size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Ditt välmående</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{completedActivities} aktiviteter denna vecka</p>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('wellnessWidget.yourWellness')}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('wellnessWidget.activitiesThisWeek', { count: completedActivities })}</p>
           </div>
         </div>
         {streakDays > 0 && (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 dark:bg-orange-900/40 rounded-lg text-orange-600 dark:text-orange-400">
             <Flame size={16} />
-            <span className="text-sm font-bold">{streakDays} dagar</span>
+            <span className="text-sm font-bold">{t('wellnessWidget.daysCount', { count: streakDays })}</span>
           </div>
         )}
       </div>
@@ -136,13 +139,13 @@ export function WellnessWidget({
         )}>
           <span className="text-4xl">{moodInfo.icon}</span>
           <div>
-            <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Dagens humör</p>
-            <p className={cn("text-lg font-bold", moodInfo.color)}>{moodInfo.label}</p>
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('wellnessWidget.todaysMood')}</p>
+            <p className={cn("text-lg font-bold", moodInfo.color)}>{t(moodInfo.labelKey)}</p>
           </div>
         </div>
       ) : (
         <div className="p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800 mb-4">
-          <p className="text-sm font-semibold text-rose-800 dark:text-rose-300 mb-2">Hur mår du idag?</p>
+          <p className="text-sm font-semibold text-rose-800 dark:text-rose-300 mb-2">{t('wellnessWidget.howAreYou')}</p>
           <div className="flex gap-2">
             {moodOptions.map(mood => (
               <span
@@ -163,14 +166,14 @@ export function WellnessWidget({
             <Sparkles size={16} className="text-rose-500 dark:text-rose-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{completedActivities}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Aktiviteter</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.activities')}</p>
         </div>
         <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Flame size={16} className="text-orange-500 dark:text-orange-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{streakDays}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Dagars streak</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.daysStreak')}</p>
         </div>
       </div>
 
@@ -178,7 +181,7 @@ export function WellnessWidget({
       <div className="flex gap-2">
         <span className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400 rounded-lg text-xs font-medium group-hover:bg-rose-200 dark:group-hover:bg-rose-900/60 transition-colors">
           <Heart size={12} />
-          {hasMood ? 'Se historik' : 'Logga humör'}
+          {hasMood ? t('wellnessWidget.seeHistory') : t('wellnessWidget.logMood')}
         </span>
       </div>
     </Link>

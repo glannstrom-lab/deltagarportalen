@@ -851,6 +851,25 @@
       }
     }
   },
+  "wellnessWidget": {
+    "wellness": "Wellness",
+    "yourWellness": "Your Wellness",
+    "howAreYou": "How are you feeling today?",
+    "logMood": "Log mood",
+    "todaysMood": "Today's mood",
+    "seeHistory": "See history",
+    "activities": "Activities",
+    "activitiesThisWeek": "{{count}} activities this week",
+    "daysCount": "{{count}} days",
+    "daysStreak": "Day streak",
+    "mood": {
+      "great": "Great",
+      "good": "Good",
+      "okay": "Okay",
+      "bad": "Not so good",
+      "terrible": "Tough"
+    }
+  },
   "cvWidget": {
     "yourCV": "Your CV",
     "complete": "Complete",

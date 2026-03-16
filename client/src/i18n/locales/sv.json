@@ -851,6 +851,25 @@
       }
     }
   },
+  "wellnessWidget": {
+    "wellness": "Välmående",
+    "yourWellness": "Ditt välmående",
+    "howAreYou": "Hur mår du idag?",
+    "logMood": "Logga humör",
+    "todaysMood": "Dagens humör",
+    "seeHistory": "Se historik",
+    "activities": "Aktiviteter",
+    "activitiesThisWeek": "{{count}} aktiviteter denna vecka",
+    "daysCount": "{{count}} dagar",
+    "daysStreak": "Dagars streak",
+    "mood": {
+      "great": "Utmärkt",
+      "good": "Bra",
+      "okay": "Okej",
+      "bad": "Inte så bra",
+      "terrible": "Tufft"
+    }
+  },
   "cvWidget": {
     "yourCV": "Ditt CV",
     "complete": "Komplett",
