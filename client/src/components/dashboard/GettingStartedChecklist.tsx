@@ -21,7 +21,7 @@ import { Button } from '@/components/ui/Button'
 import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
 import { Link } from 'react-router-dom'
-import { useDashboardData } from '@/hooks/useDashboardData'
+import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 
 interface ChecklistItem {
   id: string
@@ -41,7 +41,7 @@ interface GettingStartedChecklistProps {
 }
 
 export function GettingStartedChecklist({ onClose, compact = false }: GettingStartedChecklistProps) {
-  const { data, loading } = useDashboardData()
+  const { data, isLoading } = useDashboardDataQuery()
   const [showCelebration, setShowCelebration] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 

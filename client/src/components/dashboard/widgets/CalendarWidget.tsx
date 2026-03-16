@@ -21,10 +21,10 @@ interface CalendarWidgetProps {
 }
 
 const eventTypeConfig = {
-  interview: { icon: Briefcase, color: 'text-amber-600', bg: 'bg-amber-100' },
-  meeting: { icon: Video, color: 'text-blue-600', bg: 'bg-blue-100' },
-  deadline: { icon: Clock, color: 'text-red-600', bg: 'bg-red-100' },
-  other: { icon: Calendar, color: 'text-slate-600', bg: 'bg-slate-100' },
+  interview: { icon: Briefcase, color: 'text-amber-600 dark:text-amber-400', bg: 'bg-amber-100 dark:bg-amber-900/40' },
+  meeting: { icon: Video, color: 'text-blue-600 dark:text-blue-400', bg: 'bg-blue-100 dark:bg-blue-900/40' },
+  deadline: { icon: Clock, color: 'text-red-600 dark:text-red-400', bg: 'bg-red-100 dark:bg-red-900/40' },
+  other: { icon: Calendar, color: 'text-slate-600 dark:text-slate-400', bg: 'bg-slate-100 dark:bg-slate-700' },
 }
 
 const getRelativeDate = (dateString: string) => {
@@ -59,19 +59,19 @@ export function CalendarWidget({
     return (
       <Link
         to="/calendar"
-        className="group flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-200 hover:border-rose-300 hover:shadow-md transition-all duration-200"
+        className="group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-md transition-all duration-200"
       >
-        <div className="w-8 h-8 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center flex-shrink-0">
+        <div className="w-8 h-8 rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center flex-shrink-0">
           <Calendar size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800">Kalender</p>
-          <p className="text-xs text-slate-500">
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Kalender</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             {nextEvent ? getRelativeDate(nextEvent.date) : `${upcomingEvents} händelser`}
           </p>
         </div>
         {upcomingEvents > 0 && (
-          <span className="px-1.5 py-0.5 bg-rose-100 text-rose-700 rounded text-xs font-medium">
+          <span className="px-1.5 py-0.5 bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400 rounded text-xs font-medium">
             {upcomingEvents}
           </span>
         )}
@@ -84,30 +84,30 @@ export function CalendarWidget({
     return (
       <Link
         to="/calendar"
-        className="group block bg-white p-4 rounded-xl border border-slate-200 hover:border-rose-300 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
+        className="group block bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200"
       >
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-lg bg-rose-100 text-rose-600 flex items-center justify-center">
+            <div className="w-9 h-9 rounded-lg bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
               <Calendar size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 text-sm">Kalender</h3>
-              <p className="text-xs text-slate-500">
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Kalender</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
                 {hasEvents ? `${upcomingEvents} kommande` : 'Inga händelser'}
               </p>
             </div>
           </div>
-          <ChevronRight size={16} className="text-slate-300 group-hover:text-rose-500 transition-colors" />
+          <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors" />
         </div>
 
         {nextEvent ? (
           <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-rose-600">{getRelativeDate(nextEvent.date)}</span>
-            <span className="text-sm text-slate-600 truncate">{nextEvent.title}</span>
+            <span className="text-sm font-medium text-rose-600 dark:text-rose-400">{getRelativeDate(nextEvent.date)}</span>
+            <span className="text-sm text-slate-600 dark:text-slate-300 truncate">{nextEvent.title}</span>
           </div>
         ) : (
-          <div className="flex items-center gap-2 text-rose-600">
+          <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400">
             <Plus size={16} />
             <span className="text-sm">Lägg till händelse</span>
           </div>
@@ -123,21 +123,21 @@ export function CalendarWidget({
   return (
     <Link
       to="/calendar"
-      className="group block bg-white p-5 rounded-xl border border-slate-200 hover:border-rose-300 hover:shadow-lg transition-all duration-200"
+      className="group block bg-white dark:bg-slate-800 p-5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-rose-300 dark:hover:border-rose-600 hover:shadow-lg transition-all duration-200"
     >
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-100 to-pink-100 text-rose-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-100 to-pink-100 dark:from-rose-900/40 dark:to-pink-900/40 text-rose-600 dark:text-rose-400 flex items-center justify-center">
             <Calendar size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800">Kalender</h3>
-            <p className="text-sm text-slate-500">
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">Kalender</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">
               {hasEvents ? `${upcomingEvents} kommande händelser` : 'Inga händelser'}
             </p>
           </div>
         </div>
-        <ChevronRight size={18} className="text-slate-300 group-hover:text-rose-500 mt-1 transition-colors" />
+        <ChevronRight size={18} className="text-slate-300 dark:text-slate-600 group-hover:text-rose-500 dark:group-hover:text-rose-400 mt-1 transition-colors" />
       </div>
 
       {/* Next event card */}
@@ -147,7 +147,7 @@ export function CalendarWidget({
             <Icon size={24} className={config.color} />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-slate-800 truncate">{nextEvent.title}</p>
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-100 truncate">{nextEvent.title}</p>
             <p className={cn("text-xs font-medium", config.color)}>
               {getRelativeDate(nextEvent.date)}
               {nextEvent.time && ` kl ${nextEvent.time}`}
@@ -155,38 +155,38 @@ export function CalendarWidget({
           </div>
         </div>
       ) : (
-        <div className="flex items-center gap-4 p-4 rounded-xl bg-rose-50 border border-rose-100 mb-4">
-          <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center">
-            <Plus size={24} className="text-rose-500" />
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-rose-50 dark:bg-rose-900/20 border border-rose-100 dark:border-rose-800 mb-4">
+          <div className="w-12 h-12 rounded-xl bg-rose-100 dark:bg-rose-900/40 flex items-center justify-center">
+            <Plus size={24} className="text-rose-500 dark:text-rose-400" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-rose-800">Inga händelser</p>
-            <p className="text-xs text-rose-600">Lägg till intervjuer och möten</p>
+            <p className="text-sm font-semibold text-rose-800 dark:text-rose-300">Inga händelser</p>
+            <p className="text-xs text-rose-600 dark:text-rose-400">Lägg till intervjuer och möten</p>
           </div>
         </div>
       )}
 
       {/* Stats */}
       <div className="grid grid-cols-2 gap-3 mb-4">
-        <div className="p-3 bg-rose-50 rounded-lg">
+        <div className="p-3 bg-rose-50 dark:bg-rose-900/20 rounded-lg">
           <div className="flex items-center gap-2">
-            <Calendar size={16} className="text-rose-500" />
-            <span className="text-lg font-bold text-slate-800">{upcomingEvents}</span>
+            <Calendar size={16} className="text-rose-500 dark:text-rose-400" />
+            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{upcomingEvents}</span>
           </div>
-          <p className="text-xs text-slate-500">Kommande</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Kommande</p>
         </div>
-        <div className="p-3 bg-slate-50 rounded-lg">
+        <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <Clock size={16} className="text-slate-500" />
-            <span className="text-lg font-bold text-slate-800">{eventsThisWeek}</span>
+            <Clock size={16} className="text-slate-500 dark:text-slate-400" />
+            <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{eventsThisWeek}</span>
           </div>
-          <p className="text-xs text-slate-500">Denna vecka</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Denna vecka</p>
         </div>
       </div>
 
       {/* Action */}
       <div className="flex gap-2">
-        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-100 text-rose-700 rounded-lg text-xs font-medium group-hover:bg-rose-200 transition-colors">
+        <span className="flex items-center gap-1.5 px-3 py-1.5 bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-400 rounded-lg text-xs font-medium group-hover:bg-rose-200 dark:group-hover:bg-rose-900/60 transition-colors">
           <Calendar size={12} />
           Visa kalender
         </span>

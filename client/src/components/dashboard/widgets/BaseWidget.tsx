@@ -43,102 +43,102 @@ export interface BaseWidgetProps {
 
 const colorClasses = {
   violet: {
-    icon: 'bg-violet-100 text-violet-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-violet-300',
+    icon: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-violet-300 dark:hover:border-violet-600',
     progress: 'bg-violet-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-violet-600',
-    light: 'bg-violet-50',
+    accent: 'text-violet-600 dark:text-violet-400',
+    light: 'bg-violet-50 dark:bg-violet-900/20',
   },
   blue: {
-    icon: 'bg-blue-100 text-blue-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-blue-300',
+    icon: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-blue-300 dark:hover:border-blue-600',
     progress: 'bg-blue-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-blue-600',
-    light: 'bg-blue-50',
+    accent: 'text-blue-600 dark:text-blue-400',
+    light: 'bg-blue-50 dark:bg-blue-900/20',
   },
   rose: {
-    icon: 'bg-rose-100 text-rose-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-rose-300',
+    icon: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-rose-300 dark:hover:border-rose-600',
     progress: 'bg-rose-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-rose-600',
-    light: 'bg-rose-50',
+    accent: 'text-rose-600 dark:text-rose-400',
+    light: 'bg-rose-50 dark:bg-rose-900/20',
   },
   amber: {
-    icon: 'bg-amber-100 text-amber-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-amber-300',
+    icon: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-amber-300 dark:hover:border-amber-600',
     progress: 'bg-amber-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-amber-600',
-    light: 'bg-amber-50',
+    accent: 'text-amber-600 dark:text-amber-400',
+    light: 'bg-amber-50 dark:bg-amber-900/20',
   },
   emerald: {
-    icon: 'bg-emerald-100 text-emerald-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-emerald-300',
+    icon: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-emerald-300 dark:hover:border-emerald-600',
     progress: 'bg-emerald-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-emerald-600',
-    light: 'bg-emerald-50',
+    accent: 'text-emerald-600 dark:text-emerald-400',
+    light: 'bg-emerald-50 dark:bg-emerald-900/20',
   },
   teal: {
-    icon: 'bg-teal-100 text-teal-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-teal-300',
+    icon: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-teal-300 dark:hover:border-teal-600',
     progress: 'bg-teal-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-teal-600',
-    light: 'bg-teal-50',
+    accent: 'text-teal-600 dark:text-teal-400',
+    light: 'bg-teal-50 dark:bg-teal-900/20',
   },
   purple: {
-    icon: 'bg-purple-100 text-purple-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-purple-300',
+    icon: 'bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-purple-300 dark:hover:border-purple-600',
     progress: 'bg-purple-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-purple-600',
-    light: 'bg-purple-50',
+    accent: 'text-purple-600 dark:text-purple-400',
+    light: 'bg-purple-50 dark:bg-purple-900/20',
   },
   indigo: {
-    icon: 'bg-indigo-100 text-indigo-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-indigo-300',
+    icon: 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-indigo-300 dark:hover:border-indigo-600',
     progress: 'bg-indigo-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-indigo-600',
-    light: 'bg-indigo-50',
+    accent: 'text-indigo-600 dark:text-indigo-400',
+    light: 'bg-indigo-50 dark:bg-indigo-900/20',
   },
   orange: {
-    icon: 'bg-orange-100 text-orange-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-orange-300',
+    icon: 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-orange-300 dark:hover:border-orange-600',
     progress: 'bg-orange-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-orange-600',
-    light: 'bg-orange-50',
+    accent: 'text-orange-600 dark:text-orange-400',
+    light: 'bg-orange-50 dark:bg-orange-900/20',
   },
   cyan: {
-    icon: 'bg-cyan-100 text-cyan-600',
-    iconComplete: 'bg-emerald-100 text-emerald-600',
-    hover: 'hover:border-cyan-300',
+    icon: 'bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400',
+    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
+    hover: 'hover:border-cyan-300 dark:hover:border-cyan-600',
     progress: 'bg-cyan-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-cyan-600',
-    light: 'bg-cyan-50',
+    accent: 'text-cyan-600 dark:text-cyan-400',
+    light: 'bg-cyan-50 dark:bg-cyan-900/20',
   },
 }
 
 const badgeClasses = {
-  default: 'bg-slate-100 text-slate-600 border-slate-200',
-  success: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-  warning: 'bg-amber-100 text-amber-700 border-amber-200',
-  info: 'bg-blue-100 text-blue-700 border-blue-200',
+  default: 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-600',
+  success: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-700',
+  warning: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-700',
+  info: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-400 border-blue-200 dark:border-blue-700',
 }
 
 export function BaseWidget({
@@ -163,12 +163,14 @@ export function BaseWidget({
     <Link
       to={to}
       className={cn(
-        "group block bg-white rounded-2xl border-2 transition-all duration-200",
+        "group block bg-white dark:bg-slate-800 rounded-2xl border-2 transition-all duration-200",
         "hover:shadow-lg hover:-translate-y-0.5",
-        "focus:outline-none focus:ring-2 focus:ring-offset-2",
+        "focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900",
         colors.hover,
         `focus:ring-${color}-500`,
-        isComplete ? "border-emerald-200 bg-gradient-to-br from-emerald-50/50 to-white" : "border-slate-200",
+        isComplete
+          ? "border-emerald-200 dark:border-emerald-700 bg-gradient-to-br from-emerald-50/50 dark:from-emerald-900/20 to-white dark:to-slate-800"
+          : "border-slate-200 dark:border-slate-700",
         isSmall ? "p-4" : "p-5",
         className
       )}
@@ -188,19 +190,19 @@ export function BaseWidget({
           </div>
           <div>
             <h3 className={cn(
-              "font-semibold text-slate-800",
+              "font-semibold text-slate-800 dark:text-slate-100",
               isSmall ? "text-sm" : "text-base"
             )}>
               {title}
             </h3>
             {subtitle && !isSmall && (
-              <p className="text-xs text-slate-500">{subtitle}</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
             )}
           </div>
         </div>
         <ChevronRight
           size={isSmall ? 16 : 18}
-          className="text-slate-300 group-hover:text-slate-500 group-hover:translate-x-0.5 transition-all"
+          className="text-slate-300 dark:text-slate-600 group-hover:text-slate-500 dark:group-hover:text-slate-400 group-hover:translate-x-0.5 transition-all"
         />
       </div>
 
@@ -210,11 +212,11 @@ export function BaseWidget({
           <span className={cn(
             "font-bold",
             isSmall ? "text-2xl" : "text-3xl",
-            isComplete ? "text-emerald-600" : colors.accent
+            isComplete ? "text-emerald-600 dark:text-emerald-400" : colors.accent
           )}>
             {stat.value}
           </span>
-          <span className="text-sm text-slate-500">{stat.label}</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">{stat.label}</span>
         </div>
       )}
 
@@ -238,14 +240,14 @@ export function BaseWidget({
         <div className={cn(isSmall ? "mt-3" : "mt-4")}>
           {progress.showLabel && (
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-xs text-slate-500">Progress</span>
-              <span className={cn("text-sm font-semibold", isComplete ? "text-emerald-600" : colors.accent)}>
+              <span className="text-xs text-slate-500 dark:text-slate-400">Progress</span>
+              <span className={cn("text-sm font-semibold", isComplete ? "text-emerald-600 dark:text-emerald-400" : colors.accent)}>
                 {progress.value}%
               </span>
             </div>
           )}
           <div className={cn(
-            "bg-slate-100 rounded-full overflow-hidden",
+            "bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden",
             isSmall ? "h-1.5" : "h-2.5"
           )}>
             <div

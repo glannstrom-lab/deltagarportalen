@@ -11,6 +11,7 @@ import { useDashboardDataQuery } from '@/hooks/useDashboardData'
 import type { DashboardWidgetData } from '@/types/dashboard'
 import { useClickOutside } from '@/hooks/useClickOutside'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
+import { GettingStartedChecklist } from '@/components/dashboard/GettingStartedChecklist'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 
@@ -427,13 +428,31 @@ export default function OverviewTab() {
   const [isSaving, setIsSaving] = useState(false)
   const [prefsLoaded, setPrefsLoaded] = useState(false)
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+  const [showChecklist, setShowChecklist] = useState(true)
   const selectorRef = useRef<HTMLDivElement>(null)
 
   const isNewUser = !data?.cv?.hasCV && (data?.cv?.progress || 0) < 10 && (data?.jobs?.savedCount || 0) === 0
   const nextAction = getNextAction(data)
 
+  // Check if user should see the Getting Started checklist
+  // Show for users who have started but haven't completed all basic steps
+  const hasCompletedCV = data?.cv?.hasCV ?? false
+  const hasCompletedInterest = data?.interest?.hasResult ?? false
+  const hasSavedJob = (data?.jobs?.savedCount ?? 0) > 0
+  const hasCoverLetter = (data?.coverLetters?.count ?? 0) > 0
+  const allChecklistComplete = hasCompletedCV && hasCompletedInterest && hasSavedJob && hasCoverLetter
+  const shouldShowChecklist = !isNewUser && !allChecklistComplete && showChecklist
+
   // Close selector on outside click
   useClickOutside(selectorRef, () => setShowSelector(false), showSelector)
+
+  // Check if checklist was previously dismissed
+  useEffect(() => {
+    const isDismissed = localStorage.getItem('checklist-dismissed')
+    if (isDismissed === 'true') {
+      setShowChecklist(false)
+    }
+  }, [])
 
   // Load preferences
   useEffect(() => {
@@ -634,8 +653,13 @@ export default function OverviewTab() {
 
   return (
     <div className="space-y-4">
-      {/* Next Step Card */}
-      {nextAction && <NextStepCard action={nextAction} />}
+      {/* Getting Started Checklist for users in progress */}
+      {shouldShowChecklist && (
+        <GettingStartedChecklist onClose={() => setShowChecklist(false)} />
+      )}
+
+      {/* Next Step Card - only show if checklist is not visible */}
+      {!shouldShowChecklist && nextAction && <NextStepCard action={nextAction} />}
 
       {/* Quick Stats Bar */}
       <div className="flex items-center gap-3 text-sm">
