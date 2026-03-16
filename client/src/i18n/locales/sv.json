@@ -46,7 +46,35 @@
     "of": "av",
     "page": "Sida",
     "employerNotSpecified": "Arbetsgivare ej angiven",
-    "locationNotSpecified": "Ort ej angiven"
+    "locationNotSpecified": "Ort ej angiven",
+    "new": "Ny!"
+  },
+  "pageTabs": {
+    "cv": {
+      "design": "Design",
+      "content": "Innehåll",
+      "preview": "Förhandsgranska"
+    },
+    "coverLetter": {
+      "generator": "Generator",
+      "templates": "Mallar",
+      "saved": "Sparade brev"
+    },
+    "jobSearch": {
+      "search": "Sök",
+      "tracker": "Ansöknings tracker",
+      "saved": "Sparade jobb"
+    },
+    "profile": {
+      "profile": "Profil",
+      "settings": "Inställningar"
+    },
+    "resources": {
+      "all": "Alla filer",
+      "documents": "Dokument",
+      "jobs": "Jobb",
+      "articles": "Artiklar"
+    }
   },
   "nav": {
     "dashboard": "Översikt",
@@ -108,10 +136,13 @@
     "streak": "{{count}} dagar i rad",
     "tabs": {
       "overview": "Översikt",
+      "overviewDesc": "Din personliga översikt",
       "activity": "Aktivitet",
       "community": "Community",
       "insights": "Insikter",
-      "learning": "Lärande"
+      "learning": "Lärande",
+      "quests": "Mina Quests",
+      "questsDesc": "Dagliga utmaningar och belöningar"
     }
   },
   "cv": {
@@ -397,7 +428,8 @@
       "quickHelp": "Snabbhjälp",
       "myJourney": "Min resa",
       "tools": "Verktyg",
-      "trending": "Trendar"
+      "trending": "Trendar",
+      "stories": "Berättelser"
     },
     "energyLevel": "Din energinivå",
     "energyLow": "Låg",
@@ -649,14 +681,272 @@
     "noCvDesc": "Skapa ett professionellt CV för att öka dina chanser att få jobb."
   },
   "help": {
-    "title": "Hjälp & Support",
+    "title": "Hjälp & Support"
+  },
+  "helpPage": {
+    "description": "Få hjälp med att använda Jobin",
+    "intro": "Hitta svar på vanliga frågor eller kontakta oss om du behöver mer hjälp.",
+    "goTo": "Gå till {{section}}",
+    "noAnswer": "Hittade du inte svaret?",
+    "contactConsultant": "Kontakta din arbetskonsulent för personlig hjälp och vägledning.",
+    "bookMeeting": "Boka möte",
+    "emailSupport": "Mejla support",
+    "version": "Deltagarportalen v2.0",
+    "categories": {
+      "gettingStarted": "Komma igång",
+      "cvCoverLetter": "CV & Personligt brev",
+      "jobSearch": "Jobbsökning",
+      "careerDevelopment": "Karriär & Utveckling"
+    },
+    "quickLinks": {
+      "articlesGuides": "Artiklar och guider",
+      "findCareer": "Hitta rätt yrke",
+      "buildCV": "Bygg ditt CV",
+      "findJobs": "Hitta lediga jobb"
+    },
     "faq": {
-      "multipleCV": "Kan jag ha flera CV-versioner?",
-      "multipleCVAnswer": "Ja! Du kan spara flera versioner av ditt CV...",
-      "jobAlerts": "Kan jag få notiser om nya jobb?",
-      "jobAlertsAnswer": "Ja, du kan ställa in jobbaviseringar...",
-      "saveArticles": "Kan jag spara artiklar?",
-      "saveArticlesAnswer": "Ja! Klicka på bokmärkes-ikonen..."
+      "createCV": {
+        "q": "Hur skapar jag ett CV?",
+        "a": "Gå till CV-sektionen och följ steg-för-steg-guiden. Du kan välja mellan olika mallar och få AI-hjälp med formuleringarna."
+      },
+      "interestGuide": {
+        "q": "Vad är Intresseguiden?",
+        "a": "Intresseguiden hjälper dig att hitta yrken som passar din personlighet och dina intressen. Det tar ca 10 minuter att slutföra."
+      },
+      "saveJobs": {
+        "q": "Hur sparar jag jobb?",
+        "a": "När du söker jobb kan du klicka på hjärtat/spara-knappen på varje jobbannons för att spara den till din jobbtracker."
+      },
+      "multipleCVs": {
+        "q": "Kan jag ha flera CV-versioner?",
+        "a": "Ja! Du kan spara flera versioner av ditt CV och välja vilken du vill använda för varje ansökan."
+      },
+      "aiWriter": {
+        "q": "Hur fungerar AI-brevskrivaren?",
+        "a": "AI:n analyserar jobbannonsen och ditt CV för att skriva ett personligt brev som matchar just det jobbet."
+      },
+      "atsAnalysis": {
+        "q": "Vad är ATS-analys?",
+        "a": "ATS (Applicant Tracking System) är system som många företag använder för att filtrera CV:n. Vår analys hjälper dig att optimera ditt CV så det kommer förbi dessa system."
+      },
+      "howToSearch": {
+        "q": "Hur söker jag jobb via portalen?",
+        "a": "Använd jobbsöksfunktionen för att söka bland lediga jobb. Du kan filtrera på plats, yrke och anställningstyp."
+      },
+      "saveVsApply": {
+        "q": "Vad är skillnaden mellan att spara och ansöka?",
+        "a": "När du sparar ett jobb läggs det i din jobbtracker så du kan återkomma till det senare. Ansökan gör du vanligtvis via företagets hemsida."
+      },
+      "jobAlerts": {
+        "q": "Kan jag få notiser om nya jobb?",
+        "a": "Ja, du kan ställa in jobbaviseringar i dina inställningar för att få mail när nya jobb som matchar dina kriterier publiceras."
+      },
+      "knowledgeBase": {
+        "q": "Vad kan jag göra i Kunskapsbanken?",
+        "a": "Kunskapsbanken innehåller artiklar, guider och tips om allt från CV-skrivning till intervjuteknik och arbetsrätt."
+      },
+      "exercises": {
+        "q": "Hur fungerar Övningarna?",
+        "a": "Övningarna är interaktiva verktyg som hjälper dig att träna på olika aspekter av jobbsökning, som att sälja in dig själv eller förbereda dig för intervju."
+      },
+      "saveArticles": {
+        "q": "Kan jag spara artiklar?",
+        "a": "Ja! Klicka på bokmärkes-ikonen på valfri artikel för att spara den till dina bokmärken."
+      }
+    }
+  },
+  "exercisesWidget": {
+    "exercises": "Övningar",
+    "trainSkills": "Träna dina jobbfärdigheter",
+    "trainToBetter": "Träna för att bli bättre",
+    "streakDays": "{{count}} dagar",
+    "yourProgress": "Din progress",
+    "completed": "Avklarade",
+    "remaining": "Kvar att göra",
+    "continuePractice": "Fortsätt öva",
+    "startPractice": "Börja öva"
+  },
+  "knowledgeWidget": {
+    "knowledge": "Kunskap",
+    "knowledgeBase": "Kunskapsbank",
+    "readCount": "{{count}} lästa",
+    "tipsAndGuides": "Tips och guider",
+    "articlesRead": "artiklar lästa",
+    "articlesReadCount": "{{count}} artiklar lästa",
+    "exploreArticles": "Utforska artiklar",
+    "startReading": "Börja läsa",
+    "tipsDescription": "Tips om CV, intervjuer och jobbsökning",
+    "readArticles": "Lästa artiklar",
+    "read": "Lästa",
+    "saved": "Sparade",
+    "continueReading": "Fortsätt läsa"
+  },
+  "quests": {
+    "todaysQuests": "Dagens Quests",
+    "allDone": "Alla klara!",
+    "remaining": "{{count}} kvar",
+    "youCompletedAll": "Du har klarat allt!",
+    "completeTasks": "Slutför uppgifterna",
+    "streakDays": "{{count}} dagar",
+    "progress": "Progress",
+    "showAll": "Visa alla",
+    "continue": "Fortsätt",
+    "sample": {
+      "readArticle": "Läs en artikel",
+      "updateCV": "Uppdatera ditt CV",
+      "applyJob": "Sök ett jobb"
+    }
+  },
+  "crisis": {
+    "ariaLabel": "Öppna stöd och hjälp - för dig som mår dåligt eller behöver någon att prata med",
+    "needToTalk": "Behöver du prata med någon?",
+    "support": "Stöd",
+    "notAlone": "Du är inte ensam",
+    "helpAvailable": "Hjälp finns tillgänglig",
+    "introText": "Det är modigt att söka hjälp. Om du mår dåligt, har ångest, eller bara behöver prata med någon - finns det alltid någon som lyssnar. Du behöver inte gå igenom detta ensam.",
+    "emergencyHelp": "Akut hjälp - dygnet runt",
+    "someoneToTalk": "Någon att prata med",
+    "informationAndSupport": "Information och stöd",
+    "youMatter": "Du är viktig.",
+    "alwaysHope": "Det finns alltid hopp, även när det inte känns så just nu.",
+    "resources": {
+      "suicideLine": {
+        "name": "Självmordslinjen",
+        "hours": "Dygnet runt",
+        "description": "För dig som har tankar på att ta ditt liv"
+      },
+      "companion": {
+        "name": "Jourhavande medmänniska",
+        "hours": "21-06",
+        "description": "Någon att prata med när det känns tufft"
+      },
+      "priest": {
+        "name": "Jourhavande präst",
+        "hours": "Dygnet runt",
+        "description": "Via 112 - begär att få tala med jourhavande präst"
+      },
+      "healthcare": {
+        "name": "1177 Vårdguiden",
+        "hours": "Dygnet runt",
+        "description": "Sjukvårdsrådgivning och hjälp"
+      },
+      "youth": {
+        "name": "Barn- och ungdomspsykiatrisk akut",
+        "hours": "Dygnet runt",
+        "description": "För dig under 18 år"
+      }
+    },
+    "selfHelp": {
+      "mind": {
+        "name": "Mind.se",
+        "description": "Information och stöd för psykisk hälsa"
+      },
+      "umo": {
+        "name": "UMO.se",
+        "description": "Stöd för unga om psykisk hälsa"
+      },
+      "healthcare": {
+        "name": "1177.se",
+        "description": "Sjukvårdsinformation och e-tjänster"
+      }
+    }
+  },
+  "coverLetterTemplates": {
+    "standard": {
+      "name": "Standard",
+      "description": "Professionell och balanserad - fungerar för de flesta jobb",
+      "structure": {
+        "introduction": "Vilket jobb du söker + var du såg annonsen + kort varför du är intresserad",
+        "motivation": "Vad som lockar dig hos arbetsgivaren + varför du passar för rollen",
+        "experience": "2-3 relevanta erfarenheter med konkreta resultat",
+        "closing": "Sammanfatta ditt värde + call-to-action för intervju"
+      },
+      "tips": [
+        "Nämn alltid tydligt vilket jobb du söker",
+        "Koppla dina erfarenheter till jobbannonsens krav",
+        "Visa att du gjort research om företaget",
+        "Håll det under 1 A4-sida"
+      ]
+    },
+    "short": {
+      "name": "Kort & Koncis",
+      "description": "Max 150 ord - för enkla jobb och bemanningsföretag",
+      "structure": {
+        "introduction": "Jobbtitel + referensnummer (1 mening)",
+        "motivation": "Kärnan: Vad kan du bidra med? (2-3 meningar)",
+        "experience": "En konkret styrka som matchar jobbet",
+        "closing": "Tillgänglig för intervju + kontaktuppgifter (1-2 meningar)"
+      },
+      "tips": [
+        "Max 150 ord - varje mening ska bära",
+        "Fokusera på det viktigaste",
+        "Använd punktlistor om det passar",
+        "Perfekt när energin är låg"
+      ]
+    },
+    "formal": {
+      "name": "Formell",
+      "description": "Traditionell ton för offentlig sektor, bank, försäkring, juridik",
+      "structure": {
+        "introduction": "Formell inledning med referensnummer",
+        "motivation": "Professionell profil med yrkesroll och specialisering",
+        "experience": "Utbildning, certifieringar, relevanta anställningar",
+        "closing": "Formellt avslut med erbjudande om kompletterande information"
+      },
+      "tips": [
+        "Använd formell ton genom hela brevet",
+        "Nämn annonsnummer korrekt",
+        "Fokusera på utbildning och formell erfarenhet",
+        "Undvik för informella uttryck"
+      ]
+    },
+    "creative": {
+      "name": "Kreativ",
+      "description": "Personlig ton för marknadsföring, design, media, startup",
+      "structure": {
+        "introduction": "Fångande inledning som visar personlighet",
+        "motivation": "Din story - vad som driver dig i ditt yrke",
+        "experience": "Ett konkret projekt eller resultat + ditt arbetssätt",
+        "closing": "Kreativt avslut som sticker ut (inom rimliga gränser)"
+      },
+      "tips": [
+        "Visa personlighet men håll det professionellt",
+        "Använd storytelling",
+        "Fokusera på kulturell matchning",
+        "Inkludera ett konkret projektexempel"
+      ]
+    },
+    "careerChange": {
+      "name": "Karriärbyte",
+      "description": "För omställare som byter bransch eller efter lång frånvaro",
+      "structure": {
+        "introduction": "Tydlig inledning om att du söker ny riktning",
+        "motivation": "Överförbara kompetenser - lista 3-5 skills",
+        "experience": "Vad du gjort för att förbereda dig (kurser, praktik)",
+        "closing": "Ödmjukt men självsäkert avslut om din potential"
+      },
+      "tips": [
+        "Adressera bytet direkt - var inte defensiv",
+        "Fokusera på överförbara skills, inte vad du saknar",
+        "Visa att du gjort research och förberedelser",
+        "Var positiv om framtiden, inte ursäktande om det förflutna"
+      ]
+    },
+    "graduate": {
+      "name": "Nyexaminerad",
+      "description": "För första jobbet efter utbildning eller praktikplatser",
+      "structure": {
+        "introduction": "Entusiastisk inledning - examen + när",
+        "motivation": "Vad du lärt dig som är relevant + examensarbete/praktik",
+        "experience": "Sommarjobb, extraknäck, ideellt arbete - fokus på mjuka kompetenser",
+        "closing": "Humble avslutning om att få bidra och lära"
+      },
+      "tips": [
+        "Var entusiastisk men inte överdriven",
+        "Lyft examensarbete och praktik som relevant erfarenhet",
+        "Fokusera på vad du lärt dig, inte bara teori",
+        "Var öppen med att du är ny i rollen - men visa på potential"
+      ]
     }
   }
 }

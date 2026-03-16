@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Dumbbell, Trophy, Flame, ChevronRight, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +18,7 @@ export function ExercisesWidget({
   streakDays = 0,
   size = 'medium'
 }: ExercisesWidgetProps) {
+  const { t } = useTranslation()
   // MINI
   if (size === 'mini') {
     return (
@@ -28,7 +30,7 @@ export function ExercisesWidget({
           <Dumbbell size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Övningar</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('exercisesWidget.exercises')}</p>
           <p className="text-xs text-slate-500 dark:text-slate-400">{completedCount}/{totalExercises}</p>
         </div>
         {streakDays > 0 && (
@@ -54,8 +56,8 @@ export function ExercisesWidget({
               <Dumbbell size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Övningar</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Träna dina jobbfärdigheter</p>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('exercisesWidget.exercises')}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('exercisesWidget.trainSkills')}</p>
             </div>
           </div>
           <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors" />
@@ -87,14 +89,14 @@ export function ExercisesWidget({
             <Dumbbell size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Övningar</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">Träna för att bli bättre</p>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('exercisesWidget.exercises')}</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400">{t('exercisesWidget.trainToBetter')}</p>
           </div>
         </div>
         {streakDays > 0 && (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 dark:bg-orange-900/40 rounded-lg text-orange-600 dark:text-orange-400">
             <Flame size={16} />
-            <span className="text-sm font-bold">{streakDays} dagar</span>
+            <span className="text-sm font-bold">{t('exercisesWidget.streakDays', { count: streakDays })}</span>
           </div>
         )}
       </div>
@@ -102,7 +104,7 @@ export function ExercisesWidget({
       {/* Progress */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600 dark:text-slate-400">Din progress</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">{t('exercisesWidget.yourProgress')}</span>
           <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{completionRate}%</span>
         </div>
         <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -120,14 +122,14 @@ export function ExercisesWidget({
             <Trophy size={16} className="text-emerald-500 dark:text-emerald-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{completedCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Avklarade</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('exercisesWidget.completed')}</p>
         </div>
         <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
             <Dumbbell size={16} className="text-slate-500 dark:text-slate-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{totalExercises - completedCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Kvar att göra</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('exercisesWidget.remaining')}</p>
         </div>
       </div>
 
@@ -135,7 +137,7 @@ export function ExercisesWidget({
       <div className="flex gap-2">
         <span className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-lg text-xs font-medium group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/60 transition-colors">
           <Play size={12} />
-          {completedCount > 0 ? 'Fortsätt öva' : 'Börja öva'}
+          {completedCount > 0 ? t('exercisesWidget.continuePractice') : t('exercisesWidget.startPractice')}
         </span>
       </div>
     </Link>

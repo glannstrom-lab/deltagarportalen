@@ -46,7 +46,35 @@
     "of": "of",
     "page": "Page",
     "employerNotSpecified": "Employer not specified",
-    "locationNotSpecified": "Location not specified"
+    "locationNotSpecified": "Location not specified",
+    "new": "New!"
+  },
+  "pageTabs": {
+    "cv": {
+      "design": "Design",
+      "content": "Content",
+      "preview": "Preview"
+    },
+    "coverLetter": {
+      "generator": "Generator",
+      "templates": "Templates",
+      "saved": "Saved letters"
+    },
+    "jobSearch": {
+      "search": "Search",
+      "tracker": "Application tracker",
+      "saved": "Saved jobs"
+    },
+    "profile": {
+      "profile": "Profile",
+      "settings": "Settings"
+    },
+    "resources": {
+      "all": "All files",
+      "documents": "Documents",
+      "jobs": "Jobs",
+      "articles": "Articles"
+    }
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -108,10 +136,13 @@
     "streak": "{{count}} day streak",
     "tabs": {
       "overview": "Overview",
+      "overviewDesc": "Your personal overview",
       "activity": "Activity",
       "community": "Community",
       "insights": "Insights",
-      "learning": "Learning"
+      "learning": "Learning",
+      "quests": "My Quests",
+      "questsDesc": "Daily challenges and rewards"
     }
   },
   "cv": {
@@ -397,7 +428,8 @@
       "quickHelp": "Quick Help",
       "myJourney": "My Journey",
       "tools": "Tools",
-      "trending": "Trending"
+      "trending": "Trending",
+      "stories": "Stories"
     },
     "energyLevel": "Your energy level",
     "energyLow": "Low",
@@ -649,14 +681,272 @@
     "noCvDesc": "Create a professional CV to increase your chances of getting a job."
   },
   "help": {
-    "title": "Help & Support",
+    "title": "Help & Support"
+  },
+  "helpPage": {
+    "description": "Get help using Jobin",
+    "intro": "Find answers to common questions or contact us if you need more help.",
+    "goTo": "Go to {{section}}",
+    "noAnswer": "Didn't find the answer?",
+    "contactConsultant": "Contact your employment consultant for personal help and guidance.",
+    "bookMeeting": "Book meeting",
+    "emailSupport": "Email support",
+    "version": "Participant Portal v2.0",
+    "categories": {
+      "gettingStarted": "Getting Started",
+      "cvCoverLetter": "CV & Cover Letter",
+      "jobSearch": "Job Search",
+      "careerDevelopment": "Career & Development"
+    },
+    "quickLinks": {
+      "articlesGuides": "Articles and guides",
+      "findCareer": "Find the right career",
+      "buildCV": "Build your CV",
+      "findJobs": "Find job openings"
+    },
     "faq": {
-      "multipleCV": "Can I have multiple CV versions?",
-      "multipleCVAnswer": "Yes! You can save multiple versions of your CV...",
-      "jobAlerts": "Can I get notifications about new jobs?",
-      "jobAlertsAnswer": "Yes, you can set up job alerts...",
-      "saveArticles": "Can I save articles?",
-      "saveArticlesAnswer": "Yes! Click the bookmark icon..."
+      "createCV": {
+        "q": "How do I create a CV?",
+        "a": "Go to the CV section and follow the step-by-step guide. You can choose from different templates and get AI help with the wording."
+      },
+      "interestGuide": {
+        "q": "What is the Interest Guide?",
+        "a": "The Interest Guide helps you find careers that match your personality and interests. It takes about 10 minutes to complete."
+      },
+      "saveJobs": {
+        "q": "How do I save jobs?",
+        "a": "When searching for jobs, you can click the heart/save button on each job ad to save it to your job tracker."
+      },
+      "multipleCVs": {
+        "q": "Can I have multiple CV versions?",
+        "a": "Yes! You can save multiple versions of your CV and choose which one to use for each application."
+      },
+      "aiWriter": {
+        "q": "How does the AI letter writer work?",
+        "a": "The AI analyzes the job ad and your CV to write a cover letter that matches that specific job."
+      },
+      "atsAnalysis": {
+        "q": "What is ATS analysis?",
+        "a": "ATS (Applicant Tracking System) is software that many companies use to filter CVs. Our analysis helps you optimize your CV to get past these systems."
+      },
+      "howToSearch": {
+        "q": "How do I search for jobs through the portal?",
+        "a": "Use the job search function to search among job openings. You can filter by location, profession, and employment type."
+      },
+      "saveVsApply": {
+        "q": "What's the difference between saving and applying?",
+        "a": "When you save a job, it's added to your job tracker so you can return to it later. Applications are usually made through the company's website."
+      },
+      "jobAlerts": {
+        "q": "Can I get notifications about new jobs?",
+        "a": "Yes, you can set up job alerts in your settings to receive emails when new jobs matching your criteria are published."
+      },
+      "knowledgeBase": {
+        "q": "What can I do in the Knowledge Base?",
+        "a": "The Knowledge Base contains articles, guides, and tips about everything from CV writing to interview techniques and labor law."
+      },
+      "exercises": {
+        "q": "How do the Exercises work?",
+        "a": "The exercises are interactive tools that help you practice various aspects of job searching, like selling yourself or preparing for interviews."
+      },
+      "saveArticles": {
+        "q": "Can I save articles?",
+        "a": "Yes! Click the bookmark icon on any article to save it to your bookmarks."
+      }
+    }
+  },
+  "exercisesWidget": {
+    "exercises": "Exercises",
+    "trainSkills": "Train your job skills",
+    "trainToBetter": "Practice to improve",
+    "streakDays": "{{count}} days",
+    "yourProgress": "Your progress",
+    "completed": "Completed",
+    "remaining": "Remaining",
+    "continuePractice": "Continue practicing",
+    "startPractice": "Start practicing"
+  },
+  "knowledgeWidget": {
+    "knowledge": "Knowledge",
+    "knowledgeBase": "Knowledge Base",
+    "readCount": "{{count}} read",
+    "tipsAndGuides": "Tips and guides",
+    "articlesRead": "articles read",
+    "articlesReadCount": "{{count}} articles read",
+    "exploreArticles": "Explore articles",
+    "startReading": "Start reading",
+    "tipsDescription": "Tips on CVs, interviews, and job searching",
+    "readArticles": "Read articles",
+    "read": "Read",
+    "saved": "Saved",
+    "continueReading": "Continue reading"
+  },
+  "quests": {
+    "todaysQuests": "Today's Quests",
+    "allDone": "All done!",
+    "remaining": "{{count}} left",
+    "youCompletedAll": "You've completed everything!",
+    "completeTasks": "Complete the tasks",
+    "streakDays": "{{count}} days",
+    "progress": "Progress",
+    "showAll": "Show all",
+    "continue": "Continue",
+    "sample": {
+      "readArticle": "Read an article",
+      "updateCV": "Update your CV",
+      "applyJob": "Apply for a job"
+    }
+  },
+  "crisis": {
+    "ariaLabel": "Open support and help - for those who are struggling or need someone to talk to",
+    "needToTalk": "Need someone to talk to?",
+    "support": "Support",
+    "notAlone": "You are not alone",
+    "helpAvailable": "Help is available",
+    "introText": "It takes courage to seek help. If you're feeling down, anxious, or just need someone to talk to - there's always someone who will listen. You don't have to go through this alone.",
+    "emergencyHelp": "Emergency help - 24/7",
+    "someoneToTalk": "Someone to talk to",
+    "informationAndSupport": "Information and support",
+    "youMatter": "You matter.",
+    "alwaysHope": "There is always hope, even when it doesn't feel like it right now.",
+    "resources": {
+      "suicideLine": {
+        "name": "Suicide Helpline",
+        "hours": "24/7",
+        "description": "For those having thoughts of taking their own life"
+      },
+      "companion": {
+        "name": "On-call Companion",
+        "hours": "9 PM - 6 AM",
+        "description": "Someone to talk to when things feel tough"
+      },
+      "priest": {
+        "name": "On-call Priest",
+        "hours": "24/7",
+        "description": "Via 112 - ask to speak with the on-call priest"
+      },
+      "healthcare": {
+        "name": "1177 Healthcare Guide",
+        "hours": "24/7",
+        "description": "Healthcare advice and help"
+      },
+      "youth": {
+        "name": "Child and Youth Psychiatric Emergency",
+        "hours": "24/7",
+        "description": "For those under 18 years old"
+      }
+    },
+    "selfHelp": {
+      "mind": {
+        "name": "Mind.se",
+        "description": "Information and support for mental health"
+      },
+      "umo": {
+        "name": "UMO.se",
+        "description": "Support for young people about mental health"
+      },
+      "healthcare": {
+        "name": "1177.se",
+        "description": "Healthcare information and e-services"
+      }
+    }
+  },
+  "coverLetterTemplates": {
+    "standard": {
+      "name": "Standard",
+      "description": "Professional and balanced - works for most jobs",
+      "structure": {
+        "introduction": "Which job you're applying for + where you saw the ad + briefly why you're interested",
+        "motivation": "What attracts you to the employer + why you're a good fit for the role",
+        "experience": "2-3 relevant experiences with concrete results",
+        "closing": "Summarize your value + call-to-action for an interview"
+      },
+      "tips": [
+        "Always clearly mention which job you're applying for",
+        "Connect your experiences to the job requirements",
+        "Show that you've researched the company",
+        "Keep it under 1 page"
+      ]
+    },
+    "short": {
+      "name": "Short & Concise",
+      "description": "Max 150 words - for simple jobs and staffing agencies",
+      "structure": {
+        "introduction": "Job title + reference number (1 sentence)",
+        "motivation": "The core: What can you contribute? (2-3 sentences)",
+        "experience": "One concrete strength that matches the job",
+        "closing": "Available for interview + contact details (1-2 sentences)"
+      },
+      "tips": [
+        "Max 150 words - every sentence should count",
+        "Focus on what's most important",
+        "Use bullet points if appropriate",
+        "Perfect when energy is low"
+      ]
+    },
+    "formal": {
+      "name": "Formal",
+      "description": "Traditional tone for public sector, banking, insurance, legal",
+      "structure": {
+        "introduction": "Formal introduction with reference number",
+        "motivation": "Professional profile with job role and specialization",
+        "experience": "Education, certifications, relevant employment",
+        "closing": "Formal closing with offer of additional information"
+      },
+      "tips": [
+        "Use formal tone throughout the letter",
+        "Mention reference number correctly",
+        "Focus on education and formal experience",
+        "Avoid overly informal expressions"
+      ]
+    },
+    "creative": {
+      "name": "Creative",
+      "description": "Personal tone for marketing, design, media, startup",
+      "structure": {
+        "introduction": "Catchy opening that shows personality",
+        "motivation": "Your story - what drives you in your profession",
+        "experience": "A concrete project or result + your work style",
+        "closing": "Creative closing that stands out (within reasonable limits)"
+      },
+      "tips": [
+        "Show personality but keep it professional",
+        "Use storytelling",
+        "Focus on cultural fit",
+        "Include a concrete project example"
+      ]
+    },
+    "careerChange": {
+      "name": "Career Change",
+      "description": "For career changers switching industries or after a long absence",
+      "structure": {
+        "introduction": "Clear introduction about seeking a new direction",
+        "motivation": "Transferable skills - list 3-5 skills",
+        "experience": "What you've done to prepare (courses, internships)",
+        "closing": "Humble but confident closing about your potential"
+      },
+      "tips": [
+        "Address the change directly - don't be defensive",
+        "Focus on transferable skills, not what you lack",
+        "Show that you've done research and preparation",
+        "Be positive about the future, not apologetic about the past"
+      ]
+    },
+    "graduate": {
+      "name": "Recent Graduate",
+      "description": "For first job after education or internships",
+      "structure": {
+        "introduction": "Enthusiastic opening - degree + when",
+        "motivation": "What you learned that's relevant + thesis/internship",
+        "experience": "Summer jobs, part-time work, volunteer work - focus on soft skills",
+        "closing": "Humble closing about contributing and learning"
+      },
+      "tips": [
+        "Be enthusiastic but not over the top",
+        "Highlight thesis and internships as relevant experience",
+        "Focus on what you've learned, not just theory",
+        "Be open about being new to the role - but show potential"
+      ]
     }
   }
 }

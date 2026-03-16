@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Target, Flame, Zap, ChevronRight, CheckCircle2, Circle, Play } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -15,6 +16,7 @@ export function QuestsWidget({
   streakDays = 0,
   size = 'medium'
 }: QuestsWidgetProps) {
+  const { t } = useTranslation()
   const progress = totalQuests > 0 ? Math.round((completedQuests / totalQuests) * 100) : 0
   const isComplete = completedQuests >= totalQuests
 
@@ -71,9 +73,9 @@ export function QuestsWidget({
               {isComplete ? <Zap size={18} /> : <Target size={18} />}
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Dagens Quests</h3>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('quests.todaysQuests')}</h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                {isComplete ? 'Alla klara!' : `${totalQuests - completedQuests} kvar`}
+                {isComplete ? t('quests.allDone') : t('quests.remaining', { count: totalQuests - completedQuests })}
               </p>
             </div>
           </div>
@@ -108,9 +110,9 @@ export function QuestsWidget({
 
   // LARGE
   const sampleQuests = [
-    { id: 1, title: 'Läs en artikel', completed: completedQuests >= 1 },
-    { id: 2, title: 'Uppdatera ditt CV', completed: completedQuests >= 2 },
-    { id: 3, title: 'Sök ett jobb', completed: completedQuests >= 3 },
+    { id: 1, titleKey: 'quests.sample.readArticle', completed: completedQuests >= 1 },
+    { id: 2, titleKey: 'quests.sample.updateCV', completed: completedQuests >= 2 },
+    { id: 3, titleKey: 'quests.sample.applyJob', completed: completedQuests >= 3 },
   ]
 
   return (
@@ -133,16 +135,16 @@ export function QuestsWidget({
             {isComplete ? <Zap size={24} /> : <Target size={24} />}
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Dagens Quests</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('quests.todaysQuests')}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {isComplete ? 'Du har klarat allt!' : 'Slutför uppgifterna'}
+              {isComplete ? t('quests.youCompletedAll') : t('quests.completeTasks')}
             </p>
           </div>
         </div>
         {streakDays > 0 && (
           <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 dark:bg-orange-900/40 rounded-lg text-orange-600 dark:text-orange-400">
             <Flame size={16} />
-            <span className="text-sm font-bold">{streakDays} dagar</span>
+            <span className="text-sm font-bold">{t('quests.streakDays', { count: streakDays })}</span>
           </div>
         )}
       </div>
@@ -150,7 +152,7 @@ export function QuestsWidget({
       {/* Progress */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600 dark:text-slate-400">Progress</span>
+          <span className="text-sm text-slate-600 dark:text-slate-400">{t('quests.progress')}</span>
           <span className={cn(
             "text-lg font-bold",
             isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
@@ -190,7 +192,7 @@ export function QuestsWidget({
               "text-sm",
               quest.completed ? "text-emerald-700 dark:text-emerald-400 line-through" : "text-slate-600 dark:text-slate-300"
             )}>
-              {quest.title}
+              {t(quest.titleKey)}
             </span>
           </div>
         ))}
@@ -205,7 +207,7 @@ export function QuestsWidget({
             : "bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 group-hover:bg-amber-200 dark:group-hover:bg-amber-900/60"
         )}>
           {isComplete ? <CheckCircle2 size={12} /> : <Play size={12} />}
-          {isComplete ? 'Visa alla' : 'Fortsätt'}
+          {isComplete ? t('quests.showAll') : t('quests.continue')}
         </span>
       </div>
     </Link>

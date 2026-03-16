@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { BookOpen, Bookmark, ChevronRight, Sparkles } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
@@ -15,6 +16,7 @@ export function KnowledgeWidget({
   totalArticles = 50,
   size = 'medium'
 }: KnowledgeWidgetProps) {
+  const { t } = useTranslation()
   const hasStarted = readCount > 0
 
   // MINI
@@ -28,8 +30,8 @@ export function KnowledgeWidget({
           <BookOpen size={16} />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Kunskap</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{readCount} lästa</p>
+          <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('knowledgeWidget.knowledge')}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('knowledgeWidget.readCount', { count: readCount })}</p>
         </div>
         {savedCount > 0 && (
           <span className="px-1.5 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded text-xs font-medium">
@@ -53,8 +55,8 @@ export function KnowledgeWidget({
               <BookOpen size={18} />
             </div>
             <div>
-              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">Kunskapsbank</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">Tips och guider</p>
+              <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('knowledgeWidget.knowledgeBase')}</h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400">{t('knowledgeWidget.tipsAndGuides')}</p>
             </div>
           </div>
           <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-amber-500 dark:group-hover:text-amber-400 transition-colors" />
@@ -62,7 +64,7 @@ export function KnowledgeWidget({
 
         <div className="flex items-center gap-3">
           <span className="text-2xl font-bold text-slate-800 dark:text-slate-100">{readCount}</span>
-          <span className="text-sm text-slate-500 dark:text-slate-400">artiklar lästa</span>
+          <span className="text-sm text-slate-500 dark:text-slate-400">{t('knowledgeWidget.articlesRead')}</span>
           {savedCount > 0 && (
             <span className="ml-auto flex items-center gap-1 px-2 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-full text-xs font-medium">
               <Bookmark size={10} className="fill-current" />
@@ -86,9 +88,9 @@ export function KnowledgeWidget({
             <BookOpen size={24} />
           </div>
           <div>
-            <h3 className="font-bold text-slate-800 dark:text-slate-100">Kunskapsbank</h3>
+            <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('knowledgeWidget.knowledgeBase')}</h3>
             <p className="text-sm text-slate-500 dark:text-slate-400">
-              {hasStarted ? `${readCount} artiklar lästa` : 'Utforska artiklar'}
+              {hasStarted ? t('knowledgeWidget.articlesReadCount', { count: readCount }) : t('knowledgeWidget.exploreArticles')}
             </p>
           </div>
         </div>
@@ -102,14 +104,14 @@ export function KnowledgeWidget({
             <Sparkles size={24} className="text-amber-500 dark:text-amber-400" />
           </div>
           <div>
-            <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">Börja läsa</p>
-            <p className="text-xs text-amber-600 dark:text-amber-400">Tips om CV, intervjuer och jobbsökning</p>
+            <p className="text-sm font-semibold text-amber-800 dark:text-amber-300">{t('knowledgeWidget.startReading')}</p>
+            <p className="text-xs text-amber-600 dark:text-amber-400">{t('knowledgeWidget.tipsDescription')}</p>
           </div>
         </div>
       ) : (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">Lästa artiklar</span>
+            <span className="text-sm text-slate-600 dark:text-slate-400">{t('knowledgeWidget.readArticles')}</span>
             <span className="text-lg font-bold text-amber-600 dark:text-amber-400">{readCount}</span>
           </div>
           <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -128,14 +130,14 @@ export function KnowledgeWidget({
             <BookOpen size={16} className="text-amber-500 dark:text-amber-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{readCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Lästa</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('knowledgeWidget.read')}</p>
         </div>
         <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Bookmark size={16} className="text-orange-500 dark:text-orange-400 fill-current" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{savedCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">Sparade</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{t('knowledgeWidget.saved')}</p>
         </div>
       </div>
 
@@ -143,7 +145,7 @@ export function KnowledgeWidget({
       <div className="flex gap-2">
         <span className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 rounded-lg text-xs font-medium group-hover:bg-amber-200 dark:group-hover:bg-amber-900/60 transition-colors">
           <BookOpen size={12} />
-          {hasStarted ? 'Fortsätt läsa' : 'Börja läsa'}
+          {hasStarted ? t('knowledgeWidget.continueReading') : t('knowledgeWidget.startReading')}
         </span>
       </div>
     </Link>

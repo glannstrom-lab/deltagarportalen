@@ -1,69 +1,76 @@
 import { useState, useEffect, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Heart, X, Phone, ExternalLink, MessageCircle, Shield } from 'lucide-react'
 
 interface CrisisResource {
-  name: string
+  nameKey: string
   phone: string
-  hours: string
-  description: string
+  hoursKey: string
+  descriptionKey: string
   urgent?: boolean
   category: 'immediate' | 'health' | 'support'
 }
 
-const crisisResources: CrisisResource[] = [
+const crisisResourceDefs: CrisisResource[] = [
   {
-    name: 'Självmordslinjen',
+    nameKey: 'crisis.resources.suicideLine.name',
     phone: '901 01',
-    hours: 'Dygnet runt',
-    description: 'För dig som har tankar på att ta ditt liv',
+    hoursKey: 'crisis.resources.suicideLine.hours',
+    descriptionKey: 'crisis.resources.suicideLine.description',
     urgent: true,
     category: 'immediate',
   },
   {
-    name: 'Jourhavande medmänniska',
+    nameKey: 'crisis.resources.companion.name',
     phone: '08-702 16 80',
-    hours: '21-06',
-    description: 'Någon att prata med när det känns tufft',
+    hoursKey: 'crisis.resources.companion.hours',
+    descriptionKey: 'crisis.resources.companion.description',
     category: 'support',
   },
   {
-    name: 'Jourhavande präst',
+    nameKey: 'crisis.resources.priest.name',
     phone: '112',
-    hours: 'Dygnet runt',
-    description: 'Via 112 - begär att få tala med jourhavande präst',
+    hoursKey: 'crisis.resources.priest.hours',
+    descriptionKey: 'crisis.resources.priest.description',
     category: 'support',
   },
   {
-    name: '1177 Vårdguiden',
+    nameKey: 'crisis.resources.healthcare.name',
     phone: '1177',
-    hours: 'Dygnet runt',
-    description: 'Sjukvårdsrådgivning och hjälp',
+    hoursKey: 'crisis.resources.healthcare.hours',
+    descriptionKey: 'crisis.resources.healthcare.description',
     category: 'health',
   },
   {
-    name: 'Barn- och ungdomspsykiatrisk akut',
+    nameKey: 'crisis.resources.youth.name',
     phone: '1177',
-    hours: 'Dygnet runt',
-    description: 'För dig under 18 år',
+    hoursKey: 'crisis.resources.youth.hours',
+    descriptionKey: 'crisis.resources.youth.description',
     category: 'health',
   },
 ]
 
-const selfHelpResources = [
+interface SelfHelpResource {
+  nameKey: string
+  url: string
+  descriptionKey: string
+}
+
+const selfHelpResourceDefs: SelfHelpResource[] = [
   {
-    name: 'Mind.se',
+    nameKey: 'crisis.selfHelp.mind.name',
     url: 'https://mind.se',
-    description: 'Information och stöd för psykisk hälsa',
+    descriptionKey: 'crisis.selfHelp.mind.description',
   },
   {
-    name: 'UMO.se',
+    nameKey: 'crisis.selfHelp.umo.name',
     url: 'https://umo.se',
-    description: 'Stöd för unga om psykisk hälsa',
+    descriptionKey: 'crisis.selfHelp.umo.description',
   },
   {
-    name: '1177.se',
+    nameKey: 'crisis.selfHelp.healthcare.name',
     url: 'https://1177.se',
-    description: 'Sjukvårdsinformation och e-tjänster',
+    descriptionKey: 'crisis.selfHelp.healthcare.description',
   },
 ]
 
@@ -72,6 +79,7 @@ interface CrisisSupportProps {
 }
 
 export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps) {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const modalRef = useRef<HTMLDivElement>(null)
   const closeButtonRef = useRef<HTMLButtonElement>(null)
@@ -141,15 +149,15 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
             : 'px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl'
           }
         `}
-        aria-label="Öppna stöd och hjälp - för dig som mår dåligt eller behöver någon att prata med"
+        aria-label={t('crisis.ariaLabel')}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
         <Heart size={variant === 'fixed' ? 18 : 20} className="text-rose-500" aria-hidden="true" />
         {variant === 'fixed' && (
           <>
-            <span className="hidden sm:inline font-medium">Behöver du prata med någon?</span>
-            <span className="sm:hidden">Stöd</span>
+            <span className="hidden sm:inline font-medium">{t('crisis.needToTalk')}</span>
+            <span className="sm:hidden">{t('crisis.support')}</span>
           </>
         )}
       </button>
@@ -179,20 +187,20 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                   <Shield className="text-rose-600" size={24} aria-hidden="true" />
                 </div>
                 <div>
-                  <h2 
-                    id="crisis-modal-title" 
+                  <h2
+                    id="crisis-modal-title"
                     className="text-lg font-semibold text-slate-900"
                   >
-                    Du är inte ensam
+                    {t('crisis.notAlone')}
                   </h2>
-                  <p className="text-sm text-slate-500">Hjälp finns tillgänglig</p>
+                  <p className="text-sm text-slate-500">{t('crisis.helpAvailable')}</p>
                 </div>
               </div>
               <button
                 ref={closeButtonRef}
                 onClick={() => setIsOpen(false)}
                 className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
-                aria-label="Stäng"
+                aria-label={t('common.close')}
               >
                 <X size={20} aria-hidden="true" />
               </button>
@@ -200,14 +208,12 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
 
             <div className="p-6 space-y-6">
               {/* Intro text */}
-              <div 
+              <div
                 id="crisis-modal-description"
                 className="bg-teal-50 border border-teal-100 rounded-xl p-4"
               >
                 <p className="text-teal-800 text-sm leading-relaxed">
-                  Det är modigt att söka hjälp. Om du mår dåligt, har ångest, 
-                  eller bara behöver prata med någon - finns det alltid någon som lyssnar. 
-                  Du behöver inte gå igenom detta ensam.
+                  {t('crisis.introText')}
                 </p>
               </div>
 
@@ -215,14 +221,14 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               <div>
                 <h3 className="text-sm font-semibold text-rose-700 uppercase tracking-wide mb-3 flex items-center gap-2">
                   <span className="w-2 h-2 bg-rose-500 rounded-full animate-pulse" aria-hidden="true" />
-                  Akut hjälp - dygnet runt
+                  {t('crisis.emergencyHelp')}
                 </h3>
                 <div className="space-y-3">
-                  {crisisResources
+                  {crisisResourceDefs
                     .filter(r => r.urgent)
                     .map((resource) => (
                       <a
-                        key={resource.name}
+                        key={resource.nameKey}
                         href={`tel:${resource.phone.replace(/\s/g, '')}`}
                         className="flex items-center gap-4 p-4 rounded-xl border-2 border-rose-200 bg-rose-50 hover:bg-rose-100 hover:border-rose-300 transition-all focus:outline-none focus:ring-2 focus:ring-rose-500"
                       >
@@ -231,17 +237,17 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                         </div>
                         <div className="flex-1">
                           <div className="font-semibold text-rose-900">
-                            {resource.name}
+                            {t(resource.nameKey)}
                           </div>
                           <div className="text-2xl font-bold text-rose-700">
                             {resource.phone}
                           </div>
                           <div className="text-sm text-rose-600 mt-1">
-                            {resource.description}
+                            {t(resource.descriptionKey)}
                           </div>
                         </div>
                         <div className="text-xs text-rose-500 font-medium bg-white px-2 py-1 rounded">
-                          {resource.hours}
+                          {t(resource.hoursKey)}
                         </div>
                       </a>
                     ))}
@@ -252,14 +258,14 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               <div>
                 <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-3 flex items-center gap-2">
                   <MessageCircle size={16} aria-hidden="true" />
-                  Någon att prata med
+                  {t('crisis.someoneToTalk')}
                 </h3>
                 <div className="space-y-2">
-                  {crisisResources
+                  {crisisResourceDefs
                     .filter(r => !r.urgent)
                     .map((resource) => (
                       <a
-                        key={resource.name}
+                        key={resource.nameKey}
                         href={`tel:${resource.phone.replace(/\s/g, '')}`}
                         className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-violet-500"
                       >
@@ -268,10 +274,10 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                         </div>
                         <div className="flex-1">
                           <div className="font-medium text-slate-900">
-                            {resource.name}
+                            {t(resource.nameKey)}
                           </div>
                           <div className="text-sm text-slate-600">
-                            {resource.description}
+                            {t(resource.descriptionKey)}
                           </div>
                         </div>
                         <div className="text-right">
@@ -279,7 +285,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                             {resource.phone}
                           </div>
                           <div className="text-xs text-slate-400">
-                            {resource.hours}
+                            {t(resource.hoursKey)}
                           </div>
                         </div>
                       </a>
@@ -290,12 +296,12 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               {/* Självhjälp och information */}
               <div>
                 <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wide mb-3">
-                  Information och stöd
+                  {t('crisis.informationAndSupport')}
                 </h3>
                 <div className="space-y-2">
-                  {selfHelpResources.map((resource) => (
+                  {selfHelpResourceDefs.map((resource) => (
                     <a
-                      key={resource.name}
+                      key={resource.nameKey}
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -304,10 +310,10 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                       <ExternalLink size={18} className="text-slate-400" aria-hidden="true" />
                       <div className="flex-1">
                         <div className="font-medium text-slate-900">
-                          {resource.name}
+                          {t(resource.nameKey)}
                         </div>
                         <div className="text-sm text-slate-500">
-                          {resource.description}
+                          {t(resource.descriptionKey)}
                         </div>
                       </div>
                     </a>
@@ -318,8 +324,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               {/* Uppmuntrande avslutning */}
               <div className="bg-gradient-to-r from-teal-50 to-rose-50 border border-teal-100 rounded-xl p-4 text-center">
                 <p className="text-sm text-slate-700">
-                  <strong>Du är viktig.</strong> Det finns alltid hopp, 
-                  även när det inte känns så just nu. 
+                  <strong>{t('crisis.youMatter')}</strong> {t('crisis.alwaysHope')}
                 </p>
               </div>
             </div>
@@ -330,7 +335,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                 onClick={() => setIsOpen(false)}
                 className="w-full bg-white border border-slate-300 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
               >
-                Stäng
+                {t('common.close')}
               </button>
             </div>
           </div>
