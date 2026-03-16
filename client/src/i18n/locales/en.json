@@ -1731,6 +1731,129 @@
     "helpDescription": "If you have questions or need support, don't hesitate to contact your employment consultant. We're here for you!",
     "bookMeeting": "Book a meeting"
   },
+  "coverLetterGenerator": {
+    "title": "Cover Letter",
+    "pageTitle": "Help formulating your cover letter",
+    "pageDescription": "Your experience + our help with wording = a letter that feels like you. It's okay not to be 100% enthusiastic - honesty is best.",
+    "stepByStep": "Step by step - let's take it slow",
+    "backToJobSearch": "Back to job search",
+    "writingFor": "Writing letter for:",
+    "at": "at",
+    "savedLetters": {
+      "title": "Your saved letters",
+      "count": "{{count}} saved",
+      "noLetters": "No saved letters yet",
+      "open": "Open",
+      "close": "Close"
+    },
+    "savedJobs": {
+      "title": "Saved jobs",
+      "count": "{{count}} jobs",
+      "noJobs": "No saved jobs",
+      "searchJobs": "Search jobs to save →",
+      "use": "Use"
+    },
+    "applications": {
+      "title": "Your applications",
+      "count": "{{count}} registered",
+      "noApplications": "No applications registered yet",
+      "trackInfo": "Keep track of your applications to follow up and see which ones respond",
+      "registerApplication": "+ Register application",
+      "registerNew": "+ Register new application",
+      "status": {
+        "applied": "Sent",
+        "interview": "Interview",
+        "offer": "Offer",
+        "rejected": "Rejected"
+      }
+    },
+    "templates": {
+      "title": "Choose starting point",
+      "groups": {
+        "general": "General",
+        "public": "Public sector",
+        "creative": "Creative professions",
+        "tech": "Tech & IT",
+        "care": "Healthcare",
+        "newToWork": "New to the job market"
+      }
+    },
+    "jobInfo": {
+      "title": "Job information",
+      "company": "Company",
+      "companyPlaceholder": "e.g. Acme Inc",
+      "jobTitle": "Job title",
+      "jobTitlePlaceholder": "e.g. Project Manager",
+      "jobAd": "Job posting",
+      "jobAdOptional": "(optional but helps us)",
+      "jobAdPlaceholder": "Paste the job posting here, or describe the job in your own words...",
+      "characters": "{{count}} characters",
+      "cvMatch": "Matches your CV: {{score}}%",
+      "whyThisJob": "What attracts you to this job?",
+      "whyThisJobOptional": "(optional)",
+      "whyThisJobPlaceholder": "Briefly describe what made you want to apply - it doesn't have to be big, honesty is best...",
+      "extraKeywords": "Extra keywords/interests",
+      "extraKeywordsPlaceholder": "E.g. specific tools, soft skills, interests or certifications you want to highlight that aren't in your CV...",
+      "extraKeywordsHint": "Here you can add things that aren't visible in your CV but are relevant to the job"
+    },
+    "tone": {
+      "title": "Tone of the letter",
+      "professional": "Professional",
+      "enthusiastic": "Enthusiastic",
+      "formal": "Formal"
+    },
+    "cvSection": {
+      "title": "Your information from CV",
+      "noCV": "No information found from your CV",
+      "loadCV": "Load CV information",
+      "personalInfo": "Personal information",
+      "howWellMatches": "How well does your CV match?",
+      "goodMatch": "Good match! Your experience fits well for this job.",
+      "someMatch": "There's some match. We'll help you highlight your strengths.",
+      "lowMatch": "Focus on your transferable skills. All experience counts!",
+      "summary": "Summary",
+      "experienceToHighlight": "Experience we can highlight",
+      "moreExperiences": "+{{count}} more experiences...",
+      "skills": "Skills"
+    },
+    "generate": {
+      "button": "Get help formulating the letter",
+      "generating": "Creating your letter...",
+      "fillRequired": "Fill in at least company, job title or job posting to get started.",
+      "noLetterGenerated": "No letter was generated",
+      "offlineFallback": "We couldn't connect to our smart help right now, so we've created a suggestion based on your information instead. You can edit it however you like!",
+      "yourOwnWordsValueable": "It's also good to write yourself - your words are valuable."
+    },
+    "result": {
+      "title": "Your cover letter",
+      "tip": "This is a suggestion based on your information. It's okay to change, add or remove - the most important thing is that it feels like you!",
+      "editLabel": "Edit your letter:",
+      "quickInsert": "Quick insert:",
+      "languageCheck": "Language check:",
+      "nameLabel": "What should we call this letter?",
+      "namePlaceholder": "e.g. Acme Inc - Project Manager"
+    },
+    "actions": {
+      "save": "Save letter",
+      "saved": "Saved!",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "newSuggestion": "New suggestion",
+      "clearAndRestart": "Clear and start over",
+      "downloadTxt": "Download as text file",
+      "downloadWord": "Download as Word document",
+      "openForPrint": "Open for print/PDF"
+    },
+    "messages": {
+      "couldNotSave": "Could not save right now. Your letter is still saved locally in your browser.",
+      "deleteConfirm": "Are you sure you want to delete this letter?",
+      "couldNotDelete": "Could not delete the letter. Please try again.",
+      "clearConfirm": "This will clear all fields. Your current work is saved if you want to return to it later. Continue?",
+      "popupBlocked": "Could not open print window. Check that pop-ups are allowed.",
+      "defaultTitle": "Cover letter",
+      "defaultFilename": "Cover-letter"
+    }
+  },
   "cvBuilder": {
     "title": "Create CV",
     "steps": {

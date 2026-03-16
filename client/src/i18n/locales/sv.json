@@ -1731,6 +1731,129 @@
     "helpDescription": "Om du har frågor eller behöver stöd, tveka inte att kontakta din arbetskonsulent. Vi finns här för dig!",
     "bookMeeting": "Boka ett möte"
   },
+  "coverLetterGenerator": {
+    "title": "Personligt brev",
+    "pageTitle": "Hjälp att formulera ditt personliga brev",
+    "pageDescription": "Dina erfarenheter + vår hjälp med formuleringar = ett brev som känns som dig. Det är okej att inte vara 100% entusiastisk - ärlighet är bäst.",
+    "stepByStep": "Steg för steg - vi tar det lugnt",
+    "backToJobSearch": "Tillbaka till jobbsök",
+    "writingFor": "Skriver brev för:",
+    "at": "på",
+    "savedLetters": {
+      "title": "Dina sparade brev",
+      "count": "{{count}} sparade",
+      "noLetters": "Inga sparade brev ännu",
+      "open": "Öppna",
+      "close": "Stäng"
+    },
+    "savedJobs": {
+      "title": "Sparade jobb",
+      "count": "{{count}} jobb",
+      "noJobs": "Inga sparade jobb",
+      "searchJobs": "Sök jobb att spara →",
+      "use": "Använd"
+    },
+    "applications": {
+      "title": "Dina ansökningar",
+      "count": "{{count}} registrerade",
+      "noApplications": "Inga ansökningar registrerade än",
+      "trackInfo": "Håll koll på dina ansökningar för att följa upp och se vilka som ger svar",
+      "registerApplication": "+ Registrera ansökan",
+      "registerNew": "+ Registrera ny ansökan",
+      "status": {
+        "applied": "Skickad",
+        "interview": "Intervju",
+        "offer": "Erbjudande",
+        "rejected": "Avslag"
+      }
+    },
+    "templates": {
+      "title": "Välj utgångspunkt",
+      "groups": {
+        "general": "Allmänt",
+        "public": "Offentlig sektor",
+        "creative": "Kreativa yrken",
+        "tech": "Tech & IT",
+        "care": "Vård & Omsorg",
+        "newToWork": "Ny på arbetsmarknaden"
+      }
+    },
+    "jobInfo": {
+      "title": "Jobbinformation",
+      "company": "Företag",
+      "companyPlaceholder": "t.ex. Acme AB",
+      "jobTitle": "Jobbtitel",
+      "jobTitlePlaceholder": "t.ex. Projektledare",
+      "jobAd": "Jobbannons",
+      "jobAdOptional": "(valfritt men hjälper oss)",
+      "jobAdPlaceholder": "Klistra in jobbannonsen här, eller beskriv jobbet med egna ord...",
+      "characters": "{{count}} tecken",
+      "cvMatch": "Matchar ditt CV: {{score}}%",
+      "whyThisJob": "Vad lockar dig med detta jobb?",
+      "whyThisJobOptional": "(valfritt)",
+      "whyThisJobPlaceholder": "Beskriv kort vad som fick dig att vilja söka - det behöver inte vara stort, ärlighet är bäst...",
+      "extraKeywords": "Extra nyckelord/intressen",
+      "extraKeywordsPlaceholder": "T.ex. specifika verktyg, mjuka kompetenser, intressen eller certifieringar du vill lyfta som inte finns i CV:t...",
+      "extraKeywordsHint": "Här kan du lägga till saker som inte syns i ditt CV men som är relevanta för jobbet"
+    },
+    "tone": {
+      "title": "Ton i brevet",
+      "professional": "Professionell",
+      "enthusiastic": "Entusiastisk",
+      "formal": "Formell"
+    },
+    "cvSection": {
+      "title": "Din information från CV",
+      "noCV": "Ingen information hittades från ditt CV",
+      "loadCV": "Ladda CV-information",
+      "personalInfo": "Personlig information",
+      "howWellMatches": "Hur väl matchar ditt CV?",
+      "goodMatch": "Bra matchning! Dina erfarenheter passar väl för detta jobb.",
+      "someMatch": "Det finns viss matchning. Vi hjälper dig lyfta dina styrkor.",
+      "lowMatch": "Fokusera på dina överförbara färdigheter. All erfarenhet räknas!",
+      "summary": "Sammanfattning",
+      "experienceToHighlight": "Erfarenhet vi kan lyfta",
+      "moreExperiences": "+{{count}} fler erfarenheter...",
+      "skills": "Kompetenser"
+    },
+    "generate": {
+      "button": "Få hjälp att formulera brevet",
+      "generating": "Skapar ditt brev...",
+      "fillRequired": "Fyll i åtminstone företag, jobbtitel eller jobbannons för att komma igång.",
+      "noLetterGenerated": "Inget brev genererades",
+      "offlineFallback": "Vi kunde inte ansluta till vår smarta hjälp just nu, så vi har skapat ett förslag baserat på din information istället. Du kan redigera det hur du vill!",
+      "yourOwnWordsValueable": "Det är också bra att skriva själv - dina ord är värdefulla."
+    },
+    "result": {
+      "title": "Ditt personliga brev",
+      "tip": "Detta är ett förslag baserat på din information. Det är okej att ändra, lägga till eller ta bort - det viktigaste är att det känns som du!",
+      "editLabel": "Redigera ditt brev:",
+      "quickInsert": "Snabbinfoga:",
+      "languageCheck": "Språkkontroll:",
+      "nameLabel": "Vad ska vi kalla detta brev?",
+      "namePlaceholder": "t.ex. Acme AB - Projektledare"
+    },
+    "actions": {
+      "save": "Spara brevet",
+      "saved": "Sparat!",
+      "copy": "Kopiera",
+      "copied": "Kopierat!",
+      "newSuggestion": "Nytt förslag",
+      "clearAndRestart": "Rensa och börja om",
+      "downloadTxt": "Ladda ner som textfil",
+      "downloadWord": "Ladda ner som Word-dokument",
+      "openForPrint": "Öppna för utskrift/PDF"
+    },
+    "messages": {
+      "couldNotSave": "Kunde inte spara just nu. Ditt brev är fortfarande sparat lokalt i din webbläsare.",
+      "deleteConfirm": "Är du säker på att du vill ta bort detta brev?",
+      "couldNotDelete": "Kunde inte ta bort brevet. Försök igen.",
+      "clearConfirm": "Detta rensar alla fält. Ditt nuvarande arbete är sparat om du vill återvända till det senare. Vill du fortsätta?",
+      "popupBlocked": "Kunde inte öppna utskriftsfönster. Kontrollera att popup-fönster är tillåtna.",
+      "defaultTitle": "Personligt brev",
+      "defaultFilename": "Personligt-brev"
+    }
+  },
   "cvBuilder": {
     "title": "Skapa CV",
     "steps": {

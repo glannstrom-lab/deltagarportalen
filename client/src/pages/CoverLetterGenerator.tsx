@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useSearchParams, Link } from 'react-router-dom'
 import { 
   FileText, 
@@ -80,6 +81,8 @@ interface CVData {
 const templates = coverLetterTemplates
 
 export default function CoverLetterGenerator() {
+  const { t, i18n } = useTranslation()
+
   // === QUERY PARAMS ===
   const [searchParams] = useSearchParams()
   const queryJobId = searchParams.get('jobId')
@@ -389,7 +392,7 @@ export default function CoverLetterGenerator() {
   // === GENERATE ===
   const handleGenerate = async () => {
     if (!jobbAnnons.trim() && !company && !jobTitle) {
-      setError('Fyll i åtminstone företag, jobbtitel eller jobbannons för att komma igång.')
+      setError(t('coverLetterGenerator.generate.fillRequired'))
       return
     }
 
@@ -469,7 +472,7 @@ export default function CoverLetterGenerator() {
       setGenerationProgress(100)
 
       if (!response || !response.brev) {
-        throw new Error('Inget brev genererades')
+        throw new Error(t('coverLetterGenerator.generate.noLetterGenerated'))
       }
 
       setGeneratedBrev(response.brev)
@@ -498,7 +501,7 @@ export default function CoverLetterGenerator() {
       }
       
       // Visa info om att det är en mall
-      setError('Vi kunde inte ansluta till vår smarta hjälp just nu, så vi har skapat ett förslag baserat på din information istället. Du kan redigera det hur du vill!')
+      setError(t('coverLetterGenerator.generate.offlineFallback'))
       
       // Scroll to result
       setTimeout(() => {
@@ -513,7 +516,7 @@ export default function CoverLetterGenerator() {
   const handleSave = async () => {
     if (!generatedBrev.trim()) return
 
-    const title = saveTitle.trim() || `Personligt brev - ${new Date().toLocaleDateString('sv-SE')}`
+    const title = saveTitle.trim() || `${t('coverLetterGenerator.messages.defaultTitle')} - ${new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}`
     
     try {
       await coverLetterApi.create({
@@ -531,19 +534,19 @@ export default function CoverLetterGenerator() {
       clearSavedData() // Rensa auto-save när explicit sparat
     } catch (e) {
       console.error('Kunde inte spara brev:', e)
-      setError('Kunde inte spara just nu. Ditt brev är fortfarande sparat lokalt i din webbläsare.')
+      setError(t('coverLetterGenerator.messages.couldNotSave'))
     }
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Är du säker på att du vill ta bort detta brev?')) return
-    
+    if (!confirm(t('coverLetterGenerator.messages.deleteConfirm'))) return
+
     try {
       await coverLetterApi.delete(id)
       await loadSavedLetters()
     } catch (e) {
       console.error('Kunde inte ta bort brev:', e)
-      setError('Kunde inte ta bort brevet. Försök igen.')
+      setError(t('coverLetterGenerator.messages.couldNotDelete'))
     }
   }
 
@@ -577,7 +580,7 @@ export default function CoverLetterGenerator() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${saveTitle || 'Personligt-brev'}.txt`
+    a.download = `${saveTitle || t('coverLetterGenerator.messages.defaultFilename')}.txt`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -585,12 +588,14 @@ export default function CoverLetterGenerator() {
   }
 
   const handleDownloadWord = () => {
+    const defaultTitle = t('coverLetterGenerator.messages.defaultTitle')
+    const dateLocale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
     const htmlContent = `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
-        <title>${saveTitle || 'Personligt brev'}</title>
+        <title>${saveTitle || defaultTitle}</title>
         <style>
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 40px auto; padding: 40px; }
           .header { margin-bottom: 40px; }
@@ -604,7 +609,7 @@ export default function CoverLetterGenerator() {
           ${cvData?.email ? `<p>${cvData.email}</p>` : ''}
           ${cvData?.phone ? `<p>${cvData.phone}</p>` : ''}
         </div>
-        <div class="date">${new Date().toLocaleDateString('sv-SE')}</div>
+        <div class="date">${new Date().toLocaleDateString(dateLocale)}</div>
         <div class="content">${generatedBrev.replace(/\n/g, '<br>')}</div>
       </body>
       </html>
@@ -614,7 +619,7 @@ export default function CoverLetterGenerator() {
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.href = url
-    a.download = `${saveTitle || 'Personligt-brev'}.doc`
+    a.download = `${saveTitle || t('coverLetterGenerator.messages.defaultFilename')}.doc`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -624,16 +629,18 @@ export default function CoverLetterGenerator() {
   const handleDownloadPDF = async () => {
     const printWindow = window.open('', '_blank')
     if (!printWindow) {
-      alert('Kunde inte öppna utskriftsfönster. Kontrollera att popup-fönster är tillåtna.')
+      alert(t('coverLetterGenerator.messages.popupBlocked'))
       return
     }
-    
+
+    const defaultTitle = t('coverLetterGenerator.messages.defaultTitle')
+    const dateLocale = i18n.language === 'en' ? 'en-US' : 'sv-SE'
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
-        <title>${saveTitle || 'Personligt brev'}</title>
+        <title>${saveTitle || defaultTitle}</title>
         <style>
           @page { margin: 2cm; }
           body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; padding: 40px; }
@@ -651,7 +658,7 @@ export default function CoverLetterGenerator() {
           ${cvData?.email ? `<p>${cvData.email}</p>` : ''}
           ${cvData?.phone ? `<p>${cvData.phone}</p>` : ''}
         </div>
-        <div class="date">${new Date().toLocaleDateString('sv-SE')}</div>
+        <div class="date">${new Date().toLocaleDateString(dateLocale)}</div>
         <div class="content">${generatedBrev.replace(/\n/g, '<br>')}</div>
         <script>
           setTimeout(() => {
@@ -666,7 +673,7 @@ export default function CoverLetterGenerator() {
   }
 
   const handleReset = () => {
-    if (confirm('Detta rensar alla fält. Ditt nuvarande arbete är sparat om du vill återvända till det senare. Vill du fortsätta?')) {
+    if (confirm(t('coverLetterGenerator.messages.clearConfirm'))) {
       setJobbAnnons('')
       setTidigareBrev('')
       setMotivering('')
@@ -692,28 +699,28 @@ export default function CoverLetterGenerator() {
       <div className="max-w-lg mx-auto space-y-4 pb-20 px-4">
         {/* Back button */}
         {(sourceJob || queryJobId) && (
-          <Link 
+          <Link
             to="/job-search"
             className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 pt-4"
           >
             <ArrowLeft size={16} />
-            Tillbaka till jobbsök
+            {t('coverLetterGenerator.backToJobSearch')}
           </Link>
         )}
-        
+
         {/* Source Job Info */}
         {(company || jobTitle) && (
           <div className="bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl p-4 border border-teal-100">
-            <p className="text-xs text-teal-600 font-medium uppercase tracking-wider mb-1">Skriver brev för:</p>
+            <p className="text-xs text-teal-600 font-medium uppercase tracking-wider mb-1">{t('coverLetterGenerator.writingFor')}</p>
             <h2 className="font-semibold text-slate-800">{jobTitle}</h2>
             {company && <p className="text-sm text-slate-600">{company}</p>}
           </div>
         )}
-        
+
         <div className="text-center space-y-2 pt-4">
-          <h1 className="text-xl font-bold text-slate-800">Personligt brev</h1>
+          <h1 className="text-xl font-bold text-slate-800">{t('coverLetterGenerator.title')}</h1>
           <p className="text-sm text-slate-600">
-            Steg för steg - vi tar det lugnt
+            {t('coverLetterGenerator.stepByStep')}
           </p>
         </div>
         
@@ -721,17 +728,17 @@ export default function CoverLetterGenerator() {
         {showSaved ? (
           <div className="bg-white rounded-xl border border-slate-200 p-4">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-slate-800">Dina sparade brev</h3>
+              <h3 className="font-semibold text-slate-800">{t('coverLetterGenerator.savedLetters.title')}</h3>
               <button
                 onClick={() => setShowSaved(false)}
                 className="text-sm text-slate-500 hover:text-slate-700"
               >
-                Stäng
+                {t('coverLetterGenerator.savedLetters.close')}
               </button>
             </div>
             <div className="space-y-3 max-h-96 overflow-y-auto">
               {savedLetters.length === 0 ? (
-                <p className="text-slate-500 text-center py-4 text-sm">Inga sparade brev ännu</p>
+                <p className="text-slate-500 text-center py-4 text-sm">{t('coverLetterGenerator.savedLetters.noLetters')}</p>
               ) : (
                 savedLetters.map((letter) => (
                   <div
@@ -741,7 +748,7 @@ export default function CoverLetterGenerator() {
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-slate-900 truncate">{letter.title}</p>
                       <p className="text-sm text-slate-500">
-                        {new Date(letter.createdAt).toLocaleDateString('sv-SE')}
+                        {new Date(letter.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                         {letter.company && ` • ${letter.company}`}
                       </p>
                     </div>
@@ -753,7 +760,7 @@ export default function CoverLetterGenerator() {
                         }}
                         className="px-3 py-1 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                       >
-                        Öppna
+                        {t('coverLetterGenerator.savedLetters.open')}
                       </button>
                       <button
                         onClick={() => handleDelete(letter.id)}
@@ -809,21 +816,21 @@ export default function CoverLetterGenerator() {
       {/* Back button & Source Job Info */}
       {(sourceJob || queryJobId || company || jobTitle) && (
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-          <Link 
+          <Link
             to="/job-search"
             className="inline-flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
           >
             <ArrowLeft size={16} />
-            Tillbaka till jobbsök
+            {t('coverLetterGenerator.backToJobSearch')}
           </Link>
-          
+
           {(company || jobTitle) && (
             <div className="flex-1 bg-gradient-to-r from-teal-50 to-emerald-50 rounded-xl px-4 py-3 border border-teal-100">
               <div className="flex items-center gap-2">
                 <Briefcase className="w-5 h-5 text-teal-600" />
                 <div>
-                  <p className="text-xs text-teal-600 font-medium uppercase tracking-wider">Skriver brev för:</p>
-                  <p className="font-semibold text-slate-800">{jobTitle} {company && `på ${company}`}</p>
+                  <p className="text-xs text-teal-600 font-medium uppercase tracking-wider">{t('coverLetterGenerator.writingFor')}</p>
+                  <p className="font-semibold text-slate-800">{jobTitle} {company && `${t('coverLetterGenerator.at')} ${company}`}</p>
                 </div>
               </div>
             </div>
@@ -836,10 +843,9 @@ export default function CoverLetterGenerator() {
         <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-teal-100 to-emerald-100 mb-2">
           <FileText className="w-7 h-7 text-teal-600" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800">Hjälp att formulera ditt personliga brev</h1>
+        <h1 className="text-2xl font-bold text-slate-800">{t('coverLetterGenerator.pageTitle')}</h1>
         <p className="text-slate-600 max-w-2xl mx-auto">
-          Dina erfarenheter + vår hjälp med formuleringar = ett brev som känns som dig. 
-          Det är okej att inte vara 100% entusiastisk - ärlighet är bäst.
+          {t('coverLetterGenerator.pageDescription')}
         </p>
         
         {/* Auto-save indicator */}
@@ -868,7 +874,7 @@ export default function CoverLetterGenerator() {
           <div className="flex items-center gap-3">
             <Target className="w-5 h-5 text-indigo-600" />
             <div>
-              <h2 className="font-semibold text-slate-800">Välj utgångspunkt</h2>
+              <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.templates.title')}</h2>
               <p className="text-sm text-slate-500">
                 {coverLetterTemplates.find(t => t.id === selectedTemplate)?.label}
               </p>
@@ -944,8 +950,8 @@ export default function CoverLetterGenerator() {
             <div className="flex items-center gap-3">
               <History className="w-5 h-5 text-slate-500" />
               <div>
-                <h3 className="font-medium text-slate-800">Dina sparade brev</h3>
-                <p className="text-sm text-slate-500">{savedLetters.length} sparade</p>
+                <h3 className="font-medium text-slate-800">{t('coverLetterGenerator.savedLetters.title')}</h3>
+                <p className="text-sm text-slate-500">{t('coverLetterGenerator.savedLetters.count', { count: savedLetters.length })}</p>
               </div>
             </div>
             {showSaved ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -954,7 +960,7 @@ export default function CoverLetterGenerator() {
           {showSaved && (
             <div className="mt-4 space-y-3 border-t pt-4 max-h-64 overflow-y-auto">
               {savedLetters.length === 0 ? (
-                <p className="text-slate-500 text-center py-4 text-sm">Inga sparade brev ännu</p>
+                <p className="text-slate-500 text-center py-4 text-sm">{t('coverLetterGenerator.savedLetters.noLetters')}</p>
               ) : (
                 savedLetters.map((letter) => (
                   <div
@@ -964,7 +970,7 @@ export default function CoverLetterGenerator() {
                     <div className="min-w-0 flex-1">
                       <p className="font-medium text-slate-900 truncate">{letter.title}</p>
                       <p className="text-sm text-slate-500">
-                        {new Date(letter.createdAt).toLocaleDateString('sv-SE')}
+                        {new Date(letter.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                         {letter.company && ` • ${letter.company}`}
                       </p>
                     </div>
@@ -973,7 +979,7 @@ export default function CoverLetterGenerator() {
                         onClick={() => handleLoad(letter)}
                         className="px-3 py-1 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                       >
-                        Öppna
+                        {t('coverLetterGenerator.savedLetters.open')}
                       </button>
                       <button
                         onClick={() => handleDelete(letter.id)}
@@ -997,8 +1003,8 @@ export default function CoverLetterGenerator() {
             <div className="flex items-center gap-3">
               <Building2 className="w-5 h-5 text-slate-500" />
               <div>
-                <h3 className="font-medium text-slate-800">Sparade jobb</h3>
-                <p className="text-sm text-slate-500">{savedJobs.length} jobb</p>
+                <h3 className="font-medium text-slate-800">{t('coverLetterGenerator.savedJobs.title')}</h3>
+                <p className="text-sm text-slate-500">{t('coverLetterGenerator.savedJobs.count', { count: savedJobs.length })}</p>
               </div>
             </div>
             {showSavedJobs ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -1008,9 +1014,9 @@ export default function CoverLetterGenerator() {
             <div className="mt-4 space-y-3 border-t pt-4 max-h-64 overflow-y-auto">
               {savedJobs.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text-slate-500 text-sm mb-2">Inga sparade jobb</p>
+                  <p className="text-slate-500 text-sm mb-2">{t('coverLetterGenerator.savedJobs.noJobs')}</p>
                   <a href="/job-search" className="text-sm text-teal-600 hover:underline">
-                    Sök jobb att spara →
+                    {t('coverLetterGenerator.savedJobs.searchJobs')}
                   </a>
                 </div>
               ) : (
@@ -1030,7 +1036,7 @@ export default function CoverLetterGenerator() {
                       onClick={() => handleLoadJob(job)}
                       className="px-3 py-1 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors ml-2"
                     >
-                      Använd
+                      {t('coverLetterGenerator.savedJobs.use')}
                     </button>
                   </div>
                 ))
@@ -1048,8 +1054,8 @@ export default function CoverLetterGenerator() {
             <div className="flex items-center gap-3">
               <Send className="w-5 h-5 text-orange-500" />
               <div>
-                <h3 className="font-medium text-slate-800">Dina ansökningar</h3>
-                <p className="text-sm text-slate-500">{applications.length} registrerade</p>
+                <h3 className="font-medium text-slate-800">{t('coverLetterGenerator.applications.title')}</h3>
+                <p className="text-sm text-slate-500">{t('coverLetterGenerator.applications.count', { count: applications.length })}</p>
               </div>
             </div>
             {showApplications ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
@@ -1059,16 +1065,16 @@ export default function CoverLetterGenerator() {
             <div className="mt-4 space-y-3 border-t pt-4 max-h-64 overflow-y-auto">
               {applications.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text-slate-500 text-sm mb-3">Inga ansökningar registrerade än</p>
+                  <p className="text-slate-500 text-sm mb-3">{t('coverLetterGenerator.applications.noApplications')}</p>
                   <p className="text-xs text-slate-400 mb-3">
-                    Håll koll på dina ansökningar för att följa upp och se vilka som ger svar
+                    {t('coverLetterGenerator.applications.trackInfo')}
                   </p>
                   <button
                     onClick={() => {
                       const newApplication = {
                         id: Date.now().toString(),
-                        company: company || 'Nytt företag',
-                        jobTitle: jobTitle || 'Nytt jobb',
+                        company: company || 'New company',
+                        jobTitle: jobTitle || 'New job',
                         status: 'applied' as const,
                         appliedDate: new Date().toISOString()
                       }
@@ -1076,7 +1082,7 @@ export default function CoverLetterGenerator() {
                     }}
                     className="px-4 py-2 bg-orange-500 text-white text-sm rounded-lg hover:bg-orange-600 transition-colors"
                   >
-                    + Registrera ansökan
+                    {t('coverLetterGenerator.applications.registerApplication')}
                   </button>
                 </div>
               ) : (
@@ -1089,7 +1095,7 @@ export default function CoverLetterGenerator() {
                       <div className="min-w-0 flex-1">
                         <p className="font-medium text-slate-900 truncate">{app.jobTitle}</p>
                         <p className="text-sm text-slate-500">
-                          {app.company} • {new Date(app.appliedDate).toLocaleDateString('sv-SE')}
+                          {app.company} • {new Date(app.appliedDate).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                         </p>
                       </div>
                       <div className="flex items-center gap-2 ml-2">
@@ -1099,9 +1105,7 @@ export default function CoverLetterGenerator() {
                           app.status === 'offer' ? 'bg-emerald-100 text-emerald-700' :
                           'bg-slate-100 text-slate-700'
                         }`}>
-                          {app.status === 'applied' ? 'Skickad' :
-                           app.status === 'interview' ? 'Intervju' :
-                           app.status === 'offer' ? 'Erbjudande' : 'Avslag'}
+                          {t(`coverLetterGenerator.applications.status.${app.status}`)}
                         </span>
                         <button
                           onClick={() => setApplications(applications.filter(a => a.id !== app.id))}
@@ -1116,8 +1120,8 @@ export default function CoverLetterGenerator() {
                     onClick={() => {
                       const newApplication = {
                         id: Date.now().toString(),
-                        company: company || 'Nytt företag',
-                        jobTitle: jobTitle || 'Nytt jobb',
+                        company: company || 'New company',
+                        jobTitle: jobTitle || 'New job',
                         status: 'applied' as const,
                         appliedDate: new Date().toISOString()
                       }
@@ -1125,7 +1129,7 @@ export default function CoverLetterGenerator() {
                     }}
                     className="w-full py-2 border-2 border-dashed border-orange-200 text-orange-600 rounded-lg hover:bg-orange-50 transition-colors text-sm"
                   >
-                    + Registrera ny ansökan
+                    {t('coverLetterGenerator.applications.registerNew')}
                   </button>
                 </>
               )}
@@ -1142,7 +1146,7 @@ export default function CoverLetterGenerator() {
         >
           <div className="flex items-center gap-3">
             <Briefcase className="w-5 h-5 text-teal-600" />
-            <h2 className="font-semibold text-slate-800">Jobbinformation</h2>
+            <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.jobInfo.title')}</h2>
           </div>
           {expandedSections.input ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
         </button>
@@ -1153,25 +1157,25 @@ export default function CoverLetterGenerator() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Företag
+                  {t('coverLetterGenerator.jobInfo.company')}
                 </label>
                 <input
                   type="text"
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
-                  placeholder="t.ex. Acme AB"
+                  placeholder={t('coverLetterGenerator.jobInfo.companyPlaceholder')}
                   className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Jobbtitel
+                  {t('coverLetterGenerator.jobInfo.jobTitle')}
                 </label>
                 <input
                   type="text"
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
-                  placeholder="t.ex. Projektledare"
+                  placeholder={t('coverLetterGenerator.jobInfo.jobTitlePlaceholder')}
                   className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
                 />
               </div>
@@ -1180,25 +1184,25 @@ export default function CoverLetterGenerator() {
             {/* Job Ad */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Jobbannons <span className="text-slate-400 font-normal">(valfritt men hjälper oss)</span>
+                {t('coverLetterGenerator.jobInfo.jobAd')} <span className="text-slate-400 font-normal">{t('coverLetterGenerator.jobInfo.jobAdOptional')}</span>
               </label>
               <textarea
                 value={jobbAnnons}
                 onChange={(e) => setJobbAnnons(e.target.value)}
-                placeholder="Klistra in jobbannonsen här, eller beskriv jobbet med egna ord..."
+                placeholder={t('coverLetterGenerator.jobInfo.jobAdPlaceholder')}
                 rows={6}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
               />
               <div className="flex justify-between mt-1">
                 <p className="text-xs text-slate-500">
-                  {jobbAnnons.length} tecken
+                  {t('coverLetterGenerator.jobInfo.characters', { count: jobbAnnons.length })}
                 </p>
                 {cvMatchScore !== null && jobbAnnons.length > 50 && (
                   <p className={`text-xs font-medium ${
-                    cvMatchScore >= 70 ? 'text-green-600' : 
+                    cvMatchScore >= 70 ? 'text-green-600' :
                     cvMatchScore >= 40 ? 'text-amber-600' : 'text-slate-500'
                   }`}>
-                    Matchar ditt CV: {cvMatchScore}%
+                    {t('coverLetterGenerator.jobInfo.cvMatch', { score: cvMatchScore })}
                   </p>
                 )}
               </div>
@@ -1207,12 +1211,12 @@ export default function CoverLetterGenerator() {
             {/* Why this job */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Vad lockar dig med detta jobb? <span className="text-slate-400 font-normal">(valfritt)</span>
+                {t('coverLetterGenerator.jobInfo.whyThisJob')} <span className="text-slate-400 font-normal">{t('coverLetterGenerator.jobInfo.whyThisJobOptional')}</span>
               </label>
               <textarea
                 value={motivering}
                 onChange={(e) => setMotivering(e.target.value)}
-                placeholder="Beskriv kort vad som fick dig att vilja söka - det behöver inte vara stort, ärlighet är bäst..."
+                placeholder={t('coverLetterGenerator.jobInfo.whyThisJobPlaceholder')}
                 rows={3}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
               />
@@ -1221,39 +1225,39 @@ export default function CoverLetterGenerator() {
             {/* Extra keywords/interests */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">
-                Extra nyckelord/intressen <span className="text-slate-400 font-normal">(valfritt)</span>
+                {t('coverLetterGenerator.jobInfo.extraKeywords')} <span className="text-slate-400 font-normal">{t('coverLetterGenerator.jobInfo.whyThisJobOptional')}</span>
               </label>
               <textarea
                 value={extraKeywords}
                 onChange={(e) => setExtraKeywords(e.target.value)}
-                placeholder="T.ex. specifika verktyg, mjuka kompetenser, intressen eller certifieringar du vill lyfta som inte finns i CV:t..."
+                placeholder={t('coverLetterGenerator.jobInfo.extraKeywordsPlaceholder')}
                 rows={2}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
               />
               <p className="text-xs text-slate-500 mt-1">
-                Här kan du lägga till saker som inte syns i ditt CV men som är relevanta för jobbet
+                {t('coverLetterGenerator.jobInfo.extraKeywordsHint')}
               </p>
             </div>
 
             {/* Tone Selection */}
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-2">
-                Ton i brevet
+                {t('coverLetterGenerator.tone.title')}
               </label>
               <div className="flex flex-wrap gap-3">
-                {(['professionell', 'entusiastisk', 'formell'] as const).map((t) => (
+                {(['professionell', 'entusiastisk', 'formell'] as const).map((toneOption) => (
                   <button
-                    key={t}
-                    onClick={() => setTon(t)}
+                    key={toneOption}
+                    onClick={() => setTon(toneOption)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      ton === t
+                      ton === toneOption
                         ? 'bg-teal-600 text-white'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
-                    {t === 'professionell' && 'Professionell'}
-                    {t === 'entusiastisk' && 'Entusiastisk'}
-                    {t === 'formell' && 'Formell'}
+                    {toneOption === 'professionell' && t('coverLetterGenerator.tone.professional')}
+                    {toneOption === 'entusiastisk' && t('coverLetterGenerator.tone.enthusiastic')}
+                    {toneOption === 'formell' && t('coverLetterGenerator.tone.formal')}
                   </button>
                 ))}
               </div>
@@ -1270,7 +1274,7 @@ export default function CoverLetterGenerator() {
         >
           <div className="flex items-center gap-3">
             <User className="w-5 h-5 text-teal-600" />
-            <h2 className="font-semibold text-slate-800">Din information från CV</h2>
+            <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.cvSection.title')}</h2>
           </div>
           <div className="flex items-center gap-2">
             {cvLoading && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
@@ -1282,9 +1286,9 @@ export default function CoverLetterGenerator() {
           <div className="p-4 pt-0">
             {!cvData ? (
               <div className="text-center py-8">
-                <p className="text-slate-500 mb-4">Ingen information hittades från ditt CV</p>
+                <p className="text-slate-500 mb-4">{t('coverLetterGenerator.cvSection.noCV')}</p>
                 <Button onClick={loadCVData} variant="outline">
-                  Ladda CV-information
+                  {t('coverLetterGenerator.cvSection.loadCV')}
                 </Button>
               </div>
             ) : (
@@ -1293,7 +1297,7 @@ export default function CoverLetterGenerator() {
                 <div className="bg-slate-50 rounded-lg p-4">
                   <h3 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
                     <User className="w-4 h-4" />
-                    Personlig information
+                    {t('coverLetterGenerator.cvSection.personalInfo')}
                   </h3>
                   <p className="text-slate-700">
                     {cvData.firstName} {cvData.lastName}
@@ -1304,37 +1308,37 @@ export default function CoverLetterGenerator() {
                 {/* CV Match visualization */}
                 {cvMatchScore !== null && jobbAnnons.length > 50 && (
                   <div className={`rounded-lg p-4 ${
-                    cvMatchScore >= 70 ? 'bg-green-50 border border-green-200' : 
-                    cvMatchScore >= 40 ? 'bg-amber-50 border border-amber-200' : 
+                    cvMatchScore >= 70 ? 'bg-green-50 border border-green-200' :
+                    cvMatchScore >= 40 ? 'bg-amber-50 border border-amber-200' :
                     'bg-slate-50 border border-slate-200'
                   }`}>
                     <h3 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
                       <Target className="w-4 h-4" />
-                      Hur väl matchar ditt CV?
+                      {t('coverLetterGenerator.cvSection.howWellMatches')}
                     </h3>
                     <div className="flex items-center gap-3">
                       <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div 
+                        <div
                           className={`h-full transition-all duration-500 ${
-                            cvMatchScore >= 70 ? 'bg-green-500' : 
+                            cvMatchScore >= 70 ? 'bg-green-500' :
                             cvMatchScore >= 40 ? 'bg-amber-500' : 'bg-slate-400'
                           }`}
                           style={{ width: `${cvMatchScore}%` }}
                         />
                       </div>
                       <span className={`font-bold ${
-                        cvMatchScore >= 70 ? 'text-green-600' : 
+                        cvMatchScore >= 70 ? 'text-green-600' :
                         cvMatchScore >= 40 ? 'text-amber-600' : 'text-slate-500'
                       }`}>
                         {cvMatchScore}%
                       </span>
                     </div>
                     <p className="text-sm text-slate-600 mt-2">
-                      {cvMatchScore >= 70 
-                        ? 'Bra matchning! Dina erfarenheter passar väl för detta jobb.'
+                      {cvMatchScore >= 70
+                        ? t('coverLetterGenerator.cvSection.goodMatch')
                         : cvMatchScore >= 40
-                        ? 'Det finns viss matchning. Vi hjälper dig lyfta dina styrkor.'
-                        : 'Fokusera på dina överförbara färdigheter. All erfarenhet räknas!'}
+                        ? t('coverLetterGenerator.cvSection.someMatch')
+                        : t('coverLetterGenerator.cvSection.lowMatch')}
                     </p>
                   </div>
                 )}
@@ -1342,7 +1346,7 @@ export default function CoverLetterGenerator() {
                 {/* Summary */}
                 {cvData.summary && (
                   <div className="bg-slate-50 rounded-lg p-4">
-                    <h3 className="font-medium text-slate-800 mb-2">Sammanfattning</h3>
+                    <h3 className="font-medium text-slate-800 mb-2">{t('coverLetterGenerator.cvSection.summary')}</h3>
                     <p className="text-slate-700 text-sm line-clamp-4">{cvData.summary}</p>
                   </div>
                 )}
@@ -1350,17 +1354,17 @@ export default function CoverLetterGenerator() {
                 {/* Experience */}
                 {cvData.workExperience && cvData.workExperience.length > 0 && (
                   <div className="bg-slate-50 rounded-lg p-4">
-                    <h3 className="font-medium text-slate-800 mb-2">Erfarenhet vi kan lyfta</h3>
+                    <h3 className="font-medium text-slate-800 mb-2">{t('coverLetterGenerator.cvSection.experienceToHighlight')}</h3>
                     <ul className="space-y-1 text-sm text-slate-700">
                       {cvData.workExperience.slice(0, 3).map((exp, idx) => (
                         <li key={idx} className="flex items-center gap-2">
                           <Check className="w-3 h-3 text-teal-500" />
-                          {exp.title} på {exp.company}
+                          {exp.title} {t('coverLetterGenerator.at')} {exp.company}
                         </li>
                       ))}
                       {cvData.workExperience.length > 3 && (
                         <li className="text-slate-500 text-sm">
-                          +{cvData.workExperience.length - 3} fler erfarenheter...
+                          {t('coverLetterGenerator.cvSection.moreExperiences', { count: cvData.workExperience.length - 3 })}
                         </li>
                       )}
                     </ul>
@@ -1370,7 +1374,7 @@ export default function CoverLetterGenerator() {
                 {/* Skills */}
                 {cvData.skills && cvData.skills.length > 0 && (
                   <div className="bg-slate-50 rounded-lg p-4">
-                    <h3 className="font-medium text-slate-800 mb-2">Kompetenser</h3>
+                    <h3 className="font-medium text-slate-800 mb-2">{t('coverLetterGenerator.cvSection.skills')}</h3>
                     <div className="flex flex-wrap gap-2">
                       {cvData.skills.slice(0, 8).map((skill, idx) => (
                         <span
@@ -1404,12 +1408,12 @@ export default function CoverLetterGenerator() {
           {isGenerating ? (
             <>
               <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              Skapar ditt brev...
+              {t('coverLetterGenerator.generate.generating')}
             </>
           ) : (
             <>
               <Sparkles className="w-5 h-5 mr-2" />
-              Få hjälp att formulera brevet
+              {t('coverLetterGenerator.generate.button')}
             </>
           )}
         </Button>
@@ -1421,7 +1425,7 @@ export default function CoverLetterGenerator() {
           <AlertCircle className="w-5 h-5 mx-auto mb-2" />
           <p>{error}</p>
           <p className="text-sm mt-2 text-amber-600">
-            Det är också bra att skriva själv - dina ord är värdefulla.
+            {t('coverLetterGenerator.generate.yourOwnWordsValueable')}
           </p>
         </div>
       )}
@@ -1435,7 +1439,7 @@ export default function CoverLetterGenerator() {
           >
             <div className="flex items-center gap-3">
               <MessageSquare className="w-5 h-5 text-teal-600" />
-              <h2 className="font-semibold text-slate-800">Ditt personliga brev</h2>
+              <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.result.title')}</h2>
             </div>
             {expandedSections.result ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
           </button>
@@ -1446,9 +1450,7 @@ export default function CoverLetterGenerator() {
               <div className="bg-white/70 rounded-lg p-3 text-sm text-slate-600 flex items-start gap-2">
                 <Lightbulb className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
                 <p>
-                  Detta är ett förslag baserat på din information. 
-                  Det är okej att ändra, lägga till eller ta bort - 
-                  det viktigaste är att det känns som du!
+                  {t('coverLetterGenerator.result.tip')}
                 </p>
               </div>
 
@@ -1463,7 +1465,7 @@ export default function CoverLetterGenerator() {
               {/* Generated Letter with inline editing */}
               <div className="space-y-2">
                 <label className="block text-sm font-medium text-slate-700">
-                  Redigera ditt brev:
+                  {t('coverLetterGenerator.result.editLabel')}
                 </label>
                 <textarea
                   value={generatedBrev}
@@ -1471,10 +1473,10 @@ export default function CoverLetterGenerator() {
                   rows={12}
                   className="w-full px-4 py-4 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-y font-serif leading-relaxed"
                 />
-                
+
                 {/* Quick phrases */}
                 <div className="pt-2">
-                  <p className="text-xs text-slate-500 mb-2">Snabbinfoga:</p>
+                  <p className="text-xs text-slate-500 mb-2">{t('coverLetterGenerator.result.quickInsert')}</p>
                   <QuickPhrases onSelect={(text) => setGeneratedBrev(generatedBrev + ' ' + text)} />
                 </div>
               </div>
@@ -1482,7 +1484,7 @@ export default function CoverLetterGenerator() {
               {/* Swedish Norms Check */}
               {normIssues.length > 0 && (
                 <div className="space-y-2">
-                  <h4 className="text-sm font-medium text-slate-700">Språkkontroll:</h4>
+                  <h4 className="text-sm font-medium text-slate-700">{t('coverLetterGenerator.result.languageCheck')}</h4>
                   {normIssues.map((issue, idx) => (
                     <div 
                       key={idx}
@@ -1502,13 +1504,13 @@ export default function CoverLetterGenerator() {
               {/* Save Title Input */}
               <div>
                 <label className="block text-sm font-medium text-slate-700 mb-1">
-                  Vad ska vi kalla detta brev?
+                  {t('coverLetterGenerator.result.nameLabel')}
                 </label>
                 <input
                   type="text"
                   value={saveTitle}
                   onChange={(e) => setSaveTitle(e.target.value)}
-                  placeholder="t.ex. Acme AB - Projektledare"
+                  placeholder={t('coverLetterGenerator.result.namePlaceholder')}
                   className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none"
                 />
               </div>
@@ -1525,48 +1527,48 @@ export default function CoverLetterGenerator() {
                   ) : (
                     <Save className="w-4 h-4" />
                   )}
-                  {isSaving ? 'Sparat!' : 'Spara brevet'}
+                  {isSaving ? t('coverLetterGenerator.actions.saved') : t('coverLetterGenerator.actions.save')}
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   onClick={handleCopy}
                   className="flex items-center gap-2"
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  {copied ? 'Kopierat!' : 'Kopiera'}
+                  {copied ? t('coverLetterGenerator.actions.copied') : t('coverLetterGenerator.actions.copy')}
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   onClick={handleDownloadTXT}
                   className="flex items-center gap-2"
-                  title="Ladda ner som textfil"
+                  title={t('coverLetterGenerator.actions.downloadTxt')}
                 >
                   <Download className="w-4 h-4" />
                   TXT
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   onClick={handleDownloadWord}
                   className="flex items-center gap-2"
-                  title="Ladda ner som Word-dokument"
+                  title={t('coverLetterGenerator.actions.downloadWord')}
                 >
                   <FileText className="w-4 h-4" />
                   Word
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   onClick={handleDownloadPDF}
                   className="flex items-center gap-2"
-                  title="Öppna för utskrift/PDF"
+                  title={t('coverLetterGenerator.actions.openForPrint')}
                 >
                   <Download className="w-4 h-4" />
                   PDF
                 </Button>
-                
+
                 <Button
                   variant="outline"
                   onClick={handleGenerate}
@@ -1574,7 +1576,7 @@ export default function CoverLetterGenerator() {
                   className="flex items-center gap-2"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  Nytt förslag
+                  {t('coverLetterGenerator.actions.newSuggestion')}
                 </Button>
               </div>
             </div>
@@ -1588,7 +1590,7 @@ export default function CoverLetterGenerator() {
           onClick={handleReset}
           className="text-slate-500 hover:text-slate-700 text-sm transition-colors flex items-center gap-2"
         >
-          Rensa och börja om
+          {t('coverLetterGenerator.actions.clearAndRestart')}
         </button>
       </div>
     </div>
