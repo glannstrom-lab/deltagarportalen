@@ -143,6 +143,111 @@
       "learning": "Lärande",
       "quests": "Mina Quests",
       "questsDesc": "Dagliga utmaningar och belöningar"
+    },
+    "greeting": "Hej, {{name}}! 👋",
+    "greetingDefault": "där",
+    "loading": "Laddar din översikt...",
+    "ariaLabel": "Dashboard-widgets",
+    "welcomeMessages": {
+      "start": "Välkommen! Låt oss komma igång med ditt jobbsökande.",
+      "goodStart": "Bra start! Fortsätt bygga din profil.",
+      "onTrack": "Du är på god väg! Fortsätt så!",
+      "ready": "Fantastiskt arbete! Du är redo att söka drömjobbet."
+    },
+    "widgets": {
+      "cv": {
+        "title": "Mitt CV",
+        "score": "CV-score: {{score}}/100",
+        "noCV": "Inget CV skapat än",
+        "looksGood": "Ditt CV ser bra ut!",
+        "roomForImprovement": "Det finns utrymme för förbättring",
+        "createToStart": "Skapa ditt CV för att komma igång",
+        "optimized": "{{percent}}% optimerat",
+        "update": "Uppdatera CV",
+        "create": "Skapa CV",
+        "ready": "Redo!"
+      },
+      "interestGuide": {
+        "title": "Intresseguide",
+        "matches": "{{count}} yrken matchar",
+        "findJobs": "Hitta yrken som passar dig",
+        "analyzed": "Dina intressen är analyserade",
+        "takeQuiz": "Gör testet för att se matchningar",
+        "quiz": "Quiz",
+        "seeResults": "Se resultat",
+        "startGuide": "Starta guiden",
+        "recommended": "Rekommenderas"
+      },
+      "jobSearch": {
+        "title": "Jobbsök",
+        "savedJobs": "{{count}} sparade jobb",
+        "searchThousands": "Sök bland tusentals jobb",
+        "newToday": "{{count}} nya jobb idag",
+        "fromAF": "Från Arbetsförmedlingen",
+        "search": "Sök jobb",
+        "new": "{{count}} nya"
+      },
+      "applications": {
+        "title": "Ansökningar",
+        "activeCount": "{{count}} aktiva ansökningar",
+        "noActive": "Inga aktiva ansökningar",
+        "waitingForResponse": "Väntar på svar",
+        "manage": "Hantera",
+        "track": "Spåra ansökningar"
+      },
+      "coverLetters": {
+        "title": "Personliga brev",
+        "savedCount": "{{count}} sparade brev",
+        "createLetters": "Skapa personliga brev",
+        "lastUpdated": "Senast uppdaterat {{date}}",
+        "recently": "nyligen",
+        "customized": "Anpassade för varje jobb",
+        "createNew": "Skapa nytt",
+        "create": "Skapa brev"
+      },
+      "knowledgeBase": {
+        "title": "Kunskapsbank",
+        "articlesRead": "{{count}} artiklar lästa",
+        "articlesAndGuides": "Artiklar och guider",
+        "available": "{{count}} artiklar tillgängliga",
+        "percentRead": "{{percent}}% läst",
+        "explore": "Utforska"
+      },
+      "career": {
+        "title": "Karriärvägar",
+        "explore": "Utforska yrken och löner",
+        "pathways": "Se utbildningsvägar och karriärmöjligheter",
+        "cta": "Utforska"
+      },
+      "calendar": {
+        "title": "Kalender",
+        "scheduleReminders": "Schema och påminnelser",
+        "trackMeetings": "Håll koll på möten och deadlines",
+        "open": "Öppna kalender"
+      },
+      "wellness": {
+        "title": "Välmående",
+        "streak": "{{count}} dagar i rad!",
+        "howAreYou": "Hur mår du idag?",
+        "lastMood": "Senaste humör: {{mood}}",
+        "logForSupport": "Logga ditt humör för att få stöd",
+        "logToday": "Logga idag",
+        "logMood": "Logga humör"
+      },
+      "exercises": {
+        "title": "Övningar",
+        "weeklyProgress": "{{completed}}/{{goal}} övningar denna vecka",
+        "goalAchieved": "Bra jobbat! Veckans mål uppnått",
+        "forJobSeekers": "Övningar för jobbsökande",
+        "continue": "Fortsätt öva",
+        "done": "Klart!"
+      }
+    },
+    "quickLinks": {
+      "title": "Snabblänkar",
+      "profile": "Min profil",
+      "settings": "Inställningar",
+      "help": "Hjälp"
     }
   },
   "cv": {

@@ -143,6 +143,111 @@
       "learning": "Learning",
       "quests": "My Quests",
       "questsDesc": "Daily challenges and rewards"
+    },
+    "greeting": "Hi, {{name}}! 👋",
+    "greetingDefault": "there",
+    "loading": "Loading your overview...",
+    "ariaLabel": "Dashboard widgets",
+    "welcomeMessages": {
+      "start": "Welcome! Let's get started with your job search.",
+      "goodStart": "Good start! Keep building your profile.",
+      "onTrack": "You're on the right track! Keep it up!",
+      "ready": "Fantastic work! You're ready to apply for your dream job."
+    },
+    "widgets": {
+      "cv": {
+        "title": "My CV",
+        "score": "CV score: {{score}}/100",
+        "noCV": "No CV created yet",
+        "looksGood": "Your CV looks good!",
+        "roomForImprovement": "There's room for improvement",
+        "createToStart": "Create your CV to get started",
+        "optimized": "{{percent}}% optimized",
+        "update": "Update CV",
+        "create": "Create CV",
+        "ready": "Ready!"
+      },
+      "interestGuide": {
+        "title": "Interest Guide",
+        "matches": "{{count}} jobs match",
+        "findJobs": "Find jobs that suit you",
+        "analyzed": "Your interests are analyzed",
+        "takeQuiz": "Take the quiz to see matches",
+        "quiz": "Quiz",
+        "seeResults": "See results",
+        "startGuide": "Start guide",
+        "recommended": "Recommended"
+      },
+      "jobSearch": {
+        "title": "Job Search",
+        "savedJobs": "{{count}} saved jobs",
+        "searchThousands": "Search thousands of jobs",
+        "newToday": "{{count}} new jobs today",
+        "fromAF": "From the Employment Agency",
+        "search": "Search jobs",
+        "new": "{{count}} new"
+      },
+      "applications": {
+        "title": "Applications",
+        "activeCount": "{{count}} active applications",
+        "noActive": "No active applications",
+        "waitingForResponse": "Waiting for response",
+        "manage": "Manage",
+        "track": "Track applications"
+      },
+      "coverLetters": {
+        "title": "Cover Letters",
+        "savedCount": "{{count}} saved letters",
+        "createLetters": "Create cover letters",
+        "lastUpdated": "Last updated {{date}}",
+        "recently": "recently",
+        "customized": "Customized for each job",
+        "createNew": "Create new",
+        "create": "Create letter"
+      },
+      "knowledgeBase": {
+        "title": "Knowledge Base",
+        "articlesRead": "{{count}} articles read",
+        "articlesAndGuides": "Articles and guides",
+        "available": "{{count}} articles available",
+        "percentRead": "{{percent}}% read",
+        "explore": "Explore"
+      },
+      "career": {
+        "title": "Career Paths",
+        "explore": "Explore jobs and salaries",
+        "pathways": "See education paths and career opportunities",
+        "cta": "Explore"
+      },
+      "calendar": {
+        "title": "Calendar",
+        "scheduleReminders": "Schedule and reminders",
+        "trackMeetings": "Keep track of meetings and deadlines",
+        "open": "Open calendar"
+      },
+      "wellness": {
+        "title": "Wellness",
+        "streak": "{{count}} days in a row!",
+        "howAreYou": "How are you today?",
+        "lastMood": "Last mood: {{mood}}",
+        "logForSupport": "Log your mood to get support",
+        "logToday": "Log today",
+        "logMood": "Log mood"
+      },
+      "exercises": {
+        "title": "Exercises",
+        "weeklyProgress": "{{completed}}/{{goal}} exercises this week",
+        "goalAchieved": "Great job! Weekly goal achieved",
+        "forJobSeekers": "Exercises for job seekers",
+        "continue": "Continue practicing",
+        "done": "Done!"
+      }
+    },
+    "quickLinks": {
+      "title": "Quick links",
+      "profile": "My profile",
+      "settings": "Settings",
+      "help": "Help"
     }
   },
   "cv": {

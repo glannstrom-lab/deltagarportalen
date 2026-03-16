@@ -6,18 +6,19 @@
  */
 
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { 
-  FileText, 
-  Compass, 
-  Search, 
-  Briefcase, 
-  Mail, 
-  BookOpen, 
-  TrendingUp, 
-  Calendar, 
-  Heart, 
-  Dumbbell 
+import {
+  FileText,
+  Compass,
+  Search,
+  Briefcase,
+  Mail,
+  BookOpen,
+  TrendingUp,
+  Calendar,
+  Heart,
+  Dumbbell
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { cvApi, coverLetterApi, activityApi, savedJobsApi } from '@/services/api'
@@ -65,6 +66,7 @@ interface WidgetData {
 }
 
 export default function DashboardNew() {
+  const { t, i18n } = useTranslation()
   const { user } = useAuthStore()
   const { isMobile } = useMobileOptimization()
   
@@ -144,7 +146,7 @@ export default function DashboardNew() {
           },
           jobTracker: {
             activeApplications: applications,
-            recentStatus: applications > 0 ? 'Väntar på svar' : undefined,
+            recentStatus: applications > 0 ? t('dashboard.widgets.applications.waitingForResponse') : undefined,
           },
           coverLetters: {
             count: letters.length,
@@ -174,7 +176,7 @@ export default function DashboardNew() {
   }, [])
 
   if (loading) {
-    return <LoadingState message="Laddar din översikt..." />
+    return <LoadingState message={t('dashboard.loading')} />
   }
 
   // Välkomstmeddelande baserat på progress
@@ -185,15 +187,15 @@ export default function DashboardNew() {
       interestGuide.hasResult,
       jobTracker.activeApplications > 0,
     ].filter(Boolean).length
-    
+
     if (completedCount === 0) {
-      return 'Välkommen! Låt oss komma igång med ditt jobbsökande.'
+      return t('dashboard.welcomeMessages.start')
     } else if (completedCount === 1) {
-      return 'Bra start! Fortsätt bygga din profil.'
+      return t('dashboard.welcomeMessages.goodStart')
     } else if (completedCount === 2) {
-      return 'Du är på god väg! Fortsätt så!'
+      return t('dashboard.welcomeMessages.onTrack')
     }
-    return 'Fantastiskt arbete! Du är redo att söka drömjobbet.'
+    return t('dashboard.welcomeMessages.ready')
   }
 
   return (
@@ -203,7 +205,7 @@ export default function DashboardNew() {
       {/* Välkomstsektion */}
       <header className="mb-6 sm:mb-8">
         <h1 className="text-xl sm:text-2xl font-bold text-slate-800">
-          Hej, {user?.firstName || 'där'}! 👋
+          {t('dashboard.greeting', { name: user?.firstName || t('dashboard.greetingDefault') })}
         </h1>
         <p className="text-slate-500 text-sm sm:text-base mt-1">
           {getWelcomeMessage()}
@@ -211,180 +213,185 @@ export default function DashboardNew() {
       </header>
 
       {/* Widget Grid */}
-      <section 
+      <section
         className="grid gap-4 sm:gap-5"
         style={{
-          gridTemplateColumns: isMobile 
-            ? 'repeat(2, 1fr)' 
+          gridTemplateColumns: isMobile
+            ? 'repeat(2, 1fr)'
             : 'repeat(auto-fill, minmax(240px, 1fr))'
         }}
-        aria-label="Dashboard-widgets"
+        aria-label={t('dashboard.ariaLabel')}
       >
         {/* 1. CV Widget */}
         <DashboardWidget
-          title="Mitt CV"
+          title={t('dashboard.widgets.cv.title')}
           icon={FileText}
           color="violet"
           to="/cv"
-          statusText={widgetData.cv.exists 
-            ? `CV-score: ${widgetData.cv.progress}/100` 
-            : 'Inget CV skapat än'}
-          statusDescription={widgetData.cv.exists 
-            ? widgetData.cv.progress >= 70 ? 'Ditt CV ser bra ut!' : 'Det finns utrymme för förbättring'
-            : 'Skapa ditt CV för att komma igång'}
+          statusText={widgetData.cv.exists
+            ? t('dashboard.widgets.cv.score', { score: widgetData.cv.progress })
+            : t('dashboard.widgets.cv.noCV')}
+          statusDescription={widgetData.cv.exists
+            ? widgetData.cv.progress >= 70 ? t('dashboard.widgets.cv.looksGood') : t('dashboard.widgets.cv.roomForImprovement')
+            : t('dashboard.widgets.cv.createToStart')}
           showProgress={widgetData.cv.exists}
           progressValue={widgetData.cv.progress}
-          progressLabel={`${widgetData.cv.progress}% optimerat`}
-          ctaText={widgetData.cv.exists ? 'Uppdatera CV' : 'Skapa CV'}
-          badge={widgetData.cv.progress >= 80 ? 'Redo!' : undefined}
+          progressLabel={t('dashboard.widgets.cv.optimized', { percent: widgetData.cv.progress })}
+          ctaText={widgetData.cv.exists ? t('dashboard.widgets.cv.update') : t('dashboard.widgets.cv.create')}
+          badge={widgetData.cv.progress >= 80 ? t('dashboard.widgets.cv.ready') : undefined}
         />
 
         {/* 2. Intresseguide Widget */}
         <DashboardWidget
-          title="Intresseguide"
+          title={t('dashboard.widgets.interestGuide.title')}
           icon={Compass}
           color="teal"
           to="/interest-guide"
           statusText={widgetData.interestGuide.hasResult
-            ? `${widgetData.interestGuide.matches} yrken matchar`
-            : 'Hitta yrken som passar dig'}
+            ? t('dashboard.widgets.interestGuide.matches', { count: widgetData.interestGuide.matches })
+            : t('dashboard.widgets.interestGuide.findJobs')}
           statusDescription={widgetData.interestGuide.hasResult
-            ? 'Dina intressen är analyserade'
-            : 'Gör testet för att se matchningar'}
+            ? t('dashboard.widgets.interestGuide.analyzed')
+            : t('dashboard.widgets.interestGuide.takeQuiz')}
           showProgress={!widgetData.interestGuide.hasResult}
           progressValue={widgetData.interestGuide.progress}
-          progressLabel="Quiz"
-          ctaText={widgetData.interestGuide.hasResult ? 'Se resultat' : 'Starta guiden'}
-          badge={!widgetData.interestGuide.hasResult ? 'Rekommenderas' : undefined}
+          progressLabel={t('dashboard.widgets.interestGuide.quiz')}
+          ctaText={widgetData.interestGuide.hasResult ? t('dashboard.widgets.interestGuide.seeResults') : t('dashboard.widgets.interestGuide.startGuide')}
+          badge={!widgetData.interestGuide.hasResult ? t('dashboard.widgets.interestGuide.recommended') : undefined}
         />
 
         {/* 3. Jobbsök Widget */}
         <DashboardWidget
-          title="Jobbsök"
+          title={t('dashboard.widgets.jobSearch.title')}
           icon={Search}
           color="blue"
           to="/job-search"
           statusText={widgetData.jobSearch.savedJobsCount > 0
-            ? `${widgetData.jobSearch.savedJobsCount} sparade jobb`
-            : 'Sök bland tusentals jobb'}
+            ? t('dashboard.widgets.jobSearch.savedJobs', { count: widgetData.jobSearch.savedJobsCount })
+            : t('dashboard.widgets.jobSearch.searchThousands')}
           statusDescription={widgetData.jobSearch.newJobsToday > 0
-            ? `${widgetData.jobSearch.newJobsToday} nya jobb idag`
-            : 'Från Arbetsförmedlingen'}
-          ctaText="Sök jobb"
-          badge={widgetData.jobSearch.newJobsToday > 0 ? `${widgetData.jobSearch.newJobsToday} nya` : undefined}
+            ? t('dashboard.widgets.jobSearch.newToday', { count: widgetData.jobSearch.newJobsToday })
+            : t('dashboard.widgets.jobSearch.fromAF')}
+          ctaText={t('dashboard.widgets.jobSearch.search')}
+          badge={widgetData.jobSearch.newJobsToday > 0 ? t('dashboard.widgets.jobSearch.new', { count: widgetData.jobSearch.newJobsToday }) : undefined}
         />
 
         {/* 4. Ansökningar Widget */}
         <DashboardWidget
-          title="Ansökningar"
+          title={t('dashboard.widgets.applications.title')}
           icon={Briefcase}
           color="orange"
           to="/job-search"
           statusText={widgetData.jobTracker.activeApplications > 0
-            ? `${widgetData.jobTracker.activeApplications} aktiva ansökningar`
-            : 'Inga aktiva ansökningar'}
+            ? t('dashboard.widgets.applications.activeCount', { count: widgetData.jobTracker.activeApplications })
+            : t('dashboard.widgets.applications.noActive')}
           statusDescription={widgetData.jobTracker.recentStatus}
-          ctaText={widgetData.jobTracker.activeApplications > 0 ? 'Hantera' : 'Spåra ansökningar'}
+          ctaText={widgetData.jobTracker.activeApplications > 0 ? t('dashboard.widgets.applications.manage') : t('dashboard.widgets.applications.track')}
           badge={widgetData.jobTracker.activeApplications > 0 ? `${widgetData.jobTracker.activeApplications}` : undefined}
         />
 
         {/* 5. Brev Widget */}
         <DashboardWidget
-          title="Personliga brev"
+          title={t('dashboard.widgets.coverLetters.title')}
           icon={Mail}
           color="emerald"
           to="/cover-letter"
           statusText={widgetData.coverLetters.count > 0
-            ? `${widgetData.coverLetters.count} sparade brev`
-            : 'Skapa personliga brev'}
+            ? t('dashboard.widgets.coverLetters.savedCount', { count: widgetData.coverLetters.count })
+            : t('dashboard.widgets.coverLetters.createLetters')}
           statusDescription={widgetData.coverLetters.count > 0
-            ? 'Senast uppdaterat ' + (widgetData.coverLetters.lastCreated 
-              ? new Date(widgetData.coverLetters.lastCreated).toLocaleDateString('sv-SE')
-              : 'nyligen')
-            : 'Anpassade för varje jobb'}
-          ctaText={widgetData.coverLetters.count > 0 ? 'Skapa nytt' : 'Skapa brev'}
+            ? t('dashboard.widgets.coverLetters.lastUpdated', {
+                date: widgetData.coverLetters.lastCreated
+                  ? new Date(widgetData.coverLetters.lastCreated).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')
+                  : t('dashboard.widgets.coverLetters.recently')
+              })
+            : t('dashboard.widgets.coverLetters.customized')}
+          ctaText={widgetData.coverLetters.count > 0 ? t('dashboard.widgets.coverLetters.createNew') : t('dashboard.widgets.coverLetters.create')}
         />
 
         {/* 6. Kunskapsbank Widget */}
         <DashboardWidget
-          title="Kunskapsbank"
+          title={t('dashboard.widgets.knowledgeBase.title')}
           icon={BookOpen}
           color="amber"
           to="/knowledge-base"
           statusText={widgetData.knowledgeBase.articlesRead > 0
-            ? `${widgetData.knowledgeBase.articlesRead} artiklar lästa`
-            : 'Artiklar och guider'}
-          statusDescription={`${widgetData.knowledgeBase.totalArticles} artiklar tillgängliga`}
+            ? t('dashboard.widgets.knowledgeBase.articlesRead', { count: widgetData.knowledgeBase.articlesRead })
+            : t('dashboard.widgets.knowledgeBase.articlesAndGuides')}
+          statusDescription={t('dashboard.widgets.knowledgeBase.available', { count: widgetData.knowledgeBase.totalArticles })}
           showProgress={widgetData.knowledgeBase.articlesRead > 0}
           progressValue={(widgetData.knowledgeBase.articlesRead / widgetData.knowledgeBase.totalArticles) * 100}
-          progressLabel={`${Math.round((widgetData.knowledgeBase.articlesRead / widgetData.knowledgeBase.totalArticles) * 100)}% läst`}
-          ctaText="Utforska"
+          progressLabel={t('dashboard.widgets.knowledgeBase.percentRead', { percent: Math.round((widgetData.knowledgeBase.articlesRead / widgetData.knowledgeBase.totalArticles) * 100) })}
+          ctaText={t('dashboard.widgets.knowledgeBase.explore')}
         />
 
         {/* 7. Karriär Widget */}
         <DashboardWidget
-          title="Karriärvägar"
+          title={t('dashboard.widgets.career.title')}
           icon={TrendingUp}
           color="pink"
           to="/career"
-          statusText="Utforska yrken och löner"
-          statusDescription="Se utbildningsvägar och karriärmöjligheter"
-          ctaText="Utforska"
+          statusText={t('dashboard.widgets.career.explore')}
+          statusDescription={t('dashboard.widgets.career.pathways')}
+          ctaText={t('dashboard.widgets.career.cta')}
         />
 
         {/* 8. Kalender Widget */}
         <DashboardWidget
-          title="Kalender"
+          title={t('dashboard.widgets.calendar.title')}
           icon={Calendar}
           color="purple"
           to="/diary"
-          statusText="Schema och påminnelser"
-          statusDescription="Håll koll på möten och deadlines"
-          ctaText="Öppna kalender"
+          statusText={t('dashboard.widgets.calendar.scheduleReminders')}
+          statusDescription={t('dashboard.widgets.calendar.trackMeetings')}
+          ctaText={t('dashboard.widgets.calendar.open')}
         />
 
         {/* 9. Välmående Widget */}
         <DashboardWidget
-          title="Välmående"
+          title={t('dashboard.widgets.wellness.title')}
           icon={Heart}
           color="rose"
           to="/wellness"
           statusText={widgetData.wellness.streakDays > 0
-            ? `${widgetData.wellness.streakDays} dagar i rad!`
-            : 'Hur mår du idag?'}
+            ? t('dashboard.widgets.wellness.streak', { count: widgetData.wellness.streakDays })
+            : t('dashboard.widgets.wellness.howAreYou')}
           statusDescription={widgetData.wellness.lastMood
-            ? `Senaste humör: ${widgetData.wellness.lastMood}`
-            : 'Logga ditt humör för att få stöd'}
-          ctaText={widgetData.wellness.streakDays > 0 ? 'Logga idag' : 'Logga humör'}
+            ? t('dashboard.widgets.wellness.lastMood', { mood: widgetData.wellness.lastMood })
+            : t('dashboard.widgets.wellness.logForSupport')}
+          ctaText={widgetData.wellness.streakDays > 0 ? t('dashboard.widgets.wellness.logToday') : t('dashboard.widgets.wellness.logMood')}
           badge={widgetData.wellness.streakDays >= 7 ? `${widgetData.wellness.streakDays} 🔥` : undefined}
         />
 
         {/* 10. Övningar Widget */}
         <DashboardWidget
-          title="Övningar"
+          title={t('dashboard.widgets.exercises.title')}
           icon={Dumbbell}
           color="mint"
           to="/exercises"
-          statusText={`${widgetData.exercises.completedThisWeek}/${widgetData.exercises.weeklyGoal} övningar denna vecka`}
+          statusText={t('dashboard.widgets.exercises.weeklyProgress', {
+            completed: widgetData.exercises.completedThisWeek,
+            goal: widgetData.exercises.weeklyGoal
+          })}
           statusDescription={widgetData.exercises.completedThisWeek >= widgetData.exercises.weeklyGoal
-            ? 'Bra jobbat! Veckans mål uppnått'
-            : 'Övningar för jobbsökande'}
+            ? t('dashboard.widgets.exercises.goalAchieved')
+            : t('dashboard.widgets.exercises.forJobSeekers')}
           showProgress={true}
           progressValue={(widgetData.exercises.completedThisWeek / widgetData.exercises.weeklyGoal) * 100}
           progressLabel={`${widgetData.exercises.completedThisWeek}/${widgetData.exercises.weeklyGoal}`}
-          ctaText="Fortsätt öva"
-          badge={widgetData.exercises.completedThisWeek >= widgetData.exercises.weeklyGoal ? 'Klart!' : undefined}
+          ctaText={t('dashboard.widgets.exercises.continue')}
+          badge={widgetData.exercises.completedThisWeek >= widgetData.exercises.weeklyGoal ? t('dashboard.widgets.exercises.done') : undefined}
         />
       </section>
 
       {/* Snabblänkar (footer) */}
       <footer className="mt-8 pt-6 border-t border-slate-200">
-        <h2 className="text-sm font-semibold text-slate-700 mb-3">Snabblänkar</h2>
+        <h2 className="text-sm font-semibold text-slate-700 mb-3">{t('dashboard.quickLinks.title')}</h2>
         <div className="flex flex-wrap gap-2">
           {[
-            { label: 'Min profil', to: '/profile' },
-            { label: 'Inställningar', to: '/settings' },
-            { label: 'Hjälp', to: '/knowledge-base' },
+            { label: t('dashboard.quickLinks.profile'), to: '/profile' },
+            { label: t('dashboard.quickLinks.settings'), to: '/settings' },
+            { label: t('dashboard.quickLinks.help'), to: '/knowledge-base' },
           ].map((link) => (
             <Link
               key={link.to}
