@@ -354,30 +354,30 @@ export default function CVBuilder() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {TEMPLATES.map((t) => {
-          const selected = data.template === t.id
+        {TEMPLATES.map((tpl) => {
+          const selected = data.template === tpl.id
           return (
             <button
-              key={t.id}
-              onClick={() => setData({ ...data, template: t.id })}
+              key={tpl.id}
+              onClick={() => setData({ ...data, template: tpl.id })}
               className={cn(
                 "group relative overflow-hidden rounded-2xl border-2 text-left transition-all",
-                selected 
-                  ? "border-indigo-500 ring-2 ring-indigo-500 ring-offset-2 shadow-xl" 
+                selected
+                  ? "border-indigo-500 ring-2 ring-indigo-500 ring-offset-2 shadow-xl"
                   : "border-slate-200 hover:border-indigo-300 hover:shadow-lg"
               )}
             >
               {/* Preview thumbnail */}
-              <div className={cn("h-36 w-full relative", t.preview)}>
+              <div className={cn("h-36 w-full relative", tpl.preview)}>
                 {selected && (
                   <div className="absolute top-3 right-3 bg-indigo-500 text-white rounded-full p-1.5 shadow-lg">
                     <Check className="w-5 h-5" />
                   </div>
                 )}
-                
+
                 {/* Mock layout preview */}
                 <div className="absolute inset-0 flex items-center justify-center p-4">
-                  {t.id === 'sidebar' && (
+                  {tpl.id === 'sidebar' && (
                     <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
                       <div className="w-1/3 bg-slate-700 rounded" />
                       <div className="w-2/3 space-y-1">
@@ -386,20 +386,20 @@ export default function CVBuilder() {
                       </div>
                     </div>
                   )}
-                  {t.id === 'centered' && (
+                  {tpl.id === 'centered' && (
                     <div className="flex flex-col items-center w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
                       <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-400 mb-2" />
                       <div className="h-3 bg-slate-200 rounded w-1/2" />
                     </div>
                   )}
-                  {t.id === 'minimal' && (
+                  {tpl.id === 'minimal' && (
                     <div className="w-full h-20 bg-white/90 rounded-lg p-3 shadow-sm space-y-2">
                       <div className="h-3 bg-slate-800 rounded w-1/3" />
                       <div className="h-2 bg-slate-200 rounded w-full" />
                       <div className="h-2 bg-slate-200 rounded w-2/3" />
                     </div>
                   )}
-                  {t.id === 'creative' && (
+                  {tpl.id === 'creative' && (
                     <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
                       <div className="w-2/5 bg-pink-500 rounded" />
                       <div className="w-3/5 grid grid-cols-2 gap-1">
@@ -408,13 +408,13 @@ export default function CVBuilder() {
                       </div>
                     </div>
                   )}
-                  {t.id === 'executive' && (
+                  {tpl.id === 'executive' && (
                     <div className="w-full h-20 bg-slate-800 rounded-lg p-3 shadow-sm">
                       <div className="h-3 bg-amber-400 rounded w-1/2 mb-2" />
                       <div className="h-2 bg-slate-600 rounded w-full" />
                     </div>
                   )}
-                  {t.id === 'nordic' && (
+                  {tpl.id === 'nordic' && (
                     <div className="flex gap-2 w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
                       <div className="w-1/3 bg-sky-100 rounded" />
                       <div className="w-2/3 space-y-1">
@@ -425,19 +425,19 @@ export default function CVBuilder() {
                   )}
                 </div>
               </div>
-              
+
               {/* Info */}
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
-                  <h4 className="font-bold text-lg text-slate-800">{t.name}</h4>
+                  <h4 className="font-bold text-lg text-slate-800">{tpl.name}</h4>
                   {selected && <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
-                <p className="text-sm text-slate-500 mb-3">{t.desc}</p>
-                
+                <p className="text-sm text-slate-500 mb-3">{tpl.desc}</p>
+
                 {/* Features */}
                 <div className="flex flex-wrap gap-1.5">
-                  {t.features.map((feature, i) => (
-                    <span 
+                  {tpl.features.map((feature, i) => (
+                    <span
                       key={i}
                       className="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded-md"
                     >
