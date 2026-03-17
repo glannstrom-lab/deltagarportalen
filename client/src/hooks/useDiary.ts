@@ -32,10 +32,11 @@ export function useDiaryEntries() {
     setError(null)
     try {
       const data = await diaryEntriesApi.getAll()
-      setEntries(data)
+      setEntries(data || [])
     } catch (err) {
-      setError('Kunde inte ladda dagboksinlägg')
-      console.error(err)
+      console.warn('Could not load diary entries:', err)
+      setEntries([])
+      // Don't set error - tables might not exist yet
     } finally {
       setIsLoading(false)
     }
@@ -110,13 +111,15 @@ export function useMoodLogs() {
     setIsLoading(true)
     try {
       const [allLogs, today] = await Promise.all([
-        moodLogsApi.getAll(30),
-        moodLogsApi.getToday()
+        moodLogsApi.getAll(30).catch(() => []),
+        moodLogsApi.getToday().catch(() => null)
       ])
-      setLogs(allLogs)
+      setLogs(allLogs || [])
       setTodayMood(today)
     } catch (err) {
-      console.error('Error loading mood logs:', err)
+      console.warn('Could not load mood logs:', err)
+      setLogs([])
+      setTodayMood(null)
     } finally {
       setIsLoading(false)
     }
@@ -183,9 +186,10 @@ export function useWeeklyGoals() {
     setIsLoading(true)
     try {
       const data = await weeklyGoalsApi.getCurrentWeek()
-      setGoals(data)
+      setGoals(data || [])
     } catch (err) {
-      console.error('Error loading weekly goals:', err)
+      console.warn('Could not load weekly goals:', err)
+      setGoals([])
     } finally {
       setIsLoading(false)
     }
@@ -263,13 +267,15 @@ export function useGratitude() {
     setIsLoading(true)
     try {
       const [allEntries, today] = await Promise.all([
-        gratitudeApi.getAll(30),
-        gratitudeApi.getToday()
+        gratitudeApi.getAll(30).catch(() => []),
+        gratitudeApi.getToday().catch(() => null)
       ])
-      setEntries(allEntries)
+      setEntries(allEntries || [])
       setTodayEntry(today)
     } catch (err) {
-      console.error('Error loading gratitude entries:', err)
+      console.warn('Could not load gratitude entries:', err)
+      setEntries([])
+      setTodayEntry(null)
     } finally {
       setIsLoading(false)
     }
@@ -326,7 +332,9 @@ export function useDiaryStreaks() {
       const data = await diaryStreaksApi.get()
       setStreaks(data)
     } catch (err) {
-      console.error('Error loading diary streaks:', err)
+      // Silently handle - tables might not exist yet
+      console.warn('Could not load diary streaks:', err)
+      setStreaks(null)
     } finally {
       setIsLoading(false)
     }
@@ -339,10 +347,10 @@ export function useDiaryStreaks() {
   return {
     streaks,
     isLoading,
-    currentStreak: streaks?.current_streak || 0,
-    longestStreak: streaks?.longest_streak || 0,
-    totalEntries: streaks?.total_entries || 0,
-    totalWords: streaks?.total_words || 0,
+    currentStreak: streaks?.current_streak ?? 0,
+    longestStreak: streaks?.longest_streak ?? 0,
+    totalEntries: streaks?.total_entries ?? 0,
+    totalWords: streaks?.total_words ?? 0,
     refresh: loadStreaks
   }
 }
@@ -360,13 +368,13 @@ export function useWritingPrompts() {
     setIsLoading(true)
     try {
       const [random, all] = await Promise.all([
-        writingPromptsApi.getRandom(),
-        writingPromptsApi.getAll()
+        writingPromptsApi.getRandom().catch(() => null),
+        writingPromptsApi.getAll().catch(() => [])
       ])
       setPrompt(random)
-      setAllPrompts(all)
+      setAllPrompts(all || [])
     } catch (err) {
-      console.error('Error loading writing prompts:', err)
+      console.warn('Could not load writing prompts:', err)
     } finally {
       setIsLoading(false)
     }

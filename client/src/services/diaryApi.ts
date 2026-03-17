@@ -303,12 +303,13 @@ export const moodLogsApi = {
       .select('*')
       .eq('user_id', user.id)
       .eq('log_date', today)
-      .single()
+      .maybeSingle()
 
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error fetching today mood:', error)
+    if (error) {
+      console.warn('Could not fetch today mood:', error.message)
+      return null
     }
-    return data || null
+    return data
   },
 
   async upsert(log: Omit<MoodLog, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<MoodLog | null> {
@@ -508,12 +509,13 @@ export const gratitudeApi = {
       .select('*')
       .eq('user_id', user.id)
       .eq('entry_date', today)
-      .single()
+      .maybeSingle()
 
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error fetching today gratitude:', error)
+    if (error) {
+      console.warn('Could not fetch today gratitude:', error.message)
+      return null
     }
-    return data || null
+    return data
   },
 
   async create(entry: { item1: string; item2?: string; item3?: string; reflection?: string }): Promise<GratitudeEntry | null> {
@@ -566,12 +568,14 @@ export const diaryStreaksApi = {
       .from('diary_streaks')
       .select('*')
       .eq('user_id', user.id)
-      .single()
+      .maybeSingle()
 
-    if (error && error.code !== 'PGRST116') {
-      console.error('Error fetching diary streaks:', error)
+    if (error) {
+      // Table might not exist yet - return default values
+      console.warn('Could not fetch diary streaks:', error.message)
+      return null
     }
-    return data || null
+    return data
   },
 
   async updateAfterEntry(wordCount: number): Promise<void> {
@@ -636,38 +640,58 @@ export const diaryStreaksApi = {
 // WRITING PROMPTS API
 // ============================================
 
+// Default writing prompts if table doesn't exist
+const DEFAULT_PROMPTS: WritingPrompt[] = [
+  { id: '1', prompt_text: 'Vad är du mest tacksam för idag?', category: 'gratitude', is_active: true },
+  { id: '2', prompt_text: 'Beskriv ett ögonblick som gjorde dig glad idag.', category: 'reflection', is_active: true },
+  { id: '3', prompt_text: 'Vilka är dina tre viktigaste mål just nu?', category: 'career', is_active: true },
+  { id: '4', prompt_text: 'Vad har du lärt dig den senaste veckan?', category: 'reflection', is_active: true },
+  { id: '5', prompt_text: 'Beskriv din perfekta arbetsdag.', category: 'career', is_active: true },
+]
+
 export const writingPromptsApi = {
   async getRandom(category?: string): Promise<WritingPrompt | null> {
-    let query = supabase
-      .from('writing_prompts')
-      .select('*')
-      .eq('is_active', true)
+    try {
+      let query = supabase
+        .from('writing_prompts')
+        .select('*')
+        .eq('is_active', true)
 
-    if (category) {
-      query = query.eq('category', category)
+      if (category) {
+        query = query.eq('category', category)
+      }
+
+      const { data, error } = await query
+
+      if (error || !data || data.length === 0) {
+        // Use default prompts as fallback
+        const filtered = category
+          ? DEFAULT_PROMPTS.filter(p => p.category === category)
+          : DEFAULT_PROMPTS
+        return filtered[Math.floor(Math.random() * filtered.length)] || DEFAULT_PROMPTS[0]
+      }
+
+      // Return random prompt
+      return data[Math.floor(Math.random() * data.length)]
+    } catch (err) {
+      // Return default prompt on any error
+      return DEFAULT_PROMPTS[Math.floor(Math.random() * DEFAULT_PROMPTS.length)]
     }
-
-    const { data, error } = await query
-
-    if (error || !data || data.length === 0) {
-      console.error('Error fetching writing prompts:', error)
-      return null
-    }
-
-    // Return random prompt
-    return data[Math.floor(Math.random() * data.length)]
   },
 
   async getAll(): Promise<WritingPrompt[]> {
-    const { data, error } = await supabase
-      .from('writing_prompts')
-      .select('*')
-      .eq('is_active', true)
+    try {
+      const { data, error } = await supabase
+        .from('writing_prompts')
+        .select('*')
+        .eq('is_active', true)
 
-    if (error) {
-      console.error('Error fetching writing prompts:', error)
-      return []
+      if (error || !data || data.length === 0) {
+        return DEFAULT_PROMPTS
+      }
+      return data
+    } catch (err) {
+      return DEFAULT_PROMPTS
     }
-    return data || []
   }
 }
