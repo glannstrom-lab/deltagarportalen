@@ -186,101 +186,98 @@ export function TopBar() {
         </form>
 
         {/* Höger - Actions */}
-        <div className="flex items-center">
-          {/* Icon buttons container */}
-          <div className="flex items-center gap-0.5 mr-1">
-            {/* Language Selector */}
-            <LanguageSelector />
+        <div className="flex items-center gap-1">
+          {/* Language Selector */}
+          <LanguageSelector />
 
-            {/* Dark Mode Toggle */}
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={isDark ? t('topbar.lightMode') : t('topbar.darkMode')}
+          >
+            {isDark ? (
+              <Sun size={18} className="text-amber-500" />
+            ) : (
+              <Moon size={18} className="text-stone-500 dark:text-stone-400" />
+            )}
+          </button>
+
+          {/* Help */}
+          <Link
+            to="/help"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            title={t('topbar.help')}
+          >
+            <HelpCircle size={18} className="text-stone-500 dark:text-stone-400" />
+          </Link>
+
+          {/* Crisis Support / Hjärtat */}
+          <div className="hidden lg:block">
+            <CrisisSupport variant="inline" />
+          </div>
+
+          {/* Notifikationer */}
+          <div className="relative">
             <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-              title={isDark ? t('topbar.lightMode') : t('topbar.darkMode')}
+              onClick={() => {
+                setShowNotifications(!showNotifications)
+                setShowUserMenu(false)
+              }}
+              className={cn(
+                "w-9 h-9 flex items-center justify-center rounded-lg transition-colors relative",
+                showNotifications ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
+              )}
+              aria-label={`${t('topbar.notifications')}${unreadCount > 0 ? ` (${t('topbar.unreadNotifications', { count: unreadCount })})` : ''}`}
+              aria-expanded={showNotifications}
+              aria-haspopup="true"
             >
-              {isDark ? (
-                <Sun size={18} className="text-amber-500" />
-              ) : (
-                <Moon size={18} className="text-stone-500 dark:text-stone-400" />
+              <Bell size={18} className={showNotifications ? "text-violet-600 dark:text-violet-400" : "text-stone-500 dark:text-stone-400"} aria-hidden="true" />
+              {unreadCount > 0 && (
+                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center" aria-hidden="true">
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </span>
               )}
             </button>
 
-            {/* Help */}
-            <Link
-              to="/help"
-              className="hidden sm:flex p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-              title={t('topbar.help')}
-            >
-              <HelpCircle size={18} className="text-stone-500 dark:text-stone-400" />
-            </Link>
-
-            {/* Crisis Support / Hjärtat */}
-            <div className="hidden lg:flex">
-              <CrisisSupport variant="inline" />
-            </div>
-
-            {/* Notifikationer */}
-            <div className="relative">
-              <button
-                onClick={() => {
-                  setShowNotifications(!showNotifications)
-                  setShowUserMenu(false)
-                }}
-                className={cn(
-                  "p-2 rounded-lg transition-colors relative",
-                  showNotifications ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
-                )}
-                aria-label={`${t('topbar.notifications')}${unreadCount > 0 ? ` (${t('topbar.unreadNotifications', { count: unreadCount })})` : ''}`}
-                aria-expanded={showNotifications}
-                aria-haspopup="true"
-              >
-                <Bell size={18} className={showNotifications ? "text-violet-600 dark:text-violet-400" : "text-stone-500 dark:text-stone-400"} aria-hidden="true" />
-                {unreadCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center" aria-hidden="true">
-                    {unreadCount > 9 ? '9+' : unreadCount}
-                  </span>
-                )}
-              </button>
-
-              {/* Notifikations-dropdown */}
-              {showNotifications && (
-                <>
-                  <div
-                    className="fixed inset-0 z-40"
-                    onClick={() => setShowNotifications(false)}
-                  />
-                  <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-100 dark:border-stone-700 p-2 z-50">
-                    <div className="flex items-center justify-between px-3 py-2 border-b border-stone-100 dark:border-stone-700">
-                      <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('topbar.notifications')}</h3>
-                      {unreadCount > 0 && (
-                        <button
-                          onClick={() => setNotifications([])}
-                          className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700"
-                        >
-                          {t('topbar.markAllRead')}
-                        </button>
-                      )}
-                    </div>
-                    <div className="max-h-64 overflow-y-auto">
-                      {notifications.length === 0 ? (
-                        <p className="text-center text-stone-500 dark:text-stone-400 text-sm py-6">{t('topbar.noNotifications')}</p>
-                      ) : (
-                        notifications.map(n => (
-                          <button
-                            key={n.id}
-                            onClick={() => markNotificationAsRead(n.id)}
-                            className="w-full text-left p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
-                          >
-                            <p className="font-medium text-stone-800 dark:text-stone-100 text-sm">{n.title}</p>
-                            <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">{n.message}</p>
-                          </button>
-                        ))
-                      )}
-                    </div>
+            {/* Notifikations-dropdown */}
+            {showNotifications && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setShowNotifications(false)}
+                />
+                <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-100 dark:border-stone-700 p-2 z-50">
+                  <div className="flex items-center justify-between px-3 py-2 border-b border-stone-100 dark:border-stone-700">
+                    <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('topbar.notifications')}</h3>
+                    {unreadCount > 0 && (
+                      <button
+                        onClick={() => setNotifications([])}
+                        className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700"
+                      >
+                        {t('topbar.markAllRead')}
+                      </button>
+                    )}
                   </div>
-                </>
-              )}
-            </div>
+                  <div className="max-h-64 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <p className="text-center text-stone-500 dark:text-stone-400 text-sm py-6">{t('topbar.noNotifications')}</p>
+                    ) : (
+                      notifications.map(n => (
+                        <button
+                          key={n.id}
+                          onClick={() => markNotificationAsRead(n.id)}
+                          className="w-full text-left p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
+                        >
+                          <p className="font-medium text-stone-800 dark:text-stone-100 text-sm">{n.title}</p>
+                          <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">{n.message}</p>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           {/* Divider */}
