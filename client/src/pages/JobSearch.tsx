@@ -8,7 +8,7 @@ import {
   Trash2, CheckCircle, Clock
 } from 'lucide-react';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
-import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
+import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
 
 import { PageLayout } from '@/components/layout/index';
@@ -233,19 +233,6 @@ function SearchTab() {
                   ))}
                 </div>
               )}
-            </div>
-
-            {/* Quick Search Tags */}
-            <div className="flex flex-wrap gap-2">
-              {POPULAR_QUERIES.slice(0, 5).map((q) => (
-                <button
-                  key={q.label}
-                  onClick={() => setFilters({ ...filters, query: q.query })}
-                  className="px-3 py-1.5 bg-slate-50 hover:bg-violet-50 border border-slate-200 hover:border-violet-200 rounded-lg text-sm text-slate-700 hover:text-violet-700 transition-colors"
-                >
-                  {q.icon} {q.label}
-                </button>
-              ))}
             </div>
 
             {/* Location Filters */}
