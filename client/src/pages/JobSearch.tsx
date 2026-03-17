@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   Search, MapPin, Briefcase, X, Building2,
   ExternalLink, Filter, ChevronDown,
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
-  Bookmark, Send, Bell, ClipboardList
+  Bookmark, Send, Bell, ClipboardList, MoreVertical,
+  Trash2, CheckCircle, Clock
 } from 'lucide-react';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, POPULAR_QUERIES, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
-import { useSavedJobs } from '@/hooks/useSavedJobs';
+import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
 
 import { PageLayout } from '@/components/layout/index';
 import {
@@ -20,6 +21,11 @@ import {
 } from '@/components/ui';
 import { cn } from '@/lib/utils';
 import { CreateApplicationModal } from '@/components/workflow';
+
+// Import new tab components
+import { ApplicationsTab } from '@/components/jobs/ApplicationsTab';
+import { AlertsTab } from '@/components/jobs/AlertsTab';
+import { MatchesTab } from '@/components/jobs/MatchesTab';
 
 // Tab definitions with i18n keys
 const jobSearchTabDefs = [
@@ -595,15 +601,54 @@ function SearchTab() {
   );
 }
 
-// Placeholder tabs for future implementation
+// Enhanced Saved Jobs Tab
 function SavedJobsTab() {
   const { t } = useTranslation();
-  const { savedJobs, removeJob } = useSavedJobs();
+  const { savedJobs, removeJob, updateJobStatus, isLoaded } = useSavedJobs();
+  const [filter, setFilter] = useState<'all' | SavedJob['status']>('all');
+  const [sortBy, setSortBy] = useState<'date' | 'company' | 'status'>('date');
 
-  if (savedJobs.length === 0) {
+  // Filter to only show saved jobs (not applications)
+  const onlySaved = useMemo(() =>
+    savedJobs.filter(j => j.status === 'saved'),
+    [savedJobs]
+  );
+
+  const filteredJobs = useMemo(() => {
+    let jobs = filter === 'all' ? onlySaved : onlySaved.filter(j => j.status === filter);
+
+    // Sort
+    return jobs.sort((a, b) => {
+      switch (sortBy) {
+        case 'company':
+          return (a.jobData?.employer?.name || '').localeCompare(b.jobData?.employer?.name || '');
+        case 'status':
+          return a.status.localeCompare(b.status);
+        case 'date':
+        default:
+          return new Date(b.savedAt).getTime() - new Date(a.savedAt).getTime();
+      }
+    });
+  }, [onlySaved, filter, sortBy]);
+
+  const handleMarkAsApplied = async (jobId: string) => {
+    await updateJobStatus(jobId, 'applied');
+  };
+
+  if (!isLoaded) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+      </div>
+    );
+  }
+
+  if (onlySaved.length === 0) {
     return (
       <Card className="p-12 text-center">
-        <Bookmark className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+        <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Bookmark className="w-8 h-8 text-slate-400" />
+        </div>
         <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noSavedJobsTitle')}</h3>
         <p className="text-slate-500 mb-4">{t('jobSearch.noSavedJobsDesc')}</p>
         <Link to="/job-search">
@@ -615,73 +660,104 @@ function SavedJobsTab() {
 
   return (
     <div className="space-y-4">
-      <p className="text-slate-600">{t('jobSearch.youHaveXSavedJobs', { count: savedJobs.length })}</p>
-      {savedJobs.map((job: any) => (
-        <Card key={job.id} className="p-4">
-          <div className="flex items-start justify-between">
-            <div>
-              <h3 className="font-semibold text-slate-900">{job.headline}</h3>
-              <p className="text-slate-600 text-sm">{job.employer?.name}</p>
-            </div>
-            <button
-              onClick={() => removeJob(job.id)}
-              className="text-red-500 hover:text-red-700"
-            >
-              <X size={20} />
-            </button>
-          </div>
-        </Card>
-      ))}
+      {/* Header with stats and filters */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 className="text-lg font-semibold text-slate-900">Sparade jobb</h2>
+          <p className="text-sm text-slate-500">{onlySaved.length} jobb sparade</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value as any)}
+            className="px-3 py-2 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          >
+            <option value="date">Senast sparade</option>
+            <option value="company">Företag A-Ö</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Jobs list */}
+      <div className="grid gap-4 md:grid-cols-2">
+        {filteredJobs.map((job) => {
+          const jobData = job.jobData;
+          return (
+            <Card key={job.id} className="p-5 hover:shadow-md transition-shadow">
+              <div className="flex items-start gap-4">
+                {/* Company logo placeholder */}
+                <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center flex-shrink-0">
+                  <Building2 className="w-6 h-6 text-slate-400" />
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-slate-900 line-clamp-1">
+                    {jobData?.headline || 'Okänd tjänst'}
+                  </h3>
+                  <p className="text-sm text-slate-600 flex items-center gap-1 mt-0.5">
+                    <Briefcase className="w-3.5 h-3.5" />
+                    {jobData?.employer?.name || 'Okänt företag'}
+                  </p>
+                  {jobData?.workplace_address?.municipality && (
+                    <p className="text-sm text-slate-500 flex items-center gap-1 mt-0.5">
+                      <MapPin className="w-3.5 h-3.5" />
+                      {jobData.workplace_address.municipality}
+                    </p>
+                  )}
+
+                  {/* Saved date */}
+                  <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
+                    <Clock className="w-3 h-3" />
+                    Sparad {new Date(job.savedAt).toLocaleDateString('sv-SE')}
+                  </p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex flex-col gap-2">
+                  <button
+                    onClick={() => handleMarkAsApplied(job.id)}
+                    className="p-2 hover:bg-green-50 rounded-lg transition-colors text-slate-400 hover:text-green-600"
+                    title="Markera som ansökt"
+                  >
+                    <CheckCircle className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm('Ta bort detta sparade jobb?')) {
+                        removeJob(job.id);
+                      }
+                    }}
+                    className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-400 hover:text-red-600"
+                    title="Ta bort"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Footer with link */}
+              {jobData?.webpage_url && (
+                <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end">
+                  <a
+                    href={jobData.webpage_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1 text-sm text-indigo-600 hover:text-indigo-700 font-medium"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    Visa annons
+                  </a>
+                </div>
+              )}
+            </Card>
+          );
+        })}
+      </div>
     </div>
   );
 }
 
-function ApplicationsTab() {
-  const { t } = useTranslation();
-  return (
-    <Card className="p-12 text-center">
-      <ClipboardList className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noApplicationsTitle')}</h3>
-      <p className="text-slate-500 mb-4">{t('jobSearch.noApplicationsDesc')}</p>
-      <Link to="/job-search">
-        <Button>{t('jobSearch.searchJobsToApply')}</Button>
-      </Link>
-    </Card>
-  );
-}
-
-function AlertsTab() {
-  const { t } = useTranslation();
-  return (
-    <Card className="p-12 text-center">
-      <Bell className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noAlertsTitle')}</h3>
-      <p className="text-slate-500 mb-4">{t('jobSearch.noAlertsDesc')}</p>
-      <Link to="/job-search">
-        <Button>{t('jobSearch.createAlert')}</Button>
-      </Link>
-    </Card>
-  );
-}
-
-function MatchesTab() {
-  const { t } = useTranslation();
-  return (
-    <Card className="p-12 text-center">
-      <Sparkles className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-      <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noMatchesTitle')}</h3>
-      <p className="text-slate-500 mb-4">{t('jobSearch.noMatchesDesc')}</p>
-      <div className="flex justify-center gap-3">
-        <Link to="/interest-guide">
-          <Button variant="outline">{t('jobSearch.takeInterestTest')}</Button>
-        </Link>
-        <Link to="/cv">
-          <Button>{t('cv.createCV')}</Button>
-        </Link>
-      </div>
-    </Card>
-  );
-}
+// ApplicationsTab, AlertsTab, MatchesTab are imported from @/components/jobs/
 
 // Main component with routing
 export default function JobSearch() {

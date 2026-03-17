@@ -1074,6 +1074,176 @@ export const savedJobsApi = {
     const job = saved.find(j => j.job_id === jobId)
     if (!job) return true
     return jobsApi.deleteApplication(job.id)
+  },
+
+  async updateNotes(jobId: string, notes: string) {
+    const saved = await jobsApi.getSavedJobs()
+    const job = saved.find(j => j.job_id === jobId)
+    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
+    return jobsApi.updateApplication(job.id, { notes })
+  },
+
+  async updateFollowUpDate(jobId: string, date: string | null) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const saved = await jobsApi.getSavedJobs()
+    const job = saved.find(j => j.job_id === jobId)
+    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
+
+    const { data, error } = await supabase
+      .from('saved_jobs')
+      .update({ follow_up_date: date, updated_at: new Date().toISOString() })
+      .eq('id', job.id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
+
+    if (error) handleError(error)
+    return data
+  },
+
+  async updatePriority(jobId: string, priority: 'low' | 'medium' | 'high') {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const saved = await jobsApi.getSavedJobs()
+    const job = saved.find(j => j.job_id === jobId)
+    if (!job) throw new APIError('Jobb inte hittat', 'NOT_FOUND', 404)
+
+    const { data, error } = await supabase
+      .from('saved_jobs')
+      .update({ priority, updated_at: new Date().toISOString() })
+      .eq('id', job.id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
+
+    if (error) handleError(error)
+    return data
+  },
+
+  async getByStatus(statuses: string[]): Promise<SavedJob[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('saved_jobs')
+      .select('*')
+      .eq('user_id', user.id)
+      .in('status', statuses)
+      .order('created_at', { ascending: false })
+
+    if (error) handleError(error)
+    return data || []
+  },
+
+  async getApplications(): Promise<SavedJob[]> {
+    return this.getByStatus(['APPLIED', 'INTERVIEW', 'REJECTED', 'OFFER'])
+  }
+}
+
+// ============================================
+// JOB ALERTS API
+// ============================================
+export interface JobAlert {
+  id: string
+  user_id: string
+  name: string
+  query?: string
+  municipality?: string
+  region?: string
+  employment_type?: string
+  published_within?: string
+  remote?: boolean
+  is_active: boolean
+  notification_frequency: 'instant' | 'daily' | 'weekly'
+  last_checked_at?: string
+  new_jobs_count: number
+  created_at: string
+  updated_at: string
+}
+
+export const jobAlertsApi = {
+  async getAll(): Promise<JobAlert[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('job_alerts')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+
+    if (error) handleError(error)
+    return data || []
+  },
+
+  async create(alert: Partial<JobAlert>): Promise<JobAlert> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('job_alerts')
+      .insert({
+        user_id: user.id,
+        name: alert.name || 'Min bevakning',
+        query: alert.query,
+        municipality: alert.municipality,
+        region: alert.region,
+        employment_type: alert.employment_type,
+        published_within: alert.published_within || 'week',
+        remote: alert.remote || false,
+        is_active: true,
+        notification_frequency: alert.notification_frequency || 'daily',
+        new_jobs_count: 0
+      })
+      .select()
+      .single()
+
+    if (error) handleError(error)
+    return data
+  },
+
+  async update(id: string, updates: Partial<JobAlert>): Promise<JobAlert> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('job_alerts')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
+
+    if (error) handleError(error)
+    return data
+  },
+
+  async delete(id: string): Promise<boolean> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { error } = await supabase
+      .from('job_alerts')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) handleError(error)
+    return true
+  },
+
+  async toggleActive(id: string, isActive: boolean): Promise<JobAlert> {
+    return this.update(id, { is_active: isActive })
+  },
+
+  async updateNewJobsCount(id: string, count: number): Promise<void> {
+    await this.update(id, {
+      new_jobs_count: count,
+      last_checked_at: new Date().toISOString()
+    })
   }
 }
 
