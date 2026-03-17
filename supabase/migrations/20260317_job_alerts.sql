@@ -1,11 +1,16 @@
 -- Migration: Create job_alerts table and extend saved_jobs
 -- Date: 2026-03-17
+-- Run this in Supabase SQL Editor
 
 -- ============================================
--- 1. CREATE JOB_ALERTS TABLE
+-- 1. DROP AND RECREATE JOB_ALERTS TABLE
 -- ============================================
 
-CREATE TABLE IF NOT EXISTS job_alerts (
+-- Drop existing table if it exists (to ensure clean state)
+DROP TABLE IF EXISTS job_alerts CASCADE;
+
+-- Create job_alerts table
+CREATE TABLE job_alerts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
@@ -27,9 +32,9 @@ CREATE TABLE IF NOT EXISTS job_alerts (
 );
 
 -- Indexes for performance
-CREATE INDEX IF NOT EXISTS idx_job_alerts_user_id ON job_alerts(user_id);
-CREATE INDEX IF NOT EXISTS idx_job_alerts_active ON job_alerts(is_active);
-CREATE INDEX IF NOT EXISTS idx_job_alerts_created_at ON job_alerts(created_at DESC);
+CREATE INDEX idx_job_alerts_user_id ON job_alerts(user_id);
+CREATE INDEX idx_job_alerts_active ON job_alerts(is_active);
+CREATE INDEX idx_job_alerts_created_at ON job_alerts(created_at DESC);
 
 -- Enable Row Level Security
 ALTER TABLE job_alerts ENABLE ROW LEVEL SECURITY;
@@ -52,8 +57,15 @@ CREATE POLICY "Users can delete their own alerts"
   ON job_alerts FOR DELETE
   USING (user_id = auth.uid());
 
--- Auto-update updated_at trigger
-DROP TRIGGER IF EXISTS update_job_alerts_updated_at ON job_alerts;
+-- Auto-update updated_at trigger (create function if not exists)
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = now();
+  RETURN NEW;
+END;
+$$ language 'plpgsql';
+
 CREATE TRIGGER update_job_alerts_updated_at
   BEFORE UPDATE ON job_alerts
   FOR EACH ROW
@@ -63,25 +75,42 @@ CREATE TRIGGER update_job_alerts_updated_at
 -- 2. EXTEND SAVED_JOBS TABLE
 -- ============================================
 
--- Add follow-up and application tracking columns
-ALTER TABLE saved_jobs
-  ADD COLUMN IF NOT EXISTS follow_up_date DATE,
-  ADD COLUMN IF NOT EXISTS application_date TIMESTAMPTZ,
-  ADD COLUMN IF NOT EXISTS interview_date TIMESTAMPTZ,
-  ADD COLUMN IF NOT EXISTS priority TEXT DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high'));
+-- Add follow-up and application tracking columns (safe to run multiple times)
+DO $$
+BEGIN
+  -- Add follow_up_date if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name = 'saved_jobs' AND column_name = 'follow_up_date') THEN
+    ALTER TABLE saved_jobs ADD COLUMN follow_up_date DATE;
+  END IF;
+
+  -- Add application_date if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name = 'saved_jobs' AND column_name = 'application_date') THEN
+    ALTER TABLE saved_jobs ADD COLUMN application_date TIMESTAMPTZ;
+  END IF;
+
+  -- Add interview_date if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name = 'saved_jobs' AND column_name = 'interview_date') THEN
+    ALTER TABLE saved_jobs ADD COLUMN interview_date TIMESTAMPTZ;
+  END IF;
+
+  -- Add priority if it doesn't exist
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns
+                 WHERE table_name = 'saved_jobs' AND column_name = 'priority') THEN
+    ALTER TABLE saved_jobs ADD COLUMN priority TEXT DEFAULT 'medium';
+  END IF;
+END $$;
 
 -- Index for filtering by status (for applications view)
 CREATE INDEX IF NOT EXISTS idx_saved_jobs_status ON saved_jobs(status);
 CREATE INDEX IF NOT EXISTS idx_saved_jobs_follow_up ON saved_jobs(follow_up_date) WHERE follow_up_date IS NOT NULL;
 
 -- ============================================
--- 3. COMMENTS
+-- 3. VERIFICATION
 -- ============================================
 
-COMMENT ON TABLE job_alerts IS 'Stores saved job search criteria for alerts/notifications';
-COMMENT ON COLUMN job_alerts.query IS 'Search text query';
-COMMENT ON COLUMN job_alerts.municipality IS 'Municipality code filter';
-COMMENT ON COLUMN job_alerts.region IS 'Region code filter';
-COMMENT ON COLUMN job_alerts.new_jobs_count IS 'Number of new jobs since last check';
-COMMENT ON COLUMN saved_jobs.follow_up_date IS 'Date to follow up on application';
-COMMENT ON COLUMN saved_jobs.priority IS 'User-defined priority: low, medium, high';
+-- Verify table was created
+SELECT 'job_alerts table created successfully' AS status
+WHERE EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'job_alerts');
