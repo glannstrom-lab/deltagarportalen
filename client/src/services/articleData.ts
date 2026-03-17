@@ -91,6 +91,7 @@ export const articleCategories = [
     subcategories: [
       { id: 'preparation', name: 'Förberedelser' },
       { id: 'during-interview', name: 'Under intervjun' },
+      { id: 'after-interview', name: 'Efter intervjun' },
       { id: 'salary', name: 'Löneförhandling' },
     ]
   },
@@ -395,7 +396,7 @@ När du har ett grund-CV är det dags att:
 3. Förbereda dig för intervjun
 
 Kom ihåg: Ett CV är aldrig "färdigt". Det är ett levande dokument som utvecklas med dig!`,
-    category: 'cv-application',
+    category: 'job-search',
     subcategory: 'cv-writing',
     tags: ['CV', 'skriva CV', 'ATS', 'grunder', 'detaljerad'],
     createdAt: '2024-01-10T10:00:00Z',
@@ -468,7 +469,7 @@ Sammanfatta kort och visa entusiasm.
 Om du har svårt att komma igång kan du använda vår AI-assistent för personliga brev. Den hjälper dig att få en struktur att utgå ifrån.
 
 Kom ihåg: AI:n är ett verktyg, inte en ersättning för din egen röst!`,
-    category: 'cv-application',
+    category: 'job-search',
     subcategory: 'cover-letter',
     tags: ['personligt brev', 'ansökan', 'skriva', 'exempel'],
     createdAt: '2024-01-12T10:00:00Z',
@@ -534,7 +535,7 @@ Arbetsgivare anställer människor, inte bara CV:n. Visa att du är:
 - En bra lagspelare
 
 Din brist på erfarenhet kan vara en styrka – du har inga "dåliga vanor" att glömma bort!`,
-    category: 'cv-application',
+    category: 'job-search',
     subcategory: 'cv-writing',
     tags: ['CV', 'utan erfarenhet', 'första jobbet', 'nybörjare'],
     createdAt: '2024-01-14T10:00:00Z',
@@ -1267,7 +1268,7 @@ Vanligtvis 12 månader, men kan variera.
 Nystartsjobb är ett **trampolin**, inte en livboj. Det är en chans att visa vad du går för och bygga en karriär!`,
     category: 'accessibility',
     subcategory: 'support',
-    tags: ['nystartsjobb', 'stöd', 'subventionerad anställning', ' Arbetsförmedlingen'],
+    tags: ['nystartsjobb', 'stöd', 'subventionerad anställning', 'Arbetsförmedlingen'],
     createdAt: '2024-03-01T10:00:00Z',
     updatedAt: '2024-03-01T10:00:00Z',
     readingTime: 12,
@@ -1581,7 +1582,7 @@ Ett tackbrev tar 10 minuter att skriva men kan göra skillnaden mellan att få j
 - Syfte: testa om jobbet passar
 
 ### Praktik via skola/utbildning
-- OFta en del av utbildningen
+- Ofta en del av utbildningen
 - Ger studiepoäng
 - LIA (Lärande i arbete)
 
@@ -1849,7 +1850,7 @@ En samling som visar konkreta bevis på vad du kan:
 ## Kom ihåg
 
 En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa konkreta bevis på sina färdigheter. Det särskiljer dig från andra kandidater!`,
-    category: 'cv-application',
+    category: 'job-search',
     subcategory: 'portfolio',
     tags: ['portfölj', 'kompetens', 'arbetsprover', 'bevis', 'kreativt CV'],
     createdAt: '2024-03-07T10:00:00Z',
@@ -1868,7 +1869,106 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'upptack-dina-styrkor',
     title: 'Upptäck och använd dina styrkor',
     summary: 'Lär dig identifiera dina naturliga talanger och hur du kan använda dem i arbetslivet.',
-    content: `Att känna till sina styrkor är grunden för en framgångsrik karriär. När du vet vad du är bra på kan du göra medvetna val som leder till större trivsel och framgång.\n\n## Vad är styrkor?\n\nStyrkor är inte bara saker du kan göra – de är saker du gör bra OCH som ger dig energi. Det som gör dig stark!\n\n## Hur hittar du dina styrkor?\n\n### 1. Se tillbaka på framgångar\nTänk på situationer där du:\n- Kände dig engagerad och i flow\n- Fick beröm från andra\n- Åstadkom resultat med mindre ansträngning än andra\n\n### 2. Fråga andra\nBe 3-5 personer som känner dig att svara på vad de tycker du är bra på.\n\n### 3. Gör övningen\nI övningsmodulen hittar du en strukturerad övning för att kartlägga dina styrkor.\n\n## Vanliga styrkeområden\n\n**Sociala styrkor:** Att bygga relationer, kommunicera, samarbeta\n\n**Intellectuella styrkor:** Att analysera, tänka strategiskt, lära sig snabbt\n\n**Praktiska styrkor:** Att organisera, skapa ordning, planera\n\n**Kreativa styrkor:** Att hitta nya lösningar, tänka utanför boxen\n\n## Använd dina styrkor i jobbsökningen\n\n- Lyft fram styrkor som är relevanta för jobbet i CV:t\n- Berätta om situationer där dina styrkor gjort skillnad i intervjun\n- Sök roller där du får använda dina styrkor dagligen\n\n## Kom ihåg\n\nDina styrkor är unika för dig. När du jobbar med dem känns det inte som jobb – det känns som att vara dig själv!`,
+    content: `Att känna till sina styrkor är grunden för en framgångsrik karriär. När du vet vad du är bra på kan du göra medvetna val som leder till större trivsel och framgång.
+
+## Vad är styrkor?
+
+Styrkor är inte bara saker du kan göra – de är saker du gör bra OCH som ger dig energi. Det som gör dig stark!
+
+### Skillnaden mellan styrkor och kompetenser
+
+- **Kompetenser** är saker du lärt dig göra (t.ex. köra bil, använda Excel)
+- **Styrkor** är naturliga talanger som ger dig energi (t.ex. att organisera, lösa problem, motivera andra)
+
+Du kan vara kompetent på något utan att det är en styrka – och tvärtom!
+
+## Hur hittar du dina styrkor?
+
+### 1. Se tillbaka på framgångar
+Tänk på situationer där du:
+- Kände dig engagerad och i flow
+- Fick beröm från andra
+- Åstadkom resultat med mindre ansträngning än andra
+- Tappade begreppet om tid för att du var så fokuserad
+
+### 2. Fråga andra
+Be 3-5 personer som känner dig att svara på:
+- "Vad tycker du att jag är bra på?"
+- "När ser du att jag är som mest engagerad?"
+- "Vilka av mina egenskaper uppskattar du mest?"
+
+### 3. Notera vad som ger dig energi
+Under en vecka, notera:
+- Vilka uppgifter ger dig energi?
+- Vilka uppgifter dränerar dig?
+- När känner du dig mest "du själv"?
+
+### 4. Gör övningen
+I övningsmodulen hittar du en strukturerad övning för att kartlägga dina styrkor.
+
+## Vanliga styrkeområden
+
+**Sociala styrkor:**
+- Att bygga relationer och skapa förtroende
+- Att kommunicera tydligt och övertygande
+- Att samarbeta och få grupper att fungera
+- Att förstå andras perspektiv och behov
+
+**Intellektuella styrkor:**
+- Att analysera komplex information
+- Att tänka strategiskt och se mönster
+- Att lära sig snabbt och anpassa sig
+- Att lösa problem kreativt
+
+**Praktiska styrkor:**
+- Att organisera och skapa struktur
+- Att planera och hålla deadlines
+- Att vara noggrann och detaljorienterad
+- Att genomföra och slutföra uppgifter
+
+**Kreativa styrkor:**
+- Att hitta nya lösningar och idéer
+- Att tänka utanför boxen
+- Att se möjligheter andra missar
+- Att visualisera och inspirera
+
+## Konkreta exempel på styrkor i arbetslivet
+
+| Styrka | Hur det visar sig | Passande roller |
+|--------|-------------------|-----------------|
+| Organisering | Du älskar att skapa ordning och system | Projektledare, administratör |
+| Empati | Du förstår snabbt hur andra mår | Vårdyrken, HR, kundservice |
+| Analys | Du ser mönster i data och information | Analytiker, revisor, forskare |
+| Kommunikation | Du förklarar komplexa saker enkelt | Lärare, säljare, journalist |
+| Problemlösning | Du hittar lösningar där andra ser hinder | Konsult, utvecklare, tekniker |
+
+## Använd dina styrkor i jobbsökningen
+
+### I ditt CV
+- Lyft fram styrkor som är relevanta för jobbet
+- Använd konkreta exempel: "Organiserade ett event för 200 deltagare"
+- Koppla styrkor till resultat
+
+### I intervjun
+- Berätta om situationer där dina styrkor gjort skillnad
+- Använd STAR-metoden (Situation, Task, Action, Result)
+- Visa självinsikt om både styrkor och utvecklingsområden
+
+### Vid jobbsökning
+- Sök roller där du får använda dina styrkor dagligen
+- Undvik roller som kräver det motsatta
+- Fråga om arbetsuppgifterna i intervjun
+
+## Vanliga misstag
+
+- Att förväxla vad du KAN med vad som GER DIG ENERGI
+- Att underskatta vardagliga styrkor
+- Att jämföra dig med andra istället för att hitta ditt unika
+- Att inte be om feedback från andra
+
+## Kom ihåg
+
+Dina styrkor är unika för dig. När du jobbar med dem känns det inte som jobb – det känns som att vara dig själv! Det bästa jobbet är ett där du får använda dina styrkor varje dag.`,
     category: 'self-awareness',
     subcategory: 'strengths',
     tags: ['styrkor', 'självkännedom', 'talanger', 'personlig utveckling'],
@@ -1892,7 +1992,250 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'personlighetstyper-i-arbetslivet',
     title: 'Personlighetstyper i arbetslivet – hitta din profil',
     summary: 'Lär dig om olika personlighetstyper och vilka yrken som passar bäst för varje typ.',
-    content: `Att förstå sin personlighetstyp kan ge ovärderliga insikter om vilka yrken och arbetsmiljöer som passar dig bäst.\n\n## De fyra personlighetstyperna\n\nBaserat på Arbetsförmedlingens modell finns det fyra grundläggande personlighetstyper:\n\n### 1. Den praktiska (Realistisk)\n**Kännetecken:**\n- Gillar att arbeta med händerna\n- Tycker om konkreta resultat\n- Föredrar praktiska uppgifter framför teoretiska\n\n**Passande yrken:** Byggarbetare, elektriker, lastbilschaufför, kock\n\n### 2. Den analytiska (Investigativ)\n**Kännetecken:**\n- Gillar att lösa problem\n- Tycker om att analysera och fördjupa sig\n- Föredrar intellektuella utmaningar\n\n**Passande yrken:** Programmerare, civilingenjör, forskar, ekonom\n\n### 3. Den sociala (Social)\n**Kännetecken:**\n- Gillar att hjälpa och samarbeta med andra\n- Tycker om att kommunicera och undervisa\n- Föredrar meningsfullt arbete med människor\n\n**Passande yrken:** Sjuksköterska, lärare, kundtjänstmedarbetare, kurator\n\n### 4. Den kreativa (Konstnärlig)\n**Kännetecken:**\n- Gillar att skapa och uttrycka sig\n- Tycker om att tänka nytt och se möjligheter\n- Föredrar varierande och inspirerande arbete\n\n**Passande yrken:** Designer, skribent, musiker, marknadsförare\n\n## Kombinationer av typer\n\nDe flesta av oss är en blandning av flera typer. Din primära och sekundära typ tillsammans ger en ännu tydligare bild.\n\n## Gör övningen\n\nI våra övningar finns en strukturerad guide som hjälper dig identifiera din personlighetstyp och hitta passande yrken.\n\n## Kom ihåg\n\nIngen typ är bättre än en annan. Arbetslivet behöver alla typer för att fungera!`,
+    content: `Att förstå sin personlighetstyp kan ge ovärderliga insikter om vilka yrken och arbetsmiljöer som passar dig bäst. Denna guide hjälper dig identifiera din typ och hitta rätt karriärväg.
+
+## Vad är personlighetstyper?
+
+Personlighetstyper är ett sätt att kategorisera hur vi föredrar att arbeta, tänka och interagera. Det finns ingen "bästa" typ – alla behövs på arbetsmarknaden!
+
+### Varför är det användbart?
+- Hjälper dig välja rätt yrke
+- Förklarar varför vissa jobb känns naturliga
+- Ger insikt i dina styrkor
+- Underlättar samarbete med andra typer
+
+## De sex personlighetstyperna (RIASEC)
+
+Denna modell, även kallad Holland-koden, används av Arbetsförmedlingen och karriärvägledare världen över.
+
+### 1. Realistisk (R) – Den praktiska
+
+**Så känner du igen dig:**
+- Du föredrar att GÖRA saker framför att prata om dem
+- Du gillar konkreta resultat du kan se och ta på
+- Du trivs med verktyg, maskiner eller att vara utomhus
+- Du löser problem genom att prova praktiskt
+
+**Styrkor:**
+- Händig och teknisk
+- Uthållig och fokuserad
+- Självständig
+- Jordnära och realistisk
+
+**Arbetsmiljö du trivs i:**
+- Verkstad, byggarbetsplats, utomhus
+- Tydliga uppgifter och mål
+- Möjlighet att se konkreta resultat
+- Begränsat med möten och administration
+
+**Passande yrken:**
+| Yrke | Beskrivning |
+|------|-------------|
+| Elektriker | Installation och reparation av elsystem |
+| Snickare/Byggarbetare | Bygga och renovera |
+| Mekaniker | Reparation av fordon och maskiner |
+| Kock | Matlagning och köksarbete |
+| Trädgårdsmästare | Skötsel av växter och utemiljöer |
+| Lastbilschaufför | Transport av gods |
+| Undersköterska | Praktisk vård och omsorg |
+
+### 2. Investigativ (I) – Den analytiska
+
+**Så känner du igen dig:**
+- Du älskar att förstå HUR och VARFÖR saker fungerar
+- Du föredrar att tänka före du handlar
+- Du gillar att fördjupa dig i komplexa problem
+- Du är nyfiken och ifrågasättande
+
+**Styrkor:**
+- Analytisk och logisk
+- Noggrann och detaljorienterad
+- Självständig tänkare
+- Bra på research
+
+**Arbetsmiljö du trivs i:**
+- Lugn miljö för koncentration
+- Tillgång till information och data
+- Möjlighet att specialisera dig
+- Intellektuell stimulans
+
+**Passande yrken:**
+| Yrke | Beskrivning |
+|------|-------------|
+| Programmerare | Utveckling av mjukvara |
+| Dataanalytiker | Analys av data och statistik |
+| Forskare | Vetenskapliga studier |
+| Ingenjör | Teknisk problemlösning |
+| Ekonom | Finansiell analys |
+| Läkare | Medicinsk diagnostik |
+| Laboratorieassistent | Tester och analyser |
+
+### 3. Artistisk (A) – Den kreativa
+
+**Så känner du igen dig:**
+- Du behöver uttrycka dig kreativt
+- Du ogillar rutiner och strikta regler
+- Du ser möjligheter där andra ser problem
+- Du dras till estetik och design
+
+**Styrkor:**
+- Kreativ och innovativ
+- Uttrycksfull och kommunikativ
+- Flexibel och anpassningsbar
+- Originell och nytänkande
+
+**Arbetsmiljö du trivs i:**
+- Frihet och flexibilitet
+- Möjlighet till kreativt uttryck
+- Variation i arbetsuppgifter
+- Inspirerande och estetisk miljö
+
+**Passande yrken:**
+| Yrke | Beskrivning |
+|------|-------------|
+| Grafisk designer | Visuell kommunikation |
+| Fotograf | Bildberättande |
+| Skribent/Copywriter | Textproduktion |
+| Arkitekt | Design av byggnader |
+| Marknadsförare | Kreativa kampanjer |
+| Inredare | Rumsdesign |
+| Musiker/Artist | Konstnärligt skapande |
+
+### 4. Social (S) – Den hjälpsamma
+
+**Så känner du igen dig:**
+- Du får energi av att hjälpa andra
+- Du är en naturlig lyssnare
+- Du trivs i grupp och samarbete
+- Du vill göra skillnad för människor
+
+**Styrkor:**
+- Empatisk och förstående
+- Kommunikativ och pedagogisk
+- Samarbetsinriktad
+- Tålmodig och stöttande
+
+**Arbetsmiljö du trivs i:**
+- Mycket mänsklig kontakt
+- Teamarbete och samarbete
+- Meningsfullt arbete
+- Möjlighet att se andras utveckling
+
+**Passande yrken:**
+| Yrke | Beskrivning |
+|------|-------------|
+| Lärare | Undervisning och pedagogik |
+| Sjuksköterska | Vård och omsorg |
+| Kurator/Socionom | Socialt stödarbete |
+| HR-specialist | Personalfrågor |
+| Coach | Personlig utveckling |
+| Kundtjänst | Kundservice och support |
+| Fritidsledare | Aktiviteter för barn/unga |
+
+### 5. Entreprenöriell (E) – Den ledande
+
+**Så känner du igen dig:**
+- Du tar gärna initiativ och leder
+- Du gillar att övertyga och påverka
+- Du trivs med att ta beslut
+- Du drivs av mål och resultat
+
+**Styrkor:**
+- Beslutssam och handlingskraftig
+- Övertalande och karismatisk
+- Riskvillig och ambitiös
+- Energisk och entusiastisk
+
+**Arbetsmiljö du trivs i:**
+- Ledarposition eller eget ansvar
+- Mål och bonusar
+- Dynamisk och föränderlig
+- Möjlighet att påverka
+
+**Passande yrken:**
+| Yrke | Beskrivning |
+|------|-------------|
+| Säljare | Försäljning och kundrelationer |
+| Chef/Ledare | Ledarskap och management |
+| Egenföretagare | Driva eget |
+| Projektledare | Leda projekt |
+| Mäklare | Förmedling och förhandling |
+| Rekryterare | Hitta och övertyga talanger |
+| Eventkoordinator | Planera och genomföra event |
+
+### 6. Konventionell (C) – Den strukturerade
+
+**Så känner du igen dig:**
+- Du gillar ordning, system och rutiner
+- Du är noggrann och detaljorienterad
+- Du föredrar tydliga instruktioner
+- Du trivs med administrativa uppgifter
+
+**Styrkor:**
+- Organiserad och systematisk
+- Pålitlig och noggrann
+- Effektiv och disciplinerad
+- Bra på att följa processer
+
+**Arbetsmiljö du trivs i:**
+- Tydlig struktur och regler
+- Förutsägbara uppgifter
+- Lugn kontorsmiljö
+- Möjlighet att specialisera dig
+
+**Passande yrken:**
+| Yrke | Beskrivning |
+|------|-------------|
+| Redovisningsekonom | Bokföring och redovisning |
+| Administratör | Kontorsadministration |
+| Lönehandläggare | Lönehantering |
+| Bankman | Finansiella tjänster |
+| Sekreterare | Administrativt stöd |
+| Kvalitetskontrollant | Granska och säkerställa |
+| Arkivarie | Dokumenthantering |
+
+## Hitta din kombination
+
+De flesta har 2-3 dominerande typer. Din unika kombination kallas din "Holland-kod".
+
+### Exempel på kombinationer:
+- **RI (Realistisk-Investigativ):** Ingenjör, tekniker
+- **AS (Artistisk-Social):** Terapeut med konstinriktning, dramapedagog
+- **EC (Entreprenöriell-Konventionell):** Bankchef, försäljningschef
+- **SI (Social-Investigativ):** Läkare, psykolog
+- **RA (Realistisk-Artistisk):** Möbelsnickare, blomsterdekoratör
+
+### Hur hittar du din kod?
+1. Läs igenom alla sex typer
+2. Välj de 2-3 som passar dig bäst
+3. Rangordna dem (primär, sekundär, tertiär)
+4. Sök på yrken som matchar din kombination
+
+## Använd kunskapen i jobbsökningen
+
+### I CV:t
+Lyft fram erfarenheter som matchar din typ:
+- Realistisk: Praktiska projekt och tekniska färdigheter
+- Social: Teamarbete och kundkontakt
+
+### I intervjun
+Förklara varför du passar för rollen utifrån din personlighet:
+- "Jag trivs bäst när jag får lösa konkreta problem"
+- "Det som driver mig är att hjälpa andra lyckas"
+
+### Vid val av jobb
+Använd din kod för att filtrera jobbmöjligheter:
+- Matchar arbetsuppgifterna min typ?
+- Passar arbetsmiljön min stil?
+
+## Kom ihåg
+
+- Ingen typ är bättre än en annan
+- Du är mer än en bokstav – se hela bilden
+- Typer kan förändras över tid
+- Använd detta som vägledning, inte begränsning
+
+Arbetslivet behöver alla typer för att fungera!`,
     category: 'self-awareness',
     subcategory: 'personality',
     tags: ['personlighetstyper', 'yrkesval', 'jobb-jag', 'realistisk', 'analytisk', 'social', 'kreativ'],
@@ -1917,7 +2260,194 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'kompetensinventering-guide',
     title: 'Kompetensinventering – kartlägg allt du kan',
     summary: 'En guide för att identifiera alla dina kompetenser – formella, praktiska och personliga.',
-    content: `Många underskattar vad de kan. Denna guide hjälper dig att kartlägga alla dina kompetenser så du kan visa ditt fulla värde för arbetsgivare.\n\n## Tre typer av kompetenser\n\n### 1. Formella kompetenser\nDina papper – utbildning, certifikat, behörigheter.\n\n### 2. Praktiska kompetenser\nDet du kan göra baserat på erfarenhet – oavsett om den är formell eller informell.\n\n### 3. Personliga kompetenser\nDina egenskaper och sätt att vara.\n\n## Hur gör du en inventering?\n\n### Steg 1: Lista all formell utbildning\nGå igenom alla år sedan grundskolan.\n\n### Steg 2: Dokumentera all arbetslivserfarenhet\nTänk brett – anställningar, praktik, sommarjobb, ideellt arbete.\n\n### Steg 3: Identifiera dolda erfarenheter\nMånga saker vi gör i vardagen är relevanta.\n\n### Steg 4: Definiera dina personliga styrkor\nFråga dig själv vad du är bra på utan att anstränga dig.\n\n## Gör övningen\n\nÖvningen Kompetensinventering tar dig igenom processen steg för steg och hjälper dig dokumentera allt du kan!`,
+    content: `Många underskattar vad de kan. Denna guide hjälper dig att kartlägga alla dina kompetenser så du kan visa ditt fulla värde för arbetsgivare.
+
+## Varför göra en kompetensinventering?
+
+- Du blir medveten om allt du faktiskt kan
+- Du hittar kompetenser du glömt bort
+- Du får material till CV och intervjuer
+- Du ser vilka områden du kan utveckla
+- Du ökar ditt självförtroende
+
+## Tre typer av kompetenser
+
+### 1. Formella kompetenser
+Dokumenterade kvalifikationer:
+- Utbildningar och examina
+- Certifieringar och behörigheter
+- Körkort och truckkort
+- Språkcertifikat
+- Yrkesbevis
+
+### 2. Praktiska kompetenser
+Färdigheter du lärt dig genom erfarenhet:
+- Yrkesspecifika färdigheter
+- Verktyg och system du kan använda
+- Metoder och processer du behärskar
+- Tekniska färdigheter
+
+### 3. Personliga kompetenser (mjuka färdigheter)
+Dina egenskaper och hur du arbetar:
+- Kommunikationsförmåga
+- Samarbetsförmåga
+- Ledarskap
+- Problemlösning
+- Kreativitet
+
+## Steg-för-steg: Gör din inventering
+
+### Steg 1: Lista all formell utbildning
+
+**Gå igenom:**
+- Gymnasieutbildning
+- Högskola/universitet
+- Yrkesutbildningar
+- Komvux och folkhögskola
+- Kortare kurser och utbildningar
+- Arbetsgivarens interna utbildningar
+- Onlinekurser och certifieringar
+
+**Skriv ner:**
+| Utbildning | År | Vad lärde jag mig? |
+|------------|----|--------------------|
+| Gymnasium, Ekonomi | 2015 | Bokföring, Excel, företagsekonomi |
+| Excelkurs via jobbet | 2019 | Avancerade formler, pivot-tabeller |
+
+### Steg 2: Dokumentera all arbetslivserfarenhet
+
+**Tänk brett – inkludera:**
+- Alla anställningar (även korta)
+- Praktikplatser
+- Sommarjobb
+- Extraknäck
+- Ideellt arbete
+- Styrelseuppdrag
+- Familjeföretag
+
+**För varje erfarenhet, fråga dig:**
+- Vilka arbetsuppgifter hade jag?
+- Vilka verktyg/system använde jag?
+- Vad lärde jag mig?
+- Vilka resultat uppnådde jag?
+
+**Exempel:**
+| Jobb | Uppgifter | Kompetenser |
+|------|-----------|-------------|
+| Kassör på ICA | Kassa, påfyllning, kundservice | Kassasystem, kundhantering, stresshantering |
+| Fotbollstränare | Träningar, matcher, föräldrakontakt | Ledarskap, planering, kommunikation |
+
+### Steg 3: Identifiera dolda erfarenheter
+
+Vardagliga aktiviteter som ger värdefull kompetens:
+
+**Hemma och privat:**
+- Renoverat hemma → Projektledning, hantverk
+- Skött familjens ekonomi → Budgetering, ekonomiförståelse
+- Organiserat fester/bröllop → Eventplanering, koordinering
+- Tagit hand om sjuk anhörig → Omsorg, tålamod, problemlösning
+
+**Fritid och ideellt:**
+- Styrelsearbete i förening → Administration, beslutsfattande
+- Tränare/ledare → Ledarskap, pedagogik
+- Bloggat/sociala medier → Content, marknadsföring
+- Spelat i band → Samarbete, kreativitet
+
+**Resor och livserfarenhet:**
+- Bott utomlands → Språk, kulturell förståelse, anpassningsförmåga
+- Rest själv → Självständighet, problemlösning
+- Invandrat till Sverige → Resiliens, språkinlärning, anpassning
+
+### Steg 4: Identifiera dina personliga styrkor
+
+**Fråga dig själv:**
+- Vad kommer naturligt för mig?
+- Vad ber andra mig om hjälp med?
+- Vad får jag ofta beröm för?
+- Vad gör jag utan att det känns ansträngande?
+
+**Vanliga personliga kompetenser:**
+
+| Kompetens | Exempel på hur det visar sig |
+|-----------|------------------------------|
+| Kommunikation | Förklarar saker tydligt, lyssnar aktivt |
+| Samarbete | Fungerar bra i grupp, löser konflikter |
+| Problemlösning | Hittar lösningar, tänker kreativt |
+| Organisation | Håller ordning, planerar effektivt |
+| Ledarskap | Tar initiativ, motiverar andra |
+| Anpassningsförmåga | Hanterar förändring, lär sig snabbt |
+| Noggrannhet | Gör få fel, dubbelkollar |
+| Uthållighet | Ger inte upp, arbetar långsiktigt |
+
+### Steg 5: Kategorisera och prioritera
+
+Sortera dina kompetenser efter:
+
+**Relevans för jobbet du söker:**
+- Direkt relevanta (lyfts fram först i CV)
+- Indirekt relevanta (kan nämnas)
+- Mindre relevanta (utelämnas)
+
+**Nivå:**
+- Expert (kan lära andra)
+- Erfaren (arbetar självständigt)
+- Grundläggande (behöver viss vägledning)
+- Nybörjare (behöver handledning)
+
+## Sammanställ ditt kompetensdokument
+
+Skapa ett dokument du kan använda som underlag:
+
+**Mall:**
+
+MINA KOMPETENSER
+
+Formella kvalifikationer:
+- [Utbildning 1]
+- [Certifiering 1]
+- [Körkort/behörigheter]
+
+Yrkeskompetenser:
+- [Kompetens 1] – [nivå] – [exempel]
+- [Kompetens 2] – [nivå] – [exempel]
+
+Verktyg och system:
+- [System 1] – [nivå]
+- [Verktyg 1] – [nivå]
+
+Personliga styrkor:
+- [Styrka 1] – [hur det visar sig]
+- [Styrka 2] – [hur det visar sig]
+
+Språk:
+- [Språk 1] – [nivå]
+- [Språk 2] – [nivå]
+
+## Använd din inventering
+
+### I CV:t
+- Välj de mest relevanta kompetenserna för varje jobb
+- Använd konkreta exempel och resultat
+- Matcha ordval med jobbannonsen
+
+### I personligt brev
+- Lyft fram 2-3 nyckekompetenser
+- Koppla dem till arbetsgivarens behov
+
+### I intervjun
+- Ha exempel redo för varje kompetens
+- Använd STAR-metoden (Situation, Task, Action, Result)
+
+## Vanliga misstag
+
+- Att underskatta vardagliga kompetenser
+- Att glömma bort gamla erfarenheter
+- Att inte be andra om input
+- Att bara fokusera på formella kvalifikationer
+
+## Kom ihåg
+
+Du kan mer än du tror! Ta dig tid att verkligen gräva i din bakgrund – du kommer bli positivt överraskad.`,
     category: 'self-awareness',
     subcategory: 'competencies',
     tags: ['kompetenser', 'kompetensinventering', 'CV', 'erfarenheter'],
@@ -1937,12 +2467,235 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     authorTitle: 'Karriärcoach',
   },
 
+  {
+    id: 'varderingar-i-arbetslivet',
+    title: 'Hitta dina värderingar – nyckeln till rätt jobb',
+    summary: 'Lär dig identifiera dina kärnvärderingar och hur de påverkar din trivsel i arbetslivet.',
+    content: `Dina värderingar är de saker som är viktigast för dig i livet. När ditt jobb matchar dina värderingar trivs du bättre och presterar bättre.
+
+## Vad är värderingar?
+
+Värderingar är djupt rotade övertygelser om vad som är viktigt och meningsfullt. De styr våra beslut och påverkar hur vi mår.
+
+### Skillnaden mellan värderingar och intressen
+- **Intressen** är vad du tycker om att göra (t.ex. läsa, träna, resa)
+- **Värderingar** är vad som är viktigt för dig (t.ex. frihet, rättvisa, kreativitet)
+
+Du kan ha samma intresse som någon annan men helt olika värderingar!
+
+## Vanliga arbetsvärderingar
+
+### Ekonomiska värderingar
+- Hög lön och ekonomisk trygghet
+- Karriärmöjligheter och avancemang
+- Förmåner och bonus
+
+### Sociala värderingar
+- Bra kollegor och teamwork
+- Hjälpa andra människor
+- Bidra till samhället
+
+### Utvecklingsvärderingar
+- Lärande och kompetensutveckling
+- Utmaningar och variation
+- Kreativt arbete
+
+### Livsstilsvärderingar
+- Work-life balance
+- Flexibilitet och frihet
+- Arbeta hemifrån
+
+### Statusvärderingar
+- Erkännande och respekt
+- Inflytande och makt
+- Prestige
+
+## Hur hittar du dina värderingar?
+
+### Övning 1: Topplistemetoden
+Välj dina 5 viktigaste värderingar från denna lista:
+
+| Värdering | Beskrivning |
+|-----------|-------------|
+| Trygghet | Fast anställning, förutsägbarhet |
+| Frihet | Självständighet, flexibilitet |
+| Kreativitet | Skapa nytt, innovation |
+| Hjälpsamhet | Hjälpa andra, göra skillnad |
+| Prestation | Nå mål, vara bäst |
+| Balans | Tid för familj och fritid |
+| Utveckling | Lära nytt, växa |
+| Samarbete | Teamwork, gemenskap |
+| Rättvisa | Likabehandling, etik |
+| Status | Erkännande, position |
+
+### Övning 2: Värderingskonflikter
+Tänk på situationer där du känt dig frustrerad på jobbet. Vilken värdering blev kränkt?
+
+**Exempel:**
+- Frustrerad över övertid → Värdering: Balans
+- Frustrerad över orättvis behandling → Värdering: Rättvisa
+- Frustrerad över monotona uppgifter → Värdering: Utveckling
+
+### Övning 3: Drömjobbet
+Om du kunde designa ditt perfekta jobb utan begränsningar:
+- Hur skulle arbetsmiljön se ut?
+- Vilka uppgifter skulle du ha?
+- Hur skulle dina kollegor vara?
+- Vad skulle du bidra med?
+
+Svaren avslöjar dina värderingar!
+
+## Använda värderingar i jobbsökningen
+
+### Vid jobbsökning
+- Sök jobb hos företag vars värderingar matchar dina
+- Läs "Om oss"-sidor och företagskultur-beskrivningar
+- Researcha på Glassdoor och liknande sajter
+
+### I intervjun
+Ställ frågor som avslöjar företagets verkliga värderingar:
+- "Hur firar ni framgångar här?"
+- "Hur ser en typisk karriärväg ut?"
+- "Hur hanterar ni work-life balance?"
+
+### Vid beslut
+Om du har flera erbjudanden, jämför hur väl varje jobb matchar dina topp 5 värderingar.
+
+## Värderingskonflikter på jobbet
+
+Om dina värderingar inte matchar arbetsplatsens kan det leda till:
+- Låg motivation och energi
+- Konflikter med kollegor eller chefer
+- Känsla av att inte passa in
+- Utmattning och stress
+
+### Vad kan du göra?
+1. **Identifiera konflikten** – Vilken värdering kränks?
+2. **Utvärdera alternativen** – Kan situationen förändras?
+3. **Kommunicera** – Kan du prata med din chef?
+4. **Ta beslut** – Ibland är det rätt att byta jobb
+
+## Kom ihåg
+
+Det finns inga rätta eller fel värderingar. Dina värderingar är unika för dig, och det bästa jobbet är ett där du kan leva efter dem!`,
+    category: 'self-awareness',
+    subcategory: 'interests',
+    tags: ['värderingar', 'självkännedom', 'arbetsvärderingar', 'trivsel', 'rätt jobb'],
+    createdAt: '2024-04-05T10:00:00Z',
+    updatedAt: '2024-04-05T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'easy',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 178,
+    relatedArticles: ['upptack-dina-styrkor', 'personlighetstyper-i-arbetslivet', 'karriarplanering-guide'],
+    relatedExercises: ['strengths'],
+    author: 'Lisa Bergström',
+    authorTitle: 'Beteendevetare',
+  },
+
   // === NÄTVERKANDE (nya artiklar) ===
   {
     id: 'natverka-for-jobb',
     title: 'Nätverkande – din dolda jobbmarknad',
     summary: 'Lär dig hur du bygger och använder ett professionellt nätverk för att hitta dolda jobbmöjligheter.',
-    content: `Upp till 70% av alla jobb tillsätts via nätverk. Att bygga relationer är inte bara bra – det är avgörande för din karriär.\n\n## Vad är nätverkande?\n\nNätverkande är att bygga och underhålla relationer som kan vara ömsesidigt fördelaktiga. Det handlar inte om att använda människor, utan om att skapa genuina kontakter.\n\n## Din nätverksposition idag\n\nDu har redan ett nätverk! Börja med att kartlägga:\n\n### Nära nätverk\n- Familj och vänner\n- Grannar\n- Tidigare klasskamrater\n- Tidigare kollegor\n\n### Professionellt nätverk\n- Arbetskonsulenter\n- Lärare/mentorer\n- Personer du träffat på praktik\n\n### Utvidgat nätverk\n- Vänners vänner\n- Kontakter på LinkedIn\n- Medlemmar i föreningar\n\n## Så börjar du nätverka\n\n### 1. Definiera vad du söker\nVar tydlig med vilken typ av jobb du söker och vilken information eller hjälp du behöver.\n\n### 2. Skapa en lista\nSkriv ner 20 personer du skulle kunna kontakta. Tänk brett!\n\n### 3. Nå ut\nKontakta personer med ett personligt meddelande.\n\n## Informationsmöten\n\nAtt be om ett informationsmöte är mindre hotande än att be om jobb:\n- Be om 20-30 minuter\n- Förbered frågor om personens yrke och företag\n- Be om tips på andra att kontakta\n- Skicka ett tackbrev efteråt\n\n## Gör övningen\n\nÖvningen Nätverka för att hitta jobb tar dig igenom hela processen – från att kartlägga ditt nätverk till att göra första kontakten.`,
+    content: `Upp till 70% av alla jobb tillsätts via nätverk. Att bygga relationer är inte bara bra – det är avgörande för din karriär.
+
+## Vad är nätverkande?
+
+Nätverkande är att bygga och underhålla relationer som kan vara ömsesidigt fördelaktiga. Det handlar inte om att använda människor, utan om att skapa genuina kontakter.
+
+### Varför fungerar det?
+- Arbetsgivare litar mer på rekommendationer än på ansökningar
+- Många jobb utannonseras aldrig – de tillsätts internt
+- Du får tillgång till information andra inte har
+- Det ger dig ett försprång i rekryteringsprocessen
+
+## Din nätverksposition idag
+
+Du har redan ett nätverk! Börja med att kartlägga:
+
+### Nära nätverk
+- Familj och vänner
+- Grannar
+- Tidigare klasskamrater
+- Tidigare kollegor
+
+### Professionellt nätverk
+- Arbetskonsulenter
+- Lärare/mentorer
+- Personer du träffat på praktik
+
+### Utvidgat nätverk
+- Vänners vänner
+- Kontakter på LinkedIn
+- Medlemmar i föreningar
+
+## Så börjar du nätverka
+
+### 1. Definiera vad du söker
+Var tydlig med vilken typ av jobb du söker och vilken information eller hjälp du behöver. Skriv ner:
+- Vilken bransch/roll intresserar dig?
+- Vilka företag vill du veta mer om?
+- Vad behöver du hjälp med?
+
+### 2. Skapa en lista
+Skriv ner 20 personer du skulle kunna kontakta. Tänk brett! Inkludera:
+- Alla du känner i branschen
+- Vänner som kanske känner någon
+- Gamla kollegor och chefer
+- LinkedIn-kontakter
+
+### 3. Nå ut
+Kontakta personer med ett personligt meddelande:
+
+**Exempel:**
+"Hej [Namn]! Jag såg att du jobbar inom [bransch] och jag utforskar just nu möjligheter inom det området. Skulle du ha tid för en kopp kaffe eller ett kort samtal? Jag skulle uppskatta dina insikter och råd."
+
+## Informationsmöten
+
+Att be om ett informationsmöte är mindre hotande än att be om jobb:
+- Be om 20-30 minuter
+- Förbered frågor om personens yrke och företag
+- Be om tips på andra att kontakta
+- Skicka ett tackbrev efteråt
+
+### Bra frågor att ställa
+- "Hur ser en typisk dag ut för dig?"
+- "Vad tycker du bäst om med ditt jobb?"
+- "Hur tog du dig till din nuvarande position?"
+- "Vilka råd skulle du ge någon som vill in i branschen?"
+- "Känner du någon annan jag borde prata med?"
+
+## Underhåll ditt nätverk
+
+### Regelbunden kontakt
+- Gratulera till nya jobb och milstolpar
+- Dela intressanta artiklar
+- Hör av dig utan att be om något
+
+### Ge mer än du tar
+- Erbjud hjälp när du kan
+- Dela information och kontakter
+- Var generös med din tid och kunskap
+
+## Vanliga hinder – och hur du övervinner dem
+
+**"Jag är för blyg"**
+Börja digitalt via LinkedIn. Skriftlig kontakt är lättare än telefonsamtal.
+
+**"Jag vill inte verka desperat"**
+Du ber om råd och insikter, inte om ett jobb. De flesta uppskattar att bli tillfrågade!
+
+**"Jag har inget nätverk"**
+Alla börjar någonstans. Ditt nätverk växer med varje person du pratar med.
+
+**"Jag vet inte vad jag ska säga"**
+Förbered dig. Skriv ner frågor och öva på din "hiss-pitch" om dig själv.
+
+## Kom ihåg
+
+Nätverkande handlar om relationer, inte transaktioner. Var genuint intresserad av andra människor, ge utan att förvänta dig något tillbaka, och ha tålamod. De bästa kontakterna byggs över tid!`,
     category: 'networking',
     subcategory: 'building-network',
     tags: ['nätverkande', 'nätverk', 'dolda jobbmarknaden', 'kontakter', 'informationsmöten'],
@@ -1967,7 +2720,129 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'bygg-ditt-personliga-varumarke',
     title: 'Bygg ditt personliga varumärke online',
     summary: 'Skapa en konsekvent och professionell digital närvaro som attraherar rätt möjligheter.',
-    content: `Ditt personliga varumärke är vad folk säger om dig när du inte är i rummet. I dagens digitala värld är det avgörande för din karriär.\n\n## Vad är ett personligt varumärke?\n\nDitt personliga varumärke är:\n- Den bild andra har av dig\n- Det du är känd för\n- Din unika kombination av kompetenser och personlighet\n\n## Steg 1: Definiera ditt varumärke\n\n### Vilka är du?\n- Vilka är dina kärnkompetenser?\n- Vilka värderingar driver dig?\n- Vad vill du bli känd för?\n\n### Din unika vinkel\nVad skiljer dig från andra med liknande bakgrund?\n\n## Steg 2: Optimera dina profiler\n\n### LinkedIn\n- Professionell bild\n- Tydlig rubrik med nyckelord\n- Sammanfattning som berättar din historia\n\n## Steg 3: Skapa innehåll\n\n### Dela vad du lär dig\n### Visa ditt arbete\n### Engagera dig\n\n## Gör övningen\n\nÖvningen Ditt personliga varumärke hjälper dig definiera och kommunicera vad du vill vara känd för!`,
+    content: `Ditt personliga varumärke är vad folk säger om dig när du inte är i rummet. I dagens digitala värld är det avgörande för din karriär.
+
+## Vad är ett personligt varumärke?
+
+Ditt personliga varumärke är:
+- Den bild andra har av dig
+- Det du är känd för
+- Din unika kombination av kompetenser och personlighet
+
+### Varför är det viktigt?
+
+- **70% av arbetsgivare** googlar kandidater före intervju
+- Ett starkt varumärke gör att möjligheter kommer till dig
+- Det hjälper dig sticka ut i en konkurrenskraftig marknad
+- Det ger dig kontroll över hur andra uppfattar dig
+
+## Steg 1: Definiera ditt varumärke
+
+### Vilka är du?
+Ställ dig dessa frågor:
+- Vilka är dina kärnkompetenser?
+- Vilka värderingar driver dig?
+- Vad vill du bli känd för?
+- Vilka problem kan du lösa för andra?
+
+### Din unika vinkel
+Vad skiljer dig från andra med liknande bakgrund? Det kan vara:
+- En unik kombination av erfarenheter
+- Ett speciellt perspektiv
+- En ovanlig karriärväg
+- Specifika resultat du uppnått
+
+### Skapa ditt varumärkesbudskap
+Sammanfatta dig själv i en mening:
+"Jag hjälper [målgrupp] med [problem] genom [din unika metod/kompetens]"
+
+**Exempel:**
+- "Jag hjälper småföretag växa genom kreativ digital marknadsföring"
+- "Jag förenklar komplex teknik för användare utan IT-bakgrund"
+
+## Steg 2: Optimera dina profiler
+
+### LinkedIn – din viktigaste plattform
+
+**Profilbild:**
+- Professionell men personlig
+- Bra belysning, neutral bakgrund
+- Klä dig som för jobbet du vill ha
+- Le genuint!
+
+**Rubrik (Headline):**
+- Mer än bara din titel
+- Inkludera nyckelord rekryterare söker på
+- **Dåligt:** "Arbetssökande"
+- **Bra:** "Projektledare | Effektivisering | Digitala verktyg | Söker nya utmaningar"
+
+**Sammanfattning (About):**
+- Berätta din historia, inte bara CV-punkter
+- Visa din personlighet
+- Inkludera vad du söker
+- Avsluta med en uppmaning (CTA)
+
+**Erfarenheter:**
+- Fokusera på resultat, inte arbetsuppgifter
+- Använd siffror när möjligt
+- Inkludera relevanta nyckelord
+
+### Andra plattformar
+- Säkerställ samma profilbild och namn överallt
+- Rensa bort olämpligt innehåll på privata konton
+- Överväg en personlig hemsida eller portfolio
+
+## Steg 3: Skapa innehåll
+
+### Dela vad du lär dig
+- Artiklar du läst och vad du tar med dig
+- Kurser och utbildningar du genomfört
+- Insikter från din bransch
+- Reflektioner om trender
+
+### Visa ditt arbete
+- Projekt du slutfört (med tillåtelse)
+- Resultat du uppnått
+- Presentationer eller rapporter
+- Före/efter-exempel
+
+### Engagera dig aktivt
+- Kommentera på andras inlägg med värdefulla insikter
+- Gratulera kontakter till nya jobb och framgångar
+- Delta i relevanta grupper och diskussioner
+- Svara alltid på kommentarer på dina egna inlägg
+
+### Innehållskalender
+Planera för att posta regelbundet:
+- 1-2 gånger per vecka är lagom
+- Blanda olika typer av innehåll
+- Var konsekvent – sluta inte efter första veckan!
+
+## Steg 4: Underhåll och utveckla
+
+### Månadsrutin
+- Uppdatera profilen med nya erfarenheter
+- Lägg till nya kompetenser
+- Be om rekommendationer
+- Rensa kontakter som inte är relevanta
+
+### Mät din framgång
+- Hur många profilvisningar får du?
+- Får du fler kontaktförfrågningar?
+- Kontaktas du av rekryterare?
+- Hur uppfattar folk dig?
+
+## Vanliga misstag att undvika
+
+- Att vara för generisk och tråkig
+- Att bara prata om dig själv
+- Att vara inkonsekvent mellan plattformar
+- Att ge upp efter några veckor
+- Att vara negativ eller klaga offentligt
+
+## Kom ihåg
+
+Ditt personliga varumärke byggs över tid. Var autentisk, var konsekvent, och var tålmodig. Det viktigaste är att det verkligen representerar vem du är!`,
     category: 'digital-presence',
     subcategory: 'personal-brand',
     tags: ['personligt varumärke', 'digital närvaro', 'LinkedIn', 'online-profil'],
@@ -1993,7 +2868,185 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'anstallningsformer-guide',
     title: 'Anställningsformer – vad är skillnaden?',
     summary: 'En guide till olika anställningsformer, deras fördelar och vad du behöver tänka på.',
-    content: `Att förstå olika anställningsformer hjälper dig göra medvetna val och veta vad du har rätt till.\n\n## Vanliga anställningsformer\n\n### Tillsvidareanställning (fast anställning)\n**Vad är det?\n- En anställning utan tidsbegränsning\n- Gäller tills du eller arbetsgivaren säger upp den\n- Starkast anställningsskydd\n\n**Fördelar:**\n- Trygghet och stabilitet\n- Försäkringar och förmåner\n- Lättare att få lån\n\n### Visstidsanställning (tidsbegränsad)\n**Vad är det?\n- Anställning för en specifik period\n- Slutar automatiskt vid periodens slut\n\n**Varianter:**\n- Allmän visstidsanställning\n- Vikariat\n- Säsongsanställning\n- Projektanställning\n\n### Timanställning\n- Anställning där du arbetar vid behov\n- Ingen garanterad arbetstid\n\n### Provanställning\n- En prövoperiod (vanligtvis 6 månader)\n- Båda parter kan avsluta utan uppsägningstid\n\n## Viktiga rättigheter\n\nOavsett anställningsform har du rätt till:\n- Lön enligt avtal\n- Semester\n- Arbetsmiljöskydd\n\n## Kom ihåg\n\n- Ingen anställningsform är sämre – de passar olika situationer\n- En visstidsanställning kan leda till fast jobb\n- Ställ frågor om något är oklart!`,
+    content: `Att förstå olika anställningsformer hjälper dig göra medvetna val och veta vad du har rätt till. Här är en komplett guide.
+
+## Översikt: Anställningsformer i Sverige
+
+| Typ | Tidsbegränsning | Uppsägningsskydd | Vanligast för |
+|-----|-----------------|------------------|---------------|
+| Tillsvidare | Nej | Starkast | Ordinarie tjänster |
+| Visstid | Ja | Begränsat | Projekt, säsong |
+| Vikariat | Ja | Begränsat | Ersätta frånvarande |
+| Provanställning | Max 6 mån | Svagast | Nya anställningar |
+| Timanställning | Varierande | Begränsat | Extrajobb |
+
+## Tillsvidareanställning (Fast anställning)
+
+### Vad är det?
+En anställning utan slutdatum som gäller tills någon säger upp den.
+
+### Fördelar
+- **Trygghet:** Kan inte avslutas utan saklig grund
+- **Stabilitet:** Förutsägbar inkomst
+- **Utveckling:** Långsiktig kompetensutveckling
+- **Lån:** Lättare att få bolån och krediter
+- **Försäkringar:** Bättre villkor i gruppförsäkringar
+
+### Nackdelar
+- Kan vara svårare att få direkt
+- Mindre flexibilitet om du vill byta
+- Längre uppsägningstid kan kännas bindande
+
+### Uppsägningstid
+- 1 månad (under 2 års anställning)
+- 2 månader (2-4 år)
+- 3 månader (4-6 år)
+- Upp till 6 månader vid längre anställning
+
+### Uppsägning
+Arbetsgivaren måste ha saklig grund:
+- Arbetsbrist (omorganisation, nedskärningar)
+- Personliga skäl (allvarlig misskötsel)
+
+Du har turordningsskydd ("sist in, först ut").
+
+## Visstidsanställning (Tidsbegränsad)
+
+### Allmän visstidsanställning
+- Behöver ingen speciell anledning
+- Max 24 månader under en 5-årsperiod
+- Övergår till tillsvidare om gränsen överskrids
+
+### Vikariat
+- Du ersätter någon som är frånvarande
+- Gäller så länge ordinarie är borta
+- Ingen maxgräns i tid
+
+### Säsongsanställning
+- För arbete under viss säsong
+- Vanligt inom jordbruk, turism, handel
+
+### Projektanställning
+- Knutet till ett specifikt projekt
+- Avslutas när projektet är klart
+
+### Fördelar med visstid
+- Lättare att få foten in
+- Prova på arbetsplatsen
+- Kan leda till fast tjänst
+- Flexibilitet
+
+### Nackdelar med visstid
+- Osäkerhet om framtiden
+- Svårare att planera ekonomi
+- Kan vara svårare att få lån
+
+## Provanställning
+
+### Vad är det?
+En prövoperiod innan fast anställning.
+
+### Regler
+- Max 6 månader
+- Kan avbrytas av båda parter utan skäl
+- Övergår automatiskt till tillsvidare om ingen säger upp
+- 2 veckors varsel vid avbrytande
+
+### Tips för provanställda
+- Visa engagemang från dag ett
+- Be om feedback regelbundet
+- Dokumentera dina prestationer
+- Fråga om förväntningarna
+
+## Timanställning
+
+### Vad är det?
+Du kallas in vid behov och får betalt per timme.
+
+### Varianter
+- **Behovsanställning:** Arbetsgivaren ringer när det behövs
+- **Intermittent anställning:** Regelbundet återkommande tillfällen
+
+### Fördelar
+- Flexibilitet
+- Möjlighet att tacka nej
+- Bra som extrajobb
+
+### Nackdelar
+- Ingen garanterad inkomst
+- Osäkerhet
+- Svårare med planering
+
+### Dina rättigheter
+- Samma timlön som ordinarie
+- Semester (betalas ofta som tillägg)
+- Arbetsmiljöskydd
+
+## Anställningsbevis
+
+### Du har rätt till skriftlig information om:
+- Arbetsgivare och arbetsplats
+- Arbetsuppgifter
+- Anställningsform
+- Startdatum (och slutdatum vid visstid)
+- Lön och förmåner
+- Arbetstid
+- Uppsägningstid
+- Kollektivavtal (om det finns)
+
+### Tips
+- Be alltid om skriftligt anställningsbevis
+- Läs igenom noga innan du skriver på
+- Spara en kopia
+
+## Konvertering till fast anställning
+
+### När övergår visstid till tillsvidare?
+
+**Allmän visstid:**
+Automatisk övergång om du arbetat mer än:
+- 24 månader under en 5-årsperiod
+
+**Vikariat:**
+Automatisk övergång om du:
+- Haft vikariat mer än 24 månader under 5 år
+- ELLER haft vikariat + allmän visstid sammanlagt 24 månader
+
+### Vad göra om du borde konverterats?
+1. Räkna ihop din tid
+2. Kontakta arbetsgivaren
+3. Vid tvist: kontakta facket eller Arbetsdomstolen
+
+## Kollektivavtal
+
+### Vad är det?
+Avtal mellan fackförbund och arbetsgivarorganisation som ger bättre villkor än lagen.
+
+### Fördelar med kollektivavtal
+- Högre minimilön
+- Bättre pension (tjänstepension)
+- Föräldraledighetstillägg
+- Längre semester
+- Försäkringar
+
+### Så kollar du
+Fråga arbetsgivaren: "Har ni kollektivavtal? Med vilket förbund?"
+
+## Frågor att ställa vid anställning
+
+- Vilken anställningsform erbjuds?
+- Hur lång är provanställningen?
+- Vad händer efter provanställningen?
+- Finns kollektivavtal?
+- Hur ser möjligheterna till fast tjänst ut?
+- Vilken uppsägningstid gäller?
+
+## Kom ihåg
+
+- Ingen anställningsform är "dålig" – de passar olika situationer
+- Visstidsanställningar är ofta ett första steg
+- Läs alltid anställningsbeviset noga
+- Fråga om du är osäker på något!`,
     category: 'employment-law',
     subcategory: 'employment-types',
     tags: ['anställningsformer', 'tillsvidare', 'visstid', 'provanställning', 'rättigheter'],
@@ -2014,7 +3067,190 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'lon-och-formaner-guide',
     title: 'Lön och förmåner – mer än bara kontant lön',
     summary: 'Förstå hela ersättningspaketet och lär dig förhandla om både lön och förmåner.',
-    content: `När du utvärderar ett jobberbjudande är det viktigt att se hela paketet – inte bara grundlönen.\n\n## Delar av ersättningspaketet\n\n### Kontant lön\nDet du får utbetalt varje månad före skatt.\n\n### Pension\n- Tjänstepension: Arbetsgivarens pensionssparande\n- Premiepension: En del av den allmänna pensionen\n\n### Semester\n- 25 dagar är lagstadgat\n- Många har 30 dagar eller mer\n\n### Försäkringar\n- Sjukförsäkring\n- Tjänstegrupplivförsäkring\n- Arbetsskadeförsäkring\n\n### Övriga förmåner\n- Friskvårdsbidrag\n- Flextid\n- Distansarbete\n- Kompetensutveckling\n\n## Att förhandla om förmåner\n\nIbland kan förmåner vara lika värdefulla som högre lön:\n- Flextid ger lättare att kombinera arbete och privatliv\n- Distansarbete sparar tid och pengar på resor\n- Kompetensutveckling ökar ditt framtida värde\n\n## Gör övningen\n\nÖvningen Förstå lön och förmåner hjälper dig göra marknadsundersökningar och förbereda löneförhandlingen.`,
+    content: `När du utvärderar ett jobberbjudande är det viktigt att se hela paketet – inte bara grundlönen. Ibland är förmånerna värda mer än en högre lön.
+
+## Ersättningspaketets delar
+
+### 1. Kontant lön
+
+**Grundlön**
+- Det du får utbetalt varje månad före skatt
+- Kan vara fast eller rörlig
+
+**Rörlig lön**
+- Provision (vanligt inom försäljning)
+- Bonus (vid måluppfyllelse)
+- Tantiem (andel av vinst)
+
+**OB-tillägg**
+- Extra ersättning för obekväm arbetstid
+- Kvällar, nätter, helger
+
+### 2. Tjänstepension
+
+Arbetsgivaren betalar in pengar till din pension utöver den allmänna pensionen.
+
+**Vanliga nivåer:**
+- Minst 4,5% av lönen (lag)
+- 6-8% vanligt med kollektivavtal
+- 10-15% för tjänstemän med ITP
+
+**Räkneexempel:**
+| Lön | Pensionsavsättning 4,5% | Pensionsavsättning 10% |
+|-----|-------------------------|------------------------|
+| 30 000 kr | 1 350 kr/mån | 3 000 kr/mån |
+| 40 000 kr | 1 800 kr/mån | 4 000 kr/mån |
+| 50 000 kr | 2 250 kr/mån | 5 000 kr/mån |
+
+**Tips:** Fråga alltid om pensionsavsättningens nivå – det är pengar du inte ser men som är mycket värda!
+
+### 3. Semester
+
+**Lagstadgat minimum:** 25 dagar per år
+
+**Vanligt med kollektivavtal:**
+- 25-28 dagar som standard
+- 30+ dagar vid längre anställning
+- Extra dagar för äldre arbetstagare
+
+**Räkna ut värdet:**
+En extra semestervecka = ca 2% av årslönen i värde
+
+### 4. Försäkringar
+
+**Försäkringar via arbetsgivare:**
+| Försäkring | Vad den täcker |
+|------------|----------------|
+| Sjukförsäkring | Utfyllnad vid sjukdom |
+| Tjänstegrupplivförsäkring (TGL) | Engångsbelopp vid dödsfall |
+| Trygghetsförsäkring (TFA) | Arbetsskador |
+| Tjänstereseförsäkring | Olyckor på tjänsteresa |
+
+**Värde:** Att teckna motsvarande privat kan kosta 5 000-15 000 kr/år
+
+### 5. Förmåner med ekonomiskt värde
+
+| Förmån | Typiskt värde per år |
+|--------|----------------------|
+| Friskvårdsbidrag | 3 000-5 000 kr |
+| Lunch/matkuponger | 10 000-15 000 kr |
+| Tjänstebil | 30 000-80 000 kr |
+| Sjukvårdsförsäkring | 5 000-10 000 kr |
+| Mobiltelefon + abonnemang | 5 000-8 000 kr |
+| Kompetensutveckling | 10 000-50 000 kr |
+
+### 6. Flexibilitet och livskvalitet
+
+**Flextid**
+- Möjlighet att styra arbetstider
+- Värde: Svårt att räkna, men högt värderat
+
+**Distansarbete/Hybridarbete**
+- Spara tid på pendling
+- Spara pengar på resor, lunch, kläder
+- Räkneexempel: Pendling 1 timme/dag = 250 timmar/år
+
+**Förkortad arbetstid**
+- Fler arbetsgivare erbjuder 37,5 eller 38 timmar
+- Skillnad mot 40 timmar = 5 extra lediga dagar/år
+
+## Jämföra erbjudanden
+
+### Mall för jämförelse
+
+| Komponent | Jobb A | Jobb B | Jobb C |
+|-----------|--------|--------|--------|
+| Grundlön | 35 000 | 38 000 | 36 000 |
+| Pension % | 6% | 4,5% | 10% |
+| Pension kr | 2 100 | 1 710 | 3 600 |
+| Semester (dagar) | 25 | 28 | 25 |
+| Friskvård | 5 000 | 3 000 | 5 000 |
+| Distansarbete | 0 | 2 dgr/v | 1 dgr/v |
+| **Totalt värde ca** | 42 000 | 43 700 | 45 100 |
+
+### Viktiga frågor att ställa
+
+**Om lön:**
+- Är lönen förhandlingsbar?
+- Hur ofta sker lönerevision?
+- Finns bonus eller provision?
+
+**Om pension:**
+- Hur stor är pensionsavsättningen?
+- Vilken pensionsplan gäller?
+
+**Om semester:**
+- Hur många semesterdagar?
+- Kan man ta ut förskottssemester?
+
+**Om förmåner:**
+- Vilka förmåner ingår?
+- Finns friskvårdsbidrag? Hur mycket?
+- Erbjuds tjänstebil/pendelbidrag?
+- Finns möjlighet till distansarbete?
+
+## Förhandla om förmåner
+
+### När lönen är låst
+Om arbetsgivaren inte kan höja lönen, förhandla om:
+- Fler semesterdagar
+- Högre friskvårdsbidrag
+- Distansarbete
+- Kompetensutveckling
+- Flexibla arbetstider
+- Signeringsbonus (engångsbelopp)
+
+### Argument för förmåner
+- "Jag värderar work-life balance högt – kan vi diskutera flexibla arbetstider?"
+- "Jag förstår att lönen är satt, men skulle extra semesterdagar vara möjligt?"
+- "Kompetensutveckling är viktigt för mig – har ni utbildningsbudget?"
+
+### Tips vid förhandling
+1. Prioritera vad som är viktigast för dig
+2. Ha alternativ redo
+3. Var konkret i dina önskemål
+4. Lyssna på vad de kan erbjuda
+5. Få allt skriftligt i anställningsbeviset
+
+## Räkna på det totala värdet
+
+### Exempel: Anna jämför två jobb
+
+**Jobb A:** 38 000 kr i lön
+- Pension 4,5% = 1 710 kr
+- 25 semesterdagar
+- Inget friskvård
+- Ingen flex
+- Total: ca 39 710 kr + 0 kr förmåner
+
+**Jobb B:** 35 000 kr i lön
+- Pension 10% = 3 500 kr
+- 28 semesterdagar (värde ca 700 kr/mån)
+- Friskvård 5 000 kr/år (ca 400 kr/mån)
+- 2 dagar distansarbete/vecka (pendlarbesparing ca 1 500 kr/mån)
+- Total: ca 35 000 + 6 100 = 41 100 kr
+
+**Slutsats:** Jobb B är värt mer trots lägre lön!
+
+## Förmånsbeskattning
+
+### Skattefria förmåner
+- Friskvårdsbidrag (upp till 5 000 kr)
+- Personalvårdsförmåner
+- Utbildning inom tjänsten
+
+### Skattepliktiga förmåner
+- Tjänstebil (förmånsvärde beskattas)
+- Fri lunch (värde beskattas)
+- Mobiltelefon för privat bruk
+
+## Kom ihåg
+
+- Titta alltid på hela paketet, inte bara lönen
+- Förmåner kan ibland vara mer värda än högre lön
+- Fråga specifikt om pension – det är ofta stora skillnader
+- Förhandla om förmåner om lönen är låst
+- Få allt skriftligt!`,
     category: 'employment-law',
     subcategory: 'salary-benefits',
     tags: ['lön', 'förmåner', 'pension', 'semester', 'förhandling', 'ersättning'],
@@ -2039,7 +3275,177 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'karriarplanering-guide',
     title: 'Karriärplanering – från vision till verklighet',
     summary: 'Skapa en strukturerad plan för din karriär med kortsiktiga och långsiktiga mål.',
-    content: `En karriärplan är som en karta – den hjälper dig navigera från där du är idag till dit du vill vara.\n\n## Varför karriärplanera?\n\n- Riktning: Du vet vart du är på väg\n- Motivation: Tydliga mål ger drivkraft\n- Kontroll: Du styr din utveckling\n\n## Steg 1: Din nuvarande position\n\nBörja med att analysera var du är idag:\n- Vad har du?\n- Vad saknar du?\n\n## Steg 2: Din vision\n\nVar vill du vara om 3 månader? 1 år? 5 år?\n\n## Steg 3: Sätt SMARTA mål\n\nGör dina mål:\n- Specifika – tydligt vad du ska uppnå\n- Mätbara – så du vet när du nått dem\n- Atkomliga – realistiska men utmanande\n- Relevanta – kopplade till din vision\n- Tidsbundna – med deadline\n\n## Steg 4: Gör en handlingsplan\n\nBryt ner dina mål i konkreta steg:\n- Veckovis\n- Månadsvis\n- Kvartalsvis\n\n## Gör övningarna\n\n- Planera din karriärväg – långsiktig planering\n- Drömjobbsanalys – från vision till verklighet\n- Planera vidareutbildning – kompetensutveckling`,
+    content: `En karriärplan är som en karta – den hjälper dig navigera från där du är idag till dit du vill vara. Utan plan riskerar du att driva runt utan riktning.
+
+## Varför karriärplanera?
+
+**Fördelar med en karriärplan:**
+- **Riktning:** Du vet vart du är på väg och kan fatta bättre beslut
+- **Motivation:** Tydliga mål ger drivkraft när det känns tungt
+- **Kontroll:** Du styr din utveckling istället för att bara reagera
+- **Fokus:** Du vet vad du ska prioritera och vad du kan säga nej till
+- **Framsteg:** Du kan mäta och fira dina framsteg
+
+## Steg 1: Analysera din nuvarande position
+
+### Var är du idag?
+
+**Kartlägg dina resurser:**
+- Vilken utbildning har du?
+- Vilken arbetslivserfarenhet har du?
+- Vilka kompetenser och färdigheter besitter du?
+- Vilket nätverk har du?
+- Vilka ekonomiska förutsättningar har du?
+
+**Identifiera dina styrkor:**
+- Vad är du bra på?
+- Vad får du beröm för?
+- Vad ger dig energi?
+
+**Erkänn dina svagheter:**
+- Var behöver du utvecklas?
+- Vilka kompetenser saknar du?
+- Vad undviker du?
+
+### Reflektera över din situation
+- Vad fungerar bra i ditt nuvarande arbetsliv/jobbsökning?
+- Vad fungerar inte?
+- Vad har du lärt dig av tidigare erfarenheter?
+
+## Steg 2: Definiera din vision
+
+### Drömmen utan begränsningar
+Om allt var möjligt:
+- Vad skulle du jobba med?
+- Var skulle du bo?
+- Hur skulle din vardag se ut?
+- Hur mycket skulle du tjäna?
+- Vilken livsstil skulle du ha?
+
+### Visualisera framtiden
+Skriv en beskrivning av ditt liv om 5 år som om det redan hänt:
+
+"Det är år 2029 och jag arbetar som [roll] på [typ av företag]. Min vardag innebär [uppgifter]. Det jag älskar med mitt jobb är [det bästa]. Jag tjänar [lön] och har [livsstil]..."
+
+### Tidsperspektiv
+Tänk i olika tidshorisonter:
+- **5 år:** Din stora vision
+- **1 år:** Konkret mål att arbeta mot
+- **3 månader:** Första milstolpen
+- **1 månad:** Första steget
+
+## Steg 3: Sätt SMARTA mål
+
+### Vad är SMARTA mål?
+
+| Bokstav | Betydelse | Fråga att ställa |
+|---------|-----------|------------------|
+| S | Specifikt | Vad exakt ska uppnås? |
+| M | Mätbart | Hur vet jag att jag nått målet? |
+| A | Attraktivt | Varför vill jag detta? |
+| R | Realistiskt | Är det möjligt att uppnå? |
+| T | Tidsbundet | När ska det vara klart? |
+
+### Exempel på SMARTA mål
+
+**Dåligt mål:** "Jag vill bli bättre på marknadsföring"
+
+**SMART mål:** "Jag ska genomföra Google Analytics-certifieringen senast 30 april och kunna analysera webbtrafikdata självständigt"
+
+**Dåligt mål:** "Jag vill ha ett nytt jobb"
+
+**SMART mål:** "Jag ska ha skickat 15 skräddarsydda ansökningar till projektledarroller inom IT-branschen före 1 maj"
+
+### Dina mål för varje tidshorisont
+
+**5-årsmål (vision):**
+- Vilken position vill du ha?
+- Vilken bransch?
+- Vilken kompetensnivå?
+
+**1-årsmål:**
+- Vilket konkret steg tar dig närmare visionen?
+- Vilken utbildning eller erfarenhet behöver du?
+
+**3-månadersmål:**
+- Vad kan du uppnå på kort sikt?
+- Vilka snabba vinster finns?
+
+## Steg 4: Skapa din handlingsplan
+
+### Bryt ner målen i aktiviteter
+
+För varje mål, identifiera:
+1. Vilka steg krävs för att nå dit?
+2. I vilken ordning ska stegen tas?
+3. Hur lång tid tar varje steg?
+4. Vilka resurser behövs?
+5. Vilka hinder kan uppstå?
+
+### Exempel på handlingsplan
+
+**Mål:** Byta till projektledarroll inom 1 år
+
+| Tidperiod | Aktivitet | Deadline |
+|-----------|-----------|----------|
+| Månad 1-2 | Gå projektledarkurs online | 28 feb |
+| Månad 2-3 | Uppdatera CV med projektfokus | 15 mars |
+| Månad 3-4 | Nätverka med 5 projektledare | 30 april |
+| Månad 4-6 | Söka 2-3 jobb per vecka | Löpande |
+| Månad 6-9 | Ta på mig projektansvar i nuvarande roll | 30 sep |
+| Månad 9-12 | Intensifiera jobbsök | Dec |
+
+### Veckoplanering
+
+Schemalägg karriäraktiviteter varje vecka:
+- **Måndag:** 1 timme research och jobbsök
+- **Onsdag:** 30 min nätverkande (LinkedIn, mejl)
+- **Fredag:** 30 min reflektion och planering
+
+## Steg 5: Följ upp och justera
+
+### Veckovis uppföljning
+- Vad har jag gjort denna vecka?
+- Ligger jag i fas med planen?
+- Vad ska jag göra nästa vecka?
+
+### Månadsvis utvärdering
+- Hur går det mot 3-månadersmålet?
+- Behöver jag justera något?
+- Vilka lärdomar tar jag med mig?
+
+### Kvartalsvis översyn
+- Är mina mål fortfarande relevanta?
+- Har något förändrats?
+- Ska jag justera min plan?
+
+### När du ska ändra planen
+Det är OK att ändra din plan om:
+- Du lärt dig något nytt om dig själv
+- Omständigheter har förändrats
+- Du hittat en bättre väg
+- Dina värderingar har ändrats
+
+## Vanliga hinder och lösningar
+
+**"Jag vet inte vad jag vill"**
+→ Gör drömjobbsanalysen och testa olika saker
+
+**"Jag har inte tid"**
+→ Börja med 15 minuter per dag – det räcker långt
+
+**"Det känns överväldigande"**
+→ Fokusera bara på nästa steg, inte hela resan
+
+**"Jag tappar motivationen"**
+→ Fira små framsteg och påminn dig om varför du gör detta
+
+## Kom ihåg
+
+- En plan behöver inte vara perfekt för att vara användbar
+- Det är bättre med en enkel plan du följer än en komplex du ignorerar
+- Justera planen när du lär dig mer
+- Fira dina framsteg längs vägen!`,
     category: 'career-development',
     subcategory: 'career-planning',
     tags: ['karriärplanering', 'mål', 'vision', 'handlingsplan', 'utveckling'],
@@ -2064,7 +3470,211 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     id: 'dromjobbsanalys',
     title: 'Drömjobbsanalys – från vision till handling',
     summary: 'Definiera ditt drömjobb och skapa en konkret plan för att nå dit.',
-    content: `Att ha en tydlig bild av vad du vill åstadkomma är första steget mot att nå dit. Denna guide hjälper dig definiera ditt drömjobb och göra en plan.\n\n## Definiera ditt drömjobb\n\n### Dröm stort – utan begränsningar\nOm du kunde välja helt fritt:\n- Vilken typ av arbete skulle du göra?\n- Vilken bransch?\n- Vilken roll?\n\n### Visualisera din perfekta arbetsdag\nBeskriv en typisk dag i ditt drömjobb.\n\n### Identifiera dina värderingar\nVad är viktigast för dig i ett jobb?\n\n## Gap-analys\n\n### Vad krävs för drömjobbet?\n### Vad har du redan?\n### Vad saknas?\n\n## Bryt ner till konkreta steg\n\n### Denna veckan\n### Kommande 3 månaderna\n### Kommande året\n\n## Gör övningen\n\nDrömjobbsanalys tar dig igenom hela processen med strukturerade frågor och hjälper dig skapa en konkret handlingsplan.`,
+    content: `Att ha en tydlig bild av vad du vill åstadkomma är första steget mot att nå dit. Denna guide hjälper dig definiera ditt drömjobb och skapa en konkret plan för att nå dit.
+
+## Varför drömjobbsanalys?
+
+Många söker jobb utan att veta vad de egentligen vill. Det leder till:
+- Jobb som inte passar
+- Brist på motivation
+- Ständiga jobbbyten
+- Känsla av att driva runt
+
+Med en tydlig vision kan du:
+- Söka rätt jobb från början
+- Motivera dig när det är tufft
+- Fatta bättre beslut
+- Bygga en meningsfull karriär
+
+## Del 1: Dröm stort
+
+### Övning: Den perfekta arbetsdagen
+
+Stäng ögonen och föreställ dig din perfekta arbetsdag om 5 år. Skriv ner allt i detalj:
+
+**Morgonen:**
+- Hur vaknar du? Är du stressad eller avslappnad?
+- Hur tar du dig till jobbet? Pendlar du, jobbar hemma?
+- Vilken tid börjar du?
+
+**Arbetsdagen:**
+- Var befinner du dig? Kontor, utomhus, hemma, resande?
+- Vilka uppgifter gör du?
+- Vem arbetar du med? Ensam, i team, med kunder?
+- Hur känns arbetet? Utmanande, kreativt, hjälpande?
+
+**Eftermiddagen och kvällen:**
+- Vilken tid slutar du?
+- Hur mår du när arbetsdagen är slut?
+- Vad har du energi att göra efter jobbet?
+
+### Övning: 20 frågor om ditt drömjobb
+
+Svara snabbt och intuitivt:
+
+**Om arbetet:**
+1. Vilka uppgifter vill du göra varje dag?
+2. Vilka uppgifter vill du ALDRIG behöva göra?
+3. Vill du arbeta med människor, data, saker eller idéer?
+4. Vill du ha rutiner eller variation?
+5. Vill du lösa problem, skapa nytt eller förvalta?
+
+**Om miljön:**
+6. Inomhus eller utomhus?
+7. Stort företag eller litet?
+8. Etablerat eller startup?
+9. Offentlig sektor eller privat?
+10. Lokal eller internationell?
+
+**Om livsstil:**
+11. Hur mycket vill du tjäna?
+12. Hur många timmar vill du jobba per vecka?
+13. Hur viktigt är flexibilitet?
+14. Vill du kunna jobba hemifrån?
+15. Hur mycket resor accepterar du?
+
+**Om mening:**
+16. Vad vill du bidra med till världen?
+17. Vem vill du hjälpa?
+18. Vilket avtryck vill du lämna?
+19. Vilka värderingar måste arbetsgivaren dela?
+20. Vad skulle göra dig stolt?
+
+## Del 2: Gap-analys
+
+### Vad krävs för drömjobbet?
+
+Researcha vad som faktiskt krävs för din drömroll:
+
+**Formella krav:**
+- Vilken utbildning behövs?
+- Vilka certifieringar är vanliga?
+- Vilka tekniska färdigheter listas i annonser?
+
+**Erfarenhetskrav:**
+- Hur många års erfarenhet efterfrågas?
+- Vilken typ av erfarenhet räknas?
+- Finns det ingångsroller?
+
+**Mjuka krav:**
+- Vilka personliga egenskaper nämns?
+- Vilken branschkunskap förväntas?
+- Vilket nätverk behövs?
+
+### Vad har du redan?
+
+Gör en ärlig inventering av dina resurser:
+
+| Kategori | Vad krävs | Vad har jag | Gap |
+|----------|-----------|-------------|-----|
+| Utbildning | | | |
+| Erfarenhet | | | |
+| Tekniska färdigheter | | | |
+| Mjuka färdigheter | | | |
+| Nätverk | | | |
+| Certifieringar | | | |
+
+### Prioritera gapen
+
+Rangordna vad som är viktigast att åtgärda:
+
+1. **Måste ha** – Utan detta kan du inte få jobbet
+2. **Bra att ha** – Ökar dina chanser betydligt
+3. **Nice to have** – Ger dig en fördel men inte avgörande
+
+## Del 3: Verklighetstest
+
+### Är drömmen realistisk?
+
+Ställ dig dessa frågor:
+
+**Praktiska frågor:**
+- Finns det jobb inom detta område?
+- Var finns jobben geografiskt?
+- Hur ser lönenivån ut?
+- Hur ser konkurrensen ut?
+
+**Personliga frågor:**
+- Är jag villig att göra det som krävs?
+- Passar min livssituation?
+- Har jag tålamod att vänta?
+
+### Informationsintervjuer
+
+Prata med 3-5 personer som har ditt drömjobb:
+- Hur ser verkligheten ut?
+- Stämmer din bild?
+- Vad är bra/dåligt med jobbet?
+- Hur tog de sig dit?
+
+### Justera vid behov
+
+Det är OK att justera drömmen baserat på ny information. Kanske upptäcker du:
+- En liknande roll som passar bättre
+- En väg du inte tänkt på
+- Att drömmen inte var vad du trodde
+
+## Del 4: Handlingsplan
+
+### Bryt ner till konkreta steg
+
+**Denna vecka:**
+- [ ] Skriva ner min drömjobbsversion
+- [ ] Researcha 5 jobbannonser för rollen
+- [ ] Identifiera 3 personer att kontakta
+
+**Denna månad:**
+- [ ] Genomföra 2 informationsintervjuer
+- [ ] Påbörja en relevant onlinekurs
+- [ ] Uppdatera LinkedIn-profilen
+
+**Kommande 3 månader:**
+- [ ] Slutföra grundläggande utbildning
+- [ ] Bygga portfolio/visa exempel
+- [ ] Börja söka relevanta jobb/praktik
+
+**Kommande år:**
+- [ ] Få relevant erfarenhet
+- [ ] Bygga nätverk i branschen
+- [ ] Positionera mig för drömrollen
+
+### Milstolpar att fira
+
+Definiera konkreta milstolpar:
+- Första informationsintervjun genomförd
+- Första kursen avslutad
+- Första relevanta ansökan skickad
+- Första intervjun för relevant roll
+- Drömjobbet erbjudet!
+
+## Exempel: Marias drömjobbsanalys
+
+**Drömjobb:** UX-designer på techbolag
+
+**Gap-analys:**
+| Krav | Har | Saknar |
+|------|-----|--------|
+| UX-utbildning | Nej | Ja |
+| Portfolio | Nej | Ja |
+| Figma | Grundläggande | Avancerat |
+| Användarresearch | Har gjort lite | Mer erfarenhet |
+
+**Plan:**
+- Månad 1-3: Google UX Design Certificate
+- Månad 3-4: Bygga portfolio med 3 projekt
+- Månad 4-5: Frilansa småprojekt för erfarenhet
+- Månad 5-8: Söka juniorroller
+
+**Resultat:** Maria fick sitt första UX-jobb efter 7 månader!
+
+## Kom ihåg
+
+- Drömjobbet är en riktning, inte en exakt destination
+- Det är OK om drömmen förändras
+- Små steg varje dag tar dig dit
+- Resan är viktig, inte bara målet
+
+Du förtjänar ett jobb du älskar!`,
     category: 'career-development',
     subcategory: 'career-planning',
     tags: ['drömjobb', 'karriär', 'vision', 'mål', 'planering'],
@@ -2082,52 +3692,6 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     ],
     author: 'Lisa Bergström',
     authorTitle: 'Beteendevetare',
-  },
-
-  // === VÄLMÅENDE (nya artiklar) ===
-  {
-    id: 'hantera-avslag-guide',
-    title: 'Hantera avslag – väx genom motgångar',
-    summary: 'Lär dig att hantera avslag på ett sätt som stärker dig och håller motivationen uppe.',
-    content: `Att få avslag är en del av jobbsökningen. Det är inte ett misslyckande – det är en möjlighet att växa.\n\n## Avslag är normalt\n\n- De flesta ansökningar leder till avslag\n- Det är en sifferspel – ju fler du söker, desto fler avslag får du\n- Det säger inget om ditt värde som människa\n\n## Varför får man avslag?\n\nVanliga orsaker (som inte handlar om dig):\n- 200+ personer sökte samma jobb\n- En intern kandidat fick jobbet\n- De omorganiserade och lade ner tjänsten\n\n## Hantera känslorna\n\n### Tillåt dig att känna\nDet är okej att känna besvikelse och frustration.\n\n### Omsvängningsteknik\nFråga dig själv vad du kan lära dig av detta.\n\n## Be om feedback\n\nEtt avslag kan bli en möjlighet – be om feedback och använd informationen för att förbättra dig.\n\n## Bygg motståndskraft\n\n- Ett avslag är ett steg närmare JA\n- Varje ansökan är träning\n- Fira ansträngningen, inte bara resultatet\n\n## Gör övningen\n\nHantera avslag och motgångar hjälper dig omvärdera vad avslag betyder och bygga mental styrka.`,
-    category: 'wellness',
-    subcategory: 'rejection',
-    tags: ['avslag', 'hantera', 'motgångar', 'motståndskraft', 'mental styrka'],
-    createdAt: '2024-03-21T10:00:00Z',
-    updatedAt: '2024-03-21T10:00:00Z',
-    readingTime: 11,
-    difficulty: 'easy',
-    energyLevel: 'low',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 312,
-    relatedArticles: ['motivation-langsiktig', 'stresshantering'],
-    relatedExercises: ['hantera-avslag'],
-    actions: [
-      { label: '🛡️ Gör övningen: Hantera avslag', href: '/exercises', type: 'primary' },
-    ],
-    author: 'Lisa Bergström',
-    authorTitle: 'Beteendevetare',
-  },
-
-  {
-    id: 'motivation-i-jobb-sokning',
-    title: 'Behåll motivationen under långtidssökande',
-    summary: 'Strategier för att orka fortsätta när jobbsökningen tar längre tid än väntat.',
-    content: `Jobbsökning är ett maraton, inte en sprint. Här är strategier för att hålla motivationen uppe under lång tid.\n\n## Varför tappar vi motivation?\n\n- Den emotionella berg-och-dalbanan\n- Brist på kontroll\n- Isolering\n\n## Strategier för långsiktig motivation\n\n### 1. Sätt upp ett system, inte bara mål\nFokusera på processen: Söka 3 jobb i veckan istället för Få ett jobb.\n\n### 2. Dela upp dagen\n- Morgon: Energikrävande uppgifter\n- Eftermiddag: Lättare uppgifter\n- Kväll: Vila och återhämtning\n\n### 3. Fira små segrar\nVarje steg är värt att fira!\n\n### 4. Skapa rutiner\nFasta rutiner minskar beslutsutmatning.\n\n### 5. Var social\nMotverka isolering genom att träffa vänner och gå på nätverksevent.\n\n### 6. Ta hand om dig själv\n- Prioritera sömn (7-9 timmar)\n- Rör på dig regelbundet\n- Gör saker du tycker om\n\n## Gör övningarna\n\n- Hantera stress i jobbsökning\n- Motivationsboost för jobbsökaren\n- Strukturera din jobbsökarvecka`,
-    category: 'wellness',
-    subcategory: 'motivation',
-    tags: ['motivation', 'långtidssökande', 'uthållighet', 'strategier', 'välmående'],
-    createdAt: '2024-03-22T10:00:00Z',
-    updatedAt: '2024-03-22T10:00:00Z',
-    readingTime: 14,
-    difficulty: 'easy',
-    energyLevel: 'low',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 278,
-    relatedArticles: ['hantera-avslag-guide', 'stresshantering'],
-    relatedExercises: ['wellbeing', 'motivationsboost', 'tidsplanering'],
-    author: 'Maria Lindqvist',
-    authorTitle: 'Arbetskonsulent',
   },
 
   // === FLER NYA ARTIKLAR ===
@@ -2239,30 +3803,6 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
   },
 
   {
-    id: 'stresshantering-praktiska-tips',
-    title: 'Praktisk stresshantering för arbetssökande',
-    summary: 'Konkreta verktyg och tekniker för att hantera stress och oro under jobbsökningsperioden.',
-    content: `Att söka jobb är en av livets mer stressande upplevelser. Här är praktiska verktyg du kan använda direkt när stressen känns för mycket.\n\n## Akut stresshantering – när det känns för mycket\n\n### 4-7-8-andning\nEn teknik som snabbt sänker stressnivån:\n1. Andas in genom näsan i 4 sekunder\n2. Håll andan i 7 sekunder\n3. Andas ut genom munnen i 8 sekunder\n4. Upprepa 3-4 gånger\n\n### 5-4-3-2-1-tekniken\nFörankra dig i nuet genom att identifiera:\n- 5 saker du ser\n- 4 saker du känner (fysiska sensationer)\n- 3 saker du hör\n- 2 saker du luktar\n- 1 sak du smakar\n\n### Fysisk rörelse\n- Gå en 10-minuters promenad\n- Gör några stretchövningar\n- Skaka ut händerna och armarna\n- Rullar axlarna bakåt\n\n## Dagliga rutiner som minskar stress\n\n### Morgonrutin\n- Vakna vid samma tid varje dag\n- Gör något du tycker om innan du börjar jobbsöka\n- Ät en ordentlig frukost\n- Undvik att kolla mail/sociala medier första timmen\n\n### Strukturera jobbsökningen\n- Sätt specifika tider för jobbsökning\n- Ta regelbundna pauser (var 45-60 minut)\n- Ha en tydlig sluttid varje dag\n\n### Eftermiddagsrutin\n- Gör något fysiskt (promenad, träning)\n- Träffa vänner eller familj\n- Sysselsätt dig med hobbyer\n\n### Kvällsrutin\n- Sluta jobbsöka minst 2 timmar innan läggdags\n- Skärmfri tid innan sängen\n- Regelbunden läggtid\n\n## Mentala strategier\n\n### Omfokusera tankarna\nNär oron tar över:\n- "Vad är det värsta som kan hända?" – Ofta är det hanterbart\n- "Vad kan jag kontrollera just nu?" – Fokusera på det\n- "Vad skulle jag säga till en vän i samma situation?"\n\n### Tacksamhetsövning\nVarje dag, skriv ner 3 saker du är tacksam för. De kan vara små:\n- "Solen sken idag"\n- "Jag fick ett vänligt meddelande"\n- "Kaffet var gott imorse"\n\n### Visualisering\n- Stäng ögonen\n- Föreställ dig att du har fått drömjobbet\n- Hur känns det? Vilka detaljer ser du?\n- Använd det som motivation\n\n## Socialt stöd\n\n### Be om hjälp\n- Berätta för vänner och familj hur du mår\n- Be om praktisk hjälp om du behöver\n- Acceptera att du inte behöver klara allt själv\n\n### Håll kontakten\n- Träffa människor regelbundet\n- Gå på nätverksträffar\n- Delta i stödgrupper för arbetssökande\n\n## När stressen blir för stor\n\n### Varningstecken\n- Du kan inte sova eller sover för mycket\n- Du tappar aptiten eller äter för mycket\n- Du känner dig konstant nedstämd\n- Du isolerar dig från andra\n- Du har fysiska symptom (huvudvärk, magproblem)\n\n### Sök professionell hjälp\n- Din arbetskonsulent finns där för dig\n- Vårdcentralen kan hjälpa\n- Kuratorer och psykologer finns tillgängliga\n- Det är inte svagt att be om hjälp – det är smart\n\n## Kom ihåg\n\nStress är en normal reaktion på en utmanande situation. Det betyder inte att du är svag eller inte klarar det. Ta en dag i taget och var snäll mot dig själv.`,
-    category: 'wellness',
-    subcategory: 'stress',
-    tags: ['stresshantering', 'stress', 'mående', 'verktyg', 'andning', 'mental hälsa'],
-    createdAt: '2024-03-30T10:00:00Z',
-    updatedAt: '2024-03-30T10:00:00Z',
-    readingTime: 15,
-    difficulty: 'easy',
-    energyLevel: 'low',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 298,
-    relatedArticles: ['stresshantering', 'motivation-i-jobb-sokning', 'hantera-avslag-guide'],
-    relatedExercises: ['wellbeing', 'motivationsboost'],
-    actions: [
-      { label: '📅 Boka stödsamtal', href: '/diary', type: 'primary' },
-    ],
-    author: 'Lisa Bergström',
-    authorTitle: 'Beteendevetare',
-  },
-
-  {
     id: 'arbetsmarknadstrender-2024',
     title: 'Arbetsmarknadstrender 2024 – vad efterfrågas?',
     summary: 'De största trenderna på arbetsmarknaden och vilka kompetenser som efterfrågas just nu.',
@@ -2303,6 +3843,898 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     actions: [
       { label: '📝 Öppna CV-generatorn', href: '/cv-builder', type: 'primary' },
     ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'ordlista-jobbsokning',
+    title: 'Ordlista för jobbsökare – A till Ö',
+    summary: 'Förstå alla begrepp och förkortningar du stöter på under jobbsökningen.',
+    content: `Jobbsökning kommer med en hel del termer och förkortningar som kan vara förvirrande. Här är din guide till de vanligaste!
+
+## A
+
+**Allmän visstidsanställning (AVA)**
+En tidsbegränsad anställning som inte behöver ha något särskilt skäl. Max 24 månader hos samma arbetsgivare under en femårsperiod.
+
+**Anställningsbevis**
+Ett skriftligt dokument som bekräftar din anställning med villkor som lön, arbetstid och anställningsform.
+
+**Arbetsförmedlingen (AF)**
+Statlig myndighet som hjälper arbetssökande hitta jobb och arbetsgivare hitta personal.
+
+**ATS (Applicant Tracking System)**
+Programvara som arbetsgivare använder för att hantera ansökningar. Automatiserar screening av CV:n genom att söka efter nyckelord.
+
+## B
+
+**Bemanningsföretag**
+Företag som hyr ut personal till andra företag. Du är anställd hos bemanningsföretaget men arbetar hos kunden.
+
+**Bristyrke**
+Ett yrke där det finns fler lediga jobb än arbetssökande med rätt kompetens.
+
+## C
+
+**CV (Curriculum Vitae)**
+Latin för "livets gång". Ditt dokument som sammanfattar utbildning, erfarenhet och kompetenser.
+
+**Cover letter**
+Engelska för personligt brev. Brevet som följer med din ansökan och förklarar varför du söker jobbet.
+
+## D
+
+**Diskrimineringslagen**
+Lag som förbjuder arbetsgivare att särbehandla dig på grund av kön, könsöverskridande identitet, etnisk tillhörighet, religion, funktionsnedsättning, sexuell läggning eller ålder.
+
+## E
+
+**Entry-level**
+Jobb för nybörjare som inte kräver tidigare erfarenhet inom området.
+
+**Egenanställning**
+Du fakturerar via ett egenanställningsföretag istället för att starta eget. Företaget sköter administration mot en avgift.
+
+## F
+
+**Fast anställning**
+Se Tillsvidareanställning.
+
+**Frilans**
+Att arbeta självständigt och sälja sina tjänster till olika uppdragsgivare utan fast anställning.
+
+**Förhandlingsbar lön**
+Lönen är inte fastställd utan kan diskuteras vid anställning.
+
+## G
+
+**Gigekonomin**
+Arbetsmarknad baserad på korta uppdrag och tillfälliga anställningar istället för fasta jobb.
+
+## H
+
+**Headhunter**
+Rekryterare som aktivt söker upp lämpliga kandidater, ofta för chefspositioner.
+
+**HR (Human Resources)**
+Personalavdelningen på ett företag. Ansvarar ofta för rekrytering.
+
+**Hybridarbete**
+Kombination av arbete på kontoret och hemarbete.
+
+## I
+
+**Internship**
+Engelska för praktik. En tidsbegränsad period där du får arbetslivserfarenhet.
+
+## J
+
+**Jobbcoach**
+Person som hjälper dig med jobbsökningen genom vägledning och stöd.
+
+## K
+
+**Kollektivavtal**
+Avtal mellan fackförbund och arbetsgivarorganisation som reglerar löner och villkor för en hel bransch.
+
+**Konkurrensklausul**
+Avtalsvillkor som begränsar din möjlighet att börja hos konkurrenter efter anställningen.
+
+**Kompetensbaserad rekrytering**
+Rekryteringsmetod som fokuserar på kandidatens kompetenser och beteenden snarare än formella meriter.
+
+## L
+
+**LAS (Lagen om anställningsskydd)**
+Lag som reglerar anställningsvillkor, uppsägningar och turordning.
+
+**LinkedIn**
+Professionellt socialt nätverk för karriär och jobbsökning.
+
+**LIA (Lärande i arbete)**
+Praktikperiod som ingår i yrkeshögskoleutbildningar.
+
+## M
+
+**Matchning**
+Processen att hitta rätt kandidat för ett jobb eller rätt jobb för en kandidat.
+
+**Meritlista**
+Se CV.
+
+## N
+
+**Networking**
+Engelska för nätverkande. Att bygga och underhålla professionella kontakter.
+
+**Nystartsjobb**
+Stödform där arbetsgivaren får ekonomiskt bidrag för att anställa arbetssökande som stått utanför arbetsmarknaden.
+
+## O
+
+**OB-tillägg (Obekväm arbetstid)**
+Extra ersättning för arbete på kvällar, nätter och helger.
+
+**Onboarding**
+Processen när en ny anställd introduceras på arbetsplatsen.
+
+## P
+
+**Personligt brev**
+Brev som kompletterar CV:t och förklarar varför du är rätt för jobbet.
+
+**Provanställning**
+En inledande period (max 6 månader) där båda parter kan avsluta anställningen utan uppsägningstid.
+
+## R
+
+**Referens**
+Person som kan intyga din kompetens och lämplighet för en arbetsgivare.
+
+**Rekryterare**
+Person som arbetar med att hitta och anställa personal.
+
+## S
+
+**STAR-metoden**
+Intervjuteknik: Situation, Task (uppgift), Action (handling), Result (resultat). Används för att svara på beteendefrågor.
+
+**Spontanansökan**
+Ansökan till ett företag utan att de har en utlyst tjänst.
+
+## T
+
+**Tillsvidareanställning**
+Anställning utan slutdatum som gäller tills någon säger upp den. Kallas också fast anställning.
+
+**Turordning**
+Regler i LAS om i vilken ordning anställda sägs upp ("sist in, först ut").
+
+## U
+
+**Undersköterska (USK)**
+Ett bristyrke inom vård och omsorg.
+
+**Uppsägningstid**
+Tiden mellan uppsägning och sista arbetsdag. Regleras i avtal eller lag.
+
+## V
+
+**Vikariat**
+Tidsbegränsad anställning där du ersätter någon som är frånvarande.
+
+**Visstidsanställning**
+Samlingsbegrepp för tidsbegränsade anställningar (vikariat, säsong, projekt, allmän visstid).
+
+## Y
+
+**YH (Yrkeshögskola)**
+Eftergymnasial utbildning med nära koppling till arbetslivet.
+
+## Ö
+
+**Öppen arbetsmarknad**
+Jobb som tillsätts utan subventioner eller särskilt stöd.
+
+## Saknar du något?
+
+Stöter du på ett begrepp du inte förstår? Fråga din arbetskonsulent – de hjälper gärna till!`,
+    category: 'tools',
+    subcategory: 'glossary',
+    tags: ['ordlista', 'begrepp', 'termer', 'förkortningar', 'verktyg'],
+    createdAt: '2024-04-08T10:00:00Z',
+    updatedAt: '2024-04-08T10:00:00Z',
+    readingTime: 12,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.7,
+    bookmarkCount: 234,
+    relatedArticles: ['komma-igang-intro', 'anstallningsformer-guide'],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
+  // === NYA ARTIKLAR FÖR SAKNADE OMRÅDEN ===
+
+  {
+    id: 'kompetensutveckling-guide',
+    title: 'Kompetensutveckling – vägar till ny kunskap',
+    summary: 'Guide till utbildningsmöjligheter, stöd och hur du utvecklar dina färdigheter under jobbsökningen.',
+    content: `Att utveckla nya kompetenser ökar dina chanser på arbetsmarknaden. Här är dina möjligheter.
+
+## Varför kompetensutveckling?
+
+- Arbetsmarknaden förändras snabbt
+- Nya kompetenser öppnar nya dörrar
+- Det visar arbetsgivare att du är motiverad
+- Du blir mer konkurrenskraftig
+
+## Utbildningsmöjligheter
+
+### Arbetsmarknadsutbildning
+Via Arbetsförmedlingen kan du få:
+- Yrkesinriktad utbildning inom bristyrken
+- Validering av befintlig kompetens
+- Korta kurser för specifika färdigheter
+
+**Fördelar:**
+- Gratis
+- Aktivitetsstöd under utbildningen
+- Ofta praktik inkluderad
+
+### Yrkeshögskola (YH)
+Eftergymnasial utbildning med nära koppling till arbetslivet.
+
+**Kännetecken:**
+- 1-3 år
+- LIA (Lärande i arbete) ingår
+- Hög anställningsgrad efter examen
+- CSN-berättigad
+
+### Komvux
+Kommunal vuxenutbildning för att:
+- Komplettera grundskole- eller gymnasiebetyg
+- Läsa enstaka kurser
+- Byta inriktning
+
+### Folkhögskola
+Alternativ utbildningsform med:
+- Bred inriktning
+- Social gemenskap
+- Möjlighet till högskolebehörighet
+
+### Onlinekurser och certifieringar
+Flexibelt lärande via:
+- LinkedIn Learning
+- Coursera, Udemy
+- Google, Microsoft-certifieringar
+- Branschspecifika kurser
+
+## Finansiering av studier
+
+### CSN (Centrala studiestödsnämnden)
+- Studiemedel: bidrag + lån
+- Omställningsstudiestöd för yrkesverksamma
+- Krav: vara inskriven på godkänd utbildning
+
+### Omställningsstöd
+Om du blivit uppsagd kan du ha rätt till:
+- Rådgivning och vägledning
+- Ekonomiskt stöd för studier
+- Hjälp med jobbsökning
+
+### Arbetsförmedlingens stöd
+- Aktivitetsstöd under arbetsmarknadsutbildning
+- Stöd för yrkesintroduktion
+- Praktikplatser
+
+## Validering – visa vad du redan kan
+
+Validering innebär att få dina kunskaper och erfarenheter bedömda och dokumenterade.
+
+**Passar dig som:**
+- Har yrkeserfarenhet men saknar formella bevis
+- Har utländsk utbildning
+- Vill byta bransch och visa överförbar kompetens
+
+**Kontakta:**
+- Arbetsförmedlingen
+- Branschorganisationer
+- Yrkeshögskolor
+
+## Så väljer du rätt utbildning
+
+### Frågor att ställa dig själv
+1. Vad vill jag jobba med?
+2. Vilka kompetenser saknar jag?
+3. Hur lång tid har jag?
+4. Hur finansierar jag det?
+
+### Researcha arbetsmarknaden
+- Vilka yrken har brist?
+- Vilka kompetenser efterfrågas i annonser?
+- Vad säger branschrapporter?
+
+### Prata med andra
+- Informationsintervjuer med yrkesverksamma
+- Kontakta utbildningsanordnare
+- Diskutera med din arbetskonsulent
+
+## Tips för att lyckas med studier
+
+- **Sätt tydliga mål** – varför gör du detta?
+- **Skapa rutiner** – behandla studier som jobb
+- **Sök stöd** – använd studievägledare
+- **Nätverka** – dina klasskamrater blir framtida kontakter
+- **Kombinera teori och praktik** – sök praktik under studietiden
+
+## Kom ihåg
+
+Det är aldrig för sent att lära sig något nytt. Varje ny kompetens är en investering i din framtid!`,
+    category: 'career-development',
+    subcategory: 'skills-development',
+    tags: ['kompetensutveckling', 'utbildning', 'kurser', 'yrkeshögskola', 'CSN', 'validering'],
+    createdAt: '2024-04-10T10:00:00Z',
+    updatedAt: '2024-04-10T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 198,
+    relatedArticles: ['karriarplanering-guide', 'karriarvaxling-guide', 'arbetsmarknadstrender-2024'],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
+  {
+    id: 'ats-optimering',
+    title: 'ATS-optimering – få ditt CV förbi datorn',
+    summary: 'Lär dig hur rekryteringssystem fungerar och hur du anpassar ditt CV för att bli sedd.',
+    content: `Många arbetsgivare använder ATS (Applicant Tracking System) för att sortera ansökningar. Så här ser du till att ditt CV kommer fram.
+
+## Vad är ett ATS?
+
+ATS (Applicant Tracking System) är mjukvara som:
+- Automatiskt skannar och sorterar CV:n
+- Söker efter nyckelord som matchar jobbannonsen
+- Rankar kandidater baserat på matchning
+- Filtrerar bort ansökningar som inte uppfyller kraven
+
+**Statistik:** Upp till 75% av alla CV:n avvisas av ATS innan en människa ser dem!
+
+## Hur fungerar det?
+
+### Steg 1: Parsing
+ATS-systemet läser ditt CV och försöker förstå strukturen:
+- Kontaktuppgifter
+- Arbetslivserfarenhet
+- Utbildning
+- Kompetenser
+
+### Steg 2: Nyckelordsmatchning
+Systemet jämför ditt CV med jobbannonsen:
+- Specifika färdigheter
+- Utbildningskrav
+- Erfarenhetsnivå
+- Certifieringar
+
+### Steg 3: Ranking
+Kandidater rankas baserat på hur väl de matchar kraven.
+
+## Så optimerar du ditt CV för ATS
+
+### 1. Använd rätt filformat
+**Gör så här:**
+- Spara som .docx eller .pdf (vanlig PDF, inte skannad)
+- Undvik bilder, tabeller och grafik
+- Använd standardteckensnitt (Arial, Calibri, Times New Roman)
+
+**Undvik:**
+- Kreativa layouter med kolumner
+- Infografik och ikoner
+- Headers och footers med viktig information
+
+### 2. Matcha nyckelord från annonsen
+Läs jobbannonsen noga och inkludera:
+- Exakta jobbetitlar
+- Specifika kompetenser som nämns
+- Verktyg och system
+- Certifieringar
+
+**Exempel:**
+Om annonsen säger "erfarenhet av Microsoft Excel" – skriv "Microsoft Excel", inte bara "kalkylprogram".
+
+### 3. Använd standard rubriker
+ATS förväntar sig dessa rubriker:
+- Arbetslivserfarenhet (eller Erfarenhet)
+- Utbildning
+- Kompetenser (eller Färdigheter)
+- Sammanfattning (eller Profil)
+
+**Undvik kreativa rubriker** som "Min resa" eller "Vad jag kan".
+
+### 4. Skriv ut förkortningar
+Första gången du använder en förkortning, skriv ut hela:
+- "Certifierad projektledare (PMP)"
+- "Sökmotoroptimering (SEO)"
+
+### 5. Inkludera relevanta nyckelord naturligt
+Stoppa inte in nyckelord överallt – det märks. Istället:
+- Väv in dem i dina meritbeskrivningar
+- Använd dem i din sammanfattning
+- Lista dem under Kompetenser
+
+### 6. Undvik "keyword stuffing"
+Att upprepa samma ord många gånger kan flaggas som manipulation.
+
+## Vanliga ATS-misstag
+
+❌ **Grafiskt CV** – ATS kan inte läsa bilder
+❌ **Tabeller** – Information kan hamna i fel ordning
+❌ **Kreativa filnamn** – Använd "Förnamn_Efternamn_CV.pdf"
+❌ **Vita nyckelord** – Att gömma text i vit färg fungerar inte och kan diskvalificera dig
+
+## Testa ditt CV
+
+### Gratis verktyg
+- **Jobscan** – jämför ditt CV mot en jobbannons
+- **Resume Worded** – ger feedback på ATS-vänlighet
+
+### Manuellt test
+- Kopiera ditt CV till ett vanligt textdokument
+- Ser all information korrekt ut?
+- Finns alla rubriker och datum?
+
+## Kom ihåg
+
+Ett ATS-optimerat CV behöver inte vara tråkigt. Det handlar om att:
+1. Använda rätt format
+2. Inkludera relevanta nyckelord
+3. Ha en tydlig struktur
+
+När ditt CV väl kommer förbi ATS behöver det fortfarande imponera på en människa – så glöm inte att göra det intressant också!`,
+    category: 'job-search',
+    subcategory: 'ats',
+    tags: ['ATS', 'CV-optimering', 'nyckelord', 'rekryteringssystem', 'ansökan'],
+    createdAt: '2024-04-11T10:00:00Z',
+    updatedAt: '2024-04-11T10:00:00Z',
+    readingTime: 12,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 287,
+    relatedArticles: ['cv-grunder', 'cv-mallar-exempel', 'ansokningsstrategi'],
+    relatedTools: ['/cv-builder'],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'mental-halsa-jobbsokning',
+    title: 'Mental hälsa under jobbsökning',
+    summary: 'Stöd och strategier för att ta hand om din psykiska hälsa när jobbsökningen känns tung.',
+    content: `Jobbsökning kan vara en av livets mest stressande perioder. Det är normalt att känna oro, nedstämdhet och frustration. Här är hur du tar hand om dig själv.
+
+## Det är normalt att må dåligt
+
+### Vanliga känslor under jobbsökning
+- Oro för ekonomin och framtiden
+- Nedstämdhet och hopplöshet
+- Frustration över avslag
+- Skam och skuld
+- Ensamhet och isolering
+- Identitetskris – "Vem är jag utan mitt jobb?"
+
+**Viktigt:** Dessa känslor är normala reaktioner på en onormal situation. Du är inte svag för att du känner så här.
+
+## Varningstecken att vara uppmärksam på
+
+### Sök hjälp om du upplever:
+- Ihållande nedstämdhet i mer än två veckor
+- Svårigheter att komma ur sängen
+- Självskadande tankar
+- Panikattacker eller svår ångest
+- Sömnlöshet eller översömn
+- Aptitlöshet eller överätande
+- Social isolering
+- Känslor av värdelöshet
+
+## Var får du hjälp?
+
+### Akut hjälp
+- **1177** – Sjukvårdsrådgivning
+- **Mind självmordslinjen** – 90101 (dygnet runt)
+- **Jourhavande präst** – 112
+
+### Vårdcentralen
+Boka tid hos:
+- Läkare för bedömning
+- Kurator för samtalsstöd
+- Psykolog (remiss kan behövas)
+
+### Arbetsförmedlingen
+- Arbetskonsulenter med stöduppdrag
+- Rehabiliteringsinsatser
+- Samverkan med vården
+
+### Försäkringskassan
+Om du mår så dåligt att du inte kan söka jobb:
+- Sjukpenning kan vara aktuellt
+- Kontakta dem för rådgivning
+
+### Ideella organisationer
+- **Mind** – stödchattar och information
+- **Självhjälp på väg** – grupper för arbetssökande
+- **Röda Korset** – stödsamtal
+
+## Strategier för bättre mående
+
+### Dagliga rutiner
+- Vakna och gå upp samma tid varje dag
+- Klä dig som om du skulle gå till jobbet
+- Ät regelbundna måltider
+- Rörelse – även en kort promenad hjälper
+
+### Begränsa jobbsökningen
+- Sätt max antal timmar per dag
+- Ta pauser var 45-60 minut
+- Ha lediga dagar från jobbsökning
+
+### Sociala kontakter
+- Träffa vänner och familj regelbundet
+- Berätta hur du mår (du behöver inte vara stark)
+- Gå med i stödgrupper för arbetssökande
+
+### Meningsfulla aktiviteter
+- Volontärarbete ger struktur och syfte
+- Hobbyer och intressen
+- Lärande – kurser eller egen utveckling
+
+## Kognitiva strategier
+
+### Utmana negativa tankar
+**Negativ tanke:** "Jag kommer aldrig få jobb"
+**Utmaning:** "Många har fått jobb efter lång tid. Ett avslag är inte samma sak som alla avslag."
+
+### Separera dig från situationen
+Du ÄR inte arbetslös – du HAR inte jobb just nu. Din identitet är mer än din anställning.
+
+### Fokusera på det du kan kontrollera
+- Du kan INTE kontrollera om du får jobb
+- Du KAN kontrollera hur många ansökningar du skickar och hur du tar hand om dig själv
+
+## För anhöriga
+
+Om någon du känner söker jobb och mår dåligt:
+- Lyssna utan att ge råd
+- Undvik "Har du testat att..."
+- Erbjud praktisk hjälp
+- Håll kontakten – de kanske inte orkar höra av sig
+- Ta det på allvar om de pratar om självskada
+
+## Kom ihåg
+
+- Jobbsökning är temporärt – det tar slut
+- Ditt värde avgörs inte av ditt jobb
+- Det är modigt att be om hjälp
+- Du förtjänar att må bra, oavsett anställningsstatus
+
+**Behöver du prata?** Din arbetskonsulent finns där för dig. Tveka inte att höra av dig.`,
+    category: 'wellness',
+    subcategory: 'mental-health',
+    tags: ['mental hälsa', 'psykisk ohälsa', 'depression', 'ångest', 'stöd', 'hjälp'],
+    createdAt: '2024-04-12T10:00:00Z',
+    updatedAt: '2024-04-12T10:00:00Z',
+    readingTime: 14,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    helpfulnessRating: 4.9,
+    bookmarkCount: 312,
+    relatedArticles: ['hantera-avslag', 'stresshantering', 'motivation-langsiktig'],
+    actions: [
+      { label: '📞 1177 Vårdguiden', href: 'https://1177.se', type: 'primary' },
+      { label: '📅 Boka stödsamtal', href: '/diary', type: 'secondary' },
+    ],
+    author: 'Lisa Bergström',
+    authorTitle: 'Beteendevetare',
+  },
+
+  {
+    id: 'personlig-ekonomi-jobbsokning',
+    title: 'Personlig ekonomi under jobbsökning',
+    summary: 'Praktisk guide till ekonomi, bidrag och budgetering när du är arbetssökande.',
+    content: `Att ha koll på ekonomin minskar stress och låter dig fokusera på jobbsökningen. Här är vad du behöver veta.
+
+## Dina ekonomiska rättigheter
+
+### A-kassa (Arbetslöshetskassa)
+Om du är medlem i en a-kassa och uppfyller villkoren:
+- Ersättning baserad på tidigare inkomst
+- Max 80% av lönen upp till ett tak
+- Kräver att du är aktivt arbetssökande
+
+**Villkor:**
+- Medlemskap i minst 12 månader
+- Arbetat minst 6 av de senaste 12 månaderna
+- Anmäld på Arbetsförmedlingen
+
+### Grundersättning
+Om du inte uppfyller villkoren för inkomstbaserad ersättning:
+- Lägre ersättning (ca 510 kr/dag)
+- Samma aktivitetskrav
+
+### Aktivitetsstöd
+Om du deltar i program via Arbetsförmedlingen:
+- Ersättning under utbildning
+- Praktik med ersättning
+- Jobbgarantin
+
+### Försörjningsstöd (Socialbidrag)
+Om du inte har andra inkomster:
+- Ansök hos kommunens socialtjänst
+- Behovsbaserat
+- Tillfälligt stöd
+
+## Budgetering under arbetslöshet
+
+### Steg 1: Kartlägg dina utgifter
+**Fasta kostnader (måste betalas):**
+- Hyra/boende
+- El och vatten
+- Försäkringar
+- Telefon/internet
+- Eventuella lån
+
+**Rörliga kostnader (kan justeras):**
+- Mat
+- Transport
+- Kläder
+- Nöjen
+
+### Steg 2: Jämför med din inkomst
+- Hur mycket får du i ersättning?
+- Räcker det till de fasta kostnaderna?
+- Vad blir kvar?
+
+### Steg 3: Gör en realistisk budget
+**Prioritera:**
+1. Tak över huvudet (hyra, el)
+2. Mat
+3. Hälsa
+4. Transport för jobbsökning
+
+### Tips för att spara
+
+**Mat:**
+- Planera veckomenyer
+- Handla med lista
+- Köp basvaror och laga från grunden
+- Kolla datummärkta varor
+
+**Transport:**
+- Gå eller cykla när möjligt
+- Kolla om du har rätt till rabatterade resekort
+- Planera resor för intervjuer effektivt
+
+**Abonnemang:**
+- Gå igenom alla abonnemang
+- Säg upp det du inte använder
+- Förhandla priser på telefon och internet
+
+## Om du har skulder
+
+### Ta tag i det direkt
+Att ignorera skulder gör det värre. Kontakta:
+- Långivare för att diskutera avbetalningsplan
+- Budget- och skuldrådgivare (gratis via kommunen)
+- Kronofogden om du redan har skulder där
+
+### Prioritering av skulder
+1. Hyra (risk för vräkning)
+2. El (risk för avstängning)
+3. Kronofogdeskulder
+4. Andra skulder
+
+### Skuldsanering
+Om du har stora skulder och inte kan betala:
+- Ansök hos Kronofogden
+- Kräver att du försökt andra lösningar
+- En möjlighet till nystart
+
+## Stöd och bidrag att känna till
+
+### Bostadsbidrag
+- För dig med låg inkomst
+- Ansök hos Försäkringskassan
+- Beror på hyra, inkomst och familjesituation
+
+### Studiemedel
+Om du studerar för att öka din anställningsbarhet:
+- CSN för godkända utbildningar
+- Omställningsstudiestöd för yrkesverksamma
+
+### Tandvårdsstöd
+- Särskilt tandvårdsbidrag vid låg inkomst
+- Frisktandvård
+
+### Glasögonbidrag
+- I vissa regioner för personer med låg inkomst
+
+## Praktiska tips
+
+### Håll koll på utbetalningar
+- Notera när pengarna kommer
+- Ha marginal för förseningar
+- Planera utgifter efter utbetalningsdatum
+
+### Dokumentera allt
+- Spara beslut och brev
+- Anteckna datum och namn vid samtal
+- Ha koll på dina ärenden
+
+### Sök hjälp tidigt
+Vänta inte tills krisen är akut. Kontakta:
+- Budget- och skuldrådgivare
+- Din arbetskonsulent
+- Socialtjänsten
+
+## Resurser
+
+- **Konsumentverket** – budgetkalkyler och tips
+- **Kronofogden** – information om skulder
+- **Kommunens budget- och skuldrådgivning** – gratis hjälp
+- **A-kassan** – din specifika a-kassas webbplats
+
+## Kom ihåg
+
+Ekonomisk stress är verklig och tung. Men det finns hjälp att få. Ta ett steg i taget och var inte rädd för att be om stöd.`,
+    category: 'employment-law',
+    subcategory: 'salary-benefits',
+    tags: ['ekonomi', 'budget', 'a-kassa', 'bidrag', 'skulder', 'pengar'],
+    createdAt: '2024-04-13T10:00:00Z',
+    updatedAt: '2024-04-13T10:00:00Z',
+    readingTime: 16,
+    difficulty: 'easy',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.8,
+    bookmarkCount: 256,
+    relatedArticles: ['anstallningsformer-guide', 'nystartsjobb-guide', 'rattigheter-stod'],
+    author: 'Katarina Holm',
+    authorTitle: 'Handläggare Arbetsförmedlingen',
+  },
+
+  {
+    id: 'underhall-kontakter',
+    title: 'Underhåll ditt nätverk – långsiktiga relationer',
+    summary: 'Så håller du kontakten med ditt professionella nätverk över tid för framtida möjligheter.',
+    content: `Att bygga ett nätverk är bara halva jobbet – du måste också underhålla det. Så här håller du kontakterna levande.
+
+## Varför underhålla kontakter?
+
+- Möjligheter kommer ofta via gamla kontakter
+- Relationer försvagas om de inte vårdas
+- Det är lättare att be om hjälp från någon du haft kontakt med nyligen
+- Du blir "top of mind" när möjligheter dyker upp
+
+## Systematiskt kontaktunderhåll
+
+### Kategorisera dina kontakter
+**A-kontakter (varje månad):**
+- Nära mentorer och rådgivare
+- Nyckelpersoner i din målbransch
+- Personer som aktivt hjälper dig
+
+**B-kontakter (varje kvartal):**
+- Tidigare kollegor och chefer
+- Branschkontakter
+- LinkedIn-kontakter du träffat
+
+**C-kontakter (årligen):**
+- Svagare bekantskaper
+- Gamla klasskamrater
+- Kontakter utanför din bransch
+
+### Skapa en kontaktrutin
+- Lägg in påminnelser i kalendern
+- Avsätt tid varje vecka för nätverkande
+- Håll en enkel lista över senaste kontakt
+
+## Sätt att hålla kontakten
+
+### Digitalt (låg insats)
+- **Reagera på LinkedIn-inlägg** – kommentera meningsfullt
+- **Gratulera vid nyheter** – nya jobb, födelsedagar, prestationer
+- **Dela relevant innehåll** – "Tänkte på dig när jag såg detta"
+- **Skicka ett kort "Hej!"** – "Hur går det för dig?"
+
+### Personligt (högre insats, högre värde)
+- **Fika eller lunch** – "Ska vi ta en kaffe och catch up?"
+- **Telefonsamtal** – för kontakter på distans
+- **Delta i event** – branschmässor, meetups
+- **Bjud in till dina event** – om du organiserar något
+
+### Ge värde
+Det bästa sättet att underhålla kontakter är att ge:
+- Dela en artikel de skulle uppskatta
+- Introducera dem för någon relevant
+- Erbjud din hjälp med något du kan
+- Tipsa om möjligheter du ser
+
+## LinkedIn-strategier
+
+### Vardagligt engagemang
+- Scrolla genom flödet 10-15 minuter dagligen
+- Kommentera på 3-5 inlägg
+- Gilla och dela relevant innehåll
+
+### Direktkontakt
+- Skicka personliga meddelanden, inte generiska
+- Referera till något specifikt
+- Ha ett syfte (men behöver inte vara "jobb-relaterat")
+
+**Exempel på meddelande:**
+"Hej [Namn]! Jag såg ditt inlägg om [ämne] och det fick mig att tänka. Hur går det för dig på [Företag]? Hoppas allt är bra!"
+
+### Undvik
+- Att bara höra av dig när du behöver något
+- Generiska "Hur mår du?"-meddelanden till alla
+- Att glömma bort kontakter i månader
+
+## Professionella referensbrev
+
+### Be om referensbrev medan relationen är färsk
+- Efter en lyckad praktik
+- När du slutar ett jobb på bra villkor
+- Efter ett framgångsrikt projekt
+
+### Så frågar du
+"Hej [Namn], jag har verkligen uppskattat att jobba med dig på [projekt/jobb]. Skulle du kunna tänka dig att skriva ett referensbrev eller vara referens för mig i framtiden?"
+
+### Håll referenserna uppdaterade
+- Meddela dem innan du ger ut deras nummer
+- Berätta om jobben du söker
+- Tacka dem efteråt
+
+## Hantera "gamla" kontakter
+
+### Att återuppta kontakt
+Det är aldrig för sent att höra av sig. Var ärlig:
+"Hej [Namn]! Det har gått ett tag sedan vi pratade. Jag tänkte på dig nyligen och undrar hur det går för dig?"
+
+### Om du behöver hjälp
+Var tydlig men inte desperat:
+"Jag söker just nu nya möjligheter inom [område] och undrar om du har några tips eller känner någon som skulle vara bra att prata med?"
+
+## Vanliga misstag
+
+❌ **Bara höra av sig när du behöver något**
+Lösning: Ge innan du tar. Underhåll relationen kontinuerligt.
+
+❌ **Vara för formell**
+Lösning: Var personlig och genuin. Människor vill hjälpa människor, inte få formella förfrågningar.
+
+❌ **Glömma att tacka**
+Lösning: Skicka alltid ett tack efter hjälp. Följ upp med resultat.
+
+❌ **Samla kontakter utan att använda dem**
+Lösning: Kvalitet över kvantitet. Bättre med 50 aktiva kontakter än 500 passiva.
+
+## Kom ihåg
+
+Nätverkande är inte transaktionellt – det handlar om relationer. De bästa professionella relationerna är genuina vänskaper där båda parter vinner. Investera i människor, inte bara i kontakter!`,
+    category: 'networking',
+    subcategory: 'maintaining-contacts',
+    tags: ['nätverkande', 'kontakter', 'relationer', 'LinkedIn', 'referensbrev'],
+    createdAt: '2024-04-14T10:00:00Z',
+    updatedAt: '2024-04-14T10:00:00Z',
+    readingTime: 13,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    helpfulnessRating: 4.7,
+    bookmarkCount: 189,
+    relatedArticles: ['natverka-for-jobb', 'linkedin-optimering', 'informationsintervju-guide'],
+    relatedExercises: ['networking'],
     author: 'Maria Lindqvist',
     authorTitle: 'Arbetskonsulent',
   },
