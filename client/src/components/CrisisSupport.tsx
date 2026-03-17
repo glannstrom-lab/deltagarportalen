@@ -144,16 +144,16 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
         onClick={() => setIsOpen(true)}
         className={`
           flex items-center gap-2 transition-all text-sm focus:outline-none focus:ring-2 focus:ring-rose-500
-          ${variant === 'fixed' 
-            ? 'fixed bottom-6 right-6 z-40 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus:ring-offset-2' 
-            : 'px-3 py-2 text-rose-600 hover:bg-rose-50 rounded-xl'
+          ${variant === 'fixed'
+            ? 'fixed bottom-6 right-6 z-40 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus:ring-offset-2'
+            : 'p-2 text-rose-500 hover:bg-rose-50 rounded-lg'
           }
         `}
         aria-label={t('crisis.ariaLabel')}
         aria-haspopup="dialog"
         aria-expanded={isOpen}
       >
-        <Heart size={variant === 'fixed' ? 18 : 20} className="text-rose-500" aria-hidden="true" />
+        <Heart size={18} className={variant === 'fixed' ? 'text-rose-500' : 'text-rose-500'} aria-hidden="true" />
         {variant === 'fixed' && (
           <>
             <span className="hidden sm:inline font-medium">{t('crisis.needToTalk')}</span>

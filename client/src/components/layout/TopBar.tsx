@@ -186,101 +186,105 @@ export function TopBar() {
         </form>
 
         {/* Höger - Actions */}
-        <div className="flex items-center gap-1 sm:gap-2">
+        <div className="flex items-center">
+          {/* Icon buttons container */}
+          <div className="flex items-center gap-0.5 mr-1">
+            {/* Language Selector */}
+            <LanguageSelector />
 
-
-          {/* Language Selector */}
-          <LanguageSelector />
-
-          {/* Dark Mode Toggle */}
-          <button
-            onClick={toggleDarkMode}
-            className="p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-            title={isDark ? t('topbar.lightMode') : t('topbar.darkMode')}
-          >
-            {isDark ? (
-              <Sun size={20} className="text-amber-500" />
-            ) : (
-              <Moon size={20} className="text-stone-500" />
-            )}
-          </button>
-
-          {/* Help */}
-          <Link
-            to="/help"
-            className="hidden sm:flex p-2.5 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
-            title={t('topbar.help')}
-          >
-            <HelpCircle size={20} className="text-stone-500 dark:text-stone-400" />
-          </Link>
-
-          {/* Crisis Support / Hjärtat */}
-          <div className="hidden lg:flex items-center">
-            <CrisisSupport variant="inline" />
-          </div>
-
-          {/* Notifikationer */}
-          <div className="relative">
+            {/* Dark Mode Toggle */}
             <button
-              onClick={() => {
-                setShowNotifications(!showNotifications)
-                setShowUserMenu(false)
-              }}
-              className={cn(
-                "p-2.5 rounded-xl transition-colors relative",
-                showNotifications ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
-              )}
-              aria-label={`${t('topbar.notifications')}${unreadCount > 0 ? ` (${t('topbar.unreadNotifications', { count: unreadCount })})` : ''}`}
-              aria-expanded={showNotifications}
-              aria-haspopup="true"
+              onClick={toggleDarkMode}
+              className="p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+              title={isDark ? t('topbar.lightMode') : t('topbar.darkMode')}
             >
-              <Bell size={20} className={showNotifications ? "text-violet-600 dark:text-violet-400" : "text-stone-500 dark:text-stone-400"} aria-hidden="true" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1.5 right-1.5 w-4 h-4 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center" aria-hidden="true">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
+              {isDark ? (
+                <Sun size={18} className="text-amber-500" />
+              ) : (
+                <Moon size={18} className="text-stone-500 dark:text-stone-400" />
               )}
             </button>
 
-            {/* Notifikations-dropdown */}
-            {showNotifications && (
-              <>
-                <div 
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowNotifications(false)}
-                />
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-100 dark:border-stone-700 p-2 z-50">
-                  <div className="flex items-center justify-between px-3 py-2 border-b border-stone-100 dark:border-stone-700">
-                    <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('topbar.notifications')}</h3>
-                    {unreadCount > 0 && (
-                      <button
-                        onClick={() => setNotifications([])}
-                        className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700"
-                      >
-                        {t('topbar.markAllRead')}
-                      </button>
-                    )}
-                  </div>
-                  <div className="max-h-64 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <p className="text-center text-stone-500 dark:text-stone-400 text-sm py-6">{t('topbar.noNotifications')}</p>
-                    ) : (
-                      notifications.map(n => (
+            {/* Help */}
+            <Link
+              to="/help"
+              className="hidden sm:flex p-2 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+              title={t('topbar.help')}
+            >
+              <HelpCircle size={18} className="text-stone-500 dark:text-stone-400" />
+            </Link>
+
+            {/* Crisis Support / Hjärtat */}
+            <div className="hidden lg:flex">
+              <CrisisSupport variant="inline" />
+            </div>
+
+            {/* Notifikationer */}
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setShowNotifications(!showNotifications)
+                  setShowUserMenu(false)
+                }}
+                className={cn(
+                  "p-2 rounded-lg transition-colors relative",
+                  showNotifications ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
+                )}
+                aria-label={`${t('topbar.notifications')}${unreadCount > 0 ? ` (${t('topbar.unreadNotifications', { count: unreadCount })})` : ''}`}
+                aria-expanded={showNotifications}
+                aria-haspopup="true"
+              >
+                <Bell size={18} className={showNotifications ? "text-violet-600 dark:text-violet-400" : "text-stone-500 dark:text-stone-400"} aria-hidden="true" />
+                {unreadCount > 0 && (
+                  <span className="absolute top-0.5 right-0.5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center" aria-hidden="true">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {/* Notifikations-dropdown */}
+              {showNotifications && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowNotifications(false)}
+                  />
+                  <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-100 dark:border-stone-700 p-2 z-50">
+                    <div className="flex items-center justify-between px-3 py-2 border-b border-stone-100 dark:border-stone-700">
+                      <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('topbar.notifications')}</h3>
+                      {unreadCount > 0 && (
                         <button
-                          key={n.id}
-                          onClick={() => markNotificationAsRead(n.id)}
-                          className="w-full text-left p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
+                          onClick={() => setNotifications([])}
+                          className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700"
                         >
-                          <p className="font-medium text-stone-800 dark:text-stone-100 text-sm">{n.title}</p>
-                          <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">{n.message}</p>
+                          {t('topbar.markAllRead')}
                         </button>
-                      ))
-                    )}
+                      )}
+                    </div>
+                    <div className="max-h-64 overflow-y-auto">
+                      {notifications.length === 0 ? (
+                        <p className="text-center text-stone-500 dark:text-stone-400 text-sm py-6">{t('topbar.noNotifications')}</p>
+                      ) : (
+                        notifications.map(n => (
+                          <button
+                            key={n.id}
+                            onClick={() => markNotificationAsRead(n.id)}
+                            className="w-full text-left p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
+                          >
+                            <p className="font-medium text-stone-800 dark:text-stone-100 text-sm">{n.title}</p>
+                            <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">{n.message}</p>
+                          </button>
+                        ))
+                      )}
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
+
+          {/* Divider */}
+          <div className="hidden sm:block w-px h-6 bg-stone-200 dark:bg-stone-700 mx-1" />
 
           {/* User Menu */}
           <div className="relative">
@@ -290,14 +294,14 @@ export function TopBar() {
                 setShowNotifications(false)
               }}
               className={cn(
-                "flex items-center gap-2 p-1.5 pr-3 rounded-xl transition-colors",
+                "flex items-center gap-1.5 p-1 pr-2 rounded-lg transition-colors",
                 showUserMenu ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
               )}
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-xl flex items-center justify-center text-white font-medium text-sm">
+              <div className="w-7 h-7 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-medium text-sm">
                 {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
               </div>
-              <ChevronDown size={16} className="hidden sm:block text-stone-400 dark:text-stone-500" />
+              <ChevronDown size={14} className="hidden sm:block text-stone-400 dark:text-stone-500" />
             </button>
 
             {/* User dropdown */}

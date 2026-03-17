@@ -59,7 +59,7 @@ export function LanguageSelector() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'flex items-center gap-1.5 p-2 sm:p-2.5 rounded-xl transition-colors',
+          'flex items-center gap-1 p-2 rounded-lg transition-colors',
           isOpen
             ? 'bg-violet-100 dark:bg-violet-900/30'
             : 'hover:bg-stone-100 dark:hover:bg-stone-800'
@@ -69,21 +69,14 @@ export function LanguageSelector() {
         aria-haspopup="listbox"
       >
         <Globe
-          size={20}
+          size={18}
           className={cn(
             isOpen ? 'text-violet-600 dark:text-violet-400' : 'text-stone-500 dark:text-stone-400'
           )}
         />
-        <span className="hidden sm:inline text-sm font-medium text-stone-700 dark:text-stone-300">
+        <span className="hidden sm:inline text-sm">
           {currentLanguage.flag}
         </span>
-        <ChevronDown
-          size={14}
-          className={cn(
-            'hidden sm:block transition-transform text-stone-400',
-            isOpen && 'rotate-180'
-          )}
-        />
       </button>
 
       {isOpen && (
