@@ -19,6 +19,7 @@ import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import CrisisSupport from '@/components/CrisisSupport'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
+import { OptimizedImage } from '@/components/ui/OptimizedImage'
 
 interface UserProfile {
   first_name: string
@@ -151,9 +152,10 @@ export function TopBar() {
         {/* Vänster - Logo/Datum + Streak */}
         <div className="flex items-center gap-3">
           <Link to="/" className="lg:hidden flex items-center gap-2">
-            <img 
-              src="/logo-icon.png" 
-              alt="Jobin" 
+            <OptimizedImage
+              src="/logo-icon.png"
+              alt="Jobin"
+              loading="eager"
               className="w-8 h-8 rounded-xl object-contain bg-white shadow-md"
             />
           </Link>

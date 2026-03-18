@@ -1,9 +1,13 @@
 /**
  * AI Service för Deltagarportalen
- * 
+ *
  * Denna service anropar Vercel Serverless Functions för alla AI-operationer.
  * Ersätter den tidigare lokala servern (localhost:3002).
+ *
+ * Inkluderar retry-logik för förbättrad tillförlitlighet.
  */
+
+import { withRetry } from './retryService';
 
 const API_BASE = '/api';
 
@@ -17,24 +21,51 @@ interface AIResponse {
   model?: string;
 }
 
+// AI-specifik retry config - färre försök, längre timeout
+const AI_RETRY_CONFIG = {
+  maxRetries: 2, // 3 totala försök
+  baseDelay: 2000, // 2 sekunder
+  maxDelay: 15000, // 15 sekunder
+  retryableStatusCodes: [408, 429, 500, 502, 503, 504],
+};
+
 /**
- * Generisk funktion för att anropa AI-endpoints
+ * Generisk funktion för att anropa AI-endpoints med retry-logik
  */
-async function callAI(functionName: string, data: any): Promise<AIResponse> {
-  const response = await fetch(`${API_BASE}/ai/${functionName}`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
+async function callAI(functionName: string, data: Record<string, unknown>): Promise<AIResponse> {
+  return withRetry(
+    async () => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout för AI
+
+      try {
+        const response = await fetch(`${API_BASE}/ai/${functionName}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ function: functionName, data }),
+          signal: controller.signal,
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({})) as { error?: string };
+          const error = new Error(errorData.error || `HTTP error! status: ${response.status}`);
+          (error as Error & { status: number }).status = response.status;
+          throw error;
+        }
+
+        return response.json() as Promise<AIResponse>;
+      } catch (error) {
+        clearTimeout(timeoutId);
+        throw error;
+      }
     },
-    body: JSON.stringify({ function: functionName, data }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-  }
-
-  return response.json();
+    AI_RETRY_CONFIG,
+    `AI ${functionName}`
+  );
 }
 
 /**

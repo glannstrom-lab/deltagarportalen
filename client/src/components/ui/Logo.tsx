@@ -4,6 +4,7 @@
  */
 
 import { cn } from '@/lib/utils'
+import { OptimizedImage } from './OptimizedImage'
 
 interface LogoProps {
   variant?: 'full' | 'icon' | 'header'
@@ -41,9 +42,10 @@ export function Logo({
 
   if (variant === 'icon') {
     return (
-      <img 
-        src="/logo-icon.png" 
+      <OptimizedImage
+        src="/logo-icon.png"
         alt="Jobin"
+        loading="eager"
         className={cn(
           'rounded-lg object-contain',
           sizes.container,
@@ -56,9 +58,10 @@ export function Logo({
   if (variant === 'header') {
     return (
       <div className={cn('flex items-center gap-2.5', className)}>
-        <img 
-          src="/logo-icon.png" 
+        <OptimizedImage
+          src="/logo-icon.png"
           alt=""
+          loading="eager"
           className="w-8 h-8 rounded-lg object-contain bg-white shadow-sm"
         />
         {showText && (
@@ -73,9 +76,10 @@ export function Logo({
   // Full variant (default)
   return (
     <div className={cn('flex flex-col items-center', className)}>
-      <img 
-        src="/logo-jobin.png" 
+      <OptimizedImage
+        src="/logo-jobin.png"
         alt="Jobin"
+        loading="eager"
         className={cn(
           'rounded-2xl shadow-lg object-contain bg-white',
           sizes.container

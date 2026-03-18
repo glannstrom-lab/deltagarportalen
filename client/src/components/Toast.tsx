@@ -72,10 +72,17 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
     setTimeout(() => onRemove(toast.id), 300)
   }
 
+  // Determine aria-live based on toast type (errors are assertive, others polite)
+  const ariaLive = toast.type === 'error' ? 'assertive' : 'polite'
+  const ariaRole = toast.type === 'error' ? 'alert' : 'status'
+
   return (
     <div
+      role={ariaRole}
+      aria-live={ariaLive}
+      aria-atomic="true"
       className={`
-        relative flex items-start gap-3 p-4 rounded-xl shadow-lg 
+        relative flex items-start gap-3 p-4 rounded-xl shadow-lg
         transform transition-all duration-300 min-w-[320px] max-w-md
         ${styles[toast.type]}
         ${isExiting ? 'translate-x-full opacity-0' : 'translate-x-0 opacity-100'}
@@ -111,9 +118,10 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       {/* Close button */}
       <button
         onClick={handleRemove}
+        aria-label="Stäng meddelande"
         className="flex-shrink-0 p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
       >
-        <X className="w-4 h-4" />
+        <X className="w-4 h-4" aria-hidden="true" />
       </button>
 
       {/* Progress bar */}

@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react'
 import { Download, FileText, Check, FileType, Loader2 } from 'lucide-react'
-import jsPDF from 'jspdf'
-import html2canvas from 'html2canvas'
+import { loadPDFLibraries, preloadPDFLibraries } from '@/services/pdfLazyLoad'
 import type { CVData } from '@/services/supabaseApi'
 
 interface CVExportProps {
@@ -51,10 +50,13 @@ export function CVExport({ cvData }: CVExportProps) {
     }
 
     setIsExportingPDF(true)
-    
+
     try {
+      // Lazy-load PDF libraries (sparar ~300KB från initial bundle)
+      const { jsPDF, html2canvas } = await loadPDFLibraries()
+
       const element = pdfRef.current
-      
+
       // Gör elementet tillfälligt synligt för rendering
       const originalStyles = {
         position: element.style.position,
@@ -62,17 +64,17 @@ export function CVExport({ cvData }: CVExportProps) {
         opacity: element.style.opacity,
         zIndex: element.style.zIndex
       }
-      
+
       element.style.position = 'fixed'
       element.style.left = '0'
       element.style.top = '0'
       element.style.opacity = '0'
       element.style.zIndex = '-9999'
       element.style.width = '794px' // A4 width i pixels (96 DPI)
-      
+
       // Vänta på att DOM ska uppdateras
       await new Promise(resolve => setTimeout(resolve, 100))
-      
+
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
@@ -497,6 +499,8 @@ export function CVExport({ cvData }: CVExportProps) {
           {/* PDF Export */}
           <button
             onClick={handleExportPDF}
+            onMouseEnter={preloadPDFLibraries}
+            onFocus={preloadPDFLibraries}
             disabled={isExportingPDF || isExportingWord}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors"
           >

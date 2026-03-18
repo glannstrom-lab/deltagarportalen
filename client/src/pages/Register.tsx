@@ -5,6 +5,7 @@ import { useAuthStore } from '../stores/authStore'
 import { useZodForm } from '../hooks/useZodForm'
 import { registerSchema } from '../lib/validations'
 import { Eye, EyeOff, Loader2, Mail, Lock, User, ArrowRight, Check, X } from 'lucide-react'
+import { OptimizedImage } from '@/components/ui/OptimizedImage'
 
 export default function Register() {
   const { t } = useTranslation()
@@ -85,9 +86,10 @@ export default function Register() {
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
-          <img
+          <OptimizedImage
             src="/logo-jobin.png"
             alt="Jobin"
+            loading="eager"
             className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
           />
           <h1 className="text-2xl font-bold text-white">Jobin</h1>

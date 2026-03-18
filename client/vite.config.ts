@@ -3,11 +3,25 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression2'
+import { ViteImageOptimizer } from 'vite-plugin-image-optimizer'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => ({
   plugins: [
     react(),
+    // Optimize images during build (PNG compression, WebP generation)
+    ViteImageOptimizer({
+      png: {
+        quality: 80,
+      },
+      jpeg: {
+        quality: 80,
+      },
+      webp: {
+        lossless: false,
+        quality: 80,
+      },
+    }),
     // Enable gzip compression for assets
     compression({
       algorithm: 'gzip',

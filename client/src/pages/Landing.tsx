@@ -28,6 +28,7 @@ import {
   Phone
 } from 'lucide-react'
 import { useState, useEffect, useRef } from 'react'
+import { OptimizedImage } from '@/components/ui/OptimizedImage'
 
 // FAQ Item Component
 function FAQItem({ question, answer, isOpen, onClick }: { 
@@ -267,9 +268,10 @@ export default function Landing() {
           <div className="flex items-center justify-between h-16 lg:h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3 group">
-              <img 
-                src="/logo-icon.png" 
-                alt="" 
+              <OptimizedImage
+                src="/logo-icon.png"
+                alt=""
+                loading="eager"
                 className="w-10 h-10 rounded-xl shadow-lg group-hover:shadow-xl transition-shadow object-contain bg-white"
               />
               <span className="text-xl font-bold bg-gradient-to-r from-violet-600 to-violet-500 bg-clip-text text-transparent">Jobin</span>
