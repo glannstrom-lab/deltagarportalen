@@ -229,799 +229,965 @@ export function CVTemplates() {
     URL.revokeObjectURL(url)
   }
 
-  // SIDEBAR LAYOUT - Two column with colored sidebar
+  // SIDEBAR LAYOUT - Two column with colored sidebar (Word-compatible)
   const generateSidebarTemplate = (template: CVTemplate, primaryColor: string, secondaryColor: string) => `
 <!DOCTYPE html>
-<html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>${template.name} - CV Mall</title>
+<!--[if gte mso 9]>
+<xml>
+<w:WordDocument>
+<w:View>Print</w:View>
+</w:WordDocument>
+</xml>
+<![endif]-->
 <style>
-@page { margin: 0; size: A4; }
-body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; line-height: 1.5; font-size: 10pt; }
-.cv-container { display: flex; min-height: 100vh; }
-.sidebar { width: 35%; background: linear-gradient(180deg, ${primaryColor}, ${secondaryColor}); color: white; padding: 40px 25px; }
-.main { width: 65%; padding: 40px 35px; background: #ffffff; }
-.photo-circle { width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.2); border: 4px solid rgba(255,255,255,0.3); margin: 0 auto 25px; display: flex; align-items: center; justify-content: center; font-size: 48px; }
-.sidebar-name { font-size: 22pt; font-weight: bold; text-align: center; margin-bottom: 5px; }
-.sidebar-title { font-size: 11pt; text-align: center; opacity: 0.9; margin-bottom: 30px; }
-.sidebar-section { margin-bottom: 25px; }
-.sidebar-section-title { font-size: 9pt; text-transform: uppercase; letter-spacing: 2px; opacity: 0.7; margin-bottom: 12px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; }
-.contact-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; font-size: 9.5pt; }
-.contact-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
-.skill-tag { display: inline-block; background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 9pt; margin: 4px 4px 4px 0; }
-.lang-item { display: flex; justify-content: space-between; margin-bottom: 10px; }
-.lang-level { opacity: 0.8; font-size: 9pt; background: rgba(255,255,255,0.15); padding: 2px 10px; border-radius: 10px; }
-.main-header { margin-bottom: 30px; padding-bottom: 20px; border-bottom: 3px solid ${primaryColor}; }
-.main-name { font-size: 28pt; font-weight: bold; color: #1e293b; margin-bottom: 5px; }
-.main-title { font-size: 14pt; color: ${primaryColor}; font-weight: 500; }
-.section { margin-bottom: 28px; }
-.section-title { font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
-.section-icon { color: ${primaryColor}; font-size: 16px; }
-.profile-text { font-size: 10.5pt; color: #475569; line-height: 1.7; background: #f8fafc; padding: 18px; border-radius: 10px; border-left: 4px solid ${primaryColor}; }
-.timeline { position: relative; padding-left: 20px; }
-.timeline::before { content: ''; position: absolute; left: 0; top: 5px; bottom: 5px; width: 2px; background: #e2e8f0; }
-.timeline-item { position: relative; margin-bottom: 22px; }
-.timeline-dot { position: absolute; left: -24px; top: 3px; width: 10px; height: 10px; background: ${primaryColor}; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px ${primaryColor}; }
-.job-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
-.job-title { font-weight: bold; font-size: 11pt; color: #1e293b; }
-.job-date { font-size: 8.5pt; color: ${primaryColor}; background: #eef2ff; padding: 4px 12px; border-radius: 15px; }
-.job-company { font-size: 10pt; color: ${primaryColor}; font-weight: 600; margin-bottom: 6px; }
-.job-desc { font-size: 9.5pt; color: #64748b; line-height: 1.6; }
-.edu-card { background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 12px; border-left: 3px solid ${primaryColor}; }
-.edu-degree { font-weight: bold; color: #1e293b; margin-bottom: 2px; }
-.edu-school { color: ${primaryColor}; font-size: 9.5pt; }
-.edu-date { color: #94a3b8; font-size: 9pt; margin-top: 4px; }
-@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@page { margin: 0cm; size: A4; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; margin: 0; padding: 0; line-height: 1.5; font-size: 10pt; }
+table { border-collapse: collapse; }
 </style>
 </head>
 <body>
-<div class="cv-container">
-  <div class="sidebar">
-    <div class="photo-circle">👤</div>
-    <div class="sidebar-name">[Ditt Namn]</div>
-    <div class="sidebar-title">[Din Titel]</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="min-height: 842px;">
+<tr>
+<!-- SIDEBAR -->
+<td width="35%" valign="top" style="background-color: ${primaryColor}; color: white; padding: 35px 25px;">
 
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Kontakt</div>
-      <div class="contact-item"><div class="contact-icon">📧</div><span>[din.email@exempel.se]</span></div>
-      <div class="contact-item"><div class="contact-icon">📱</div><span>[070-123 45 67]</span></div>
-      <div class="contact-item"><div class="contact-icon">📍</div><span>[Stockholm]</span></div>
-      <div class="contact-item"><div class="contact-icon">🔗</div><span>[linkedin.com/in/dittnamn]</span></div>
-    </div>
+<!-- Photo Circle -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td align="center" style="padding-bottom: 20px;">
+<table cellpadding="0" cellspacing="0">
+<tr><td style="width: 100px; height: 100px; background-color: rgba(255,255,255,0.3); border: 4px solid rgba(255,255,255,0.5); text-align: center; font-size: 42px; vertical-align: middle;">👤</td></tr>
+</table>
+</td></tr>
+</table>
 
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Kompetenser</div>
-      <span class="skill-tag">[Kompetens 1]</span>
-      <span class="skill-tag">[Kompetens 2]</span>
-      <span class="skill-tag">[Kompetens 3]</span>
-      <span class="skill-tag">[Kompetens 4]</span>
-      <span class="skill-tag">[Kompetens 5]</span>
-      <span class="skill-tag">[Kompetens 6]</span>
-    </div>
+<!-- Name & Title -->
+<p style="font-size: 20pt; font-weight: bold; text-align: center; margin: 0 0 5px 0;">[Ditt Namn]</p>
+<p style="font-size: 11pt; text-align: center; margin: 0 0 25px 0; opacity: 0.9;">[Din Titel]</p>
 
-    <div class="sidebar-section">
-      <div class="sidebar-section-title">Språk</div>
-      <div class="lang-item"><span>Svenska</span><span class="lang-level">Modersmål</span></div>
-      <div class="lang-item"><span>Engelska</span><span class="lang-level">Flytande</span></div>
-      <div class="lang-item"><span>[Annat]</span><span class="lang-level">[Nivå]</span></div>
-    </div>
-  </div>
+<!-- Contact Section -->
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 8px; margin-bottom: 12px;">Kontakt</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+<tr><td style="padding: 6px 0; font-size: 9.5pt;">📧 &nbsp; [din.email@exempel.se]</td></tr>
+<tr><td style="padding: 6px 0; font-size: 9.5pt;">📱 &nbsp; [070-123 45 67]</td></tr>
+<tr><td style="padding: 6px 0; font-size: 9.5pt;">📍 &nbsp; [Stockholm]</td></tr>
+<tr><td style="padding: 6px 0; font-size: 9.5pt;">🔗 &nbsp; [linkedin.com/in/dittnamn]</td></tr>
+</table>
 
-  <div class="main">
-    <div class="main-header">
-      <div class="main-name">[Ditt Fullständiga Namn]</div>
-      <div class="main-title">[Din Yrkestitel / Profession]</div>
-    </div>
+<!-- Skills Section -->
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 8px; margin-bottom: 12px;">Kompetenser</p>
+<p style="font-size: 9pt; line-height: 2.2;">
+<span style="background-color: rgba(255,255,255,0.2); padding: 4px 12px; margin: 2px;">[Kompetens 1]</span>
+<span style="background-color: rgba(255,255,255,0.2); padding: 4px 12px; margin: 2px;">[Kompetens 2]</span>
+<span style="background-color: rgba(255,255,255,0.2); padding: 4px 12px; margin: 2px;">[Kompetens 3]</span>
+<span style="background-color: rgba(255,255,255,0.2); padding: 4px 12px; margin: 2px;">[Kompetens 4]</span>
+<span style="background-color: rgba(255,255,255,0.2); padding: 4px 12px; margin: 2px;">[Kompetens 5]</span>
+</p>
 
-    <div class="section">
-      <div class="section-title"><span class="section-icon">✨</span> Profil</div>
-      <div class="profile-text">
-        [Skriv en engagerande sammanfattning om dig själv här. Beskriv dina styrkor, dina viktigaste erfarenheter och vad du söker. 2-3 meningar som fångar uppmärksamhet.]
-      </div>
-    </div>
+<!-- Languages Section -->
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 8px; margin: 20px 0 12px 0;">Språk</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding: 5px 0; font-size: 9.5pt;">Svenska</td><td align="right" style="padding: 5px 0; font-size: 9pt; opacity: 0.8;">Modersmål</td></tr>
+<tr><td style="padding: 5px 0; font-size: 9.5pt;">Engelska</td><td align="right" style="padding: 5px 0; font-size: 9pt; opacity: 0.8;">Flytande</td></tr>
+<tr><td style="padding: 5px 0; font-size: 9.5pt;">[Annat]</td><td align="right" style="padding: 5px 0; font-size: 9pt; opacity: 0.8;">[Nivå]</td></tr>
+</table>
 
-    <div class="section">
-      <div class="section-title"><span class="section-icon">💼</span> Erfarenhet</div>
-      <div class="timeline">
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="job-header">
-            <span class="job-title">[Jobbtitel]</span>
-            <span class="job-date">[År] - Nu</span>
-          </div>
-          <div class="job-company">[Företagsnamn], [Stad]</div>
-          <div class="job-desc">• [Beskriv en nyckelprestation]<br>• [Beskriv en annan viktig uppgift]<br>• [Lägg till fler punkter]</div>
-        </div>
-        <div class="timeline-item">
-          <div class="timeline-dot"></div>
-          <div class="job-header">
-            <span class="job-title">[Tidigare Titel]</span>
-            <span class="job-date">[År] - [År]</span>
-          </div>
-          <div class="job-company">[Tidigare Företag], [Stad]</div>
-          <div class="job-desc">• [Beskriv dina uppgifter och resultat]</div>
-        </div>
-      </div>
-    </div>
+</td>
 
-    <div class="section">
-      <div class="section-title"><span class="section-icon">🎓</span> Utbildning</div>
-      <div class="edu-card">
-        <div class="edu-degree">[Examen / Program]</div>
-        <div class="edu-school">[Skola / Universitet]</div>
-        <div class="edu-date">[Startår] - [Slutår]</div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- MAIN CONTENT -->
+<td width="65%" valign="top" style="background-color: #ffffff; padding: 35px 35px;">
+
+<!-- Header -->
+<p style="font-size: 26pt; font-weight: bold; color: #1e293b; margin: 0 0 5px 0;">[Ditt Fullständiga Namn]</p>
+<p style="font-size: 13pt; color: ${primaryColor}; font-weight: 500; margin: 0 0 20px 0;">[Din Yrkestitel / Profession]</p>
+<hr style="border: none; border-top: 3px solid ${primaryColor}; margin-bottom: 25px;">
+
+<!-- Profile Section -->
+<p style="font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;">✨ Profil</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+<tr><td style="background-color: #f8fafc; padding: 15px; border-left: 4px solid ${primaryColor}; font-size: 10.5pt; color: #475569; line-height: 1.7;">
+[Skriv en engagerande sammanfattning om dig själv här. Beskriv dina styrkor, dina viktigaste erfarenheter och vad du söker. 2-3 meningar som fångar uppmärksamhet.]
+</td></tr>
+</table>
+
+<!-- Experience Section -->
+<p style="font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">💼 Erfarenhet</p>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 18px; border-left: 3px solid #e2e8f0; padding-left: 15px;">
+<tr>
+<td style="padding-left: 15px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-weight: bold; font-size: 11pt; color: #1e293b;">[Jobbtitel]</span></td>
+<td align="right"><span style="font-size: 9pt; color: ${primaryColor}; background-color: #eef2ff; padding: 3px 10px;">[År] - Nu</span></td>
+</tr>
+</table>
+<p style="font-size: 10pt; color: ${primaryColor}; font-weight: 600; margin: 4px 0 6px 0;">[Företagsnamn], [Stad]</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0;">• [Beskriv en nyckelprestation]<br>• [Beskriv en annan viktig uppgift]<br>• [Lägg till fler punkter]</p>
+</td>
+</tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px; border-left: 3px solid #e2e8f0; padding-left: 15px;">
+<tr>
+<td style="padding-left: 15px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-weight: bold; font-size: 11pt; color: #1e293b;">[Tidigare Titel]</span></td>
+<td align="right"><span style="font-size: 9pt; color: ${primaryColor}; background-color: #eef2ff; padding: 3px 10px;">[År] - [År]</span></td>
+</tr>
+</table>
+<p style="font-size: 10pt; color: ${primaryColor}; font-weight: 600; margin: 4px 0 6px 0;">[Tidigare Företag], [Stad]</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0;">• [Beskriv dina uppgifter och resultat]</p>
+</td>
+</tr>
+</table>
+
+<!-- Education Section -->
+<p style="font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;">🎓 Utbildning</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+<tr><td style="background-color: #f8fafc; padding: 12px 15px; border-left: 3px solid ${primaryColor};">
+<p style="font-weight: bold; color: #1e293b; margin: 0 0 2px 0;">[Examen / Program]</p>
+<p style="color: ${primaryColor}; font-size: 9.5pt; margin: 0 0 4px 0;">[Skola / Universitet]</p>
+<p style="color: #94a3b8; font-size: 9pt; margin: 0;">[Startår] - [Slutår]</p>
+</td></tr>
+</table>
+
+</td>
+</tr>
+</table>
 </body>
 </html>`
 
-  // CREATIVE LAYOUT - Bold, colorful, artistic
+  // CREATIVE LAYOUT - Bold, colorful, artistic (Word-compatible)
   const generateCreativeTemplate = (template: CVTemplate, primaryColor: string, secondaryColor: string) => `
 <!DOCTYPE html>
-<html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>${template.name} - CV Mall</title>
+<!--[if gte mso 9]>
+<xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml>
+<![endif]-->
 <style>
-@page { margin: 0; size: A4; }
-body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; background: #faf5ff; }
-.header { background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); padding: 50px 40px 60px; color: white; text-align: center; position: relative; }
-.header::after { content: ''; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%); width: 100px; height: 100px; background: white; border-radius: 50%; border: 5px solid ${primaryColor}; display: flex; align-items: center; justify-content: center; }
-.photo-placeholder { position: absolute; bottom: -35px; left: 50%; transform: translateX(-50%); width: 100px; height: 100px; background: white; border-radius: 50%; border: 5px solid ${primaryColor}; display: flex; align-items: center; justify-content: center; font-size: 40px; z-index: 10; }
-.name { font-size: 32pt; font-weight: bold; margin-bottom: 8px; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); }
-.title { font-size: 14pt; opacity: 0.95; font-weight: 300; }
-.contact-bar { display: flex; justify-content: center; gap: 25px; margin-top: 20px; font-size: 10pt; }
-.contact-pill { background: rgba(255,255,255,0.2); padding: 8px 18px; border-radius: 25px; backdrop-filter: blur(5px); }
-.content { padding: 60px 50px 40px; }
-.section { margin-bottom: 35px; }
-.section-title { font-size: 13pt; font-weight: bold; color: ${primaryColor}; margin-bottom: 18px; display: flex; align-items: center; gap: 12px; }
-.section-title::after { content: ''; flex: 1; height: 3px; background: linear-gradient(90deg, ${primaryColor}, transparent); border-radius: 3px; }
-.profile-box { background: white; padding: 25px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); font-size: 11pt; color: #475569; line-height: 1.8; position: relative; }
-.profile-box::before { content: '"'; position: absolute; top: 10px; left: 15px; font-size: 60pt; color: ${primaryColor}; opacity: 0.15; font-family: Georgia, serif; }
-.card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-.exp-card { background: white; padding: 22px; border-radius: 16px; box-shadow: 0 8px 25px rgba(0,0,0,0.06); border-left: 4px solid ${primaryColor}; }
-.exp-title { font-weight: bold; font-size: 11pt; color: #1e293b; margin-bottom: 4px; }
-.exp-company { color: ${primaryColor}; font-weight: 600; font-size: 10pt; margin-bottom: 4px; }
-.exp-date { font-size: 9pt; color: #94a3b8; margin-bottom: 10px; display: inline-block; background: #f1f5f9; padding: 3px 10px; border-radius: 12px; }
-.exp-desc { font-size: 9.5pt; color: #64748b; line-height: 1.6; }
-.skills-cloud { display: flex; flex-wrap: wrap; gap: 10px; }
-.skill-bubble { background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); color: white; padding: 10px 20px; border-radius: 25px; font-size: 10pt; font-weight: 500; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-.two-col { display: flex; gap: 30px; }
-.col { flex: 1; }
-.mini-card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.mini-title { font-weight: bold; color: #1e293b; font-size: 10pt; margin-bottom: 3px; }
-.mini-sub { color: ${primaryColor}; font-size: 9pt; }
-.mini-detail { color: #94a3b8; font-size: 8.5pt; margin-top: 3px; }
-@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@page { margin: 0cm; size: A4; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; margin: 0; padding: 0; }
+table { border-collapse: collapse; }
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="name">[Ditt Namn]</div>
-  <div class="title">[Din Kreativa Titel]</div>
-  <div class="contact-bar">
-    <span class="contact-pill">📧 [email@exempel.se]</span>
-    <span class="contact-pill">📱 [070-123 45 67]</span>
-    <span class="contact-pill">📍 [Stockholm]</span>
-  </div>
-  <div class="photo-placeholder">👤</div>
-</div>
 
-<div class="content">
-  <div class="section">
-    <div class="section-title">✨ Om Mig</div>
-    <div class="profile-box">
-      [Berätta din historia här! Vad driver dig? Vad är din superkraft? Vad gör dig unik? Skriv med personlighet och passion - låt din kreativitet synas redan här.]
-    </div>
-  </div>
+<!-- HEADER -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${primaryColor};">
+<tr><td style="padding: 45px 40px 55px; text-align: center; color: white;">
+<p style="font-size: 30pt; font-weight: bold; margin: 0 0 8px 0;">[Ditt Namn]</p>
+<p style="font-size: 13pt; margin: 0 0 20px 0; opacity: 0.95;">[Din Kreativa Titel]</p>
+<table cellpadding="0" cellspacing="0" align="center">
+<tr>
+<td style="background-color: rgba(255,255,255,0.2); padding: 8px 18px; font-size: 10pt; margin-right: 10px;">📧 [email@exempel.se]</td>
+<td width="15"></td>
+<td style="background-color: rgba(255,255,255,0.2); padding: 8px 18px; font-size: 10pt;">📱 [070-123 45 67]</td>
+<td width="15"></td>
+<td style="background-color: rgba(255,255,255,0.2); padding: 8px 18px; font-size: 10pt;">📍 [Stockholm]</td>
+</tr>
+</table>
+</td></tr>
+</table>
 
-  <div class="section">
-    <div class="section-title">🚀 Erfarenheter</div>
-    <div class="card-grid">
-      <div class="exp-card">
-        <div class="exp-title">[Kreativ Titel]</div>
-        <div class="exp-company">[Företag/Studio]</div>
-        <span class="exp-date">[År] - Nu</span>
-        <div class="exp-desc">• [Projekt eller prestation]<br>• [Kreativ lösning du bidrog med]</div>
-      </div>
-      <div class="exp-card">
-        <div class="exp-title">[Tidigare Roll]</div>
-        <div class="exp-company">[Tidigare Plats]</div>
-        <span class="exp-date">[År] - [År]</span>
-        <div class="exp-desc">• [Vad du skapade eller åstadkom]</div>
-      </div>
-    </div>
-  </div>
+<!-- PHOTO CIRCLE -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #faf5ff;">
+<tr><td align="center" style="padding: 0;">
+<table cellpadding="0" cellspacing="0" style="margin-top: -35px;">
+<tr><td style="width: 90px; height: 90px; background-color: white; border: 5px solid ${primaryColor}; text-align: center; vertical-align: middle; font-size: 36px;">👤</td></tr>
+</table>
+</td></tr>
+</table>
 
-  <div class="section">
-    <div class="section-title">⚡ Superkrafter</div>
-    <div class="skills-cloud">
-      <span class="skill-bubble">[Kreativ Kompetens]</span>
-      <span class="skill-bubble">[Design Tool]</span>
-      <span class="skill-bubble">[Mjuk Kompetens]</span>
-      <span class="skill-bubble">[Teknisk Skill]</span>
-      <span class="skill-bubble">[Passion]</span>
-      <span class="skill-bubble">[Expertis]</span>
-    </div>
-  </div>
+<!-- CONTENT -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #faf5ff;">
+<tr><td style="padding: 30px 50px 40px;">
 
-  <div class="two-col">
-    <div class="col">
-      <div class="section">
-        <div class="section-title">🎓 Utbildning</div>
-        <div class="mini-card">
-          <div class="mini-title">[Program/Examen]</div>
-          <div class="mini-sub">[Skola/Universitet]</div>
-          <div class="mini-detail">[År] - [År]</div>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="section">
-        <div class="section-title">🌍 Språk</div>
-        <div class="mini-card">
-          <div class="mini-title">Svenska</div>
-          <div class="mini-sub">Modersmål</div>
-        </div>
-        <div class="mini-card">
-          <div class="mini-title">Engelska</div>
-          <div class="mini-sub">Flytande</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Profile Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr>
+<td style="font-size: 13pt; font-weight: bold; color: ${primaryColor}; padding-bottom: 5px;">✨ Om Mig</td>
+<td style="border-bottom: 3px solid ${primaryColor}; width: 70%;"></td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr><td style="background-color: white; padding: 25px; font-size: 11pt; color: #475569; line-height: 1.8;">
+<span style="font-size: 48pt; color: ${primaryColor}; opacity: 0.2; font-family: Georgia, serif; float: left; line-height: 0.8; margin-right: 10px;">"</span>
+[Berätta din historia här! Vad driver dig? Vad är din superkraft? Vad gör dig unik? Skriv med personlighet och passion - låt din kreativitet synas redan här.]
+</td></tr>
+</table>
+
+<!-- Experience Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr>
+<td style="font-size: 13pt; font-weight: bold; color: ${primaryColor}; padding-bottom: 5px;">🚀 Erfarenheter</td>
+<td style="border-bottom: 3px solid ${primaryColor}; width: 65%;"></td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr>
+<td width="48%" valign="top" style="background-color: white; padding: 20px; border-left: 4px solid ${primaryColor};">
+<p style="font-weight: bold; font-size: 11pt; color: #1e293b; margin: 0 0 4px 0;">[Kreativ Titel]</p>
+<p style="color: ${primaryColor}; font-weight: 600; font-size: 10pt; margin: 0 0 4px 0;">[Företag/Studio]</p>
+<p style="font-size: 9pt; color: #94a3b8; background-color: #f1f5f9; padding: 3px 10px; display: inline-block; margin: 0 0 10px 0;">[År] - Nu</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0;">• [Projekt eller prestation]<br>• [Kreativ lösning du bidrog med]</p>
+</td>
+<td width="4%"></td>
+<td width="48%" valign="top" style="background-color: white; padding: 20px; border-left: 4px solid ${secondaryColor};">
+<p style="font-weight: bold; font-size: 11pt; color: #1e293b; margin: 0 0 4px 0;">[Tidigare Roll]</p>
+<p style="color: ${secondaryColor}; font-weight: 600; font-size: 10pt; margin: 0 0 4px 0;">[Tidigare Plats]</p>
+<p style="font-size: 9pt; color: #94a3b8; background-color: #f1f5f9; padding: 3px 10px; display: inline-block; margin: 0 0 10px 0;">[År] - [År]</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0;">• [Vad du skapade eller åstadkom]</p>
+</td>
+</tr>
+</table>
+
+<!-- Skills Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr>
+<td style="font-size: 13pt; font-weight: bold; color: ${primaryColor}; padding-bottom: 5px;">⚡ Superkrafter</td>
+<td style="border-bottom: 3px solid ${primaryColor}; width: 65%;"></td>
+</tr>
+</table>
+<p style="margin-bottom: 30px; line-height: 2.5;">
+<span style="background-color: ${primaryColor}; color: white; padding: 10px 20px; font-size: 10pt; font-weight: 500; margin: 5px;">[Kreativ Kompetens]</span>
+<span style="background-color: ${secondaryColor}; color: white; padding: 10px 20px; font-size: 10pt; font-weight: 500; margin: 5px;">[Design Tool]</span>
+<span style="background-color: ${primaryColor}; color: white; padding: 10px 20px; font-size: 10pt; font-weight: 500; margin: 5px;">[Mjuk Kompetens]</span>
+<span style="background-color: ${secondaryColor}; color: white; padding: 10px 20px; font-size: 10pt; font-weight: 500; margin: 5px;">[Teknisk Skill]</span>
+<span style="background-color: ${primaryColor}; color: white; padding: 10px 20px; font-size: 10pt; font-weight: 500; margin: 5px;">[Passion]</span>
+</p>
+
+<!-- Education & Languages -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr>
+<td style="font-size: 13pt; font-weight: bold; color: ${primaryColor}; padding-bottom: 5px;">🎓 Utbildning</td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="background-color: white; padding: 15px;">
+<p style="font-weight: bold; color: #1e293b; font-size: 10pt; margin: 0 0 3px 0;">[Program/Examen]</p>
+<p style="color: ${primaryColor}; font-size: 9pt; margin: 0 0 3px 0;">[Skola/Universitet]</p>
+<p style="color: #94a3b8; font-size: 8.5pt; margin: 0;">[År] - [År]</p>
+</td></tr>
+</table>
+</td>
+<td width="4%"></td>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr>
+<td style="font-size: 13pt; font-weight: bold; color: ${primaryColor}; padding-bottom: 5px;">🌍 Språk</td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;">
+<tr><td style="background-color: white; padding: 12px 15px;">
+<p style="font-weight: bold; color: #1e293b; font-size: 10pt; margin: 0 0 2px 0;">Svenska</p>
+<p style="color: ${primaryColor}; font-size: 9pt; margin: 0;">Modersmål</p>
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="background-color: white; padding: 12px 15px;">
+<p style="font-weight: bold; color: #1e293b; font-size: 10pt; margin: 0 0 2px 0;">Engelska</p>
+<p style="color: ${primaryColor}; font-size: 9pt; margin: 0;">Flytande</p>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+
+</td></tr>
+</table>
 </body>
 </html>`
 
-  // EXECUTIVE/ELEGANT LAYOUT - Sophisticated, classic
+  // EXECUTIVE/ELEGANT LAYOUT - Sophisticated, classic (Word-compatible)
   const generateExecutiveTemplate = (template: CVTemplate, primaryColor: string) => `
 <!DOCTYPE html>
-<html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>${template.name} - CV Mall</title>
+<!--[if gte mso 9]>
+<xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml>
+<![endif]-->
 <style>
-@page { margin: 0; size: A4; }
-body { font-family: 'Georgia', 'Times New Roman', serif; margin: 0; padding: 0; background: #fffbeb; color: #1c1917; }
-.header { background: #0f172a; color: #f8fafc; padding: 45px 50px; }
-.header-content { max-width: 700px; margin: 0 auto; }
-.name { font-size: 34pt; font-weight: normal; letter-spacing: 3px; margin-bottom: 8px; }
-.title { font-size: 13pt; font-style: italic; color: #d4af37; letter-spacing: 1px; margin-bottom: 20px; }
-.contact-line { display: flex; gap: 30px; font-size: 10pt; color: #94a3b8; }
-.gold-bar { height: 5px; background: linear-gradient(90deg, #d4af37, #fbbf24, #d4af37); }
-.content { max-width: 700px; margin: 0 auto; padding: 40px 50px; }
-.section { margin-bottom: 35px; }
-.section-title { font-size: 11pt; text-transform: uppercase; letter-spacing: 3px; color: #0f172a; padding-bottom: 12px; margin-bottom: 18px; border-bottom: 2px solid #d4af37; display: flex; align-items: center; gap: 12px; }
-.gold-icon { color: #d4af37; font-size: 14px; }
-.profile-elegant { font-size: 11pt; line-height: 1.9; color: #374151; font-style: italic; padding: 25px; background: linear-gradient(135deg, #fffbeb, #fef3c7); border-left: 3px solid #d4af37; }
-.exp-item { margin-bottom: 25px; padding-left: 20px; border-left: 2px solid #e5e7eb; }
-.exp-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
-.exp-title { font-size: 12pt; font-weight: bold; color: #0f172a; }
-.exp-date { font-size: 9pt; color: #d4af37; background: #fef3c7; padding: 4px 14px; border: 1px solid #d4af37; }
-.exp-company { font-size: 10.5pt; color: #d4af37; font-weight: 600; margin-bottom: 8px; }
-.exp-desc { font-size: 10pt; color: #4b5563; line-height: 1.7; }
-.skills-elegant { display: flex; flex-wrap: wrap; gap: 10px; }
-.skill-gold { background: #fffbeb; color: #92400e; padding: 8px 18px; border: 1px solid #d4af37; font-size: 9.5pt; letter-spacing: 0.5px; }
-.two-col { display: flex; gap: 40px; }
-.col { flex: 1; }
-.edu-elegant { padding: 18px; background: #fefce8; margin-bottom: 15px; }
-.edu-degree { font-weight: bold; color: #0f172a; font-size: 11pt; margin-bottom: 3px; }
-.edu-school { color: #d4af37; font-size: 10pt; }
-.edu-date { color: #6b7280; font-size: 9pt; margin-top: 5px; }
-.lang-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #fde68a; }
-.lang-name { font-weight: 600; color: #0f172a; }
-.lang-level { color: #d4af37; font-size: 9.5pt; }
-.footer { text-align: center; padding: 25px; color: #9ca3af; font-size: 9pt; border-top: 1px solid #e5e7eb; font-style: italic; }
-@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@page { margin: 0cm; size: A4; }
+body { font-family: Georgia, 'Times New Roman', serif; margin: 0; padding: 0; background: #fffbeb; color: #1c1917; }
+table { border-collapse: collapse; }
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="header-content">
-    <div class="name">[DITT FULLSTÄNDIGA NAMN]</div>
-    <div class="title">[Din Professionella Titel]</div>
-    <div class="contact-line">
-      <span>📧 [email@företag.se]</span>
-      <span>📱 [070-123 45 67]</span>
-      <span>📍 [Stockholm, Sverige]</span>
-    </div>
-  </div>
-</div>
-<div class="gold-bar"></div>
 
-<div class="content">
-  <div class="section">
-    <div class="section-title"><span class="gold-icon">✦</span> Professionell Profil</div>
-    <div class="profile-elegant">
-      [Skriv en elegant och professionell sammanfattning. Fokusera på din ledarskapserfarenhet, strategiska kompetens och de resultat du har åstadkommit under din karriär. Håll tonen sofistikerad men personlig.]
-    </div>
-  </div>
+<!-- HEADER -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0f172a;">
+<tr><td style="padding: 40px 50px; color: #f8fafc;">
+<p style="font-size: 32pt; font-weight: normal; letter-spacing: 3px; margin: 0 0 8px 0;">[DITT FULLSTÄNDIGA NAMN]</p>
+<p style="font-size: 13pt; font-style: italic; color: #d4af37; letter-spacing: 1px; margin: 0 0 18px 0;">[Din Professionella Titel]</p>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td style="font-size: 10pt; color: #94a3b8; padding-right: 30px;">📧 [email@företag.se]</td>
+<td style="font-size: 10pt; color: #94a3b8; padding-right: 30px;">📱 [070-123 45 67]</td>
+<td style="font-size: 10pt; color: #94a3b8;">📍 [Stockholm, Sverige]</td>
+</tr>
+</table>
+</td></tr>
+</table>
 
-  <div class="section">
-    <div class="section-title"><span class="gold-icon">✦</span> Professionell Erfarenhet</div>
-    <div class="exp-item">
-      <div class="exp-header">
-        <span class="exp-title">[Senior Titel / Chef]</span>
-        <span class="exp-date">[År] - Nuvarande</span>
-      </div>
-      <div class="exp-company">[Företagsnamn], [Stad]</div>
-      <div class="exp-desc">
-        • [Strategiskt initiativ du ledde och resultatet]<br>
-        • [Ledarskapsprestation med mätbara resultat]<br>
-        • [Affärspåverkan eller förändring du drev]
-      </div>
-    </div>
-    <div class="exp-item">
-      <div class="exp-header">
-        <span class="exp-title">[Tidigare Seniorposition]</span>
-        <span class="exp-date">[År] - [År]</span>
-      </div>
-      <div class="exp-company">[Tidigare Företag], [Stad]</div>
-      <div class="exp-desc">• [Betydande bidrag och resultat]</div>
-    </div>
-  </div>
+<!-- GOLD BAR -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="height: 5px; background-color: #d4af37;"></td></tr>
+</table>
 
-  <div class="section">
-    <div class="section-title"><span class="gold-icon">✦</span> Kärnkompetenser</div>
-    <div class="skills-elegant">
-      <span class="skill-gold">[Strategisk Planering]</span>
-      <span class="skill-gold">[Ledarskap]</span>
-      <span class="skill-gold">[Affärsutveckling]</span>
-      <span class="skill-gold">[Förhandling]</span>
-      <span class="skill-gold">[Projektledning]</span>
-      <span class="skill-gold">[Förändringsledning]</span>
-    </div>
-  </div>
+<!-- CONTENT -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fffbeb;">
+<tr><td style="padding: 35px 50px;">
 
-  <div class="two-col">
-    <div class="col">
-      <div class="section">
-        <div class="section-title"><span class="gold-icon">✦</span> Utbildning</div>
-        <div class="edu-elegant">
-          <div class="edu-degree">[Examen, t.ex. MBA eller Civilingenjör]</div>
-          <div class="edu-school">[Universitet/Högskola]</div>
-          <div class="edu-date">[År]</div>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="section">
-        <div class="section-title"><span class="gold-icon">✦</span> Språk</div>
-        <div class="lang-row"><span class="lang-name">Svenska</span><span class="lang-level">Modersmål</span></div>
-        <div class="lang-row"><span class="lang-name">Engelska</span><span class="lang-level">Flytande</span></div>
-        <div class="lang-row"><span class="lang-name">[Annat]</span><span class="lang-level">[Nivå]</span></div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Profile Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr><td style="font-size: 11pt; text-transform: uppercase; letter-spacing: 3px; color: #0f172a; padding-bottom: 12px; border-bottom: 2px solid #d4af37;">
+<span style="color: #d4af37;">✦</span> &nbsp; Professionell Profil
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr><td style="font-size: 11pt; line-height: 1.9; color: #374151; font-style: italic; padding: 22px; background-color: #fef3c7; border-left: 3px solid #d4af37;">
+[Skriv en elegant och professionell sammanfattning. Fokusera på din ledarskapserfarenhet, strategiska kompetens och de resultat du har åstadkommit under din karriär. Håll tonen sofistikerad men personlig.]
+</td></tr>
+</table>
 
-<div class="footer">CV skapat med mallen "${template.name}"</div>
+<!-- Experience Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr><td style="font-size: 11pt; text-transform: uppercase; letter-spacing: 3px; color: #0f172a; padding-bottom: 12px; border-bottom: 2px solid #d4af37;">
+<span style="color: #d4af37;">✦</span> &nbsp; Professionell Erfarenhet
+</td></tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px; border-left: 2px solid #e5e7eb; padding-left: 20px;">
+<tr><td style="padding-left: 18px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-size: 12pt; font-weight: bold; color: #0f172a;">[Senior Titel / Chef]</span></td>
+<td align="right"><span style="font-size: 9pt; color: #d4af37; background-color: #fef3c7; padding: 4px 14px; border: 1px solid #d4af37;">[År] - Nuvarande</span></td>
+</tr>
+</table>
+<p style="font-size: 10.5pt; color: #d4af37; font-weight: 600; margin: 6px 0 8px 0;">[Företagsnamn], [Stad]</p>
+<p style="font-size: 10pt; color: #4b5563; line-height: 1.7; margin: 0;">
+• [Strategiskt initiativ du ledde och resultatet]<br>
+• [Ledarskapsprestation med mätbara resultat]<br>
+• [Affärspåverkan eller förändring du drev]
+</p>
+</td></tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px; border-left: 2px solid #e5e7eb; padding-left: 20px;">
+<tr><td style="padding-left: 18px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-size: 12pt; font-weight: bold; color: #0f172a;">[Tidigare Seniorposition]</span></td>
+<td align="right"><span style="font-size: 9pt; color: #d4af37; background-color: #fef3c7; padding: 4px 14px; border: 1px solid #d4af37;">[År] - [År]</span></td>
+</tr>
+</table>
+<p style="font-size: 10.5pt; color: #d4af37; font-weight: 600; margin: 6px 0 8px 0;">[Tidigare Företag], [Stad]</p>
+<p style="font-size: 10pt; color: #4b5563; line-height: 1.7; margin: 0;">• [Betydande bidrag och resultat]</p>
+</td></tr>
+</table>
+
+<!-- Skills Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr><td style="font-size: 11pt; text-transform: uppercase; letter-spacing: 3px; color: #0f172a; padding-bottom: 12px; border-bottom: 2px solid #d4af37;">
+<span style="color: #d4af37;">✦</span> &nbsp; Kärnkompetenser
+</td></tr>
+</table>
+<p style="margin-bottom: 30px; line-height: 2.2;">
+<span style="background-color: #fffbeb; color: #92400e; padding: 8px 18px; border: 1px solid #d4af37; font-size: 9.5pt; letter-spacing: 0.5px; margin: 3px;">[Strategisk Planering]</span>
+<span style="background-color: #fffbeb; color: #92400e; padding: 8px 18px; border: 1px solid #d4af37; font-size: 9.5pt; letter-spacing: 0.5px; margin: 3px;">[Ledarskap]</span>
+<span style="background-color: #fffbeb; color: #92400e; padding: 8px 18px; border: 1px solid #d4af37; font-size: 9.5pt; letter-spacing: 0.5px; margin: 3px;">[Affärsutveckling]</span>
+<span style="background-color: #fffbeb; color: #92400e; padding: 8px 18px; border: 1px solid #d4af37; font-size: 9.5pt; letter-spacing: 0.5px; margin: 3px;">[Förhandling]</span>
+<span style="background-color: #fffbeb; color: #92400e; padding: 8px 18px; border: 1px solid #d4af37; font-size: 9.5pt; letter-spacing: 0.5px; margin: 3px;">[Projektledning]</span>
+</p>
+
+<!-- Education & Languages -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr><td style="font-size: 11pt; text-transform: uppercase; letter-spacing: 3px; color: #0f172a; padding-bottom: 12px; border-bottom: 2px solid #d4af37;">
+<span style="color: #d4af37;">✦</span> &nbsp; Utbildning
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding: 15px; background-color: #fefce8;">
+<p style="font-weight: bold; color: #0f172a; font-size: 11pt; margin: 0 0 3px 0;">[Examen, t.ex. MBA]</p>
+<p style="color: #d4af37; font-size: 10pt; margin: 0 0 5px 0;">[Universitet/Högskola]</p>
+<p style="color: #6b7280; font-size: 9pt; margin: 0;">[År]</p>
+</td></tr>
+</table>
+</td>
+<td width="4%"></td>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr><td style="font-size: 11pt; text-transform: uppercase; letter-spacing: 3px; color: #0f172a; padding-bottom: 12px; border-bottom: 2px solid #d4af37;">
+<span style="color: #d4af37;">✦</span> &nbsp; Språk
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding: 10px 0; border-bottom: 1px solid #fde68a;">
+<table width="100%"><tr>
+<td style="font-weight: 600; color: #0f172a;">Svenska</td>
+<td align="right" style="color: #d4af37; font-size: 9.5pt;">Modersmål</td>
+</tr></table>
+</td></tr>
+<tr><td style="padding: 10px 0; border-bottom: 1px solid #fde68a;">
+<table width="100%"><tr>
+<td style="font-weight: 600; color: #0f172a;">Engelska</td>
+<td align="right" style="color: #d4af37; font-size: 9.5pt;">Flytande</td>
+</tr></table>
+</td></tr>
+<tr><td style="padding: 10px 0; border-bottom: 1px solid #fde68a;">
+<table width="100%"><tr>
+<td style="font-weight: 600; color: #0f172a;">[Annat]</td>
+<td align="right" style="color: #d4af37; font-size: 9.5pt;">[Nivå]</td>
+</tr></table>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+
+</td></tr>
+</table>
+
+<!-- Footer -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fffbeb;">
+<tr><td style="text-align: center; padding: 20px; color: #9ca3af; font-size: 9pt; font-style: italic; border-top: 1px solid #e5e7eb;">
+CV skapat med mallen "${template.name}"
+</td></tr>
+</table>
 </body>
 </html>`
 
-  // MINIMAL/SCANDINAVIAN LAYOUT - Clean, airy, focused
+  // MINIMAL/SCANDINAVIAN LAYOUT - Clean, airy, focused (Word-compatible)
   const generateMinimalTemplate = (template: CVTemplate, primaryColor: string) => `
 <!DOCTYPE html>
-<html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>${template.name} - CV Mall</title>
+<!--[if gte mso 9]>
+<xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml>
+<![endif]-->
 <style>
-@page { margin: 30px 40px; size: A4; }
-body { font-family: 'Segoe UI', -apple-system, Arial, sans-serif; margin: 0; padding: 40px 50px; background: #ffffff; color: #171717; line-height: 1.7; font-size: 10.5pt; }
-.header { text-align: center; margin-bottom: 40px; padding-bottom: 30px; border-bottom: 1px solid #e5e5e5; }
-.name { font-size: 28pt; font-weight: 300; letter-spacing: 4px; color: #171717; margin-bottom: 8px; text-transform: uppercase; }
-.title { font-size: 11pt; color: #737373; letter-spacing: 2px; margin-bottom: 20px; }
-.contact-minimal { display: flex; justify-content: center; gap: 30px; font-size: 9.5pt; color: #525252; }
-.contact-minimal span { display: flex; align-items: center; gap: 6px; }
-.section { margin-bottom: 35px; }
-.section-title { font-size: 9pt; text-transform: uppercase; letter-spacing: 3px; color: #a3a3a3; margin-bottom: 15px; font-weight: 600; }
-.profile-minimal { font-size: 10.5pt; color: #404040; line-height: 1.9; max-width: 600px; }
-.exp-minimal { margin-bottom: 25px; }
-.exp-row { display: flex; gap: 30px; }
-.exp-date-col { width: 120px; flex-shrink: 0; font-size: 9pt; color: #737373; padding-top: 3px; }
-.exp-content { flex: 1; }
-.exp-title { font-weight: 600; color: #171717; font-size: 11pt; margin-bottom: 2px; }
-.exp-company { color: #525252; font-size: 10pt; margin-bottom: 8px; }
-.exp-desc { color: #737373; font-size: 9.5pt; line-height: 1.6; }
-.skills-minimal { display: flex; flex-wrap: wrap; gap: 8px; }
-.skill-plain { background: #f5f5f5; color: #404040; padding: 6px 14px; font-size: 9pt; }
-.two-col { display: flex; gap: 50px; }
-.col { flex: 1; }
-.edu-minimal { margin-bottom: 15px; }
-.edu-degree { font-weight: 600; color: #171717; font-size: 10pt; }
-.edu-school { color: #525252; font-size: 9.5pt; }
-.edu-date { color: #a3a3a3; font-size: 9pt; margin-top: 3px; }
-.lang-minimal { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f5f5f5; }
-.footer { margin-top: 50px; text-align: center; font-size: 8pt; color: #d4d4d4; }
+@page { margin: 2.5cm 3cm; size: A4; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; margin: 0; padding: 0; background: #ffffff; color: #171717; line-height: 1.7; font-size: 10.5pt; }
+table { border-collapse: collapse; }
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="name">[Ditt Namn]</div>
-  <div class="title">[Din Titel]</div>
-  <div class="contact-minimal">
-    <span>📧 [email@exempel.se]</span>
-    <span>📱 [070-123 45 67]</span>
-    <span>📍 [Stockholm]</span>
-  </div>
-</div>
 
-<div class="section">
-  <div class="section-title">Profil</div>
-  <div class="profile-minimal">
-    [Skriv en rak och tydlig sammanfattning. Fokusera på det viktigaste - vem du är professionellt och vad du söker. Håll det kort och koncist.]
-  </div>
-</div>
+<!-- HEADER -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 35px; padding-bottom: 25px; border-bottom: 1px solid #e5e5e5;">
+<tr><td align="center">
+<p style="font-size: 26pt; font-weight: 300; letter-spacing: 4px; color: #171717; margin: 0 0 8px 0; text-transform: uppercase;">[Ditt Namn]</p>
+<p style="font-size: 11pt; color: #737373; letter-spacing: 2px; margin: 0 0 18px 0;">[Din Titel]</p>
+<table cellpadding="0" cellspacing="0" align="center">
+<tr>
+<td style="font-size: 9.5pt; color: #525252; padding: 0 15px;">📧 [email@exempel.se]</td>
+<td style="font-size: 9.5pt; color: #737373;">•</td>
+<td style="font-size: 9.5pt; color: #525252; padding: 0 15px;">📱 [070-123 45 67]</td>
+<td style="font-size: 9.5pt; color: #737373;">•</td>
+<td style="font-size: 9.5pt; color: #525252; padding: 0 15px;">📍 [Stockholm]</td>
+</tr>
+</table>
+</td></tr>
+</table>
 
-<div class="section">
-  <div class="section-title">Erfarenhet</div>
-  <div class="exp-minimal">
-    <div class="exp-row">
-      <div class="exp-date-col">[År] — Nu</div>
-      <div class="exp-content">
-        <div class="exp-title">[Jobbtitel]</div>
-        <div class="exp-company">[Företag], [Stad]</div>
-        <div class="exp-desc">[Kortfattad beskrivning av dina viktigaste uppgifter och resultat]</div>
-      </div>
-    </div>
-  </div>
-  <div class="exp-minimal">
-    <div class="exp-row">
-      <div class="exp-date-col">[År] — [År]</div>
-      <div class="exp-content">
-        <div class="exp-title">[Tidigare Titel]</div>
-        <div class="exp-company">[Tidigare Företag]</div>
-        <div class="exp-desc">[Beskrivning av roll och resultat]</div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Profile Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr><td>
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 3px; color: #a3a3a3; margin: 0 0 12px 0; font-weight: 600;">Profil</p>
+<p style="font-size: 10.5pt; color: #404040; line-height: 1.9; margin: 0;">
+[Skriv en rak och tydlig sammanfattning. Fokusera på det viktigaste - vem du är professionellt och vad du söker. Håll det kort och koncist.]
+</p>
+</td></tr>
+</table>
 
-<div class="section">
-  <div class="section-title">Kompetenser</div>
-  <div class="skills-minimal">
-    <span class="skill-plain">[Kompetens 1]</span>
-    <span class="skill-plain">[Kompetens 2]</span>
-    <span class="skill-plain">[Kompetens 3]</span>
-    <span class="skill-plain">[Kompetens 4]</span>
-    <span class="skill-plain">[Kompetens 5]</span>
-  </div>
-</div>
+<!-- Experience Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr><td>
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 3px; color: #a3a3a3; margin: 0 0 15px 0; font-weight: 600;">Erfarenhet</p>
+</td></tr>
+</table>
 
-<div class="two-col">
-  <div class="col">
-    <div class="section">
-      <div class="section-title">Utbildning</div>
-      <div class="edu-minimal">
-        <div class="edu-degree">[Examen / Program]</div>
-        <div class="edu-school">[Lärosäte]</div>
-        <div class="edu-date">[År] — [År]</div>
-      </div>
-    </div>
-  </div>
-  <div class="col">
-    <div class="section">
-      <div class="section-title">Språk</div>
-      <div class="lang-minimal"><span>Svenska</span><span>Modersmål</span></div>
-      <div class="lang-minimal"><span>Engelska</span><span>Flytande</span></div>
-    </div>
-  </div>
-</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+<tr>
+<td width="110" valign="top" style="font-size: 9pt; color: #737373; padding-top: 3px; text-align: right; padding-right: 25px;">[År] — Nu</td>
+<td valign="top">
+<p style="font-weight: 600; color: #171717; font-size: 11pt; margin: 0 0 2px 0;">[Jobbtitel]</p>
+<p style="color: #525252; font-size: 10pt; margin: 0 0 8px 0;">[Företag], [Stad]</p>
+<p style="color: #737373; font-size: 9.5pt; line-height: 1.6; margin: 0;">[Kortfattad beskrivning av dina viktigaste uppgifter och resultat]</p>
+</td>
+</tr>
+</table>
 
-<div class="footer">CV skapat med ${template.name}</div>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr>
+<td width="110" valign="top" style="font-size: 9pt; color: #737373; padding-top: 3px; text-align: right; padding-right: 25px;">[År] — [År]</td>
+<td valign="top">
+<p style="font-weight: 600; color: #171717; font-size: 11pt; margin: 0 0 2px 0;">[Tidigare Titel]</p>
+<p style="color: #525252; font-size: 10pt; margin: 0 0 8px 0;">[Tidigare Företag]</p>
+<p style="color: #737373; font-size: 9.5pt; line-height: 1.6; margin: 0;">[Beskrivning av roll och resultat]</p>
+</td>
+</tr>
+</table>
+
+<!-- Skills Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 30px;">
+<tr><td>
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 3px; color: #a3a3a3; margin: 0 0 12px 0; font-weight: 600;">Kompetenser</p>
+<p style="margin: 0; line-height: 2.2;">
+<span style="background-color: #f5f5f5; color: #404040; padding: 6px 14px; font-size: 9pt; margin: 3px;">[Kompetens 1]</span>
+<span style="background-color: #f5f5f5; color: #404040; padding: 6px 14px; font-size: 9pt; margin: 3px;">[Kompetens 2]</span>
+<span style="background-color: #f5f5f5; color: #404040; padding: 6px 14px; font-size: 9pt; margin: 3px;">[Kompetens 3]</span>
+<span style="background-color: #f5f5f5; color: #404040; padding: 6px 14px; font-size: 9pt; margin: 3px;">[Kompetens 4]</span>
+<span style="background-color: #f5f5f5; color: #404040; padding: 6px 14px; font-size: 9pt; margin: 3px;">[Kompetens 5]</span>
+</p>
+</td></tr>
+</table>
+
+<!-- Education & Languages -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td width="48%" valign="top">
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 3px; color: #a3a3a3; margin: 0 0 12px 0; font-weight: 600;">Utbildning</p>
+<p style="font-weight: 600; color: #171717; font-size: 10pt; margin: 0 0 2px 0;">[Examen / Program]</p>
+<p style="color: #525252; font-size: 9.5pt; margin: 0 0 3px 0;">[Lärosäte]</p>
+<p style="color: #a3a3a3; font-size: 9pt; margin: 0;">[År] — [År]</p>
+</td>
+<td width="4%"></td>
+<td width="48%" valign="top">
+<p style="font-size: 9pt; text-transform: uppercase; letter-spacing: 3px; color: #a3a3a3; margin: 0 0 12px 0; font-weight: 600;">Språk</p>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding: 8px 0; border-bottom: 1px solid #f5f5f5;">
+<table width="100%"><tr>
+<td>Svenska</td>
+<td align="right" style="color: #737373;">Modersmål</td>
+</tr></table>
+</td></tr>
+<tr><td style="padding: 8px 0; border-bottom: 1px solid #f5f5f5;">
+<table width="100%"><tr>
+<td>Engelska</td>
+<td align="right" style="color: #737373;">Flytande</td>
+</tr></table>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+
+<!-- Footer -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 45px;">
+<tr><td align="center" style="font-size: 8pt; color: #d4d4d4;">
+CV skapat med ${template.name}
+</td></tr>
+</table>
 </body>
 </html>`
 
-  // TECH/MODERN LAYOUT - Clean tech aesthetic
+  // TECH/MODERN LAYOUT - Clean tech aesthetic (Word-compatible)
   const generateTechTemplate = (template: CVTemplate, primaryColor: string, secondaryColor: string) => `
 <!DOCTYPE html>
-<html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>${template.name} - CV Mall</title>
+<!--[if gte mso 9]>
+<xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml>
+<![endif]-->
 <style>
-@page { margin: 0; size: A4; }
-body { font-family: 'Segoe UI', -apple-system, Arial, sans-serif; margin: 0; padding: 0; background: #f8fafc; color: #0f172a; }
-.header { background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); padding: 40px 50px; color: white; }
-.header-grid { display: flex; justify-content: space-between; align-items: flex-start; }
-.header-left { }
-.name { font-size: 28pt; font-weight: bold; margin-bottom: 5px; }
-.title { font-size: 13pt; opacity: 0.9; margin-bottom: 15px; }
-.header-right { text-align: right; font-size: 9.5pt; opacity: 0.9; line-height: 2; }
-.tech-bar { background: #0f172a; padding: 15px 50px; display: flex; gap: 15px; flex-wrap: wrap; }
-.tech-tag { background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); color: white; padding: 6px 16px; border-radius: 20px; font-size: 9pt; font-weight: 500; }
-.content { padding: 35px 50px; background: white; margin: 0; }
-.section { margin-bottom: 30px; }
-.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
-.section-icon { width: 36px; height: 36px; background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: white; font-size: 16px; }
-.section-title { font-size: 12pt; font-weight: bold; color: #0f172a; text-transform: uppercase; letter-spacing: 1px; }
-.profile-tech { font-size: 10.5pt; color: #475569; line-height: 1.8; padding: 20px; background: #f8fafc; border-radius: 12px; border-left: 4px solid ${primaryColor}; }
-.exp-card { background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 15px; }
-.exp-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-.exp-title { font-weight: bold; font-size: 11pt; color: #0f172a; }
-.exp-date { font-size: 8.5pt; color: white; background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); padding: 4px 12px; border-radius: 15px; }
-.exp-company { color: ${primaryColor}; font-weight: 600; font-size: 10pt; margin-bottom: 10px; }
-.exp-desc { font-size: 9.5pt; color: #64748b; line-height: 1.6; }
-.exp-stack { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
-.stack-tag { background: white; color: #475569; padding: 3px 10px; border-radius: 4px; font-size: 8pt; border: 1px solid #e2e8f0; }
-.skills-section { background: #f8fafc; padding: 25px; border-radius: 12px; }
-.skill-category { margin-bottom: 18px; }
-.skill-label { font-size: 9pt; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
-.skill-bars { }
-.skill-item { display: flex; align-items: center; gap: 15px; margin-bottom: 8px; }
-.skill-name { width: 120px; font-size: 9.5pt; color: #0f172a; }
-.skill-bar { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
-.skill-fill { height: 100%; background: linear-gradient(90deg, ${primaryColor}, ${secondaryColor}); border-radius: 4px; }
-.two-col { display: flex; gap: 30px; }
-.col { flex: 1; }
-.edu-tech { background: #f8fafc; padding: 15px; border-radius: 10px; margin-bottom: 12px; }
-.edu-degree { font-weight: bold; color: #0f172a; font-size: 10pt; }
-.edu-school { color: ${primaryColor}; font-size: 9.5pt; }
-.edu-date { color: #94a3b8; font-size: 9pt; margin-top: 4px; }
-@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@page { margin: 0cm; size: A4; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; margin: 0; padding: 0; background: #f8fafc; color: #0f172a; }
+table { border-collapse: collapse; }
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="header-grid">
-    <div class="header-left">
-      <div class="name">[Ditt Namn]</div>
-      <div class="title">[Din Tech-titel, t.ex. Full-Stack Developer]</div>
-    </div>
-    <div class="header-right">
-      📧 [email@exempel.se]<br>
-      📱 [070-123 45 67]<br>
-      💻 [github.com/dittnamn]<br>
-      🔗 [linkedin.com/in/dittnamn]
-    </div>
-  </div>
-</div>
 
-<div class="tech-bar">
-  <span class="tech-tag">[JavaScript]</span>
-  <span class="tech-tag">[React]</span>
-  <span class="tech-tag">[Node.js]</span>
-  <span class="tech-tag">[TypeScript]</span>
-  <span class="tech-tag">[Python]</span>
-  <span class="tech-tag">[AWS]</span>
-</div>
+<!-- HEADER -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${primaryColor};">
+<tr><td style="padding: 35px 50px; color: white;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td valign="top">
+<p style="font-size: 26pt; font-weight: bold; margin: 0 0 5px 0;">[Ditt Namn]</p>
+<p style="font-size: 13pt; opacity: 0.9; margin: 0;">[Din Tech-titel, t.ex. Full-Stack Developer]</p>
+</td>
+<td valign="top" align="right" style="font-size: 9.5pt; opacity: 0.9; line-height: 2;">
+📧 [email@exempel.se]<br>
+📱 [070-123 45 67]<br>
+💻 [github.com/dittnamn]<br>
+🔗 [linkedin.com/in/dittnamn]
+</td>
+</tr>
+</table>
+</td></tr>
+</table>
 
-<div class="content">
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon">👨‍💻</div>
-      <div class="section-title">Om Mig</div>
-    </div>
-    <div class="profile-tech">
-      [Beskriv din passion för teknologi och vad som driver dig som utvecklare. Nämn dina specialområden och vad du söker i din nästa roll. Var konkret med teknologier och metoder du behärskar.]
-    </div>
-  </div>
+<!-- TECH BAR -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: #0f172a;">
+<tr><td style="padding: 15px 50px;">
+<span style="background-color: ${primaryColor}; color: white; padding: 6px 16px; font-size: 9pt; font-weight: 500; margin-right: 10px;">[JavaScript]</span>
+<span style="background-color: ${secondaryColor}; color: white; padding: 6px 16px; font-size: 9pt; font-weight: 500; margin-right: 10px;">[React]</span>
+<span style="background-color: ${primaryColor}; color: white; padding: 6px 16px; font-size: 9pt; font-weight: 500; margin-right: 10px;">[Node.js]</span>
+<span style="background-color: ${secondaryColor}; color: white; padding: 6px 16px; font-size: 9pt; font-weight: 500; margin-right: 10px;">[TypeScript]</span>
+<span style="background-color: ${primaryColor}; color: white; padding: 6px 16px; font-size: 9pt; font-weight: 500; margin-right: 10px;">[Python]</span>
+<span style="background-color: ${secondaryColor}; color: white; padding: 6px 16px; font-size: 9pt; font-weight: 500;">[AWS]</span>
+</td></tr>
+</table>
 
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon">💼</div>
-      <div class="section-title">Erfarenhet</div>
-    </div>
-    <div class="exp-card">
-      <div class="exp-top">
-        <span class="exp-title">[Senior Developer / Tech Lead]</span>
-        <span class="exp-date">[År] - Nu</span>
-      </div>
-      <div class="exp-company">[Tech-företag], [Stad]</div>
-      <div class="exp-desc">
-        • [Tekniskt projekt du ledde eller bidrog till]<br>
-        • [Prestation med mätbart resultat, t.ex. "Ökade prestanda med 40%"]<br>
-        • [Arkitekturbeslut eller innovation]
-      </div>
-      <div class="exp-stack">
-        <span class="stack-tag">[React]</span>
-        <span class="stack-tag">[Node.js]</span>
-        <span class="stack-tag">[PostgreSQL]</span>
-        <span class="stack-tag">[Docker]</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div class="exp-top">
-        <span class="exp-title">[Tidigare Developer-roll]</span>
-        <span class="exp-date">[År] - [År]</span>
-      </div>
-      <div class="exp-company">[Tidigare Företag]</div>
-      <div class="exp-desc">• [Vad du byggde eller förbättrade]</div>
-      <div class="exp-stack">
-        <span class="stack-tag">[Tech]</span>
-        <span class="stack-tag">[Stack]</span>
-      </div>
-    </div>
-  </div>
+<!-- CONTENT -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: white;">
+<tr><td style="padding: 30px 50px;">
 
-  <div class="section">
-    <div class="section-header">
-      <div class="section-icon">⚡</div>
-      <div class="section-title">Teknisk Kompetens</div>
-    </div>
-    <div class="skills-section">
-      <div class="skill-category">
-        <div class="skill-label">Frontend</div>
-        <div class="skill-item"><span class="skill-name">[React]</span><div class="skill-bar"><div class="skill-fill" style="width: 90%"></div></div></div>
-        <div class="skill-item"><span class="skill-name">[TypeScript]</span><div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div></div>
-      </div>
-      <div class="skill-category">
-        <div class="skill-label">Backend</div>
-        <div class="skill-item"><span class="skill-name">[Node.js]</span><div class="skill-bar"><div class="skill-fill" style="width: 85%"></div></div></div>
-        <div class="skill-item"><span class="skill-name">[Python]</span><div class="skill-bar"><div class="skill-fill" style="width: 75%"></div></div></div>
-      </div>
-    </div>
-  </div>
+<!-- About Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+<tr>
+<td width="40" valign="middle" style="background-color: ${primaryColor}; padding: 10px; text-align: center; color: white; font-size: 16px;">👨‍💻</td>
+<td style="padding-left: 12px; font-size: 12pt; font-weight: bold; color: #0f172a; text-transform: uppercase; letter-spacing: 1px;">Om Mig</td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+<tr><td style="background-color: #f8fafc; padding: 20px; border-left: 4px solid ${primaryColor}; font-size: 10.5pt; color: #475569; line-height: 1.8;">
+[Beskriv din passion för teknologi och vad som driver dig som utvecklare. Nämn dina specialområden och vad du söker i din nästa roll. Var konkret med teknologier och metoder du behärskar.]
+</td></tr>
+</table>
 
-  <div class="two-col">
-    <div class="col">
-      <div class="section">
-        <div class="section-header">
-          <div class="section-icon">🎓</div>
-          <div class="section-title">Utbildning</div>
-        </div>
-        <div class="edu-tech">
-          <div class="edu-degree">[Dataingenjör / CS Degree]</div>
-          <div class="edu-school">[Universitet/Högskola]</div>
-          <div class="edu-date">[År] - [År]</div>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="section">
-        <div class="section-header">
-          <div class="section-icon">🌍</div>
-          <div class="section-title">Språk</div>
-        </div>
-        <div class="edu-tech">
-          <div class="edu-degree">Svenska</div>
-          <div class="edu-school">Modersmål</div>
-        </div>
-        <div class="edu-tech">
-          <div class="edu-degree">Engelska</div>
-          <div class="edu-school">Flytande (dagligt i arbetet)</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Experience Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr>
+<td width="40" valign="middle" style="background-color: ${primaryColor}; padding: 10px; text-align: center; color: white; font-size: 16px;">💼</td>
+<td style="padding-left: 12px; font-size: 12pt; font-weight: bold; color: #0f172a; text-transform: uppercase; letter-spacing: 1px;">Erfarenhet</td>
+</tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr><td style="background-color: #f8fafc; padding: 18px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-weight: bold; font-size: 11pt; color: #0f172a;">[Senior Developer / Tech Lead]</span></td>
+<td align="right"><span style="font-size: 8.5pt; color: white; background-color: ${primaryColor}; padding: 4px 12px;">[År] - Nu</span></td>
+</tr>
+</table>
+<p style="color: ${primaryColor}; font-weight: 600; font-size: 10pt; margin: 6px 0 10px 0;">[Tech-företag], [Stad]</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0 0 10px 0;">
+• [Tekniskt projekt du ledde eller bidrog till]<br>
+• [Prestation med mätbart resultat, t.ex. "Ökade prestanda med 40%"]<br>
+• [Arkitekturbeslut eller innovation]
+</p>
+<p style="margin: 0;">
+<span style="background-color: white; color: #475569; padding: 3px 10px; font-size: 8pt; border: 1px solid #e2e8f0; margin-right: 5px;">[React]</span>
+<span style="background-color: white; color: #475569; padding: 3px 10px; font-size: 8pt; border: 1px solid #e2e8f0; margin-right: 5px;">[Node.js]</span>
+<span style="background-color: white; color: #475569; padding: 3px 10px; font-size: 8pt; border: 1px solid #e2e8f0; margin-right: 5px;">[PostgreSQL]</span>
+<span style="background-color: white; color: #475569; padding: 3px 10px; font-size: 8pt; border: 1px solid #e2e8f0;">[Docker]</span>
+</p>
+</td></tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+<tr><td style="background-color: #f8fafc; padding: 18px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-weight: bold; font-size: 11pt; color: #0f172a;">[Tidigare Developer-roll]</span></td>
+<td align="right"><span style="font-size: 8.5pt; color: white; background-color: ${secondaryColor}; padding: 4px 12px;">[År] - [År]</span></td>
+</tr>
+</table>
+<p style="color: ${primaryColor}; font-weight: 600; font-size: 10pt; margin: 6px 0 10px 0;">[Tidigare Företag]</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0 0 10px 0;">• [Vad du byggde eller förbättrade]</p>
+<p style="margin: 0;">
+<span style="background-color: white; color: #475569; padding: 3px 10px; font-size: 8pt; border: 1px solid #e2e8f0; margin-right: 5px;">[Tech]</span>
+<span style="background-color: white; color: #475569; padding: 3px 10px; font-size: 8pt; border: 1px solid #e2e8f0;">[Stack]</span>
+</p>
+</td></tr>
+</table>
+
+<!-- Skills Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr>
+<td width="40" valign="middle" style="background-color: ${primaryColor}; padding: 10px; text-align: center; color: white; font-size: 16px;">⚡</td>
+<td style="padding-left: 12px; font-size: 12pt; font-weight: bold; color: #0f172a; text-transform: uppercase; letter-spacing: 1px;">Teknisk Kompetens</td>
+</tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px; background-color: #f8fafc; padding: 20px;">
+<tr><td style="padding: 20px;">
+<!-- Frontend -->
+<p style="font-size: 9pt; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0;">Frontend</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 15px;">
+<tr>
+<td width="100" style="font-size: 9.5pt; color: #0f172a;">[React]</td>
+<td><table width="100%" cellpadding="0" cellspacing="0"><tr>
+<td width="90%" style="background-color: #e2e8f0; height: 8px;"><div style="width: 90%; height: 8px; background-color: ${primaryColor};"></div></td>
+<td width="10%"></td>
+</tr></table></td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px;">
+<tr>
+<td width="100" style="font-size: 9.5pt; color: #0f172a;">[TypeScript]</td>
+<td><table width="100%" cellpadding="0" cellspacing="0"><tr>
+<td width="85%" style="background-color: #e2e8f0; height: 8px;"><div style="width: 85%; height: 8px; background-color: ${primaryColor};"></div></td>
+<td width="15%"></td>
+</tr></table></td>
+</tr>
+</table>
+<!-- Backend -->
+<p style="font-size: 9pt; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin: 0 0 10px 0;">Backend</p>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 8px;">
+<tr>
+<td width="100" style="font-size: 9.5pt; color: #0f172a;">[Node.js]</td>
+<td><table width="100%" cellpadding="0" cellspacing="0"><tr>
+<td width="85%" style="background-color: #e2e8f0; height: 8px;"><div style="width: 85%; height: 8px; background-color: ${secondaryColor};"></div></td>
+<td width="15%"></td>
+</tr></table></td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td width="100" style="font-size: 9.5pt; color: #0f172a;">[Python]</td>
+<td><table width="100%" cellpadding="0" cellspacing="0"><tr>
+<td width="75%" style="background-color: #e2e8f0; height: 8px;"><div style="width: 75%; height: 8px; background-color: ${secondaryColor};"></div></td>
+<td width="25%"></td>
+</tr></table></td>
+</tr>
+</table>
+</td></tr>
+</table>
+
+<!-- Education & Languages -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 12px;">
+<tr>
+<td width="40" valign="middle" style="background-color: ${primaryColor}; padding: 10px; text-align: center; color: white; font-size: 16px;">🎓</td>
+<td style="padding-left: 12px; font-size: 12pt; font-weight: bold; color: #0f172a; text-transform: uppercase; letter-spacing: 1px;">Utbildning</td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="background-color: #f8fafc; padding: 15px;">
+<p style="font-weight: bold; color: #0f172a; font-size: 10pt; margin: 0 0 2px 0;">[Dataingenjör / CS Degree]</p>
+<p style="color: ${primaryColor}; font-size: 9.5pt; margin: 0 0 4px 0;">[Universitet/Högskola]</p>
+<p style="color: #94a3b8; font-size: 9pt; margin: 0;">[År] - [År]</p>
+</td></tr>
+</table>
+</td>
+<td width="4%"></td>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 12px;">
+<tr>
+<td width="40" valign="middle" style="background-color: ${primaryColor}; padding: 10px; text-align: center; color: white; font-size: 16px;">🌍</td>
+<td style="padding-left: 12px; font-size: 12pt; font-weight: bold; color: #0f172a; text-transform: uppercase; letter-spacing: 1px;">Språk</td>
+</tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;">
+<tr><td style="background-color: #f8fafc; padding: 12px 15px;">
+<p style="font-weight: bold; color: #0f172a; font-size: 10pt; margin: 0 0 2px 0;">Svenska</p>
+<p style="color: ${primaryColor}; font-size: 9.5pt; margin: 0;">Modersmål</p>
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="background-color: #f8fafc; padding: 12px 15px;">
+<p style="font-weight: bold; color: #0f172a; font-size: 10pt; margin: 0 0 2px 0;">Engelska</p>
+<p style="color: ${primaryColor}; font-size: 9.5pt; margin: 0;">Flytande (dagligt i arbetet)</p>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+
+</td></tr>
+</table>
 </body>
 </html>`
 
-  // MODERN DEFAULT LAYOUT - Clean and professional
+  // MODERN DEFAULT LAYOUT - Clean and professional (Word-compatible)
   const generateModernTemplate = (template: CVTemplate, primaryColor: string, secondaryColor: string) => `
 <!DOCTYPE html>
-<html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <title>${template.name} - CV Mall</title>
+<!--[if gte mso 9]>
+<xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml>
+<![endif]-->
 <style>
-@page { margin: 0; size: A4; }
-body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; color: #1e293b; line-height: 1.6; font-size: 10.5pt; }
-.header { background: linear-gradient(135deg, ${primaryColor}, ${secondaryColor}); padding: 40px 50px; color: white; }
-.name { font-size: 30pt; font-weight: bold; margin-bottom: 6px; }
-.title { font-size: 14pt; opacity: 0.9; margin-bottom: 18px; }
-.contact-row { display: flex; flex-wrap: wrap; gap: 25px; font-size: 10pt; }
-.contact-item { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.15); padding: 8px 16px; border-radius: 25px; }
-.accent-bar { height: 4px; background: linear-gradient(90deg, ${primaryColor}, ${secondaryColor}, ${primaryColor}); }
-.content { padding: 35px 50px; }
-.section { margin-bottom: 30px; }
-.section-title { font-size: 12pt; font-weight: bold; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 10px; margin-bottom: 18px; border-bottom: 2px solid ${primaryColor}; display: flex; align-items: center; gap: 10px; }
-.section-icon { font-size: 16px; }
-.profile-box { background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 22px; border-radius: 12px; border-left: 4px solid ${primaryColor}; font-size: 10.5pt; color: #475569; line-height: 1.8; }
-.exp-timeline { position: relative; padding-left: 25px; }
-.exp-timeline::before { content: ''; position: absolute; left: 6px; top: 8px; bottom: 8px; width: 2px; background: #e2e8f0; }
-.exp-item { position: relative; margin-bottom: 25px; }
-.exp-dot { position: absolute; left: -22px; top: 5px; width: 12px; height: 12px; background: ${primaryColor}; border-radius: 50%; border: 3px solid white; box-shadow: 0 0 0 2px ${primaryColor}; }
-.exp-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px; }
-.exp-title { font-weight: bold; font-size: 11pt; color: #1e293b; }
-.exp-date { font-size: 8.5pt; color: ${primaryColor}; background: #eef2ff; padding: 4px 14px; border-radius: 15px; }
-.exp-company { font-size: 10pt; color: ${primaryColor}; font-weight: 600; margin-bottom: 8px; }
-.exp-desc { font-size: 9.5pt; color: #64748b; line-height: 1.6; }
-.skills-grid { display: flex; flex-wrap: wrap; gap: 10px; }
-.skill-tag { background: linear-gradient(135deg, #eef2ff, #e0e7ff); color: ${primaryColor}; padding: 8px 18px; border-radius: 25px; font-size: 9.5pt; font-weight: 500; }
-.two-col { display: flex; gap: 35px; }
-.col { flex: 1; }
-.edu-card { background: #f8fafc; padding: 18px; border-radius: 12px; margin-bottom: 15px; border-left: 3px solid ${primaryColor}; }
-.edu-degree { font-weight: bold; color: #1e293b; font-size: 10.5pt; margin-bottom: 3px; }
-.edu-school { color: ${primaryColor}; font-size: 10pt; }
-.edu-date { color: #94a3b8; font-size: 9pt; margin-top: 5px; }
-.lang-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
-.lang-name { font-weight: 600; color: #1e293b; }
-.lang-level { color: ${primaryColor}; font-size: 9.5pt; }
-.footer { text-align: center; padding: 25px; color: #94a3b8; font-size: 9pt; border-top: 1px solid #e5e7eb; }
-@media print { body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+@page { margin: 0cm; size: A4; }
+body { font-family: 'Segoe UI', Calibri, Arial, sans-serif; margin: 0; padding: 0; color: #1e293b; line-height: 1.6; font-size: 10.5pt; }
+table { border-collapse: collapse; }
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="name">[Ditt Namn]</div>
-  <div class="title">[Din Yrkestitel / Profession]</div>
-  <div class="contact-row">
-    <span class="contact-item">📧 [din.email@exempel.se]</span>
-    <span class="contact-item">📱 [070-123 45 67]</span>
-    <span class="contact-item">📍 [Stockholm]</span>
-    <span class="contact-item">🔗 [linkedin.com/in/dittnamn]</span>
-  </div>
-</div>
-<div class="accent-bar"></div>
 
-<div class="content">
-  <div class="section">
-    <div class="section-title"><span class="section-icon">✨</span> Profil</div>
-    <div class="profile-box">
-      [Skriv en engagerande och professionell sammanfattning om dig själv. Beskriv dina styrkor, viktigaste erfarenheter och vad du söker i din nästa roll. 2-3 meningar som fångar uppmärksamhet.]
-    </div>
-  </div>
+<!-- HEADER -->
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color: ${primaryColor};">
+<tr><td style="padding: 35px 50px; color: white;">
+<p style="font-size: 28pt; font-weight: bold; margin: 0 0 6px 0;">[Ditt Namn]</p>
+<p style="font-size: 13pt; opacity: 0.9; margin: 0 0 18px 0;">[Din Yrkestitel / Profession]</p>
+<table cellpadding="0" cellspacing="0">
+<tr>
+<td style="background-color: rgba(255,255,255,0.15); padding: 8px 16px; font-size: 10pt; margin-right: 10px;">📧 [din.email@exempel.se]</td>
+<td width="10"></td>
+<td style="background-color: rgba(255,255,255,0.15); padding: 8px 16px; font-size: 10pt;">📱 [070-123 45 67]</td>
+<td width="10"></td>
+<td style="background-color: rgba(255,255,255,0.15); padding: 8px 16px; font-size: 10pt;">📍 [Stockholm]</td>
+<td width="10"></td>
+<td style="background-color: rgba(255,255,255,0.15); padding: 8px 16px; font-size: 10pt;">🔗 [linkedin.com/in/dittnamn]</td>
+</tr>
+</table>
+</td></tr>
+</table>
 
-  <div class="section">
-    <div class="section-title"><span class="section-icon">💼</span> Arbetslivserfarenhet</div>
-    <div class="exp-timeline">
-      <div class="exp-item">
-        <div class="exp-dot"></div>
-        <div class="exp-header">
-          <span class="exp-title">[Jobbtitel]</span>
-          <span class="exp-date">[Månad År] - Nu</span>
-        </div>
-        <div class="exp-company">[Företag], [Stad]</div>
-        <div class="exp-desc">
-          • [Beskriv en nyckelprestation eller ansvarsområde]<br>
-          • [Beskriv en annan viktig uppgift eller resultat]<br>
-          • [Lägg till fler punkter vid behov]
-        </div>
-      </div>
-      <div class="exp-item">
-        <div class="exp-dot"></div>
-        <div class="exp-header">
-          <span class="exp-title">[Tidigare Jobbtitel]</span>
-          <span class="exp-date">[Månad År] - [Månad År]</span>
-        </div>
-        <div class="exp-company">[Tidigare Företag], [Stad]</div>
-        <div class="exp-desc">• [Beskriv dina arbetsuppgifter och prestationer]</div>
-      </div>
-    </div>
-  </div>
+<!-- ACCENT BAR -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="height: 4px; background-color: ${secondaryColor};"></td></tr>
+</table>
 
-  <div class="section">
-    <div class="section-title"><span class="section-icon">⭐</span> Kompetenser</div>
-    <div class="skills-grid">
-      <span class="skill-tag">[Kompetens 1]</span>
-      <span class="skill-tag">[Kompetens 2]</span>
-      <span class="skill-tag">[Kompetens 3]</span>
-      <span class="skill-tag">[Kompetens 4]</span>
-      <span class="skill-tag">[Kompetens 5]</span>
-      <span class="skill-tag">[Lägg till fler...]</span>
-    </div>
-  </div>
+<!-- CONTENT -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding: 30px 50px;">
 
-  <div class="two-col">
-    <div class="col">
-      <div class="section">
-        <div class="section-title"><span class="section-icon">🎓</span> Utbildning</div>
-        <div class="edu-card">
-          <div class="edu-degree">[Examen / Program]</div>
-          <div class="edu-school">[Skola / Universitet]</div>
-          <div class="edu-date">[År] - [År]</div>
-        </div>
-      </div>
-    </div>
-    <div class="col">
-      <div class="section">
-        <div class="section-title"><span class="section-icon">🌍</span> Språk</div>
-        <div class="lang-item"><span class="lang-name">Svenska</span><span class="lang-level">Modersmål</span></div>
-        <div class="lang-item"><span class="lang-name">Engelska</span><span class="lang-level">Flytande</span></div>
-        <div class="lang-item"><span class="lang-name">[Annat språk]</span><span class="lang-level">[Nivå]</span></div>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- Profile Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 12px;">
+<tr><td style="font-size: 12pt; font-weight: bold; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 10px; border-bottom: 2px solid ${primaryColor};">
+✨ &nbsp; Profil
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px;">
+<tr><td style="background-color: #f8fafc; padding: 20px; border-left: 4px solid ${primaryColor}; font-size: 10.5pt; color: #475569; line-height: 1.8;">
+[Skriv en engagerande och professionell sammanfattning om dig själv. Beskriv dina styrkor, viktigaste erfarenheter och vad du söker i din nästa roll. 2-3 meningar som fångar uppmärksamhet.]
+</td></tr>
+</table>
 
-<div class="footer">CV skapat med mallen "${template.name}" från Jobin</div>
+<!-- Experience Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 12px;">
+<tr><td style="font-size: 12pt; font-weight: bold; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 10px; border-bottom: 2px solid ${primaryColor};">
+💼 &nbsp; Arbetslivserfarenhet
+</td></tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 18px; border-left: 3px solid #e2e8f0;">
+<tr><td style="padding-left: 20px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-weight: bold; font-size: 11pt; color: #1e293b;">[Jobbtitel]</span></td>
+<td align="right"><span style="font-size: 8.5pt; color: ${primaryColor}; background-color: #eef2ff; padding: 4px 14px;">[Månad År] - Nu</span></td>
+</tr>
+</table>
+<p style="font-size: 10pt; color: ${primaryColor}; font-weight: 600; margin: 5px 0 8px 0;">[Företag], [Stad]</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0;">
+• [Beskriv en nyckelprestation eller ansvarsområde]<br>
+• [Beskriv en annan viktig uppgift eller resultat]<br>
+• [Lägg till fler punkter vid behov]
+</p>
+</td></tr>
+</table>
+
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 25px; border-left: 3px solid #e2e8f0;">
+<tr><td style="padding-left: 20px;">
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td><span style="font-weight: bold; font-size: 11pt; color: #1e293b;">[Tidigare Jobbtitel]</span></td>
+<td align="right"><span style="font-size: 8.5pt; color: ${primaryColor}; background-color: #eef2ff; padding: 4px 14px;">[Månad År] - [Månad År]</span></td>
+</tr>
+</table>
+<p style="font-size: 10pt; color: ${primaryColor}; font-weight: 600; margin: 5px 0 8px 0;">[Tidigare Företag], [Stad]</p>
+<p style="font-size: 9.5pt; color: #64748b; line-height: 1.6; margin: 0;">• [Beskriv dina arbetsuppgifter och prestationer]</p>
+</td></tr>
+</table>
+
+<!-- Skills Section -->
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 12px;">
+<tr><td style="font-size: 12pt; font-weight: bold; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 10px; border-bottom: 2px solid ${primaryColor};">
+⭐ &nbsp; Kompetenser
+</td></tr>
+</table>
+<p style="margin-bottom: 25px; line-height: 2.2;">
+<span style="background-color: #eef2ff; color: ${primaryColor}; padding: 8px 18px; font-size: 9.5pt; font-weight: 500; margin: 3px;">[Kompetens 1]</span>
+<span style="background-color: #eef2ff; color: ${primaryColor}; padding: 8px 18px; font-size: 9.5pt; font-weight: 500; margin: 3px;">[Kompetens 2]</span>
+<span style="background-color: #eef2ff; color: ${primaryColor}; padding: 8px 18px; font-size: 9.5pt; font-weight: 500; margin: 3px;">[Kompetens 3]</span>
+<span style="background-color: #eef2ff; color: ${primaryColor}; padding: 8px 18px; font-size: 9.5pt; font-weight: 500; margin: 3px;">[Kompetens 4]</span>
+<span style="background-color: #eef2ff; color: ${primaryColor}; padding: 8px 18px; font-size: 9.5pt; font-weight: 500; margin: 3px;">[Kompetens 5]</span>
+</p>
+
+<!-- Education & Languages -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 12px;">
+<tr><td style="font-size: 12pt; font-weight: bold; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 10px; border-bottom: 2px solid ${primaryColor};">
+🎓 &nbsp; Utbildning
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="background-color: #f8fafc; padding: 15px; border-left: 3px solid ${primaryColor};">
+<p style="font-weight: bold; color: #1e293b; font-size: 10.5pt; margin: 0 0 3px 0;">[Examen / Program]</p>
+<p style="color: ${primaryColor}; font-size: 10pt; margin: 0 0 5px 0;">[Skola / Universitet]</p>
+<p style="color: #94a3b8; font-size: 9pt; margin: 0;">[År] - [År]</p>
+</td></tr>
+</table>
+</td>
+<td width="4%"></td>
+<td width="48%" valign="top">
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 12px;">
+<tr><td style="font-size: 12pt; font-weight: bold; color: ${primaryColor}; text-transform: uppercase; letter-spacing: 1.5px; padding-bottom: 10px; border-bottom: 2px solid ${primaryColor};">
+🌍 &nbsp; Språk
+</td></tr>
+</table>
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+<table width="100%"><tr>
+<td style="font-weight: 600; color: #1e293b;">Svenska</td>
+<td align="right" style="color: ${primaryColor}; font-size: 9.5pt;">Modersmål</td>
+</tr></table>
+</td></tr>
+<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+<table width="100%"><tr>
+<td style="font-weight: 600; color: #1e293b;">Engelska</td>
+<td align="right" style="color: ${primaryColor}; font-size: 9.5pt;">Flytande</td>
+</tr></table>
+</td></tr>
+<tr><td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+<table width="100%"><tr>
+<td style="font-weight: 600; color: #1e293b;">[Annat språk]</td>
+<td align="right" style="color: ${primaryColor}; font-size: 9.5pt;">[Nivå]</td>
+</tr></table>
+</td></tr>
+</table>
+</td>
+</tr>
+</table>
+
+</td></tr>
+</table>
+
+<!-- Footer -->
+<table width="100%" cellpadding="0" cellspacing="0">
+<tr><td style="text-align: center; padding: 20px; color: #94a3b8; font-size: 9pt; border-top: 1px solid #e5e7eb;">
+CV skapat med mallen "${template.name}" från Jobin
+</td></tr>
+</table>
 </body>
 </html>`
 
