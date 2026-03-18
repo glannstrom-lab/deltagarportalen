@@ -47,6 +47,10 @@ const Help = lazy(() => import('./pages/Help'))
 const ConsultantDashboard = lazy(() => import('./components/consultant/ConsultantDashboard'))
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
+// New feature pages
+const Salary = lazy(() => import('./pages/Salary'))
+const International = lazy(() => import('./pages/International'))
+const PersonalBrand = lazy(() => import('./pages/PersonalBrand'))
 
 // Loading fallback
 function PageLoader() {
@@ -354,7 +358,30 @@ function App() {
             </RouteErrorBoundary>
           </LazyRoute>
         } />
-        
+
+        {/* New feature pages */}
+        <Route path="salary/*" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Salary />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="international/*" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <International />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="personal-brand/*" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <PersonalBrand />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+
         {/* Consultant routes */}
         <Route path="consultant" element={
           <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>

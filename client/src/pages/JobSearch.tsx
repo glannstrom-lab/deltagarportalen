@@ -26,11 +26,15 @@ import { CreateApplicationModal } from '@/components/workflow';
 import { ApplicationsTab } from '@/components/jobs/ApplicationsTab';
 import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchesTab } from '@/components/jobs/MatchesTab';
+import { CultureTab } from '@/components/jobs/CultureTab';
+import { CRMTab } from '@/components/jobs/CRMTab';
 
 // Tab definitions with i18n keys
 const jobSearchTabDefs = [
   { id: 'search', labelKey: 'jobSearch.tabs.search', path: '/job-search', icon: Search },
   { id: 'saved', labelKey: 'jobSearch.tabs.saved', path: '/job-search/saved', icon: Bookmark },
+  { id: 'crm', labelKey: 'jobSearch.tabs.crm', path: '/job-search/crm', icon: ClipboardList, badge: 'Ny!' },
+  { id: 'culture', labelKey: 'jobSearch.tabs.culture', path: '/job-search/culture', icon: Heart, badge: 'Ny!' },
   { id: 'applications', labelKey: 'jobSearch.tabs.applications', path: '/job-search/applications', icon: ClipboardList },
   { id: 'alerts', labelKey: 'jobSearch.tabs.alerts', path: '/job-search/alerts', icon: Bell },
   { id: 'matches', labelKey: 'jobSearch.tabs.matches', path: '/job-search/matches', icon: Sparkles },
@@ -768,6 +772,8 @@ export default function JobSearch() {
       <Routes>
         <Route index element={<SearchTab />} />
         <Route path="saved" element={<SavedJobsTab />} />
+        <Route path="crm" element={<CRMTab />} />
+        <Route path="culture" element={<CultureTab />} />
         <Route path="applications" element={<ApplicationsTab />} />
         <Route path="alerts" element={<AlertsTab />} />
         <Route path="matches" element={<MatchesTab />} />

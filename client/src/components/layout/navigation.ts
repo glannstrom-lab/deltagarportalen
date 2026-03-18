@@ -12,6 +12,9 @@ import {
   Heart,
   Bookmark,
   Sparkles,
+  Wallet,
+  Globe,
+  Star,
 } from 'lucide-react'
 
 // Standard navigation för deltagare
@@ -22,10 +25,13 @@ export const navItems = [
   { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
   { path: '/job-search', labelKey: 'nav.jobSearch', icon: Briefcase },
   { path: '/career', labelKey: 'nav.career', icon: Target },
+  { path: '/salary', labelKey: 'nav.salary', icon: Wallet, badge: 'Ny!' },
+  { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star, badge: 'Ny!' },
   { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
   { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
   { path: '/diary', labelKey: 'nav.diary', icon: Heart },
   { path: '/wellness', labelKey: 'nav.wellness', icon: Sparkles },
+  { path: '/international', labelKey: 'nav.international', icon: Globe, badge: 'Ny!' },
   { path: '/knowledge-base', labelKey: 'nav.knowledgeBase', icon: BookOpen },
   { path: '/resources', labelKey: 'nav.resources', icon: Bookmark },
 ]
