@@ -462,7 +462,7 @@ function NewUserOnboarding({ userName }: { userName?: string }) {
 
 export default function OverviewTab() {
   const { user } = useAuthStore()
-  const { data, isLoading } = useDashboardDataQuery()
+  const { data, isLoading, isPlaceholderData } = useDashboardDataQuery()
   const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS)
   const [showSelector, setShowSelector] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
@@ -472,7 +472,8 @@ export default function OverviewTab() {
   const [showChecklist, setShowChecklist] = useState(true)
   const selectorRef = useRef<HTMLDivElement>(null)
 
-  const isNewUser = !data?.cv?.hasCV && (data?.cv?.progress || 0) < 10 && (data?.jobs?.savedCount || 0) === 0
+  // Only determine new user status after real data loads (not placeholder)
+  const isNewUser = !isPlaceholderData && !data?.cv?.hasCV && (data?.cv?.progress || 0) < 10 && (data?.jobs?.savedCount || 0) === 0
   const nextAction = getNextAction(data)
 
   // Check if user should see the Getting Started checklist
