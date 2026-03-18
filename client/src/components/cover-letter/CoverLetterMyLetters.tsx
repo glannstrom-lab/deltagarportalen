@@ -259,17 +259,17 @@ export function CoverLetterMyLetters() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header med sök */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="relative flex-1 max-w-md">
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-between sm:items-center">
+        <div className="relative w-full sm:flex-1 sm:max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
           <input
             type="text"
             placeholder="Sök bland dina brev..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+            className="w-full pl-10 pr-4 py-2.5 sm:py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-base sm:text-sm"
           />
         </div>
         <div className="text-sm text-slate-500">
@@ -282,22 +282,37 @@ export function CoverLetterMyLetters() {
         {filteredLetters.map((letter) => (
           <Card
             key={letter.id}
-            className="p-5 hover:shadow-md transition-shadow group"
+            className="p-4 sm:p-5 hover:shadow-md transition-shadow group"
           >
-            <div className="flex items-start gap-4">
-              {/* Ikon */}
-              <div className={cn(
-                'w-12 h-12 rounded-xl flex items-center justify-center shrink-0',
-                letter.status === 'sent' 
-                  ? 'bg-emerald-100 text-emerald-600' 
-                  : 'bg-indigo-100 text-indigo-600'
-              )}>
-                <FileText size={24} />
+            {/* Mobile: Stack vertically, Desktop: Side by side */}
+            <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
+              {/* Header row on mobile: Icon + Title + Status */}
+              <div className="flex items-start gap-3 sm:contents">
+                {/* Ikon */}
+                <div className={cn(
+                  'w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center shrink-0',
+                  letter.status === 'sent'
+                    ? 'bg-emerald-100 text-emerald-600'
+                    : 'bg-indigo-100 text-indigo-600'
+                )}>
+                  <FileText className="w-5 h-5 sm:w-6 sm:h-6" />
+                </div>
+
+                {/* Title & status on mobile */}
+                <div className="flex-1 min-w-0 sm:hidden">
+                  <h3 className="font-semibold text-slate-800 text-sm line-clamp-2">
+                    {letter.title}
+                  </h3>
+                  <div className="mt-1">
+                    {getStatusBadge(letter.status, letter.sentDate)}
+                  </div>
+                </div>
               </div>
 
               {/* Innehåll */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-start justify-between gap-4">
+                {/* Desktop title row */}
+                <div className="hidden sm:flex items-start justify-between gap-4">
                   <div>
                     <h3 className="font-semibold text-slate-800 truncate">
                       {letter.title}
@@ -311,37 +326,47 @@ export function CoverLetterMyLetters() {
                       <span>{letter.wordCount} ord</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 shrink-0">
                     {getStatusBadge(letter.status, letter.sentDate)}
                   </div>
                 </div>
 
+                {/* Mobile company & word count */}
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 sm:hidden">
+                  <span className="flex items-center gap-1">
+                    <Building2 size={12} />
+                    {letter.company}
+                  </span>
+                  <span>•</span>
+                  <span>{letter.wordCount} ord</span>
+                </div>
+
                 {/* Metadata */}
-                <div className="flex items-center gap-4 mt-3 text-xs text-slate-400">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs text-slate-400">
                   <span className="flex items-center gap-1">
                     <Calendar size={12} />
-                    Skapat {formatDate(letter.createdAt)}
+                    {formatDate(letter.createdAt)}
                   </span>
                   {letter.updatedAt !== letter.createdAt && (
                     <span className="flex items-center gap-1">
                       <Edit3 size={12} />
-                      Redigerat {formatDate(letter.updatedAt)}
+                      {formatDate(letter.updatedAt)}
                     </span>
                   )}
                 </div>
 
                 {/* Actions */}
-                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-slate-100">
+                <div className="flex flex-wrap items-center gap-2 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-slate-100">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => handleEdit(letter.id)}
-                    className="gap-1.5"
+                    className="gap-1.5 flex-1 sm:flex-none justify-center"
                   >
                     <Edit3 size={14} />
-                    Redigera
+                    <span className="sm:inline">Redigera</span>
                   </Button>
-                  
+
                   <div className="relative">
                     <Button
                       variant="ghost"
@@ -350,15 +375,15 @@ export function CoverLetterMyLetters() {
                       className="gap-1.5"
                     >
                       <MoreVertical size={14} />
-                      Mer
+                      <span className="hidden sm:inline">Mer</span>
                     </Button>
-                    
+
                     {showActions === letter.id && (
-                      <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px] z-10">
+                      <div className="absolute right-0 sm:left-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px] z-10">
                         <button
                           onClick={() => handleDuplicate(letter)}
                           disabled={actionLoading === letter.id}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2 disabled:opacity-50"
+                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2 disabled:opacity-50"
                         >
                           {actionLoading === letter.id ? (
                             <Loader2 size={14} className="text-slate-400 animate-spin" />
@@ -369,7 +394,7 @@ export function CoverLetterMyLetters() {
                         </button>
                         <button
                           onClick={() => handleDownload(letter)}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
+                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
                         >
                           <Download size={14} className="text-slate-400" />
                           Ladda ner PDF
@@ -378,7 +403,7 @@ export function CoverLetterMyLetters() {
                         <button
                           onClick={() => handleDelete(letter.id)}
                           disabled={actionLoading === letter.id}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2 text-rose-600 disabled:opacity-50"
+                          className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2 text-rose-600 disabled:opacity-50"
                         >
                           {actionLoading === letter.id ? (
                             <Loader2 size={14} className="animate-spin" />
@@ -395,7 +420,7 @@ export function CoverLetterMyLetters() {
                     <Button
                       size="sm"
                       onClick={() => navigate('/cover-letter/applications')}
-                      className="gap-1.5 ml-auto"
+                      className="gap-1.5 flex-1 sm:flex-none sm:ml-auto justify-center"
                     >
                       <Send size={14} />
                       Skicka
