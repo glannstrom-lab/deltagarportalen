@@ -24,7 +24,6 @@ import type { WorkExperience } from '@/services/supabaseApi'
 import { useCVScore, getOverallTips, getScoreColor } from '@/hooks/useCVScore'
 import { SaveIndicator } from '@/components/cv/SaveIndicator'
 import { CVProgressBar } from '@/components/cv/CVProgressBar'
-import { MobilePreviewFAB } from '@/components/cv/MobilePreviewFAB'
 import { AIHelpButton } from '@/components/cv/AIHelpButton'
 import { RichTextEditor } from '@/components/cv/RichTextEditor'
 import { ExperienceEditor } from '@/components/cv/ExperienceEditor'
@@ -736,17 +735,20 @@ export default function CVBuilder() {
             {renderContent()}
           </div>
 
-          {/* Navigation - Preview button removed, use FAB instead */}
-          <div className="flex items-center justify-between mt-6 pb-20 lg:pb-0">
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center justify-between mt-6">
             <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 font-medium">
               <ChevronLeft className="w-5 h-5" />
-              <span className="hidden sm:inline">{t('cvBuilder.actions.previous')}</span>
+              {t('cvBuilder.actions.previous')}
             </button>
             <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 font-medium">
-              <span className="hidden sm:inline">{t('cvBuilder.actions.next')}</span>
+              {t('cvBuilder.actions.next')}
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
+
+          {/* Spacer for fixed mobile navigation */}
+          <div className="h-24 lg:hidden" />
         </div>
 
         {/* Right: Preview + Tools (desktop) */}
@@ -859,8 +861,31 @@ export default function CVBuilder() {
         />
       )}
       
-      {/* Mobile Preview FAB */}
-      <MobilePreviewFAB data={data} />
+      {/* Mobile Fixed Navigation Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-slate-200 px-4 py-3 flex items-center justify-between gap-3 safe-area-pb">
+        <button
+          onClick={() => setStep(Math.max(1, step - 1))}
+          disabled={step === 1}
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 font-medium"
+        >
+          <ChevronLeft className="w-5 h-5" />
+          {t('cvBuilder.actions.previous')}
+        </button>
+        <button
+          onClick={() => setShowPreview(true)}
+          className="flex items-center justify-center w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl"
+        >
+          <Eye className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => setStep(Math.min(STEPS.length, step + 1))}
+          disabled={step === STEPS.length}
+          className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 font-medium"
+        >
+          {t('cvBuilder.actions.next')}
+          <ChevronRight className="w-5 h-5" />
+        </button>
+      </div>
     </div>
   )
 }
