@@ -333,10 +333,10 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      // SECURITY: Only persist non-sensitive state
+      // Session tokens are managed by Supabase's own secure storage
       partialize: (state) => ({
-        user: state.user,
         profile: state.profile,
-        session: state.session,
         isAuthenticated: state.isAuthenticated,
       }),
     }

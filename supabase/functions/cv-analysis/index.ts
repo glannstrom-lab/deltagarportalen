@@ -3,11 +3,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 
 interface CVAnalysisRequest {
   cvData: {
@@ -38,18 +34,25 @@ interface AnalysisResult {
   keywords: string[]
 }
 
+// SECURITY: Sanitize user input
+function sanitizeText(input: string | undefined, maxLength: number = 5000): string {
+  if (!input) return ''
+  return input
+    .slice(0, maxLength)
+    .replace(/[<>]/g, '')
+    .trim()
+}
+
 serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  const preflightResponse = handleCorsPreflightOrNull(req)
+  if (preflightResponse) return preflightResponse
+
+  const origin = req.headers.get('Origin')
 
   try {
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Missing authorization header' }, 401, origin)
     }
 
     const supabaseClient = createClient(
@@ -63,35 +66,32 @@ serve(async (req) => {
     )
 
     if (userError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Invalid token' }, 401, origin)
     }
 
     const { cvData, jobDescription, jobRequirements = [] }: CVAnalysisRequest = await req.json()
 
     if (!jobDescription) {
-      return new Response(
-        JSON.stringify({ error: 'Missing job description' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Missing job description' }, 400, origin)
     }
 
     // Hämta OpenAI API key
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY')
-    
-    // Förbered CV-text
+
+    // Förbered CV-text med sanitering
     const cvText = `
-${cvData.summary || ''}
+${sanitizeText(cvData.summary, 1000)}
 
 Erfarenhet:
-${cvData.workExperience?.map(e => `${e.title} på ${e.company}: ${e.description || ''}`).join('\n') || ''}
+${cvData.workExperience?.map(e => `${sanitizeText(e.title, 100)} på ${sanitizeText(e.company, 100)}: ${sanitizeText(e.description, 500)}`).join('\n') || ''}
 
-Kompetenser: ${cvData.skills?.join(', ') || ''}
-Utbildning: ${cvData.education?.map(e => e.degree).join(', ') || ''}
-Språk: ${cvData.languages?.join(', ') || ''}
+Kompetenser: ${cvData.skills?.map(s => sanitizeText(s, 50)).join(', ') || ''}
+Utbildning: ${cvData.education?.map(e => sanitizeText(e.degree, 100)).join(', ') || ''}
+Språk: ${cvData.languages?.map(l => sanitizeText(l, 30)).join(', ') || ''}
     `.trim()
+
+    const sanitizedJobDescription = sanitizeText(jobDescription, 5000)
+    const sanitizedRequirements = jobRequirements.map(r => sanitizeText(r, 200))
 
     let analysisResult: AnalysisResult
 
@@ -108,7 +108,7 @@ Språk: ${cvData.languages?.join(', ') || ''}
           messages: [
             {
               role: 'system',
-              content: `Du är en expert på rekrytering och CV-optimering. 
+              content: `Du är en expert på rekrytering och CV-optimering.
 Analysera matchningen mellan kandidatens CV och jobbeskrivningen.
 Returnera svaret som ett JSON-objekt med följande struktur:
 {
@@ -124,7 +124,7 @@ Var ärlig men konstruktiv. Fokusera på konkreta, handlingsbara råd.`
             },
             {
               role: 'user',
-              content: `CV:\n${cvText}\n\nJobbeskrivning:\n${jobDescription}\n\nKrav:\n${jobRequirements.join('\n')}`
+              content: `CV:\n${cvText}\n\nJobbeskrivning:\n${sanitizedJobDescription}\n\nKrav:\n${sanitizedRequirements.join('\n')}`
             }
           ],
           temperature: 0.3,
@@ -134,22 +134,22 @@ Var ärlig men konstruktiv. Fokusera på konkreta, handlingsbara råd.`
 
       const openAIData = await openAIResponse.json()
       const aiResponse = openAIData.choices[0]?.message?.content
-      
+
       try {
         analysisResult = JSON.parse(aiResponse)
       } catch {
         // Fallback om AI inte returnerar valid JSON
-        analysisResult = generateFallbackAnalysis(cvText, jobDescription)
+        analysisResult = generateFallbackAnalysis(cvText, sanitizedJobDescription)
       }
     } else {
       // Fallback utan AI - enkel nyckelordsmatchning
-      analysisResult = generateFallbackAnalysis(cvText, jobDescription)
+      analysisResult = generateFallbackAnalysis(cvText, sanitizedJobDescription)
     }
 
     // Spara analysen i databasen
     await supabaseClient.from('cv_analyses').upsert({
       user_id: user.id,
-      job_description: jobDescription.substring(0, 1000),
+      job_description: sanitizedJobDescription.substring(0, 1000),
       match_percentage: analysisResult.matchPercentage,
       matching_skills: analysisResult.matchingSkills,
       missing_skills: analysisResult.missingSkills,
@@ -158,17 +158,11 @@ Var ärlig men konstruktiv. Fokusera på konkreta, handlingsbara råd.`
       created_at: new Date().toISOString()
     })
 
-    return new Response(
-      JSON.stringify(analysisResult),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return createCorsResponse(analysisResult, 200, origin)
 
   } catch (error) {
     console.error('Error:', error)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return createCorsResponse({ error: 'Internal server error' }, 500, origin)
   }
 })
 
@@ -176,37 +170,37 @@ Var ärlig men konstruktiv. Fokusera på konkreta, handlingsbara råd.`
 function generateFallbackAnalysis(cvText: string, jobDescription: string): AnalysisResult {
   const cvLower = cvText.toLowerCase()
   const jobLower = jobDescription.toLowerCase()
-  
+
   // Vanliga kompetenser att söka efter
   const commonSkills = [
     'kommunikation', ' teamwork', 'ledarskap', 'projektledning', 'excel', 'word',
     'powerpoint', 'svenska', 'engelska', 'kundservice', 'försäljning', 'administration',
     'programmering', 'javascript', 'python', 'react', 'sql', 'analys', 'problemlösning'
   ]
-  
+
   const matchingSkills: string[] = []
   const missingSkills: string[] = []
-  
+
   commonSkills.forEach(skill => {
     const inJob = jobLower.includes(skill)
     const inCv = cvLower.includes(skill)
-    
+
     if (inJob && inCv) {
       matchingSkills.push(skill)
     } else if (inJob && !inCv) {
       missingSkills.push(skill)
     }
   })
-  
+
   // Beräkna matchningsprocent
   const jobWords = jobLower.split(/\s+/)
   const cvWords = new Set(cvLower.split(/\s+/))
   const matchingWords = jobWords.filter(w => cvWords.has(w)).length
   const matchPercentage = Math.min(95, Math.round((matchingWords / jobWords.length) * 100))
-  
+
   // ATS-score baserat på format
   const atsScore = calculateFallbackATSScore(cvText)
-  
+
   return {
     matchPercentage,
     matchingSkills: matchingSkills.slice(0, 5),
@@ -228,16 +222,16 @@ function generateFallbackAnalysis(cvText: string, jobDescription: string): Analy
 
 function calculateFallbackATSScore(cvText: string): number {
   let score = 70 // Baspoäng
-  
+
   // Positiva faktorer
   if (cvText.length > 500) score += 5
   if (cvText.includes('erfarenhet')) score += 5
   if (cvText.includes('utbildning')) score += 5
   if (/\d+%/.test(cvText)) score += 5 // Kvantifierade resultat
-  
+
   // Negativa faktorer
   if (cvText.includes(' jag ')) score -= 5 // För mycket "jag"
   if (cvText.split(' ').length > 800) score -= 5 // För långt
-  
+
   return Math.max(0, Math.min(100, score))
 }

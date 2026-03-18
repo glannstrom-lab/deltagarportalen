@@ -5,12 +5,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-}
+import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -22,16 +17,16 @@ const WINDOW_MS = 60 * 1000
 function checkRateLimit(userId: string): boolean {
   const now = Date.now()
   const userLimit = rateLimits.get(userId)
-  
+
   if (!userLimit || now > userLimit.resetTime) {
     rateLimits.set(userId, { count: 1, resetTime: now + WINDOW_MS })
     return true
   }
-  
+
   if (userLimit.count >= RATE_LIMIT) {
     return false
   }
-  
+
   userLimit.count++
   return true
 }
@@ -48,13 +43,14 @@ function sanitizeInput(input: string): string {
     .replace(/\/system/gi, '')
     .replace(/\/user/gi, '')
     .replace(/\/assistant/gi, '')
+    .replace(/[<>]/g, '') // Remove HTML/XML tags
     .slice(0, 4000) // Max 4000 tecken
 }
 
 // Bygg säker prompt med tydliga separatorer
 function buildSecurePrompt(content: string, type: string, feature: string): string {
   const sanitizedContent = sanitizeInput(content)
-  
+
   const systemPrompts: Record<string, string> = {
     improve: `Du är en professionell CV-skrivare. Din uppgift är att förbättra texten för att göra den mer slagkraftig och professionell. Använd starka action-verb och konkreta formuleringar.`,
     quantify: `Du är en expert på resultatorienterade CV:n. Lägg till mätbara resultat och siffror där det är möjligt.`,
@@ -77,25 +73,20 @@ Text: ${sanitizedContent}
 
 serve(async (req) => {
   // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  const preflightResponse = handleCorsPreflightOrNull(req)
+  if (preflightResponse) return preflightResponse
+
+  const origin = req.headers.get('Origin')
 
   if (req.method !== 'POST') {
-    return new Response(
-      JSON.stringify({ error: 'Method not allowed' }),
-      { status: 405, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return createCorsResponse({ error: 'Method not allowed' }, 405, origin)
   }
 
   try {
     // 1. Auth check
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Authorization required' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Authorization required' }, 401, origin)
     }
 
     // 2. Get environment variables
@@ -104,17 +95,11 @@ serve(async (req) => {
     const openRouterKey = Deno.env.get('OPENROUTER_API_KEY')
 
     if (!supabaseUrl || !serviceRoleKey) {
-      return new Response(
-        JSON.stringify({ error: 'Server configuration error' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Server configuration error' }, 500, origin)
     }
 
     if (!openRouterKey) {
-      return new Response(
-        JSON.stringify({ error: 'AI service not configured' }),
-        { status: 503, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'AI service not configured' }, 503, origin)
     }
 
     // 3. Verify user
@@ -126,18 +111,12 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token)
 
     if (authError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Invalid token' }, 401, origin)
     }
 
     // 4. Rate limiting
     if (!checkRateLimit(user.id)) {
-      return new Response(
-        JSON.stringify({ error: 'Rate limit exceeded. Max 10 requests per minute.' }),
-        { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Rate limit exceeded. Max 10 requests per minute.' }, 429, origin)
     }
 
     // 5. Parse request body
@@ -145,19 +124,13 @@ serve(async (req) => {
     try {
       body = await req.json()
     } catch {
-      return new Response(
-        JSON.stringify({ error: 'Invalid JSON body' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Invalid JSON body' }, 400, origin)
     }
 
     const { content, type = 'summary', feature = 'improve' } = body
 
     if (!content || typeof content !== 'string') {
-      return new Response(
-        JSON.stringify({ error: 'Content is required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Content is required' }, 400, origin)
     }
 
     // 6. Build secure prompt
@@ -173,8 +146,8 @@ serve(async (req) => {
         headers: {
           'Authorization': `Bearer ${openRouterKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://deltagarportalen.se',
-          'X-Title': 'Deltagarportalen'
+          'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://jobin.se',
+          'X-Title': 'Jobin'
         },
         body: JSON.stringify({
           model: Deno.env.get('AI_MODEL') || 'anthropic/claude-3.5-sonnet',
@@ -192,20 +165,14 @@ serve(async (req) => {
       if (!aiRes.ok) {
         const errorText = await aiRes.text()
         console.error('OpenRouter error:', aiRes.status, errorText)
-        return new Response(
-          JSON.stringify({ error: 'AI service error', details: `Status ${aiRes.status}` }),
-          { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+        return createCorsResponse({ error: 'AI service error', details: `Status ${aiRes.status}` }, 502, origin)
       }
 
       const aiData = await aiRes.json()
       const result = aiData.choices?.[0]?.message?.content?.trim()
 
       if (!result) {
-        return new Response(
-          JSON.stringify({ error: 'Empty AI response' }),
-          { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+        return createCorsResponse({ error: 'Empty AI response' }, 502, origin)
       }
 
       // 8. Log usage (non-blocking)
@@ -223,33 +190,24 @@ serve(async (req) => {
       }
 
       // 9. Return result
-      return new Response(
-        JSON.stringify({
-          success: true,
-          result,
-          feature,
-          model: aiData.model,
-          tokensUsed: aiData.usage?.total_tokens
-        }),
-        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({
+        success: true,
+        result,
+        feature,
+        model: aiData.model,
+        tokensUsed: aiData.usage?.total_tokens
+      }, 200, origin)
 
     } catch (fetchError: any) {
       clearTimeout(timeoutId)
       if (fetchError.name === 'AbortError') {
-        return new Response(
-          JSON.stringify({ error: 'AI request timed out' }),
-          { status: 504, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
+        return createCorsResponse({ error: 'AI request timed out' }, 504, origin)
       }
       throw fetchError
     }
 
   } catch (err: any) {
     console.error('Server error:', err)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error', message: err.message }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return createCorsResponse({ error: 'Internal server error', message: err.message }, 500, origin)
   }
 })

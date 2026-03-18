@@ -3,12 +3,7 @@
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-
-// CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-}
+import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 
 // Email template
 const getInviteEmailTemplate = (data: {
@@ -23,7 +18,7 @@ const getInviteEmailTemplate = (data: {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Inbjudan till Deltagarportalen</title>
+  <title>Inbjudan till Jobin</title>
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
     .header { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); color: white; padding: 30px; border-radius: 12px 12px 0 0; text-align: center; }
@@ -38,44 +33,44 @@ const getInviteEmailTemplate = (data: {
 </head>
 <body>
   <div class="header">
-    <h1>🎯 Välkommen till Deltagarportalen!</h1>
+    <h1>Välkommen till Jobin!</h1>
   </div>
-  
+
   <div class="content">
     <p>Hej ${data.firstName || 'du'}!</p>
-    
-    <p><strong>${data.consultantName}</strong> har bjudit in dig till Deltagarportalen - en plattform som hjälper dig att hitta vägen tillbaka till arbetsmarknaden.</p>
-    
+
+    <p><strong>${data.consultantName}</strong> har bjudit in dig till Jobin - en plattform som hjälper dig att hitta vägen tillbaka till arbetsmarknaden.</p>
+
     ${data.message ? `
     <div class="message-box">
       <strong>Personligt meddelande:</strong><br>
       ${data.message}
     </div>
     ` : ''}
-    
-    <p>Med Deltagarportalen kan du:</p>
+
+    <p>Med Jobin kan du:</p>
     <ul>
-      <li>✅ Bygga ett professionellt CV</li>
-      <li>✅ Upptäcka yrken som passar dig</li>
-      <li>✅ Söka jobb från Arbetsförmedlingen</li>
-      <li>✅ Få stöd i din jobbsökning</li>
+      <li>Bygga ett professionellt CV</li>
+      <li>Upptäcka yrken som passar dig</li>
+      <li>Söka jobb från Arbetsförmedlingen</li>
+      <li>Få stöd i din jobbsökning</li>
     </ul>
-    
+
     <center>
       <a href="${data.inviteUrl}" class="button">Skapa ditt konto</a>
     </center>
-    
-    <p class="expiry">⏰ Inbjudan är giltig till: ${data.expiresAt}</p>
-    
+
+    <p class="expiry">Inbjudan är giltig till: ${data.expiresAt}</p>
+
     <p style="font-size: 14px; color: #6b7280;">
       Om knappen inte fungerar, kopiera denna länk till din webbläsare:<br>
       <a href="${data.inviteUrl}" style="color: #4f46e5;">${data.inviteUrl}</a>
     </p>
   </div>
-  
+
   <div class="footer">
     <p>Har du frågor? Kontakta din handledare eller svara på detta email.</p>
-    <p>&copy; ${new Date().getFullYear()} Deltagarportalen</p>
+    <p>&copy; ${new Date().getFullYear()} Jobin</p>
   </div>
 </body>
 </html>
@@ -83,18 +78,16 @@ const getInviteEmailTemplate = (data: {
 
 serve(async (req) => {
   // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  const preflightResponse = handleCorsPreflightOrNull(req)
+  if (preflightResponse) return preflightResponse
+
+  const origin = req.headers.get('Origin')
 
   try {
     // Verifiera JWT token
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      return new Response(
-        JSON.stringify({ error: 'Missing authorization header' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Missing authorization header' }, 401, origin)
     }
 
     // Skapa Supabase client
@@ -110,20 +103,14 @@ serve(async (req) => {
     )
 
     if (userError || !user) {
-      return new Response(
-        JSON.stringify({ error: 'Invalid token' }),
-        { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Invalid token' }, 401, origin)
     }
 
     // Parse request body
     const { invitationId } = await req.json()
-    
+
     if (!invitationId) {
-      return new Response(
-        JSON.stringify({ error: 'Invitation ID required' }),
-        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Invitation ID required' }, 400, origin)
     }
 
     // Hämta inbjudan
@@ -134,16 +121,13 @@ serve(async (req) => {
       .single()
 
     if (inviteError || !invitation) {
-      return new Response(
-        JSON.stringify({ error: 'Invitation not found' }),
-        { status: 404, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+      return createCorsResponse({ error: 'Invitation not found' }, 404, origin)
     }
 
     // Bygg inbjudnings-URL
     const siteUrl = Deno.env.get('SITE_URL') || 'http://localhost:5173'
     const inviteUrl = `${siteUrl}/#/invite/${invitation.token}`
-    
+
     // Formatera utgångsdatum
     const expiresAt = new Date(invitation.expires_at)
     const expiresAtFormatted = expiresAt.toLocaleDateString('sv-SE', {
@@ -153,7 +137,7 @@ serve(async (req) => {
     })
 
     // Hämta konsultens namn
-    const consultantName = invitation.invited_by 
+    const consultantName = invitation.invited_by
       ? `${invitation.invited_by.first_name || ''} ${invitation.invited_by.last_name || ''}`.trim()
       : 'Din handledare'
 
@@ -169,57 +153,48 @@ serve(async (req) => {
     // Skicka email via Supabase
     const { error: emailError } = await supabaseClient.auth.admin.sendRawEmail({
       to: invitation.email,
-      subject: '🎯 Inbjudan till Deltagarportalen',
+      subject: 'Inbjudan till Jobin',
       html: emailHtml,
     })
 
     if (emailError) {
       console.error('Email error:', emailError)
-      
+
       // Fallback: logga att email behöver skickas manuellt
       await supabaseClient
         .from('invitations')
-        .update({ 
+        .update({
           email_sent: false,
           email_error: emailError.message,
           updated_at: new Date().toISOString()
         })
         .eq('id', invitationId)
-      
-      return new Response(
-        JSON.stringify({ 
-          error: 'Could not send email automatically',
-          details: emailError.message,
-          fallback: 'Email logged for manual sending'
-        }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      )
+
+      return createCorsResponse({
+        error: 'Could not send email automatically',
+        details: emailError.message,
+        fallback: 'Email logged for manual sending'
+      }, 500, origin)
     }
 
     // Uppdatera inbjudan som skickad
     await supabaseClient
       .from('invitations')
-      .update({ 
+      .update({
         email_sent: true,
         email_sent_at: new Date().toISOString(),
         updated_at: new Date().toISOString()
       })
       .eq('id', invitationId)
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        message: 'Invitation email sent',
-        to: invitation.email
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return createCorsResponse({
+      success: true,
+      message: 'Invitation email sent',
+      to: invitation.email
+    }, 200, origin)
 
   } catch (error) {
     console.error('Error:', error)
-    return new Response(
-      JSON.stringify({ error: 'Internal server error' }),
-      { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-    )
+    return createCorsResponse({ error: 'Internal server error' }, 500, origin)
   }
 })

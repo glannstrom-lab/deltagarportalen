@@ -63,8 +63,8 @@ async function analyzeWithAI(cvData: CVData, targetRole?: string, jobRequirement
       headers: {
         'Authorization': `Bearer ${openRouterKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://deltagarportalen.se',
-        'X-Title': 'Deltagarportalen'
+        'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://jobin.se',
+        'X-Title': 'Jobin'
       },
       body: JSON.stringify({
         model: model,

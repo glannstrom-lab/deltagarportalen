@@ -1,30 +1,28 @@
 // Edge Function: AI Assistant - Universal AI proxy via OpenRouter
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
-
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-}
-
-function createResponse(body: object, status: number = 200) {
-  return new Response(JSON.stringify(body), {
-    status,
-    headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-  })
-}
+import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
+// SECURITY: Sanitize user input before including in AI prompts
+function sanitizeInput(input: string | undefined, maxLength: number = 5000): string {
+  if (!input) return ''
+  return input
+    .slice(0, maxLength)
+    .replace(/[<>]/g, '') // Remove potential HTML/XML tags
+    .trim()
+}
+
 serve(async (req) => {
   // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return new Response('ok', { headers: corsHeaders })
-  }
+  const preflightResponse = handleCorsPreflightOrNull(req)
+  if (preflightResponse) return preflightResponse
+
+  const origin = req.headers.get('Origin')
 
   if (req.method !== 'POST') {
-    return createResponse({ error: 'Method not allowed' }, 405)
+    return createCorsResponse({ error: 'Method not allowed' }, 405, origin)
   }
 
   try {
@@ -33,24 +31,24 @@ serve(async (req) => {
     try {
       const text = await req.text()
       if (!text || text.trim() === '') {
-        return createResponse({ error: 'Empty request body' }, 400)
+        return createCorsResponse({ error: 'Empty request body' }, 400, origin)
       }
       body = JSON.parse(text)
     } catch (e) {
       console.error('JSON parse error:', e)
-      return createResponse({ error: 'Invalid JSON body' }, 400)
+      return createCorsResponse({ error: 'Invalid JSON body' }, 400, origin)
     }
 
     const { function: fn, data, model: overrideModel } = body
 
     if (!fn) {
-      return createResponse({ error: 'Missing function parameter' }, 400)
+      return createCorsResponse({ error: 'Missing function parameter' }, 400, origin)
     }
 
     // Auth
     const authHeader = req.headers.get('Authorization')
     if (!authHeader) {
-      return createResponse({ error: 'Missing authorization' }, 401)
+      return createCorsResponse({ error: 'Missing authorization' }, 401, origin)
     }
 
     // Env vars
@@ -59,11 +57,11 @@ serve(async (req) => {
     const openRouterKey = Deno.env.get('OPENROUTER_API_KEY')
 
     if (!supabaseUrl || !serviceRoleKey) {
-      return createResponse({ error: 'Server config error' }, 500)
+      return createCorsResponse({ error: 'Server config error' }, 500, origin)
     }
 
     if (!openRouterKey) {
-      return createResponse({ error: 'AI not configured' }, 503)
+      return createCorsResponse({ error: 'AI not configured' }, 503, origin)
     }
 
     // Verify user
@@ -75,14 +73,14 @@ serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser(token)
 
     if (authError || !user) {
-      return createResponse({ error: 'Invalid token' }, 401)
+      return createCorsResponse({ error: 'Invalid token' }, 401, origin)
     }
 
     // Default model
     const defaultModel = Deno.env.get('AI_MODEL') || 'anthropic/claude-3.5-sonnet'
     const model = overrideModel || defaultModel
 
-    // Build prompt based on function
+    // Build prompt based on function with sanitized inputs
     let systemPrompt = 'Du är en hjälpsam assistent på svenska.'
     let userPrompt = ''
     let maxTokens = 1000
@@ -90,42 +88,42 @@ serve(async (req) => {
     switch (fn) {
       case 'personligt-brev':
         systemPrompt = 'Du är en karriärcoach som skriver personliga brev på svenska.'
-        userPrompt = `Skriv personligt brev för jobb: ${data?.jobTitle || 'titel'} på ${data?.companyName || data?.foretag || 'företaget'}. Jobbannons: ${data?.jobbAnnons || data?.jobDescription || ''}. Min bakgrund: ${data?.erfarenhet || ''}. Ton: ${data?.ton || 'professionell'}. Max 300 ord.`
+        userPrompt = `Skriv personligt brev för jobb: ${sanitizeInput(data?.jobTitle, 200) || 'titel'} på ${sanitizeInput(data?.companyName || data?.foretag, 200) || 'företaget'}. Jobbannons: ${sanitizeInput(data?.jobbAnnons || data?.jobDescription, 3000)}. Min bakgrund: ${sanitizeInput(data?.erfarenhet, 2000)}. Ton: ${sanitizeInput(data?.ton, 50) || 'professionell'}. Max 300 ord.`
         maxTokens = 1200
         break
-      
+
       case 'cv-optimering':
         systemPrompt = 'Du är expert på CV-skrivning. Ge konstruktiv feedback på svenska.'
-        userPrompt = `Ge feedback på CV för "${data?.yrke || 'jobb'}":\n${data?.cvText || ''}`
+        userPrompt = `Ge feedback på CV för "${sanitizeInput(data?.yrke, 100) || 'jobb'}":\n${sanitizeInput(data?.cvText, 5000)}`
         maxTokens = 1500
         break
-      
+
       case 'generera-cv-text':
         systemPrompt = 'Du är expert på CV-skrivning på svenska.'
-        userPrompt = `Skriv CV-sammanfattning för ${data?.yrke}. Erfarenhet: ${data?.erfarenhet || 'varierad'}. Max 4 meningar.`
+        userPrompt = `Skriv CV-sammanfattning för ${sanitizeInput(data?.yrke, 100)}. Erfarenhet: ${sanitizeInput(data?.erfarenhet, 1000) || 'varierad'}. Max 4 meningar.`
         maxTokens = 500
         break
-      
+
       case 'intervju-forberedelser':
         systemPrompt = 'Du är jobbcoach på svenska.'
-        userPrompt = `Förbered mig för intervju som ${data?.jobbTitel || 'kandidat'}. Erfarenhet: ${data?.erfarenhet || 'varierad'}.`
+        userPrompt = `Förbered mig för intervju som ${sanitizeInput(data?.jobbTitel, 100) || 'kandidat'}. Erfarenhet: ${sanitizeInput(data?.erfarenhet, 1000) || 'varierad'}.`
         maxTokens = 2000
         break
-      
+
       case 'jobbtips':
         systemPrompt = 'Du är empatisk jobbcoach på svenska.'
-        userPrompt = `Ge jobbsökartips. Intressen: ${data?.intressen || 'varierade'}. Hinder: ${data?.hinder || 'inga'}.`
+        userPrompt = `Ge jobbsökartips. Intressen: ${sanitizeInput(data?.intressen, 500) || 'varierade'}. Hinder: ${sanitizeInput(data?.hinder, 500) || 'inga'}.`
         maxTokens = 1200
         break
-      
+
       case 'loneforhandling':
         systemPrompt = 'Du är löneexpert på svenska.'
-        userPrompt = `Löneförhandling för ${data?.roll}. Erfarenhet: ${data?.erfarenhetAr || 0} år.`
+        userPrompt = `Löneförhandling för ${sanitizeInput(data?.roll, 100)}. Erfarenhet: ${data?.erfarenhetAr || 0} år.`
         maxTokens = 1500
         break
-      
+
       default:
-        return createResponse({ error: `Unknown function: ${fn}` }, 400)
+        return createCorsResponse({ error: `Unknown function: ${fn}` }, 400, origin)
     }
 
     console.log(`AI call: ${fn}, model: ${model}`)
@@ -136,8 +134,8 @@ serve(async (req) => {
       headers: {
         'Authorization': `Bearer ${openRouterKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://deltagarportalen.se',
-        'X-Title': 'Deltagarportalen'
+        'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://jobin.se',
+        'X-Title': 'Jobin'
       },
       body: JSON.stringify({
         model,
@@ -153,14 +151,14 @@ serve(async (req) => {
     if (!aiRes.ok) {
       const err = await aiRes.text()
       console.error('OpenRouter error:', aiRes.status, err)
-      return createResponse({ error: 'AI service error' }, 502)
+      return createCorsResponse({ error: 'AI service error' }, 502, origin)
     }
 
     const aiData = await aiRes.json()
     const content = aiData.choices?.[0]?.message?.content
 
     if (!content) {
-      return createResponse({ error: 'Empty AI response' }, 502)
+      return createCorsResponse({ error: 'Empty AI response' }, 502, origin)
     }
 
     // Log usage (non-blocking)
@@ -176,15 +174,15 @@ serve(async (req) => {
       console.log('Log error:', e)
     }
 
-    return createResponse({
+    return createCorsResponse({
       success: true,
       content,
       function: fn,
       model
-    })
+    }, 200, origin)
 
   } catch (err) {
     console.error('Error:', err)
-    return createResponse({ error: 'Internal error' }, 500)
+    return createCorsResponse({ error: 'Internal error' }, 500, req.headers.get('Origin'))
   }
 })
