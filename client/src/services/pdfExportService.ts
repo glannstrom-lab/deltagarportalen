@@ -155,17 +155,19 @@ const TEMPLATES: Record<string, TemplateConfig> = {
   },
 }
 
-// Helper för svenska tecken
-function utf8ToLatin1(str: string): string {
+// Helper för att hantera svenska tecken i PDF
+// jsPDF stöder UTF-8 text direkt, men vi behöver hantera vissa specialtecken
+function sanitizeText(str: string): string {
   if (!str) return ''
-  const charMap: Record<string, string> = {
-    'Å': 'A', 'Ä': 'A', 'Ö': 'O',
-    'å': 'a', 'ä': 'a', 'ö': 'o',
-    'É': 'E', 'é': 'e',
-    'Ü': 'U', 'ü': 'u',
-    '–': '-', '—': '-',
-  }
-  return str.split('').map(c => charMap[c] || c).join('')
+  // Ersätt bara problematiska tecken som kan orsaka rendering-problem
+  return str
+    .replace(/–/g, '-')  // en-dash
+    .replace(/—/g, '-')  // em-dash
+    .replace(/'/g, "'")  // smart quote
+    .replace(/'/g, "'")  // smart quote
+    .replace(/"/g, '"')  // smart quote
+    .replace(/"/g, '"')  // smart quote
+    .replace(/…/g, '...') // ellipsis
 }
 
 // Hämta bild som base64
@@ -336,7 +338,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     if (data.location) contactInfo.push(data.location)
     
     contactInfo.forEach(info => {
-      doc.text(utf8ToLatin1(info), margin, yPos)
+      doc.text(sanitizeText(info), margin, yPos)
       yPos += 5
     })
 
@@ -352,7 +354,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFontSize(8)
       
       data.skills.slice(0, 10).forEach((skill) => {
-        const skillText = utf8ToLatin1(getSkillName(skill))
+        const skillText = sanitizeText(getSkillName(skill))
         doc.text(`• ${skillText}`, margin + 2, yPos)
         yPos += 4
       })
@@ -370,8 +372,8 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFontSize(8)
       
       data.languages.forEach(lang => {
-        const langName = utf8ToLatin1((lang as any).language || (lang as any).name || '')
-        const langLevel = utf8ToLatin1(lang.level || '')
+        const langName = sanitizeText((lang as any).language || (lang as any).name || '')
+        const langLevel = sanitizeText(lang.level || '')
         doc.text(`${langName} - ${langLevel}`, margin + 2, yPos)
         yPos += 4
       })
@@ -389,7 +391,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFontSize(8)
       
       data.certificates.forEach(cert => {
-        const certText = utf8ToLatin1(cert.name)
+        const certText = sanitizeText(cert.name)
         doc.text(`• ${certText}`, margin + 2, yPos)
         yPos += 4
       })
@@ -403,13 +405,13 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     doc.setTextColor(...template.colors.text as [number, number, number])
     doc.setFont(template.fonts.heading, 'bold')
     doc.setFontSize(24)
-    doc.text(utf8ToLatin1(`${data.firstName} ${data.lastName}`), mainX, mainY)
+    doc.text(sanitizeText(`${data.firstName} ${data.lastName}`), mainX, mainY)
     
     mainY += 10
     if (data.title) {
       doc.setFontSize(14)
       doc.setTextColor(...template.colors.accent as [number, number, number])
-      doc.text(utf8ToLatin1(data.title), mainX, mainY)
+      doc.text(sanitizeText(data.title), mainX, mainY)
       mainY += 5
     }
 
@@ -429,7 +431,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       
       doc.setFont(template.fonts.body, 'normal')
       doc.setFontSize(10)
-      const summaryLines = doc.splitTextToSize(utf8ToLatin1(data.summary), mainWidth - 25)
+      const summaryLines = doc.splitTextToSize(sanitizeText(data.summary), mainWidth - 25)
       doc.text(summaryLines, mainX, mainY)
       mainY += summaryLines.length * 5 + 8
     }
@@ -443,27 +445,30 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       mainY += 8
 
       data.workExperience.forEach(job => {
+        // Sätt alltid rätt färg för jobbtitel
+        doc.setTextColor(...template.colors.text as [number, number, number])
         doc.setFont(template.fonts.heading, 'bold')
         doc.setFontSize(11)
-        doc.text(utf8ToLatin1(job.title), mainX, mainY)
-        
+        doc.text(sanitizeText(job.title), mainX, mainY)
+
         const dateText = `${job.startDate} - ${job.current ? 'Nu' : job.endDate}`
         doc.setFont(template.fonts.body, 'normal')
         doc.setFontSize(9)
         doc.setTextColor(...template.colors.accent as [number, number, number])
         const dateWidth = doc.getTextWidth(dateText)
         doc.text(dateText, pageWidth - margin - dateWidth, mainY)
-        
+
         mainY += 5
         doc.setFontSize(10)
-        const companyText = utf8ToLatin1(`${job.company}${job.location ? `, ${job.location}` : ''}`)
+        // Företagsnamn behåller accent-färg
+        const companyText = sanitizeText(`${job.company}${job.location ? `, ${job.location}` : ''}`)
         doc.text(companyText, mainX, mainY)
         mainY += 5
-        
+
         if (job.description) {
           doc.setTextColor(...template.colors.muted as [number, number, number])
           doc.setFontSize(9)
-          const descLines = doc.splitTextToSize(utf8ToLatin1(job.description), mainWidth - 25)
+          const descLines = doc.splitTextToSize(sanitizeText(job.description), mainWidth - 25)
           doc.text(descLines, mainX, mainY)
           mainY += descLines.length * 4 + 6
         } else {
@@ -484,7 +489,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       data.education.forEach(edu => {
         doc.setFont(template.fonts.heading, 'bold')
         doc.setFontSize(11)
-        doc.text(utf8ToLatin1(edu.degree), mainX, mainY)
+        doc.text(sanitizeText(edu.degree), mainX, mainY)
         
         const eduDate = `${edu.startDate} - ${edu.endDate}`
         doc.setFont(template.fonts.body, 'normal')
@@ -495,7 +500,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
         
         mainY += 5
         doc.setFontSize(10)
-        doc.text(utf8ToLatin1(edu.school), mainX, mainY)
+        doc.text(sanitizeText(edu.school), mainX, mainY)
         mainY += 6
       })
     }
@@ -552,25 +557,25 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     if (isExecutive) {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(28)
-      doc.text(utf8ToLatin1(`${data.firstName} ${data.lastName}`), margin + (data.profileImage ? 45 : 0), headerY)
+      doc.text(sanitizeText(`${data.firstName} ${data.lastName}`), margin + (data.profileImage ? 45 : 0), headerY)
       
       headerY += 10
       if (data.title) {
         doc.setFont(template.fonts.heading, 'italic')
         doc.setFontSize(16)
-        doc.text(utf8ToLatin1(data.title), margin + (data.profileImage ? 45 : 0), headerY)
+        doc.text(sanitizeText(data.title), margin + (data.profileImage ? 45 : 0), headerY)
         headerY += 8
       }
     } else {
       doc.setFont(template.fonts.heading, 'bold')
       doc.setFontSize(24)
-      doc.text(utf8ToLatin1(`${data.firstName} ${data.lastName}`), margin + (data.profileImage ? 45 : 0), headerY)
+      doc.text(sanitizeText(`${data.firstName} ${data.lastName}`), margin + (data.profileImage ? 45 : 0), headerY)
       
       headerY += 10
       if (data.title) {
         doc.setFont(template.fonts.body, 'normal')
         doc.setFontSize(14)
-        doc.text(utf8ToLatin1(data.title), margin + (data.profileImage ? 45 : 0), headerY)
+        doc.text(sanitizeText(data.title), margin + (data.profileImage ? 45 : 0), headerY)
         headerY += 6
       }
     }
@@ -586,7 +591,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     if (data.location) contacts.push(data.location)
     
     if (contacts.length > 0) {
-      doc.text(utf8ToLatin1(contacts.join(' | ')), margin + (data.profileImage ? 45 : 0), headerY)
+      doc.text(sanitizeText(contacts.join(' | ')), margin + (data.profileImage ? 45 : 0), headerY)
     }
 
     // Huvudinnehåll
@@ -603,7 +608,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       
       doc.setFont(template.fonts.body, 'normal')
       doc.setFontSize(10)
-      const summaryLines = doc.splitTextToSize(utf8ToLatin1(data.summary), colWidth + 40)
+      const summaryLines = doc.splitTextToSize(sanitizeText(data.summary), colWidth + 40)
       doc.text(summaryLines, margin, mainY)
       mainY += summaryLines.length * 5 + 8
     }
@@ -619,7 +624,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFontSize(9)
       doc.setTextColor(...template.colors.muted as [number, number, number])
       
-      const skillText = data.skills.map(s => utf8ToLatin1(getSkillName(s))).join('  •  ')
+      const skillText = data.skills.map(s => sanitizeText(getSkillName(s))).join('  •  ')
       const skillLines = doc.splitTextToSize(skillText, contentWidth)
       doc.text(skillLines, margin, mainY)
       mainY += skillLines.length * 4 + 8
@@ -640,22 +645,24 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.body, 'normal')
       
       data.workExperience.forEach(job => {
+        // Sätt rätt färg för jobbtitel
+        doc.setTextColor(...template.colors.text as [number, number, number])
         doc.setFont(template.fonts.heading, 'bold')
         doc.setFontSize(10)
-        doc.text(utf8ToLatin1(job.title), margin, expRowY)
+        doc.text(sanitizeText(job.title), margin, expRowY)
         expRowY += 4
-        
+
         doc.setFont(template.fonts.body, 'normal')
         doc.setFontSize(9)
         doc.setTextColor(...template.colors.accent as [number, number, number])
         const dateText = `${job.startDate} - ${job.current ? 'Nu' : job.endDate}`
-        doc.text(`${utf8ToLatin1(job.company)}  •  ${dateText}`, margin, expRowY)
+        doc.text(`${sanitizeText(job.company)}  •  ${dateText}`, margin, expRowY)
         expRowY += 4
-        
+
         if (job.description) {
           doc.setTextColor(...template.colors.muted as [number, number, number])
           doc.setFontSize(8)
-          const descLines = doc.splitTextToSize(utf8ToLatin1(job.description), colWidth)
+          const descLines = doc.splitTextToSize(sanitizeText(job.description), colWidth)
           doc.text(descLines, margin, expRowY)
           expRowY += descLines.length * 3.5 + 4
         } else {
@@ -677,17 +684,19 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFont(template.fonts.body, 'normal')
       
       data.education.forEach(edu => {
+        // Sätt rätt färg för utbildningstitel
+        doc.setTextColor(...template.colors.text as [number, number, number])
         doc.setFont(template.fonts.heading, 'bold')
         doc.setFontSize(10)
-        doc.text(utf8ToLatin1(edu.degree), rightX, eduRowY)
+        doc.text(sanitizeText(edu.degree), rightX, eduRowY)
         eduRowY += 4
-        
+
         doc.setFont(template.fonts.body, 'normal')
         doc.setFontSize(9)
         doc.setTextColor(...template.colors.accent as [number, number, number])
-        doc.text(utf8ToLatin1(edu.school), rightX, eduRowY)
+        doc.text(sanitizeText(edu.school), rightX, eduRowY)
         eduRowY += 4
-        
+
         doc.setTextColor(...template.colors.muted as [number, number, number])
         doc.setFontSize(8)
         doc.text(`${edu.startDate} - ${edu.endDate}`, rightX, eduRowY)
@@ -736,7 +745,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     doc.setTextColor(255, 255, 255)
     doc.setFont(template.fonts.heading, 'bold')
     doc.setFontSize(18)
-    const nameText = utf8ToLatin1(`${data.firstName} ${data.lastName}`)
+    const nameText = sanitizeText(`${data.firstName} ${data.lastName}`)
     const nameWidth = doc.getTextWidth(nameText)
     doc.text(nameText, (leftWidth - nameWidth) / 2, leftY)
     leftY += 8
@@ -744,7 +753,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     if (data.title) {
       doc.setFont(template.fonts.body, 'normal')
       doc.setFontSize(11)
-      const titleText = utf8ToLatin1(data.title)
+      const titleText = sanitizeText(data.title)
       const titleWidth = doc.getTextWidth(titleText)
       doc.text(titleText, (leftWidth - titleWidth) / 2, leftY)
       leftY += 10
@@ -755,15 +764,15 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
     doc.setFontSize(9)
     
     if (data.email) {
-      doc.text(utf8ToLatin1(data.email), leftWidth / 2, leftY, { align: 'center' })
+      doc.text(sanitizeText(data.email), leftWidth / 2, leftY, { align: 'center' })
       leftY += 5
     }
     if (data.phone) {
-      doc.text(utf8ToLatin1(data.phone), leftWidth / 2, leftY, { align: 'center' })
+      doc.text(sanitizeText(data.phone), leftWidth / 2, leftY, { align: 'center' })
       leftY += 5
     }
     if (data.location) {
-      doc.text(utf8ToLatin1(data.location), leftWidth / 2, leftY, { align: 'center' })
+      doc.text(sanitizeText(data.location), leftWidth / 2, leftY, { align: 'center' })
       leftY += 5
     }
 
@@ -776,8 +785,8 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       leftY += 8
 
       data.languages.forEach(lang => {
-        const langName = utf8ToLatin1((lang as any).language || (lang as any).name || '')
-        const langLevel = utf8ToLatin1(lang.level || '')
+        const langName = sanitizeText((lang as any).language || (lang as any).name || '')
+        const langLevel = sanitizeText(lang.level || '')
         
         doc.setFont(template.fonts.body, 'normal')
         doc.setFontSize(9)
@@ -800,7 +809,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       
       doc.setFont(template.fonts.body, 'normal')
       doc.setFontSize(10)
-      const summaryLines = doc.splitTextToSize(utf8ToLatin1(data.summary), rightWidth)
+      const summaryLines = doc.splitTextToSize(sanitizeText(data.summary), rightWidth)
       doc.text(summaryLines, rightX, rightY)
       rightY += summaryLines.length * 5 + 8
     }
@@ -816,7 +825,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
         doc.setFont(template.fonts.heading, 'bold')
         doc.setFontSize(11)
         doc.setTextColor(...template.colors.text as [number, number, number])
-        doc.text(utf8ToLatin1(job.title), rightX, rightY)
+        doc.text(sanitizeText(job.title), rightX, rightY)
         
         const dateText = `${job.startDate} - ${job.current ? 'Nu' : job.endDate}`
         doc.setFontSize(9)
@@ -828,13 +837,13 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
         doc.setFont(template.fonts.body, 'normal')
         doc.setFontSize(10)
         doc.setTextColor(...template.colors.accent as [number, number, number])
-        doc.text(utf8ToLatin1(job.company), rightX, rightY)
+        doc.text(sanitizeText(job.company), rightX, rightY)
         rightY += 5
         
         if (job.description) {
           doc.setTextColor(...template.colors.muted as [number, number, number])
           doc.setFontSize(9)
-          const descLines = doc.splitTextToSize(utf8ToLatin1(job.description), rightWidth)
+          const descLines = doc.splitTextToSize(sanitizeText(job.description), rightWidth)
           doc.text(descLines, rightX, rightY)
           rightY += descLines.length * 4 + 5
         } else {
@@ -856,7 +865,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFontSize(9)
       doc.setTextColor(...template.colors.muted as [number, number, number])
       
-      const skillText = data.skills.map(s => utf8ToLatin1(getSkillName(s))).join('  •  ')
+      const skillText = data.skills.map(s => sanitizeText(getSkillName(s))).join('  •  ')
       const skillLines = doc.splitTextToSize(skillText, rightWidth)
       doc.text(skillLines, rightX, rightY)
       rightY += skillLines.length * 4 + 8
@@ -871,15 +880,17 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       rightY += 6
 
       data.education.forEach(edu => {
+        // Sätt rätt färg för utbildningstitel
+        doc.setTextColor(...template.colors.text as [number, number, number])
         doc.setFont(template.fonts.heading, 'bold')
         doc.setFontSize(10)
-        doc.text(utf8ToLatin1(edu.degree), rightX, rightY)
+        doc.text(sanitizeText(edu.degree), rightX, rightY)
         rightY += 4
-        
+
         doc.setFont(template.fonts.body, 'normal')
         doc.setFontSize(9)
         doc.setTextColor(...template.colors.accent as [number, number, number])
-        doc.text(utf8ToLatin1(edu.school), rightX, rightY)
+        doc.text(sanitizeText(edu.school), rightX, rightY)
         rightY += 4
         
         doc.setTextColor(...template.colors.muted as [number, number, number])
@@ -899,15 +910,15 @@ export async function generateJobPDF(job: JobData): Promise<Blob> {
   const doc = new jsPDF()
   
   doc.setFontSize(20)
-  doc.text(utf8ToLatin1(job.title), 20, 30)
+  doc.text(sanitizeText(job.title), 20, 30)
   
   doc.setFontSize(12)
-  doc.text(utf8ToLatin1(job.company), 20, 45)
-  doc.text(utf8ToLatin1(`${job.location || ''} • ${job.type || ''}`), 20, 55)
+  doc.text(sanitizeText(job.company), 20, 45)
+  doc.text(sanitizeText(`${job.location || ''} • ${job.type || ''}`), 20, 55)
   
   doc.setFontSize(10)
   const description = job.description || ''
-  const splitDescription = doc.splitTextToSize(utf8ToLatin1(description), 170)
+  const splitDescription = doc.splitTextToSize(sanitizeText(description), 170)
   doc.text(splitDescription, 20, 70)
   
   return doc.output('blob')
@@ -930,15 +941,15 @@ export async function generateApplicationHistoryPDF(applications: any[]): Promis
     }
     
     doc.setFontSize(12)
-    doc.text(utf8ToLatin1(`${index + 1}. ${app.jobTitle || app.job_title || ''}`), 20, y)
+    doc.text(sanitizeText(`${index + 1}. ${app.jobTitle || app.job_title || ''}`), 20, y)
     y += 10
     
     doc.setFontSize(10)
-    doc.text(utf8ToLatin1(`Företag: ${app.company || ''}`), 20, y)
+    doc.text(sanitizeText(`Företag: ${app.company || ''}`), 20, y)
     y += 7
-    doc.text(utf8ToLatin1(`Status: ${app.status || ''}`), 20, y)
+    doc.text(sanitizeText(`Status: ${app.status || ''}`), 20, y)
     y += 7
-    doc.text(utf8ToLatin1(`Datum: ${app.appliedDate || app.applied_at || ''}`), 20, y)
+    doc.text(sanitizeText(`Datum: ${app.appliedDate || app.applied_at || ''}`), 20, y)
     y += 15
   })
   
