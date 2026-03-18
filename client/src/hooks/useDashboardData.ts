@@ -140,6 +140,9 @@ function getDefaultDashboardData(): DashboardWidgetData
 // Funktion för att hämta all dashboard-data
 async function fetchDashboardData(): Promise<DashboardWidgetData> {
   try {
+  // Hämta användare EN gång och återanvänd
+  const { data: { user } } = await supabase.auth.getUser()
+
   // Parallella anrop för bättre prestanda
   const [
     cv,
@@ -165,10 +168,10 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     activityApi.getActivities().catch(() => []),
     activityApi.getCount('application_sent').catch(() => 0),
     cvApi.getVersions().catch(() => []),
-    fetchExerciseProgress(),
-    fetchCalendarEvents(),
-    fetchQuests(),
-    fetchUserStreaks(),
+    fetchExerciseProgress(user?.id),
+    fetchCalendarEvents(user?.id),
+    fetchQuests(user?.id),
+    fetchUserStreaks(user?.id),
     moodApi.getTodaysMood().catch(() => null),
     moodApi.getStreak().catch(() => 0),
   ])
@@ -386,16 +389,15 @@ export function getDefaultDashboardData(): DashboardWidgetData {
 }
 
 // Hämta övningsprogress från Supabase
-async function fetchExerciseProgress(): Promise<ExerciseAnswer[]> {
+async function fetchExerciseProgress(userId?: string): Promise<ExerciseAnswer[]> {
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return []
-    
+    if (!userId) return []
+
     const { data, error } = await supabase
       .from('exercise_answers')
       .select('*')
-      .eq('user_id', user.id)
-    
+      .eq('user_id', userId)
+
     if (error) {
       // Table might not exist yet, return empty array
       console.warn('Exercise answers not available:', error.message)
@@ -408,16 +410,15 @@ async function fetchExerciseProgress(): Promise<ExerciseAnswer[]> {
 }
 
 // Hämta kalenderhändelser från Supabase
-async function fetchCalendarEvents(): Promise<CalendarEvent[]> {
+async function fetchCalendarEvents(userId?: string): Promise<CalendarEvent[]> {
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return []
-    
+    if (!userId) return []
+
     const { data, error } = await supabase
       .from('calendar_events')
       .select('*')
-      .eq('user_id', user.id)
-    
+      .eq('user_id', userId)
+
     if (error) {
       // Table might not exist yet, return empty array
       console.warn('Calendar events not available:', error.message)
@@ -430,17 +431,16 @@ async function fetchCalendarEvents(): Promise<CalendarEvent[]> {
 }
 
 // Hämta quests från Supabase
-async function fetchQuests(): Promise<Quest[]> {
+async function fetchQuests(userId?: string): Promise<Quest[]> {
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return []
-    
+    if (!userId) return []
+
     const { data, error } = await supabase
       .from('quests')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('assigned_date', new Date().toISOString().split('T')[0])
-    
+
     if (error) {
       // Table might not exist yet, return empty array
       console.warn('Quests not available:', error.message)
@@ -453,18 +453,17 @@ async function fetchQuests(): Promise<Quest[]> {
 }
 
 // Hämta user streaks från Supabase
-async function fetchUserStreaks(): Promise<UserStreaks | null> {
+async function fetchUserStreaks(userId?: string): Promise<UserStreaks | null> {
   try {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) return null
-    
+    if (!userId) return null
+
     const { data, error } = await supabase
       .from('user_streaks')
       .select('*')
-      .eq('user_id', user.id)
+      .eq('user_id', userId)
       .eq('streak_type', 'general')
       .maybeSingle()
-    
+
     if (error) {
       console.warn('User streaks not available:', error.message)
       return null
@@ -484,6 +483,8 @@ export function useDashboardDataQuery() {
     gcTime: 10 * 60 * 1000, // 10 minuter
     retry: 1,
     refetchOnWindowFocus: false,
+    // Visa default data direkt medan riktig data laddas
+    placeholderData: getDefaultDashboardData,
   })
 }
 

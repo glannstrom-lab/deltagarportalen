@@ -673,8 +673,9 @@ export default function OverviewTab() {
     )
   }
 
-  // Loading
-  if (isLoading || !prefsLoaded) {
+  // Loading - only wait for dashboard data, not preferences
+  // (preferences will use default widgets while loading)
+  if (isLoading) {
     return (
       <div className="space-y-4">
         <div className="h-20 sm:h-24 bg-slate-100 rounded-xl sm:rounded-2xl animate-pulse" />
