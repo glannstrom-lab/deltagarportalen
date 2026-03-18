@@ -171,15 +171,15 @@ function ScoreFilter({
   ]
 
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-slate-600">Minst:</span>
-      <div className="flex gap-1">
+    <div className="flex items-center gap-2 w-full sm:w-auto">
+      <span className="text-xs sm:text-sm text-slate-600 shrink-0">Minst:</span>
+      <div className="flex gap-1 flex-1 sm:flex-none">
         {options.map(opt => (
           <button
             key={opt.value}
             onClick={() => onChange(opt.value)}
             className={cn(
-              "px-3 py-1.5 text-sm rounded-lg transition-colors",
+              "flex-1 sm:flex-none px-2 sm:px-3 py-1.5 text-xs sm:text-sm rounded-lg transition-colors",
               minScore === opt.value
                 ? "bg-indigo-600 text-white"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
@@ -353,20 +353,20 @@ export function MatchesTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-amber-500" />
-            Matchade jobb för dig
+          <h2 className="text-base sm:text-lg font-semibold text-slate-900 flex items-center gap-2">
+            <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
+            Matchade jobb
           </h2>
-          <p className="text-sm text-slate-500">
-            Baserat på {userSkills.length} kompetenser från ditt CV
+          <p className="text-xs sm:text-sm text-slate-500">
+            {userSkills.length} kompetenser från ditt CV
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
           <ScoreFilter minScore={minScore} onChange={setMinScore} />
-          <Button variant="outline" size="sm" onClick={loadMatchedJobs}>
+          <Button variant="outline" size="sm" onClick={loadMatchedJobs} className="w-full sm:w-auto justify-center">
             <RefreshCw className="w-4 h-4 mr-1" />
             Uppdatera
           </Button>
@@ -374,31 +374,31 @@ export function MatchesTab() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
-          <div className="flex items-center gap-2 mb-1">
-            <Award className="w-4 h-4 text-green-600" />
-            <span className="text-sm font-medium text-green-700">Bra matchningar</span>
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-3 sm:p-4 border border-green-100">
+          <div className="flex items-center gap-1 sm:gap-2 mb-1">
+            <Award className="w-3 h-3 sm:w-4 sm:h-4 text-green-600" />
+            <span className="text-xs sm:text-sm font-medium text-green-700">Bra</span>
           </div>
-          <p className="text-2xl font-bold text-green-700">
+          <p className="text-xl sm:text-2xl font-bold text-green-700">
             {matchedJobs.filter(m => m.matchScore >= 70).length}
           </p>
         </div>
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
-          <div className="flex items-center gap-2 mb-1">
-            <TrendingUp className="w-4 h-4 text-amber-600" />
-            <span className="text-sm font-medium text-amber-700">Möjliga</span>
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-3 sm:p-4 border border-amber-100">
+          <div className="flex items-center gap-1 sm:gap-2 mb-1">
+            <TrendingUp className="w-3 h-3 sm:w-4 sm:h-4 text-amber-600" />
+            <span className="text-xs sm:text-sm font-medium text-amber-700">Möjliga</span>
           </div>
-          <p className="text-2xl font-bold text-amber-700">
+          <p className="text-xl sm:text-2xl font-bold text-amber-700">
             {matchedJobs.filter(m => m.matchScore >= 50 && m.matchScore < 70).length}
           </p>
         </div>
-        <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-4 border border-slate-100">
-          <div className="flex items-center gap-2 mb-1">
-            <Briefcase className="w-4 h-4 text-slate-600" />
-            <span className="text-sm font-medium text-slate-700">Totalt</span>
+        <div className="bg-gradient-to-br from-slate-50 to-gray-50 rounded-xl p-3 sm:p-4 border border-slate-100">
+          <div className="flex items-center gap-1 sm:gap-2 mb-1">
+            <Briefcase className="w-3 h-3 sm:w-4 sm:h-4 text-slate-600" />
+            <span className="text-xs sm:text-sm font-medium text-slate-700">Totalt</span>
           </div>
-          <p className="text-2xl font-bold text-slate-700">
+          <p className="text-xl sm:text-2xl font-bold text-slate-700">
             {matchedJobs.length}
           </p>
         </div>

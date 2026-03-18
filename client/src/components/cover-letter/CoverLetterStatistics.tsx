@@ -80,7 +80,7 @@ export function CoverLetterStatistics() {
   return (
     <div className="space-y-6">
       {/* Översiktskort */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
         <StatCard
           icon={FileText}
           value={mockStats.totalLetters}
@@ -113,7 +113,7 @@ export function CoverLetterStatistics() {
       </div>
 
       {/* Main content grid */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid gap-4 sm:gap-6 lg:grid-cols-3">
         {/* Vänster kolumn - Trend och insights */}
         <div className="lg:col-span-2 space-y-6">
           {/* Aktivitet över tid */}
@@ -318,14 +318,14 @@ export function CoverLetterStatistics() {
 
 // Hjälpkomponenter
 
-function StatCard({ 
-  icon: Icon, 
-  value, 
-  label, 
-  subtext, 
+function StatCard({
+  icon: Icon,
+  value,
+  label,
+  subtext,
   color,
   trend
-}: { 
+}: {
   icon: React.ElementType
   value: string | number
   label: string
@@ -341,25 +341,25 @@ function StatCard({
   }
 
   return (
-    <Card className="p-5">
+    <Card className="p-3 sm:p-5">
       <div className="flex items-start justify-between">
-        <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center', colors[color].bg)}>
-          <Icon className={cn('w-5 h-5', colors[color].icon)} />
+        <div className={cn('w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center', colors[color].bg)}>
+          <Icon className={cn('w-4 h-4 sm:w-5 sm:h-5', colors[color].icon)} />
         </div>
         {trend && (
           <div className={cn(
             'flex items-center gap-0.5 text-xs font-medium',
             trend === 'up' ? 'text-emerald-600' : 'text-rose-600'
           )}>
-            {trend === 'up' ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+            {trend === 'up' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
             {trend === 'up' ? '+' : '-'}{Math.floor(Math.random() * 10)}%
           </div>
         )}
       </div>
-      <div className="mt-3">
-        <div className={cn('text-2xl font-bold', colors[color].text)}>{value}</div>
-        <div className="text-sm font-medium text-slate-700">{label}</div>
-        <div className="text-xs text-slate-500 mt-0.5">{subtext}</div>
+      <div className="mt-2 sm:mt-3">
+        <div className={cn('text-xl sm:text-2xl font-bold', colors[color].text)}>{value}</div>
+        <div className="text-xs sm:text-sm font-medium text-slate-700">{label}</div>
+        <div className="text-xs text-slate-500 mt-0.5 hidden sm:block">{subtext}</div>
       </div>
     </Card>
   )

@@ -166,28 +166,28 @@ function StatsHeader({ jobs }: { jobs: SavedJob[] }) {
     : 0
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mb-6">
-      <div className="bg-white rounded-xl border border-slate-200 p-4 text-center">
-        <div className="text-2xl font-bold text-slate-900">{stats.total}</div>
-        <div className="text-xs text-slate-500">Totalt</div>
+    <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
+      <div className="bg-white rounded-xl border border-slate-200 p-2 sm:p-4 text-center">
+        <div className="text-lg sm:text-2xl font-bold text-slate-900">{stats.total}</div>
+        <div className="text-[10px] sm:text-xs text-slate-500">Totalt</div>
       </div>
-      <div className="bg-blue-50 rounded-xl border border-blue-200 p-4 text-center">
-        <div className="text-2xl font-bold text-blue-600">{stats.applied}</div>
-        <div className="text-xs text-blue-600">Ansökt</div>
+      <div className="bg-blue-50 rounded-xl border border-blue-200 p-2 sm:p-4 text-center">
+        <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.applied}</div>
+        <div className="text-[10px] sm:text-xs text-blue-600">Ansökt</div>
       </div>
-      <div className="bg-amber-50 rounded-xl border border-amber-200 p-4 text-center">
-        <div className="text-2xl font-bold text-amber-600">{stats.interview}</div>
-        <div className="text-xs text-amber-600">Intervju</div>
+      <div className="bg-amber-50 rounded-xl border border-amber-200 p-2 sm:p-4 text-center">
+        <div className="text-lg sm:text-2xl font-bold text-amber-600">{stats.interview}</div>
+        <div className="text-[10px] sm:text-xs text-amber-600">Intervju</div>
       </div>
-      <div className="bg-green-50 rounded-xl border border-green-200 p-4 text-center">
-        <div className="text-2xl font-bold text-green-600">{stats.offer}</div>
-        <div className="text-xs text-green-600">Erbjudande</div>
+      <div className="bg-green-50 rounded-xl border border-green-200 p-2 sm:p-4 text-center hidden sm:block">
+        <div className="text-lg sm:text-2xl font-bold text-green-600">{stats.offer}</div>
+        <div className="text-[10px] sm:text-xs text-green-600">Erbjudande</div>
       </div>
-      <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-4 text-center col-span-2 sm:col-span-1">
-        <div className="text-2xl font-bold text-indigo-600">{responseRate}%</div>
-        <div className="text-xs text-indigo-600 flex items-center justify-center gap-1">
+      <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-2 sm:p-4 text-center hidden sm:block">
+        <div className="text-lg sm:text-2xl font-bold text-indigo-600">{responseRate}%</div>
+        <div className="text-[10px] sm:text-xs text-indigo-600 flex items-center justify-center gap-1">
           <TrendingUp className="w-3 h-3" />
-          Svarsfrekvens
+          Svar
         </div>
       </div>
     </div>

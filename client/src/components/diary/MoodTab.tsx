@@ -372,66 +372,66 @@ function MoodStats() {
     .slice(0, 3)
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card className="p-4">
-        <div className="flex items-center gap-2 text-slate-500 mb-1">
-          <Smile className="w-4 h-4" />
-          <span className="text-sm font-medium">Snitthumör</span>
+    <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+          <Smile className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="text-xs sm:text-sm font-medium">Humör</span>
         </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-slate-900">
+        <div className="flex items-baseline gap-1 sm:gap-2">
+          <span className="text-lg sm:text-2xl font-bold text-slate-900">
             {stats.averageMood.toFixed(1)}
           </span>
-          <span className="text-slate-500">/5</span>
+          <span className="text-xs sm:text-sm text-slate-500">/5</span>
         </div>
       </Card>
 
-      <Card className="p-4">
-        <div className="flex items-center gap-2 text-slate-500 mb-1">
-          <Activity className="w-4 h-4" />
-          <span className="text-sm font-medium">Veckotrend</span>
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+          <Activity className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="text-xs sm:text-sm font-medium">Trend</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           {trend === 'up' && (
             <>
-              <TrendingUp className="w-5 h-5 text-green-500" />
-              <span className="text-green-600 font-medium">Uppåt</span>
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-green-500" />
+              <span className="text-sm text-green-600 font-medium">Uppåt</span>
             </>
           )}
           {trend === 'down' && (
             <>
-              <TrendingDown className="w-5 h-5 text-orange-500" />
-              <span className="text-orange-600 font-medium">Nedåt</span>
+              <TrendingDown className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
+              <span className="text-sm text-orange-600 font-medium">Nedåt</span>
             </>
           )}
           {trend === 'same' && (
             <>
-              <Minus className="w-5 h-5 text-slate-400" />
-              <span className="text-slate-600 font-medium">Stabil</span>
+              <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+              <span className="text-sm text-slate-600 font-medium">Stabil</span>
             </>
           )}
         </div>
       </Card>
 
-      <Card className="p-4">
-        <div className="flex items-center gap-2 text-slate-500 mb-1">
-          <Battery className="w-4 h-4" />
-          <span className="text-sm font-medium">Snittenergi</span>
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+          <Battery className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="text-xs sm:text-sm font-medium">Energi</span>
         </div>
-        <div className="flex items-baseline gap-2">
-          <span className="text-2xl font-bold text-slate-900">
+        <div className="flex items-baseline gap-1 sm:gap-2">
+          <span className="text-lg sm:text-2xl font-bold text-slate-900">
             {stats.averageEnergy.toFixed(1)}
           </span>
-          <span className="text-slate-500">/5</span>
+          <span className="text-xs sm:text-sm text-slate-500">/5</span>
         </div>
       </Card>
 
-      <Card className="p-4">
-        <div className="flex items-center gap-2 text-slate-500 mb-1">
-          <Calendar className="w-4 h-4" />
-          <span className="text-sm font-medium">Loggade dagar</span>
+      <Card className="p-3 sm:p-4">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+          <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
+          <span className="text-xs sm:text-sm font-medium">Dagar</span>
         </div>
-        <span className="text-2xl font-bold text-slate-900">
+        <span className="text-lg sm:text-2xl font-bold text-slate-900">
           {stats.totalLogs}
         </span>
       </Card>

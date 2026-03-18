@@ -162,35 +162,77 @@ export function CoverLetterApplications() {
   return (
     <div className="space-y-4">
       {/* Header med sök och filter */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="flex gap-2 flex-1 max-w-lg">
+      <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-between sm:items-center">
+        <div className="flex gap-2 flex-1 w-full sm:max-w-lg">
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
             <input
               type="text"
-              placeholder="Sök bland ansökningar..."
+              placeholder="Sök..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+              className="w-full pl-10 pr-4 py-2.5 sm:py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-base sm:text-sm"
             />
           </div>
-          <Button 
-            variant="outline" 
-            className={cn('gap-2', showFilters && 'bg-slate-100')}
+          <Button
+            variant="outline"
+            className={cn('gap-2 shrink-0', showFilters && 'bg-slate-100')}
             onClick={() => setShowFilters(!showFilters)}
           >
             <Filter size={18} />
-            Filter
+            <span className="hidden sm:inline">Filter</span>
           </Button>
         </div>
-        <Button className="gap-2">
+        <Button className="gap-2 w-full sm:w-auto justify-center">
           <Plus size={18} />
-          Registrera ansökan
+          <span className="sm:hidden">Ny ansökan</span>
+          <span className="hidden sm:inline">Registrera ansökan</span>
         </Button>
       </div>
 
-      {/* Kanban board */}
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      {/* Mobile: Vertikala kolumner / Desktop: Horisontell Kanban */}
+      {/* Mobile view - collapsed columns */}
+      <div className="sm:hidden space-y-4">
+        {columns.map((column) => {
+          const columnApps = getApplicationsByStatus(column.id)
+          const Icon = column.icon
+
+          return (
+            <div key={column.id} className="bg-slate-50 rounded-xl p-3">
+              <div className="flex items-center justify-between mb-3">
+                <div className="flex items-center gap-2">
+                  <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center', column.color)}>
+                    <Icon size={16} />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-slate-800 text-sm">{column.label}</h3>
+                  </div>
+                </div>
+                <span className="text-xs bg-white px-2 py-1 rounded-full text-slate-600">{columnApps.length}</span>
+              </div>
+
+              {columnApps.length > 0 ? (
+                <div className="space-y-2">
+                  {columnApps.map((app) => (
+                    <ApplicationCard
+                      key={app.id}
+                      application={app}
+                      onDragStart={() => {}}
+                      formatDate={formatDate}
+                      getDaysSince={getDaysSince}
+                    />
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-slate-400 text-center py-4">Inga ansökningar</p>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Desktop view - Kanban board */}
+      <div className="hidden sm:flex gap-4 overflow-x-auto pb-4">
         {columns.map((column) => {
           const columnApps = getApplicationsByStatus(column.id)
           const Icon = column.icon
@@ -198,7 +240,7 @@ export function CoverLetterApplications() {
           return (
             <div
               key={column.id}
-              className="flex-shrink-0 w-80"
+              className="flex-shrink-0 w-64 lg:w-72"
               onDragOver={handleDragOver}
               onDrop={(e) => handleDrop(e, column.id)}
             >

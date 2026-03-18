@@ -267,27 +267,27 @@ export function JournalTab() {
   return (
     <div className="space-y-6">
       {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-4">
-        <Card className="p-4 bg-gradient-to-br from-violet-50 to-purple-50 border-violet-100">
-          <div className="flex items-center gap-2 text-violet-600 mb-1">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-medium">Streak</span>
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <Card className="p-3 sm:p-4 bg-gradient-to-br from-violet-50 to-purple-50 border-violet-100">
+          <div className="flex items-center gap-1 sm:gap-2 text-violet-600 mb-1">
+            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-sm font-medium">Streak</span>
           </div>
-          <p className="text-2xl font-bold text-violet-700">{currentStreak} 🔥</p>
+          <p className="text-lg sm:text-2xl font-bold text-violet-700">{currentStreak} 🔥</p>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-2 text-slate-500 mb-1">
-            <BookHeart className="w-4 h-4" />
-            <span className="text-sm font-medium">Inlägg</span>
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+            <BookHeart className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-sm font-medium">Inlägg</span>
           </div>
-          <p className="text-2xl font-bold text-slate-900">{totalEntries}</p>
+          <p className="text-lg sm:text-2xl font-bold text-slate-900">{totalEntries}</p>
         </Card>
-        <Card className="p-4">
-          <div className="flex items-center gap-2 text-slate-500 mb-1">
-            <Edit2 className="w-4 h-4" />
-            <span className="text-sm font-medium">Ord totalt</span>
+        <Card className="p-3 sm:p-4">
+          <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+            <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
+            <span className="text-xs sm:text-sm font-medium">Ord</span>
           </div>
-          <p className="text-2xl font-bold text-slate-900">{totalWords.toLocaleString()}</p>
+          <p className="text-lg sm:text-2xl font-bold text-slate-900">{totalWords.toLocaleString()}</p>
         </Card>
       </div>
 

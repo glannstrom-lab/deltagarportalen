@@ -314,8 +314,33 @@ export function CoverLetterWrite() {
   return (
     <div className="max-w-4xl mx-auto">
       {/* Step indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      <div className="mb-6 sm:mb-8">
+        {/* Mobile: Compact step indicator */}
+        <div className="flex sm:hidden items-center justify-center gap-2 mb-3">
+          {steps.map((step) => {
+            const isActive = step.id === currentStep
+            const isCompleted = step.id < currentStep
+            return (
+              <div
+                key={step.id}
+                className={cn(
+                  'w-2.5 h-2.5 rounded-full transition-colors',
+                  isActive && 'bg-indigo-600 w-8',
+                  isCompleted && 'bg-emerald-500',
+                  !isActive && !isCompleted && 'bg-slate-200'
+                )}
+              />
+            )
+          })}
+        </div>
+        <div className="sm:hidden text-center">
+          <span className="text-sm font-medium text-indigo-600">
+            Steg {currentStep}: {steps[currentStep - 1].title}
+          </span>
+        </div>
+
+        {/* Desktop: Full step indicator */}
+        <div className="hidden sm:flex items-center justify-between">
           {steps.map((step, index) => {
             const Icon = step.icon
             const isActive = step.id === currentStep
@@ -362,21 +387,23 @@ export function CoverLetterWrite() {
 
       {/* CV Status Banner */}
       {cvData && (
-        <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-              <User className="w-5 h-5 text-emerald-600" />
+        <div className="mb-4 sm:mb-6 p-3 sm:p-4 bg-emerald-50 border border-emerald-200 rounded-xl">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
+                <User className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <h4 className="font-medium text-emerald-800 text-sm sm:text-base">
+                  CV-data hämtad
+                </h4>
+                <p className="text-xs sm:text-sm text-emerald-700 truncate">
+                  {cvData.first_name} {cvData.last_name} • {cvData.skills?.length || 0} kompetenser
+                </p>
+              </div>
             </div>
-            <div className="flex-1">
-              <h4 className="font-medium text-emerald-800">
-                CV-data hämtad
-              </h4>
-              <p className="text-sm text-emerald-700">
-                {cvData.first_name} {cvData.last_name} • {cvData.title || 'Ingen titel'} • {cvData.skills?.length || 0} kompetenser
-              </p>
-            </div>
-            <div className="text-sm text-emerald-600">
-              AI kommer använda detta
+            <div className="text-xs sm:text-sm text-emerald-600 sm:shrink-0 ml-11 sm:ml-0">
+              AI använder detta
             </div>
           </div>
         </div>
@@ -450,31 +477,34 @@ export function CoverLetterWrite() {
       </Card>
 
       {/* Navigation */}
-      <div className="flex justify-between mt-6">
+      <div className="flex justify-between gap-3 mt-6">
         <Button
           variant="outline"
           onClick={handleBack}
           disabled={currentStep === 1}
-          className="gap-2"
+          className="gap-1 sm:gap-2 flex-1 sm:flex-none"
         >
           <ChevronLeft size={18} />
-          Tillbaka
+          <span className="hidden sm:inline">Tillbaka</span>
+          <span className="sm:hidden">Bakåt</span>
         </Button>
 
         {currentStep < 5 ? (
           <Button
             onClick={handleNext}
             disabled={!canProceed() || isGenerating}
-            className="gap-2"
+            className="gap-1 sm:gap-2 flex-1 sm:flex-none"
           >
             {isGenerating ? (
               <>
                 <Loader2 size={18} className="animate-spin" />
-                Skapar brev...
+                <span className="hidden sm:inline">Skapar brev...</span>
+                <span className="sm:hidden">Skapar...</span>
               </>
             ) : (
               <>
-                Nästa steg
+                <span className="hidden sm:inline">Nästa steg</span>
+                <span className="sm:hidden">Nästa</span>
                 <ChevronRight size={18} />
               </>
             )}
@@ -482,10 +512,11 @@ export function CoverLetterWrite() {
         ) : (
           <Button
             onClick={handleSave}
-            className="gap-2 bg-emerald-600 hover:bg-emerald-700"
+            className="gap-1 sm:gap-2 flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700"
           >
             <Save size={18} />
-            Spara brev
+            <span className="hidden sm:inline">Spara brev</span>
+            <span className="sm:hidden">Spara</span>
           </Button>
         )}
       </div>
@@ -807,7 +838,7 @@ function Step3Customize({
         <label className="block text-sm font-medium text-slate-700 mb-3">
           Välj tonläge
         </label>
-        <div className="flex gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
           {[
             { id: 'professional', label: 'Professionell', desc: 'Balanserad och trygg' },
             { id: 'enthusiastic', label: 'Entusiastisk', desc: 'Energisk och passionerad' },
@@ -817,13 +848,13 @@ function Step3Customize({
               key={tone.id}
               onClick={() => setFormData({ ...formData, tone: tone.id })}
               className={cn(
-                'flex-1 p-3 rounded-lg border-2 text-left transition-all',
+                'p-3 rounded-lg border-2 text-left transition-all',
                 formData.tone === tone.id
                   ? 'border-indigo-500 bg-indigo-50'
                   : 'border-slate-200 hover:border-indigo-200'
               )}
             >
-              <div className="font-medium text-slate-800">{tone.label}</div>
+              <div className="font-medium text-slate-800 text-sm sm:text-base">{tone.label}</div>
               <div className="text-xs text-slate-500 mt-0.5">{tone.desc}</div>
             </button>
           ))}
