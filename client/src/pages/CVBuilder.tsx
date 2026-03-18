@@ -736,14 +736,11 @@ export default function CVBuilder() {
             {renderContent()}
           </div>
 
-          {/* Navigation */}
-          <div className="flex items-center justify-between mt-6">
+          {/* Navigation - Preview button removed, use FAB instead */}
+          <div className="flex items-center justify-between mt-6 pb-20 lg:pb-0">
             <button onClick={() => setStep(Math.max(1, step - 1))} disabled={step === 1} className="flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 disabled:opacity-50 font-medium">
               <ChevronLeft className="w-5 h-5" />
               <span className="hidden sm:inline">{t('cvBuilder.actions.previous')}</span>
-            </button>
-            <button onClick={() => setShowPreview(true)} className="lg:hidden flex items-center gap-2 px-4 py-2.5 border border-slate-300 rounded-xl text-slate-700 hover:bg-slate-50 font-medium">
-              <Eye className="w-4 h-4" /> {t('cvBuilder.actions.showCV')}
             </button>
             <button onClick={() => setStep(Math.min(STEPS.length, step + 1))} disabled={step === STEPS.length} className="flex items-center gap-2 px-4 py-2.5 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] disabled:opacity-50 font-medium">
               <span className="hidden sm:inline">{t('cvBuilder.actions.next')}</span>
