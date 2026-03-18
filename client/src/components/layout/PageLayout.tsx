@@ -47,7 +47,7 @@ export function PageLayout({
   const shouldShowTabs = tabs.length > 1 && showTabs
 
   return (
-    <div className={cn('space-y-6', className)}>
+    <div className={cn('space-y-4 sm:space-y-5 md:space-y-6', className)}>
       {/* Page Header with Tabs */}
       {showHeader && (title || shouldShowTabs) && (
         <PageHeader
@@ -58,7 +58,7 @@ export function PageLayout({
           actions={actions}
         />
       )}
-      
+
       {/* Page Content */}
       <div className={contentClassName}>
         {children}
@@ -119,20 +119,38 @@ export function PageSection({
 }: PageSectionProps) {
   return (
     <section className={cn(
-      'bg-white dark:bg-stone-900 rounded-2xl border-2 border-stone-200 dark:border-stone-700 overflow-hidden',
+      'bg-white dark:bg-stone-900',
+      'rounded-xl sm:rounded-2xl',
+      'border sm:border-2 border-stone-200 dark:border-stone-700 overflow-hidden',
       'hover:border-stone-300 dark:hover:border-stone-600 transition-colors duration-300',
       className
     )}>
       {(title || actions) && (
-        <div className="px-6 py-4 border-b-2 border-stone-100 dark:border-stone-800 flex items-center justify-between gap-4">
-          <div>
-            {title && <h2 className="text-lg font-bold text-stone-900 dark:text-stone-100">{title}</h2>}
-            {description && <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{description}</p>}
+        <div className={cn(
+          'px-4 py-3 sm:px-5 sm:py-4 md:px-6',
+          'border-b sm:border-b-2 border-stone-100 dark:border-stone-800',
+          'flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-4'
+        )}>
+          <div className="min-w-0 flex-1">
+            {title && (
+              <h2 className="text-base sm:text-lg font-bold text-stone-900 dark:text-stone-100 truncate">
+                {title}
+              </h2>
+            )}
+            {description && (
+              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5 sm:mt-1 line-clamp-2">
+                {description}
+              </p>
+            )}
           </div>
-          {actions && <div className="flex items-center gap-2">{actions}</div>}
+          {actions && (
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {actions}
+            </div>
+          )}
         </div>
       )}
-      <div className="p-6">
+      <div className="p-4 sm:p-5 md:p-6">
         {children}
       </div>
     </section>

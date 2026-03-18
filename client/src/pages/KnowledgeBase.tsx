@@ -209,14 +209,14 @@ export default function KnowledgeBase() {
       showTabs={false}
     >
       {/* Header */}
-      <div className="mb-8">
-        <p className="text-slate-600 max-w-2xl">
+      <div className="mb-6 sm:mb-8">
+        <p className="text-sm sm:text-base text-slate-600 max-w-2xl">
           {t('knowledgeBase.intro')}
         </p>
 
         {/* Energy indicator */}
         <div className={cn(
-          "inline-flex items-center gap-2 mt-4 px-4 py-2 rounded-full text-sm font-medium",
+          "inline-flex flex-wrap items-center gap-1.5 sm:gap-2 mt-3 sm:mt-4 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium",
           energyLevel === 'low' && "bg-sky-100 text-sky-800",
           energyLevel === 'medium' && "bg-amber-100 text-amber-800",
           energyLevel === 'high' && "bg-rose-100 text-rose-800",
@@ -225,7 +225,7 @@ export default function KnowledgeBase() {
           <span className="capitalize">
             {energyLevel === 'low' ? t('knowledgeBase.energyLow') : energyLevel === 'medium' ? t('knowledgeBase.energyMedium') : t('knowledgeBase.energyHigh')}
           </span>
-          <span className="opacity-70">
+          <span className="hidden sm:inline opacity-70">
             {energyLevel === 'low' && `• ${t('knowledgeBase.energyLowTip')}`}
             {energyLevel === 'medium' && `• ${t('knowledgeBase.energyMediumTip')}`}
             {energyLevel === 'high' && `• ${t('knowledgeBase.energyHighTip')}`}
@@ -234,12 +234,12 @@ export default function KnowledgeBase() {
       </div>
       
       {/* Tab navigation - using consistent PageTabs component */}
-      <div className="mb-8">
-        <PageTabs tabs={tabs} />
+      <div className="mb-6 sm:mb-8">
+        <PageTabs tabs={tabs} variant="glass" />
       </div>
-      
+
       {/* Tab content */}
-      <div className="min-h-[400px]">
+      <div className="min-h-[300px] sm:min-h-[400px]">
         {renderContent()}
       </div>
     </PageLayout>

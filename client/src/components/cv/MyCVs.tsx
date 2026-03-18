@@ -30,6 +30,7 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { cvApi } from '@/services/supabaseApi'
+import { userPreferencesApi } from '@/services/cloudStorage'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVPreview } from './CVPreview'
 import type { CVData } from '@/services/supabaseApi'
@@ -76,7 +77,11 @@ export function MyCVs() {
       setLoading(true)
       // Hämta från databasen
       const versions = await cvApi.getVersions()
-      
+
+      // Hämta standard-CV-id från användarinställningar
+      const prefs = await userPreferencesApi.get()
+      const defaultCVId = prefs?.default_cv_id || localStorage.getItem('default_cv_id')
+
       // Beräkna ATS-score för varje version om det inte redan finns
       const versionsWithScores = await Promise.all(
         versions.map(async (v: any) => {
@@ -86,11 +91,11 @@ export function MyCVs() {
           return {
             ...v,
             atsScore,
-            isDefault: v.is_default || false
+            isDefault: v.id === defaultCVId || v.is_default || false
           }
         })
       )
-      
+
       setCvs(versionsWithScores)
     } catch (error) {
       console.error('Fel vid laddning av CV:n:', error)
@@ -177,11 +182,17 @@ export function MyCVs() {
         ...cv,
         isDefault: cv.id === id
       })))
-      
-      // TODO: Uppdatera i databasen om vi vill spara standard-CV
+
+      // Spara till cloud storage och localStorage som fallback
+      await userPreferencesApi.update({ default_cv_id: id } as any)
+      localStorage.setItem('default_cv_id', id)
+
       showToast.success('Satt som standard-CV')
     } catch (error) {
-      showToast.error('Kunde inte sätta som standard')
+      console.error('Fel vid sparning av standard-CV:', error)
+      // Fallback till localStorage om cloud storage misslyckas
+      localStorage.setItem('default_cv_id', id)
+      showToast.success('Satt som standard-CV')
     } finally {
       setActionMenuOpen(null)
     }

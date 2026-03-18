@@ -183,9 +183,11 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
   // Variant: Glass - Glassmorphism effect
   const GlassTabs = () => (
     <div className={cn(
-      'flex items-center gap-1 p-1.5 overflow-x-auto',
-      'bg-white/60 backdrop-blur-xl rounded-2xl',
+      'flex items-center gap-1 p-1 sm:p-1.5 overflow-x-auto scrollbar-hide',
+      'bg-white/60 backdrop-blur-xl rounded-xl sm:rounded-2xl',
       'border border-white/40 shadow-lg shadow-slate-200/50',
+      // Hide scrollbar but keep functionality
+      '-mx-4 px-4 sm:mx-0 sm:px-0',
       className
     )}>
       {tabs.map((tab) => {
@@ -197,17 +199,19 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             key={tab.id}
             to={tab.path}
             className={cn(
-              'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-300',
+              'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg sm:rounded-xl',
+              'text-xs sm:text-sm font-medium transition-all duration-300 whitespace-nowrap',
+              'min-h-[40px] sm:min-h-[44px]', // Touch-friendly height
               isActive
                 ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
                 : 'text-slate-600 hover:bg-white/80 hover:text-slate-900'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4', isActive && 'text-white/90')} />}
+            {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive && 'text-white/90')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
-                'px-1.5 py-0.5 text-xs rounded-full font-bold',
+                'px-1.5 py-0.5 text-[10px] sm:text-xs rounded-full font-bold',
                 isActive ? 'bg-white/25 text-white' : 'bg-violet-100 text-violet-700'
               )}>
                 {tab.badge}
@@ -241,7 +245,8 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
           'bg-white border border-slate-200',
           'text-slate-800 shadow-sm',
           'transition-all duration-200',
-          'active:scale-[0.99]'
+          'active:scale-[0.99]',
+          'min-h-[48px]' // Touch-friendly minimum height
         )}
       >
         <div className="flex items-center gap-3">
@@ -267,6 +272,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                 onClick={() => setIsExpanded(false)}
                 className={cn(
                   'flex items-center justify-between px-4 py-3.5 transition-colors',
+                  'min-h-[52px]', // Touch-friendly minimum height
                   isActive
                     ? 'bg-violet-50 text-violet-700'
                     : 'text-slate-700 hover:bg-slate-50',
@@ -276,7 +282,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                 <div className="flex items-center gap-3">
                   {Icon && (
                     <div className={cn(
-                      'w-8 h-8 rounded-lg flex items-center justify-center',
+                      'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
                       isActive ? 'bg-violet-100' : 'bg-slate-100'
                     )}>
                       <Icon className={cn('w-4 h-4', isActive ? 'text-violet-600' : 'text-slate-500')} />

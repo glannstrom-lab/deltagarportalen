@@ -162,39 +162,50 @@ export async function gatherUserContext(): Promise<UserContext> {
     // Beräkna trend
     const applicationTrend = calculateApplicationTrend(applications || [])
 
+    // Calculate high match jobs (jobs with match_score > 70)
+    const highMatchJobs = (savedJobs || []).filter(j =>
+      j.match_score && j.match_score > 70
+    )
+
+    // Calculate preferred application time
+    const preferredApplicationTime = calculatePreferredTime(applications || [])
+
+    // Calculate best performing day
+    const bestPerformingDay = calculateBestDay(applications || [])
+
     return {
       hasCV: !!cv,
       cvCompleteness,
       lastCVUpdate: cv?.updated_at || null,
-      
+
       totalApplications: applications?.length || 0,
       recentApplications: recentApps.length,
       pendingApplications: pendingApps.length,
       interviewCount: interviews.length,
-      
+
       savedJobsCount: savedJobs?.length || 0,
       savedJobsWithoutApplication: jobsWithoutApplication.length,
-      highMatchJobs: [], // TODO: Implementera matchning
+      highMatchJobs,
       jobsClosingSoon: oldSavedJobs,
-      
+
       lastActiveDate: recentEntries?.[0]?.created_at || null,
       streakDays: calculateStreak(recentEntries || []),
-      preferredApplicationTime: null, // TODO: Analysera mönster
-      
+      preferredApplicationTime,
+
       hasInterestResult: !!interestResult,
       topOccupations: interestResult?.top_occupations || [],
-      
+
       recentMood,
       averageEnergy,
-      
+
       upcomingInterviews: (upcomingInterviews || []).map(i => ({
         id: i.id,
         company: i.employer,
         date: i.follow_up_date
       })),
-      
+
       applicationTrend,
-      bestPerformingDay: null // TODO: Analysera
+      bestPerformingDay
     }
   } catch (error) {
     console.error('Fel vid insamling av användarkontext:', error)
@@ -216,27 +227,133 @@ function calculateCVCompleteness(cv: any): number {
 
 function calculateStreak(entries: any[]): number {
   if (entries.length === 0) return 0
-  // TODO: Implementera riktig streak-beräkning
-  return Math.min(entries.length, 7)
+
+  // Sort by date descending
+  const sortedEntries = [...entries].sort((a, b) =>
+    new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+  )
+
+  // Get unique dates
+  const uniqueDates = new Set(
+    sortedEntries.map(e => new Date(e.created_at).toISOString().split('T')[0])
+  )
+
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  let streak = 0
+  let checkDate = today
+
+  // Check if there's an entry for today or yesterday to start the streak
+  const todayStr = today.toISOString().split('T')[0]
+  const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000)
+  const yesterdayStr = yesterday.toISOString().split('T')[0]
+
+  if (!uniqueDates.has(todayStr) && !uniqueDates.has(yesterdayStr)) {
+    return 0 // No streak if no activity today or yesterday
+  }
+
+  // Start from today or yesterday
+  if (!uniqueDates.has(todayStr)) {
+    checkDate = yesterday
+  }
+
+  // Count consecutive days
+  while (true) {
+    const dateStr = checkDate.toISOString().split('T')[0]
+    if (uniqueDates.has(dateStr)) {
+      streak++
+      checkDate = new Date(checkDate.getTime() - 24 * 60 * 60 * 1000)
+    } else {
+      break
+    }
+  }
+
+  return streak
 }
 
 function calculateApplicationTrend(applications: any[]): 'increasing' | 'stable' | 'decreasing' | null {
   if (applications.length < 5) return null
-  
+
   const now = new Date()
-  const thisWeek = applications.filter(a => 
-    new Date(a.application_date) >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+  const thisWeek = applications.filter(a =>
+    new Date(a.application_date || a.created_at) >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
   ).length
-  
+
   const lastWeek = applications.filter(a => {
-    const date = new Date(a.application_date)
+    const date = new Date(a.application_date || a.created_at)
     return date >= new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000) &&
            date < new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
   }).length
-  
+
   if (thisWeek > lastWeek * 1.2) return 'increasing'
   if (thisWeek < lastWeek * 0.8) return 'decreasing'
   return 'stable'
+}
+
+function calculatePreferredTime(applications: any[]): string | null {
+  if (applications.length < 3) return null
+
+  // Count applications by hour
+  const hourCounts: Record<number, number> = {}
+  applications.forEach(app => {
+    const date = new Date(app.application_date || app.created_at)
+    const hour = date.getHours()
+    hourCounts[hour] = (hourCounts[hour] || 0) + 1
+  })
+
+  // Find most common hour
+  let maxHour = 0
+  let maxCount = 0
+  for (const [hour, count] of Object.entries(hourCounts)) {
+    if (count > maxCount) {
+      maxCount = count
+      maxHour = parseInt(hour)
+    }
+  }
+
+  if (maxCount < 2) return null
+
+  // Format time period
+  if (maxHour >= 6 && maxHour < 12) return 'morning'
+  if (maxHour >= 12 && maxHour < 17) return 'afternoon'
+  if (maxHour >= 17 && maxHour < 21) return 'evening'
+  return 'night'
+}
+
+function calculateBestDay(applications: any[]): string | null {
+  if (applications.length < 5) return null
+
+  // Only consider applications that led to interviews
+  const successfulApps = applications.filter(a =>
+    a.status === 'interview' || a.status === 'offer'
+  )
+
+  if (successfulApps.length < 2) return null
+
+  // Count by day of week
+  const dayNames = ['Söndag', 'Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag']
+  const dayCounts: Record<number, number> = {}
+
+  successfulApps.forEach(app => {
+    const date = new Date(app.application_date || app.created_at)
+    const day = date.getDay()
+    dayCounts[day] = (dayCounts[day] || 0) + 1
+  })
+
+  // Find most successful day
+  let maxDay = 0
+  let maxCount = 0
+  for (const [day, count] of Object.entries(dayCounts)) {
+    if (count > maxCount) {
+      maxCount = count
+      maxDay = parseInt(day)
+    }
+  }
+
+  if (maxCount < 2) return null
+
+  return dayNames[maxDay]
 }
 
 function getEmptyContext(): UserContext {
@@ -531,20 +648,77 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
 // API
 // ============================================
 
+// Storage key for dismissed recommendations
+const DISMISSED_KEY = 'ai_dismissed_recommendations'
+const COMPLETED_KEY = 'ai_completed_recommendations'
+
+function getDismissedRecommendations(): Set<string> {
+  try {
+    const stored = localStorage.getItem(DISMISSED_KEY)
+    if (stored) {
+      const parsed = JSON.parse(stored)
+      // Filter out entries older than 7 days
+      const now = Date.now()
+      const valid = parsed.filter((item: any) =>
+        now - item.timestamp < 7 * 24 * 60 * 60 * 1000
+      )
+      return new Set(valid.map((item: any) => item.id))
+    }
+  } catch (e) {
+    console.error('Error reading dismissed recommendations:', e)
+  }
+  return new Set()
+}
+
+function saveDismissedRecommendation(id: string): void {
+  try {
+    const stored = localStorage.getItem(DISMISSED_KEY)
+    const items = stored ? JSON.parse(stored) : []
+    items.push({ id, timestamp: Date.now() })
+    localStorage.setItem(DISMISSED_KEY, JSON.stringify(items))
+  } catch (e) {
+    console.error('Error saving dismissed recommendation:', e)
+  }
+}
+
+function saveCompletedRecommendation(id: string): void {
+  try {
+    const stored = localStorage.getItem(COMPLETED_KEY)
+    const items = stored ? JSON.parse(stored) : []
+    items.push({ id, timestamp: Date.now() })
+    localStorage.setItem(COMPLETED_KEY, JSON.stringify(items))
+  } catch (e) {
+    console.error('Error saving completed recommendation:', e)
+  }
+}
+
 export const aiAssistantApi = {
   /**
    * Hämta personliga rekommendationer för användaren
    */
   async getRecommendations(): Promise<AIRecommendation[]> {
     const context = await gatherUserContext()
-    return generateRecommendations(context)
+    const allRecommendations = generateRecommendations(context)
+
+    // Filter out dismissed recommendations
+    const dismissed = getDismissedRecommendations()
+    return allRecommendations.filter(rec => {
+      // Extract base ID (without timestamp) for comparison
+      const baseId = rec.id.split('-')[0]
+      return !dismissed.has(rec.id) && !dismissed.has(baseId)
+    })
   },
 
   /**
-   * Markera rekommendation som hanterad
+   * Markera rekommendation som hanterad (visa inte igen på ett tag)
    */
   async dismissRecommendation(recommendationId: string): Promise<void> {
-    // TODO: Spara i databas för att inte visa igen
+    saveDismissedRecommendation(recommendationId)
+    // Also save the base ID to prevent similar recommendations
+    const baseId = recommendationId.split('-')[0]
+    if (baseId !== recommendationId) {
+      saveDismissedRecommendation(baseId)
+    }
     console.log('Rekommendation avfärdad:', recommendationId)
   },
 
@@ -552,7 +726,16 @@ export const aiAssistantApi = {
    * Markera rekommendation som utförd
    */
   async completeRecommendation(recommendationId: string): Promise<void> {
-    // TODO: Spara i databas för analytics
+    saveCompletedRecommendation(recommendationId)
+    // Also dismiss it so it doesn't show again
+    saveDismissedRecommendation(recommendationId)
     console.log('Rekommendation utförd:', recommendationId)
+  },
+
+  /**
+   * Hämta användarkontext för debugging/display
+   */
+  async getUserContext(): Promise<UserContext> {
+    return gatherUserContext()
   }
 }

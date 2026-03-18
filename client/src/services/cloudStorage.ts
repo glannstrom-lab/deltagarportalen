@@ -309,6 +309,7 @@ export const userPreferencesApi = {
     onboarding_completed?: boolean
     onboarding_skipped?: boolean
     onboarding_progress?: any
+    default_cv_id?: string
   }) {
     const user = await getCurrentUser()
     if (!user) {
@@ -1115,6 +1116,30 @@ export const darkModeApi = {
 // ============================================
 export type MoodType = 'great' | 'good' | 'okay' | 'bad' | 'terrible'
 
+// Konvertera mood_level (1-5) till MoodType
+function moodLevelToType(level: number): MoodType {
+  switch (level) {
+    case 5: return 'great'
+    case 4: return 'good'
+    case 3: return 'okay'
+    case 2: return 'bad'
+    case 1: return 'terrible'
+    default: return 'okay'
+  }
+}
+
+// Konvertera MoodType till mood_level (1-5)
+function moodTypeToLevel(mood: MoodType): number {
+  switch (mood) {
+    case 'great': return 5
+    case 'good': return 4
+    case 'okay': return 3
+    case 'bad': return 2
+    case 'terrible': return 1
+    default: return 3
+  }
+}
+
 export const moodApi = {
   async getTodaysMood(): Promise<{ mood: MoodType; note?: string } | null> {
     const user = await getCurrentUser()
@@ -1123,16 +1148,20 @@ export const moodApi = {
     const today = new Date().toISOString().split('T')[0]
     const { data, error } = await supabase
       .from('mood_logs')
-      .select('mood, note')
+      .select('mood_level, notes')
       .eq('user_id', user.id)
-      .eq('logged_at', today)
+      .eq('log_date', today)
       .maybeSingle()
 
     if (error) {
       handleStorageError(error, 'hämta dagens humör')
       return null
     }
-    return data as { mood: MoodType; note?: string } | null
+    if (!data) return null
+    return {
+      mood: moodLevelToType(data.mood_level),
+      note: data.notes
+    }
   },
 
   async logMood(mood: MoodType, note?: string): Promise<boolean> {
@@ -1147,11 +1176,11 @@ export const moodApi = {
       .from('mood_logs')
       .upsert({
         user_id: user.id,
-        mood,
-        note,
-        logged_at: today
+        mood_level: moodTypeToLevel(mood),
+        notes: note,
+        log_date: today
       }, {
-        onConflict: 'user_id,logged_at'
+        onConflict: 'user_id,log_date'
       })
 
     if (error) {
@@ -1167,30 +1196,72 @@ export const moodApi = {
 
     const { data, error } = await supabase
       .from('mood_logs')
-      .select('mood, note, logged_at')
+      .select('mood_level, notes, log_date')
       .eq('user_id', user.id)
-      .order('logged_at', { ascending: false })
+      .order('log_date', { ascending: false })
       .limit(days)
 
     if (error) {
       handleStorageError(error, 'hämta humörhistorik')
       return []
     }
-    return (data as { mood: MoodType; note?: string; logged_at: string }[]) || []
+    return (data || []).map((d: any) => ({
+      mood: moodLevelToType(d.mood_level),
+      note: d.notes,
+      logged_at: d.log_date
+    }))
   },
 
   async getStreak(): Promise<number> {
     const user = await getCurrentUser()
     if (!user) return 0
 
+    // Beräkna streak manuellt istället för RPC
     const { data, error } = await supabase
-      .rpc('get_mood_streak', { p_user_id: user.id })
+      .from('mood_logs')
+      .select('log_date')
+      .eq('user_id', user.id)
+      .order('log_date', { ascending: false })
+      .limit(365)
 
     if (error) {
       handleStorageError(error, 'hämta humör-streak')
       return 0
     }
-    return data || 0
+
+    if (!data || data.length === 0) return 0
+
+    // Räkna streak från idag eller igår bakåt
+    let streak = 0
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+
+    const dates = data.map((d: any) => {
+      const date = new Date(d.log_date)
+      date.setHours(0, 0, 0, 0)
+      return date.getTime()
+    })
+
+    // Kolla om vi har en loggning idag eller igår
+    const todayTime = today.getTime()
+    const yesterdayTime = todayTime - 86400000
+
+    let checkDate = todayTime
+    if (!dates.includes(todayTime)) {
+      if (dates.includes(yesterdayTime)) {
+        checkDate = yesterdayTime
+      } else {
+        return 0 // Ingen streak om vi inte loggat idag eller igår
+      }
+    }
+
+    // Räkna streak bakåt
+    while (dates.includes(checkDate)) {
+      streak++
+      checkDate -= 86400000
+    }
+
+    return streak
   }
 }
 

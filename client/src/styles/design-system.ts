@@ -335,6 +335,132 @@ export const touch = {
 }
 
 // ============================================
+// RESPONSIVE UTILITIES - BREAKPOINTS
+// ============================================
+// sm: 640px (small phones landscape / large phones)
+// md: 768px (tablets portrait)
+// lg: 1024px (tablets landscape / small laptops)
+// xl: 1280px (laptops / desktops)
+// 2xl: 1536px (large desktops)
+
+export const responsive = {
+  // Responsive padding
+  padding: {
+    page: 'px-4 sm:px-5 md:px-6 lg:px-8',
+    section: 'py-4 sm:py-5 md:py-6 lg:py-8',
+    card: 'p-4 sm:p-5 md:p-6',
+    cardCompact: 'p-3 sm:p-4',
+  },
+
+  // Responsive gaps
+  gap: {
+    xs: 'gap-1 sm:gap-1.5 md:gap-2',
+    sm: 'gap-2 sm:gap-3 md:gap-4',
+    md: 'gap-3 sm:gap-4 md:gap-5 lg:gap-6',
+    lg: 'gap-4 sm:gap-5 md:gap-6 lg:gap-8',
+    section: 'gap-4 sm:gap-6 md:gap-8',
+  },
+
+  // Responsive grids
+  grid: {
+    // 1 col mobile → 2 col tablet → 3 col desktop
+    cols123: 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+    // 1 col mobile → 2 col tablet → 4 col desktop
+    cols124: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4',
+    // 2 col mobile → 3 col tablet → 4 col desktop
+    cols234: 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4',
+    // 1 col mobile → 2 col desktop
+    cols12: 'grid grid-cols-1 md:grid-cols-2',
+    // 2 col mobile → 4 col desktop
+    cols24: 'grid grid-cols-2 lg:grid-cols-4',
+    // Stats grid - 2 mobile, 4 desktop
+    stats: 'grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4',
+    // Cards grid
+    cards: 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6',
+  },
+
+  // Responsive max-widths
+  maxWidth: {
+    content: 'max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-6xl xl:max-w-7xl',
+    narrow: 'max-w-full sm:max-w-xl md:max-w-2xl lg:max-w-3xl',
+    modal: 'max-w-[95vw] sm:max-w-md md:max-w-lg lg:max-w-xl',
+    modalLarge: 'max-w-[95vw] sm:max-w-lg md:max-w-2xl lg:max-w-4xl',
+  },
+
+  // Responsive typography
+  text: {
+    // Headings
+    h1: 'text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold',
+    h2: 'text-lg sm:text-xl md:text-2xl font-bold',
+    h3: 'text-base sm:text-lg md:text-xl font-semibold',
+    h4: 'text-sm sm:text-base md:text-lg font-semibold',
+    // Body
+    body: 'text-sm sm:text-base',
+    bodyLarge: 'text-base sm:text-lg md:text-xl',
+    bodySmall: 'text-xs sm:text-sm',
+    // Labels & captions
+    label: 'text-xs sm:text-sm font-medium',
+    caption: 'text-[10px] sm:text-xs',
+  },
+
+  // Responsive icon sizes
+  icon: {
+    xs: 'w-3 h-3 sm:w-4 sm:h-4',
+    sm: 'w-4 h-4 sm:w-5 sm:h-5',
+    md: 'w-5 h-5 sm:w-6 sm:h-6',
+    lg: 'w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8',
+    xl: 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12',
+    // Widget icons
+    widget: 'w-10 h-10 sm:w-12 sm:h-12',
+    stat: 'w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12',
+  },
+
+  // Responsive buttons
+  button: {
+    // Auto touch-optimized on mobile
+    primary: 'px-3 py-2 sm:px-4 sm:py-2.5 md:px-5 md:py-2.5 min-h-[44px] sm:min-h-0 text-sm sm:text-base',
+    small: 'px-2.5 py-1.5 sm:px-3 sm:py-2 min-h-[40px] sm:min-h-0 text-xs sm:text-sm',
+    large: 'px-4 py-3 sm:px-5 sm:py-3 md:px-6 md:py-3.5 min-h-[48px] text-sm sm:text-base',
+    icon: 'w-10 h-10 sm:w-9 sm:h-9 md:w-10 md:h-10 min-w-[44px] min-h-[44px] sm:min-w-0 sm:min-h-0',
+  },
+
+  // Responsive spacing for sections
+  section: {
+    py: 'py-4 sm:py-6 md:py-8 lg:py-10',
+    mb: 'mb-4 sm:mb-6 md:mb-8',
+    space: 'space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-8',
+  },
+
+  // Show/hide utilities
+  show: {
+    mobileOnly: 'block sm:hidden',
+    tabletUp: 'hidden sm:block',
+    tabletOnly: 'hidden sm:block lg:hidden',
+    desktopUp: 'hidden lg:block',
+    desktopOnly: 'hidden lg:block xl:hidden',
+    // Flex variants
+    mobileOnlyFlex: 'flex sm:hidden',
+    tabletUpFlex: 'hidden sm:flex',
+    desktopUpFlex: 'hidden lg:flex',
+  },
+
+  // Responsive heights
+  height: {
+    hero: 'min-h-[200px] sm:min-h-[250px] md:min-h-[300px]',
+    card: 'min-h-[120px] sm:min-h-[140px] md:min-h-[160px]',
+    input: 'h-10 sm:h-11 md:h-12',
+    inputTouch: 'h-12 sm:h-11',
+  },
+
+  // Responsive borders and radius
+  radius: {
+    card: 'rounded-lg sm:rounded-xl md:rounded-2xl',
+    button: 'rounded-md sm:rounded-lg',
+    modal: 'rounded-t-2xl sm:rounded-2xl',
+  },
+}
+
+// ============================================
 // UTILITIES
 // ============================================
 export const container = {
@@ -398,6 +524,7 @@ export default {
   labelBase,
   badgeVariants,
   touch,
+  responsive,
   container,
   flex,
   states,

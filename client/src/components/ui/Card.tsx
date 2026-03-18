@@ -16,20 +16,21 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   className?: string
 }
 
-export function Card({ 
-  children, 
+export function Card({
+  children,
   variant = 'default',
   padding = 'md',
   className,
   ...props
 }: CardProps) {
+  // Responsive padding classes
   const paddingClasses = {
     none: '',
-    sm: 'p-4',
-    md: 'p-6',
-    lg: 'p-8',
+    sm: 'p-3 sm:p-4',
+    md: 'p-4 sm:p-5 md:p-6',
+    lg: 'p-5 sm:p-6 md:p-8',
   }
-  
+
   return (
     <div
       className={cn(
@@ -55,38 +56,38 @@ interface CardHeaderProps {
   className?: string
 }
 
-export function CardHeader({ 
-  title, 
-  description, 
+export function CardHeader({
+  title,
+  description,
   icon,
   actions,
-  className 
+  className
 }: CardHeaderProps) {
   if (!title && !actions) return null
-  
+
   return (
     <div className={cn(
-      'flex items-start justify-between gap-4',
-      'pb-4 mb-4 border-b border-stone-100',
+      'flex flex-col sm:flex-row sm:items-start justify-between gap-2 sm:gap-4',
+      'pb-3 sm:pb-4 mb-3 sm:mb-4 border-b border-stone-100',
       className
     )}>
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
         {icon && (
-          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-violet-50 flex items-center justify-center">
-            <span className="text-violet-600">{icon}</span>
+          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-violet-50 flex items-center justify-center">
+            <span className="text-violet-600 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">{icon}</span>
           </div>
         )}
         <div className="flex-1 min-w-0">
           {title && (
-            <h3 className="text-lg font-semibold text-stone-800">{title}</h3>
+            <h3 className="text-base sm:text-lg font-semibold text-stone-800 truncate">{title}</h3>
           )}
           {description && (
-            <p className="text-sm text-stone-500 mt-0.5">{description}</p>
+            <p className="text-xs sm:text-sm text-stone-500 mt-0.5 line-clamp-2">{description}</p>
           )}
         </div>
       </div>
       {actions && (
-        <div className="flex items-center gap-2 flex-shrink-0">
+        <div className="flex items-center gap-2 flex-shrink-0 mt-1 sm:mt-0">
           {actions}
         </div>
       )}
@@ -175,13 +176,13 @@ interface StatCardProps {
   className?: string
 }
 
-export function StatCard({ 
-  value, 
-  label, 
+export function StatCard({
+  value,
+  label,
   icon,
   trend,
   color = 'default',
-  className 
+  className
 }: StatCardProps) {
   const colorClasses = {
     default: 'bg-stone-50 text-stone-600',
@@ -191,35 +192,37 @@ export function StatCard({
     blue: 'bg-blue-50 text-blue-600',
     purple: 'bg-purple-50 text-purple-600',
   }
-  
+
   return (
-    <Card 
-      variant="hover" 
-      padding="md"
+    <Card
+      variant="hover"
+      padding="sm"
       className={cn(className)}
     >
-      <div className="flex items-center gap-4">
+      {/* Vertical on mobile, horizontal on larger screens */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 md:gap-4">
         {icon && (
           <div className={cn(
-            'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0',
+            'w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0',
+            '[&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6',
             colorClasses[color]
           )}>
             {icon}
           </div>
         )}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-baseline gap-2">
-            <span className="text-2xl font-bold text-stone-800">{value}</span>
+        <div className="flex-1 min-w-0 w-full sm:w-auto">
+          <div className="flex items-baseline gap-1.5 sm:gap-2">
+            <span className="text-xl sm:text-2xl font-bold text-stone-800">{value}</span>
             {trend && (
               <span className={cn(
-                'text-xs font-medium',
+                'text-[10px] sm:text-xs font-medium',
                 trend.isPositive ? 'text-emerald-600' : 'text-red-600'
               )}>
                 {trend.isPositive ? '+' : ''}{trend.value}%
               </span>
             )}
           </div>
-          <p className="text-sm text-stone-500 truncate">{label}</p>
+          <p className="text-xs sm:text-sm text-stone-500 truncate">{label}</p>
         </div>
       </div>
     </Card>
@@ -237,12 +240,12 @@ interface InfoCardProps {
   className?: string
 }
 
-export function InfoCard({ 
+export function InfoCard({
   title,
   children,
   variant = 'info',
   icon,
-  className 
+  className
 }: InfoCardProps) {
   const variantClasses = {
     info: 'bg-blue-50 border-blue-200 text-blue-800',
@@ -250,33 +253,36 @@ export function InfoCard({
     warning: 'bg-amber-50 border-amber-200 text-amber-800',
     error: 'bg-red-50 border-red-200 text-red-800',
   }
-  
+
   const iconColors = {
     info: 'text-blue-600',
     success: 'text-emerald-600',
     warning: 'text-amber-600',
     error: 'text-red-600',
   }
-  
+
   return (
     <div className={cn(
-      'rounded-xl border p-4',
+      'rounded-lg sm:rounded-xl border p-3 sm:p-4',
       variantClasses[variant],
       className
     )}>
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-2 sm:gap-3">
         {icon && (
-          <div className={cn('flex-shrink-0 mt-0.5', iconColors[variant])}>
+          <div className={cn(
+            'flex-shrink-0 mt-0.5 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5',
+            iconColors[variant]
+          )}>
             {icon}
           </div>
         )}
-        <div className="flex-1">
+        <div className="flex-1 min-w-0">
           {title && (
-            <h4 className={cn('font-semibold mb-1', variantClasses[variant].split(' ')[2])}>
+            <h4 className={cn('text-sm sm:text-base font-semibold mb-0.5 sm:mb-1', variantClasses[variant].split(' ')[2])}>
               {title}
             </h4>
           )}
-          <div className="text-sm opacity-90">{children}</div>
+          <div className="text-xs sm:text-sm opacity-90">{children}</div>
         </div>
       </div>
     </div>
@@ -308,37 +314,39 @@ export function ActionCard({
     <button
       className={cn(
         'w-full text-left',
-        'bg-white rounded-xl border-2 p-4',
+        'bg-white rounded-lg sm:rounded-xl border sm:border-2 p-3 sm:p-4',
         'transition-all duration-200',
+        'min-h-[44px]', // Touch target
         animations.press,
         animations.lift,
-        isSelected 
-          ? 'border-violet-500 ring-2 ring-violet-500 ring-offset-2' 
+        isSelected
+          ? 'border-violet-500 ring-2 ring-violet-500 ring-offset-2'
           : 'border-stone-200 hover:border-violet-300 hover:shadow-md',
         className
       )}
       {...props}
     >
-      <div className="flex items-start gap-4">
+      <div className="flex items-start gap-3 sm:gap-4">
         {icon && (
           <div className={cn(
-            'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0',
+            'w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0',
+            '[&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6',
             isSelected ? 'bg-violet-100 text-violet-600' : 'bg-stone-100 text-stone-600'
           )}>
             {icon}
           </div>
         )}
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
-            <h3 className="font-semibold text-stone-800">{title}</h3>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="text-sm sm:text-base font-semibold text-stone-800">{title}</h3>
             {badge && (
-              <span className="px-2 py-0.5 bg-violet-100 text-violet-700 text-xs font-medium rounded-full">
+              <span className="px-1.5 sm:px-2 py-0.5 bg-violet-100 text-violet-700 text-[10px] sm:text-xs font-medium rounded-full">
                 {badge}
               </span>
             )}
           </div>
           {description && (
-            <p className="text-sm text-stone-500 mt-1">{description}</p>
+            <p className="text-xs sm:text-sm text-stone-500 mt-0.5 sm:mt-1 line-clamp-2">{description}</p>
           )}
         </div>
       </div>

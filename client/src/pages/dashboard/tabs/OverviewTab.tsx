@@ -163,38 +163,38 @@ function NextStepCard({ action }: { action: ReturnType<typeof getNextAction> }) 
     <Link
       to={action.link}
       className={cn(
-        "group block bg-white rounded-2xl border-2 p-5 transition-all duration-200",
-        "hover:shadow-lg hover:-translate-y-0.5",
+        "group block bg-white rounded-xl sm:rounded-2xl border-2 p-4 sm:p-5 transition-all duration-200",
+        "hover:shadow-lg active:scale-[0.99]",
         action.color === 'violet' && "border-violet-200 hover:border-violet-300",
         action.color === 'blue' && "border-blue-200 hover:border-blue-300",
         action.color === 'rose' && "border-rose-200 hover:border-rose-300",
         action.color === 'teal' && "border-teal-200 hover:border-teal-300",
       )}
     >
-      <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-3">
+      <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-2 sm:mb-3">
         <Lightbulb size={14} className="text-amber-500" />
         Nästa steg
       </div>
 
-      <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
         <div className={cn(
-          "w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0",
+          "w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0",
           action.color === 'violet' && "bg-violet-100 text-violet-600",
           action.color === 'blue' && "bg-blue-100 text-blue-600",
           action.color === 'rose' && "bg-rose-100 text-rose-600",
           action.color === 'teal' && "bg-teal-100 text-teal-600",
         )}>
-          <Icon size={28} />
+          <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
         </div>
 
         <div className="flex-1 min-w-0">
-          <h2 className="text-lg font-bold text-slate-800 mb-1">{action.title}</h2>
-          <p className="text-sm text-slate-500 line-clamp-2">{action.description}</p>
+          <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-0.5 sm:mb-1">{action.title}</h2>
+          <p className="text-xs sm:text-sm text-slate-500 line-clamp-2">{action.description}</p>
         </div>
 
         <div className={cn(
-          "flex items-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all",
-          "group-hover:gap-3",
+          "flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl font-medium text-sm transition-all",
+          "group-hover:gap-3 min-h-[44px]",
           action.color === 'violet' && "bg-violet-600 text-white",
           action.color === 'blue' && "bg-blue-600 text-white",
           action.color === 'rose' && "bg-rose-600 text-white",
@@ -661,23 +661,23 @@ export default function OverviewTab() {
       {/* Next Step Card - only show if checklist is not visible */}
       {!shouldShowChecklist && nextAction && <NextStepCard action={nextAction} />}
 
-      {/* Quick Stats Bar */}
-      <div className="flex items-center gap-3 text-sm">
+      {/* Quick Stats Bar - Scrollable on mobile */}
+      <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
         {(data?.activity?.streakDays || 0) > 0 && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 text-orange-700 rounded-full border border-orange-200">
-            <Flame size={14} className="text-orange-500" />
+          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-orange-50 text-orange-700 rounded-full border border-orange-200 whitespace-nowrap">
+            <Flame size={14} className="text-orange-500 flex-shrink-0" />
             <span className="font-medium">{data?.activity?.streakDays} dagar i rad</span>
           </div>
         )}
         {(data?.quests?.completed || 0) > 0 && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200">
-            <Target size={14} className="text-amber-500" />
+          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200 whitespace-nowrap">
+            <Target size={14} className="text-amber-500 flex-shrink-0" />
             <span className="font-medium">{data?.quests?.completed}/{data?.quests?.total || 3} quests</span>
           </div>
         )}
         {(data?.cv?.progress || 0) >= 100 && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200">
-            <CheckCircle2 size={14} className="text-emerald-500" />
+          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200 whitespace-nowrap">
+            <CheckCircle2 size={14} className="text-emerald-500 flex-shrink-0" />
             <span className="font-medium">CV klart</span>
           </div>
         )}
@@ -688,28 +688,28 @@ export default function OverviewTab() {
         <div className="flex items-center gap-2">
           {isSaving && <span className="text-xs text-slate-400">Sparar...</span>}
         </div>
-        <div className="flex items-center gap-2 relative" ref={selectorRef}>
+        <div className="flex items-center gap-1 sm:gap-2 relative" ref={selectorRef}>
           <button
             onClick={() => setIsEditing(!isEditing)}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all",
+              "flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg text-xs font-medium transition-all min-h-[40px] sm:min-h-0",
               isEditing ? "bg-violet-100 text-violet-700" : "text-slate-500 hover:bg-slate-100"
             )}
             aria-label={isEditing ? 'Avsluta redigering av widgets' : 'Redigera widgets'}
             aria-pressed={isEditing}
           >
             <Settings size={14} aria-hidden="true" />
-            {isEditing ? 'Klar' : 'Redigera'}
+            <span className="hidden xs:inline">{isEditing ? 'Klar' : 'Redigera'}</span>
           </button>
           <button
             onClick={() => setShowSelector(!showSelector)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-100 transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-100 transition-all min-h-[40px] sm:min-h-0"
             aria-label="Lägg till widget"
             aria-expanded={showSelector}
             aria-haspopup="true"
           >
             <Plus size={14} aria-hidden="true" />
-            Lägg till
+            <span className="hidden xs:inline">Lägg till</span>
           </button>
           {showSelector && (
             <WidgetSelector

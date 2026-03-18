@@ -6,6 +6,22 @@
 
 import { Response } from 'express'
 
+// Pagination type for reuse
+export interface PaginationInfo {
+  page: number
+  perPage: number
+  total: number
+  totalPages: number
+}
+
+// Metadata type for responses
+export interface ResponseMeta {
+  timestamp: string
+  requestId: string
+  cache?: boolean
+  pagination?: PaginationInfo
+}
+
 // Standardiserat response-format
 export interface ApiResponse<T = unknown> {
   success: boolean
@@ -16,17 +32,7 @@ export interface ApiResponse<T = unknown> {
     details?: unknown
     context?: string
   }
-  meta?: {
-    timestamp: string
-    requestId: string
-    cache?: boolean
-    pagination?: {
-      page: number
-      perPage: number
-      total: number
-      totalPages: number
-    }
-  }
+  meta?: ResponseMeta
 }
 
 // Generera unikt request ID för spårbarhet
@@ -35,17 +41,25 @@ export function generateRequestId(): string {
 }
 
 // Skapa metadata för response
-export function createMeta(options?: { 
+export function createMeta(options?: {
   cache?: boolean
-  pagination?: ApiResponse['meta']['pagination']
+  pagination?: PaginationInfo
   requestId?: string
-}): ApiResponse['meta'] {
-  return {
+}): ResponseMeta {
+  const meta: ResponseMeta = {
     timestamp: new Date().toISOString(),
-    requestId: options?.requestId || generateRequestId(),
-    ...(options?.cache !== undefined && { cache: options.cache }),
-    ...(options?.pagination && { pagination: options.pagination })
+    requestId: options?.requestId || generateRequestId()
   }
+
+  if (options?.cache !== undefined) {
+    meta.cache = options.cache
+  }
+
+  if (options?.pagination) {
+    meta.pagination = options.pagination
+  }
+
+  return meta
 }
 
 // Skapa success response
@@ -55,7 +69,7 @@ export function successResponse<T>(
   options?: {
     statusCode?: number
     cache?: boolean
-    pagination?: ApiResponse['meta']['pagination']
+    pagination?: PaginationInfo
     requestId?: string
   }
 ): void {
@@ -64,7 +78,7 @@ export function successResponse<T>(
     data,
     meta: createMeta(options)
   }
-  
+
   res.status(options?.statusCode || 200).json(response)
 }
 
@@ -80,17 +94,25 @@ export function errorResponse(
     requestId?: string
   }
 ): void {
+  const errorObj: ApiResponse['error'] = {
+    code: options.code,
+    message: options.message
+  }
+
+  if (options.details !== undefined) {
+    errorObj!.details = options.details
+  }
+
+  if (options.context !== undefined) {
+    errorObj!.context = options.context
+  }
+
   const response: ApiResponse = {
     success: false,
-    error: {
-      code: options.code,
-      message: options.message,
-      ...(options.details && { details: options.details }),
-      ...(options.context && { context: options.context })
-    },
+    error: errorObj,
     meta: createMeta({ requestId: options.requestId })
   }
-  
+
   // Logga felet för debugging (men inte skicka till klienten)
   console.error(`[API Error] ${options.code}: ${options.message}`, {
     details: options.details,
@@ -98,7 +120,7 @@ export function errorResponse(
     requestId: response.meta?.requestId,
     timestamp: response.meta?.timestamp
   })
-  
+
   res.status(options.statusCode || 400).json(response)
 }
 

@@ -477,13 +477,13 @@ function SearchTab() {
 
       {/* Job Detail Modal */}
       {selectedJob && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center justify-between">
-              <h2 className="text-lg font-semibold text-slate-900 pr-8">{selectedJob.headline}</h2>
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 bg-white border-b border-slate-100 p-3 sm:p-4 flex items-center justify-between">
+              <h2 className="text-base sm:text-lg font-semibold text-slate-900 pr-8 line-clamp-1">{selectedJob.headline}</h2>
               <button
                 onClick={() => setSelectedJob(null)}
-                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                className="p-2 hover:bg-slate-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
                 <X size={24} className="text-slate-500" />
               </button>
@@ -515,8 +515,8 @@ function SearchTab() {
                   />
                 </div>
 
-                <div className="space-y-3 pt-4 border-t border-slate-100">
-                  <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2 sm:space-y-3 pt-4 border-t border-slate-100">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
                     <button
                       onClick={() => {
                         if (isSaved(selectedJob.id)) {
@@ -526,23 +526,23 @@ function SearchTab() {
                         }
                       }}
                       className={cn(
-                        "flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-colors",
+                        "flex items-center justify-center gap-2 py-3 rounded-xl font-medium transition-colors min-h-[48px]",
                         isSaved(selectedJob.id)
                           ? "bg-rose-50 text-rose-600 hover:bg-rose-100 border border-rose-200"
                           : "bg-slate-100 text-slate-700 hover:bg-slate-200"
                       )}
                     >
-                      <Heart size={20} className={isSaved(selectedJob.id) ? "fill-current" : ""} />
-                      {isSaved(selectedJob.id) ? t('jobSearch.saved') : t('jobSearch.saveJob')}
+                      <Heart size={18} className={isSaved(selectedJob.id) ? "fill-current" : ""} />
+                      <span className="text-sm sm:text-base">{isSaved(selectedJob.id) ? t('jobSearch.saved') : t('jobSearch.saveJob')}</span>
                     </button>
 
                     <Link
                       to={`/cover-letter?jobId=${selectedJob.id}&company=${encodeURIComponent(selectedJob.employer?.name || '')}&title=${encodeURIComponent(selectedJob.headline)}&desc=${encodeURIComponent(selectedJob.description?.text?.substring(0, 1000) || '')}`}
                       onClick={() => setSelectedJob(null)}
-                      className="flex items-center justify-center gap-2 py-3 bg-teal-50 text-teal-600 hover:bg-teal-100 rounded-xl font-medium transition-colors border border-teal-200"
+                      className="flex items-center justify-center gap-2 py-3 bg-teal-50 text-teal-600 hover:bg-teal-100 rounded-xl font-medium transition-colors border border-teal-200 min-h-[48px]"
                     >
-                      <FileText size={20} />
-                      {t('jobSearch.writePersonalLetter')}
+                      <FileText size={18} />
+                      <span className="text-sm sm:text-base">{t('jobSearch.writePersonalLetter')}</span>
                     </Link>
                   </div>
 
@@ -551,10 +551,10 @@ function SearchTab() {
                       setApplicationModalJob(selectedJob)
                       setSelectedJob(null)
                     }}
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors"
+                    className="flex items-center justify-center gap-2 w-full py-3 bg-violet-500 text-white rounded-xl font-medium hover:bg-violet-600 transition-colors min-h-[48px]"
                   >
                     <Send size={18} />
-                    {t('jobSearch.createApplication')}
+                    <span className="text-sm sm:text-base">{t('jobSearch.createApplication')}</span>
                   </button>
 
                   {selectedJob.application_details?.url && (
@@ -562,10 +562,10 @@ function SearchTab() {
                       href={selectedJob.application_details.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors"
+                      className="flex items-center justify-center gap-2 w-full py-3 bg-slate-100 text-slate-700 rounded-xl font-medium hover:bg-slate-200 transition-colors min-h-[48px]"
                     >
                       <ExternalLink size={18} />
-                      {t('jobSearch.applyDirectlyAtAF')}
+                      <span className="text-sm sm:text-base">{t('jobSearch.applyDirectlyAtAF')}</span>
                     </a>
                   )}
                 </div>

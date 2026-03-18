@@ -3,63 +3,28 @@
  * Lista över alla sparade personliga brev
  */
 
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { 
-  FileText, 
-  Search, 
-  Calendar, 
-  Building2, 
+import {
+  FileText,
+  Search,
+  Calendar,
+  Building2,
   MoreVertical,
   Edit3,
   Copy,
   Trash2,
   Download,
   Send,
-  Clock
+  Clock,
+  Loader2
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
-
-// Mock data - ska ersättas med riktig data från backend
-const mockLetters = [
-  {
-    id: '1',
-    title: 'Acme AB - Projektledare',
-    company: 'Acme AB',
-    jobTitle: 'Projektledare',
-    content: 'Hej, jag söker rollen som...',
-    createdAt: '2026-03-10',
-    updatedAt: '2026-03-11',
-    wordCount: 285,
-    status: 'draft' as const,
-  },
-  {
-    id: '2',
-    title: 'TechCorp - Utvecklare',
-    company: 'TechCorp',
-    jobTitle: 'Frontend-utvecklare',
-    content: 'Hej, jag skriver för att söka...',
-    createdAt: '2026-03-08',
-    updatedAt: '2026-03-08',
-    wordCount: 320,
-    status: 'sent' as const,
-    sentDate: '2026-03-09',
-  },
-  {
-    id: '3',
-    title: 'Stadskommunen - Handläggare',
-    company: 'Stadskommunen',
-    jobTitle: 'Administrativ handläggare',
-    content: 'Jag söker tjänsten som...',
-    createdAt: '2026-03-05',
-    updatedAt: '2026-03-06',
-    wordCount: 410,
-    status: 'draft' as const,
-  },
-]
+import { coverLetterApi, type CoverLetter } from '@/services/supabaseApi'
+import { jsPDF } from 'jspdf'
 
 type LetterStatus = 'draft' | 'sent' | 'template'
 
@@ -76,11 +41,51 @@ interface Letter {
   sentDate?: string
 }
 
+// Transform API data to UI format
+function transformLetter(apiLetter: CoverLetter): Letter {
+  const content = apiLetter.content || ''
+  const wordCount = content.split(/\s+/).filter(Boolean).length
+
+  return {
+    id: apiLetter.id,
+    title: apiLetter.title || `${apiLetter.company || 'Företag'} - ${apiLetter.job_title || 'Position'}`,
+    company: apiLetter.company || '',
+    jobTitle: apiLetter.job_title || '',
+    content: content,
+    createdAt: apiLetter.created_at,
+    updatedAt: apiLetter.updated_at,
+    wordCount,
+    status: 'draft', // Could be extended with sent tracking
+  }
+}
+
 export function CoverLetterMyLetters() {
   const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
-  const [letters] = useState<Letter[]>(mockLetters)
+  const [letters, setLetters] = useState<Letter[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [showActions, setShowActions] = useState<string | null>(null)
+  const [actionLoading, setActionLoading] = useState<string | null>(null)
+
+  // Load letters from API
+  const loadLetters = useCallback(async () => {
+    try {
+      setLoading(true)
+      setError(null)
+      const apiLetters = await coverLetterApi.getAll()
+      setLetters(apiLetters.map(transformLetter))
+    } catch (err: any) {
+      console.error('Failed to load cover letters:', err)
+      setError(err.message || 'Kunde inte ladda personliga brev')
+    } finally {
+      setLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    loadLetters()
+  }, [loadLetters])
 
   const filteredLetters = letters.filter(letter =>
     letter.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -91,19 +96,94 @@ export function CoverLetterMyLetters() {
     navigate(`/dashboard/cover-letter?edit=${id}`)
   }
 
-  const handleDuplicate = (letter: Letter) => {
-    // TODO: Implementera duplicering
-    console.log('Duplicera brev:', letter.id)
+  const handleDuplicate = async (letter: Letter) => {
+    try {
+      setActionLoading(letter.id)
+      setShowActions(null)
+
+      // Get original letter data from API
+      const original = await coverLetterApi.getById(letter.id)
+      if (!original) {
+        throw new Error('Kunde inte hitta originalbrevet')
+      }
+
+      // Create duplicate with modified title
+      await coverLetterApi.create({
+        title: `${original.title} (kopia)`,
+        content: original.content,
+        company: original.company,
+        job_title: original.job_title,
+        job_ad: original.job_ad,
+        ai_generated: original.ai_generated
+      })
+
+      // Reload letters
+      await loadLetters()
+    } catch (err: any) {
+      console.error('Failed to duplicate letter:', err)
+      setError(err.message || 'Kunde inte duplicera brevet')
+    } finally {
+      setActionLoading(null)
+    }
   }
 
-  const handleDelete = (id: string) => {
-    // TODO: Implementera radering
-    console.log('Radera brev:', id)
+  const handleDelete = async (id: string) => {
+    if (!window.confirm('Är du säker på att du vill ta bort detta brev?')) {
+      return
+    }
+
+    try {
+      setActionLoading(id)
+      setShowActions(null)
+      await coverLetterApi.delete(id)
+      setLetters(prev => prev.filter(l => l.id !== id))
+    } catch (err: any) {
+      console.error('Failed to delete letter:', err)
+      setError(err.message || 'Kunde inte ta bort brevet')
+    } finally {
+      setActionLoading(null)
+    }
   }
 
   const handleDownload = (letter: Letter) => {
-    // TODO: Implementera nedladdning
-    console.log('Ladda ner brev:', letter.id)
+    try {
+      setShowActions(null)
+      const doc = new jsPDF()
+
+      // Title
+      doc.setFontSize(16)
+      doc.setFont('helvetica', 'bold')
+      doc.text(letter.title, 20, 20)
+
+      // Company and job title
+      doc.setFontSize(12)
+      doc.setFont('helvetica', 'normal')
+      if (letter.company) {
+        doc.text(`Företag: ${letter.company}`, 20, 30)
+      }
+      if (letter.jobTitle) {
+        doc.text(`Position: ${letter.jobTitle}`, 20, 38)
+      }
+
+      // Date
+      doc.setFontSize(10)
+      doc.setTextColor(100)
+      doc.text(`Skapad: ${formatDate(letter.createdAt)}`, 20, 48)
+      doc.setTextColor(0)
+
+      // Content
+      doc.setFontSize(11)
+      const splitText = doc.splitTextToSize(letter.content, 170)
+      doc.text(splitText, 20, 60)
+
+      // Save
+      const fileName = `${letter.company || 'Personligt_brev'}_${letter.jobTitle || 'ansökan'}.pdf`
+        .replace(/[^a-zA-Z0-9åäöÅÄÖ_-]/g, '_')
+      doc.save(fileName)
+    } catch (err: any) {
+      console.error('Failed to download letter:', err)
+      setError('Kunde inte ladda ner brevet som PDF')
+    }
   }
 
   const formatDate = (dateString: string) => {
@@ -137,6 +217,29 @@ export function CoverLetterMyLetters() {
     }
   }
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+        <span className="ml-3 text-slate-600">Laddar brev...</span>
+      </div>
+    )
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <p className="text-rose-600 mb-4">{error}</p>
+        <Button onClick={loadLetters} variant="outline">
+          Försök igen
+        </Button>
+      </div>
+    )
+  }
+
+  // Empty state
   if (letters.length === 0) {
     return (
       <EmptyState
@@ -254,9 +357,14 @@ export function CoverLetterMyLetters() {
                       <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px] z-10">
                         <button
                           onClick={() => handleDuplicate(letter)}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
+                          disabled={actionLoading === letter.id}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2 disabled:opacity-50"
                         >
-                          <Copy size={14} className="text-slate-400" />
+                          {actionLoading === letter.id ? (
+                            <Loader2 size={14} className="text-slate-400 animate-spin" />
+                          ) : (
+                            <Copy size={14} className="text-slate-400" />
+                          )}
                           Duplicera
                         </button>
                         <button
@@ -264,14 +372,19 @@ export function CoverLetterMyLetters() {
                           className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
                         >
                           <Download size={14} className="text-slate-400" />
-                          Ladda ner
+                          Ladda ner PDF
                         </button>
                         <hr className="my-1 border-slate-100" />
                         <button
                           onClick={() => handleDelete(letter.id)}
-                          className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2 text-rose-600"
+                          disabled={actionLoading === letter.id}
+                          className="w-full px-3 py-2 text-left text-sm hover:bg-slate-50 flex items-center gap-2 text-rose-600 disabled:opacity-50"
                         >
-                          <Trash2 size={14} />
+                          {actionLoading === letter.id ? (
+                            <Loader2 size={14} className="animate-spin" />
+                          ) : (
+                            <Trash2 size={14} />
+                          )}
                           Ta bort
                         </button>
                       </div>
