@@ -176,25 +176,38 @@ function NextStepCard({ action }: { action: ReturnType<typeof getNextAction> }) 
         Nästa steg
       </div>
 
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+      <div className="flex items-start gap-3 sm:gap-4">
         <div className={cn(
-          "w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0",
+          "w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0",
           action.color === 'violet' && "bg-violet-100 text-violet-600",
           action.color === 'blue' && "bg-blue-100 text-blue-600",
           action.color === 'rose' && "bg-rose-100 text-rose-600",
           action.color === 'teal' && "bg-teal-100 text-teal-600",
         )}>
-          <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
+          <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
         </div>
 
         <div className="flex-1 min-w-0">
           <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-0.5 sm:mb-1">{action.title}</h2>
-          <p className="text-xs sm:text-sm text-slate-500 line-clamp-2">{action.description}</p>
+          <p className="text-xs sm:text-sm text-slate-500 line-clamp-2 mb-3 sm:mb-0">{action.description}</p>
+
+          {/* Button on mobile - full width below text */}
+          <div className={cn(
+            "sm:hidden flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-sm mt-3",
+            action.color === 'violet' && "bg-violet-600 text-white",
+            action.color === 'blue' && "bg-blue-600 text-white",
+            action.color === 'rose' && "bg-rose-600 text-white",
+            action.color === 'teal' && "bg-teal-600 text-white",
+          )}>
+            {action.buttonText}
+            <ArrowRight size={16} />
+          </div>
         </div>
 
+        {/* Button on desktop - inline */}
         <div className={cn(
-          "flex items-center justify-center gap-2 px-4 py-2.5 sm:py-2 rounded-xl font-medium text-sm transition-all",
-          "group-hover:gap-3 min-h-[44px]",
+          "hidden sm:flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all",
+          "group-hover:gap-3 flex-shrink-0",
           action.color === 'violet' && "bg-violet-600 text-white",
           action.color === 'blue' && "bg-blue-600 text-white",
           action.color === 'rose' && "bg-rose-600 text-white",
@@ -228,54 +241,66 @@ function WidgetSelector({
   }, {} as Record<WidgetCategory, Array<{ id: WidgetId; label: string; icon: React.ElementType; color: string; category: WidgetCategory }>>)
 
   return (
-    <div className="absolute right-0 top-full mt-2 z-50 w-80 bg-white rounded-xl shadow-xl border border-slate-200 p-3 max-h-96 overflow-y-auto">
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Lägg till widgets</span>
-        <button
-          onClick={onClose}
-          className="p-1 hover:bg-slate-100 rounded-lg"
-          aria-label="Stäng widget-menyn"
-        >
-          <X size={14} className="text-slate-400" />
-        </button>
-      </div>
-      <div className="space-y-3">
-        {Object.entries(WIDGET_CATEGORIES)
-          .sort(([, a], [, b]) => a.order - b.order)
-          .map(([categoryKey, categoryInfo]) => {
-            const categoryWidgets = widgetsByCategory[categoryKey as WidgetCategory] || []
-            if (categoryWidgets.length === 0) return null
+    <>
+      {/* Mobile: Full-screen overlay */}
+      <div
+        className="sm:hidden fixed inset-0 bg-black/50 z-40"
+        onClick={onClose}
+      />
+      <div className={cn(
+        "z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 overflow-y-auto",
+        // Mobile: Bottom sheet style
+        "fixed sm:absolute inset-x-4 bottom-4 sm:inset-auto sm:right-0 sm:top-full sm:mt-2",
+        "max-h-[70vh] sm:max-h-96 sm:w-80"
+      )}>
+        <div className="flex items-center justify-between mb-4 sm:mb-3">
+          <span className="text-sm sm:text-xs font-medium text-slate-500 uppercase tracking-wider">Lägg till widgets</span>
+          <button
+            onClick={onClose}
+            className="p-2 sm:p-1 hover:bg-slate-100 rounded-lg -mr-1"
+            aria-label="Stäng widget-menyn"
+          >
+            <X size={18} className="sm:w-3.5 sm:h-3.5 text-slate-400" />
+          </button>
+        </div>
+        <div className="space-y-4 sm:space-y-3">
+          {Object.entries(WIDGET_CATEGORIES)
+            .sort(([, a], [, b]) => a.order - b.order)
+            .map(([categoryKey, categoryInfo]) => {
+              const categoryWidgets = widgetsByCategory[categoryKey as WidgetCategory] || []
+              if (categoryWidgets.length === 0) return null
 
-            return (
-              <div key={categoryKey}>
-                <p className="text-xs font-medium text-slate-400 mb-1.5 px-1">{categoryInfo.label}</p>
-                <div className="grid grid-cols-4 gap-1.5">
-                  {categoryWidgets.map(({ id, label, icon: Icon }) => {
-                    const isActive = activeIds.includes(id)
-                    return (
-                      <button
-                        key={id}
-                        onClick={() => onToggle(id)}
-                        className={cn(
-                          "flex flex-col items-center gap-1 p-2 rounded-lg text-xs font-medium transition-all",
-                          isActive
-                            ? "bg-violet-100 text-violet-700 ring-1 ring-violet-200"
-                            : "hover:bg-slate-50 text-slate-600"
-                        )}
-                        aria-label={isActive ? `Ta bort ${label} widget` : `Lägg till ${label} widget`}
-                        aria-pressed={isActive}
-                      >
-                        <Icon size={16} aria-hidden="true" />
-                        <span className="truncate w-full text-center">{label}</span>
-                      </button>
-                    )
-                  })}
+              return (
+                <div key={categoryKey}>
+                  <p className="text-xs font-medium text-slate-400 mb-2 sm:mb-1.5 px-1">{categoryInfo.label}</p>
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-1.5">
+                    {categoryWidgets.map(({ id, label, icon: Icon }) => {
+                      const isActive = activeIds.includes(id)
+                      return (
+                        <button
+                          key={id}
+                          onClick={() => onToggle(id)}
+                          className={cn(
+                            "flex flex-col items-center gap-1.5 sm:gap-1 p-3 sm:p-2 rounded-xl sm:rounded-lg text-xs font-medium transition-all min-h-[60px] sm:min-h-0",
+                            isActive
+                              ? "bg-violet-100 text-violet-700 ring-2 sm:ring-1 ring-violet-200"
+                              : "bg-slate-50 sm:bg-transparent hover:bg-slate-100 sm:hover:bg-slate-50 text-slate-600"
+                          )}
+                          aria-label={isActive ? `Ta bort ${label} widget` : `Lägg till ${label} widget`}
+                          aria-pressed={isActive}
+                        >
+                          <Icon size={20} className="sm:w-4 sm:h-4" aria-hidden="true" />
+                          <span className="truncate w-full text-center text-xs">{label}</span>
+                        </button>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 
@@ -312,9 +337,11 @@ function DraggableWidget({
       onDrop={onDrop}
       className={cn(
         "relative transition-all duration-200",
+        // Mobile: All sizes are full width (col-span-1 in a 1-col grid)
+        // xs breakpoint (375px+): Start using 2 columns
         config.size === 'mini' && "col-span-1",
-        config.size === 'medium' && "col-span-1 sm:col-span-2",
-        config.size === 'large' && "col-span-1 sm:col-span-2 lg:col-span-3",
+        config.size === 'medium' && "col-span-1 xs:col-span-2 sm:col-span-2",
+        config.size === 'large' && "col-span-1 xs:col-span-2 sm:col-span-2 lg:col-span-3",
         isDragging && "opacity-50 scale-95",
         isEditing && "cursor-grab active:cursor-grabbing"
       )}
@@ -323,26 +350,27 @@ function DraggableWidget({
         <div className="absolute -top-1 -left-1 -right-1 -bottom-1 border-2 border-dashed border-violet-300 rounded-2xl pointer-events-none z-0" />
       )}
 
+      {/* Resize controls - hidden on very small mobile */}
       {isEditing && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1 bg-white rounded-full shadow-md border border-slate-200 px-2 py-1">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 hidden xs:flex items-center gap-1 bg-white rounded-full shadow-md border border-slate-200 px-2 py-1">
           <button
             onClick={() => onResize(sizes[Math.max(0, currentIndex - 1)])}
             disabled={currentIndex === 0}
-            className="p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
+            className="p-2 sm:p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
             title="Mindre"
             aria-label="Minska widget-storlek"
           >
-            <Minimize2 size={14} className="text-slate-500" aria-hidden="true" />
+            <Minimize2 size={16} className="sm:w-3.5 sm:h-3.5 text-slate-500" aria-hidden="true" />
           </button>
-          <span className="text-xs font-medium text-slate-400 px-1">{config.size}</span>
+          <span className="text-xs font-medium text-slate-400 px-1 hidden sm:inline">{config.size}</span>
           <button
             onClick={() => onResize(sizes[Math.min(2, currentIndex + 1)])}
             disabled={currentIndex === 2}
-            className="p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
+            className="p-2 sm:p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
             title="Större"
             aria-label="Öka widget-storlek"
           >
-            <Maximize2 size={14} className="text-slate-500" aria-hidden="true" />
+            <Maximize2 size={16} className="sm:w-3.5 sm:h-3.5 text-slate-500" aria-hidden="true" />
           </button>
         </div>
       )}
@@ -351,14 +379,15 @@ function DraggableWidget({
         <>
           <button
             onClick={onRemove}
-            className="absolute -top-3 -right-3 z-20 w-8 h-8 md:w-6 md:h-6 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-rose-600 active:scale-95 transition-all touch-manipulation"
+            className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-20 w-8 h-8 sm:w-7 sm:h-7 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-rose-600 active:scale-95 transition-all touch-manipulation"
             title="Ta bort"
             aria-label="Ta bort widget"
           >
-            <X size={16} className="md:w-3 md:h-3" aria-hidden="true" />
+            <X size={18} className="sm:w-4 sm:h-4" aria-hidden="true" />
           </button>
+          {/* Drag handle - hidden on small mobile, show on xs+ */}
           <div
-            className="absolute top-1/2 -left-4 -translate-y-1/2 z-20 p-2 bg-white rounded-xl shadow-md border border-slate-200 cursor-grab active:cursor-grabbing touch-manipulation"
+            className="absolute top-1/2 -left-3 sm:-left-4 -translate-y-1/2 z-20 p-2 bg-white rounded-xl shadow-md border border-slate-200 cursor-grab active:cursor-grabbing touch-manipulation hidden xs:block"
             role="button"
             aria-label="Dra för att flytta widget"
             tabIndex={0}
@@ -384,34 +413,46 @@ function NewUserOnboarding({ userName }: { userName?: string }) {
   ]
 
   return (
-    <div className="space-y-6">
-      <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-2xl p-6 text-white">
-        <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
+    <div className="space-y-4 sm:space-y-6">
+      {/* Welcome Hero */}
+      <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-5 sm:p-6 text-white">
+        <div className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
         <div className="relative">
           <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-4 h-4 text-amber-300" />
             <span className="text-xs font-medium text-white/70">Välkommen till Jobin</span>
           </div>
-          <h1 className="text-2xl font-bold mb-2">Hej{userName ? `, ${userName}` : ''}! 👋</h1>
+          <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">Hej{userName ? `, ${userName}` : ''}! 👋</h1>
           <p className="text-white/80 text-sm">Kom igång med tre enkla steg.</p>
         </div>
       </div>
 
-      <div className="grid sm:grid-cols-3 gap-3">
+      {/* Steps */}
+      <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-3">
         {steps.map((step) => (
           <Link
             key={step.id}
             to={step.link}
-            className="group relative bg-white rounded-xl p-4 border border-slate-200 hover:border-violet-300 hover:shadow-md transition-all"
+            className="group relative flex sm:flex-col items-center sm:items-start gap-4 sm:gap-0 bg-white rounded-xl p-4 border border-slate-200 hover:border-violet-300 hover:shadow-md transition-all active:scale-[0.99]"
           >
-            <div className="absolute -top-2 -left-2 w-6 h-6 bg-slate-800 text-white rounded-full flex items-center justify-center text-xs font-bold">
+            {/* Step number badge */}
+            <div className="absolute -top-2 -left-2 w-6 h-6 bg-slate-800 text-white rounded-full flex items-center justify-center text-xs font-bold z-10">
               {step.id}
             </div>
-            <div className={cn("w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center mb-3", step.color)}>
-              <step.icon className="w-5 h-5 text-white" />
+
+            {/* Icon */}
+            <div className={cn("w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br flex items-center justify-center flex-shrink-0 sm:mb-3", step.color)}>
+              <step.icon className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
             </div>
-            <h3 className="font-semibold text-slate-800 text-sm mb-0.5">{step.title}</h3>
-            <p className="text-xs text-slate-500">{step.description}</p>
+
+            {/* Text */}
+            <div className="flex-1 sm:flex-none">
+              <h3 className="font-semibold text-slate-800 text-base sm:text-sm mb-0.5">{step.title}</h3>
+              <p className="text-sm sm:text-xs text-slate-500">{step.description}</p>
+            </div>
+
+            {/* Mobile arrow */}
+            <ChevronRight size={20} className="text-slate-300 sm:hidden flex-shrink-0" />
           </Link>
         ))}
       </div>
@@ -636,10 +677,10 @@ export default function OverviewTab() {
   if (isLoading || !prefsLoaded) {
     return (
       <div className="space-y-4">
-        <div className="h-24 bg-slate-100 rounded-2xl animate-pulse" />
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div className="h-20 sm:h-24 bg-slate-100 rounded-xl sm:rounded-2xl animate-pulse" />
+        <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-4 lg:grid-cols-6 sm:gap-3">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse col-span-2" />
+            <div key={i} className="h-24 sm:h-20 bg-slate-100 rounded-xl animate-pulse sm:col-span-2" />
           ))}
         </div>
       </div>
@@ -688,28 +729,28 @@ export default function OverviewTab() {
         <div className="flex items-center gap-2">
           {isSaving && <span className="text-xs text-slate-400">Sparar...</span>}
         </div>
-        <div className="flex items-center gap-1 sm:gap-2 relative" ref={selectorRef}>
+        <div className="flex items-center gap-2 relative" ref={selectorRef}>
           <button
             onClick={() => setIsEditing(!isEditing)}
             className={cn(
-              "flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg text-xs font-medium transition-all min-h-[40px] sm:min-h-0",
-              isEditing ? "bg-violet-100 text-violet-700" : "text-slate-500 hover:bg-slate-100"
+              "flex items-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-sm sm:text-xs font-medium transition-all min-h-[44px] sm:min-h-[36px]",
+              isEditing ? "bg-violet-100 text-violet-700" : "text-slate-500 hover:bg-slate-100 bg-slate-50 sm:bg-transparent"
             )}
             aria-label={isEditing ? 'Avsluta redigering av widgets' : 'Redigera widgets'}
             aria-pressed={isEditing}
           >
-            <Settings size={14} aria-hidden="true" />
-            <span className="hidden xs:inline">{isEditing ? 'Klar' : 'Redigera'}</span>
+            <Settings size={16} className="sm:w-3.5 sm:h-3.5" aria-hidden="true" />
+            <span>{isEditing ? 'Klar' : 'Redigera'}</span>
           </button>
           <button
             onClick={() => setShowSelector(!showSelector)}
-            className="flex items-center gap-1.5 px-3 py-2 sm:py-1.5 rounded-lg text-xs font-medium text-slate-500 hover:bg-slate-100 transition-all min-h-[40px] sm:min-h-0"
+            className="flex items-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-sm sm:text-xs font-medium text-slate-500 hover:bg-slate-100 bg-slate-50 sm:bg-transparent transition-all min-h-[44px] sm:min-h-[36px]"
             aria-label="Lägg till widget"
             aria-expanded={showSelector}
             aria-haspopup="true"
           >
-            <Plus size={14} aria-hidden="true" />
-            <span className="hidden xs:inline">Lägg till</span>
+            <Plus size={16} className="sm:w-3.5 sm:h-3.5" aria-hidden="true" />
+            <span>Lägg till</span>
           </button>
           {showSelector && (
             <WidgetSelector
@@ -724,7 +765,7 @@ export default function OverviewTab() {
       {/* Widget Grid - Grouped by category when not editing */}
       {isEditing ? (
         // Flat grid when editing (for drag-and-drop)
-        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
           {widgets.map((config, index) => (
             <DraggableWidget
               key={`${config.id}-${index}`}
@@ -743,7 +784,7 @@ export default function OverviewTab() {
         </div>
       ) : (
         // Grouped by category when viewing
-        <div className="space-y-6">
+        <div className="space-y-5 sm:space-y-6">
           {Object.entries(WIDGET_CATEGORIES)
             .sort(([, a], [, b]) => a.order - b.order)
             .map(([categoryKey, categoryInfo]) => {
@@ -754,10 +795,10 @@ export default function OverviewTab() {
 
               return (
                 <section key={categoryKey}>
-                  <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-1">
+                  <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sm:mb-3 px-1">
                     {categoryInfo.label}
                   </h2>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
+                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
                     {categoryWidgets.map((config) => {
                       const index = widgets.findIndex(w => w.id === config.id)
                       return (
@@ -784,12 +825,12 @@ export default function OverviewTab() {
       )}
 
       {widgets.length === 0 && (
-        <div className="text-center py-12 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-          <Sparkles className="w-8 h-8 text-slate-300 mx-auto mb-2" aria-hidden="true" />
-          <p className="text-sm text-slate-500 mb-3">Inga widgets ännu</p>
+        <div className="text-center py-10 sm:py-12 px-4 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
+          <Sparkles className="w-10 h-10 sm:w-8 sm:h-8 text-slate-300 mx-auto mb-3 sm:mb-2" aria-hidden="true" />
+          <p className="text-base sm:text-sm text-slate-500 mb-4 sm:mb-3">Inga widgets ännu</p>
           <button
             onClick={() => setShowSelector(true)}
-            className="px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
+            className="px-5 py-3 sm:px-4 sm:py-2 bg-violet-600 text-white rounded-xl sm:rounded-lg text-base sm:text-sm font-medium hover:bg-violet-700 active:scale-[0.98] transition-all min-h-[48px] sm:min-h-0"
           >
             Lägg till widgets
           </button>
