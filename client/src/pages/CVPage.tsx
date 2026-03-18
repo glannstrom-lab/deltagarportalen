@@ -1,6 +1,6 @@
 /**
- * CV Page - Main entry with 5 tabs
- * Tabs: Skapa CV, Mina CV, Mallar, ATS-analys, CV-tips
+ * CV Page - Main entry with 4 tabs
+ * Tabs: Skapa CV, Mina CV, ATS-analys, CV-tips
  */
 
 import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
@@ -9,7 +9,6 @@ import { PageLayout } from '@/components/layout/index'
 import { cvTabDefs } from '@/data/cvTabs'
 import CVBuilder from './CVBuilder'
 import { MyCVs } from '@/components/cv/MyCVs'
-import { CVTemplates } from '@/components/cv/templates/CVTemplates'
 import { ATSAnalysis } from '@/components/cv/ATSAnalysis'
 import { CVTips } from '@/components/cv/CVTips'
 
@@ -41,7 +40,6 @@ export default function CVPage() {
       <Routes>
         <Route path="/" element={<CVBuilder />} />
         <Route path="/my-cvs" element={<MyCVs />} />
-        <Route path="/templates" element={<CVTemplates />} />
         <Route path="/ats" element={<ATSAnalysis />} />
         <Route path="/tips" element={<CVTips />} />
         <Route path="*" element={<Navigate to="/cv" replace />} />
