@@ -224,44 +224,44 @@ export default function HealthTab() {
   return (
     <div className="space-y-6">
       {/* Mood Logging - Prominent at top */}
-      <Card className="p-6 bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200">
-        <div className="flex items-center justify-between mb-4">
+      <Card className="p-4 sm:p-6 bg-gradient-to-br from-rose-50 to-pink-50 border-rose-200">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-0 mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-xl bg-rose-100 flex items-center justify-center">
-              <Heart className="w-6 h-6 text-rose-600" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-rose-100 flex items-center justify-center shrink-0">
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 text-rose-600" />
             </div>
             <div>
-              <h2 className="text-lg font-bold text-slate-800">{t('wellness.health.howAreYou')}</h2>
-              <p className="text-sm text-slate-500">
+              <h2 className="text-base sm:text-lg font-bold text-slate-800">{t('wellness.health.howAreYou')}</h2>
+              <p className="text-xs sm:text-sm text-slate-500">
                 {moodSaved ? t('wellness.health.moodLoggedToday') : t('wellness.health.logMoodToTrack')}
               </p>
             </div>
           </div>
           {moodStreak > 0 && (
-            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 rounded-full">
-              <span className="text-lg">🔥</span>
-              <span className="text-sm font-bold text-orange-700">{moodStreak} {t('wellness.health.days')}</span>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 bg-orange-100 rounded-full w-fit">
+              <span className="text-base sm:text-lg">🔥</span>
+              <span className="text-xs sm:text-sm font-bold text-orange-700">{moodStreak} {t('wellness.health.days')}</span>
             </div>
           )}
         </div>
 
         {/* Mood Selection */}
-        <div className="flex flex-wrap gap-3 mb-4">
+        <div className="grid grid-cols-5 gap-2 sm:flex sm:flex-wrap sm:gap-3 mb-4">
           {moodOptions.map((option) => (
             <button
               key={option.value}
               onClick={() => handleMoodSelect(option.value)}
               disabled={isSavingMood}
               className={cn(
-                "flex flex-col items-center gap-1 px-4 py-3 rounded-xl border-2 transition-all duration-200",
+                "flex flex-col items-center gap-0.5 sm:gap-1 px-2 sm:px-4 py-2 sm:py-3 rounded-xl border-2 transition-all duration-200",
                 currentMood === option.value
                   ? `${option.bgColor} border-current ring-2 ring-offset-2 ${option.color.replace('text-', 'ring-')}`
                   : "bg-white border-slate-200 hover:border-slate-300"
               )}
             >
-              <span className="text-3xl">{option.icon}</span>
+              <span className="text-2xl sm:text-3xl">{option.icon}</span>
               <span className={cn(
-                "text-xs font-medium",
+                "text-[10px] sm:text-xs font-medium text-center",
                 currentMood === option.value ? option.color : "text-slate-600"
               )}>
                 {option.label}

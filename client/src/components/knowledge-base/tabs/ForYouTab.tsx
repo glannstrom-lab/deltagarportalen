@@ -91,24 +91,29 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
   }, [articles])
   
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       {/* Welcome header */}
       <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-100">
-        <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center shrink-0">
-            <Sparkles className="w-6 h-6 text-violet-600" />
-          </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">
+        <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
+          <div className="flex items-center gap-3 sm:block">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-violet-100 rounded-xl flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
+            </div>
+            <h2 className="text-lg sm:text-xl font-bold text-slate-900 sm:hidden">
               Hej {userProfile.name}! 👋
             </h2>
-            <p className="text-slate-600 mt-1">
-              Här är dagens utvalda innehåll baserat på dina intressen och mål.
+          </div>
+          <div className="flex-1">
+            <h2 className="hidden sm:block text-xl font-bold text-slate-900">
+              Hej {userProfile.name}! 👋
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 sm:mt-1">
+              Dagens utvalda innehåll baserat på dina intressen.
             </p>
             {userProfile.streak > 0 && (
-              <div className="flex items-center gap-2 mt-3 text-amber-600">
-                <Flame className="w-5 h-5" />
-                <span className="font-medium">🔥 {userProfile.streak} dagars lässtreak!</span>
+              <div className="flex items-center gap-2 mt-2 sm:mt-3 text-amber-600">
+                <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
+                <span className="text-sm sm:text-base font-medium">🔥 {userProfile.streak} dagars streak!</span>
               </div>
             )}
           </div>
