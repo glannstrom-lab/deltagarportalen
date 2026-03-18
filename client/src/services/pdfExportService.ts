@@ -37,8 +37,9 @@ interface TemplateConfig {
   }
 }
 
+// Template IDs match CVBuilder.tsx (English IDs)
 const TEMPLATES: Record<string, TemplateConfig> = {
-  sidokolumn: {
+  sidebar: {
     layout: 'sidebar',
     fonts: { heading: 'helvetica', body: 'helvetica' },
     colors: {
@@ -52,7 +53,7 @@ const TEMPLATES: Record<string, TemplateConfig> = {
     },
     features: { roundedPhoto: true, skillTags: true },
   },
-  centrerad: {
+  centered: {
     layout: 'top',
     fonts: { heading: 'helvetica', body: 'helvetica' },
     colors: {
@@ -80,7 +81,7 @@ const TEMPLATES: Record<string, TemplateConfig> = {
     },
     features: { roundedPhoto: false },
   },
-  kreativ: {
+  creative: {
     layout: 'split',
     fonts: { heading: 'helvetica', body: 'helvetica' },
     colors: {
@@ -108,6 +109,35 @@ const TEMPLATES: Record<string, TemplateConfig> = {
       border: [212, 175, 55],
     },
     features: { roundedPhoto: true },
+  },
+  nordic: {
+    layout: 'sidebar',
+    fonts: { heading: 'helvetica', body: 'helvetica' },
+    colors: {
+      sidebar: [240, 249, 255],
+      sidebarText: [12, 74, 110],
+      accent: [2, 132, 199],
+      accentLight: [224, 242, 254],
+      text: [12, 74, 110],
+      muted: [3, 105, 161],
+      border: [186, 230, 253],
+    },
+    features: { roundedPhoto: true, skillTags: true },
+  },
+  // Legacy Swedish IDs for backwards compatibility
+  sidokolumn: {
+    layout: 'sidebar',
+    fonts: { heading: 'helvetica', body: 'helvetica' },
+    colors: {
+      sidebar: [15, 23, 42],
+      sidebarText: [248, 250, 252],
+      accent: [59, 130, 246],
+      accentLight: [219, 234, 254],
+      text: [30, 41, 59],
+      muted: [100, 116, 139],
+      border: [226, 232, 240],
+    },
+    features: { roundedPhoto: true, skillTags: true },
   },
   nordisk: {
     layout: 'sidebar',
@@ -238,8 +268,8 @@ function getSkillName(skill: any): string {
 }
 
 export async function generateCVPDF(data: CVData): Promise<Blob> {
-  const template = TEMPLATES[data.template] || TEMPLATES.sidokolumn
-  const isNordic = data.template === 'nordisk'
+  const template = TEMPLATES[data.template] || TEMPLATES.sidebar
+  const isNordic = data.template === 'nordic' || data.template === 'nordisk'
   const isExecutive = data.template === 'executive'
   
   const doc = new jsPDF({
