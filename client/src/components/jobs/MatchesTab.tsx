@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom'
 import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
 import { cvApi } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
-import { calculateUserProfile } from '@/services/interestGuideData'
+import { calculateUserProfile, calculateJobMatches, type UserProfile as InterestUserProfile } from '@/services/interestGuideData'
 import { unifiedProfileApi } from '@/services/unifiedProfileApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
 import { matchJobsToInterests, type RiasecScores, type JobInterestMatch } from '@/services/interestJobMatching'
@@ -48,10 +48,16 @@ interface MatchFilters {
   minScore: number
 }
 
+interface RecommendedOccupation {
+  name: string
+  matchPercentage: number
+}
+
 interface UserProfile {
   skills: string[]
   workTitles: string[]
   riasecScores: RiasecScores | null
+  recommendedOccupations: RecommendedOccupation[]
   careerGoals: {
     shortTerm: string
     longTerm: string
@@ -509,7 +515,7 @@ export function MatchesTab() {
 
   // Check what data is available
   const hasCV = userProfile && userProfile.skills.length > 0
-  const hasInterest = userProfile && userProfile.riasecScores !== null
+  const hasInterest = userProfile && userProfile.recommendedOccupations.length > 0
   const hasCareer = userProfile && userProfile.careerGoals !== null
 
   // Load user profile data
@@ -543,19 +549,31 @@ export function MatchesTab() {
       // Get interest guide results from progress (where answers are actually stored)
       const interestProgress = await interestGuideApi.getProgress()
       let riasecScores: RiasecScores | null = null
+      let recommendedOccupations: RecommendedOccupation[] = []
 
       if (interestProgress?.is_completed && interestProgress.answers) {
-        // Calculate RIASEC profile from answers
-        const profile = calculateUserProfile(interestProgress.answers)
-        if (profile?.riasec) {
+        // Calculate full profile from answers
+        const interestProfile = calculateUserProfile(interestProgress.answers)
+
+        if (interestProfile?.riasec) {
           riasecScores = {
-            realistic: profile.riasec.R || 0,
-            investigative: profile.riasec.I || 0,
-            artistic: profile.riasec.A || 0,
-            social: profile.riasec.S || 0,
-            enterprising: profile.riasec.E || 0,
-            conventional: profile.riasec.C || 0
+            realistic: interestProfile.riasec.R || 0,
+            investigative: interestProfile.riasec.I || 0,
+            artistic: interestProfile.riasec.A || 0,
+            social: interestProfile.riasec.S || 0,
+            enterprising: interestProfile.riasec.E || 0,
+            conventional: interestProfile.riasec.C || 0
           }
+
+          // Get recommended occupations from the interest guide
+          const jobMatches = calculateJobMatches(interestProfile)
+          recommendedOccupations = jobMatches
+            .filter(m => m.matchPercentage >= 50) // Only good matches
+            .slice(0, 20) // Top 20
+            .map(m => ({
+              name: m.occupation.name,
+              matchPercentage: m.matchPercentage
+            }))
         }
       }
 
@@ -568,13 +586,14 @@ export function MatchesTab() {
         skills,
         workTitles,
         riasecScores,
+        recommendedOccupations,
         careerGoals: careerGoals ? {
           ...careerGoals,
           preferredRoles
         } : null
       })
 
-      return { skills, workTitles, riasecScores, careerGoals, preferredRoles }
+      return { skills, workTitles, riasecScores, recommendedOccupations, careerGoals, preferredRoles }
     } catch (err) {
       console.error('Error loading profile:', err)
       return null
@@ -583,49 +602,28 @@ export function MatchesTab() {
 
   // Search and match jobs
   const searchAndMatchJobs = useCallback(async (profile: UserProfile, locations: string[]) => {
-    // Build search queries from all sources
+    // Build search queries based on what data is available
     const searchTerms: string[] = []
 
-    // From CV
+    // From CV - skills and job titles
     if (profile.skills.length > 0) {
-      searchTerms.push(...profile.skills.slice(0, 3))
+      searchTerms.push(...profile.skills.slice(0, 5))
     }
     if (profile.workTitles.length > 0) {
-      searchTerms.push(...profile.workTitles.slice(0, 2))
+      searchTerms.push(...profile.workTitles.slice(0, 3))
+    }
+
+    // From interest guide - use recommended occupation names
+    if (profile.recommendedOccupations.length > 0) {
+      const occupationNames = profile.recommendedOccupations
+        .slice(0, 5)
+        .map(o => o.name)
+      searchTerms.push(...occupationNames)
     }
 
     // From career goals
     if (profile.careerGoals?.preferredRoles) {
-      searchTerms.push(...profile.careerGoals.preferredRoles.slice(0, 2))
-    }
-
-    // Always add RIASEC-based search terms if profile exists
-    // This ensures we find relevant jobs for interest matching
-    if (profile.riasecScores) {
-      const dominantTypes = Object.entries(profile.riasecScores)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, 2)
-        .map(([type]) => type)
-
-      // Expanded RIASEC search terms for better job discovery
-      const riasecSearches: Record<string, string[]> = {
-        realistic: ['tekniker', 'mekaniker', 'elektriker', 'montör', 'lager', 'produktion', 'bygg'],
-        investigative: ['utvecklare', 'analytiker', 'ingenjör', 'IT', 'system', 'data'],
-        artistic: ['designer', 'kreativ', 'marknadsföring', 'kommunikation', 'grafisk'],
-        social: ['lärare', 'vård', 'omsorg', 'pedagog', 'kundservice', 'stöd'],
-        enterprising: ['säljare', 'projektledare', 'chef', 'affär', 'konsult'],
-        conventional: ['administratör', 'ekonom', 'redovisning', 'kontor', 'handläggare']
-      }
-
-      dominantTypes.forEach(type => {
-        const terms = riasecSearches[type] || []
-        // Add terms that aren't already included
-        terms.forEach(term => {
-          if (!searchTerms.some(s => s.toLowerCase().includes(term.toLowerCase()))) {
-            searchTerms.push(term)
-          }
-        })
-      })
+      searchTerms.push(...profile.careerGoals.preferredRoles.slice(0, 3))
     }
 
     // Search for jobs
@@ -710,15 +708,25 @@ export function MatchesTab() {
         cvScore = Math.min(cvScore + 15, 100) // Baseline boost
       }
 
-      // Interest matching (RIASEC)
+      // Interest matching - match against recommended occupations from interest guide
       let interestScore = 0
       const matchedInterestTypes: string[] = []
 
-      if (activeSources.includes('interest') && profile.riasecScores) {
-        const interestMatches = matchJobsToInterests([job], profile.riasecScores, [])
-        if (interestMatches.length > 0) {
-          interestScore = interestMatches[0].riasecMatch.score
-          matchedInterestTypes.push(...interestMatches[0].riasecMatch.matchedTypes)
+      if (activeSources.includes('interest') && profile.recommendedOccupations.length > 0) {
+        const jobTitle = (job.headline || '').toLowerCase()
+        const jobOccupation = (job.occupation?.label || '').toLowerCase()
+
+        // Check if job matches any recommended occupation
+        for (const recOcc of profile.recommendedOccupations) {
+          const occName = recOcc.name.toLowerCase()
+
+          // Check job title and occupation label for match
+          if (jobTitle.includes(occName) || jobOccupation.includes(occName) ||
+              occName.split(' ').some(word => word.length > 3 && (jobTitle.includes(word) || jobOccupation.includes(word)))) {
+            // Score based on how well the interest guide recommends this occupation
+            interestScore = Math.max(interestScore, recOcc.matchPercentage)
+            matchedInterestTypes.push(recOcc.name)
+          }
         }
       }
 
@@ -749,37 +757,25 @@ export function MatchesTab() {
         careerScore = Math.min(careerScore, 100)
       }
 
-      // Calculate total weighted score
+      // Calculate total score based on active sources
+      // When only one source is active, use that score directly
+      // When multiple sources, use weighted average
       let totalScore = 0
-      let weights = 0
+      const scores: number[] = []
 
-      // Count active sources for proper weighting
-      const activeSourceCount = activeSources.length
-
-      if (activeSources.includes('cv')) {
-        if (cvScore > 0) {
-          totalScore += cvScore * 0.4
-          weights += 0.4
-        }
+      if (activeSources.includes('cv') && cvScore > 0) {
+        scores.push(cvScore)
       }
-      if (activeSources.includes('interest')) {
-        // Always add interest score if source is active (even if 0)
-        // This ensures proper weighting when only interest is selected
-        totalScore += interestScore * 0.35
-        weights += 0.35
+      if (activeSources.includes('interest') && interestScore > 0) {
+        scores.push(interestScore)
       }
-      if (activeSources.includes('career')) {
-        if (careerScore > 0) {
-          totalScore += careerScore * 0.25
-          weights += 0.25
-        }
+      if (activeSources.includes('career') && careerScore > 0) {
+        scores.push(careerScore)
       }
 
-      // Normalize if not all sources active
-      if (weights > 0 && weights < 1) {
-        totalScore = Math.round(totalScore / weights)
-      } else {
-        totalScore = Math.round(totalScore)
+      if (scores.length > 0) {
+        // Average of all active scores
+        totalScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
       }
 
       // Determine primary source
@@ -819,6 +815,7 @@ export function MatchesTab() {
           skills: [],
           workTitles: [],
           riasecScores: null,
+          recommendedOccupations: [],
           careerGoals: null
         })
         setIsLoading(false)
@@ -829,6 +826,7 @@ export function MatchesTab() {
         skills: profile.skills,
         workTitles: profile.workTitles,
         riasecScores: profile.riasecScores,
+        recommendedOccupations: profile.recommendedOccupations,
         careerGoals: profile.careerGoals ? {
           shortTerm: profile.careerGoals.shortTerm || '',
           longTerm: profile.careerGoals.longTerm || '',
