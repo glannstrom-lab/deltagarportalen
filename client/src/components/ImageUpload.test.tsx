@@ -9,6 +9,9 @@ describe('ImageUpload', () => {
 
   beforeEach(() => {
     vi.clearAllMocks()
+    // Mock URL APIs not available in jsdom
+    global.URL.createObjectURL = vi.fn(() => 'blob:mock-url')
+    global.URL.revokeObjectURL = vi.fn()
   })
 
   it('renders empty state when no image', () => {

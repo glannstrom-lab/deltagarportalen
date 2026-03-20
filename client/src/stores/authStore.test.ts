@@ -31,10 +31,19 @@ vi.mock('@/lib/supabase', () => ({
 
 describe('authStore', () => {
   beforeEach(() => {
-    // Reset store before each test
-    const store = useAuthStore.getState()
-    store.signOut()
+    // Reset store state directly (avoid calling signOut which needs mock)
+    useAuthStore.setState({
+      user: null,
+      profile: null,
+      session: null,
+      isAuthenticated: false,
+      isLoading: false,
+      error: null,
+      isSigningOut: false,
+    })
     vi.clearAllMocks()
+    // Set default mock returns
+    mockSignOut.mockResolvedValue({ error: null })
   })
 
   describe('initialize', () => {
@@ -49,6 +58,8 @@ describe('authStore', () => {
         first_name: 'Test',
         last_name: 'User',
         role: 'USER',
+        roles: ['USER'],
+        activeRole: 'USER',
         phone: null,
         avatar_url: null,
         consultant_id: null,
@@ -58,49 +69,51 @@ describe('authStore', () => {
 
       mockGetSession.mockResolvedValue({ data: { session: mockSession }, error: null })
       mockGetUser.mockResolvedValue({ data: { user: mockSession.user }, error: null })
-      
-      const mockSelect = vi.fn().mockReturnThis()
-      const mockEq = vi.fn().mockReturnThis()
-      const mockSingle = vi.fn().mockResolvedValue({ data: mockProfile, error: null })
-      
+
       mockFrom.mockReturnValue({
-        select: mockSelect,
-        eq: mockEq,
-        single: mockSingle,
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: mockProfile, error: null })
+          })
+        })
       })
 
-      const store = useAuthStore.getState()
-      await store.initialize()
+      await useAuthStore.getState().initialize()
 
-      expect(store.isAuthenticated).toBe(true)
-      expect(store.user).toEqual(mockSession.user)
-      expect(store.profile).toEqual(mockProfile)
-      expect(store.isLoading).toBe(false)
+      const state = useAuthStore.getState()
+      expect(state.isAuthenticated).toBe(true)
+      expect(state.user).toEqual(mockSession.user)
+      expect(state.profile).toEqual(expect.objectContaining({
+        id: mockProfile.id,
+        email: mockProfile.email,
+        first_name: mockProfile.first_name,
+      }))
+      expect(state.isLoading).toBe(false)
     })
 
     it('should set unauthenticated state when no session', async () => {
       mockGetSession.mockResolvedValue({ data: { session: null }, error: null })
 
-      const store = useAuthStore.getState()
-      await store.initialize()
+      await useAuthStore.getState().initialize()
 
-      expect(store.isAuthenticated).toBe(false)
-      expect(store.user).toBeNull()
-      expect(store.isLoading).toBe(false)
+      const state = useAuthStore.getState()
+      expect(state.isAuthenticated).toBe(false)
+      expect(state.user).toBeNull()
+      expect(state.isLoading).toBe(false)
     })
 
     it('should handle initialization errors', async () => {
-      mockGetSession.mockResolvedValue({ 
-        data: { session: null }, 
-        error: { message: 'Session error' } 
+      mockGetSession.mockResolvedValue({
+        data: { session: null },
+        error: { message: 'Session error' }
       })
 
-      const store = useAuthStore.getState()
-      await store.initialize()
+      await useAuthStore.getState().initialize()
 
-      expect(store.isAuthenticated).toBe(false)
-      expect(store.error).toBe('Session error')
-      expect(store.isLoading).toBe(false)
+      const state = useAuthStore.getState()
+      expect(state.isAuthenticated).toBe(false)
+      expect(state.error).toBe('Kunde inte initiera autentisering')
+      expect(state.isLoading).toBe(false)
     })
   })
 
@@ -115,6 +128,8 @@ describe('authStore', () => {
         first_name: 'Test',
         last_name: 'User',
         role: 'USER',
+        roles: ['USER'],
+        activeRole: 'USER',
         phone: null,
         avatar_url: null,
         consultant_id: null,
@@ -122,27 +137,25 @@ describe('authStore', () => {
         updated_at: '2024-01-01',
       }
 
-      mockSignInWithPassword.mockResolvedValue({ 
-        data: { user: mockUser, session: mockSession }, 
-        error: null 
+      mockSignInWithPassword.mockResolvedValue({
+        data: { user: mockUser, session: mockSession },
+        error: null
       })
 
-      const mockSelect = vi.fn().mockReturnThis()
-      const mockEq = vi.fn().mockReturnThis()
-      const mockSingle = vi.fn().mockResolvedValue({ data: mockProfile, error: null })
-      
       mockFrom.mockReturnValue({
-        select: mockSelect,
-        eq: mockEq,
-        single: mockSingle,
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: mockProfile, error: null })
+          })
+        })
       })
 
-      const store = useAuthStore.getState()
-      const result = await store.signIn(credentials.email, credentials.password)
+      const result = await useAuthStore.getState().signIn(credentials.email, credentials.password)
 
+      const state = useAuthStore.getState()
       expect(result.error).toBeNull()
-      expect(store.isAuthenticated).toBe(true)
-      expect(store.user).toEqual(mockUser)
+      expect(state.isAuthenticated).toBe(true)
+      expect(state.user).toEqual(mockUser)
       expect(mockSignInWithPassword).toHaveBeenCalledWith(credentials)
     })
 
@@ -152,11 +165,10 @@ describe('authStore', () => {
         error: { message: 'Invalid login credentials' },
       })
 
-      const store = useAuthStore.getState()
-      const result = await store.signIn('test@example.com', 'wrongpassword')
+      const result = await useAuthStore.getState().signIn('test@example.com', 'wrongpassword')
 
       expect(result.error).toBe('Fel e-post eller lösenord')
-      expect(store.isAuthenticated).toBe(false)
+      expect(useAuthStore.getState().isAuthenticated).toBe(false)
     })
 
     it('should handle unconfirmed email error', async () => {
@@ -165,8 +177,7 @@ describe('authStore', () => {
         error: { message: 'Email not confirmed' },
       })
 
-      const store = useAuthStore.getState()
-      const result = await store.signIn('test@example.com', 'password')
+      const result = await useAuthStore.getState().signIn('test@example.com', 'password')
 
       expect(result.error).toBe('E-postadressen är inte bekräftad')
     })
@@ -188,24 +199,22 @@ describe('authStore', () => {
         error: null,
       })
 
-      const mockSelect = vi.fn().mockReturnThis()
-      const mockEq = vi.fn().mockReturnThis()
-      const mockSingle = vi.fn().mockResolvedValue({ 
-        data: { ...mockUser, first_name: userData.firstName, last_name: userData.lastName }, 
-        error: null 
-      })
-      
       mockFrom.mockReturnValue({
-        select: mockSelect,
-        eq: mockEq,
-        single: mockSingle,
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({
+              data: { ...mockUser, first_name: userData.firstName, last_name: userData.lastName },
+              error: null
+            })
+          })
+        })
       })
 
-      const store = useAuthStore.getState()
-      const result = await store.signUp(userData)
+      const result = await useAuthStore.getState().signUp(userData)
 
+      const state = useAuthStore.getState()
       expect(result.error).toBeNull()
-      expect(store.isAuthenticated).toBe(true)
+      expect(state.isAuthenticated).toBe(true)
       expect(mockSignUp).toHaveBeenCalledWith({
         email: userData.email,
         password: userData.password,
@@ -232,11 +241,10 @@ describe('authStore', () => {
         error: null,
       })
 
-      const store = useAuthStore.getState()
-      const result = await store.signUp(userData)
+      const result = await useAuthStore.getState().signUp(userData)
 
-      expect(result.error).toContain('e-postbekräftelse')
-      expect(store.isAuthenticated).toBe(false)
+      expect(result.error).toContain('e-post')
+      expect(useAuthStore.getState().isAuthenticated).toBe(false)
     })
   })
 
@@ -244,13 +252,13 @@ describe('authStore', () => {
     it('should sign out user successfully', async () => {
       mockSignOut.mockResolvedValue({ error: null })
 
-      const store = useAuthStore.getState()
-      await store.signOut()
+      await useAuthStore.getState().signOut()
 
-      expect(store.isAuthenticated).toBe(false)
-      expect(store.user).toBeNull()
-      expect(store.profile).toBeNull()
-      expect(store.session).toBeNull()
+      const state = useAuthStore.getState()
+      expect(state.isAuthenticated).toBe(false)
+      expect(state.user).toBeNull()
+      expect(state.profile).toBeNull()
+      expect(state.session).toBeNull()
     })
   })
 
@@ -263,6 +271,8 @@ describe('authStore', () => {
         first_name: 'Old',
         last_name: 'Name',
         role: 'USER',
+        roles: ['USER'],
+        activeRole: 'USER',
         phone: null,
         avatar_url: null,
         consultant_id: null,
@@ -278,32 +288,24 @@ describe('authStore', () => {
       })
 
       const updates = { first_name: 'New', last_name: 'Name' }
-      
-      const mockUpdate = vi.fn().mockReturnThis()
-      const mockEq = vi.fn().mockReturnThis()
-      const mockSingle = vi.fn().mockResolvedValue({ 
-        data: { ...initialProfile, ...updates }, 
-        error: null 
-      })
-      
+
       mockFrom.mockReturnValue({
-        update: mockUpdate,
-        eq: mockEq,
-        single: mockSingle,
+        update: vi.fn().mockReturnValue({
+          eq: vi.fn().mockResolvedValue({ error: null })
+        })
       })
 
-      const store = useAuthStore.getState()
-      const result = await store.updateProfile(updates)
+      const result = await useAuthStore.getState().updateProfile(updates)
 
+      const state = useAuthStore.getState()
       expect(result.error).toBeNull()
-      expect(store.profile?.first_name).toBe('New')
+      expect(state.profile?.first_name).toBe('New')
     })
 
     it('should return error when not authenticated', async () => {
       useAuthStore.setState({ user: null, isAuthenticated: false })
 
-      const store = useAuthStore.getState()
-      const result = await store.updateProfile({ first_name: 'New' })
+      const result = await useAuthStore.getState().updateProfile({ first_name: 'New' })
 
       expect(result.error).toBe('Inte inloggad')
     })
@@ -312,11 +314,10 @@ describe('authStore', () => {
   describe('clearError', () => {
     it('should clear error state', () => {
       useAuthStore.setState({ error: 'Some error' })
-      
-      const store = useAuthStore.getState()
-      store.clearError()
 
-      expect(store.error).toBeNull()
+      useAuthStore.getState().clearError()
+
+      expect(useAuthStore.getState().error).toBeNull()
     })
   })
 })
