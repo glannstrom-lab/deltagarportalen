@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useDashboardData } from '@/hooks/useDashboardData'
-import { useEnergyStore, type EnergyLevel } from '@/stores/energyStore'
+import { useEnergyStore, type EnergyLevel } from '@/stores/energyStoreWithSync'
 import { DashboardWidget } from '../DashboardWidget'
 import { cn } from '@/lib/utils'
 

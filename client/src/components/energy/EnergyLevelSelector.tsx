@@ -4,12 +4,12 @@
  */
 import { useState, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  type EnergyLevel, 
-  getEnergyDescription, 
+import {
+  type EnergyLevel,
+  getEnergyDescription,
   getEnergyEmoji,
-  useEnergyStore 
-} from '@/stores/energyStore'
+  useEnergyStore
+} from '@/stores/energyStoreWithSync'
 import { Button } from '@/components/ui/Button'
 import { Sparkles, Battery, BatteryLow, BatteryMedium, BatteryFull } from 'lucide-react'
 import { cn } from '@/lib/utils'

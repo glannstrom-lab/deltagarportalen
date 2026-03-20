@@ -13,7 +13,7 @@ import {
   Sparkles
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { useEnergyStore, type EnergyLevel, getEnergyDescription } from '@/stores/energyStore'
+import { useEnergyStore, type EnergyLevel, getEnergyDescription } from '@/stores/energyStoreWithSync'
 
 interface MobileEnergySelectorProps {
   isOpen: boolean

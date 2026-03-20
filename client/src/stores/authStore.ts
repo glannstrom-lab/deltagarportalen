@@ -2,6 +2,8 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
+import { useSettingsStore } from './settingsStore'
+import { useEnergyStore } from './energyStoreWithSync'
 
 export type UserRole = 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN'
 
@@ -105,6 +107,12 @@ export const useAuthStore = create<AuthState>()(
               isAuthenticated: !!user,
               isLoading: false,
             })
+
+            // Sync settings and energy from cloud
+            if (user) {
+              useSettingsStore.getState().syncWithServer()
+              useEnergyStore.getState().syncWithServer()
+            }
           } else {
             set({
               user: null,
@@ -170,6 +178,10 @@ export const useAuthStore = create<AuthState>()(
             isAuthenticated: true,
             isLoading: false,
           })
+
+          // Sync settings and energy from cloud
+          useSettingsStore.getState().syncWithServer()
+          useEnergyStore.getState().syncWithServer()
 
           return { error: null }
         } catch (error: unknown) {

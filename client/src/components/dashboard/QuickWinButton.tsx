@@ -19,7 +19,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
-import { useEnergyStore, type EnergyLevel } from '@/stores/energyStore'
+import { useEnergyStore, type EnergyLevel } from '@/stores/energyStoreWithSync'
 import { useDashboardData, type UseDashboardDataReturn } from '@/hooks/useDashboardData'
 import { Link } from 'react-router-dom'
 
