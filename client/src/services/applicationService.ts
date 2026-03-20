@@ -3,6 +3,7 @@ import { type JobAd } from './arbetsformedlingenApi'
 import { jobApplicationsApi } from './cloudStorage'
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
+import { logApplicationSent, logInterviewScheduled } from './communityActivityLogger'
 
 export interface ApplicationData {
   id?: string
@@ -105,13 +106,18 @@ class ApplicationService {
     try {
       const result = await jobApplicationsApi.add(toApiFormat(application))
       const createdApp = fromApiFormat(result)
-      
+
       // Uppdatera cache
       if (this.localCache) {
         this.localCache.push(createdApp)
         this.saveToLocalStorage(this.localCache)
       }
-      
+
+      // Logga till community feed (om status är 'sent')
+      if (application.status === 'sent') {
+        logApplicationSent(application.employer, application.jobTitle)
+      }
+
       return createdApp
     } catch (error) {
       console.error('Fel vid skapande av ansökan:', error)
@@ -130,7 +136,7 @@ class ApplicationService {
       // Hitta ansökan först
       const apps = await this.getApplications()
       const app = apps.find(a => a.jobId === jobId)
-      
+
       if (app?.id) {
         await jobApplicationsApi.update(app.id, {
           ...updates,
@@ -142,8 +148,13 @@ class ApplicationService {
           contact_person: updates.contactPerson,
           follow_up_date: updates.followUpDate,
         })
+
+        // Logga till community feed om status ändras till intervju
+        if (updates.status === 'interview' && app.status !== 'interview') {
+          logInterviewScheduled(app.employer)
+        }
       }
-      
+
       // Uppdatera cache
       if (this.localCache) {
         this.localCache = this.localCache.map(a =>
