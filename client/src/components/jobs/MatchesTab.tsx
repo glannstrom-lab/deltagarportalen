@@ -540,63 +540,108 @@ export function MatchesTab() {
   const searchInterestJobs = useCallback(async (data: SourceData['interest'], locations: string[]): Promise<MatchedJob[]> => {
     if (!data.available || data.occupations.length === 0) return []
 
-    // Search for each top occupation
-    const topOccupations = data.occupations.slice(0, 5)
+    // Helper to extract clean search terms from occupation name
+    const getSearchTerms = (name: string): string[] => {
+      // Split on / and extract parts, remove parentheses content
+      return name
+        .split('/')
+        .map(part => part.replace(/\(.*?\)/g, '').trim())
+        .filter(part => part.length > 2)
+    }
+
+    const topOccupations = data.occupations.slice(0, 8)
     const allJobs: MatchedJob[] = []
     const seenJobIds = new Set<string>()
 
+    // Collect all unique search terms
+    const searchTermsUsed = new Set<string>()
+
     for (const occ of topOccupations) {
-      try {
-        const result = await searchJobs({
-          query: occ.name,
-          municipality: locations.length === 1 ? locations[0] : undefined,
-          limit: 20,
-          publishedWithin: 'month'
-        })
+      const searchTerms = getSearchTerms(occ.name)
 
-        let jobs = result.hits
-        if (locations.length > 1) {
-          jobs = jobs.filter(job =>
-            locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
-          )
-        }
+      for (const searchTerm of searchTerms) {
+        // Skip if we already searched this term
+        if (searchTermsUsed.has(searchTerm.toLowerCase())) continue
+        searchTermsUsed.add(searchTerm.toLowerCase())
 
-        jobs.forEach(job => {
-          if (seenJobIds.has(job.id)) return
-          seenJobIds.add(job.id)
+        try {
+          const result = await searchJobs({
+            query: searchTerm,
+            municipality: locations.length === 1 ? locations[0] : undefined,
+            limit: 25,
+            publishedWithin: 'month'
+          })
 
-          const jobTitle = (job.headline || '').toLowerCase()
-          const jobOccupation = (job.occupation?.label || '').toLowerCase()
-          const occNameLower = occ.name.toLowerCase()
-          const occWords = occNameLower.split(/[\s-]+/).filter(w => w.length > 3)
-
-          // Check if job matches this occupation
-          const titleMatch = jobTitle.includes(occNameLower) || occWords.some(w => jobTitle.includes(w))
-          const occMatch = jobOccupation.includes(occNameLower) || occWords.some(w => jobOccupation.includes(w))
-
-          if (titleMatch || occMatch) {
-            allJobs.push({
-              job,
-              score: occ.matchPercentage,
-              source: 'interest' as MatchSource,
-              matchDetails: [occ.name]
-            })
-          } else {
-            // Still include but with lower score
-            allJobs.push({
-              job,
-              score: Math.round(occ.matchPercentage * 0.7),
-              source: 'interest' as MatchSource,
-              matchDetails: [occ.name + ' (relaterat)']
-            })
+          let jobs = result.hits
+          if (locations.length > 1) {
+            jobs = jobs.filter(job =>
+              locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
+            )
           }
-        })
-      } catch (e) {
-        console.error('Error searching for occupation:', occ.name, e)
+
+          jobs.forEach(job => {
+            if (seenJobIds.has(job.id)) return
+            seenJobIds.add(job.id)
+
+            const jobTitle = (job.headline || '').toLowerCase()
+            const jobOccupation = (job.occupation?.label || '').toLowerCase()
+            const jobText = `${jobTitle} ${jobOccupation}`
+            const searchTermLower = searchTerm.toLowerCase()
+
+            // Calculate match quality
+            let matchQuality = 0
+            const matchDetails: string[] = []
+
+            // Direct match in title
+            if (jobTitle.includes(searchTermLower)) {
+              matchQuality = 100
+              matchDetails.push(searchTerm)
+            }
+            // Direct match in occupation label
+            else if (jobOccupation.includes(searchTermLower)) {
+              matchQuality = 90
+              matchDetails.push(searchTerm)
+            }
+            // Word match
+            else {
+              const searchWords = searchTermLower.split(/\s+/).filter(w => w.length > 3)
+              const matchedWords = searchWords.filter(w => jobText.includes(w))
+              if (matchedWords.length > 0) {
+                matchQuality = 70 + (matchedWords.length / searchWords.length) * 20
+                matchDetails.push(searchTerm)
+              } else {
+                // Still related since search returned it
+                matchQuality = 50
+                matchDetails.push(searchTerm + ' (relaterat)')
+              }
+            }
+
+            // Final score combines match quality with occupation recommendation percentage
+            const score = Math.round((matchQuality / 100) * occ.matchPercentage)
+
+            allJobs.push({
+              job,
+              score: Math.max(score, 30),
+              source: 'interest' as MatchSource,
+              matchDetails
+            })
+          })
+        } catch (e) {
+          console.error('Error searching for term:', searchTerm, e)
+        }
       }
     }
 
-    return allJobs
+    // Deduplicate and keep best score for each job
+    const jobMap = new Map<string, MatchedJob>()
+    allJobs.forEach(match => {
+      const existing = jobMap.get(match.job.id)
+      if (!existing || match.score > existing.score) {
+        jobMap.set(match.job.id, match)
+      }
+    })
+
+    return Array.from(jobMap.values())
       .filter(m => m.score >= 30)
       .sort((a, b) => b.score - a.score)
       .slice(0, 50)
