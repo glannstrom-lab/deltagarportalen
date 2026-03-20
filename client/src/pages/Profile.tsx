@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { userApi } from '../services/api'
 import {
   User, Save, CheckCircle, Camera, Phone, MapPin, Mail,
-  FileText, Sparkles, Lightbulb
+  FileText, Sparkles, Lightbulb, Compass, ChevronRight
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
-import { 
-  Card, 
-  CardHeader, 
+import {
+  Card,
+  CardHeader,
   CardSection,
-  Input, 
+  Input,
   Textarea,
   Button,
   LoadingState,
@@ -19,9 +20,12 @@ import {
   StatCard
 } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
+import { getPersonalityStrengths } from '@/services/interestPersonalization'
 
 export default function Profile() {
   const { t, i18n } = useTranslation()
+  const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
   const [profile, setProfile] = useState<{
     first_name?: string
     last_name?: string
@@ -275,6 +279,109 @@ export default function Profile() {
           color="amber"
         />
       </div>
+
+      {/* RIASEC Profile Section */}
+      {!interestLoading && interestProfile.hasResult && interestProfile.riasecScores && (
+        <Card variant="elevated">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
+              <Compass className="w-6 h-6 text-amber-600" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                Din intresseprofil
+                <Sparkles className="w-4 h-4 text-amber-500" />
+              </h3>
+              <p className="text-sm text-slate-500 mt-1">
+                Baserat på ditt resultat från intresseguiden
+              </p>
+
+              {/* Dominant Types */}
+              {interestProfile.dominantTypes.length > 0 && (
+                <div className="mt-4 space-y-3">
+                  {interestProfile.dominantTypes.slice(0, 3).map((type, index) => {
+                    const riasecType = RIASEC_TYPES[type.code]
+                    const percentage = type.score
+                    return (
+                      <div key={type.code}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-sm font-medium text-slate-700">
+                            {index === 0 && '🥇 '}
+                            {index === 1 && '🥈 '}
+                            {index === 2 && '🥉 '}
+                            {riasecType.nameSv}
+                          </span>
+                          <span className="text-sm text-slate-500">{percentage}%</span>
+                        </div>
+                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className={cn(
+                              "h-full rounded-full transition-all",
+                              index === 0 ? "bg-amber-500" :
+                              index === 1 ? "bg-amber-400" : "bg-amber-300"
+                            )}
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                        <p className="text-xs text-slate-500 mt-1">{riasecType.description}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Strengths */}
+              {interestProfile.riasecScores && (
+                <div className="mt-6">
+                  <h4 className="text-sm font-medium text-slate-700 mb-2">Dina styrkor</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {getPersonalityStrengths(interestProfile.riasecScores).slice(0, 6).map((strength, i) => (
+                      <span
+                        key={i}
+                        className="px-3 py-1 bg-amber-50 text-amber-700 text-sm rounded-full border border-amber-200"
+                      >
+                        {strength}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Link to Interest Guide */}
+              <Link
+                to="/interest-guide"
+                className="inline-flex items-center gap-2 mt-4 text-sm text-amber-600 hover:text-amber-700 font-medium"
+              >
+                Gör om intresseguiden
+                <ChevronRight className="w-4 h-4" />
+              </Link>
+            </div>
+          </div>
+        </Card>
+      )}
+
+      {/* CTA to complete Interest Guide */}
+      {!interestLoading && !interestProfile.hasResult && (
+        <Link to="/interest-guide" className="block">
+          <Card variant="elevated" className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-200 hover:border-violet-300 transition-colors">
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <Compass className="w-6 h-6 text-violet-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+                  Upptäck din intresseprofil
+                  <Sparkles className="w-4 h-4 text-violet-500" />
+                </h3>
+                <p className="text-sm text-slate-600 mt-1">
+                  Gör intresseguiden för att få personaliserade rekommendationer
+                </p>
+              </div>
+              <ChevronRight className="w-5 h-5 text-violet-400" />
+            </div>
+          </Card>
+        </Link>
+      )}
 
       {/* Quick Tips */}
       <InfoCard

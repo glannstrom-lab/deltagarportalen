@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
   BookOpen, Play, Clock, CheckCircle2, Award, Star, TrendingUp,
   ArrowLeft, Flame, Target, Lightbulb, ChevronRight, Loader2,
-  RefreshCw, FileText, Dumbbell, Sparkles, Zap
+  RefreshCw, FileText, Dumbbell, Sparkles, Zap, Compass
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
@@ -25,6 +25,7 @@ export default function LearningTab() {
     categories,
     exercises,
     dailyTip,
+    hasInterestProfile,
     isLoading,
     error,
     refresh,
@@ -190,9 +191,15 @@ export default function LearningTab() {
 
       {/* Recommended articles */}
       <Section
-        title="Rekommenderat för dig"
-        icon={<Star className="text-violet-500" />}
+        title={hasInterestProfile ? "Anpassat för dig" : "Rekommenderat för dig"}
+        icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-violet-500" />}
       >
+        {hasInterestProfile && (
+          <p className="text-sm text-slate-500 -mt-2 mb-4 flex items-center gap-1">
+            <Sparkles size={14} className="text-amber-500" />
+            Baserat på din intresseprofil
+          </p>
+        )}
         <div className="grid gap-3 sm:grid-cols-2">
           {recommendedArticles.slice(0, 4).map((article, index) => (
             <motion.div
@@ -204,6 +211,7 @@ export default function LearningTab() {
               <ArticleCard
                 article={article}
                 onClick={() => handleSelectArticle(article)}
+                showRelevance={hasInterestProfile}
               />
             </motion.div>
           ))}
@@ -226,6 +234,7 @@ export default function LearningTab() {
               <ExerciseCard
                 exercise={exercise}
                 onClick={() => handleSelectExercise(exercise)}
+                showRelevance={hasInterestProfile}
               />
             </motion.div>
           ))}
@@ -382,9 +391,10 @@ interface ArticleCardProps {
   article: ArticleWithProgress
   onClick: () => void
   showProgress?: boolean
+  showRelevance?: boolean
 }
 
-function ArticleCard({ article, onClick, showProgress }: ArticleCardProps) {
+function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleCardProps) {
   const difficultyColors = {
     easy: 'bg-emerald-100 text-emerald-700',
     medium: 'bg-amber-100 text-amber-700',
@@ -397,6 +407,8 @@ function ArticleCard({ article, onClick, showProgress }: ArticleCardProps) {
     detailed: 'Detaljerad'
   }
 
+  const hasHighRelevance = showRelevance && article.relevanceScore && article.relevanceScore >= 60
+
   return (
     <div
       onClick={onClick}
@@ -404,16 +416,20 @@ function ArticleCard({ article, onClick, showProgress }: ArticleCardProps) {
         "bg-white p-4 rounded-xl border transition-all cursor-pointer",
         article.isCompleted
           ? "border-emerald-200 bg-emerald-50/30"
-          : "border-slate-200 hover:border-violet-300 hover:shadow-md"
+          : hasHighRelevance
+            ? "border-amber-200 hover:border-amber-300 hover:shadow-md"
+            : "border-slate-200 hover:border-violet-300 hover:shadow-md"
       )}
     >
       <div className="flex items-start gap-3">
         <div className={cn(
           "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
-          article.isCompleted ? "bg-emerald-100" : "bg-violet-100"
+          article.isCompleted ? "bg-emerald-100" : hasHighRelevance ? "bg-amber-100" : "bg-violet-100"
         )}>
           {article.isCompleted ? (
             <CheckCircle2 className="text-emerald-600" size={20} />
+          ) : hasHighRelevance ? (
+            <Compass className="text-amber-600" size={20} />
           ) : (
             <FileText className="text-violet-600" size={20} />
           )}
@@ -436,6 +452,12 @@ function ArticleCard({ article, onClick, showProgress }: ArticleCardProps) {
               <Clock size={12} />
               {article.readingTime} min
             </span>
+            {hasHighRelevance && (
+              <span className="text-xs text-amber-600 flex items-center gap-1">
+                <Sparkles size={12} />
+                Matchar din profil
+              </span>
+            )}
           </div>
           {showProgress && article.progress > 0 && !article.isCompleted && (
             <div className="mt-2">
@@ -467,14 +489,17 @@ function ArticleCard({ article, onClick, showProgress }: ArticleCardProps) {
 interface ExerciseCardProps {
   exercise: ExerciseWithProgress
   onClick: () => void
+  showRelevance?: boolean
 }
 
-function ExerciseCard({ exercise, onClick }: ExerciseCardProps) {
+function ExerciseCard({ exercise, onClick, showRelevance }: ExerciseCardProps) {
   const difficultyColors = {
     'Lätt': 'bg-emerald-100 text-emerald-700',
     'Medel': 'bg-amber-100 text-amber-700',
     'Utmanande': 'bg-red-100 text-red-700'
   }
+
+  const hasHighRelevance = showRelevance && exercise.relevanceScore && exercise.relevanceScore >= 60
 
   return (
     <div
@@ -483,16 +508,20 @@ function ExerciseCard({ exercise, onClick }: ExerciseCardProps) {
         "bg-white p-4 rounded-xl border transition-all cursor-pointer",
         exercise.isCompleted
           ? "border-emerald-200 bg-emerald-50/30"
-          : "border-slate-200 hover:border-emerald-300 hover:shadow-md"
+          : hasHighRelevance
+            ? "border-amber-200 hover:border-amber-300 hover:shadow-md"
+            : "border-slate-200 hover:border-emerald-300 hover:shadow-md"
       )}
     >
       <div className="flex items-start gap-3">
         <div className={cn(
           "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
-          exercise.isCompleted ? "bg-emerald-100" : "bg-emerald-100"
+          exercise.isCompleted ? "bg-emerald-100" : hasHighRelevance ? "bg-amber-100" : "bg-emerald-100"
         )}>
           {exercise.isCompleted ? (
             <CheckCircle2 className="text-emerald-600" size={20} />
+          ) : hasHighRelevance ? (
+            <Compass className="text-amber-600" size={20} />
           ) : (
             <Dumbbell className="text-emerald-600" size={20} />
           )}
@@ -515,6 +544,12 @@ function ExerciseCard({ exercise, onClick }: ExerciseCardProps) {
               <Clock size={12} />
               {exercise.duration}
             </span>
+            {hasHighRelevance && (
+              <span className="text-xs text-amber-600 flex items-center gap-1">
+                <Sparkles size={12} />
+                Matchar din profil
+              </span>
+            )}
           </div>
         </div>
         {exercise.isCompleted && (

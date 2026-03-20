@@ -42,15 +42,16 @@ import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
 import { SupportiveLanguage } from '@/components/SupportiveLanguage'
 import { useMobileOptimization } from '@/components/MobileOptimizer'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
-import { 
-  PromptButtons, 
+import {
+  PromptButtons,
   QuickPhrases,
   WordCounter,
   MobileSimplified,
   coverLetterTemplates,
   checkSwedishNorms,
-  type CoverLetterTemplate 
+  type CoverLetterTemplate
 } from '@/components/coverletter'
+import { RiasecTips } from '@/components/cover-letter/RiasecTips'
 
 interface SavedCoverLetter {
   id: string
@@ -1352,6 +1353,9 @@ export default function CoverLetterGenerator() {
                     </p>
                   </div>
                 )}
+
+                {/* RIASEC Tips */}
+                <RiasecTips jobDescription={jobbAnnons} />
 
                 {/* Summary */}
                 {cvData.summary && (

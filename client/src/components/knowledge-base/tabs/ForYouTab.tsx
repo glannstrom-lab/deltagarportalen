@@ -1,13 +1,17 @@
 /**
- * For You Tab - Personalized content based on user profile
+ * For You Tab - Personalized content based on user profile and RIASEC
  */
 
 import { useMemo } from 'react'
-import { Sparkles, Target, Flame, BookOpen, Zap, TrendingUp, ChevronRight } from 'lucide-react'
+import { Sparkles, Target, Flame, BookOpen, Zap, TrendingUp, ChevronRight, Compass } from 'lucide-react'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
+import { calculateArticleRelevance, type RiasecScores } from '@/services/interestPersonalization'
+import { RiasecPersonalizationBanner } from '../RiasecPersonalizationBanner'
 import type { Article } from '@/types/knowledge'
+import type { EnhancedArticle } from '@/services/articleData'
 
 interface ForYouTabProps {
   articles: Article[]
@@ -20,25 +24,32 @@ interface ForYouTabProps {
   energyLevel: 'low' | 'medium' | 'high'
 }
 
-// Simple recommendation algorithm
+// Enhanced recommendation algorithm with RIASEC support
 function getRecommendations(
   articles: Article[],
   userProfile: ForYouTabProps['userProfile'],
-  energyLevel: string
-): Article[] {
+  energyLevel: string,
+  riasecScores?: RiasecScores | null
+): Array<Article & { relevanceScore?: number }> {
   return articles
     .filter(article => !userProfile.completedArticles.includes(article.id))
     .map(article => {
       let score = 0
-      
-      // Interest match
-      if (userProfile.interests.some(i => 
+
+      // RIASEC-based relevance (highest priority)
+      if (riasecScores) {
+        const relevance = calculateArticleRelevance(article as EnhancedArticle, riasecScores)
+        score += relevance * 0.5 // Up to 50 points from RIASEC
+      }
+
+      // Interest match (fallback/supplement)
+      if (userProfile.interests.some(i =>
         article.category.toLowerCase().includes(i.toLowerCase()) ||
         article.tags?.includes(i)
       )) {
         score += 20
       }
-      
+
       // Energy level match
       if (energyLevel === 'low' && article.readingTime && article.readingTime <= 5) {
         score += 15
@@ -47,13 +58,19 @@ function getRecommendations(
       } else if (energyLevel === 'high') {
         score += 5
       }
-      
+
       // Popular articles
       if (article.helpfulnessRating && article.helpfulnessRating >= 4.5) {
         score += 10
       }
-      
-      return { article, score }
+
+      return {
+        article: {
+          ...article,
+          relevanceScore: riasecScores ? calculateArticleRelevance(article as EnhancedArticle, riasecScores) : undefined
+        },
+        score
+      }
     })
     .sort((a, b) => b.score - a.score)
     .slice(0, 4)
@@ -61,10 +78,17 @@ function getRecommendations(
 }
 
 export default function ForYouTab({ articles, userProfile, energyLevel }: ForYouTabProps) {
-  // Get recommendations
+  const { profile: riasecProfile } = useInterestProfile()
+
+  // Get recommendations with RIASEC integration
   const recommendations = useMemo(() => {
-    return getRecommendations(articles, userProfile, energyLevel)
-  }, [articles, userProfile, energyLevel])
+    return getRecommendations(
+      articles,
+      userProfile,
+      energyLevel,
+      riasecProfile.hasResult ? riasecProfile.riasecScores : null
+    )
+  }, [articles, userProfile, energyLevel, riasecProfile])
   
   // Get trending articles
   const trendingArticles = useMemo(() => {
@@ -100,25 +124,30 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
               <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
             </div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 sm:hidden">
-              Hej {userProfile.name}! 👋
+              Hej {userProfile.name}!
             </h2>
           </div>
           <div className="flex-1">
             <h2 className="hidden sm:block text-xl font-bold text-slate-900">
-              Hej {userProfile.name}! 👋
+              Hej {userProfile.name}!
             </h2>
             <p className="text-sm sm:text-base text-slate-600 sm:mt-1">
-              Dagens utvalda innehåll baserat på dina intressen.
+              {riasecProfile.hasResult
+                ? 'Dagens utvalda innehåll personaliserat efter din intresseprofil.'
+                : 'Dagens utvalda innehåll baserat på dina intressen.'}
             </p>
             {userProfile.streak > 0 && (
               <div className="flex items-center gap-2 mt-2 sm:mt-3 text-amber-600">
                 <Flame className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="text-sm sm:text-base font-medium">🔥 {userProfile.streak} dagars streak!</span>
+                <span className="text-sm sm:text-base font-medium">{userProfile.streak} dagars streak!</span>
               </div>
             )}
           </div>
         </div>
       </Card>
+
+      {/* RIASEC Personalization Banner */}
+      <RiasecPersonalizationBanner />
       
       {/* Continue reading */}
       {continueReading.length > 0 && (
@@ -181,12 +210,18 @@ export default function ForYouTab({ articles, userProfile, energyLevel }: ForYou
       {recommendations.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
-            <Target className="w-5 h-5 text-teal-600" />
+            {riasecProfile.hasResult ? (
+              <Compass className="w-5 h-5 text-amber-600" />
+            ) : (
+              <Target className="w-5 h-5 text-teal-600" />
+            )}
             <h3 className="text-lg font-semibold text-slate-900">
               Rekommenderat för dig
             </h3>
             <span className="text-sm text-slate-400">
-              Baserat på dina intressen
+              {riasecProfile.hasResult
+                ? 'Baserat på din intresseprofil'
+                : 'Baserat på dina intressen'}
             </span>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

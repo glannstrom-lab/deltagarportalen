@@ -23,6 +23,7 @@ interface UseLearningReturn {
   categories: LearningCategory[]
   exercises: ExerciseWithProgress[]
   dailyTip: DailyTip | null
+  hasInterestProfile: boolean
   isLoading: boolean
   error: string | null
   refresh: () => void
@@ -39,6 +40,7 @@ export function useLearning(): UseLearningReturn {
   const [categories, setCategories] = useState<LearningCategory[]>([])
   const [exercises, setExercises] = useState<ExerciseWithProgress[]>([])
   const [dailyTip, setDailyTip] = useState<DailyTip | null>(null)
+  const [hasInterestProfile, setHasInterestProfile] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -54,6 +56,7 @@ export function useLearning(): UseLearningReturn {
       setCategories(data.categories)
       setExercises(data.exercises)
       setDailyTip(data.dailyTip)
+      setHasInterestProfile(data.hasInterestProfile)
     } catch (err) {
       console.error('Error loading learning data:', err)
       setError('Kunde inte ladda lärande-data')
@@ -97,6 +100,7 @@ export function useLearning(): UseLearningReturn {
     categories,
     exercises,
     dailyTip,
+    hasInterestProfile,
     isLoading,
     error,
     refresh: loadData,

@@ -1,10 +1,13 @@
 /**
  * Learning Service - Articles, exercises, and learning progress
+ * With RIASEC-based personalization
  */
 
 import { supabase } from '@/lib/supabase'
 import { mockArticlesData, articleCategories, type EnhancedArticle } from '@/services/articleData'
 import { exercises, type Exercise } from '@/data/exercises'
+import { interestApi } from '@/services/supabaseApi'
+import { personalizeArticles, calculateExerciseRelevance, type RiasecScores } from '@/services/interestPersonalization'
 
 // ============================================
 // TYPES
@@ -23,6 +26,7 @@ export interface ArticleWithProgress extends EnhancedArticle {
   progress: number
   isCompleted: boolean
   lastReadAt?: string
+  relevanceScore?: number // RIASEC-based relevance
 }
 
 export interface ExerciseWithProgress extends Exercise {
@@ -30,6 +34,7 @@ export interface ExerciseWithProgress extends Exercise {
   isCompleted: boolean
   answeredSteps: number
   lastActivityAt?: string
+  relevanceScore?: number // RIASEC-based relevance
 }
 
 export interface LearningPath {
@@ -70,6 +75,7 @@ export async function getLearningData(): Promise<{
   categories: LearningCategory[]
   exercises: ExerciseWithProgress[]
   dailyTip: DailyTip
+  hasInterestProfile: boolean
 }> {
   const { data: { user } } = await supabase.auth.getUser()
 
@@ -82,26 +88,64 @@ export async function getLearningData(): Promise<{
   // Get exercise progress
   const exerciseProgress = user ? await getExerciseProgress(user.id) : new Map()
 
+  // Get RIASEC profile for personalization
+  let riasecScores: RiasecScores | null = null
+  let hasInterestProfile = false
+
+  try {
+    const interestResult = await interestApi.getResult()
+    if (interestResult?.riasec_profile?.scores) {
+      riasecScores = interestResult.riasec_profile.scores as RiasecScores
+      hasInterestProfile = true
+    }
+  } catch {
+    // No interest profile available
+  }
+
   // Build articles with progress
-  const allArticles = mockArticlesData.map(article => ({
+  const allArticles: ArticleWithProgress[] = mockArticlesData.map(article => ({
     ...article,
     progress: articleProgress.get(article.id)?.progress || 0,
     isCompleted: articleProgress.get(article.id)?.isCompleted || false,
-    lastReadAt: articleProgress.get(article.id)?.lastReadAt
+    lastReadAt: articleProgress.get(article.id)?.lastReadAt,
+    relevanceScore: 50 // Default relevance
   }))
 
-  // Get recommended articles (not completed, sorted by relevance)
-  const recommendedArticles = allArticles
-    .filter(a => !a.isCompleted && a.progress < 80)
-    .sort((a, b) => {
-      // Prioritize articles in progress
-      if (a.progress > 0 && b.progress === 0) return -1
-      if (b.progress > 0 && a.progress === 0) return 1
-      // Then by energy level (start with easy)
-      const energyOrder = { low: 0, medium: 1, high: 2 }
-      return energyOrder[a.energyLevel] - energyOrder[b.energyLevel]
-    })
-    .slice(0, 6)
+  // Personalize articles if RIASEC profile available
+  let recommendedArticles: ArticleWithProgress[]
+
+  if (riasecScores) {
+    // Use RIASEC-based personalization
+    const personalizedArticles = personalizeArticles(
+      allArticles.filter(a => !a.isCompleted && a.progress < 80),
+      riasecScores
+    )
+
+    recommendedArticles = personalizedArticles
+      .map(a => ({
+        ...a,
+        relevanceScore: a.relevanceScore
+      }))
+      .sort((a, b) => {
+        // First prioritize in-progress
+        if (a.progress > 0 && b.progress === 0) return -1
+        if (b.progress > 0 && a.progress === 0) return 1
+        // Then by RIASEC relevance
+        return (b.relevanceScore || 0) - (a.relevanceScore || 0)
+      })
+      .slice(0, 6)
+  } else {
+    // Fallback: sort by energy level
+    recommendedArticles = allArticles
+      .filter(a => !a.isCompleted && a.progress < 80)
+      .sort((a, b) => {
+        if (a.progress > 0 && b.progress === 0) return -1
+        if (b.progress > 0 && a.progress === 0) return 1
+        const energyOrder = { low: 0, medium: 1, high: 2 }
+        return energyOrder[a.energyLevel] - energyOrder[b.energyLevel]
+      })
+      .slice(0, 6)
+  }
 
   // Get in-progress articles
   const inProgressArticles = allArticles
@@ -112,17 +156,33 @@ export async function getLearningData(): Promise<{
   // Build categories with counts
   const categories = buildCategories(allArticles)
 
-  // Build exercises with progress
-  const exercisesWithProgress = exercises.map(exercise => {
+  // Build exercises with progress and relevance
+  const exercisesWithProgress: ExerciseWithProgress[] = exercises.map(exercise => {
     const prog = exerciseProgress.get(exercise.id)
+    const relevanceScore = riasecScores
+      ? calculateExerciseRelevance(exercise, riasecScores)
+      : 50
+
     return {
       ...exercise,
       progress: prog?.progress || 0,
       isCompleted: prog?.isCompleted || false,
       answeredSteps: prog?.answeredSteps || 0,
-      lastActivityAt: prog?.lastActivityAt
+      lastActivityAt: prog?.lastActivityAt,
+      relevanceScore
     }
   })
+
+  // Sort exercises by relevance if RIASEC available
+  if (riasecScores) {
+    exercisesWithProgress.sort((a, b) => {
+      // Prioritize not completed
+      if (!a.isCompleted && b.isCompleted) return -1
+      if (a.isCompleted && !b.isCompleted) return 1
+      // Then by relevance
+      return (b.relevanceScore || 0) - (a.relevanceScore || 0)
+    })
+  }
 
   // Get daily tip
   const dailyTip = getDailyTip()
@@ -133,7 +193,8 @@ export async function getLearningData(): Promise<{
     inProgressArticles,
     categories,
     exercises: exercisesWithProgress,
-    dailyTip
+    dailyTip,
+    hasInterestProfile
   }
 }
 
