@@ -15,12 +15,14 @@ import {
   Wallet,
   Globe,
   Star,
+  Map,
 } from 'lucide-react'
 
 // Standard navigation för deltagare
 // labelKey är nyckeln i översättningsfilen (nav.X)
 export const navItems = [
   { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
+  { path: '/journey', labelKey: 'nav.journey', icon: Map, badge: 'Ny!' },
   { path: '/cv', labelKey: 'nav.cv', icon: FileText },
   { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
   { path: '/job-search', labelKey: 'nav.jobSearch', icon: Briefcase },

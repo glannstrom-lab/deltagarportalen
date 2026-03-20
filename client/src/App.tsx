@@ -52,6 +52,7 @@ const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 const Salary = lazy(() => import('./pages/Salary'))
 const International = lazy(() => import('./pages/International'))
 const PersonalBrand = lazy(() => import('./pages/PersonalBrand'))
+const Journey = lazy(() => import('./pages/Journey'))
 
 // Loading fallback
 function PageLoader() {
@@ -356,6 +357,13 @@ function App() {
           <LazyRoute>
             <RouteErrorBoundary>
               <Help />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="journey" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Journey />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
