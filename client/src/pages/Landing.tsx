@@ -13,21 +13,20 @@ import {
   Heart,
   Menu,
   ChevronDown,
-  ChevronUp,
-  Users,
-  Star,
-  TrendingUp,
-  Award,
   Sparkles,
   Play,
   Zap,
   Target,
   ChevronRight,
   Mail,
-  MapPin,
-  Phone
+  BarChart3,
+  Search,
+  BookOpen,
+  Star,
+  User,
+  MapPin
 } from 'lucide-react'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 
 // FAQ Item Component
@@ -58,26 +57,171 @@ function FAQItem({ question, answer, isOpen, onClick }: {
   )
 }
 
-// Feature Card Component
-function FeatureCard({ 
-  icon: Icon, 
-  iconBg, 
+// Feature Mockup Components
+function CVMockup() {
+  return (
+    <div className="bg-gradient-to-br from-violet-50 to-white rounded-xl p-4 border border-violet-100 shadow-sm">
+      <div className="flex gap-3">
+        <div className="w-12 h-12 bg-violet-200 rounded-full flex-shrink-0" />
+        <div className="flex-1 space-y-2">
+          <div className="h-3 bg-violet-300 rounded w-3/4" />
+          <div className="h-2 bg-violet-200 rounded w-1/2" />
+        </div>
+      </div>
+      <div className="mt-4 space-y-2">
+        <div className="h-2 bg-slate-200 rounded w-full" />
+        <div className="h-2 bg-slate-200 rounded w-5/6" />
+        <div className="h-2 bg-slate-200 rounded w-4/6" />
+      </div>
+      <div className="mt-4 flex items-center gap-2">
+        <span className="text-xs text-violet-600 font-medium">ATS Score:</span>
+        <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-violet-400 to-violet-600 rounded-full animate-pulse" style={{ width: '85%' }} />
+        </div>
+        <span className="text-xs font-bold text-violet-600">85%</span>
+      </div>
+    </div>
+  )
+}
+
+function InterestMockup() {
+  return (
+    <div className="bg-gradient-to-br from-teal-50 to-white rounded-xl p-4 border border-teal-100 shadow-sm">
+      <div className="relative w-24 h-24 mx-auto">
+        <svg viewBox="0 0 100 100" className="w-full h-full">
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#e2e8f0" strokeWidth="8" />
+          <circle cx="50" cy="50" r="40" fill="none" stroke="#14b8a6" strokeWidth="8" strokeDasharray="188" strokeDashoffset="50" strokeLinecap="round" className="animate-spin" style={{ animationDuration: '8s' }} />
+          <text x="50" y="50" textAnchor="middle" dy="0.35em" className="text-sm font-bold fill-teal-600">RIASEC</text>
+        </svg>
+      </div>
+      <div className="mt-3 flex justify-center gap-1">
+        {['R', 'I', 'A', 'S', 'E', 'C'].map((letter, i) => (
+          <span key={letter} className={`w-6 h-6 rounded text-xs font-bold flex items-center justify-center ${i === 3 ? 'bg-teal-500 text-white' : 'bg-teal-100 text-teal-600'}`}>{letter}</span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function JobSearchMockup() {
+  return (
+    <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-4 border border-orange-100 shadow-sm">
+      <div className="flex items-center gap-2 mb-3">
+        <Search className="w-4 h-4 text-orange-400" />
+        <div className="flex-1 h-6 bg-white rounded border border-orange-200" />
+      </div>
+      <div className="space-y-2">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex items-center gap-2 p-2 bg-white rounded-lg border border-slate-100 hover:border-orange-200 transition-colors">
+            <div className="w-8 h-8 bg-orange-100 rounded flex-shrink-0" />
+            <div className="flex-1 space-y-1">
+              <div className="h-2 bg-slate-300 rounded w-3/4" />
+              <div className="h-1.5 bg-slate-200 rounded w-1/2" />
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function InterviewMockup() {
+  return (
+    <div className="bg-gradient-to-br from-pink-50 to-white rounded-xl p-4 border border-pink-100 shadow-sm">
+      <div className="space-y-3">
+        <div className="flex gap-2">
+          <div className="w-6 h-6 bg-pink-200 rounded-full flex-shrink-0" />
+          <div className="bg-pink-100 rounded-xl rounded-tl-none px-3 py-2 max-w-[80%]">
+            <div className="h-2 bg-pink-300 rounded w-full" />
+          </div>
+        </div>
+        <div className="flex gap-2 justify-end">
+          <div className="bg-violet-500 text-white rounded-xl rounded-tr-none px-3 py-2 max-w-[80%]">
+            <div className="h-2 bg-white/50 rounded w-full" />
+          </div>
+          <div className="w-6 h-6 bg-violet-200 rounded-full flex-shrink-0" />
+        </div>
+      </div>
+      <div className="mt-3 flex justify-center">
+        <div className="w-10 h-10 bg-gradient-to-br from-pink-400 to-pink-500 rounded-full flex items-center justify-center animate-pulse">
+          <Mic className="w-5 h-5 text-white" />
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function WellnessMockup() {
+  return (
+    <div className="bg-gradient-to-br from-green-50 to-white rounded-xl p-4 border border-green-100 shadow-sm">
+      <div className="flex items-center justify-between mb-3">
+        <BookOpen className="w-5 h-5 text-green-500" />
+        <div className="flex gap-1">
+          {['😊', '😐', '😔'].map((emoji, i) => (
+            <span key={i} className={`text-lg ${i === 0 ? 'opacity-100' : 'opacity-40'}`}>{emoji}</span>
+          ))}
+        </div>
+      </div>
+      <div className="space-y-2">
+        <div className="h-2 bg-green-200 rounded w-full" />
+        <div className="h-2 bg-green-200 rounded w-5/6" />
+        <div className="h-2 bg-green-200 rounded w-3/4" />
+      </div>
+      <div className="mt-3 flex items-center gap-2">
+        <Heart className="w-4 h-4 text-green-500 fill-green-500" />
+        <div className="h-1.5 bg-green-300 rounded-full w-2/3" />
+      </div>
+    </div>
+  )
+}
+
+function CoachMockup() {
+  return (
+    <div className="bg-gradient-to-br from-amber-50 to-white rounded-xl p-4 border border-amber-100 shadow-sm">
+      <div className="flex items-center gap-2 mb-3">
+        <BarChart3 className="w-5 h-5 text-amber-500" />
+        <span className="text-xs font-medium text-amber-600">Karriärutveckling</span>
+      </div>
+      <div className="flex items-end gap-1 h-16">
+        {[40, 55, 45, 70, 60, 85, 75].map((height, i) => (
+          <div key={i} className="flex-1 bg-gradient-to-t from-amber-400 to-amber-300 rounded-t transition-all hover:from-amber-500 hover:to-amber-400" style={{ height: `${height}%` }} />
+        ))}
+      </div>
+      <div className="mt-2 flex items-center justify-between text-xs text-amber-600">
+        <span>Jan</span>
+        <span className="font-medium">+35%</span>
+      </div>
+    </div>
+  )
+}
+
+// Feature Card Component with Mockup
+function FeatureCard({
+  icon: Icon,
+  iconBg,
   iconColor,
-  title, 
-  description, 
+  title,
+  description,
   features,
-  large = false 
-}: { 
+  mockup,
+  large = false
+}: {
   icon: React.ElementType
   iconBg: string
   iconColor: string
   title: string
   description: string
   features?: string[]
+  mockup?: React.ReactNode
   large?: boolean
 }) {
   return (
     <div className={`bg-white rounded-2xl p-6 lg:p-8 shadow-card hover:shadow-card-hover transition-all duration-300 border border-slate-100 hover:-translate-y-2 hover:border-violet-100 group ${large ? 'md:row-span-2' : ''}`}>
+      {mockup && (
+        <div className="mb-5">
+          {mockup}
+        </div>
+      )}
       <div className={`w-14 h-14 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110 ${iconBg}`}>
         <Icon className={`w-7 h-7 ${iconColor}`} />
       </div>
@@ -99,16 +243,92 @@ function FeatureCard({
   )
 }
 
-// Step Card Component
-function StepCard({ number, title, description, showArrow }: {
+// Step Illustration Components
+function Step1Illustration() {
+  return (
+    <div className="relative w-full h-32 mb-4">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative">
+          <div className="w-20 h-20 bg-gradient-to-br from-teal-100 to-teal-200 rounded-full flex items-center justify-center">
+            <Lightbulb className="w-10 h-10 text-teal-600" />
+          </div>
+          <div className="absolute -top-2 -right-2 w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center animate-bounce" style={{ animationDuration: '2s' }}>
+            <Sparkles className="w-4 h-4 text-yellow-500" />
+          </div>
+          <div className="absolute -bottom-1 -left-3 w-6 h-6 bg-violet-100 rounded-full flex items-center justify-center animate-pulse">
+            <Star className="w-3 h-3 text-violet-500 fill-violet-500" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Step2Illustration() {
+  return (
+    <div className="relative w-full h-32 mb-4">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative">
+          <div className="w-24 h-28 bg-white rounded-lg shadow-md border border-slate-200 p-2">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-6 h-6 bg-violet-100 rounded-full" />
+              <div className="flex-1 space-y-1">
+                <div className="h-1.5 bg-slate-200 rounded w-full" />
+                <div className="h-1 bg-slate-100 rounded w-2/3" />
+              </div>
+            </div>
+            <div className="space-y-1">
+              <div className="h-1 bg-slate-100 rounded w-full" />
+              <div className="h-1 bg-slate-100 rounded w-5/6" />
+              <div className="h-1 bg-slate-100 rounded w-4/6" />
+            </div>
+          </div>
+          <div className="absolute -top-3 -right-3 w-10 h-10 bg-gradient-to-br from-violet-500 to-violet-600 rounded-lg shadow-lg flex items-center justify-center animate-pulse">
+            <FileText className="w-5 h-5 text-white" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function Step3Illustration() {
+  return (
+    <div className="relative w-full h-32 mb-4">
+      <div className="absolute inset-0 flex items-center justify-center">
+        <div className="relative">
+          <div className="flex gap-2">
+            {[0, 1, 2].map((i) => (
+              <div key={i} className={`w-14 h-16 bg-white rounded-lg shadow-sm border border-slate-200 p-1.5 transition-transform ${i === 1 ? 'scale-110 border-orange-300 shadow-md' : ''}`}>
+                <div className={`w-full h-4 rounded ${i === 1 ? 'bg-orange-100' : 'bg-slate-100'}`} />
+                <div className="mt-1 space-y-0.5">
+                  <div className="h-0.5 bg-slate-200 rounded w-full" />
+                  <div className="h-0.5 bg-slate-200 rounded w-2/3" />
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-500 rounded-full shadow-lg flex items-center justify-center">
+            <Search className="w-4 h-4 text-white" />
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Step Card Component with Illustration
+function StepCard({ number, title, description, showArrow, illustration }: {
   number: number
   title: string
   description: string
   showArrow?: boolean
+  illustration?: React.ReactNode
 }) {
   return (
     <div className="relative bg-gradient-to-br from-slate-50 to-white rounded-2xl p-8 text-center border border-slate-100 hover:shadow-card-hover transition-all duration-300 hover:-translate-y-2 group">
-      <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-violet-600 text-white rounded-2xl flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg group-hover:scale-110 transition-transform duration-300">
+      {illustration}
+      <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-violet-600 text-white rounded-xl flex items-center justify-center text-xl font-bold mx-auto mb-4 shadow-lg group-hover:scale-110 transition-transform duration-300">
         {number}
       </div>
       <h3 className="text-xl font-bold text-slate-800 mb-3">{title}</h3>
@@ -152,56 +372,6 @@ function TestimonialCard({ quote, name, role, gradient }: {
   )
 }
 
-// Stats Card Component
-function StatsCard({ value, label, icon: Icon, suffix = '' }: {
-  value: number
-  label: string
-  icon: React.ElementType
-  suffix?: string
-}) {
-  const [count, setCount] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
-  const [hasAnimated, setHasAnimated] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated) {
-          setHasAnimated(true)
-          const duration = 2000
-          const steps = 60
-          const increment = value / steps
-          let current = 0
-          const timer = setInterval(() => {
-            current += increment
-            if (current >= value) {
-              setCount(value)
-              clearInterval(timer)
-            } else {
-              setCount(Math.floor(current))
-            }
-          }, duration / steps)
-        }
-      },
-      { threshold: 0.5 }
-    )
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [value, hasAnimated])
-
-  return (
-    <div ref={ref} className="text-center">
-      <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-4">
-        <Icon className="w-6 h-6 text-white" />
-      </div>
-      <div className="text-4xl lg:text-5xl font-bold text-white mb-2">
-        {count.toLocaleString('sv-SE')}{suffix}
-      </div>
-      <div className="text-white/80">{label}</div>
-    </div>
-  )
-}
-
 export default function Landing() {
   const { t } = useTranslation()
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
@@ -213,6 +383,14 @@ export default function Landing() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' })
+    }
+    setMobileMenuOpen(false)
+  }
 
   const faqs = [
     {
@@ -230,6 +408,14 @@ export default function Landing() {
     {
       question: t('landing.faq.q4'),
       answer: t('landing.faq.a4')
+    },
+    {
+      question: t('landing.faq.q5'),
+      answer: t('landing.faq.a5')
+    },
+    {
+      question: t('landing.faq.q6'),
+      answer: t('landing.faq.a6')
     }
   ]
 
@@ -279,18 +465,18 @@ export default function Landing() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
-              <a href="#funktioner" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
+              <button onClick={() => scrollToSection('funktioner')} className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
                 {t('landing.nav.features')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
-              </a>
-              <a href="#hur-det-funkar" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
+              </button>
+              <button onClick={() => scrollToSection('hur-det-funkar')} className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
                 {t('landing.nav.howItWorks')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
-              </a>
-              <a href="#faq" className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
+              </button>
+              <button onClick={() => scrollToSection('faq')} className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
                 {t('landing.nav.faq')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
-              </a>
+              </button>
               <Link
                 to="/login"
                 className="text-slate-600 hover:text-violet-600 font-medium transition-colors"
@@ -318,9 +504,9 @@ export default function Landing() {
           {/* Mobile Menu */}
           <div className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className="py-4 border-t border-slate-100 space-y-2">
-              <a href="#funktioner" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('landing.nav.features')}</a>
-              <a href="#hur-det-funkar" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('landing.nav.howItWorks')}</a>
-              <a href="#faq" className="block text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors" onClick={() => setMobileMenuOpen(false)}>{t('landing.nav.faq')}</a>
+              <button onClick={() => scrollToSection('funktioner')} className="block w-full text-left text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors">{t('landing.nav.features')}</button>
+              <button onClick={() => scrollToSection('hur-det-funkar')} className="block w-full text-left text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors">{t('landing.nav.howItWorks')}</button>
+              <button onClick={() => scrollToSection('faq')} className="block w-full text-left text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors">{t('landing.nav.faq')}</button>
               <div className="pt-2 flex flex-col gap-2">
                 <Link
                   to="/login"
@@ -384,13 +570,13 @@ export default function Landing() {
                   {t('landing.hero.cta')}
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
-                <a
-                  href="#funktioner"
+                <button
+                  onClick={() => scrollToSection('funktioner')}
                   className="group bg-white text-violet-600 border-2 border-violet-100 hover:border-violet-300 px-8 py-4 rounded-xl font-semibold text-lg inline-flex items-center justify-center transition-all hover:shadow-lg hover:bg-violet-50"
                 >
                   <Play className="w-5 h-5 mr-2 fill-violet-600" />
                   {t('landing.hero.watchVideo')}
-                </a>
+                </button>
               </div>
 
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-slate-500">
@@ -409,7 +595,7 @@ export default function Landing() {
               </div>
             </div>
 
-            {/* Hero Visual */}
+            {/* Hero Visual - Animated App Preview */}
             <div className="relative hidden lg:block">
               <div className="bg-white rounded-3xl shadow-2xl p-6 relative z-10 border border-slate-100">
                 <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100">
@@ -422,60 +608,96 @@ export default function Landing() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-violet-50 to-white rounded-xl p-4 border border-slate-100">
-                    <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center text-lg mb-3">📝</div>
+                  {/* CV Progress Card - Animated */}
+                  <div className="bg-gradient-to-br from-violet-50 to-white rounded-xl p-4 border border-slate-100 hover:shadow-md transition-shadow group">
+                    <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <FileText className="w-5 h-5 text-violet-600" />
+                    </div>
                     <p className="text-xs text-slate-500 mb-1">{t('landing.hero.cvProgress')}</p>
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-slate-800">85%</p>
                       <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
-                        <div className="h-full bg-violet-500 rounded-full" style={{ width: '85%' }} />
+                        <div className="h-full bg-gradient-to-r from-violet-400 to-violet-600 rounded-full animate-[pulse_2s_ease-in-out_infinite]" style={{ width: '85%' }} />
                       </div>
                     </div>
                   </div>
-                  <div className="bg-gradient-to-br from-teal-50 to-white rounded-xl p-4 border border-slate-100">
-                    <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center text-lg mb-3">💡</div>
+
+                  {/* Interest Guide Card - With Animation */}
+                  <div className="bg-gradient-to-br from-teal-50 to-white rounded-xl p-4 border border-slate-100 hover:shadow-md transition-shadow group">
+                    <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Lightbulb className="w-5 h-5 text-teal-600" />
+                    </div>
                     <p className="text-xs text-slate-500 mb-1">{t('landing.hero.interestGuide')}</p>
-                    <p className="font-semibold text-slate-800">Social (S)</p>
+                    <div className="flex items-center gap-1">
+                      {['R', 'I', 'A', 'S', 'E', 'C'].map((l, i) => (
+                        <span key={l} className={`w-5 h-5 rounded text-[10px] font-bold flex items-center justify-center transition-all ${i === 3 ? 'bg-teal-500 text-white scale-110' : 'bg-teal-100 text-teal-600'}`}>{l}</span>
+                      ))}
+                    </div>
                   </div>
-                  <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-4 border border-slate-100">
-                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-lg mb-3">💼</div>
+
+                  {/* Jobs Card - With Hover Effect */}
+                  <div className="bg-gradient-to-br from-orange-50 to-white rounded-xl p-4 border border-slate-100 hover:shadow-md transition-shadow group">
+                    <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Briefcase className="w-5 h-5 text-orange-600" />
+                    </div>
                     <p className="text-xs text-slate-500 mb-1">{t('landing.hero.savedJobs')}</p>
-                    <p className="font-semibold text-slate-800">12 {t('landing.hero.jobListings')}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-slate-800">12</p>
+                      <div className="flex -space-x-1">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="w-4 h-4 bg-orange-200 rounded border border-white" />
+                        ))}
+                        <div className="w-4 h-4 bg-orange-300 rounded border border-white flex items-center justify-center text-[8px] text-orange-700 font-bold">+9</div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="bg-gradient-to-br from-pink-50 to-white rounded-xl p-4 border border-slate-100">
-                    <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center text-lg mb-3">🎯</div>
+
+                  {/* Interview Card - With Animation */}
+                  <div className="bg-gradient-to-br from-pink-50 to-white rounded-xl p-4 border border-slate-100 hover:shadow-md transition-shadow group">
+                    <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                      <Mic className="w-5 h-5 text-pink-600" />
+                    </div>
                     <p className="text-xs text-slate-500 mb-1">{t('landing.hero.interviews')}</p>
-                    <p className="font-semibold text-slate-800">2 {t('landing.hero.thisWeek')}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-slate-800">2</p>
+                      <div className="flex gap-0.5">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                          <div key={i} className={`w-1 rounded-full bg-pink-400 animate-[bounce_1s_ease-in-out_infinite]`} style={{ height: `${8 + Math.random() * 8}px`, animationDelay: `${i * 0.1}s` }} />
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Animated Activity Indicator */}
+                <div className="mt-4 pt-4 border-t border-slate-100">
+                  <div className="flex items-center justify-between text-xs text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                      Live-uppdateringar
+                    </span>
+                    <span>Senast: just nu</span>
                   </div>
                 </div>
               </div>
 
-              {/* Floating badges */}
-              <div className="absolute -top-4 -right-4 bg-white rounded-xl p-4 shadow-xl border border-slate-100 animate-pulse">
+              {/* Floating badges with enhanced animations */}
+              <div className="absolute -top-4 -right-4 bg-white rounded-xl p-4 shadow-xl border border-slate-100 animate-bounce" style={{ animationDuration: '3s' }}>
                 <span className="flex items-center gap-2 text-sm font-medium text-green-600">
-                  <span>🎉</span>
+                  <Check className="w-4 h-4" />
                   {t('landing.hero.cvApproved')}
                 </span>
               </div>
-              <div className="absolute bottom-8 -left-8 bg-white rounded-xl p-4 shadow-xl border border-slate-100">
+              <div className="absolute bottom-8 -left-8 bg-white rounded-xl p-4 shadow-xl border border-slate-100 animate-pulse">
                 <span className="flex items-center gap-2 text-sm font-medium text-violet-600">
-                  <span>⭐</span>
+                  <Star className="w-4 h-4 fill-violet-600" />
                   {t('landing.hero.newJobMatches')}
                 </span>
               </div>
+              <div className="absolute top-1/2 -right-6 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full p-3 shadow-lg animate-pulse">
+                <MapPin className="w-4 h-4 text-white" />
+              </div>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <section className="py-16 bg-gradient-to-r from-violet-600 to-violet-700">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-            <StatsCard value={12450} label={t('landing.stats.jobSeekersHelped')} icon={Users} suffix="+" />
-            <StatsCard value={89} label={t('landing.stats.findJobWithin6Months')} icon={TrendingUp} suffix="%" />
-            <StatsCard value={156000} label={t('landing.stats.activeJobListings')} icon={Briefcase} suffix="+" />
-            <StatsCard value={48} label={t('landing.stats.userRating')} icon={Star} suffix="/5" />
           </div>
         </div>
       </section>
@@ -517,18 +739,21 @@ export default function Landing() {
               number={1}
               title={t('landing.steps.step1Title')}
               description={t('landing.steps.step1Description')}
+              illustration={<Step1Illustration />}
               showArrow
             />
             <StepCard
               number={2}
               title={t('landing.steps.step2Title')}
               description={t('landing.steps.step2Description')}
+              illustration={<Step2Illustration />}
               showArrow
             />
             <StepCard
               number={3}
               title={t('landing.steps.step3Title')}
               description={t('landing.steps.step3Description')}
+              illustration={<Step3Illustration />}
             />
           </div>
         </div>
@@ -550,6 +775,7 @@ export default function Landing() {
               iconColor="text-violet-600"
               title={t('landing.features.cv.title')}
               description={t('landing.features.cv.description')}
+              mockup={<CVMockup />}
               features={[
                 t('landing.features.cv.feature1'),
                 t('landing.features.cv.feature2'),
@@ -565,6 +791,7 @@ export default function Landing() {
               iconColor="text-teal-600"
               title={t('landing.features.interests.title')}
               description={t('landing.features.interests.description')}
+              mockup={<InterestMockup />}
             />
             <FeatureCard
               icon={Briefcase}
@@ -572,6 +799,7 @@ export default function Landing() {
               iconColor="text-orange-600"
               title={t('landing.features.jobs.title')}
               description={t('landing.features.jobs.description')}
+              mockup={<JobSearchMockup />}
             />
             <FeatureCard
               icon={Mic}
@@ -579,6 +807,7 @@ export default function Landing() {
               iconColor="text-pink-600"
               title={t('landing.features.interview.title')}
               description={t('landing.features.interview.description')}
+              mockup={<InterviewMockup />}
             />
             <FeatureCard
               icon={Heart}
@@ -586,6 +815,7 @@ export default function Landing() {
               iconColor="text-green-600"
               title={t('landing.features.wellness.title')}
               description={t('landing.features.wellness.description')}
+              mockup={<WellnessMockup />}
             />
             <FeatureCard
               icon={Zap}
@@ -593,6 +823,7 @@ export default function Landing() {
               iconColor="text-amber-600"
               title={t('landing.features.coach.title')}
               description={t('landing.features.coach.description')}
+              mockup={<CoachMockup />}
             />
           </div>
         </div>
@@ -616,17 +847,19 @@ export default function Landing() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-20 lg:py-28 bg-gradient-to-b from-slate-50 to-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="faq" className="py-20 lg:py-28 bg-gradient-to-b from-slate-50 to-white relative overflow-hidden">
+        <div className="absolute top-20 left-10 w-64 h-64 bg-violet-100 rounded-full blur-3xl opacity-30 pointer-events-none" />
+        <div className="absolute bottom-20 right-10 w-48 h-48 bg-teal-100 rounded-full blur-3xl opacity-30 pointer-events-none" />
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="text-center mb-12">
             <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.faq.sectionLabel')}</span>
             <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.faq.title')}</h2>
             <p className="text-slate-600 text-lg">{t('landing.faq.description')}</p>
           </div>
-          
-          <div>
+
+          <div className="grid lg:grid-cols-2 gap-4">
             {faqs.map((faq, idx) => (
-              <FAQItem 
+              <FAQItem
                 key={idx}
                 question={faq.question}
                 answer={faq.answer}
@@ -811,10 +1044,10 @@ export default function Landing() {
                   </a>
                 </li>
                 <li>
-                  <a href="#faq" className="hover:text-white transition-colors flex items-center gap-1 group">
+                  <button onClick={() => scrollToSection('faq')} className="hover:text-white transition-colors flex items-center gap-1 group">
                     <ChevronRight className="w-4 h-4 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all" />
                     {t('landing.footer.faq')}
-                  </a>
+                  </button>
                 </li>
                 <li>
                   <Link to="/register" className="hover:text-white transition-colors flex items-center gap-1 group">

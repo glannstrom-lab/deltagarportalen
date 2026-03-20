@@ -1957,12 +1957,6 @@
       "cvApproved": "CV approved by ATS!",
       "newJobMatches": "3 new job matches"
     },
-    "stats": {
-      "jobSeekersHelped": "job seekers have been helped",
-      "findJobWithin6Months": "find a job within 6 months",
-      "activeJobListings": "active job listings",
-      "userRating": "user rating"
-    },
     "trust": {
       "partnersTitle": "Partners with",
       "arbetsformedlingen": "Swedish Public Employment Service",
@@ -2042,7 +2036,11 @@
       "q3": "I don't even know what I want to work with. Where should I start?",
       "a3": "Start with our interest guide! It helps you explore your strengths and interests, and gives suggestions for careers that might suit you. No pressure – just discovery. Many users have discovered new career paths they never thought of before.",
       "q4": "Is my personal information safe?",
-      "a4": "Yes, we take your privacy very seriously. Your information is stored securely with modern encryption and is never shared with third parties without your consent. You always own your data and can delete your account at any time. We follow GDPR and have clear procedures for data security."
+      "a4": "Yes, we take your privacy very seriously. Your information is stored securely with modern encryption and is never shared with third parties without your consent. You always own your data and can delete your account at any time. We follow GDPR and have clear procedures for data security.",
+      "q5": "How does the AI help in the CV generator work?",
+      "a5": "Our AI analyzes your experience and suggests improvements in text, structure, and keywords. It helps you formulate your strengths in a way that both recruiters and automated systems (ATS) appreciate. You always have full control and can edit everything.",
+      "q6": "Can I use Jobin on my phone?",
+      "a6": "Yes! Jobin is fully responsive and works great on mobile, tablet, and desktop. You can search for jobs, update your CV, and do interview training wherever you are."
     },
     "contact": {
       "sectionLabel": "Contact",
