@@ -1,7 +1,8 @@
 /**
- * MatchesTab - Advanced Job Matching
- * Matches jobs against CV, Interest Guide (RIASEC), and Career Goals
- * With location filtering
+ * MatchesTab - Job Matching with Three Independent Sources
+ *
+ * Each source (CV, Interest, Career) searches and matches jobs independently.
+ * No combination or weighting - each source gives its own results.
  */
 
 import { useState, useEffect, useMemo, useCallback } from 'react'
@@ -9,17 +10,16 @@ import { useTranslation } from 'react-i18next'
 import {
   Sparkles, Target, CheckCircle, AlertCircle, FileText,
   Briefcase, MapPin, Heart, ExternalLink, ChevronDown,
-  Loader2, RefreshCw, TrendingUp, Award, Compass, Star,
-  Settings2, X, Filter, GraduationCap, Lightbulb
+  Loader2, RefreshCw, TrendingUp, Award, Compass,
+  Settings2, X
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
 import { cvApi } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
-import { calculateUserProfile, calculateJobMatches, type UserProfile as InterestUserProfile } from '@/services/interestGuideData'
+import { calculateUserProfile, calculateJobMatches } from '@/services/interestGuideData'
 import { unifiedProfileApi } from '@/services/unifiedProfileApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
-import { matchJobsToInterests, type RiasecScores, type JobInterestMatch } from '@/services/interestJobMatching'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 
@@ -31,38 +31,26 @@ type MatchSource = 'cv' | 'interest' | 'career'
 
 interface MatchedJob {
   job: PlatsbankenJob
-  totalScore: number
-  cvScore: number
-  interestScore: number
-  careerScore: number
-  matchingSkills: string[]
-  missingSkills: string[]
-  matchedInterestTypes: string[]
-  matchedCareerKeywords: string[]
-  primarySource: MatchSource
+  score: number
+  source: MatchSource
+  matchDetails: string[]
 }
 
-interface MatchFilters {
-  sources: MatchSource[]
-  municipalities: string[]
-  minScore: number
-}
-
-interface RecommendedOccupation {
-  name: string
-  matchPercentage: number
-}
-
-interface UserProfile {
-  skills: string[]
-  workTitles: string[]
-  riasecScores: RiasecScores | null
-  recommendedOccupations: RecommendedOccupation[]
-  careerGoals: {
-    shortTerm: string
-    longTerm: string
+interface SourceData {
+  cv: {
+    available: boolean
+    skills: string[]
+    workTitles: string[]
+  }
+  interest: {
+    available: boolean
+    occupations: Array<{ name: string; matchPercentage: number }>
+  }
+  career: {
+    available: boolean
     preferredRoles: string[]
-  } | null
+    keywords: string[]
+  }
 }
 
 // ============================================
@@ -75,6 +63,7 @@ function SourceToggle({
   icon: Icon,
   active,
   available,
+  count,
   onToggle
 }: {
   source: MatchSource
@@ -82,6 +71,7 @@ function SourceToggle({
   icon: React.ElementType
   active: boolean
   available: boolean
+  count: number
   onToggle: () => void
 }) {
   const colors = {
@@ -103,6 +93,14 @@ function SourceToggle({
     >
       <Icon className="w-4 h-4" />
       <span className="font-medium text-sm">{label}</span>
+      {available && count > 0 && (
+        <span className={cn(
+          "text-xs px-2 py-0.5 rounded-full",
+          active ? "bg-white/50" : "bg-slate-100"
+        )}>
+          {count}
+        </span>
+      )}
       {!available && (
         <span className="text-xs bg-slate-200 px-2 py-0.5 rounded-full ml-1">
           Saknas
@@ -231,43 +229,38 @@ function MatchCard({
   onSave: (job: PlatsbankenJob) => void
   isSaved: boolean
 }) {
-  const { job, totalScore, cvScore, interestScore, careerScore, matchingSkills, missingSkills, matchedInterestTypes, matchedCareerKeywords, primarySource } = matchedJob
+  const { job, score, source, matchDetails } = matchedJob
   const [showDetails, setShowDetails] = useState(false)
 
-  const scoreColor = totalScore >= 70
+  const scoreColor = score >= 70
     ? 'text-green-600 bg-green-100 border-green-200'
-    : totalScore >= 50
+    : score >= 50
       ? 'text-amber-600 bg-amber-100 border-amber-200'
       : 'text-slate-600 bg-slate-100 border-slate-200'
 
-  const sourceColors = {
-    cv: 'bg-violet-100 text-violet-700',
-    interest: 'bg-amber-100 text-amber-700',
-    career: 'bg-teal-100 text-teal-700'
+  const sourceConfig = {
+    cv: { color: 'bg-violet-100 text-violet-700', label: 'CV', icon: FileText },
+    interest: { color: 'bg-amber-100 text-amber-700', label: 'Intressen', icon: Compass },
+    career: { color: 'bg-teal-100 text-teal-700', label: 'Karriärmål', icon: Target }
   }
 
-  const sourceLabels = {
-    cv: 'CV',
-    interest: 'Intressen',
-    career: 'Karriärmål'
-  }
+  const config = sourceConfig[source]
 
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg transition-shadow">
-      {/* Header with match score */}
       <div className="flex items-start gap-4 p-5">
         <div className={cn(
           "w-14 h-14 rounded-xl flex flex-col items-center justify-center flex-shrink-0 border",
           scoreColor
         )}>
-          <span className="text-lg font-bold">{totalScore}%</span>
+          <span className="text-lg font-bold">{score}%</span>
           <span className="text-[10px] font-medium">match</span>
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", sourceColors[primarySource])}>
-              {sourceLabels[primarySource]}
+            <span className={cn("px-2 py-0.5 rounded-full text-xs font-medium", config.color)}>
+              {config.label}
             </span>
           </div>
           <h3 className="font-semibold text-slate-900 line-clamp-2 mb-1">
@@ -299,144 +292,55 @@ function MatchCard({
         </button>
       </div>
 
-      {/* Score breakdown */}
-      <div className="px-5 pb-3">
-        <button
-          onClick={() => setShowDetails(!showDetails)}
-          className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-700"
-        >
-          <Settings2 className="w-3 h-3" />
-          Visa matchningsdetaljer
-          <ChevronDown className={cn("w-3 h-3 transition-transform", showDetails && "rotate-180")} />
-        </button>
-      </div>
-
-      {showDetails && (
-        <div className="px-5 pb-4 space-y-3">
-          {/* Score bars */}
-          <div className="grid grid-cols-3 gap-2">
-            {cvScore > 0 && (
-              <div className="text-center">
-                <div className="text-xs text-slate-500 mb-1">CV</div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-violet-500 rounded-full" style={{ width: `${cvScore}%` }} />
-                </div>
-                <div className="text-xs font-medium text-violet-600 mt-0.5">{cvScore}%</div>
-              </div>
-            )}
-            {interestScore > 0 && (
-              <div className="text-center">
-                <div className="text-xs text-slate-500 mb-1">Intressen</div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-amber-500 rounded-full" style={{ width: `${interestScore}%` }} />
-                </div>
-                <div className="text-xs font-medium text-amber-600 mt-0.5">{interestScore}%</div>
-              </div>
-            )}
-            {careerScore > 0 && (
-              <div className="text-center">
-                <div className="text-xs text-slate-500 mb-1">Karriär</div>
-                <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-teal-500 rounded-full" style={{ width: `${careerScore}%` }} />
-                </div>
-                <div className="text-xs font-medium text-teal-600 mt-0.5">{careerScore}%</div>
-              </div>
-            )}
-          </div>
-
-          {/* Matching skills */}
-          {matchingSkills.length > 0 && (
-            <div>
-              <p className="text-xs font-medium text-green-700 mb-1.5 flex items-center gap-1">
-                <CheckCircle className="w-3 h-3" />
-                Matchande kompetenser
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {matchingSkills.slice(0, 5).map((skill, i) => (
-                  <span key={i} className="px-2 py-0.5 bg-green-100 text-green-700 text-xs rounded">
-                    {skill}
-                  </span>
-                ))}
-                {matchingSkills.length > 5 && (
-                  <span className="px-2 py-0.5 bg-green-50 text-green-600 text-xs rounded">
-                    +{matchingSkills.length - 5}
-                  </span>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Matched interest types */}
-          {matchedInterestTypes.length > 0 && (
-            <div>
-              <p className="text-xs font-medium text-amber-700 mb-1.5 flex items-center gap-1">
-                <Compass className="w-3 h-3" />
-                Intressetyper
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {matchedInterestTypes.map((type, i) => (
-                  <span key={i} className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs rounded capitalize">
-                    {type}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Matched career keywords */}
-          {matchedCareerKeywords.length > 0 && (
-            <div>
-              <p className="text-xs font-medium text-teal-700 mb-1.5 flex items-center gap-1">
-                <Target className="w-3 h-3" />
-                Karriärmatch
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {matchedCareerKeywords.slice(0, 4).map((kw, i) => (
-                  <span key={i} className="px-2 py-0.5 bg-teal-100 text-teal-700 text-xs rounded">
-                    {kw}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Missing skills */}
-          {missingSkills.length > 0 && (
-            <div className="p-3 bg-amber-50 rounded-lg">
-              <p className="text-xs font-medium text-amber-800 mb-1.5 flex items-center gap-1">
-                <AlertCircle className="w-3 h-3" />
-                Kompetenser som efterfrågas
-              </p>
-              <div className="flex flex-wrap gap-1">
-                {missingSkills.slice(0, 5).map((skill, i) => (
-                  <span key={i} className="px-2 py-0.5 bg-white text-amber-700 text-xs rounded border border-amber-200">
-                    {skill}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
+      {matchDetails.length > 0 && (
+        <div className="px-5 pb-3">
+          <button
+            onClick={() => setShowDetails(!showDetails)}
+            className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-700"
+          >
+            <Settings2 className="w-3 h-3" />
+            Visa matchningsdetaljer
+            <ChevronDown className={cn("w-3 h-3 transition-transform", showDetails && "rotate-180")} />
+          </button>
         </div>
       )}
 
-      {/* Footer */}
+      {showDetails && matchDetails.length > 0 && (
+        <div className="px-5 pb-4">
+          <p className="text-xs font-medium text-slate-600 mb-1.5 flex items-center gap-1">
+            <CheckCircle className="w-3 h-3 text-green-600" />
+            Matchar på
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {matchDetails.slice(0, 6).map((detail, i) => (
+              <span key={i} className={cn("px-2 py-0.5 text-xs rounded", config.color)}>
+                {detail}
+              </span>
+            ))}
+            {matchDetails.length > 6 && (
+              <span className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded">
+                +{matchDetails.length - 6}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50">
         <span className="text-xs text-slate-500">
           {new Date(job.publication_date).toLocaleDateString('sv-SE')}
         </span>
-        <div className="flex items-center gap-2">
-          {job.webpage_url && (
-            <a
-              href={job.webpage_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
-            >
-              <ExternalLink className="w-3 h-3" />
-              Ansök
-            </a>
-          )}
-        </div>
+        {job.webpage_url && (
+          <a
+            href={job.webpage_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+          >
+            <ExternalLink className="w-3 h-3" />
+            Ansök
+          </a>
+        )}
       </div>
     </div>
   )
@@ -453,8 +357,7 @@ function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
           Skapa din profil först
         </h3>
         <p className="text-slate-500 mb-8 max-w-md mx-auto">
-          För att hitta de bästa matchningarna behöver vi veta mer om dig.
-          Börja med att skapa ditt CV, ta intressetestet eller sätt upp karriärmål.
+          För att hitta matchningar behöver du skapa ditt CV, ta intresseguiden eller sätta karriärmål.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to="/cv">
@@ -466,7 +369,7 @@ function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
           <Link to="/interest-guide">
             <Button variant="outline" size="lg">
               <Compass className="w-5 h-5 mr-2" />
-              Ta intressetestet
+              Ta intresseguiden
             </Button>
           </Link>
           <Link to="/profile">
@@ -484,8 +387,7 @@ function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
     <Card className="p-8 text-center">
       <Sparkles className="w-12 h-12 text-slate-300 mx-auto mb-4" />
       <p className="text-slate-500">
-        Inga jobb matchar dina filterinställningar.
-        Prova att ändra filter eller sänka minimikravet.
+        Inga jobb hittades. Prova att välja en annan källa eller ändra ortsfilter.
       </p>
     </Card>
   )
@@ -502,432 +404,351 @@ export function MatchesTab() {
   // State
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [userProfile, setUserProfile] = useState<UserProfile | null>(null)
-  const [allJobs, setAllJobs] = useState<PlatsbankenJob[]>([])
-  const [matchedJobs, setMatchedJobs] = useState<MatchedJob[]>([])
+  const [sourceData, setSourceData] = useState<SourceData | null>(null)
+  const [activeSource, setActiveSource] = useState<MatchSource>('cv')
+  const [municipalities, setMunicipalities] = useState<string[]>([])
 
-  // Filters
-  const [filters, setFilters] = useState<MatchFilters>({
-    sources: ['cv', 'interest', 'career'],
-    municipalities: [],
-    minScore: 0
-  })
+  // Jobs per source
+  const [cvJobs, setCvJobs] = useState<MatchedJob[]>([])
+  const [interestJobs, setInterestJobs] = useState<MatchedJob[]>([])
+  const [careerJobs, setCareerJobs] = useState<MatchedJob[]>([])
 
-  // Check what data is available
-  const hasCV = userProfile && userProfile.skills.length > 0
-  const hasInterest = userProfile && (userProfile.riasecScores !== null || userProfile.recommendedOccupations.length > 0)
-  const hasCareer = userProfile && userProfile.careerGoals !== null
+  // Load source data (CV, Interest, Career)
+  const loadSourceData = useCallback(async (): Promise<SourceData> => {
+    // Load CV
+    const cv = await cvApi.getCV()
+    const skills = cv?.skills?.map((s: string | { name: string }) =>
+      typeof s === 'string' ? s : s.name
+    ).filter(Boolean) || []
+    const certificates = cv?.certificates?.map((c: { name?: string }) => c.name).filter(Boolean) || []
+    const languages = cv?.languages?.map((l: string | { name?: string; language?: string }) =>
+      typeof l === 'string' ? l : (l.name || l.language)
+    ).filter(Boolean) || []
+    const allSkills = [...new Set([...skills, ...certificates, ...languages])]
+    const workTitles = cv?.work_experience?.map((e: { title?: string }) => e.title).filter(Boolean) || []
 
-  // Load user profile data
-  const loadUserProfile = useCallback(async () => {
-    try {
-      // Get CV data
-      const cv = await cvApi.getCV()
+    // Load Interest Guide
+    const interestProgress = await interestGuideApi.getProgress()
+    let occupations: Array<{ name: string; matchPercentage: number }> = []
 
-      // Extract skills from various CV fields
-      const skillsFromSkills = cv?.skills?.map((s: string | { name: string }) =>
-        typeof s === 'string' ? s : s.name
-      ) || []
-
-      // Extract certifications (körkort, etc.)
-      const skillsFromCertificates = cv?.certificates?.map((c: { name?: string }) =>
-        c.name
-      ).filter(Boolean) || []
-
-      // Extract languages
-      const skillsFromLanguages = cv?.languages?.map((l: string | { name?: string; language?: string }) =>
-        typeof l === 'string' ? l : (l.name || l.language)
-      ).filter(Boolean) || []
-
-      // Combine all skills
-      const skills = [...new Set([...skillsFromSkills, ...skillsFromCertificates, ...skillsFromLanguages])]
-
-      const workTitles = cv?.work_experience?.map((e: { title?: string }) =>
-        e.title
-      ).filter(Boolean) || []
-
-      // Get interest guide results from progress (where answers are actually stored)
-      const interestProgress = await interestGuideApi.getProgress()
-      let riasecScores: RiasecScores | null = null
-      let recommendedOccupations: RecommendedOccupation[] = []
-
-      if (interestProgress?.is_completed && interestProgress.answers) {
-        // Calculate full profile from answers
-        const interestProfile = calculateUserProfile(interestProgress.answers)
-
-        if (interestProfile?.riasec) {
-          riasecScores = {
-            realistic: interestProfile.riasec.R || 0,
-            investigative: interestProfile.riasec.I || 0,
-            artistic: interestProfile.riasec.A || 0,
-            social: interestProfile.riasec.S || 0,
-            enterprising: interestProfile.riasec.E || 0,
-            conventional: interestProfile.riasec.C || 0
-          }
-
-          // Get recommended occupations from the interest guide
-          const jobMatches = calculateJobMatches(interestProfile)
-          recommendedOccupations = jobMatches
-            .filter(m => m.matchPercentage >= 50) // Only good matches
-            .slice(0, 20) // Top 20
-            .map(m => ({
-              name: m.occupation.name,
-              matchPercentage: m.matchPercentage
-            }))
+    if (interestProgress?.is_completed && interestProgress.answers) {
+      try {
+        const profile = calculateUserProfile(interestProgress.answers)
+        if (profile) {
+          const matches = calculateJobMatches(profile)
+          occupations = matches
+            .filter(m => m.matchPercentage >= 50)
+            .slice(0, 15)
+            .map(m => ({ name: m.occupation.name, matchPercentage: m.matchPercentage }))
         }
+      } catch (e) {
+        console.error('Error calculating interest matches:', e)
       }
+    }
 
-      // Get unified profile for career goals
-      const unifiedProfile = await unifiedProfileApi.getProfile()
-      const careerGoals = unifiedProfile?.career?.careerGoals || null
-      const preferredRoles = unifiedProfile?.career?.preferredRoles || []
+    // Load Career Goals
+    const unifiedProfile = await unifiedProfileApi.getProfile()
+    const preferredRoles = unifiedProfile?.career?.preferredRoles || []
+    const careerGoals = unifiedProfile?.career?.careerGoals
+    const careerKeywords: string[] = []
+    if (careerGoals?.shortTerm) {
+      careerKeywords.push(...careerGoals.shortTerm.split(/\s+/).filter((w: string) => w.length > 4))
+    }
+    if (careerGoals?.longTerm) {
+      careerKeywords.push(...careerGoals.longTerm.split(/\s+/).filter((w: string) => w.length > 4))
+    }
 
-      setUserProfile({
-        skills,
-        workTitles,
-        riasecScores,
-        recommendedOccupations,
-        careerGoals: careerGoals ? {
-          ...careerGoals,
-          preferredRoles
-        } : null
-      })
-
-      return { skills, workTitles, riasecScores, recommendedOccupations, careerGoals, preferredRoles }
-    } catch (err) {
-      console.error('Error loading profile:', err)
-      return null
+    return {
+      cv: {
+        available: allSkills.length > 0 || workTitles.length > 0,
+        skills: allSkills,
+        workTitles
+      },
+      interest: {
+        available: occupations.length > 0,
+        occupations
+      },
+      career: {
+        available: preferredRoles.length > 0,
+        preferredRoles,
+        keywords: [...new Set(careerKeywords)].slice(0, 10)
+      }
     }
   }, [])
 
-  // Search and match jobs
-  const searchAndMatchJobs = useCallback(async (profile: UserProfile, locations: string[]) => {
-    // Build search queries based on what data is available
-    const searchTerms: string[] = []
+  // Search and match jobs for CV
+  const searchCvJobs = useCallback(async (data: SourceData['cv'], locations: string[]): Promise<MatchedJob[]> => {
+    if (!data.available) return []
 
-    // From CV - skills and job titles
-    if (profile.skills.length > 0) {
-      searchTerms.push(...profile.skills.slice(0, 5))
-    }
-    if (profile.workTitles.length > 0) {
-      searchTerms.push(...profile.workTitles.slice(0, 3))
-    }
+    const searchTerms = [...data.skills.slice(0, 3), ...data.workTitles.slice(0, 2)]
+    if (searchTerms.length === 0) return []
 
-    // From interest guide - use recommended occupation names
-    if (profile.recommendedOccupations.length > 0) {
-      const occupationNames = profile.recommendedOccupations
-        .slice(0, 5)
-        .map(o => o.name)
-      searchTerms.push(...occupationNames)
-    }
-
-    // From career goals
-    if (profile.careerGoals?.preferredRoles) {
-      searchTerms.push(...profile.careerGoals.preferredRoles.slice(0, 3))
-    }
-
-    // Search for jobs
-    const searchQuery = [...new Set(searchTerms)].slice(0, 5).join(' ')
     const result = await searchJobs({
-      query: searchQuery,
+      query: searchTerms.join(' '),
       municipality: locations.length === 1 ? locations[0] : undefined,
-      limit: 100,
+      limit: 50,
       publishedWithin: 'month'
     })
 
-    // Filter by locations if multiple selected
-    let filteredJobs = result.hits
+    let jobs = result.hits
     if (locations.length > 1) {
-      filteredJobs = result.hits.filter(job =>
-        locations.some(loc =>
-          job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase())
-        )
+      jobs = jobs.filter(job =>
+        locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
       )
     }
 
-    return filteredJobs
-  }, [])
-
-  // Calculate match scores
-  const calculateMatches = useCallback((
-    jobs: PlatsbankenJob[],
-    profile: UserProfile,
-    activeSources: MatchSource[]
-  ): MatchedJob[] => {
+    // Match each job
     return jobs.map(job => {
       const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
+      const matchDetails: string[] = []
+      let matchCount = 0
 
-      // CV matching
-      let cvScore = 0
-      const matchingSkills: string[] = []
-      const missingSkills: string[] = []
-
-      if (activeSources.includes('cv') && profile.skills.length > 0) {
-        const allUserSkills = [...profile.skills, ...profile.workTitles]
-
-        // Check each user skill against job text
-        allUserSkills.forEach(skill => {
-          const skillLower = skill.toLowerCase()
-          // Check for the skill or common variations
-          if (jobText.includes(skillLower)) {
-            matchingSkills.push(skill)
-          }
-          // Also check if job mentions a variation (e.g. job says "körkort" and user has "B-körkort")
-          else if (skillLower.includes('körkort') && jobText.includes('körkort')) {
-            matchingSkills.push(skill)
-          }
-        })
-
-        // Extract missing skills from job
-        const commonSkills = ['Excel', 'Word', 'PowerPoint', 'Teams', 'SAP', 'CRM',
-          'projektledning', 'kommunikation', 'engelska', 'körkort', 'B-körkort',
-          'Python', 'JavaScript', 'SQL', 'ledarskap', 'teamwork']
-
-        // Helper to check if user has a skill (handles variations like "B-körkort" matching "körkort")
-        const userHasSkill = (skill: string): boolean => {
-          const skillLower = skill.toLowerCase()
-          return allUserSkills.some(s => {
-            const userSkillLower = s.toLowerCase()
-            // Exact match
-            if (userSkillLower === skillLower) return true
-            // Check if skill contains the other (e.g. "B-körkort" contains "körkort")
-            if (userSkillLower.includes(skillLower) || skillLower.includes(userSkillLower)) return true
-            return false
-          })
+      // Check skills
+      data.skills.forEach(skill => {
+        const skillLower = skill.toLowerCase()
+        if (jobText.includes(skillLower) || (skillLower.includes('körkort') && jobText.includes('körkort'))) {
+          matchDetails.push(skill)
+          matchCount++
         }
+      })
 
-        commonSkills.forEach(skill => {
-          if (jobText.includes(skill.toLowerCase()) && !userHasSkill(skill)) {
-            missingSkills.push(skill)
-          }
-        })
-
-        cvScore = allUserSkills.length > 0
-          ? Math.round((matchingSkills.length / allUserSkills.length) * 100)
-          : 0
-        cvScore = Math.min(cvScore + 15, 100) // Baseline boost
-      }
-
-      // Interest matching - use RIASEC profile for broad matching
-      let interestScore = 0
-      const matchedInterestTypes: string[] = []
-
-      if (activeSources.includes('interest') && profile.riasecScores) {
-        // Use RIASEC-based matching (broad keyword matching)
-        const interestMatches = matchJobsToInterests([job], profile.riasecScores, [])
-        if (interestMatches.length > 0 && interestMatches[0].riasecMatch.score > 0) {
-          interestScore = interestMatches[0].riasecMatch.score
-          matchedInterestTypes.push(...interestMatches[0].riasecMatch.matchedTypes.map(t => {
-            // Translate RIASEC type names to Swedish
-            const translations: Record<string, string> = {
-              realistic: 'Realistisk',
-              investigative: 'Undersökande',
-              artistic: 'Konstnärlig',
-              social: 'Social',
-              enterprising: 'Företagsam',
-              conventional: 'Konventionell'
-            }
-            return translations[t] || t
-          }))
+      // Check work titles
+      data.workTitles.forEach(title => {
+        if (jobText.includes(title.toLowerCase())) {
+          matchDetails.push(title)
+          matchCount++
         }
+      })
 
-        // Bonus if job matches a recommended occupation
-        if (profile.recommendedOccupations.length > 0) {
-          const jobTitle = (job.headline || '').toLowerCase()
-          const jobOccupation = (job.occupation?.label || '').toLowerCase()
-
-          for (const recOcc of profile.recommendedOccupations) {
-            const occName = recOcc.name.toLowerCase()
-            const occWords = occName.split(/[\s-]+/).filter(w => w.length > 3)
-
-            if (jobTitle.includes(occName) || jobOccupation.includes(occName) ||
-                occWords.some(word => jobTitle.includes(word) || jobOccupation.includes(word))) {
-              // Boost score when matching recommended occupation
-              interestScore = Math.max(interestScore, Math.min(100, recOcc.matchPercentage + 10))
-              if (!matchedInterestTypes.includes(recOcc.name)) {
-                matchedInterestTypes.push(recOcc.name)
-              }
-              break
-            }
-          }
-        }
-      }
-
-      // Career goal matching
-      let careerScore = 0
-      const matchedCareerKeywords: string[] = []
-
-      if (activeSources.includes('career') && profile.careerGoals) {
-        const careerText = `${profile.careerGoals.shortTerm} ${profile.careerGoals.longTerm}`.toLowerCase()
-        const careerKeywords = careerText.split(/\s+/).filter(w => w.length > 3)
-
-        // Check preferred roles
-        profile.careerGoals.preferredRoles.forEach(role => {
-          if (jobText.includes(role.toLowerCase())) {
-            matchedCareerKeywords.push(role)
-            careerScore += 25
-          }
-        })
-
-        // Check career goal keywords
-        careerKeywords.forEach(keyword => {
-          if (jobText.includes(keyword) && !matchedCareerKeywords.includes(keyword)) {
-            matchedCareerKeywords.push(keyword)
-            careerScore += 5
-          }
-        })
-
-        careerScore = Math.min(careerScore, 100)
-      }
-
-      // Calculate total score based on active sources
-      // When only one source is active, use that score directly
-      // When multiple sources, use weighted average
-      let totalScore = 0
-      const scores: number[] = []
-
-      if (activeSources.includes('cv') && cvScore > 0) {
-        scores.push(cvScore)
-      }
-      if (activeSources.includes('interest') && interestScore > 0) {
-        scores.push(interestScore)
-      }
-      if (activeSources.includes('career') && careerScore > 0) {
-        scores.push(careerScore)
-      }
-
-      if (scores.length > 0) {
-        // Average of all active scores
-        totalScore = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length)
-      }
-
-      // Determine primary source
-      let primarySource: MatchSource = 'cv'
-      const maxScore = Math.max(cvScore, interestScore, careerScore)
-      if (maxScore === interestScore && activeSources.includes('interest')) {
-        primarySource = 'interest'
-      } else if (maxScore === careerScore && activeSources.includes('career')) {
-        primarySource = 'career'
-      }
+      const totalItems = data.skills.length + data.workTitles.length
+      const score = totalItems > 0
+        ? Math.min(100, Math.round((matchCount / Math.min(totalItems, 5)) * 100))
+        : 0
 
       return {
         job,
-        totalScore,
-        cvScore,
-        interestScore,
-        careerScore,
-        matchingSkills,
-        missingSkills: missingSkills.slice(0, 5),
-        matchedInterestTypes,
-        matchedCareerKeywords,
-        primarySource
+        score: Math.max(score, matchDetails.length > 0 ? 30 : 0),
+        source: 'cv' as MatchSource,
+        matchDetails
       }
-    }).sort((a, b) => b.totalScore - a.totalScore)
+    })
+    .filter(m => m.score > 0)
+    .sort((a, b) => b.score - a.score)
   }, [])
 
-  // Load data
+  // Search and match jobs for Interest
+  const searchInterestJobs = useCallback(async (data: SourceData['interest'], locations: string[]): Promise<MatchedJob[]> => {
+    if (!data.available || data.occupations.length === 0) return []
+
+    // Search for each top occupation
+    const topOccupations = data.occupations.slice(0, 5)
+    const allJobs: MatchedJob[] = []
+    const seenJobIds = new Set<string>()
+
+    for (const occ of topOccupations) {
+      try {
+        const result = await searchJobs({
+          query: occ.name,
+          municipality: locations.length === 1 ? locations[0] : undefined,
+          limit: 20,
+          publishedWithin: 'month'
+        })
+
+        let jobs = result.hits
+        if (locations.length > 1) {
+          jobs = jobs.filter(job =>
+            locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
+          )
+        }
+
+        jobs.forEach(job => {
+          if (seenJobIds.has(job.id)) return
+          seenJobIds.add(job.id)
+
+          const jobTitle = (job.headline || '').toLowerCase()
+          const jobOccupation = (job.occupation?.label || '').toLowerCase()
+          const occNameLower = occ.name.toLowerCase()
+          const occWords = occNameLower.split(/[\s-]+/).filter(w => w.length > 3)
+
+          // Check if job matches this occupation
+          const titleMatch = jobTitle.includes(occNameLower) || occWords.some(w => jobTitle.includes(w))
+          const occMatch = jobOccupation.includes(occNameLower) || occWords.some(w => jobOccupation.includes(w))
+
+          if (titleMatch || occMatch) {
+            allJobs.push({
+              job,
+              score: occ.matchPercentage,
+              source: 'interest' as MatchSource,
+              matchDetails: [occ.name]
+            })
+          } else {
+            // Still include but with lower score
+            allJobs.push({
+              job,
+              score: Math.round(occ.matchPercentage * 0.7),
+              source: 'interest' as MatchSource,
+              matchDetails: [occ.name + ' (relaterat)']
+            })
+          }
+        })
+      } catch (e) {
+        console.error('Error searching for occupation:', occ.name, e)
+      }
+    }
+
+    return allJobs
+      .filter(m => m.score >= 30)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 50)
+  }, [])
+
+  // Search and match jobs for Career
+  const searchCareerJobs = useCallback(async (data: SourceData['career'], locations: string[]): Promise<MatchedJob[]> => {
+    if (!data.available || data.preferredRoles.length === 0) return []
+
+    const allJobs: MatchedJob[] = []
+    const seenJobIds = new Set<string>()
+
+    // Search for each preferred role
+    for (const role of data.preferredRoles.slice(0, 5)) {
+      try {
+        const result = await searchJobs({
+          query: role,
+          municipality: locations.length === 1 ? locations[0] : undefined,
+          limit: 20,
+          publishedWithin: 'month'
+        })
+
+        let jobs = result.hits
+        if (locations.length > 1) {
+          jobs = jobs.filter(job =>
+            locations.some(loc => job.workplace_address?.municipality?.toLowerCase().includes(loc.toLowerCase()))
+          )
+        }
+
+        jobs.forEach(job => {
+          if (seenJobIds.has(job.id)) return
+          seenJobIds.add(job.id)
+
+          const jobText = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase()
+          const matchDetails: string[] = []
+          let score = 0
+
+          // Check preferred roles
+          if (jobText.includes(role.toLowerCase())) {
+            matchDetails.push(role)
+            score += 40
+          }
+
+          // Check keywords
+          data.keywords.forEach(keyword => {
+            if (jobText.includes(keyword.toLowerCase())) {
+              matchDetails.push(keyword)
+              score += 10
+            }
+          })
+
+          if (matchDetails.length > 0) {
+            allJobs.push({
+              job,
+              score: Math.min(100, score),
+              source: 'career' as MatchSource,
+              matchDetails
+            })
+          }
+        })
+      } catch (e) {
+        console.error('Error searching for role:', role, e)
+      }
+    }
+
+    return allJobs
+      .filter(m => m.score >= 30)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 50)
+  }, [])
+
+  // Load all data
   const loadData = useCallback(async () => {
     setIsLoading(true)
     setError(null)
 
     try {
-      const profile = await loadUserProfile()
+      const data = await loadSourceData()
+      setSourceData(data)
 
-      if (!profile || (profile.skills.length === 0 && !profile.riasecScores && !profile.careerGoals)) {
-        setUserProfile({
-          skills: [],
-          workTitles: [],
-          riasecScores: null,
-          recommendedOccupations: [],
-          careerGoals: null
-        })
-        setIsLoading(false)
-        return
+      // Set default active source to first available
+      if (data.cv.available) {
+        setActiveSource('cv')
+      } else if (data.interest.available) {
+        setActiveSource('interest')
+      } else if (data.career.available) {
+        setActiveSource('career')
       }
 
-      const profileData: UserProfile = {
-        skills: profile.skills,
-        workTitles: profile.workTitles,
-        riasecScores: profile.riasecScores,
-        recommendedOccupations: profile.recommendedOccupations,
-        careerGoals: profile.careerGoals ? {
-          shortTerm: profile.careerGoals.shortTerm || '',
-          longTerm: profile.careerGoals.longTerm || '',
-          preferredRoles: profile.preferredRoles
-        } : null
-      }
+      // Load jobs for each available source in parallel
+      const [cvResults, interestResults, careerResults] = await Promise.all([
+        data.cv.available ? searchCvJobs(data.cv, municipalities) : Promise.resolve([]),
+        data.interest.available ? searchInterestJobs(data.interest, municipalities) : Promise.resolve([]),
+        data.career.available ? searchCareerJobs(data.career, municipalities) : Promise.resolve([])
+      ])
 
-      setUserProfile(profileData)
-
-      const jobs = await searchAndMatchJobs(profileData, filters.municipalities)
-      setAllJobs(jobs)
-
-      const matched = calculateMatches(jobs, profileData, filters.sources)
-      setMatchedJobs(matched)
+      setCvJobs(cvResults)
+      setInterestJobs(interestResults)
+      setCareerJobs(careerResults)
     } catch (err) {
       console.error('Error loading matches:', err)
       setError('Kunde inte ladda matchningar')
     } finally {
       setIsLoading(false)
     }
-  }, [loadUserProfile, searchAndMatchJobs, calculateMatches, filters.municipalities, filters.sources])
+  }, [loadSourceData, searchCvJobs, searchInterestJobs, searchCareerJobs, municipalities])
 
   // Initial load
   useEffect(() => {
     loadData()
   }, [])
 
-  // Recalculate matches when filters change
+  // Reload when municipalities change
   useEffect(() => {
-    if (userProfile && allJobs.length > 0) {
-      const matched = calculateMatches(allJobs, userProfile, filters.sources)
-      setMatchedJobs(matched)
-    }
-  }, [filters.sources, userProfile, allJobs, calculateMatches])
-
-  // Reload when locations change
-  useEffect(() => {
-    if (userProfile && !isLoading) {
+    if (sourceData && !isLoading) {
       loadData()
     }
-  }, [filters.municipalities])
+  }, [municipalities])
 
-  // Filter by minimum score
-  const filteredJobs = useMemo(() =>
-    matchedJobs.filter(m => m.totalScore >= filters.minScore),
-    [matchedJobs, filters.minScore]
-  )
+  // Get current jobs based on active source
+  const currentJobs = useMemo(() => {
+    switch (activeSource) {
+      case 'cv': return cvJobs
+      case 'interest': return interestJobs
+      case 'career': return careerJobs
+      default: return []
+    }
+  }, [activeSource, cvJobs, interestJobs, careerJobs])
 
   // Stats
   const stats = useMemo(() => ({
-    high: matchedJobs.filter(m => m.totalScore >= 70).length,
-    medium: matchedJobs.filter(m => m.totalScore >= 50 && m.totalScore < 70).length,
-    total: matchedJobs.length
-  }), [matchedJobs])
+    high: currentJobs.filter(m => m.score >= 70).length,
+    medium: currentJobs.filter(m => m.score >= 50 && m.score < 70).length,
+    total: currentJobs.length
+  }), [currentJobs])
 
   const handleSave = async (job: PlatsbankenJob) => {
     await saveJob(job)
-  }
-
-  const toggleSource = (source: MatchSource) => {
-    setFilters(prev => ({
-      ...prev,
-      sources: prev.sources.includes(source)
-        ? prev.sources.filter(s => s !== source)
-        : [...prev.sources, source]
-    }))
   }
 
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <Loader2 className="w-10 h-10 text-indigo-600 animate-spin mb-4" />
-        <p className="text-slate-600">Analyserar din profil och hittar matchningar...</p>
+        <p className="text-slate-600">Söker efter matchande jobb...</p>
       </div>
     )
   }
 
-  if (!hasCV && !hasInterest && !hasCareer) {
+  const hasAnyData = sourceData && (sourceData.cv.available || sourceData.interest.available || sourceData.career.available)
+
+  if (!hasAnyData) {
     return <EmptyState type="no-data" />
   }
 
@@ -947,44 +768,47 @@ export function MatchesTab() {
 
   return (
     <div className="space-y-6">
-      {/* Header with source toggles */}
+      {/* Header with source tabs */}
       <div className="bg-white rounded-2xl border border-slate-200 p-5">
         <div className="flex flex-col gap-4">
           <div>
             <h2 className="text-lg font-semibold text-slate-900 flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              Smarta jobbmatchningar
+              Jobbmatchningar
             </h2>
             <p className="text-sm text-slate-500">
-              Välj vilka datakällor som ska användas för matchning
+              Välj källa för att se matchande jobb
             </p>
           </div>
 
-          {/* Source toggles */}
+          {/* Source tabs */}
           <div className="flex flex-wrap gap-2">
             <SourceToggle
               source="cv"
               label="Mitt CV"
               icon={FileText}
-              active={filters.sources.includes('cv')}
-              available={hasCV || false}
-              onToggle={() => toggleSource('cv')}
+              active={activeSource === 'cv'}
+              available={sourceData?.cv.available || false}
+              count={cvJobs.length}
+              onToggle={() => setActiveSource('cv')}
             />
             <SourceToggle
               source="interest"
               label="Intresseguiden"
               icon={Compass}
-              active={filters.sources.includes('interest')}
-              available={hasInterest || false}
-              onToggle={() => toggleSource('interest')}
+              active={activeSource === 'interest'}
+              available={sourceData?.interest.available || false}
+              count={interestJobs.length}
+              onToggle={() => setActiveSource('interest')}
             />
             <SourceToggle
               source="career"
               label="Karriärmål"
               icon={Target}
-              active={filters.sources.includes('career')}
-              available={hasCareer || false}
-              onToggle={() => toggleSource('career')}
+              active={activeSource === 'career'}
+              available={sourceData?.career.available || false}
+              count={careerJobs.length}
+              onToggle={() => setActiveSource('career')}
             />
           </div>
 
@@ -992,30 +816,9 @@ export function MatchesTab() {
           <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100">
             <span className="text-sm text-slate-600">Orter:</span>
             <LocationSelector
-              selected={filters.municipalities}
-              onChange={(locs) => setFilters(prev => ({ ...prev, municipalities: locs }))}
+              selected={municipalities}
+              onChange={setMunicipalities}
             />
-
-            {/* Min score filter */}
-            <div className="flex items-center gap-2 ml-auto">
-              <span className="text-sm text-slate-600">Minst:</span>
-              <div className="flex gap-1">
-                {[0, 30, 50, 70].map(score => (
-                  <button
-                    key={score}
-                    onClick={() => setFilters(prev => ({ ...prev, minScore: score }))}
-                    className={cn(
-                      "px-3 py-1.5 text-sm rounded-lg transition-colors",
-                      filters.minScore === score
-                        ? "bg-indigo-600 text-white"
-                        : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-                    )}
-                  >
-                    {score === 0 ? 'Alla' : `${score}%`}
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -1054,11 +857,11 @@ export function MatchesTab() {
       </div>
 
       {/* Jobs Grid */}
-      {filteredJobs.length === 0 ? (
+      {currentJobs.length === 0 ? (
         <EmptyState type="no-results" />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
-          {filteredJobs.map(matchedJob => (
+          {currentJobs.map(matchedJob => (
             <MatchCard
               key={matchedJob.job.id}
               matchedJob={matchedJob}
