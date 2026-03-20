@@ -75,6 +75,18 @@ export interface UserProgress {
   lastActivity: string | null
 }
 
+interface CVWorkExperience {
+  title: string
+  description?: string
+}
+
+interface CVRecord {
+  title?: string
+  summary?: string
+  skills?: string[]
+  work_experience?: CVWorkExperience[]
+}
+
 // ============================================
 // APPLICATION WORKFLOW API
 // ============================================
@@ -183,18 +195,6 @@ Med vänliga hälsningar,
   /**
    * Hämta CV-matchning för ett jobb
    */
-interface CVWorkExperience {
-  title: string;
-  description?: string;
-}
-
-interface CVRecord {
-  title?: string;
-  summary?: string;
-  skills?: string[];
-  work_experience?: CVWorkExperience[];
-}
-
   async getCVMatchScore(jobData: JobData): Promise<number> {
     try {
       const { data: cv } = await supabase
