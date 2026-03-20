@@ -154,3 +154,251 @@ export const ENCOURAGEMENT_TEMPLATES = [
   { emoji: '💜', text: 'Jag tror på dig!' },
   { emoji: '🌈', text: 'Bättre tider kommer!' },
 ]
+
+// ============================================
+// DISCUSSIONS (Step 2)
+// ============================================
+
+export interface DiscussionCategory {
+  id: string
+  name: string
+  slug: string
+  description?: string
+  icon: string
+  color: string
+  sortOrder: number
+}
+
+export interface DiscussionTopic {
+  id: string
+  categoryId: string
+  authorId: string
+  title: string
+  content: string
+  replyCount: number
+  viewCount: number
+  likeCount: number
+  isPinned: boolean
+  isSolved: boolean
+  isLocked: boolean
+  lastReplyAt?: string
+  createdAt: string
+  updatedAt: string
+  // Joined data
+  author?: UserInfo
+  category?: DiscussionCategory
+  hasLiked?: boolean
+}
+
+export interface DiscussionReply {
+  id: string
+  topicId: string
+  authorId: string
+  parentReplyId?: string
+  content: string
+  likeCount: number
+  isAccepted: boolean
+  createdAt: string
+  updatedAt: string
+  // Joined data
+  author?: UserInfo
+  hasLiked?: boolean
+}
+
+export interface CreateTopicData {
+  categoryId: string
+  title: string
+  content: string
+}
+
+export interface CreateReplyData {
+  topicId: string
+  content: string
+  parentReplyId?: string
+}
+
+// ============================================
+// ACCOUNTABILITY GROUPS (Step 3)
+// ============================================
+
+export type GroupGoalType = 'applications' | 'articles' | 'exercises' | 'custom'
+
+export interface CommunityGroup {
+  id: string
+  name: string
+  description?: string
+  maxMembers: number
+  isPublic: boolean
+  isActive: boolean
+  weeklyGoalType?: GroupGoalType
+  weeklyGoalTarget: number
+  weeklyGoalDescription?: string
+  memberCount: number
+  weeklyProgress: number
+  createdBy: string
+  createdAt: string
+  // Joined data
+  members?: GroupMember[]
+  myMembership?: GroupMember
+}
+
+export interface GroupMember {
+  id: string
+  groupId: string
+  userId: string
+  role: 'leader' | 'member'
+  weeklyContribution: number
+  isActive: boolean
+  joinedAt: string
+  lastActiveAt: string
+  // Joined data
+  user?: UserInfo
+}
+
+export interface GroupMessage {
+  id: string
+  groupId: string
+  userId: string
+  content: string
+  messageType: 'text' | 'system' | 'celebration'
+  createdAt: string
+  // Joined data
+  user?: UserInfo
+}
+
+export interface GroupInvite {
+  id: string
+  groupId: string
+  invitedBy: string
+  invitedUserId: string
+  status: 'pending' | 'accepted' | 'declined'
+  createdAt: string
+  respondedAt?: string
+  // Joined data
+  group?: CommunityGroup
+  inviter?: UserInfo
+}
+
+export interface CreateGroupData {
+  name: string
+  description?: string
+  maxMembers?: number
+  isPublic?: boolean
+  weeklyGoalType?: GroupGoalType
+  weeklyGoalTarget?: number
+  weeklyGoalDescription?: string
+}
+
+// ============================================
+// BUDDY MATCHING (Step 4)
+// ============================================
+
+export type ContactPreference = 'chat' | 'video' | 'both'
+export type BuddyStatus = 'pending' | 'active' | 'paused' | 'ended'
+export type CheckinType = 'weekly' | 'interview_practice' | 'cv_review' | 'motivation' | 'celebration'
+
+export interface BuddyPreferences {
+  id: string
+  userId: string
+  lookingForBuddy: boolean
+  // What they want help with
+  wantsInterviewPractice: boolean
+  wantsCvFeedback: boolean
+  wantsMotivationSupport: boolean
+  wantsAccountability: boolean
+  // What they can offer
+  canHelpInterview: boolean
+  canHelpCv: boolean
+  canHelpMotivation: boolean
+  canHelpAccountability: boolean
+  // Availability
+  preferredContact?: ContactPreference
+  timezone: string
+  bio?: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface BuddyMatch {
+  userId: string
+  matchScore: number
+  firstName: string
+  lastName: string
+  bio?: string
+  avatarUrl?: string
+}
+
+export interface BuddyPair {
+  id: string
+  user1Id: string
+  user2Id: string
+  status: BuddyStatus
+  checkInCount: number
+  lastCheckIn?: string
+  matchScore?: number
+  matchedAt: string
+  createdAt: string
+  // Joined data
+  buddy?: UserInfo
+}
+
+export interface BuddyCheckin {
+  id: string
+  buddyPairId: string
+  initiatedBy: string
+  checkinType: CheckinType
+  notes?: string
+  rating?: number
+  createdAt: string
+}
+
+export interface UpdateBuddyPreferencesData {
+  lookingForBuddy?: boolean
+  wantsInterviewPractice?: boolean
+  wantsCvFeedback?: boolean
+  wantsMotivationSupport?: boolean
+  wantsAccountability?: boolean
+  canHelpInterview?: boolean
+  canHelpCv?: boolean
+  canHelpMotivation?: boolean
+  canHelpAccountability?: boolean
+  preferredContact?: ContactPreference
+  bio?: string
+}
+
+// ============================================
+// SHARED TYPES
+// ============================================
+
+export interface UserInfo {
+  id: string
+  firstName: string
+  lastName: string
+  avatarUrl?: string
+}
+
+// Category icon/color config
+export const CATEGORY_CONFIG: Record<string, { icon: string; color: string }> = {
+  'interview-tips': { icon: 'MessageSquare', color: 'violet' },
+  'cv-feedback': { icon: 'FileText', color: 'blue' },
+  'motivation': { icon: 'Heart', color: 'rose' },
+  'success-stories': { icon: 'Trophy', color: 'amber' },
+  'general': { icon: 'MessageCircle', color: 'slate' }
+}
+
+// Group goal types
+export const GROUP_GOAL_LABELS: Record<GroupGoalType, string> = {
+  applications: 'Jobbansökningar',
+  articles: 'Lästa artiklar',
+  exercises: 'Genomförda övningar',
+  custom: 'Eget mål'
+}
+
+// Checkin type labels
+export const CHECKIN_TYPE_LABELS: Record<CheckinType, string> = {
+  weekly: 'Veckocheck-in',
+  interview_practice: 'Intervjuövning',
+  cv_review: 'CV-granskning',
+  motivation: 'Motivationssnack',
+  celebration: 'Firande'
+}
