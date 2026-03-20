@@ -94,9 +94,24 @@ export async function getLearningData(): Promise<{
 
   try {
     const interestResult = await interestApi.getResult()
-    if (interestResult?.riasec_profile?.scores) {
-      riasecScores = interestResult.riasec_profile.scores as RiasecScores
-      hasInterestProfile = true
+    if (interestResult) {
+      // Check nested format first (riasec_profile.scores)
+      if (interestResult.riasec_profile?.scores) {
+        riasecScores = interestResult.riasec_profile.scores as RiasecScores
+        hasInterestProfile = true
+      }
+      // Check for direct columns format (database schema)
+      else if (typeof interestResult.realistic === 'number' || typeof interestResult.investigative === 'number') {
+        riasecScores = {
+          realistic: interestResult.realistic || 0,
+          investigative: interestResult.investigative || 0,
+          artistic: interestResult.artistic || 0,
+          social: interestResult.social || 0,
+          enterprising: interestResult.enterprising || 0,
+          conventional: interestResult.conventional || 0
+        }
+        hasInterestProfile = true
+      }
     }
   } catch {
     // No interest profile available

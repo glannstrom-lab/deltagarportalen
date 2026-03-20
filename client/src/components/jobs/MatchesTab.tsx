@@ -525,8 +525,22 @@ export function MatchesTab() {
       // Get interest guide results
       const interestResult = await interestApi.getResult()
       let riasecScores: RiasecScores | null = null
-      if (interestResult?.riasec_profile?.scores) {
-        riasecScores = interestResult.riasec_profile.scores as RiasecScores
+      if (interestResult) {
+        // Check nested format first (riasec_profile.scores)
+        if (interestResult.riasec_profile?.scores) {
+          riasecScores = interestResult.riasec_profile.scores as RiasecScores
+        }
+        // Check for direct columns format (database schema)
+        else if (typeof interestResult.realistic === 'number' || typeof interestResult.investigative === 'number') {
+          riasecScores = {
+            realistic: interestResult.realistic || 0,
+            investigative: interestResult.investigative || 0,
+            artistic: interestResult.artistic || 0,
+            social: interestResult.social || 0,
+            enterprising: interestResult.enterprising || 0,
+            conventional: interestResult.conventional || 0
+          }
+        }
       }
 
       // Get unified profile for career goals

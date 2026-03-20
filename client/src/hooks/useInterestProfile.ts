@@ -220,11 +220,23 @@ export function useInterestProfile() {
         // Extract RIASEC scores from result
         let riasecScores: RiasecScores | null = null
 
+        // Check nested format first (riasec_profile.scores)
         if (result.riasec_profile?.scores) {
           riasecScores = result.riasec_profile.scores as RiasecScores
-        } else if (result.answers) {
-          // Calculate from answers if scores not pre-calculated
-          // This is a fallback - normally scores should be pre-calculated
+        }
+        // Check for direct columns format (database schema)
+        else if (typeof result.realistic === 'number' || typeof result.investigative === 'number') {
+          riasecScores = {
+            realistic: result.realistic || 0,
+            investigative: result.investigative || 0,
+            artistic: result.artistic || 0,
+            social: result.social || 0,
+            enterprising: result.enterprising || 0,
+            conventional: result.conventional || 0
+          }
+        }
+        // Fallback if only answers exist
+        else if (result.answers) {
           riasecScores = {
             realistic: 0,
             investigative: 0,
