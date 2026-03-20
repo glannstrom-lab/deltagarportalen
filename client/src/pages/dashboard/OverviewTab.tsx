@@ -36,7 +36,12 @@ const allWidgets: WidgetType[] = [
 ]
 
 // Standardstorlekar per widget (dynamiskt baserat på prioritet)
-const getDefaultWidgetSizes = (data: any): Record<WidgetType, WidgetSize> => {
+const getDefaultWidgetSizes = (data: {
+  cv?: { hasCV?: boolean; progress?: number; savedCVs?: unknown[] }
+  jobs?: { savedCount?: number }
+  applications?: { total?: number }
+  interest?: { hasResult?: boolean }
+} | null): Record<WidgetType, WidgetSize> => {
   const isNewUser = !data?.cv?.hasCV
   
   if (isNewUser) {
@@ -109,7 +114,7 @@ export default function OverviewTab() {
   // Check if user is new (for showing checklist)
   const isNewUser = useMemo(() => {
     if (!data) return false
-    return !data.cv.hasCV || data.cv.progress < 30
+    return !data.cv?.hasCV || (data.cv?.progress ?? 0) < 30
   }, [data])
 
   // Rendera widget med rätt storlek

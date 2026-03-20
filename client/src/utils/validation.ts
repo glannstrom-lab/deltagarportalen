@@ -5,6 +5,9 @@
 
 import { z } from 'zod'
 
+// Typdefinitioner
+type CVData = z.infer<typeof cvDataSchema>
+
 // Grundläggande valideringsschema för CV-data
 export const cvDataSchema = z.object({
   firstName: z.string().max(100).optional(),
@@ -46,7 +49,7 @@ export const cvDataSchema = z.object({
 })
 
 // Validera och sanera CV-data
-export function validateCVData(data: unknown): { valid: true; data: any } | { valid: false; error: string } {
+export function validateCVData(data: unknown): { valid: true; data: CVData } | { valid: false; error: string } {
   try {
     // Om data är null eller undefined, returnera default
     if (data == null) {
@@ -98,7 +101,7 @@ export function getDefaultCVData() {
 }
 
 // Försök reparera felaktig CV-data
-function repairCVData(data: any): any {
+function repairCVData(data: unknown): CVData {
   const repaired = { ...getDefaultCVData() }
   
   if (typeof data === 'object' && data !== null) {
@@ -113,7 +116,7 @@ function repairCVData(data: any): any {
     
     // Hantera arrays
     if (Array.isArray(data.workExperience)) {
-      repaired.workExperience = data.workExperience.slice(0, 20).map((item: any) => ({
+      repaired.workExperience = data.workExperience.slice(0, 20).map((item: unknown) => ({
         id: String(item?.id || Date.now()),
         title: String(item?.title || '').substring(0, 200),
         company: String(item?.company || '').substring(0, 200),
@@ -126,7 +129,7 @@ function repairCVData(data: any): any {
     }
     
     if (Array.isArray(data.education)) {
-      repaired.education = data.education.slice(0, 10).map((item: any) => ({
+      repaired.education = data.education.slice(0, 10).map((item: unknown) => ({
         id: String(item?.id || Date.now()),
         degree: String(item?.degree || '').substring(0, 200),
         field: String(item?.field || '').substring(0, 200),
@@ -140,7 +143,7 @@ function repairCVData(data: any): any {
     }
     
     if (Array.isArray(data.skills)) {
-      repaired.skills = data.skills.slice(0, 30).map((item: any) => ({
+      repaired.skills = data.skills.slice(0, 30).map((item: unknown) => ({
         id: String(item?.id || Date.now()),
         name: String(item?.name || '').substring(0, 100),
         level: ['beginner', 'intermediate', 'advanced', 'expert'].includes(item?.level) 

@@ -34,7 +34,13 @@ interface AIChatbotProps {
 }
 
 // Fördefinierade intents och svar för offline/demosyfte
-const intentResponses: Record<string, (params: any) => { response: string; suggestions?: string[]; actions?: { label: string; url: string }[] }> = {
+type IntentResponse = {
+  response: string;
+  suggestions?: string[];
+  actions?: { label: string; url: string }[];
+}
+
+const intentResponses: Record<string, (params: unknown) => IntentResponse> = {
   'cv_hjälp': () => ({
     response: 'Jag kan hjälpa dig med ditt CV! Vad vill du förbättra? Jag kan ge tips om struktur, innehåll, eller specifika sektioner som sammanfattning eller erfarenheter.',
     suggestions: ['Hur skriver jag en bra sammanfattning?', 'Vilka kompetenser ska jag lyfta?', 'CV-mallar'],
@@ -78,7 +84,7 @@ const intentResponses: Record<string, (params: any) => { response: string; sugge
 }
 
 // Enkel intent-recognition
-function recognizeIntent(message: string): { intent: string; params: any } {
+function recognizeIntent(message: string): { intent: string; params: unknown } {
   const lowerMsg = message.toLowerCase()
   
   if (/cv|meritförteckning|resume/i.test(lowerMsg)) {

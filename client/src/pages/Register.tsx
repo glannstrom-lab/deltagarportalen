@@ -61,8 +61,8 @@ export default function Register() {
 
         // Navigera till dashboard
         navigate('/')
-      } catch (err: any) {
-        setSubmitError(err.message || t('auth.errors.createFailed'))
+      } catch (err) {
+        setSubmitError(err instanceof Error ? err.message : t('auth.errors.createFailed'))
       }
     },
   })

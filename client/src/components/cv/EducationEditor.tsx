@@ -49,8 +49,8 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
     setExpandedId(newEd.id)
   }
 
-  const updateEducation = (id: string, field: keyof Education, value: any) => {
-    const updated = education.map(ed => 
+  const updateEducation = (id: string, field: keyof Education, value: string | boolean) => {
+    const updated = education.map(ed =>
       ed.id === id ? { ...ed, [field]: value } : ed
     )
     onChange(updated)

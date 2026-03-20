@@ -120,22 +120,31 @@ export interface NetworkContact {
 
 // ===== Error Handler =====
 
-function handleError(error: any, context: string): never {
+interface PostgrestError {
+  code?: string;
+  message?: string;
+  details?: string;
+  hint?: string;
+}
+
+function handleError(error: unknown, context: string): never {
   console.error(`[CareerAPI] ${context}:`, error);
-  
-  if (error?.code === 'PGRST116') {
+
+  const pgError = error as PostgrestError;
+
+  if (pgError?.code === 'PGRST116') {
     throw new APIError('Resursen hittades inte', 'NOT_FOUND', 404);
   }
-  if (error?.code === '23505') {
+  if (pgError?.code === '23505') {
     throw new APIError('Denna post finns redan', 'DUPLICATE', 409);
   }
-  if (error?.code === '23503') {
+  if (pgError?.code === '23503') {
     throw new APIError('Ogiltig referens', 'FOREIGN_KEY', 400);
   }
-  
+
   throw new APIError(
-    error?.message || 'Ett fel uppstod',
-    error?.code || 'UNKNOWN',
+    pgError?.message || 'Ett fel uppstod',
+    pgError?.code || 'UNKNOWN',
     500
   );
 }

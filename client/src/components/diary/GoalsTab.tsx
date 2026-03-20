@@ -131,13 +131,23 @@ function AddGoalForm({
   )
 }
 
+interface Goal {
+  id: string
+  goal_text: string
+  category: string
+  priority: number
+  is_completed: boolean
+  completed_at?: string
+  reflection?: string
+}
+
 function GoalCard({
   goal,
   onToggle,
   onDelete,
   onReflect
 }: {
-  goal: any
+  goal: Goal
   onToggle: () => void
   onDelete: () => void
   onReflect: (reflection: string) => void
@@ -317,7 +327,7 @@ export function GoalsTab() {
     )
   }
 
-  const handleAddGoal = async (goalData: any) => {
+  const handleAddGoal = async (goalData: { goal_text: string; category: string; priority: number }) => {
     await createGoal(goalData)
     setShowAddForm(false)
   }

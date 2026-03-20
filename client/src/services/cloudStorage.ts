@@ -9,21 +9,143 @@
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
 
+// ============================================
+// TYPE DEFINITIONS
+// ============================================
+
+interface SupabaseError {
+  code?: string
+  status?: number
+  message?: string
+}
+
+interface ArticleProgressUpdate {
+  user_id: string
+  article_id: string
+  progress_percent: number
+  updated_at: string
+  is_completed?: boolean
+  completed_at?: string
+}
+
+interface OnboardingProgress {
+  currentStep?: number
+  completedSteps?: string[]
+  [key: string]: unknown
+}
+
+interface InterestGuideAnswers {
+  [key: string]: unknown
+}
+
+interface NotificationPreferences {
+  email_notifications?: boolean
+  push_notifications?: boolean
+  job_alerts?: boolean
+  article_updates?: boolean
+  [key: string]: unknown
+}
+
+interface JobApplication {
+  company_name: string
+  position: string
+  status?: string
+  applied_at?: string
+  notes?: string
+  [key: string]: unknown
+}
+
+interface JobApplicationUpdate {
+  company_name?: string
+  position?: string
+  status?: string
+  notes?: string
+  [key: string]: unknown
+}
+
+interface JobApplicationStatusUpdate {
+  status: string
+  updated_at: string
+  applied_at?: string
+}
+
+interface InterviewSession {
+  company_name: string
+  position: string
+  interview_date?: string
+  questions?: string[]
+  notes?: string
+  [key: string]: unknown
+}
+
+interface InterviewSessionUpdate {
+  company_name?: string
+  position?: string
+  interview_date?: string
+  questions?: string[]
+  notes?: string
+  [key: string]: unknown
+}
+
+interface SavedJob {
+  id: string
+  title?: string
+  company?: string
+  [key: string]: unknown
+}
+
+interface SavedSearch {
+  id?: string
+  name: string
+  query?: string
+  municipality?: string
+  employment_type?: string
+  remote?: boolean
+  [key: string]: unknown
+}
+
+interface PlatsbankenJob {
+  id: string
+  title?: string
+  employer?: { name?: string }
+  [key: string]: unknown
+}
+
+interface MoodLogData {
+  mood_level: number
+  notes?: string
+  log_date: string
+}
+
+interface PlatsbankenSavedJobData {
+  job_data: PlatsbankenJob
+}
+
 // Hjälpfunktion för att hämta aktuell användare
 async function getCurrentUser() {
   const { data: { user } } = await supabase.auth.getUser()
   return user
 }
 
+// Type guard for Supabase errors
+function isSupabaseError(error: unknown): error is SupabaseError {
+  return typeof error === 'object' && error !== null && ('code' in error || 'status' in error)
+}
+
 // Hjälpfunktion för att hantera fel
-function handleStorageError(error: any, context: string): void {
+function handleStorageError(error: unknown, context: string): void {
+  if (!isSupabaseError(error)) {
+    storageLogger.error(`Fel vid ${context}:`, error)
+    return
+  }
+
   // RLS-policy fel (42501) - logga tyst
-  if (error?.code === '42501') {
+  if (error.code === '42501') {
     storageLogger.debug(`RLS policy förhindrar ${context} - använder fallback`)
     return
   }
   // Användaren inte inloggad
-  if (error?.code === 'PGRST116' || error?.status === 401 || error?.status === 406) {
+  if (error.code === 'PGRST116' || error.status === 401 || error.status === 406) {
     storageLogger.debug(`Användare inte inloggad för ${context} - använder fallback`)
     return
   }
@@ -144,13 +266,13 @@ export const articleProgressApi = {
     const user = await getCurrentUser()
     if (!user) return
 
-    const updateData: any = {
+    const updateData: ArticleProgressUpdate = {
       user_id: user.id,
       article_id: articleId,
       progress_percent: progress,
       updated_at: new Date().toISOString()
     }
-    
+
     if (isCompleted) {
       updateData.is_completed = true
       updateData.completed_at = new Date().toISOString()
@@ -161,7 +283,7 @@ export const articleProgressApi = {
       .upsert(updateData, {
         onConflict: 'user_id,article_id'
       })
-    
+
     if (error && error.code !== '42501') {
       storageLogger.error('Error updating progress:', error)
     }
@@ -309,7 +431,7 @@ export const userPreferencesApi = {
     energy_level?: string
     onboarding_completed?: boolean
     onboarding_skipped?: boolean
-    onboarding_progress?: any
+    onboarding_progress?: OnboardingProgress
     default_cv_id?: string
   }) {
     const user = await getCurrentUser()
@@ -463,7 +585,7 @@ export const interestGuideApi = {
 
   async saveProgress(progress: {
     current_step?: number
-    answers?: any
+    answers?: InterestGuideAnswers
     energy_level?: string
     is_completed?: boolean
   }) {
@@ -585,7 +707,7 @@ export const notificationsApi = {
     return data?.[0] || null
   },
 
-  async updatePreferences(preferences: any) {
+  async updatePreferences(preferences: NotificationPreferences) {
     const user = await getCurrentUser()
     if (!user) {
       storageLogger.debug('Ingen användare inloggad - notifikationsinställningar sparas inte')
@@ -601,7 +723,7 @@ export const notificationsApi = {
       }, {
         onConflict: 'user_id'
       })
-    
+
     if (error) {
       handleStorageError(error, 'uppdatera notifikationsinställningar')
     }
@@ -633,7 +755,7 @@ export const draftsApi = {
     return data?.[0]?.data || null
   },
 
-  async save(draftType: string, draftKey: string, data: any) {
+  async save(draftType: string, draftKey: string, data: unknown) {
     const user = await getCurrentUser()
     if (!user) {
       const drafts = JSON.parse(localStorage.getItem(`drafts_${draftType}`) || '{}')
@@ -653,7 +775,7 @@ export const draftsApi = {
       }, {
         onConflict: 'user_id,draft_type,draft_key'
       })
-    
+
     if (error) {
       handleStorageError(error, 'spara utkast')
       const drafts = JSON.parse(localStorage.getItem(`drafts_${draftType}`) || '{}')
@@ -721,7 +843,7 @@ export const jobApplicationsApi = {
     return data || []
   },
 
-  async add(application: any) {
+  async add(application: JobApplication) {
     const user = await getCurrentUser()
     if (!user) {
       throw new Error('Användaren måste vara inloggad för att lägga till jobbansökning')
@@ -735,12 +857,12 @@ export const jobApplicationsApi = {
       })
       .select()
       .single()
-    
+
     if (error) throw error
     return data
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: JobApplicationUpdate) {
     const { error } = await supabase
       .from('job_applications')
       .update({
@@ -748,7 +870,7 @@ export const jobApplicationsApi = {
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
-    
+
     if (error) {
       handleStorageError(error, 'uppdatera jobbansökning')
     }
@@ -766,19 +888,19 @@ export const jobApplicationsApi = {
   },
 
   async updateStatus(id: string, status: string) {
-    const updates: any = { 
+    const updates: JobApplicationStatusUpdate = {
       status,
       updated_at: new Date().toISOString()
     }
     if (status === 'applied') {
       updates.applied_at = new Date().toISOString()
     }
-    
+
     const { error } = await supabase
       .from('job_applications')
       .update(updates)
       .eq('id', id)
-    
+
     if (error) {
       handleStorageError(error, 'uppdatera jobbansökningsstatus')
     }
@@ -802,7 +924,7 @@ export const interviewSessionsApi = {
     return data || []
   },
 
-  async create(session: any) {
+  async create(session: InterviewSession) {
     const user = await getCurrentUser()
     if (!user) {
       throw new Error('Användaren måste vara inloggad för att skapa intervjusession')
@@ -816,12 +938,12 @@ export const interviewSessionsApi = {
       })
       .select()
       .single()
-    
+
     if (error) throw error
     return data
   },
 
-  async update(id: string, updates: any) {
+  async update(id: string, updates: InterviewSessionUpdate) {
     const { error } = await supabase
       .from('interview_sessions')
       .update({
@@ -829,7 +951,7 @@ export const interviewSessionsApi = {
         updated_at: new Date().toISOString()
       })
       .eq('id', id)
-    
+
     if (error) {
       handleStorageError(error, 'uppdatera intervjusession')
     }
@@ -855,7 +977,7 @@ export const savedJobsApi = {
     return data || []
   },
 
-  async add(job: any) {
+  async add(job: SavedJob) {
     const user = await getCurrentUser()
     if (!user) {
       const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
@@ -873,7 +995,7 @@ export const savedJobsApi = {
       })
       .select()
       .single()
-    
+
     if (error) {
       handleStorageError(error, 'spara jobb')
       const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
@@ -888,7 +1010,7 @@ export const savedJobsApi = {
     const user = await getCurrentUser()
     if (!user) {
       const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      const filtered = saved.filter((j: any) => j.id !== jobId)
+      const filtered = saved.filter((j: SavedJob) => j.id !== jobId)
       localStorage.setItem('savedJobs', JSON.stringify(filtered))
       return
     }
@@ -898,11 +1020,11 @@ export const savedJobsApi = {
       .delete()
       .eq('job_id', jobId)
       .eq('user_id', user.id)
-    
+
     if (error) {
       handleStorageError(error, 'ta bort sparat jobb')
       const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      const filtered = saved.filter((j: any) => j.id !== jobId)
+      const filtered = saved.filter((j: SavedJob) => j.id !== jobId)
       localStorage.setItem('savedJobs', JSON.stringify(filtered))
     }
   },
@@ -911,7 +1033,7 @@ export const savedJobsApi = {
     const user = await getCurrentUser()
     if (!user) {
       const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      return saved.some((j: any) => j.id === jobId)
+      return saved.some((j: SavedJob) => j.id === jobId)
     }
 
     const { data, error } = await supabase
@@ -920,11 +1042,11 @@ export const savedJobsApi = {
       .eq('job_id', jobId)
       .eq('user_id', user.id)
       .limit(1)
-    
+
     if (error) {
       handleStorageError(error, 'kolla om jobb är sparat')
       const saved = JSON.parse(localStorage.getItem('savedJobs') || '[]')
-      return saved.some((j: any) => j.id === jobId)
+      return saved.some((j: SavedJob) => j.id === jobId)
     }
     return data && data.length > 0
   }
@@ -940,19 +1062,19 @@ export const platsbankenApi = {
       .from('platsbanken_saved_jobs')
       .select('*')
       .order('created_at', { ascending: false })
-    
+
     if (error) {
       handleStorageError(error, 'hämta platsbanken-sparade jobb')
       return JSON.parse(localStorage.getItem('platsbanken_saved_jobs') || '[]')
     }
-    return data?.map((d: any) => d.job_data) || []
+    return data?.map((d: PlatsbankenSavedJobData) => d.job_data) || []
   },
 
-  async saveJob(job: any) {
+  async saveJob(job: PlatsbankenJob) {
     const user = await getCurrentUser()
     if (!user) {
       const saved = JSON.parse(localStorage.getItem('platsbanken_saved_jobs') || '[]')
-      if (!saved.find((j: any) => j.id === job.id)) {
+      if (!saved.find((j: PlatsbankenJob) => j.id === job.id)) {
         saved.push(job)
         localStorage.setItem('platsbanken_saved_jobs', JSON.stringify(saved))
       }
@@ -966,11 +1088,11 @@ export const platsbankenApi = {
         job_id: job.id,
         job_data: job
       })
-    
+
     if (error) {
       handleStorageError(error, 'spara platsbanken-jobb')
       const saved = JSON.parse(localStorage.getItem('platsbanken_saved_jobs') || '[]')
-      if (!saved.find((j: any) => j.id === job.id)) {
+      if (!saved.find((j: PlatsbankenJob) => j.id === job.id)) {
         saved.push(job)
         localStorage.setItem('platsbanken_saved_jobs', JSON.stringify(saved))
       }
@@ -982,7 +1104,7 @@ export const platsbankenApi = {
     const user = await getCurrentUser()
     if (!user) {
       const saved = JSON.parse(localStorage.getItem('platsbanken_saved_jobs') || '[]')
-      const filtered = saved.filter((j: any) => j.id !== jobId)
+      const filtered = saved.filter((j: PlatsbankenJob) => j.id !== jobId)
       localStorage.setItem('platsbanken_saved_jobs', JSON.stringify(filtered))
       return
     }
@@ -992,11 +1114,11 @@ export const platsbankenApi = {
       .delete()
       .eq('job_id', jobId)
       .eq('user_id', user.id)
-    
+
     if (error) {
       handleStorageError(error, 'ta bort platsbanken-sparat jobb')
       const saved = JSON.parse(localStorage.getItem('platsbanken_saved_jobs') || '[]')
-      const filtered = saved.filter((j: any) => j.id !== jobId)
+      const filtered = saved.filter((j: PlatsbankenJob) => j.id !== jobId)
       localStorage.setItem('platsbanken_saved_jobs', JSON.stringify(filtered))
     }
   },
@@ -1007,7 +1129,7 @@ export const platsbankenApi = {
       .from('platsbanken_saved_searches')
       .select('*')
       .order('updated_at', { ascending: false })
-    
+
     if (error) {
       handleStorageError(error, 'hämta sparade sökningar')
       return JSON.parse(localStorage.getItem('platsbanken_saved_searches') || '[]')
@@ -1015,7 +1137,7 @@ export const platsbankenApi = {
     return data || []
   },
 
-  async saveSearch(search: any) {
+  async saveSearch(search: SavedSearch) {
     const user = await getCurrentUser()
     if (!user) {
       const searches = JSON.parse(localStorage.getItem('platsbanken_saved_searches') || '[]')
@@ -1036,7 +1158,7 @@ export const platsbankenApi = {
       })
       .select()
       .single()
-    
+
     if (error) {
       handleStorageError(error, 'spara sökning')
       const searches = JSON.parse(localStorage.getItem('platsbanken_saved_searches') || '[]')
@@ -1051,7 +1173,7 @@ export const platsbankenApi = {
     const user = await getCurrentUser()
     if (!user) {
       const searches = JSON.parse(localStorage.getItem('platsbanken_saved_searches') || '[]')
-      const filtered = searches.filter((s: any) => s.id !== searchId)
+      const filtered = searches.filter((s: SavedSearch) => s.id !== searchId)
       localStorage.setItem('platsbanken_saved_searches', JSON.stringify(filtered))
       return
     }
@@ -1061,11 +1183,11 @@ export const platsbankenApi = {
       .delete()
       .eq('id', searchId)
       .eq('user_id', user.id)
-    
+
     if (error) {
       handleStorageError(error, 'ta bort sparad sökning')
       const searches = JSON.parse(localStorage.getItem('platsbanken_saved_searches') || '[]')
-      const filtered = searches.filter((s: any) => s.id !== searchId)
+      const filtered = searches.filter((s: SavedSearch) => s.id !== searchId)
       localStorage.setItem('platsbanken_saved_searches', JSON.stringify(filtered))
     }
   }
@@ -1206,7 +1328,7 @@ export const moodApi = {
       handleStorageError(error, 'hämta humörhistorik')
       return []
     }
-    return (data || []).map((d: any) => ({
+    return (data || []).map((d: MoodLogData) => ({
       mood: moodLevelToType(d.mood_level),
       note: d.notes,
       logged_at: d.log_date
@@ -1237,7 +1359,7 @@ export const moodApi = {
     const today = new Date()
     today.setHours(0, 0, 0, 0)
 
-    const dates = data.map((d: any) => {
+    const dates = data.map((d: MoodLogData) => {
       const date = new Date(d.log_date)
       date.setHours(0, 0, 0, 0)
       return date.getTime()

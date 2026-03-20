@@ -525,6 +525,17 @@ export function CoverLetterWrite() {
 }
 
 // Steg 1: Välj jobb (sparade eller manuell)
+interface FormData {
+  company: string
+  jobTitle: string
+  jobAd: string
+  motivation: string
+  selectedTemplate: string
+  tone: 'professional' | 'enthusiastic' | 'formal'
+  selectedJobId: string
+  useManualInput: boolean
+}
+
 function Step1SelectJob({
   savedJobs,
   loadingJobs,
@@ -535,8 +546,8 @@ function Step1SelectJob({
 }: {
   savedJobs: SavedJob[]
   loadingJobs: boolean
-  formData: any
-  setFormData: (data: any) => void
+  formData: FormData
+  setFormData: (data: FormData) => void
   onSelectJob: (job: SavedJob) => void
   onManual: () => void
 }) {
@@ -737,12 +748,12 @@ function Step1SelectJob({
 }
 
 // Steg 2: Välj mall (oförändrad)
-function Step2Template({ 
-  formData, 
-  setFormData 
-}: { 
-  formData: any
-  setFormData: (data: any) => void 
+function Step2Template({
+  formData,
+  setFormData
+}: {
+  formData: FormData
+  setFormData: (data: FormData) => void
 }) {
   return (
     <div className="space-y-6">
@@ -800,8 +811,8 @@ function Step3Customize({
   setFormData,
   cvData,
 }: {
-  formData: any
-  setFormData: (data: any) => void
+  formData: FormData
+  setFormData: (data: FormData) => void
   cvData: CVData | null
 }) {
   return (
@@ -886,7 +897,7 @@ function Step4Review({
   setEditedLetter,
   isGenerating,
 }: {
-  formData: any
+  formData: FormData
   generatedLetter: string
   editedLetter: string
   setEditedLetter: (text: string) => void
@@ -1035,7 +1046,7 @@ function Step5Done({
 }
 
 // Mock AI-tjänst - fallback
-const mockGenerateLetter = async (data: any) => {
+const mockGenerateLetter = async (data: { jobTitle: string; company: string; background?: string; skills?: string; motivation?: string }) => {
   await new Promise(resolve => setTimeout(resolve, 1500))
   return {
     content: `Hej,

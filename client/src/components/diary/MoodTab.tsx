@@ -82,7 +82,7 @@ function LevelSlider({
   highLabel
 }: {
   label: string
-  icon: any
+  icon: React.ComponentType<{ className?: string }>
   value: number
   onChange: (value: number) => void
   lowLabel: string

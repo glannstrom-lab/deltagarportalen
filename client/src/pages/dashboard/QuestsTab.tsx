@@ -86,7 +86,18 @@ export default function QuestsTab() {
         if (questsError) throw questsError
 
         // Transform data
-        const formattedQuests: Quest[] = questsData?.map((q: any) => ({
+        const formattedQuests: Quest[] = questsData?.map((q: {
+          id: string
+          is_completed: boolean
+          quest_templates: {
+            title: string
+            description: string
+            category: 'cv' | 'apply' | 'network' | 'wellness'
+            energy_level: 'low' | 'medium' | 'high'
+            points: number
+            estimated_minutes: number
+          }
+        }) => ({
           id: q.id,
           title: q.quest_templates.title,
           description: q.quest_templates.description,

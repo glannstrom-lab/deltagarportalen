@@ -26,7 +26,7 @@ export function useDeepCompareMemo<T>(factory: () => T, deps: DependencyList): T
 /**
  * Memoized callback with deep comparison dependencies
  */
-export function useDeepCompareCallback<T extends (...args: any[]) => any>(
+export function useDeepCompareCallback<T extends (...args: never[]) => unknown>(
   callback: T,
   deps: DependencyList
 ): T {
@@ -38,25 +38,25 @@ export function useDeepCompareCallback<T extends (...args: any[]) => any>(
     callbackRef.current = callback;
   }
 
-  return useCallback((...args: Parameters<T>) => callbackRef.current(...args), []);
+  return useCallback((...args: Parameters<T>) => callbackRef.current(...args), []) as T;
 }
 
 /**
  * Simple deep equality check
  */
-function deepEqual(a: any, b: any): boolean {
+function deepEqual(a: unknown, b: unknown): boolean {
   if (a === b) return true;
   if (a == null || b == null) return false;
   if (typeof a !== typeof b) return false;
 
-  if (typeof a === 'object') {
+  if (typeof a === 'object' && typeof b === 'object') {
     const keysA = Object.keys(a);
     const keysB = Object.keys(b);
     if (keysA.length !== keysB.length) return false;
 
     for (const key of keysA) {
       if (!keysB.includes(key)) return false;
-      if (!deepEqual(a[key], b[key])) return false;
+      if (!deepEqual((a as Record<string, unknown>)[key], (b as Record<string, unknown>)[key])) return false;
     }
     return true;
   }

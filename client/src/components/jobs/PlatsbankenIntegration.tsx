@@ -71,8 +71,8 @@ export default function PlatsbankenIntegration() {
   // Autocomplete
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [municipalities, setMunicipalities] = useState<any[]>([]);
-  const [regions, setRegions] = useState<any[]>([]);
+  const [municipalities, setMunicipalities] = useState<Array<{ concept_id: string; label: string }>>([]);
+  const [regions, setRegions] = useState<Array<{ concept_id: string; label: string }>>([]);
   
   // Sparade jobb och sökningar
   const [savedJobs, setSavedJobs] = useState<SavedJob[]>([]);
@@ -209,12 +209,15 @@ export default function PlatsbankenIntegration() {
   // Autocomplete
   const handleInputChange = async (value: string) => {
     setFilters(prev => ({ ...prev, q: value }));
-    
+
     if (value.length >= 2) {
       try {
         const result = await afApi.getAutocomplete(value, 'occupation');
         if (result.success && result.data) {
-          setSuggestions(result.data.map((item: any) => item.label || item).slice(0, 5));
+          setSuggestions(result.data.map((item: unknown) => {
+            const autocompleteItem = item as { label?: string } | string
+            return typeof autocompleteItem === 'string' ? autocompleteItem : (autocompleteItem.label || '')
+          }).slice(0, 5));
           setShowSuggestions(true);
         }
       } catch (e) {

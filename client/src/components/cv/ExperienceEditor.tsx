@@ -47,14 +47,14 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
     setExpandedId(newExp.id)
   }
 
-  const updateExperience = (id: string, field: keyof WorkExperience, value: any) => {
-    const updated = experiences.map(exp => 
+  const updateExperience = (id: string, field: keyof WorkExperience, value: string | boolean) => {
+    const updated = experiences.map(exp =>
       exp.id === id ? { ...exp, [field]: value } : exp
     )
     onChange(updated)
-    
+
     // Clear error when user types
-    if (errors[id]?.[field]) {
+    if (errors[id]?.[field as 'company' | 'title' | 'startDate']) {
       setErrors(prev => ({
         ...prev,
         [id]: { ...prev[id], [field]: undefined }
@@ -68,8 +68,8 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
   }
 
   const validateExperience = (exp: WorkExperience): boolean => {
-    const expErrors: any = {}
-    
+    const expErrors: Partial<ValidationErrors[string]> = {}
+
     if (!exp.company.trim()) {
       expErrors.company = 'Företagsnamn krävs'
     }
@@ -79,9 +79,9 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
     if (!exp.startDate) {
       expErrors.startDate = 'Startdatum krävs'
     }
-    
+
     if (Object.keys(expErrors).length > 0) {
-      setErrors(prev => ({ ...prev, [exp.id]: expErrors }))
+      setErrors(prev => ({ ...prev, [exp.id]: expErrors as ValidationErrors[string] }))
       return false
     }
     return true

@@ -341,7 +341,7 @@ export default function CVBuilder() {
   const remove = <T extends { id: string }>(arr: T[], id: string, key: keyof CVData) => {
     setData({ ...data, [key]: arr.filter(x => x.id !== id) } as CVData)
   }
-  const update = <T extends { id: string }>(arr: T[], id: string, key: keyof CVData, field: keyof T, val: any) => {
+  const update = <T extends { id: string }>(arr: T[], id: string, key: keyof CVData, field: keyof T, val: T[keyof T]) => {
     setData({ ...data, [key]: arr.map(x => x.id === id ? { ...x, [field]: val } : x) } as CVData)
   }
 

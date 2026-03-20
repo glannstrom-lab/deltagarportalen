@@ -21,6 +21,90 @@ interface AIResponse {
   model?: string;
 }
 
+interface HealthCheckResponse {
+  status: string;
+  timestamp?: string;
+  [key: string]: unknown;
+}
+
+interface Model {
+  id: string;
+  name: string;
+  provider?: string;
+  [key: string]: unknown;
+}
+
+interface ModelsResponse {
+  models: Model[];
+  [key: string]: unknown;
+}
+
+interface ConfigResponse {
+  apiVersion?: string;
+  features?: string[];
+  [key: string]: unknown;
+}
+
+interface LinkedInHeadlineData {
+  currentHeadline?: string;
+  title?: string;
+  experience?: string;
+}
+
+interface LinkedInAboutData {
+  currentAbout?: string;
+  skills?: string;
+  achievements?: string;
+}
+
+interface LinkedInPostData {
+  topic?: string;
+  tone?: string;
+  length?: 'short' | 'medium' | 'long';
+}
+
+interface LinkedInConnectionData {
+  recipientName?: string;
+  context?: string;
+  mutualConnection?: string;
+}
+
+type LinkedInOptimeringData =
+  | { typ: 'headline'; data: LinkedInHeadlineData }
+  | { typ: 'about'; data: LinkedInAboutData }
+  | { typ: 'post'; data: LinkedInPostData }
+  | { typ: 'connection'; data: LinkedInConnectionData };
+
+interface NetworkingContactData {
+  recipientName?: string;
+  company?: string;
+  role?: string;
+  context?: string;
+}
+
+interface NetworkingFollowUpData {
+  previousInteraction?: string;
+  purpose?: string;
+}
+
+interface NetworkingInformationalData {
+  recipientName?: string;
+  company?: string;
+  questions?: string;
+}
+
+interface NetworkingThankYouData {
+  recipientName?: string;
+  occasion?: string;
+  details?: string;
+}
+
+type NatverkandeData =
+  | { typ: 'kontakt'; data: NetworkingContactData }
+  | { typ: 'foljupp'; data: NetworkingFollowUpData }
+  | { typ: 'informational'; data: NetworkingInformationalData }
+  | { typ: 'tack'; data: NetworkingThankYouData };
+
 // AI-specifik retry config - färre försök, längre timeout
 const AI_RETRY_CONFIG = {
   maxRetries: 2, // 3 totala försök
@@ -71,25 +155,25 @@ async function callAI(functionName: string, data: Record<string, unknown>): Prom
 /**
  * Health check - kolla att API:t fungerar
  */
-export async function checkHealth(): Promise<any> {
+export async function checkHealth(): Promise<HealthCheckResponse> {
   const response = await fetch(`${API_BASE}/health`);
-  return response.json();
+  return response.json() as Promise<HealthCheckResponse>;
 }
 
 /**
  * Hämta lista över tillgängliga AI-modeller
  */
-export async function getModels(): Promise<any> {
+export async function getModels(): Promise<ModelsResponse> {
   const response = await fetch(`${API_BASE}/models`);
-  return response.json();
+  return response.json() as Promise<ModelsResponse>;
 }
 
 /**
  * Hämta API-konfiguration
  */
-export async function getConfig(): Promise<any> {
+export async function getConfig(): Promise<ConfigResponse> {
   const response = await fetch(`${API_BASE}/config`);
-  return response.json();
+  return response.json() as Promise<ConfigResponse>;
 }
 
 /**
@@ -227,11 +311,8 @@ export const aiService = {
   /**
    * Hjälp med LinkedIn-profil
    */
-  linkedinOptimering: async (data: {
-    typ: 'headline' | 'about' | 'post' | 'connection';
-    data: any;
-  }) => {
-    const response = await callAI('linkedin-optimering', data);
+  linkedinOptimering: async (data: LinkedInOptimeringData) => {
+    const response = await callAI('linkedin-optimering', data as Record<string, unknown>);
     return response.result;
   },
 
@@ -298,11 +379,8 @@ export const aiService = {
   /**
    * Hjälp med nätverkande
    */
-  natverkande: async (data: {
-    typ: 'kontakt' | 'foljupp' | 'informational' | 'tack';
-    data: any;
-  }) => {
-    const response = await callAI('natverkande', data);
+  natverkande: async (data: NatverkandeData) => {
+    const response = await callAI('natverkande', data as Record<string, unknown>);
     return response.result;
   },
 };

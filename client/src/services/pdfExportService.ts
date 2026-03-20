@@ -263,9 +263,11 @@ async function getCircularImage(url: string, size: number): Promise<string | nul
 }
 
 // Hämta skill name
-function getSkillName(skill: any): string {
+function getSkillName(skill: string | { name: string } | Record<string, unknown>): string {
   if (typeof skill === 'string') return skill
-  if (skill?.name) return skill.name
+  if (skill && typeof skill === 'object' && 'name' in skill && typeof skill.name === 'string') {
+    return skill.name
+  }
   return ''
 }
 
@@ -924,26 +926,35 @@ export async function generateJobPDF(job: JobData): Promise<Blob> {
   return doc.output('blob')
 }
 
+interface ApplicationHistoryItem {
+  jobTitle?: string;
+  job_title?: string;
+  company?: string;
+  status?: string;
+  appliedDate?: string;
+  applied_at?: string;
+}
+
 /**
  * Generera PDF för ansökningshistorik
  */
-export async function generateApplicationHistoryPDF(applications: any[]): Promise<Blob> {
+export async function generateApplicationHistoryPDF(applications: ApplicationHistoryItem[]): Promise<Blob> {
   const doc = new jsPDF()
-  
+
   doc.setFontSize(20)
   doc.text('Ansokningshistorik', 20, 30)
-  
+
   let y = 50
   applications.forEach((app, index) => {
     if (y > 250) {
       doc.addPage()
       y = 30
     }
-    
+
     doc.setFontSize(12)
     doc.text(sanitizeText(`${index + 1}. ${app.jobTitle || app.job_title || ''}`), 20, y)
     y += 10
-    
+
     doc.setFontSize(10)
     doc.text(sanitizeText(`Företag: ${app.company || ''}`), 20, y)
     y += 7
@@ -952,7 +963,7 @@ export async function generateApplicationHistoryPDF(applications: any[]): Promis
     doc.text(sanitizeText(`Datum: ${app.appliedDate || app.applied_at || ''}`), 20, y)
     y += 15
   })
-  
+
   return doc.output('blob')
 }
 

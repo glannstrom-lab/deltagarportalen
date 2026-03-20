@@ -26,8 +26,31 @@ export interface JobNotification {
   createdAt: string
 }
 
+interface JobAlertDB {
+  id: string;
+  name: string;
+  query: string;
+  municipality?: string;
+  employment_type?: string;
+  remote?: boolean;
+  last_checked: string;
+  last_job_id?: string;
+}
+
+interface JobNotificationDB {
+  id: string;
+  job_id: string;
+  title: string;
+  employer: string;
+  municipality?: string;
+  published_date: string;
+  alert_id: string;
+  read: boolean;
+  created_at: string;
+}
+
 // Konverteringsfunktioner
-const toApiAlert = (alert: JobAlert) => ({
+const toApiAlert = (alert: JobAlert): JobAlertDB => ({
   id: alert.id,
   name: alert.name,
   query: alert.query,
@@ -38,7 +61,7 @@ const toApiAlert = (alert: JobAlert) => ({
   last_job_id: alert.lastJobId,
 })
 
-const fromApiAlert = (data: any): JobAlert => ({
+const fromApiAlert = (data: JobAlertDB): JobAlert => ({
   id: data.id,
   name: data.name,
   query: data.query,
@@ -49,7 +72,7 @@ const fromApiAlert = (data: any): JobAlert => ({
   lastJobId: data.last_job_id,
 })
 
-const toApiNotification = (notif: JobNotification) => ({
+const toApiNotification = (notif: JobNotification): JobNotificationDB => ({
   id: notif.id,
   job_id: notif.jobId,
   title: notif.title,
@@ -61,7 +84,7 @@ const toApiNotification = (notif: JobNotification) => ({
   created_at: notif.createdAt,
 })
 
-const fromApiNotification = (data: any): JobNotification => ({
+const fromApiNotification = (data: JobNotificationDB): JobNotification => ({
   id: data.id,
   jobId: data.job_id,
   title: data.title,

@@ -31,7 +31,7 @@ interface UseZodFormReturn<T> {
   clearErrors: () => void
 }
 
-export function useZodForm<T extends Record<string, any>>({
+export function useZodForm<T extends Record<string, unknown>>({
   schema,
   initialValues,
   onSubmit,
@@ -63,14 +63,14 @@ export function useZodForm<T extends Record<string, any>>({
   const validateField = useCallback(<K extends keyof T>(field: K, value: T[K]): string | undefined => {
     // Skapa ett partial schema för endast detta fält
     // För ZodObject, försök plocka ut fältet, men hantera fel om det inte går (t.ex. pga refine)
-    let fieldSchema: z.ZodType<any>
-    
+    let fieldSchema: z.ZodType<unknown>
+
     if (schema instanceof z.ZodObject) {
       try {
         // @ts-ignore - shape finns på ZodObject
         const shape = schema.shape || schema._def?.shape?.()
         if (shape && field in shape) {
-          fieldSchema = shape[field]
+          fieldSchema = shape[field as string] as z.ZodType<unknown>
         } else {
           // Fallback: validera hela schemat och filtrera på fältet
           const result = schema.safeParse({ ...values, [field]: value })
@@ -92,10 +92,10 @@ export function useZodForm<T extends Record<string, any>>({
     } else {
       fieldSchema = schema
     }
-    
+
     // Validera enskilt fält
     const result = fieldSchema.safeParse(value)
-    
+
     if (!result.success) {
       // Handle both ZodError format and issues array
       const issues = result.error.errors || result.error.issues
@@ -103,7 +103,7 @@ export function useZodForm<T extends Record<string, any>>({
         return issues[0].message
       }
     }
-    
+
     return undefined
   }, [schema, values])
 
@@ -128,15 +128,17 @@ export function useZodForm<T extends Record<string, any>>({
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value, type } = e.target
-    
+
     // Hantera olika input-typer
-    let parsedValue: any = value
+    let parsedValue: T[keyof T]
     if (type === 'checkbox') {
-      parsedValue = (e.target as HTMLInputElement).checked
+      parsedValue = (e.target as HTMLInputElement).checked as T[keyof T]
     } else if (type === 'number') {
-      parsedValue = value === '' ? '' : Number(value)
+      parsedValue = (value === '' ? '' : Number(value)) as T[keyof T]
+    } else {
+      parsedValue = value as T[keyof T]
     }
-    
+
     setValue(name as keyof T, parsedValue)
   }, [setValue])
 

@@ -20,7 +20,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useEnergyStore, type EnergyLevel } from '@/stores/energyStore'
-import { useDashboardData } from '@/hooks/useDashboardData'
+import { useDashboardData, type UseDashboardDataReturn } from '@/hooks/useDashboardData'
 import { Link } from 'react-router-dom'
 
 interface QuickWin {
@@ -32,7 +32,7 @@ interface QuickWin {
   icon: React.ReactNode
   link: string
   color: string
-  condition?: (data: any) => boolean
+  condition?: (data: NonNullable<UseDashboardDataReturn['data']>) => boolean
 }
 
 export function QuickWinButton() {

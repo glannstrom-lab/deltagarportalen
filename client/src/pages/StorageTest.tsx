@@ -45,8 +45,8 @@ export default function StorageTest() {
         return
       }
       updateResult(0, 'success', 'Ansluten!', `Inloggad som: ${session.user.email}`)
-    } catch (err: any) {
-      updateResult(0, 'error', 'Anslutning misslyckades', err.message)
+    } catch (err) {
+      updateResult(0, 'error', 'Anslutning misslyckades', err instanceof Error ? err.message : String(err))
       setIsRunning(false)
       return
     }
@@ -73,8 +73,8 @@ export default function StorageTest() {
       }
       
       updateResult(1, 'success', 'Bucket finns!', `Name: ${cvBucket.name}, Public: ${cvBucket.public}`)
-    } catch (err: any) {
-      updateResult(1, 'error', 'Kunde inte lista buckets', err.message)
+    } catch (err) {
+      updateResult(1, 'error', 'Kunde inte lista buckets', err instanceof Error ? err.message : String(err))
       setIsRunning(false)
       return
     }
@@ -106,8 +106,9 @@ export default function StorageTest() {
         .upload(testPath, blob, { contentType: 'image/png' })
 
       if (uploadError) {
-        if (uploadError.message.includes('row-level security') || uploadError.message.includes('violates')) {
-          throw new Error(`RLS Policy fel: ${uploadError.message}\n\nLösning: Gå till Storage → cv-images → Policies och skapa INSERT-policy för authenticated users`)
+        const errorMessage = uploadError.message || String(uploadError)
+        if (errorMessage.includes('row-level security') || errorMessage.includes('violates')) {
+          throw new Error(`RLS Policy fel: ${errorMessage}\n\nLösning: Gå till Storage → cv-images → Policies och skapa INSERT-policy för authenticated users`)
         }
         throw uploadError
       }
@@ -130,8 +131,9 @@ export default function StorageTest() {
         .remove([testPath])
       
       if (deleteError) {
-        if (deleteError.message.includes('row-level security')) {
-          updateResult(4, 'error', `RLS Policy fel: ${deleteError.message}\n\nLösning: Gå till Storage → cv-images → Policies och skapa DELETE-policy`, '')
+        const errorMessage = deleteError.message || String(deleteError)
+        if (errorMessage.includes('row-level security')) {
+          updateResult(4, 'error', `RLS Policy fel: ${errorMessage}\n\nLösning: Gå till Storage → cv-images → Policies och skapa DELETE-policy`, '')
         } else {
           throw deleteError
         }
@@ -139,8 +141,8 @@ export default function StorageTest() {
         updateResult(4, 'success', 'Borttagning lyckades!', '')
       }
       
-    } catch (err: any) {
-      updateResult(2, 'error', 'Uppladdning misslyckades', err.message)
+    } catch (err) {
+      updateResult(2, 'error', 'Uppladdning misslyckades', err instanceof Error ? err.message : String(err))
       setIsRunning(false)
       return
     }

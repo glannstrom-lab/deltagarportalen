@@ -169,16 +169,27 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
   )
 }
 
+interface JobAlert {
+  id: string
+  name: string
+  query?: string
+  region?: string
+  remote?: boolean
+  is_active: boolean
+  new_jobs_count: number
+  last_checked_at?: string
+}
+
 function AlertCard({
   alert,
   onToggle,
   onDelete,
   onRunSearch
 }: {
-  alert: any
+  alert: JobAlert
   onToggle: (id: string, isActive: boolean) => void
   onDelete: (id: string) => void
-  onRunSearch: (alert: any) => void
+  onRunSearch: (alert: JobAlert) => void
 }) {
   const [isChecking, setIsChecking] = useState(false)
 
@@ -298,11 +309,18 @@ export function AlertsTab() {
   const { alerts, isLoading, createAlert, deleteAlert, toggleAlert, runAlertSearch, checkForNewJobs } = useJobAlerts()
   const [showCreateModal, setShowCreateModal] = useState(false)
 
-  const handleCreateAlert = async (alertData: any) => {
+  const handleCreateAlert = async (alertData: {
+    name: string
+    query?: string
+    municipality?: string
+    region?: string
+    employment_type?: string
+    remote?: boolean
+  }) => {
     await createAlert(alertData)
   }
 
-  const handleRunSearch = async (alert: any) => {
+  const handleRunSearch = async (alert: JobAlert) => {
     // Check for new jobs first
     await checkForNewJobs(alert)
     // Then navigate to search with alert criteria

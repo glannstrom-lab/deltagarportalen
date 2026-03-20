@@ -141,7 +141,7 @@ interface UploadedFile {
   uploaded_at: string
 }
 
-const statusLabels: Record<string, { label: string; color: string; bg: string; icon: any }> = {
+const statusLabels: Record<string, { label: string; color: string; bg: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
   'SAVED': { label: 'Sparad', color: 'text-slate-600', bg: 'bg-slate-100', icon: Bookmark },
   'APPLIED': { label: 'Ansökt', color: 'text-blue-600', bg: 'bg-blue-100', icon: CheckCircle2 },
   'INTERVIEW': { label: 'Intervju', color: 'text-purple-600', bg: 'bg-purple-100', icon: Sparkles },
@@ -150,17 +150,17 @@ const statusLabels: Record<string, { label: string; color: string; bg: string; i
 }
 
 // Quick Stats Card Component
-function StatCard({ 
-  label, 
-  value, 
-  icon: Icon, 
+function StatCard({
+  label,
+  value,
+  icon: Icon,
   color,
   link,
   subtitle
-}: { 
+}: {
   label: string
   value: string | number
-  icon: any
+  icon: React.ComponentType<{ size?: number; className?: string }>
   color: string
   link?: string
   subtitle?: string
@@ -190,9 +190,9 @@ function StatCard({
 }
 
 // Document Card Component
-function DocumentCard({ 
-  title, 
-  subtitle, 
+function DocumentCard({
+  title,
+  subtitle,
   type,
   date,
   actions,
@@ -204,7 +204,7 @@ function DocumentCard({
   type: string
   date: string
   actions: React.ReactNode
-  icon: any
+  icon: React.ComponentType<{ size?: number; className?: string }>
   color: string
 }) {
   return (
@@ -332,7 +332,7 @@ function generateCVPDF(cvData: CVData) {
     y += 8
     doc.setFontSize(10)
     doc.setTextColor(60, 60, 60)
-    const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : s.name).join(', ')
+    const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : (s as { name: string }).name).join(', ')
     const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 2 * margin)
     doc.text(splitSkills, margin, y)
   }
@@ -390,7 +390,7 @@ export default function Resources() {
   const [interestResult, setInterestResult] = useState<InterestResult | null>(null)
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
   const [loading, setLoading] = useState(true)
-  const [previewModal, setPreviewModal] = useState<{type: string, data: any} | null>(null)
+  const [previewModal, setPreviewModal] = useState<{type: string, data: CVData | CoverLetter | SavedJob} | null>(null)
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid')
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -467,7 +467,7 @@ export default function Resources() {
   ]
 
   // Status labels with translations
-  const statusLabelsTranslated: Record<string, { label: string; color: string; bg: string; icon: any }> = {
+  const statusLabelsTranslated: Record<string, { label: string; color: string; bg: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
     'SAVED': { label: t('resources.status.saved'), color: 'text-slate-600', bg: 'bg-slate-100', icon: Bookmark },
     'APPLIED': { label: t('resources.status.applied'), color: 'text-blue-600', bg: 'bg-blue-100', icon: CheckCircle2 },
     'INTERVIEW': { label: t('resources.status.interview'), color: 'text-purple-600', bg: 'bg-purple-100', icon: Sparkles },

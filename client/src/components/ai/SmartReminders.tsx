@@ -42,26 +42,26 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
   useEffect(() => {
     // Hämta användardata och generera påminnelser
     const loadReminders = () => {
-      const savedJobs = JSON.parse(localStorage.getItem('saved-jobs') || '[]')
-      const applications = JSON.parse(localStorage.getItem('applications') || '[]')
-      const goals = JSON.parse(localStorage.getItem('goals') || '[]')
+      const savedJobs = JSON.parse(localStorage.getItem('saved-jobs') || '[]') as Array<{ savedAt?: string }>
+      const applications = JSON.parse(localStorage.getItem('applications') || '[]') as Array<{ appliedAt?: string }>
+      const goals = JSON.parse(localStorage.getItem('goals') || '[]') as Array<{ deadline?: string }>
       const lastLogin = new Date(localStorage.getItem('last-login') || Date.now())
-      
+
       // Simulerad aktivitetsdata
-      const activityPattern = new Array(24).fill(0).map((_, i) => 
+      const activityPattern = new Array(24).fill(0).map((_, i) =>
         i >= 9 && i <= 17 ? Math.floor(Math.random() * 5) : 0
       )
 
       const userData = {
-        savedJobs: savedJobs.map((j: any) => ({
+        savedJobs: savedJobs.map((j) => ({
           ...j,
           savedAt: new Date(j.savedAt || Date.now() - 6 * 24 * 60 * 60 * 1000)
         })),
-        applications: applications.map((a: any) => ({
+        applications: applications.map((a) => ({
           ...a,
           appliedAt: new Date(a.appliedAt || Date.now() - 8 * 24 * 60 * 60 * 1000)
         })),
-        goals: goals.map((g: any) => ({
+        goals: goals.map((g) => ({
           ...g,
           deadline: new Date(g.deadline || Date.now() + 3 * 24 * 60 * 60 * 1000)
         })),
@@ -204,7 +204,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
               <span className="text-sm text-slate-600 block mb-2">Frekvens</span>
               <select
                 value={preferences.frequency}
-                onChange={(e) => updatePreferences({ frequency: e.target.value as any })}
+                onChange={(e) => updatePreferences({ frequency: e.target.value as ReminderPreferences['frequency'] })}
                 className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm"
               >
                 <option value="smart">Smart (AI-driven)</option>
@@ -249,6 +249,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                     reminder.type === 'insight' && 'bg-violet-100'
                   )}>
                     {reminder.type === 'application' && <Briefcase className="w-5 h-5 text-blue-600" />}
+                    {reminder.type === 'followUp' && <TrendingUp className="w-5 h-5 text-amber-600" />}
                     {reminder.type === 'followUp' && <TrendingUp className="w-5 h-5 text-amber-600" />}
                     {reminder.type === 'deadline' && <Clock className="w-5 h-5 text-rose-600" />}
                     {reminder.type === 'milestone' && <Zap className="w-5 h-5 text-emerald-600" />}

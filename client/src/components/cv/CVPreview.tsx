@@ -135,9 +135,13 @@ const TEMPLATES = {
 export function CVPreview({ data }: CVPreviewProps) {
   const template = TEMPLATES[data.template as keyof typeof TEMPLATES] || TEMPLATES.sidebar
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
-  
-  const getSkillName = (skill: any) => typeof skill === 'string' ? skill : skill?.name || ''
-  const getSkillCategory = (skill: any) => typeof skill === 'object' ? skill?.category : 'other'
+
+  const getSkillName = (skill: string | { name: string; category?: string }): string => {
+    return typeof skill === 'string' ? skill : skill?.name || ''
+  }
+  const getSkillCategory = (skill: string | { name: string; category?: string }): string => {
+    return typeof skill === 'object' ? skill?.category || 'other' : 'other'
+  }
   
   const technicalSkills = data.skills?.filter(s => getSkillCategory(s) === 'technical') || []
   const softSkills = data.skills?.filter(s => getSkillCategory(s) === 'soft') || []
@@ -254,19 +258,22 @@ export function CVPreview({ data }: CVPreviewProps) {
                 Språk
               </h3>
               <div className="space-y-3">
-                {data.languages.map(lang => (
-                  <div key={lang.id} className="flex items-center justify-between">
-                    <span className="font-medium">{lang.language || (lang as any).name}</span>
-                    <span 
-                      className="text-xs px-2 py-1 rounded-full"
-                      style={{ 
-                        background: isNordic ? '#bae6fd' : 'rgba(255,255,255,0.2)',
-                      }}
-                    >
-                      {lang.level}
-                    </span>
-                  </div>
-                ))}
+                {data.languages.map(lang => {
+                  const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+                  return (
+                    <div key={lang.id} className="flex items-center justify-between">
+                      <span className="font-medium">{languageName}</span>
+                      <span
+                        className="text-xs px-2 py-1 rounded-full"
+                        style={{
+                          background: isNordic ? '#bae6fd' : 'rgba(255,255,255,0.2)',
+                        }}
+                      >
+                        {lang.level}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
             </div>
           )}
@@ -510,16 +517,19 @@ export function CVPreview({ data }: CVPreviewProps) {
                     Språk
                   </h3>
                   <div className="space-y-2">
-                    {data.languages.map(lang => (
-                      <div key={lang.id} className="flex justify-between items-center">
-                        <span style={{ color: template.colors.text }}>
-                          {lang.language || (lang as any).name}
-                        </span>
-                        <span className="text-sm font-medium" style={{ color: template.colors.muted }}>
-                          {lang.level}
-                        </span>
-                      </div>
-                    ))}
+                    {data.languages.map(lang => {
+                      const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+                      return (
+                        <div key={lang.id} className="flex justify-between items-center">
+                          <span style={{ color: template.colors.text }}>
+                            {languageName}
+                          </span>
+                          <span className="text-sm font-medium" style={{ color: template.colors.muted }}>
+                            {lang.level}
+                          </span>
+                        </div>
+                      )
+                    })}
                   </div>
                 </div>
               )}
@@ -722,24 +732,27 @@ export function CVPreview({ data }: CVPreviewProps) {
               Språk
             </h3>
             <div className="space-y-4">
-              {data.languages.map(lang => (
-                <div key={lang.id}>
-                  <div className="flex justify-between text-sm mb-1">
-                    <span>{lang.language || (lang as any).name}</span>
-                    <span className="opacity-70">{lang.level}</span>
+              {data.languages.map(lang => {
+                const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+                return (
+                  <div key={lang.id}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span>{languageName}</span>
+                      <span className="opacity-70">{lang.level}</span>
+                    </div>
+                    <div className="h-2 rounded-full bg-white/20 overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-white transition-all"
+                        style={{
+                          width: lang.level === 'Modersmål' ? '100%' :
+                                 lang.level === 'Flytande' ? '85%' :
+                                 lang.level === 'God' ? '70%' : '50%'
+                        }}
+                      />
+                    </div>
                   </div>
-                  <div className="h-2 rounded-full bg-white/20 overflow-hidden">
-                    <div 
-                      className="h-full rounded-full bg-white transition-all"
-                      style={{ 
-                        width: lang.level === 'Modersmål' ? '100%' :
-                               lang.level === 'Flytande' ? '85%' :
-                               lang.level === 'God' ? '70%' : '50%'
-                      }}
-                    />
-                  </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         )}

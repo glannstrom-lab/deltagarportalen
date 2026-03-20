@@ -153,19 +153,28 @@ export async function searchSkills(query: string, limit: number = 20): Promise<S
   }));
 }
 
+interface ConceptRelationResponse {
+  to_concept?: {
+    id: string;
+    type: string;
+    preferred_label: string;
+    definition?: string;
+  };
+}
+
 export async function getSkillsForOccupation(occupationId: string): Promise<Skill[]> {
   try {
     const relations = await fetchFromTaxonomy(`/concepts/${occupationId}/relations`, {
       relation_type: 'has_skill'
-    });
-    
+    }) as ConceptRelationResponse[];
+
     return relations
-      .filter((r: any) => r.to_concept?.type === 'skill')
-      .map((r: any) => ({
-        id: r.to_concept.id,
-        preferred_label: r.to_concept.preferred_label,
-        definition: r.to_concept.definition,
-        type: 'skill'
+      .filter((r) => r.to_concept?.type === 'skill')
+      .map((r) => ({
+        id: r.to_concept!.id,
+        preferred_label: r.to_concept!.preferred_label,
+        definition: r.to_concept!.definition,
+        type: 'skill' as const
       }));
   } catch (error) {
     return [];

@@ -39,6 +39,11 @@ interface LearningPath {
   status: string;
 }
 
+interface Achievement {
+  icon: string;
+  title: string;
+}
+
 interface CourseRecommendation {
   id: string;
   relevance_score: number;
@@ -238,7 +243,7 @@ export default function MicroLearningHub() {
       if (data.isCompleted) {
         showToast.success(data.message);
         if (data.achievements?.length > 0) {
-          data.achievements.forEach((achievement: any) => {
+          data.achievements.forEach((achievement: Achievement) => {
             showToast.success(`${achievement.icon} ${achievement.title}`);
           });
         }
@@ -442,7 +447,7 @@ export default function MicroLearningHub() {
               <Filter size={16} className="text-slate-400" />
               <select
                 value={activeFilter}
-                onChange={(e) => setActiveFilter(e.target.value as any)}
+                onChange={(e) => setActiveFilter(e.target.value as 'all' | 'short' | 'beginner')}
                 className="text-sm border-slate-200 rounded-lg focus:ring-indigo-500"
               >
                 <option value="all">Alla</option>

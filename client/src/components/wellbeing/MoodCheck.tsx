@@ -41,7 +41,7 @@ export function MoodCheck({ onMoodSubmit, showTrend = true }: MoodCheckProps) {
         const data = await moodHistoryApi.getAll()
         
         // Konvertera från databasformat till komponentformat
-        const entries: MoodEntry[] = data.map((item: any) => ({
+        const entries: MoodEntry[] = data.map((item: { recorded_at?: string; mood: number; note?: string }) => ({
           date: item.recorded_at?.split('T')[0] || new Date().toISOString().split('T')[0],
           mood: item.mood as 1 | 2 | 3 | 4 | 5,
           note: item.note

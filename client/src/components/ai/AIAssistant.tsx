@@ -49,19 +49,30 @@ interface RecommendedAction {
 }
 
 // Mock ML-analys - i produktion skulle detta komma från backend
-function analyzeBehavior(userData: any, activities: any[]): BehaviorAnalysis {
+interface UserData {
+  cv?: { progress?: number };
+  applications?: { total?: number };
+  wellness?: { streakDays?: number };
+}
+
+interface Activity {
+  created_at: string;
+  type: string;
+}
+
+function analyzeBehavior(userData: UserData | undefined, activities: Activity[]): BehaviorAnalysis {
   // Simulerad analys baserat på data
   const now = new Date()
   const hour = now.getHours()
   
   // Beräkna trend
-  const recentActivities = activities.filter((a: any) => {
+  const recentActivities = activities.filter((a) => {
     const activityDate = new Date(a.created_at)
     const daysDiff = (now.getTime() - activityDate.getTime()) / (1000 * 60 * 60 * 24)
     return daysDiff <= 14
   })
-  
-  const olderActivities = activities.filter((a: any) => {
+
+  const olderActivities = activities.filter((a) => {
     const activityDate = new Date(a.created_at)
     const daysDiff = (now.getTime() - activityDate.getTime()) / (1000 * 60 * 60 * 24)
     return daysDiff > 14 && daysDiff <= 28

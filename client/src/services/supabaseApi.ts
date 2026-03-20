@@ -121,8 +121,8 @@ export interface CVData {
   // ATS-analys
   ats_score?: number | null
   atsScore?: number | null
-  ats_feedback?: any
-  atsFeedback?: any
+  ats_feedback?: unknown
+  atsFeedback?: unknown
 }
 
 export interface CoverLetter {
@@ -142,7 +142,7 @@ export interface SavedJob {
   id: string
   user_id: string
   job_id: string
-  job_data: any
+  job_data: Record<string, unknown>
   status: 'SAVED' | 'APPLIED' | 'INTERVIEW' | 'REJECTED' | 'ACCEPTED'
   notes?: string | null
   applied_at?: string | null
@@ -163,21 +163,46 @@ class APIError extends Error {
   }
 }
 
-function handleError(error: any): never {
-  if (error.code === 'PGRST116') {
+function handleError(error: unknown): never {
+  if (
+    error &&
+    typeof error === 'object' &&
+    'code' in error &&
+    error.code === 'PGRST116'
+  ) {
     throw new APIError('Resursen hittades inte', 'NOT_FOUND', 404)
   }
-  if (error.code === '42501') {
+  if (
+    error &&
+    typeof error === 'object' &&
+    'code' in error &&
+    error.code === '42501'
+  ) {
     throw new APIError('Åtkomst nekad', 'FORBIDDEN', 403)
   }
-  if (error.code === '23505') {
+  if (
+    error &&
+    typeof error === 'object' &&
+    'code' in error &&
+    error.code === '23505'
+  ) {
     throw new APIError('Resursen finns redan', 'CONFLICT', 409)
   }
-  throw new APIError(
-    error.message || 'Ett fel uppstod',
-    error.code,
-    error.status
-  )
+
+  const message =
+    error && typeof error === 'object' && 'message' in error && typeof error.message === 'string'
+      ? error.message
+      : 'Ett fel uppstod'
+  const code =
+    error && typeof error === 'object' && 'code' in error && typeof error.code === 'string'
+      ? error.code
+      : undefined
+  const status =
+    error && typeof error === 'object' && 'status' in error && typeof error.status === 'number'
+      ? error.status
+      : undefined
+
+  throw new APIError(message, code, status)
 }
 
 // ============================================
@@ -306,9 +331,9 @@ export const cvApi = {
   async updateCV(cvData: Partial<CVData>) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
+
     // Transform camelCase to snake_case - prioritera camelCase (UI-fält) över snake_case (DB-fält)
-    const dbData: any = {
+    const dbData: Record<string, unknown> = {
       user_id: user.id,
       updated_at: new Date().toISOString(),
       first_name: cvData.firstName ?? cvData.first_name,
@@ -330,7 +355,7 @@ export const cvApi = {
       color_scheme: cvData.colorScheme ?? cvData.color_scheme,
       font: cvData.font,
     }
-    
+
     // Remove undefined values
     Object.keys(dbData).forEach(key => {
       if (dbData[key] === undefined) delete dbData[key]
@@ -367,7 +392,7 @@ export const cvApi = {
       }
       
       return result
-    } catch (error: any) {
+    } catch (error: unknown) {
       handleError(error)
       throw error
     }
@@ -516,10 +541,10 @@ export const interestApi = {
     return data
   },
 
-  async saveResult(resultData: any) {
+  async saveResult(resultData: Record<string, unknown>) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
+
     const { data, error } = await supabase
       .from('interest_results')
       .upsert({
@@ -529,7 +554,7 @@ export const interestApi = {
       })
       .select()
       .single()
-    
+
     if (error) handleError(error)
     return data
   },
@@ -631,7 +656,7 @@ export const coverLetterApi = {
   },
 
   async generate(params: {
-    cvData: any
+    cvData: CVData
     jobDescription: string
     companyName: string
     jobTitle: string
@@ -765,7 +790,7 @@ export const articleApi = {
           name: cat.name,
           slug: cat.id,
           description: cat.description,
-          subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
+          subcategories: cat.subcategories?.map((sub: { name: string }) => sub.name) || []
         }))
       }
 
@@ -776,28 +801,28 @@ export const articleApi = {
           name: cat.name,
           slug: cat.id,
           description: cat.description,
-          subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
+          subcategories: cat.subcategories?.map((sub: { name: string }) => sub.name) || []
         }))
       }
       
       // Extract unique categories with their subcategories
-      const categoryMap = new Map()
-      
-      data?.forEach((article: any) => {
+      const categoryMap = new Map<string, { name: string; subcategories: Set<string> }>()
+
+      data?.forEach((article: { category?: string; subcategory?: string }) => {
         const cat = article.category || 'Övrigt'
         const sub = article.subcategory
-        
+
         if (!categoryMap.has(cat)) {
           categoryMap.set(cat, { name: cat, subcategories: new Set() })
         }
-        
+
         if (sub) {
-          categoryMap.get(cat).subcategories.add(sub)
+          categoryMap.get(cat)!.subcategories.add(sub)
         }
       })
-      
+
       // Convert to array format expected by components
-      return Array.from(categoryMap.values()).map((cat: any) => ({
+      return Array.from(categoryMap.values()).map((cat: { name: string; subcategories: Set<string> }) => ({
         name: cat.name,
         slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
         subcategories: Array.from(cat.subcategories)
@@ -809,7 +834,7 @@ export const articleApi = {
         name: cat.name,
         slug: cat.id,
         description: cat.description,
-        subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
+        subcategories: cat.subcategories?.map((sub: { name: string }) => sub.name) || []
       }))
     }
   }
@@ -842,7 +867,13 @@ export const jobsApi = {
     return data.hits || []
   },
 
-  async searchJobs(params?: any) {
+  async searchJobs(params?: {
+    search?: string
+    location?: string
+    employmentType?: string
+    remote?: boolean
+    limit?: number
+  }) {
     return this.search(params || {})
   },
 
@@ -856,10 +887,10 @@ export const jobsApi = {
     return response.json()
   },
 
-  async saveJob(jobId: string, status: string = 'SAVED', jobData?: any) {
+  async saveJob(jobId: string, status: string = 'SAVED', jobData?: Record<string, unknown>) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
+
     // Get job data if not provided
     let dataToSave = jobData
     if (!dataToSave) {
@@ -908,8 +939,8 @@ export const jobsApi = {
   async updateApplication(id: string, updates: { status?: string, notes?: string }) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
-    const dbUpdates: any = {}
+
+    const dbUpdates: Record<string, unknown> = {}
     if (updates.status) dbUpdates.status = updates.status.toUpperCase()
     if (updates.notes !== undefined) dbUpdates.notes = updates.notes
     
@@ -945,23 +976,24 @@ export const jobsApi = {
     const jobText = `${job.headline || ''} ${job.description?.text || ''} ${job.occupation?.label || ''}`.toLowerCase()
     const skills = cvData.skills || []
     const experiences = cvData.work_experience || []
-    
+
     let matchScore = 0
     let maxScore = 0
     const matchingSkills: string[] = []
     const missingSkills: string[] = []
-    
-    skills.forEach((skill: any) => {
+
+    skills.forEach((skill: Skill | string) => {
       maxScore += 3
-      if (jobText.includes((skill.name || skill).toLowerCase())) {
+      const skillName = typeof skill === 'string' ? skill : skill.name
+      if (jobText.includes(skillName.toLowerCase())) {
         matchScore += 3
-        matchingSkills.push(skill.name || skill)
+        matchingSkills.push(skillName)
       } else {
-        missingSkills.push(skill.name || skill)
+        missingSkills.push(skillName)
       }
     })
-    
-    experiences.forEach((exp: any) => {
+
+    experiences.forEach((exp: WorkExperience) => {
       const expTitle = (exp.title || '').toLowerCase()
       if (jobText.includes(expTitle)) {
         matchScore += 2
@@ -1059,7 +1091,7 @@ export const savedJobsApi = {
     return jobsApi.getSavedJobs()
   },
 
-  async save(jobId: string, jobData: any) {
+  async save(jobId: string, jobData: Record<string, unknown>) {
     return jobsApi.saveJob(jobId, 'SAVED', jobData)
   },
 
@@ -1252,10 +1284,10 @@ export const jobAlertsApi = {
 // ACTIVITY API
 // ============================================
 export const activityApi = {
-  async logActivity(activityType: string, activityData?: any) {
+  async logActivity(activityType: string, activityData?: Record<string, unknown>) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
+
     const { data, error } = await supabase
       .from('user_activities')
       .insert({
@@ -1265,7 +1297,7 @@ export const activityApi = {
       })
       .select()
       .single()
-    
+
     if (error) handleError(error)
     return data
   },

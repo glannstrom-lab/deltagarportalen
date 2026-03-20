@@ -225,9 +225,12 @@ export function MatchesTab() {
       setHasCV(true)
 
       // Extract skills from CV
-      const skills = cv.skills?.map((s: any) => s.name || s) || []
+      const skills = cv.skills?.map((s: string | { name: string }) => typeof s === 'string' ? s : s.name) || []
       const titleSkills = cv.title ? [cv.title] : []
-      const experienceSkills = cv.work_experience?.map((e: any) => e.title).filter(Boolean) || []
+      const experienceSkills = cv.work_experience?.map((e: unknown) => {
+        const workExp = e as { title?: string }
+        return workExp.title
+      }).filter(Boolean) || []
       const allSkills = [...new Set([...skills, ...titleSkills, ...experienceSkills])]
       setUserSkills(allSkills)
 

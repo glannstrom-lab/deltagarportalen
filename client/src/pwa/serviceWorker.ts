@@ -3,6 +3,9 @@
  * Offline support, caching, and background sync
  */
 
+// Extend ServiceWorkerGlobalScope to access self with proper typing
+declare const self: ServiceWorkerGlobalScope;
+
 const CACHE_NAME = 'deltagarportal-v1'
 const STATIC_ASSETS = [
   '/',
@@ -13,7 +16,7 @@ const STATIC_ASSETS = [
 ]
 
 // Installera service worker
-self.addEventListener('install', (event: any) => {
+self.addEventListener('install', (event: ExtendableEvent) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
       return cache.addAll(STATIC_ASSETS)
@@ -23,7 +26,7 @@ self.addEventListener('install', (event: any) => {
 })
 
 // Aktivera service worker
-self.addEventListener('activate', (event: any) => {
+self.addEventListener('activate', (event: ExtendableEvent) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
       return Promise.all(
@@ -37,7 +40,7 @@ self.addEventListener('activate', (event: any) => {
 })
 
 // Intercepta fetch-anrop
-self.addEventListener('fetch', (event: any) => {
+self.addEventListener('fetch', (event: FetchEvent) => {
   const { request } = event
 
   // API-anrop - network first, fallback to cache
@@ -86,14 +89,14 @@ self.addEventListener('fetch', (event: any) => {
 })
 
 // Background sync för offline-formulär
-self.addEventListener('sync', (event: any) => {
+self.addEventListener('sync', (event: SyncEvent) => {
   if (event.tag === 'sync-forms') {
     event.waitUntil(syncFormData())
   }
 })
 
 // Push-notiser
-self.addEventListener('push', (event: any) => {
+self.addEventListener('push', (event: PushEvent) => {
   const data = event.data?.json() || {}
   
   const options = {
@@ -114,7 +117,7 @@ self.addEventListener('push', (event: any) => {
 })
 
 // Klick på notis
-self.addEventListener('notificationclick', (event: any) => {
+self.addEventListener('notificationclick', (event: NotificationEvent) => {
   event.notification.close()
 
   if (event.action === 'open' || !event.action) {
@@ -156,8 +159,8 @@ function openDB(name: string, version: number): Promise<IDBDatabase> {
     const request = indexedDB.open(name, version)
     request.onerror = () => reject(request.error)
     request.onsuccess = () => resolve(request.result)
-    request.onupgradeneeded = (event: any) => {
-      const db = event.target.result
+    request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+      const db = (event.target as IDBOpenDBRequest).result
       if (!db.objectStoreNames.contains('pending-forms')) {
         db.createObjectStore('pending-forms', { keyPath: 'id' })
       }

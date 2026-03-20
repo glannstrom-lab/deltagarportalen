@@ -10,7 +10,7 @@ import { jobLogger } from '@/lib/logger';
 const AF_JOBSEARCH_BASE = 'https://jobsearch.api.jobtechdev.se';
 
 // Cache
-const cache = new Map<string, { data: any; timestamp: number }>();
+const cache = new Map<string, { data: unknown; timestamp: number }>();
 const CACHE_TTL = 2 * 60 * 1000; // 2 minuter
 
 // Typdefinitioner
@@ -69,6 +69,18 @@ export interface JobSearchResponse {
 
 // Alias for backwards compatibility
 export type JobAd = PlatsbankenJob;
+
+// Autocomplete API response types
+interface AutocompleteItem {
+  value?: string;
+  found_phrase?: string;
+  type?: string;
+  occurrences?: number;
+}
+
+interface AutocompleteResponse {
+  typeahead: (AutocompleteItem | string)[];
+}
 
 // Populära sökningar
 export const POPULAR_QUERIES = [
@@ -147,10 +159,10 @@ const MUNICIPALITY_TO_REGION: Record<string, string> = {
 };
 
 // Hjälpfunktion för fetch
-async function fetchFromAF(url: string): Promise<any> {
+async function fetchFromAF<T = unknown>(url: string): Promise<T> {
   const cached = cache.get(url);
   if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
-    return cached.data;
+    return cached.data as T;
   }
 
   jobLogger.debug('Fetching:', url);
@@ -165,7 +177,7 @@ async function fetchFromAF(url: string): Promise<any> {
     throw new Error(`HTTP ${response.status}`);
   }
 
-  const data = await response.json();
+  const data: T = await response.json();
   cache.set(url, { data, timestamp: Date.now() });
   return data;
 }
@@ -229,8 +241,8 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
 
     const url = `${AF_JOBSEARCH_BASE}/search?${searchParams.toString()}`;
     jobLogger.debug('Search URL:', url);
-    
-    const data = await fetchFromAF(url);
+
+    const data = await fetchFromAF<JobSearchResponse>(url);
     
     let hits = data.hits || [];
     
@@ -345,15 +357,15 @@ export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> 
 // Autocomplete
 export async function getAutocomplete(query: string): Promise<string[]> {
   if (!query || query.length < 2) return [];
-  
+
   try {
     const url = `${AF_JOBSEARCH_BASE}/complete?q=${encodeURIComponent(query)}`;
-    const data = await fetchFromAF(url);
-    
+    const data = await fetchFromAF<AutocompleteResponse>(url);
+
     // AF API returns objects with { value, found_phrase, type, occurrences }
     // We need to extract the 'value' property to get the suggestion string
     const typeahead = data.typeahead || [];
-    return typeahead.map((item: any) => {
+    return typeahead.map((item: AutocompleteItem | string) => {
       if (typeof item === 'string') return item;
       return item.value || item.found_phrase || '';
     }).filter(Boolean);
@@ -367,7 +379,7 @@ export async function getMarketInsights() {
   try {
     // Hämta faktisk statistik från AF
     const url = `${AF_JOBSEARCH_BASE}/search?q=jobb&limit=1`;
-    const data = await fetchFromAF(url);
+    const data = await fetchFromAF<JobSearchResponse>(url);
     const totalJobs = data.total?.value || 0;
     
     return {
@@ -780,7 +792,7 @@ export async function searchJobsSafe(filters: SearchFilters): Promise<SafeSearch
 
     // Filter for "no experience required" if specified
     if (filters.experience === false) {
-      filteredHits = filteredHits.filter((job: any) => {
+      filteredHits = filteredHits.filter((job: PlatsbankenJob) => {
         // Check if job description mentions no experience required
         const desc = (job.description?.text || '').toLowerCase();
         return desc.includes('ingen erfarenhet') ||
@@ -793,7 +805,7 @@ export async function searchJobsSafe(filters: SearchFilters): Promise<SafeSearch
 
     // Filter for remote work if specified
     if (filters.remote === true) {
-      filteredHits = filteredHits.filter((job: any) => {
+      filteredHits = filteredHits.filter((job: PlatsbankenJob) => {
         const desc = (job.description?.text || '').toLowerCase();
         return desc.includes('distans') ||
                desc.includes('remote') ||

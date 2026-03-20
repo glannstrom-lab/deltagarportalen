@@ -138,12 +138,12 @@ export default function SalaryInsights() {
           median: data.medianSalary,
           percentile25: data.percentile25,
           percentile75: data.percentile75,
-          byRegion: data.byRegion.map((r: any) => ({
+          byRegion: data.byRegion.map((r: { region: string; median: number; jobCount: number }) => ({
             region: r.region,
             median: r.median,
             jobCount: r.jobCount,
           })),
-          byExperience: data.byExperience.map((e: any) => ({
+          byExperience: data.byExperience.map((e: { years: string; median: number }) => ({
             years: e.years,
             median: e.median,
           })),

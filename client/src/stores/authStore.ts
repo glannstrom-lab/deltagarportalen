@@ -114,7 +114,8 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
             })
           }
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Kunde inte initiera autentisering'
           console.error('Auth initialization error:', error)
           set({
             user: null,
@@ -122,7 +123,7 @@ export const useAuthStore = create<AuthState>()(
             session: null,
             isAuthenticated: false,
             isLoading: false,
-            error: error.message || 'Kunde inte initiera autentisering',
+            error: message,
           })
         }
       },
@@ -171,12 +172,13 @@ export const useAuthStore = create<AuthState>()(
           })
 
           return { error: null }
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Inloggning misslyckades'
           set({
             isLoading: false,
-            error: error.message || 'Inloggning misslyckades',
+            error: message,
           })
-          return { error: error.message }
+          return { error: message }
         }
       },
 
@@ -230,12 +232,13 @@ export const useAuthStore = create<AuthState>()(
           })
 
           return { error: null }
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Registrering misslyckades'
           set({
             isLoading: false,
-            error: error.message || 'Registrering misslyckades',
+            error: message,
           })
-          return { error: error.message }
+          return { error: message }
         }
       },
 
@@ -258,7 +261,7 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
             isSigningOut: false,
           })
-        } catch (error: any) {
+        } catch (error: unknown) {
           console.error('Sign out error:', error)
           set({ isSigningOut: false })
         }
@@ -287,8 +290,9 @@ export const useAuthStore = create<AuthState>()(
           })
 
           return { error: null }
-        } catch (error: any) {
-          return { error: error.message || 'Kunde inte uppdatera profil' }
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Kunde inte uppdatera profil'
+          return { error: message }
         }
       },
 

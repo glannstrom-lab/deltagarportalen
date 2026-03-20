@@ -370,10 +370,22 @@ export async function saveInterviewSession(session: InterviewSession): Promise<v
 /**
  * Hämta alla intervjusessioner (från molnet!)
  */
+interface InterviewSessionDB {
+  mock_interview_id: string;
+  start_time: string;
+  end_time?: string;
+  answers: Array<{
+    questionId: string;
+    notes: string;
+    confidence: number;
+  }>;
+  completed: boolean;
+}
+
 export async function getInterviewSessions(): Promise<InterviewSession[]> {
   try {
     const data = await interviewSessionsApi.getAll();
-    return data.map((s: any) => ({
+    return data.map((s: InterviewSessionDB) => ({
       mockInterviewId: s.mock_interview_id,
       startTime: s.start_time,
       endTime: s.end_time,

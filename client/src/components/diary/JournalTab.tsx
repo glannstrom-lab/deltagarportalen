@@ -216,13 +216,24 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
   )
 }
 
+interface DiaryEntry {
+  id: string
+  title: string
+  content: string
+  mood?: number
+  tags: string[]
+  entry_date: string
+  word_count: number
+  is_favorite: boolean
+}
+
 export function JournalTab() {
   const { t } = useTranslation()
   const { entries, isLoading, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
   const { prompt, getNewPrompt, isLoading: promptLoading } = useWritingPrompts()
   const { currentStreak, totalEntries, totalWords } = useDiaryStreaks()
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
-  const [selectedEntry, setSelectedEntry] = useState<any>(null)
+  const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
   const [filterTag, setFilterTag] = useState<string | null>(null)
   const [showFilters, setShowFilters] = useState(false)
@@ -245,7 +256,13 @@ export function JournalTab() {
   // Get all unique tags
   const allTags = [...new Set(entries.flatMap(e => e.tags))]
 
-  const handleSaveEntry = async (entryData: any) => {
+  const handleSaveEntry = async (entryData: {
+    title: string
+    content: string
+    mood: number
+    tags: string[]
+    entry_type: 'diary' | 'reflection'
+  }) => {
     await createEntry({
       ...entryData,
       entry_date: new Date().toISOString().split('T')[0]

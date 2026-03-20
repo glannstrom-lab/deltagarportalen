@@ -6,6 +6,11 @@ interface ReadingProgressProps {
   articleId: string
 }
 
+interface DatabaseError {
+  code?: string
+  message?: string
+}
+
 export default function ReadingProgress({ articleId }: ReadingProgressProps) {
   const [progress, setProgress] = useState(0)
   const [showReminder, setShowReminder] = useState(false)
@@ -20,10 +25,11 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
         if (saved?.progress_percent) {
           setProgress(saved.progress_percent)
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Tyst ignorera RLS-policy fel (42501) - detta är ett databaskonfigurationsfel
         // som inte påverkar användarens upplevelse
-        if (err?.code === '42501' || err?.message?.includes('row-level security')) {
+        const dbError = err as DatabaseError
+        if (dbError?.code === '42501' || dbError?.message?.includes('row-level security')) {
           storageLogger.debug('Reading progress: RLS policy prevents loading (non-critical)')
         } else {
           storageLogger.error('Failed to load reading progress:', err)
@@ -40,9 +46,10 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
   const saveProgress = useCallback(async (newProgress: number) => {
     try {
       await articleProgressApi.update(articleId, newProgress, newProgress >= 100)
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Tyst ignorera RLS-policy fel (42501) - läsprogress sparas lokalt istället
-      if (err?.code === '42501' || err?.message?.includes('row-level security')) {
+      const dbError = err as DatabaseError
+      if (dbError?.code === '42501' || dbError?.message?.includes('row-level security')) {
         storageLogger.debug('Reading progress: RLS policy prevents saving (non-critical)')
       } else {
         storageLogger.error('Failed to save reading progress:', err)
@@ -91,9 +98,10 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
     setShowReminder(false)
     try {
       await articleProgressApi.pause(articleId)
-    } catch (err: any) {
+    } catch (err: unknown) {
       // Tyst ignorera RLS-policy fel
-      if (err?.code === '42501' || err?.message?.includes('row-level security')) {
+      const dbError = err as DatabaseError
+      if (dbError?.code === '42501' || dbError?.message?.includes('row-level security')) {
         storageLogger.debug('Reading progress: RLS policy prevents pause save (non-critical)')
       } else {
         storageLogger.error('Failed to save pause state:', err)

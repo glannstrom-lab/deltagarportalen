@@ -156,7 +156,12 @@ export default function ParticipantAnalytics() {
   )
 }
 
-function StatCard({ icon, label, value, color }: any) {
+function StatCard({ icon, label, value, color }: {
+  icon: React.ReactNode
+  label: string
+  value: number
+  color: string
+}) {
   const colors: Record<string, string> = {
     blue: 'bg-blue-100 text-blue-700',
     red: 'bg-red-100 text-red-700',

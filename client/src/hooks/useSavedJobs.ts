@@ -28,11 +28,11 @@ export function useSavedJobs() {
       try {
         const jobs = await savedJobsApi.getAll()
         // Konvertera från Supabase-format till vårt format
-        const formatted = jobs.map((job: any) => ({
+        const formatted = jobs.map((job) => ({
           id: job.job_id,
-          jobData: job.job_data,
+          jobData: job.job_data as PlatsbankenJob,
           savedAt: job.created_at,
-          notes: job.notes,
+          notes: job.notes || undefined,
           status: (job.status?.toLowerCase() || 'saved') as SavedJob['status']
         }))
         setSavedJobs(formatted)

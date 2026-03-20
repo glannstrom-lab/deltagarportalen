@@ -83,7 +83,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
           )
         }
       } catch (emailErr) {
-        console.warn('Could not send email automatically:', emailErr)
+        console.warn('Could not send email automatically:', emailErr instanceof Error ? emailErr.message : 'Unknown error')
         // Email-fel ska inte blockera - inbjudan är skapad
       }
 
@@ -92,8 +92,8 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
         onSuccess();
         onClose();
       }, 1500);
-    } catch (err: any) {
-      setError(err.message || 'Kunde inte skicka inbjudan');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Kunde inte skicka inbjudan');
     } finally {
       setLoading(false);
     }

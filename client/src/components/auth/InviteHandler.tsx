@@ -13,9 +13,21 @@ export const InviteHandler: React.FC = () => {
   const { token } = useParams<{ token: string }>();
   const navigate = useNavigate();
   
+interface InviteData {
+  id: string
+  email: string
+  role: string
+  consultant_id?: string
+  invited_by?: string
+  metadata?: {
+    first_name?: string
+    last_name?: string
+  }
+}
+
   const [loading, setLoading] = useState(true);
   const [validating, setValidating] = useState(true);
-  const [inviteData, setInviteData] = useState<any>(null);
+  const [inviteData, setInviteData] = useState<InviteData | null>(null);
   const [error, setError] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
@@ -58,8 +70,8 @@ export const InviteHandler: React.FC = () => {
           lastName: data.metadata.last_name || '',
         }));
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ett fel uppstod');
     } finally {
       setValidating(false);
       setLoading(false);
@@ -119,8 +131,8 @@ export const InviteHandler: React.FC = () => {
       setTimeout(() => {
         navigate('/login');
       }, 2000);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ett fel uppstod');
     } finally {
       setSubmitting(false);
     }

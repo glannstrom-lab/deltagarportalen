@@ -12,9 +12,20 @@ import { ZenModeToggle, ZenArticleCard } from '../ZenModeToggle'
 import { Card } from '@/components/ui'
 import type { Article } from '@/types/knowledge'
 
+interface Category {
+  id: string
+  name: string
+  slug?: string
+  subcategories?: Array<{
+    id: string
+    name: string
+    slug?: string
+  }>
+}
+
 interface TopicsTabProps {
   articles: Article[]
-  categories: any[]
+  categories: Category[]
   energyLevel: 'low' | 'medium' | 'high'
   onEnergyLevelChange: (level: 'low' | 'medium' | 'high') => void
 }

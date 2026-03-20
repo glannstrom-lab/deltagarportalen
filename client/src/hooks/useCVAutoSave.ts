@@ -49,16 +49,18 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
         trackCVUpdate()
       }
     },
-    onError: (error: any) => {
-      console.error('CV auto-save failed:', error?.message || 'Unknown error')
+    onError: (error: unknown) => {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      console.error('CV auto-save failed:', errorMessage)
       markError()
       if (currentData) {
         pendingQueue.current.push(currentData)
         setPendingCount(pendingQueue.current.length)
       }
     },
-    retry: (failureCount, error: any) => {
-      if (error?.status >= 400 && error?.status < 500) return false
+    retry: (failureCount, error: unknown) => {
+      const errorWithStatus = error as { status?: number }
+      if (errorWithStatus?.status && errorWithStatus.status >= 400 && errorWithStatus.status < 500) return false
       return failureCount < 3
     },
     retryDelay: (attempt) => Math.min(1000 * 2 ** attempt, 10000),

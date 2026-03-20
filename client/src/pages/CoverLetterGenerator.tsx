@@ -253,7 +253,16 @@ export default function CoverLetterGenerator() {
   const loadSavedLetters = async () => {
     try {
       const letters = await coverLetterApi.getAll()
-      setSavedLetters(letters.map((l: any) => ({
+      setSavedLetters(letters.map((l: {
+        id: string
+        title: string
+        job_ad?: string
+        content: string
+        created_at: string
+        updated_at: string
+        company?: string
+        job_title?: string
+      }) => ({
         id: l.id,
         title: l.title,
         jobbAnnons: l.job_ad || '',

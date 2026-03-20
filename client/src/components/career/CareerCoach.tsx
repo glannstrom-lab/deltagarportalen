@@ -219,11 +219,12 @@ export default function CareerCoach() {
           aiSteps = generateSteps(currentOccupation.label, targetOccupation.label, expYears, 2);
           aiAnalysis = 'Kunde inte generera AI-analys. Visar generiska steg.';
         }
-      } catch (aiError: any) {
+      } catch (aiError) {
         console.error('AI generation failed, using fallback:', aiError);
         // Use fallback steps instead of showing error
         aiSteps = generateSteps(currentOccupation.label, targetOccupation.label, expYears, 2);
-        aiAnalysis = `Kunde inte generera AI-analys: ${aiError.message || 'Okänt fel'}. Visar generiska steg.`;
+        const errorMessage = aiError instanceof Error ? aiError.message : 'Okänt fel';
+        aiAnalysis = `Kunde inte generera AI-analys: ${errorMessage}. Visar generiska steg.`;
       }
       
       const path: CareerPath = {

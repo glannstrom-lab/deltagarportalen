@@ -31,7 +31,25 @@ export default function Article() {
   const { t, i18n } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const [article, setArticle] = useState<any>(null)
+  const [article, setArticle] = useState<{
+    id: string
+    title: string
+    category: string
+    author?: string
+    authorTitle?: string
+    createdAt: string
+    readingTime?: number
+    summary?: string
+    content: string
+    checklist?: string[]
+    actions?: Array<{ type: string; href: string; label: string }>
+    tags?: string | string[]
+    helpfulnessRating?: number
+    bookmarkCount?: number
+    difficulty?: string
+    relatedArticles?: string[]
+    relatedExercises?: string[]
+  } | null>(null)
   const [loading, setLoading] = useState(true)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
@@ -387,7 +405,7 @@ export default function Article() {
               {t('article.nextSteps')}
             </h4>
             <div className="flex flex-wrap gap-3">
-              {actions.map((action: any, index: number) => (
+              {actions.map((action, index: number) => (
                 <Link
                   key={index}
                   to={action.href}
@@ -410,7 +428,7 @@ export default function Article() {
           <footer className="mt-8 pt-6 border-t border-slate-200">
             <div className="flex items-center gap-2 flex-wrap">
               <Tag size={16} className="text-slate-400" />
-              {(Array.isArray(article.tags) ? article.tags : article.tags.split(',')).map((tag: string) => (
+              {(Array.isArray(article.tags) ? article.tags : article.tags.split(',')).map((tag) => (
                 <span
                   key={tag}
                   className="px-2 py-1 bg-slate-100 text-slate-600 text-sm rounded"

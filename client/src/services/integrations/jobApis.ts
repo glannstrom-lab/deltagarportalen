@@ -76,15 +76,34 @@ export class ArbetsformedlingenAPI {
         throw new Error(`AF API error: ${response.status}`)
       }
       
-      const data = await response.json()
-      
-      return data.hits?.map((hit: any) => this.transformAFJob(hit)) || []
+interface AFJobHit {
+  id: string;
+  headline?: string;
+  employer?: { name?: string };
+  workplace_address?: { municipality?: string };
+  description?: { text?: string };
+  must_have?: { skills?: Array<{ label: string }> };
+  nice_to_have?: { skills?: Array<{ label: string }> };
+  employment_type?: { label?: string };
+  publication_date: string;
+  application_deadline?: string;
+  webpage_url?: string;
+  experience_required?: boolean;
+}
+
+interface AFJobSearchResponse {
+  hits?: AFJobHit[];
+}
+
+      const data = await response.json() as AFJobSearchResponse;
+
+      return data.hits?.map((hit) => this.transformAFJob(hit)) || []
     } catch (error) {
       console.error('Arbetsförmedlingen search failed:', error)
       return this.getMockJobs() // Fallback till mock-data
     }
   }
-  
+
   async getJobDetails(id: string): Promise<JobPosting | null> {
     try {
       const response = await fetch(`${this.baseUrl}/ad/${id}`, {
@@ -93,18 +112,18 @@ export class ArbetsformedlingenAPI {
           'api-key': import.meta.env.VITE_AF_API_KEY || ''
         }
       })
-      
+
       if (!response.ok) return null
-      
-      const data = await response.json()
+
+      const data = await response.json() as AFJobHit;
       return this.transformAFJob(data)
     } catch (error) {
       console.error('Failed to fetch job details:', error)
       return null
     }
   }
-  
-  private transformAFJob(hit: any): JobPosting {
+
+  private transformAFJob(hit: AFJobHit): JobPosting {
     return {
       id: hit.id,
       source: 'arbetsformedlingen',
@@ -112,13 +131,13 @@ export class ArbetsformedlingenAPI {
       company: hit.employer?.name || 'Okänt företag',
       location: hit.workplace_address?.municipality || 'Ort ej angiven',
       description: hit.description?.text || '',
-      requirements: hit.must_have?.skills?.map((s: any) => s.label) || [],
+      requirements: hit.must_have?.skills?.map((s) => s.label) || [],
       employmentType: this.mapEmploymentType(hit.employment_type?.label),
       publishedAt: hit.publication_date,
       applicationDeadline: hit.application_deadline,
       url: hit.webpage_url || `https://arbetsformedlingen.se/platsbanken/annonser/${hit.id}`,
-      skills: [...(hit.must_have?.skills?.map((s: any) => s.label) || []),
-               ...(hit.nice_to_have?.skills?.map((s: any) => s.label) || [])],
+      skills: [...(hit.must_have?.skills?.map((s) => s.label) || []),
+               ...(hit.nice_to_have?.skills?.map((s) => s.label) || [])],
       experienceLevel: this.mapExperienceLevel(hit.experience_required)
     }
   }

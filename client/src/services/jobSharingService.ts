@@ -126,7 +126,11 @@ export async function updateSharedJobStatus(
   notes?: string
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const update: any = {
+    const update: {
+      status: SharedJob['status'];
+      updated_at: string;
+      consultant_notes?: string;
+    } = {
       status,
       updated_at: new Date().toISOString(),
     };
@@ -212,10 +216,23 @@ export async function getSharedJobsStats(
   }
 }
 
+interface SharedJobDB {
+  id: string;
+  job_id: string;
+  job_data: SharedJob['jobData'];
+  participant_id: string;
+  consultant_id: string;
+  message?: string;
+  status: SharedJob['status'];
+  consultant_notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 /**
  * Mappa från databasformat till intern typ
  */
-function mapSharedJobFromDB(dbRecord: any): SharedJob {
+function mapSharedJobFromDB(dbRecord: SharedJobDB): SharedJob {
   return {
     id: dbRecord.id,
     jobId: dbRecord.job_id,

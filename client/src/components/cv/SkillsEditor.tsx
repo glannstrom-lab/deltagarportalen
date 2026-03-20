@@ -24,7 +24,7 @@ interface SkillsEditorProps {
   onChange: (skills: Skill[]) => void
 }
 
-const categories: { value: SkillCategory; label: string; icon: any }[] = [
+const categories: { value: SkillCategory; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
   { value: 'technical', label: 'Teknisk', icon: Code },
   { value: 'soft', label: 'Mjuk', icon: Users },
   { value: 'tool', label: 'Verktyg', icon: Wrench },

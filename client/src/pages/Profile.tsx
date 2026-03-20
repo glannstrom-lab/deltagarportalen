@@ -22,7 +22,20 @@ import { cn } from '@/lib/utils'
 
 export default function Profile() {
   const { t, i18n } = useTranslation()
-  const [profile, setProfile] = useState<any>(null)
+  const [profile, setProfile] = useState<{
+    first_name?: string
+    last_name?: string
+    email?: string
+    phone?: string
+    location?: string
+    bio?: string
+    created_at: string
+    _count?: {
+      cv?: number
+      coverLetters?: number
+    }
+    interestResult?: boolean
+  } | null>(null)
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
     first_name: '',
@@ -52,7 +65,7 @@ export default function Profile() {
         location: data.location || '',
         bio: data.bio || ''
       })
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error loading profile:', err)
       setError(t('profile.errorLoading'))
     } finally {
@@ -67,7 +80,7 @@ export default function Profile() {
       await userApi.updateProfile(formData)
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error saving profile:', err)
       setError(t('profile.errorSaving'))
     } finally {

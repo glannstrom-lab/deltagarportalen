@@ -109,7 +109,7 @@ export default function ActivityTab() {
   }
 
   // Calculate real progress from dashboard data
-  const realProgress = calculateRealProgress(dashboardData)
+  const realProgress = calculateRealProgress(dashboardData as DashboardData | null)
 
   // Merge real progress with gamification milestones
   const milestonesWithRealData = gamification?.milestones?.map(milestone => ({
@@ -317,7 +317,23 @@ function LevelProgress({ level, title, currentPoints, nextLevelPoints }: {
   )
 }
 
-function MilestoneCard({ milestone }: { milestone: any }) {
+interface Milestone {
+  id: string
+  current_progress: number
+  is_completed: boolean
+  milestone?: {
+    key?: string
+    name: string
+    description: string
+    icon: string
+    color: string
+    category: string
+    max_progress: number
+    reward_points: number
+  }
+}
+
+function MilestoneCard({ milestone }: { milestone: Milestone }) {
   const m = milestone.milestone
   if (!m) return null
 
@@ -373,7 +389,7 @@ function MilestoneCard({ milestone }: { milestone: any }) {
   )
 }
 
-function MilestoneCardCompact({ milestone }: { milestone: any }) {
+function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
   const m = milestone.milestone
   if (!m) return null
 
@@ -401,7 +417,7 @@ function MilestoneCardCompact({ milestone }: { milestone: any }) {
   )
 }
 
-function CompletedBadge({ milestone }: { milestone: any }) {
+function CompletedBadge({ milestone }: { milestone: Milestone }) {
   const m = milestone.milestone
   if (!m) return null
 
@@ -423,7 +439,12 @@ function CompletedBadge({ milestone }: { milestone: any }) {
   )
 }
 
-function BadgeCard({ achievement, earnedAt }: { achievement: any; earnedAt: string }) {
+interface Achievement {
+  icon: string
+  name: string
+}
+
+function BadgeCard({ achievement, earnedAt }: { achievement: Achievement; earnedAt: string }) {
   const Icon = getIcon(achievement.icon)
 
   return (
@@ -441,7 +462,16 @@ function BadgeCard({ achievement, earnedAt }: { achievement: any; earnedAt: stri
   )
 }
 
-function ActivityItem({ activity }: { activity: any }) {
+interface ActivityLog {
+  id: string
+  activity_type: string
+  title: string
+  description?: string
+  points_earned: number
+  created_at: string
+}
+
+function ActivityItem({ activity }: { activity: ActivityLog }) {
   const Icon = getIcon(getActivityIcon(activity.activity_type))
 
   return (
@@ -508,7 +538,36 @@ function ActivityTabSkeleton() {
 // REAL DATA CALCULATION
 // ============================================
 
-function calculateRealProgress(data: any): Record<string, number> {
+interface DashboardData {
+  cv?: {
+    hasCV?: boolean
+    progress?: number
+    savedCVs?: unknown[]
+    atsScore?: number
+  }
+  jobs?: {
+    savedCount?: number
+  }
+  applications?: {
+    total?: number
+  }
+  knowledge?: {
+    readCount?: number
+    savedCount?: number
+  }
+  exercises?: {
+    completedExercises?: number
+  }
+  wellness?: {
+    streakDays?: number
+    completedActivities?: number
+  }
+  activity?: {
+    streakDays?: number
+  }
+}
+
+function calculateRealProgress(data: DashboardData | null): Record<string, number> {
   if (!data) return {}
 
   return {

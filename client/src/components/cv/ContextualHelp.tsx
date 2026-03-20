@@ -23,7 +23,7 @@ interface HelpTip {
 
 interface ContextualHelpProps {
   context: string
-  data?: any
+  data?: { length?: number } | unknown
   onApplySuggestion?: (suggestion: string) => void
 }
 
@@ -117,17 +117,17 @@ export function ContextualHelp({ context, data, onApplySuggestion }: ContextualH
     const tips = helpDatabase[context] || []
     const relevantTips = tips.filter(tip => {
       if (dismissedTips.has(tip.id)) return false
-      
+
       // Context-specific logic
-      if (context === 'summary' && data) {
-        const length = data.length || 0
+      if (context === 'summary' && data && typeof data === 'object' && 'length' in data) {
+        const length = (data.length as number) || 0
         if (tip.id === 'su-2' && length >= 100) return false
         if (tip.id === 'su-3' && length < 100) return false
       }
-      
+
       return true
     })
-    
+
     setVisibleTips(new Set(relevantTips.map(t => t.id)))
   }, [context, data, dismissedTips])
 

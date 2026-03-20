@@ -6,28 +6,44 @@
 const AF_JOBSEARCH_BASE = 'https://jobsearch.api.jobtechdev.se';
 const CACHE_TTL = 2 * 60 * 1000; // 2 minuter
 
-const cache = new Map<string, { data: any; timestamp: number }>();
+interface AFJobSearchHit {
+  id: string;
+  headline: string;
+  employer?: { name: string };
+  workplace_address?: { region?: string; municipality?: string };
+  salary_description?: string;
+  wage_type?: { label?: string };
+  description?: { text?: string };
+  must_have?: { skills?: Array<{ label: string }> };
+  nice_to_have?: { skills?: Array<{ label: string }> };
+}
 
-async function fetchWithCache(url: string): Promise<any> {
+interface AFJobSearchResponse {
+  hits: AFJobSearchHit[];
+}
+
+const cache = new Map<string, { data: AFJobSearchResponse; timestamp: number }>();
+
+async function fetchWithCache(url: string): Promise<AFJobSearchResponse> {
   const now = Date.now();
   const cached = cache.get(url);
-  
+
   if (cached && now - cached.timestamp < CACHE_TTL) {
     return cached.data;
   }
-  
+
   const response = await fetch(url, {
     headers: {
       'Accept': 'application/json',
       'User-Agent': 'JobIn/1.0'
     }
   });
-  
+
   if (!response.ok) {
     throw new Error(`API error: ${response.status}`);
   }
-  
-  const data = await response.json();
+
+  const data = await response.json() as AFJobSearchResponse;
   cache.set(url, { data, timestamp: now });
   return data;
 }
@@ -65,21 +81,21 @@ export async function getSalaryStats(occupation: string): Promise<SalaryStats | 
     const regionMap = new Map<string, number[]>();
     const experienceMap = new Map<string, number[]>();
     
-    jobs.forEach((job: any) => {
+    jobs.forEach((job) => {
       // Extrahera lön från salary_description eller wage_type
       const salaryText = job.salary_description || '';
       const wageType = job.wage_type?.label || '';
-      
+
       const parsedSalary = parseSalaryFromText(salaryText, wageType);
-      
+
       if (parsedSalary && parsedSalary > 20000 && parsedSalary < 150000) {
         salaries.push(parsedSalary);
-        
+
         // Gruppera per region
         const region = job.workplace_address?.region || 'Okänd region';
         if (!regionMap.has(region)) regionMap.set(region, []);
         regionMap.get(region)!.push(parsedSalary);
-        
+
         // Gruppera efter erfarenhet (baserat på text)
         const exp = estimateExperienceLevel(job.description?.text || '', job.headline || '');
         if (!experienceMap.has(exp)) experienceMap.set(exp, []);
@@ -246,13 +262,13 @@ export async function getCompetencyStats(occupation: string): Promise<Competency
       'Yrkesbevis': { category: 'certification', patterns: ['yrkesbevis', 'certifiering', 'certified'] },
     };
     
-    jobs.forEach((job: any) => {
+    jobs.forEach((job) => {
       const text = `${job.headline || ''} ${job.description?.text || ''}`.toLowerCase();
       const employer = job.employer?.name || 'Okänd';
-      
+
       Object.entries(skillPatterns).forEach(([skillName, config]) => {
         const found = config.patterns.some(pattern => text.includes(pattern));
-        
+
         if (found) {
           if (!skillMap.has(skillName)) {
             skillMap.set(skillName, { count: 0, employers: new Set(), category: config.category });

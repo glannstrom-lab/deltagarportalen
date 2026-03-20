@@ -12,9 +12,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
 
+interface JobData {
+  id?: string
+  title?: string
+  employer?: string
+}
+
 interface QuickActionBannerProps {
   type: 'cv_saved' | 'job_saved' | 'letter_saved' | 'profile_complete' | 'application_reminder'
-  data?: any
+  data?: JobData
   onDismiss?: () => void
   className?: string
 }

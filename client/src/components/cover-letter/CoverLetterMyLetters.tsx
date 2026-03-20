@@ -75,9 +75,9 @@ export function CoverLetterMyLetters() {
       setError(null)
       const apiLetters = await coverLetterApi.getAll()
       setLetters(apiLetters.map(transformLetter))
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to load cover letters:', err)
-      setError(err.message || 'Kunde inte ladda personliga brev')
+      setError(err instanceof Error ? err.message : 'Kunde inte ladda personliga brev')
     } finally {
       setLoading(false)
     }
@@ -119,9 +119,9 @@ export function CoverLetterMyLetters() {
 
       // Reload letters
       await loadLetters()
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to duplicate letter:', err)
-      setError(err.message || 'Kunde inte duplicera brevet')
+      setError(err instanceof Error ? err.message : 'Kunde inte duplicera brevet')
     } finally {
       setActionLoading(null)
     }
@@ -137,9 +137,9 @@ export function CoverLetterMyLetters() {
       setShowActions(null)
       await coverLetterApi.delete(id)
       setLetters(prev => prev.filter(l => l.id !== id))
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to delete letter:', err)
-      setError(err.message || 'Kunde inte ta bort brevet')
+      setError(err instanceof Error ? err.message : 'Kunde inte ta bort brevet')
     } finally {
       setActionLoading(null)
     }
@@ -180,7 +180,7 @@ export function CoverLetterMyLetters() {
       const fileName = `${letter.company || 'Personligt_brev'}_${letter.jobTitle || 'ansökan'}.pdf`
         .replace(/[^a-zA-Z0-9åäöÅÄÖ_-]/g, '_')
       doc.save(fileName)
-    } catch (err: any) {
+    } catch (err) {
       console.error('Failed to download letter:', err)
       setError('Kunde inte ladda ner brevet som PDF')
     }

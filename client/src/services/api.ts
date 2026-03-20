@@ -100,7 +100,7 @@ export async function apiRequest(endpoint: string, options: RequestInit = {}): P
  */
 export const api = {
   get: (endpoint: string) => apiRequest(endpoint, { method: 'GET' }),
-  post: (endpoint: string, data?: any) => apiRequest(endpoint, { method: 'POST', body: JSON.stringify(data) }),
-  put: (endpoint: string, data?: any) => apiRequest(endpoint, { method: 'PUT', body: JSON.stringify(data) }),
+  post: (endpoint: string, data?: Record<string, unknown>) => apiRequest(endpoint, { method: 'POST', body: JSON.stringify(data) }),
+  put: (endpoint: string, data?: Record<string, unknown>) => apiRequest(endpoint, { method: 'PUT', body: JSON.stringify(data) }),
   delete: (endpoint: string) => apiRequest(endpoint, { method: 'DELETE' })
 }

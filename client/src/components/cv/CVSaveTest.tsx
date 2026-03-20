@@ -88,10 +88,11 @@ export function CVSaveTest() {
       await cvApi.updateCV({ workExperience: [] })
       logs.push('✅ Testdata borttaget')
 
-    } catch (err: any) {
+    } catch (err) {
       setStatus('error')
       setMessage('❌ Fel vid test')
-      logs.push(`❌ ERROR: ${err.message}`)
+      const errorMessage = err instanceof Error ? err.message : 'Okänt fel'
+      logs.push(`❌ ERROR: ${errorMessage}`)
       logs.push('💡 Tips: Kolla att du är inloggad och har nätverk')
     }
 

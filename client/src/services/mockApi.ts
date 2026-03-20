@@ -59,6 +59,59 @@ export interface Reference {
   phone?: string
 }
 
+export interface CoverLetter {
+  id: string
+  jobTitle?: string
+  company?: string
+  content: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface User {
+  id: string
+  email: string
+  firstName: string
+  lastName: string
+  role: string
+  createdAt: string
+}
+
+export interface InterestResult {
+  realistic: number
+  investigative: number
+  artistic: number
+  social: number
+  enterprising: number
+  conventional: number
+  hollandCode: string
+  openness: number
+  conscientiousness: number
+  extraversion: number
+  agreeableness: number
+  neuroticism: number
+  recommendedJobs: string[]
+  completedAt: string
+}
+
+export interface CreateCoverLetterData {
+  jobTitle?: string
+  company?: string
+  content: string
+}
+
+export interface UpdateCoverLetterData {
+  jobTitle?: string
+  company?: string
+  content?: string
+}
+
+export interface UpdateUserData {
+  email?: string
+  firstName?: string
+  lastName?: string
+}
+
 export interface Skill {
   id: string
   name: string
@@ -223,7 +276,7 @@ const mockCVVersions: CVVersion[] = [
   },
 ]
 
-const mockCoverLetters: any[] = []
+const mockCoverLetters: CoverLetter[] = []
 
 const mockInterestResult = {
   realistic: 70,
@@ -277,7 +330,7 @@ const mockJobs: Job[] = [
 
 const mockApplications: JobApplication[] = []
 
-const mockUsers: Record<string, any> = {
+const mockUsers: Record<string, User> = {
   'demo@demo.se': mockUser,
 }
 
@@ -471,7 +524,7 @@ async function mockApiRequest(endpoint: string, options: RequestInit = {}) {
   
   if (endpoint.match(/^\/cover-letter\/\w+$/) && method === 'PUT') {
     const id = endpoint.split('/')[2]
-    const letter = mockCoverLetters.find((l: any) => l.id === id)
+    const letter = mockCoverLetters.find((l: CoverLetter) => l.id === id)
     if (letter) {
       Object.assign(letter, body, { updatedAt: new Date().toISOString() })
       return letter
@@ -481,7 +534,7 @@ async function mockApiRequest(endpoint: string, options: RequestInit = {}) {
   
   if (endpoint.match(/^\/cover-letter\/\w+$/) && method === 'DELETE') {
     const id = endpoint.split('/')[2]
-    const index = mockCoverLetters.findIndex((l: any) => l.id === id)
+    const index = mockCoverLetters.findIndex((l: CoverLetter) => l.id === id)
     if (index >= 0) {
       mockCoverLetters.splice(index, 1)
     }
@@ -731,7 +784,7 @@ export const mockCvApi = {
 export const mockJobsApi = {
   searchJobs: (filters?: JobFilters) => mockApiRequest('/jobs', { method: 'POST', body: JSON.stringify({ filters }) }),
   getJob: (jobId: string) => mockApiRequest(`/jobs/${jobId}`),
-  matchCV: (_jobId: string, _cvData: any) => Promise.resolve({ matchPercentage: 75, matchingSkills: ['Kommunikation'], missingSkills: ['Python'] }),
+  matchCV: (_jobId: string, _cvData: CVData) => Promise.resolve({ matchPercentage: 75, matchingSkills: ['Kommunikation'], missingSkills: ['Python'] }),
   getApplications: () => mockApiRequest('/job-applications'),
   saveJob: (jobId: string, status: JobApplication['status'], notes?: string) => mockApiRequest('/job-applications', { method: 'POST', body: JSON.stringify({ jobId, status, notes }) }),
   updateApplication: (appId: string, data: Partial<JobApplication>) => mockApiRequest(`/job-applications/${appId}`, { method: 'PUT', body: JSON.stringify(data) }),
@@ -741,14 +794,14 @@ export const mockJobsApi = {
 export const mockInterestApi = {
   getQuestions: () => mockApiRequest('/interest/questions'),
   getResult: () => mockApiRequest('/interest/result'),
-  saveResult: (data: any) => mockApiRequest('/interest/result', { method: 'POST', body: JSON.stringify(data) }),
+  saveResult: (data: Partial<InterestResult>) => mockApiRequest('/interest/result', { method: 'POST', body: JSON.stringify(data) }),
   getRecommendations: () => mockApiRequest('/interest/recommendations'),
 }
 
 export const mockCoverLetterApi = {
   getAll: () => mockApiRequest('/cover-letter'),
-  create: (data: any) => mockApiRequest('/cover-letter', { method: 'POST', body: JSON.stringify(data) }),
-  update: (id: string, data: any) => {
+  create: (data: CreateCoverLetterData) => mockApiRequest('/cover-letter', { method: 'POST', body: JSON.stringify(data) }),
+  update: (id: string, data: UpdateCoverLetterData) => {
     const index = mockCoverLetters.findIndex(l => l.id === id)
     if (index >= 0) {
       mockCoverLetters[index] = { ...mockCoverLetters[index], ...data, updatedAt: new Date().toISOString() }
@@ -786,7 +839,7 @@ export const mockArticleApi = {
 
 export const mockUserApi = {
   getMe: () => mockApiRequest('/users/me'),
-  updateMe: (data: any) => {
+  updateMe: (data: UpdateUserData) => {
     const user = mockUsers['demo@demo.se']
     Object.assign(user, data)
     return Promise.resolve(user)

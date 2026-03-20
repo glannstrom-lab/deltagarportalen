@@ -432,7 +432,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
           <div className="p-3 bg-emerald-50 rounded-xl mb-4">
             <p className="text-emerald-700 font-medium flex items-center justify-center gap-2">
               <CheckCircle2 size={18} />
-              Uplåst {badge.unlockedAt && format(new Date(badge.unlockedAt), 'd MMMM yyyy', { locale: sv })}
+              Uplåst {badge.unlockedAt && new Date(badge.unlockedAt).toLocaleDateString('sv-SE', { year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
           </div>
         ) : (
@@ -487,10 +487,10 @@ function getTierStyles(tier: BadgeTier): string {
 }
 
 // Hook för att beräkna badge-progress (mock för nu)
-export function useBadges(userProgress: any): Badge[] {
+export function useBadges(userProgress: Record<string, number>): Badge[] {
   return badges.map(badge => {
     const isUnlocked = userProgress[badge.id] >= (badge.total || 1)
-    
+
     return {
       ...badge,
       isUnlocked,

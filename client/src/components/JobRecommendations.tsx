@@ -26,8 +26,8 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
     // Sök jobb i relaterade kategorier
     const loadRelatedJobs = async () => {
       try {
-        const allJobs: any[] = []
-        
+        const allJobs: RelatedJob[] = []
+
         // Sök på några av de relaterade yrkena
         for (const suggestion of related.slice(0, 3)) {
           const response = await afApi.searchByQuery(suggestion.occupation, 3)
@@ -35,7 +35,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
         }
 
         // Ta bort dubletter och begränsa
-        const uniqueJobs = allJobs.filter((job, index, self) => 
+        const uniqueJobs = allJobs.filter((job, index, self) =>
           index === self.findIndex(j => j.id === job.id)
         ).slice(0, 5)
 

@@ -12,6 +12,67 @@ import type { ApplicationData } from '../applicationService'
 import type { SavedJob } from '../cloudStorage'
 
 // ============================================
+// DATABASE TYPES
+// ============================================
+
+/**
+ * Journey entry from database (diary, activities, etc.)
+ */
+interface JourneyEntry {
+  id: string
+  user_id: string
+  type: 'diary' | 'activity' | 'reflection' | 'goal'
+  created_at: string
+  mood?: number | null
+  energy_level?: number | null
+  [key: string]: unknown
+}
+
+/**
+ * Job application from database
+ */
+interface JobApplicationDB {
+  id: string
+  user_id: string
+  job_id?: string | null
+  job_title: string
+  employer: string
+  application_date?: string
+  status: 'draft' | 'sent' | 'viewed' | 'interview' | 'rejected' | 'offer' | 'applied' | 'withdrawn'
+  cover_letter?: string | null
+  notes?: string | null
+  contact_person?: string | null
+  follow_up_date?: string | null
+  created_at: string
+  updated_at: string
+}
+
+/**
+ * Saved job with extended data
+ */
+interface SavedJobDB {
+  id: string
+  user_id: string
+  job_id: string
+  status: 'SAVED' | 'APPLIED' | 'INTERVIEW' | 'REJECTED' | 'ACCEPTED'
+  match_score?: number | null
+  created_at: string
+  [key: string]: unknown
+}
+
+/**
+ * Interest result from database
+ */
+interface InterestResultDB {
+  id: string
+  user_id: string
+  top_occupations?: string[]
+  recommended_jobs?: string[]
+  created_at: string
+  [key: string]: unknown
+}
+
+// ============================================
 // TYPES
 // ============================================
 
@@ -131,78 +192,87 @@ export async function gatherUserContext(): Promise<UserContext> {
 
     // Beräkna CV-kompletthet
     const cvCompleteness = calculateCVCompleteness(cv)
-    
+
     // Analysera ansökningar
-    const recentApps = (applications || []).filter(a => 
-      new Date(a.application_date) >= weekAgo
+    const applicationsTyped = (applications || []) as JobApplicationDB[]
+    const recentApps = applicationsTyped.filter(a =>
+      a.application_date && new Date(a.application_date) >= weekAgo
     )
-    
-    const pendingApps = (applications || []).filter(a => 
+
+    const pendingApps = applicationsTyped.filter(a =>
       a.status === 'sent' || a.status === 'viewed'
     )
-    
-    const interviews = (applications || []).filter(a => 
+
+    const interviews = applicationsTyped.filter(a =>
       a.status === 'interview' || a.status === 'offer'
     )
 
     // Analysera sparade jobb
-    const jobsWithoutApplication = (savedJobs || []).filter(j => j.status === 'SAVED')
-    
+    const savedJobsTyped = (savedJobs || []) as SavedJobDB[]
+    const jobsWithoutApplication = savedJobsTyped.filter(j => j.status === 'SAVED')
+
     const fiveDaysAgo = new Date(now.getTime() - 5 * 24 * 60 * 60 * 1000)
-    const oldSavedJobs = jobsWithoutApplication.filter(j => 
+    const oldSavedJobs = jobsWithoutApplication.filter(j =>
       new Date(j.created_at) < fiveDaysAgo
     )
 
     // Analysera humör och energi
-    const diaryEntries = (recentEntries || []).filter(e => e.type === 'diary')
+    const entriesTyped = (recentEntries || []) as JourneyEntry[]
+    const diaryEntries = entriesTyped.filter(e => e.type === 'diary')
     const recentMood = diaryEntries[0]?.mood || null
     const averageEnergy = diaryEntries.length > 0
       ? diaryEntries.reduce((sum, e) => sum + (e.energy_level || 5), 0) / diaryEntries.length
       : null
 
     // Beräkna trend
-    const applicationTrend = calculateApplicationTrend(applications || [])
+    const applicationTrend = calculateApplicationTrend(applicationsTyped)
 
     // Calculate high match jobs (jobs with match_score > 70)
-    const highMatchJobs = (savedJobs || []).filter(j =>
+    const highMatchJobs = savedJobsTyped.filter(j =>
       j.match_score && j.match_score > 70
-    )
+    ) as SavedJob[]
 
     // Calculate preferred application time
-    const preferredApplicationTime = calculatePreferredTime(applications || [])
+    const preferredApplicationTime = calculatePreferredTime(applicationsTyped)
 
     // Calculate best performing day
-    const bestPerformingDay = calculateBestDay(applications || [])
+    const bestPerformingDay = calculateBestDay(applicationsTyped)
+
+    // Type interest result
+    const interestResultTyped = interestResult as InterestResultDB | null
+
+    // Type upcoming interviews
+    const upcomingInterviewsTyped = (upcomingInterviews || []) as JobApplicationDB[]
 
     return {
       hasCV: !!cv,
       cvCompleteness,
       lastCVUpdate: cv?.updated_at || null,
 
-      totalApplications: applications?.length || 0,
+      totalApplications: applicationsTyped.length,
       recentApplications: recentApps.length,
       pendingApplications: pendingApps.length,
       interviewCount: interviews.length,
 
-      savedJobsCount: savedJobs?.length || 0,
+      savedJobsCount: savedJobsTyped.length,
       savedJobsWithoutApplication: jobsWithoutApplication.length,
       highMatchJobs,
-      jobsClosingSoon: oldSavedJobs,
+      jobsClosingSoon: oldSavedJobs as SavedJob[],
 
-      lastActiveDate: recentEntries?.[0]?.created_at || null,
-      streakDays: calculateStreak(recentEntries || []),
+      lastActiveDate: entriesTyped[0]?.created_at || null,
+      streakDays: calculateStreak(entriesTyped),
       preferredApplicationTime,
 
-      hasInterestResult: !!interestResult,
-      topOccupations: interestResult?.top_occupations || [],
+      hasInterestResult: !!interestResultTyped,
+      topOccupations: interestResultTyped?.top_occupations || interestResultTyped?.recommended_jobs || [],
 
       recentMood,
       averageEnergy,
 
-      upcomingInterviews: (upcomingInterviews || []).map(i => ({
+      upcomingInterviews: upcomingInterviewsTyped.map(i => ({
         id: i.id,
         company: i.employer,
-        date: i.follow_up_date
+        date: i.follow_up_date || i.created_at
       })),
 
       applicationTrend,
@@ -214,19 +284,19 @@ export async function gatherUserContext(): Promise<UserContext> {
   }
 }
 
-function calculateCVCompleteness(cv: any): number {
+function calculateCVCompleteness(cv: CVData | null): number {
   if (!cv) return 0
   let score = 0
-  if (cv.first_name && cv.last_name) score += 15
+  if ((cv.first_name || cv.firstName) && (cv.last_name || cv.lastName)) score += 15
   if (cv.email) score += 10
   if (cv.summary) score += 15
-  if (cv.skills?.length > 0) score += 20
-  if (cv.work_experience?.length > 0) score += 25
-  if (cv.education?.length > 0) score += 15
+  if (cv.skills && cv.skills.length > 0) score += 20
+  if ((cv.work_experience && cv.work_experience.length > 0) || (cv.workExperience && cv.workExperience.length > 0)) score += 25
+  if (cv.education && cv.education.length > 0) score += 15
   return Math.min(100, score)
 }
 
-function calculateStreak(entries: any[]): number {
+function calculateStreak(entries: JourneyEntry[]): number {
   if (entries.length === 0) return 0
 
   // Sort by date descending
@@ -273,7 +343,7 @@ function calculateStreak(entries: any[]): number {
   return streak
 }
 
-function calculateApplicationTrend(applications: any[]): 'increasing' | 'stable' | 'decreasing' | null {
+function calculateApplicationTrend(applications: JobApplicationDB[]): 'increasing' | 'stable' | 'decreasing' | null {
   if (applications.length < 5) return null
 
   const now = new Date()
@@ -292,7 +362,7 @@ function calculateApplicationTrend(applications: any[]): 'increasing' | 'stable'
   return 'stable'
 }
 
-function calculatePreferredTime(applications: any[]): string | null {
+function calculatePreferredTime(applications: JobApplicationDB[]): string | null {
   if (applications.length < 3) return null
 
   // Count applications by hour
@@ -322,7 +392,7 @@ function calculatePreferredTime(applications: any[]): string | null {
   return 'night'
 }
 
-function calculateBestDay(applications: any[]): string | null {
+function calculateBestDay(applications: JobApplicationDB[]): string | null {
   if (applications.length < 5) return null
 
   // Only consider applications that led to interviews
@@ -653,17 +723,22 @@ export function generateRecommendations(context: UserContext): AIRecommendation[
 const DISMISSED_KEY = 'ai_dismissed_recommendations'
 const COMPLETED_KEY = 'ai_completed_recommendations'
 
+interface DismissedItem {
+  id: string
+  timestamp: number
+}
+
 function getDismissedRecommendations(): Set<string> {
   try {
     const stored = localStorage.getItem(DISMISSED_KEY)
     if (stored) {
-      const parsed = JSON.parse(stored)
+      const parsed = JSON.parse(stored) as DismissedItem[]
       // Filter out entries older than 7 days
       const now = Date.now()
-      const valid = parsed.filter((item: any) =>
+      const valid = parsed.filter((item: DismissedItem) =>
         now - item.timestamp < 7 * 24 * 60 * 60 * 1000
       )
-      return new Set(valid.map((item: any) => item.id))
+      return new Set(valid.map((item: DismissedItem) => item.id))
     }
   } catch (e) {
     aiLogger.error('Error reading dismissed recommendations:', e)

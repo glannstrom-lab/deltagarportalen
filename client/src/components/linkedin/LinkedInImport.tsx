@@ -12,12 +12,13 @@ import {
   isLinkedInIntegrationAvailable,
 } from '@/services/linkedinService';
 import type { LinkedInProfile } from '@/services/linkedinService';
+import type { CVData } from '@/types/pdf.types';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { useAchievementTracker } from '@/hooks/useAchievementTracker';
 
 interface LinkedInImportProps {
-  onImport: (cvData: any) => void;
-  existingData?: any;
+  onImport: (cvData: Partial<CVData>) => void;
+  existingData?: Partial<CVData>;
 }
 
 export const LinkedInImport: React.FC<LinkedInImportProps> = ({

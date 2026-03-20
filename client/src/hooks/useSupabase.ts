@@ -171,7 +171,7 @@ export function useAIGeneration() {
   const [error, setError] = useState<string | null>(null)
 
   const generateCoverLetter = async (params: {
-    cvData: any
+    cvData: CV | Record<string, unknown>
     jobDescription: string
     companyName: string
     jobTitle: string
@@ -211,7 +211,7 @@ export function useAIGeneration() {
   }
 
   const analyzeCV = async (params: {
-    cvData: any
+    cvData: CV | Record<string, unknown>
     jobDescription: string
   }) => {
     setGenerating(true)

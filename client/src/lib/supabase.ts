@@ -34,6 +34,17 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
   }
 })
 
+// JSON type for database columns storing JSON data
+type JsonValue = string | number | boolean | null | JsonValue[] | { [key: string]: JsonValue }
+
+// Realtime subscription payload type
+export type RealtimePayload<T = Record<string, unknown>> = {
+  eventType: 'INSERT' | 'UPDATE' | 'DELETE'
+  new: T | Record<string, never>
+  old: T | Record<string, never>
+  errors: unknown
+}
+
 // Type definitions for database tables
 export type Tables = {
   profiles: {
@@ -87,7 +98,7 @@ export type Tables = {
       contact?: string
     }>
     ats_score: number | null
-    ats_feedback: any
+    ats_feedback: JsonValue | null
     created_at: string
     updated_at: string
   }
@@ -106,7 +117,7 @@ export type Tables = {
     extraversion: number
     agreeableness: number
     neuroticism: number
-    physical_requirements: any
+    physical_requirements: JsonValue | null
     recommended_jobs: string[]
     completed_at: string
   }
@@ -147,7 +158,7 @@ export type Tables = {
     id: string
     user_id: string
     job_id: string
-    job_data: any
+    job_data: JsonValue | null
     status: 'SAVED' | 'APPLIED' | 'INTERVIEW' | 'REJECTED' | 'ACCEPTED'
     notes: string | null
     applied_at: string | null
@@ -264,7 +275,7 @@ export async function createCoverLetter(letter: Partial<Tables['cover_letters']>
 
 // Edge Functions helpers
 export async function generateCoverLetterWithAI(requestData: {
-  cvData: any
+  cvData: Partial<CV>
   jobDescription: string
   companyName: string
   jobTitle: string
@@ -298,7 +309,7 @@ export async function generateCoverLetterWithAI(requestData: {
 }
 
 export async function analyzeCVWithAI(requestData: {
-  cvData: any
+  cvData: Partial<CV>
   jobDescription: string
   jobRequirements?: string[]
 }) {
@@ -329,7 +340,7 @@ export async function analyzeCVWithAI(requestData: {
 }
 
 // Realtime subscriptions
-export function subscribeToCVUpdates(userId: string, callback: (payload: any) => void) {
+export function subscribeToCVUpdates(userId: string, callback: (payload: RealtimePayload<CV>) => void) {
   return supabase
     .channel('cv-updates')
     .on(
@@ -345,7 +356,7 @@ export function subscribeToCVUpdates(userId: string, callback: (payload: any) =>
     .subscribe()
 }
 
-export function subscribeToConsultantNotes(participantId: string, callback: (payload: any) => void) {
+export function subscribeToConsultantNotes(participantId: string, callback: (payload: RealtimePayload<ConsultantNote>) => void) {
   return supabase
     .channel('consultant-notes')
     .on(

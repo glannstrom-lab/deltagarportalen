@@ -84,7 +84,7 @@ export function MyCVs() {
 
       // Beräkna ATS-score för varje version om det inte redan finns
       const versionsWithScores = await Promise.all(
-        versions.map(async (v: any) => {
+        versions.map(async (v) => {
           const cvData = v.data as CVData
           // Beräkna enkel ATS-score baserat på datainnehåll
           const atsScore = calculateATSScore(cvData)
@@ -184,7 +184,7 @@ export function MyCVs() {
       })))
 
       // Spara till cloud storage och localStorage som fallback
-      await userPreferencesApi.update({ default_cv_id: id } as any)
+      await userPreferencesApi.update({ default_cv_id: id })
       localStorage.setItem('default_cv_id', id)
 
       showToast.success('Satt som standard-CV')

@@ -26,7 +26,7 @@ export interface ApplicationTemplate {
 }
 
 // Konvertera mellan API-format och internt format
-const toApiFormat = (app: ApplicationData) => ({
+const toApiFormat = (app: ApplicationData): Partial<ApplicationDB> => ({
   job_id: app.jobId,
   job_title: app.jobTitle,
   employer: app.employer,
@@ -38,7 +38,20 @@ const toApiFormat = (app: ApplicationData) => ({
   follow_up_date: app.followUpDate,
 })
 
-const fromApiFormat = (data: any): ApplicationData => ({
+interface ApplicationDB {
+  id: string;
+  job_id: string;
+  job_title: string;
+  employer: string;
+  application_date: string;
+  status: ApplicationData['status'];
+  cover_letter?: string;
+  notes?: string;
+  contact_person?: string;
+  follow_up_date?: string;
+}
+
+const fromApiFormat = (data: ApplicationDB): ApplicationData => ({
   id: data.id,
   jobId: data.job_id,
   jobTitle: data.job_title,

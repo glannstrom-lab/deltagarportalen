@@ -183,12 +183,24 @@ Med vänliga hälsningar,
   /**
    * Hämta CV-matchning för ett jobb
    */
+interface CVWorkExperience {
+  title: string;
+  description?: string;
+}
+
+interface CVRecord {
+  title?: string;
+  summary?: string;
+  skills?: string[];
+  work_experience?: CVWorkExperience[];
+}
+
   async getCVMatchScore(jobData: JobData): Promise<number> {
     try {
       const { data: cv } = await supabase
         .from('cvs')
         .select('*')
-        .maybeSingle()
+        .maybeSingle() as { data: CVRecord | null }
 
       if (!cv) return 0
 
@@ -197,18 +209,18 @@ Med vänliga hälsningar,
         cv.title || '',
         cv.summary || '',
         ...(cv.skills || []),
-        ...(cv.work_experience || []).map((e: any) => `${e.title} ${e.description}`).join(' ')
+        ...(cv.work_experience || []).map((e) => `${e.title} ${e.description || ''}`).join(' ')
       ].join(' ').toLowerCase()
 
       const jobText = `${jobData.headline} ${jobData.description}`.toLowerCase()
-      
+
       // Extrahera viktiga ord (enkel implementation)
       const jobWords = jobText.split(/\s+/).filter(w => w.length > 4)
       const uniqueJobWords = [...new Set(jobWords)]
-      
+
       const matchedWords = uniqueJobWords.filter(word => cvText.includes(word))
       const score = Math.min(95, Math.round((matchedWords.length / Math.min(uniqueJobWords.length, 20)) * 100))
-      
+
       return score
     } catch (error) {
       console.error('Fel vid CV-matchning:', error)

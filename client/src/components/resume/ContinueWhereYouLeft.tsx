@@ -31,10 +31,73 @@ interface InProgressActivity {
   icon: typeof FileText
 }
 
+interface CVData {
+  firstName?: string
+  lastName?: string
+  email?: string
+  phone?: string
+  workExperience?: Array<{
+    title: string
+    company: string
+    description?: string
+    startDate?: string
+    endDate?: string
+  }>
+  education?: Array<{
+    degree: string
+    school: string
+    startDate?: string
+    endDate?: string
+  }>
+  skills?: Array<string | { name: string }>
+  summary?: string
+  updatedAt?: string
+}
+
 export function ContinueWhereYouLeft() {
   const navigate = useNavigate()
   const [activities, setActivities] = useState<InProgressActivity[]>([])
   const [isVisible, setIsVisible] = useState(true)
+
+  // Beräkna CV-progress
+  const calculateCVProgress = (cv: CVData): number => {
+    let total = 0
+    let filled = 0
+
+    // Personuppgifter (grundinfo)
+    const basicFields = ['firstName', 'lastName', 'email'] as const
+    total += basicFields.length
+    filled += basicFields.filter(f => cv[f]).length
+
+    // Arbetslivserfarenhet
+    total += 1
+    if (cv.workExperience?.length > 0) filled += 1
+
+    // Utbildning
+    total += 1
+    if (cv.education?.length > 0) filled += 1
+
+    // Kompetenser
+    total += 1
+    if (cv.skills?.length > 0) filled += 1
+
+    // Sammanfattning
+    total += 1
+    if (cv.summary) filled += 1
+
+    return Math.round((filled / total) * 100)
+  }
+
+  // Formatera tid sedan aktivitet
+  const formatTimeSince = (date: Date): string => {
+    const hours = Math.round((Date.now() - date.getTime()) / (1000 * 60 * 60))
+    if (hours < 1) return 'För mindre än en timme sedan'
+    if (hours === 1) return 'För en timme sedan'
+    if (hours < 24) return `För ${hours} timmar sedan`
+    const days = Math.round(hours / 24)
+    if (days === 1) return 'Igår'
+    return `För ${days} dagar sedan`
+  }
 
   useEffect(() => {
     const loadActivities = async () => {
@@ -59,7 +122,10 @@ export function ContinueWhereYouLeft() {
               icon: FileText
             })
           }
-        } catch {}
+        } catch (cvParseError) {
+          // Ignore CV parse errors
+          console.debug('Could not parse CV data:', cvParseError)
+        }
       }
 
       // Intresseguide-progress (from Supabase)
@@ -105,7 +171,10 @@ export function ContinueWhereYouLeft() {
             path: '/diary',
             icon: BookHeart
           })
-        } catch {}
+        } catch (diaryParseError) {
+          // Ignore diary draft parse errors
+          console.debug('Could not parse diary draft:', diaryParseError)
+        }
       }
 
       // Sortera efter senast aktiv
@@ -114,15 +183,15 @@ export function ContinueWhereYouLeft() {
     }
 
     loadActivities()
-  }, [])
+  }, [calculateCVProgress])
 
   // Beräkna CV-progress
-  const calculateCVProgress = (cv: any): number => {
+  const calculateCVProgress = (cv: CVData): number => {
     let total = 0
     let filled = 0
 
     // Personuppgifter (grundinfo)
-    const basicFields = ['firstName', 'lastName', 'email']
+    const basicFields = ['firstName', 'lastName', 'email'] as const
     total += basicFields.length
     filled += basicFields.filter(f => cv[f]).length
 
