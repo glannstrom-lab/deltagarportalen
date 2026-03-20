@@ -515,7 +515,7 @@ export function MatchesTab() {
 
   // Check what data is available
   const hasCV = userProfile && userProfile.skills.length > 0
-  const hasInterest = userProfile && userProfile.recommendedOccupations.length > 0
+  const hasInterest = userProfile && (userProfile.riasecScores !== null || userProfile.recommendedOccupations.length > 0)
   const hasCareer = userProfile && userProfile.careerGoals !== null
 
   // Load user profile data
@@ -708,24 +708,47 @@ export function MatchesTab() {
         cvScore = Math.min(cvScore + 15, 100) // Baseline boost
       }
 
-      // Interest matching - match against recommended occupations from interest guide
+      // Interest matching - use RIASEC profile for broad matching
       let interestScore = 0
       const matchedInterestTypes: string[] = []
 
-      if (activeSources.includes('interest') && profile.recommendedOccupations.length > 0) {
-        const jobTitle = (job.headline || '').toLowerCase()
-        const jobOccupation = (job.occupation?.label || '').toLowerCase()
+      if (activeSources.includes('interest') && profile.riasecScores) {
+        // Use RIASEC-based matching (broad keyword matching)
+        const interestMatches = matchJobsToInterests([job], profile.riasecScores, [])
+        if (interestMatches.length > 0 && interestMatches[0].riasecMatch.score > 0) {
+          interestScore = interestMatches[0].riasecMatch.score
+          matchedInterestTypes.push(...interestMatches[0].riasecMatch.matchedTypes.map(t => {
+            // Translate RIASEC type names to Swedish
+            const translations: Record<string, string> = {
+              realistic: 'Realistisk',
+              investigative: 'Undersökande',
+              artistic: 'Konstnärlig',
+              social: 'Social',
+              enterprising: 'Företagsam',
+              conventional: 'Konventionell'
+            }
+            return translations[t] || t
+          }))
+        }
 
-        // Check if job matches any recommended occupation
-        for (const recOcc of profile.recommendedOccupations) {
-          const occName = recOcc.name.toLowerCase()
+        // Bonus if job matches a recommended occupation
+        if (profile.recommendedOccupations.length > 0) {
+          const jobTitle = (job.headline || '').toLowerCase()
+          const jobOccupation = (job.occupation?.label || '').toLowerCase()
 
-          // Check job title and occupation label for match
-          if (jobTitle.includes(occName) || jobOccupation.includes(occName) ||
-              occName.split(' ').some(word => word.length > 3 && (jobTitle.includes(word) || jobOccupation.includes(word)))) {
-            // Score based on how well the interest guide recommends this occupation
-            interestScore = Math.max(interestScore, recOcc.matchPercentage)
-            matchedInterestTypes.push(recOcc.name)
+          for (const recOcc of profile.recommendedOccupations) {
+            const occName = recOcc.name.toLowerCase()
+            const occWords = occName.split(/[\s-]+/).filter(w => w.length > 3)
+
+            if (jobTitle.includes(occName) || jobOccupation.includes(occName) ||
+                occWords.some(word => jobTitle.includes(word) || jobOccupation.includes(word))) {
+              // Boost score when matching recommended occupation
+              interestScore = Math.max(interestScore, Math.min(100, recOcc.matchPercentage + 10))
+              if (!matchedInterestTypes.includes(recOcc.name)) {
+                matchedInterestTypes.push(recOcc.name)
+              }
+              break
+            }
           }
         }
       }
