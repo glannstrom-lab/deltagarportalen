@@ -540,14 +540,18 @@ export function MatchesTab() {
 
       // Get interest guide results
       const interestResult = await interestApi.getResult()
+      console.log('[MatchesTab] Interest result from API:', interestResult)
+
       let riasecScores: RiasecScores | null = null
       if (interestResult) {
         // Check nested format first (riasec_profile.scores)
         if (interestResult.riasec_profile?.scores) {
+          console.log('[MatchesTab] Found nested riasec_profile.scores')
           riasecScores = interestResult.riasec_profile.scores as RiasecScores
         }
         // Check for direct columns format (database schema)
         else if (typeof interestResult.realistic === 'number' || typeof interestResult.investigative === 'number') {
+          console.log('[MatchesTab] Found direct RIASEC columns')
           riasecScores = {
             realistic: interestResult.realistic || 0,
             investigative: interestResult.investigative || 0,
@@ -556,8 +560,14 @@ export function MatchesTab() {
             enterprising: interestResult.enterprising || 0,
             conventional: interestResult.conventional || 0
           }
+        } else {
+          console.log('[MatchesTab] No RIASEC data found in result. Keys:', Object.keys(interestResult))
         }
+      } else {
+        console.log('[MatchesTab] No interest result returned')
       }
+
+      console.log('[MatchesTab] Final riasecScores:', riasecScores)
 
       // Get unified profile for career goals
       const unifiedProfile = await unifiedProfileApi.getProfile()
