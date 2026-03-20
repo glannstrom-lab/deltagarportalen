@@ -515,9 +515,25 @@ export function MatchesTab() {
     try {
       // Get CV data
       const cv = await cvApi.getCV()
-      const skills = cv?.skills?.map((s: string | { name: string }) =>
+
+      // Extract skills from various CV fields
+      const skillsFromSkills = cv?.skills?.map((s: string | { name: string }) =>
         typeof s === 'string' ? s : s.name
       ) || []
+
+      // Extract certifications (körkort, etc.)
+      const skillsFromCertificates = cv?.certificates?.map((c: { name?: string }) =>
+        c.name
+      ).filter(Boolean) || []
+
+      // Extract languages
+      const skillsFromLanguages = cv?.languages?.map((l: string | { name?: string; language?: string }) =>
+        typeof l === 'string' ? l : (l.name || l.language)
+      ).filter(Boolean) || []
+
+      // Combine all skills
+      const skills = [...new Set([...skillsFromSkills, ...skillsFromCertificates, ...skillsFromLanguages])]
+
       const workTitles = cv?.work_experience?.map((e: { title?: string }) =>
         e.title
       ).filter(Boolean) || []
@@ -643,8 +659,16 @@ export function MatchesTab() {
 
       if (activeSources.includes('cv') && profile.skills.length > 0) {
         const allUserSkills = [...profile.skills, ...profile.workTitles]
+
+        // Check each user skill against job text
         allUserSkills.forEach(skill => {
-          if (jobText.includes(skill.toLowerCase())) {
+          const skillLower = skill.toLowerCase()
+          // Check for the skill or common variations
+          if (jobText.includes(skillLower)) {
+            matchingSkills.push(skill)
+          }
+          // Also check if job mentions a variation (e.g. job says "körkort" and user has "B-körkort")
+          else if (skillLower.includes('körkort') && jobText.includes('körkort')) {
             matchingSkills.push(skill)
           }
         })
@@ -653,9 +677,22 @@ export function MatchesTab() {
         const commonSkills = ['Excel', 'Word', 'PowerPoint', 'Teams', 'SAP', 'CRM',
           'projektledning', 'kommunikation', 'engelska', 'körkort', 'B-körkort',
           'Python', 'JavaScript', 'SQL', 'ledarskap', 'teamwork']
+
+        // Helper to check if user has a skill (handles variations like "B-körkort" matching "körkort")
+        const userHasSkill = (skill: string): boolean => {
+          const skillLower = skill.toLowerCase()
+          return allUserSkills.some(s => {
+            const userSkillLower = s.toLowerCase()
+            // Exact match
+            if (userSkillLower === skillLower) return true
+            // Check if skill contains the other (e.g. "B-körkort" contains "körkort")
+            if (userSkillLower.includes(skillLower) || skillLower.includes(userSkillLower)) return true
+            return false
+          })
+        }
+
         commonSkills.forEach(skill => {
-          if (jobText.includes(skill.toLowerCase()) &&
-            !allUserSkills.some(s => s.toLowerCase() === skill.toLowerCase())) {
+          if (jobText.includes(skill.toLowerCase()) && !userHasSkill(skill)) {
             missingSkills.push(skill)
           }
         })
