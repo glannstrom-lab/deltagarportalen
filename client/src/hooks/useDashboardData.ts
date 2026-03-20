@@ -97,6 +97,13 @@ interface Activity {
   created_at: string
 }
 
+/** Article progress data */
+interface ArticleProgressData {
+  completed: number
+  saved: number
+  total: number
+}
+
 /** User streaks from database */
 interface UserStreaks {
   current_streak: number
@@ -159,6 +166,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     userStreaks,
     todaysMood,
     moodStreak,
+    articleProgress,
   ] = await Promise.all([
     cvApi.getCV().catch(() => null),
     cvApi.getATSAnalysis().catch(() => null),
@@ -174,6 +182,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     fetchUserStreaks(user?.id),
     moodApi.getTodaysMood().catch(() => null),
     moodApi.getStreak().catch(() => 0),
+    fetchArticleProgress(user?.id),
   ])
 
   // Beräkna CV-progress
@@ -308,6 +317,13 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
         a.activity_type === 'wellness' || a.activity_type === 'mood_logged'
       ).length,
       lastEntryDate: activities.find((a: Activity) => a.activity_type === 'mood_logged')?.created_at || null,
+    },
+    knowledge: {
+      readCount: articleProgress.completed,
+      savedCount: articleProgress.saved,
+      totalArticles: articleProgress.total,
+      recentlyRead: [],
+      recommendedArticle: null,
     },
   }
   } catch (err) {
@@ -471,6 +487,44 @@ async function fetchUserStreaks(userId?: string): Promise<UserStreaks | null> {
     return data as UserStreaks | null
   } catch {
     return null
+  }
+}
+
+// Hämta artikel-progress från Supabase
+async function fetchArticleProgress(userId?: string): Promise<ArticleProgressData> {
+  const defaultProgress: ArticleProgressData = { completed: 0, saved: 0, total: 0 }
+
+  try {
+    if (!userId) return defaultProgress
+
+    // Get completed articles
+    const { count: completedCount, error: completedError } = await supabase
+      .from('article_reading_progress')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+      .eq('is_completed', true)
+
+    if (completedError) {
+      console.warn('Article progress not available:', completedError.message)
+      return defaultProgress
+    }
+
+    // Get saved articles
+    const { count: savedCount, error: savedError } = await supabase
+      .from('saved_articles')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', userId)
+
+    // saved_articles might not exist, that's okay
+    const saved = savedError ? 0 : (savedCount || 0)
+
+    return {
+      completed: completedCount || 0,
+      saved: saved,
+      total: 0, // Could be populated with total article count if needed
+    }
+  } catch {
+    return defaultProgress
   }
 }
 

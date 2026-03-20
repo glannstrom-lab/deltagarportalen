@@ -371,6 +371,31 @@
     "noMatchesTitle": "Inga matchningar ännu",
     "noMatchesDesc": "Slutför din profil för att få personliga jobbförslag.",
     "takeInterestTest": "Gör intressetestet",
+    "matches": {
+      "title": "Smarta jobbmatchningar",
+      "subtitle": "Välj vilka datakällor som ska användas för matchning",
+      "sources": {
+        "cv": "Mitt CV",
+        "interest": "Intresseguiden",
+        "career": "Karriärmål"
+      },
+      "missing": "Saknas",
+      "locations": "Orter",
+      "allLocations": "Alla orter",
+      "minScore": "Minst",
+      "all": "Alla",
+      "goodMatch": "Bra match",
+      "possible": "Möjliga",
+      "total": "Totalt",
+      "showDetails": "Visa matchningsdetaljer",
+      "matchingSkills": "Matchande kompetenser",
+      "interestTypes": "Intressetyper",
+      "careerMatch": "Karriärmatch",
+      "requiredSkills": "Kompetenser som efterfrågas",
+      "createProfile": "Skapa din profil först",
+      "createProfileDesc": "För att hitta de bästa matchningarna behöver vi veta mer om dig.",
+      "analyzing": "Analyserar din profil och hittar matchningar..."
+    },
     "tabs": {
       "search": "Sök jobb",
       "saved": "Sparade",
