@@ -3,6 +3,8 @@
  * Hanterar tillfälliga nätverksfel och timeout
  */
 
+import { apiLogger } from '@/lib/logger';
+
 export interface RetryConfig {
   maxRetries: number;
   baseDelay: number;
@@ -59,7 +61,7 @@ export async function withRetry<T>(
 
   for (let attempt = 0; attempt <= fullConfig.maxRetries; attempt++) {
     try {
-      console.log(`[Retry] ${operationName} - Försök ${attempt + 1}/${fullConfig.maxRetries + 1}`);
+      apiLogger.debug(`[Retry] ${operationName} - Försök ${attempt + 1}/${fullConfig.maxRetries + 1}`);
       return await fn();
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
@@ -72,7 +74,7 @@ export async function withRetry<T>(
       }
 
       const delay = calculateDelay(attempt, fullConfig);
-      console.log(`[Retry] ${operationName} - Försök ${attempt + 1} misslyckades, väntar ${delay}ms...`);
+      apiLogger.debug(`[Retry] ${operationName} - Försök ${attempt + 1} misslyckades, väntar ${delay}ms...`);
       await sleep(delay);
     }
   }

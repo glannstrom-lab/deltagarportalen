@@ -7,6 +7,7 @@
  */
 
 import type { CVData } from '@/types/pdf.types';
+import { logger } from '@/lib/logger';
 
 export interface LinkedInProfile {
   id: string;
@@ -211,7 +212,7 @@ export async function handleLinkedInCallback(
   // och sedan hämta profildata
   
   // För demo: Returnera mock-profil
-  console.log('LinkedIn auth successful (mock)');
+  logger.debug('LinkedIn auth successful (mock)');
   return getMockLinkedInProfile();
 }
 
@@ -271,6 +272,6 @@ export function shareJobOnLinkedIn(jobTitle: string, jobUrl: string): void {
  */
 export async function updateLinkedInStatus(message: string): Promise<boolean> {
   // Detta kräver w_member_social scope
-  console.log('Would update LinkedIn status:', message);
+  logger.debug('Would update LinkedIn status:', message);
   return true;
 }

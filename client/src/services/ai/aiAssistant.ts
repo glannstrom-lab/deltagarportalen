@@ -6,6 +6,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
+import { aiLogger } from '@/lib/logger'
 import type { CVData } from '../supabaseApi'
 import type { ApplicationData } from '../applicationService'
 import type { SavedJob } from '../cloudStorage'
@@ -208,7 +209,7 @@ export async function gatherUserContext(): Promise<UserContext> {
       bestPerformingDay
     }
   } catch (error) {
-    console.error('Fel vid insamling av användarkontext:', error)
+    aiLogger.error('Fel vid insamling av användarkontext:', error)
     return getEmptyContext()
   }
 }
@@ -665,7 +666,7 @@ function getDismissedRecommendations(): Set<string> {
       return new Set(valid.map((item: any) => item.id))
     }
   } catch (e) {
-    console.error('Error reading dismissed recommendations:', e)
+    aiLogger.error('Error reading dismissed recommendations:', e)
   }
   return new Set()
 }
@@ -677,7 +678,7 @@ function saveDismissedRecommendation(id: string): void {
     items.push({ id, timestamp: Date.now() })
     localStorage.setItem(DISMISSED_KEY, JSON.stringify(items))
   } catch (e) {
-    console.error('Error saving dismissed recommendation:', e)
+    aiLogger.error('Error saving dismissed recommendation:', e)
   }
 }
 
@@ -688,7 +689,7 @@ function saveCompletedRecommendation(id: string): void {
     items.push({ id, timestamp: Date.now() })
     localStorage.setItem(COMPLETED_KEY, JSON.stringify(items))
   } catch (e) {
-    console.error('Error saving completed recommendation:', e)
+    aiLogger.error('Error saving completed recommendation:', e)
   }
 }
 
@@ -719,7 +720,7 @@ export const aiAssistantApi = {
     if (baseId !== recommendationId) {
       saveDismissedRecommendation(baseId)
     }
-    console.log('Rekommendation avfärdad:', recommendationId)
+    aiLogger.debug('Rekommendation avfärdad:', recommendationId)
   },
 
   /**
@@ -729,7 +730,7 @@ export const aiAssistantApi = {
     saveCompletedRecommendation(recommendationId)
     // Also dismiss it so it doesn't show again
     saveDismissedRecommendation(recommendationId)
-    console.log('Rekommendation utförd:', recommendationId)
+    aiLogger.debug('Rekommendation utförd:', recommendationId)
   },
 
   /**

@@ -6,6 +6,7 @@
 import { supabase } from '../lib/supabase'
 import { mockArticlesData, articleCategories } from './articleData'
 import type { Tables } from '../lib/supabase'
+import { apiLogger } from '../lib/logger'
 
 // ============================================
 // TYPES
@@ -685,24 +686,24 @@ export const articleApi = {
       
       // If error or no data, return mock data
       if (error) {
-        console.log('Supabase articles error, using mock data:', error.message)
+        apiLogger.debug('Supabase articles error, using mock data:', error.message)
         return mockArticlesData
       }
-      
+
       if (!data || data.length === 0) {
-        console.log('No articles in database, using mock data')
+        apiLogger.debug('No articles in database, using mock data')
         return mockArticlesData
       }
-      
+
       // Merge database articles with mock articles, avoiding duplicates
       const dbIds = new Set(data.map(a => a.id))
       const uniqueMockArticles = mockArticlesData.filter(a => !dbIds.has(a.id))
-      
-      console.log(`Loaded ${data.length} from DB + ${uniqueMockArticles.length} from mock = ${data.length + uniqueMockArticles.length} total`)
-      
+
+      apiLogger.debug(`Loaded ${data.length} from DB + ${uniqueMockArticles.length} from mock = ${data.length + uniqueMockArticles.length} total`)
+
       return [...data, ...uniqueMockArticles]
     } catch (err) {
-      console.log('Exception loading articles, using mock data:', err)
+      apiLogger.debug('Exception loading articles, using mock data:', err)
       return mockArticlesData
     }
   },
@@ -758,7 +759,7 @@ export const articleApi = {
       
       // Fallback to mock categories if no data in database or error
       if (error) {
-        console.log('Supabase categories error, using mock data:', error.message)
+        apiLogger.debug('Supabase categories error, using mock data:', error.message)
         return articleCategories.map(cat => ({
           id: cat.id,
           name: cat.name,
@@ -767,9 +768,9 @@ export const articleApi = {
           subcategories: cat.subcategories?.map((sub: any) => sub.name) || []
         }))
       }
-      
+
       if (!data || data.length === 0) {
-        console.log('No categories in database, using mock data')
+        apiLogger.debug('No categories in database, using mock data')
         return articleCategories.map(cat => ({
           id: cat.id,
           name: cat.name,
@@ -802,7 +803,7 @@ export const articleApi = {
         subcategories: Array.from(cat.subcategories)
       }))
     } catch (err) {
-      console.log('Exception loading categories, using mock data:', err)
+      apiLogger.debug('Exception loading categories, using mock data:', err)
       return articleCategories.map(cat => ({
         id: cat.id,
         name: cat.name,

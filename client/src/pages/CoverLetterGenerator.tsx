@@ -33,6 +33,7 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { aiLogger } from '@/lib/logger'
 import { aiService } from '@/services/aiService'
 import { cvApi, coverLetterApi, jobsApi } from '@/services/api'
 import { searchPlatsbanken, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
@@ -225,7 +226,7 @@ export default function CoverLetterGenerator() {
     setCvLoading(true)
     try {
       const cv = await cvApi.getCV()
-      console.log('📄 Laddade CV:', cv)
+      aiLogger.debug('📄 Laddade CV:', cv)
       
       if (!cv) {
         console.warn('⚠️ Inget CV hittades')
@@ -427,13 +428,13 @@ export default function CoverLetterGenerator() {
       } : undefined
 
       // DEBUG: Logga exakt vad som skickas till AI
-      console.log('=== FRONTEND SKICKAR ===');
-      console.log('jobbAnnons state length:', jobbAnnons.length);
-      console.log('jobbAnnons state preview:', jobbAnnons.substring(0, 150));
-      console.log('company state:', company);
-      console.log('jobTitle state:', jobTitle);
-      console.log('cvData workExperience count:', aiCvData?.workExperience?.length || 0);
-      console.log('extraKeywords:', extraKeywords);
+      aiLogger.debug('=== FRONTEND SKICKAR ===');
+      aiLogger.debug('jobbAnnons state length:', jobbAnnons.length);
+      aiLogger.debug('jobbAnnons state preview:', jobbAnnons.substring(0, 150));
+      aiLogger.debug('company state:', company);
+      aiLogger.debug('jobTitle state:', jobTitle);
+      aiLogger.debug('cvData workExperience count:', aiCvData?.workExperience?.length || 0);
+      aiLogger.debug('extraKeywords:', extraKeywords);
       
       // Bygg payload för debugging
       const payload = {
@@ -450,8 +451,8 @@ export default function CoverLetterGenerator() {
         extraKeywords,
         cvData: aiCvData
       };
-      console.log('Full payload:', JSON.stringify(payload, null, 2).substring(0, 800));
-      console.log('=======================');
+      aiLogger.debug('Full payload:', JSON.stringify(payload, null, 2).substring(0, 800));
+      aiLogger.debug('=======================');
 
       const response = await aiService.generateCoverLetter({
         jobbAnnons,
@@ -491,7 +492,7 @@ export default function CoverLetterGenerator() {
       
       // OFFLINE FALLBACK: Generera mall lokalt
       console.error('AI-tjänsten fel:', err);
-      console.log('AI-tjänsten ej tillgänglig, använder offline-mall')
+      aiLogger.debug('AI-tjänsten ej tillgänglig, använder offline-mall')
       const offlineBrev = generateOfflineTemplate()
       setGeneratedBrev(offlineBrev)
       setExpandedSections(prev => ({ ...prev, result: true }))

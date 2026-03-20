@@ -5,6 +5,8 @@
  * Detta är mer tillförlitligt än att förlita sig på AF:s filter
  */
 
+import { jobLogger } from '@/lib/logger';
+
 const AF_JOBSEARCH_BASE = 'https://jobsearch.api.jobtechdev.se';
 
 // Cache
@@ -151,8 +153,8 @@ async function fetchFromAF(url: string): Promise<any> {
     return cached.data;
   }
 
-  console.log('[AF API] Fetching:', url);
-  
+  jobLogger.debug('Fetching:', url);
+
   const response = await fetch(url, {
     headers: {
       'Accept': 'application/json',
@@ -226,7 +228,7 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
     }
 
     const url = `${AF_JOBSEARCH_BASE}/search?${searchParams.toString()}`;
-    console.log('[AF API] Search URL:', url);
+    jobLogger.debug('Search URL:', url);
     
     const data = await fetchFromAF(url);
     
@@ -267,15 +269,15 @@ export async function searchJobs(params: SearchParams): Promise<JobSearchRespons
       );
     }
 
-    console.log(`[AF API] Found ${hits.length} jobs after filtering`);
-    
+    jobLogger.debug(`Found ${hits.length} jobs after filtering`);
+
     return {
       total: { value: hits.length },
       hits: hits,
     };
     
   } catch (error) {
-    console.error('[AF API] Search error:', error);
+    jobLogger.error('Search error:', error);
     return { total: { value: 0 }, hits: [] };
   }
 }
@@ -335,7 +337,7 @@ export async function getJobDetails(id: string): Promise<PlatsbankenJob | null> 
     const url = `${AF_JOBSEARCH_BASE}/ad/${id}`;
     return await fetchFromAF(url);
   } catch (error) {
-    console.error('[AF API] Get job details error:', error);
+    jobLogger.error('Get job details error:', error);
     return null;
   }
 }
@@ -810,7 +812,7 @@ export async function searchJobsSafe(filters: SearchFilters): Promise<SafeSearch
       isMockData: false,
     };
   } catch (error) {
-    console.error('[AF API] Safe search error:', error);
+    jobLogger.error('Safe search error:', error);
     return {
       success: false,
       data: { total: { value: 0 }, hits: [] },

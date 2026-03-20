@@ -9,6 +9,7 @@
  */
 
 import { useEffect, useState, useCallback } from 'react'
+import { swLogger } from '@/lib/logger'
 
 interface ServiceWorkerState {
   isSupported: boolean
@@ -39,7 +40,7 @@ export function useServiceWorker(): UseServiceWorkerReturn {
   // Register service worker
   useEffect(() => {
     if (!state.isSupported) {
-      console.log('[SW] Service Worker not supported')
+      swLogger.debug('[SW] Service Worker not supported')
       return
     }
 
@@ -49,7 +50,7 @@ export function useServiceWorker(): UseServiceWorkerReturn {
           scope: '/',
         })
 
-        console.log('[SW] Registered:', registration)
+        swLogger.debug('[SW] Registered:', registration)
 
         setState((prev) => ({
           ...prev,
@@ -64,7 +65,7 @@ export function useServiceWorker(): UseServiceWorkerReturn {
           if (newWorker) {
             newWorker.addEventListener('statechange', () => {
               if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                console.log('[SW] Update available')
+                swLogger.debug('[SW] Update available')
                 setState((prev) => ({ ...prev, updateAvailable: true }))
               }
             })
@@ -76,7 +77,7 @@ export function useServiceWorker(): UseServiceWorkerReturn {
           setState((prev) => ({ ...prev, updateAvailable: true }))
         }
       } catch (error) {
-        console.error('[SW] Registration failed:', error)
+        swLogger.error('[SW] Registration failed:', error)
       }
     }
 
@@ -86,12 +87,12 @@ export function useServiceWorker(): UseServiceWorkerReturn {
   // Listen for online/offline events
   useEffect(() => {
     const handleOnline = () => {
-      console.log('[SW] App is online')
+      swLogger.debug('[SW] App is online')
       setState((prev) => ({ ...prev, isOffline: false }))
     }
 
     const handleOffline = () => {
-      console.log('[SW] App is offline')
+      swLogger.debug('[SW] App is offline')
       setState((prev) => ({ ...prev, isOffline: true }))
     }
 
@@ -139,7 +140,7 @@ export function useServiceWorker(): UseServiceWorkerReturn {
     if (!state.registration) return
 
     const success = await state.registration.unregister()
-    console.log('[SW] Unregistered:', success)
+    swLogger.debug('[SW] Unregistered:', success)
     
     setState((prev) => ({
       ...prev,
@@ -154,9 +155,9 @@ export function useServiceWorker(): UseServiceWorkerReturn {
 
     try {
       await state.registration.update()
-      console.log('[SW] Update check complete')
+      swLogger.debug('[SW] Update check complete')
     } catch (error) {
-      console.error('[SW] Update check failed:', error)
+      swLogger.error('[SW] Update check failed:', error)
     }
   }, [state.registration])
 
@@ -226,17 +227,17 @@ export function useNetworkStatus(): {
 export function useBackgroundSync() {
   const sync = useCallback(async (tag: string): Promise<boolean> => {
     if (!('serviceWorker' in navigator) || !('sync' in (navigator as any).serviceWorker)) {
-      console.log('[SW] Background sync not supported')
+      swLogger.debug('[SW] Background sync not supported')
       return false
     }
 
     try {
       const registration = await navigator.serviceWorker.ready
       await (registration as any).sync.register(tag)
-      console.log('[SW] Background sync registered:', tag)
+      swLogger.debug('[SW] Background sync registered:', tag)
       return true
     } catch (error) {
-      console.error('[SW] Background sync registration failed:', error)
+      swLogger.error('[SW] Background sync registration failed:', error)
       return false
     }
   }, [])
@@ -258,7 +259,7 @@ export function usePushNotifications() {
 
   const subscribe = useCallback(async (): Promise<boolean> => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      console.log('[SW] Push notifications not supported')
+      swLogger.debug('[SW] Push notifications not supported')
       return false
     }
 
@@ -270,7 +271,7 @@ export function usePushNotifications() {
       setPermission(result)
       
       if (result !== 'granted') {
-        console.log('[SW] Notification permission denied')
+        swLogger.debug('[SW] Notification permission denied')
         return false
       }
 
@@ -282,7 +283,7 @@ export function usePushNotifications() {
         ),
       })
 
-      console.log('[SW] Push subscription:', subscription)
+      swLogger.debug('[SW] Push subscription:', subscription)
       
       // Send subscription to server
       // await fetch('/api/subscriptions', {
@@ -292,7 +293,7 @@ export function usePushNotifications() {
 
       return true
     } catch (error) {
-      console.error('[SW] Push subscription failed:', error)
+      swLogger.error('[SW] Push subscription failed:', error)
       return false
     }
   }, [])
@@ -304,13 +305,13 @@ export function usePushNotifications() {
       
       if (subscription) {
         await subscription.unsubscribe()
-        console.log('[SW] Push subscription cancelled')
+        swLogger.debug('[SW] Push subscription cancelled')
         return true
       }
       
       return false
     } catch (error) {
-      console.error('[SW] Push unsubscribe failed:', error)
+      swLogger.error('[SW] Push unsubscribe failed:', error)
       return false
     }
   }, [])

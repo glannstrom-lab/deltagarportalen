@@ -3,6 +3,8 @@
  * Förbättrar prestanda och minskar belastning på Edge Functions
  */
 
+import { apiLogger } from '@/lib/logger';
+
 interface CacheEntry<T> {
   data: T;
   timestamp: number;
@@ -110,7 +112,7 @@ class CacheService {
   ): Promise<T> {
     const cached = this.get<T>(key);
     if (cached !== null) {
-      console.log(`[Cache] Hittade cache för: ${key}`);
+      apiLogger.debug(`[Cache] Hittade cache för: ${key}`);
       return cached;
     }
 

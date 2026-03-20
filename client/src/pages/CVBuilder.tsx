@@ -16,6 +16,7 @@ import { CompactImageUpload } from '@/components/ImageUpload'
 import { useVercelImageUpload } from '@/hooks/useVercelImageUpload'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
+import { cvLogger } from '@/lib/logger'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
 // NYA IMPORTS för förbättringar
@@ -205,7 +206,7 @@ export default function CVBuilder() {
   useEffect(() => {
     const currentWorkExp = JSON.stringify(data.workExperience)
     if (prevWorkExpRef.current !== currentWorkExp) {
-      console.log('CVBuilder: workExperience changed, triggering auto-save')
+      cvLogger.debug('CVBuilder: workExperience changed, triggering auto-save')
       triggerSave(data)
       prevWorkExpRef.current = currentWorkExp
     }
@@ -256,7 +257,7 @@ export default function CVBuilder() {
       if (cv) {
         setData(prev => {
           const newData = { ...prev, ...cv }
-          console.log('CVBuilder: Setting data with workExperience:', newData.workExperience)
+          cvLogger.debug('CVBuilder: Setting data with workExperience:', newData.workExperience)
           return newData
         })
         // Viktigt: Markera att server-data är laddad så draft inte triggar

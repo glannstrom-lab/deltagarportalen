@@ -11,6 +11,7 @@ const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 import { trendsCache } from './cacheService';
+import { jobLogger } from '@/lib/logger';
 import { withRetry, fetchWithRetry } from './retryService';
 import { supabase } from '@/lib/supabase';
 
@@ -20,14 +21,14 @@ async function fetchFromFunction(functionName: string, endpoint: string, params?
   // Kolla cache först
   const cached = trendsCache.get(cacheKey);
   if (cached) {
-    console.log(`[${functionName}] Cache hit:`, endpoint);
+    jobLogger.debug(`${functionName} Cache hit:`, endpoint);
     return cached;
   }
-  
+
   const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
   const functionUrl = `${SUPABASE_URL}/functions/v1/${functionName}${endpoint}${queryParams}`;
-  
-  console.log('[Trends] Fetching:', functionUrl);
+
+  jobLogger.debug('Trends fetching:', functionUrl);
   
   // Hämta aktuell session (kan vara anon eller user)
   const { data: { session } } = await supabase.auth.getSession();
@@ -46,7 +47,7 @@ async function fetchFromFunction(functionName: string, endpoint: string, params?
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error(`[${functionName}] API error:`, response.status, errorText);
+      jobLogger.error(`${functionName} API error:`, response.status, errorText);
       throw new Error(`${functionName} API error: ${response.status}`);
     }
     
@@ -154,8 +155,8 @@ export interface SalaryStats {
 }
 
 export async function getSalaryStats(occupation: string): Promise<SalaryStats | null> {
-  console.log('[SalaryStats] Getting stats for:', occupation);
-  
+  jobLogger.debug('Getting salary stats for:', occupation);
+
   try {
     // Använd af-historical för lönestatistik
     const result = await fetchFromHistorical('/salary-stats', { occupation });
@@ -173,7 +174,7 @@ export async function getSalaryStats(occupation: string): Promise<SalaryStats | 
       };
     }
   } catch (error) {
-    console.log('[Historical] API error:', error);
+    jobLogger.debug('Historical API error:', error);
   }
   
   // Ingen fallback - returnera null om ingen data finns

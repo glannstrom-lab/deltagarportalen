@@ -2,6 +2,7 @@
 import { type JobAd } from './arbetsformedlingenApi'
 import { jobApplicationsApi } from './cloudStorage'
 import { supabase } from '@/lib/supabase'
+import { storageLogger } from '@/lib/logger'
 
 export interface ApplicationData {
   id?: string
@@ -205,7 +206,7 @@ class ApplicationService {
         }))
       }
     } catch (error) {
-      console.log('Använder localStorage för mallar:', error)
+      storageLogger.debug('Använder localStorage för mallar:', error)
     }
 
     // Fallback till localStorage

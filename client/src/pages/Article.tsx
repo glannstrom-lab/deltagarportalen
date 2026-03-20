@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { articleApi } from '../services/api'
+import { logger } from '../lib/logger'
 import {
   ReadingProgress,
   ArticleChecklist,
@@ -39,8 +40,8 @@ export default function Article() {
   const hasTrackedRead = useRef(false)
 
   useEffect(() => {
-    console.log('Article - ID from params:', id)
-    console.log('Article - Current URL:', window.location.href)
+    logger.debug('Article - ID from params:', id)
+    logger.debug('Article - Current URL:', window.location.href)
     if (id) {
       loadArticle()
       checkBookmark()

@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { articleProgressApi } from '@/services/cloudStorage'
+import { storageLogger } from '@/lib/logger'
 
 interface ReadingProgressProps {
   articleId: string
@@ -23,9 +24,9 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
         // Tyst ignorera RLS-policy fel (42501) - detta är ett databaskonfigurationsfel
         // som inte påverkar användarens upplevelse
         if (err?.code === '42501' || err?.message?.includes('row-level security')) {
-          console.log('Reading progress: RLS policy prevents loading (non-critical)')
+          storageLogger.debug('Reading progress: RLS policy prevents loading (non-critical)')
         } else {
-          console.error('Failed to load reading progress:', err)
+          storageLogger.error('Failed to load reading progress:', err)
         }
       } finally {
         setIsLoading(false)
@@ -42,9 +43,9 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
     } catch (err: any) {
       // Tyst ignorera RLS-policy fel (42501) - läsprogress sparas lokalt istället
       if (err?.code === '42501' || err?.message?.includes('row-level security')) {
-        console.log('Reading progress: RLS policy prevents saving (non-critical)')
+        storageLogger.debug('Reading progress: RLS policy prevents saving (non-critical)')
       } else {
-        console.error('Failed to save reading progress:', err)
+        storageLogger.error('Failed to save reading progress:', err)
       }
     }
   }, [articleId])
@@ -93,9 +94,9 @@ export default function ReadingProgress({ articleId }: ReadingProgressProps) {
     } catch (err: any) {
       // Tyst ignorera RLS-policy fel
       if (err?.code === '42501' || err?.message?.includes('row-level security')) {
-        console.log('Reading progress: RLS policy prevents pause save (non-critical)')
+        storageLogger.debug('Reading progress: RLS policy prevents pause save (non-critical)')
       } else {
-        console.error('Failed to save pause state:', err)
+        storageLogger.error('Failed to save pause state:', err)
       }
     }
   }

@@ -2,6 +2,7 @@ import { useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { swLogger } from './lib/logger'
 import { Loader2 } from 'lucide-react'
 
 // Wrapper komponent för att hantera redirects med params
@@ -140,7 +141,7 @@ function App() {
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.getRegistrations().then((registrations) => {
         registrations.forEach((registration) => {
-          console.log('[App] Unregistering old service worker:', registration.scope)
+          swLogger.debug('[App] Unregistering old service worker:', registration.scope)
           registration.unregister()
         })
       })

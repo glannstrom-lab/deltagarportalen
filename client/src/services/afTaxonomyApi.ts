@@ -8,6 +8,7 @@
 
 import { taxonomyCache } from './cacheService';
 import { withRetry, fetchWithRetry } from './retryService';
+import { jobLogger } from '@/lib/logger';
 
 // Supabase config
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -19,15 +20,15 @@ async function fetchFromTaxonomy(endpoint: string, params?: Record<string, strin
   // Kolla cache först
   const cached = taxonomyCache.get(cacheKey);
   if (cached) {
-    console.log('[Taxonomy] Cache hit:', endpoint);
+    jobLogger.debug('Taxonomy cache hit:', endpoint);
     return cached;
   }
-  
+
   // Bygg query string
   const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
   const functionUrl = `${SUPABASE_URL}/functions/v1/af-taxonomy${endpoint}${queryParams}`;
-  
-  console.log('[Taxonomy] Fetching:', functionUrl);
+
+  jobLogger.debug('Taxonomy fetching:', functionUrl);
   
   // Kör med retry-logik
   const data = await withRetry(async () => {
@@ -42,7 +43,7 @@ async function fetchFromTaxonomy(endpoint: string, params?: Record<string, strin
     
     if (!response.ok) {
       const errorText = await response.text();
-      console.error('[Taxonomy] API error:', response.status, errorText);
+      jobLogger.error('Taxonomy API error:', response.status, errorText);
       throw new Error(`Taxonomy API error: ${response.status}`);
     }
     
@@ -241,7 +242,7 @@ export async function autocompleteOccupations(query: string): Promise<Autocomple
       type: 'occupation'
     }));
   } catch (error) {
-    console.log('[Taxonomy] API failed, using mock suggestions');
+    jobLogger.debug('Taxonomy API failed, using mock suggestions');
     // Fallback till mock-data filtrerat på query
     return POPULAR_OCCUPATIONS
       .filter(o => o.label.toLowerCase().includes(query.toLowerCase()))

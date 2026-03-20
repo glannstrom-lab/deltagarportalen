@@ -11,6 +11,7 @@ import { ThemeProvider } from './contexts/ThemeContext'
 import './i18n/config' // Initiera i18n
 import './index.css'
 import './styles/mobile.css'
+import { swLogger } from './lib/logger'
 
 // Global error handler for chunk load errors
 // This catches errors that might slip past ErrorBoundary
@@ -23,7 +24,7 @@ window.addEventListener('error', (event) => {
     message.includes('loading chunk') ||
     message.includes('failed to fetch dynamically')
   ) {
-    console.warn('[Global Error Handler] ChunkLoadError detected:', event.error)
+    swLogger.warn('ChunkLoadError detected:', event.error)
     
     // Prevent default error handling
     event.preventDefault()
@@ -49,7 +50,7 @@ window.addEventListener('unhandledrejection', (event) => {
     message.includes('loading chunk') ||
     message.includes('failed to fetch dynamically')
   ) {
-    console.warn('[Global Rejection Handler] ChunkLoadError detected:', event.reason)
+    swLogger.warn('Chunk load rejection detected:', event.reason)
     
     event.preventDefault()
     
@@ -80,10 +81,10 @@ if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then(registration => {
-        console.log('[SW] Registrerad:', registration.scope)
+        swLogger.debug('Registrerad:', registration.scope)
       })
       .catch(error => {
-        console.log('[SW] Registrering misslyckades:', error)
+        swLogger.debug('Registrering misslyckades:', error)
       })
   })
 }

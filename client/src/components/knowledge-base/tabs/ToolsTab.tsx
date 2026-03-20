@@ -5,6 +5,7 @@
 
 import { Wrench, Download, FileText, CheckSquare, Calculator, Calendar, Star } from 'lucide-react'
 import { Card, Button } from '@/components/ui'
+import { logger } from '@/lib/logger'
 
 interface Tool {
   id: string
@@ -107,7 +108,7 @@ const categoryLabels: Record<string, { label: string; color: string }> = {
 export default function ToolsTab() {
   const handleDownload = (toolId: string) => {
     // Track download
-    console.log(`Downloading ${toolId}`)
+    logger.debug(`Downloading ${toolId}`)
     // In real implementation, this would trigger file download
   }
   

@@ -7,6 +7,7 @@
  */
 
 import { supabase } from '@/lib/supabase'
+import { storageLogger } from '@/lib/logger'
 
 // Hjälpfunktion för att hämta aktuell användare
 async function getCurrentUser() {
@@ -18,16 +19,16 @@ async function getCurrentUser() {
 function handleStorageError(error: any, context: string): void {
   // RLS-policy fel (42501) - logga tyst
   if (error?.code === '42501') {
-    console.log(`[CloudStorage] RLS policy förhindrar ${context} - använder fallback`)
+    storageLogger.debug(`RLS policy förhindrar ${context} - använder fallback`)
     return
   }
   // Användaren inte inloggad
   if (error?.code === 'PGRST116' || error?.status === 401 || error?.status === 406) {
-    console.log(`[CloudStorage] Användare inte inloggad för ${context} - använder fallback`)
+    storageLogger.debug(`Användare inte inloggad för ${context} - använder fallback`)
     return
   }
   // Andra fel - logga för debugging
-  console.error(`[CloudStorage] Fel vid ${context}:` , error)
+  storageLogger.error(`Fel vid ${context}:`, error)
 }
 
 // ============================================
@@ -134,7 +135,7 @@ export const articleProgressApi = {
       .limit(1)
     
     if (error && error.code !== 'PGRST116') {
-      console.error('Error getting progress:', error)
+      storageLogger.error('Error getting progress:', error)
     }
     return data?.[0] || null
   },
@@ -162,7 +163,7 @@ export const articleProgressApi = {
       })
     
     if (error && error.code !== '42501') {
-      console.error('Error updating progress:', error)
+      storageLogger.error('Error updating progress:', error)
     }
   },
 
@@ -182,7 +183,7 @@ export const articleProgressApi = {
       })
     
     if (error && error.code !== '42501') {
-      console.error('Error pausing progress:', error)
+      storageLogger.error('Error pausing progress:', error)
     }
   }
 }
@@ -354,16 +355,16 @@ export const moodHistoryApi = {
   async add(mood: number, note?: string) {
     const user = await getCurrentUser()
     if (!user) {
-      console.log('[CloudStorage] Ingen användare inloggad - humör sparas inte')
+      storageLogger.debug('Ingen användare inloggad - humör sparas inte')
       return
     }
 
     const { error } = await supabase
       .from('mood_history')
-      .insert({ 
+      .insert({
         user_id: user.id,
-        mood, 
-        note 
+        mood,
+        note
       })
     
     if (error) {
@@ -403,17 +404,17 @@ export const journalApi = {
   async add(content: string, mood?: number, tags?: string[]) {
     const user = await getCurrentUser()
     if (!user) {
-      console.log('[CloudStorage] Ingen användare inloggad - dagbok sparas inte')
+      storageLogger.debug('Ingen användare inloggad - dagbok sparas inte')
       return
     }
 
     const { error } = await supabase
       .from('journal_entries')
-      .insert({ 
+      .insert({
         user_id: user.id,
-        content, 
-        mood, 
-        tags 
+        content,
+        mood,
+        tags
       })
     
     if (error) {
@@ -455,7 +456,7 @@ export const interestGuideApi = {
       .limit(1)
     
     if (error && error.code !== 'PGRST116') {
-      console.error('Error getting interest guide progress:', error)
+      storageLogger.error('Error getting interest guide progress:', error)
     }
     return data?.[0] || null
   },
@@ -468,7 +469,7 @@ export const interestGuideApi = {
   }) {
     const user = await getCurrentUser()
     if (!user) {
-      console.log('[CloudStorage] Ingen användare inloggad - intresseguide sparas inte')
+      storageLogger.debug('Ingen användare inloggad - intresseguide sparas inte')
       return
     }
 
@@ -579,7 +580,7 @@ export const notificationsApi = {
       .limit(1)
     
     if (error && error.code !== 'PGRST116') {
-      console.error('Error getting notification preferences:', error)
+      storageLogger.error('Error getting notification preferences:', error)
     }
     return data?.[0] || null
   },
@@ -587,7 +588,7 @@ export const notificationsApi = {
   async updatePreferences(preferences: any) {
     const user = await getCurrentUser()
     if (!user) {
-      console.log('[CloudStorage] Ingen användare inloggad - notifikationsinställningar sparas inte')
+      storageLogger.debug('Ingen användare inloggad - notifikationsinställningar sparas inte')
       return
     }
 
@@ -627,7 +628,7 @@ export const draftsApi = {
       .limit(1)
     
     if (error && error.code !== 'PGRST116') {
-      console.error('Error getting draft:', error)
+      storageLogger.error('Error getting draft:', error)
     }
     return data?.[0]?.data || null
   },
@@ -1167,7 +1168,7 @@ export const moodApi = {
   async logMood(mood: MoodType, note?: string): Promise<boolean> {
     const user = await getCurrentUser()
     if (!user) {
-      console.log('[CloudStorage] Ingen användare inloggad - humör sparas inte')
+      storageLogger.debug('Ingen användare inloggad - humör sparas inte')
       return false
     }
 

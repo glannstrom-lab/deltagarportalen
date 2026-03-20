@@ -6,6 +6,8 @@
  * ANVÄNDER SUPABASE EDGE FUNCTIONS (ingen CORS!)
  */
 
+import { jobLogger } from '@/lib/logger';
+
 // Supabase config
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
@@ -14,7 +16,7 @@ async function fetchFromJobEd(endpoint: string, params?: Record<string, string>)
   const queryParams = params ? '?' + new URLSearchParams(params).toString() : '';
   const functionUrl = `${SUPABASE_URL}/functions/v1/af-jobed${endpoint}${queryParams}`;
   
-  console.log('Calling Edge Function (JobEd):', functionUrl);
+  jobLogger.debug('Calling Edge Function (JobEd):', functionUrl);
   
   // Timeout efter 10 sekunder
   const controller = new AbortController();
