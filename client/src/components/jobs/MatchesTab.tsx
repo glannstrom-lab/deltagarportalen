@@ -14,7 +14,9 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
-import { cvApi, interestApi } from '@/services/supabaseApi'
+import { cvApi } from '@/services/supabaseApi'
+import { interestGuideApi } from '@/services/cloudStorage'
+import { calculateUserProfile } from '@/services/interestGuideData'
 import { unifiedProfileApi } from '@/services/unifiedProfileApi'
 import { useSavedJobs } from '@/hooks/useSavedJobs'
 import { matchJobsToInterests, type RiasecScores, type JobInterestMatch } from '@/services/interestJobMatching'
@@ -538,36 +540,24 @@ export function MatchesTab() {
         e.title
       ).filter(Boolean) || []
 
-      // Get interest guide results
-      const interestResult = await interestApi.getResult()
-      console.log('[MatchesTab] Interest result from API:', interestResult)
-
+      // Get interest guide results from progress (where answers are actually stored)
+      const interestProgress = await interestGuideApi.getProgress()
       let riasecScores: RiasecScores | null = null
-      if (interestResult) {
-        // Check nested format first (riasec_profile.scores)
-        if (interestResult.riasec_profile?.scores) {
-          console.log('[MatchesTab] Found nested riasec_profile.scores')
-          riasecScores = interestResult.riasec_profile.scores as RiasecScores
-        }
-        // Check for direct columns format (database schema)
-        else if (typeof interestResult.realistic === 'number' || typeof interestResult.investigative === 'number') {
-          console.log('[MatchesTab] Found direct RIASEC columns')
-          riasecScores = {
-            realistic: interestResult.realistic || 0,
-            investigative: interestResult.investigative || 0,
-            artistic: interestResult.artistic || 0,
-            social: interestResult.social || 0,
-            enterprising: interestResult.enterprising || 0,
-            conventional: interestResult.conventional || 0
-          }
-        } else {
-          console.log('[MatchesTab] No RIASEC data found in result. Keys:', Object.keys(interestResult))
-        }
-      } else {
-        console.log('[MatchesTab] No interest result returned')
-      }
 
-      console.log('[MatchesTab] Final riasecScores:', riasecScores)
+      if (interestProgress?.is_completed && interestProgress.answers) {
+        // Calculate RIASEC profile from answers
+        const profile = calculateUserProfile(interestProgress.answers)
+        if (profile?.riasec) {
+          riasecScores = {
+            realistic: profile.riasec.R || 0,
+            investigative: profile.riasec.I || 0,
+            artistic: profile.riasec.A || 0,
+            social: profile.riasec.S || 0,
+            enterprising: profile.riasec.E || 0,
+            conventional: profile.riasec.C || 0
+          }
+        }
+      }
 
       // Get unified profile for career goals
       const unifiedProfile = await unifiedProfileApi.getProfile()
