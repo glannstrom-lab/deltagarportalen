@@ -599,25 +599,32 @@ export function MatchesTab() {
       searchTerms.push(...profile.careerGoals.preferredRoles.slice(0, 2))
     }
 
-    // If no search terms, use generic searches based on RIASEC
-    if (searchTerms.length === 0 && profile.riasecScores) {
+    // Always add RIASEC-based search terms if profile exists
+    // This ensures we find relevant jobs for interest matching
+    if (profile.riasecScores) {
       const dominantTypes = Object.entries(profile.riasecScores)
         .sort(([, a], [, b]) => b - a)
         .slice(0, 2)
         .map(([type]) => type)
 
-      // Map RIASEC to search terms
+      // Expanded RIASEC search terms for better job discovery
       const riasecSearches: Record<string, string[]> = {
-        realistic: ['tekniker', 'byggjobb'],
-        investigative: ['utvecklare', 'analytiker'],
-        artistic: ['designer', 'kreativ'],
-        social: ['lärare', 'vård'],
-        enterprising: ['säljare', 'projektledare'],
-        conventional: ['administratör', 'ekonom']
+        realistic: ['tekniker', 'mekaniker', 'elektriker', 'montör', 'lager', 'produktion', 'bygg'],
+        investigative: ['utvecklare', 'analytiker', 'ingenjör', 'IT', 'system', 'data'],
+        artistic: ['designer', 'kreativ', 'marknadsföring', 'kommunikation', 'grafisk'],
+        social: ['lärare', 'vård', 'omsorg', 'pedagog', 'kundservice', 'stöd'],
+        enterprising: ['säljare', 'projektledare', 'chef', 'affär', 'konsult'],
+        conventional: ['administratör', 'ekonom', 'redovisning', 'kontor', 'handläggare']
       }
 
       dominantTypes.forEach(type => {
-        searchTerms.push(...(riasecSearches[type] || []))
+        const terms = riasecSearches[type] || []
+        // Add terms that aren't already included
+        terms.forEach(term => {
+          if (!searchTerms.some(s => s.toLowerCase().includes(term.toLowerCase()))) {
+            searchTerms.push(term)
+          }
+        })
       })
     }
 
@@ -746,17 +753,26 @@ export function MatchesTab() {
       let totalScore = 0
       let weights = 0
 
-      if (activeSources.includes('cv') && cvScore > 0) {
-        totalScore += cvScore * 0.4
-        weights += 0.4
+      // Count active sources for proper weighting
+      const activeSourceCount = activeSources.length
+
+      if (activeSources.includes('cv')) {
+        if (cvScore > 0) {
+          totalScore += cvScore * 0.4
+          weights += 0.4
+        }
       }
-      if (activeSources.includes('interest') && interestScore > 0) {
+      if (activeSources.includes('interest')) {
+        // Always add interest score if source is active (even if 0)
+        // This ensures proper weighting when only interest is selected
         totalScore += interestScore * 0.35
         weights += 0.35
       }
-      if (activeSources.includes('career') && careerScore > 0) {
-        totalScore += careerScore * 0.25
-        weights += 0.25
+      if (activeSources.includes('career')) {
+        if (careerScore > 0) {
+          totalScore += careerScore * 0.25
+          weights += 0.25
+        }
       }
 
       // Normalize if not all sources active

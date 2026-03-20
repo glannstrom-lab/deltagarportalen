@@ -159,42 +159,64 @@ function calculateRiasecMatch(
   dominantTypes: Array<{ type: string; score: number }>
 ): { score: number; matchedTypes: string[] } {
   const jobText = `${job.headline} ${job.description?.text || ''}`.toLowerCase()
+  const occupationType = (job.occupation?.label || '').toLowerCase()
   let totalScore = 0
   const matchedTypes: string[] = []
-  
+
+  // Normalize dominant type scores to sum to 100 for proper weighting
+  const totalDominantScore = dominantTypes.reduce((sum, t) => sum + t.score, 0)
+
   for (const { type, score } of dominantTypes) {
     const mapping = riasecJobMapping[type as keyof RiasecScores]
-    let typeMatches = 0
-    
-    // Kolla keywords
+    let keywordMatches = 0
+    let occupationMatch = false
+
+    // Check keywords in job text
     for (const keyword of mapping.keywords) {
       if (jobText.includes(keyword.toLowerCase())) {
-        typeMatches++
+        keywordMatches++
       }
     }
-    
-    // Kolla yrkesgrupper
-    const occupationType = job.occupation?.label || ''
+
+    // Check occupation groups
     for (const group of mapping.occupationGroups) {
-      if (occupationType.toLowerCase().includes(group.toLowerCase())) {
-        typeMatches += 2 // Högre vikt för yrkesgrupp
+      if (occupationType.includes(group.toLowerCase())) {
+        occupationMatch = true
+        break
       }
     }
-    
-    // Vikta poängen baserat på användarens RIASEC-score
-    const weightedScore = (typeMatches * score * 100) / (mapping.keywords.length + mapping.occupationGroups.length * 2)
-    totalScore += weightedScore
-    
-    if (typeMatches > 0) {
+
+    // Calculate match score for this type
+    // - Each keyword match gives points
+    // - Occupation group match gives bonus
+    // - Weight by user's score for this type
+    let typeScore = 0
+
+    if (keywordMatches > 0 || occupationMatch) {
+      // Base score: percentage of keywords matched (0-60)
+      const keywordScore = Math.min(60, (keywordMatches / 3) * 60)
+
+      // Occupation bonus (0-40)
+      const occupationBonus = occupationMatch ? 40 : 0
+
+      // Combine scores
+      typeScore = keywordScore + occupationBonus
+
+      // Weight by user's dominance in this type (normalized)
+      const typeWeight = totalDominantScore > 0 ? (score / totalDominantScore) : 0.33
+      totalScore += typeScore * typeWeight
+
       matchedTypes.push(type)
     }
   }
-  
-  // Normalisera till 0-100
-  const normalizedScore = Math.min(100, Math.round(totalScore / dominantTypes.length))
-  
+
+  // Ensure minimum score of 30 if any type matched (shows relevance)
+  const finalScore = matchedTypes.length > 0
+    ? Math.max(30, Math.min(100, Math.round(totalScore)))
+    : 0
+
   return {
-    score: normalizedScore,
+    score: finalScore,
     matchedTypes
   }
 }
