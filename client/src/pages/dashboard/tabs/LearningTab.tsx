@@ -1,163 +1,820 @@
 /**
- * LearningTab - Mikro-learning och utbildning
- * Lär dig nya färdigheter för jobbsökande
+ * LearningTab - Comprehensive learning hub
+ * Articles, exercises, progress tracking, and recommendations
  */
+
 import { useState } from 'react'
-import { motion } from 'framer-motion'
-import { BookOpen, Play, Clock, CheckCircle2, Award, Star, TrendingUp } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import {
+  BookOpen, Play, Clock, CheckCircle2, Award, Star, TrendingUp,
+  ArrowLeft, Flame, Target, Lightbulb, ChevronRight, Loader2,
+  RefreshCw, FileText, Dumbbell, Sparkles, Zap
+} from 'lucide-react'
 import { Button } from '@/components/ui/Button'
-import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
+import { useLearning } from '@/hooks/useLearning'
+import type { ArticleWithProgress, ExerciseWithProgress, LearningCategory } from '@/services/learningService'
 
-// Mock lektioner
-const lessons = [
-  { id: '1', title: 'Intervjuteknik: De 3 vanligaste frågorna', duration: '3 min', type: 'video', completed: true, category: 'Intervju' },
-  { id: '2', title: 'Hur du skriver ett CV som syns för ATS', duration: '5 min', type: 'article', completed: false, category: 'CV' },
-  { id: '3', title: 'Nätverkande för introverter', duration: '4 min', type: 'video', completed: false, category: 'Nätverk' },
-  { id: '4', title: 'Så hanterar du nervositet inför intervju', duration: '6 min', type: 'video', completed: false, category: 'Psykologi' },
-  { id: '5', title: 'LinkedIn-optimering för jobbsökare', duration: '4 min', type: 'article', completed: false, category: 'Nätverk' },
-]
-
-const categories = ['Alla', 'CV', 'Intervju', 'Nätverk', 'Psykologi']
+type ViewMode = 'home' | 'category' | 'article' | 'exercise'
 
 export default function LearningTab() {
-  const [activeCategory, setActiveCategory] = useState('Alla')
-  const [activeLesson, setActiveLesson] = useState<typeof lessons[0] | null>(null)
-  const [completed, setCompleted] = useState<string[]>(['1'])
+  const {
+    progress,
+    recommendedArticles,
+    inProgressArticles,
+    categories,
+    exercises,
+    dailyTip,
+    isLoading,
+    error,
+    refresh,
+    completeArticle,
+    loadCategoryArticles
+  } = useLearning()
 
-  const filteredLessons = activeCategory === 'Alla' 
-    ? lessons 
-    : lessons.filter(l => l.category === activeCategory)
+  const [viewMode, setViewMode] = useState<ViewMode>('home')
+  const [selectedCategory, setSelectedCategory] = useState<LearningCategory | null>(null)
+  const [selectedArticle, setSelectedArticle] = useState<ArticleWithProgress | null>(null)
+  const [selectedExercise, setSelectedExercise] = useState<ExerciseWithProgress | null>(null)
+  const [categoryArticles, setCategoryArticles] = useState<ArticleWithProgress[]>([])
+  const [isLoadingCategory, setIsLoadingCategory] = useState(false)
 
-  const markComplete = (id: string) => {
-    setCompleted([...completed, id])
-    setActiveLesson(null)
+  const handleSelectCategory = async (category: LearningCategory) => {
+    setSelectedCategory(category)
+    setViewMode('category')
+    setIsLoadingCategory(true)
+    const articles = await loadCategoryArticles(category.id)
+    setCategoryArticles(articles)
+    setIsLoadingCategory(false)
   }
 
-  const progress = Math.round((completed.length / lessons.length) * 100)
+  const handleSelectArticle = (article: ArticleWithProgress) => {
+    setSelectedArticle(article)
+    setViewMode('article')
+  }
 
-  if (activeLesson) {
+  const handleSelectExercise = (exercise: ExerciseWithProgress) => {
+    setSelectedExercise(exercise)
+    setViewMode('exercise')
+  }
+
+  const handleBack = () => {
+    if (viewMode === 'article' || viewMode === 'exercise') {
+      if (selectedCategory) {
+        setViewMode('category')
+      } else {
+        setViewMode('home')
+      }
+    } else if (viewMode === 'category') {
+      setViewMode('home')
+      setSelectedCategory(null)
+    }
+    setSelectedArticle(null)
+    setSelectedExercise(null)
+  }
+
+  if (isLoading) {
     return (
-      <div className="space-y-6">
-        <button onClick={() => setActiveLesson(null)} className="text-slate-500 hover:text-slate-700 flex items-center gap-1">
-          ← Tillbaka till lektioner
-        </button>
-        
-        <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-          <div className="aspect-video bg-slate-800 flex items-center justify-center">
-            <button className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors">
-              <Play size={32} className="text-white ml-1" />
-            </button>
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" />
+          <p className="text-slate-500">Laddar lärande...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="text-center py-12">
+        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <BookOpen className="w-8 h-8 text-red-500" />
+        </div>
+        <h3 className="text-lg font-semibold text-slate-800 mb-2">
+          Kunde inte ladda lärande
+        </h3>
+        <p className="text-slate-500 mb-4">{error}</p>
+        <Button onClick={refresh} variant="outline">
+          <RefreshCw className="w-4 h-4 mr-2" />
+          Försök igen
+        </Button>
+      </div>
+    )
+  }
+
+  // Article view
+  if (viewMode === 'article' && selectedArticle) {
+    return (
+      <ArticleView
+        article={selectedArticle}
+        onBack={handleBack}
+        onComplete={() => completeArticle(selectedArticle.id)}
+      />
+    )
+  }
+
+  // Exercise view
+  if (viewMode === 'exercise' && selectedExercise) {
+    return (
+      <ExerciseView
+        exercise={selectedExercise}
+        onBack={handleBack}
+      />
+    )
+  }
+
+  // Category view
+  if (viewMode === 'category' && selectedCategory) {
+    return (
+      <CategoryView
+        category={selectedCategory}
+        articles={categoryArticles}
+        isLoading={isLoadingCategory}
+        onBack={handleBack}
+        onSelectArticle={handleSelectArticle}
+      />
+    )
+  }
+
+  // Home view
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <BookOpen className="text-violet-500" size={28} />
+            Lärande
+          </h2>
+          <p className="text-slate-500">Utveckla dina färdigheter för jobbsökningen</p>
+        </div>
+        <Button onClick={refresh} variant="secondary" size="sm">
+          <RefreshCw className="w-4 h-4" />
+        </Button>
+      </div>
+
+      {/* Progress summary */}
+      {progress && (
+        <ProgressSummary progress={progress} />
+      )}
+
+      {/* Daily tip */}
+      {dailyTip && (
+        <DailyTipCard tip={dailyTip} />
+      )}
+
+      {/* Continue learning */}
+      {inProgressArticles.length > 0 && (
+        <Section
+          title="Fortsätt läsa"
+          icon={<Play className="text-amber-500" />}
+        >
+          <div className="space-y-3">
+            {inProgressArticles.map((article, index) => (
+              <motion.div
+                key={article.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <ArticleCard
+                  article={article}
+                  onClick={() => handleSelectArticle(article)}
+                  showProgress
+                />
+              </motion.div>
+            ))}
           </div>
-          <div className="p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded-full">{activeLesson.category}</span>
-              <span className="text-xs text-slate-500 flex items-center gap-1">
-                <Clock size={12} /> {activeLesson.duration}
-              </span>
-            </div>
-            <h2 className="text-xl font-bold text-slate-800 mb-4">{activeLesson.title}</h2>
-            <p className="text-slate-600 mb-6">
-              I denna lektion lär du dig de viktigaste strategierna för att lyckas. 
-              Vi går igenom praktiska tips som du kan använda direkt.
-            </p>
-            <Button 
-              onClick={() => markComplete(activeLesson.id)}
-              className="w-full"
-              disabled={completed.includes(activeLesson.id)}
+        </Section>
+      )}
+
+      {/* Recommended articles */}
+      <Section
+        title="Rekommenderat för dig"
+        icon={<Star className="text-violet-500" />}
+      >
+        <div className="grid gap-3 sm:grid-cols-2">
+          {recommendedArticles.slice(0, 4).map((article, index) => (
+            <motion.div
+              key={article.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
             >
-              {completed.includes(activeLesson.id) ? (
-                <><CheckCircle2 size={18} className="mr-2" /> Avklarad (+10 XP)</>
-              ) : (
-                <><CheckCircle2 size={18} className="mr-2" /> Markera som klar (+10 XP)</>
-              )}
-            </Button>
+              <ArticleCard
+                article={article}
+                onClick={() => handleSelectArticle(article)}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Exercises */}
+      <Section
+        title="Övningar"
+        icon={<Dumbbell className="text-emerald-500" />}
+      >
+        <div className="grid gap-3 sm:grid-cols-2">
+          {exercises.slice(0, 4).map((exercise, index) => (
+            <motion.div
+              key={exercise.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.05 }}
+            >
+              <ExerciseCard
+                exercise={exercise}
+                onClick={() => handleSelectExercise(exercise)}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+
+      {/* Categories */}
+      <Section
+        title="Kategorier"
+        icon={<Target className="text-blue-500" />}
+      >
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {categories.slice(0, 6).map((category, index) => (
+            <motion.div
+              key={category.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.03 }}
+            >
+              <CategoryCard
+                category={category}
+                onClick={() => handleSelectCategory(category)}
+              />
+            </motion.div>
+          ))}
+        </div>
+      </Section>
+    </div>
+  )
+}
+
+// ============================================
+// PROGRESS SUMMARY
+// ============================================
+
+interface ProgressSummaryProps {
+  progress: {
+    articlesRead: number
+    articlesInProgress: number
+    exercisesCompleted: number
+    totalXP: number
+    streak: number
+  }
+}
+
+function ProgressSummary({ progress }: ProgressSummaryProps) {
+  return (
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <StatCard
+        icon={<FileText className="text-violet-500" />}
+        value={progress.articlesRead}
+        label="Artiklar lästa"
+        color="violet"
+      />
+      <StatCard
+        icon={<Dumbbell className="text-emerald-500" />}
+        value={progress.exercisesCompleted}
+        label="Övningar klara"
+        color="emerald"
+      />
+      <StatCard
+        icon={<Zap className="text-amber-500" />}
+        value={progress.totalXP}
+        label="Total XP"
+        color="amber"
+      />
+      <StatCard
+        icon={<Flame className="text-orange-500" />}
+        value={progress.streak}
+        label="Dagars streak"
+        color="orange"
+      />
+    </div>
+  )
+}
+
+interface StatCardProps {
+  icon: React.ReactNode
+  value: number
+  label: string
+  color: 'violet' | 'emerald' | 'amber' | 'orange'
+}
+
+function StatCard({ icon, value, label, color }: StatCardProps) {
+  const bgColors = {
+    violet: 'bg-violet-50',
+    emerald: 'bg-emerald-50',
+    amber: 'bg-amber-50',
+    orange: 'bg-orange-50'
+  }
+
+  return (
+    <div className={cn("rounded-xl p-4", bgColors[color])}>
+      <div className="flex items-center gap-2 mb-1">
+        {icon}
+        <span className="text-2xl font-bold text-slate-800">{value}</span>
+      </div>
+      <p className="text-xs text-slate-500">{label}</p>
+    </div>
+  )
+}
+
+// ============================================
+// DAILY TIP
+// ============================================
+
+interface DailyTipCardProps {
+  tip: { title: string; content: string }
+}
+
+function DailyTipCard({ tip }: DailyTipCardProps) {
+  return (
+    <div className="bg-gradient-to-r from-violet-50 to-indigo-50 rounded-xl border border-violet-100 p-4">
+      <div className="flex items-start gap-3">
+        <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Lightbulb className="text-violet-600" size={20} />
+        </div>
+        <div>
+          <h4 className="font-semibold text-slate-800">{tip.title}</h4>
+          <p className="text-sm text-slate-600 mt-1">{tip.content}</p>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// SECTION
+// ============================================
+
+interface SectionProps {
+  title: string
+  icon: React.ReactNode
+  children: React.ReactNode
+}
+
+function Section({ title, icon, children }: SectionProps) {
+  return (
+    <div>
+      <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
+        {icon}
+        {title}
+      </h3>
+      {children}
+    </div>
+  )
+}
+
+// ============================================
+// ARTICLE CARD
+// ============================================
+
+interface ArticleCardProps {
+  article: ArticleWithProgress
+  onClick: () => void
+  showProgress?: boolean
+}
+
+function ArticleCard({ article, onClick, showProgress }: ArticleCardProps) {
+  const difficultyColors = {
+    easy: 'bg-emerald-100 text-emerald-700',
+    medium: 'bg-amber-100 text-amber-700',
+    detailed: 'bg-red-100 text-red-700'
+  }
+
+  const difficultyLabels = {
+    easy: 'Lätt',
+    medium: 'Medel',
+    detailed: 'Detaljerad'
+  }
+
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        "bg-white p-4 rounded-xl border transition-all cursor-pointer",
+        article.isCompleted
+          ? "border-emerald-200 bg-emerald-50/30"
+          : "border-slate-200 hover:border-violet-300 hover:shadow-md"
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <div className={cn(
+          "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
+          article.isCompleted ? "bg-emerald-100" : "bg-violet-100"
+        )}>
+          {article.isCompleted ? (
+            <CheckCircle2 className="text-emerald-600" size={20} />
+          ) : (
+            <FileText className="text-violet-600" size={20} />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className={cn(
+            "font-semibold line-clamp-2",
+            article.isCompleted ? "text-slate-500" : "text-slate-800"
+          )}>
+            {article.title}
+          </h4>
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <span className={cn(
+              "text-xs px-2 py-0.5 rounded-full",
+              difficultyColors[article.difficulty]
+            )}>
+              {difficultyLabels[article.difficulty]}
+            </span>
+            <span className="text-xs text-slate-500 flex items-center gap-1">
+              <Clock size={12} />
+              {article.readingTime} min
+            </span>
+          </div>
+          {showProgress && article.progress > 0 && !article.isCompleted && (
+            <div className="mt-2">
+              <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-violet-500 rounded-full"
+                  style={{ width: `${article.progress}%` }}
+                />
+              </div>
+              <span className="text-xs text-slate-500 mt-1">{article.progress}% läst</span>
+            </div>
+          )}
+        </div>
+        {article.isCompleted && (
+          <span className="text-xs text-emerald-600 font-medium flex items-center gap-1 flex-shrink-0">
+            <Award size={14} />
+            +10 XP
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// EXERCISE CARD
+// ============================================
+
+interface ExerciseCardProps {
+  exercise: ExerciseWithProgress
+  onClick: () => void
+}
+
+function ExerciseCard({ exercise, onClick }: ExerciseCardProps) {
+  const difficultyColors = {
+    'Lätt': 'bg-emerald-100 text-emerald-700',
+    'Medel': 'bg-amber-100 text-amber-700',
+    'Utmanande': 'bg-red-100 text-red-700'
+  }
+
+  return (
+    <div
+      onClick={onClick}
+      className={cn(
+        "bg-white p-4 rounded-xl border transition-all cursor-pointer",
+        exercise.isCompleted
+          ? "border-emerald-200 bg-emerald-50/30"
+          : "border-slate-200 hover:border-emerald-300 hover:shadow-md"
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <div className={cn(
+          "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
+          exercise.isCompleted ? "bg-emerald-100" : "bg-emerald-100"
+        )}>
+          {exercise.isCompleted ? (
+            <CheckCircle2 className="text-emerald-600" size={20} />
+          ) : (
+            <Dumbbell className="text-emerald-600" size={20} />
+          )}
+        </div>
+        <div className="flex-1 min-w-0">
+          <h4 className={cn(
+            "font-semibold line-clamp-2",
+            exercise.isCompleted ? "text-slate-500" : "text-slate-800"
+          )}>
+            {exercise.title}
+          </h4>
+          <div className="flex items-center gap-2 mt-2 flex-wrap">
+            <span className={cn(
+              "text-xs px-2 py-0.5 rounded-full",
+              difficultyColors[exercise.difficulty]
+            )}>
+              {exercise.difficulty}
+            </span>
+            <span className="text-xs text-slate-500 flex items-center gap-1">
+              <Clock size={12} />
+              {exercise.duration}
+            </span>
           </div>
         </div>
+        {exercise.isCompleted && (
+          <span className="text-xs text-emerald-600 font-medium flex items-center gap-1 flex-shrink-0">
+            <Award size={14} />
+            +20 XP
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// CATEGORY CARD
+// ============================================
+
+interface CategoryCardProps {
+  category: LearningCategory
+  onClick: () => void
+}
+
+function CategoryCard({ category, onClick }: CategoryCardProps) {
+  const progress = category.articleCount > 0
+    ? Math.round((category.completedCount / category.articleCount) * 100)
+    : 0
+
+  return (
+    <div
+      onClick={onClick}
+      className="bg-white p-4 rounded-xl border border-slate-200 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer"
+    >
+      <div className="flex items-center justify-between mb-2">
+        <h4 className="font-semibold text-slate-800">{category.name}</h4>
+        <ChevronRight className="text-slate-400" size={20} />
+      </div>
+      <p className="text-sm text-slate-500 line-clamp-2 mb-3">{category.description}</p>
+      <div className="flex items-center justify-between text-xs">
+        <span className="text-slate-500">
+          {category.completedCount}/{category.articleCount} artiklar
+        </span>
+        {progress > 0 && (
+          <span className="text-emerald-600 font-medium">{progress}%</span>
+        )}
+      </div>
+      {progress > 0 && (
+        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden mt-2">
+          <div
+            className="h-full bg-emerald-500 rounded-full"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ============================================
+// CATEGORY VIEW
+// ============================================
+
+interface CategoryViewProps {
+  category: LearningCategory
+  articles: ArticleWithProgress[]
+  isLoading: boolean
+  onBack: () => void
+  onSelectArticle: (article: ArticleWithProgress) => void
+}
+
+function CategoryView({ category, articles, isLoading, onBack, onSelectArticle }: CategoryViewProps) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
       </div>
     )
   }
 
   return (
     <div className="space-y-6">
-      {/* Header */}
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        Tillbaka
+      </button>
+
       <div>
-        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-          <BookOpen className="text-violet-500" size={28} />
-          Lärande
-        </h2>
-        <p className="text-slate-500">Mikro-lektioner för att bli en starkare kandidat</p>
+        <h2 className="text-2xl font-bold text-slate-800">{category.name}</h2>
+        <p className="text-slate-500 mt-1">{category.description}</p>
       </div>
 
-      {/* Progress */}
-      <div className="bg-white p-4 rounded-xl border border-slate-200">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600">Din progress</span>
-          <span className="text-sm font-medium">{completed.length}/{lessons.length} lektioner</span>
-        </div>
-        <Progress value={progress} className="h-2" />
-      </div>
-
-      {/* Categories */}
-      <div className="flex gap-2 flex-wrap">
-        {categories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
-            className={cn(
-              "px-4 py-2 rounded-full text-sm font-medium transition-colors",
-              activeCategory === cat
-                ? 'bg-violet-100 text-violet-700'
-                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-            )}
-          >
-            {cat}
-          </button>
-        ))}
-      </div>
-
-      {/* Lessons */}
       <div className="space-y-3">
-        {filteredLessons.map((lesson, index) => (
+        {articles.map((article, index) => (
           <motion.div
-            key={lesson.id}
+            key={article.id}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.05 }}
-            onClick={() => setActiveLesson(lesson)}
-            className={cn(
-              "bg-white p-4 rounded-xl border transition-all cursor-pointer flex items-center gap-4",
-              completed.includes(lesson.id) 
-                ? 'border-emerald-200 bg-emerald-50/30' 
-                : 'border-slate-200 hover:border-violet-300'
-            )}
+            transition={{ delay: index * 0.03 }}
           >
-            <div className={cn(
-              "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0",
-              completed.includes(lesson.id) ? 'bg-emerald-100' : 'bg-violet-100'
-            )}>
-              {completed.includes(lesson.id) ? (
-                <CheckCircle2 size={24} className="text-emerald-600" />
-              ) : (
-                <Play size={20} className="text-violet-600 ml-0.5" />
-              )}
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className={cn("font-semibold", completed.includes(lesson.id) && 'text-slate-500')}>{lesson.title}</h3>
-              <div className="flex items-center gap-3 mt-1">
-                <span className="text-xs px-2 py-0.5 bg-slate-100 rounded-full">{lesson.category}</span>
-                <span className="text-xs text-slate-500 flex items-center gap-1">
-                  <Clock size={12} /> {lesson.duration}
-                </span>
-              </div>
-            </div>
-            {completed.includes(lesson.id) && (
-              <span className="text-xs text-emerald-600 font-medium flex items-center gap-1">
-                <Award size={14} /> +10 XP
-              </span>
-            )}
+            <ArticleCard
+              article={article}
+              onClick={() => onSelectArticle(article)}
+              showProgress
+            />
           </motion.div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// ARTICLE VIEW
+// ============================================
+
+interface ArticleViewProps {
+  article: ArticleWithProgress
+  onBack: () => void
+  onComplete: () => Promise<boolean>
+}
+
+function ArticleView({ article, onBack, onComplete }: ArticleViewProps) {
+  const [isCompleting, setIsCompleting] = useState(false)
+  const [isCompleted, setIsCompleted] = useState(article.isCompleted)
+
+  const handleComplete = async () => {
+    setIsCompleting(true)
+    const success = await onComplete()
+    if (success) {
+      setIsCompleted(true)
+    }
+    setIsCompleting(false)
+  }
+
+  return (
+    <div className="space-y-6">
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        Tillbaka
+      </button>
+
+      <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
+        {/* Header */}
+        <div className="p-6 border-b border-slate-100">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded-full">
+              {article.category}
+            </span>
+            <span className="text-xs text-slate-500 flex items-center gap-1">
+              <Clock size={12} /> {article.readingTime} min
+            </span>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-800">{article.title}</h1>
+          <p className="text-slate-600 mt-2">{article.summary}</p>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <div className="prose prose-slate max-w-none">
+            {article.content.split('\n\n').map((paragraph, i) => {
+              if (paragraph.startsWith('## ')) {
+                return <h2 key={i} className="text-lg font-bold mt-6 mb-3">{paragraph.replace('## ', '')}</h2>
+              }
+              if (paragraph.startsWith('**') && paragraph.endsWith('**')) {
+                return <p key={i} className="font-semibold">{paragraph.replace(/\*\*/g, '')}</p>
+              }
+              return <p key={i} className="mb-4">{paragraph}</p>
+            })}
+          </div>
+        </div>
+
+        {/* Complete button */}
+        <div className="p-6 border-t border-slate-100">
+          <Button
+            onClick={handleComplete}
+            className="w-full"
+            disabled={isCompleted || isCompleting}
+          >
+            {isCompleting ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : isCompleted ? (
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+            ) : (
+              <Sparkles className="w-4 h-4 mr-2" />
+            )}
+            {isCompleted ? 'Avklarad (+10 XP)' : 'Markera som läst (+10 XP)'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// EXERCISE VIEW
+// ============================================
+
+interface ExerciseViewProps {
+  exercise: ExerciseWithProgress
+  onBack: () => void
+}
+
+function ExerciseView({ exercise, onBack }: ExerciseViewProps) {
+  const [currentStep, setCurrentStep] = useState(0)
+
+  return (
+    <div className="space-y-6">
+      <button
+        onClick={onBack}
+        className="flex items-center gap-2 text-slate-600 hover:text-slate-800 transition-colors"
+      >
+        <ArrowLeft size={20} />
+        Tillbaka
+      </button>
+
+      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-xs px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">
+              {exercise.category}
+            </span>
+            <span className="text-xs text-slate-500 flex items-center gap-1">
+              <Clock size={12} /> {exercise.duration}
+            </span>
+          </div>
+          <h1 className="text-2xl font-bold text-slate-800">{exercise.title}</h1>
+          <p className="text-slate-600 mt-2">{exercise.description}</p>
+        </div>
+
+        {/* Progress */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between text-sm mb-2">
+            <span className="text-slate-600">Steg {currentStep + 1} av {exercise.steps.length}</span>
+            <span className="text-slate-500">{Math.round(((currentStep + 1) / exercise.steps.length) * 100)}%</span>
+          </div>
+          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-emerald-500 rounded-full transition-all"
+              style={{ width: `${((currentStep + 1) / exercise.steps.length) * 100}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Current step */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+          >
+            <div className="mb-6">
+              <h3 className="text-lg font-semibold text-slate-800 mb-2">
+                {exercise.steps[currentStep].title}
+              </h3>
+              <p className="text-slate-600">{exercise.steps[currentStep].description}</p>
+            </div>
+
+            <div className="space-y-4">
+              {exercise.steps[currentStep].questions.map(question => (
+                <div key={question.id}>
+                  <label className="block text-sm font-medium text-slate-700 mb-2">
+                    {question.text}
+                  </label>
+                  <textarea
+                    placeholder={question.placeholder}
+                    className="w-full h-24 p-3 border border-slate-200 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  />
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+
+        {/* Navigation */}
+        <div className="flex justify-between mt-6 pt-6 border-t border-slate-100">
+          <Button
+            variant="secondary"
+            onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
+            disabled={currentStep === 0}
+          >
+            Föregående
+          </Button>
+          {currentStep < exercise.steps.length - 1 ? (
+            <Button onClick={() => setCurrentStep(currentStep + 1)}>
+              Nästa steg
+            </Button>
+          ) : (
+            <Button>
+              <CheckCircle2 className="w-4 h-4 mr-2" />
+              Slutför (+20 XP)
+            </Button>
+          )}
+        </div>
       </div>
     </div>
   )
