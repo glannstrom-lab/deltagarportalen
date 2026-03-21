@@ -3,7 +3,6 @@ import {
   Search,
   Moon,
   Sun,
-  Bell,
   User,
   LogOut,
   Settings,
@@ -20,20 +19,12 @@ import { supabase } from '@/lib/supabase'
 import CrisisSupport from '@/components/CrisisSupport'
 import { LanguageSelector } from '@/components/ui/LanguageSelector'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
+import { NotificationBell } from '@/components/notifications/NotificationBell'
 
 interface UserProfile {
   first_name: string
   last_name: string
   avatar_url?: string
-}
-
-interface Notification {
-  id: string
-  title: string
-  message: string
-  read: boolean
-  created_at: string
-  type: 'info' | 'success' | 'warning'
 }
 
 export function TopBar() {
@@ -42,9 +33,7 @@ export function TopBar() {
   const [currentDate, setCurrentDate] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
   const [showUserMenu, setShowUserMenu] = useState(false)
-  const [showNotifications, setShowNotifications] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [notifications, setNotifications] = useState<Notification[]>([])
   const [streak, setStreak] = useState(0)
   const location = useLocation()
   const navigate = useNavigate()
@@ -67,9 +56,6 @@ export function TopBar() {
     // Ladda profil
     loadProfile()
 
-    // Ladda notifikationer
-    loadNotifications()
-
     // Ladda streak
     loadStreak()
   }, [i18n.language])
@@ -82,18 +68,6 @@ export function TopBar() {
       .eq('id', user.id)
       .single()
     if (data) setProfile(data)
-  }
-
-  const loadNotifications = async () => {
-    if (!user) return
-    const { data } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', user.id)
-      .eq('read', false)
-      .order('created_at', { ascending: false })
-      .limit(5)
-    if (data) setNotifications(data)
   }
 
   const loadStreak = async () => {
@@ -129,13 +103,6 @@ export function TopBar() {
     await signOut()
     navigate('/login')
   }
-
-  const markNotificationAsRead = async (id: string) => {
-    await supabase.from('notifications').update({ read: true }).eq('id', id)
-    setNotifications(prev => prev.filter(n => n.id !== id))
-  }
-
-  const unreadCount = notifications.length
 
   // Bestäm vilken sökplaceholder som ska visas baserat på sida
   const getSearchPlaceholder = () => {
@@ -220,67 +187,7 @@ export function TopBar() {
           </div>
 
           {/* Notifikationer */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setShowNotifications(!showNotifications)
-                setShowUserMenu(false)
-              }}
-              className={cn(
-                "w-9 h-9 flex items-center justify-center rounded-lg transition-colors relative",
-                showNotifications ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
-              )}
-              aria-label={`${t('topbar.notifications')}${unreadCount > 0 ? ` (${t('topbar.unreadNotifications', { count: unreadCount })})` : ''}`}
-              aria-expanded={showNotifications}
-              aria-haspopup="true"
-            >
-              <Bell size={18} className={showNotifications ? "text-violet-600 dark:text-violet-400" : "text-stone-500 dark:text-stone-400"} aria-hidden="true" />
-              {unreadCount > 0 && (
-                <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center" aria-hidden="true">
-                  {unreadCount > 9 ? '9+' : unreadCount}
-                </span>
-              )}
-            </button>
-
-            {/* Notifikations-dropdown */}
-            {showNotifications && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowNotifications(false)}
-                />
-                <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-stone-800 rounded-2xl shadow-xl border border-stone-100 dark:border-stone-700 p-2 z-50">
-                  <div className="flex items-center justify-between px-3 py-2 border-b border-stone-100 dark:border-stone-700">
-                    <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('topbar.notifications')}</h3>
-                    {unreadCount > 0 && (
-                      <button
-                        onClick={() => setNotifications([])}
-                        className="text-xs text-violet-600 dark:text-violet-400 hover:text-violet-700"
-                      >
-                        {t('topbar.markAllRead')}
-                      </button>
-                    )}
-                  </div>
-                  <div className="max-h-64 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <p className="text-center text-stone-500 dark:text-stone-400 text-sm py-6">{t('topbar.noNotifications')}</p>
-                    ) : (
-                      notifications.map(n => (
-                        <button
-                          key={n.id}
-                          onClick={() => markNotificationAsRead(n.id)}
-                          className="w-full text-left p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
-                        >
-                          <p className="font-medium text-stone-800 dark:text-stone-100 text-sm">{n.title}</p>
-                          <p className="text-stone-500 dark:text-stone-400 text-xs mt-0.5">{n.message}</p>
-                        </button>
-                      ))
-                    )}
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
+          <NotificationBell />
 
           {/* Divider */}
           <div className="hidden sm:block w-px h-6 bg-stone-200 dark:bg-stone-700 mx-1" />
@@ -288,10 +195,7 @@ export function TopBar() {
           {/* User Menu */}
           <div className="relative">
             <button
-              onClick={() => {
-                setShowUserMenu(!showUserMenu)
-                setShowNotifications(false)
-              }}
+              onClick={() => setShowUserMenu(!showUserMenu)}
               className={cn(
                 "flex items-center gap-1.5 p-1 pr-2 rounded-lg transition-colors",
                 showUserMenu ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"

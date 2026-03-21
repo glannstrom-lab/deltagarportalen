@@ -1,9 +1,9 @@
 import { Outlet, useLocation, Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { 
-  Menu, X, User, Settings, LogOut, 
-  LayoutDashboard, FileText, Mail, Briefcase, Target, 
-  Compass, Dumbbell, Heart, BookOpen, Bookmark 
+import {
+  Menu, X, User, Settings, LogOut,
+  LayoutDashboard, FileText, Mail, Briefcase, Target,
+  Compass, Dumbbell, Heart, BookOpen, Bookmark
 } from 'lucide-react'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
@@ -14,6 +14,7 @@ import { SkipLinks } from './SkipLinks'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
+import { NotificationBell } from './notifications/NotificationBell'
 
 // Mobila navigeringsitems - synkade med Sidebar navigation.ts
 const mobileNavItems = [
@@ -139,15 +140,18 @@ function MobileTopBar() {
               <h1 className="font-semibold text-slate-800 text-lg">{title}</h1>
             )}
           </div>
-          
-          {/* Höger: Meny-knapp */}
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
-            aria-label="Meny"
-          >
-            <Menu className="w-6 h-6 text-slate-700" />
-          </button>
+
+          {/* Höger: Notifikationer + Meny */}
+          <div className="flex items-center gap-1">
+            <NotificationBell variant="compact" />
+            <button
+              onClick={() => setIsMenuOpen(true)}
+              className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
+              aria-label="Meny"
+            >
+              <Menu className="w-6 h-6 text-slate-700" />
+            </button>
+          </div>
         </div>
       </header>
       
