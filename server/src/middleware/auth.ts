@@ -20,7 +20,8 @@ export interface AuthRequest extends Request {
 }
 
 export const generateToken = (userId: string, email: string, role: string): string => {
-  return jwt.sign({ id: userId, email, role }, JWT_SECRET, { expiresIn: '7d' });
+  // JWT giltig i 1 timme - klienten bör hantera token-refresh
+  return jwt.sign({ id: userId, email, role }, JWT_SECRET, { expiresIn: '1h' });
 };
 
 export const verifyToken = (token: string) => {

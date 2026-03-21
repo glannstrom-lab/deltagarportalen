@@ -145,18 +145,23 @@ export interface UseDashboardDataReturn {
 function getDefaultDashboardData(): DashboardWidgetData
 
 // Funktion för att hämta all dashboard-data
+// PRESTANDA: Delat upp i kritisk och sekundär data för snabbare initial rendering
 async function fetchDashboardData(): Promise<DashboardWidgetData> {
   try {
   // Hämta användare EN gång och återanvänd
   const { data: { user } } = await supabase.auth.getUser()
 
-  // Parallella anrop för bättre prestanda
+  // STEG 1: Kritisk data - behövs för att visa huvudinnehåll snabbt
+  const [cv, interestResult, savedJobs, coverLetters] = await Promise.all([
+    cvApi.getCV().catch(() => null),
+    interestApi.getResult().catch(() => null),
+    savedJobsApi.getAll().catch(() => []),
+    coverLetterApi.getAll().catch(() => []),
+  ])
+
+  // STEG 2: Sekundär data - kan laddas parallellt efteråt
   const [
-    cv,
     atsAnalysis,
-    interestResult,
-    savedJobs,
-    coverLetters,
     activities,
     applicationCount,
     cvVersions,
@@ -168,11 +173,7 @@ async function fetchDashboardData(): Promise<DashboardWidgetData> {
     moodStreak,
     articleProgress,
   ] = await Promise.all([
-    cvApi.getCV().catch(() => null),
     cvApi.getATSAnalysis().catch(() => null),
-    interestApi.getResult().catch(() => null),
-    savedJobsApi.getAll().catch(() => []),
-    coverLetterApi.getAll().catch(() => []),
     activityApi.getActivities().catch(() => []),
     activityApi.getCount('application_sent').catch(() => 0),
     cvApi.getVersions().catch(() => []),
@@ -529,18 +530,29 @@ async function fetchArticleProgress(userId?: string): Promise<ArticleProgressDat
 }
 
 // React Query hook (rekommenderad)
+// PRESTANDA: Optimerade cache-tider baserat på hur ofta data ändras
 export function useDashboardDataQuery() {
   return useQuery({
     queryKey: [DASHBOARD_QUERY_KEY],
     queryFn: fetchDashboardData,
-    staleTime: 5 * 60 * 1000, // 5 minuter
-    gcTime: 10 * 60 * 1000, // 10 minuter
+    staleTime: 2 * 60 * 1000, // 2 minuter - dashboard uppdateras relativt ofta
+    gcTime: 15 * 60 * 1000, // 15 minuter - behåll i cache längre
     retry: 1,
     refetchOnWindowFocus: false,
+    refetchOnMount: 'always', // Alltid hämta färsk data vid mount
     // Visa default data direkt medan riktig data laddas
     placeholderData: getDefaultDashboardData,
   })
 }
+
+// Separata queries för data som ändras sällan (kan användas för mer granulär caching)
+export const QUERY_STALE_TIMES = {
+  cv: 30 * 60 * 1000,        // 30 min - CV ändras sällan
+  dashboard: 2 * 60 * 1000,   // 2 min - dashboard-stats uppdateras ofta
+  jobs: 15 * 60 * 1000,       // 15 min - jobbsökningar kan cachas längre
+  articles: 60 * 60 * 1000,   // 1 timme - artiklar ändras sällan
+  interest: 60 * 60 * 1000,   // 1 timme - intresseresultat ändras sällan
+} as const
 
 // Legacy hook för bakåtkompatibilitet
 export function useDashboardData(): UseDashboardDataReturn {

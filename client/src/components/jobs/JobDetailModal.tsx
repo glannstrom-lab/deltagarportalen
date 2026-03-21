@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useId } from 'react'
 import { X, MapPin, Briefcase, Clock, DollarSign, Calendar, Heart, Sparkles, Send, Building, Share2, FileDown } from 'lucide-react'
 import type { Job } from '@/services/mockApi'
 import type { CVData } from '@/services/supabaseApi'
@@ -27,6 +27,26 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null)
   const [_loading, setLoading] = useState(false)
   const [showShareDialog, setShowShareDialog] = useState(false)
+  const titleId = useId()
+
+  // Stäng modal med Escape-tangent
+  const handleKeyDown = useCallback((event: KeyboardEvent) => {
+    if (event.key === 'Escape') {
+      onClose()
+    }
+  }, [onClose])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      // Förhindra scroll på body när modal är öppen
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [isOpen, handleKeyDown])
 
   useEffect(() => {
     if (job && isOpen) {
@@ -50,12 +70,18 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
   if (!isOpen || !job) return null
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-xl">
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-slate-200 p-6 flex items-start justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800">{job.title}</h2>
+            <h2 id={titleId} className="text-2xl font-bold text-slate-800">{job.title}</h2>
             <div className="flex items-center gap-2 mt-1 text-slate-600">
               <Building size={16} />
               {job.company}
@@ -64,8 +90,9 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+            aria-label="Stäng dialog"
           >
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-slate-500" aria-hidden="true" />
           </button>
         </div>
 

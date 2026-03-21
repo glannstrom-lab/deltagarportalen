@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useId } from 'react'
 import { X, MapPin, Video, Phone, Link2 } from 'lucide-react'
 import type { CalendarEvent } from '@/services/calendarData'
 import { TaskManager } from './TaskManager'
@@ -28,6 +28,23 @@ const eventTypes = [
 export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJobTitle }: EventModalProps) {
   const [formData, setFormData] = useState<Partial<CalendarEvent>>({})
   const [activeTab, setActiveTab] = useState<'details' | 'tasks' | 'prep' | 'travel'>('details')
+  const titleId = useId()
+
+  // Stäng modal med Escape-tangent
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') onClose()
+  }, [onClose])
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = 'hidden'
+    }
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown)
+      document.body.style.overflow = ''
+    }
+  }, [isOpen, handleKeyDown])
 
   useEffect(() => {
     if (event) {
@@ -75,15 +92,25 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
   ]
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby={titleId}
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
       <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-slate-200">
-          <h2 className="text-xl font-semibold text-slate-900">
+          <h2 id={titleId} className="text-xl font-semibold text-slate-900">
             {event ? 'Redigera händelse' : 'Ny händelse'}
           </h2>
-          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg">
-            <X size={20} className="text-slate-500" />
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-slate-100 rounded-lg"
+            aria-label="Stäng dialog"
+          >
+            <X size={20} className="text-slate-500" aria-hidden="true" />
           </button>
         </div>
 

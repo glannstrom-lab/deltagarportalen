@@ -63,18 +63,25 @@ export default defineConfig(({ mode }) => ({
           // Core vendor chunks - most stable
           'vendor-react': ['react', 'react-dom'],
           'vendor-router': ['react-router-dom'],
-          
+
           // Data fetching and state management
-          'vendor-data': ['zustand'],
-          
+          'vendor-query': ['@tanstack/react-query'],
+          'vendor-state': ['zustand'],
+
           // Backend integration - split to reduce main bundle
           'vendor-supabase': ['@supabase/supabase-js'],
-          
+
           // Form validation
           'vendor-forms': ['zod'],
-          
-          // PDF generation - heavy, only needed for CV/PB pages
-          'vendor-pdf': ['jspdf', 'html2canvas'],
+
+          // PDF generation - heavy, only needed for CV export (dynamiskt laddad)
+          'vendor-pdf': ['jspdf', 'jspdf-autotable', 'html2canvas', '@react-pdf/renderer'],
+
+          // Animation library - heavy, kan lazy-loadas
+          'vendor-animation': ['framer-motion'],
+
+          // UI utilities
+          'vendor-icons': ['lucide-react'],
         },
         // Asset naming for better caching
         assetFileNames: (assetInfo) => {
@@ -110,15 +117,19 @@ export default defineConfig(({ mode }) => ({
     // Source maps for production debugging (can be disabled for smaller builds)
     sourcemap: mode !== 'production',
   },
-  // Optimize dependencies
+  // Optimize dependencies - pre-bundle for faster dev server startup
   optimizeDeps: {
     include: [
       'react',
       'react-dom',
       'react-router-dom',
       '@supabase/supabase-js',
+      '@tanstack/react-query',
       'zod',
       'zustand',
+      'lucide-react',
     ],
+    // Exkludera tunga bibliotek som laddas dynamiskt
+    exclude: ['jspdf', 'jspdf-autotable', '@react-pdf/renderer'],
   },
 }))

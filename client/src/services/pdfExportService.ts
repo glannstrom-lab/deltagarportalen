@@ -1,14 +1,33 @@
 /**
  * PDF Export Service - Förbättrade moderna mallar
  * Matchar CVPreview-komponenten med bättre typografi och design
+ *
+ * PRESTANDA: Använder dynamisk import för att ladda jsPDF (~167KB)
+ * endast när PDF-generering faktiskt efterfrågas.
  */
 
-import jsPDF from 'jspdf'
-import autoTable from 'jspdf-autotable'
 import type { CVData, JobData } from '@/types/pdf.types'
+import type jsPDF from 'jspdf'
 
 export type { CVData, JobData } from '@/types/pdf.types'
-;(jsPDF as any).autoTable = autoTable
+
+// Lazy-load jsPDF och autoTable för att minska initial bundle
+let jsPDFModule: typeof import('jspdf') | null = null
+let autoTableModule: typeof import('jspdf-autotable') | null = null
+
+async function loadPDFLibraries(): Promise<typeof jsPDF> {
+  if (!jsPDFModule) {
+    const [jspdfLib, autoTableLib] = await Promise.all([
+      import('jspdf'),
+      import('jspdf-autotable')
+    ])
+    jsPDFModule = jspdfLib
+    autoTableModule = autoTableLib
+    // Attach autoTable to jsPDF prototype
+    ;(jsPDFModule.default as any).autoTable = autoTableModule.default
+  }
+  return jsPDFModule.default
+}
 
 interface TemplateConfig {
   layout: 'sidebar' | 'top' | 'split'
@@ -272,11 +291,14 @@ function getSkillName(skill: string | { name: string } | Record<string, unknown>
 }
 
 export async function generateCVPDF(data: CVData): Promise<Blob> {
+  // Ladda PDF-bibliotek dynamiskt (första gången)
+  const jsPDFClass = await loadPDFLibraries()
+
   const template = TEMPLATES[data.template] || TEMPLATES.sidebar
   const isNordic = data.template === 'nordic' || data.template === 'nordisk'
   const isExecutive = data.template === 'executive'
-  
-  const doc = new jsPDF({
+
+  const doc = new jsPDFClass({
     unit: 'mm',
     format: 'a4',
     orientation: 'portrait',
@@ -374,7 +396,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       doc.setFontSize(8)
       
       data.languages.forEach(lang => {
-        const langName = sanitizeText((lang as any).language || (lang as any).name || '')
+        const langName = sanitizeText(lang.language || lang.name || '')
         const langLevel = sanitizeText(lang.level || '')
         doc.text(`${langName} - ${langLevel}`, margin + 2, yPos)
         yPos += 4
@@ -787,7 +809,7 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
       leftY += 8
 
       data.languages.forEach(lang => {
-        const langName = sanitizeText((lang as any).language || (lang as any).name || '')
+        const langName = sanitizeText(lang.language || lang.name || '')
         const langLevel = sanitizeText(lang.level || '')
         
         doc.setFont(template.fonts.body, 'normal')
@@ -909,7 +931,8 @@ export async function generateCVPDF(data: CVData): Promise<Blob> {
  * Generera PDF för jobbannons
  */
 export async function generateJobPDF(job: JobData): Promise<Blob> {
-  const doc = new jsPDF()
+  const jsPDFClass = await loadPDFLibraries()
+  const doc = new jsPDFClass()
   
   doc.setFontSize(20)
   doc.text(sanitizeText(job.title), 20, 30)
@@ -939,7 +962,8 @@ interface ApplicationHistoryItem {
  * Generera PDF för ansökningshistorik
  */
 export async function generateApplicationHistoryPDF(applications: ApplicationHistoryItem[]): Promise<Blob> {
-  const doc = new jsPDF()
+  const jsPDFClass = await loadPDFLibraries()
+  const doc = new jsPDFClass()
 
   doc.setFontSize(20)
   doc.text('Ansokningshistorik', 20, 30)

@@ -6,7 +6,7 @@
 import { cn } from '@/lib/utils'
 import { inputBase, labelBase, animations, touch } from '@/styles/design-system'
 import { AlertCircle, Eye, EyeOff, ChevronDown } from 'lucide-react'
-import { useState, forwardRef } from 'react'
+import { useState, forwardRef, useId } from 'react'
 
 // ============================================
 // TEXT INPUT
@@ -22,33 +22,48 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ 
-    label, 
-    error, 
+  ({
+    label,
+    error,
     hint,
     leftIcon,
     rightIcon,
     fullWidth = true,
     touchOptimized = false,
     className,
-    ...props 
+    id: providedId,
+    ...props
   }, ref) => {
+    const generatedId = useId()
+    const inputId = providedId || generatedId
+    const errorId = `${inputId}-error`
+    const hintId = `${inputId}-hint`
+
+    // Bygg aria-describedby baserat på vilka hjälptexter som finns
+    const describedBy = [
+      error && errorId,
+      hint && !error && hintId,
+    ].filter(Boolean).join(' ') || undefined
+
     return (
       <div className={cn(fullWidth && 'w-full')}>
         {label && (
-          <label className={labelBase}>
+          <label htmlFor={inputId} className={labelBase}>
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true">
               {leftIcon}
             </div>
           )}
           <input
             ref={ref}
+            id={inputId}
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={describedBy}
             className={cn(
               inputBase,
               leftIcon && 'pl-10',
@@ -66,13 +81,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           )}
         </div>
         {error && (
-          <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
-            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+          <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
+            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}
         {hint && !error && (
-          <p className="mt-1.5 text-sm text-slate-500">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-500">{hint}</p>
         )}
       </div>
     )
@@ -90,7 +105,7 @@ interface PasswordInputProps extends Omit<InputProps, 'type' | 'rightIcon'> {
 export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
   ({ className, ...props }, ref) => {
     const [showPassword, setShowPassword] = useState(false)
-    
+
     return (
       <Input
         ref={ref}
@@ -99,13 +114,14 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="p-1 hover:bg-slate-100 rounded transition-colors"
-            tabIndex={-1}
+            className="p-1 hover:bg-slate-100 rounded transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center -mr-2"
+            aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
+            aria-pressed={showPassword}
           >
             {showPassword ? (
-              <EyeOff className="w-4 h-4 text-slate-500" />
+              <EyeOff className="w-4 h-4 text-slate-500" aria-hidden="true" />
             ) : (
-              <Eye className="w-4 h-4 text-slate-500" />
+              <Eye className="w-4 h-4 text-slate-500" aria-hidden="true" />
             )}
           </button>
         }
@@ -129,25 +145,39 @@ interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement
 }
 
 export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ 
-    label, 
-    error, 
+  ({
+    label,
+    error,
     hint,
     fullWidth = true,
     resize = 'vertical',
     className,
-    ...props 
+    id: providedId,
+    ...props
   }, ref) => {
+    const generatedId = useId()
+    const textareaId = providedId || generatedId
+    const errorId = `${textareaId}-error`
+    const hintId = `${textareaId}-hint`
+
+    const describedBy = [
+      error && errorId,
+      hint && !error && hintId,
+    ].filter(Boolean).join(' ') || undefined
+
     return (
       <div className={cn(fullWidth && 'w-full')}>
         {label && (
-          <label className={labelBase}>
+          <label htmlFor={textareaId} className={labelBase}>
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <textarea
           ref={ref}
+          id={textareaId}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={describedBy}
           className={cn(
             inputBase,
             'min-h-[100px]',
@@ -160,13 +190,13 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           {...props}
         />
         {error && (
-          <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
-            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+          <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
+            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}
         {hint && !error && (
-          <p className="mt-1.5 text-sm text-slate-500">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-500">{hint}</p>
         )}
       </div>
     )
@@ -187,27 +217,41 @@ interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
 }
 
 export const Select = forwardRef<HTMLSelectElement, SelectProps>(
-  ({ 
-    label, 
-    error, 
+  ({
+    label,
+    error,
     hint,
     options,
     placeholder,
     fullWidth = true,
     className,
-    ...props 
+    id: providedId,
+    ...props
   }, ref) => {
+    const generatedId = useId()
+    const selectId = providedId || generatedId
+    const errorId = `${selectId}-error`
+    const hintId = `${selectId}-hint`
+
+    const describedBy = [
+      error && errorId,
+      hint && !error && hintId,
+    ].filter(Boolean).join(' ') || undefined
+
     return (
       <div className={cn(fullWidth && 'w-full')}>
         {label && (
-          <label className={labelBase}>
+          <label htmlFor={selectId} className={labelBase}>
             {label}
-            {props.required && <span className="text-red-500 ml-1">*</span>}
+            {props.required && <span className="text-red-500 ml-1" aria-hidden="true">*</span>}
           </label>
         )}
         <div className="relative">
           <select
             ref={ref}
+            id={selectId}
+            aria-invalid={error ? 'true' : undefined}
+            aria-describedby={describedBy}
             className={cn(
               inputBase,
               'appearance-none bg-white pr-10',
@@ -220,8 +264,8 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               <option value="" disabled>{placeholder}</option>
             )}
             {options.map((option) => (
-              <option 
-                key={option.value} 
+              <option
+                key={option.value}
                 value={option.value}
                 disabled={option.disabled}
               >
@@ -229,16 +273,16 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" aria-hidden="true" />
         </div>
         {error && (
-          <p className="mt-1.5 text-sm text-red-600 flex items-center gap-1">
-            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+          <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
+            <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" aria-hidden="true" />
             {error}
           </p>
         )}
         {hint && !error && (
-          <p className="mt-1.5 text-sm text-slate-500">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-500">{hint}</p>
         )}
       </div>
     )

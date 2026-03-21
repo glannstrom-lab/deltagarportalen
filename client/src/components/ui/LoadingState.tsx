@@ -23,13 +23,16 @@ export function Spinner({ size = 'md', className }: SpinnerProps) {
     lg: 'w-8 h-8',
     xl: 'w-12 h-12',
   }
-  
+
   return (
-    <Loader2 className={cn(
-      'animate-spin text-indigo-600',
-      sizeClasses[size],
-      className
-    )} />
+    <Loader2
+      className={cn(
+        'animate-spin text-indigo-600',
+        sizeClasses[size],
+        className
+      )}
+      aria-hidden="true"
+    />
   )
 }
 
@@ -44,20 +47,25 @@ interface LoadingStateProps {
   className?: string
 }
 
-export function LoadingState({ 
+export function LoadingState({
   title,
   message = 'Laddar...',
   size = 'md',
   fullHeight = false,
-  className 
+  className
 }: LoadingStateProps) {
   return (
-    <div className={cn(
-      'flex flex-col items-center justify-center',
-      'text-center p-6',
-      fullHeight && 'min-h-[400px]',
-      className
-    )}>
+    <div
+      className={cn(
+        'flex flex-col items-center justify-center',
+        'text-center p-6',
+        fullHeight && 'min-h-[400px]',
+        className
+      )}
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       <Spinner size={size === 'sm' ? 'md' : size === 'md' ? 'lg' : 'xl'} />
       {title && (
         <h3 className="mt-4 text-lg font-semibold text-slate-800">{title}</h3>
@@ -215,19 +223,23 @@ interface ErrorStateProps {
   className?: string
 }
 
-export function ErrorState({ 
+export function ErrorState({
   title = 'Något gick fel',
   message = 'Kunde inte ladda data. Försök igen.',
   onRetry,
   icon,
-  className 
+  className
 }: ErrorStateProps) {
   return (
-    <div className={cn(
-      'flex flex-col items-center justify-center',
-      'text-center p-8',
-      className
-    )}>
+    <div
+      className={cn(
+        'flex flex-col items-center justify-center',
+        'text-center p-8',
+        className
+      )}
+      role="alert"
+      aria-live="assertive"
+    >
       {icon ? (
         <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
           <span className="text-red-600">{icon}</span>
@@ -283,12 +295,16 @@ interface InlineLoadingProps {
   size?: 'sm' | 'md'
 }
 
-export function InlineLoading({ 
+export function InlineLoading({
   text = 'Laddar...',
   size = 'sm'
 }: InlineLoadingProps) {
   return (
-    <span className="inline-flex items-center gap-2 text-slate-500">
+    <span
+      className="inline-flex items-center gap-2 text-slate-500"
+      role="status"
+      aria-live="polite"
+    >
       <Spinner size={size} />
       {text && <span className="text-sm">{text}</span>}
     </span>

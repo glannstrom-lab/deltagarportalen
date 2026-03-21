@@ -13,6 +13,23 @@ export interface RetryConfig {
   retryableStatusCodes: number[];
 }
 
+/**
+ * Interface för errors med HTTP status-kod
+ */
+interface ErrorWithStatus {
+  status?: number;
+  statusCode?: number;
+}
+
+/**
+ * Type guard för att kolla om ett error har status-kod
+ */
+function hasStatusCode(error: unknown): error is ErrorWithStatus {
+  if (error === null || typeof error !== 'object') return false;
+  const obj = error as Record<string, unknown>;
+  return typeof obj.status === 'number' || typeof obj.statusCode === 'number';
+}
+
 const DEFAULT_RETRY_CONFIG: RetryConfig = {
   maxRetries: 3,
   baseDelay: 1000, // 1 sekund
@@ -102,9 +119,11 @@ function isRetryableError(error: unknown, config: RetryConfig): boolean {
   }
 
   // Kolla HTTP status kod (om tillgänglig)
-  const statusCode = (error as any)?.status || (error as any)?.statusCode;
-  if (statusCode && config.retryableStatusCodes.includes(statusCode)) {
-    return true;
+  if (hasStatusCode(error)) {
+    const statusCode = error.status ?? error.statusCode;
+    if (statusCode && config.retryableStatusCodes.includes(statusCode)) {
+      return true;
+    }
   }
 
   return false;
