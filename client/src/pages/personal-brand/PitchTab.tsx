@@ -1,0 +1,703 @@
+/**
+ * Pitch Tab - Create and practice your elevator pitch
+ * Features: Pitch builder, practice mode with timer, AI feedback
+ */
+import { useState, useEffect, useRef, useCallback } from 'react'
+import {
+  Mic,
+  Play,
+  Pause,
+  RotateCcw,
+  Save,
+  Plus,
+  Trash2,
+  Edit2,
+  Star,
+  Clock,
+  Target,
+  Sparkles,
+  ChevronRight,
+  CheckCircle,
+  Volume2,
+  Copy,
+  Check,
+  X,
+  MessageSquare
+} from 'lucide-react'
+import { Card, Button } from '@/components/ui'
+import { cn } from '@/lib/utils'
+import { personalBrandApi, type ElevatorPitch } from '@/services/cloudStorage'
+import { motion, AnimatePresence } from 'framer-motion'
+
+const PITCH_TYPES = {
+  general: { label: 'Generell', color: 'violet', description: 'Fungerar i alla situationer' },
+  'job-specific': { label: 'Jobbspecifik', color: 'blue', description: 'Anpassad för en specifik tjänst' },
+  networking: { label: 'Nätverkande', color: 'emerald', description: 'För mingel och events' },
+  interview: { label: 'Intervju', color: 'amber', description: 'För jobbintervjuer' },
+}
+
+const PITCH_TEMPLATES = [
+  {
+    id: 'classic',
+    name: 'Klassisk',
+    structure: ['Vem jag är', 'Vad jag gör', 'Vad jag söker', 'Varför vi borde prata'],
+    example: 'Hej! Jag heter [Namn] och arbetar som [Roll]. Jag har [X] års erfarenhet av [Område] och är särskilt bra på [Styrka]. Just nu söker jag [Mål]. Jag skulle gärna höra mer om [Deras projekt/företag].'
+  },
+  {
+    id: 'problem-solution',
+    name: 'Problem-Lösning',
+    structure: ['Problem jag löser', 'Hur jag löser det', 'Resultat jag uppnått', 'Call to action'],
+    example: 'Vet du hur företag ofta kämpar med [Problem]? Jag hjälper dem att [Lösning] genom att [Metod]. Senast sparade jag [Företag] [X] timmar/kronor. Låt mig veta om ni har liknande utmaningar!'
+  },
+  {
+    id: 'story',
+    name: 'Berättande',
+    structure: ['Bakgrund', 'Vändpunkt', 'Nuläge', 'Framtid'],
+    example: 'Jag började min karriär som [Start] men upptäckte snart att min passion var [Passion]. Efter att ha [Prestation] insåg jag att jag ville [Mål]. Nu söker jag en möjlighet att [Nästa steg].'
+  }
+]
+
+export default function PitchTab() {
+  const [pitches, setPitches] = useState<ElevatorPitch[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [selectedPitch, setSelectedPitch] = useState<ElevatorPitch | null>(null)
+  const [isEditing, setIsEditing] = useState(false)
+  const [isPracticing, setIsPracticing] = useState(false)
+  const [copied, setCopied] = useState(false)
+
+  // Practice mode state
+  const [practiceTime, setPracticeTime] = useState(0)
+  const [isTimerRunning, setIsTimerRunning] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+
+  // Form state
+  const [formData, setFormData] = useState<Partial<ElevatorPitch>>({
+    title: '',
+    content: '',
+    duration_seconds: 30,
+    pitch_type: 'general',
+    target_audience: '',
+    key_points: []
+  })
+  const [newKeyPoint, setNewKeyPoint] = useState('')
+
+  // Load pitches
+  useEffect(() => {
+    loadPitches()
+  }, [])
+
+  const loadPitches = async () => {
+    setIsLoading(true)
+    try {
+      const data = await personalBrandApi.getPitches()
+      setPitches(data)
+      if (data.length > 0 && !selectedPitch) {
+        setSelectedPitch(data[0])
+      }
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  // Timer logic
+  useEffect(() => {
+    if (isTimerRunning) {
+      timerRef.current = setInterval(() => {
+        setPracticeTime(prev => prev + 1)
+      }, 1000)
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current)
+    }
+    return () => {
+      if (timerRef.current) clearInterval(timerRef.current)
+    }
+  }, [isTimerRunning])
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
+
+  const startPractice = () => {
+    setPracticeTime(0)
+    setIsTimerRunning(true)
+    setIsPracticing(true)
+  }
+
+  const stopPractice = async () => {
+    setIsTimerRunning(false)
+    if (selectedPitch?.id) {
+      await personalBrandApi.recordPractice(selectedPitch.id)
+      loadPitches()
+    }
+  }
+
+  const resetPractice = () => {
+    setPracticeTime(0)
+    setIsTimerRunning(false)
+  }
+
+  const handleSave = async () => {
+    if (!formData.title?.trim() || !formData.content?.trim()) return
+
+    const pitchData: ElevatorPitch = {
+      title: formData.title,
+      content: formData.content,
+      duration_seconds: formData.duration_seconds || 30,
+      pitch_type: formData.pitch_type as ElevatorPitch['pitch_type'],
+      target_audience: formData.target_audience,
+      key_points: formData.key_points || []
+    }
+
+    if (selectedPitch?.id && isEditing) {
+      await personalBrandApi.updatePitch(selectedPitch.id, pitchData)
+    } else {
+      const newPitch = await personalBrandApi.addPitch(pitchData)
+      if (newPitch) {
+        setSelectedPitch(newPitch)
+      }
+    }
+
+    await loadPitches()
+    setIsEditing(false)
+    resetForm()
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('Ta bort denna pitch?')) return
+    await personalBrandApi.deletePitch(id)
+    if (selectedPitch?.id === id) {
+      setSelectedPitch(null)
+    }
+    await loadPitches()
+  }
+
+  const handleEdit = (pitch: ElevatorPitch) => {
+    setFormData({
+      title: pitch.title,
+      content: pitch.content,
+      duration_seconds: pitch.duration_seconds,
+      pitch_type: pitch.pitch_type,
+      target_audience: pitch.target_audience,
+      key_points: pitch.key_points
+    })
+    setSelectedPitch(pitch)
+    setIsEditing(true)
+  }
+
+  const resetForm = () => {
+    setFormData({
+      title: '',
+      content: '',
+      duration_seconds: 30,
+      pitch_type: 'general',
+      target_audience: '',
+      key_points: []
+    })
+    setNewKeyPoint('')
+  }
+
+  const addKeyPoint = () => {
+    if (newKeyPoint.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        key_points: [...(prev.key_points || []), newKeyPoint.trim()]
+      }))
+      setNewKeyPoint('')
+    }
+  }
+
+  const removeKeyPoint = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      key_points: prev.key_points?.filter((_, i) => i !== index) || []
+    }))
+  }
+
+  const useTemplate = (template: typeof PITCH_TEMPLATES[0]) => {
+    setFormData(prev => ({
+      ...prev,
+      content: template.example,
+      key_points: template.structure
+    }))
+  }
+
+  const copyToClipboard = () => {
+    if (selectedPitch) {
+      navigator.clipboard.writeText(selectedPitch.content)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    }
+  }
+
+  const getTargetTime = () => selectedPitch?.duration_seconds || 30
+  const isOverTime = practiceTime > getTargetTime()
+  const isNearTarget = practiceTime >= getTargetTime() - 5 && practiceTime <= getTargetTime() + 5
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-100">
+        <div className="flex items-start gap-4">
+          <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
+            <Mic className="w-6 h-6 text-rose-600" />
+          </div>
+          <div className="flex-1">
+            <h2 className="text-xl font-bold text-slate-900">Din Personliga Pitch</h2>
+            <p className="text-slate-600 mt-1">
+              Skapa och öva på din hiss-pitch. En bra pitch tar 30-60 sekunder och
+              lämnar ett starkt intryck.
+            </p>
+          </div>
+          <Button onClick={() => { resetForm(); setIsEditing(true); setSelectedPitch(null); }}>
+            <Plus className="w-4 h-4 mr-1" />
+            Ny pitch
+          </Button>
+        </div>
+      </Card>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Pitch List */}
+        <div className="lg:col-span-1 space-y-4">
+          <h3 className="font-semibold text-slate-900">Dina pitchar</h3>
+
+          {pitches.length === 0 && !isLoading ? (
+            <Card className="text-center py-8">
+              <MessageSquare className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+              <p className="text-slate-500 text-sm">Inga pitchar ännu</p>
+              <Button
+                size="sm"
+                variant="outline"
+                className="mt-3"
+                onClick={() => { resetForm(); setIsEditing(true); }}
+              >
+                Skapa din första
+              </Button>
+            </Card>
+          ) : (
+            <div className="space-y-2">
+              {pitches.map((pitch) => {
+                const typeInfo = PITCH_TYPES[pitch.pitch_type]
+                return (
+                  <button
+                    key={pitch.id}
+                    onClick={() => { setSelectedPitch(pitch); setIsEditing(false); setIsPracticing(false); }}
+                    className={cn(
+                      "w-full p-3 rounded-xl border text-left transition-all",
+                      selectedPitch?.id === pitch.id
+                        ? "border-rose-300 bg-rose-50"
+                        : "border-slate-200 bg-white hover:border-slate-300"
+                    )}
+                  >
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <h4 className="font-medium text-slate-900">{pitch.title}</h4>
+                        <div className="flex items-center gap-2 mt-1">
+                          <span className={cn(
+                            "px-2 py-0.5 rounded-full text-xs font-medium",
+                            typeInfo.color === 'violet' && "bg-violet-100 text-violet-700",
+                            typeInfo.color === 'blue' && "bg-blue-100 text-blue-700",
+                            typeInfo.color === 'emerald' && "bg-emerald-100 text-emerald-700",
+                            typeInfo.color === 'amber' && "bg-amber-100 text-amber-700"
+                          )}>
+                            {typeInfo.label}
+                          </span>
+                          <span className="text-xs text-slate-400 flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {pitch.duration_seconds}s
+                          </span>
+                        </div>
+                      </div>
+                      {pitch.is_favorite && (
+                        <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                      )}
+                    </div>
+                    {pitch.practice_count && pitch.practice_count > 0 && (
+                      <p className="text-xs text-slate-400 mt-2">
+                        Övat {pitch.practice_count} gånger
+                      </p>
+                    )}
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Main Content Area */}
+        <div className="lg:col-span-2">
+          <AnimatePresence mode="wait">
+            {/* Practice Mode */}
+            {isPracticing && selectedPitch && (
+              <motion.div
+                key="practice"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <Card className="border-rose-200">
+                  <div className="text-center py-8">
+                    {/* Timer */}
+                    <div className={cn(
+                      "text-6xl font-bold mb-4 transition-colors",
+                      isOverTime ? "text-rose-600" : isNearTarget ? "text-emerald-600" : "text-slate-800"
+                    )}>
+                      {formatTime(practiceTime)}
+                    </div>
+                    <p className="text-slate-500 mb-6">
+                      Mål: {formatTime(getTargetTime())}
+                      {isNearTarget && " - Perfekt timing!"}
+                      {isOverTime && " - Försök korta ner"}
+                    </p>
+
+                    {/* Controls */}
+                    <div className="flex justify-center gap-3 mb-8">
+                      {isTimerRunning ? (
+                        <Button onClick={stopPractice} size="lg" className="bg-rose-600 hover:bg-rose-700">
+                          <Pause className="w-5 h-5 mr-2" />
+                          Stoppa
+                        </Button>
+                      ) : (
+                        <Button onClick={() => setIsTimerRunning(true)} size="lg">
+                          <Play className="w-5 h-5 mr-2" />
+                          {practiceTime > 0 ? 'Fortsätt' : 'Starta'}
+                        </Button>
+                      )}
+                      <Button variant="outline" onClick={resetPractice}>
+                        <RotateCcw className="w-4 h-4 mr-1" />
+                        Återställ
+                      </Button>
+                    </div>
+
+                    {/* Pitch content */}
+                    <div className="bg-slate-50 rounded-xl p-6 text-left max-h-60 overflow-y-auto">
+                      <p className="text-slate-700 whitespace-pre-wrap">{selectedPitch.content}</p>
+                    </div>
+
+                    {/* Key points */}
+                    {selectedPitch.key_points.length > 0 && (
+                      <div className="mt-4 flex flex-wrap justify-center gap-2">
+                        {selectedPitch.key_points.map((point, idx) => (
+                          <span key={idx} className="px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-sm">
+                            {point}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+
+                    <Button
+                      variant="ghost"
+                      className="mt-6"
+                      onClick={() => setIsPracticing(false)}
+                    >
+                      Avsluta övning
+                    </Button>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+
+            {/* Edit/Create Mode */}
+            {isEditing && !isPracticing && (
+              <motion.div
+                key="edit"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <Card>
+                  <h3 className="font-semibold text-slate-900 mb-4">
+                    {selectedPitch ? 'Redigera pitch' : 'Skapa ny pitch'}
+                  </h3>
+
+                  {/* Templates */}
+                  {!selectedPitch && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                        Välj en mall att utgå från
+                      </label>
+                      <div className="grid grid-cols-3 gap-2">
+                        {PITCH_TEMPLATES.map((template) => (
+                          <button
+                            key={template.id}
+                            onClick={() => useTemplate(template)}
+                            className="p-3 rounded-lg border border-slate-200 hover:border-rose-300 hover:bg-rose-50 transition-all text-left"
+                          >
+                            <h4 className="font-medium text-slate-800 text-sm">{template.name}</h4>
+                            <p className="text-xs text-slate-500 mt-1">
+                              {template.structure.length} delar
+                            </p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Titel</label>
+                      <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                        placeholder="T.ex. Min generella pitch"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Typ</label>
+                        <select
+                          value={formData.pitch_type}
+                          onChange={(e) => setFormData(prev => ({ ...prev, pitch_type: e.target.value as ElevatorPitch['pitch_type'] }))}
+                          className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                        >
+                          {Object.entries(PITCH_TYPES).map(([key, type]) => (
+                            <option key={key} value={key}>{type.label}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-slate-700 mb-1">Mållängd (sek)</label>
+                        <select
+                          value={formData.duration_seconds}
+                          onChange={(e) => setFormData(prev => ({ ...prev, duration_seconds: parseInt(e.target.value) }))}
+                          className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                        >
+                          <option value={30}>30 sekunder</option>
+                          <option value={45}>45 sekunder</option>
+                          <option value={60}>60 sekunder</option>
+                          <option value={90}>90 sekunder</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                        Målgrupp (valfritt)
+                      </label>
+                      <input
+                        type="text"
+                        value={formData.target_audience || ''}
+                        onChange={(e) => setFormData(prev => ({ ...prev, target_audience: e.target.value }))}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                        placeholder="T.ex. Rekryterare inom tech"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">Din pitch</label>
+                      <textarea
+                        value={formData.content}
+                        onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
+                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500 min-h-[150px]"
+                        placeholder="Skriv din pitch här..."
+                      />
+                      <p className="text-xs text-slate-400 mt-1">
+                        Ca {Math.round((formData.content?.length || 0) / 15)} sekunder att läsa ({formData.content?.length || 0} tecken)
+                      </p>
+                    </div>
+
+                    {/* Key points */}
+                    <div>
+                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                        Nyckelpoänger att komma ihåg
+                      </label>
+                      <div className="flex gap-2 mb-2">
+                        <input
+                          type="text"
+                          value={newKeyPoint}
+                          onChange={(e) => setNewKeyPoint(e.target.value)}
+                          onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addKeyPoint())}
+                          className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                          placeholder="Lägg till en nyckelpoäng"
+                        />
+                        <Button variant="outline" onClick={addKeyPoint}>
+                          <Plus className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="flex flex-wrap gap-2">
+                        {formData.key_points?.map((point, idx) => (
+                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm">
+                            {point}
+                            <button onClick={() => removeKeyPoint(idx)} className="hover:text-rose-600">
+                              <X className="w-3 h-3" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex gap-2 pt-4">
+                      <Button onClick={handleSave} disabled={!formData.title?.trim() || !formData.content?.trim()}>
+                        <Save className="w-4 h-4 mr-1" />
+                        Spara
+                      </Button>
+                      <Button variant="outline" onClick={() => { setIsEditing(false); resetForm(); }}>
+                        Avbryt
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </motion.div>
+            )}
+
+            {/* View Mode */}
+            {selectedPitch && !isEditing && !isPracticing && (
+              <motion.div
+                key="view"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+              >
+                <Card>
+                  <div className="flex items-start justify-between mb-4">
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-900">{selectedPitch.title}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className={cn(
+                          "px-2 py-0.5 rounded-full text-xs font-medium",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'violet' && "bg-violet-100 text-violet-700",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'blue' && "bg-blue-100 text-blue-700",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'emerald' && "bg-emerald-100 text-emerald-700",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'amber' && "bg-amber-100 text-amber-700"
+                        )}>
+                          {PITCH_TYPES[selectedPitch.pitch_type].label}
+                        </span>
+                        <span className="text-sm text-slate-500 flex items-center gap-1">
+                          <Clock className="w-4 h-4" />
+                          {selectedPitch.duration_seconds} sek
+                        </span>
+                      </div>
+                    </div>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => handleEdit(selectedPitch)}
+                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                      >
+                        <Edit2 className="w-4 h-4 text-slate-500" />
+                      </button>
+                      <button
+                        onClick={() => selectedPitch.id && handleDelete(selectedPitch.id)}
+                        className="p-2 hover:bg-rose-100 rounded-lg transition-colors"
+                      >
+                        <Trash2 className="w-4 h-4 text-rose-500" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {selectedPitch.target_audience && (
+                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
+                      <p className="text-sm text-slate-600">
+                        <Target className="w-4 h-4 inline mr-1" />
+                        Målgrupp: {selectedPitch.target_audience}
+                      </p>
+                    </div>
+                  )}
+
+                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 mb-4">
+                    <p className="text-slate-800 whitespace-pre-wrap leading-relaxed">
+                      {selectedPitch.content}
+                    </p>
+                  </div>
+
+                  {selectedPitch.key_points.length > 0 && (
+                    <div className="mb-6">
+                      <h4 className="text-sm font-medium text-slate-700 mb-2">Kom ihåg:</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {selectedPitch.key_points.map((point, idx) => (
+                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-sm">
+                            <CheckCircle className="w-3 h-3" />
+                            {point}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-3">
+                    <Button onClick={startPractice} className="bg-rose-600 hover:bg-rose-700">
+                      <Play className="w-4 h-4 mr-1" />
+                      Öva nu
+                    </Button>
+                    <Button variant="outline" onClick={copyToClipboard}>
+                      {copied ? <Check className="w-4 h-4 mr-1" /> : <Copy className="w-4 h-4 mr-1" />}
+                      {copied ? 'Kopierad!' : 'Kopiera'}
+                    </Button>
+                  </div>
+
+                  {selectedPitch.practice_count && selectedPitch.practice_count > 0 && (
+                    <p className="text-sm text-slate-400 mt-4">
+                      Du har övat på denna pitch {selectedPitch.practice_count} gånger
+                      {selectedPitch.last_practiced_at && (
+                        <span>, senast {new Date(selectedPitch.last_practiced_at).toLocaleDateString('sv-SE')}</span>
+                      )}
+                    </p>
+                  )}
+                </Card>
+              </motion.div>
+            )}
+
+            {/* Empty state when no pitch selected and not editing */}
+            {!selectedPitch && !isEditing && (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+              >
+                <Card className="text-center py-12">
+                  <Mic className="w-16 h-16 text-slate-200 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-slate-700 mb-2">Skapa din första pitch</h3>
+                  <p className="text-slate-500 mb-6 max-w-md mx-auto">
+                    En bra elevator pitch är nyckeln till att göra ett starkt första intryck.
+                    Börja med att skapa en generell pitch som du kan anpassa efter situation.
+                  </p>
+                  <Button onClick={() => { resetForm(); setIsEditing(true); }}>
+                    <Plus className="w-4 h-4 mr-1" />
+                    Skapa pitch
+                  </Button>
+                </Card>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* Tips */}
+      <Card className="bg-amber-50 border-amber-100">
+        <h3 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-amber-600" />
+          Tips för en kraftfull pitch
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="text-sm">
+            <p className="font-medium text-amber-800">Var specifik</p>
+            <p className="text-amber-700 text-xs mt-1">
+              Undvik vaga uttalanden. "Jag sparade företaget 2 miljoner" är bättre än "jag är bra på att spara pengar".
+            </p>
+          </div>
+          <div className="text-sm">
+            <p className="font-medium text-amber-800">Anpassa efter lyssnaren</p>
+            <p className="text-amber-700 text-xs mt-1">
+              Ha olika versioner för olika målgrupper och situationer.
+            </p>
+          </div>
+          <div className="text-sm">
+            <p className="font-medium text-amber-800">Öva högt</p>
+            <p className="text-amber-700 text-xs mt-1">
+              En pitch ska kännas naturlig. Öva tills den sitter utan att den låter inövad.
+            </p>
+          </div>
+          <div className="text-sm">
+            <p className="font-medium text-amber-800">Avsluta med en fråga</p>
+            <p className="text-amber-700 text-xs mt-1">
+              Bjud in till dialog istället för att bara prata om dig själv.
+            </p>
+          </div>
+        </div>
+      </Card>
+    </div>
+  )
+}

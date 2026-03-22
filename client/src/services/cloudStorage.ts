@@ -1519,6 +1519,491 @@ Object.assign(journalApi, {
 })
 
 // ============================================
+// PERSONAL BRAND
+// ============================================
+
+export interface PortfolioItem {
+  id?: string
+  title: string
+  description?: string
+  item_type: 'project' | 'work' | 'certificate' | 'other'
+  url?: string
+  image_url?: string
+  tags: string[]
+  start_date?: string
+  end_date?: string
+  is_featured?: boolean
+  sort_order?: number
+}
+
+export interface ElevatorPitch {
+  id?: string
+  title: string
+  content: string
+  duration_seconds: number
+  pitch_type: 'general' | 'job-specific' | 'networking' | 'interview'
+  target_audience?: string
+  key_points: string[]
+  is_favorite?: boolean
+  practice_count?: number
+  last_practiced_at?: string
+}
+
+export interface VisibilityProgressItem {
+  strategy_id: string
+  status: 'not_started' | 'in_progress' | 'completed' | 'skipped'
+  started_at?: string
+  completed_at?: string
+  notes?: string
+}
+
+export interface ContentCalendarItem {
+  id?: string
+  title: string
+  content?: string
+  platform: 'linkedin' | 'twitter' | 'blog' | 'other'
+  scheduled_date: string
+  scheduled_time?: string
+  status: 'draft' | 'scheduled' | 'published' | 'skipped'
+  tags: string[]
+}
+
+export const personalBrandApi = {
+  // ===== BRAND AUDIT =====
+  async getAuditAnswers(): Promise<Record<string, boolean>> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const saved = localStorage.getItem('brand-audit-answers')
+      return saved ? JSON.parse(saved) : {}
+    }
+
+    const { data, error } = await supabase
+      .from('personal_brand_audit')
+      .select('answers')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+      .limit(1)
+
+    if (error) {
+      handleStorageError(error, 'hämta varumärkesaudit')
+      const saved = localStorage.getItem('brand-audit-answers')
+      return saved ? JSON.parse(saved) : {}
+    }
+    return data?.[0]?.answers || {}
+  },
+
+  async saveAuditAnswers(answers: Record<string, boolean>, totalScore: number, categoryScores: Record<string, number>): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      localStorage.setItem('brand-audit-answers', JSON.stringify(answers))
+      return
+    }
+
+    const { error } = await supabase
+      .from('personal_brand_audit')
+      .upsert({
+        user_id: user.id,
+        answers,
+        total_score: totalScore,
+        category_scores: categoryScores,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      })
+
+    if (error) {
+      handleStorageError(error, 'spara varumärkesaudit')
+      localStorage.setItem('brand-audit-answers', JSON.stringify(answers))
+    }
+  },
+
+  async getAuditHistory(): Promise<{ total_score: number; category_scores: Record<string, number>; created_at: string }[]> {
+    const user = await getCurrentUser()
+    if (!user) return []
+
+    const { data, error } = await supabase
+      .from('personal_brand_audit')
+      .select('total_score, category_scores, created_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(10)
+
+    if (error) {
+      handleStorageError(error, 'hämta audit-historik')
+      return []
+    }
+    return data || []
+  },
+
+  // ===== PORTFOLIO =====
+  async getPortfolioItems(): Promise<PortfolioItem[]> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const saved = localStorage.getItem('portfolio-items')
+      return saved ? JSON.parse(saved) : []
+    }
+
+    const { data, error } = await supabase
+      .from('portfolio_items')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('sort_order', { ascending: true })
+
+    if (error) {
+      handleStorageError(error, 'hämta portfolio')
+      const saved = localStorage.getItem('portfolio-items')
+      return saved ? JSON.parse(saved) : []
+    }
+    return data || []
+  },
+
+  async addPortfolioItem(item: PortfolioItem): Promise<PortfolioItem | null> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const items = JSON.parse(localStorage.getItem('portfolio-items') || '[]')
+      const newItem = { ...item, id: Date.now().toString() }
+      items.unshift(newItem)
+      localStorage.setItem('portfolio-items', JSON.stringify(items))
+      return newItem
+    }
+
+    const { data, error } = await supabase
+      .from('portfolio_items')
+      .insert({ ...item, user_id: user.id })
+      .select()
+      .single()
+
+    if (error) {
+      handleStorageError(error, 'lägga till portfolio-objekt')
+      const items = JSON.parse(localStorage.getItem('portfolio-items') || '[]')
+      const newItem = { ...item, id: Date.now().toString() }
+      items.unshift(newItem)
+      localStorage.setItem('portfolio-items', JSON.stringify(items))
+      return newItem
+    }
+    return data
+  },
+
+  async updatePortfolioItem(id: string, updates: Partial<PortfolioItem>): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const items = JSON.parse(localStorage.getItem('portfolio-items') || '[]')
+      const index = items.findIndex((i: PortfolioItem) => i.id === id)
+      if (index >= 0) {
+        items[index] = { ...items[index], ...updates }
+        localStorage.setItem('portfolio-items', JSON.stringify(items))
+      }
+      return
+    }
+
+    const { error } = await supabase
+      .from('portfolio_items')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'uppdatera portfolio-objekt')
+    }
+  },
+
+  async deletePortfolioItem(id: string): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const items = JSON.parse(localStorage.getItem('portfolio-items') || '[]')
+      const filtered = items.filter((i: PortfolioItem) => i.id !== id)
+      localStorage.setItem('portfolio-items', JSON.stringify(filtered))
+      return
+    }
+
+    const { error } = await supabase
+      .from('portfolio_items')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'ta bort portfolio-objekt')
+    }
+  },
+
+  // ===== ELEVATOR PITCHES =====
+  async getPitches(): Promise<ElevatorPitch[]> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const saved = localStorage.getItem('elevator-pitches')
+      return saved ? JSON.parse(saved) : []
+    }
+
+    const { data, error } = await supabase
+      .from('elevator_pitches')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('updated_at', { ascending: false })
+
+    if (error) {
+      handleStorageError(error, 'hämta pitchar')
+      const saved = localStorage.getItem('elevator-pitches')
+      return saved ? JSON.parse(saved) : []
+    }
+    return data || []
+  },
+
+  async addPitch(pitch: ElevatorPitch): Promise<ElevatorPitch | null> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const pitches = JSON.parse(localStorage.getItem('elevator-pitches') || '[]')
+      const newPitch = { ...pitch, id: Date.now().toString() }
+      pitches.unshift(newPitch)
+      localStorage.setItem('elevator-pitches', JSON.stringify(pitches))
+      return newPitch
+    }
+
+    const { data, error } = await supabase
+      .from('elevator_pitches')
+      .insert({ ...pitch, user_id: user.id })
+      .select()
+      .single()
+
+    if (error) {
+      handleStorageError(error, 'lägga till pitch')
+      const pitches = JSON.parse(localStorage.getItem('elevator-pitches') || '[]')
+      const newPitch = { ...pitch, id: Date.now().toString() }
+      pitches.unshift(newPitch)
+      localStorage.setItem('elevator-pitches', JSON.stringify(pitches))
+      return newPitch
+    }
+    return data
+  },
+
+  async updatePitch(id: string, updates: Partial<ElevatorPitch>): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const pitches = JSON.parse(localStorage.getItem('elevator-pitches') || '[]')
+      const index = pitches.findIndex((p: ElevatorPitch) => p.id === id)
+      if (index >= 0) {
+        pitches[index] = { ...pitches[index], ...updates }
+        localStorage.setItem('elevator-pitches', JSON.stringify(pitches))
+      }
+      return
+    }
+
+    const { error } = await supabase
+      .from('elevator_pitches')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'uppdatera pitch')
+    }
+  },
+
+  async deletePitch(id: string): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const pitches = JSON.parse(localStorage.getItem('elevator-pitches') || '[]')
+      const filtered = pitches.filter((p: ElevatorPitch) => p.id !== id)
+      localStorage.setItem('elevator-pitches', JSON.stringify(filtered))
+      return
+    }
+
+    const { error } = await supabase
+      .from('elevator_pitches')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'ta bort pitch')
+    }
+  },
+
+  async recordPractice(id: string): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const pitches = JSON.parse(localStorage.getItem('elevator-pitches') || '[]')
+      const index = pitches.findIndex((p: ElevatorPitch) => p.id === id)
+      if (index >= 0) {
+        pitches[index].practice_count = (pitches[index].practice_count || 0) + 1
+        pitches[index].last_practiced_at = new Date().toISOString()
+        localStorage.setItem('elevator-pitches', JSON.stringify(pitches))
+      }
+      return
+    }
+
+    // Get current count first
+    const { data: current } = await supabase
+      .from('elevator_pitches')
+      .select('practice_count')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single()
+
+    const { error } = await supabase
+      .from('elevator_pitches')
+      .update({
+        practice_count: (current?.practice_count || 0) + 1,
+        last_practiced_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'registrera övning')
+    }
+  },
+
+  // ===== VISIBILITY PROGRESS =====
+  async getVisibilityProgress(): Promise<VisibilityProgressItem[]> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const saved = localStorage.getItem('visibility-progress')
+      return saved ? JSON.parse(saved) : []
+    }
+
+    const { data, error } = await supabase
+      .from('visibility_progress')
+      .select('*')
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'hämta synlighets-progress')
+      const saved = localStorage.getItem('visibility-progress')
+      return saved ? JSON.parse(saved) : []
+    }
+    return data || []
+  },
+
+  async updateVisibilityProgress(item: VisibilityProgressItem): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const progress = JSON.parse(localStorage.getItem('visibility-progress') || '[]')
+      const index = progress.findIndex((p: VisibilityProgressItem) => p.strategy_id === item.strategy_id)
+      if (index >= 0) {
+        progress[index] = item
+      } else {
+        progress.push(item)
+      }
+      localStorage.setItem('visibility-progress', JSON.stringify(progress))
+      return
+    }
+
+    const { error } = await supabase
+      .from('visibility_progress')
+      .upsert({
+        user_id: user.id,
+        ...item,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id,strategy_id'
+      })
+
+    if (error) {
+      handleStorageError(error, 'uppdatera synlighets-progress')
+    }
+  },
+
+  // ===== CONTENT CALENDAR =====
+  async getContentCalendar(startDate?: string, endDate?: string): Promise<ContentCalendarItem[]> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const saved = localStorage.getItem('content-calendar')
+      return saved ? JSON.parse(saved) : []
+    }
+
+    let query = supabase
+      .from('content_calendar')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('scheduled_date', { ascending: true })
+
+    if (startDate) {
+      query = query.gte('scheduled_date', startDate)
+    }
+    if (endDate) {
+      query = query.lte('scheduled_date', endDate)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      handleStorageError(error, 'hämta innehållskalender')
+      const saved = localStorage.getItem('content-calendar')
+      return saved ? JSON.parse(saved) : []
+    }
+    return data || []
+  },
+
+  async addContentItem(item: ContentCalendarItem): Promise<ContentCalendarItem | null> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const items = JSON.parse(localStorage.getItem('content-calendar') || '[]')
+      const newItem = { ...item, id: Date.now().toString() }
+      items.push(newItem)
+      localStorage.setItem('content-calendar', JSON.stringify(items))
+      return newItem
+    }
+
+    const { data, error } = await supabase
+      .from('content_calendar')
+      .insert({ ...item, user_id: user.id })
+      .select()
+      .single()
+
+    if (error) {
+      handleStorageError(error, 'lägga till innehållsobjekt')
+      return null
+    }
+    return data
+  },
+
+  async updateContentItem(id: string, updates: Partial<ContentCalendarItem>): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const items = JSON.parse(localStorage.getItem('content-calendar') || '[]')
+      const index = items.findIndex((i: ContentCalendarItem) => i.id === id)
+      if (index >= 0) {
+        items[index] = { ...items[index], ...updates }
+        localStorage.setItem('content-calendar', JSON.stringify(items))
+      }
+      return
+    }
+
+    const { error } = await supabase
+      .from('content_calendar')
+      .update({ ...updates, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'uppdatera innehållsobjekt')
+    }
+  },
+
+  async deleteContentItem(id: string): Promise<void> {
+    const user = await getCurrentUser()
+    if (!user) {
+      const items = JSON.parse(localStorage.getItem('content-calendar') || '[]')
+      const filtered = items.filter((i: ContentCalendarItem) => i.id !== id)
+      localStorage.setItem('content-calendar', JSON.stringify(filtered))
+      return
+    }
+
+    const { error } = await supabase
+      .from('content_calendar')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'ta bort innehållsobjekt')
+    }
+  }
+}
+
+// ============================================
 // ONBOARDING PROGRESS
 // ============================================
 export const onboardingApi = {
