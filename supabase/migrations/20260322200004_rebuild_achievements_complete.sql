@@ -17,10 +17,13 @@ ALTER TABLE achievements ALTER COLUMN requirement_type DROP NOT NULL;
 ALTER TABLE achievements ALTER COLUMN requirement_value DROP NOT NULL;
 ALTER TABLE achievements ALTER COLUMN key DROP NOT NULL;
 
--- Step 3: Clear existing data
+-- Step 3: Drop CHECK constraints on category
+ALTER TABLE achievements DROP CONSTRAINT IF EXISTS achievements_category_check;
+
+-- Step 4: Clear existing data
 DELETE FROM achievements;
 
--- Step 4: Insert fresh achievements
+-- Step 5: Insert fresh achievements
 INSERT INTO achievements (key, name, description, icon, category, xp_reward, rarity, requirement_type, requirement_value, sort_order) VALUES
   ('first_login', 'Första steget', 'Logga in för första gången', 'log-in', 'engagement', 10, 'common', 'login', 1, 1),
   ('profile_complete', 'Komplett profil', 'Fyll i alla profiluppgifter', 'user-check', 'profile', 25, 'common', 'profile_complete', 1, 2),
@@ -38,7 +41,7 @@ INSERT INTO achievements (key, name, description, icon, category, xp_reward, rar
   ('linkedin_pro', 'LinkedIn-proffs', 'Optimera din LinkedIn-profil', 'linkedin', 'profile', 50, 'uncommon', 'linkedin_analyzed', 1, 14),
   ('journey_master', 'Jobbkung', 'Nå nivå 10', 'crown', 'special', 500, 'legendary', 'level_reached', 10, 15);
 
--- Step 5: Now make key NOT NULL and unique
+-- Step 6: Now make key NOT NULL and unique
 UPDATE achievements SET key = 'achievement_' || id::text WHERE key IS NULL;
 ALTER TABLE achievements ALTER COLUMN key SET NOT NULL;
 
