@@ -18,10 +18,11 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
-import { exercises, type Exercise } from '@/data/exercises'
+import { type Exercise } from '@/data/exercises'
+import { contentExerciseApi, contentArticleApi } from '@/services/contentApi'
+import { exerciseToArticleCategoryMap } from '@/services/articleData'
 import { AIAssistant } from '@/components/ai'
 import { supabase } from '@/lib/supabase'
-import { mockArticlesData, exerciseToArticleCategoryMap } from '@/services/articleData'
 import { Link } from 'react-router-dom'
 import { PageLayout } from '@/components/layout/index'
 
@@ -63,6 +64,7 @@ interface ExerciseAnswer {
 
 export default function Exercises() {
   const { t } = useTranslation()
+  const [exercises, setExercises] = useState<Exercise[]>([])
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [answers, setAnswers] = useState<ExerciseProgress>({})
@@ -72,17 +74,29 @@ export default function Exercises() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [user, setUser] = useState<any>(null)
+  const [relatedArticles, setRelatedArticles] = useState<any[]>([])
 
-  // Check authentication and load user
+  // Check authentication and load user + exercises
   useEffect(() => {
-    const getUser = async () => {
+    const init = async () => {
+      // Get user
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+
+      // Load exercises from database (with mock fallback)
+      try {
+        const exercisesData = await contentExerciseApi.getAll()
+        setExercises(exercisesData)
+      } catch (err) {
+        console.error('Error loading exercises:', err)
+        setError(t('exercises.errorLoadingExercises'))
+      }
+
       if (!user) {
         setLoading(false)
       }
     }
-    getUser()
+    init()
   }, [])
 
   // Load saved answers from Supabase (cloud)
@@ -185,11 +199,25 @@ export default function Exercises() {
     return Math.round((answeredQuestions / totalQuestions) * 100)
   }
 
-  const handleSelectExercise = (exercise: Exercise) => {
+  const handleSelectExercise = async (exercise: Exercise) => {
     setSelectedExercise(exercise)
     setCurrentStep(0)
     setIsCompleted(false)
     window.scrollTo({ top: 0, behavior: 'smooth' })
+
+    // Load related articles
+    const articleCategory = exerciseToArticleCategoryMap[exercise.category]
+    if (articleCategory) {
+      try {
+        const articles = await contentArticleApi.getByCategory(articleCategory)
+        setRelatedArticles(articles.slice(0, 2))
+      } catch (err) {
+        console.error('Error loading related articles:', err)
+        setRelatedArticles([])
+      }
+    } else {
+      setRelatedArticles([])
+    }
   }
 
   const handleBackToList = () => {
@@ -773,47 +801,38 @@ export default function Exercises() {
       </Card>
 
       {/* Related Articles */}
-      {(() => {
-        const articleCategory = exerciseToArticleCategoryMap[selectedExercise.category]
-        const relatedArticles = articleCategory 
-          ? mockArticlesData.filter(a => a.category === articleCategory).slice(0, 2)
-          : []
-        
-        if (relatedArticles.length === 0) return null
-        
-        return (
-          <Card className="p-4 bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
-            <div className="flex items-start gap-3">
-              <BookOpen className="w-5 h-5 text-teal-600 mt-0.5" />
-              <div className="flex-1">
-                <h3 className="font-medium text-teal-900">Relaterade artiklar</h3>
-                <p className="text-sm text-teal-700 mt-1 mb-3">
-                  Läs mer om {selectedExercise.category.toLowerCase()} i kunskapsbanken.
-                </p>
-                <div className="space-y-2">
-                  {relatedArticles.map((article) => (
-                    <Link
-                      key={article.id}
-                      to={`/knowledge-base/article/${article.id}`}
-                      className="block p-3 bg-white rounded-lg hover:shadow-sm transition-shadow border border-teal-100"
-                    >
-                      <h4 className="font-medium text-slate-800 text-sm">{article.title}</h4>
-                      <p className="text-xs text-slate-600 mt-1 line-clamp-2">{article.summary}</p>
-                    </Link>
-                  ))}
-                </div>
-                <Link
-                  to="/knowledge-base"
-                  className="inline-flex items-center gap-1 text-sm text-teal-700 hover:text-teal-800 mt-3 font-medium"
-                >
-                  Se alla artiklar
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
+      {relatedArticles.length > 0 && (
+        <Card className="p-4 bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
+          <div className="flex items-start gap-3">
+            <BookOpen className="w-5 h-5 text-teal-600 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="font-medium text-teal-900">Relaterade artiklar</h3>
+              <p className="text-sm text-teal-700 mt-1 mb-3">
+                Läs mer om {selectedExercise.category.toLowerCase()} i kunskapsbanken.
+              </p>
+              <div className="space-y-2">
+                {relatedArticles.map((article) => (
+                  <Link
+                    key={article.id}
+                    to={`/knowledge-base/article/${article.id}`}
+                    className="block p-3 bg-white rounded-lg hover:shadow-sm transition-shadow border border-teal-100"
+                  >
+                    <h4 className="font-medium text-slate-800 text-sm">{article.title}</h4>
+                    <p className="text-xs text-slate-600 mt-1 line-clamp-2">{article.summary}</p>
+                  </Link>
+                ))}
               </div>
+              <Link
+                to="/knowledge-base"
+                className="inline-flex items-center gap-1 text-sm text-teal-700 hover:text-teal-800 mt-3 font-medium"
+              >
+                Se alla artiklar
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
-          </Card>
-        )
-      })()}
+          </div>
+        </Card>
+      )}
     </div>
     </PageLayout>
   )

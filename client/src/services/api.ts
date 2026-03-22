@@ -11,6 +11,7 @@ import {
   interestApi,
   coverLetterApi,
   articleApi,
+  exerciseApi,
   jobsApi,
   userApi,
   activityApi,
@@ -25,7 +26,7 @@ export { enrichmentsApi } from './afEnrichmentsApi'
 export { trendsApi } from './afTrendsApi'
 
 // Supabase API:er
-export { authApi, cvApi, interestApi, coverLetterApi, articleApi, jobsApi, userApi, activityApi, savedJobsApi }
+export { authApi, cvApi, interestApi, coverLetterApi, articleApi, exerciseApi, jobsApi, userApi, activityApi, savedJobsApi }
 
 // Re-export supabase client för direktåtkomst vid behov
 export { supabase } from '../lib/supabase'

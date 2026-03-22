@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useParams, useNavigate, Link } from 'react-router-dom'
-import { articleApi } from '../services/api'
+import { articleApi, exerciseApi } from '../services/api'
 import { logger } from '../lib/logger'
 import {
   ReadingProgress,
@@ -22,8 +22,8 @@ import {
   Lightbulb,
   Dumbbell,
 } from 'lucide-react'
-import { getRelatedArticles } from '../services/articleData'
-import { exercises } from '../data/exercises'
+import { contentArticleApi, contentExerciseApi } from '../services/contentApi'
+import type { Exercise } from '../data/exercises'
 import { articleBookmarksApi } from '../services/cloudStorage'
 import { useAchievementTracker } from '../hooks/useAchievementTracker'
 
@@ -54,6 +54,8 @@ export default function Article() {
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
   const [fontSize, setFontSize] = useState<'normal' | 'large' | 'xlarge'>('normal')
+  const [relatedArticles, setRelatedArticles] = useState<any[]>([])
+  const [relatedExercises, setRelatedExercises] = useState<Exercise[]>([])
   const { trackArticleRead, trackArticleSaved } = useAchievementTracker()
   const hasTrackedRead = useRef(false)
 
@@ -78,6 +80,22 @@ export default function Article() {
       if (!hasTrackedRead.current && data?.title) {
         hasTrackedRead.current = true
         trackArticleRead(data.title)
+      }
+
+      // Load related articles
+      if (data?.relatedArticles && data.relatedArticles.length > 0) {
+        const allArticles = await contentArticleApi.getAll()
+        const related = allArticles
+          .filter(a => data.relatedArticles.includes(a.id) && a.id !== id)
+          .slice(0, 3)
+        setRelatedArticles(related)
+      }
+
+      // Load related exercises
+      if (data?.relatedExercises && data.relatedExercises.length > 0) {
+        const allExercises = await contentExerciseApi.getAll()
+        const related = allExercises.filter(e => data.relatedExercises.includes(e.id))
+        setRelatedExercises(related)
       }
     } catch (error) {
       console.error('Error loading article:', error)
@@ -147,16 +165,6 @@ export default function Article() {
       default: return 'text-base leading-relaxed'
     }
   }
-
-  // Get related articles
-  const relatedArticles = article?.relatedArticles 
-    ? getRelatedArticles(article.relatedArticles).filter(a => a.id !== id).slice(0, 3)
-    : []
-
-  // Get related exercises
-  const relatedExercises = article?.relatedExercises
-    ? exercises.filter(e => article.relatedExercises.includes(e.id))
-    : []
 
   if (loading) {
     return (

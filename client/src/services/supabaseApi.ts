@@ -4,7 +4,7 @@
  */
 
 import { supabase } from '../lib/supabase'
-import { mockArticlesData, articleCategories } from './articleData'
+import { contentArticleApi, contentExerciseApi } from './contentApi'
 import type { Tables } from '../lib/supabase'
 import { apiLogger } from '../lib/logger'
 
@@ -699,144 +699,90 @@ export const coverLetterApi = {
 
 // ============================================
 // ARTICLES API
+// Uses contentApi.ts for database access with mock data fallback
 // ============================================
 export const articleApi = {
+  /**
+   * Get all active articles
+   */
   async getAll() {
-    try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('published', true)
-        .order('created_at', { ascending: false })
-      
-      // If error or no data, return mock data
-      if (error) {
-        apiLogger.debug('Supabase articles error, using mock data:', error.message)
-        return mockArticlesData
-      }
-
-      if (!data || data.length === 0) {
-        apiLogger.debug('No articles in database, using mock data')
-        return mockArticlesData
-      }
-
-      // Merge database articles with mock articles, avoiding duplicates
-      const dbIds = new Set(data.map(a => a.id))
-      const uniqueMockArticles = mockArticlesData.filter(a => !dbIds.has(a.id))
-
-      apiLogger.debug(`Loaded ${data.length} from DB + ${uniqueMockArticles.length} from mock = ${data.length + uniqueMockArticles.length} total`)
-
-      return [...data, ...uniqueMockArticles]
-    } catch (err) {
-      apiLogger.debug('Exception loading articles, using mock data:', err)
-      return mockArticlesData
-    }
+    return contentArticleApi.getAll()
   },
 
+  /**
+   * Get article by slug or ID
+   */
   async getById(id: string) {
-    try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('id', id)
-        .single()
-      
-      // Fallback to mock data if not found in database
-      if (error || !data) {
-        const mockArticle = mockArticlesData.find(a => a.id === id)
-        if (mockArticle) return mockArticle
-        if (error && error.code !== 'PGRST116') handleError(error)
-        return null
-      }
-      return data
-    } catch (err) {
-      const mockArticle = mockArticlesData.find(a => a.id === id)
-      if (mockArticle) return mockArticle
-      return null
-    }
+    return contentArticleApi.getById(id)
   },
 
+  /**
+   * Get articles by category
+   */
   async getByCategory(category: string) {
-    try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('*')
-        .eq('published', true)
-        .eq('category', category)
-        .order('created_at', { ascending: false })
-      
-      // Fallback to mock data if no data in database or error
-      if (error || !data || data.length === 0) {
-        return mockArticlesData.filter(a => a.category === category)
-      }
-      return data
-    } catch (err) {
-      return mockArticlesData.filter(a => a.category === category)
-    }
+    return contentArticleApi.getByCategory(category)
   },
 
+  /**
+   * Get all article categories
+   */
   async getCategories() {
-    try {
-      const { data, error } = await supabase
-        .from('articles')
-        .select('category, subcategory')
-        .eq('published', true)
-      
-      // Fallback to mock categories if no data in database or error
-      if (error) {
-        apiLogger.debug('Supabase categories error, using mock data:', error.message)
-        return articleCategories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          slug: cat.id,
-          description: cat.description,
-          subcategories: cat.subcategories?.map((sub: { name: string }) => sub.name) || []
-        }))
-      }
+    const categories = await contentArticleApi.getCategories()
+    return categories.map(cat => ({
+      id: cat.key,
+      name: cat.name,
+      slug: cat.key,
+      description: cat.description,
+      subcategories: cat.subcategories?.map(sub => sub.name) || []
+    }))
+  },
 
-      if (!data || data.length === 0) {
-        apiLogger.debug('No categories in database, using mock data')
-        return articleCategories.map(cat => ({
-          id: cat.id,
-          name: cat.name,
-          slug: cat.id,
-          description: cat.description,
-          subcategories: cat.subcategories?.map((sub: { name: string }) => sub.name) || []
-        }))
-      }
-      
-      // Extract unique categories with their subcategories
-      const categoryMap = new Map<string, { name: string; subcategories: Set<string> }>()
+  /**
+   * Search articles
+   */
+  async search(query: string) {
+    return contentArticleApi.search(query)
+  }
+}
 
-      data?.forEach((article: { category?: string; subcategory?: string }) => {
-        const cat = article.category || 'Övrigt'
-        const sub = article.subcategory
+// ============================================
+// EXERCISES API
+// Uses contentApi.ts for database access with mock data fallback
+// ============================================
+export const exerciseApi = {
+  /**
+   * Get all active exercises
+   */
+  async getAll() {
+    return contentExerciseApi.getAll()
+  },
 
-        if (!categoryMap.has(cat)) {
-          categoryMap.set(cat, { name: cat, subcategories: new Set() })
-        }
+  /**
+   * Get exercise by slug or ID
+   */
+  async getById(id: string) {
+    return contentExerciseApi.getById(id)
+  },
 
-        if (sub) {
-          categoryMap.get(cat)!.subcategories.add(sub)
-        }
-      })
+  /**
+   * Get exercises by category
+   */
+  async getByCategory(category: string) {
+    return contentExerciseApi.getByCategory(category)
+  },
 
-      // Convert to array format expected by components
-      return Array.from(categoryMap.values()).map((cat: { name: string; subcategories: Set<string> }) => ({
-        name: cat.name,
-        slug: cat.name.toLowerCase().replace(/\s+/g, '-'),
-        subcategories: Array.from(cat.subcategories)
-      }))
-    } catch (err) {
-      apiLogger.debug('Exception loading categories, using mock data:', err)
-      return articleCategories.map(cat => ({
-        id: cat.id,
-        name: cat.name,
-        slug: cat.id,
-        description: cat.description,
-        subcategories: cat.subcategories?.map((sub: { name: string }) => sub.name) || []
-      }))
-    }
+  /**
+   * Get all exercise categories
+   */
+  async getCategories() {
+    return contentExerciseApi.getCategories()
+  },
+
+  /**
+   * Get exercise steps with questions
+   */
+  async getSteps(exerciseSlug: string) {
+    return contentExerciseApi.getSteps(exerciseSlug)
   }
 }
 

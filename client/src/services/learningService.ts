@@ -1,12 +1,15 @@
 /**
  * Learning Service - Articles, exercises, and learning progress
  * With RIASEC-based personalization
+ *
+ * Now uses contentApi for database access with mock data fallback
  */
 
 import { supabase } from '@/lib/supabase'
-import { mockArticlesData, articleCategories, type EnhancedArticle } from '@/services/articleData'
-import { exercises, type Exercise } from '@/data/exercises'
+import { articleCategories, type EnhancedArticle } from '@/services/articleData'
+import { type Exercise } from '@/data/exercises'
 import { interestApi } from '@/services/supabaseApi'
+import { contentArticleApi, contentExerciseApi } from '@/services/contentApi'
 import { personalizeArticles, calculateExerciseRelevance, type RiasecScores } from '@/services/interestPersonalization'
 
 // ============================================
@@ -85,8 +88,14 @@ export async function getLearningData(): Promise<{
   // Get article progress
   const articleProgress = user ? await getArticleProgress(user.id) : new Map()
 
-  // Get exercise progress
-  const exerciseProgress = user ? await getExerciseProgress(user.id) : new Map()
+  // Fetch articles and exercises from database (with mock data fallback)
+  const [articlesData, exercisesData] = await Promise.all([
+    contentArticleApi.getAll(),
+    contentExerciseApi.getAll()
+  ])
+
+  // Get exercise progress (needs exercises for step count)
+  const exerciseProgress = user ? await getExerciseProgress(user.id, exercisesData) : new Map()
 
   // Get RIASEC profile for personalization
   let riasecScores: RiasecScores | null = null
@@ -118,7 +127,7 @@ export async function getLearningData(): Promise<{
   }
 
   // Build articles with progress
-  const allArticles: ArticleWithProgress[] = mockArticlesData.map(article => ({
+  const allArticles: ArticleWithProgress[] = articlesData.map(article => ({
     ...article,
     progress: articleProgress.get(article.id)?.progress || 0,
     isCompleted: articleProgress.get(article.id)?.isCompleted || false,
@@ -169,10 +178,10 @@ export async function getLearningData(): Promise<{
     .slice(0, 3)
 
   // Build categories with counts
-  const categories = buildCategories(allArticles)
+  const categories = await buildCategories(allArticles)
 
   // Build exercises with progress and relevance
-  const exercisesWithProgress: ExerciseWithProgress[] = exercises.map(exercise => {
+  const exercisesWithProgress: ExerciseWithProgress[] = exercisesData.map(exercise => {
     const prog = exerciseProgress.get(exercise.id)
     const relevanceScore = riasecScores
       ? calculateExerciseRelevance(exercise, riasecScores)
@@ -221,14 +230,15 @@ export async function getArticlesByCategory(categoryId: string): Promise<Article
   const { data: { user } } = await supabase.auth.getUser()
   const articleProgress = user ? await getArticleProgress(user.id) : new Map()
 
-  return mockArticlesData
-    .filter(a => a.category === categoryId)
-    .map(article => ({
-      ...article,
-      progress: articleProgress.get(article.id)?.progress || 0,
-      isCompleted: articleProgress.get(article.id)?.isCompleted || false,
-      lastReadAt: articleProgress.get(article.id)?.lastReadAt
-    }))
+  // Fetch articles by category from database
+  const articles = await contentArticleApi.getByCategory(categoryId)
+
+  return articles.map(article => ({
+    ...article,
+    progress: articleProgress.get(article.id)?.progress || 0,
+    isCompleted: articleProgress.get(article.id)?.isCompleted || false,
+    lastReadAt: articleProgress.get(article.id)?.lastReadAt
+  }))
 }
 
 // ============================================
@@ -445,7 +455,7 @@ interface ExerciseProgressData {
   lastActivityAt?: string
 }
 
-async function getExerciseProgress(userId: string): Promise<Map<string, ExerciseProgressData>> {
+async function getExerciseProgress(userId: string, exercisesData: Exercise[]): Promise<Map<string, ExerciseProgressData>> {
   const map = new Map<string, ExerciseProgressData>()
 
   try {
@@ -457,7 +467,7 @@ async function getExerciseProgress(userId: string): Promise<Map<string, Exercise
     data?.forEach(row => {
       const answers = row.answers || {}
       const answeredSteps = Object.keys(answers).length
-      const exercise = exercises.find(e => e.id === row.exercise_id)
+      const exercise = exercisesData.find(e => e.id === row.exercise_id)
       const totalSteps = exercise?.steps.length || 1
 
       map.set(row.exercise_id, {
@@ -474,14 +484,17 @@ async function getExerciseProgress(userId: string): Promise<Map<string, Exercise
   return map
 }
 
-function buildCategories(articles: ArticleWithProgress[]): LearningCategory[] {
-  return articleCategories.map(cat => {
-    const catArticles = articles.filter(a => a.category === cat.id)
+async function buildCategories(articles: ArticleWithProgress[]): Promise<LearningCategory[]> {
+  // Fetch categories from database (with mock fallback)
+  const categories = await contentArticleApi.getCategories()
+
+  return categories.map(cat => {
+    const catArticles = articles.filter(a => a.category === cat.key)
     return {
-      id: cat.id,
+      id: cat.key,
       name: cat.name,
-      description: cat.description,
-      icon: cat.icon,
+      description: cat.description || '',
+      icon: cat.icon || '',
       articleCount: catArticles.length,
       completedCount: catArticles.filter(a => a.isCompleted).length
     }
