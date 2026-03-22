@@ -53,6 +53,10 @@ const Salary = lazy(() => import('./pages/Salary'))
 const International = lazy(() => import('./pages/International'))
 const PersonalBrand = lazy(() => import('./pages/PersonalBrand'))
 const Journey = lazy(() => import('./pages/Journey'))
+const LinkedInOptimizer = lazy(() => import('./pages/LinkedInOptimizer'))
+const SkillsGapAnalysis = lazy(() => import('./pages/SkillsGapAnalysis'))
+const InterviewSimulator = lazy(() => import('./pages/InterviewSimulator'))
+const Calendar = lazy(() => import('./pages/Calendar'))
 
 // Loading fallback
 function PageLoader() {
@@ -387,6 +391,34 @@ function App() {
           <LazyRoute>
             <RouteErrorBoundary>
               <PersonalBrand />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="linkedin-optimizer" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <LinkedInOptimizer />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="skills-gap-analysis" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <SkillsGapAnalysis />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="interview-simulator" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <InterviewSimulator />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="calendar" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Calendar />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
