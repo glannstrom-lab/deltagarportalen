@@ -862,6 +862,239 @@ export async function getAchievements(): Promise<Achievement[]> {
   }
 }
 
+/**
+ * Check and unlock achievements based on requirements
+ */
+export async function checkAndUnlockAchievements(): Promise<{
+  unlocked: Achievement[]
+  xpEarned: number
+}> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { unlocked: [], xpEarned: 0 }
+
+    // Get all achievements
+    const { data: allAchievements } = await supabase
+      .from('achievements')
+      .select('*')
+
+    // Get already unlocked achievements
+    const { data: userAchievements } = await supabase
+      .from('user_achievements')
+      .select('achievement_id')
+      .eq('user_id', user.id)
+
+    const unlockedIds = new Set((userAchievements || []).map(ua => ua.achievement_id))
+    const newlyUnlocked: Achievement[] = []
+    let totalXpEarned = 0
+
+    // Check each achievement
+    for (const achievement of allAchievements || []) {
+      // Skip already unlocked
+      if (unlockedIds.has(achievement.id)) continue
+
+      // Skip if no requirement (manual unlock only)
+      if (!achievement.requirement_type) continue
+
+      // Check if requirement is met
+      const progress = await getAchievementProgress(
+        achievement.requirement_type,
+        achievement.requirement_value || 1
+      )
+
+      if (progress >= 100) {
+        // Unlock achievement
+        const { error } = await supabase
+          .from('user_achievements')
+          .insert({
+            user_id: user.id,
+            achievement_id: achievement.id,
+            unlocked_at: new Date().toISOString()
+          })
+
+        if (!error) {
+          // Award XP
+          if (achievement.xp_reward > 0) {
+            await supabase.rpc('increment_user_points', {
+              p_user_id: user.id,
+              p_points: achievement.xp_reward
+            })
+          }
+
+          // Log activity
+          await supabase.from('user_activity_log').insert({
+            user_id: user.id,
+            activity_type: 'badge_unlocked',
+            title: `Badge upplåst: ${achievement.name}`,
+            description: achievement.description,
+            points_earned: achievement.xp_reward,
+            metadata: {
+              achievement_id: achievement.id,
+              achievement_key: achievement.key,
+              rarity: achievement.rarity
+            }
+          })
+
+          newlyUnlocked.push({
+            ...achievement,
+            is_unlocked: true,
+            unlocked_at: new Date().toISOString()
+          })
+          totalXpEarned += achievement.xp_reward || 0
+        }
+      }
+    }
+
+    return { unlocked: newlyUnlocked, xpEarned: totalXpEarned }
+  } catch (error) {
+    console.error('Error checking achievements:', error)
+    return { unlocked: [], xpEarned: 0 }
+  }
+}
+
+/**
+ * Get progress for achievement requirement (similar to milestone but with different handling)
+ */
+async function getAchievementProgress(
+  requirementType: string,
+  requirementValue: number
+): Promise<number> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return 0
+
+    let currentValue = 0
+
+    switch (requirementType) {
+      case 'login': {
+        // Always met if user is logged in
+        currentValue = 1
+        break
+      }
+
+      case 'profile_complete': {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, phone, location')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (profile) {
+          const fields = ['full_name', 'phone', 'location']
+          const filled = fields.filter(f => !!(profile as Record<string, unknown>)[f])
+          currentValue = filled.length >= 2 ? 1 : 0
+        }
+        break
+      }
+
+      case 'cv_started': {
+        const { data: cv } = await supabase
+          .from('cvs')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = cv ? 1 : 0
+        break
+      }
+
+      case 'cv_complete': {
+        const { data: cv } = await supabase
+          .from('cvs')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle()
+
+        if (cv) {
+          const sections = ['personal_info', 'work_experience', 'education', 'skills', 'summary']
+          const filled = sections.filter(s => {
+            const val = cv[s]
+            return Array.isArray(val) ? val.length > 0 : !!val
+          })
+          currentValue = filled.length === sections.length ? 1 : 0
+        }
+        break
+      }
+
+      case 'jobs_applied': {
+        const { count } = await supabase
+          .from('job_applications')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+        currentValue = count || 0
+        break
+      }
+
+      case 'articles_read': {
+        const { count } = await supabase
+          .from('article_progress')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .gte('progress', 80)
+        currentValue = count || 0
+        break
+      }
+
+      case 'diary_entries': {
+        const { count } = await supabase
+          .from('diary_entries')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+        currentValue = count || 0
+        break
+      }
+
+      case 'streak_days': {
+        const { data } = await supabase
+          .from('user_gamification')
+          .select('current_streak')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = data?.current_streak || 0
+        break
+      }
+
+      case 'interest_guide_complete': {
+        const { data } = await supabase
+          .from('user_interests')
+          .select('riasec_results')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = data?.riasec_results ? 1 : 0
+        break
+      }
+
+      case 'linkedin_analyzed': {
+        const { data } = await supabase
+          .from('personal_brand_audit')
+          .select('linkedin_score')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = data?.linkedin_score && data.linkedin_score > 0 ? 1 : 0
+        break
+      }
+
+      case 'level_reached': {
+        const { data: gamification } = await supabase
+          .from('user_gamification')
+          .select('total_points')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        const xp = gamification?.total_points || 0
+        const levelInfo = getLevelFromXP(xp)
+        currentValue = levelInfo.level
+        break
+      }
+
+      default:
+        currentValue = 0
+    }
+
+    return Math.min(100, Math.round((currentValue / requirementValue) * 100))
+  } catch {
+    return 0
+  }
+}
+
 export const journeyService = {
   getJourneyProgress,
   getJourneyStats,
@@ -870,6 +1103,7 @@ export const journeyService = {
   getWeeklySummary,
   logJourneyActivity,
   checkAndCompleteMilestones,
+  checkAndUnlockAchievements,
   getUserGoals,
   createUserGoal,
   updateGoalProgress,

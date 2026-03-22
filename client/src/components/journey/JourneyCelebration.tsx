@@ -1,25 +1,31 @@
 /**
- * JourneyCelebration - Celebration modal for milestone completions
+ * JourneyCelebration - Celebration modal for milestone/achievement completions
  */
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Award, Star, Zap, PartyPopper, X } from 'lucide-react'
+import { Award, Star, Zap, PartyPopper, X, Trophy } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { JOURNEY_PHASES } from '@/data/journeyData'
+import type { Achievement } from '@/services/journeyService'
 
 interface JourneyCelebrationProps {
-  completedMilestones: string[]
+  completedMilestones?: string[]
+  unlockedAchievements?: Achievement[]
   xpEarned: number
   onDismiss: () => void
 }
 
 export function JourneyCelebration({
-  completedMilestones,
+  completedMilestones = [],
+  unlockedAchievements = [],
   xpEarned,
   onDismiss
 }: JourneyCelebrationProps) {
   const [confetti, setConfetti] = useState<{ id: number; x: number; delay: number; color: string }[]>([])
+
+  const hasMilestones = completedMilestones.length > 0
+  const hasAchievements = unlockedAchievements.length > 0
 
   // Get milestone details
   const milestoneDetails = completedMilestones.map(id => {
@@ -41,6 +47,23 @@ export function JourneyCelebration({
     }))
     setConfetti(particles)
   }, [])
+
+  const getTitle = () => {
+    if (hasMilestones && hasAchievements) return 'Dubbel framgång!'
+    if (hasAchievements) return 'Badge upplåst!'
+    return 'Grattis!'
+  }
+
+  const getSubtitle = () => {
+    const parts = []
+    if (hasMilestones) {
+      parts.push(completedMilestones.length === 1 ? 'en ny milstolpe' : `${completedMilestones.length} nya milstolpar`)
+    }
+    if (hasAchievements) {
+      parts.push(unlockedAchievements.length === 1 ? 'en ny badge' : `${unlockedAchievements.length} nya badges`)
+    }
+    return `Du har uppnått ${parts.join(' och ')}!`
+  }
 
   return (
     <AnimatePresence>
@@ -81,7 +104,7 @@ export function JourneyCelebration({
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.8, opacity: 0 }}
           transition={{ type: 'spring', duration: 0.5 }}
-          className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden"
+          className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full overflow-hidden max-h-[90vh] flex flex-col"
         >
           {/* Close button */}
           <button
@@ -92,14 +115,22 @@ export function JourneyCelebration({
           </button>
 
           {/* Header */}
-          <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 p-8 text-center">
+          <div className={`p-8 text-center ${
+            hasAchievements
+              ? 'bg-gradient-to-br from-amber-400 via-orange-500 to-pink-500'
+              : 'bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500'
+          }`}>
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: 'spring' }}
               className="w-20 h-20 rounded-full bg-white/20 backdrop-blur flex items-center justify-center mx-auto mb-4"
             >
-              <PartyPopper className="w-10 h-10 text-white" />
+              {hasAchievements ? (
+                <Trophy className="w-10 h-10 text-white" />
+              ) : (
+                <PartyPopper className="w-10 h-10 text-white" />
+              )}
             </motion.div>
 
             <motion.h2
@@ -108,7 +139,7 @@ export function JourneyCelebration({
               transition={{ delay: 0.3 }}
               className="text-2xl font-bold text-white mb-2"
             >
-              Grattis!
+              {getTitle()}
             </motion.h2>
 
             <motion.p
@@ -117,12 +148,12 @@ export function JourneyCelebration({
               transition={{ delay: 0.4 }}
               className="text-white/80"
             >
-              Du har uppnått {completedMilestones.length === 1 ? 'en ny milstolpe' : `${completedMilestones.length} nya milstolpar`}!
+              {getSubtitle()}
             </motion.p>
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-6 overflow-y-auto flex-1">
             {/* XP Earned */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -134,30 +165,63 @@ export function JourneyCelebration({
               <span className="font-bold text-lg">+{xpEarned} XP</span>
             </motion.div>
 
+            {/* Achievements list */}
+            {hasAchievements && (
+              <div className="space-y-3 mb-6">
+                <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Badges</h4>
+                {unlockedAchievements.map((achievement, index) => (
+                  <motion.div
+                    key={achievement.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 + index * 0.1 }}
+                    className="flex items-center gap-3 p-3 bg-amber-50 rounded-xl border border-amber-100"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center">
+                      <Trophy className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-slate-900">{achievement.name}</h4>
+                      <p className="text-sm text-slate-500">{achievement.description}</p>
+                    </div>
+                    <div className="flex items-center gap-1 text-amber-600">
+                      <Star className="w-4 h-4" fill="currentColor" />
+                      <span className="text-sm font-medium">+{achievement.xp_reward}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+
             {/* Milestones list */}
-            <div className="space-y-3 mb-6">
-              {milestoneDetails.map((milestone, index) => (
-                <motion.div
-                  key={milestone!.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                  className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl"
-                >
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
-                    <Award className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="font-medium text-slate-900">{milestone!.name}</h4>
-                    <p className="text-sm text-slate-500">{milestone!.phaseName}</p>
-                  </div>
-                  <div className="flex items-center gap-1 text-amber-600">
-                    <Star className="w-4 h-4" fill="currentColor" />
-                    <span className="text-sm font-medium">+{milestone!.xpReward}</span>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            {hasMilestones && (
+              <div className="space-y-3 mb-6">
+                {hasAchievements && (
+                  <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Milstolpar</h4>
+                )}
+                {milestoneDetails.map((milestone, index) => (
+                  <motion.div
+                    key={milestone!.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.6 + (hasAchievements ? unlockedAchievements.length : 0) * 0.1 + index * 0.1 }}
+                    className="flex items-center gap-3 p-3 bg-slate-50 rounded-xl"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center">
+                      <Award className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-medium text-slate-900">{milestone!.name}</h4>
+                      <p className="text-sm text-slate-500">{milestone!.phaseName}</p>
+                    </div>
+                    <div className="flex items-center gap-1 text-amber-600">
+                      <Star className="w-4 h-4" fill="currentColor" />
+                      <span className="text-sm font-medium">+{milestone!.xpReward}</span>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
 
             <Button onClick={onDismiss} className="w-full">
               Fortsätt din resa

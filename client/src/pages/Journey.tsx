@@ -33,6 +33,7 @@ export default function Journey() {
     goals,
     achievements,
     recentCompletions,
+    recentAchievements,
     isLoading,
     error,
     refresh,
@@ -317,10 +318,12 @@ export default function Journey() {
         )}
 
         {/* Celebration Modal */}
-        {recentCompletions && recentCompletions.completed.length > 0 && (
+        {((recentCompletions && recentCompletions.completed.length > 0) ||
+          (recentAchievements && recentAchievements.unlocked.length > 0)) && (
           <JourneyCelebration
-            completedMilestones={recentCompletions.completed}
-            xpEarned={recentCompletions.xpEarned}
+            completedMilestones={recentCompletions?.completed || []}
+            unlockedAchievements={recentAchievements?.unlocked || []}
+            xpEarned={(recentCompletions?.xpEarned || 0) + (recentAchievements?.xpEarned || 0)}
             onDismiss={dismissCompletions}
           />
         )}

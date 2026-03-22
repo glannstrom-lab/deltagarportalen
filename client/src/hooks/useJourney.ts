@@ -19,6 +19,11 @@ interface MilestoneCompletion {
   xpEarned: number
 }
 
+interface AchievementUnlock {
+  unlocked: Achievement[]
+  xpEarned: number
+}
+
 interface UseJourneyReturn {
   // Data
   progress: UserJourneyProgress | null
@@ -31,6 +36,7 @@ interface UseJourneyReturn {
   goals: UserGoal[]
   achievements: Achievement[]
   recentCompletions: MilestoneCompletion | null
+  recentAchievements: AchievementUnlock | null
 
   // State
   isLoading: boolean
@@ -40,6 +46,7 @@ interface UseJourneyReturn {
   refresh: () => Promise<void>
   logActivity: (type: string, title: string, points?: number) => Promise<void>
   checkMilestones: () => Promise<MilestoneCompletion>
+  checkAchievements: () => Promise<AchievementUnlock>
   createGoal: (goal: Parameters<typeof journeyService.createUserGoal>[0]) => Promise<UserGoal | null>
   updateGoalProgress: (goalId: string, value: number) => Promise<void>
   deleteGoal: (goalId: string) => Promise<void>
@@ -55,6 +62,7 @@ export function useJourney(): UseJourneyReturn {
   const [goals, setGoals] = useState<UserGoal[]>([])
   const [achievements, setAchievements] = useState<Achievement[]>([])
   const [recentCompletions, setRecentCompletions] = useState<MilestoneCompletion | null>(null)
+  const [recentAchievements, setRecentAchievements] = useState<AchievementUnlock | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -118,6 +126,15 @@ export function useJourney(): UseJourneyReturn {
     return result
   }, [fetchData])
 
+  const checkAchievements = useCallback(async () => {
+    const result = await journeyService.checkAndUnlockAchievements()
+    if (result.unlocked.length > 0) {
+      setRecentAchievements(result)
+      await fetchData()
+    }
+    return result
+  }, [fetchData])
+
   const createGoal = useCallback(async (
     goal: Parameters<typeof journeyService.createUserGoal>[0]
   ) => {
@@ -144,6 +161,7 @@ export function useJourney(): UseJourneyReturn {
 
   const dismissCompletions = useCallback(() => {
     setRecentCompletions(null)
+    setRecentAchievements(null)
   }, [])
 
   const hasCheckedMilestones = useRef(false)
@@ -152,13 +170,14 @@ export function useJourney(): UseJourneyReturn {
     fetchData()
   }, [fetchData])
 
-  // Check milestones on initial load (only once)
+  // Check milestones and achievements on initial load (only once)
   useEffect(() => {
     if (!isLoading && progress && !hasCheckedMilestones.current) {
       hasCheckedMilestones.current = true
-      checkMilestones()
+      // Check both milestones and achievements
+      checkMilestones().then(() => checkAchievements())
     }
-  }, [isLoading, progress, checkMilestones])
+  }, [isLoading, progress, checkMilestones, checkAchievements])
 
   return {
     progress,
@@ -171,11 +190,13 @@ export function useJourney(): UseJourneyReturn {
     goals,
     achievements,
     recentCompletions,
+    recentAchievements,
     isLoading,
     error,
     refresh: fetchData,
     logActivity,
     checkMilestones,
+    checkAchievements,
     createGoal,
     updateGoalProgress,
     deleteGoal,
