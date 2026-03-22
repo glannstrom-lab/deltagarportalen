@@ -1,15 +1,26 @@
--- Fix: Remove NOT NULL constraint on requirement_type and rebuild achievements
+-- Complete rebuild of achievements table
+-- This migration handles ALL cases: missing columns, constraints, and data
 
--- Drop the NOT NULL constraint on requirement_type if it exists
+-- Step 1: Add ALL potentially missing columns one by one
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS key TEXT;
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS xp_reward INTEGER DEFAULT 10;
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS rarity TEXT DEFAULT 'common';
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS requirement_type TEXT;
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS requirement_value INTEGER;
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS category TEXT DEFAULT 'general';
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS icon TEXT DEFAULT 'award';
+ALTER TABLE achievements ADD COLUMN IF NOT EXISTS created_at TIMESTAMPTZ DEFAULT now();
+
+-- Step 2: Drop NOT NULL constraints if they exist
 ALTER TABLE achievements ALTER COLUMN requirement_type DROP NOT NULL;
-
--- Also ensure requirement_value can be null
 ALTER TABLE achievements ALTER COLUMN requirement_value DROP NOT NULL;
+ALTER TABLE achievements ALTER COLUMN key DROP NOT NULL;
 
--- Clear existing achievements
+-- Step 3: Clear existing data
 DELETE FROM achievements;
 
--- Insert achievements with proper values (use empty string instead of NULL for requirement_type where needed)
+-- Step 4: Insert fresh achievements
 INSERT INTO achievements (key, name, description, icon, category, xp_reward, rarity, requirement_type, requirement_value, sort_order) VALUES
   ('first_login', 'Första steget', 'Logga in för första gången', 'log-in', 'engagement', 10, 'common', 'login', 1, 1),
   ('profile_complete', 'Komplett profil', 'Fyll i alla profiluppgifter', 'user-check', 'profile', 25, 'common', 'profile_complete', 1, 2),
@@ -26,3 +37,17 @@ INSERT INTO achievements (key, name, description, icon, category, xp_reward, rar
   ('interest_explorer', 'Självutforskare', 'Slutför intresseguiden', 'compass', 'knowledge', 40, 'uncommon', 'interest_guide_complete', 1, 13),
   ('linkedin_pro', 'LinkedIn-proffs', 'Optimera din LinkedIn-profil', 'linkedin', 'profile', 50, 'uncommon', 'linkedin_analyzed', 1, 14),
   ('journey_master', 'Jobbkung', 'Nå nivå 10', 'crown', 'special', 500, 'legendary', 'level_reached', 10, 15);
+
+-- Step 5: Now make key NOT NULL and unique
+UPDATE achievements SET key = 'achievement_' || id::text WHERE key IS NULL;
+ALTER TABLE achievements ALTER COLUMN key SET NOT NULL;
+
+-- Add unique constraint if not exists
+DO $$
+BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'achievements_key_key') THEN
+    ALTER TABLE achievements ADD CONSTRAINT achievements_key_key UNIQUE (key);
+  END IF;
+EXCEPTION WHEN duplicate_object THEN
+  NULL;
+END $$;
