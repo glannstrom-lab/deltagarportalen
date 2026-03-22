@@ -380,6 +380,51 @@ async function getMilestoneProgress(
     let currentValue = 0
 
     switch (requirementType) {
+      case 'profile_complete': {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('full_name, phone, location')
+          .eq('id', user.id)
+          .maybeSingle()
+
+        if (profile) {
+          const fields = ['full_name', 'phone', 'location']
+          const filled = fields.filter(f => !!(profile as Record<string, unknown>)[f])
+          currentValue = filled.length >= 2 ? 1 : 0
+        }
+        break
+      }
+
+      case 'onboarding_complete': {
+        const { data } = await supabase
+          .from('user_preferences')
+          .select('onboarding_completed')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = data?.onboarding_completed ? 1 : 0
+        break
+      }
+
+      case 'page_visited': {
+        const { count } = await supabase
+          .from('user_activity_log')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+          .eq('activity_type', 'page_visit')
+        currentValue = count || 0
+        break
+      }
+
+      case 'cv_started': {
+        const { data: cv } = await supabase
+          .from('cvs')
+          .select('id')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = cv ? 1 : 0
+        break
+      }
+
       case 'cv_progress': {
         const { data: cv } = await supabase
           .from('cvs')
@@ -395,6 +440,44 @@ async function getMilestoneProgress(
           })
           currentValue = Math.round((filled.length / sections.length) * 100)
         }
+        break
+      }
+
+      case 'cv_complete': {
+        const { data: cv } = await supabase
+          .from('cvs')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle()
+
+        if (cv) {
+          const sections = ['personal_info', 'work_experience', 'education', 'skills', 'summary']
+          const filled = sections.filter(s => {
+            const val = cv[s]
+            return Array.isArray(val) ? val.length > 0 : !!val
+          })
+          currentValue = filled.length === sections.length ? 1 : 0
+        }
+        break
+      }
+
+      case 'cv_ats_score': {
+        const { data: cv } = await supabase
+          .from('cvs')
+          .select('ats_score')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = cv?.ats_score || 0
+        break
+      }
+
+      case 'interest_guide_complete': {
+        const { data } = await supabase
+          .from('user_interests')
+          .select('riasec_results')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = data?.riasec_results ? 1 : 0
         break
       }
 
@@ -416,12 +499,30 @@ async function getMilestoneProgress(
         break
       }
 
+      case 'cover_letter_created': {
+        const { count } = await supabase
+          .from('cover_letters')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
+        currentValue = count || 0
+        break
+      }
+
       case 'articles_read': {
         const { count } = await supabase
           .from('article_progress')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .gte('progress', 80)
+        currentValue = count || 0
+        break
+      }
+
+      case 'interview_practice': {
+        const { count } = await supabase
+          .from('exercise_answers')
+          .select('*', { count: 'exact', head: true })
+          .eq('user_id', user.id)
         currentValue = count || 0
         break
       }
@@ -442,6 +543,28 @@ async function getMilestoneProgress(
           .eq('user_id', user.id)
           .single()
         currentValue = data?.current_streak || 0
+        break
+      }
+
+      case 'linkedin_analyzed': {
+        const { data } = await supabase
+          .from('personal_brand_audit')
+          .select('linkedin_score')
+          .eq('user_id', user.id)
+          .maybeSingle()
+        currentValue = data?.linkedin_score && data.linkedin_score > 0 ? 1 : 0
+        break
+      }
+
+      case 'level_reached': {
+        const { data: gamification } = await supabase
+          .from('user_gamification')
+          .select('total_points')
+          .eq('user_id', user.id)
+          .single()
+        const xp = gamification?.total_points || 0
+        const levelInfo = getLevelFromXP(xp)
+        currentValue = levelInfo.level
         break
       }
 
@@ -484,13 +607,274 @@ function getEmptyWeeklySummary(): WeeklySummary {
   }
 }
 
+/**
+ * Check and auto-complete milestones that meet requirements
+ */
+export async function checkAndCompleteMilestones(): Promise<{
+  completed: string[]
+  xpEarned: number
+}> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return { completed: [], xpEarned: 0 }
+
+    // Get currently completed milestones
+    const { data: existingMilestones } = await supabase
+      .from('user_milestones')
+      .select('milestone_id')
+      .eq('user_id', user.id)
+      .eq('is_completed', true)
+
+    const completedIds = new Set((existingMilestones || []).map(m => m.milestone_id))
+    const newlyCompleted: string[] = []
+    let totalXpEarned = 0
+
+    // Check all milestones
+    for (const phase of JOURNEY_PHASES) {
+      for (const milestone of phase.milestones) {
+        // Skip already completed
+        if (completedIds.has(milestone.id) || completedIds.has(milestone.key)) {
+          continue
+        }
+
+        // Check progress
+        const progress = await getMilestoneProgress(
+          milestone.requirementType,
+          milestone.requirementValue
+        )
+
+        // If 100% complete, mark as done
+        if (progress >= 100) {
+          // Insert or update milestone
+          await supabase
+            .from('user_milestones')
+            .upsert({
+              user_id: user.id,
+              milestone_id: milestone.id,
+              is_completed: true,
+              completed_at: new Date().toISOString()
+            }, {
+              onConflict: 'user_id,milestone_id'
+            })
+
+          // Award XP
+          await supabase.rpc('increment_user_points', {
+            p_user_id: user.id,
+            p_points: milestone.xpReward
+          })
+
+          // Log activity
+          await supabase.from('user_activity_log').insert({
+            user_id: user.id,
+            activity_type: 'milestone_completed',
+            title: `Milstolpe uppnådd: ${milestone.name}`,
+            description: milestone.description,
+            points_earned: milestone.xpReward,
+            metadata: {
+              milestone_id: milestone.id,
+              milestone_key: milestone.key,
+              phase_id: phase.id
+            }
+          })
+
+          newlyCompleted.push(milestone.id)
+          totalXpEarned += milestone.xpReward
+        }
+      }
+    }
+
+    return { completed: newlyCompleted, xpEarned: totalXpEarned }
+  } catch (error) {
+    console.error('Error checking milestones:', error)
+    return { completed: [], xpEarned: 0 }
+  }
+}
+
+/**
+ * Get user goals
+ */
+export interface UserGoal {
+  id: string
+  user_id: string
+  type: 'weekly' | 'monthly' | 'custom'
+  title: string
+  description?: string
+  target_value: number
+  current_value: number
+  metric: string
+  deadline?: string
+  is_completed: boolean
+  created_at: string
+  updated_at: string
+}
+
+export async function getUserGoals(): Promise<UserGoal[]> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+
+    const { data } = await supabase
+      .from('user_goals')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+
+    return data || []
+  } catch (error) {
+    console.error('Error fetching user goals:', error)
+    return []
+  }
+}
+
+/**
+ * Create a new user goal
+ */
+export async function createUserGoal(goal: {
+  type: 'weekly' | 'monthly' | 'custom'
+  title: string
+  description?: string
+  target_value: number
+  metric: string
+  deadline?: string
+}): Promise<UserGoal | null> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return null
+
+    const { data, error } = await supabase
+      .from('user_goals')
+      .insert({
+        user_id: user.id,
+        ...goal,
+        current_value: 0,
+        is_completed: false
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+    return data
+  } catch (error) {
+    console.error('Error creating user goal:', error)
+    return null
+  }
+}
+
+/**
+ * Update goal progress
+ */
+export async function updateGoalProgress(
+  goalId: string,
+  currentValue: number
+): Promise<void> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    const { data: goal } = await supabase
+      .from('user_goals')
+      .select('target_value')
+      .eq('id', goalId)
+      .eq('user_id', user.id)
+      .single()
+
+    if (!goal) return
+
+    const isCompleted = currentValue >= goal.target_value
+
+    await supabase
+      .from('user_goals')
+      .update({
+        current_value: currentValue,
+        is_completed: isCompleted,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', goalId)
+      .eq('user_id', user.id)
+  } catch (error) {
+    console.error('Error updating goal progress:', error)
+  }
+}
+
+/**
+ * Delete a user goal
+ */
+export async function deleteUserGoal(goalId: string): Promise<void> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+
+    await supabase
+      .from('user_goals')
+      .delete()
+      .eq('id', goalId)
+      .eq('user_id', user.id)
+  } catch (error) {
+    console.error('Error deleting user goal:', error)
+  }
+}
+
+/**
+ * Get user achievements/badges
+ */
+export interface Achievement {
+  id: string
+  key: string
+  name: string
+  description: string
+  icon: string
+  category: string
+  xp_reward: number
+  rarity: 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary'
+  unlocked_at?: string
+  is_unlocked: boolean
+}
+
+export async function getAchievements(): Promise<Achievement[]> {
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return []
+
+    // Get all achievements
+    const { data: allAchievements } = await supabase
+      .from('achievements')
+      .select('*')
+      .order('category', { ascending: true })
+
+    // Get user's unlocked achievements
+    const { data: userAchievements } = await supabase
+      .from('user_achievements')
+      .select('achievement_id, unlocked_at')
+      .eq('user_id', user.id)
+
+    const unlockedMap = new Map(
+      (userAchievements || []).map(ua => [ua.achievement_id, ua.unlocked_at])
+    )
+
+    return (allAchievements || []).map(a => ({
+      ...a,
+      unlocked_at: unlockedMap.get(a.id),
+      is_unlocked: unlockedMap.has(a.id)
+    }))
+  } catch (error) {
+    console.error('Error fetching achievements:', error)
+    return []
+  }
+}
+
 export const journeyService = {
   getJourneyProgress,
   getJourneyStats,
   getJourneyActivities,
   getNextSteps,
   getWeeklySummary,
-  logJourneyActivity
+  logJourneyActivity,
+  checkAndCompleteMilestones,
+  getUserGoals,
+  createUserGoal,
+  updateGoalProgress,
+  deleteUserGoal,
+  getAchievements
 }
 
 export default journeyService

@@ -1,10 +1,10 @@
 /**
  * Journey Page - Min Jobbresa
- * Main page showing the user's job seeking journey
+ * Main page showing the user's job seeking journey with gamification
  */
 
 import { useState } from 'react'
-import { Map, RefreshCw, Loader2 } from 'lucide-react'
+import { Map, RefreshCw, Loader2, Trophy, Target, BarChart3 } from 'lucide-react'
 import { Button } from '@/components/ui'
 import { useJourney } from '@/hooks/useJourney'
 import {
@@ -13,7 +13,11 @@ import {
   JourneyNextSteps,
   JourneyTimeline,
   JourneyWeekSummary,
-  JourneyPhaseDetail
+  JourneyPhaseDetail,
+  JourneyGoals,
+  JourneyAchievements,
+  JourneyCelebration,
+  JourneyStats
 } from '@/components/journey'
 import type { JourneyPhase } from '@/types/journey.types'
 
@@ -26,12 +30,20 @@ export default function Journey() {
     weeklySummary,
     phases,
     currentPhase,
+    goals,
+    achievements,
+    recentCompletions,
     isLoading,
     error,
-    refresh
+    refresh,
+    createGoal,
+    updateGoalProgress,
+    deleteGoal,
+    dismissCompletions
   } = useJourney()
 
   const [selectedPhase, setSelectedPhase] = useState<JourneyPhase | null>(null)
+  const [activeTab, setActiveTab] = useState<'overview' | 'goals' | 'achievements' | 'stats'>('overview')
 
   // Loading state
   if (isLoading) {
@@ -127,38 +139,172 @@ export default function Journey() {
           <JourneyProgress progress={progress} currentPhase={currentPhase} />
         </div>
 
-        {/* Journey Map */}
-        <div className="mb-8">
-          <JourneyMap
-            phases={phases}
-            currentPhaseId={progress.currentPhase}
-            phaseProgress={progress.phaseProgress}
-            onPhaseClick={setSelectedPhase}
-          />
+        {/* Tab Navigation */}
+        <div className="flex gap-2 mb-8 border-b border-slate-200 pb-2">
+          <button
+            onClick={() => setActiveTab('overview')}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
+              ${activeTab === 'overview'
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'text-slate-600 hover:bg-slate-100'
+              }
+            `}
+          >
+            <Map className="w-4 h-4" />
+            Översikt
+          </button>
+          <button
+            onClick={() => setActiveTab('goals')}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
+              ${activeTab === 'goals'
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'text-slate-600 hover:bg-slate-100'
+              }
+            `}
+          >
+            <Target className="w-4 h-4" />
+            Mål
+            {goals.filter(g => !g.is_completed).length > 0 && (
+              <span className="bg-indigo-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                {goals.filter(g => !g.is_completed).length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('achievements')}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
+              ${activeTab === 'achievements'
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'text-slate-600 hover:bg-slate-100'
+              }
+            `}
+          >
+            <Trophy className="w-4 h-4" />
+            Achievements
+            {achievements.filter(a => a.is_unlocked).length > 0 && (
+              <span className="bg-amber-500 text-white text-xs px-1.5 py-0.5 rounded-full">
+                {achievements.filter(a => a.is_unlocked).length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('stats')}
+            className={`
+              flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors
+              ${activeTab === 'stats'
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'text-slate-600 hover:bg-slate-100'
+              }
+            `}
+          >
+            <BarChart3 className="w-4 h-4" />
+            Statistik
+          </button>
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Next Steps */}
-          <div className="lg:col-span-2 space-y-8">
-            <JourneyNextSteps steps={nextSteps} />
+        {/* Overview Tab */}
+        {activeTab === 'overview' && (
+          <>
+            {/* Journey Map */}
+            <div className="mb-8">
+              <JourneyMap
+                phases={phases}
+                currentPhaseId={progress.currentPhase}
+                phaseProgress={progress.phaseProgress}
+                onPhaseClick={setSelectedPhase}
+              />
+            </div>
 
-            {/* Weekly Summary (Desktop) */}
-            <div className="hidden lg:block">
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              {/* Left Column - Next Steps */}
+              <div className="lg:col-span-2 space-y-8">
+                <JourneyNextSteps steps={nextSteps} />
+
+                {/* Weekly Summary (Desktop) */}
+                <div className="hidden lg:block">
+                  {weeklySummary && <JourneyWeekSummary summary={weeklySummary} />}
+                </div>
+              </div>
+
+              {/* Right Column - Timeline & Compact Widgets */}
+              <div className="space-y-6">
+                {/* Compact Achievements */}
+                <JourneyAchievements achievements={achievements} compact />
+
+                <JourneyTimeline activities={activities} maxItems={8} />
+
+                {/* Weekly Summary (Mobile) */}
+                <div className="lg:hidden">
+                  {weeklySummary && <JourneyWeekSummary summary={weeklySummary} />}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Goals Tab */}
+        {activeTab === 'goals' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <JourneyGoals
+              goals={goals}
+              onCreateGoal={createGoal}
+              onUpdateProgress={updateGoalProgress}
+              onDeleteGoal={deleteGoal}
+            />
+
+            <div className="space-y-6">
+              {/* Weekly Summary */}
               {weeklySummary && <JourneyWeekSummary summary={weeklySummary} />}
+
+              {/* Tips for goal setting */}
+              <div className="bg-indigo-50 rounded-xl p-6 border border-indigo-100">
+                <h4 className="font-semibold text-indigo-900 mb-3">Tips för att sätta mål</h4>
+                <ul className="space-y-2 text-sm text-indigo-700">
+                  <li className="flex items-start gap-2">
+                    <span className="text-indigo-500 mt-0.5">•</span>
+                    Börja med små, uppnåeliga mål
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-indigo-500 mt-0.5">•</span>
+                    Sätt veckomål istället för månadsmål
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-indigo-500 mt-0.5">•</span>
+                    Fira varje uppnått mål - du förtjänar det!
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="text-indigo-500 mt-0.5">•</span>
+                    Fokusera på aktiviteter, inte resultat
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
+        )}
 
-          {/* Right Column - Timeline */}
-          <div className="space-y-8">
-            <JourneyTimeline activities={activities} maxItems={10} />
+        {/* Achievements Tab */}
+        {activeTab === 'achievements' && (
+          <JourneyAchievements achievements={achievements} />
+        )}
 
-            {/* Weekly Summary (Mobile) */}
-            <div className="lg:hidden">
+        {/* Stats Tab */}
+        {activeTab === 'stats' && stats && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <JourneyStats stats={stats} />
+
+            <div className="space-y-6">
+              {/* Weekly Summary */}
               {weeklySummary && <JourneyWeekSummary summary={weeklySummary} />}
+
+              {/* Activity Timeline */}
+              <JourneyTimeline activities={activities} maxItems={10} />
             </div>
           </div>
-        </div>
+        )}
 
         {/* Phase Detail Modal */}
         {selectedPhase && progress.phaseProgress[selectedPhase.id] && (
@@ -167,6 +313,15 @@ export default function Journey() {
             progress={progress.phaseProgress[selectedPhase.id]}
             completedMilestones={progress.milestonesCompleted}
             onClose={() => setSelectedPhase(null)}
+          />
+        )}
+
+        {/* Celebration Modal */}
+        {recentCompletions && recentCompletions.completed.length > 0 && (
+          <JourneyCelebration
+            completedMilestones={recentCompletions.completed}
+            xpEarned={recentCompletions.xpEarned}
+            onDismiss={dismissCompletions}
           />
         )}
       </div>
