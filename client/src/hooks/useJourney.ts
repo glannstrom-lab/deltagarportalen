@@ -2,7 +2,7 @@
  * useJourney Hook - React hook for Min Jobbresa
  */
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { JOURNEY_PHASES } from '@/data/journeyData'
 import { journeyService, type UserGoal, type Achievement } from '@/services/journeyService'
 import type {
@@ -146,16 +146,19 @@ export function useJourney(): UseJourneyReturn {
     setRecentCompletions(null)
   }, [])
 
+  const hasCheckedMilestones = useRef(false)
+
   useEffect(() => {
     fetchData()
   }, [fetchData])
 
-  // Check milestones on initial load
+  // Check milestones on initial load (only once)
   useEffect(() => {
-    if (!isLoading && progress) {
+    if (!isLoading && progress && !hasCheckedMilestones.current) {
+      hasCheckedMilestones.current = true
       checkMilestones()
     }
-  }, [isLoading]) // Only run once after initial load
+  }, [isLoading, progress, checkMilestones])
 
   return {
     progress,
