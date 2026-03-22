@@ -22,6 +22,7 @@ import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
 import { Link } from 'react-router-dom'
 import { useDashboardDataQuery } from '@/hooks/useDashboardData'
+import { userPreferencesApi } from '@/services/cloudStorage'
 
 interface ChecklistItem {
   id: string
@@ -45,22 +46,25 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
   const [showCelebration, setShowCelebration] = useState(false)
   const [dismissed, setDismissed] = useState(false)
 
-  // Check if user has dismissed the checklist
+  // Check if user has dismissed the checklist (from cloud)
   useEffect(() => {
-    const isDismissed = localStorage.getItem('checklist-dismissed')
-    if (isDismissed === 'true') {
-      setDismissed(true)
+    const checkDismissed = async () => {
+      const isDismissed = await userPreferencesApi.isChecklistDismissed()
+      if (isDismissed) {
+        setDismissed(true)
+      }
     }
+    checkDismissed()
   }, [])
 
-  const handleDismiss = () => {
-    localStorage.setItem('checklist-dismissed', 'true')
+  const handleDismiss = async () => {
+    await userPreferencesApi.setChecklistDismissed(true)
     setDismissed(true)
     onClose?.()
   }
 
-  const handleReopen = () => {
-    localStorage.removeItem('checklist-dismissed')
+  const handleReopen = async () => {
+    await userPreferencesApi.setChecklistDismissed(false)
     setDismissed(false)
   }
 

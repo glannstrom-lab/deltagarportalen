@@ -14,6 +14,7 @@ import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { GettingStartedChecklist } from '@/components/dashboard/GettingStartedChecklist'
 import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
+import { userPreferencesApi } from '@/services/cloudStorage'
 
 // Lazy load widgets
 const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
@@ -488,12 +489,15 @@ export default function OverviewTab() {
   // Close selector on outside click
   useClickOutside(selectorRef, () => setShowSelector(false), showSelector)
 
-  // Check if checklist was previously dismissed
+  // Check if checklist was previously dismissed (from cloud)
   useEffect(() => {
-    const isDismissed = localStorage.getItem('checklist-dismissed')
-    if (isDismissed === 'true') {
-      setShowChecklist(false)
+    const checkDismissed = async () => {
+      const isDismissed = await userPreferencesApi.isChecklistDismissed()
+      if (isDismissed) {
+        setShowChecklist(false)
+      }
     }
+    checkDismissed()
   }, [])
 
   // Load preferences

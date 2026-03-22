@@ -25,6 +25,7 @@ import { cn } from '@/lib/utils'
 import { useEnergyStore, type EnergyLevel } from '@/stores/energyStoreWithSync'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { Link } from 'react-router-dom'
+import { userPreferencesApi } from '@/services/cloudStorage'
 
 interface SmartQuickWin {
   id: string
@@ -66,11 +67,17 @@ function getWeatherContext() {
 export function SmartQuickWinButton() {
   const [isOpen, setIsOpen] = useState(false)
   const [completedId, setCompletedId] = useState<string | null>(null)
+  const [lastLoginDate, setLastLoginDate] = useState<string | null>(null)
   const { level: energyLevel } = useEnergyStore()
   const { data } = useDashboardData()
-  
+
   const context = getCurrentContext()
   const weather = getWeatherContext()
+
+  // Load last login date from cloud
+  useEffect(() => {
+    userPreferencesApi.getLastLoginDate().then(setLastLoginDate)
+  }, [])
 
   // Generera smarta quick wins baserat på kontext
   const smartWins: SmartQuickWin[] = useMemo(() => {
@@ -128,10 +135,9 @@ export function SmartQuickWinButton() {
 
     // 3. Streak-räddare (om streak håller på att brytas)
     const streakDays = data?.activity?.streakDays || 0
-    const lastLogin = localStorage.getItem('lastLoginDate')
     const today = new Date().toDateString()
-    
-    if (lastLogin !== today && streakDays > 0) {
+
+    if (lastLoginDate !== today && streakDays > 0) {
       wins.push({
         id: 'streak-save',
         title: `Rädda din ${streakDays}-dagars streak!`,
@@ -234,7 +240,7 @@ export function SmartQuickWinButton() {
       })
       .sort((a, b) => b.priority - a.priority)
       .slice(0, 5)
-  }, [context, weather, energyLevel, data])
+  }, [context, weather, energyLevel, data, lastLoginDate])
 
   const handleComplete = (id: string) => {
     setCompletedId(id)

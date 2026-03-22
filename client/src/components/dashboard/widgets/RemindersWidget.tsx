@@ -2,7 +2,7 @@
  * RemindersWidget - Påminnelser om påbörjade uppgifter, streak-hot, mm
  * "Don't let users forget what they started"
  */
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
@@ -24,6 +24,7 @@ import { useDashboardData } from '@/hooks/useDashboardData'
 import { cn } from '@/lib/utils'
 import { differenceInDays, parseISO, format } from 'date-fns'
 import { sv } from 'date-fns/locale'
+import { userPreferencesApi } from '@/services/cloudStorage'
 
 interface Reminder {
   id: string
@@ -50,6 +51,12 @@ export function RemindersWidget({
   const { t } = useTranslation()
   const { data } = useDashboardData()
   const [dismissed, setDismissed] = useState<string[]>([])
+  const [lastLoginDate, setLastLoginDate] = useState<string | null>(null)
+
+  // Load last login date from cloud
+  useEffect(() => {
+    userPreferencesApi.getLastLoginDate().then(setLastLoginDate)
+  }, [])
 
   const reminders = useMemo<Reminder[]>(() => {
     if (!data) return []
@@ -80,11 +87,10 @@ export function RemindersWidget({
     }
 
     // 2. Streak-risk
-    const lastLogin = localStorage.getItem('lastLoginDate')
     const today = new Date().toDateString()
     const yesterday = new Date(Date.now() - 86400000).toDateString()
 
-    if (lastLogin === yesterday && data.activity?.streakDays && data.activity.streakDays > 0) {
+    if (lastLoginDate === yesterday && data.activity?.streakDays && data.activity.streakDays > 0) {
       list.push({
         id: 'streak-risk',
         type: 'streak-risk',
@@ -155,7 +161,7 @@ export function RemindersWidget({
     return list
       .filter(r => !dismissed.includes(r.id))
       .sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority])
-  }, [data, dismissed])
+  }, [data, dismissed, lastLoginDate])
 
   const handleDismiss = (e: React.MouseEvent, id: string) => {
     e.preventDefault()

@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
 import { useSettingsStore } from './settingsStore'
 import { useEnergyStore } from './energyStoreWithSync'
+import { userPreferencesApi } from '@/services/cloudStorage'
 
 export type UserRole = 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN'
 
@@ -112,6 +113,8 @@ export const useAuthStore = create<AuthState>()(
             if (user) {
               useSettingsStore.getState().syncWithServer()
               useEnergyStore.getState().syncWithServer()
+              // Update last login for streak tracking
+              userPreferencesApi.updateLastLogin()
             }
           } else {
             set({
@@ -182,6 +185,9 @@ export const useAuthStore = create<AuthState>()(
           // Sync settings and energy from cloud
           useSettingsStore.getState().syncWithServer()
           useEnergyStore.getState().syncWithServer()
+
+          // Update last login timestamp for streak tracking
+          userPreferencesApi.updateLastLogin()
 
           return { error: null }
         } catch (error: unknown) {
