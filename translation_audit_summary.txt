@@ -1,0 +1,135 @@
+TRANSLATION AUDIT - SWEDISH HARDCODED TEXT SUMMARY
+====================================================
+
+KEY FINDINGS:
+- 50 components use useTranslation hook
+- 45 components have hardcoded Swedish labels
+- 48 components have hardcoded Swedish titles
+- 271 total components in client/src/components
+- 8 data files contain hardcoded Swedish strings
+- ~1132+ lines of Swedish text in exercises.ts alone
+
+PRIORITY 1 - DATA FILES (CRITICAL - Contains bulk Swedish text):
+1. exercises.ts (1132+ Swedish strings in exercise definitions)
+2. coverLetterTemplates.ts (44 Swedish strings in templates and tips)
+3. dashboardTabs.ts (2 Swedish labels: "Översikt", "Mina Quests")
+4. cvTabs.ts (5 Swedish labels: backwards compatibility section)
+5. coverLetterTabs.ts (5 Swedish labels: backwards compatibility section)
+6. careerTabs.ts (6 Swedish descriptions and labels)
+7. knowledgeTabs.ts (8 Swedish labels and descriptions)
+8. wellnessTabs.ts (5 Swedish labels and descriptions)
+9. pageTabs.ts (8 Swedish labels for main navigation)
+10. interestGuideTabs.ts (5 Swedish labels)
+
+PRIORITY 2 - CORE COMPONENTS (45 files with Swedish labels):
+Admin/System:
+- SuperAdminPanel.tsx (labels: "Sök användare...", "Kunde inte ändra roll")
+- Layout.tsx ("Sök jobb")
+- MobileNav.tsx ("Sök jobb")
+- SkipLinks.tsx
+
+Dashboard Components (11 files):
+- QuickActions.tsx (labels: "Spara ett intressant jobb", "Skriv en ansökan", "Skriv personligt brev")
+- CompactWidgetFilter.tsx
+- MobileWidgetFilter.tsx
+- WidgetFilter.tsx
+- WeeklySummary.tsx
+- GettingStartedChecklist.tsx (label: "Välj din väg")
+- QuickWinButton.tsx
+- SmartQuickWinButton.tsx
+- NextStepCard.tsx
+- MobileDashboard.tsx
+- CompactDashboard.tsx
+
+Widgets (4 files):
+- ApplicationsWidget.tsx (label: "Ny ansökan")
+- CareerWidget.tsx
+- DiaryWidget.tsx
+- WellnessWidget.tsx
+
+Chat/AI Components (3 files):
+- AIChatbot.tsx (labels: "Sök jobb", "Skriv i dagboken")
+- AICareerChatbot.tsx (hardcoded message content in Swedish)
+- AIToolsPanel.tsx (titles: "Generera CV-sammanfattning", "Analysera CV", "Skriv personligt brev", "Förbered intervju")
+
+Cover Letter Components (3 files):
+- CoverLetterApplications.tsx (labels: "Sparade", "Skickade")
+- CoverLetterMyLetters.tsx (label: "Skriv mitt första brev")
+- CoverLetterTemplates.tsx (label: "Nyexaminerad")
+- CoverLetterWrite.tsx (titles: "Välj jobb", "Välj mall")
+
+CV Components (5 files):
+- AIWritingAssistant.tsx
+- AIWritingAssistantSecure.tsx
+- EducationEditor.tsx
+- MyCVs.tsx (placeholder: "Sök bland dina CV...")
+- SkillsEditor.tsx
+
+Calendar Components (2 files):
+- EventModal.tsx (event types: "Intervju", "Möte", "Deadline", "Påminnelse", "Uppgift", "Uppföljning", "Förberedelse")
+- TravelPlanner.tsx
+
+Career Components (3 files):
+- NetworkingGuide.tsx
+- EducationOverview.tsx
+- CareerPath.tsx (title: "Din profil")
+
+Community/Consultant (3 files):
+- ParticipantJournal.tsx
+- ConsultantStats.tsx
+- ActionPlan.tsx
+
+Energy/Wellness:
+- EnergyLevelSelector.tsx (labels: "Sök ett jobb", "Skriv personligt brev", "Skriv i dagboken")
+- MobileEnergySelector.tsx
+
+Other Components:
+- JobFilters.tsx
+- JobMatchAnalyzer.tsx
+- Jobs/ApplicationsTracker.tsx (label: "Sparad")
+- Layout/BottomBar.tsx (multiple action labels)
+- Knowledge-base/EnergyFilter.tsx
+- Microlearning/SkillGapAnalyzer.tsx
+- Onboarding/GettingStartedChecklist.tsx
+- UI/QuickActions.tsx
+- Workflow/QuickActionBanner.tsx
+- Gamification components (3 files)
+- Analytics components (2 files)
+
+PRIORITY 3 - COMPONENTS WITH COMPLEX SWEDISH TEXT:
+- Career/occupations.ts (data file with occupation definitions)
+- Career/SkillsDevelopment.tsx
+- Community/PeerSupport.tsx
+- Career/CareerCoach.tsx (title: "Skriv personligt brev")
+- Support/RejectionSupport.tsx
+- Resume/ContinueWhereYouLeft.tsx
+- Interest-guide/ResultsView.tsx
+- Knowledge-base tabs (4 files with Swedish titles)
+- Learning/MicroLearning.tsx
+- Diary/DailyTask.tsx
+- CV/CVOnboarding.tsx (titles: "Välj design", "Skriv en sammanfattning")
+- CV/CVTips.tsx
+- CV/ContextualHelp.tsx
+- CV/AIHelpButton.tsx
+- CV/ATSAnalysis.tsx
+- CV/RichTextEditor.tsx (placeholder: "Skriv här...")
+
+COMMON SWEDISH STRINGS NEEDING TRANSLATION:
+- Labels: "Sök", "Spara", "Sparade", "Sparad", "Skriv", "Välj", "Mina", "Din", "Dina"
+- Action labels: "Sök jobb", "Skriv brev", "Spara jobb", "Skriv ansökan"
+- Placeholders: "Sök bland...", "Skriv här..."
+- Titles/Headers: "Välj jobb", "Välj mall", "Din profil", "Ny ansökan"
+- Messages: "Kunde inte ändra roll", "Ursäkta, tekniska problem"
+- Event types: "Intervju", "Möte", "Deadline", "Påminnelse", "Uppgift", "Uppföljning"
+
+TRANSLATION INFRASTRUCTURE:
+- useTranslation hook already exists and is used in 50 components
+- i18n system appears to be in place
+- Tab definitions already support i18n keys (cvTabDefs, careerTabDefs, etc.)
+
+RECOMMENDATION:
+1. Start with data files - highest impact (exercises.ts, coverLetterTemplates.ts)
+2. Move to dashboard and navigation components
+3. Migrate hardcoded strings to use useTranslation hook consistently
+4. Use existing i18n keys pattern for tab definitions
+5. Create comprehensive translation keys for all UI text
