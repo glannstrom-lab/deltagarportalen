@@ -3,16 +3,18 @@
  * Dialog för att bjuda in nya deltagare till portalen
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Mail, User, Phone, MessageSquare, CheckCircle, Loader2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 interface InviteParticipantDialogProps {
+  isOpen: boolean;
   onClose: () => void;
   onSuccess: () => void;
 }
 
 export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = ({
+  isOpen,
   onClose,
   onSuccess,
 }) => {
@@ -26,6 +28,18 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Reset form when dialog closes
+  useEffect(() => {
+    if (!isOpen) {
+      setFormData({ email: '', firstName: '', lastName: '', phone: '', message: '' });
+      setSuccess(false);
+      setError(null);
+      setLoading(false);
+    }
+  }, [isOpen]);
+
+  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +62,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
       }
 
       // Skapa inbjudan
-      const { error: inviteError } = await supabase
+      const { data, error: inviteError } = await supabase
         .from('invitations')
         .insert({
           email: formData.email,
@@ -61,14 +75,16 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
             phone: formData.phone,
             message: formData.message,
           },
-        });
+        })
+        .select()
+        .single();
 
       if (inviteError) throw inviteError;
 
       // Skicka email via Edge Function
       try {
         const { data: { session } } = await supabase.auth.getSession()
-        if (session) {
+        if (session && data) {
           const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
           await fetch(
             `${supabaseUrl}/functions/v1/send-invite-email`,
@@ -221,7 +237,7 @@ export const InviteParticipantDialog: React.FC<InviteParticipantDialogProps> = (
 
           <div className="pt-4 border-t border-gray-200">
             <p className="text-sm text-gray-500 mb-4">
-              Deltagaren får ett email med en länk för att skapa ett konto. 
+              Deltagaren får ett email med en länk för att skapa ett konto.
               Inbjudan är giltig i 7 dagar.
             </p>
             <div className="flex gap-3">

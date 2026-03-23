@@ -237,12 +237,11 @@ export const ConsultantDashboard: React.FC = () => {
       </div>
 
       {/* Invite Dialog */}
-      {showInviteDialog && (
-        <InviteParticipantDialog 
-          onClose={() => setShowInviteDialog(false)}
-          onSuccess={fetchParticipants}
-        />
-      )}
+      <InviteParticipantDialog
+        isOpen={showInviteDialog}
+        onClose={() => setShowInviteDialog(false)}
+        onSuccess={fetchParticipants}
+      />
     </div>
   );
 };
