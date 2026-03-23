@@ -23,9 +23,9 @@ export const wellnessTabDefs = [
 
 // For backwards compatibility - static tabs (Swedish)
 export const wellnessTabs: Tab[] = [
-  { id: 'health', label: 'Hälsa', path: '/wellness', icon: Heart, description: 'Välmående och hälsotips' },
-  { id: 'energy', label: 'Energi', path: '/wellness/energy', icon: Zap, description: 'Spåra din energi och planera aktiviteter' },
-  { id: 'routines', label: 'Rutiner', path: '/wellness/routines', icon: CalendarDays, description: 'Bygg hållbara dagliga rutiner' },
-  { id: 'cognitive', label: 'Kognitiv träning', path: '/wellness/cognitive', icon: Brain, description: 'Träna minne och koncentration' },
-  { id: 'crisis', label: 'Akut stöd', path: '/wellness/crisis', icon: Siren, description: 'Hjälp vid psykisk ohälsa', variant: 'danger' },
+  { id: 'health', label: 'Hälsa', path: '/wellness', icon: Heart },
+  { id: 'energy', label: 'Energi', path: '/wellness/energy', icon: Zap },
+  { id: 'routines', label: 'Rutiner', path: '/wellness/routines', icon: CalendarDays },
+  { id: 'cognitive', label: 'Kognitiv träning', path: '/wellness/cognitive', icon: Brain },
+  { id: 'crisis', label: 'Akut stöd', path: '/wellness/crisis', icon: Siren },
 ]

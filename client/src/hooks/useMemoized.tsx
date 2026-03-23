@@ -117,7 +117,7 @@ export function useDebouncedValue<T>(value: T, delay: number): T {
  * Hook to track previous value
  */
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>();
+  const ref = useRef<T | undefined>(undefined);
 
   useEffect(() => {
     ref.current = value;
@@ -145,15 +145,13 @@ export function useRenderCount(componentName: string) {
 /**
  * Compare props for React.memo with custom comparison
  */
-export function propsAreEqual<P>(
+export function propsAreEqual<P extends object>(
   prevProps: P,
-  nextProps: P,
-  ignoreKeys: (keyof P)[] = []
+  nextProps: P
 ): boolean {
   const keys = Object.keys(prevProps) as (keyof P)[];
-  
+
   for (const key of keys) {
-    if (ignoreKeys.includes(key)) continue;
     if (!deepEqual(prevProps[key], nextProps[key])) {
       return false;
     }
@@ -168,7 +166,7 @@ export function memoWithDeepCompare<P extends object>(
   Component: React.ComponentType<P>,
   displayName?: string
 ): React.MemoExoticComponent<React.ComponentType<P>> {
-  const Memoized = memo(Component, propsAreEqual);
+  const Memoized = memo(Component, propsAreEqual as any);
   if (displayName) {
     Memoized.displayName = displayName;
   }

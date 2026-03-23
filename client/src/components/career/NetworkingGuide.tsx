@@ -346,7 +346,8 @@ export default function NetworkingGuide() {
     setOccupation(value)
     if (value.length >= 2) {
       const filtered = COMMON_OCCUPATIONS
-        .filter(occ => occ.toLowerCase().includes(value.toLowerCase()))
+        .filter(occ => occ.label.toLowerCase().includes(value.toLowerCase()))
+        .map(occ => occ.label)
         .slice(0, 5)
       setOccupationSuggestions(filtered)
       setShowOccupationSuggestions(filtered.length > 0)

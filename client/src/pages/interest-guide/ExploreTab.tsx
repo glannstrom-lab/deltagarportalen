@@ -63,8 +63,8 @@ export default function ExploreTab() {
 
       // Education filter
       if (filterUni !== null) {
-        if (filterUni && !occ.requiresUni) return false
-        if (!filterUni && occ.requiresUni) return false
+        if (filterUni && !occ.requiresUniversity) return false
+        if (!filterUni && occ.requiresUniversity) return false
       }
 
       // Prognosis filter
@@ -324,7 +324,7 @@ export default function ExploreTab() {
                     <h3 className="font-medium text-gray-900">{occupation.name}</h3>
                     <div className="flex items-center gap-3 text-xs text-gray-500">
                       <span className="flex items-center gap-1">
-                        {occupation.requiresUni ? (
+                        {occupation.requiresUniversity ? (
                           <><GraduationCap className="w-3 h-3" /> Högskola</>
                         ) : (
                           <><Users className="w-3 h-3" /> Gymnasium/YH</>
@@ -360,18 +360,15 @@ export default function ExploreTab() {
                       </div>
                     </div>
 
-                    {occupation.education.length > 0 && (
+                    {occupation.education && (
                       <div>
                         <p className="text-gray-500 text-sm mb-2">Utbildningsvägar</p>
                         <div className="flex flex-wrap gap-2">
-                          {occupation.education.map((edu, i) => (
-                            <span
-                              key={i}
-                              className="px-2 py-1 bg-white border border-gray-200 rounded text-xs text-gray-600"
-                            >
-                              {edu}
-                            </span>
-                          ))}
+                          <span
+                            className="px-2 py-1 bg-white border border-gray-200 rounded text-xs text-gray-600"
+                          >
+                            {occupation.education.name} ({occupation.education.length})
+                          </span>
                         </div>
                       </div>
                     )}

@@ -11,6 +11,7 @@ export interface Question {
   category: string
   section: SectionId
   type: 'likert' | 'slider'
+  subtext?: string
   lowLabel?: string
   highLabel?: string
 }

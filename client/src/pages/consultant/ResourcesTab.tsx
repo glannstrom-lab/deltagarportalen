@@ -3,7 +3,7 @@
  * Resource library for consultants to use with participants
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target,
@@ -24,9 +24,16 @@ import {
   Download,
   Share2,
   MoreVertical,
+  X,
+  Save,
+  Loader2,
+  Edit2,
+  Trash2,
 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 
 interface GoalTemplate {
@@ -66,11 +73,16 @@ function TemplateCard({
   template,
   onUse,
   onStar,
+  onEdit,
+  onDelete,
 }: {
   template: GoalTemplate
   onUse: (template: GoalTemplate) => void
   onStar: (id: string) => void
+  onEdit: (template: GoalTemplate) => void
+  onDelete: (id: string) => void
 }) {
+  const [showMenu, setShowMenu] = useState(false)
   const categoryLabels = {
     cv: { label: 'CV', color: 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300' },
     job_search: { label: 'Jobbsökning', color: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300' },
@@ -80,6 +92,7 @@ function TemplateCard({
   }
 
   const category = categoryLabels[template.category]
+  const isDefault = template.id.startsWith('default-')
 
   return (
     <Card className="p-4 hover:shadow-md transition-shadow">
@@ -87,15 +100,46 @@ function TemplateCard({
         <span className={cn('px-2.5 py-1 rounded-full text-xs font-medium', category.color)}>
           {category.label}
         </span>
-        <button
-          onClick={() => onStar(template.id)}
-          className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
-        >
-          <Star className={cn(
-            'w-4 h-4',
-            template.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-400'
-          )} />
-        </button>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={() => onStar(template.id)}
+            className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
+            disabled={isDefault}
+          >
+            <Star className={cn(
+              'w-4 h-4',
+              template.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-400'
+            )} />
+          </button>
+          {!isDefault && (
+            <div className="relative">
+              <button
+                onClick={() => setShowMenu(!showMenu)}
+                className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
+              >
+                <MoreVertical className="w-4 h-4 text-stone-400" />
+              </button>
+              {showMenu && (
+                <div className="absolute right-0 top-full mt-1 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-10 min-w-[120px]">
+                  <button
+                    onClick={() => { onEdit(template); setShowMenu(false) }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center gap-2"
+                  >
+                    <Edit2 className="w-4 h-4" />
+                    Redigera
+                  </button>
+                  <button
+                    onClick={() => { onDelete(template.id); setShowMenu(false) }}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-stone-100 dark:hover:bg-stone-700 flex items-center gap-2 text-red-600"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Ta bort
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
       <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
         {template.title}
@@ -209,19 +253,378 @@ function BestPracticeCard({
   )
 }
 
+// Template Form Dialog
+function TemplateFormDialog({
+  isOpen,
+  onClose,
+  template,
+  onSave,
+  saving,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  template: GoalTemplate | null
+  onSave: (data: Partial<GoalTemplate>) => void
+  saving: boolean
+}) {
+  const [formData, setFormData] = useState<Partial<GoalTemplate>>({
+    title: '',
+    category: 'cv',
+    description: '',
+    specific: '',
+    measurable: '',
+    achievable: '',
+    relevant: '',
+    timeBound: '',
+  })
+
+  useEffect(() => {
+    if (template) {
+      setFormData(template)
+    } else {
+      setFormData({
+        title: '',
+        category: 'cv',
+        description: '',
+        specific: '',
+        measurable: '',
+        achievable: '',
+        relevant: '',
+        timeBound: '',
+      })
+    }
+  }, [template, isOpen])
+
+  if (!isOpen) return null
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+          <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            {template ? 'Redigera mall' : 'Skapa ny mall'}
+          </h3>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-4 space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              Titel
+            </label>
+            <input
+              type="text"
+              value={formData.title || ''}
+              onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-violet-500"
+              placeholder="T.ex. Förbättra CV till 80+ poäng"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              Kategori
+            </label>
+            <select
+              value={formData.category || 'cv'}
+              onChange={e => setFormData(prev => ({ ...prev, category: e.target.value as GoalTemplate['category'] }))}
+              className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent"
+            >
+              <option value="cv">CV</option>
+              <option value="job_search">Jobbsökning</option>
+              <option value="interview">Intervju</option>
+              <option value="networking">Nätverk</option>
+              <option value="skills">Kompetens</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1">
+              Beskrivning
+            </label>
+            <textarea
+              value={formData.description || ''}
+              onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-violet-500 resize-none"
+              rows={2}
+              placeholder="Kort beskrivning av mallen"
+            />
+          </div>
+          <div className="border-t border-stone-200 dark:border-stone-700 pt-4">
+            <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-3">SMART-mål</h4>
+            <div className="space-y-3">
+              <div>
+                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                  <strong>S</strong>pecifikt
+                </label>
+                <input
+                  type="text"
+                  value={formData.specific || ''}
+                  onChange={e => setFormData(prev => ({ ...prev, specific: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-violet-500"
+                  placeholder="Vad exakt ska uppnås?"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                  <strong>M</strong>ätbart
+                </label>
+                <input
+                  type="text"
+                  value={formData.measurable || ''}
+                  onChange={e => setFormData(prev => ({ ...prev, measurable: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-violet-500"
+                  placeholder="Hur mäts framgång?"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                  <strong>A</strong>chievable (Uppnåeligt)
+                </label>
+                <input
+                  type="text"
+                  value={formData.achievable || ''}
+                  onChange={e => setFormData(prev => ({ ...prev, achievable: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-violet-500"
+                  placeholder="Hur är det möjligt att uppnå?"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                  <strong>R</strong>elevant
+                </label>
+                <input
+                  type="text"
+                  value={formData.relevant || ''}
+                  onChange={e => setFormData(prev => ({ ...prev, relevant: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-violet-500"
+                  placeholder="Varför är detta viktigt?"
+                />
+              </div>
+              <div>
+                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                  <strong>T</strong>idsbestämt
+                </label>
+                <input
+                  type="text"
+                  value={formData.timeBound || ''}
+                  onChange={e => setFormData(prev => ({ ...prev, timeBound: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-800 border-2 border-transparent focus:border-violet-500"
+                  placeholder="När ska det vara klart?"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
+          <Button variant="outline" onClick={onClose}>
+            Avbryt
+          </Button>
+          <Button onClick={() => onSave(formData)} disabled={saving || !formData.title}>
+            {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Save className="w-4 h-4 mr-2" />}
+            {template ? 'Spara ändringar' : 'Skapa mall'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Template Detail Dialog
+function TemplateDetailDialog({
+  isOpen,
+  onClose,
+  template,
+  onUseForParticipant,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  template: GoalTemplate | null
+  onUseForParticipant: () => void
+}) {
+  if (!isOpen || !template) return null
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-lg">
+        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+          <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            {template.title}
+          </h3>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-4 space-y-4">
+          <p className="text-stone-600 dark:text-stone-400">{template.description}</p>
+          <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4 space-y-3">
+            <h4 className="font-medium text-stone-900 dark:text-stone-100">SMART-mål</h4>
+            <div className="space-y-2 text-sm">
+              <div>
+                <span className="font-medium text-violet-600">S - Specifikt:</span>
+                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.specific}</span>
+              </div>
+              <div>
+                <span className="font-medium text-violet-600">M - Mätbart:</span>
+                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.measurable}</span>
+              </div>
+              <div>
+                <span className="font-medium text-violet-600">A - Uppnåeligt:</span>
+                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.achievable}</span>
+              </div>
+              <div>
+                <span className="font-medium text-violet-600">R - Relevant:</span>
+                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.relevant}</span>
+              </div>
+              <div>
+                <span className="font-medium text-violet-600">T - Tidsbestämt:</span>
+                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.timeBound}</span>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs text-stone-400">
+            Använd {template.usageCount} gånger
+          </p>
+        </div>
+        <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
+          <Button variant="outline" onClick={onClose}>
+            Stäng
+          </Button>
+          <Button onClick={onUseForParticipant}>
+            <Copy className="w-4 h-4 mr-2" />
+            Använd för deltagare
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Best Practice Detail Dialog
+function BestPracticeDetailDialog({
+  isOpen,
+  onClose,
+  practice,
+}: {
+  isOpen: boolean
+  onClose: () => void
+  practice: BestPractice | null
+}) {
+  if (!isOpen || !practice) return null
+
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white dark:bg-stone-900 rounded-2xl w-full max-w-lg">
+        <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+          <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
+            {practice.title}
+          </h3>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+        <div className="p-4 space-y-4">
+          <p className="text-stone-600 dark:text-stone-400">{practice.description}</p>
+          <div className="space-y-3">
+            <h4 className="font-medium text-stone-900 dark:text-stone-100">Steg</h4>
+            <ol className="space-y-2">
+              {practice.steps.map((step, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 flex items-center justify-center text-sm font-medium">
+                    {index + 1}
+                  </span>
+                  <span className="text-stone-600 dark:text-stone-400 pt-0.5">{step}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+        <div className="flex items-center justify-end p-4 border-t border-stone-200 dark:border-stone-700">
+          <Button onClick={onClose}>
+            Stäng
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export function ResourcesTab() {
   const { t } = useTranslation()
   const [activeSection, setActiveSection] = useState<'templates' | 'collections' | 'practices'>('templates')
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
 
-  // Mock data - TODO: Fetch from database
-  const goalTemplates: GoalTemplate[] = [
+  // Template state
+  const [loading, setLoading] = useState(true)
+  const [templates, setTemplates] = useState<GoalTemplate[]>([])
+  const [showTemplateForm, setShowTemplateForm] = useState(false)
+  const [editingTemplate, setEditingTemplate] = useState<GoalTemplate | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [selectedTemplate, setSelectedTemplate] = useState<GoalTemplate | null>(null)
+  const [showTemplateDetail, setShowTemplateDetail] = useState(false)
+
+  // Best Practice state
+  const [selectedPractice, setSelectedPractice] = useState<BestPractice | null>(null)
+  const [showPracticeDetail, setShowPracticeDetail] = useState(false)
+
+  // Load templates from database
+  useEffect(() => {
+    loadTemplates()
+  }, [])
+
+  const loadTemplates = async () => {
+    setLoading(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data, error } = await supabase
+        .from('consultant_goal_templates')
+        .select('*')
+        .or(`consultant_id.eq.${user.id},is_shared.eq.true`)
+        .order('usage_count', { ascending: false })
+
+      if (error) throw error
+
+      const formattedTemplates: GoalTemplate[] = (data || []).map(t => ({
+        id: t.id,
+        title: t.title,
+        category: t.category,
+        description: t.description || '',
+        specific: t.specific || '',
+        measurable: t.measurable || '',
+        achievable: t.achievable || '',
+        relevant: t.relevant || '',
+        timeBound: t.time_bound || '',
+        usageCount: t.usage_count || 0,
+        isStarred: t.is_starred || false,
+      }))
+
+      setTemplates(formattedTemplates)
+    } catch (err) {
+      console.error('Error loading templates:', err)
+      // Use default templates as fallback
+      setTemplates(getDefaultTemplates())
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getDefaultTemplates = (): GoalTemplate[] => [
     {
-      id: '1',
+      id: 'default-1',
       title: 'Förbättra CV till 80+ poäng',
       category: 'cv',
-      description: 'Ett stegvist mål för att förbättra CV-kvaliteten med fokus på ATS-optimering och relevanta nyckelord.',
+      description: 'Ett stegvist mål för att förbättra CV-kvaliteten med fokus på ATS-optimering.',
       specific: 'Förbättra mitt CV så att det får minst 80 poäng i ATS-systemet',
       measurable: 'CV-poäng ökar från nuvarande till minst 80/100',
       achievable: 'Genomförbart genom att följa CV-guiden och få feedback',
@@ -231,7 +634,7 @@ export function ResourcesTab() {
       isStarred: true,
     },
     {
-      id: '2',
+      id: 'default-2',
       title: 'Skicka 10 ansökningar per vecka',
       category: 'job_search',
       description: 'Systematiskt jobbsökande med fokus på kvalitativa ansökningar.',
@@ -244,7 +647,7 @@ export function ResourcesTab() {
       isStarred: false,
     },
     {
-      id: '3',
+      id: 'default-3',
       title: 'Förbereda för intervju',
       category: 'interview',
       description: 'Strukturerad förberedelse inför en kommande intervju.',
@@ -256,34 +659,149 @@ export function ResourcesTab() {
       usageCount: 28,
       isStarred: true,
     },
-    {
-      id: '4',
-      title: 'Utöka LinkedIn-nätverket',
-      category: 'networking',
-      description: 'Strategiskt nätverkande på LinkedIn för att öka synlighet.',
-      specific: 'Anslut med 20 nya relevanta kontakter inom min bransch',
-      measurable: '20 nya accepterade kontakter',
-      achievable: 'Skicka personliga inbjudningar dagligen',
-      relevant: 'Större nätverk ökar chansen att hitta dolda jobb',
-      timeBound: '1 månad',
-      usageCount: 19,
-      isStarred: false,
-    },
-    {
-      id: '5',
-      title: 'Lära sig ny kompetens',
-      category: 'skills',
-      description: 'Strukturerat lärande av en efterfrågad kompetens.',
-      specific: 'Genomföra en online-kurs inom vald kompetens',
-      measurable: 'Kurs genomförd med certifikat',
-      achievable: '1-2 timmar per dag under kursen',
-      relevant: 'Ökar anställningsbarhet och löneutrymme',
-      timeBound: '4 veckor',
-      usageCount: 15,
-      isStarred: false,
-    },
   ]
 
+  const handleSaveTemplate = async (data: Partial<GoalTemplate>) => {
+    setSaving(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const templateData = {
+        consultant_id: user.id,
+        title: data.title,
+        category: data.category,
+        description: data.description,
+        specific: data.specific,
+        measurable: data.measurable,
+        achievable: data.achievable,
+        relevant: data.relevant,
+        time_bound: data.timeBound,
+        is_shared: false,
+        updated_at: new Date().toISOString(),
+      }
+
+      if (editingTemplate && !editingTemplate.id.startsWith('default-')) {
+        // Update existing
+        const { error } = await supabase
+          .from('consultant_goal_templates')
+          .update(templateData)
+          .eq('id', editingTemplate.id)
+
+        if (error) throw error
+
+        setTemplates(prev => prev.map(t =>
+          t.id === editingTemplate.id
+            ? { ...t, ...data }
+            : t
+        ))
+      } else {
+        // Create new
+        const { data: newTemplate, error } = await supabase
+          .from('consultant_goal_templates')
+          .insert({ ...templateData, usage_count: 0, is_starred: false })
+          .select()
+          .single()
+
+        if (error) throw error
+
+        if (newTemplate) {
+          setTemplates(prev => [{
+            id: newTemplate.id,
+            title: newTemplate.title,
+            category: newTemplate.category,
+            description: newTemplate.description || '',
+            specific: newTemplate.specific || '',
+            measurable: newTemplate.measurable || '',
+            achievable: newTemplate.achievable || '',
+            relevant: newTemplate.relevant || '',
+            timeBound: newTemplate.time_bound || '',
+            usageCount: 0,
+            isStarred: false,
+          }, ...prev])
+        }
+      }
+
+      setShowTemplateForm(false)
+      setEditingTemplate(null)
+    } catch (err) {
+      console.error('Error saving template:', err)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleStarTemplate = async (id: string) => {
+    const template = templates.find(t => t.id === id)
+    if (!template || id.startsWith('default-')) return
+
+    const newStarred = !template.isStarred
+
+    // Optimistic update
+    setTemplates(prev => prev.map(t =>
+      t.id === id ? { ...t, isStarred: newStarred } : t
+    ))
+
+    try {
+      await supabase
+        .from('consultant_goal_templates')
+        .update({ is_starred: newStarred })
+        .eq('id', id)
+    } catch (err) {
+      console.error('Error starring template:', err)
+      // Revert on error
+      setTemplates(prev => prev.map(t =>
+        t.id === id ? { ...t, isStarred: !newStarred } : t
+      ))
+    }
+  }
+
+  const handleDeleteTemplate = async (id: string) => {
+    if (id.startsWith('default-')) return
+    if (!confirm('Är du säker på att du vill ta bort denna mall?')) return
+
+    try {
+      await supabase
+        .from('consultant_goal_templates')
+        .delete()
+        .eq('id', id)
+
+      setTemplates(prev => prev.filter(t => t.id !== id))
+    } catch (err) {
+      console.error('Error deleting template:', err)
+    }
+  }
+
+  const handleUseTemplate = async (template: GoalTemplate) => {
+    setSelectedTemplate(template)
+    setShowTemplateDetail(true)
+
+    // Increment usage count
+    if (!template.id.startsWith('default-')) {
+      try {
+        await supabase
+          .from('consultant_goal_templates')
+          .update({ usage_count: template.usageCount + 1 })
+          .eq('id', template.id)
+
+        setTemplates(prev => prev.map(t =>
+          t.id === template.id ? { ...t, usageCount: t.usageCount + 1 } : t
+        ))
+      } catch (err) {
+        console.error('Error updating usage count:', err)
+      }
+    }
+  }
+
+  const handleUseForParticipant = () => {
+    // In a real implementation, this would open a participant selector
+    // and create a goal for the selected participant
+    alert('Funktionen för att tilldela mål till deltagare kommer snart!')
+    setShowTemplateDetail(false)
+    setSelectedTemplate(null)
+  }
+
+  // Static data for collections and practices
   const jobCollections: JobCollection[] = [
     {
       id: '1',
@@ -368,7 +886,7 @@ export function ResourcesTab() {
     },
   ]
 
-  const filteredTemplates = goalTemplates.filter(t => {
+  const filteredTemplates = templates.filter(t => {
     const matchesSearch = t.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       t.description.toLowerCase().includes(searchQuery.toLowerCase())
     const matchesCategory = categoryFilter === 'all' || t.category === categoryFilter
@@ -454,25 +972,34 @@ export function ResourcesTab() {
               <option value="networking">Nätverk</option>
               <option value="skills">Kompetens</option>
             </select>
-            <Button>
+            <Button onClick={() => { setEditingTemplate(null); setShowTemplateForm(true) }}>
               <Plus className="w-4 h-4 mr-2" />
               Skapa mall
             </Button>
           </div>
 
-          {/* Templates Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredTemplates.map(template => (
-              <TemplateCard
-                key={template.id}
-                template={template}
-                onUse={t => console.log('Use template:', t)}
-                onStar={id => console.log('Star template:', id)}
-              />
-            ))}
-          </div>
+          {/* Loading State */}
+          {loading && (
+            <LoadingState message="Laddar mallar..." />
+          )}
 
-          {filteredTemplates.length === 0 && (
+          {/* Templates Grid */}
+          {!loading && (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredTemplates.map(template => (
+                <TemplateCard
+                  key={template.id}
+                  template={template}
+                  onUse={handleUseTemplate}
+                  onStar={handleStarTemplate}
+                  onEdit={(t) => { setEditingTemplate(t); setShowTemplateForm(true) }}
+                  onDelete={handleDeleteTemplate}
+                />
+              ))}
+            </div>
+          )}
+
+          {!loading && filteredTemplates.length === 0 && (
             <Card className="p-12 text-center">
               <Target className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
               <p className="text-stone-500 dark:text-stone-400">
@@ -490,7 +1017,7 @@ export function ResourcesTab() {
             <p className="text-stone-500 dark:text-stone-400">
               Skapa och dela jobbsamlingar med dina deltagare
             </p>
-            <Button>
+            <Button onClick={() => alert('Funktion för att skapa jobbsamlingar kommer snart!')}>
               <Plus className="w-4 h-4 mr-2" />
               Ny samling
             </Button>
@@ -501,8 +1028,8 @@ export function ResourcesTab() {
               <JobCollectionCard
                 key={collection.id}
                 collection={collection}
-                onView={c => console.log('View collection:', c)}
-                onShare={id => console.log('Share collection:', id)}
+                onView={() => alert(`Visa samling: ${collection.name}\n\nDenna funktion kommer snart!`)}
+                onShare={() => alert(`Dela samling med deltagare:\n${collection.name}\n\nDenna funktion kommer snart!`)}
               />
             ))}
           </div>
@@ -521,12 +1048,36 @@ export function ResourcesTab() {
               <BestPracticeCard
                 key={practice.id}
                 practice={practice}
-                onView={p => console.log('View practice:', p)}
+                onView={(p) => { setSelectedPractice(p); setShowPracticeDetail(true) }}
               />
             ))}
           </div>
         </>
       )}
+
+      {/* Template Form Dialog */}
+      <TemplateFormDialog
+        isOpen={showTemplateForm}
+        onClose={() => { setShowTemplateForm(false); setEditingTemplate(null) }}
+        template={editingTemplate}
+        onSave={handleSaveTemplate}
+        saving={saving}
+      />
+
+      {/* Template Detail Dialog */}
+      <TemplateDetailDialog
+        isOpen={showTemplateDetail}
+        onClose={() => { setShowTemplateDetail(false); setSelectedTemplate(null) }}
+        template={selectedTemplate}
+        onUseForParticipant={handleUseForParticipant}
+      />
+
+      {/* Best Practice Detail Dialog */}
+      <BestPracticeDetailDialog
+        isOpen={showPracticeDetail}
+        onClose={() => { setShowPracticeDetail(false); setSelectedPractice(null) }}
+        practice={selectedPractice}
+      />
     </div>
   )
 }

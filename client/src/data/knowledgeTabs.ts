@@ -36,5 +36,5 @@ export const knowledgeTabs: Tab[] = [
   { id: 'my-journey', label: 'Min resa', path: '/knowledge-base?tab=my-journey', icon: Route },
   { id: 'tools', label: 'Verktyg', path: '/knowledge-base?tab=tools', icon: Wrench },
   { id: 'trending', label: 'Trendar', path: '/knowledge-base?tab=trending', icon: Flame },
-  { id: 'stories', label: 'Berättelser', path: '/knowledge-base?tab=stories', icon: Users, badge: 'Ny!' },
+  { id: 'stories', label: 'Berättelser', path: '/knowledge-base?tab=stories', icon: Users, badge: undefined },
 ]

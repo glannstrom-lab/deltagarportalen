@@ -4,7 +4,7 @@
  * Inkluderar: reduced motion, tangentbordsnavigering, ARIA-stöd
  */
 
-import { useState, useEffect, useCallback, useRef, type RefObject } from 'react'
+import { useState, useEffect, useCallback, useRef, type RefObject, type JSX } from 'react'
 
 /**
  * Hook för att lyssna på prefers-reduced-motion

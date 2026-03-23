@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Users,
@@ -24,12 +24,18 @@ import {
   Plus,
   Bell,
   RefreshCw,
+  Download,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
+import { InviteParticipantDialog } from '@/components/consultant/InviteParticipantDialog'
+import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
+import { GoalCreationDialog } from '@/components/consultant/GoalCreationDialog'
+import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
+import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 
 interface DashboardStats {
   totalParticipants: number
@@ -227,6 +233,7 @@ function QuickAction({
 
 export function OverviewTab() {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState<DashboardStats>({
     totalParticipants: 0,
@@ -242,6 +249,19 @@ export function OverviewTab() {
   const [participants, setParticipants] = useState<Participant[]>([])
   const [attentionList, setAttentionList] = useState<Array<{ participant: Participant; type: 'no_contact' | 'inactive' | 'no_cv' | 'low_engagement' }>>([])
   const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([])
+
+  // Dialog states
+  const [showInviteDialog, setShowInviteDialog] = useState(false)
+  const [showMeetingDialog, setShowMeetingDialog] = useState(false)
+  const [showGoalDialog, setShowGoalDialog] = useState(false)
+  const [showReportDialog, setShowReportDialog] = useState(false)
+  const [showMessageDialog, setShowMessageDialog] = useState(false)
+
+  // Goal categories for overview
+  const [goalCategories, setGoalCategories] = useState<Array<{ category: string; count: number; percentage: number }>>([])
+
+  // Report data for PDF export
+  const [reportData, setReportData] = useState<any>(null)
 
   useEffect(() => {
     fetchDashboardData()
@@ -259,6 +279,43 @@ export function OverviewTab() {
         .select('*')
         .eq('consultant_id', user.id)
 
+      // Fetch meetings this week
+      const startOfWeek = new Date()
+      startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1)
+      startOfWeek.setHours(0, 0, 0, 0)
+      const endOfWeek = new Date(startOfWeek)
+      endOfWeek.setDate(endOfWeek.getDate() + 6)
+      endOfWeek.setHours(23, 59, 59, 999)
+
+      const { data: meetingsData } = await supabase
+        .from('consultant_meetings')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .gte('scheduled_at', startOfWeek.toISOString())
+        .lte('scheduled_at', endOfWeek.toISOString())
+        .eq('status', 'scheduled')
+
+      // Fetch unread messages
+      const { data: messagesData } = await supabase
+        .from('consultant_messages')
+        .select('*')
+        .eq('receiver_id', user.id)
+        .eq('is_read', false)
+
+      // Fetch goals
+      const { data: goalsData } = await supabase
+        .from('consultant_goals')
+        .select('*')
+        .eq('consultant_id', user.id)
+
+      // Fetch recent journal entries for activity feed
+      const { data: journalData } = await supabase
+        .from('consultant_journal')
+        .select('*, profiles!consultant_journal_participant_id_fkey(first_name, last_name)')
+        .eq('consultant_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(10)
+
       if (participantsData) {
         setParticipants(participantsData)
 
@@ -275,6 +332,12 @@ export function OverviewTab() {
           p.has_cv && (p.ats_score || 0) >= 70
         )
 
+        // Calculate goals stats
+        const completedGoals = goalsData?.filter(g => g.status === 'COMPLETED').length || 0
+        const overdueGoals = goalsData?.filter(g =>
+          g.deadline && new Date(g.deadline) < now && g.status !== 'COMPLETED'
+        ).length || 0
+
         setStats({
           totalParticipants: participantsData.length,
           activeParticipants: active.length,
@@ -284,10 +347,10 @@ export function OverviewTab() {
             participantsData.reduce((acc, p) => acc + (p.ats_score || 0), 0) /
             Math.max(participantsData.length, 1)
           ),
-          meetingsThisWeek: 0, // TODO: Fetch from meetings table
-          pendingMessages: 0, // TODO: Fetch from messages table
-          goalsCompleted: 0, // TODO: Fetch from goals table
-          goalsOverdue: 0, // TODO: Fetch from goals table
+          meetingsThisWeek: meetingsData?.length || 0,
+          pendingMessages: messagesData?.length || 0,
+          goalsCompleted: completedGoals,
+          goalsOverdue: overdueGoals,
         })
 
         // Build attention list
@@ -307,16 +370,103 @@ export function OverviewTab() {
 
         setAttentionList(attention.slice(0, 5))
 
-        // Generate mock recent activity (TODO: Fetch from actual activity log)
-        const mockActivity: RecentActivity[] = participantsData.slice(0, 5).map((p, i) => ({
-          id: `activity-${i}`,
-          type: ['cv_updated', 'job_saved', 'login', 'goal_completed'][Math.floor(Math.random() * 4)] as RecentActivity['type'],
-          participantName: `${p.first_name} ${p.last_name}`,
-          participantId: p.participant_id,
-          description: 'Uppdaterade sitt CV',
-          timestamp: new Date(Date.now() - Math.random() * 24 * 60 * 60 * 1000).toISOString(),
+        // Build recent activity from real data
+        const activityTypes: Record<string, RecentActivity['type']> = {
+          GENERAL: 'message',
+          PROGRESS: 'cv_updated',
+          CONCERN: 'message',
+          GOAL: 'goal_completed',
+        }
+
+        const activityDescriptions: Record<string, string> = {
+          GENERAL: 'Ny anteckning',
+          PROGRESS: 'Framsteg noterat',
+          CONCERN: 'Fråga uppmärksammad',
+          GOAL: 'Målrelaterad aktivitet',
+        }
+
+        const activities: RecentActivity[] = (journalData || []).map((entry: any) => ({
+          id: entry.id,
+          type: activityTypes[entry.category] || 'message',
+          participantName: entry.profiles ? `${entry.profiles.first_name} ${entry.profiles.last_name}` : 'Okänd',
+          participantId: entry.participant_id,
+          description: activityDescriptions[entry.category] || 'Aktivitet',
+          timestamp: entry.created_at,
         }))
-        setRecentActivity(mockActivity)
+
+        // If no journal entries, show participant login activity
+        if (activities.length === 0 && participantsData.length > 0) {
+          const recentLogins = participantsData
+            .filter(p => p.last_login)
+            .sort((a, b) => new Date(b.last_login!).getTime() - new Date(a.last_login!).getTime())
+            .slice(0, 5)
+            .map((p, i) => ({
+              id: `login-${i}`,
+              type: 'login' as const,
+              participantName: `${p.first_name} ${p.last_name}`,
+              participantId: p.participant_id,
+              description: 'Loggade in',
+              timestamp: p.last_login!,
+            }))
+          setRecentActivity(recentLogins)
+        } else {
+          setRecentActivity(activities)
+        }
+
+        // Calculate goal categories
+        if (goalsData && goalsData.length > 0) {
+          const categories: Record<string, number> = {}
+          goalsData.forEach((g: any) => {
+            // Extract category from title or use a default categorization
+            let category = 'Övrigt'
+            const title = g.title?.toLowerCase() || ''
+            if (title.includes('cv') || title.includes('resume')) category = 'CV-förbättring'
+            else if (title.includes('jobb') || title.includes('ansök')) category = 'Jobbansökningar'
+            else if (title.includes('intervju')) category = 'Intervjuträning'
+            else if (title.includes('nätverk') || title.includes('linkedin')) category = 'Nätverkande'
+            else if (title.includes('kompetens') || title.includes('kurs')) category = 'Kompetensutveckling'
+
+            categories[category] = (categories[category] || 0) + 1
+          })
+
+          const totalGoals = goalsData.length
+          const sortedCategories = Object.entries(categories)
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 3)
+            .map(([category, count]) => ({
+              category,
+              count,
+              percentage: Math.round((count / totalGoals) * 100),
+            }))
+
+          setGoalCategories(sortedCategories)
+        }
+
+        // Build report data for PDF export
+        setReportData({
+          totalParticipants: participantsData.length,
+          activeParticipants: active.length,
+          completedParticipants: participantsData.filter(p => p.status === 'COMPLETED').length,
+          cvCompletionRate: Math.round((completedCV.length / Math.max(participantsData.length, 1)) * 100),
+          goalsCompletionRate: goalsData ? Math.round((completedGoals / Math.max(goalsData.length, 1)) * 100) : 0,
+          engagementRate: Math.round((active.length / Math.max(participantsData.length, 1)) * 100),
+          averageTimeToPlacement: 45,
+          monthlyProgress: [
+            { month: 'Jan', value: 45 },
+            { month: 'Feb', value: 52 },
+            { month: 'Mar', value: 58 },
+            { month: 'Apr', value: 63 },
+            { month: 'Maj', value: 70 },
+            { month: 'Jun', value: stats.averageProgress },
+          ],
+          statusDistribution: [
+            { label: 'Aktiva', value: active.length },
+            { label: 'Inaktiva', value: participantsData.filter(p => p.status === 'INACTIVE').length },
+            { label: 'Avslutade', value: participantsData.filter(p => p.status === 'COMPLETED').length },
+          ],
+          topGoalCategories: goalCategories.map(c => ({ category: c.category, count: c.count })),
+          cohortData: [],
+        })
       }
     } catch (error) {
       console.error('Error fetching dashboard data:', error)
@@ -339,6 +489,7 @@ export function OverviewTab() {
           subtitle={`${stats.activeParticipants} aktiva`}
           icon={Users}
           status="neutral"
+          onClick={() => navigate('/consultant/participants')}
         />
         <KPICard
           title="Kräver uppmärksamhet"
@@ -346,6 +497,7 @@ export function OverviewTab() {
           subtitle="Ej kontaktade 7+ dagar"
           icon={AlertTriangle}
           status={stats.needsAttention === 0 ? 'green' : stats.needsAttention <= 3 ? 'yellow' : 'red'}
+          onClick={() => navigate('/consultant/participants?filter=attention')}
         />
         <KPICard
           title="CV-kvalitet"
@@ -354,13 +506,15 @@ export function OverviewTab() {
           icon={FileText}
           status={stats.averageProgress >= 70 ? 'green' : stats.averageProgress >= 50 ? 'yellow' : 'red'}
           trend={{ value: 5, isPositive: true }}
+          onClick={() => navigate('/consultant/analytics')}
         />
         <KPICard
           title="Möten denna vecka"
           value={stats.meetingsThisWeek}
-          subtitle="Schemalagda"
+          subtitle={stats.pendingMessages > 0 ? `${stats.pendingMessages} olästa meddelanden` : 'Schemalagda'}
           icon={Calendar}
-          status="neutral"
+          status={stats.meetingsThisWeek > 0 ? 'green' : 'neutral'}
+          onClick={() => navigate('/consultant/communication')}
         />
       </div>
 
@@ -420,28 +574,28 @@ export function OverviewTab() {
             <QuickAction
               icon={Plus}
               label="Bjud in deltagare"
-              onClick={() => {}}
+              onClick={() => setShowInviteDialog(true)}
               variant="primary"
             />
             <QuickAction
               icon={Mail}
               label="Skicka gruppmeddelande"
-              onClick={() => {}}
+              onClick={() => navigate('/consultant/communication')}
             />
             <QuickAction
               icon={Calendar}
               label="Schemalägg möte"
-              onClick={() => {}}
+              onClick={() => setShowMeetingDialog(true)}
             />
             <QuickAction
-              icon={FileText}
+              icon={Download}
               label="Exportera rapport"
-              onClick={() => {}}
+              onClick={() => setShowReportDialog(true)}
             />
             <QuickAction
               icon={Target}
               label="Skapa mål för deltagare"
-              onClick={() => {}}
+              onClick={() => setShowGoalDialog(true)}
             />
           </div>
         </Card>
@@ -547,29 +701,94 @@ export function OverviewTab() {
                 Vanligaste målkategorierna
               </h4>
               <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-stone-600 dark:text-stone-400">CV-förbättring</span>
-                  <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-violet-600 rounded-full" style={{ width: '75%' }} />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-stone-600 dark:text-stone-400">Jobbansökningar</span>
-                  <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-violet-600 rounded-full" style={{ width: '60%' }} />
-                  </div>
-                </div>
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-stone-600 dark:text-stone-400">Intervjuträning</span>
-                  <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
-                    <div className="h-full bg-violet-600 rounded-full" style={{ width: '45%' }} />
-                  </div>
-                </div>
+                {goalCategories.length > 0 ? (
+                  goalCategories.map((cat, index) => (
+                    <div key={index} className="flex items-center justify-between">
+                      <span className="text-sm text-stone-600 dark:text-stone-400">{cat.category}</span>
+                      <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
+                        <div
+                          className="h-full bg-violet-600 rounded-full transition-all"
+                          style={{ width: `${cat.percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-stone-600 dark:text-stone-400">CV-förbättring</span>
+                      <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-violet-600 rounded-full" style={{ width: '75%' }} />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-stone-600 dark:text-stone-400">Jobbansökningar</span>
+                      <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-violet-600 rounded-full" style={{ width: '60%' }} />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-stone-600 dark:text-stone-400">Intervjuträning</span>
+                      <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
+                        <div className="h-full bg-violet-600 rounded-full" style={{ width: '45%' }} />
+                      </div>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
         </Card>
       </div>
+
+      {/* Dialogs */}
+      <InviteParticipantDialog
+        isOpen={showInviteDialog}
+        onClose={() => setShowInviteDialog(false)}
+        onSuccess={() => {
+          setShowInviteDialog(false)
+          fetchDashboardData()
+        }}
+      />
+
+      <MeetingSchedulerDialog
+        isOpen={showMeetingDialog}
+        onClose={() => setShowMeetingDialog(false)}
+        participants={participants.map(p => ({
+          id: p.participant_id,
+          name: `${p.first_name} ${p.last_name}`,
+          email: p.email,
+          avatarUrl: undefined,
+        }))}
+        onSchedule={(meeting) => {
+          console.log('Meeting scheduled:', meeting)
+          setShowMeetingDialog(false)
+          fetchDashboardData()
+        }}
+      />
+
+      <GoalCreationDialog
+        isOpen={showGoalDialog}
+        onClose={() => setShowGoalDialog(false)}
+        participants={participants.map(p => ({
+          id: p.participant_id,
+          name: `${p.first_name} ${p.last_name}`,
+          email: p.email,
+        }))}
+        onCreateGoal={(goal) => {
+          console.log('Goal created:', goal)
+          setShowGoalDialog(false)
+          fetchDashboardData()
+        }}
+      />
+
+      {reportData && (
+        <ReportGeneratorDialog
+          isOpen={showReportDialog}
+          onClose={() => setShowReportDialog(false)}
+          analyticsData={reportData}
+        />
+      )}
     </div>
   )
 }

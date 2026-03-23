@@ -26,30 +26,13 @@ import { contentArticleApi, contentExerciseApi } from '../services/contentApi'
 import type { Exercise } from '../data/exercises'
 import { articleBookmarksApi } from '../services/cloudStorage'
 import { useAchievementTracker } from '../hooks/useAchievementTracker'
+import type { EnhancedArticle } from '../services/articleData'
 
 export default function Article() {
   const { t, i18n } = useTranslation()
   const { id } = useParams()
   const navigate = useNavigate()
-  const [article, setArticle] = useState<{
-    id: string
-    title: string
-    category: string
-    author?: string
-    authorTitle?: string
-    createdAt: string
-    readingTime?: number
-    summary?: string
-    content: string
-    checklist?: string[]
-    actions?: Array<{ type: string; href: string; label: string }>
-    tags?: string | string[]
-    helpfulnessRating?: number
-    bookmarkCount?: number
-    difficulty?: string
-    relatedArticles?: string[]
-    relatedExercises?: string[]
-  } | null>(null)
+  const [article, setArticle] = useState<EnhancedArticle | null>(null)
   const [loading, setLoading] = useState(true)
   const [isBookmarked, setIsBookmarked] = useState(false)
   const [showCopied, setShowCopied] = useState(false)
@@ -60,8 +43,8 @@ export default function Article() {
   const hasTrackedRead = useRef(false)
 
   useEffect(() => {
-    logger.debug('Article - ID from params:', id)
-    logger.debug('Article - Current URL:', window.location.href)
+    logger.debug('Article - ID from params:', { id })
+    logger.debug('Article - Current URL:', { url: window.location.href })
     if (id) {
       loadArticle()
       checkBookmark()
@@ -210,7 +193,7 @@ export default function Article() {
   const contentParagraphs = article.content.split('\n\n').filter((p: string) => p.trim())
 
   // Get checklist items
-  const checklistItems = article.checklist || []
+  const checklistItems = (article.checklist || []) as Array<{ id: string; text: string }>
 
   // Get actions
   const actions = article.actions || []

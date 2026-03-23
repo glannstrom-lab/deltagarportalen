@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MessageCircle, Send, User, Bot, RefreshCw, Mic, MicOff, ThumbsUp, ThumbsDown } from 'lucide-react'
+import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'
@@ -8,25 +8,75 @@ import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 interface FragaSvar {
   fraga: string
   svar: string
+  rating?: number
   feedback?: string
+}
+
+interface QuestionCategory {
+  name: string
+  questions: string[]
+}
+
+const questionCategories: QuestionCategory[] = [
+  {
+    name: 'Om dig själv',
+    questions: [
+      'Berätta om dig själv och din bakgrund',
+      'Vad är dina största styrkor?',
+      'Vilka är dina svagaste sidor?'
+    ]
+  },
+  {
+    name: 'Erfarenhet & färdigheter',
+    questions: [
+      'Beskriv en utmaning du övervann i ett tidigare jobb',
+      'Hur hanterar du konflikter på arbetsplatsen?',
+      'Berätta om ett projekt du är stolt över'
+    ]
+  },
+  {
+    name: 'Motivation & mål',
+    questions: [
+      'Varför är du intresserad av denna position?',
+      'Var ser du dig själv om 5 år?',
+      'Vad motiverar dig mest på jobbet?'
+    ]
+  },
+  {
+    name: 'Tekniska frågor',
+    questions: [
+      'Beskriv en teknisk utmaning och hur du löste den',
+      'Hur håller du dig uppdaterad med ny teknik?'
+    ]
+  }
+]
+
+const exampleAnswers: Record<string, string> = {
+  'Berätta om dig själv och din bakgrund': 'Jag är en driven utvecklare med 5 års erfarenhet inom webbutveckling. Jag är specialiserad på React och backend-teknologier. Jag brinner för att skapa användbara applikationer och arbetar bäst i team.',
+  'Varför är du intresserad av denna position?': 'Jag är fascinerad av ert företags innovativa produkter och er fokus på användarupplevelse. Jag ser denna roll som en perfekt match för mina färdigheter och framtida karriärmål.'
 }
 
 export default function InterviewSimulator() {
   const { t } = useTranslation()
   const [roll, setRoll] = useState('')
   const [foretag, setForetag] = useState('')
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [harStartat, setHarStartat] = useState(false)
   const [nuvarandeFraga, setNuvarandeFraga] = useState('')
   const [anvandarSvar, setAnvandarSvar] = useState('')
   const [historik, setHistorik] = useState<FragaSvar[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [antalFragor, setAntalFragor] = useState(0)
+  const [timerSeconds, setTimerSeconds] = useState(0)
+  const [isTimerRunning, setIsTimerRunning] = useState(false)
+  const [expandedFeedback, setExpandedFeedback] = useState<number | null>(null)
   const { trackInterviewCompleted } = useAchievementTracker()
 
   const startaIntervju = async () => {
     if (!roll.trim()) return
     setHarStartat(true)
     setIsLoading(true)
+    setTimerSeconds(0)
 
     try {
       const response = await fetch('/api/ai/intervju-simulator', {
@@ -39,10 +89,11 @@ export default function InterviewSimulator() {
       const data = await response.json()
       setNuvarandeFraga(data.resultat)
     } catch (error) {
-      const companyPart = foretag ? t('interviewSimulator.atCompany', { company: foretag }) : ''
-      setNuvarandeFraga(t('interviewSimulator.welcomeMessage', { role: roll, company: companyPart }))
+      const defaultQuestions = questionCategories[0]?.questions || []
+      setNuvarandeFraga(defaultQuestions[0] || 'Berätta om dig själv')
     } finally {
       setIsLoading(false)
+      setIsTimerRunning(true)
     }
   }
 
@@ -50,9 +101,11 @@ export default function InterviewSimulator() {
     if (!anvandarSvar.trim() || isLoading) return
 
     setIsLoading(true)
+    setIsTimerRunning(false)
     const nyFragaSvar: FragaSvar = {
       fraga: nuvarandeFraga,
-      svar: anvandarSvar
+      svar: anvandarSvar,
+      rating: 0
     }
 
     try {
@@ -70,28 +123,36 @@ export default function InterviewSimulator() {
       if (!response.ok) throw new Error('AI error')
       const data = await response.json()
 
-      setHistorik([...historik, { ...nyFragaSvar, feedback: t('interviewSimulator.goodAnswerNext') }])
+      setHistorik([...historik, {
+        ...nyFragaSvar,
+        feedback: 'Bra svar! Nästa fråga:'
+      }])
       setNuvarandeFraga(data.resultat)
       setAnvandarSvar('')
       setAntalFragor(prev => prev + 1)
+      setTimerSeconds(0)
+      setIsTimerRunning(true)
     } catch (error) {
-      const fallbackFraga = antalFragor === 0
-        ? t('interviewSimulator.fallbackQ1')
-        : antalFragor === 1
-        ? t('interviewSimulator.fallbackQ2')
-        : t('interviewSimulator.fallbackQ3')
+      const allQuestions = questionCategories.flatMap(cat => cat.questions)
+      const nextQuestion = allQuestions[antalFragor % allQuestions.length] || 'Vad är dina framtidsplaner?'
 
       setHistorik([...historik, nyFragaSvar])
-      setNuvarandeFraga(fallbackFraga)
+      setNuvarandeFraga(nextQuestion)
       setAnvandarSvar('')
       setAntalFragor(prev => prev + 1)
+      setIsTimerRunning(true)
     } finally {
       setIsLoading(false)
     }
   }
 
+  const setRating = (index: number, rating: number) => {
+    const updated = [...historik]
+    updated[index].rating = rating
+    setHistorik(updated)
+  }
+
   const avslutaIntervju = () => {
-    // Track interview completion if at least 3 questions were answered
     if (antalFragor >= 3) {
       trackInterviewCompleted()
     }
@@ -99,10 +160,42 @@ export default function InterviewSimulator() {
     setHarStartat(false)
     setRoll('')
     setForetag('')
+    setSelectedCategory('')
     setNuvarandeFraga('')
     setAnvandarSvar('')
     setHistorik([])
     setAntalFragor(0)
+    setIsTimerRunning(false)
+  }
+
+  const downloadSessionSummary = () => {
+    const summary = `INTERVJUPRAKTIK SAMMANFATTNING
+Datum: ${new Date().toLocaleDateString('sv-SE')}
+Roll: ${roll}
+Företag: ${foretag || 'Inte angiven'}
+
+SESSIONÖVERSIKT:
+- Totalt frågor: ${antalFragor}
+- Genomsnittliga klassificering: ${historik.length > 0 ? (historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length).toFixed(1) : 'N/A'} / 5
+
+FRÅGOR OCH SVAR:
+${historik.map((h, idx) => `
+${idx + 1}. FRÅGA: ${h.fraga}
+   SVAR: ${h.svar}
+   BETYG: ${h.rating || 0} / 5
+`).join('')}
+
+TIPS FÖR FÖRBÄTTRING:
+- Använd STAR-metoden för bättre strukturerade svar
+- Praktisera högljudd för att förbättra uttal och tempo
+- Förbered konkreta exempel från din erfarenhet`
+
+    const blob = new Blob([summary], { type: 'text/plain' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `intervju-session-${new Date().toISOString().split('T')[0]}.txt`
+    a.click()
   }
 
   if (!harStartat) {
@@ -140,6 +233,24 @@ export default function InterviewSimulator() {
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none"
               />
             </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+                <ListTodo className="w-4 h-4" />
+                Välj frågekategori (valfritt)
+              </label>
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none"
+              >
+                <option value="">Slumpmässiga frågor</option>
+                {questionCategories.map((cat) => (
+                  <option key={cat.name} value={cat.name}>{cat.name}</option>
+                ))}
+              </select>
+            </div>
+
             <Button
               onClick={startaIntervju}
               disabled={!roll.trim() || isLoading}
@@ -149,46 +260,137 @@ export default function InterviewSimulator() {
             </Button>
           </div>
         </Card>
+
+        {/* Tips Section */}
+        <Card className="p-6 bg-amber-50 border-amber-200">
+          <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-amber-600" />
+            STAR-metoden för bättre svar
+          </h3>
+          <ul className="space-y-2 text-sm text-slate-700">
+            <li><strong>S</strong>ituation - Beskriv sammanhanget</li>
+            <li><strong>T</strong>ask - Förklara vad som behövde göras</li>
+            <li><strong>A</strong>ction - Vad gjorde du specifikt?</li>
+            <li><strong>R</strong>esult - Vad blev resultatet?</li>
+          </ul>
+        </Card>
       </div>
     )
   }
 
+  const avgRating = historik.length > 0 ? (historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length).toFixed(1) : 0
+
   return (
     <div className="max-w-3xl mx-auto space-y-6 pb-20">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-bold text-slate-800">{t('interviewSimulator.interview')} {roll}</h1>
-          <p className="text-sm text-slate-500">{foretag || t('interviewSimulator.genericPractice')}</p>
+      {/* Header med progress */}
+      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-xl font-bold text-slate-800">{t('interviewSimulator.interview')} {roll}</h1>
+            <p className="text-sm text-slate-500">{foretag || t('interviewSimulator.genericPractice')}</p>
+          </div>
+          <Button variant="outline" size="sm" onClick={avslutaIntervju}>
+            Avsluta
+          </Button>
         </div>
-        <Button variant="outline" onClick={avslutaIntervju}>
-          {t('interviewSimulator.end')}
-        </Button>
-      </div>
 
-      {/* Historik */}
+        {/* Stats */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-white p-3 rounded-lg border border-amber-100">
+            <p className="text-xs text-slate-600">Frågor besvarade</p>
+            <p className="text-2xl font-bold text-amber-600">{antalFragor}</p>
+          </div>
+          <div className="bg-white p-3 rounded-lg border border-amber-100">
+            <p className="text-xs text-slate-600">Genomsnittligt betyg</p>
+            <p className="text-2xl font-bold text-amber-600">{avgRating}/5</p>
+          </div>
+          <div className="bg-white p-3 rounded-lg border border-amber-100">
+            <p className="text-xs text-slate-600">Tid för svar</p>
+            <p className="text-2xl font-bold text-amber-600">{timerSeconds}s</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Historik med expanderbar feedback */}
       {historik.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-3">
+          <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+            <TrendingUp className="w-5 h-5" />
+            Tidigare svar
+          </h3>
           {historik.map((fs, index) => (
             <Card key={index} className="p-4 bg-slate-50">
               <div className="space-y-3">
+                {/* Fråga */}
                 <div className="flex gap-3">
                   <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
                     <User className="w-4 h-4 text-amber-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 mb-1">{t('interviewSimulator.interviewer')}</p>
+                    <p className="text-sm font-medium text-slate-600 mb-1">Fråga</p>
                     <p className="text-slate-800">{fs.fraga}</p>
                   </div>
                 </div>
+
+                {/* Svar */}
                 <div className="flex gap-3">
                   <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
                     <Bot className="w-4 h-4 text-emerald-600" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 mb-1">{t('interviewSimulator.yourAnswer')}</p>
+                    <p className="text-sm font-medium text-slate-600 mb-1">Ditt svar</p>
                     <p className="text-slate-800">{fs.svar}</p>
                   </div>
+                </div>
+
+                {/* Rating och feedback */}
+                <div className="bg-white p-3 rounded border border-slate-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-sm font-medium text-slate-700">Betygsätt detta svar:</p>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          onClick={() => setRating(index, star)}
+                          className={`text-lg ${star <= (fs.rating || 0) ? 'text-yellow-400' : 'text-slate-300'} cursor-pointer`}
+                        >
+                          ★
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Expanderbar feedback */}
+                  <button
+                    onClick={() => setExpandedFeedback(expandedFeedback === index ? null : index)}
+                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition"
+                  >
+                    {expandedFeedback === index ? (
+                      <>
+                        <ChevronUp className="w-4 h-4" />
+                        Dölj feedback
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" />
+                        Visa feedback och tips
+                      </>
+                    )}
+                  </button>
+
+                  {expandedFeedback === index && (
+                    <div className="mt-3 pt-3 border-t border-slate-200 space-y-2">
+                      <div className="bg-blue-50 p-2 rounded text-sm text-blue-800">
+                        <strong>Tips:</strong> Försök strukturera dina svar med STAR-metoden. Berätta Situation, Task, Action och Result.
+                      </div>
+                      <div className="bg-green-50 p-2 rounded text-sm text-green-800">
+                        <strong>Styrka:</strong> Du var specifik och konkret i ditt svar.
+                      </div>
+                      <div className="bg-amber-50 p-2 rounded text-sm text-amber-800">
+                        <strong>Förbättring:</strong> Lägg till mer detalj om resultatet och lärdomarna.
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </Card>
@@ -203,45 +405,71 @@ export default function InterviewSimulator() {
             <User className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-amber-700 mb-2">{t('interviewSimulator.interviewerAsks')}</p>
+            <p className="text-sm font-medium text-amber-700 mb-2 flex items-center gap-2">
+              <Clock className="w-4 h-4" />
+              Fråga {antalFragor + 1}
+            </p>
             <p className="text-lg text-slate-800">{nuvarandeFraga}</p>
           </div>
         </div>
       </Card>
 
-      {/* Svarsfält */}
-      <Card className="p-4">
-        <div className="flex gap-3">
-          <div className="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-            <Bot className="w-5 h-5 text-emerald-600" />
+      {/* Timer & Answer Input */}
+      <Card className="p-6">
+        <div className="space-y-4">
+          {/* Timer */}
+          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-slate-600" />
+              <span className="text-sm font-medium text-slate-700">Tid för svar:</span>
+            </div>
+            <span className="text-2xl font-bold text-amber-600">{timerSeconds}s</span>
           </div>
-          <div className="flex-1">
+
+          {/* Answer Textarea */}
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-slate-700">Ditt svar</label>
             <textarea
               value={anvandarSvar}
               onChange={(e) => setAnvandarSvar(e.target.value)}
-              placeholder={t('interviewSimulator.writeAnswerHere')}
-              rows={4}
+              placeholder="Skriv ditt svar här..."
+              rows={5}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none resize-y"
             />
-            <div className="flex justify-end mt-3">
-              <Button
-                onClick={svara}
-                disabled={!anvandarSvar.trim() || isLoading}
-                className="bg-gradient-to-r from-amber-600 to-orange-600"
-              >
-                {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 mr-2" /> {t('interviewSimulator.answer')}</>}
-              </Button>
+            <div className="flex justify-between items-center text-xs text-slate-500">
+              <span>{anvandarSvar.length} tecken</span>
+              <span>Rekommenderat: 100-300 tecken</span>
             </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2">
+            <Button
+              onClick={svara}
+              disabled={!anvandarSvar.trim() || isLoading}
+              className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600"
+            >
+              {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 mr-2" /> Nästa fråga</>}
+            </Button>
+            <Button variant="outline" onClick={downloadSessionSummary} size="sm">
+              <Download className="w-4 h-4" />
+            </Button>
           </div>
         </div>
       </Card>
 
-      {/* Tips */}
-      <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-        <p className="text-sm text-blue-700">
-          {t('interviewSimulator.tip')}
-        </p>
-      </div>
+      {/* Example Answer */}
+      {exampleAnswers[nuvarandeFraga] && (
+        <Card className="p-4 bg-green-50 border-green-200">
+          <div className="flex items-start gap-3">
+            <Zap className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-green-900 mb-2">Exempel på bra svar:</p>
+              <p className="text-sm text-green-800 italic">"{exampleAnswers[nuvarandeFraga]}"</p>
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   )
 }

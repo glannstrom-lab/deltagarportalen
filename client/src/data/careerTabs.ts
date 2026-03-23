@@ -29,12 +29,12 @@ export const careerTabDefs = [
 
 // For backwards compatibility - static tabs (Swedish)
 export const careerTabs: Tab[] = [
-  { id: 'explore', label: 'Utforska yrken', path: '/career', icon: Compass, description: 'Upptäck nya yrkesmöjligheter' },
-  { id: 'network', label: 'Nätverk', path: '/career/network', icon: Network, description: 'Bygg och underhåll ditt nätverk', badge: 'Ny!' },
-  { id: 'adaptation', label: 'Anpassning', path: '/career/adaptation', icon: Accessibility, description: 'Arbetsanpassning och stöd', badge: 'Ny!' },
-  { id: 'companies', label: 'Företag', path: '/career/companies', icon: Building2, description: 'Utforska arbetsgivare', badge: 'Ny!' },
-  { id: 'credentials', label: 'Credentials', path: '/career/credentials', icon: GraduationCap, description: 'Spåra certifieringar', badge: 'Ny!' },
-  { id: 'relocation', label: 'Flytta', path: '/career/relocation', icon: Home, description: 'Flytta för jobbet', badge: 'Ny!' },
-  { id: 'plan', label: 'Karriärplan', path: '/career-plan', icon: Target, description: 'Skapa din karriärväg' },
-  { id: 'skills', label: 'Kompetens', path: '/skills-gap', icon: BarChart3, description: 'Analysera och utveckla kompetenser' },
+  { id: 'explore', label: 'Utforska yrken', path: '/career', icon: Compass },
+  { id: 'network', label: 'Nätverk', path: '/career/network', icon: Network, badge: undefined },
+  { id: 'adaptation', label: 'Anpassning', path: '/career/adaptation', icon: Accessibility, badge: undefined },
+  { id: 'companies', label: 'Företag', path: '/career/companies', icon: Building2, badge: undefined },
+  { id: 'credentials', label: 'Credentials', path: '/career/credentials', icon: GraduationCap, badge: undefined },
+  { id: 'relocation', label: 'Flytta', path: '/career/relocation', icon: Home, badge: undefined },
+  { id: 'plan', label: 'Karriärplan', path: '/career-plan', icon: Target },
+  { id: 'skills', label: 'Kompetens', path: '/skills-gap', icon: BarChart3 },
 ]

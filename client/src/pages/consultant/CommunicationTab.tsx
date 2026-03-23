@@ -28,12 +28,15 @@ import {
   MoreVertical,
   Edit2,
   Trash2,
+  Loader2,
+  Reply,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
+import { MeetingSchedulerDialog } from '@/components/consultant/MeetingSchedulerDialog'
 
 interface Message {
   id: string
@@ -401,8 +404,11 @@ export function CommunicationTab() {
   const [meetings, setMeetings] = useState<Meeting[]>([])
   const [participants, setParticipants] = useState<Participant[]>([])
   const [showNewMessage, setShowNewMessage] = useState(false)
+  const [showMeetingDialog, setShowMeetingDialog] = useState(false)
   const [selectedMessage, setSelectedMessage] = useState<Message | null>(null)
   const [messageFilter, setMessageFilter] = useState<'all' | 'unread' | 'starred'>('all')
+  const [sendingMessage, setSendingMessage] = useState(false)
+  const [replyContent, setReplyContent] = useState('')
 
   useEffect(() => {
     fetchData()
@@ -423,53 +429,91 @@ export function CommunicationTab() {
       if (participantsData) {
         setParticipants(participantsData)
 
-        // Generate mock messages (TODO: Fetch from real messages table)
-        const mockMessages: Message[] = participantsData.slice(0, 5).map((p, i) => ({
-          id: `msg-${i}`,
-          participantId: p.participant_id,
-          participantName: `${p.first_name} ${p.last_name}`,
-          participantEmail: p.email,
-          content: ['Hej! Jag har uppdaterat mitt CV, kan du kolla på det?', 'Tack för hjälpen igår!', 'Har du tid för ett möte nästa vecka?'][i % 3],
-          isRead: i > 1,
-          isStarred: i === 0,
-          createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
-          direction: 'incoming',
-        }))
-        setMessages(mockMessages)
+        // Create a map for quick participant lookup
+        const participantMap = new Map(
+          participantsData.map(p => [p.participant_id, p])
+        )
 
-        // Generate mock meetings
-        const mockMeetings: Meeting[] = [
-          {
-            id: 'meeting-1',
-            participantId: participantsData[0]?.participant_id || '',
-            participantName: `${participantsData[0]?.first_name} ${participantsData[0]?.last_name}`,
-            scheduledAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours from now
-            duration: 30,
-            type: 'video',
-            meetingLink: 'https://meet.google.com/abc-defg-hij',
-            status: 'scheduled',
-          },
-          {
-            id: 'meeting-2',
-            participantId: participantsData[1]?.participant_id || '',
-            participantName: `${participantsData[1]?.first_name} ${participantsData[1]?.last_name}`,
-            scheduledAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Tomorrow
-            duration: 45,
-            type: 'phone',
-            status: 'scheduled',
-          },
-          {
-            id: 'meeting-3',
-            participantId: participantsData[2]?.participant_id || '',
-            participantName: `${participantsData[2]?.first_name} ${participantsData[2]?.last_name}`,
-            scheduledAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-            duration: 60,
-            type: 'physical',
-            location: 'Kontoret, rum 302',
-            status: 'scheduled',
-          },
-        ]
-        setMeetings(mockMeetings)
+        // Fetch real messages
+        const { data: messagesData } = await supabase
+          .from('consultant_messages')
+          .select('*')
+          .or(`sender_id.eq.${user.id},receiver_id.eq.${user.id}`)
+          .order('created_at', { ascending: false })
+          .limit(50)
+
+        if (messagesData && messagesData.length > 0) {
+          const formattedMessages: Message[] = messagesData.map(m => {
+            const isIncoming = m.receiver_id === user.id
+            const participantId = isIncoming ? m.sender_id : m.receiver_id
+            const participant = participantMap.get(participantId)
+
+            return {
+              id: m.id,
+              participantId,
+              participantName: participant
+                ? `${participant.first_name} ${participant.last_name}`
+                : 'Okänd',
+              participantEmail: participant?.email || '',
+              content: m.content,
+              isRead: m.is_read,
+              isStarred: false, // TODO: Add starred field to messages table
+              createdAt: m.created_at,
+              direction: isIncoming ? 'incoming' : 'outgoing',
+            }
+          })
+          setMessages(formattedMessages)
+        } else {
+          // Fallback to sample messages if no real messages exist
+          const sampleMessages: Message[] = participantsData.slice(0, 3).map((p, i) => ({
+            id: `sample-${i}`,
+            participantId: p.participant_id,
+            participantName: `${p.first_name} ${p.last_name}`,
+            participantEmail: p.email,
+            content: [
+              'Hej! Jag har uppdaterat mitt CV, kan du kolla på det?',
+              'Tack för hjälpen med jobbansökan!',
+              'Har du tid för ett möte nästa vecka?'
+            ][i % 3],
+            isRead: i > 0,
+            isStarred: i === 0,
+            createdAt: new Date(Date.now() - i * 24 * 60 * 60 * 1000).toISOString(),
+            direction: 'incoming' as const,
+          }))
+          setMessages(sampleMessages)
+        }
+
+        // Fetch real meetings
+        const { data: meetingsData } = await supabase
+          .from('consultant_meetings')
+          .select('*')
+          .eq('consultant_id', user.id)
+          .gte('scheduled_at', new Date().toISOString())
+          .eq('status', 'scheduled')
+          .order('scheduled_at', { ascending: true })
+
+        if (meetingsData && meetingsData.length > 0) {
+          const formattedMeetings: Meeting[] = meetingsData.map(m => {
+            const participant = participantMap.get(m.participant_id)
+            return {
+              id: m.id,
+              participantId: m.participant_id,
+              participantName: participant
+                ? `${participant.first_name} ${participant.last_name}`
+                : 'Okänd',
+              scheduledAt: m.scheduled_at,
+              duration: m.duration_minutes,
+              type: m.meeting_type as 'video' | 'phone' | 'physical',
+              location: m.location,
+              meetingLink: m.meeting_link,
+              notes: m.notes,
+              status: m.status as 'scheduled' | 'completed' | 'cancelled',
+            }
+          })
+          setMeetings(formattedMeetings)
+        } else {
+          setMeetings([])
+        }
       }
     } catch (error) {
       console.error('Error fetching data:', error)
@@ -478,17 +522,127 @@ export function CommunicationTab() {
     }
   }
 
-  const handleReadMessage = (id: string) => {
+  const handleReadMessage = async (id: string) => {
+    // Update local state immediately
     setMessages(prev => prev.map(m => m.id === id ? { ...m, isRead: true } : m))
+
+    // Update in database
+    try {
+      await supabase
+        .from('consultant_messages')
+        .update({ is_read: true })
+        .eq('id', id)
+    } catch (error) {
+      console.error('Error marking message as read:', error)
+    }
   }
 
   const handleStarMessage = (id: string) => {
     setMessages(prev => prev.map(m => m.id === id ? { ...m, isStarred: !m.isStarred } : m))
   }
 
-  const handleSendMessage = (participantIds: string[], content: string) => {
-    // TODO: Implement actual message sending
-    console.log('Sending message to:', participantIds, content)
+  const handleSendMessage = async (participantIds: string[], content: string) => {
+    setSendingMessage(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
+
+      // Send message to each participant
+      const messages = participantIds.map(participantId => ({
+        sender_id: user.id,
+        receiver_id: participantId,
+        content,
+        is_read: false,
+      }))
+
+      const { error } = await supabase
+        .from('consultant_messages')
+        .insert(messages)
+
+      if (error) throw error
+
+      // Refresh messages
+      fetchData()
+    } catch (error) {
+      console.error('Error sending message:', error)
+    } finally {
+      setSendingMessage(false)
+    }
+  }
+
+  const handleReplyToMessage = async () => {
+    if (!selectedMessage || !replyContent.trim()) return
+
+    setSendingMessage(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
+
+      const { error } = await supabase
+        .from('consultant_messages')
+        .insert({
+          sender_id: user.id,
+          receiver_id: selectedMessage.participantId,
+          content: replyContent.trim(),
+          is_read: false,
+        })
+
+      if (error) throw error
+
+      setReplyContent('')
+      setSelectedMessage(null)
+      fetchData()
+    } catch (error) {
+      console.error('Error sending reply:', error)
+    } finally {
+      setSendingMessage(false)
+    }
+  }
+
+  const handleCancelMeeting = async (meetingId: string) => {
+    if (!confirm('Är du säker på att du vill avboka detta möte?')) return
+
+    try {
+      const { error } = await supabase
+        .from('consultant_meetings')
+        .update({ status: 'cancelled' })
+        .eq('id', meetingId)
+
+      if (error) throw error
+
+      // Remove from local state
+      setMeetings(prev => prev.filter(m => m.id !== meetingId))
+    } catch (error) {
+      console.error('Error cancelling meeting:', error)
+    }
+  }
+
+  const handleScheduleMeeting = async (meetingData: any) => {
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
+
+      const { error } = await supabase
+        .from('consultant_meetings')
+        .insert({
+          consultant_id: user.id,
+          participant_id: meetingData.participantId,
+          scheduled_at: meetingData.dateTime,
+          duration_minutes: meetingData.duration,
+          meeting_type: meetingData.type,
+          meeting_link: meetingData.meetingLink,
+          location: meetingData.location,
+          notes: meetingData.notes,
+          status: 'scheduled',
+        })
+
+      if (error) throw error
+
+      setShowMeetingDialog(false)
+      fetchData()
+    } catch (error) {
+      console.error('Error scheduling meeting:', error)
+    }
   }
 
   const filteredMessages = messages.filter(m => {
@@ -655,7 +809,7 @@ export function CommunicationTab() {
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
               Kommande möten
             </h3>
-            <Button>
+            <Button onClick={() => setShowMeetingDialog(true)}>
               <Plus className="w-4 h-4 mr-2" />
               Boka nytt möte
             </Button>
@@ -676,8 +830,8 @@ export function CommunicationTab() {
                     <MeetingCard
                       key={meeting.id}
                       meeting={meeting}
-                      onEdit={m => console.log('Edit meeting:', m)}
-                      onCancel={id => console.log('Cancel meeting:', id)}
+                      onEdit={m => setShowMeetingDialog(true)}
+                      onCancel={handleCancelMeeting}
                     />
                   ))}
               </div>
@@ -696,8 +850,8 @@ export function CommunicationTab() {
                   <MeetingCard
                     key={meeting.id}
                     meeting={meeting}
-                    onEdit={m => console.log('Edit meeting:', m)}
-                    onCancel={id => console.log('Cancel meeting:', id)}
+                    onEdit={m => setShowMeetingDialog(true)}
+                    onCancel={handleCancelMeeting}
                   />
                 ))}
             </div>
@@ -712,7 +866,7 @@ export function CommunicationTab() {
               <p className="text-stone-500 dark:text-stone-400 mb-6">
                 Boka ett möte med en deltagare för att komma igång.
               </p>
-              <Button>
+              <Button onClick={() => setShowMeetingDialog(true)}>
                 <Plus className="w-4 h-4 mr-2" />
                 Boka möte
               </Button>
@@ -728,6 +882,105 @@ export function CommunicationTab() {
         participants={participants}
         onSend={handleSendMessage}
       />
+
+      {/* Meeting Scheduler Dialog */}
+      <MeetingSchedulerDialog
+        isOpen={showMeetingDialog}
+        onClose={() => setShowMeetingDialog(false)}
+        participants={participants.map(p => ({
+          id: p.participant_id,
+          name: `${p.first_name} ${p.last_name}`,
+          email: p.email,
+        }))}
+        onSchedule={handleScheduleMeeting}
+      />
+
+      {/* Message Detail Modal */}
+      {selectedMessage && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-lg">
+            <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-600 dark:text-violet-400 font-medium">
+                  {selectedMessage.participantName.split(' ').map(n => n[0]).join('').toUpperCase()}
+                </div>
+                <div>
+                  <p className="font-medium text-stone-900 dark:text-stone-100">
+                    {selectedMessage.participantName}
+                  </p>
+                  <p className="text-sm text-stone-500">{selectedMessage.participantEmail}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setSelectedMessage(null)
+                  setReplyContent('')
+                }}
+                className="p-2 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
+              >
+                <X className="w-5 h-5 text-stone-500" />
+              </button>
+            </div>
+            <div className="p-4">
+              <div className="mb-4">
+                <p className="text-xs text-stone-500 mb-2">
+                  {new Date(selectedMessage.createdAt).toLocaleString('sv-SE')}
+                </p>
+                <p className="text-stone-900 dark:text-stone-100 whitespace-pre-wrap">
+                  {selectedMessage.content}
+                </p>
+              </div>
+
+              {/* Reply section */}
+              <div className="pt-4 border-t border-stone-200 dark:border-stone-700">
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
+                  Svara
+                </label>
+                <textarea
+                  value={replyContent}
+                  onChange={e => setReplyContent(e.target.value)}
+                  placeholder="Skriv ditt svar..."
+                  rows={3}
+                  className={cn(
+                    'w-full px-4 py-3 rounded-xl',
+                    'bg-stone-100 dark:bg-stone-800',
+                    'border-2 border-transparent focus:border-violet-500',
+                    'text-stone-900 dark:text-stone-100',
+                    'resize-none'
+                  )}
+                />
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-3 p-4 border-t border-stone-200 dark:border-stone-700">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  setSelectedMessage(null)
+                  setReplyContent('')
+                }}
+              >
+                Stäng
+              </Button>
+              <Button
+                onClick={handleReplyToMessage}
+                disabled={!replyContent.trim() || sendingMessage}
+              >
+                {sendingMessage ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Skickar...
+                  </>
+                ) : (
+                  <>
+                    <Reply className="w-4 h-4 mr-2" />
+                    Skicka svar
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

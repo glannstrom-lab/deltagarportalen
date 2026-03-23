@@ -17,6 +17,6 @@ export const dashboardTabDefs = [
 
 // For backwards compatibility
 export const dashboardTabs: Tab[] = [
-  { id: 'overview', label: 'Översikt', path: '/', icon: LayoutDashboard, description: 'Din personliga översikt' },
-  { id: 'quests', label: 'Mina Quests', path: '/quests', icon: Trophy, description: 'Dagliga utmaningar och belöningar', badge: 'Ny!' },
+  { id: 'overview', label: 'Översikt', path: '/', icon: LayoutDashboard },
+  { id: 'quests', label: 'Mina Quests', path: '/quests', icon: Trophy, badge: undefined },
 ]

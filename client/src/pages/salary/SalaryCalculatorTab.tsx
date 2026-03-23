@@ -1,11 +1,13 @@
 /**
  * Salary Calculator Tab
  * Calculate expected salary based on role, experience, and location
+ * Features: comparison mode, net salary after tax, visual charts, save/export
  */
 import { useState, useMemo } from 'react'
-import { Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles } from 'lucide-react'
+import { Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles, Download, Plus, X, BarChart3, PieChart } from 'lucide-react'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Swedish salary data by occupation category (monthly SEK, source: SCB approximations)
 const SALARY_DATA: Record<string, { min: number; median: number; max: number; growth: number }> = {
@@ -42,11 +44,32 @@ const EXPERIENCE_MULTIPLIERS: Record<string, number> = {
   '10+ år': 1.30,
 }
 
+// Swedish tax calculator (simplified)
+// Marginal tax rates approximately: 20-22% employee + 31.42% employer = ~53.42% total
+// We'll calculate net pay: approximately 78% of gross for average earner
+const calculateNetSalary = (gross: number): number => {
+  // Swedish income tax brackets (simplified for avg earner)
+  // At 50,000 SEK/month: roughly 22% employee tax + 8% CSL
+  return Math.round(gross * 0.78)
+}
+
+interface SalaryComparison {
+  id: string
+  occupation: string
+  region: string
+  experience: string
+  gross: number
+  net: number
+}
+
 export default function SalaryCalculatorTab() {
   const [occupation, setOccupation] = useState('')
   const [region, setRegion] = useState('')
   const [experience, setExperience] = useState('')
   const [showResult, setShowResult] = useState(false)
+  const [comparisonMode, setComparisonMode] = useState(false)
+  const [comparisons, setComparisons] = useState<SalaryComparison[]>([])
+  const [showTaxDetail, setShowTaxDetail] = useState(false)
 
   const calculatedSalary = useMemo(() => {
     if (!occupation || !region || !experience) return null
@@ -69,6 +92,60 @@ export default function SalaryCalculatorTab() {
     if (occupation && region && experience) {
       setShowResult(true)
     }
+  }
+
+  const handleAddComparison = () => {
+    if (occupation && region && experience && calculatedSalary) {
+      const id = Math.random().toString(36).substr(2, 9)
+      setComparisons([...comparisons, {
+        id,
+        occupation,
+        region,
+        experience,
+        gross: calculatedSalary.median,
+        net: calculateNetSalary(calculatedSalary.median),
+      }])
+      // Reset form for next comparison
+      setOccupation('')
+      setRegion('')
+      setExperience('')
+      setShowResult(false)
+    }
+  }
+
+  const handleRemoveComparison = (id: string) => {
+    setComparisons(comparisons.filter(c => c.id !== id))
+  }
+
+  const handleExport = () => {
+    if (!calculatedSalary) return
+
+    let text = 'Lönekalkylering från Deltagarportalen\n'
+    text += '=====================================\n\n'
+    text += `Yrke: ${occupation}\n`
+    text += `Region: ${region}\n`
+    text += `Erfarenhet: ${experience}\n\n`
+    text += `Bruttolön/månad: ${calculatedSalary.median.toLocaleString('sv-SE')} kr\n`
+    text += `Nettolön/månad: ${calculateNetSalary(calculatedSalary.median).toLocaleString('sv-SE')} kr\n`
+    text += `Årslön: ${(calculatedSalary.median * 12).toLocaleString('sv-SE')} kr\n`
+    text += `Löneökning/år: +${calculatedSalary.growth}%\n\n`
+
+    if (comparisons.length > 0) {
+      text += 'Jämförelser:\n'
+      comparisons.forEach((comp, idx) => {
+        text += `\n${idx + 1}. ${comp.occupation} (${comp.region}, ${comp.experience})\n`
+        text += `   Bruttolön: ${comp.gross.toLocaleString('sv-SE')} kr\n`
+        text += `   Nettolön: ${comp.net.toLocaleString('sv-SE')} kr\n`
+      })
+    }
+
+    const blob = new Blob([text], { type: 'text/plain' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `lönekalkylering-${new Date().toISOString().split('T')[0]}.txt`
+    a.click()
+    window.URL.revokeObjectURL(url)
   }
 
   return (
@@ -159,63 +236,234 @@ export default function SalaryCalculatorTab() {
       </Card>
 
       {/* Results */}
-      {showResult && calculatedSalary && (
-        <Card className="border-emerald-200 bg-emerald-50/50">
+      <AnimatePresence>
+        {showResult && calculatedSalary && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+          >
+            <Card className="border-emerald-200 bg-emerald-50/50">
+              <div className="flex items-center justify-between gap-2 mb-6">
+                <div className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-emerald-600" />
+                  <h3 className="font-semibold text-slate-900">Ditt löneresultat</h3>
+                </div>
+                <Button
+                  onClick={handleExport}
+                  size="sm"
+                  variant="outline"
+                  className="gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  Exportera
+                </Button>
+              </div>
+
+              {/* Salary range grid */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-white rounded-xl p-4 border border-emerald-100">
+                  <p className="text-sm text-slate-500 mb-1">Minimum</p>
+                  <p className="text-2xl font-bold text-slate-700">
+                    {calculatedSalary.min.toLocaleString('sv-SE')} kr
+                  </p>
+                  <p className="text-xs text-slate-400">per månad</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border-2 border-emerald-300 shadow-sm">
+                  <p className="text-sm text-emerald-600 font-medium mb-1">Median (rekommenderat)</p>
+                  <p className="text-3xl font-bold text-emerald-700">
+                    {calculatedSalary.median.toLocaleString('sv-SE')} kr
+                  </p>
+                  <p className="text-xs text-slate-400">per månad</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-emerald-100">
+                  <p className="text-sm text-slate-500 mb-1">Maximum</p>
+                  <p className="text-2xl font-bold text-slate-700">
+                    {calculatedSalary.max.toLocaleString('sv-SE')} kr
+                  </p>
+                  <p className="text-xs text-slate-400">per månad</p>
+                </div>
+              </div>
+
+              {/* Net salary section */}
+              <div className="bg-white rounded-xl p-4 border border-emerald-100 mb-4">
+                <button
+                  onClick={() => setShowTaxDetail(!showTaxDetail)}
+                  className="w-full flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                >
+                  <div className="text-left">
+                    <p className="text-sm text-slate-500">Nettolön/månad</p>
+                    <p className="text-xl font-bold text-slate-800">
+                      {calculateNetSalary(calculatedSalary.median).toLocaleString('sv-SE')} kr
+                    </p>
+                  </div>
+                  <div className="text-right text-xs text-slate-500">
+                    (efter skatt ~22%)
+                  </div>
+                </button>
+              </div>
+
+              {/* Annual salary & growth */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="bg-white rounded-xl p-4 border border-emerald-100">
+                  <p className="text-sm text-slate-500 mb-1">Årslön (brutto)</p>
+                  <p className="text-xl font-bold text-slate-800">
+                    {(calculatedSalary.median * 12).toLocaleString('sv-SE')} kr
+                  </p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-emerald-100">
+                  <p className="text-sm text-slate-500 mb-1">Löneökning/år (snitt)</p>
+                  <p className="text-xl font-bold text-emerald-600">+{calculatedSalary.growth}%</p>
+                </div>
+              </div>
+
+              {/* Visual salary range chart */}
+              <div className="bg-white rounded-xl p-4 border border-emerald-100 mb-4">
+                <p className="text-sm font-medium text-slate-700 mb-3">Löneintervallets fördelning</p>
+                <div className="space-y-3">
+                  {/* Min range */}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-xs text-slate-600">Min</span>
+                      <span className="text-xs font-medium text-slate-700">{calculatedSalary.min.toLocaleString('sv-SE')} kr</span>
+                    </div>
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-blue-400"
+                        style={{ width: `${(calculatedSalary.min / calculatedSalary.max) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  {/* Median range */}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-xs text-slate-600">Median</span>
+                      <span className="text-xs font-medium text-slate-700">{calculatedSalary.median.toLocaleString('sv-SE')} kr</span>
+                    </div>
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500"
+                        style={{ width: `${(calculatedSalary.median / calculatedSalary.max) * 100}%` }}
+                      />
+                    </div>
+                  </div>
+                  {/* Max range */}
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <span className="text-xs text-slate-600">Max</span>
+                      <span className="text-xs font-medium text-slate-700">{calculatedSalary.max.toLocaleString('sv-SE')} kr</span>
+                    </div>
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div className="h-full bg-slate-300" style={{ width: '100%' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Tax information expandable */}
+              {showTaxDetail && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: 'auto' }}
+                  exit={{ opacity: 0, height: 0 }}
+                  className="bg-blue-50 rounded-xl p-4 border border-blue-100 mb-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <PieChart className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                    <div className="text-sm text-blue-800">
+                      <p className="font-medium mb-2">Skatteavdrag</p>
+                      <ul className="space-y-1">
+                        <li>Primär källskatt (ungefär 22%): ~{Math.round(calculatedSalary.median * 0.22).toLocaleString('sv-SE')} kr</li>
+                        <li>Arbetsgivaravgift ingår ej i din lön</li>
+                      </ul>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Info box */}
+              <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
+                <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                <div className="text-sm text-blue-800">
+                  <p className="font-medium mb-1">Om beräkningen</p>
+                  <p>
+                    Löneuppgifterna är baserade på branschstatistik och justerade för region och erfarenhet.
+                    Nettolönen är en uppskattning. Faktisk skatt varierar baserat på personliga förhållanden.
+                  </p>
+                </div>
+              </div>
+
+              {/* Comparison button */}
+              <Button
+                onClick={handleAddComparison}
+                variant="outline"
+                className="w-full mt-4 gap-2"
+              >
+                <Plus className="w-4 h-4" />
+                Lägg till jämförelse
+              </Button>
+            </Card>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Comparison mode */}
+      {comparisons.length > 0 && (
+        <Card className="border-purple-200 bg-purple-50/30">
           <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-emerald-600" />
-            <h3 className="font-semibold text-slate-900">Ditt löneintervall</h3>
+            <BarChart3 className="w-5 h-5 text-purple-600" />
+            <h3 className="font-semibold text-slate-900">Lönejämförelser ({comparisons.length})</h3>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div className="bg-white rounded-xl p-4 border border-emerald-100">
-              <p className="text-sm text-slate-500 mb-1">Minimum</p>
-              <p className="text-2xl font-bold text-slate-700">
-                {calculatedSalary.min.toLocaleString('sv-SE')} kr
-              </p>
-              <p className="text-xs text-slate-400">per månad</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 border-2 border-emerald-300 shadow-sm">
-              <p className="text-sm text-emerald-600 font-medium mb-1">Median (rekommenderat)</p>
-              <p className="text-3xl font-bold text-emerald-700">
-                {calculatedSalary.median.toLocaleString('sv-SE')} kr
-              </p>
-              <p className="text-xs text-slate-400">per månad</p>
-            </div>
-            <div className="bg-white rounded-xl p-4 border border-emerald-100">
-              <p className="text-sm text-slate-500 mb-1">Maximum</p>
-              <p className="text-2xl font-bold text-slate-700">
-                {calculatedSalary.max.toLocaleString('sv-SE')} kr
-              </p>
-              <p className="text-xs text-slate-400">per månad</p>
-            </div>
-          </div>
+          <div className="space-y-3">
+            {comparisons.map((comp, idx) => (
+              <div key={comp.id} className="bg-white rounded-xl p-4 border border-purple-100">
+                <div className="flex items-start justify-between mb-3">
+                  <div>
+                    <p className="font-medium text-slate-900">{comp.occupation}</p>
+                    <p className="text-sm text-slate-600">{comp.region} • {comp.experience}</p>
+                  </div>
+                  <button
+                    onClick={() => handleRemoveComparison(comp.id)}
+                    className="text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
 
-          {/* Annual salary */}
-          <div className="bg-white rounded-xl p-4 border border-emerald-100 mb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-slate-500">Årslön (median)</p>
-                <p className="text-xl font-bold text-slate-800">
-                  {(calculatedSalary.median * 12).toLocaleString('sv-SE')} kr
-                </p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-purple-50 rounded-lg p-3">
+                    <p className="text-xs text-slate-600 mb-1">Brutto</p>
+                    <p className="font-bold text-slate-900">{comp.gross.toLocaleString('sv-SE')} kr</p>
+                  </div>
+                  <div className="bg-purple-50 rounded-lg p-3">
+                    <p className="text-xs text-slate-600 mb-1">Netto</p>
+                    <p className="font-bold text-slate-900">{comp.net.toLocaleString('sv-SE')} kr</p>
+                  </div>
+                </div>
+
+                {/* Comparison bar with current */}
+                {calculatedSalary && (
+                  <div className="mt-3 pt-3 border-t border-purple-100">
+                    <p className="text-xs text-slate-600 mb-2">Jämfört med nuvarande beräkning</p>
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 bg-slate-100 rounded-full h-2 overflow-hidden">
+                        <div
+                          className="h-full bg-emerald-500"
+                          style={{ width: `${(calculatedSalary.median / Math.max(calculatedSalary.median, comp.gross)) * 100}%` }}
+                        />
+                      </div>
+                      <span className={cn(
+                        'text-xs font-medium ml-2 whitespace-nowrap',
+                        comp.gross > calculatedSalary.median ? 'text-emerald-600' : 'text-slate-500'
+                      )}>
+                        {comp.gross > calculatedSalary.median ? '+' : ''}{((comp.gross - calculatedSalary.median) / calculatedSalary.median * 100).toFixed(1)}%
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="text-right">
-                <p className="text-sm text-slate-500">Löneökning/år (snitt)</p>
-                <p className="text-xl font-bold text-emerald-600">+{calculatedSalary.growth}%</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Info box */}
-          <div className="flex items-start gap-3 p-4 bg-blue-50 rounded-xl border border-blue-100">
-            <Info className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
-            <div className="text-sm text-blue-800">
-              <p className="font-medium mb-1">Om beräkningen</p>
-              <p>
-                Löneuppgifterna är baserade på branschstatistik och justerade för region och erfarenhet.
-                Faktisk lön kan variera beroende på företag, specifik roll och individuella kvalifikationer.
-              </p>
-            </div>
+            ))}
           </div>
         </Card>
       )}

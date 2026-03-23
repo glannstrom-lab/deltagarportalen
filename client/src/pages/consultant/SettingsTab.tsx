@@ -3,7 +3,7 @@
  * Notification settings, team management, and preferences
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Settings,
@@ -20,9 +20,13 @@ import {
   Check,
   ChevronRight,
   Save,
+  Loader2,
+  CheckCircle,
 } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
+import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 
 interface NotificationSetting {
@@ -100,9 +104,13 @@ function SettingRow({
 }
 
 export function SettingsTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
   const [hasChanges, setHasChanges] = useState(false)
-  const [notifications, setNotifications] = useState<NotificationSetting[]>([
+
+  const defaultNotifications: NotificationSetting[] = [
     {
       id: 'new_participant',
       label: 'Ny deltagare tilldelad',
@@ -145,7 +153,9 @@ export function SettingsTab() {
       enabled: true,
       channel: 'both',
     },
-  ])
+  ]
+
+  const [notifications, setNotifications] = useState<NotificationSetting[]>(defaultNotifications)
 
   const [preferences, setPreferences] = useState({
     defaultView: 'grid' as 'grid' | 'list',
@@ -156,49 +166,177 @@ export function SettingsTab() {
     showInactiveWarning: 7,
   })
 
-  // Mock team data
-  const teamMembers: TeamMember[] = [
-    { id: '1', name: 'Anna Andersson', email: 'anna@example.com', role: 'admin', participantCount: 0 },
-    { id: '2', name: 'Erik Eriksson', email: 'erik@example.com', role: 'consultant', participantCount: 12 },
-    { id: '3', name: 'Maria Nilsson', email: 'maria@example.com', role: 'consultant', participantCount: 8 },
-  ]
+  // Team members state
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([])
+
+  // Load settings on mount
+  useEffect(() => {
+    loadSettings()
+  }, [])
+
+  const loadSettings = async () => {
+    try {
+      setLoading(true)
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      // Fetch settings from database
+      const { data: settingsData } = await supabase
+        .from('consultant_settings')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .single()
+
+      if (settingsData) {
+        // Apply saved notifications
+        if (settingsData.notifications) {
+          const savedNotifs = settingsData.notifications as Record<string, any>
+          setNotifications(defaultNotifications.map(n => ({
+            ...n,
+            enabled: savedNotifs[n.id]?.enabled ?? n.enabled,
+            channel: savedNotifs[n.id]?.channel ?? n.channel,
+          })))
+        }
+
+        // Apply saved preferences
+        if (settingsData.preferences) {
+          const savedPrefs = settingsData.preferences as Record<string, any>
+          setPreferences(prev => ({
+            ...prev,
+            ...savedPrefs,
+          }))
+        }
+      }
+
+      // Fetch team members (mock for now, would come from organization table)
+      setTeamMembers([
+        { id: '1', name: 'Anna Andersson', email: 'anna@example.com', role: 'admin', participantCount: 0 },
+        { id: '2', name: 'Erik Eriksson', email: 'erik@example.com', role: 'consultant', participantCount: 12 },
+        { id: '3', name: 'Maria Nilsson', email: 'maria@example.com', role: 'consultant', participantCount: 8 },
+      ])
+
+    } catch (error) {
+      console.error('Error loading settings:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const updateNotification = (id: string, field: keyof NotificationSetting, value: any) => {
     setNotifications(prev => prev.map(n =>
       n.id === id ? { ...n, [field]: value } : n
     ))
     setHasChanges(true)
+    setSaved(false)
   }
 
   const updatePreference = (key: string, value: any) => {
     setPreferences(prev => ({ ...prev, [key]: value }))
     setHasChanges(true)
+    setSaved(false)
+
+    // Apply language change immediately
+    if (key === 'language') {
+      i18n.changeLanguage(value)
+    }
   }
 
-  const handleSave = () => {
-    // TODO: Save settings to database
-    console.log('Saving settings:', { notifications, preferences })
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
+
+      // Convert notifications to object format for storage
+      const notificationsObj = notifications.reduce((acc, n) => ({
+        ...acc,
+        [n.id]: { enabled: n.enabled, channel: n.channel },
+      }), {})
+
+      // Upsert settings
+      const { error } = await supabase
+        .from('consultant_settings')
+        .upsert({
+          consultant_id: user.id,
+          notifications: notificationsObj,
+          preferences: preferences,
+          updated_at: new Date().toISOString(),
+        }, {
+          onConflict: 'consultant_id',
+        })
+
+      if (error) throw error
+
+      setHasChanges(false)
+      setSaved(true)
+
+      // Hide success message after 3 seconds
+      setTimeout(() => setSaved(false), 3000)
+    } catch (error) {
+      console.error('Error saving settings:', error)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleReset = () => {
+    setNotifications(defaultNotifications)
+    setPreferences({
+      defaultView: 'grid',
+      language: 'sv',
+      timezone: 'Europe/Stockholm',
+      weekStart: 'monday',
+      autoRefresh: true,
+      showInactiveWarning: 7,
+    })
     setHasChanges(false)
+  }
+
+  if (loading) {
+    return <LoadingState type="form" />
   }
 
   return (
     <div className="space-y-6 max-w-3xl">
       {/* Save Banner */}
-      {hasChanges && (
-        <Card className="p-4 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800 sticky top-4 z-10">
+      {(hasChanges || saved) && (
+        <Card className={cn(
+          'p-4 sticky top-4 z-10',
+          saved
+            ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800'
+            : 'bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800'
+        )}>
           <div className="flex items-center justify-between">
-            <p className="font-medium text-violet-900 dark:text-violet-100">
-              Du har osparade ändringar
-            </p>
-            <div className="flex items-center gap-2">
-              <Button variant="ghost" onClick={() => setHasChanges(false)}>
-                Ångra
-              </Button>
-              <Button onClick={handleSave}>
-                <Save className="w-4 h-4 mr-2" />
-                Spara
-              </Button>
-            </div>
+            {saved ? (
+              <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+                <CheckCircle className="w-5 h-5" />
+                <p className="font-medium">Inställningar sparade!</p>
+              </div>
+            ) : (
+              <>
+                <p className="font-medium text-violet-900 dark:text-violet-100">
+                  Du har osparade ändringar
+                </p>
+                <div className="flex items-center gap-2">
+                  <Button variant="ghost" onClick={handleReset}>
+                    Ångra
+                  </Button>
+                  <Button onClick={handleSave} disabled={saving}>
+                    {saving ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Sparar...
+                      </>
+                    ) : (
+                      <>
+                        <Save className="w-4 h-4 mr-2" />
+                        Spara
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </>
+            )}
           </div>
         </Card>
       )}

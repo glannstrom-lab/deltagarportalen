@@ -1,10 +1,12 @@
 /**
  * Market Data Tab - Salary statistics by industry and region
+ * Features: interactive sorting, filtering, visual charts, search, expandable rows
  */
-import { useState } from 'react'
-import { BarChart3, TrendingUp, MapPin, Building2, Users, ArrowUp, ArrowDown } from 'lucide-react'
-import { Card } from '@/components/ui'
+import { useState, useMemo } from 'react'
+import { BarChart3, TrendingUp, MapPin, Building2, Users, ArrowUp, ArrowDown, Search, Filter, ChevronDown, ChevronUp } from 'lucide-react'
+import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { motion, AnimatePresence } from 'framer-motion'
 
 // Industry salary data (monthly SEK)
 const INDUSTRY_DATA = [
@@ -45,10 +47,70 @@ const HOT_SKILLS = [
   { skill: 'Product Management', premium: '+10-20%', demand: 'Medel-hög' },
 ]
 
+type SortKey = 'name' | 'median' | 'change'
+type SortOrder = 'asc' | 'desc'
+
+interface ExpandedRows {
+  [key: string]: boolean
+}
+
 export default function MarketDataTab() {
   const [selectedView, setSelectedView] = useState<'industry' | 'region'>('industry')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [sortKey, setSortKey] = useState<SortKey>('median')
+  const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
+  const [expandedRows, setExpandedRows] = useState<ExpandedRows>({})
 
   const maxMedian = Math.max(...INDUSTRY_DATA.map(d => d.median))
+
+  const toggleSort = (key: SortKey) => {
+    if (sortKey === key) {
+      setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+    } else {
+      setSortKey(key)
+      setSortOrder('desc')
+    }
+  }
+
+  const toggleExpandRow = (id: string) => {
+    setExpandedRows(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }))
+  }
+
+  const filteredAndSortedIndustries = useMemo(() => {
+    let filtered = INDUSTRY_DATA.filter(ind =>
+      ind.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+
+    filtered.sort((a, b) => {
+      let aVal = a[sortKey] as any
+      let bVal = b[sortKey] as any
+
+      if (sortKey === 'median') {
+        aVal = parseInt(aVal)
+        bVal = parseInt(bVal)
+      } else if (sortKey === 'change') {
+        aVal = parseFloat(aVal)
+        bVal = parseFloat(bVal)
+      }
+
+      if (sortOrder === 'asc') {
+        return aVal > bVal ? 1 : -1
+      } else {
+        return aVal < bVal ? 1 : -1
+      }
+    })
+
+    return filtered
+  }, [searchTerm, sortKey, sortOrder])
+
+  const filteredRegions = useMemo(() => {
+    return REGIONAL_DATA.filter(reg =>
+      reg.region.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [searchTerm])
 
   return (
     <div className="space-y-6">
@@ -67,118 +129,310 @@ export default function MarketDataTab() {
         </div>
       </Card>
 
-      {/* View toggle */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setSelectedView('industry')}
-          className={cn(
-            "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
-            selectedView === 'industry'
-              ? "bg-blue-600 text-white"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-          )}
-        >
-          <Building2 className="w-4 h-4" />
-          Per bransch
-        </button>
-        <button
-          onClick={() => setSelectedView('region')}
-          className={cn(
-            "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
-            selectedView === 'region'
-              ? "bg-blue-600 text-white"
-              : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-          )}
-        >
-          <MapPin className="w-4 h-4" />
-          Per region
-        </button>
+      {/* View toggle and search */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <button
+            onClick={() => setSelectedView('industry')}
+            className={cn(
+              "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
+              selectedView === 'industry'
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            )}
+          >
+            <Building2 className="w-4 h-4" />
+            Per bransch
+          </button>
+          <button
+            onClick={() => setSelectedView('region')}
+            className={cn(
+              "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
+              selectedView === 'region'
+                ? "bg-blue-600 text-white"
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            )}
+          >
+            <MapPin className="w-4 h-4" />
+            Per region
+          </button>
+        </div>
+
+        {/* Search bar */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder={selectedView === 'industry' ? 'Sök bransch...' : 'Sök region...'}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
       </div>
 
       {/* Industry view */}
       {selectedView === 'industry' && (
         <Card>
-          <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <Building2 className="w-5 h-5 text-blue-600" />
-            Medianlön per bransch
-          </h3>
-
-          <div className="space-y-3">
-            {INDUSTRY_DATA.map((industry) => (
-              <div key={industry.name} className="group">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-sm font-medium text-slate-700">{industry.name}</span>
-                  <div className="flex items-center gap-3">
-                    <span className={cn(
-                      "text-xs flex items-center gap-0.5",
-                      industry.change >= 3 ? "text-emerald-600" : "text-slate-500"
-                    )}>
-                      {industry.change >= 3 ? <ArrowUp className="w-3 h-3" /> : null}
-                      {industry.change}%/år
-                    </span>
-                    <span className="text-sm font-bold text-slate-900">
-                      {industry.median.toLocaleString('sv-SE')} kr
-                    </span>
-                  </div>
-                </div>
-                <div className="h-6 bg-slate-100 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all group-hover:from-blue-600 group-hover:to-blue-700"
-                    style={{ width: `${(industry.median / maxMedian) * 100}%` }}
-                  />
-                </div>
-                <p className="text-xs text-slate-400 mt-1">
-                  <Users className="w-3 h-3 inline mr-1" />
-                  ~{industry.employees} anställda i Sverige
-                </p>
-              </div>
-            ))}
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-blue-600" />
+              Medianlön per bransch
+            </h3>
+            <span className="text-xs text-slate-500">{filteredAndSortedIndustries.length} resultat</span>
           </div>
+
+          {/* Sort controls */}
+          <div className="flex gap-2 mb-4 flex-wrap">
+            <button
+              onClick={() => toggleSort('median')}
+              className={cn(
+                'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
+                sortKey === 'median'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              )}
+            >
+              Lön {sortKey === 'median' && (sortOrder === 'asc' ? '↑' : '↓')}
+            </button>
+            <button
+              onClick={() => toggleSort('change')}
+              className={cn(
+                'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
+                sortKey === 'change'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              )}
+            >
+              Ökning {sortKey === 'change' && (sortOrder === 'asc' ? '↑' : '↓')}
+            </button>
+            <button
+              onClick={() => toggleSort('name')}
+              className={cn(
+                'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
+                sortKey === 'name'
+                  ? 'bg-blue-100 text-blue-700'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+              )}
+            >
+              Namn {sortKey === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+            </button>
+          </div>
+
+          <AnimatePresence>
+            {filteredAndSortedIndustries.length > 0 ? (
+              <div className="space-y-2">
+                {filteredAndSortedIndustries.map((industry) => {
+                  const isExpanded = expandedRows[industry.name]
+                  return (
+                    <motion.div
+                      key={industry.name}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="group"
+                    >
+                      <button
+                        onClick={() => toggleExpandRow(industry.name)}
+                        className="w-full text-left hover:bg-blue-50/30 p-3 rounded-xl transition-colors"
+                      >
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2 flex-1">
+                            <span className={cn(
+                              'transition-transform',
+                              isExpanded && 'rotate-180'
+                            )}>
+                              <ChevronDown className="w-4 h-4 text-slate-400" />
+                            </span>
+                            <span className="text-sm font-medium text-slate-700">{industry.name}</span>
+                          </div>
+                          <div className="flex items-center gap-3">
+                            <span className={cn(
+                              "text-xs flex items-center gap-0.5 font-medium",
+                              industry.change >= 3 ? "text-emerald-600" : "text-slate-500"
+                            )}>
+                              {industry.change >= 3 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3 opacity-30" />}
+                              {industry.change}%/år
+                            </span>
+                            <span className="text-sm font-bold text-slate-900 min-w-fit">
+                              {industry.median.toLocaleString('sv-SE')} kr
+                            </span>
+                          </div>
+                        </div>
+                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all group-hover:from-blue-600 group-hover:to-blue-700"
+                            style={{ width: `${(industry.median / maxMedian) * 100}%` }}
+                          />
+                        </div>
+                      </button>
+
+                      {/* Expanded detail row */}
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: 'auto' }}
+                            exit={{ opacity: 0, height: 0 }}
+                            className="overflow-hidden"
+                          >
+                            <div className="px-3 pb-3 pt-1 bg-blue-50/30 rounded-b-xl border-t border-blue-100/50">
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="text-sm">
+                                  <p className="text-slate-600 text-xs mb-1">Anställda i Sverige</p>
+                                  <p className="font-semibold text-slate-900">~{industry.employees}</p>
+                                </div>
+                                <div className="text-sm">
+                                  <p className="text-slate-600 text-xs mb-1">Årlig tillväxt</p>
+                                  <p className={cn(
+                                    'font-semibold',
+                                    industry.change >= 3 ? 'text-emerald-600' : 'text-slate-500'
+                                  )}>
+                                    +{industry.change}%
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="mt-3 p-2 bg-white rounded-lg border border-blue-100">
+                                <p className="text-xs text-slate-600 mb-2">Lönespektrum (uppskattning):</p>
+                                <div className="flex justify-between text-xs text-slate-700">
+                                  <span>Min: ~{Math.round(industry.median * 0.8).toLocaleString('sv-SE')} kr</span>
+                                  <span>Max: ~{Math.round(industry.median * 1.3).toLocaleString('sv-SE')} kr</span>
+                                </div>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="text-center py-8 text-slate-500">
+                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>Ingen bransch hittad för "{searchTerm}"</p>
+              </div>
+            )}
+          </AnimatePresence>
         </Card>
       )}
 
       {/* Region view */}
       {selectedView === 'region' && (
         <Card>
-          <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <MapPin className="w-5 h-5 text-blue-600" />
-            Lönenivå per region
-          </h3>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-blue-600" />
+              Lönenivå per region
+            </h3>
+            <span className="text-xs text-slate-500">{filteredRegions.length} resultat</span>
+          </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-slate-200">
-                  <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Region</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Lönepremie</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Snittlön</th>
-                  <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Levnadskostnad</th>
-                </tr>
-              </thead>
-              <tbody>
-                {REGIONAL_DATA.map((region) => (
-                  <tr key={region.region} className="border-b border-slate-100 hover:bg-slate-50">
-                    <td className="py-3 px-4 font-medium text-slate-800">{region.region}</td>
-                    <td className="py-3 px-4">
-                      <span className={cn(
-                        "px-2 py-1 rounded-full text-xs font-medium",
-                        region.premium.startsWith('+')
-                          ? "bg-emerald-100 text-emerald-700"
-                          : region.premium.startsWith('-')
-                          ? "bg-rose-100 text-rose-700"
-                          : "bg-slate-100 text-slate-600"
-                      )}>
-                        {region.premium}
-                      </span>
-                    </td>
-                    <td className="py-3 px-4 font-medium text-slate-700">
-                      {region.avgSalary.toLocaleString('sv-SE')} kr
-                    </td>
-                    <td className="py-3 px-4 text-sm text-slate-500">{region.costOfLiving}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-3">
+            {filteredRegions.length > 0 ? (
+              filteredRegions.map((region) => {
+                const isExpanded = expandedRows[region.region]
+                const premiumNum = parseFloat(region.premium)
+                return (
+                  <motion.div
+                    key={region.region}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 transition-colors"
+                  >
+                    <button
+                      onClick={() => toggleExpandRow(region.region)}
+                      className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <p className="font-medium text-slate-900">{region.region}</p>
+                        <p className="text-sm text-slate-600 mt-1">
+                          {region.avgSalary.toLocaleString('sv-SE')} kr/månad
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-4">
+                        <span className={cn(
+                          "px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap",
+                          premiumNum > 0
+                            ? "bg-emerald-100 text-emerald-700"
+                            : premiumNum < 0
+                            ? "bg-rose-100 text-rose-700"
+                            : "bg-slate-100 text-slate-600"
+                        )}>
+                          {region.premium}
+                        </span>
+                        <span className={cn(
+                          'transition-transform',
+                          isExpanded && 'rotate-180'
+                        )}>
+                          <ChevronDown className="w-4 h-4 text-slate-400" />
+                        </span>
+                      </div>
+                    </button>
+
+                    <AnimatePresence>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          exit={{ opacity: 0, height: 0 }}
+                          className="border-t border-slate-200 overflow-hidden"
+                        >
+                          <div className="px-4 py-3 bg-slate-50/30 space-y-4">
+                            {/* Cost of living */}
+                            <div className="grid grid-cols-2 gap-4">
+                              <div>
+                                <p className="text-xs text-slate-600 mb-1">Levnadskostnad</p>
+                                <p className="font-semibold text-slate-900">{region.costOfLiving}</p>
+                              </div>
+                              <div>
+                                <p className="text-xs text-slate-600 mb-1">Snittlön</p>
+                                <p className="font-semibold text-slate-900">{region.avgSalary.toLocaleString('sv-SE')} kr</p>
+                              </div>
+                            </div>
+
+                            {/* Premium visualization */}
+                            <div>
+                              <p className="text-xs text-slate-600 mb-2">Lönepremie relativt genomsnitt</p>
+                              <div className="flex items-center gap-2">
+                                <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                  <div
+                                    className={cn(
+                                      'h-full transition-all',
+                                      premiumNum > 0 ? 'bg-emerald-500' : 'bg-rose-500'
+                                    )}
+                                    style={{ width: `${50 + (premiumNum * 2)}%` }}
+                                  />
+                                </div>
+                                <span className="text-xs font-medium text-slate-700 min-w-fit">{region.premium}</span>
+                              </div>
+                            </div>
+
+                            {/* Info */}
+                            <div className="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-600">
+                              <p>
+                                {premiumNum > 0
+                                  ? `Högre löner än genomsnitt. Viktigt att väga detta mot levnadskostnaderna.`
+                                  : premiumNum < 0
+                                  ? `Lägre löner än genomsnitt, men ofta med lägre levnadskostnader.`
+                                  : `Genomsnittlig lön för Sverige.`
+                                }
+                              </p>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </motion.div>
+                )
+              })
+            ) : (
+              <div className="text-center py-8 text-slate-500">
+                <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                <p>Ingen region hittad för "{searchTerm}"</p>
+              </div>
+            )}
           </div>
         </Card>
       )}

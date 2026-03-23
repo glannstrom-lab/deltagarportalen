@@ -383,7 +383,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
             badge.tier === 'silver' ? 'bg-slate-400' :
             badge.tier === 'gold' ? 'bg-yellow-400' :
             'bg-violet-500'
-          ))} />
+          )} />
         )}
 
         {/* Close button */}
