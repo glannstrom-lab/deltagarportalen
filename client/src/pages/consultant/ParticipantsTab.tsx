@@ -29,6 +29,7 @@ import {
   SortDesc,
   X,
   Check,
+  UserCheck,
 } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
@@ -36,6 +37,7 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
+import { BulkActionsDialog } from '@/components/consultant/BulkActionsDialog'
 
 interface Participant {
   participant_id: string
@@ -72,6 +74,7 @@ export function ParticipantsTab() {
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>([])
   const [showBulkActions, setShowBulkActions] = useState(false)
+  const [bulkActionType, setBulkActionType] = useState<'message' | 'tag' | 'export' | 'status' | null>(null)
 
   useEffect(() => {
     fetchParticipants()
@@ -166,10 +169,18 @@ export function ParticipantsTab() {
   }
 
   const handleBulkAction = (action: 'message' | 'export' | 'tag' | 'status') => {
-    // TODO: Implement bulk actions
-    console.log('Bulk action:', action, selectedParticipants)
-    setSelectedParticipants([])
+    setBulkActionType(action)
   }
+
+  const handleBulkActionComplete = () => {
+    setSelectedParticipants([])
+    fetchParticipants() // Refresh data
+  }
+
+  // Get selected participant data for the dialog
+  const selectedParticipantData = participants.filter(p =>
+    selectedParticipants.includes(p.participant_id)
+  )
 
   const getInitials = (p: Participant) => {
     return `${p.first_name?.[0] || ''}${p.last_name?.[0] || ''}`.toUpperCase() || p.email[0].toUpperCase()
@@ -355,6 +366,14 @@ export function ParticipantsTab() {
               >
                 <Tag className="w-4 h-4 mr-1.5" />
                 Lägg till tagg
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => handleBulkAction('status')}
+              >
+                <UserCheck className="w-4 h-4 mr-1.5" />
+                Ändra status
               </Button>
               <Button
                 variant="ghost"
@@ -647,6 +666,17 @@ export function ParticipantsTab() {
             </table>
           </div>
         </Card>
+      )}
+
+      {/* Bulk Actions Dialog */}
+      {bulkActionType && (
+        <BulkActionsDialog
+          isOpen={!!bulkActionType}
+          onClose={() => setBulkActionType(null)}
+          actionType={bulkActionType}
+          selectedParticipants={selectedParticipantData}
+          onComplete={handleBulkActionComplete}
+        />
       )}
     </div>
   )

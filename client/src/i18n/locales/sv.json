@@ -3036,6 +3036,73 @@
       "onHold": "Pausad",
       "critical": "Kritisk",
       "high": "Hög"
+    },
+    "report": {
+      "title": "Generera PDF-rapport",
+      "configureOptions": "Anpassa rapportinnehåll",
+      "previewReport": "Förhandsgranska rapporten",
+      "reportTitle": "Rapporttitel",
+      "titlePlaceholder": "Konsultrapport",
+      "dateRange": "Tidsperiod",
+      "lastWeek": "Senaste veckan",
+      "lastMonth": "Senaste månaden",
+      "lastQuarter": "Senaste kvartalet",
+      "lastYear": "Senaste året",
+      "language": "Rapportspråk",
+      "includeSections": "Inkludera sektioner",
+      "sections": {
+        "overview": "Översikt & Nyckeltal",
+        "overviewDesc": "Sammanfattning, statusfördelning och framsteg",
+        "cohort": "Kohortanalys",
+        "cohortDesc": "Jämförelse mellan deltagargrupper",
+        "participants": "Deltagardetaljer",
+        "participantsDesc": "Individuell information för varje deltagare"
+      },
+      "preview": "Förhandsgranska",
+      "backToOptions": "Tillbaka till inställningar",
+      "download": "Ladda ner PDF"
+    },
+    "aiCoach": {
+      "title": "AI Coach",
+      "subtitle": "Din intelligenta assistent",
+      "open": "Öppna AI Coach",
+      "insights": "Insikter",
+      "chat": "Chatt",
+      "noInsights": "Inga insikter just nu",
+      "quickActions": "Snabbåtgärder",
+      "bookMeeting": "Boka möte",
+      "sendMessage": "Skicka meddelande",
+      "createGoal": "Skapa mål",
+      "refreshInsights": "Uppdatera insikter",
+      "welcomeTitle": "Hur kan jag hjälpa dig?",
+      "welcomeSubtitle": "Ställ frågor om deltagare, strategier eller best practices",
+      "placeholder": "Skriv din fråga...",
+      "thinking": "Tänker...",
+      "insightTypes": {
+        "warning": "Varning",
+        "suggestion": "Förslag",
+        "opportunity": "Möjlighet",
+        "achievement": "Prestation"
+      }
+    },
+    "bulk": {
+      "sendMessage": "Skicka gruppmeddelande",
+      "addTags": "Lägg till taggar",
+      "export": "Exportera deltagare",
+      "updateStatus": "Uppdatera status",
+      "participantsSelected": "deltagare valda",
+      "selectedParticipants": "Valda deltagare",
+      "templates": "Snabbmallar",
+      "message": "Meddelande",
+      "messagePlaceholder": "Skriv ditt meddelande...",
+      "selectTags": "Välj taggar att lägga till",
+      "exportFormat": "Välj exportformat",
+      "selectStatus": "Välj ny status",
+      "success": "Åtgärd slutförd!",
+      "send": "Skicka",
+      "download": "Ladda ner",
+      "apply": "Tillämpa",
+      "changeStatus": "Ändra status"
     }
   }
 }

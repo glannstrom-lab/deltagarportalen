@@ -28,6 +28,8 @@ import { Button } from '@/components/ui/Button'
 import { BarChart } from '@/components/ui/BarChart'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
+import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
+import type { ReportData } from '@/services/pdfReportGenerator'
 
 interface AnalyticsData {
   totalParticipants: number
@@ -162,6 +164,7 @@ export function AnalyticsTab() {
   const { t } = useTranslation()
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
+  const [showReportDialog, setShowReportDialog] = useState(false)
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     totalParticipants: 0,
     activeParticipants: 0,
@@ -247,8 +250,31 @@ export function AnalyticsTab() {
   }
 
   const handleExport = (format: 'pdf' | 'excel') => {
-    // TODO: Implement export functionality
-    console.log('Exporting as:', format)
+    if (format === 'pdf') {
+      setShowReportDialog(true)
+    } else {
+      // TODO: Implement Excel export
+      console.log('Exporting as Excel')
+    }
+  }
+
+  // Build report data from analytics
+  const reportData: ReportData = {
+    totalParticipants: analytics.totalParticipants,
+    activeParticipants: analytics.activeParticipants,
+    completedParticipants: analytics.completedParticipants,
+    cvCompletionRate: analytics.cvCompletionRate,
+    goalsCompletionRate: analytics.goalsCompletionRate,
+    engagementRate: analytics.engagementRate,
+    averageTimeToPlacement: analytics.averageTimeToPlacement,
+    monthlyProgress: analytics.monthlyProgress,
+    statusDistribution: analytics.statusDistribution,
+    topGoalCategories: analytics.topGoalCategories,
+    cohortData: [
+      { cohort: 'Q1 2024', participants: 12, cvComplete: 92, placed: 75, avgTime: 38 },
+      { cohort: 'Q4 2023', participants: 15, cvComplete: 87, placed: 80, avgTime: 42 },
+      { cohort: 'Q3 2023', participants: 18, cvComplete: 94, placed: 83, avgTime: 45 },
+    ],
   }
 
   if (loading) {
@@ -540,6 +566,13 @@ export function AnalyticsTab() {
           </table>
         </div>
       </Card>
+
+      {/* PDF Report Dialog */}
+      <ReportGeneratorDialog
+        isOpen={showReportDialog}
+        onClose={() => setShowReportDialog(false)}
+        analyticsData={reportData}
+      />
     </div>
   )
 }

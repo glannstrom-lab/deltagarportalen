@@ -2836,6 +2836,73 @@
       "onHold": "On hold",
       "critical": "Critical",
       "high": "High"
+    },
+    "report": {
+      "title": "Generate PDF Report",
+      "configureOptions": "Customize report content",
+      "previewReport": "Preview the report",
+      "reportTitle": "Report Title",
+      "titlePlaceholder": "Consultant Report",
+      "dateRange": "Time Period",
+      "lastWeek": "Last week",
+      "lastMonth": "Last month",
+      "lastQuarter": "Last quarter",
+      "lastYear": "Last year",
+      "language": "Report Language",
+      "includeSections": "Include Sections",
+      "sections": {
+        "overview": "Overview & Key Metrics",
+        "overviewDesc": "Summary, status distribution and progress",
+        "cohort": "Cohort Analysis",
+        "cohortDesc": "Comparison between participant groups",
+        "participants": "Participant Details",
+        "participantsDesc": "Individual information for each participant"
+      },
+      "preview": "Preview",
+      "backToOptions": "Back to settings",
+      "download": "Download PDF"
+    },
+    "aiCoach": {
+      "title": "AI Coach",
+      "subtitle": "Your intelligent assistant",
+      "open": "Open AI Coach",
+      "insights": "Insights",
+      "chat": "Chat",
+      "noInsights": "No insights at the moment",
+      "quickActions": "Quick Actions",
+      "bookMeeting": "Book meeting",
+      "sendMessage": "Send message",
+      "createGoal": "Create goal",
+      "refreshInsights": "Refresh insights",
+      "welcomeTitle": "How can I help you?",
+      "welcomeSubtitle": "Ask questions about participants, strategies or best practices",
+      "placeholder": "Type your question...",
+      "thinking": "Thinking...",
+      "insightTypes": {
+        "warning": "Warning",
+        "suggestion": "Suggestion",
+        "opportunity": "Opportunity",
+        "achievement": "Achievement"
+      }
+    },
+    "bulk": {
+      "sendMessage": "Send group message",
+      "addTags": "Add tags",
+      "export": "Export participants",
+      "updateStatus": "Update status",
+      "participantsSelected": "participants selected",
+      "selectedParticipants": "Selected participants",
+      "templates": "Quick templates",
+      "message": "Message",
+      "messagePlaceholder": "Write your message...",
+      "selectTags": "Select tags to add",
+      "exportFormat": "Select export format",
+      "selectStatus": "Select new status",
+      "success": "Action completed!",
+      "send": "Send",
+      "download": "Download",
+      "apply": "Apply",
+      "changeStatus": "Change status"
     }
   }
 }

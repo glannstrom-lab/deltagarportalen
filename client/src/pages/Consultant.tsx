@@ -16,26 +16,32 @@ import { CommunicationTab } from './consultant/CommunicationTab'
 import { ResourcesTab } from './consultant/ResourcesTab'
 import { SettingsTab } from './consultant/SettingsTab'
 import { ParticipantDetailPage } from './consultant/ParticipantDetailPage'
+import { AICoachAssistant } from '@/components/consultant/AICoachAssistant'
 
 export default function Consultant() {
   const { t } = useTranslation()
 
   return (
-    <PageLayout
-      title={t('consultant.title', 'Konsultportal')}
-      subtitle={t('consultant.subtitle', 'Hantera och följ upp dina deltagare')}
-      tabs={consultantTabs}
-      tabVariant="glass"
-    >
-      <Routes>
-        <Route index element={<OverviewTab />} />
-        <Route path="participants" element={<ParticipantsTab />} />
-        <Route path="participants/:participantId" element={<ParticipantDetailPage />} />
-        <Route path="analytics" element={<AnalyticsTab />} />
-        <Route path="communication" element={<CommunicationTab />} />
-        <Route path="resources" element={<ResourcesTab />} />
-        <Route path="settings" element={<SettingsTab />} />
-      </Routes>
-    </PageLayout>
+    <>
+      <PageLayout
+        title={t('consultant.title', 'Konsultportal')}
+        subtitle={t('consultant.subtitle', 'Hantera och följ upp dina deltagare')}
+        tabs={consultantTabs}
+        tabVariant="glass"
+      >
+        <Routes>
+          <Route index element={<OverviewTab />} />
+          <Route path="participants" element={<ParticipantsTab />} />
+          <Route path="participants/:participantId" element={<ParticipantDetailPage />} />
+          <Route path="analytics" element={<AnalyticsTab />} />
+          <Route path="communication" element={<CommunicationTab />} />
+          <Route path="resources" element={<ResourcesTab />} />
+          <Route path="settings" element={<SettingsTab />} />
+        </Routes>
+      </PageLayout>
+
+      {/* AI Coach Assistant - Floating on all consultant pages */}
+      <AICoachAssistant context="overview" />
+    </>
   )
 }
