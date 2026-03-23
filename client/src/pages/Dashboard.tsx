@@ -5,6 +5,7 @@
 import { useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { LayoutDashboard, Zap, Users, Lightbulb, BookOpen } from 'lucide-react'
+import { ConsultantRequestBanner } from '@/components/consultant/ConsultantRequestBanner'
 import OverviewTab from './dashboard/tabs/OverviewTab'
 import ActivityTab from './dashboard/tabs/ActivityTab'
 import CommunityTab from './dashboard/tabs/CommunityTab'
@@ -106,6 +107,7 @@ export default function DashboardPage() {
       showTabs={true}
       className="space-y-6"
     >
+      <ConsultantRequestBanner />
       <div className="animate-in fade-in duration-300">
         {renderContent()}
       </div>
