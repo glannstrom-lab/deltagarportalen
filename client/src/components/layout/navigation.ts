@@ -45,5 +45,5 @@ export const adminNavItems = [
 
 // Konsulent navigation (visas för CONSULTANT)
 export const consultantNavItems = [
-  { path: '/consultant', labelKey: 'nav.myParticipants', icon: Users },
+  { path: '/consultant', labelKey: 'nav.consultantPortal', icon: Users },
 ]

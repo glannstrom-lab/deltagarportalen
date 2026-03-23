@@ -92,7 +92,8 @@
     "settings": "Settings",
     "logout": "Log out",
     "adminPanel": "Admin Panel",
-    "myParticipants": "My Participants"
+    "myParticipants": "My Participants",
+    "consultantPortal": "Consultant Portal"
   },
   "roles": {
     "activeRole": "Active role",
@@ -2745,6 +2746,96 @@
       "replaceConfirm": "This will replace your current CV. Continue?",
       "fillDemoData": "Fill in with example data?",
       "loadedCVVersion": "Loaded saved CV version"
+    }
+  },
+  "consultant": {
+    "title": "Consultant Portal",
+    "subtitle": "Manage and follow up on your participants",
+    "tabs": {
+      "overview": "Overview",
+      "overviewDesc": "Dashboard and KPIs",
+      "participants": "Participants",
+      "participantsDesc": "Manage your participants",
+      "analytics": "Reports",
+      "analyticsDesc": "Analytics and statistics",
+      "communication": "Communication",
+      "communicationDesc": "Messages and meetings",
+      "resources": "Resources",
+      "resourcesDesc": "Templates and tools",
+      "settings": "Settings",
+      "settingsDesc": "Preferences and notifications"
+    },
+    "overview": {
+      "totalParticipants": "Total participants",
+      "activeParticipants": "Active participants",
+      "needsAttention": "Needs attention",
+      "notContactedDays": "Not contacted {{count}} days",
+      "cvQuality": "CV quality",
+      "completeCvs": "{{count}} complete",
+      "meetingsThisWeek": "Meetings this week",
+      "scheduled": "Scheduled",
+      "attentionAlerts": "Needs attention",
+      "viewAll": "View all",
+      "allCaughtUp": "All participants followed up!",
+      "noAttentionNeeded": "No participants need immediate attention.",
+      "quickActions": "Quick actions",
+      "inviteParticipant": "Invite participant",
+      "sendGroupMessage": "Send group message",
+      "scheduleMeeting": "Schedule meeting",
+      "exportReport": "Export report",
+      "createGoal": "Create goal for participant",
+      "recentActivity": "Recent activity",
+      "goalsOverview": "Goals overview",
+      "completedGoals": "Completed goals",
+      "overdueGoals": "Overdue goals",
+      "topGoalCategories": "Top goal categories"
+    },
+    "participants": {
+      "searchPlaceholder": "Search by name or email...",
+      "allStatuses": "All statuses",
+      "active": "Active",
+      "inactive": "Inactive",
+      "paused": "Paused",
+      "completed": "Completed",
+      "needsAttention": "Needs attention",
+      "sortBy": "Sort by",
+      "priority": "Priority",
+      "name": "Name",
+      "cvScore": "CV score",
+      "lastContact": "Last contact",
+      "status": "Status",
+      "invite": "Invite",
+      "selected": "{{count}} selected",
+      "sendMessage": "Send message",
+      "addTag": "Add tag",
+      "export": "Export",
+      "showing": "Showing {{shown}} of {{total}} participants",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "noParticipants": "No participants found",
+      "tryDifferentFilters": "Try changing your filters or search terms.",
+      "noAssignedYet": "You have not been assigned any participants yet.",
+      "clearFilters": "Clear filters",
+      "view": "View"
+    },
+    "settings": {
+      "unsavedChanges": "You have unsaved changes",
+      "notifications": "Notifications",
+      "manageNotifications": "Manage how and when you want to be notified",
+      "preferences": "Preferences",
+      "customizeView": "Customize your consultant view",
+      "team": "Team",
+      "colleaguesAndAdmins": "Colleagues and administrators",
+      "dataPrivacy": "Data & Privacy",
+      "gdprSettings": "Manage data and GDPR-related settings"
+    },
+    "statuses": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "completed": "Completed",
+      "onHold": "On hold",
+      "critical": "Critical",
+      "high": "High"
     }
   }
 }

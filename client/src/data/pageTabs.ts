@@ -26,6 +26,7 @@ import { wellnessTabs } from './wellnessTabs'
 import { dashboardTabs } from './dashboardTabs'
 import { careerTabs } from './careerTabs'
 import { knowledgeTabs } from './knowledgeTabs'
+import { consultantTabs } from './consultantTabs'
 
 // Tab definitions with i18n keys - labels are resolved at render time
 export const dashboardNavTabDefs = [
@@ -141,5 +142,6 @@ export function getTabsForPath(path: string): Tab[] {
   if (path.startsWith('/resources')) return resourcesTabs
   if (path.startsWith('/profile') || path.startsWith('/settings')) return profileTabs
   if (path.startsWith('/dashboard')) return dashboardTabs
+  if (path.startsWith('/consultant')) return consultantTabs
   return []
 }

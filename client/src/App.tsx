@@ -46,6 +46,7 @@ const Settings = lazy(() => import('./pages/Settings'))
 const Resources = lazy(() => import('./pages/Resources'))
 const Help = lazy(() => import('./pages/Help'))
 const ConsultantDashboard = lazy(() => import('./components/consultant/ConsultantDashboard'))
+const Consultant = lazy(() => import('./pages/Consultant'))
 const SuperAdminPanel = lazy(() => import('./components/admin/SuperAdminPanel'))
 const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 // New feature pages
@@ -424,11 +425,11 @@ function App() {
         } />
 
         {/* Consultant routes */}
-        <Route path="consultant" element={
+        <Route path="consultant/*" element={
           <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
             <LazyRoute>
               <RouteErrorBoundary>
-                <ConsultantDashboard />
+                <Consultant />
               </RouteErrorBoundary>
             </LazyRoute>
           </PrivateRoute>
