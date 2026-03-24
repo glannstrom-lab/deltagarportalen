@@ -298,87 +298,87 @@ const bigFiveQuestions: Omit<Question, 'type'>[] = [
   },
 ]
 
-// Strong Interest Inventory (10 frågor) - Tydligare formuleringar
+// Strong Interest Inventory (10 frågor) - Konsekvent "Jag intresserar mig för..." format
 const strongInterestQuestions: Omit<Question, 'type'>[] = [
-  { 
-    id: 'si1', 
-    text: 'Att arbeta med teknik, mekanik och förstå hur saker fungerar', 
-    category: 'teknik_mekanik', 
+  {
+    id: 'si1',
+    text: 'Jag intresserar mig för teknik, mekanik och att förstå hur saker fungerar',
+    category: 'teknik_mekanik',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si2', 
-    text: 'Naturvetenskap, biologi, kemi och forskning', 
-    category: 'natur_vetenskap', 
+  {
+    id: 'si2',
+    text: 'Jag intresserar mig för naturvetenskap, biologi, kemi och forskning',
+    category: 'natur_vetenskap',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si3', 
-    text: 'Konst, kultur, design och kreativt skapande', 
-    category: 'konst_kultur', 
+  {
+    id: 'si3',
+    text: 'Jag intresserar mig för konst, kultur, design och kreativt skapande',
+    category: 'konst_kultur',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si4', 
-    text: 'Att hjälpa och stötta människor i svåra situationer', 
-    category: 'social_vard', 
+  {
+    id: 'si4',
+    text: 'Jag intresserar mig för att hjälpa och stötta människor i svåra situationer',
+    category: 'social_vard',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si5', 
-    text: 'Affärer, försäljning och driva egna projekt', 
-    category: 'affarer_forsaljning', 
+  {
+    id: 'si5',
+    text: 'Jag intresserar mig för affärer, försäljning och att driva egna projekt',
+    category: 'affarer_forsaljning',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si6', 
-    text: 'Administration, kontorsarbete och att organisera', 
-    category: 'administration_kontor', 
+  {
+    id: 'si6',
+    text: 'Jag intresserar mig för administration, kontorsarbete och organisation',
+    category: 'administration_kontor',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si7', 
-    text: 'Utomhusarbete och att arbeta i naturen', 
-    category: 'utomhusarbete', 
+  {
+    id: 'si7',
+    text: 'Jag intresserar mig för utomhusarbete och att arbeta i naturen',
+    category: 'utomhusarbete',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si8', 
-    text: 'Att leda, organisera och styra projekt', 
-    category: 'ledarskap_organisation', 
+  {
+    id: 'si8',
+    text: 'Jag intresserar mig för att leda, organisera och styra projekt',
+    category: 'ledarskap_organisation',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si9', 
-    text: 'Data, IT, programmering och digitala system', 
-    category: 'data_it', 
+  {
+    id: 'si9',
+    text: 'Jag intresserar mig för data, IT, programmering och digitala system',
+    category: 'data_it',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
-  { 
-    id: 'si10', 
-    text: 'Att undervisa, lära ut och förklara saker för andra', 
-    category: 'undervisning_pedagogik', 
+  {
+    id: 'si10',
+    text: 'Jag intresserar mig för att undervisa, lära ut och förklara saker för andra',
+    category: 'undervisning_pedagogik',
     section: 'strong',
-    lowLabel: 'Intresserar mig inte',
-    highLabel: 'Intresserar mig mycket'
+    lowLabel: 'Stämmer inte alls',
+    highLabel: 'Stämmer helt'
   },
 ]
 

@@ -197,7 +197,7 @@ export function QuestionCard({
           />
           
           {/* Dots for each value */}
-          <div className="absolute inset-x-0 flex justify-between px-[2px]">
+          <div className="absolute inset-x-0 flex justify-between px-1">
             {[1, 2, 3, 4, 5].map((dotValue) => {
               const isActive = (value || 0) >= dotValue
               const isCurrent = value === dotValue
