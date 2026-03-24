@@ -1,845 +1,255 @@
-import { useState, useEffect, lazy, Suspense, useCallback, useRef } from 'react'
+/**
+ * Overview Tab - Simplified onboarding-focused view
+ * Shows the user's journey through 6 steps
+ */
+
 import { Link } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
-  Settings, Plus, ChevronRight, Flame, Target,
-  FileText, Briefcase, Heart, BookOpen, Sparkles, ArrowRight,
-  CheckCircle2, Lightbulb, Zap, Star, X, GripVertical,
-  Calendar, MessageSquare, Linkedin, BarChart3, Maximize2, Minimize2
+  User,
+  Compass,
+  FileText,
+  Target,
+  Search,
+  Mail,
+  Check,
+  ChevronRight,
+  Sparkles
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
-import { useDashboardDataQuery } from '@/hooks/useDashboardData'
-import type { DashboardWidgetData } from '@/types/dashboard'
-import { useClickOutside } from '@/hooks/useClickOutside'
-import { ErrorBoundary } from '@/components/ErrorBoundary'
-import { GettingStartedChecklist } from '@/components/dashboard/GettingStartedChecklist'
 import { cn } from '@/lib/utils'
-import { supabase } from '@/lib/supabase'
-import { userPreferencesApi } from '@/services/cloudStorage'
 
-// Lazy load widgets
-const CVWidget = lazy(() => import('@/components/dashboard/widgets/CVWidget'))
-const JobSearchWidget = lazy(() => import('@/components/dashboard/widgets/JobSearchWidget'))
-const WellnessWidget = lazy(() => import('@/components/dashboard/widgets/WellnessWidget'))
-const QuestsWidget = lazy(() => import('@/components/dashboard/widgets/QuestsWidget'))
-const ExercisesWidget = lazy(() => import('@/components/dashboard/widgets/ExercisesWidget'))
-const KnowledgeWidget = lazy(() => import('@/components/dashboard/widgets/KnowledgeWidget'))
-const InterestWidget = lazy(() => import('@/components/dashboard/widgets/InterestWidget'))
-const CalendarWidget = lazy(() => import('@/components/dashboard/widgets/CalendarWidget'))
-const InterviewWidget = lazy(() => import('@/components/dashboard/widgets/InterviewWidget'))
-const LinkedInWidget = lazy(() => import('@/components/dashboard/widgets/LinkedInWidget'))
-const SkillsWidget = lazy(() => import('@/components/dashboard/widgets/SkillsWidget'))
-
-// Widget configuration
-const WIDGET_COMPONENTS = {
-  cv: CVWidget,
-  jobSearch: JobSearchWidget,
-  wellness: WellnessWidget,
-  quests: QuestsWidget,
-  exercises: ExercisesWidget,
-  knowledge: KnowledgeWidget,
-  interests: InterestWidget,
-  calendar: CalendarWidget,
-  interview: InterviewWidget,
-  linkedin: LinkedInWidget,
-  skills: SkillsWidget,
-}
-
-type WidgetId = keyof typeof WIDGET_COMPONENTS
-type WidgetSize = 'mini' | 'medium' | 'large'
-
-interface WidgetConfig {
-  id: WidgetId
-  size: WidgetSize
-}
-
-// Widget categories for grouping
-type WidgetCategory = 'profile' | 'jobsearch' | 'activity' | 'learning'
-
-const WIDGET_CATEGORIES: Record<WidgetCategory, { label: string; order: number }> = {
-  profile: { label: 'Din profil', order: 1 },
-  jobsearch: { label: 'Jobbsökning', order: 2 },
-  activity: { label: 'Daglig aktivitet', order: 3 },
-  learning: { label: 'Lärande & utveckling', order: 4 },
-}
-
-const WIDGET_INFO: Record<WidgetId, { label: string; icon: React.ElementType; color: string; category: WidgetCategory }> = {
-  cv: { label: 'CV', icon: FileText, color: 'violet', category: 'profile' },
-  interests: { label: 'Intressen', icon: Sparkles, color: 'teal', category: 'profile' },
-  skills: { label: 'Kompetens', icon: BarChart3, color: 'cyan', category: 'profile' },
-  linkedin: { label: 'LinkedIn', icon: Linkedin, color: 'blue', category: 'profile' },
-  jobSearch: { label: 'Jobbsök', icon: Briefcase, color: 'blue', category: 'jobsearch' },
-  interview: { label: 'Intervju', icon: MessageSquare, color: 'indigo', category: 'jobsearch' },
-  quests: { label: 'Quests', icon: Target, color: 'amber', category: 'activity' },
-  wellness: { label: 'Välmående', icon: Heart, color: 'rose', category: 'activity' },
-  calendar: { label: 'Kalender', icon: Calendar, color: 'rose', category: 'activity' },
-  exercises: { label: 'Övningar', icon: Zap, color: 'emerald', category: 'learning' },
-  knowledge: { label: 'Kunskap', icon: BookOpen, color: 'amber', category: 'learning' },
-}
-
-const DEFAULT_WIDGETS: WidgetConfig[] = [
-  { id: 'cv', size: 'large' },
-  { id: 'interests', size: 'medium' },  // Strategically important for user journey
-  { id: 'quests', size: 'medium' },
-  { id: 'jobSearch', size: 'medium' },
-  { id: 'wellness', size: 'mini' },
-  { id: 'exercises', size: 'mini' },
-]
-
-// Get next recommended action
-function getNextAction(data: DashboardWidgetData | undefined): {
+// Step configuration
+interface Step {
+  id: string
   title: string
   description: string
-  link: string
   icon: React.ElementType
-  color: string
-  buttonText: string
-} | null {
-  if (!data) return null
-
-  if (!data.cv?.hasCV && (data.cv?.progress || 0) < 20) {
-    return {
-      title: 'Skapa ditt CV',
-      description: 'Bygg ett professionellt CV som får arbetsgivare att uppmärksamma dig',
-      link: '/cv',
-      icon: FileText,
-      color: 'violet',
-      buttonText: 'Börja nu'
-    }
-  }
-
-  if (data.cv?.hasCV && (data.cv?.progress || 0) < 80) {
-    return {
-      title: 'Slutför ditt CV',
-      description: `Ditt CV är ${data.cv.progress}% klart. Lägg till mer information för bättre resultat`,
-      link: '/cv',
-      icon: FileText,
-      color: 'violet',
-      buttonText: 'Fortsätt'
-    }
-  }
-
-  if ((data.jobs?.savedCount || 0) === 0) {
-    return {
-      title: 'Hitta ditt nästa jobb',
-      description: 'Sök bland tusentals lediga tjänster och spara de som passar dig',
-      link: '/job-search',
-      icon: Briefcase,
-      color: 'blue',
-      buttonText: 'Sök jobb'
-    }
-  }
-
-  if (!data.wellness?.moodToday) {
-    return {
-      title: 'Hur mår du idag?',
-      description: 'Logga ditt humör för att följa ditt välmående över tid',
-      link: '/wellness',
-      icon: Heart,
-      color: 'rose',
-      buttonText: 'Logga humör'
-    }
-  }
-
-  if (!data.interest?.hasResult) {
-    return {
-      title: 'Upptäck dina styrkor',
-      description: 'Ta intressetestet och få personliga yrkesrekommendationer',
-      link: '/interest-guide',
-      icon: Sparkles,
-      color: 'teal',
-      buttonText: 'Starta test'
-    }
-  }
-
-  return null
+  path: string
+  checkComplete: () => boolean
 }
 
-// Next Step Card Component
-function NextStepCard({ action }: { action: ReturnType<typeof getNextAction> }) {
-  if (!action) return null
+// Check completion status from localStorage/state
+const getSteps = (): Step[] => [
+  {
+    id: 'profile',
+    title: 'Fyll i din profil',
+    description: 'Lägg till dina kontaktuppgifter',
+    icon: User,
+    path: '/profile',
+    checkComplete: () => {
+      try {
+        const profile = localStorage.getItem('profile-data')
+        if (!profile) return false
+        const parsed = JSON.parse(profile)
+        return !!(parsed.firstName && parsed.email)
+      } catch {
+        return false
+      }
+    }
+  },
+  {
+    id: 'interest',
+    title: 'Gör intresseguiden',
+    description: 'Upptäck vilka yrken som passar dig',
+    icon: Compass,
+    path: '/interest-guide',
+    checkComplete: () => {
+      return !!localStorage.getItem('interest-result')
+    }
+  },
+  {
+    id: 'cv',
+    title: 'Skapa ditt CV',
+    description: 'Bygg ett professionellt CV',
+    icon: FileText,
+    path: '/cv',
+    checkComplete: () => {
+      try {
+        const cv = localStorage.getItem('cv-data')
+        if (!cv) return false
+        const parsed = JSON.parse(cv)
+        return !!(parsed.firstName && (parsed.workExperience?.length > 0 || parsed.skills?.length > 0))
+      } catch {
+        return false
+      }
+    }
+  },
+  {
+    id: 'career',
+    title: 'Utforska karriärvägar',
+    description: 'Se möjligheter och utvecklingsvägar',
+    icon: Target,
+    path: '/career',
+    checkComplete: () => {
+      return !!localStorage.getItem('career-visited')
+    }
+  },
+  {
+    id: 'job-search',
+    title: 'Sök jobb',
+    description: 'Hitta och spara intressanta jobb',
+    icon: Search,
+    path: '/job-search',
+    checkComplete: () => {
+      try {
+        const saved = localStorage.getItem('saved-jobs')
+        if (!saved) return false
+        const parsed = JSON.parse(saved)
+        return Array.isArray(parsed) && parsed.length > 0
+      } catch {
+        return false
+      }
+    }
+  },
+  {
+    id: 'cover-letter',
+    title: 'Skriv personligt brev',
+    description: 'Skapa ett övertygande brev',
+    icon: Mail,
+    path: '/cover-letter',
+    checkComplete: () => {
+      try {
+        const letters = localStorage.getItem('cover-letters')
+        if (!letters) return false
+        const parsed = JSON.parse(letters)
+        return Array.isArray(parsed) && parsed.length > 0
+      } catch {
+        return false
+      }
+    }
+  }
+]
 
-  const Icon = action.icon
+export default function OverviewTab() {
+  const { profile } = useAuthStore()
+  const { t } = useTranslation()
 
-  return (
-    <Link
-      to={action.link}
-      className={cn(
-        "group block bg-white rounded-xl sm:rounded-2xl border-2 p-4 sm:p-5 transition-all duration-200",
-        "hover:shadow-lg active:scale-[0.99]",
-        action.color === 'violet' && "border-violet-200 hover:border-violet-300",
-        action.color === 'blue' && "border-blue-200 hover:border-blue-300",
-        action.color === 'rose' && "border-rose-200 hover:border-rose-300",
-        action.color === 'teal' && "border-teal-200 hover:border-teal-300",
-      )}
-    >
-      <div className="flex items-center gap-2 text-xs font-medium text-slate-500 mb-2 sm:mb-3">
-        <Lightbulb size={14} className="text-amber-500" />
-        Nästa steg
-      </div>
+  const steps = getSteps()
+  const completedSteps = steps.filter(step => step.checkComplete())
+  const completedCount = completedSteps.length
+  const totalSteps = steps.length
+  const progress = Math.round((completedCount / totalSteps) * 100)
 
-      <div className="flex items-start gap-3 sm:gap-4">
-        <div className={cn(
-          "w-11 h-11 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0",
-          action.color === 'violet' && "bg-violet-100 text-violet-600",
-          action.color === 'blue' && "bg-blue-100 text-blue-600",
-          action.color === 'rose' && "bg-rose-100 text-rose-600",
-          action.color === 'teal' && "bg-teal-100 text-teal-600",
-        )}>
-          <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
-        </div>
-
-        <div className="flex-1 min-w-0">
-          <h2 className="text-base sm:text-lg font-bold text-slate-800 mb-0.5 sm:mb-1">{action.title}</h2>
-          <p className="text-xs sm:text-sm text-slate-500 line-clamp-2 mb-3 sm:mb-0">{action.description}</p>
-
-          {/* Button on mobile - full width below text */}
-          <div className={cn(
-            "sm:hidden flex items-center justify-center gap-2 px-4 py-3 rounded-xl font-medium text-sm mt-3",
-            action.color === 'violet' && "bg-violet-600 text-white",
-            action.color === 'blue' && "bg-blue-600 text-white",
-            action.color === 'rose' && "bg-rose-600 text-white",
-            action.color === 'teal' && "bg-teal-600 text-white",
-          )}>
-            {action.buttonText}
-            <ArrowRight size={16} />
-          </div>
-        </div>
-
-        {/* Button on desktop - inline */}
-        <div className={cn(
-          "hidden sm:flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-medium text-sm transition-all",
-          "group-hover:gap-3 flex-shrink-0",
-          action.color === 'violet' && "bg-violet-600 text-white",
-          action.color === 'blue' && "bg-blue-600 text-white",
-          action.color === 'rose' && "bg-rose-600 text-white",
-          action.color === 'teal' && "bg-teal-600 text-white",
-        )}>
-          {action.buttonText}
-          <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-        </div>
-      </div>
-    </Link>
-  )
-}
-
-// Compact Widget Selector with category grouping
-function WidgetSelector({
-  activeWidgets,
-  onToggle,
-  onClose
-}: {
-  activeWidgets: WidgetConfig[]
-  onToggle: (id: WidgetId) => void
-  onClose: () => void
-}) {
-  const activeIds = activeWidgets.map(w => w.id)
-
-  // Group widgets by category
-  const widgetsByCategory = Object.entries(WIDGET_INFO).reduce((acc, [id, info]) => {
-    if (!acc[info.category]) acc[info.category] = []
-    acc[info.category].push({ id: id as WidgetId, ...info })
-    return acc
-  }, {} as Record<WidgetCategory, Array<{ id: WidgetId; label: string; icon: React.ElementType; color: string; category: WidgetCategory }>>)
-
-  return (
-    <>
-      {/* Mobile: Full-screen overlay */}
-      <div
-        className="sm:hidden fixed inset-0 bg-black/50 z-40"
-        onClick={onClose}
-      />
-      <div className={cn(
-        "z-50 bg-white rounded-xl shadow-xl border border-slate-200 p-4 overflow-y-auto",
-        // Mobile: Bottom sheet style
-        "fixed sm:absolute inset-x-4 bottom-4 sm:inset-auto sm:right-0 sm:top-full sm:mt-2",
-        "max-h-[70vh] sm:max-h-96 sm:w-80"
-      )}>
-        <div className="flex items-center justify-between mb-4 sm:mb-3">
-          <span className="text-sm sm:text-xs font-medium text-slate-500 uppercase tracking-wider">Lägg till widgets</span>
-          <button
-            onClick={onClose}
-            className="p-2 sm:p-1 hover:bg-slate-100 rounded-lg -mr-1"
-            aria-label="Stäng widget-menyn"
-          >
-            <X size={18} className="sm:w-3.5 sm:h-3.5 text-slate-400" />
-          </button>
-        </div>
-        <div className="space-y-4 sm:space-y-3">
-          {Object.entries(WIDGET_CATEGORIES)
-            .sort(([, a], [, b]) => a.order - b.order)
-            .map(([categoryKey, categoryInfo]) => {
-              const categoryWidgets = widgetsByCategory[categoryKey as WidgetCategory] || []
-              if (categoryWidgets.length === 0) return null
-
-              return (
-                <div key={categoryKey}>
-                  <p className="text-xs font-medium text-slate-400 mb-2 sm:mb-1.5 px-1">{categoryInfo.label}</p>
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 sm:gap-1.5">
-                    {categoryWidgets.map(({ id, label, icon: Icon }) => {
-                      const isActive = activeIds.includes(id)
-                      return (
-                        <button
-                          key={id}
-                          onClick={() => onToggle(id)}
-                          className={cn(
-                            "flex flex-col items-center gap-1.5 sm:gap-1 p-3 sm:p-2 rounded-xl sm:rounded-lg text-xs font-medium transition-all min-h-[60px] sm:min-h-0",
-                            isActive
-                              ? "bg-violet-100 text-violet-700 ring-2 sm:ring-1 ring-violet-200"
-                              : "bg-slate-50 sm:bg-transparent hover:bg-slate-100 sm:hover:bg-slate-50 text-slate-600"
-                          )}
-                          aria-label={isActive ? `Ta bort ${label} widget` : `Lägg till ${label} widget`}
-                          aria-pressed={isActive}
-                        >
-                          <Icon size={20} className="sm:w-4 sm:h-4" aria-hidden="true" />
-                          <span className="truncate w-full text-center text-xs">{label}</span>
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )
-            })}
-        </div>
-      </div>
-    </>
-  )
-}
-
-// Draggable Widget Wrapper
-function DraggableWidget({
-  config,
-  children,
-  onRemove,
-  onResize,
-  onDragStart,
-  onDragOver,
-  onDrop,
-  isDragging,
-  isEditing
-}: {
-  config: WidgetConfig
-  children: React.ReactNode
-  onRemove: () => void
-  onResize: (size: WidgetSize) => void
-  onDragStart: () => void
-  onDragOver: (e: React.DragEvent) => void
-  onDrop: () => void
-  isDragging: boolean
-  isEditing: boolean
-}) {
-  const sizes: WidgetSize[] = ['mini', 'medium', 'large']
-  const currentIndex = sizes.indexOf(config.size)
+  // Find the first incomplete step (next step to do)
+  const nextStepIndex = steps.findIndex(step => !step.checkComplete())
+  const allComplete = nextStepIndex === -1
 
   return (
-    <div
-      draggable={isEditing}
-      onDragStart={onDragStart}
-      onDragOver={onDragOver}
-      onDrop={onDrop}
-      className={cn(
-        "relative transition-all duration-200",
-        // Mobile: All sizes are full width (col-span-1 in a 1-col grid)
-        // xs breakpoint (375px+): Start using 2 columns
-        config.size === 'mini' && "col-span-1",
-        config.size === 'medium' && "col-span-1 xs:col-span-2 sm:col-span-2",
-        config.size === 'large' && "col-span-1 xs:col-span-2 sm:col-span-2 lg:col-span-3",
-        isDragging && "opacity-50 scale-95",
-        isEditing && "cursor-grab active:cursor-grabbing"
-      )}
-    >
-      {isEditing && (
-        <div className="absolute -top-1 -left-1 -right-1 -bottom-1 border-2 border-dashed border-violet-300 rounded-2xl pointer-events-none z-0" />
-      )}
-
-      {/* Resize controls - hidden on very small mobile */}
-      {isEditing && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-20 hidden xs:flex items-center gap-1 bg-white rounded-full shadow-md border border-slate-200 px-2 py-1">
-          <button
-            onClick={() => onResize(sizes[Math.max(0, currentIndex - 1)])}
-            disabled={currentIndex === 0}
-            className="p-2 sm:p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
-            title="Mindre"
-            aria-label="Minska widget-storlek"
-          >
-            <Minimize2 size={16} className="sm:w-3.5 sm:h-3.5 text-slate-500" aria-hidden="true" />
-          </button>
-          <span className="text-xs font-medium text-slate-400 px-1 hidden sm:inline">{config.size}</span>
-          <button
-            onClick={() => onResize(sizes[Math.min(2, currentIndex + 1)])}
-            disabled={currentIndex === 2}
-            className="p-2 sm:p-1.5 hover:bg-slate-100 rounded-lg disabled:opacity-30 touch-manipulation active:scale-95 transition-transform"
-            title="Större"
-            aria-label="Öka widget-storlek"
-          >
-            <Maximize2 size={16} className="sm:w-3.5 sm:h-3.5 text-slate-500" aria-hidden="true" />
-          </button>
+    <div className="max-w-2xl mx-auto">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-4">
+          <Sparkles className="w-8 h-8 text-white" />
         </div>
-      )}
+        <h1 className="text-2xl font-bold text-slate-800 mb-2">
+          {allComplete
+            ? 'Fantastiskt jobbat!'
+            : `Hej${profile?.first_name ? `, ${profile.first_name}` : ''}!`
+          }
+        </h1>
+        <p className="text-slate-600">
+          {allComplete
+            ? 'Du har slutfört alla steg. Fortsätt utforska appen!'
+            : 'Följ stegen nedan för att komma igång med din jobbsökarresa.'
+          }
+        </p>
+      </div>
 
-      {isEditing && (
-        <>
-          <button
-            onClick={onRemove}
-            className="absolute -top-2 -right-2 sm:-top-3 sm:-right-3 z-20 w-8 h-8 sm:w-7 sm:h-7 bg-rose-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-rose-600 active:scale-95 transition-all touch-manipulation"
-            title="Ta bort"
-            aria-label="Ta bort widget"
-          >
-            <X size={18} className="sm:w-4 sm:h-4" aria-hidden="true" />
-          </button>
-          {/* Drag handle - hidden on small mobile, show on xs+ */}
+      {/* Progress */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium text-slate-700">Din framsteg</span>
+          <span className="text-sm font-bold text-indigo-600">{completedCount} av {totalSteps} klart</span>
+        </div>
+        <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
           <div
-            className="absolute top-1/2 -left-3 sm:-left-4 -translate-y-1/2 z-20 p-2 bg-white rounded-xl shadow-md border border-slate-200 cursor-grab active:cursor-grabbing touch-manipulation hidden xs:block"
-            role="button"
-            aria-label="Dra för att flytta widget"
-            tabIndex={0}
-          >
-            <GripVertical size={16} className="text-slate-400" aria-hidden="true" />
-          </div>
-        </>
-      )}
-
-      <div className="relative z-10">
-        {children}
-      </div>
-    </div>
-  )
-}
-
-// Onboarding for new users
-function NewUserOnboarding({ userName }: { userName?: string }) {
-  const steps = [
-    { id: 1, title: 'Skapa ditt CV', description: 'Bygg ett professionellt CV', icon: FileText, link: '/cv', color: 'from-violet-500 to-purple-600' },
-    { id: 2, title: 'Hitta jobb', description: 'Sök bland lediga tjänster', icon: Briefcase, link: '/job-search', color: 'from-blue-500 to-cyan-600' },
-    { id: 3, title: 'Lär dig mer', description: 'Tips för jobbsökningen', icon: BookOpen, link: '/knowledge-base', color: 'from-amber-500 to-orange-600' },
-  ]
-
-  return (
-    <div className="space-y-4 sm:space-y-6">
-      {/* Welcome Hero */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-xl sm:rounded-2xl p-5 sm:p-6 text-white">
-        <div className="absolute top-0 right-0 w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-2xl" />
-        <div className="relative">
-          <div className="flex items-center gap-2 mb-2">
-            <Sparkles className="w-4 h-4 text-amber-300" />
-            <span className="text-xs font-medium text-white/70">Välkommen till Jobin</span>
-          </div>
-          <h1 className="text-xl sm:text-2xl font-bold mb-1 sm:mb-2">Hej{userName ? `, ${userName}` : ''}! 👋</h1>
-          <p className="text-white/80 text-sm">Kom igång med tre enkla steg.</p>
+            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
         </div>
       </div>
 
       {/* Steps */}
-      <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-3 sm:gap-3">
-        {steps.map((step) => (
-          <Link
-            key={step.id}
-            to={step.link}
-            className="group relative flex sm:flex-col items-center sm:items-start gap-4 sm:gap-0 bg-white rounded-xl p-4 border border-slate-200 hover:border-violet-300 hover:shadow-md transition-all active:scale-[0.99]"
-          >
-            {/* Step number badge */}
-            <div className="absolute -top-2 -left-2 w-6 h-6 bg-slate-800 text-white rounded-full flex items-center justify-center text-xs font-bold z-10">
-              {step.id}
-            </div>
+      <div className="space-y-3">
+        {steps.map((step, index) => {
+          const isComplete = step.checkComplete()
+          const isNext = index === nextStepIndex
+          const Icon = step.icon
 
-            {/* Icon */}
-            <div className={cn("w-12 h-12 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br flex items-center justify-center flex-shrink-0 sm:mb-3", step.color)}>
-              <step.icon className="w-6 h-6 sm:w-5 sm:h-5 text-white" />
-            </div>
-
-            {/* Text */}
-            <div className="flex-1 sm:flex-none">
-              <h3 className="font-semibold text-slate-800 text-base sm:text-sm mb-0.5">{step.title}</h3>
-              <p className="text-sm sm:text-xs text-slate-500">{step.description}</p>
-            </div>
-
-            {/* Mobile arrow */}
-            <ChevronRight size={20} className="text-slate-300 sm:hidden flex-shrink-0" />
-          </Link>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-export default function OverviewTab() {
-  const { user } = useAuthStore()
-  const { data, isLoading, isPlaceholderData } = useDashboardDataQuery()
-  const [widgets, setWidgets] = useState<WidgetConfig[]>(DEFAULT_WIDGETS)
-  const [showSelector, setShowSelector] = useState(false)
-  const [isEditing, setIsEditing] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const [prefsLoaded, setPrefsLoaded] = useState(false)
-  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
-  const [showChecklist, setShowChecklist] = useState(true)
-  const selectorRef = useRef<HTMLDivElement>(null)
-
-  // Only determine new user status after real data loads (not placeholder)
-  const isNewUser = !isPlaceholderData && !data?.cv?.hasCV && (data?.cv?.progress || 0) < 10 && (data?.jobs?.savedCount || 0) === 0
-  const nextAction = getNextAction(data)
-
-  // Check if user should see the Getting Started checklist
-  // Show for users who have started but haven't completed all basic steps
-  const hasCompletedCV = data?.cv?.hasCV ?? false
-  const hasCompletedInterest = data?.interest?.hasResult ?? false
-  const hasSavedJob = (data?.jobs?.savedCount ?? 0) > 0
-  const hasCoverLetter = (data?.coverLetters?.count ?? 0) > 0
-  const allChecklistComplete = hasCompletedCV && hasCompletedInterest && hasSavedJob && hasCoverLetter
-  const shouldShowChecklist = !isNewUser && !allChecklistComplete && showChecklist
-
-  // Close selector on outside click
-  useClickOutside(selectorRef, () => setShowSelector(false), showSelector)
-
-  // Check if checklist was previously dismissed (from cloud)
-  useEffect(() => {
-    const checkDismissed = async () => {
-      const isDismissed = await userPreferencesApi.isChecklistDismissed()
-      if (isDismissed) {
-        setShowChecklist(false)
-      }
-    }
-    checkDismissed()
-  }, [])
-
-  // Load preferences
-  useEffect(() => {
-    if (!user?.id || prefsLoaded) return
-
-    const load = async () => {
-      try {
-        const { data: prefs } = await supabase
-          .from('user_preferences')
-          .select('dashboard_widgets, dashboard_widget_config')
-          .eq('user_id', user.id)
-          .maybeSingle()
-
-        if (prefs?.dashboard_widget_config) {
-          setWidgets(prefs.dashboard_widget_config)
-        } else if (prefs?.dashboard_widgets) {
-          // Migrate old format
-          setWidgets(prefs.dashboard_widgets.map((id: string) => ({ id, size: 'medium' as WidgetSize })))
-        }
-      } catch (err) {
-        console.warn('Error loading preferences:', err)
-      } finally {
-        setPrefsLoaded(true)
-      }
-    }
-    load()
-  }, [user?.id, prefsLoaded])
-
-  // Save preferences
-  const savePreferences = useCallback(async (newWidgets: WidgetConfig[]) => {
-    if (!user?.id) return
-    setIsSaving(true)
-    try {
-      const { data: existing } = await supabase
-        .from('user_preferences')
-        .select('id')
-        .eq('user_id', user.id)
-        .maybeSingle()
-
-      const payload = {
-        dashboard_widget_config: newWidgets,
-        dashboard_widgets: newWidgets.map(w => w.id),
-        updated_at: new Date().toISOString()
-      }
-
-      if (existing) {
-        await supabase.from('user_preferences').update(payload).eq('user_id', user.id)
-      } else {
-        await supabase.from('user_preferences').insert({ user_id: user.id, ...payload })
-      }
-    } catch (err) {
-      console.error('Error saving:', err)
-    } finally {
-      setIsSaving(false)
-    }
-  }, [user?.id])
-
-  const toggleWidget = (id: WidgetId) => {
-    const exists = widgets.find(w => w.id === id)
-    const newWidgets = exists
-      ? widgets.filter(w => w.id !== id)
-      : [...widgets, { id, size: 'medium' as WidgetSize }]
-    setWidgets(newWidgets)
-    savePreferences(newWidgets)
-  }
-
-  const removeWidget = (index: number) => {
-    const newWidgets = widgets.filter((_, i) => i !== index)
-    setWidgets(newWidgets)
-    savePreferences(newWidgets)
-  }
-
-  const resizeWidget = (index: number, size: WidgetSize) => {
-    const newWidgets = [...widgets]
-    newWidgets[index] = { ...newWidgets[index], size }
-    setWidgets(newWidgets)
-    savePreferences(newWidgets)
-  }
-
-  const handleDragStart = (index: number) => {
-    setDraggedIndex(index)
-  }
-
-  const handleDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault()
-    if (draggedIndex === null || draggedIndex === index) return
-
-    const newWidgets = [...widgets]
-    const [dragged] = newWidgets.splice(draggedIndex, 1)
-    newWidgets.splice(index, 0, dragged)
-    setWidgets(newWidgets)
-    setDraggedIndex(index)
-  }
-
-  const handleDrop = () => {
-    setDraggedIndex(null)
-    savePreferences(widgets)
-  }
-
-  const getWidgetProps = (id: WidgetId) => {
-    switch (id) {
-      case 'cv': return { hasCV: data?.cv?.hasCV, progress: data?.cv?.progress || 0 }
-      case 'jobSearch': return { savedCount: data?.jobs?.savedCount || 0, newMatches: data?.jobs?.newMatches || 0 }
-      case 'wellness': return {
-        completedActivities: data?.wellness?.completedActivities || 0,
-        streakDays: data?.wellness?.streakDays || 0,
-        moodToday: data?.wellness?.moodToday ? String(data.wellness.moodToday) : null
-      }
-      case 'quests': return {
-        completedQuests: data?.quests?.completed || 0,
-        totalQuests: data?.quests?.total || 3,
-        streakDays: data?.activity?.streakDays || 0
-      }
-      case 'exercises': return {
-        completedCount: data?.exercises?.completedExercises || 0,
-        totalExercises: data?.exercises?.totalExercises || 38,
-        completionRate: data?.exercises?.completionRate || 0,
-        streakDays: data?.exercises?.streakDays || 0
-      }
-      case 'knowledge': return {
-        readCount: data?.knowledge?.readCount || 0,
-        savedCount: data?.knowledge?.savedCount || 0,
-        totalArticles: data?.knowledge?.totalArticles || 50
-      }
-      case 'interests': return {
-        hasResult: data?.interest?.hasResult || false,
-        topRecommendations: data?.interest?.topRecommendations || [],
-        answeredQuestions: data?.interest?.answeredQuestions || 0,
-        totalQuestions: data?.interest?.totalQuestions || 36
-      }
-      case 'calendar': return {
-        upcomingEvents: data?.calendar?.upcomingEvents || 0,
-        nextEvent: data?.calendar?.nextEvent || null,
-        eventsThisWeek: data?.calendar?.eventsThisWeek || 0
-      }
-      case 'interview': return {
-        completedSessions: data?.interview?.completedSessions || 0,
-        averageScore: data?.interview?.averageScore || 0
-      }
-      case 'linkedin': return {
-        profileScore: data?.linkedin?.profileScore || 0,
-        optimizedSections: data?.linkedin?.optimizedSections || 0,
-        hasAnalysis: data?.linkedin?.hasAnalysis || false
-      }
-      case 'skills': return {
-        analyzedSkills: data?.skills?.analyzedSkills || 0,
-        gapCount: data?.skills?.gapCount || 0,
-        matchScore: data?.skills?.matchScore || 0,
-        hasAnalysis: data?.skills?.hasAnalysis || false
-      }
-      default: return {}
-    }
-  }
-
-  const renderWidget = (config: WidgetConfig) => {
-    const Component = WIDGET_COMPONENTS[config.id]
-    const props = getWidgetProps(config.id)
-
-    return (
-      <ErrorBoundary fallback={<div className="bg-white rounded-xl border border-slate-200 p-4 text-sm text-slate-500">Fel vid laddning</div>}>
-        <Suspense fallback={
-          <div className={cn(
-            "bg-white rounded-xl border border-slate-200 animate-pulse",
-            config.size === 'mini' && "h-20",
-            config.size === 'medium' && "h-32",
-            config.size === 'large' && "h-48"
-          )}>
-            <div className="p-4">
-              <div className="h-3 bg-slate-200 rounded w-1/3 mb-2" />
-              <div className="h-5 bg-slate-200 rounded w-1/2" />
-            </div>
-          </div>
-        }>
-          <Component {...props} size={config.size} />
-        </Suspense>
-      </ErrorBoundary>
-    )
-  }
-
-  // Loading - only wait for dashboard data, not preferences
-  // (preferences will use default widgets while loading)
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <div className="h-20 sm:h-24 bg-slate-100 rounded-xl sm:rounded-2xl animate-pulse" />
-        <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-4 lg:grid-cols-6 sm:gap-3">
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className="h-24 sm:h-20 bg-slate-100 rounded-xl animate-pulse sm:col-span-2" />
-          ))}
-        </div>
-      </div>
-    )
-  }
-
-  // New user
-  if (isNewUser) {
-    return <NewUserOnboarding userName={user?.first_name} />
-  }
-
-  return (
-    <div className="space-y-4">
-      {/* Getting Started Checklist for users in progress */}
-      {shouldShowChecklist && (
-        <GettingStartedChecklist onClose={() => setShowChecklist(false)} />
-      )}
-
-      {/* Next Step Card - only show if checklist is not visible */}
-      {!shouldShowChecklist && nextAction && <NextStepCard action={nextAction} />}
-
-      {/* Quick Stats Bar - Scrollable on mobile */}
-      <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm overflow-x-auto scrollbar-hide pb-1 -mx-4 px-4 sm:mx-0 sm:px-0">
-        {(data?.activity?.streakDays || 0) > 0 && (
-          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-orange-50 text-orange-700 rounded-full border border-orange-200 whitespace-nowrap">
-            <Flame size={14} className="text-orange-500 flex-shrink-0" />
-            <span className="font-medium">{data?.activity?.streakDays} dagar i rad</span>
-          </div>
-        )}
-        {(data?.quests?.completed || 0) > 0 && (
-          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-amber-50 text-amber-700 rounded-full border border-amber-200 whitespace-nowrap">
-            <Target size={14} className="text-amber-500 flex-shrink-0" />
-            <span className="font-medium">{data?.quests?.completed}/{data?.quests?.total || 3} quests</span>
-          </div>
-        )}
-        {(data?.cv?.progress || 0) >= 100 && (
-          <div className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full border border-emerald-200 whitespace-nowrap">
-            <CheckCircle2 size={14} className="text-emerald-500 flex-shrink-0" />
-            <span className="font-medium">CV klart</span>
-          </div>
-        )}
-      </div>
-
-      {/* Toolbar */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          {isSaving && <span className="text-xs text-slate-400">Sparar...</span>}
-        </div>
-        <div className="flex items-center gap-2 relative" ref={selectorRef}>
-          <button
-            onClick={() => setIsEditing(!isEditing)}
-            className={cn(
-              "flex items-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-sm sm:text-xs font-medium transition-all min-h-[44px] sm:min-h-[36px]",
-              isEditing ? "bg-violet-100 text-violet-700" : "text-slate-500 hover:bg-slate-100 bg-slate-50 sm:bg-transparent"
-            )}
-            aria-label={isEditing ? 'Avsluta redigering av widgets' : 'Redigera widgets'}
-            aria-pressed={isEditing}
-          >
-            <Settings size={16} className="sm:w-3.5 sm:h-3.5" aria-hidden="true" />
-            <span>{isEditing ? 'Klar' : 'Redigera'}</span>
-          </button>
-          <button
-            onClick={() => setShowSelector(!showSelector)}
-            className="flex items-center gap-1.5 px-3 py-2.5 sm:py-2 rounded-xl sm:rounded-lg text-sm sm:text-xs font-medium text-slate-500 hover:bg-slate-100 bg-slate-50 sm:bg-transparent transition-all min-h-[44px] sm:min-h-[36px]"
-            aria-label="Lägg till widget"
-            aria-expanded={showSelector}
-            aria-haspopup="true"
-          >
-            <Plus size={16} className="sm:w-3.5 sm:h-3.5" aria-hidden="true" />
-            <span>Lägg till</span>
-          </button>
-          {showSelector && (
-            <WidgetSelector
-              activeWidgets={widgets}
-              onToggle={toggleWidget}
-              onClose={() => setShowSelector(false)}
-            />
-          )}
-        </div>
-      </div>
-
-      {/* Widget Grid - Grouped by category when not editing */}
-      {isEditing ? (
-        // Flat grid when editing (for drag-and-drop)
-        <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-          {widgets.map((config, index) => (
-            <DraggableWidget
-              key={`${config.id}-${index}`}
-              config={config}
-              onRemove={() => removeWidget(index)}
-              onResize={(size) => resizeWidget(index, size)}
-              onDragStart={() => handleDragStart(index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDrop={handleDrop}
-              isDragging={draggedIndex === index}
-              isEditing={isEditing}
+          return (
+            <Link
+              key={step.id}
+              to={step.path}
+              className={cn(
+                'flex items-center gap-4 p-4 rounded-xl border-2 transition-all group',
+                isComplete
+                  ? 'bg-emerald-50 border-emerald-200 hover:border-emerald-300'
+                  : isNext
+                    ? 'bg-indigo-50 border-indigo-300 hover:border-indigo-400 shadow-sm'
+                    : 'bg-white border-slate-200 hover:border-slate-300'
+              )}
             >
-              {renderWidget(config)}
-            </DraggableWidget>
-          ))}
-        </div>
-      ) : (
-        // Grouped by category when viewing
-        <div className="space-y-5 sm:space-y-6">
-          {Object.entries(WIDGET_CATEGORIES)
-            .sort(([, a], [, b]) => a.order - b.order)
-            .map(([categoryKey, categoryInfo]) => {
-              const categoryWidgets = widgets.filter(
-                w => WIDGET_INFO[w.id].category === categoryKey
-              )
-              if (categoryWidgets.length === 0) return null
+              {/* Step number / check */}
+              <div className={cn(
+                'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105',
+                isComplete
+                  ? 'bg-emerald-500 text-white'
+                  : isNext
+                    ? 'bg-indigo-600 text-white'
+                    : 'bg-slate-100 text-slate-400'
+              )}>
+                {isComplete ? (
+                  <Check className="w-6 h-6" />
+                ) : (
+                  <Icon className="w-6 h-6" />
+                )}
+              </div>
 
-              return (
-                <section key={categoryKey}>
-                  <h2 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 sm:mb-3 px-1">
-                    {categoryInfo.label}
-                  </h2>
-                  <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-                    {categoryWidgets.map((config) => {
-                      const index = widgets.findIndex(w => w.id === config.id)
-                      return (
-                        <DraggableWidget
-                          key={`${config.id}-${index}`}
-                          config={config}
-                          onRemove={() => removeWidget(index)}
-                          onResize={(size) => resizeWidget(index, size)}
-                          onDragStart={() => handleDragStart(index)}
-                          onDragOver={(e) => handleDragOver(e, index)}
-                          onDrop={handleDrop}
-                          isDragging={draggedIndex === index}
-                          isEditing={isEditing}
-                        >
-                          {renderWidget(config)}
-                        </DraggableWidget>
-                      )
-                    })}
-                  </div>
-                </section>
-              )
-            })}
-        </div>
-      )}
+              {/* Content */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className={cn(
+                    'font-semibold',
+                    isComplete ? 'text-emerald-800' : isNext ? 'text-indigo-900' : 'text-slate-700'
+                  )}>
+                    {step.title}
+                  </h3>
+                  {isNext && (
+                    <span className="px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded-full">
+                      NÄSTA
+                    </span>
+                  )}
+                  {isComplete && (
+                    <span className="px-2 py-0.5 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
+                      Klar
+                    </span>
+                  )}
+                </div>
+                <p className={cn(
+                  'text-sm mt-0.5',
+                  isComplete ? 'text-emerald-600' : isNext ? 'text-indigo-600' : 'text-slate-500'
+                )}>
+                  {step.description}
+                </p>
+              </div>
 
-      {widgets.length === 0 && (
-        <div className="text-center py-10 sm:py-12 px-4 bg-slate-50 rounded-xl border-2 border-dashed border-slate-200">
-          <Sparkles className="w-10 h-10 sm:w-8 sm:h-8 text-slate-300 mx-auto mb-3 sm:mb-2" aria-hidden="true" />
-          <p className="text-base sm:text-sm text-slate-500 mb-4 sm:mb-3">Inga widgets ännu</p>
-          <button
-            onClick={() => setShowSelector(true)}
-            className="px-5 py-3 sm:px-4 sm:py-2 bg-violet-600 text-white rounded-xl sm:rounded-lg text-base sm:text-sm font-medium hover:bg-violet-700 active:scale-[0.98] transition-all min-h-[48px] sm:min-h-0"
-          >
-            Lägg till widgets
-          </button>
+              {/* Arrow */}
+              <ChevronRight className={cn(
+                'w-5 h-5 flex-shrink-0 transition-transform group-hover:translate-x-1',
+                isComplete ? 'text-emerald-400' : isNext ? 'text-indigo-400' : 'text-slate-300'
+              )} />
+            </Link>
+          )
+        })}
+      </div>
+
+      {/* All complete celebration */}
+      {allComplete && (
+        <div className="mt-8 text-center">
+          <p className="text-slate-500 text-sm">
+            💡 Tips: Besök <Link to="/journey" className="text-indigo-600 hover:underline font-medium">Min Jobbresa</Link> för att följa din utveckling
+          </p>
         </div>
       )}
     </div>

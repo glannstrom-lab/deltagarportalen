@@ -2,6 +2,7 @@
  * Career Page - Main entry with tabs
  * 8 tabs: Utforska, Nätverk, Anpassning, Företag, Credentials, Flytta, Karriärplan, Kompetens
  */
+import { useEffect } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
@@ -19,6 +20,11 @@ import RelocationTab from './career/RelocationTab'
 
 export default function CareerPage() {
   const { t } = useTranslation()
+
+  // Mark career page as visited for onboarding tracking
+  useEffect(() => {
+    localStorage.setItem('career-visited', 'true')
+  }, [])
 
   // Build tabs with translated labels
   const careerTabs = careerTabDefs.map((tab) => ({

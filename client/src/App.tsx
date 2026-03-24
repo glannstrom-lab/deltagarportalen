@@ -213,43 +213,6 @@ function App() {
           </LazyRoute>
         } />
         
-        {/* Dashboard tab routes */}
-        <Route path="activity" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="community" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="insights" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="learning" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="quests" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        
         {/* Other protected routes */}
         <Route path="cv/*" element={
           <LazyRoute>
