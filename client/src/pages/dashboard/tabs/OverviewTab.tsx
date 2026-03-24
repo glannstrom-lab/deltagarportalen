@@ -93,26 +93,35 @@ export default function OverviewTab() {
   }, [])
 
   const loadProgress = async () => {
+    // Get localStorage values as fallback/merge source
+    const localStorageProgress: OnboardingProgress = {
+      profile: !!localStorage.getItem('profile-data'),
+      interest: !!localStorage.getItem('interest-result'),
+      cv: !!localStorage.getItem('cv-data'),
+      career: !!localStorage.getItem('career-visited'),
+      jobSearch: !!localStorage.getItem('saved-jobs'),
+      coverLetter: !!localStorage.getItem('cover-letters')
+    }
+
     try {
-      const progress = await userApi.getOnboardingProgress()
-      setOnboardingProgress(progress)
+      const cloudProgress = await userApi.getOnboardingProgress()
+
+      // Merge: use cloud value if true, otherwise use localStorage value
+      const mergedProgress: OnboardingProgress = {
+        profile: cloudProgress.profile || localStorageProgress.profile,
+        interest: cloudProgress.interest || localStorageProgress.interest,
+        cv: cloudProgress.cv || localStorageProgress.cv,
+        career: cloudProgress.career || localStorageProgress.career,
+        jobSearch: cloudProgress.jobSearch || localStorageProgress.jobSearch,
+        coverLetter: cloudProgress.coverLetter || localStorageProgress.coverLetter
+      }
+
+      setOnboardingProgress(mergedProgress)
       setSynced(true)
     } catch (err) {
       console.error('Error loading onboarding progress:', err)
-      // Fallback to localStorage for backwards compatibility
-      try {
-        const fallback: OnboardingProgress = {
-          profile: !!localStorage.getItem('profile-data'),
-          interest: !!localStorage.getItem('interest-result'),
-          cv: !!localStorage.getItem('cv-data'),
-          career: !!localStorage.getItem('career-visited'),
-          jobSearch: !!localStorage.getItem('saved-jobs'),
-          coverLetter: !!localStorage.getItem('cover-letters')
-        }
-        setOnboardingProgress(fallback)
-      } catch {
-        // Ignore
-      }
+      // Use localStorage only on error
+      setOnboardingProgress(localStorageProgress)
     } finally {
       setLoading(false)
     }

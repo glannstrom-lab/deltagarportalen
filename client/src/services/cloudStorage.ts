@@ -647,15 +647,22 @@ export const journalApi = {
 // ============================================
 export const interestGuideApi = {
   async getProgress() {
+    const user = await getCurrentUser()
+    if (!user) {
+      storageLogger.debug('Ingen användare inloggad - kan inte hämta intresseguide')
+      return null
+    }
+
     const { data, error } = await supabase
       .from('interest_guide_progress')
       .select('*')
-      .limit(1)
-    
+      .eq('user_id', user.id)
+      .maybeSingle()
+
     if (error && error.code !== 'PGRST116') {
       storageLogger.error('Error getting interest guide progress:', error)
     }
-    return data?.[0] || null
+    return data || null
   },
 
   async saveProgress(progress: {
