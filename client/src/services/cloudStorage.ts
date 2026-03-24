@@ -645,6 +645,20 @@ export const journalApi = {
 // ============================================
 // INTRESSEGUIDE
 // ============================================
+
+export interface InterestGuideHistoryEntry {
+  id: string
+  user_id: string
+  answers: Record<string, number>
+  riasec_profile: Record<string, number>
+  bigfive_profile: Record<string, number>
+  icf_profile: Record<string, number>
+  strong_interest: Record<string, number>
+  top_occupations: Array<{ name: string; matchPercentage: number }>
+  completed_at: string
+  created_at: string
+}
+
 export const interestGuideApi = {
   async getProgress() {
     const user = await getCurrentUser()
@@ -686,7 +700,7 @@ export const interestGuideApi = {
       }, {
         onConflict: 'user_id'
       })
-    
+
     if (error) {
       handleStorageError(error, 'spara intresseguide')
     }
@@ -700,10 +714,96 @@ export const interestGuideApi = {
       .from('interest_guide_progress')
       .delete()
       .eq('user_id', user.id)
-    
+
     if (error) {
       handleStorageError(error, 'återställa intresseguide')
     }
+  },
+
+  // ===== HISTORIK =====
+  async saveToHistory(historyEntry: {
+    answers: Record<string, number>
+    riasec_profile: Record<string, number>
+    bigfive_profile: Record<string, number>
+    icf_profile: Record<string, number>
+    strong_interest: Record<string, number>
+    top_occupations: Array<{ name: string; matchPercentage: number }>
+  }) {
+    const user = await getCurrentUser()
+    if (!user) {
+      storageLogger.debug('Ingen användare inloggad - historik sparas inte')
+      return null
+    }
+
+    const { data, error } = await supabase
+      .from('interest_guide_history')
+      .insert({
+        user_id: user.id,
+        ...historyEntry,
+        completed_at: new Date().toISOString()
+      })
+      .select()
+      .single()
+
+    if (error) {
+      handleStorageError(error, 'spara intresseguide-historik')
+      return null
+    }
+    return data
+  },
+
+  async getHistory(limit: number = 10): Promise<InterestGuideHistoryEntry[]> {
+    const user = await getCurrentUser()
+    if (!user) {
+      return []
+    }
+
+    const { data, error } = await supabase
+      .from('interest_guide_history')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('completed_at', { ascending: false })
+      .limit(limit)
+
+    if (error) {
+      handleStorageError(error, 'hämta intresseguide-historik')
+      return []
+    }
+    return data || []
+  },
+
+  async getHistoryEntry(id: string): Promise<InterestGuideHistoryEntry | null> {
+    const user = await getCurrentUser()
+    if (!user) return null
+
+    const { data, error } = await supabase
+      .from('interest_guide_history')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .maybeSingle()
+
+    if (error) {
+      handleStorageError(error, 'hämta historikpost')
+      return null
+    }
+    return data
+  },
+
+  async getHistoryCount(): Promise<number> {
+    const user = await getCurrentUser()
+    if (!user) return 0
+
+    const { count, error } = await supabase
+      .from('interest_guide_history')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+
+    if (error) {
+      handleStorageError(error, 'räkna historikposter')
+      return 0
+    }
+    return count || 0
   }
 }
 

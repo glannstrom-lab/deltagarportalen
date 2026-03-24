@@ -1,5 +1,6 @@
 /**
  * Results Tab - Display RIASEC profile and personality analysis
+ * With history comparison feature
  */
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
@@ -8,7 +9,7 @@ import { motion } from 'framer-motion'
 import { calculateUserProfile, calculateJobMatches, type UserProfile } from '@/services/interestGuideData'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
 import { LoadingState, InfoCard, Button, Card } from '@/components/ui'
-import { interestGuideApi } from '@/services/cloudStorage'
+import { interestGuideApi, type InterestGuideHistoryEntry } from '@/services/cloudStorage'
 import {
   ClipboardList,
   Sparkles,
@@ -18,8 +19,25 @@ import {
   Trophy,
   ArrowRight,
   CheckCircle,
-  FileText
+  FileText,
+  History,
+  TrendingUp,
+  TrendingDown,
+  Minus,
+  Calendar,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
+
+// RIASEC type names in Swedish
+const RIASEC_NAMES: Record<string, string> = {
+  R: 'Realistisk',
+  I: 'Undersökande',
+  A: 'Konstnärlig',
+  S: 'Social',
+  E: 'Företagsam',
+  C: 'Konventionell'
+}
 
 export default function ResultsTab() {
   const navigate = useNavigate()
@@ -28,26 +46,37 @@ export default function ResultsTab() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showComparisonHint, setShowComparisonHint] = useState(true)
+  const [history, setHistory] = useState<InterestGuideHistoryEntry[]>([])
+  const [showHistory, setShowHistory] = useState(false)
+  const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null)
 
   useEffect(() => {
     const loadResults = async () => {
       try {
         setIsLoading(true)
         setError(null)
-        const data = await interestGuideApi.getProgress()
 
-        console.log('Results tab - Interest guide data:', data) // Debug
+        // Load current progress and history in parallel
+        const [data, historyData] = await Promise.all([
+          interestGuideApi.getProgress(),
+          interestGuideApi.getHistory(10)
+        ])
+
+        console.log('Results tab - Interest guide data:', data)
+        console.log('Results tab - History:', historyData)
 
         if (data?.is_completed && data.answers) {
           try {
             const calculatedProfile = calculateUserProfile(data.answers)
-            console.log('Results tab - Calculated profile:', calculatedProfile) // Debug
+            console.log('Results tab - Calculated profile:', calculatedProfile)
             setProfile(calculatedProfile)
           } catch (calcErr) {
             console.error('Failed to calculate profile:', calcErr)
             setError('Kunde inte beräkna din profil. Försök göra om testet.')
           }
         }
+
+        setHistory(historyData)
       } catch (err) {
         console.error('Failed to load results:', err)
         setError(t('interestGuide.couldNotLoadResults') || 'Kunde inte ladda resultaten')
@@ -109,6 +138,17 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
       navigator.clipboard.writeText(text)
       alert(t('common.copied') || 'Kopierad!')
     }
+  }
+
+  // Get the previous result for comparison (skip the most recent which is current)
+  const previousResult = history.length > 1 ? history[1] : null
+
+  // Calculate change between current and previous
+  const getChangeIndicator = (current: number, previous: number) => {
+    const diff = current - previous
+    if (Math.abs(diff) < 3) return { icon: Minus, color: 'text-gray-400', text: 'Oförändrad' }
+    if (diff > 0) return { icon: TrendingUp, color: 'text-green-500', text: `+${diff}` }
+    return { icon: TrendingDown, color: 'text-red-500', text: `${diff}` }
   }
 
   if (isLoading) {
@@ -204,11 +244,169 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         </Card>
       </motion.div>
 
+      {/* History Comparison Section */}
+      {history.length > 1 && previousResult && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+        >
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                  <History className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h3 className="font-bold text-slate-900">Jämförelse med tidigare test</h3>
+                  <p className="text-xs text-slate-500">
+                    Från {new Date(previousResult.completed_at).toLocaleDateString('sv-SE')}
+                  </p>
+                </div>
+              </div>
+              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                {history.length} tester totalt
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+              {Object.entries(profile.riasec).map(([key, value]) => {
+                const prevValue = previousResult.riasec_profile?.[key] ?? value
+                const change = getChangeIndicator(value, prevValue)
+                const ChangeIcon = change.icon
+
+                return (
+                  <div key={key} className="bg-white rounded-lg p-3 text-center">
+                    <p className="text-xs text-slate-500 mb-1">{RIASEC_NAMES[key]}</p>
+                    <p className="text-lg font-bold text-slate-900">{value}</p>
+                    <div className={`flex items-center justify-center gap-1 text-xs ${change.color}`}>
+                      <ChangeIcon className="w-3 h-3" />
+                      <span>{change.text}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </Card>
+        </motion.div>
+      )}
+
+      {/* History Timeline (expandable) */}
+      {history.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Card className="overflow-hidden">
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <Calendar className="w-5 h-5 text-slate-400" />
+                <span className="font-medium text-slate-700">
+                  Tidigare resultat ({history.length} {history.length === 1 ? 'test' : 'tester'})
+                </span>
+              </div>
+              {showHistory ? (
+                <ChevronUp className="w-5 h-5 text-slate-400" />
+              ) : (
+                <ChevronDown className="w-5 h-5 text-slate-400" />
+              )}
+            </button>
+
+            {showHistory && (
+              <div className="border-t border-slate-100">
+                <div className="max-h-96 overflow-y-auto">
+                  {history.map((entry, index) => (
+                    <div
+                      key={entry.id}
+                      className={`p-4 border-b border-slate-100 last:border-0 ${
+                        index === 0 ? 'bg-indigo-50' : 'hover:bg-slate-50'
+                      } transition-colors cursor-pointer`}
+                      onClick={() => setSelectedHistoryId(selectedHistoryId === entry.id ? null : entry.id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
+                            index === 0 ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-600'
+                          }`}>
+                            {index === 0 ? '★' : index + 1}
+                          </div>
+                          <div>
+                            <p className="font-medium text-slate-900">
+                              {new Date(entry.completed_at).toLocaleDateString('sv-SE', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                              {index === 0 && (
+                                <span className="ml-2 text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">
+                                  Aktuellt
+                                </span>
+                              )}
+                            </p>
+                            <p className="text-sm text-slate-500">
+                              RIASEC: {Object.entries(entry.riasec_profile)
+                                .sort(([, a], [, b]) => (b as number) - (a as number))
+                                .slice(0, 3)
+                                .map(([key]) => key)
+                                .join('')}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          {entry.top_occupations && entry.top_occupations.length > 0 && (
+                            <p className="text-sm text-slate-600">
+                              Topp: {entry.top_occupations[0].name}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Expanded details */}
+                      {selectedHistoryId === entry.id && (
+                        <motion.div
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: 'auto' }}
+                          className="mt-4 pt-4 border-t border-slate-200"
+                        >
+                          <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
+                            {Object.entries(entry.riasec_profile).map(([key, value]) => (
+                              <div key={key} className="text-center p-2 bg-white rounded-lg">
+                                <p className="text-xs text-slate-500">{key}</p>
+                                <p className="font-bold text-slate-900">{value as number}</p>
+                              </div>
+                            ))}
+                          </div>
+                          {entry.top_occupations && entry.top_occupations.length > 0 && (
+                            <div className="space-y-1">
+                              <p className="text-xs font-medium text-slate-500 mb-2">Topp 5 yrkesmatchningar:</p>
+                              {entry.top_occupations.slice(0, 5).map((occ, i) => (
+                                <div key={i} className="flex justify-between text-sm">
+                                  <span className="text-slate-700">{i + 1}. {occ.name}</span>
+                                  <span className="font-medium text-indigo-600">{occ.matchPercentage}%</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </motion.div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+        </motion.div>
+      )}
+
       {/* Top Job Matches Preview */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
+        transition={{ delay: 0.15 }}
       >
         <Card className="p-6">
           <div className="flex items-center justify-between mb-4">
@@ -251,8 +449,8 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         <ResultsView profile={profile} onRestart={handleRestart} />
       </motion.div>
 
-      {/* Comparison Hint */}
-      {showComparisonHint && (
+      {/* Comparison Hint - only show if no history yet */}
+      {showComparisonHint && history.length <= 1 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

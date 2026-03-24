@@ -8,6 +8,7 @@ import {
   allQuestions,
   sections,
   calculateUserProfile,
+  calculateJobMatches,
   type SectionId,
 } from '@/services/interestGuideData'
 import { QuestionCard } from '@/components/interest-guide/QuestionCard'
@@ -125,10 +126,30 @@ export default function TestTab() {
         setIsSaving(true)
         const calculatedProfile = calculateUserProfile(answers)
 
+        // Calculate job matches for history
+        const jobMatches = calculateJobMatches(calculatedProfile)
+        const topOccupations = jobMatches.slice(0, 5).map(m => ({
+          name: m.occupation.name,
+          matchPercentage: m.matchPercentage
+        }))
+
+        // Save current progress
         await interestGuideApi.saveProgress({
           current_step: currentQuestionIndex,
           answers: answers,
           is_completed: true
+        })
+
+        // Save to history for comparison over time
+        await interestGuideApi.saveToHistory({
+          answers: answers,
+          riasec_profile: calculatedProfile.riasec,
+          bigfive_profile: calculatedProfile.bigFive,
+          icf_profile: calculatedProfile.icf,
+          strong_interest: calculatedProfile.strongInterest,
+          top_occupations: topOccupations
+        }).catch(err => {
+          console.error('Error saving to history:', err)
         })
 
         // Mark onboarding step as complete in cloud
