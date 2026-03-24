@@ -4,7 +4,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react'
-import { savedJobsApi } from '@/services/supabaseApi'
+import { savedJobsApi, userApi } from '@/services/supabaseApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useAchievementTracker } from './useAchievementTracker'
 
@@ -67,6 +67,12 @@ export function useSavedJobs() {
 
       // Track achievement
       trackJobSaved(job.headline, job.employer?.name)
+
+      // Mark job search onboarding step as complete
+      userApi.updateOnboardingStep('jobSearch', true).catch(err => {
+        console.error('Error updating onboarding progress:', err)
+      })
+      localStorage.setItem('saved-jobs', 'true')
 
       return true
     } catch (err) {

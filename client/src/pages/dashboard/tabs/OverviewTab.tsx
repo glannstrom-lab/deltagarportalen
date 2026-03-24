@@ -1,8 +1,10 @@
 /**
  * Overview Tab - Simplified onboarding-focused view
  * Shows the user's journey through 6 steps
+ * Progress is synced to cloud
  */
 
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
@@ -14,110 +16,66 @@ import {
   Mail,
   Check,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  Cloud,
+  Loader2
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
+import { userApi, type OnboardingProgress } from '@/services/supabaseApi'
 
 // Step configuration
 interface Step {
-  id: string
+  id: keyof OnboardingProgress
   title: string
   description: string
   icon: React.ElementType
   path: string
-  checkComplete: () => boolean
 }
 
-// Check completion status from localStorage/state
-const getSteps = (): Step[] => [
+// Static step definitions
+const STEPS: Step[] = [
   {
     id: 'profile',
     title: 'Fyll i din profil',
     description: 'Lägg till dina kontaktuppgifter',
     icon: User,
-    path: '/profile',
-    checkComplete: () => {
-      try {
-        const profile = localStorage.getItem('profile-data')
-        if (!profile) return false
-        const parsed = JSON.parse(profile)
-        return !!(parsed.firstName && parsed.email)
-      } catch {
-        return false
-      }
-    }
+    path: '/profile'
   },
   {
     id: 'interest',
     title: 'Gör intresseguiden',
     description: 'Upptäck vilka yrken som passar dig',
     icon: Compass,
-    path: '/interest-guide',
-    checkComplete: () => {
-      return !!localStorage.getItem('interest-result')
-    }
+    path: '/interest-guide'
   },
   {
     id: 'cv',
     title: 'Skapa ditt CV',
     description: 'Bygg ett professionellt CV',
     icon: FileText,
-    path: '/cv',
-    checkComplete: () => {
-      try {
-        const cv = localStorage.getItem('cv-data')
-        if (!cv) return false
-        const parsed = JSON.parse(cv)
-        return !!(parsed.firstName && (parsed.workExperience?.length > 0 || parsed.skills?.length > 0))
-      } catch {
-        return false
-      }
-    }
+    path: '/cv'
   },
   {
     id: 'career',
     title: 'Utforska karriärvägar',
     description: 'Se möjligheter och utvecklingsvägar',
     icon: Target,
-    path: '/career',
-    checkComplete: () => {
-      return !!localStorage.getItem('career-visited')
-    }
+    path: '/career'
   },
   {
-    id: 'job-search',
+    id: 'jobSearch',
     title: 'Sök jobb',
     description: 'Hitta och spara intressanta jobb',
     icon: Search,
-    path: '/job-search',
-    checkComplete: () => {
-      try {
-        const saved = localStorage.getItem('saved-jobs')
-        if (!saved) return false
-        const parsed = JSON.parse(saved)
-        return Array.isArray(parsed) && parsed.length > 0
-      } catch {
-        return false
-      }
-    }
+    path: '/job-search'
   },
   {
-    id: 'cover-letter',
+    id: 'coverLetter',
     title: 'Skriv personligt brev',
     description: 'Skapa ett övertygande brev',
     icon: Mail,
-    path: '/cover-letter',
-    checkComplete: () => {
-      try {
-        const letters = localStorage.getItem('cover-letters')
-        if (!letters) return false
-        const parsed = JSON.parse(letters)
-        return Array.isArray(parsed) && parsed.length > 0
-      } catch {
-        return false
-      }
-    }
+    path: '/cover-letter'
   }
 ]
 
@@ -125,15 +83,64 @@ export default function OverviewTab() {
   const { profile } = useAuthStore()
   const { t } = useTranslation()
 
-  const steps = getSteps()
-  const completedSteps = steps.filter(step => step.checkComplete())
-  const completedCount = completedSteps.length
-  const totalSteps = steps.length
+  const [onboardingProgress, setOnboardingProgress] = useState<OnboardingProgress>({})
+  const [loading, setLoading] = useState(true)
+  const [synced, setSynced] = useState(true)
+
+  // Load onboarding progress from cloud
+  useEffect(() => {
+    loadProgress()
+  }, [])
+
+  const loadProgress = async () => {
+    try {
+      const progress = await userApi.getOnboardingProgress()
+      setOnboardingProgress(progress)
+      setSynced(true)
+    } catch (err) {
+      console.error('Error loading onboarding progress:', err)
+      // Fallback to localStorage for backwards compatibility
+      try {
+        const fallback: OnboardingProgress = {
+          profile: !!localStorage.getItem('profile-data'),
+          interest: !!localStorage.getItem('interest-result'),
+          cv: !!localStorage.getItem('cv-data'),
+          career: !!localStorage.getItem('career-visited'),
+          jobSearch: !!localStorage.getItem('saved-jobs'),
+          coverLetter: !!localStorage.getItem('cover-letters')
+        }
+        setOnboardingProgress(fallback)
+      } catch {
+        // Ignore
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Check if step is complete
+  const isStepComplete = (stepId: keyof OnboardingProgress): boolean => {
+    return !!onboardingProgress[stepId]
+  }
+
+  const completedCount = STEPS.filter(step => isStepComplete(step.id)).length
+  const totalSteps = STEPS.length
   const progress = Math.round((completedCount / totalSteps) * 100)
 
   // Find the first incomplete step (next step to do)
-  const nextStepIndex = steps.findIndex(step => !step.checkComplete())
+  const nextStepIndex = STEPS.findIndex(step => !isStepComplete(step.id))
   const allComplete = nextStepIndex === -1
+
+  if (loading) {
+    return (
+      <div className="max-w-2xl mx-auto flex items-center justify-center py-12">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+          <p className="text-slate-600">Laddar din framsteg...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -154,6 +161,11 @@ export default function OverviewTab() {
             : 'Följ stegen nedan för att komma igång med din jobbsökarresa.'
           }
         </p>
+        {/* Cloud sync indicator */}
+        <div className="flex items-center justify-center gap-1.5 mt-2 text-xs text-slate-400">
+          <Cloud className="w-3.5 h-3.5" />
+          <span>Synkas automatiskt</span>
+        </div>
       </div>
 
       {/* Progress */}
@@ -172,8 +184,8 @@ export default function OverviewTab() {
 
       {/* Steps */}
       <div className="space-y-3">
-        {steps.map((step, index) => {
-          const isComplete = step.checkComplete()
+        {STEPS.map((step, index) => {
+          const isComplete = isStepComplete(step.id)
           const isNext = index === nextStepIndex
           const Icon = step.icon
 

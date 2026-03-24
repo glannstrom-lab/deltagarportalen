@@ -35,7 +35,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { aiLogger } from '@/lib/logger'
 import { aiService } from '@/services/aiService'
-import { cvApi, coverLetterApi, jobsApi } from '@/services/api'
+import { cvApi, coverLetterApi, jobsApi, userApi } from '@/services/api'
 import { searchPlatsbanken, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useAutoSave } from '@/hooks/useAutoSave'
 import { AutoSaveIndicator } from '@/components/AutoSaveIndicator'
@@ -528,7 +528,7 @@ export default function CoverLetterGenerator() {
     if (!generatedBrev.trim()) return
 
     const title = saveTitle.trim() || `${t('coverLetterGenerator.messages.defaultTitle')} - ${new Date().toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}`
-    
+
     try {
       await coverLetterApi.create({
         title,
@@ -538,11 +538,17 @@ export default function CoverLetterGenerator() {
         job_title: jobTitle || undefined,
         ai_generated: true
       })
-      
+
       await loadSavedLetters()
       setIsSaving(true)
       setTimeout(() => setIsSaving(false), 1000)
       clearSavedData() // Rensa auto-save när explicit sparat
+
+      // Mark cover letter onboarding step as complete
+      userApi.updateOnboardingStep('coverLetter', true).catch(err => {
+        console.error('Error updating onboarding progress:', err)
+      })
+      localStorage.setItem('cover-letters', 'true')
     } catch (e) {
       console.error('Kunde inte spara brev:', e)
       setError(t('coverLetterGenerator.messages.couldNotSave'))

@@ -16,6 +16,7 @@ import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { Button, LoadingState, InfoCard } from '@/components/ui'
 import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChart3, RotateCcw, Briefcase } from 'lucide-react'
 import { interestGuideApi } from '@/services/cloudStorage'
+import { userApi } from '@/services/supabaseApi'
 
 export default function TestTab() {
   const { t } = useTranslation()
@@ -129,6 +130,14 @@ export default function TestTab() {
           answers: answers,
           is_completed: true
         })
+
+        // Mark onboarding step as complete in cloud
+        await userApi.updateOnboardingStep('interest', true).catch(err => {
+          console.error('Error updating onboarding progress:', err)
+        })
+
+        // Also set localStorage for backwards compatibility
+        localStorage.setItem('interest-result', 'true')
 
         // Navigate to results
         navigate('/interest-guide/results')

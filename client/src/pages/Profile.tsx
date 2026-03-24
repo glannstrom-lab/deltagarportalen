@@ -2,14 +2,14 @@
  * Profile Page - Modern design with desired jobs, interests, and interest guide CTA
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { userApi } from '../services/api'
 import {
   User, Save, CheckCircle, Camera, Phone, MapPin, Mail,
   Sparkles, Compass, ChevronRight, Briefcase, Heart,
-  Plus, X, Loader2, ArrowRight
+  Plus, X, Loader2, ArrowRight, Cloud, CloudOff
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
@@ -66,10 +66,15 @@ export default function Profile() {
   const [newInterest, setNewInterest] = useState('')
   const [showInterestSuggestions, setShowInterestSuggestions] = useState(false)
 
-  // Load profile and saved preferences
+  // Cloud sync status
+  const [cloudSyncing, setCloudSyncing] = useState(false)
+  const [cloudSynced, setCloudSynced] = useState(true)
+  const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  // Load profile and saved preferences from cloud
   useEffect(() => {
     loadProfile()
-    loadPreferences()
+    loadPreferencesFromCloud()
   }, [])
 
   const loadProfile = async () => {
@@ -93,38 +98,74 @@ export default function Profile() {
     }
   }
 
-  const loadPreferences = () => {
+  const loadPreferencesFromCloud = async () => {
     try {
-      const savedJobs = localStorage.getItem('profile-desired-jobs')
-      if (savedJobs) setDesiredJobs(JSON.parse(savedJobs))
-
-      const savedInterests = localStorage.getItem('profile-interests')
-      if (savedInterests) setInterests(JSON.parse(savedInterests))
-    } catch {
-      // Ignore errors
+      const prefs = await userApi.getPreferences()
+      if (prefs.desired_jobs) setDesiredJobs(prefs.desired_jobs)
+      if (prefs.interests) setInterests(prefs.interests)
+    } catch (err) {
+      console.error('Error loading preferences from cloud:', err)
+      // Fallback to localStorage
+      try {
+        const savedJobs = localStorage.getItem('profile-desired-jobs')
+        if (savedJobs) setDesiredJobs(JSON.parse(savedJobs))
+        const savedInterests = localStorage.getItem('profile-interests')
+        if (savedInterests) setInterests(JSON.parse(savedInterests))
+      } catch {
+        // Ignore
+      }
     }
   }
 
-  const savePreferences = (jobs: string[], ints: string[]) => {
-    localStorage.setItem('profile-desired-jobs', JSON.stringify(jobs))
-    localStorage.setItem('profile-interests', JSON.stringify(ints))
-    // Also save profile-data for onboarding tracking
-    localStorage.setItem('profile-data', JSON.stringify({
-      firstName: formData.first_name,
-      lastName: formData.last_name,
-      email: profile?.email,
-      phone: formData.phone,
-      location: formData.location
-    }))
-  }
+  // Auto-save to cloud with debounce
+  const savePreferencesToCloud = useCallback(async (jobs: string[], ints: string[]) => {
+    // Clear any pending sync
+    if (syncTimeoutRef.current) {
+      clearTimeout(syncTimeoutRef.current)
+    }
+
+    setCloudSynced(false)
+
+    // Debounce cloud save by 1 second
+    syncTimeoutRef.current = setTimeout(async () => {
+      setCloudSyncing(true)
+      try {
+        await userApi.updatePreferences({
+          desired_jobs: jobs,
+          interests: ints
+        })
+        setCloudSynced(true)
+      } catch (err) {
+        console.error('Error saving to cloud:', err)
+        // Save to localStorage as fallback
+        localStorage.setItem('profile-desired-jobs', JSON.stringify(jobs))
+        localStorage.setItem('profile-interests', JSON.stringify(ints))
+      } finally {
+        setCloudSyncing(false)
+      }
+    }, 1000)
+  }, [])
 
   const handleSave = async () => {
     setSaving(true)
     setError(null)
     try {
+      // Save profile data
       await userApi.updateProfile(formData)
-      savePreferences(desiredJobs, interests)
+
+      // Save preferences and mark onboarding step complete
+      await userApi.updatePreferences({
+        desired_jobs: desiredJobs,
+        interests: interests
+      })
+
+      // Mark profile step as complete if basic info is filled
+      if (formData.first_name && profile?.email) {
+        await userApi.updateOnboardingStep('profile', true)
+      }
+
       setSaved(true)
+      setCloudSynced(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err) {
       console.error('Error saving profile:', err)
@@ -142,7 +183,7 @@ export default function Profile() {
     if (job.trim() && desiredJobs.length < 3 && !desiredJobs.includes(job.trim())) {
       const updated = [...desiredJobs, job.trim()]
       setDesiredJobs(updated)
-      savePreferences(updated, interests)
+      savePreferencesToCloud(updated, interests)
     }
     setNewJob('')
     setShowJobSuggestions(false)
@@ -151,14 +192,14 @@ export default function Profile() {
   const removeJob = (index: number) => {
     const updated = desiredJobs.filter((_, i) => i !== index)
     setDesiredJobs(updated)
-    savePreferences(updated, interests)
+    savePreferencesToCloud(updated, interests)
   }
 
   const addInterest = (interest: string) => {
     if (interest.trim() && interests.length < 3 && !interests.includes(interest.trim())) {
       const updated = [...interests, interest.trim()]
       setInterests(updated)
-      savePreferences(desiredJobs, updated)
+      savePreferencesToCloud(desiredJobs, updated)
     }
     setNewInterest('')
     setShowInterestSuggestions(false)
@@ -167,7 +208,7 @@ export default function Profile() {
   const removeInterest = (index: number) => {
     const updated = interests.filter((_, i) => i !== index)
     setInterests(updated)
-    savePreferences(desiredJobs, updated)
+    savePreferencesToCloud(desiredJobs, updated)
   }
 
   const filteredJobSuggestions = SUGGESTED_JOBS.filter(
@@ -549,6 +590,26 @@ export default function Profile() {
             Profilen har sparats!
           </div>
         )}
+
+        {/* Cloud Sync Status */}
+        <div className="flex items-center justify-center gap-2 text-sm">
+          {cloudSyncing ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin text-indigo-500" />
+              <span className="text-slate-500">Synkar till molnet...</span>
+            </>
+          ) : cloudSynced ? (
+            <>
+              <Cloud className="w-4 h-4 text-emerald-500" />
+              <span className="text-emerald-600">Synkat med molnet</span>
+            </>
+          ) : (
+            <>
+              <CloudOff className="w-4 h-4 text-amber-500" />
+              <span className="text-amber-600">Ändringar ej sparade</span>
+            </>
+          )}
+        </div>
 
         {/* Save Button */}
         <button

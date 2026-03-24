@@ -5,7 +5,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { cvApi } from '@/services/supabaseApi'
+import { cvApi, userApi } from '@/services/supabaseApi'
 import { useCVStore } from '@/stores/cvStore'
 import type { CVData } from '@/services/supabaseApi'
 import { useAchievementTracker } from './useAchievementTracker'
@@ -47,6 +47,14 @@ export function useCVAutoSave(currentData: CVData): UseCVAutoSaveReturn {
       if (now - lastTrackedTime.current > 30000) {
         lastTrackedTime.current = now
         trackCVUpdate()
+      }
+
+      // Mark CV onboarding step as complete in cloud (if CV has meaningful content)
+      if (currentData?.firstName || currentData?.workExperience?.length || currentData?.skills?.length) {
+        userApi.updateOnboardingStep('cv', true).catch(err => {
+          console.error('Error updating onboarding progress:', err)
+        })
+        localStorage.setItem('cv-data', JSON.stringify(currentData))
       }
     },
     onError: (error: unknown) => {

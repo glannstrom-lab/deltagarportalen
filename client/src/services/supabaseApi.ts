@@ -965,17 +965,35 @@ export const jobsApi = {
 // ============================================
 // USER API
 // ============================================
+
+// Onboarding progress interface
+export interface OnboardingProgress {
+  profile?: boolean
+  interest?: boolean
+  cv?: boolean
+  career?: boolean
+  jobSearch?: boolean
+  coverLetter?: boolean
+}
+
+// Profile preferences interface
+export interface ProfilePreferences {
+  desired_jobs?: string[]
+  interests?: string[]
+  onboarding_progress?: OnboardingProgress
+}
+
 export const userApi = {
   async getProfile() {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
+
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
       .eq('id', user.id)
       .single()
-    
+
     if (error) handleError(error)
     return data
   },
@@ -983,16 +1001,108 @@ export const userApi = {
   async updateProfile(updates: Partial<Tables['profiles']>) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
+
     const { data, error } = await supabase
       .from('profiles')
       .update(updates)
       .eq('id', user.id)
       .select()
       .single()
-    
+
     if (error) handleError(error)
     return data
+  },
+
+  // Get profile preferences (desired jobs, interests, onboarding)
+  async getPreferences(): Promise<ProfilePreferences> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('desired_jobs, interests, onboarding_progress')
+      .eq('id', user.id)
+      .single()
+
+    if (error) {
+      // Return empty if columns don't exist yet
+      if (error.code === '42703') {
+        return { desired_jobs: [], interests: [], onboarding_progress: {} }
+      }
+      handleError(error)
+    }
+
+    return {
+      desired_jobs: data?.desired_jobs || [],
+      interests: data?.interests || [],
+      onboarding_progress: data?.onboarding_progress || {}
+    }
+  },
+
+  // Update profile preferences
+  async updatePreferences(prefs: ProfilePreferences) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const updates: Record<string, unknown> = {}
+    if (prefs.desired_jobs !== undefined) updates.desired_jobs = prefs.desired_jobs
+    if (prefs.interests !== undefined) updates.interests = prefs.interests
+    if (prefs.onboarding_progress !== undefined) updates.onboarding_progress = prefs.onboarding_progress
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', user.id)
+      .select('desired_jobs, interests, onboarding_progress')
+      .single()
+
+    if (error) handleError(error)
+    return data
+  },
+
+  // Update single onboarding step
+  async updateOnboardingStep(step: keyof OnboardingProgress, completed: boolean) {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    // First get current progress
+    const { data: current } = await supabase
+      .from('profiles')
+      .select('onboarding_progress')
+      .eq('id', user.id)
+      .single()
+
+    const currentProgress = (current?.onboarding_progress || {}) as OnboardingProgress
+    const newProgress = { ...currentProgress, [step]: completed }
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .update({ onboarding_progress: newProgress })
+      .eq('id', user.id)
+      .select('onboarding_progress')
+      .single()
+
+    if (error) handleError(error)
+    return data?.onboarding_progress as OnboardingProgress
+  },
+
+  // Get onboarding progress
+  async getOnboardingProgress(): Promise<OnboardingProgress> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('onboarding_progress')
+      .eq('id', user.id)
+      .single()
+
+    if (error) {
+      if (error.code === '42703') return {}
+      handleError(error)
+    }
+
+    return (data?.onboarding_progress || {}) as OnboardingProgress
   },
 
   async updateSettings(settings: {
@@ -1006,7 +1116,7 @@ export const userApi = {
   }) {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
-    
+
     const { data, error } = await supabase
       .from('user_settings')
       .upsert({
@@ -1023,7 +1133,7 @@ export const userApi = {
       })
       .select()
       .single()
-    
+
     if (error) handleError(error)
     return data
   }
