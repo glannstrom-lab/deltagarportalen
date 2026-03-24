@@ -1,31 +1,37 @@
+/**
+ * Profile Page - Modern design with desired jobs, interests, and interest guide CTA
+ */
+
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { userApi } from '../services/api'
 import {
   User, Save, CheckCircle, Camera, Phone, MapPin, Mail,
-  FileText, Sparkles, Lightbulb, Compass, ChevronRight
+  Sparkles, Compass, ChevronRight, Briefcase, Heart,
+  Plus, X, Loader2, ArrowRight
 } from 'lucide-react'
-import { PageLayout } from '@/components/layout/index'
-import {
-  Card,
-  CardHeader,
-  CardSection,
-  Input,
-  Textarea,
-  Button,
-  LoadingState,
-  ErrorState,
-  InfoCard,
-  StatCard
-} from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
-import { getPersonalityStrengths } from '@/services/interestPersonalization'
+
+// Suggested jobs for autocomplete
+const SUGGESTED_JOBS = [
+  'Projektledare', 'Utvecklare', 'Designer', 'Marknadsförare', 'Säljare',
+  'Ekonom', 'HR-specialist', 'Lärare', 'Sjuksköterska', 'Ingenjör',
+  'Konsult', 'Chef', 'Administratör', 'Analytiker', 'Koordinator'
+]
+
+// Suggested interests
+const SUGGESTED_INTERESTS = [
+  'Teknik', 'Kreativitet', 'Ledarskap', 'Problemlösning', 'Kommunikation',
+  'Analys', 'Teamwork', 'Innovation', 'Strategi', 'Kundkontakt',
+  'Projektledning', 'Design', 'Forskning', 'Utbildning', 'Hållbarhet'
+]
 
 export default function Profile() {
   const { t, i18n } = useTranslation()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
+
   const [profile, setProfile] = useState<{
     first_name?: string
     last_name?: string
@@ -34,13 +40,14 @@ export default function Profile() {
     location?: string
     bio?: string
     created_at: string
-    _count?: {
-      cv?: number
-      coverLetters?: number
-    }
-    interestResult?: boolean
   } | null>(null)
+
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  // Form data
   const [formData, setFormData] = useState({
     first_name: '',
     last_name: '',
@@ -48,12 +55,21 @@ export default function Profile() {
     location: '',
     bio: ''
   })
-  const [saving, setSaving] = useState(false)
-  const [saved, setSaved] = useState(false)
-  const [error, setError] = useState<string | null>(null)
 
+  // Desired jobs (top 3)
+  const [desiredJobs, setDesiredJobs] = useState<string[]>([])
+  const [newJob, setNewJob] = useState('')
+  const [showJobSuggestions, setShowJobSuggestions] = useState(false)
+
+  // Interests (top 3)
+  const [interests, setInterests] = useState<string[]>([])
+  const [newInterest, setNewInterest] = useState('')
+  const [showInterestSuggestions, setShowInterestSuggestions] = useState(false)
+
+  // Load profile and saved preferences
   useEffect(() => {
     loadProfile()
+    loadPreferences()
   }, [])
 
   const loadProfile = async () => {
@@ -77,11 +93,37 @@ export default function Profile() {
     }
   }
 
+  const loadPreferences = () => {
+    try {
+      const savedJobs = localStorage.getItem('profile-desired-jobs')
+      if (savedJobs) setDesiredJobs(JSON.parse(savedJobs))
+
+      const savedInterests = localStorage.getItem('profile-interests')
+      if (savedInterests) setInterests(JSON.parse(savedInterests))
+    } catch {
+      // Ignore errors
+    }
+  }
+
+  const savePreferences = (jobs: string[], ints: string[]) => {
+    localStorage.setItem('profile-desired-jobs', JSON.stringify(jobs))
+    localStorage.setItem('profile-interests', JSON.stringify(ints))
+    // Also save profile-data for onboarding tracking
+    localStorage.setItem('profile-data', JSON.stringify({
+      firstName: formData.first_name,
+      lastName: formData.last_name,
+      email: profile?.email,
+      phone: formData.phone,
+      location: formData.location
+    }))
+  }
+
   const handleSave = async () => {
     setSaving(true)
     setError(null)
     try {
       await userApi.updateProfile(formData)
+      savePreferences(desiredJobs, interests)
       setSaved(true)
       setTimeout(() => setSaved(false), 3000)
     } catch (err) {
@@ -96,305 +138,442 @@ export default function Profile() {
     setFormData(prev => ({ ...prev, [field]: value }))
   }
 
-  if (loading) {
-    return (
-      <PageLayout title={t('profile.title')} showTabs={false}>
-        <LoadingState
-          title={t('profile.loading')}
-          message={t('profile.loadingMessage')}
-          fullHeight
-        />
-      </PageLayout>
-    )
+  const addJob = (job: string) => {
+    if (job.trim() && desiredJobs.length < 3 && !desiredJobs.includes(job.trim())) {
+      const updated = [...desiredJobs, job.trim()]
+      setDesiredJobs(updated)
+      savePreferences(updated, interests)
+    }
+    setNewJob('')
+    setShowJobSuggestions(false)
   }
 
-  if (error && !profile) {
+  const removeJob = (index: number) => {
+    const updated = desiredJobs.filter((_, i) => i !== index)
+    setDesiredJobs(updated)
+    savePreferences(updated, interests)
+  }
+
+  const addInterest = (interest: string) => {
+    if (interest.trim() && interests.length < 3 && !interests.includes(interest.trim())) {
+      const updated = [...interests, interest.trim()]
+      setInterests(updated)
+      savePreferences(desiredJobs, updated)
+    }
+    setNewInterest('')
+    setShowInterestSuggestions(false)
+  }
+
+  const removeInterest = (index: number) => {
+    const updated = interests.filter((_, i) => i !== index)
+    setInterests(updated)
+    savePreferences(desiredJobs, updated)
+  }
+
+  const filteredJobSuggestions = SUGGESTED_JOBS.filter(
+    job => job.toLowerCase().includes(newJob.toLowerCase()) && !desiredJobs.includes(job)
+  ).slice(0, 5)
+
+  const filteredInterestSuggestions = SUGGESTED_INTERESTS.filter(
+    int => int.toLowerCase().includes(newInterest.toLowerCase()) && !interests.includes(int)
+  ).slice(0, 5)
+
+  if (loading) {
     return (
-      <PageLayout title={t('profile.title')} showTabs={false}>
-        <ErrorState
-          title={t('profile.errorLoadingTitle')}
-          message={error}
-          onRetry={loadProfile}
-        />
-      </PageLayout>
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+          <p className="text-slate-600">Laddar profil...</p>
+        </div>
+      </div>
     )
   }
 
   return (
-    <PageLayout
-      title={t('profile.title')}
-      description={t('profile.description')}
-      showTabs={false}
-      className="max-w-3xl mx-auto"
-    >
-      {/* Profile Card */}
-      <Card variant="elevated">
-        {/* Profile Header with Avatar */}
-        <div className="flex flex-col sm:flex-row items-center gap-6 mb-8 pb-6 border-b border-slate-100">
-          <div className="relative">
-            <div className="w-24 h-24 bg-gradient-to-br from-indigo-100 to-violet-100 rounded-full flex items-center justify-center shadow-inner">
-              <User size={48} className="text-indigo-600" />
+    <div className="min-h-screen bg-gradient-to-b from-indigo-50 via-white to-slate-50">
+      {/* Hero Header */}
+      <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white">
+        <div className="max-w-3xl mx-auto px-4 py-12">
+          <div className="flex flex-col sm:flex-row items-center gap-6">
+            {/* Avatar */}
+            <div className="relative">
+              <div className="w-28 h-28 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center ring-4 ring-white/30">
+                <User className="w-14 h-14 text-white" />
+              </div>
+              <button
+                className="absolute bottom-0 right-0 w-10 h-10 bg-white text-indigo-600 rounded-full flex items-center justify-center shadow-lg hover:bg-indigo-50 transition-colors"
+                onClick={() => alert('Bilduppladdning kommer snart!')}
+              >
+                <Camera className="w-5 h-5" />
+              </button>
             </div>
-            <button 
-              className={cn(
-                'absolute -bottom-1 -right-1 w-8 h-8',
-                'bg-indigo-600 hover:bg-indigo-700 text-white',
-                'rounded-full flex items-center justify-center shadow-md',
-                'transition-colors'
+
+            {/* Name & Email */}
+            <div className="text-center sm:text-left">
+              <h1 className="text-2xl sm:text-3xl font-bold">
+                {formData.first_name || 'Din'} {formData.last_name || 'Profil'}
+              </h1>
+              <p className="text-indigo-200 mt-1 flex items-center justify-center sm:justify-start gap-2">
+                <Mail className="w-4 h-4" />
+                {profile?.email}
+              </p>
+              {formData.location && (
+                <p className="text-indigo-200 mt-1 flex items-center justify-center sm:justify-start gap-2">
+                  <MapPin className="w-4 h-4" />
+                  {formData.location}
+                </p>
               )}
-              title={t('profile.uploadPhotoSoon')}
-              onClick={() => alert(t('profile.uploadPhotoSoon'))}
-            >
-              <Camera size={14} />
-            </button>
-          </div>
-          <div className="text-center sm:text-left">
-            <h2 className="text-xl font-semibold text-slate-800">
-              {profile?.first_name} {profile?.last_name}
-            </h2>
-            <div className="flex items-center justify-center sm:justify-start gap-2 text-slate-500 mt-1">
-              <Mail size={14} />
-              <span>{profile?.email || t('profile.noEmail')}</span>
             </div>
-            <p className="text-sm text-slate-400 mt-2">
-              {t('profile.memberSince')} {new Date(profile?.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
-            </p>
           </div>
         </div>
-
-        {/* Form */}
-        <div className="space-y-6">
-          {/* Name Fields */}
-          <CardSection title={t('profile.personalInfo')}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label={t('profile.firstName')}
-                value={formData.first_name}
-                onChange={(e) => handleChange('first_name', e.target.value)}
-                placeholder={t('profile.firstNamePlaceholder')}
-                leftIcon={<User size={16} />}
-              />
-              <Input
-                label={t('profile.lastName')}
-                value={formData.last_name}
-                onChange={(e) => handleChange('last_name', e.target.value)}
-                placeholder={t('profile.lastNamePlaceholder')}
-                leftIcon={<User size={16} />}
-              />
-            </div>
-          </CardSection>
-
-          {/* Contact Fields */}
-          <CardSection title={t('profile.contactInfo')}>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <Input
-                label={t('profile.phone')}
-                type="tel"
-                value={formData.phone}
-                onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder={t('profile.phonePlaceholder')}
-                leftIcon={<Phone size={16} />}
-              />
-              <Input
-                label={t('profile.location')}
-                value={formData.location}
-                onChange={(e) => handleChange('location', e.target.value)}
-                placeholder={t('profile.locationPlaceholder')}
-                leftIcon={<MapPin size={16} />}
-              />
-            </div>
-          </CardSection>
-
-          {/* Bio Field */}
-          <CardSection title={t('profile.aboutMe')}>
-            <Textarea
-              value={formData.bio}
-              onChange={(e) => handleChange('bio', e.target.value)}
-              placeholder={t('profile.bioPlaceholder')}
-              hint={t('profile.bioHint')}
-              maxLength={500}
-            />
-          </CardSection>
-
-          {/* Email Field (Read-only) */}
-          <CardSection>
-            <Input
-              label={t('profile.email')}
-              type="email"
-              value={profile?.email || ''}
-              disabled
-              leftIcon={<Mail size={16} />}
-              hint={t('profile.emailHint')}
-            />
-          </CardSection>
-
-          {/* Error Message */}
-          {error && (
-            <InfoCard variant="error" title={t('profile.errorOccurred')}>
-              {error}
-            </InfoCard>
-          )}
-
-          {/* Success Message */}
-          {saved && (
-            <InfoCard variant="success" title={t('profile.savedTitle')}>
-              {t('profile.savedMessage')}
-            </InfoCard>
-          )}
-
-          {/* Save Button */}
-          <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row gap-3">
-            <Button
-              variant="primary"
-              onClick={handleSave}
-              isLoading={saving}
-              loadingText={t('profile.saving')}
-              leftIcon={saved ? <CheckCircle size={18} /> : <Save size={18} />}
-              touchOptimized
-            >
-              {saved ? t('profile.savedTitle') : t('profile.saveChanges')}
-            </Button>
-          </div>
-        </div>
-      </Card>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <StatCard
-          value={profile?._count?.cv !== undefined ? profile._count.cv : '—'}
-          label={t('profile.cvUpdates')}
-          icon={<FileText className="w-5 h-5" />}
-          color="indigo"
-        />
-        <StatCard
-          value={profile?._count?.coverLetters !== undefined ? profile._count.coverLetters : '—'}
-          label={t('profile.coverLetters')}
-          icon={<FileText className="w-5 h-5" />}
-          color="purple"
-        />
-        <StatCard
-          value={profile?.interestResult ? '✓' : '—'}
-          label={t('profile.interestGuide')}
-          icon={<Sparkles className="w-5 h-5" />}
-          color="amber"
-        />
       </div>
 
-      {/* RIASEC Profile Section */}
-      {!interestLoading && interestProfile.hasResult && interestProfile.riasecScores && (
-        <Card variant="elevated">
-          <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-amber-100 to-orange-100 rounded-xl flex items-center justify-center flex-shrink-0">
-              <Compass className="w-6 h-6 text-amber-600" />
-            </div>
-            <div className="flex-1">
-              <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                Din intresseprofil
-                <Sparkles className="w-4 h-4 text-amber-500" />
-              </h3>
-              <p className="text-sm text-slate-500 mt-1">
-                Baserat på ditt resultat från intresseguiden
-              </p>
+      {/* Main Content */}
+      <div className="max-w-3xl mx-auto px-4 py-8 space-y-6 -mt-4">
 
-              {/* Dominant Types */}
-              {interestProfile.dominantTypes.length > 0 && (
-                <div className="mt-4 space-y-3">
-                  {interestProfile.dominantTypes.slice(0, 3).map((type, index) => {
-                    const riasecType = RIASEC_TYPES[type.code]
-                    const percentage = type.score
-                    return (
-                      <div key={type.code}>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-sm font-medium text-slate-700">
-                            {index === 0 && '🥇 '}
-                            {index === 1 && '🥈 '}
-                            {index === 2 && '🥉 '}
-                            {riasecType.nameSv}
-                          </span>
-                          <span className="text-sm text-slate-500">{percentage}%</span>
-                        </div>
-                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                          <div
-                            className={cn(
-                              "h-full rounded-full transition-all",
-                              index === 0 ? "bg-amber-500" :
-                              index === 1 ? "bg-amber-400" : "bg-amber-300"
-                            )}
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                        <p className="text-xs text-slate-500 mt-1">{riasecType.description}</p>
-                      </div>
-                    )
-                  })}
-                </div>
-              )}
-
-              {/* Strengths */}
-              {interestProfile.riasecScores && (
-                <div className="mt-6">
-                  <h4 className="text-sm font-medium text-slate-700 mb-2">Dina styrkor</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {getPersonalityStrengths(interestProfile.riasecScores).slice(0, 6).map((strength, i) => (
-                      <span
-                        key={i}
-                        className="px-3 py-1 bg-amber-50 text-amber-700 text-sm rounded-full border border-amber-200"
-                      >
-                        {strength}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Link to Interest Guide */}
-              <Link
-                to="/interest-guide"
-                className="inline-flex items-center gap-2 mt-4 text-sm text-amber-600 hover:text-amber-700 font-medium"
-              >
-                Gör om intresseguiden
-                <ChevronRight className="w-4 h-4" />
-              </Link>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* CTA to complete Interest Guide */}
-      {!interestLoading && !interestProfile.hasResult && (
-        <Link to="/interest-guide" className="block">
-          <Card variant="elevated" className="bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-200 hover:border-violet-300 transition-colors">
+        {/* Interest Guide CTA - Show if not completed */}
+        {!interestLoading && !interestProfile.hasResult && (
+          <Link
+            to="/interest-guide"
+            className="block bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group"
+          >
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Compass className="w-6 h-6 text-violet-600" />
+              <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                <Compass className="w-7 h-7" />
               </div>
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                  Upptäck din intresseprofil
-                  <Sparkles className="w-4 h-4 text-violet-500" />
-                </h3>
-                <p className="text-sm text-slate-600 mt-1">
-                  Gör intresseguiden för att få personaliserade rekommendationer
+                <div className="flex items-center gap-2 text-amber-100 text-sm font-medium mb-1">
+                  <Sparkles className="w-4 h-4" />
+                  Nästa steg
+                </div>
+                <h2 className="text-xl font-bold">Gör intresseguiden</h2>
+                <p className="text-amber-100 text-sm mt-1">
+                  Upptäck vilka yrken som passar dig bäst
                 </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-violet-400" />
+              <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </div>
-          </Card>
-        </Link>
-      )}
+          </Link>
+        )}
 
-      {/* Quick Tips */}
-      <InfoCard
-        variant="info"
-        icon={<Lightbulb className="w-5 h-5" />}
-        title={t('profile.tipsTitle')}
-      >
-        <ul className="text-sm space-y-1 list-disc list-inside">
-          <li>{t('profile.tip1')}</li>
-          <li>{t('profile.tip2')}</li>
-          <li>{t('profile.tip3')}</li>
-        </ul>
-      </InfoCard>
-    </PageLayout>
+        {/* Top 3 Desired Jobs */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+              <Briefcase className="w-5 h-5 text-blue-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-slate-800">Önskade jobb</h2>
+              <p className="text-sm text-slate-500">Vilka roller drömmer du om? (max 3)</p>
+            </div>
+          </div>
+
+          {/* Current jobs */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {desiredJobs.map((job, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-700 rounded-full border border-blue-200"
+              >
+                <span className="font-medium">{job}</span>
+                <button
+                  onClick={() => removeJob(index)}
+                  className="w-5 h-5 bg-blue-200 hover:bg-blue-300 rounded-full flex items-center justify-center transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+            {desiredJobs.length === 0 && (
+              <p className="text-slate-400 text-sm italic">Inga jobb tillagda ännu</p>
+            )}
+          </div>
+
+          {/* Add new job */}
+          {desiredJobs.length < 3 && (
+            <div className="relative">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newJob}
+                  onChange={(e) => {
+                    setNewJob(e.target.value)
+                    setShowJobSuggestions(e.target.value.length > 0)
+                  }}
+                  onFocus={() => setShowJobSuggestions(newJob.length > 0)}
+                  onBlur={() => setTimeout(() => setShowJobSuggestions(false), 200)}
+                  onKeyDown={(e) => e.key === 'Enter' && addJob(newJob)}
+                  placeholder="T.ex. Projektledare, UX-designer..."
+                  className="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-slate-900"
+                />
+                <button
+                  onClick={() => addJob(newJob)}
+                  disabled={!newJob.trim()}
+                  className="px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Suggestions dropdown */}
+              {showJobSuggestions && filteredJobSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-12 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10 overflow-hidden">
+                  {filteredJobSuggestions.map((job) => (
+                    <button
+                      key={job}
+                      onClick={() => addJob(job)}
+                      className="w-full px-4 py-3 text-left hover:bg-slate-50 text-slate-700 transition-colors"
+                    >
+                      {job}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Top 3 Interests */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
+              <Heart className="w-5 h-5 text-rose-600" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold text-slate-800">Dina intressen</h2>
+              <p className="text-sm text-slate-500">Vad brinner du för? (max 3)</p>
+            </div>
+          </div>
+
+          {/* Current interests */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {interests.map((interest, index) => (
+              <span
+                key={index}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-rose-50 text-rose-700 rounded-full border border-rose-200"
+              >
+                <span className="font-medium">{interest}</span>
+                <button
+                  onClick={() => removeInterest(index)}
+                  className="w-5 h-5 bg-rose-200 hover:bg-rose-300 rounded-full flex items-center justify-center transition-colors"
+                >
+                  <X className="w-3 h-3" />
+                </button>
+              </span>
+            ))}
+            {interests.length === 0 && (
+              <p className="text-slate-400 text-sm italic">Inga intressen tillagda ännu</p>
+            )}
+          </div>
+
+          {/* Add new interest */}
+          {interests.length < 3 && (
+            <div className="relative">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newInterest}
+                  onChange={(e) => {
+                    setNewInterest(e.target.value)
+                    setShowInterestSuggestions(e.target.value.length > 0)
+                  }}
+                  onFocus={() => setShowInterestSuggestions(newInterest.length > 0)}
+                  onBlur={() => setTimeout(() => setShowInterestSuggestions(false), 200)}
+                  onKeyDown={(e) => e.key === 'Enter' && addInterest(newInterest)}
+                  placeholder="T.ex. Teknik, Kreativitet, Ledarskap..."
+                  className="flex-1 px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 focus:border-transparent bg-white text-slate-900"
+                />
+                <button
+                  onClick={() => addInterest(newInterest)}
+                  disabled={!newInterest.trim()}
+                  className="px-4 py-3 bg-rose-600 text-white rounded-xl hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  <Plus className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Suggestions dropdown */}
+              {showInterestSuggestions && filteredInterestSuggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-12 mt-1 bg-white border border-slate-200 rounded-xl shadow-lg z-10 overflow-hidden">
+                  {filteredInterestSuggestions.map((interest) => (
+                    <button
+                      key={interest}
+                      onClick={() => addInterest(interest)}
+                      className="w-full px-4 py-3 text-left hover:bg-slate-50 text-slate-700 transition-colors"
+                    >
+                      {interest}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Interest Profile Results */}
+        {!interestLoading && interestProfile.hasResult && interestProfile.dominantTypes.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                <Compass className="w-5 h-5 text-amber-600" />
+              </div>
+              <div>
+                <h2 className="text-lg font-semibold text-slate-800">Din intresseprofil</h2>
+                <p className="text-sm text-slate-500">Resultat från intresseguiden</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              {interestProfile.dominantTypes.slice(0, 3).map((type, index) => {
+                const riasecType = RIASEC_TYPES[type.code]
+                const medals = ['🥇', '🥈', '🥉']
+                const colors = ['bg-amber-500', 'bg-slate-400', 'bg-amber-700']
+
+                return (
+                  <div key={type.code} className="flex items-center gap-4">
+                    <span className="text-2xl">{medals[index]}</span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-medium text-slate-800">{riasecType.nameSv}</span>
+                        <span className="text-sm text-slate-500">{type.score}%</span>
+                      </div>
+                      <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div
+                          className={cn('h-full rounded-full', colors[index])}
+                          style={{ width: `${type.score}%` }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            <Link
+              to="/interest-guide"
+              className="inline-flex items-center gap-2 mt-4 text-sm text-amber-600 hover:text-amber-700 font-medium"
+            >
+              Gör om intresseguiden
+              <ChevronRight className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
+
+        {/* Contact Information */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
+          <h2 className="text-lg font-semibold text-slate-800 mb-4">Kontaktuppgifter</h2>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Förnamn</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  value={formData.first_name}
+                  onChange={(e) => handleChange('first_name', e.target.value)}
+                  placeholder="Ditt förnamn"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-slate-900"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Efternamn</label>
+              <div className="relative">
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  value={formData.last_name}
+                  onChange={(e) => handleChange('last_name', e.target.value)}
+                  placeholder="Ditt efternamn"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-slate-900"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Telefon</label>
+              <div className="relative">
+                <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="tel"
+                  value={formData.phone}
+                  onChange={(e) => handleChange('phone', e.target.value)}
+                  placeholder="070-123 45 67"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-slate-900"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">Ort</label>
+              <div className="relative">
+                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                <input
+                  type="text"
+                  value={formData.location}
+                  onChange={(e) => handleChange('location', e.target.value)}
+                  placeholder="Stockholm"
+                  className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-slate-900"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium text-slate-700 mb-1">E-post</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <input
+                type="email"
+                value={profile?.email || ''}
+                disabled
+                className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl bg-slate-50 text-slate-500 cursor-not-allowed"
+              />
+            </div>
+            <p className="text-xs text-slate-400 mt-1">E-postadressen kan inte ändras</p>
+          </div>
+        </div>
+
+        {/* Error/Success Messages */}
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-xl p-4 text-red-700">
+            {error}
+          </div>
+        )}
+
+        {saved && (
+          <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 text-emerald-700 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5" />
+            Profilen har sparats!
+          </div>
+        )}
+
+        {/* Save Button */}
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className={cn(
+            'w-full py-4 rounded-xl font-semibold text-white transition-all flex items-center justify-center gap-2',
+            saving
+              ? 'bg-slate-400 cursor-not-allowed'
+              : 'bg-indigo-600 hover:bg-indigo-700 active:scale-[0.99]'
+          )}
+        >
+          {saving ? (
+            <>
+              <Loader2 className="w-5 h-5 animate-spin" />
+              Sparar...
+            </>
+          ) : (
+            <>
+              <Save className="w-5 h-5" />
+              Spara profil
+            </>
+          )}
+        </button>
+      </div>
+    </div>
   )
 }
