@@ -23,6 +23,7 @@ import {
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { userApi, type OnboardingProgress } from '@/services/supabaseApi'
+import { interestGuideApi } from '@/services/cloudStorage'
 
 // Step configuration
 interface Step {
@@ -104,12 +105,27 @@ export default function OverviewTab() {
     }
 
     try {
-      const cloudProgress = await userApi.getOnboardingProgress()
+      // Fetch both onboarding progress and interest guide status in parallel
+      const [cloudProgress, interestGuideData] = await Promise.all([
+        userApi.getOnboardingProgress(),
+        interestGuideApi.getProgress().catch(() => null)
+      ])
 
-      // Merge: use cloud value if true, otherwise use localStorage value
+      // Check if interest guide is completed from the actual progress data
+      const interestCompleted = cloudProgress.interest ||
+        localStorageProgress.interest ||
+        interestGuideData?.is_completed === true
+
+      // If interest is completed but not in cloud, sync it
+      if (interestCompleted && !cloudProgress.interest) {
+        userApi.updateOnboardingStep('interest', true).catch(console.error)
+        localStorage.setItem('interest-result', 'true')
+      }
+
+      // Merge: use cloud value if true, otherwise use localStorage value, or check actual data
       const mergedProgress: OnboardingProgress = {
         profile: cloudProgress.profile || localStorageProgress.profile,
-        interest: cloudProgress.interest || localStorageProgress.interest,
+        interest: interestCompleted,
         cv: cloudProgress.cv || localStorageProgress.cv,
         career: cloudProgress.career || localStorageProgress.career,
         jobSearch: cloudProgress.jobSearch || localStorageProgress.jobSearch,

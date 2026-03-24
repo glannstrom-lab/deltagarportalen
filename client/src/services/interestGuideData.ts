@@ -1748,6 +1748,400 @@ export const occupations: Occupation[] = [
     careerPath: ['Vaktmästare', 'Fastighetstekniker', 'Fastighetsförvaltare'],
     requiresUniversity: false,
   },
+  // ===== YTTERLIGARE YRKEN FÖR BÄTTRE MATCHNING =====
+  // Tech & Digital
+  {
+    id: 'devops_engineer',
+    name: 'DevOps Engineer',
+    description: 'Automatiserar och optimerar utvecklings- och driftprocesser för mjukvara',
+    riasec: { R: 3, I: 5, A: 2, S: 2, E: 2, C: 4 },
+    bigFive: { openness: 70, conscientiousness: 85, extraversion: 35, agreeableness: 55, stability: 65 },
+    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { it: 5, teknisk: 5, analytisk: 4, noggrannhet: 4 },
+    challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    salary: '45 000 - 75 000 kr/mån',
+    education: { name: 'Systemvetenskap/Datateknik', length: '3-5 år', type: 'Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Systemadministratör', 'Cloud Engineer', 'Programmerare'],
+    careerPath: ['Junior DevOps', 'DevOps Engineer', 'Senior DevOps', 'DevOps Lead'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'cybersecurity',
+    name: 'Cybersäkerhetsanalytiker',
+    description: 'Skyddar organisationer mot digitala hot och säkerhetsrisker',
+    riasec: { R: 2, I: 5, A: 2, S: 2, E: 3, C: 4 },
+    bigFive: { openness: 75, conscientiousness: 90, extraversion: 35, agreeableness: 50, stability: 70 },
+    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { it: 5, analytisk: 5, noggrannhet: 5 },
+    challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    salary: '42 000 - 70 000 kr/mån',
+    education: { name: 'IT-säkerhet/Datateknik', length: '3-5 år', type: 'Universitet/YH' },
+    prognosis: 'growing',
+    relatedJobs: ['Nätverkstekniker', 'Systemadministratör', 'Pentester'],
+    careerPath: ['SOC-analytiker', 'Säkerhetsanalytiker', 'Senior', 'CISO'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'spelutvecklare',
+    name: 'Spelutvecklare',
+    description: 'Utvecklar dator- och mobilspel från idé till färdig produkt',
+    riasec: { R: 2, I: 4, A: 5, S: 1, E: 2, C: 3 },
+    bigFive: { openness: 90, conscientiousness: 75, extraversion: 35, agreeableness: 55, stability: 55 },
+    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { it: 5, kreativ: 5, teknisk: 4 },
+    challenges: { stillasittande: 5, koncentration: 5, tidspress: 4 },
+    salary: '35 000 - 60 000 kr/mån',
+    education: { name: 'Spelutveckling/Datateknik', length: '3-5 år', type: 'Universitet/YH' },
+    prognosis: 'growing',
+    relatedJobs: ['Programmerare', 'Grafiker', 'Speldesigner'],
+    careerPath: ['Junior utvecklare', 'Spelutvecklare', 'Lead Developer', 'Creative Director'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'webbdesigner',
+    name: 'Webbdesigner',
+    description: 'Designar och bygger användarvänliga webbplatser',
+    riasec: { R: 2, I: 3, A: 5, S: 3, E: 3, C: 3 },
+    bigFive: { openness: 85, conscientiousness: 70, extraversion: 50, agreeableness: 65, stability: 55 },
+    icf: { kognitiv: 4, kommunikation: 3, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { kreativ: 5, it: 4, teknisk: 3, kommunikation: 3 },
+    challenges: { stillasittande: 5, koncentration: 4, tidspress: 3 },
+    salary: '30 000 - 50 000 kr/mån',
+    education: { name: 'Webbdesign/Digital design', length: '2-3 år', type: 'YH/Universitet' },
+    prognosis: 'stable',
+    relatedJobs: ['UX-designer', 'Grafisk designer', 'Frontend-utvecklare'],
+    careerPath: ['Junior designer', 'Webbdesigner', 'Senior designer', 'Art director'],
+    requiresUniversity: false,
+  },
+  // Hälsa & Vård - fler roller
+  {
+    id: 'dietist',
+    name: 'Dietist',
+    description: 'Ger kostrådgivning och behandlar näringsrelaterade tillstånd',
+    riasec: { R: 2, I: 4, A: 2, S: 5, E: 2, C: 3 },
+    bigFive: { openness: 70, conscientiousness: 80, extraversion: 55, agreeableness: 80, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { vard: 5, social: 4, analytisk: 4, forskning: 3 },
+    challenges: { social_energi: 4, stillasittande: 3, koncentration: 4 },
+    salary: '30 000 - 42 000 kr/mån',
+    education: { name: 'Dietistprogrammet', length: '3 år', type: 'Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Kostrådgivare', 'Sjuksköterska', 'Läkare'],
+    careerPath: ['Dietist', 'Klinisk specialist', 'Enhetschef'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'optiker',
+    name: 'Optiker',
+    description: 'Undersöker syn och anpassar glasögon och kontaktlinser',
+    riasec: { R: 3, I: 4, A: 2, S: 4, E: 3, C: 4 },
+    bigFive: { openness: 60, conscientiousness: 85, extraversion: 55, agreeableness: 75, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 4, energi: 3 },
+    categories: { vard: 4, teknisk: 4, social: 4, noggrannhet: 5 },
+    challenges: { precision: 5, social_energi: 4, stillasittande: 4 },
+    salary: '32 000 - 45 000 kr/mån',
+    education: { name: 'Optikerutbildning', length: '3 år', type: 'Universitet' },
+    prognosis: 'stable',
+    relatedJobs: ['Ögonläkare', 'Ortoptist', 'Audiolog'],
+    careerPath: ['Optiker', 'Butikschef', 'Franchisetagare'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'ambulanssjukvardare',
+    name: 'Ambulanssjukvårdare',
+    description: 'Ger akutsjukvård och transporterar patienter till sjukhus',
+    riasec: { R: 4, I: 3, A: 1, S: 5, E: 2, C: 3 },
+    bigFive: { openness: 55, conscientiousness: 85, extraversion: 55, agreeableness: 75, stability: 75 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 4, sensorisk: 4, energi: 5 },
+    categories: { vard: 5, praktisk: 4, social: 4, noggrannhet: 4 },
+    challenges: { fysisk_rorlighet: 5, tidspress: 5, social_energi: 4, fysisk_styrka: 4 },
+    salary: '32 000 - 40 000 kr/mån',
+    education: { name: 'Ambulanssjukvårdare', length: '3 år', type: 'YH' },
+    prognosis: 'growing',
+    relatedJobs: ['Sjuksköterska', 'Brandman', 'Räddningstjänst'],
+    careerPath: ['Ambulanssjukvårdare', 'Ambulanssjuksköterska', 'Stationschef'],
+    requiresUniversity: false,
+  },
+  // Hantverk & Kreativa
+  {
+    id: 'tatuera',
+    name: 'Tatuerare',
+    description: 'Skapar permanenta tatueringar på kunders hud',
+    riasec: { R: 4, I: 2, A: 5, S: 3, E: 3, C: 2 },
+    bigFive: { openness: 85, conscientiousness: 75, extraversion: 55, agreeableness: 60, stability: 55 },
+    icf: { kognitiv: 3, kommunikation: 4, koncentration: 5, motorik: 5, sensorisk: 4, energi: 3 },
+    categories: { kreativ: 5, praktisk: 4, social: 3 },
+    challenges: { precision: 5, koncentration: 5, stillasittande: 4 },
+    salary: '25 000 - 50 000 kr/mån',
+    education: { name: 'Tatueringsutbildning (lärlingsplats)', length: '1-3 år', type: 'Privat' },
+    prognosis: 'stable',
+    relatedJobs: ['Piercerare', 'Frisör', 'Konstnär'],
+    careerPath: ['Lärling', 'Tatuerare', 'Egen studio'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'florister',
+    name: 'Florist',
+    description: 'Arrangerar blommor och växter för olika tillfällen',
+    riasec: { R: 3, I: 2, A: 5, S: 4, E: 3, C: 2 },
+    bigFive: { openness: 75, conscientiousness: 70, extraversion: 55, agreeableness: 75, stability: 55 },
+    icf: { kognitiv: 2, kommunikation: 4, koncentration: 4, motorik: 4, sensorisk: 3, energi: 3 },
+    categories: { kreativ: 5, praktisk: 4, social: 4, natur: 3 },
+    challenges: { fysisk_rorlighet: 4, social_energi: 4, sensorisk: 3 },
+    salary: '23 000 - 30 000 kr/mån',
+    education: { name: 'Floristutbildning', length: '2 år', type: 'YH/Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Trädgårdsmästare', 'Dekoratör', 'Event-arrangör'],
+    careerPath: ['Florist', 'Senior florist', 'Egen butik'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'skraddar',
+    name: 'Skräddare',
+    description: 'Syr, reparerar och anpassar kläder efter mått',
+    riasec: { R: 4, I: 2, A: 4, S: 3, E: 2, C: 3 },
+    bigFive: { openness: 60, conscientiousness: 85, extraversion: 40, agreeableness: 65, stability: 60 },
+    icf: { kognitiv: 3, kommunikation: 3, koncentration: 5, motorik: 5, sensorisk: 4, energi: 3 },
+    categories: { kreativ: 4, praktisk: 5, noggrannhet: 5 },
+    challenges: { precision: 5, stillasittande: 5, koncentration: 4 },
+    salary: '25 000 - 38 000 kr/mån',
+    education: { name: 'Textil och mode', length: '2-3 år', type: 'YH/Gymnasium' },
+    prognosis: 'declining',
+    relatedJobs: ['Modedesigner', 'Kostymör', 'Sömmerska'],
+    careerPath: ['Skräddare', 'Master Tailor', 'Egen ateljé'],
+    requiresUniversity: false,
+  },
+  // Natur & Utomhus
+  {
+    id: 'skogsarbetare',
+    name: 'Skogsarbetare',
+    description: 'Arbetar med avverkning, plantering och skogsvård',
+    riasec: { R: 5, I: 2, A: 1, S: 1, E: 1, C: 2 },
+    bigFive: { openness: 50, conscientiousness: 75, extraversion: 35, agreeableness: 55, stability: 65 },
+    icf: { kognitiv: 2, kommunikation: 2, koncentration: 4, motorik: 5, sensorisk: 3, energi: 5 },
+    categories: { natur: 5, praktisk: 5, utomhusarbete: 5 },
+    challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, vaderberoende: 5 },
+    salary: '27 000 - 38 000 kr/mån',
+    education: { name: 'Naturbruksprogrammet', length: '3 år gymn', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Maskinförare', 'Trädgårdsmästare', 'Jägare'],
+    careerPath: ['Skogsarbetare', 'Motorsågförare', 'Arbetsledare'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'fiskare',
+    name: 'Yrkesfiskare',
+    description: 'Fiskar kommersiellt i hav, sjöar eller vattendrag',
+    riasec: { R: 5, I: 2, A: 1, S: 2, E: 2, C: 2 },
+    bigFive: { openness: 50, conscientiousness: 75, extraversion: 40, agreeableness: 55, stability: 70 },
+    icf: { kognitiv: 3, kommunikation: 2, koncentration: 4, motorik: 4, sensorisk: 3, energi: 5 },
+    categories: { natur: 5, praktisk: 5, utomhusarbete: 5 },
+    challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, vaderberoende: 5, osakra_forutsattningar: 4 },
+    salary: '25 000 - 45 000 kr/mån',
+    education: { name: 'Fiskeutbildning', length: '1-2 år', type: 'Folkhögskola/YH' },
+    prognosis: 'declining',
+    relatedJobs: ['Sjöman', 'Fiskodlare', 'Båtmekaniker'],
+    careerPath: ['Fiskare', 'Erfaren fiskare', 'Skeppare', 'Redare'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'djurskotare',
+    name: 'Djurskötare',
+    description: 'Vårdar och sköter djur på djurpark, gård eller i annan verksamhet',
+    riasec: { R: 4, I: 2, A: 1, S: 3, E: 1, C: 2 },
+    bigFive: { openness: 60, conscientiousness: 75, extraversion: 45, agreeableness: 80, stability: 60 },
+    icf: { kognitiv: 2, kommunikation: 3, koncentration: 3, motorik: 4, sensorisk: 4, energi: 4 },
+    categories: { natur: 5, praktisk: 4, vard: 3, utomhusarbete: 4 },
+    challenges: { fysisk_rorlighet: 5, fysisk_styrka: 4, vaderberoende: 3 },
+    salary: '24 000 - 32 000 kr/mån',
+    education: { name: 'Djurvård', length: '3 år gymn', type: 'Gymnasium' },
+    prognosis: 'stable',
+    relatedJobs: ['Djursjukskötare', 'Veterinär', 'Lantbrukare'],
+    careerPath: ['Djurskötare', 'Erfaren skötare', 'Ansvarig djurvårdare'],
+    requiresUniversity: false,
+  },
+  // Vetenskap & Forskning
+  {
+    id: 'biolog',
+    name: 'Biolog',
+    description: 'Studerar levande organismer och ekosystem',
+    riasec: { R: 3, I: 5, A: 2, S: 2, E: 2, C: 3 },
+    bigFive: { openness: 85, conscientiousness: 80, extraversion: 40, agreeableness: 60, stability: 60 },
+    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { forskning: 5, natur: 5, analytisk: 4 },
+    challenges: { stillasittande: 4, koncentration: 5, social_energi: 2 },
+    salary: '32 000 - 50 000 kr/mån',
+    education: { name: 'Biologiprogrammet', length: '3-5 år', type: 'Universitet' },
+    prognosis: 'stable',
+    relatedJobs: ['Miljökonsult', 'Forskare', 'Laborant'],
+    careerPath: ['Biolog', 'Forskare', 'Projektledare', 'Professor'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'kemist',
+    name: 'Kemist',
+    description: 'Forskar om och analyserar kemiska substanser och reaktioner',
+    riasec: { R: 3, I: 5, A: 2, S: 2, E: 2, C: 4 },
+    bigFive: { openness: 80, conscientiousness: 85, extraversion: 35, agreeableness: 55, stability: 65 },
+    icf: { kognitiv: 5, kommunikation: 3, koncentration: 5, motorik: 3, sensorisk: 4, energi: 3 },
+    categories: { forskning: 5, analytisk: 5, noggrannhet: 5 },
+    challenges: { stillasittande: 4, koncentration: 5, precision: 5 },
+    salary: '35 000 - 55 000 kr/mån',
+    education: { name: 'Kemiprogrammet', length: '3-5 år', type: 'Universitet' },
+    prognosis: 'stable',
+    relatedJobs: ['Forskare', 'Laborant', 'Processoperatör'],
+    careerPath: ['Kemist', 'Senior kemist', 'FoU-chef'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'laborant',
+    name: 'Laborant',
+    description: 'Utför analyser och tester i laboratorium',
+    riasec: { R: 3, I: 4, A: 1, S: 1, E: 2, C: 4 },
+    bigFive: { openness: 60, conscientiousness: 85, extraversion: 35, agreeableness: 55, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 2, koncentration: 5, motorik: 4, sensorisk: 4, energi: 3 },
+    categories: { forskning: 4, analytisk: 4, noggrannhet: 5 },
+    challenges: { stillasittande: 4, precision: 5, repetitivt: 4 },
+    salary: '28 000 - 40 000 kr/mån',
+    education: { name: 'Laboratorieutbildning', length: '2-3 år', type: 'YH' },
+    prognosis: 'stable',
+    relatedJobs: ['Kemist', 'Biomedicinare', 'Processoperatör'],
+    careerPath: ['Laborant', 'Senior laborant', 'Laboratorieansvarig'],
+    requiresUniversity: false,
+  },
+  // Säkerhet & Skydd
+  {
+    id: 'brandman',
+    name: 'Brandman',
+    description: 'Släcker bränder och utför räddningsinsatser',
+    riasec: { R: 5, I: 3, A: 1, S: 4, E: 3, C: 3 },
+    bigFive: { openness: 55, conscientiousness: 85, extraversion: 65, agreeableness: 70, stability: 80 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 5, motorik: 5, sensorisk: 4, energi: 5 },
+    categories: { praktisk: 5, social: 4, ledarskap_organisation: 3 },
+    challenges: { fysisk_styrka: 5, fysisk_rorlighet: 5, tidspress: 5, sensorisk: 4 },
+    salary: '30 000 - 42 000 kr/mån',
+    education: { name: 'Räddningstjänstutbildning (SMO)', length: '2 år', type: 'MSB' },
+    prognosis: 'stable',
+    relatedJobs: ['Ambulanssjukvårdare', 'Polis', 'Räddningsledare'],
+    careerPath: ['Brandman', 'Styrkeledare', 'Stationschef', 'Räddningschef'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'vaktare',
+    name: 'Väktare',
+    description: 'Bevakar och skyddar fastigheter, personer och egendom',
+    riasec: { R: 3, I: 2, A: 1, S: 3, E: 3, C: 3 },
+    bigFive: { openness: 45, conscientiousness: 80, extraversion: 50, agreeableness: 55, stability: 70 },
+    icf: { kognitiv: 3, kommunikation: 3, koncentration: 4, motorik: 3, sensorisk: 4, energi: 4 },
+    categories: { praktisk: 3, social: 3, noggrannhet: 3 },
+    challenges: { fysisk_rorlighet: 4, social_energi: 3, kvallsarbete: 5 },
+    salary: '26 000 - 35 000 kr/mån',
+    education: { name: 'Väktarutbildning', length: '8 veckor', type: 'Bevakningsföretag' },
+    prognosis: 'growing',
+    relatedJobs: ['Ordningsvakt', 'Polis', 'Säkerhetschef'],
+    careerPath: ['Väktare', 'Rondbefäl', 'Objektledare', 'Säkerhetschef'],
+    requiresUniversity: false,
+  },
+  // Event & Upplevelse
+  {
+    id: 'eventkoordinator',
+    name: 'Eventkoordinator',
+    description: 'Planerar och genomför evenemang, konferenser och fester',
+    riasec: { R: 2, I: 2, A: 4, S: 4, E: 5, C: 3 },
+    bigFive: { openness: 75, conscientiousness: 80, extraversion: 75, agreeableness: 70, stability: 55 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
+    categories: { kreativ: 4, kommunikation: 5, ledarskap_organisation: 4, social: 4 },
+    challenges: { tidspress: 5, social_energi: 5, multitasking: 5, flexibilitet: 5 },
+    salary: '28 000 - 45 000 kr/mån',
+    education: { name: 'Event Management', length: '2 år', type: 'YH' },
+    prognosis: 'growing',
+    relatedJobs: ['Projektledare', 'Marknadsförare', 'Konferensvärd'],
+    careerPath: ['Eventassistent', 'Eventkoordinator', 'Senior Event Manager', 'Event Director'],
+    requiresUniversity: false,
+  },
+  {
+    id: 'reseledar',
+    name: 'Reseledare/Guide',
+    description: 'Leder grupper på resor och visar sevärdheter',
+    riasec: { R: 3, I: 3, A: 3, S: 5, E: 4, C: 2 },
+    bigFive: { openness: 80, conscientiousness: 70, extraversion: 80, agreeableness: 80, stability: 60 },
+    icf: { kognitiv: 3, kommunikation: 5, koncentration: 3, motorik: 3, sensorisk: 3, energi: 4 },
+    categories: { social: 5, kommunikation: 5, pedagogik: 4 },
+    challenges: { social_energi: 5, fysisk_rorlighet: 4, flexibilitet: 5 },
+    salary: '25 000 - 38 000 kr/mån',
+    education: { name: 'Turism och resande', length: '2-3 år', type: 'YH/Gymnasium' },
+    prognosis: 'growing',
+    relatedJobs: ['Receptionist', 'Flygvärdinna', 'Turismentreprenör'],
+    careerPath: ['Guide', 'Reseledare', 'Destinationsansvarig', 'Resechef'],
+    requiresUniversity: false,
+  },
+  // Finans & Försäkring
+  {
+    id: 'bankradgivare',
+    name: 'Bankrådgivare',
+    description: 'Ger råd om lån, sparande och finansiella produkter',
+    riasec: { R: 1, I: 3, A: 1, S: 4, E: 4, C: 4 },
+    bigFive: { openness: 55, conscientiousness: 85, extraversion: 65, agreeableness: 70, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { ekonomi: 5, kommunikation: 4, social: 4, analytisk: 3 },
+    challenges: { social_energi: 5, stillasittande: 4, tidspress: 3 },
+    salary: '32 000 - 50 000 kr/mån',
+    education: { name: 'Ekonom/Bank och finans', length: '3 år', type: 'Universitet/YH' },
+    prognosis: 'declining',
+    relatedJobs: ['Försäkringsrådgivare', 'Ekonom', 'Controller'],
+    careerPath: ['Bankrådgivare', 'Senior rådgivare', 'Privatbankir', 'Kontorschef'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'forsakringshandlaggare',
+    name: 'Försäkringshandläggare',
+    description: 'Hanterar skadeanmälningar och bedömer försäkringsärenden',
+    riasec: { R: 1, I: 3, A: 1, S: 3, E: 3, C: 5 },
+    bigFive: { openness: 50, conscientiousness: 85, extraversion: 45, agreeableness: 65, stability: 65 },
+    icf: { kognitiv: 4, kommunikation: 4, koncentration: 4, motorik: 2, sensorisk: 3, energi: 3 },
+    categories: { analytisk: 4, noggrannhet: 5, kommunikation: 3 },
+    challenges: { stillasittande: 5, repetitivt: 4, social_energi: 3 },
+    salary: '30 000 - 45 000 kr/mån',
+    education: { name: 'Försäkring/Ekonomi', length: '2-3 år', type: 'YH/Universitet' },
+    prognosis: 'stable',
+    relatedJobs: ['Skadereglerare', 'Försäkringssäljare', 'Underwriter'],
+    careerPath: ['Handläggare', 'Senior handläggare', 'Team leader', 'Chef'],
+    requiresUniversity: false,
+  },
+  // Ledarskap & Management
+  {
+    id: 'projektledare',
+    name: 'Projektledare',
+    description: 'Planerar, driver och koordinerar projekt inom olika branscher',
+    riasec: { R: 2, I: 3, A: 2, S: 4, E: 5, C: 4 },
+    bigFive: { openness: 70, conscientiousness: 85, extraversion: 70, agreeableness: 60, stability: 65 },
+    icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
+    categories: { ledarskap_organisation: 5, kommunikation: 5, analytisk: 4 },
+    challenges: { tidspress: 5, social_energi: 4, multitasking: 5 },
+    salary: '40 000 - 70 000 kr/mån',
+    education: { name: 'Projektledning/Management', length: '3-5 år', type: 'Universitet' },
+    prognosis: 'growing',
+    relatedJobs: ['Programledare', 'Verksamhetsutvecklare', 'Chef'],
+    careerPath: ['Projektkoordinator', 'Projektledare', 'Senior PM', 'Programledare'],
+    requiresUniversity: true,
+  },
+  {
+    id: 'foretagare',
+    name: 'Egenföretagare/Entreprenör',
+    description: 'Driver eget företag och tar ansvar för hela verksamheten',
+    riasec: { R: 3, I: 4, A: 3, S: 3, E: 5, C: 3 },
+    bigFive: { openness: 85, conscientiousness: 75, extraversion: 65, agreeableness: 50, stability: 60 },
+    icf: { kognitiv: 5, kommunikation: 5, koncentration: 4, motorik: 2, sensorisk: 3, energi: 4 },
+    categories: { ledarskap_organisation: 5, affarer_forsaljning: 5, kreativ: 4 },
+    challenges: { tidspress: 5, osakra_forutsattningar: 5, multitasking: 5 },
+    salary: '0 - 150 000+ kr/mån',
+    education: { name: 'Varierar/Ingen formell utbildning krävs', length: 'Varierar', type: 'Varierar' },
+    prognosis: 'growing',
+    relatedJobs: ['Projektledare', 'Säljare', 'Konsult'],
+    careerPath: ['Grundare', 'VD', 'Serieentreprenör'],
+    requiresUniversity: false,
+  },
 ]
 
 // ===== ICF ANPASSNINGSREKOMMENDATIONER =====
@@ -1846,27 +2240,34 @@ export function calculateJobMatches(
     const adaptations: string[] = []
     const warnings: string[] = []
 
-    // 1. RIASEC-matchning (25%) - arbetsstil och intresse
+    // Viktfördelning optimerad för bästa matchning:
+    // - RIASEC är mest forskningsvaliderat (30%)
+    // - Intresseområden visar konkreta preferenser (25%)
+    // - ICF säkerställer att användaren klarar jobbet (20%)
+    // - Big Five fångar personlighetsmatchning (15%)
+    // - Toppvärdesbonus belönar starka matchningar (10%)
+
+    // 1. RIASEC-matchning (30%) - arbetsstil och intresse
     const riasecScore = calculateRiasecMatch(profile.riasec, occupation.riasec)
-    totalScore += riasecScore * 0.25
+    totalScore += riasecScore * 0.30
+    totalWeight += 0.30
+
+    // 2. Intresseområden (25%) - specifika intressen
+    const interestScore = calculateInterestMatch(profile.strongInterest, occupation.categories)
+    totalScore += interestScore * 0.25
     totalWeight += 0.25
 
-    // 2. Big Five-matchning (20%) - personlighet
-    const bigFiveScore = calculateBigFiveMatch(profile.bigFive, occupation.bigFive)
-    totalScore += bigFiveScore * 0.20
-    totalWeight += 0.20
-
-    // 3. ICF-matchning (25%) - funktionsförutsättningar (inklusive fysiska)
+    // 3. ICF-matchning (20%) - funktionsförutsättningar
     const icfResult = calculateICFMatch(profile.icf, occupation.icf, occupation.challenges)
-    totalScore += icfResult.score * 0.25
-    totalWeight += 0.25
+    totalScore += icfResult.score * 0.20
+    totalWeight += 0.20
     adaptations.push(...icfResult.adaptations)
     warnings.push(...icfResult.warnings)
 
-    // 4. Intresseområden (20%) - specifika intressen (ökad vikt för bättre matchning)
-    const interestScore = calculateInterestMatch(profile.strongInterest, occupation.categories)
-    totalScore += interestScore * 0.20
-    totalWeight += 0.20
+    // 4. Big Five-matchning (15%) - personlighet
+    const bigFiveScore = calculateBigFiveMatch(profile.bigFive, occupation.bigFive)
+    totalScore += bigFiveScore * 0.15
+    totalWeight += 0.15
 
     // 5. Bonus för höga toppvärden i RIASEC (10%)
     // Om användaren har höga värden (4-5) i samma kategorier som jobbet kräver
@@ -2047,24 +2448,46 @@ function calculateInterestMatch(
     konst_kultur: 'konst_kultur',
     affarer_forsaljning: 'affarer_forsaljning',
     stresshantering: 'social_vard',
+    utomhusarbete: 'natur_vetenskap',
   }
+
+  // Hitta användarens toppintressen för att ge bonus
+  const userInterests = Object.entries(user).sort((a, b) => b[1] - a[1])
+  const topInterests = userInterests.slice(0, 3).map(([key]) => key)
 
   Object.entries(categories).forEach(([cat, weight]) => {
     const userCat = mappings[cat]
     if (userCat && weight && weight > 0) {
       const userScore = user[userCat] // 0-100 skala
-      // Normalisera båda till 0-1 och beräkna matchning
-      // Jobbets vikt är 1-5, användarens score är 0-100
-      const jobRequirement = (weight - 1) / 4 // Konvertera 1-5 till 0-1
       const userInterest = userScore / 100 // Konvertera 0-100 till 0-1
-      
-      // Matchning: hur väl användarens intresse motsvarar jobbets krav
-      // Om jobbet kräver mycket (1.0) och användaren har högt intresse (1.0) = perfekt match
-      // Om jobbet kräver lite (0.2) och användaren har lågt intresse (0.2) = också bra match
-      const diff = Math.abs(userInterest - jobRequirement)
-      const matchScore = Math.max(0, 1 - diff)
-      
-      matchSum += matchScore * weight // Väg efter vikten
+
+      // Förändrad matchningslogik:
+      // Om jobbet kräver mycket (vikt 4-5) och användaren har högt intresse (70%+) = perfekt
+      // Om jobbet kräver lite (vikt 1-2) påverkar inte lika mycket
+
+      let matchScore = 0
+      if (weight >= 4) {
+        // Viktigt krav - användaren bör ha högt intresse
+        if (userScore >= 70) matchScore = 1.0
+        else if (userScore >= 50) matchScore = 0.7
+        else if (userScore >= 30) matchScore = 0.4
+        else matchScore = 0.2
+      } else if (weight >= 3) {
+        // Medelviktigt krav
+        if (userScore >= 60) matchScore = 1.0
+        else if (userScore >= 40) matchScore = 0.7
+        else matchScore = 0.4
+      } else {
+        // Mindre viktigt - alla får rimlig score
+        matchScore = 0.5 + (userInterest * 0.5)
+      }
+
+      // Bonus om detta är ett av användarens toppintressen
+      if (topInterests.includes(userCat) && weight >= 4) {
+        matchScore = Math.min(1.0, matchScore + 0.15)
+      }
+
+      matchSum += matchScore * weight
       totalWeight += weight
     }
   })
