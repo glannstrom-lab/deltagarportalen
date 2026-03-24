@@ -11,7 +11,6 @@ import {
   type UserProfile,
   type JobMatch,
 } from '@/services/interestGuideData'
-import { JobCard } from '@/components/interest-guide/JobCard'
 import { LoadingState, InfoCard, Button, Card, Progress } from '@/components/ui'
 import { interestGuideApi } from '@/services/cloudStorage'
 import {
@@ -23,8 +22,6 @@ import {
   Filter,
   Search,
   Star,
-  Bookmark,
-  Heart,
   BarChart3,
   ChevronDown,
   X,
@@ -34,6 +31,8 @@ import { cn } from '@/lib/utils'
 export default function OccupationsTab() {
   const navigate = useNavigate()
   const { t } = useTranslation()
+
+  // All useState hooks
   const [profile, setProfile] = useState<UserProfile | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -44,6 +43,7 @@ export default function OccupationsTab() {
   const [sortBy, setSortBy] = useState<'match' | 'name' | 'salary'>('match')
   const [expandedOccupation, setExpandedOccupation] = useState<string | null>(null)
 
+  // useEffect for loading data
   useEffect(() => {
     const loadResults = async () => {
       try {
@@ -51,22 +51,22 @@ export default function OccupationsTab() {
         setError(null)
         const data = await interestGuideApi.getProgress()
 
-        console.log('Interest guide data:', data) // Debug
+        console.log('OccupationsTab - Interest guide data:', data)
 
         if (data?.is_completed && data.answers) {
           try {
             const calculatedProfile = calculateUserProfile(data.answers)
-            console.log('Calculated profile:', calculatedProfile) // Debug
+            console.log('OccupationsTab - Calculated profile:', calculatedProfile)
             setProfile(calculatedProfile)
           } catch (calcErr) {
-            console.error('Failed to calculate profile:', calcErr)
+            console.error('OccupationsTab - Failed to calculate profile:', calcErr)
             setError('Kunde inte beräkna din profil. Försök göra om testet.')
           }
         } else if (data && !data.is_completed) {
           setError('Du har inte slutfört testet än. Gå till testet för att slutföra.')
         }
       } catch (err) {
-        console.error('Failed to load results:', err)
+        console.error('OccupationsTab - Failed to load results:', err)
         setError('Kunde inte ladda resultaten. Försök igen senare.')
       } finally {
         setIsLoading(false)
@@ -76,6 +76,50 @@ export default function OccupationsTab() {
     loadResults()
   }, [])
 
+  // Calculate job matches - useMemo must be called unconditionally
+  const { allMatches, calculationError } = useMemo(() => {
+    if (!profile) {
+      return { allMatches: [], calculationError: null }
+    }
+    try {
+      const matches = calculateJobMatches(profile, filterUni)
+      console.log('OccupationsTab - Job matches calculated:', matches.length)
+      return { allMatches: matches, calculationError: null }
+    } catch (err) {
+      console.error('OccupationsTab - Failed to calculate job matches:', err)
+      return {
+        allMatches: [],
+        calculationError: `Kunde inte beräkna yrkesmatchningar: ${err instanceof Error ? err.message : 'Okänt fel'}`
+      }
+    }
+  }, [profile, filterUni])
+
+  // Filter and sort matches - also unconditional
+  const filteredMatches = useMemo(() => {
+    let matches = searchQuery
+      ? allMatches.filter(m =>
+          m.occupation.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          m.occupation.description.toLowerCase().includes(searchQuery.toLowerCase())
+        )
+      : allMatches
+
+    if (sortBy === 'name') {
+      matches = [...matches].sort((a, b) => a.occupation.name.localeCompare(b.occupation.name))
+    } else if (sortBy === 'salary') {
+      matches = [...matches].sort((a, b) => b.occupation.salary.localeCompare(a.occupation.salary))
+    }
+
+    return matches
+  }, [searchQuery, allMatches, sortBy])
+
+  // Stats calculations - also unconditional
+  const stats = useMemo(() => ({
+    goodMatches: allMatches.filter(m => m.matchPercentage >= 70).length,
+    growingJobs: allMatches.filter(m => m.occupation.prognosis === 'growing').length,
+    excellentMatches: allMatches.filter(m => m.matchPercentage >= 90).length,
+    displayedMatches: showAll ? filteredMatches : filteredMatches.slice(0, 10),
+  }), [allMatches, filteredMatches, showAll])
+
   const toggleFavorite = (occupationId: string) => {
     setFavorites(prev =>
       prev.includes(occupationId)
@@ -84,10 +128,28 @@ export default function OccupationsTab() {
     )
   }
 
+  // Now conditional returns are safe - all hooks have been called
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <LoadingState title={t('common.loading') || 'Laddar yrken...'} size="lg" />
+      </div>
+    )
+  }
+
+  if (calculationError) {
+    return (
+      <div className="max-w-lg mx-auto text-center py-12">
+        <InfoCard variant="error" className="mb-6">
+          {calculationError}
+        </InfoCard>
+        <Button
+          onClick={() => navigate('/interest-guide')}
+          className="gap-2"
+        >
+          <Sparkles className="w-4 h-4" />
+          Gör om testet
+        </Button>
       </div>
     )
   }
@@ -119,34 +181,6 @@ export default function OccupationsTab() {
       </div>
     )
   }
-
-  const allMatches = calculateJobMatches(profile, filterUni)
-
-  // Filter by search query
-  const filteredMatches = useMemo(() => {
-    let matches = searchQuery
-      ? allMatches.filter(m =>
-          m.occupation.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          m.occupation.description.toLowerCase().includes(searchQuery.toLowerCase())
-        )
-      : allMatches
-
-    // Sort matches
-    if (sortBy === 'name') {
-      matches = [...matches].sort((a, b) => a.occupation.name.localeCompare(b.occupation.name))
-    } else if (sortBy === 'salary') {
-      matches = [...matches].sort((a, b) => b.occupation.salary.localeCompare(a.occupation.salary))
-    }
-
-    return matches
-  }, [searchQuery, allMatches, sortBy])
-
-  const displayedMatches = showAll ? filteredMatches : filteredMatches.slice(0, 10)
-
-  // Stats
-  const goodMatches = allMatches.filter(m => m.matchPercentage >= 70).length
-  const growingJobs = allMatches.filter(m => m.occupation.prognosis === 'growing').length
-  const excellentMatches = allMatches.filter(m => m.matchPercentage >= 90).length
 
   return (
     <div className="max-w-5xl mx-auto space-y-8">
@@ -187,7 +221,7 @@ export default function OccupationsTab() {
               <Star className="w-5 h-5 text-green-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-green-900">{excellentMatches}</p>
+              <p className="text-2xl font-bold text-green-900">{stats.excellentMatches}</p>
               <p className="text-xs text-green-700">Utmärkta (90%+)</p>
             </div>
           </div>
@@ -198,7 +232,7 @@ export default function OccupationsTab() {
               <TrendingUp className="w-5 h-5 text-blue-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-blue-900">{goodMatches}</p>
+              <p className="text-2xl font-bold text-blue-900">{stats.goodMatches}</p>
               <p className="text-xs text-blue-700">Bra (70%+)</p>
             </div>
           </div>
@@ -209,7 +243,7 @@ export default function OccupationsTab() {
               <BarChart3 className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-purple-900">{growingJobs}</p>
+              <p className="text-2xl font-bold text-purple-900">{stats.growingJobs}</p>
               <p className="text-xs text-purple-700">Växande yrken</p>
             </div>
           </div>
@@ -251,7 +285,7 @@ export default function OccupationsTab() {
             <div className="relative">
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as 'match' | 'name' | 'salary')}
                 className="px-4 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 appearance-none cursor-pointer bg-white"
               >
                 <option value="match">Sortera: Matchning</option>
@@ -305,12 +339,12 @@ export default function OccupationsTab() {
           </div>
 
           {/* Quick Stats */}
-          {searchQuery || filterUni !== null ? (
+          {(searchQuery || filterUni !== null) && (
             <div className="text-sm text-gray-600 pt-2">
               Visar <span className="font-semibold text-indigo-600">{filteredMatches.length}</span> av{' '}
               <span className="font-semibold">{allMatches.length}</span> yrken
             </div>
-          ) : null}
+          )}
         </Card>
       </motion.div>
 
@@ -321,7 +355,7 @@ export default function OccupationsTab() {
         transition={{ delay: 0.3 }}
         className="space-y-3"
       >
-        {displayedMatches.length === 0 ? (
+        {stats.displayedMatches.length === 0 ? (
           <Card className="p-12 text-center">
             <Search className="w-12 h-12 mx-auto mb-4 text-gray-300" />
             <p className="text-gray-500 font-medium">
@@ -330,7 +364,7 @@ export default function OccupationsTab() {
           </Card>
         ) : (
           <AnimatePresence>
-            {displayedMatches.map((match, index) => (
+            {stats.displayedMatches.map((match, index) => (
               <motion.div
                 key={match.occupation.id}
                 initial={{ opacity: 0, x: -20 }}
