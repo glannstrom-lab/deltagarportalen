@@ -1,6 +1,8 @@
 // Edge Function: AI-generering av personligt brev
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts'
-import { handleCorsPreflightOrNull, createCorsResponse } from '../_shared/cors.ts'
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4'
+import { handleCorsPreflightOrNull, createCorsResponse, createErrorResponse } from '../_shared/cors.ts'
+import { checkRateLimit, createRateLimitResponse } from '../_shared/rateLimit.ts'
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions'
 
@@ -28,14 +30,39 @@ serve(async (req) => {
       return createCorsResponse({ error: 'Authorization required' }, 401, origin)
     }
 
-    // 2. Get OpenRouter key
+    // 2. Verify user and apply rate limiting
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
+
+    if (!supabaseUrl || !serviceRoleKey) {
+      return createCorsResponse({ error: 'Server configuration error' }, 500, origin)
+    }
+
+    const supabase = createClient(supabaseUrl, serviceRoleKey, {
+      auth: { persistSession: false }
+    })
+
+    const token = authHeader.replace('Bearer ', '')
+    const { data: { user }, error: authError } = await supabase.auth.getUser(token)
+
+    if (authError || !user) {
+      return createCorsResponse({ error: 'Invalid token' }, 401, origin)
+    }
+
+    // 3. Rate limiting
+    const rateLimitResult = checkRateLimit(user.id, 'ai-cover-letter')
+    if (!rateLimitResult.allowed) {
+      return createRateLimitResponse(rateLimitResult.retryAfter!, origin)
+    }
+
+    // 4. Get OpenRouter key
     const openRouterKey = Deno.env.get('OPENROUTER_API_KEY')
     if (!openRouterKey) {
       console.error('OPENROUTER_API_KEY missing')
-      return createCorsResponse({ error: 'AI not configured - add OPENROUTER_API_KEY secret' }, 503, origin)
+      return createCorsResponse({ error: 'AI not configured' }, 503, origin)
     }
 
-    // 3. Parse body
+    // 5. Parse body
     let body
     try {
       body = await req.json()
@@ -157,11 +184,7 @@ Skriv ett personligt brev som visar varför kandidaten passar för rollen.`
       throw fetchError
     }
 
-  } catch (error: any) {
-    console.error('Server error:', error)
-    return createCorsResponse({
-      error: 'Server error',
-      message: error.message
-    }, 500, origin)
+  } catch (error: unknown) {
+    return createErrorResponse(error, origin, 'Failed to generate cover letter')
   }
 })

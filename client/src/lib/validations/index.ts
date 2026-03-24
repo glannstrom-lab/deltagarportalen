@@ -6,6 +6,40 @@
 import { z } from 'zod'
 
 // ============================================
+// SHARED PASSWORD SCHEMA
+// Strong password requirements for all auth flows
+// ============================================
+
+/**
+ * Strong password validation schema
+ * Requirements:
+ * - Minimum 12 characters
+ * - At least one uppercase letter
+ * - At least one lowercase letter
+ * - At least one number
+ * - At least one special character
+ */
+export const strongPasswordSchema = z
+  .string()
+  .min(1, 'Lösenord är obligatoriskt')
+  .min(12, 'Lösenordet måste vara minst 12 tecken')
+  .max(128, 'Lösenordet får vara max 128 tecken')
+  .regex(/[A-Z]/, 'Lösenordet måste innehålla minst en stor bokstav (A-Z)')
+  .regex(/[a-z]/, 'Lösenordet måste innehålla minst en liten bokstav (a-z)')
+  .regex(/[0-9]/, 'Lösenordet måste innehålla minst en siffra (0-9)')
+  .regex(/[^A-Za-z0-9]/, 'Lösenordet måste innehålla minst ett specialtecken (!@#$%^&* etc)')
+  .refine(
+    (password) => !/(.)\1{2,}/.test(password),
+    'Lösenordet får inte innehålla samma tecken 3+ gånger i rad'
+  )
+  .refine(
+    (password) => !['password', 'lösenord', '12345678', 'qwerty', 'abc123'].some(
+      weak => password.toLowerCase().includes(weak)
+    ),
+    'Lösenordet innehåller vanliga osäkra mönster'
+  );
+
+// ============================================
 // AUTH VALIDATION
 // ============================================
 
@@ -13,39 +47,77 @@ export const loginSchema = z.object({
   email: z
     .string()
     .min(1, 'E-postadress är obligatorisk')
-    .email('Ogiltig e-postadress'),
+    .email('Ogiltig e-postadress')
+    .transform(email => email.toLowerCase().trim()),
   password: z
     .string()
-    .min(1, 'Lösenord är obligatoriskt')
-    .min(6, 'Lösenordet måste vara minst 6 tecken'),
+    .min(1, 'Lösenord är obligatoriskt'),
+  // Note: Password length validation happens server-side for login
+  // to avoid revealing whether account exists
 })
 
 export const registerSchema = z.object({
   email: z
     .string()
     .min(1, 'E-postadress är obligatorisk')
-    .email('Ogiltig e-postadress'),
-  password: z
-    .string()
-    .min(1, 'Lösenord är obligatoriskt')
-    .min(8, 'Lösenordet måste vara minst 8 tecken')
-    .regex(/[A-Z]/, 'Lösenordet måste innehålla minst en stor bokstav')
-    .regex(/[a-z]/, 'Lösenordet måste innehålla minst en liten bokstav')
-    .regex(/[0-9]/, 'Lösenordet måste innehålla minst en siffra'),
+    .email('Ogiltig e-postadress')
+    .transform(email => email.toLowerCase().trim()),
+  password: strongPasswordSchema,
   confirmPassword: z.string().min(1, 'Bekräfta lösenord'),
   firstName: z
     .string()
     .min(1, 'Förnamn är obligatoriskt')
     .min(2, 'Förnamnet måste vara minst 2 tecken')
-    .max(50, 'Förnamnet får vara max 50 tecken'),
+    .max(50, 'Förnamnet får vara max 50 tecken')
+    .regex(/^[a-zA-ZåäöÅÄÖéÉüÜ\s\-']+$/, 'Förnamnet innehåller ogiltiga tecken'),
   lastName: z
     .string()
     .min(1, 'Efternamn är obligatoriskt')
     .min(2, 'Efternamnet måste vara minst 2 tecken')
-    .max(50, 'Efternamnet får vara max 50 tecken'),
+    .max(50, 'Efternamnet får vara max 50 tecken')
+    .regex(/^[a-zA-ZåäöÅÄÖéÉüÜ\s\-']+$/, 'Efternamnet innehåller ogiltiga tecken'),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Lösenorden matchar inte',
   path: ['confirmPassword'],
+})
+
+/**
+ * Schema for invite-based registration
+ * Uses same strong password requirements
+ */
+export const inviteRegisterSchema = z.object({
+  firstName: z
+    .string()
+    .min(1, 'Förnamn är obligatoriskt')
+    .min(2, 'Förnamnet måste vara minst 2 tecken')
+    .max(50, 'Förnamnet får vara max 50 tecken')
+    .regex(/^[a-zA-ZåäöÅÄÖéÉüÜ\s\-']+$/, 'Förnamnet innehåller ogiltiga tecken'),
+  lastName: z
+    .string()
+    .min(1, 'Efternamn är obligatoriskt')
+    .min(2, 'Efternamnet måste vara minst 2 tecken')
+    .max(50, 'Efternamnet får vara max 50 tecken')
+    .regex(/^[a-zA-ZåäöÅÄÖéÉüÜ\s\-']+$/, 'Efternamnet innehåller ogiltiga tecken'),
+  password: strongPasswordSchema,
+  confirmPassword: z.string().min(1, 'Bekräfta lösenord'),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: 'Lösenorden matchar inte',
+  path: ['confirmPassword'],
+})
+
+/**
+ * Schema for password reset/change
+ */
+export const passwordChangeSchema = z.object({
+  currentPassword: z.string().min(1, 'Nuvarande lösenord krävs'),
+  newPassword: strongPasswordSchema,
+  confirmNewPassword: z.string().min(1, 'Bekräfta nytt lösenord'),
+}).refine((data) => data.newPassword === data.confirmNewPassword, {
+  message: 'Lösenorden matchar inte',
+  path: ['confirmNewPassword'],
+}).refine((data) => data.currentPassword !== data.newPassword, {
+  message: 'Nya lösenordet måste skilja sig från nuvarande',
+  path: ['newPassword'],
 })
 
 // ============================================

@@ -8,10 +8,14 @@ import { MobileOptimizer } from './components/MobileOptimizer'
 import { FontProvider } from './components/FontProvider'
 import { UpdateNotification } from './components/UpdateNotification'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { initSentry } from './lib/sentry'
 import './i18n/config' // Initiera i18n
 import './index.css'
 import './styles/mobile.css'
 import { swLogger } from './lib/logger'
+
+// Initialize Sentry error monitoring (before anything else)
+initSentry()
 
 // Global error handler for chunk load errors
 // This catches errors that might slip past ErrorBoundary

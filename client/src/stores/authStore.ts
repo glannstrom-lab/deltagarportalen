@@ -5,6 +5,7 @@ import type { User, Session } from '@supabase/supabase-js'
 import { useSettingsStore } from './settingsStore'
 import { useEnergyStore } from './energyStoreWithSync'
 import { userPreferencesApi } from '@/services/cloudStorage'
+import { setUser as setSentryUser } from '@/lib/sentry'
 
 export type UserRole = 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN'
 
@@ -182,6 +183,13 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
           })
 
+          // Set Sentry user context for error tracking
+          setSentryUser({
+            id: data.user.id,
+            email: data.user.email,
+            role: enrichedProfile?.role,
+          })
+
           // Sync settings and energy from cloud
           useSettingsStore.getState().syncWithServer()
           useEnergyStore.getState().syncWithServer()
@@ -264,12 +272,15 @@ export const useAuthStore = create<AuthState>()(
       signOut: async () => {
         try {
           set({ isSigningOut: true })
-          
+
           const { error } = await supabase.auth.signOut()
-          
+
           if (error) {
             throw error
           }
+
+          // Clear Sentry user context
+          setSentryUser(null)
 
           set({
             user: null,

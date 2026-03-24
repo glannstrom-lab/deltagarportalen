@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { 
-  Bell, 
-  X, 
-  Trash2, 
+import {
+  Bell,
+  X,
+  Trash2,
   Briefcase,
   Clock,
   MapPin,
@@ -11,6 +11,7 @@ import {
 } from 'lucide-react'
 import { notificationsService, type JobNotification, type JobAlert } from '../services/notificationsService'
 import { afApi, type JobAd } from '../services/arbetsformedlingenApi'
+import { sanitizeHTML } from '../utils/sanitize'
 
 export default function NotificationsCenter() {
   const [isOpen, setIsOpen] = useState(false)
@@ -306,10 +307,10 @@ export default function NotificationsCenter() {
               </button>
             </div>
             
-            <div 
+            <div
               className="prose prose-slate max-w-none"
-              dangerouslySetInnerHTML={{ 
-                __html: selectedJob.description?.text_formatted || selectedJob.description?.text || '' 
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHTML(selectedJob.description?.text_formatted || selectedJob.description?.text)
               }}
             />
 

@@ -10,6 +10,7 @@ import {
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
+import { sanitizeHTMLWithLineBreaks } from '@/utils/sanitize';
 
 import { PageLayout } from '@/components/layout/index';
 import {
@@ -515,7 +516,7 @@ function SearchTab() {
                 <div className="prose prose-slate max-w-none">
                   <div
                     className="text-slate-700 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: selectedJob.description?.text?.replace(/\n/g, '<br/>') || '' }}
+                    dangerouslySetInnerHTML={{ __html: sanitizeHTMLWithLineBreaks(selectedJob.description?.text) }}
                   />
                 </div>
 

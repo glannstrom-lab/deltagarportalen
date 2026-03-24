@@ -6,8 +6,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
+import { inviteRegisterSchema } from '@/lib/validations';
 
 export const InviteHandler: React.FC = () => {
   const { token } = useParams<{ token: string }>();
@@ -84,49 +85,33 @@ interface InviteData {
     setError(null);
 
     try {
-      // Validera lösenord
-      if (formData.password.length < 8) {
-        throw new Error('Lösenordet måste vara minst 8 tecken');
-      }
-      if (formData.password !== formData.confirmPassword) {
-        throw new Error('Lösenorden matchar inte');
+      // Validera med Zod schema
+      const validationResult = inviteRegisterSchema.safeParse(formData);
+      if (!validationResult.success) {
+        const firstError = validationResult.error.errors[0];
+        throw new Error(firstError.message);
       }
 
-      // Skapa användare
+      // Skapa användare - role sätts av trigger baserat på invitation
       const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: inviteData.email,
+        email: inviteData!.email,
         password: formData.password,
         options: {
           data: {
             first_name: formData.firstName,
             last_name: formData.lastName,
-            role: inviteData.role,
-            consultant_id: inviteData.consultant_id,
+            // Note: role is set by database trigger from invitation, not from client
           }
         }
       });
 
       if (authError) throw authError;
 
-      // Uppdatera inbjudan till accepterad
-      await supabase
-        .from('invitations')
-        .update({ status: 'ACCEPTED' })
-        .eq('id', inviteData.id);
-
-      // Om det är en deltagare, skapa koppling till konsulent
-      if (inviteData.role === 'USER' && inviteData.consultant_id) {
-        await supabase
-          .from('consultant_participants')
-          .insert({
-            consultant_id: inviteData.consultant_id,
-            participant_id: authData.user!.id,
-            assigned_by: inviteData.invited_by,
-          });
-      }
+      // Invitation status update handled by database trigger
+      // Consultant-participant relationship also handled by trigger
 
       setSuccess(true);
-      
+
       // Omdirigera efter 2 sekunder
       setTimeout(() => {
         navigate('/login');
@@ -243,9 +228,27 @@ interface InviteData {
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
-                placeholder="Minst 8 tecken"
+                placeholder="Minst 12 tecken"
+                autoComplete="new-password"
               />
             </div>
+            <ul className="mt-2 text-xs text-gray-500 space-y-0.5">
+              <li className={formData.password.length >= 12 ? 'text-green-600' : ''}>
+                {formData.password.length >= 12 ? '✓' : '○'} Minst 12 tecken
+              </li>
+              <li className={/[A-Z]/.test(formData.password) ? 'text-green-600' : ''}>
+                {/[A-Z]/.test(formData.password) ? '✓' : '○'} En stor bokstav (A-Z)
+              </li>
+              <li className={/[a-z]/.test(formData.password) ? 'text-green-600' : ''}>
+                {/[a-z]/.test(formData.password) ? '✓' : '○'} En liten bokstav (a-z)
+              </li>
+              <li className={/[0-9]/.test(formData.password) ? 'text-green-600' : ''}>
+                {/[0-9]/.test(formData.password) ? '✓' : '○'} En siffra (0-9)
+              </li>
+              <li className={/[^A-Za-z0-9]/.test(formData.password) ? 'text-green-600' : ''}>
+                {/[^A-Za-z0-9]/.test(formData.password) ? '✓' : '○'} Ett specialtecken (!@#$%^&*)
+              </li>
+            </ul>
           </div>
 
           <div>
@@ -261,8 +264,12 @@ interface InviteData {
                 onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                 placeholder="Upprepa lösenord"
+                autoComplete="new-password"
               />
             </div>
+            {formData.confirmPassword && formData.password !== formData.confirmPassword && (
+              <p className="mt-1 text-xs text-red-500">Lösenorden matchar inte</p>
+            )}
           </div>
 
           <button
