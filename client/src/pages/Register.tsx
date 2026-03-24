@@ -147,9 +147,9 @@ export default function Register() {
                     value={values.firstName}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                      touched.firstName && errors.firstName 
-                        ? 'border-red-300 focus:border-red-500' 
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                      touched.firstName && errors.firstName
+                        ? 'border-red-300 focus:border-red-500'
                         : 'border-slate-300'
                     }`}
                     placeholder="Anna"
@@ -174,9 +174,9 @@ export default function Register() {
                   value={values.lastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                    touched.lastName && errors.lastName 
-                      ? 'border-red-300 focus:border-red-500' 
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                    touched.lastName && errors.lastName
+                      ? 'border-red-300 focus:border-red-500'
                       : 'border-slate-300'
                   }`}
                   placeholder="Andersson"
@@ -209,9 +209,9 @@ export default function Register() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                    touched.email && errors.email 
-                      ? 'border-red-300 focus:border-red-500' 
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                    touched.email && errors.email
+                      ? 'border-red-300 focus:border-red-500'
                       : 'border-slate-300'
                   }`}
                   placeholder="namn@exempel.se"
@@ -244,9 +244,9 @@ export default function Register() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                    touched.password && errors.password 
-                      ? 'border-red-300 focus:border-red-500' 
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                    touched.password && errors.password
+                      ? 'border-red-300 focus:border-red-500'
                       : 'border-slate-300'
                   }`}
                   placeholder={t('auth.newPasswordPlaceholder')}
@@ -321,9 +321,9 @@ export default function Register() {
                   value={values.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 ${
-                    touched.confirmPassword && errors.confirmPassword 
-                      ? 'border-red-300 focus:border-red-500' 
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                    touched.confirmPassword && errors.confirmPassword
+                      ? 'border-red-300 focus:border-red-500'
                       : 'border-slate-300'
                   }`}
                   placeholder={t('auth.confirmPasswordPlaceholder')}

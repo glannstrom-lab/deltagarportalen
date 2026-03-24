@@ -125,7 +125,7 @@ export default function Login() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white text-slate-900 ${
                     touched.email && errors.email
                       ? 'border-red-300 focus:border-red-500'
                       : 'border-stone-300'
@@ -153,7 +153,7 @@ export default function Login() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white text-slate-900 ${
                     touched.password && errors.password
                       ? 'border-red-300 focus:border-red-500'
                       : 'border-stone-300'

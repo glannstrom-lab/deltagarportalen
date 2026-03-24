@@ -440,7 +440,42 @@
   .input::placeholder {
     color: var(--text-placeholder);
   }
-  
+
+  /* ============================================
+     AUTOFILL STYLING FIX
+     Prevents invisible text when browser autofills
+     ============================================ */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    -webkit-text-fill-color: #1e293b !important; /* slate-800 */
+    caret-color: #1e293b !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  /* Dark mode autofill */
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover,
+  .dark input:-webkit-autofill:focus,
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #292524 inset !important;
+    -webkit-text-fill-color: #fafaf9 !important;
+    caret-color: #fafaf9 !important;
+  }
+
+  /* Firefox autofill */
+  input:autofill {
+    background-color: white !important;
+    color: #1e293b !important;
+  }
+
+  .dark input:autofill {
+    background-color: #292524 !important;
+    color: #fafaf9 !important;
+  }
+
   /* NYA: Utility-klasser för temafärger */
   .bg-page {
     background-color: var(--bg-page);
