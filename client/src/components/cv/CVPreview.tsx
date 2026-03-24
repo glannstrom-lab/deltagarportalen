@@ -1,11 +1,23 @@
 /**
- * CV Preview Component - Förbättrade moderna mallar
- * Bättre typografi, ikoner, och visuell hierarki
+ * CV Preview Component - Premium Design System
+ *
+ * Design Philosophy:
+ * - Apple-level attention to detail and whitespace
+ * - Notion's clean information hierarchy
+ * - Stripe's sophisticated color usage
+ *
+ * Typography System (8pt grid):
+ * - Display: 48px/56px - Name (major hierarchy)
+ * - Title: 24px/32px - Job title, section headers
+ * - Body Large: 18px/28px - Summary, key content
+ * - Body: 16px/24px - Regular content
+ * - Caption: 14px/20px - Dates, labels
+ * - Micro: 12px/16px - Tags, badges
  */
 
 import {
   Mail, Phone, MapPin, Briefcase, GraduationCap,
-  Award, Link2, Globe, Star, Target, Zap, BookOpen, Sparkles
+  Award, Globe, Sparkles, ChevronRight, Circle
 } from 'lucide-react'
 import type { CVData } from '@/services/supabaseApi'
 
@@ -13,14 +25,232 @@ interface CVPreviewProps {
   data: CVData
 }
 
-// Helper to translate language level values to Swedish display text
+// ============================================================================
+// DESIGN TOKENS
+// ============================================================================
+
+const TYPOGRAPHY = {
+  display: { size: '48px', lineHeight: '56px', weight: '700', letterSpacing: '-0.02em' },
+  title: { size: '24px', lineHeight: '32px', weight: '600', letterSpacing: '-0.01em' },
+  titleSm: { size: '20px', lineHeight: '28px', weight: '600', letterSpacing: '-0.01em' },
+  bodyLg: { size: '18px', lineHeight: '28px', weight: '400', letterSpacing: '0' },
+  body: { size: '16px', lineHeight: '24px', weight: '400', letterSpacing: '0' },
+  caption: { size: '14px', lineHeight: '20px', weight: '500', letterSpacing: '0' },
+  micro: { size: '12px', lineHeight: '16px', weight: '500', letterSpacing: '0.02em' },
+  label: { size: '11px', lineHeight: '16px', weight: '600', letterSpacing: '0.08em' },
+}
+
+const SPACING = {
+  xs: '4px',
+  sm: '8px',
+  md: '16px',
+  lg: '24px',
+  xl: '32px',
+  '2xl': '48px',
+  '3xl': '64px',
+  '4xl': '96px',
+}
+
+// ============================================================================
+// COLOR PALETTES - Premium, refined colors
+// ============================================================================
+
+const PALETTES = {
+  // Elegant dark sidebar with warm accents
+  modern: {
+    name: 'Modern',
+    sidebar: {
+      bg: '#18181B',
+      text: '#FAFAFA',
+      textMuted: 'rgba(250, 250, 250, 0.6)',
+      accent: '#3B82F6',
+      accentMuted: 'rgba(59, 130, 246, 0.15)',
+    },
+    main: {
+      bg: '#FFFFFF',
+      text: '#18181B',
+      textSecondary: '#52525B',
+      textMuted: '#A1A1AA',
+      accent: '#3B82F6',
+      accentLight: '#EFF6FF',
+      border: '#E4E4E7',
+      borderLight: '#F4F4F5',
+    },
+  },
+  // Clean minimalist - Notion inspired
+  minimal: {
+    name: 'Minimal',
+    sidebar: null, // No sidebar for this template
+    main: {
+      bg: '#FFFFFF',
+      text: '#1F2937',
+      textSecondary: '#4B5563',
+      textMuted: '#9CA3AF',
+      accent: '#1F2937',
+      accentLight: '#F9FAFB',
+      border: '#E5E7EB',
+      borderLight: '#F3F4F6',
+    },
+  },
+  // Sophisticated executive - gold accents
+  executive: {
+    name: 'Executive',
+    header: {
+      bg: '#0C0A09',
+      text: '#FAFAF9',
+      accent: '#CA8A04',
+    },
+    main: {
+      bg: '#FAFAF9',
+      text: '#1C1917',
+      textSecondary: '#44403C',
+      textMuted: '#78716C',
+      accent: '#CA8A04',
+      accentLight: '#FEF9C3',
+      border: '#D6D3D1',
+      borderLight: '#F5F5F4',
+    },
+  },
+  // Nordic - soft, airy blues
+  nordic: {
+    name: 'Nordic',
+    sidebar: {
+      bg: '#F0F9FF',
+      text: '#0C4A6E',
+      textMuted: '#0369A1',
+      accent: '#0284C7',
+      accentMuted: 'rgba(2, 132, 199, 0.1)',
+    },
+    main: {
+      bg: '#FFFFFF',
+      text: '#0C4A6E',
+      textSecondary: '#0369A1',
+      textMuted: '#7DD3FC',
+      accent: '#0284C7',
+      accentLight: '#E0F2FE',
+      border: '#BAE6FD',
+      borderLight: '#F0F9FF',
+    },
+  },
+  // Creative - bold, modern gradient
+  creative: {
+    name: 'Creative',
+    sidebar: {
+      bg: 'linear-gradient(180deg, #7C3AED 0%, #5B21B6 100%)',
+      text: '#FFFFFF',
+      textMuted: 'rgba(255, 255, 255, 0.7)',
+      accent: '#FFFFFF',
+      accentMuted: 'rgba(255, 255, 255, 0.15)',
+    },
+    main: {
+      bg: '#FAF5FF',
+      text: '#3B0764',
+      textSecondary: '#6B21A8',
+      textMuted: '#A855F7',
+      accent: '#7C3AED',
+      accentLight: '#EDE9FE',
+      border: '#DDD6FE',
+      borderLight: '#F5F3FF',
+    },
+  },
+  // Centered - elegant gradient header
+  centered: {
+    name: 'Centered',
+    header: {
+      bg: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A855F7 100%)',
+      text: '#FFFFFF',
+      accent: '#FFFFFF',
+    },
+    main: {
+      bg: '#FFFFFF',
+      text: '#1E1B4B',
+      textSecondary: '#3730A3',
+      textMuted: '#6366F1',
+      accent: '#6366F1',
+      accentLight: '#EEF2FF',
+      border: '#C7D2FE',
+      borderLight: '#F5F3FF',
+    },
+  },
+}
+
+// ============================================================================
+// TEMPLATE CONFIGURATIONS
+// ============================================================================
+
+const TEMPLATES = {
+  sidebar: {
+    name: 'Sidokolumn',
+    layout: 'sidebar' as const,
+    palette: 'modern',
+    features: {
+      photoStyle: 'rounded-full',
+      skillStyle: 'tags',
+      experienceStyle: 'timeline',
+    },
+  },
+  centered: {
+    name: 'Centrerad',
+    layout: 'top' as const,
+    palette: 'centered',
+    features: {
+      photoStyle: 'rounded-full',
+      skillStyle: 'pills',
+      experienceStyle: 'cards',
+    },
+  },
+  minimal: {
+    name: 'Minimal',
+    layout: 'clean' as const,
+    palette: 'minimal',
+    features: {
+      photoStyle: 'rounded-lg',
+      skillStyle: 'simple',
+      experienceStyle: 'clean',
+    },
+  },
+  creative: {
+    name: 'Kreativ',
+    layout: 'split' as const,
+    palette: 'creative',
+    features: {
+      photoStyle: 'rounded-2xl',
+      skillStyle: 'progress',
+      experienceStyle: 'cards',
+    },
+  },
+  executive: {
+    name: 'Executive',
+    layout: 'top' as const,
+    palette: 'executive',
+    features: {
+      photoStyle: 'rounded-lg',
+      skillStyle: 'elegant',
+      experienceStyle: 'elegant',
+    },
+  },
+  nordic: {
+    name: 'Nordisk',
+    layout: 'sidebar' as const,
+    palette: 'nordic',
+    features: {
+      photoStyle: 'rounded-2xl',
+      skillStyle: 'soft',
+      experienceStyle: 'timeline',
+    },
+  },
+}
+
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
 const getLanguageLevelDisplay = (level: string): string => {
   const levelMap: Record<string, string> = {
     'basic': 'Grundläggande',
     'good': 'God',
     'fluent': 'Flytande',
     'native': 'Modersmål',
-    // Fallback for old Swedish values
     'Grundläggande': 'Grundläggande',
     'God': 'God',
     'Flytande': 'Flytande',
@@ -29,14 +259,12 @@ const getLanguageLevelDisplay = (level: string): string => {
   return levelMap[level] || level
 }
 
-// Helper to get progress bar width for language level
 const getLanguageLevelWidth = (level: string): string => {
   const widthMap: Record<string, string> = {
     'native': '100%',
     'fluent': '85%',
     'good': '70%',
     'basic': '50%',
-    // Fallback for old Swedish values
     'Modersmål': '100%',
     'Flytande': '85%',
     'God': '70%',
@@ -45,127 +273,297 @@ const getLanguageLevelWidth = (level: string): string => {
   return widthMap[level] || '50%'
 }
 
-// Förbättrade mallar med bättre typografi och ikoner
-const TEMPLATES = {
-  sidebar: {
-    name: 'Sidokolumn',
-    layout: 'sidebar',
-    fonts: { heading: 'Inter', body: 'Inter' },
-    colors: {
-      sidebar: '#0f172a',
-      sidebarText: '#f8fafc',
-      accent: '#3b82f6',
-      accentLight: '#dbeafe',
-      text: '#1e293b',
-      muted: '#64748b',
-      border: '#e2e8f0',
-    },
-    features: {
-      roundedPhoto: true,
-      skillTags: true,
-      timeline: true,
-    }
-  },
-  centered: {
-    name: 'Centrerad',
-    layout: 'top',
-    fonts: { heading: 'Montserrat', body: 'Inter' },
-    colors: {
-      header: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-      headerText: '#ffffff',
-      accent: '#7c3aed',
-      accentLight: '#ede9fe',
-      text: '#1e1b4b',
-      muted: '#6b7280',
-      border: '#e5e7eb',
-    },
-    features: {
-      gradientHeader: true,
-      circularPhoto: true,
-      pillTags: true,
-    }
-  },
-  minimal: {
-    name: 'Minimal',
-    layout: 'top',
-    fonts: { heading: 'Inter', body: 'Inter' },
-    colors: {
-      header: '#fafafa',
-      headerText: '#171717',
-      accent: '#171717',
-      accentLight: '#f5f5f5',
-      text: '#171717',
-      muted: '#737373',
-      border: '#e5e5e5',
-    },
-    features: {
-      cleanLines: true,
-      spacious: true,
-      simpleTags: true,
-    }
-  },
-  creative: {
-    name: 'Kreativ',
-    layout: 'split',
-    fonts: { heading: 'Poppins', body: 'Inter' },
-    colors: {
-      leftColumn: '#db2777',
-      leftText: '#ffffff',
-      rightBg: '#fdf2f8',
-      accent: '#be185d',
-      accentLight: '#fce7f3',
-      text: '#831843',
-      muted: '#9d174d',
-      border: '#fbcfe8',
-    },
-    features: {
-      progressBars: true,
-      cardLayout: true,
-      roundedPhoto: true,
-    }
-  },
-  executive: {
-    name: 'Executive',
-    layout: 'top',
-    fonts: { heading: 'Georgia', body: 'Inter' },
-    colors: {
-      header: '#0f172a',
-      headerText: '#f8fafc',
-      accent: '#d4af37',
-      accentLight: '#fefce8',
-      text: '#0f172a',
-      muted: '#475569',
-      border: '#d4af37',
-    },
-    features: {
-      serif: true,
-      goldAccents: true,
-      elegant: true,
-    }
-  },
-  nordic: {
-    name: 'Nordisk',
-    layout: 'sidebar',
-    fonts: { heading: 'Inter', body: 'Inter' },
-    colors: {
-      sidebar: '#f0f9ff',
-      sidebarText: '#0c4a6e',
-      accent: '#0284c7',
-      accentLight: '#e0f2fe',
-      text: '#0c4a6e',
-      muted: '#0369a1',
-      border: '#bae6fd',
-    },
-    features: {
-      softColors: true,
-      lightSidebar: true,
-      clean: true,
-    }
-  },
+const getSkillName = (skill: string | { name: string; category?: string }): string => {
+  return typeof skill === 'string' ? skill : skill?.name || ''
 }
 
+// ============================================================================
+// REUSABLE COMPONENTS
+// ============================================================================
+
+// Section Label - uppercase tracking
+const SectionLabel = ({
+  children,
+  color = '#A1A1AA',
+  style = {}
+}: {
+  children: React.ReactNode
+  color?: string
+  style?: React.CSSProperties
+}) => (
+  <div
+    style={{
+      fontSize: TYPOGRAPHY.label.size,
+      lineHeight: TYPOGRAPHY.label.lineHeight,
+      fontWeight: TYPOGRAPHY.label.weight,
+      letterSpacing: TYPOGRAPHY.label.letterSpacing,
+      textTransform: 'uppercase',
+      color,
+      marginBottom: SPACING.md,
+      ...style
+    }}
+  >
+    {children}
+  </div>
+)
+
+// Section Title with optional icon
+const SectionTitle = ({
+  children,
+  icon: Icon,
+  color = '#18181B',
+  accentColor = '#3B82F6',
+}: {
+  children: React.ReactNode
+  icon?: typeof Briefcase
+  color?: string
+  accentColor?: string
+}) => (
+  <h2
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      gap: SPACING.sm,
+      fontSize: TYPOGRAPHY.titleSm.size,
+      lineHeight: TYPOGRAPHY.titleSm.lineHeight,
+      fontWeight: TYPOGRAPHY.titleSm.weight,
+      letterSpacing: TYPOGRAPHY.titleSm.letterSpacing,
+      color,
+      marginBottom: SPACING.lg,
+    }}
+  >
+    {Icon && <Icon style={{ width: '20px', height: '20px', color: accentColor }} />}
+    {children}
+  </h2>
+)
+
+// Contact Item
+const ContactItem = ({
+  icon: Icon,
+  children,
+  href,
+  light = false,
+  accentColor = '#3B82F6',
+}: {
+  icon: typeof Mail
+  children: React.ReactNode
+  href?: string
+  light?: boolean
+  accentColor?: string
+}) => {
+  const content = (
+    <div
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: SPACING.md,
+        padding: `${SPACING.sm} 0`,
+      }}
+    >
+      <div
+        style={{
+          width: '36px',
+          height: '36px',
+          borderRadius: '10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: light ? 'rgba(255,255,255,0.1)' : `${accentColor}10`,
+          flexShrink: 0,
+        }}
+      >
+        <Icon style={{ width: '18px', height: '18px', color: light ? '#fff' : accentColor }} />
+      </div>
+      <span
+        style={{
+          fontSize: TYPOGRAPHY.caption.size,
+          lineHeight: TYPOGRAPHY.caption.lineHeight,
+          wordBreak: 'break-all',
+        }}
+      >
+        {children}
+      </span>
+    </div>
+  )
+
+  if (href) {
+    return <a href={href} style={{ textDecoration: 'none', color: 'inherit' }}>{content}</a>
+  }
+  return content
+}
+
+// Skill Tag
+const SkillTag = ({
+  children,
+  variant = 'default',
+  accentColor = '#3B82F6',
+  accentLight = '#EFF6FF',
+}: {
+  children: React.ReactNode
+  variant?: 'default' | 'light' | 'outline' | 'minimal'
+  accentColor?: string
+  accentLight?: string
+}) => {
+  const styles: Record<string, React.CSSProperties> = {
+    default: {
+      background: accentLight,
+      color: accentColor,
+      padding: `${SPACING.sm} ${SPACING.md}`,
+      borderRadius: '8px',
+    },
+    light: {
+      background: 'rgba(255,255,255,0.15)',
+      color: '#fff',
+      padding: `${SPACING.sm} ${SPACING.md}`,
+      borderRadius: '8px',
+    },
+    outline: {
+      background: 'transparent',
+      border: `1px solid ${accentColor}40`,
+      color: accentColor,
+      padding: `6px ${SPACING.md}`,
+      borderRadius: '6px',
+    },
+    minimal: {
+      background: '#F4F4F5',
+      color: '#52525B',
+      padding: `6px 12px`,
+      borderRadius: '4px',
+    },
+  }
+
+  return (
+    <span
+      style={{
+        display: 'inline-flex',
+        fontSize: TYPOGRAPHY.micro.size,
+        lineHeight: TYPOGRAPHY.micro.lineHeight,
+        fontWeight: TYPOGRAPHY.micro.weight,
+        ...styles[variant],
+      }}
+    >
+      {children}
+    </span>
+  )
+}
+
+// Timeline Item
+const TimelineItem = ({
+  title,
+  subtitle,
+  period,
+  description,
+  accentColor = '#3B82F6',
+  textColor = '#18181B',
+  mutedColor = '#A1A1AA',
+  isLast = false,
+}: {
+  title: string
+  subtitle: string
+  period: string
+  description?: string
+  accentColor?: string
+  textColor?: string
+  mutedColor?: string
+  isLast?: boolean
+}) => (
+  <div
+    style={{
+      position: 'relative',
+      paddingLeft: SPACING.lg,
+      paddingBottom: isLast ? 0 : SPACING.lg,
+    }}
+  >
+    {/* Timeline line */}
+    {!isLast && (
+      <div
+        style={{
+          position: 'absolute',
+          left: '5px',
+          top: '12px',
+          bottom: 0,
+          width: '2px',
+          background: `${accentColor}20`,
+        }}
+      />
+    )}
+
+    {/* Timeline dot */}
+    <div
+      style={{
+        position: 'absolute',
+        left: 0,
+        top: '4px',
+        width: '12px',
+        height: '12px',
+        borderRadius: '50%',
+        background: accentColor,
+        border: '3px solid #fff',
+        boxShadow: `0 0 0 2px ${accentColor}30`,
+      }}
+    />
+
+    {/* Content */}
+    <div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+        <h3
+          style={{
+            fontSize: TYPOGRAPHY.body.size,
+            lineHeight: TYPOGRAPHY.body.lineHeight,
+            fontWeight: '600',
+            color: textColor,
+          }}
+        >
+          {title}
+        </h3>
+        <span
+          style={{
+            fontSize: TYPOGRAPHY.micro.size,
+            fontWeight: '500',
+            color: accentColor,
+            background: `${accentColor}10`,
+            padding: '4px 10px',
+            borderRadius: '20px',
+            whiteSpace: 'nowrap',
+            marginLeft: SPACING.md,
+          }}
+        >
+          {period}
+        </span>
+      </div>
+      <div
+        style={{
+          fontSize: TYPOGRAPHY.caption.size,
+          fontWeight: '500',
+          color: accentColor,
+          marginBottom: description ? SPACING.sm : 0,
+        }}
+      >
+        {subtitle}
+      </div>
+      {description && (
+        <p
+          style={{
+            fontSize: TYPOGRAPHY.caption.size,
+            lineHeight: '22px',
+            color: mutedColor,
+            margin: 0,
+          }}
+        >
+          {description}
+        </p>
+      )}
+    </div>
+  </div>
+)
+
+// ============================================================================
+// MAIN COMPONENT
+// ============================================================================
+
 export function CVPreview({ data }: CVPreviewProps) {
-  const template = TEMPLATES[data.template as keyof typeof TEMPLATES] || TEMPLATES.sidebar
+  const templateConfig = TEMPLATES[data.template as keyof typeof TEMPLATES] || TEMPLATES.sidebar
+  const palette = PALETTES[templateConfig.palette as keyof typeof PALETTES] || PALETTES.modern
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
 
   // Check if there's any meaningful content
@@ -180,183 +578,264 @@ export function CVPreview({ data }: CVPreviewProps) {
     (data.skills && data.skills.length > 0)
   )
 
-  // Show empty state if no content
+  // Empty state
   if (!hasContent) {
     return (
-      <div className="cv-preview min-h-[400px] bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center p-12 text-center">
-        <div className="w-20 h-20 bg-slate-200 rounded-2xl flex items-center justify-center mb-6">
-          <Sparkles className="w-10 h-10 text-slate-400" />
+      <div
+        className="cv-preview"
+        style={{
+          minHeight: '500px',
+          background: 'linear-gradient(180deg, #FAFAFA 0%, #F4F4F5 100%)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: SPACING['3xl'],
+          textAlign: 'center',
+        }}
+      >
+        <div
+          style={{
+            width: '80px',
+            height: '80px',
+            background: '#E4E4E7',
+            borderRadius: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: SPACING.lg,
+          }}
+        >
+          <Sparkles style={{ width: '40px', height: '40px', color: '#A1A1AA' }} />
         </div>
-        <h3 className="text-xl font-semibold text-slate-700 mb-2">
+        <h3
+          style={{
+            fontSize: TYPOGRAPHY.title.size,
+            fontWeight: TYPOGRAPHY.title.weight,
+            color: '#52525B',
+            marginBottom: SPACING.sm,
+          }}
+        >
           Förhandsvisning
         </h3>
-        <p className="text-slate-500 max-w-xs">
+        <p style={{ fontSize: TYPOGRAPHY.body.size, color: '#A1A1AA', maxWidth: '280px' }}>
           Börja fylla i dina uppgifter för att se hur ditt CV kommer att se ut
         </p>
-        <div className="mt-8 flex gap-3">
-          <div className="w-24 h-3 bg-slate-200 rounded animate-pulse" />
-          <div className="w-16 h-3 bg-slate-200 rounded animate-pulse" />
-        </div>
-        <div className="mt-3 w-40 h-3 bg-slate-200 rounded animate-pulse" />
       </div>
     )
   }
 
-  const getSkillName = (skill: string | { name: string; category?: string }): string => {
-    return typeof skill === 'string' ? skill : skill?.name || ''
-  }
-  const getSkillCategory = (skill: string | { name: string; category?: string }): string => {
-    return typeof skill === 'object' ? skill?.category || 'other' : 'other'
-  }
-  
-  const technicalSkills = data.skills?.filter(s => getSkillCategory(s) === 'technical') || []
-  const softSkills = data.skills?.filter(s => getSkillCategory(s) === 'soft') || []
-  const otherSkills = data.skills?.filter(s => !['technical', 'soft'].includes(getSkillCategory(s))) || []
-
-  // SIDEBAR LAYOUT
-  if (template.layout === 'sidebar') {
+  // ============================================================================
+  // SIDEBAR LAYOUT (Modern, Nordic)
+  // ============================================================================
+  if (templateConfig.layout === 'sidebar') {
+    const sidebarPalette = 'sidebar' in palette ? palette.sidebar : null
+    const mainPalette = palette.main
     const isNordic = data.template === 'nordic'
-    
+
     return (
-      <div className="cv-preview flex min-h-[297mm] bg-white shadow-2xl">
-        {/* Sidokolumn */}
-        <aside 
-          className="w-[35%] p-8 flex flex-col"
-          style={{ 
-            background: isNordic ? '#f0f9ff' : '#0f172a',
-            color: isNordic ? '#0c4a6e' : '#f8fafc',
+      <div
+        className="cv-preview"
+        style={{
+          display: 'flex',
+          minHeight: '297mm',
+          background: mainPalette.bg,
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+        }}
+      >
+        {/* Sidebar */}
+        <aside
+          style={{
+            width: '35%',
+            padding: SPACING['2xl'],
+            background: sidebarPalette?.bg || '#18181B',
+            color: sidebarPalette?.text || '#FAFAFA',
+            display: 'flex',
+            flexDirection: 'column',
           }}
         >
-          {/* Profilbild */}
-          <div className="mb-8 flex justify-center">
+          {/* Profile Photo */}
+          <div style={{ marginBottom: SPACING['2xl'], textAlign: 'center' }}>
             {data.profileImage ? (
-              <div className="relative">
+              <div style={{ position: 'relative', display: 'inline-block' }}>
                 <img
                   src={data.profileImage}
                   alt=""
-                  className="w-40 h-40 object-cover rounded-full border-4 border-white/20 shadow-2xl"
+                  style={{
+                    width: '160px',
+                    height: '160px',
+                    objectFit: 'cover',
+                    borderRadius: templateConfig.features.photoStyle === 'rounded-full' ? '50%' : '24px',
+                    border: '4px solid rgba(255,255,255,0.2)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                  }}
                 />
-                <div 
-                  className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center"
-                  style={{ background: template.colors.accent }}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '-8px',
+                    right: '-8px',
+                    width: '32px',
+                    height: '32px',
+                    borderRadius: '50%',
+                    background: sidebarPalette?.accent || '#3B82F6',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                  }}
                 >
-                  <Sparkles className="w-4 h-4 text-white" />
+                  <Sparkles style={{ width: '16px', height: '16px', color: '#fff' }} />
                 </div>
               </div>
             ) : (
-              <div className="w-40 h-40 rounded-full bg-white/10 flex items-center justify-center border-4 border-white/20">
-                <span className="text-6xl opacity-50">👤</span>
+              <div
+                style={{
+                  width: '160px',
+                  height: '160px',
+                  borderRadius: templateConfig.features.photoStyle === 'rounded-full' ? '50%' : '24px',
+                  background: sidebarPalette?.accentMuted || 'rgba(255,255,255,0.1)',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '4px solid rgba(255,255,255,0.1)',
+                }}
+              >
+                <span style={{ fontSize: '64px', opacity: 0.4 }}>👤</span>
               </div>
             )}
           </div>
-          
-          {/* Kontakt-sektion */}
-          <div className="mb-8">
-            <h3 className="text-xs uppercase tracking-[0.2em] opacity-60 mb-4 font-semibold">
-              Kontakt
-            </h3>
-            <div className="space-y-3">
+
+          {/* Contact Section */}
+          <div style={{ marginBottom: SPACING['2xl'] }}>
+            <SectionLabel color={sidebarPalette?.textMuted}>Kontakt</SectionLabel>
+            <div>
               {data.email && (
-                <a href={`mailto:${data.email}`} className="flex items-center gap-3 group">
-                  <div 
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: isNordic ? '#e0f2fe' : 'rgba(255,255,255,0.1)' }}
-                  >
-                    <Mail className="w-5 h-5" style={{ color: isNordic ? '#0284c7' : 'inherit' }} />
-                  </div>
-                  <span className="text-sm break-all group-hover:opacity-80 transition-opacity">
-                    {data.email}
-                  </span>
-                </a>
+                <ContactItem
+                  icon={Mail}
+                  href={`mailto:${data.email}`}
+                  light={!isNordic}
+                  accentColor={sidebarPalette?.accent}
+                >
+                  {data.email}
+                </ContactItem>
               )}
               {data.phone && (
-                <a href={`tel:${data.phone}`} className="flex items-center gap-3 group">
-                  <div 
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: isNordic ? '#e0f2fe' : 'rgba(255,255,255,0.1)' }}
-                  >
-                    <Phone className="w-5 h-5" style={{ color: isNordic ? '#0284c7' : 'inherit' }} />
-                  </div>
-                  <span className="text-sm group-hover:opacity-80 transition-opacity">{data.phone}</span>
-                </a>
+                <ContactItem
+                  icon={Phone}
+                  href={`tel:${data.phone}`}
+                  light={!isNordic}
+                  accentColor={sidebarPalette?.accent}
+                >
+                  {data.phone}
+                </ContactItem>
               )}
               {data.location && (
-                <div className="flex items-center gap-3">
-                  <div 
-                    className="w-10 h-10 rounded-xl flex items-center justify-center"
-                    style={{ background: isNordic ? '#e0f2fe' : 'rgba(255,255,255,0.1)' }}
-                  >
-                    <MapPin className="w-5 h-5" style={{ color: isNordic ? '#0284c7' : 'inherit' }} />
-                  </div>
-                  <span className="text-sm">{data.location}</span>
-                </div>
+                <ContactItem
+                  icon={MapPin}
+                  light={!isNordic}
+                  accentColor={sidebarPalette?.accent}
+                >
+                  {data.location}
+                </ContactItem>
               )}
             </div>
           </div>
-          
-          {/* Skills med progress bars */}
+
+          {/* Skills */}
           {data.skills?.length > 0 && (
-            <div className="mb-8">
-              <h3 className="text-xs uppercase tracking-[0.2em] opacity-60 mb-4 font-semibold">
-                Expertis
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {data.skills.slice(0, 8).map((skill, i) => (
-                  <span 
+            <div style={{ marginBottom: SPACING['2xl'] }}>
+              <SectionLabel color={sidebarPalette?.textMuted}>Expertis</SectionLabel>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: SPACING.sm }}>
+                {data.skills.slice(0, 10).map((skill, i) => (
+                  <SkillTag
                     key={i}
-                    className="px-3 py-1.5 rounded-lg text-sm font-medium"
-                    style={{ 
-                      background: isNordic ? '#e0f2fe' : 'rgba(255,255,255,0.15)',
-                      color: 'inherit'
-                    }}
+                    variant={isNordic ? 'default' : 'light'}
+                    accentColor={sidebarPalette?.accent}
+                    accentLight={sidebarPalette?.accentMuted}
                   >
                     {getSkillName(skill)}
-                  </span>
+                  </SkillTag>
                 ))}
               </div>
             </div>
           )}
-          
-          {/* Språk med nivåer */}
+
+          {/* Languages */}
           {data.languages?.length > 0 && (
-            <div className="mb-8">
-              <h3 className="text-xs uppercase tracking-[0.2em] opacity-60 mb-4 font-semibold">
-                Språk
-              </h3>
-              <div className="space-y-3">
+            <div style={{ marginBottom: SPACING['2xl'] }}>
+              <SectionLabel color={sidebarPalette?.textMuted}>Språk</SectionLabel>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.md }}>
                 {data.languages.map(lang => {
                   const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                   return (
-                    <div key={lang.id} className="flex items-center justify-between">
-                      <span className="font-medium">{languageName}</span>
-                      <span
-                        className="text-xs px-2 py-1 rounded-full"
+                    <div key={lang.id}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                        <span style={{ fontSize: TYPOGRAPHY.caption.size, fontWeight: '500' }}>
+                          {languageName}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: TYPOGRAPHY.micro.size,
+                            opacity: 0.7,
+                          }}
+                        >
+                          {getLanguageLevelDisplay(lang.level)}
+                        </span>
+                      </div>
+                      <div
                         style={{
-                          background: isNordic ? '#bae6fd' : 'rgba(255,255,255,0.2)',
+                          height: '4px',
+                          borderRadius: '2px',
+                          background: sidebarPalette?.accentMuted || 'rgba(255,255,255,0.15)',
+                          overflow: 'hidden',
                         }}
                       >
-                        {getLanguageLevelDisplay(lang.level)}
-                      </span>
+                        <div
+                          style={{
+                            height: '100%',
+                            width: getLanguageLevelWidth(lang.level),
+                            background: sidebarPalette?.accent || '#3B82F6',
+                            borderRadius: '2px',
+                            transition: 'width 0.3s ease',
+                          }}
+                        />
+                      </div>
                     </div>
                   )
                 })}
               </div>
             </div>
           )}
-          
-          {/* Certifikat */}
+
+          {/* Certificates */}
           {data.certificates?.length > 0 && (
-            <div className="mt-auto">
-              <h3 className="text-xs uppercase tracking-[0.2em] opacity-60 mb-4 font-semibold">
-                Certifieringar
-              </h3>
-              <div className="space-y-2">
+            <div style={{ marginTop: 'auto' }}>
+              <SectionLabel color={sidebarPalette?.textMuted}>Certifieringar</SectionLabel>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.md }}>
                 {data.certificates.map(cert => (
-                  <div key={cert.id} className="flex items-start gap-2">
-                    <Award className="w-4 h-4 mt-0.5 opacity-60 shrink-0" />
+                  <div key={cert.id} style={{ display: 'flex', alignItems: 'flex-start', gap: SPACING.sm }}>
+                    <Award
+                      style={{
+                        width: '16px',
+                        height: '16px',
+                        marginTop: '2px',
+                        color: sidebarPalette?.accent,
+                        flexShrink: 0,
+                      }}
+                    />
                     <div>
-                      <div className="font-medium text-sm">{cert.name}</div>
-                      <div className="text-xs opacity-60">{cert.issuer}</div>
+                      <div style={{ fontSize: TYPOGRAPHY.caption.size, fontWeight: '500' }}>
+                        {cert.name}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: TYPOGRAPHY.micro.size,
+                          opacity: 0.6,
+                        }}
+                      >
+                        {cert.issuer}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -364,104 +843,142 @@ export function CVPreview({ data }: CVPreviewProps) {
             </div>
           )}
         </aside>
-        
-        {/* Huvudinnehåll */}
-        <main className="w-[65%] p-10 bg-white">
+
+        {/* Main Content */}
+        <main style={{ width: '65%', padding: SPACING['2xl'], background: mainPalette.bg }}>
           {/* Header */}
-          <header className="mb-10 pb-8 border-b-2" style={{ borderColor: template.colors.border }}>
-            <h1 className="text-5xl font-bold mb-3" style={{ color: template.colors.text }}>
+          <header
+            style={{
+              marginBottom: SPACING['2xl'],
+              paddingBottom: SPACING['2xl'],
+              borderBottom: `2px solid ${mainPalette.border}`,
+            }}
+          >
+            <h1
+              style={{
+                fontSize: TYPOGRAPHY.display.size,
+                lineHeight: TYPOGRAPHY.display.lineHeight,
+                fontWeight: TYPOGRAPHY.display.weight,
+                letterSpacing: TYPOGRAPHY.display.letterSpacing,
+                color: mainPalette.text,
+                marginBottom: SPACING.sm,
+              }}
+            >
               {fullName}
             </h1>
             {data.title && (
-              <p className="text-2xl font-medium" style={{ color: template.colors.accent }}>
+              <p
+                style={{
+                  fontSize: TYPOGRAPHY.title.size,
+                  lineHeight: TYPOGRAPHY.title.lineHeight,
+                  fontWeight: '500',
+                  color: mainPalette.accent,
+                }}
+              >
                 {data.title}
               </p>
             )}
           </header>
-          
-          {/* Profil */}
+
+          {/* Profile Summary */}
           {data.summary && (
-            <section className="mb-10">
-              <h2 
-                className="text-lg font-bold mb-4 flex items-center gap-2 uppercase tracking-wider"
-                style={{ color: template.colors.text }}
-              >
-                <Target className="w-5 h-5" style={{ color: template.colors.accent }} />
+            <section style={{ marginBottom: SPACING['2xl'] }}>
+              <SectionTitle icon={Sparkles} color={mainPalette.text} accentColor={mainPalette.accent}>
                 Profil
-              </h2>
-              <p className="text-lg leading-relaxed" style={{ color: template.colors.text }}>
+              </SectionTitle>
+              <p
+                style={{
+                  fontSize: TYPOGRAPHY.bodyLg.size,
+                  lineHeight: TYPOGRAPHY.bodyLg.lineHeight,
+                  color: mainPalette.textSecondary,
+                }}
+              >
                 {data.summary}
               </p>
             </section>
           )}
-          
-          {/* Erfarenhet med timeline */}
+
+          {/* Work Experience */}
           {data.workExperience?.length > 0 && (
-            <section className="mb-10">
-              <h2 
-                className="text-lg font-bold mb-6 flex items-center gap-2 uppercase tracking-wider"
-                style={{ color: template.colors.text }}
-              >
-                <Briefcase className="w-5 h-5" style={{ color: template.colors.accent }} />
+            <section style={{ marginBottom: SPACING['2xl'] }}>
+              <SectionTitle icon={Briefcase} color={mainPalette.text} accentColor={mainPalette.accent}>
                 Arbetslivserfarenhet
-              </h2>
-              <div className="space-y-6 relative">
-                {data.workExperience.map((job, i) => (
-                  <div key={job.id} className="relative pl-6 pb-6 border-l-2" style={{ borderColor: template.colors.border }}>
-                    <div 
-                      className="absolute -left-[9px] top-0 w-4 h-4 rounded-full border-4 border-white"
-                      style={{ background: template.colors.accent }}
-                    />
-                    <div className="flex justify-between items-start mb-1">
-                      <h3 className="text-xl font-bold" style={{ color: template.colors.text }}>
-                        {job.title}
-                      </h3>
-                      <span className="text-sm font-medium px-3 py-1 rounded-full" style={{ 
-                        background: template.colors.accentLight,
-                        color: template.colors.accent
-                      }}>
-                        {job.startDate} – {job.current ? 'Nu' : job.endDate}
-                      </span>
-                    </div>
-                    <div className="text-base font-medium mb-2" style={{ color: template.colors.accent }}>
-                      {job.company}{job.location && ` • ${job.location}`}
-                    </div>
-                    {job.description && (
-                      <p className="text-sm leading-relaxed" style={{ color: template.colors.muted }}>
-                        {job.description}
-                      </p>
-                    )}
-                  </div>
+              </SectionTitle>
+              <div>
+                {data.workExperience.map((job, index) => (
+                  <TimelineItem
+                    key={job.id}
+                    title={job.title}
+                    subtitle={`${job.company}${job.location ? ` • ${job.location}` : ''}`}
+                    period={`${job.startDate} – ${job.current ? 'Nu' : job.endDate}`}
+                    description={job.description}
+                    accentColor={mainPalette.accent}
+                    textColor={mainPalette.text}
+                    mutedColor={mainPalette.textMuted}
+                    isLast={index === data.workExperience.length - 1}
+                  />
                 ))}
               </div>
             </section>
           )}
-          
-          {/* Utbildning */}
+
+          {/* Education */}
           {data.education?.length > 0 && (
             <section>
-              <h2 
-                className="text-lg font-bold mb-6 flex items-center gap-2 uppercase tracking-wider"
-                style={{ color: template.colors.text }}
-              >
-                <GraduationCap className="w-5 h-5" style={{ color: template.colors.accent }} />
+              <SectionTitle icon={GraduationCap} color={mainPalette.text} accentColor={mainPalette.accent}>
                 Utbildning
-              </h2>
-              <div className="space-y-5">
+              </SectionTitle>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.lg }}>
                 {data.education.map(edu => (
-                  <div key={edu.id} className="flex justify-between items-start">
+                  <div
+                    key={edu.id}
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'flex-start',
+                    }}
+                  >
                     <div>
-                      <h3 className="text-lg font-bold" style={{ color: template.colors.text }}>
+                      <h3
+                        style={{
+                          fontSize: TYPOGRAPHY.body.size,
+                          fontWeight: '600',
+                          color: mainPalette.text,
+                          marginBottom: '2px',
+                        }}
+                      >
                         {edu.degree}
                       </h3>
-                      <div className="font-medium" style={{ color: template.colors.accent }}>
+                      <div
+                        style={{
+                          fontSize: TYPOGRAPHY.caption.size,
+                          fontWeight: '500',
+                          color: mainPalette.accent,
+                        }}
+                      >
                         {edu.school}
                       </div>
-                      {edu.field && <div className="text-sm text-slate-500">{edu.field}</div>}
+                      {edu.field && (
+                        <div
+                          style={{
+                            fontSize: TYPOGRAPHY.caption.size,
+                            color: mainPalette.textMuted,
+                          }}
+                        >
+                          {edu.field}
+                        </div>
+                      )}
                     </div>
-                    <span 
-                      className="text-sm px-3 py-1 rounded-full shrink-0"
-                      style={{ background: template.colors.accentLight, color: template.colors.accent }}
+                    <span
+                      style={{
+                        fontSize: TYPOGRAPHY.micro.size,
+                        fontWeight: '500',
+                        color: mainPalette.accent,
+                        background: mainPalette.accentLight,
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                        whiteSpace: 'nowrap',
+                      }}
                     >
                       {edu.startDate} – {edu.endDate}
                     </span>
@@ -475,233 +992,733 @@ export function CVPreview({ data }: CVPreviewProps) {
     )
   }
 
-  // TOP LAYOUT (Centrerad, Minimal, Executive)
-  if (template.layout === 'top') {
-    const isGradient = data.template === 'centered'
-    const isExecutive = data.template === 'executive'
-    
+  // ============================================================================
+  // CLEAN LAYOUT (Minimal)
+  // ============================================================================
+  if (templateConfig.layout === 'clean') {
+    const mainPalette = palette.main
+
     return (
-      <div className="cv-preview min-h-[297mm] bg-white shadow-2xl">
-        {/* Hero Header */}
-        <header 
-          className="relative p-12 pb-16"
-          style={{ 
-            background: isGradient 
-              ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' 
-              : isExecutive ? '#0f172a' : '#fafafa',
-            color: isGradient || isExecutive ? '#ffffff' : '#171717',
+      <div
+        className="cv-preview"
+        style={{
+          minHeight: '297mm',
+          background: mainPalette.bg,
+          padding: SPACING['3xl'],
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        {/* Clean Header */}
+        <header
+          style={{
+            marginBottom: SPACING['3xl'],
+            textAlign: 'center',
           }}
         >
-          {/* Dekorativa element */}
-          {isGradient && (
-            <div className="absolute top-0 right-0 w-64 h-64 opacity-10">
-              <div className="w-full h-full rounded-full bg-white blur-3xl" />
-            </div>
+          {data.profileImage && (
+            <img
+              src={data.profileImage}
+              alt=""
+              style={{
+                width: '100px',
+                height: '100px',
+                objectFit: 'cover',
+                borderRadius: '16px',
+                marginBottom: SPACING.lg,
+              }}
+            />
           )}
-          
-          <div className={`flex ${data.profileImage ? 'items-center gap-8' : 'flex-col items-center text-center'}`}>
-            {/* Profilbild */}
+          <h1
+            style={{
+              fontSize: '42px',
+              lineHeight: '48px',
+              fontWeight: '700',
+              letterSpacing: '-0.02em',
+              color: mainPalette.text,
+              marginBottom: SPACING.sm,
+            }}
+          >
+            {fullName}
+          </h1>
+          {data.title && (
+            <p
+              style={{
+                fontSize: TYPOGRAPHY.title.size,
+                color: mainPalette.textSecondary,
+                marginBottom: SPACING.lg,
+              }}
+            >
+              {data.title}
+            </p>
+          )}
+
+          {/* Contact row */}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: SPACING.xl,
+              flexWrap: 'wrap',
+            }}
+          >
+            {data.email && (
+              <a
+                href={`mailto:${data.email}`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: SPACING.sm,
+                  fontSize: TYPOGRAPHY.caption.size,
+                  color: mainPalette.textSecondary,
+                  textDecoration: 'none',
+                }}
+              >
+                <Mail style={{ width: '16px', height: '16px' }} />
+                {data.email}
+              </a>
+            )}
+            {data.phone && (
+              <a
+                href={`tel:${data.phone}`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: SPACING.sm,
+                  fontSize: TYPOGRAPHY.caption.size,
+                  color: mainPalette.textSecondary,
+                  textDecoration: 'none',
+                }}
+              >
+                <Phone style={{ width: '16px', height: '16px' }} />
+                {data.phone}
+              </a>
+            )}
+            {data.location && (
+              <span
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: SPACING.sm,
+                  fontSize: TYPOGRAPHY.caption.size,
+                  color: mainPalette.textSecondary,
+                }}
+              >
+                <MapPin style={{ width: '16px', height: '16px' }} />
+                {data.location}
+              </span>
+            )}
+          </div>
+        </header>
+
+        {/* Divider */}
+        <div
+          style={{
+            height: '1px',
+            background: mainPalette.border,
+            marginBottom: SPACING['2xl'],
+          }}
+        />
+
+        {/* Summary */}
+        {data.summary && (
+          <section style={{ marginBottom: SPACING['2xl'] }}>
+            <p
+              style={{
+                fontSize: TYPOGRAPHY.bodyLg.size,
+                lineHeight: '30px',
+                color: mainPalette.textSecondary,
+                textAlign: 'center',
+                maxWidth: '700px',
+                margin: '0 auto',
+              }}
+            >
+              {data.summary}
+            </p>
+          </section>
+        )}
+
+        {/* Skills - Simple tags */}
+        {data.skills?.length > 0 && (
+          <section style={{ marginBottom: SPACING['2xl'], textAlign: 'center' }}>
+            <div
+              style={{
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: SPACING.sm,
+                justifyContent: 'center',
+              }}
+            >
+              {data.skills.map((skill, i) => (
+                <SkillTag key={i} variant="minimal">
+                  {getSkillName(skill)}
+                </SkillTag>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Two Column Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: SPACING['2xl'],
+          }}
+        >
+          {/* Experience */}
+          {data.workExperience?.length > 0 && (
+            <section>
+              <h2
+                style={{
+                  fontSize: TYPOGRAPHY.micro.size,
+                  fontWeight: '600',
+                  letterSpacing: '0.1em',
+                  textTransform: 'uppercase',
+                  color: mainPalette.textMuted,
+                  marginBottom: SPACING.lg,
+                  paddingBottom: SPACING.sm,
+                  borderBottom: `2px solid ${mainPalette.border}`,
+                }}
+              >
+                Erfarenhet
+              </h2>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.lg }}>
+                {data.workExperience.map(job => (
+                  <div key={job.id}>
+                    <div
+                      style={{
+                        fontSize: TYPOGRAPHY.micro.size,
+                        color: mainPalette.textMuted,
+                        marginBottom: '4px',
+                      }}
+                    >
+                      {job.startDate} – {job.current ? 'Nu' : job.endDate}
+                    </div>
+                    <h3
+                      style={{
+                        fontSize: TYPOGRAPHY.body.size,
+                        fontWeight: '600',
+                        color: mainPalette.text,
+                      }}
+                    >
+                      {job.title}
+                    </h3>
+                    <div
+                      style={{
+                        fontSize: TYPOGRAPHY.caption.size,
+                        color: mainPalette.textSecondary,
+                        marginBottom: job.description ? SPACING.sm : 0,
+                      }}
+                    >
+                      {job.company}
+                    </div>
+                    {job.description && (
+                      <p
+                        style={{
+                          fontSize: TYPOGRAPHY.caption.size,
+                          color: mainPalette.textMuted,
+                          lineHeight: '20px',
+                          margin: 0,
+                        }}
+                      >
+                        {job.description}
+                      </p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Right column */}
+          <div>
+            {/* Education */}
+            {data.education?.length > 0 && (
+              <section style={{ marginBottom: SPACING.xl }}>
+                <h2
+                  style={{
+                    fontSize: TYPOGRAPHY.micro.size,
+                    fontWeight: '600',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: mainPalette.textMuted,
+                    marginBottom: SPACING.lg,
+                    paddingBottom: SPACING.sm,
+                    borderBottom: `2px solid ${mainPalette.border}`,
+                  }}
+                >
+                  Utbildning
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.md }}>
+                  {data.education.map(edu => (
+                    <div key={edu.id}>
+                      <div
+                        style={{
+                          fontSize: TYPOGRAPHY.micro.size,
+                          color: mainPalette.textMuted,
+                          marginBottom: '2px',
+                        }}
+                      >
+                        {edu.startDate} – {edu.endDate}
+                      </div>
+                      <h3
+                        style={{
+                          fontSize: TYPOGRAPHY.body.size,
+                          fontWeight: '600',
+                          color: mainPalette.text,
+                        }}
+                      >
+                        {edu.degree}
+                      </h3>
+                      <div style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.textSecondary }}>
+                        {edu.school}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {/* Languages */}
+            {data.languages?.length > 0 && (
+              <section style={{ marginBottom: SPACING.xl }}>
+                <h2
+                  style={{
+                    fontSize: TYPOGRAPHY.micro.size,
+                    fontWeight: '600',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: mainPalette.textMuted,
+                    marginBottom: SPACING.lg,
+                    paddingBottom: SPACING.sm,
+                    borderBottom: `2px solid ${mainPalette.border}`,
+                  }}
+                >
+                  Språk
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.sm }}>
+                  {data.languages.map(lang => {
+                    const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+                    return (
+                      <div
+                        key={lang.id}
+                        style={{ display: 'flex', justifyContent: 'space-between' }}
+                      >
+                        <span style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.text }}>
+                          {languageName}
+                        </span>
+                        <span style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.textMuted }}>
+                          {getLanguageLevelDisplay(lang.level)}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+            )}
+
+            {/* Certificates */}
+            {data.certificates?.length > 0 && (
+              <section>
+                <h2
+                  style={{
+                    fontSize: TYPOGRAPHY.micro.size,
+                    fontWeight: '600',
+                    letterSpacing: '0.1em',
+                    textTransform: 'uppercase',
+                    color: mainPalette.textMuted,
+                    marginBottom: SPACING.lg,
+                    paddingBottom: SPACING.sm,
+                    borderBottom: `2px solid ${mainPalette.border}`,
+                  }}
+                >
+                  Certifikat
+                </h2>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.sm }}>
+                  {data.certificates.map(cert => (
+                    <div
+                      key={cert.id}
+                      style={{ display: 'flex', justifyContent: 'space-between' }}
+                    >
+                      <span style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.text }}>
+                        {cert.name}
+                      </span>
+                      <span style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.textMuted }}>
+                        {cert.date}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ============================================================================
+  // TOP LAYOUT (Centered, Executive)
+  // ============================================================================
+  if (templateConfig.layout === 'top') {
+    const headerPalette = 'header' in palette ? palette.header : null
+    const mainPalette = palette.main
+    const isExecutive = data.template === 'executive'
+    const isCentered = data.template === 'centered'
+
+    return (
+      <div
+        className="cv-preview"
+        style={{
+          minHeight: '297mm',
+          background: mainPalette.bg,
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+        }}
+      >
+        {/* Hero Header */}
+        <header
+          style={{
+            position: 'relative',
+            padding: `${SPACING['3xl']} ${SPACING['2xl']}`,
+            background: headerPalette?.bg || '#0C0A09',
+            color: headerPalette?.text || '#FAFAF9',
+            overflow: 'hidden',
+          }}
+        >
+          {/* Decorative gradient orb for centered template */}
+          {isCentered && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '-50%',
+                right: '-20%',
+                width: '400px',
+                height: '400px',
+                background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%)',
+                borderRadius: '50%',
+              }}
+            />
+          )}
+
+          <div
+            style={{
+              position: 'relative',
+              display: 'flex',
+              alignItems: data.profileImage ? 'center' : 'center',
+              justifyContent: data.profileImage ? 'flex-start' : 'center',
+              gap: SPACING.xl,
+              textAlign: data.profileImage ? 'left' : 'center',
+              flexDirection: data.profileImage ? 'row' : 'column',
+            }}
+          >
+            {/* Profile Image */}
             {data.profileImage && (
-              <div className="relative">
+              <div style={{ position: 'relative' }}>
                 <img
                   src={data.profileImage}
                   alt=""
-                  className={`w-32 h-32 object-cover border-4 border-white/30 shadow-2xl ${
-                    data.template === 'centered' ? 'rounded-full' : 'rounded-2xl'
-                  }`}
+                  style={{
+                    width: '140px',
+                    height: '140px',
+                    objectFit: 'cover',
+                    borderRadius: isCentered ? '50%' : '20px',
+                    border: '4px solid rgba(255,255,255,0.2)',
+                    boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+                  }}
                 />
                 {isExecutive && (
-                  <div 
-                    className="absolute -bottom-2 -right-2 w-8 h-8 rounded-full flex items-center justify-center"
-                    style={{ background: '#d4af37' }}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '-4px',
+                      right: '-4px',
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      background: headerPalette?.accent || '#CA8A04',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                    }}
                   >
-                    <Star className="w-4 h-4 text-white" />
+                    <Award style={{ width: '18px', height: '18px', color: '#fff' }} />
                   </div>
                 )}
               </div>
             )}
-            
-            {/* Text */}
-            <div className={!data.profileImage ? 'text-center' : ''}>
-              <h1 
-                className={`font-bold mb-3 ${isExecutive ? 'font-serif text-6xl' : 'text-5xl'}`}
+
+            {/* Text Content */}
+            <div style={{ flex: 1 }}>
+              <h1
+                style={{
+                  fontSize: isExecutive ? '52px' : TYPOGRAPHY.display.size,
+                  lineHeight: isExecutive ? '60px' : TYPOGRAPHY.display.lineHeight,
+                  fontWeight: TYPOGRAPHY.display.weight,
+                  letterSpacing: TYPOGRAPHY.display.letterSpacing,
+                  fontFamily: isExecutive ? 'Georgia, serif' : 'inherit',
+                  marginBottom: SPACING.sm,
+                }}
               >
                 {fullName}
               </h1>
               {data.title && (
-                <p className={`text-2xl mb-4 ${isExecutive ? 'font-serif italic' : ''} opacity-90`}>
+                <p
+                  style={{
+                    fontSize: TYPOGRAPHY.title.size,
+                    lineHeight: TYPOGRAPHY.title.lineHeight,
+                    fontStyle: isExecutive ? 'italic' : 'normal',
+                    opacity: 0.9,
+                    marginBottom: SPACING.lg,
+                  }}
+                >
                   {data.title}
                 </p>
               )}
-              
-              {/* Kontakt-pills */}
-              <div className={`flex flex-wrap gap-3 text-sm ${!data.profileImage ? 'justify-center' : ''}`}>
+
+              {/* Contact Pills */}
+              <div
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: SPACING.sm,
+                  justifyContent: data.profileImage ? 'flex-start' : 'center',
+                }}
+              >
                 {data.email && (
-                  <span className="px-4 py-2 rounded-full bg-white/10 backdrop-blur flex items-center gap-2">
-                    <Mail className="w-4 h-4" /> {data.email}
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: SPACING.sm,
+                      padding: `${SPACING.sm} ${SPACING.md}`,
+                      borderRadius: '24px',
+                      background: 'rgba(255,255,255,0.1)',
+                      backdropFilter: 'blur(10px)',
+                      fontSize: TYPOGRAPHY.caption.size,
+                    }}
+                  >
+                    <Mail style={{ width: '14px', height: '14px' }} />
+                    {data.email}
                   </span>
                 )}
                 {data.phone && (
-                  <span className="px-4 py-2 rounded-full bg-white/10 backdrop-blur flex items-center gap-2">
-                    <Phone className="w-4 h-4" /> {data.phone}
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: SPACING.sm,
+                      padding: `${SPACING.sm} ${SPACING.md}`,
+                      borderRadius: '24px',
+                      background: 'rgba(255,255,255,0.1)',
+                      backdropFilter: 'blur(10px)',
+                      fontSize: TYPOGRAPHY.caption.size,
+                    }}
+                  >
+                    <Phone style={{ width: '14px', height: '14px' }} />
+                    {data.phone}
                   </span>
                 )}
                 {data.location && (
-                  <span className="px-4 py-2 rounded-full bg-white/10 backdrop-blur flex items-center gap-2">
-                    <MapPin className="w-4 h-4" /> {data.location}
+                  <span
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: SPACING.sm,
+                      padding: `${SPACING.sm} ${SPACING.md}`,
+                      borderRadius: '24px',
+                      background: 'rgba(255,255,255,0.1)',
+                      backdropFilter: 'blur(10px)',
+                      fontSize: TYPOGRAPHY.caption.size,
+                    }}
+                  >
+                    <MapPin style={{ width: '14px', height: '14px' }} />
+                    {data.location}
                   </span>
                 )}
               </div>
             </div>
           </div>
         </header>
-        
-        {/* Innehåll */}
-        <main className="p-12">
-          {/* Grid layout för profil och quick info */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 mb-12">
+
+        {/* Main Content */}
+        <main style={{ padding: SPACING['2xl'] }}>
+          {/* Summary + Languages Grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: data.languages?.length > 0 ? '2fr 1fr' : '1fr',
+              gap: SPACING['2xl'],
+              marginBottom: SPACING['2xl'],
+            }}
+          >
             {data.summary && (
-              <section className="lg:col-span-2">
-                <h2 
-                  className="text-xl font-bold mb-4 flex items-center gap-2"
-                  style={{ color: isExecutive ? '#0f172a' : 'inherit' }}
+              <section>
+                <SectionTitle
+                  icon={Sparkles}
+                  color={mainPalette.text}
+                  accentColor={mainPalette.accent}
                 >
-                  <Zap className="w-5 h-5" style={{ color: isExecutive ? '#d4af37' : '#3b82f6' }} />
                   Om mig
-                </h2>
-                <p className="text-lg leading-relaxed" style={{ color: template.colors.text }}>
+                </SectionTitle>
+                <p
+                  style={{
+                    fontSize: TYPOGRAPHY.bodyLg.size,
+                    lineHeight: '30px',
+                    color: mainPalette.textSecondary,
+                  }}
+                >
                   {data.summary}
                 </p>
               </section>
             )}
-            
-            {/* Quick stats */}
-            <div className="space-y-4">
-              {data.languages?.length > 0 && (
-                <div className="p-4 rounded-xl" style={{ background: template.colors.accentLight }}>
-                  <h3 className="text-sm font-bold uppercase tracking-wider mb-3" style={{ color: template.colors.accent }}>
-                    Språk
-                  </h3>
-                  <div className="space-y-2">
-                    {data.languages.map(lang => {
-                      const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
-                      return (
-                        <div key={lang.id} className="flex justify-between items-center">
-                          <span style={{ color: template.colors.text }}>
-                            {languageName}
-                          </span>
-                          <span className="text-sm font-medium" style={{ color: template.colors.muted }}>
-                            {getLanguageLevelDisplay(lang.level)}
-                          </span>
-                        </div>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-          
-          {/* Skills tags */}
-          {data.skills?.length > 0 && (
-            <section className="mb-12">
-              <h2 
-                className="text-xl font-bold mb-5 flex items-center gap-2"
-                style={{ color: template.colors.text }}
+
+            {data.languages?.length > 0 && (
+              <div
+                style={{
+                  background: mainPalette.accentLight,
+                  borderRadius: '16px',
+                  padding: SPACING.lg,
+                }}
               >
-                <Sparkles className="w-5 h-5" style={{ color: isExecutive ? '#d4af37' : '#3b82f6' }} />
+                <h3
+                  style={{
+                    fontSize: TYPOGRAPHY.micro.size,
+                    fontWeight: '600',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: mainPalette.accent,
+                    marginBottom: SPACING.md,
+                  }}
+                >
+                  Språk
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.sm }}>
+                  {data.languages.map(lang => {
+                    const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
+                    return (
+                      <div
+                        key={lang.id}
+                        style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                      >
+                        <span style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.text }}>
+                          {languageName}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: TYPOGRAPHY.micro.size,
+                            color: mainPalette.textMuted,
+                          }}
+                        >
+                          {getLanguageLevelDisplay(lang.level)}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Skills */}
+          {data.skills?.length > 0 && (
+            <section style={{ marginBottom: SPACING['2xl'] }}>
+              <SectionTitle color={mainPalette.text} accentColor={mainPalette.accent}>
                 Kompetenser
-              </h2>
-              <div className="flex flex-wrap gap-3">
+              </SectionTitle>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: SPACING.sm }}>
                 {data.skills.map((skill, i) => (
-                  <span 
+                  <SkillTag
                     key={i}
-                    className="px-4 py-2 font-medium transition-all hover:scale-105"
-                    style={{ 
-                      background: template.colors.accentLight,
-                      color: template.colors.accent,
-                      borderRadius: data.template === 'minimal' ? '4px' : '9999px',
-                    }}
+                    variant={isExecutive ? 'outline' : 'default'}
+                    accentColor={mainPalette.accent}
+                    accentLight={mainPalette.accentLight}
                   >
                     {getSkillName(skill)}
-                  </span>
+                  </SkillTag>
                 ))}
               </div>
             </section>
           )}
-          
-          {/* Erfarenhet & Utbildning */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+
+          {/* Experience & Education Grid */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: SPACING['2xl'],
+            }}
+          >
+            {/* Experience */}
             {data.workExperience?.length > 0 && (
               <section>
-                <h2 
-                  className="text-xl font-bold mb-6 flex items-center gap-2"
-                  style={{ color: template.colors.text }}
+                <SectionTitle
+                  icon={Briefcase}
+                  color={mainPalette.text}
+                  accentColor={mainPalette.accent}
                 >
-                  <Briefcase className="w-5 h-5" style={{ color: isExecutive ? '#d4af37' : '#3b82f6' }} />
                   Erfarenhet
-                </h2>
-                <div className="space-y-6">
-                  {data.workExperience.map(job => (
-                    <div 
-                      key={job.id} 
-                      className="relative pl-6 pb-6 border-l-2"
-                      style={{ borderColor: template.colors.border }}
-                    >
-                      <div 
-                        className="absolute -left-[9px] top-0 w-4 h-4 rounded-full border-4 border-white"
-                        style={{ background: isExecutive ? '#d4af37' : '#3b82f6' }}
-                      />
-                      <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-bold text-lg" style={{ color: template.colors.text }}>
-                          {job.title}
-                        </h3>
-                        <span 
-                          className="text-xs px-3 py-1 rounded-full"
-                          style={{ background: template.colors.accentLight, color: template.colors.accent }}
-                        >
-                          {job.startDate} – {job.current ? 'Nu' : job.endDate}
-                        </span>
-                      </div>
-                      <div className="font-medium mb-2" style={{ color: template.colors.accent }}>
-                        {job.company}
-                      </div>
-                      {job.description && (
-                        <p className="text-sm" style={{ color: template.colors.muted }}>
-                          {job.description}
-                        </p>
-                      )}
-                    </div>
+                </SectionTitle>
+                <div>
+                  {data.workExperience.map((job, index) => (
+                    <TimelineItem
+                      key={job.id}
+                      title={job.title}
+                      subtitle={job.company}
+                      period={`${job.startDate} – ${job.current ? 'Nu' : job.endDate}`}
+                      description={job.description}
+                      accentColor={mainPalette.accent}
+                      textColor={mainPalette.text}
+                      mutedColor={mainPalette.textMuted}
+                      isLast={index === data.workExperience.length - 1}
+                    />
                   ))}
                 </div>
               </section>
             )}
-            
-            <div className="space-y-10">
+
+            {/* Right Column */}
+            <div>
+              {/* Education */}
               {data.education?.length > 0 && (
-                <section>
-                  <h2 
-                    className="text-xl font-bold mb-6 flex items-center gap-2"
-                    style={{ color: template.colors.text }}
+                <section style={{ marginBottom: SPACING.xl }}>
+                  <SectionTitle
+                    icon={GraduationCap}
+                    color={mainPalette.text}
+                    accentColor={mainPalette.accent}
                   >
-                    <GraduationCap className="w-5 h-5" style={{ color: isExecutive ? '#d4af37' : '#3b82f6' }} />
                     Utbildning
-                  </h2>
-                  <div className="space-y-5">
+                  </SectionTitle>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.md }}>
                     {data.education.map(edu => (
-                      <div 
+                      <div
                         key={edu.id}
-                        className="p-4 rounded-xl border-l-4"
-                        style={{ 
-                          background: template.colors.accentLight,
-                          borderColor: isExecutive ? '#d4af37' : '#3b82f6'
+                        style={{
+                          padding: SPACING.md,
+                          borderRadius: '12px',
+                          background: mainPalette.accentLight,
+                          borderLeft: `4px solid ${mainPalette.accent}`,
                         }}
                       >
-                        <h3 className="font-bold" style={{ color: template.colors.text }}>
+                        <h3
+                          style={{
+                            fontSize: TYPOGRAPHY.body.size,
+                            fontWeight: '600',
+                            color: mainPalette.text,
+                          }}
+                        >
                           {edu.degree}
                         </h3>
-                        <div style={{ color: template.colors.accent }}>{edu.school}</div>
-                        <div className="text-sm mt-1" style={{ color: template.colors.muted }}>
+                        <div style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.accent }}>
+                          {edu.school}
+                        </div>
+                        <div
+                          style={{
+                            fontSize: TYPOGRAPHY.micro.size,
+                            color: mainPalette.textMuted,
+                            marginTop: '4px',
+                          }}
+                        >
                           {edu.startDate} – {edu.endDate}
                         </div>
                       </div>
@@ -709,25 +1726,33 @@ export function CVPreview({ data }: CVPreviewProps) {
                   </div>
                 </section>
               )}
-              
+
+              {/* Certificates */}
               {data.certificates?.length > 0 && (
                 <section>
-                  <h2 
-                    className="text-xl font-bold mb-4 flex items-center gap-2"
-                    style={{ color: template.colors.text }}
+                  <SectionTitle
+                    icon={Award}
+                    color={mainPalette.text}
+                    accentColor={mainPalette.accent}
                   >
-                    <Award className="w-5 h-5" style={{ color: isExecutive ? '#d4af37' : '#3b82f6' }} />
                     Certifikat
-                  </h2>
-                  <div className="space-y-2">
+                  </SectionTitle>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.sm }}>
                     {data.certificates.map(cert => (
-                      <div 
+                      <div
                         key={cert.id}
-                        className="flex justify-between items-center py-2 border-b"
-                        style={{ borderColor: template.colors.border }}
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          padding: `${SPACING.sm} 0`,
+                          borderBottom: `1px solid ${mainPalette.border}`,
+                        }}
                       >
-                        <span style={{ color: template.colors.text }}>{cert.name}</span>
-                        <span className="text-sm" style={{ color: template.colors.muted }}>
+                        <span style={{ fontSize: TYPOGRAPHY.caption.size, color: mainPalette.text }}>
+                          {cert.name}
+                        </span>
+                        <span style={{ fontSize: TYPOGRAPHY.micro.size, color: mainPalette.textMuted }}>
                           {cert.date}
                         </span>
                       </div>
@@ -742,74 +1767,175 @@ export function CVPreview({ data }: CVPreviewProps) {
     )
   }
 
-  // SPLIT LAYOUT (Kreativ)
+  // ============================================================================
+  // SPLIT LAYOUT (Creative)
+  // ============================================================================
+  const sidebarPalette = 'sidebar' in palette ? palette.sidebar : null
+  const mainPalette = palette.main
+
   return (
-    <div className="cv-preview flex min-h-[297mm] shadow-2xl">
-      {/* Vänster - färgstark */}
-      <aside 
-        className="w-[40%] p-8 flex flex-col text-white"
-        style={{ background: 'linear-gradient(180deg, #db2777 0%, #be185d 100%)' }}
+    <div
+      className="cv-preview"
+      style={{
+        display: 'flex',
+        minHeight: '297mm',
+        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)',
+      }}
+    >
+      {/* Left Column - Gradient */}
+      <aside
+        style={{
+          width: '40%',
+          padding: SPACING['2xl'],
+          background: sidebarPalette?.bg || 'linear-gradient(180deg, #7C3AED 0%, #5B21B6 100%)',
+          color: sidebarPalette?.text || '#FFFFFF',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
       >
-        {/* Foto */}
-        <div className="mb-8 flex justify-center">
+        {/* Photo */}
+        <div style={{ marginBottom: SPACING['2xl'], textAlign: 'center' }}>
           {data.profileImage ? (
             <img
               src={data.profileImage}
               alt=""
-              className="w-44 h-44 object-cover rounded-3xl border-4 border-white/20 shadow-2xl"
+              style={{
+                width: '180px',
+                height: '180px',
+                objectFit: 'cover',
+                borderRadius: '32px',
+                border: '4px solid rgba(255,255,255,0.2)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+              }}
             />
           ) : (
-            <div className="w-44 h-44 rounded-3xl bg-white/10 flex items-center justify-center border-4 border-white/20">
-              <span className="text-6xl">👤</span>
+            <div
+              style={{
+                width: '180px',
+                height: '180px',
+                borderRadius: '32px',
+                background: 'rgba(255,255,255,0.1)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '4px solid rgba(255,255,255,0.1)',
+              }}
+            >
+              <span style={{ fontSize: '72px', opacity: 0.4 }}>👤</span>
             </div>
           )}
         </div>
-        
-        {/* Namn */}
-        <h1 className="text-3xl font-bold mb-2 text-center">{fullName}</h1>
-        {data.title && <p className="text-lg opacity-90 mb-8 text-center">{data.title}</p>}
-        
-        {/* Kontakt-kort */}
-        <div className="space-y-3 mb-8">
+
+        {/* Name & Title */}
+        <h1
+          style={{
+            fontSize: '32px',
+            lineHeight: '40px',
+            fontWeight: '700',
+            textAlign: 'center',
+            marginBottom: SPACING.sm,
+          }}
+        >
+          {fullName}
+        </h1>
+        {data.title && (
+          <p
+            style={{
+              fontSize: TYPOGRAPHY.body.size,
+              textAlign: 'center',
+              opacity: 0.9,
+              marginBottom: SPACING.xl,
+            }}
+          >
+            {data.title}
+          </p>
+        )}
+
+        {/* Contact Cards */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.sm, marginBottom: SPACING['2xl'] }}>
           {data.email && (
-            <a href={`mailto:${data.email}`} className="flex items-center gap-3 bg-white/10 rounded-xl p-3 hover:bg-white/20 transition-colors">
-              <Mail className="w-5 h-5" />
-              <span className="text-sm">{data.email}</span>
+            <a
+              href={`mailto:${data.email}`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: SPACING.md,
+                padding: SPACING.md,
+                borderRadius: '16px',
+                background: 'rgba(255,255,255,0.1)',
+                textDecoration: 'none',
+                color: 'inherit',
+              }}
+            >
+              <Mail style={{ width: '20px', height: '20px' }} />
+              <span style={{ fontSize: TYPOGRAPHY.caption.size }}>{data.email}</span>
             </a>
           )}
           {data.phone && (
-            <a href={`tel:${data.phone}`} className="flex items-center gap-3 bg-white/10 rounded-xl p-3 hover:bg-white/20 transition-colors">
-              <Phone className="w-5 h-5" />
-              <span className="text-sm">{data.phone}</span>
+            <a
+              href={`tel:${data.phone}`}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: SPACING.md,
+                padding: SPACING.md,
+                borderRadius: '16px',
+                background: 'rgba(255,255,255,0.1)',
+                textDecoration: 'none',
+                color: 'inherit',
+              }}
+            >
+              <Phone style={{ width: '20px', height: '20px' }} />
+              <span style={{ fontSize: TYPOGRAPHY.caption.size }}>{data.phone}</span>
             </a>
           )}
           {data.location && (
-            <div className="flex items-center gap-3 bg-white/10 rounded-xl p-3">
-              <MapPin className="w-5 h-5" />
-              <span className="text-sm">{data.location}</span>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: SPACING.md,
+                padding: SPACING.md,
+                borderRadius: '16px',
+                background: 'rgba(255,255,255,0.1)',
+              }}
+            >
+              <MapPin style={{ width: '20px', height: '20px' }} />
+              <span style={{ fontSize: TYPOGRAPHY.caption.size }}>{data.location}</span>
             </div>
           )}
         </div>
-        
-        {/* Språk med progress bars */}
+
+        {/* Languages with Progress */}
         {data.languages?.length > 0 && (
-          <div className="mt-auto">
-            <h3 className="text-sm uppercase tracking-widest opacity-70 mb-4 font-semibold">
-              Språk
-            </h3>
-            <div className="space-y-4">
+          <div style={{ marginTop: 'auto' }}>
+            <SectionLabel color="rgba(255,255,255,0.6)">Språk</SectionLabel>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.md }}>
               {data.languages.map(lang => {
                 const languageName = lang.language || ('name' in lang ? (lang as { name: string }).name : '')
                 return (
                   <div key={lang.id}>
-                    <div className="flex justify-between text-sm mb-1">
-                      <span>{languageName}</span>
-                      <span className="opacity-70">{getLanguageLevelDisplay(lang.level)}</span>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                      <span style={{ fontSize: TYPOGRAPHY.caption.size }}>{languageName}</span>
+                      <span style={{ fontSize: TYPOGRAPHY.micro.size, opacity: 0.7 }}>
+                        {getLanguageLevelDisplay(lang.level)}
+                      </span>
                     </div>
-                    <div className="h-2 rounded-full bg-white/20 overflow-hidden">
+                    <div
+                      style={{
+                        height: '6px',
+                        borderRadius: '3px',
+                        background: 'rgba(255,255,255,0.2)',
+                        overflow: 'hidden',
+                      }}
+                    >
                       <div
-                        className="h-full rounded-full bg-white transition-all"
-                        style={{ width: getLanguageLevelWidth(lang.level) }}
+                        style={{
+                          height: '100%',
+                          width: getLanguageLevelWidth(lang.level),
+                          background: '#fff',
+                          borderRadius: '3px',
+                        }}
                       />
                     </div>
                   </div>
@@ -819,49 +1945,141 @@ export function CVPreview({ data }: CVPreviewProps) {
           </div>
         )}
       </aside>
-      
-      {/* Höger - innehåll */}
-      <main className="w-[60%] p-8 bg-pink-50">
-        {/* Profil */}
+
+      {/* Right Column - Content */}
+      <main
+        style={{
+          width: '60%',
+          padding: SPACING['2xl'],
+          background: mainPalette.bg,
+        }}
+      >
+        {/* Summary */}
         {data.summary && (
-          <section className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-pink-900">Profil</h2>
-            <p className="leading-relaxed text-pink-950">{data.summary}</p>
+          <section style={{ marginBottom: SPACING['2xl'] }}>
+            <h2
+              style={{
+                fontSize: TYPOGRAPHY.title.size,
+                fontWeight: '700',
+                color: mainPalette.text,
+                marginBottom: SPACING.md,
+              }}
+            >
+              Profil
+            </h2>
+            <p
+              style={{
+                fontSize: TYPOGRAPHY.body.size,
+                lineHeight: '26px',
+                color: mainPalette.textSecondary,
+              }}
+            >
+              {data.summary}
+            </p>
           </section>
         )}
-        
-        {/* Erfarenhet i kort */}
+
+        {/* Experience Cards */}
         {data.workExperience?.length > 0 && (
-          <section className="mb-8">
-            <h2 className="text-2xl font-bold mb-6 text-pink-900">Erfarenhet</h2>
-            <div className="space-y-4">
+          <section style={{ marginBottom: SPACING['2xl'] }}>
+            <h2
+              style={{
+                fontSize: TYPOGRAPHY.title.size,
+                fontWeight: '700',
+                color: mainPalette.text,
+                marginBottom: SPACING.lg,
+              }}
+            >
+              Erfarenhet
+            </h2>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: SPACING.md }}>
               {data.workExperience.map(job => (
-                <div key={job.id} className="bg-white p-5 rounded-2xl shadow-sm">
-                  <div className="flex justify-between items-start mb-2">
-                    <h3 className="font-bold text-lg text-pink-950">{job.title}</h3>
-                    <span className="text-xs px-3 py-1 rounded-full bg-pink-100 text-pink-700">
+                <div
+                  key={job.id}
+                  style={{
+                    background: '#fff',
+                    padding: SPACING.lg,
+                    borderRadius: '20px',
+                    boxShadow: '0 4px 16px rgba(0,0,0,0.06)',
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: SPACING.sm }}>
+                    <h3
+                      style={{
+                        fontSize: TYPOGRAPHY.body.size,
+                        fontWeight: '600',
+                        color: mainPalette.text,
+                      }}
+                    >
+                      {job.title}
+                    </h3>
+                    <span
+                      style={{
+                        fontSize: TYPOGRAPHY.micro.size,
+                        fontWeight: '500',
+                        color: mainPalette.accent,
+                        background: mainPalette.accentLight,
+                        padding: '4px 12px',
+                        borderRadius: '20px',
+                      }}
+                    >
                       {job.startDate} – {job.current ? 'Nu' : job.endDate}
                     </span>
                   </div>
-                  <div className="text-pink-700 font-medium mb-2">{job.company}</div>
+                  <div
+                    style={{
+                      fontSize: TYPOGRAPHY.caption.size,
+                      fontWeight: '500',
+                      color: mainPalette.accent,
+                      marginBottom: job.description ? SPACING.sm : 0,
+                    }}
+                  >
+                    {job.company}
+                  </div>
                   {job.description && (
-                    <p className="text-sm text-slate-600">{job.description}</p>
+                    <p
+                      style={{
+                        fontSize: TYPOGRAPHY.caption.size,
+                        color: mainPalette.textMuted,
+                        lineHeight: '22px',
+                        margin: 0,
+                      }}
+                    >
+                      {job.description}
+                    </p>
                   )}
                 </div>
               ))}
             </div>
           </section>
         )}
-        
-        {/* Kompetenser */}
+
+        {/* Skills Pills */}
         {data.skills?.length > 0 && (
-          <section className="mb-8">
-            <h2 className="text-2xl font-bold mb-4 text-pink-900">Kompetenser</h2>
-            <div className="flex flex-wrap gap-2">
+          <section style={{ marginBottom: SPACING['2xl'] }}>
+            <h2
+              style={{
+                fontSize: TYPOGRAPHY.title.size,
+                fontWeight: '700',
+                color: mainPalette.text,
+                marginBottom: SPACING.md,
+              }}
+            >
+              Kompetenser
+            </h2>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: SPACING.sm }}>
               {data.skills.map((skill, i) => (
-                <span 
+                <span
                   key={i}
-                  className="px-4 py-2 bg-white rounded-full text-pink-700 shadow-sm font-medium"
+                  style={{
+                    padding: `${SPACING.sm} ${SPACING.md}`,
+                    background: '#fff',
+                    borderRadius: '20px',
+                    fontSize: TYPOGRAPHY.caption.size,
+                    fontWeight: '500',
+                    color: mainPalette.accent,
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                  }}
                 >
                   {getSkillName(skill)}
                 </span>
@@ -869,17 +2087,56 @@ export function CVPreview({ data }: CVPreviewProps) {
             </div>
           </section>
         )}
-        
-        {/* Utbildning */}
+
+        {/* Education Grid */}
         {data.education?.length > 0 && (
           <section>
-            <h2 className="text-2xl font-bold mb-4 text-pink-900">Utbildning</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <h2
+              style={{
+                fontSize: TYPOGRAPHY.title.size,
+                fontWeight: '700',
+                color: mainPalette.text,
+                marginBottom: SPACING.md,
+              }}
+            >
+              Utbildning
+            </h2>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: SPACING.md,
+              }}
+            >
               {data.education.map(edu => (
-                <div key={edu.id} className="bg-white p-4 rounded-xl">
-                  <h3 className="font-bold text-pink-950">{edu.degree}</h3>
-                  <div className="text-pink-700">{edu.school}</div>
-                  <div className="text-sm text-slate-500 mt-1">
+                <div
+                  key={edu.id}
+                  style={{
+                    background: '#fff',
+                    padding: SPACING.md,
+                    borderRadius: '16px',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                  }}
+                >
+                  <h3
+                    style={{
+                      fontSize: TYPOGRAPHY.caption.size,
+                      fontWeight: '600',
+                      color: mainPalette.text,
+                    }}
+                  >
+                    {edu.degree}
+                  </h3>
+                  <div style={{ fontSize: TYPOGRAPHY.micro.size, color: mainPalette.accent }}>
+                    {edu.school}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: TYPOGRAPHY.micro.size,
+                      color: mainPalette.textMuted,
+                      marginTop: '4px',
+                    }}
+                  >
                     {edu.startDate} – {edu.endDate}
                   </div>
                 </div>
