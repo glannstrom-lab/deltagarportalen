@@ -48,15 +48,26 @@ export default function OccupationsTab() {
     const loadResults = async () => {
       try {
         setIsLoading(true)
+        setError(null)
         const data = await interestGuideApi.getProgress()
 
+        console.log('Interest guide data:', data) // Debug
+
         if (data?.is_completed && data.answers) {
-          const calculatedProfile = calculateUserProfile(data.answers)
-          setProfile(calculatedProfile)
+          try {
+            const calculatedProfile = calculateUserProfile(data.answers)
+            console.log('Calculated profile:', calculatedProfile) // Debug
+            setProfile(calculatedProfile)
+          } catch (calcErr) {
+            console.error('Failed to calculate profile:', calcErr)
+            setError('Kunde inte beräkna din profil. Försök göra om testet.')
+          }
+        } else if (data && !data.is_completed) {
+          setError('Du har inte slutfört testet än. Gå till testet för att slutföra.')
         }
       } catch (err) {
         console.error('Failed to load results:', err)
-        setError('Kunde inte ladda resultaten')
+        setError('Kunde inte ladda resultaten. Försök igen senare.')
       } finally {
         setIsLoading(false)
       }

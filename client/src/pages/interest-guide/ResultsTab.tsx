@@ -33,11 +33,20 @@ export default function ResultsTab() {
     const loadResults = async () => {
       try {
         setIsLoading(true)
+        setError(null)
         const data = await interestGuideApi.getProgress()
 
+        console.log('Results tab - Interest guide data:', data) // Debug
+
         if (data?.is_completed && data.answers) {
-          const calculatedProfile = calculateUserProfile(data.answers)
-          setProfile(calculatedProfile)
+          try {
+            const calculatedProfile = calculateUserProfile(data.answers)
+            console.log('Results tab - Calculated profile:', calculatedProfile) // Debug
+            setProfile(calculatedProfile)
+          } catch (calcErr) {
+            console.error('Failed to calculate profile:', calcErr)
+            setError('Kunde inte beräkna din profil. Försök göra om testet.')
+          }
         }
       } catch (err) {
         console.error('Failed to load results:', err)
