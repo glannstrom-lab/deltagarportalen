@@ -2,7 +2,7 @@
  * Results Tab - Display RIASEC profile and personality analysis
  */
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { calculateUserProfile, calculateJobMatches, type UserProfile } from '@/services/interestGuideData'
@@ -17,7 +17,8 @@ import {
   BarChart3,
   Trophy,
   ArrowRight,
-  CheckCircle
+  CheckCircle,
+  FileText
 } from 'lucide-react'
 
 export default function ResultsTab() {
@@ -261,6 +262,35 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           </Card>
         </motion.div>
       )}
+
+      {/* Next Step: CV CTA */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+      >
+        <Link
+          to="/cv"
+          className="block bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] group"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
+              <FileText className="w-7 h-7" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 text-indigo-200 text-sm font-medium mb-1">
+                <Sparkles className="w-4 h-4" />
+                Nästa steg
+              </div>
+              <h2 className="text-xl font-bold">Skapa ditt CV</h2>
+              <p className="text-indigo-200 text-sm mt-1">
+                Använd dina insikter från intresseguiden för att bygga ett professionellt CV
+              </p>
+            </div>
+            <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform flex-shrink-0" />
+          </div>
+        </Link>
+      </motion.div>
 
       {/* Action Buttons */}
       <motion.div
