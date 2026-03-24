@@ -93,6 +93,12 @@ export {
   ActionSheet,
 } from './BottomSheet'
 
+export {
+  ConfirmDialogProvider,
+  useConfirmDialog,
+  confirmDialog,
+} from './ConfirmDialog'
+
 // Re-export types
 export type { ButtonProps } from './Button'
 export type { CardProps } from './Card'

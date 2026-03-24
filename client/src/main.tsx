@@ -8,6 +8,7 @@ import { MobileOptimizer } from './components/MobileOptimizer'
 import { FontProvider } from './components/FontProvider'
 import { UpdateNotification } from './components/UpdateNotification'
 import { ThemeProvider } from './contexts/ThemeContext'
+import { ConfirmDialogProvider } from './components/ui/ConfirmDialog'
 import { initSentry } from './lib/sentry'
 import './i18n/config' // Initiera i18n
 import './index.css'
@@ -101,9 +102,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <HashRouter>
           <ThemeProvider>
             <FontProvider>
-              <MobileOptimizer />
-              <App />
-              <UpdateNotification />
+              <ConfirmDialogProvider>
+                <MobileOptimizer />
+                <App />
+                <UpdateNotification />
+              </ConfirmDialogProvider>
             </FontProvider>
           </ThemeProvider>
         </HashRouter>

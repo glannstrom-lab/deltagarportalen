@@ -4,10 +4,10 @@
  */
 
 import { useState, useCallback } from 'react'
-import { 
+import {
   GripVertical, Trash2, Plus, Sparkles, Star,
   Code, Users, Wrench, Palette, BarChart3, Globe,
-  CheckCircle
+  CheckCircle, ChevronUp, ChevronDown
 } from 'lucide-react'
 
 interface Skill {
@@ -67,6 +67,35 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
 
   const removeSkill = (id: string) => {
     onChange(skills.filter(s => s.id !== id))
+  }
+
+  // Move skill up in the list (keyboard accessible alternative to drag)
+  const moveSkillUp = (id: string) => {
+    const index = skills.findIndex(s => s.id === id)
+    if (index <= 0) return
+    const newSkills = [...skills]
+    ;[newSkills[index - 1], newSkills[index]] = [newSkills[index], newSkills[index - 1]]
+    onChange(newSkills)
+  }
+
+  // Move skill down in the list
+  const moveSkillDown = (id: string) => {
+    const index = skills.findIndex(s => s.id === id)
+    if (index === -1 || index >= skills.length - 1) return
+    const newSkills = [...skills]
+    ;[newSkills[index], newSkills[index + 1]] = [newSkills[index + 1], newSkills[index]]
+    onChange(newSkills)
+  }
+
+  // Handle keyboard navigation for star rating
+  const handleStarKeyDown = (e: React.KeyboardEvent, skillId: string, currentLevel: number) => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      updateSkill(skillId, { level: Math.min(5, currentLevel + 1) })
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      updateSkill(skillId, { level: Math.max(1, currentLevel - 1) })
+    }
   }
 
   const handleDragStart = (id: string) => {
@@ -182,33 +211,62 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
               <span className="text-sm font-normal text-slate-400">({categorySkills.length})</span>
             </h4>
             
-            <div className="space-y-2">
-              {categorySkills.map((skill) => (
+            <div className="space-y-2" role="list">
+              {categorySkills.map((skill, skillIndex) => (
                 <div
                   key={skill.id}
                   draggable
                   onDragStart={() => handleDragStart(skill.id)}
                   onDragOver={(e) => handleDragOver(e, skill.id)}
                   onDragEnd={handleDragEnd}
+                  role="listitem"
                   className={`
                     flex items-center gap-3 p-3 bg-white border border-slate-200 rounded-lg
                     hover:border-purple-300 transition-colors
                     ${draggedId === skill.id ? 'opacity-50' : ''}
                   `}
                 >
-                  <div className="text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing">
-                    <GripVertical className="w-4 h-4" />
+                  {/* Drag handle and keyboard move buttons */}
+                  <div className="flex flex-col gap-0.5">
+                    <button
+                      onClick={() => moveSkillUp(skill.id)}
+                      disabled={skillIndex === 0}
+                      className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label={`Flytta ${skill.name} uppåt`}
+                    >
+                      <ChevronUp className="w-3 h-3" />
+                    </button>
+                    <button
+                      onClick={() => moveSkillDown(skill.id)}
+                      disabled={skillIndex === categorySkills.length - 1}
+                      className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                      aria-label={`Flytta ${skill.name} nedåt`}
+                    >
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
                   </div>
-                  
+
                   <span className="flex-1 font-medium text-slate-700">{skill.name}</span>
-                  
-                  {/* Star rating */}
-                  <div className="flex items-center gap-1">
+
+                  {/* Star rating with ARIA */}
+                  <div
+                    role="slider"
+                    aria-label={`Nivå för ${skill.name}`}
+                    aria-valuenow={skill.level}
+                    aria-valuemin={1}
+                    aria-valuemax={5}
+                    aria-valuetext={`${skill.level} av 5 stjärnor`}
+                    tabIndex={0}
+                    onKeyDown={(e) => handleStarKeyDown(e, skill.id, skill.level)}
+                    className="flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 rounded p-1"
+                  >
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
                         onClick={() => updateSkill(skill.id, { level: star })}
-                        className="p-0.5 focus:outline-none"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        className="p-0.5"
                       >
                         <Star
                           className={`w-4 h-4 transition-colors ${
@@ -220,10 +278,11 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
                       </button>
                     ))}
                   </div>
-                  
+
                   <button
                     onClick={() => removeSkill(skill.id)}
                     className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                    aria-label={`Ta bort ${skill.name}`}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>

@@ -140,16 +140,124 @@ export function ATSAnalysis() {
     loadCV()
   }, [])
 
+  // Calculate actual ATS score based on CV data
+  const calculateChecks = (cv: CVData | null): ATSCheck[] => {
+    if (!cv) return defaultChecks
+
+    return [
+      {
+        id: '1',
+        category: 'content',
+        title: 'Kontaktinformation',
+        description: 'Har du fyllt i namn, e-post och telefon?',
+        status: (cv.firstName && cv.lastName && cv.email && cv.phone) ? 'pass' :
+                (cv.firstName || cv.email) ? 'warning' : 'fail',
+        score: (cv.firstName && cv.lastName ? 5 : 0) + (cv.email ? 3 : 0) + (cv.phone ? 2 : 0),
+        tips: ['Se till att din e-post är professionell', 'Dubbelkolla att telefonnumret är korrekt']
+      },
+      {
+        id: '2',
+        category: 'content',
+        title: 'Sammanfattning/Profil',
+        description: 'En kort sammanfattning ökar chanserna avsevärt',
+        status: cv.summary && cv.summary.length > 100 ? 'pass' :
+                cv.summary && cv.summary.length > 30 ? 'warning' : 'fail',
+        score: cv.summary ? Math.min(15, Math.floor(cv.summary.length / 20)) : 0,
+        tips: ['Skriv 2-3 meningar om vem du är', 'Nämn vad du söker för typ av roll']
+      },
+      {
+        id: '3',
+        category: 'content',
+        title: 'Arbetslivserfarenhet',
+        description: 'Har du listat dina tidigare jobb?',
+        status: cv.workExperience && cv.workExperience.length >= 2 ? 'pass' :
+                cv.workExperience && cv.workExperience.length === 1 ? 'warning' : 'fail',
+        score: cv.workExperience ? Math.min(25, cv.workExperience.length * 10) : 0,
+        tips: ['Börja med det senaste jobbet', 'Använd bullet points för arbetsuppgifter']
+      },
+      {
+        id: '4',
+        category: 'content',
+        title: 'Utbildning',
+        description: 'Har du med din utbildning?',
+        status: cv.education && cv.education.length > 0 ? 'pass' : 'warning',
+        score: cv.education ? Math.min(15, cv.education.length * 7) : 0,
+        tips: ['Lista även pågående utbildningar', 'Inkludera relevanta kurser']
+      },
+      {
+        id: '5',
+        category: 'keywords',
+        title: 'Kompetenser',
+        description: 'Har du listat dina kompetenser?',
+        status: cv.skills && cv.skills.length >= 5 ? 'pass' :
+                cv.skills && cv.skills.length > 0 ? 'warning' : 'fail',
+        score: cv.skills ? Math.min(15, cv.skills.length * 3) : 0,
+        tips: ['Lägg till både tekniska och mjuka kompetenser', 'Inkludera kompetenser som efterfrågas i annonser']
+      },
+      {
+        id: '6',
+        category: 'format',
+        title: 'Profilbild',
+        description: 'En professionell bild ökar chanserna',
+        status: cv.profileImage ? 'pass' : 'neutral',
+        score: cv.profileImage ? 5 : 0,
+        tips: ['Använd en professionell bild', 'Se till att bakgrunden är neutral']
+      },
+      {
+        id: '7',
+        category: 'format',
+        title: 'Mall vald',
+        description: 'Använder du en modern CV-mall?',
+        status: cv.template ? 'pass' : 'warning',
+        score: cv.template ? 10 : 5,
+        tips: ['Välj en mall som passar din bransch', 'Undvik för kreativa mallar för traditionella jobb']
+      },
+      {
+        id: '8',
+        category: 'technical',
+        title: 'Språkkunskaper',
+        description: 'Har du angett dina språkkunskaper?',
+        status: cv.languages && cv.languages.length > 0 ? 'pass' : 'neutral',
+        score: cv.languages ? Math.min(10, cv.languages.length * 5) : 0,
+        tips: ['Ange språknivå för varje språk', 'Svenska och engelska är ofta krav']
+      },
+      {
+        id: '9',
+        category: 'technical',
+        title: 'Certifieringar',
+        description: 'Certifieringar stärker din profil',
+        status: cv.certificates && cv.certificates.length > 0 ? 'pass' : 'neutral',
+        score: cv.certificates ? Math.min(5, cv.certificates.length * 2) : 0,
+        tips: ['Lägg till relevanta certifikat', 'Körkort räknas också!']
+      }
+    ]
+  }
+
+  // Recalculate checks when CV data changes
+  useEffect(() => {
+    if (cvData) {
+      setChecks(calculateChecks(cvData))
+    }
+  }, [cvData])
+
   const totalScore = checks.reduce((sum, check) => sum + check.score, 0)
   const maxScore = 100
-  const percentage = Math.round((totalScore / maxScore) * 100)
+  const percentage = Math.min(100, Math.round((totalScore / maxScore) * 100))
 
-  const runAnalysis = () => {
+  const runAnalysis = async () => {
     setIsAnalyzing(true)
-    // Simulate analysis
-    setTimeout(() => {
+    try {
+      // Reload CV data and recalculate
+      const cv = await cvApi.getCV()
+      if (cv) {
+        setCvData(cv)
+        setChecks(calculateChecks(cv))
+      }
+    } catch (e) {
+      console.error('Kunde inte ladda om CV:', e)
+    } finally {
       setIsAnalyzing(false)
-    }, 2000)
+    }
   }
 
   const getScoreColor = (score: number) => {

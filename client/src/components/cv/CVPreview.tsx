@@ -3,14 +3,46 @@
  * Bättre typografi, ikoner, och visuell hierarki
  */
 
-import { 
-  Mail, Phone, MapPin, Briefcase, GraduationCap, 
+import {
+  Mail, Phone, MapPin, Briefcase, GraduationCap,
   Award, Link2, Globe, Star, Target, Zap, BookOpen, Sparkles
 } from 'lucide-react'
 import type { CVData } from '@/services/supabaseApi'
 
 interface CVPreviewProps {
   data: CVData
+}
+
+// Helper to translate language level values to Swedish display text
+const getLanguageLevelDisplay = (level: string): string => {
+  const levelMap: Record<string, string> = {
+    'basic': 'Grundläggande',
+    'good': 'God',
+    'fluent': 'Flytande',
+    'native': 'Modersmål',
+    // Fallback for old Swedish values
+    'Grundläggande': 'Grundläggande',
+    'God': 'God',
+    'Flytande': 'Flytande',
+    'Modersmål': 'Modersmål',
+  }
+  return levelMap[level] || level
+}
+
+// Helper to get progress bar width for language level
+const getLanguageLevelWidth = (level: string): string => {
+  const widthMap: Record<string, string> = {
+    'native': '100%',
+    'fluent': '85%',
+    'good': '70%',
+    'basic': '50%',
+    // Fallback for old Swedish values
+    'Modersmål': '100%',
+    'Flytande': '85%',
+    'God': '70%',
+    'Grundläggande': '50%',
+  }
+  return widthMap[level] || '50%'
 }
 
 // Förbättrade mallar med bättre typografi och ikoner
@@ -135,6 +167,40 @@ const TEMPLATES = {
 export function CVPreview({ data }: CVPreviewProps) {
   const template = TEMPLATES[data.template as keyof typeof TEMPLATES] || TEMPLATES.sidebar
   const fullName = `${data.firstName} ${data.lastName}`.trim() || 'Ditt Namn'
+
+  // Check if there's any meaningful content
+  const hasContent = !!(
+    data.firstName ||
+    data.lastName ||
+    data.email ||
+    data.phone ||
+    data.summary ||
+    (data.workExperience && data.workExperience.length > 0) ||
+    (data.education && data.education.length > 0) ||
+    (data.skills && data.skills.length > 0)
+  )
+
+  // Show empty state if no content
+  if (!hasContent) {
+    return (
+      <div className="cv-preview min-h-[400px] bg-gradient-to-br from-slate-50 to-slate-100 flex flex-col items-center justify-center p-12 text-center">
+        <div className="w-20 h-20 bg-slate-200 rounded-2xl flex items-center justify-center mb-6">
+          <Sparkles className="w-10 h-10 text-slate-400" />
+        </div>
+        <h3 className="text-xl font-semibold text-slate-700 mb-2">
+          Förhandsvisning
+        </h3>
+        <p className="text-slate-500 max-w-xs">
+          Börja fylla i dina uppgifter för att se hur ditt CV kommer att se ut
+        </p>
+        <div className="mt-8 flex gap-3">
+          <div className="w-24 h-3 bg-slate-200 rounded animate-pulse" />
+          <div className="w-16 h-3 bg-slate-200 rounded animate-pulse" />
+        </div>
+        <div className="mt-3 w-40 h-3 bg-slate-200 rounded animate-pulse" />
+      </div>
+    )
+  }
 
   const getSkillName = (skill: string | { name: string; category?: string }): string => {
     return typeof skill === 'string' ? skill : skill?.name || ''
@@ -269,7 +335,7 @@ export function CVPreview({ data }: CVPreviewProps) {
                           background: isNordic ? '#bae6fd' : 'rgba(255,255,255,0.2)',
                         }}
                       >
-                        {lang.level}
+                        {getLanguageLevelDisplay(lang.level)}
                       </span>
                     </div>
                   )
@@ -525,7 +591,7 @@ export function CVPreview({ data }: CVPreviewProps) {
                             {languageName}
                           </span>
                           <span className="text-sm font-medium" style={{ color: template.colors.muted }}>
-                            {lang.level}
+                            {getLanguageLevelDisplay(lang.level)}
                           </span>
                         </div>
                       )
@@ -738,16 +804,12 @@ export function CVPreview({ data }: CVPreviewProps) {
                   <div key={lang.id}>
                     <div className="flex justify-between text-sm mb-1">
                       <span>{languageName}</span>
-                      <span className="opacity-70">{lang.level}</span>
+                      <span className="opacity-70">{getLanguageLevelDisplay(lang.level)}</span>
                     </div>
                     <div className="h-2 rounded-full bg-white/20 overflow-hidden">
                       <div
                         className="h-full rounded-full bg-white transition-all"
-                        style={{
-                          width: lang.level === 'Modersmål' ? '100%' :
-                                 lang.level === 'Flytande' ? '85%' :
-                                 lang.level === 'God' ? '70%' : '50%'
-                        }}
+                        style={{ width: getLanguageLevelWidth(lang.level) }}
                       />
                     </div>
                   </div>

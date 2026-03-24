@@ -32,7 +32,7 @@ export function RichTextEditor({
   const editorRef = useRef<HTMLTextAreaElement>(null)
   const [history, setHistory] = useState<string[]>([value])
   const [historyIndex, setHistoryIndex] = useState(0)
-  const [showToolbar, setShowToolbar] = useState(false)
+  const [showToolbar, setShowToolbar] = useState(true) // Show toolbar by default
 
   // Simple formatting functions that insert markdown-like syntax
   const insertFormatting = useCallback((before: string, after: string = '') => {

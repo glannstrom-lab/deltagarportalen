@@ -4,7 +4,7 @@ import { cvApi } from '@/services/api'
 import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
   Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
-  Lightbulb, Wand2
+  Lightbulb, Wand2, Loader2
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
@@ -16,6 +16,7 @@ import { useVercelImageUpload } from '@/hooks/useVercelImageUpload'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { cvLogger } from '@/lib/logger'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 import type { CVData, CVVersion } from '@/services/supabaseApi'
 
 // NYA IMPORTS för förbättringar
@@ -23,7 +24,6 @@ import { useCVAutoSave, useCVDraft } from '@/hooks/useCVAutoSave'
 import type { WorkExperience } from '@/services/supabaseApi'
 import { useCVScore, getOverallTips, getScoreColor } from '@/hooks/useCVScore'
 import { SaveIndicator } from '@/components/cv/SaveIndicator'
-import { CVProgressBar } from '@/components/cv/CVProgressBar'
 import { AIHelpButton } from '@/components/cv/AIHelpButton'
 import { RichTextEditor } from '@/components/cv/RichTextEditor'
 import { ExperienceEditor } from '@/components/cv/ExperienceEditor'
@@ -42,6 +42,14 @@ const STEPS = [
   { id: 3, title: 'Profil', description: 'Sammanfattning', minutes: 5 },
   { id: 4, title: 'Erfarenhet', description: 'Jobb & utbildning', minutes: 10 },
   { id: 5, title: 'Kompetenser', description: 'Skills & övrigt', minutes: 5 },
+] as const
+
+// Language level constants (stored in DB, display via translation)
+const LANGUAGE_LEVELS = [
+  { value: 'basic', labelKey: 'cvBuilder.languageLevels.basic' },
+  { value: 'good', labelKey: 'cvBuilder.languageLevels.good' },
+  { value: 'fluent', labelKey: 'cvBuilder.languageLevels.fluent' },
+  { value: 'native', labelKey: 'cvBuilder.languageLevels.native' },
 ] as const
 
 // Moderna CV-mallar 2025
@@ -186,12 +194,19 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
         })}
       </div>
 
-      {/* Current step description */}
-      <div className="mt-3 pt-3 border-t border-slate-100 text-center">
-        <p className="text-sm text-slate-600">
-          <span className="font-medium">{STEPS[currentStep - 1]?.title}:</span>{' '}
-          {STEPS[currentStep - 1]?.description}
-        </p>
+      {/* Current step description - more prominent on mobile */}
+      <div className="mt-3 pt-3 border-t border-slate-100">
+        <div className="sm:text-center">
+          <p className="text-sm sm:text-sm text-slate-600">
+            <span className="font-semibold text-indigo-700 sm:font-medium sm:text-slate-800">
+              Steg {currentStep}: {STEPS[currentStep - 1]?.title}
+            </span>
+            <span className="hidden sm:inline"> – </span>
+            <span className="block sm:inline text-slate-500 mt-0.5 sm:mt-0">
+              {STEPS[currentStep - 1]?.description}
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   )
@@ -248,7 +263,8 @@ export default function CVBuilder() {
   
   const { upload: uploadImage, isUploading: isImageUploading } = useVercelImageUpload()
   const { user } = useAuthStore()
-  
+  const { confirm } = useConfirmDialog()
+
   // NYA FEATURES: Auto-save och draft
   const { saveStatus, lastSavedAt, hasUnsavedChanges, triggerSave } = useCVAutoSave(data)
   const { restoreDraft, clearDraft } = useCVDraft()
@@ -278,6 +294,19 @@ export default function CVBuilder() {
     localStorage.removeItem('cv-draft')
     localStorage.removeItem('cv-last-saved')
   }, []) // Kör bara en gång vid mount
+
+  // Warn user before leaving with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault()
+        e.returnValue = ''
+        return ''
+      }
+    }
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload)
+  }, [hasUnsavedChanges])
 
   const completedSteps = [
     1,
@@ -353,21 +382,35 @@ export default function CVBuilder() {
       await loadVersions()
       setVersionName('')
       setShowSaveVersion(false)
-      alert(t('cvBuilder.messages.versionSaved'))
-    } catch { alert(t('cvBuilder.messages.couldNotSaveVersion')) }
+      showToast.success(t('cvBuilder.messages.versionSaved'))
+    } catch { showToast.error(t('cvBuilder.messages.couldNotSaveVersion')) }
   }
 
   const restoreVersion = async (versionId: string) => {
-    if (!confirm(t('cvBuilder.messages.replaceConfirm'))) return
+    const confirmed = await confirm({
+      title: t('cvBuilder.messages.restoreTitle', 'Återställ version'),
+      message: t('cvBuilder.messages.replaceConfirm'),
+      confirmText: t('cvBuilder.actions.restore'),
+      cancelText: t('cvBuilder.actions.cancel'),
+      variant: 'warning'
+    })
+    if (!confirmed) return
     try {
       const restored = await cvApi.restoreVersion(versionId)
       setData(prev => ({ ...prev, ...restored }))
-      alert(t('cvBuilder.messages.versionRestored'))
-    } catch { alert(t('cvBuilder.messages.couldNotRestore')) }
+      showToast.success(t('cvBuilder.messages.versionRestored'))
+    } catch { showToast.error(t('cvBuilder.messages.couldNotRestore')) }
   }
 
-  const loadDemoData = () => {
-    if (!confirm(t('cvBuilder.messages.fillDemoData'))) return
+  const loadDemoData = async () => {
+    const confirmed = await confirm({
+      title: t('cvBuilder.messages.demoDataTitle', 'Fyll i exempeldata'),
+      message: t('cvBuilder.messages.fillDemoData'),
+      confirmText: t('cvBuilder.actions.fill', 'Fyll i'),
+      cancelText: t('cvBuilder.actions.cancel'),
+      variant: 'info'
+    })
+    if (!confirmed) return
     setData({
       ...data,
       firstName: 'Anna', lastName: 'Andersson', title: 'Projektledare',
@@ -527,7 +570,16 @@ export default function CVBuilder() {
   // STEG 2: OM DIG
   const renderStep2 = () => (
     <div className="space-y-4">
-      <Card>
+      <Card className="relative">
+        {/* Loading overlay for image upload */}
+        {isImageUploading && (
+          <div className="absolute inset-0 bg-white/80 rounded-2xl flex items-center justify-center z-10">
+            <div className="flex items-center gap-3">
+              <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+              <span className="text-sm font-medium text-slate-700">{t('cvBuilder.profileImage.uploading')}</span>
+            </div>
+          </div>
+        )}
         <h3 className="font-semibold text-slate-800 mb-4">{t('cvBuilder.profileImage.title')}</h3>
         <p className="text-sm text-slate-500 mb-4">
           {t('cvBuilder.profileImage.description')}
@@ -537,12 +589,12 @@ export default function CVBuilder() {
           onChange={(url) => setData({ ...data, profileImage: url })}
           onUpload={async (file) => {
             if (!user?.id) {
-              alert(t('cvBuilder.profileImage.mustBeLoggedIn'))
+              showToast.error(t('cvBuilder.profileImage.mustBeLoggedIn'))
               return null
             }
             const result = await uploadImage(file)
             if (result.error) {
-              alert(t('cvBuilder.profileImage.uploadFailed') + result.error)
+              showToast.error(t('cvBuilder.profileImage.uploadFailed') + result.error)
               return null
             }
             return result.url
@@ -644,20 +696,39 @@ export default function CVBuilder() {
       <Card>
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-slate-800">{t('cvBuilder.sections.languages')}</h3>
-          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: t('cvBuilder.languageLevels.good') }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
+          <button onClick={() => add(data.languages, { id: Date.now().toString(), language: '', level: 'good' }, 'languages')} className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-[#4f46e5] bg-[#4f46e5]/10 rounded-lg hover:bg-[#4f46e5]/20"><Plus className="w-4 h-4" /> {t('cvBuilder.actions.add')}</button>
         </div>
         {data.languages.length > 0 && (
           <div className="space-y-2">
             {data.languages.map((lang) => (
               <div key={lang.id} className="flex items-center gap-3">
-                <input type="text" value={lang.language} onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)} placeholder={t('cvBuilder.sections.languages')} className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm" />
-                <select value={lang.level} onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)} className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-32">
-                  <option value={t('cvBuilder.languageLevels.basic')}>{t('cvBuilder.languageLevels.basic')}</option>
-                  <option value={t('cvBuilder.languageLevels.good')}>{t('cvBuilder.languageLevels.good')}</option>
-                  <option value={t('cvBuilder.languageLevels.fluent')}>{t('cvBuilder.languageLevels.fluent')}</option>
-                  <option value={t('cvBuilder.languageLevels.native')}>{t('cvBuilder.languageLevels.native')}</option>
+                <input
+                  type="text"
+                  value={lang.language}
+                  onChange={(e) => update(data.languages, lang.id, 'languages', 'language', e.target.value)}
+                  placeholder={t('cvBuilder.placeholders.language')}
+                  className="flex-1 px-3 py-2 border border-slate-200 rounded-lg text-sm"
+                  aria-label={t('cvBuilder.sections.languages')}
+                />
+                <select
+                  value={lang.level}
+                  onChange={(e) => update(data.languages, lang.id, 'languages', 'level', e.target.value)}
+                  className="px-3 py-2 border border-slate-200 rounded-lg text-sm w-32"
+                  aria-label={t('cvBuilder.fields.languageLevel')}
+                >
+                  {LANGUAGE_LEVELS.map(level => (
+                    <option key={level.value} value={level.value}>
+                      {t(level.labelKey)}
+                    </option>
+                  ))}
                 </select>
-                <button onClick={() => remove(data.languages, lang.id, 'languages')} className="p-2 text-red-500 hover:bg-red-50 rounded-lg"><Trash2 className="w-4 h-4" /></button>
+                <button
+                  onClick={() => remove(data.languages, lang.id, 'languages')}
+                  className="p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                  aria-label={t('cvBuilder.actions.remove')}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             ))}
           </div>
@@ -725,7 +796,7 @@ export default function CVBuilder() {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-amber-600 hover:bg-amber-50 border border-amber-200 rounded-lg transition-colors">
+          <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-50 border border-indigo-200 rounded-lg transition-colors">
             <Sparkles className="w-4 h-4" />
             <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
           </button>
@@ -751,17 +822,8 @@ export default function CVBuilder() {
         </div>
       </div>
       
-      {/* Progress Bar med CV Score */}
-      <CVProgressBar 
-        data={data} 
-        currentStep={step} 
-        onStepClick={setStep}
-      />
-
-      {/* Steg-indikator - ovanför allt */}
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 mb-6">
-        <StepIndicator currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
-      </div>
+      {/* Steg-indikator */}
+      <StepIndicator currentStep={step} totalSteps={STEPS.length} onStepClick={setStep} completedSteps={completedSteps} />
 
       {/* Mobile Preview Modal */}
       {showPreview && (

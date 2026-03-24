@@ -4,10 +4,10 @@
  */
 
 import { useState } from 'react'
-import { 
-  Briefcase, Building2, MapPin, Calendar, 
+import {
+  Briefcase, Building2, MapPin, Calendar,
   ChevronDown, ChevronUp, GripVertical, Trash2,
-  Sparkles, CheckCircle, AlertCircle
+  Sparkles, CheckCircle, AlertCircle, ArrowUp, ArrowDown
 } from 'lucide-react'
 import { RichTextEditor } from './RichTextEditor'
 import type { WorkExperience } from '@/services/supabaseApi'
@@ -111,6 +111,24 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
     setDraggedId(null)
   }
 
+  // Move experience up (keyboard accessible alternative to drag)
+  const moveExperienceUp = (id: string) => {
+    const index = experiences.findIndex(exp => exp.id === id)
+    if (index <= 0) return
+    const newExperiences = [...experiences]
+    ;[newExperiences[index - 1], newExperiences[index]] = [newExperiences[index], newExperiences[index - 1]]
+    onChange(newExperiences)
+  }
+
+  // Move experience down
+  const moveExperienceDown = (id: string) => {
+    const index = experiences.findIndex(exp => exp.id === id)
+    if (index === -1 || index >= experiences.length - 1) return
+    const newExperiences = [...experiences]
+    ;[newExperiences[index], newExperiences[index + 1]] = [newExperiences[index + 1], newExperiences[index]]
+    onChange(newExperiences)
+  }
+
   const getDuration = (startDate: string, endDate: string, current: boolean) => {
     if (!startDate) return ''
     
@@ -155,12 +173,12 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
       ) : (
         <>
           {/* Experience List */}
-          <div className="space-y-3">
+          <div className="space-y-3" role="list" aria-label="Arbetslivserfarenhet">
             {experiences.map((exp, index) => {
               const isExpanded = expandedId === exp.id
               const status = getCompletionStatus(exp)
               const duration = getDuration(exp.startDate, exp.endDate, exp.current)
-              
+
               return (
                 <div
                   key={exp.id}
@@ -168,6 +186,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                   onDragStart={() => handleDragStart(exp.id)}
                   onDragOver={(e) => handleDragOver(e, exp.id)}
                   onDragEnd={handleDragEnd}
+                  role="listitem"
                   className={`
                     bg-white border rounded-xl overflow-hidden transition-all
                     ${isExpanded ? 'border-purple-300 shadow-md' : 'border-slate-200 hover:border-slate-300'}
@@ -175,13 +194,37 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                   `}
                 >
                   {/* Header - Always visible */}
-                  <div 
+                  <div
                     onClick={() => setExpandedId(isExpanded ? null : exp.id)}
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-slate-50 transition-colors"
+                    role="button"
+                    aria-expanded={isExpanded}
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault()
+                        setExpandedId(isExpanded ? null : exp.id)
+                      }
+                    }}
                   >
-                    {/* Drag handle */}
-                    <div className="text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing">
-                      <GripVertical className="w-5 h-5" />
+                    {/* Move buttons (keyboard accessible) */}
+                    <div className="flex flex-col gap-0.5" onClick={(e) => e.stopPropagation()}>
+                      <button
+                        onClick={() => moveExperienceUp(exp.id)}
+                        disabled={index === 0}
+                        className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        aria-label={`Flytta ${exp.title || 'erfarenhet'} uppåt`}
+                      >
+                        <ArrowUp className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={() => moveExperienceDown(exp.id)}
+                        disabled={index === experiences.length - 1}
+                        className="p-0.5 text-slate-300 hover:text-slate-600 disabled:opacity-30 disabled:cursor-not-allowed"
+                        aria-label={`Flytta ${exp.title || 'erfarenhet'} nedåt`}
+                      >
+                        <ArrowDown className="w-3 h-3" />
+                      </button>
                     </div>
                     
                     {/* Status indicator */}
@@ -232,7 +275,17 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               type="text"
                               value={exp.title}
                               onChange={(e) => updateExperience(exp.id, 'title', e.target.value)}
+                              onBlur={() => {
+                                if (!exp.title.trim()) {
+                                  setErrors(prev => ({
+                                    ...prev,
+                                    [exp.id]: { ...prev[exp.id], title: 'Jobbtitel krävs' }
+                                  }))
+                                }
+                              }}
                               placeholder="t.ex. Butikssäljare"
+                              aria-required="true"
+                              aria-invalid={!!errors[exp.id]?.title}
                               className={`
                                 w-full pl-10 pr-4 py-2.5 border rounded-lg
                                 focus:outline-none focus:ring-2 focus:ring-purple-500
@@ -241,7 +294,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             />
                           </div>
                           {errors[exp.id]?.title && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                            <p className="mt-1 text-sm text-red-600 flex items-center gap-1" role="alert">
                               <AlertCircle className="w-3 h-3" /> {errors[exp.id].title}
                             </p>
                           )}
@@ -258,7 +311,17 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               type="text"
                               value={exp.company}
                               onChange={(e) => updateExperience(exp.id, 'company', e.target.value)}
+                              onBlur={() => {
+                                if (!exp.company.trim()) {
+                                  setErrors(prev => ({
+                                    ...prev,
+                                    [exp.id]: { ...prev[exp.id], company: 'Företagsnamn krävs' }
+                                  }))
+                                }
+                              }}
                               placeholder="t.ex. ICA Maxi"
+                              aria-required="true"
+                              aria-invalid={!!errors[exp.id]?.company}
                               className={`
                                 w-full pl-10 pr-4 py-2.5 border rounded-lg
                                 focus:outline-none focus:ring-2 focus:ring-purple-500
@@ -267,7 +330,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             />
                           </div>
                           {errors[exp.id]?.company && (
-                            <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                            <p className="mt-1 text-sm text-red-600 flex items-center gap-1" role="alert">
                               <AlertCircle className="w-3 h-3" /> {errors[exp.id].company}
                             </p>
                           )}
@@ -302,6 +365,15 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 type="month"
                                 value={exp.startDate}
                                 onChange={(e) => updateExperience(exp.id, 'startDate', e.target.value)}
+                                onBlur={() => {
+                                  if (!exp.startDate) {
+                                    setErrors(prev => ({
+                                      ...prev,
+                                      [exp.id]: { ...prev[exp.id], startDate: 'Startdatum krävs' }
+                                    }))
+                                  }
+                                }}
+                                max={new Date().toISOString().slice(0, 7)}
                                 className={`
                                   w-full pl-10 pr-4 py-2.5 border rounded-lg
                                   focus:outline-none focus:ring-2 focus:ring-purple-500
@@ -309,8 +381,13 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 `}
                               />
                             </div>
+                            {errors[exp.id]?.startDate && (
+                              <p className="mt-1 text-sm text-red-600 flex items-center gap-1">
+                                <AlertCircle className="w-3 h-3" /> {errors[exp.id].startDate}
+                              </p>
+                            )}
                           </div>
-                          
+
                           <div>
                             <label className="block text-sm font-medium text-slate-700 mb-1">
                               Slutdatum
@@ -322,6 +399,8 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 value={exp.endDate}
                                 onChange={(e) => updateExperience(exp.id, 'endDate', e.target.value)}
                                 disabled={exp.current}
+                                min={exp.startDate || undefined}
+                                max={new Date().toISOString().slice(0, 7)}
                                 className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-400"
                               />
                             </div>

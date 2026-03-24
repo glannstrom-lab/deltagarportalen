@@ -35,6 +35,7 @@ import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVPreview } from './CVPreview'
 import type { CVData } from '@/services/supabaseApi'
 import { showToast } from '@/components/Toast'
+import { useConfirmDialog } from '@/components/ui/ConfirmDialog'
 
 interface CVVersion {
   id: string
@@ -47,21 +48,23 @@ interface CVVersion {
   atsScore?: number
 }
 
-const categories = [
-  { id: 'all', label: 'Alla', color: 'bg-slate-100 text-slate-700' },
-  { id: 'retail', label: 'Butik & Handel', color: 'bg-blue-100 text-blue-700' },
-  { id: 'warehouse', label: 'Lager & Logistik', color: 'bg-orange-100 text-orange-700' },
-  { id: 'office', label: 'Kontor & Admin', color: 'bg-purple-100 text-purple-700' },
-  { id: 'healthcare', label: 'Vård & Omsorg', color: 'bg-red-100 text-red-700' },
-  { id: 'tech', label: 'IT & Tech', color: 'bg-cyan-100 text-cyan-700' },
-  { id: 'other', label: 'Övrigt', color: 'bg-gray-100 text-gray-700' },
+// Filter by CV template design instead of non-existent categories
+const templateFilters = [
+  { id: 'all', label: 'Alla mallar', color: 'bg-slate-100 text-slate-700' },
+  { id: 'sidebar', label: 'Sidokolumn', color: 'bg-blue-100 text-blue-700' },
+  { id: 'centered', label: 'Centrerad', color: 'bg-purple-100 text-purple-700' },
+  { id: 'minimal', label: 'Minimal', color: 'bg-gray-100 text-gray-700' },
+  { id: 'creative', label: 'Kreativ', color: 'bg-pink-100 text-pink-700' },
+  { id: 'executive', label: 'Executive', color: 'bg-amber-100 text-amber-700' },
+  { id: 'nordic', label: 'Nordisk', color: 'bg-cyan-100 text-cyan-700' },
 ]
 
 export function MyCVs() {
   const navigate = useNavigate()
+  const { confirm } = useConfirmDialog()
   const [cvs, setCvs] = useState<CVVersion[]>([])
   const [loading, setLoading] = useState(true)
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [selectedTemplate, setSelectedTemplate] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
   const [actionMenuOpen, setActionMenuOpen] = useState<string | null>(null)
   const [previewCV, setPreviewCV] = useState<CVVersion | null>(null)
@@ -156,11 +159,18 @@ export function MyCVs() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Är du säker på att du vill ta bort detta CV? Detta kan inte ångras.')) {
-      setActionMenuOpen(null)
-      return
-    }
-    
+    setActionMenuOpen(null)
+
+    const confirmed = await confirm({
+      title: 'Ta bort CV',
+      message: 'Är du säker på att du vill ta bort detta CV? Detta kan inte ångras.',
+      confirmText: 'Ta bort',
+      cancelText: 'Avbryt',
+      variant: 'danger'
+    })
+
+    if (!confirmed) return
+
     try {
       setDeletingId(id)
       await cvApi.deleteVersion(id)
@@ -171,7 +181,6 @@ export function MyCVs() {
       showToast.error('Kunde inte ta bort CV:t')
     } finally {
       setDeletingId(null)
-      setActionMenuOpen(null)
     }
   }
 
@@ -208,9 +217,9 @@ export function MyCVs() {
   }
 
   const filteredCVs = cvs
-    .filter(cv => selectedCategory === 'all' || cv.data?.template === selectedCategory)
-    .filter(cv => 
-      searchQuery === '' || 
+    .filter(cv => selectedTemplate === 'all' || cv.data?.template === selectedTemplate)
+    .filter(cv =>
+      searchQuery === '' ||
       cv.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cv.data?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       cv.data?.firstName?.toLowerCase().includes(searchQuery.toLowerCase())
@@ -228,14 +237,6 @@ export function MyCVs() {
       month: 'short',
       day: 'numeric'
     })
-  }
-
-  const getCategoryLabel = (categoryId?: string) => {
-    return categories.find(c => c.id === categoryId)?.label || 'Övrigt'
-  }
-
-  const getCategoryColor = (categoryId?: string) => {
-    return categories.find(c => c.id === categoryId)?.color || 'bg-gray-100 text-gray-700'
   }
 
   const getScoreColor = (score: number) => {
@@ -310,14 +311,15 @@ export function MyCVs() {
           />
         </div>
 
-        {/* Category Filter */}
+        {/* Template Filter */}
         <select
-          value={selectedCategory}
-          onChange={(e) => setSelectedCategory(e.target.value)}
+          value={selectedTemplate}
+          onChange={(e) => setSelectedTemplate(e.target.value)}
           className="px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+          aria-label="Filtrera efter mall"
         >
-          {categories.map(cat => (
-            <option key={cat.id} value={cat.id}>{cat.label}</option>
+          {templateFilters.map(tpl => (
+            <option key={tpl.id} value={tpl.id}>{tpl.label}</option>
           ))}
         </select>
       </div>
