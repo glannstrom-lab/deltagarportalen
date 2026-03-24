@@ -1,15 +1,14 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cvApi } from '@/services/api'
-import { 
+import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
-  Linkedin, Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
+  Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
   Lightbulb, Wand2
 } from 'lucide-react'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
 import { showToast } from '@/components/Toast'
-import { LinkedInImport } from '@/components/linkedin/LinkedInImport'
 import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 import { CVShare } from '@/components/cv/CVShare'
 import { CompactImageUpload } from '@/components/ImageUpload'
@@ -235,7 +234,6 @@ export default function CVBuilder() {
   const [step, setStep] = useState(1)
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
-  const [showLinkedInImport, setShowLinkedInImport] = useState(false)
   const [versions, setVersions] = useState<CVVersion[]>([])
   const [showSaveVersion, setShowSaveVersion] = useState(false)
   const [versionName, setVersionName] = useState('')
@@ -731,9 +729,6 @@ export default function CVBuilder() {
             <Sparkles className="w-4 h-4" />
             <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
           </button>
-          <button onClick={() => setShowLinkedInImport(true)} className="hidden sm:flex items-center gap-2 px-3 py-2 text-sm border border-[#0077B5] text-[#0077B5] rounded-lg hover:bg-[#0077B5]/5">
-            <Linkedin className="w-4 h-4" /> {t('cvBuilder.actions.import')}
-          </button>
           {/* Manuell spara-knapp - backup om auto-save misslyckas */}
           <button
             onClick={save}
@@ -899,13 +894,6 @@ export default function CVBuilder() {
         </div>
       </div>
 
-      {/* LinkedIn Import */}
-      {showLinkedInImport && (
-        <LinkedInImport
-          onImport={(d) => { setData({ ...data, ...d }); setShowLinkedInImport(false) }}
-          onClose={() => setShowLinkedInImport(false)}
-        />
-      )}
       
       {/* Onboarding */}
       {showOnboarding && (
