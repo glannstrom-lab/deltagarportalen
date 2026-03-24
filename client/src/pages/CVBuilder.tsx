@@ -33,7 +33,6 @@ import { SkillsEditor } from '@/components/cv/SkillsEditor'
 import { ContextualHelp } from '@/components/cv/ContextualHelp'
 import { CVOnboarding, shouldShowOnboarding } from '@/components/cv/CVOnboarding'
 import { ContextualKnowledgeWidget } from '@/components/workflow'
-import { CVSaveTest } from '@/components/cv/CVSaveTest'
 
 // ============================================
 // STEG - med tidsuppskattningar för bättre UX
@@ -897,8 +896,6 @@ export default function CVBuilder() {
             </div>
           </div>
 
-          {/* DEBUG: CV Save Test */}
-          <CVSaveTest />
         </div>
       </div>
 
