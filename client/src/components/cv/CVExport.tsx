@@ -7,16 +7,31 @@ interface CVExportProps {
   cvData?: CVData
 }
 
-// Color schemes för PDF-export - matchar CVBuilder.tsx och CVPreview.tsx
-const colorSchemes: Record<string, { primary: string; secondary: string; accent: string }> = {
-  indigo: { primary: '#4f46e5', secondary: '#6366f1', accent: '#818cf8' },
-  ocean: { primary: '#0ea5e9', secondary: '#38bdf8', accent: '#7dd3fc' },
-  forest: { primary: '#059669', secondary: '#10b981', accent: '#34d399' },
-  berry: { primary: '#db2777', secondary: '#ec4899', accent: '#f472b6' },
-  amber: { primary: '#d97706', secondary: '#f59e0b', accent: '#fbbf24' },
-  ruby: { primary: '#dc2626', secondary: '#ef4444', accent: '#f87171' },
-  slate: { primary: '#1e293b', secondary: '#475569', accent: '#64748b' },
-  violet: { primary: '#7c3aed', secondary: '#8b5cf6', accent: '#a78bfa' },
+// Helper functions
+const getLanguageLevelDisplay = (level: string): string => {
+  const levelMap: Record<string, string> = {
+    'basic': 'Grundläggande',
+    'good': 'God',
+    'fluent': 'Flytande',
+    'native': 'Modersmål',
+    'Grundläggande': 'Grundläggande',
+    'God': 'God',
+    'Flytande': 'Flytande',
+    'Modersmål': 'Modersmål',
+  }
+  return levelMap[level] || level
+}
+
+const getSkillName = (skill: { name: string } | string): string => {
+  return typeof skill === 'string' ? skill : skill?.name || ''
+}
+
+const getLanguageLevelPercent = (level: string): number => {
+  const map: Record<string, number> = {
+    'native': 100, 'fluent': 85, 'good': 70, 'basic': 50,
+    'Modersmål': 100, 'Flytande': 85, 'God': 70, 'Grundläggande': 50,
+  }
+  return map[level] || 50
 }
 
 export function CVExport({ cvData }: CVExportProps) {
@@ -25,7 +40,6 @@ export function CVExport({ cvData }: CVExportProps) {
   const [exportSuccess, setExportSuccess] = useState<'pdf' | 'word' | null>(null)
   const pdfRef = useRef<HTMLDivElement>(null)
 
-  // Guard för undefined data
   if (!cvData) {
     return (
       <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
@@ -52,12 +66,10 @@ export function CVExport({ cvData }: CVExportProps) {
     setIsExportingPDF(true)
 
     try {
-      // Lazy-load PDF libraries (sparar ~300KB från initial bundle)
       const { jsPDF, html2canvas } = await loadPDFLibraries()
 
       const element = pdfRef.current
 
-      // Gör elementet tillfälligt synligt för rendering
       const originalStyles = {
         position: element.style.position,
         left: element.style.left,
@@ -70,9 +82,8 @@ export function CVExport({ cvData }: CVExportProps) {
       element.style.top = '0'
       element.style.opacity = '0'
       element.style.zIndex = '-9999'
-      element.style.width = '794px' // A4 width i pixels (96 DPI)
+      element.style.width = '794px'
 
-      // Vänta på att DOM ska uppdateras
       await new Promise(resolve => setTimeout(resolve, 100))
 
       const canvas = await html2canvas(element, {
@@ -84,7 +95,6 @@ export function CVExport({ cvData }: CVExportProps) {
         width: 794
       })
 
-      // Återställ elementet
       element.style.position = originalStyles.position
       element.style.left = originalStyles.left
       element.style.opacity = originalStyles.opacity
@@ -103,25 +113,22 @@ export function CVExport({ cvData }: CVExportProps) {
       const imgWidth = canvas.width
       const imgHeight = canvas.height
       const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight)
-      
-      const imgX = (pdfWidth - imgWidth * ratio) / 2
-      let imgY = 0
 
-      // Om bilden är för lång, skala om för att passa på en sida
+      const imgX = (pdfWidth - imgWidth * ratio) / 2
+
       const scaledHeight = imgHeight * ratio
       if (scaledHeight > pdfHeight) {
-        // Flera sidor - justera ratio
         const pageRatio = pdfHeight / imgHeight
         const newWidth = imgWidth * pageRatio
         const newX = (pdfWidth - newWidth) / 2
         pdf.addImage(imgData, 'PNG', newX, 0, newWidth, pdfHeight)
       } else {
-        pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio)
+        pdf.addImage(imgData, 'PNG', imgX, 0, imgWidth * ratio, imgHeight * ratio)
       }
-      
+
       const fileName = `${cvData.firstName || 'ditt'}-${cvData.lastName || 'namn'}-cv.pdf`.toLowerCase()
       pdf.save(fileName)
-      
+
       setExportSuccess('pdf')
       setTimeout(() => setExportSuccess(null), 3000)
     } catch (error) {
@@ -134,9 +141,8 @@ export function CVExport({ cvData }: CVExportProps) {
 
   const handleExportWord = () => {
     setIsExportingWord(true)
-    
+
     try {
-      // Skapa HTML-innehåll för Word
       const htmlContent = `
         <!DOCTYPE html>
         <html>
@@ -153,7 +159,6 @@ export function CVExport({ cvData }: CVExportProps) {
             .summary { font-style: italic; margin-bottom: 24px; padding: 16px; background: #f8fafc; border-radius: 8px; }
             .section { margin-bottom: 24px; }
             .item { margin-bottom: 16px; }
-            .item-header { display: flex; justify-content: space-between; align-items: baseline; }
             .date { color: #64748b; font-size: 14px; }
             .company { color: #64748b; font-size: 14px; }
             .skills { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -172,100 +177,51 @@ export function CVExport({ cvData }: CVExportProps) {
               ${cvData.location ? `<div>${cvData.location}</div>` : ''}
             </div>
           </div>
-
-          ${cvData.summary ? `
-            <div class="summary">
-              ${cvData.summary}
-            </div>
-          ` : ''}
-
+          ${cvData.summary ? `<div class="summary">${cvData.summary}</div>` : ''}
           ${cvData.workExperience?.length ? `
             <div class="section">
               <h2>Arbetslivserfarenhet</h2>
               ${cvData.workExperience.map(exp => `
                 <div class="item">
-                  <div class="item-header">
-                    <h3>${exp.title}</h3>
-                    <span class="date">${exp.startDate || ''} - ${exp.current ? 'Pågående' : (exp.endDate || '')}</span>
-                  </div>
-                  <div class="company">${exp.company}${exp.location ? `, ${exp.location}` : ''}</div>
+                  <h3>${exp.title}</h3>
+                  <div class="company">${exp.company} | ${exp.startDate} - ${exp.current ? 'Pågående' : exp.endDate}</div>
                   ${exp.description ? `<p>${exp.description}</p>` : ''}
                 </div>
               `).join('')}
             </div>
           ` : ''}
-
           ${cvData.education?.length ? `
             <div class="section">
               <h2>Utbildning</h2>
               ${cvData.education.map(edu => `
                 <div class="item">
-                  <div class="item-header">
-                    <h3>${edu.degree}${edu.field ? ` i ${edu.field}` : ''}</h3>
-                    <span class="date">${edu.startDate || ''} - ${edu.endDate || ''}</span>
-                  </div>
-                  <div class="company">${edu.school}${edu.location ? `, ${edu.location}` : ''}</div>
-                  ${edu.description ? `<p>${edu.description}</p>` : ''}
+                  <h3>${edu.degree}</h3>
+                  <div class="company">${edu.school} | ${edu.startDate} - ${edu.endDate}</div>
                 </div>
               `).join('')}
             </div>
           ` : ''}
-
           ${cvData.skills?.length ? `
             <div class="section">
               <h2>Kompetenser</h2>
               <div class="skills">
-                ${cvData.skills.map(skill => `
-                  <span class="skill">${skill.name}</span>
-                `).join('')}
+                ${cvData.skills.map(skill => `<span class="skill">${getSkillName(skill)}</span>`).join('')}
               </div>
             </div>
           ` : ''}
-
           ${cvData.languages?.length ? `
             <div class="section">
               <h2>Språk</h2>
               <ul>
-                ${cvData.languages.map(lang => `
-                  <li>${lang.name} - ${getLanguageLevelText(lang.level)}</li>
-                `).join('')}
+                ${cvData.languages.map(lang => `<li>${lang.language || lang.name} - ${getLanguageLevelDisplay(lang.level)}</li>`).join('')}
               </ul>
-            </div>
-          ` : ''}
-
-          ${cvData.certificates?.length ? `
-            <div class="section">
-              <h2>Certifikat</h2>
-              <ul>
-                ${cvData.certificates.map(cert => `
-                  <li>${cert.name}${cert.issuer ? ` (${cert.issuer})` : ''}${cert.date ? ` - ${cert.date}` : ''}</li>
-                `).join('')}
-              </ul>
-            </div>
-          ` : ''}
-
-          ${cvData.references?.length ? `
-            <div class="section">
-              <h2>Referenser</h2>
-              ${cvData.references.map(ref => `
-                <div class="item">
-                  <h3>${ref.name}</h3>
-                  <div class="company">${ref.title}${ref.company ? `, ${ref.company}` : ''}</div>
-                  ${ref.email ? `<div>${ref.email}</div>` : ''}
-                  ${ref.phone ? `<div>${ref.phone}</div>` : ''}
-                </div>
-              `).join('')}
             </div>
           ` : ''}
         </body>
         </html>
       `
 
-      // Skapa och ladda ner Word-fil
-      const blob = new Blob(['\ufeff', htmlContent], {
-        type: 'application/msword'
-      })
-      
+      const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' })
       const link = document.createElement('a')
       link.href = URL.createObjectURL(blob)
       link.download = `${cvData.firstName || 'ditt'}-${cvData.lastName || 'namn'}-cv.doc`.toLowerCase()
@@ -273,7 +229,7 @@ export function CVExport({ cvData }: CVExportProps) {
       link.click()
       document.body.removeChild(link)
       URL.revokeObjectURL(link.href)
-      
+
       setExportSuccess('word')
       setTimeout(() => setExportSuccess(null), 3000)
     } catch (error) {
@@ -284,24 +240,494 @@ export function CVExport({ cvData }: CVExportProps) {
     }
   }
 
-  const getLanguageLevelText = (level: string) => {
-    const levels: Record<string, string> = {
-      'native': 'Modersmål',
-      'fluent': 'Flytande',
-      'advanced': 'Avancerad',
-      'intermediate': 'Medel',
-      'basic': 'Grundläggande'
-    }
-    return levels[level] || level
-  }
-
-  const scheme = colorSchemes[cvData.colorScheme || 'indigo']
   const fullName = `${cvData.firstName} ${cvData.lastName}`.trim() || 'Ditt Namn'
+  const template = cvData.template || 'sidebar'
+
+  // Template-specific render functions
+  const renderMinimalTemplate = () => (
+    <div style={{ minHeight: '1122px', background: '#FFFFFF', padding: '80px', fontFamily: 'Inter, Arial, sans-serif' }}>
+      <header style={{ marginBottom: '64px' }}>
+        <h1 style={{ fontSize: '56px', fontWeight: '700', letterSpacing: '-0.03em', lineHeight: '1', color: '#000000', marginBottom: '16px' }}>
+          {fullName}
+        </h1>
+        {cvData.title && (
+          <p style={{ fontSize: '20px', fontWeight: '400', color: '#666666', letterSpacing: '0.02em' }}>{cvData.title}</p>
+        )}
+        <div style={{ display: 'flex', gap: '32px', marginTop: '32px', paddingTop: '32px', borderTop: '1px solid #E5E5E5' }}>
+          {cvData.email && <span style={{ fontSize: '14px', color: '#666666' }}>{cvData.email}</span>}
+          {cvData.phone && <span style={{ fontSize: '14px', color: '#666666' }}>{cvData.phone}</span>}
+          {cvData.location && <span style={{ fontSize: '14px', color: '#666666' }}>{cvData.location}</span>}
+        </div>
+      </header>
+
+      {cvData.summary && (
+        <section style={{ marginBottom: '64px', maxWidth: '640px' }}>
+          <p style={{ fontSize: '18px', lineHeight: '1.7', color: '#333333' }}>{cvData.summary}</p>
+        </section>
+      )}
+
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '80px' }}>
+        <div>
+          {cvData.workExperience?.length > 0 && (
+            <section style={{ marginBottom: '48px' }}>
+              <h2 style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999999', marginBottom: '32px' }}>Erfarenhet</h2>
+              {cvData.workExperience.map(job => (
+                <div key={job.id} style={{ marginBottom: '32px' }}>
+                  <span style={{ fontSize: '12px', color: '#999999', display: 'block', marginBottom: '8px' }}>
+                    {job.startDate} — {job.current ? 'Nu' : job.endDate}
+                  </span>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#000000', marginBottom: '4px' }}>{job.title}</h3>
+                  <div style={{ fontSize: '14px', color: '#666666', marginBottom: '12px' }}>{job.company}</div>
+                  {job.description && <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#666666' }}>{job.description}</p>}
+                </div>
+              ))}
+            </section>
+          )}
+          {cvData.education?.length > 0 && (
+            <section>
+              <h2 style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999999', marginBottom: '32px' }}>Utbildning</h2>
+              {cvData.education.map(edu => (
+                <div key={edu.id} style={{ marginBottom: '24px' }}>
+                  <span style={{ fontSize: '12px', color: '#999999', display: 'block', marginBottom: '4px' }}>{edu.startDate} — {edu.endDate}</span>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#000000' }}>{edu.degree}</h3>
+                  <div style={{ fontSize: '14px', color: '#666666' }}>{edu.school}</div>
+                </div>
+              ))}
+            </section>
+          )}
+        </div>
+        <div>
+          {cvData.skills?.length > 0 && (
+            <section style={{ marginBottom: '48px' }}>
+              <h2 style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999999', marginBottom: '24px' }}>Kompetenser</h2>
+              {cvData.skills.map((skill, i) => (
+                <div key={i} style={{ fontSize: '14px', color: '#333333', marginBottom: '8px' }}>{getSkillName(skill)}</div>
+              ))}
+            </section>
+          )}
+          {cvData.languages?.length > 0 && (
+            <section>
+              <h2 style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999999', marginBottom: '24px' }}>Språk</h2>
+              {cvData.languages.map(lang => (
+                <div key={lang.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <span style={{ fontSize: '14px', color: '#333333' }}>{lang.language || lang.name}</span>
+                  <span style={{ fontSize: '14px', color: '#999999' }}>{getLanguageLevelDisplay(lang.level)}</span>
+                </div>
+              ))}
+            </section>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+
+  const renderExecutiveTemplate = () => (
+    <div style={{ minHeight: '1122px', background: '#FDFCFA', fontFamily: 'Georgia, serif' }}>
+      <header style={{ padding: '64px 80px', borderBottom: '3px solid #B8860B', background: '#FFFFFF' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '48px' }}>
+          {cvData.profileImage && (
+            <img src={cvData.profileImage} alt="" style={{ width: '120px', height: '120px', objectFit: 'cover', borderRadius: '4px', border: '2px solid #B8860B' }} />
+          )}
+          <div>
+            <h1 style={{ fontSize: '48px', fontWeight: '400', letterSpacing: '0.02em', color: '#1a1a1a', marginBottom: '8px' }}>{fullName}</h1>
+            {cvData.title && <p style={{ fontSize: '20px', fontStyle: 'italic', color: '#B8860B', marginBottom: '20px' }}>{cvData.title}</p>}
+            <div style={{ display: 'flex', gap: '24px', fontSize: '14px', color: '#666666' }}>
+              {cvData.email && <span>{cvData.email}</span>}
+              {cvData.phone && <span>{cvData.phone}</span>}
+              {cvData.location && <span>{cvData.location}</span>}
+            </div>
+          </div>
+        </div>
+      </header>
+      <main style={{ padding: '64px 80px' }}>
+        {cvData.summary && (
+          <section style={{ marginBottom: '56px' }}>
+            <p style={{ fontSize: '18px', lineHeight: '1.8', color: '#333333', maxWidth: '720px' }}>
+              <span style={{ float: 'left', fontSize: '64px', lineHeight: '1', marginRight: '12px', marginTop: '4px', color: '#B8860B' }}>{cvData.summary.charAt(0)}</span>
+              {cvData.summary.slice(1)}
+            </p>
+          </section>
+        )}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px' }}>
+          {cvData.workExperience?.length > 0 && (
+            <section>
+              <h2 style={{ fontSize: '14px', fontWeight: '400', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: '32px', paddingBottom: '12px', borderBottom: '1px solid #F5E6C8' }}>Karriär</h2>
+              {cvData.workExperience.map(job => (
+                <div key={job.id} style={{ marginBottom: '32px' }}>
+                  <h3 style={{ fontSize: '18px', fontWeight: '400', color: '#1a1a1a', marginBottom: '4px' }}>{job.title}</h3>
+                  <div style={{ fontSize: '15px', color: '#B8860B', marginBottom: '4px' }}>{job.company}</div>
+                  <div style={{ fontSize: '13px', color: '#888888', marginBottom: '12px' }}>{job.startDate} — {job.current ? 'Nuvarande' : job.endDate}</div>
+                  {job.description && <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#555555' }}>{job.description}</p>}
+                </div>
+              ))}
+            </section>
+          )}
+          <div>
+            {cvData.education?.length > 0 && (
+              <section style={{ marginBottom: '48px' }}>
+                <h2 style={{ fontSize: '14px', fontWeight: '400', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: '32px', paddingBottom: '12px', borderBottom: '1px solid #F5E6C8' }}>Utbildning</h2>
+                {cvData.education.map(edu => (
+                  <div key={edu.id} style={{ marginBottom: '24px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '400', color: '#1a1a1a' }}>{edu.degree}</h3>
+                    <div style={{ fontSize: '14px', color: '#B8860B' }}>{edu.school}</div>
+                    <div style={{ fontSize: '13px', color: '#888888' }}>{edu.startDate} — {edu.endDate}</div>
+                  </div>
+                ))}
+              </section>
+            )}
+            {cvData.skills?.length > 0 && (
+              <section>
+                <h2 style={{ fontSize: '14px', fontWeight: '400', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B8860B', marginBottom: '24px', paddingBottom: '12px', borderBottom: '1px solid #F5E6C8' }}>Expertis</h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                  {cvData.skills.map((skill, i) => (
+                    <span key={i} style={{ fontSize: '13px', padding: '6px 16px', border: '1px solid #F5E6C8', color: '#555555' }}>{getSkillName(skill)}</span>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+
+  const renderModernTemplate = () => (
+    <div style={{ display: 'flex', minHeight: '1122px', fontFamily: 'Inter, Arial, sans-serif' }}>
+      <aside style={{ width: '280px', background: 'linear-gradient(180deg, #0F0F0F 0%, #1A1A1A 100%)', color: '#FFFFFF', padding: '48px 32px' }}>
+        {cvData.profileImage ? (
+          <img src={cvData.profileImage} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: '16px', marginBottom: '32px' }} />
+        ) : (
+          <div style={{ width: '100%', aspectRatio: '1', background: 'rgba(255,255,255,0.05)', borderRadius: '16px', marginBottom: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '72px', opacity: 0.3 }}>👤</span>
+          </div>
+        )}
+        <div style={{ marginBottom: '40px' }}>
+          <h3 style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6366F1', marginBottom: '20px' }}>Kontakt</h3>
+          {cvData.email && <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', marginBottom: '12px' }}>{cvData.email}</div>}
+          {cvData.phone && <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', marginBottom: '12px' }}>{cvData.phone}</div>}
+          {cvData.location && <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)', marginBottom: '12px' }}>{cvData.location}</div>}
+        </div>
+        {cvData.skills?.length > 0 && (
+          <div style={{ marginBottom: '40px' }}>
+            <h3 style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6366F1', marginBottom: '20px' }}>Tech Stack</h3>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {cvData.skills.slice(0, 12).map((skill, i) => (
+                <span key={i} style={{ fontSize: '12px', padding: '6px 12px', background: 'rgba(99, 102, 241, 0.15)', borderRadius: '6px', color: '#FFFFFF', border: '1px solid rgba(99, 102, 241, 0.3)' }}>{getSkillName(skill)}</span>
+              ))}
+            </div>
+          </div>
+        )}
+        {cvData.languages?.length > 0 && (
+          <div>
+            <h3 style={{ fontSize: '10px', fontWeight: '600', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#6366F1', marginBottom: '20px' }}>Språk</h3>
+            {cvData.languages.map(lang => (
+              <div key={lang.id} style={{ marginBottom: '16px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontSize: '13px' }}>{lang.language || lang.name}</span>
+                  <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.5)' }}>{getLanguageLevelDisplay(lang.level)}</span>
+                </div>
+                <div style={{ height: '4px', background: 'rgba(255,255,255,0.1)', borderRadius: '2px', overflow: 'hidden' }}>
+                  <div style={{ width: `${getLanguageLevelPercent(lang.level)}%`, height: '100%', background: 'linear-gradient(90deg, #6366F1 0%, #818CF8 100%)', borderRadius: '2px' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </aside>
+      <main style={{ flex: 1, padding: '48px 56px', background: '#FFFFFF' }}>
+        <header style={{ marginBottom: '48px' }}>
+          <h1 style={{ fontSize: '56px', fontWeight: '700', letterSpacing: '-0.03em', color: '#0F0F0F', lineHeight: '1.1', marginBottom: '12px' }}>{fullName}</h1>
+          {cvData.title && <p style={{ fontSize: '20px', color: '#6366F1', fontWeight: '500' }}>{cvData.title}</p>}
+        </header>
+        {cvData.summary && (
+          <section style={{ marginBottom: '48px' }}>
+            <p style={{ fontSize: '16px', lineHeight: '1.8', color: '#444444', maxWidth: '600px' }}>{cvData.summary}</p>
+          </section>
+        )}
+        {cvData.workExperience?.length > 0 && (
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999999', marginBottom: '28px' }}>Erfarenhet</h2>
+            {cvData.workExperience.map(job => (
+              <div key={job.id} style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px', marginBottom: '32px' }}>
+                <div>
+                  <span style={{ fontSize: '12px', color: '#888888' }}>{job.startDate}<br />— {job.current ? 'Nu' : job.endDate}</span>
+                </div>
+                <div>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0F0F0F', marginBottom: '4px' }}>{job.title}</h3>
+                  <div style={{ fontSize: '14px', color: '#6366F1', marginBottom: '12px' }}>{job.company}</div>
+                  {job.description && <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#666666' }}>{job.description}</p>}
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+        {cvData.education?.length > 0 && (
+          <section>
+            <h2 style={{ fontSize: '11px', fontWeight: '600', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#999999', marginBottom: '28px' }}>Utbildning</h2>
+            {cvData.education.map(edu => (
+              <div key={edu.id} style={{ display: 'grid', gridTemplateColumns: '140px 1fr', gap: '32px', marginBottom: '20px' }}>
+                <span style={{ fontSize: '12px', color: '#888888' }}>{edu.startDate} — {edu.endDate}</span>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F0F0F' }}>{edu.degree}</h3>
+                  <div style={{ fontSize: '14px', color: '#666666' }}>{edu.school}</div>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+      </main>
+    </div>
+  )
+
+  const renderCreativeTemplate = () => (
+    <div style={{ minHeight: '1122px', background: '#FAFAFA', fontFamily: 'Inter, Arial, sans-serif', position: 'relative', overflow: 'hidden' }}>
+      <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', background: 'linear-gradient(135deg, rgba(124,58,237,0.1) 0%, rgba(236,72,153,0.1) 100%)', borderRadius: '50%' }} />
+      <header style={{ padding: '64px', paddingBottom: '48px', position: 'relative' }}>
+        <div style={{ display: 'flex', gap: '48px', alignItems: 'flex-end' }}>
+          {cvData.profileImage && (
+            <img src={cvData.profileImage} alt="" style={{ width: '180px', height: '220px', objectFit: 'cover', borderRadius: '24px', boxShadow: '0 20px 60px rgba(124, 58, 237, 0.2)' }} />
+          )}
+          <div style={{ flex: 1 }}>
+            <h1 style={{ fontSize: '64px', fontWeight: '800', letterSpacing: '-0.04em', lineHeight: '0.95', background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', marginBottom: '16px' }}>{fullName}</h1>
+            {cvData.title && <p style={{ fontSize: '24px', fontWeight: '500', color: '#333333' }}>{cvData.title}</p>}
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: '12px', marginTop: '32px', flexWrap: 'wrap' }}>
+          {cvData.email && <span style={{ padding: '10px 20px', background: '#FFFFFF', borderRadius: '100px', fontSize: '14px', color: '#333333', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>{cvData.email}</span>}
+          {cvData.phone && <span style={{ padding: '10px 20px', background: '#FFFFFF', borderRadius: '100px', fontSize: '14px', color: '#333333', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>{cvData.phone}</span>}
+          {cvData.location && <span style={{ padding: '10px 20px', background: '#FFFFFF', borderRadius: '100px', fontSize: '14px', color: '#333333', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>{cvData.location}</span>}
+        </div>
+      </header>
+      <main style={{ padding: '0 64px 64px' }}>
+        {cvData.summary && (
+          <section style={{ background: '#FFFFFF', padding: '32px', borderRadius: '24px', marginBottom: '32px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+            <p style={{ fontSize: '18px', lineHeight: '1.8', color: '#444444' }}>{cvData.summary}</p>
+          </section>
+        )}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+          {cvData.workExperience?.length > 0 && (
+            <section style={{ background: '#FFFFFF', padding: '32px', borderRadius: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+              <h2 style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#7C3AED', marginBottom: '28px' }}>Erfarenhet</h2>
+              {cvData.workExperience.map(job => (
+                <div key={job.id} style={{ marginBottom: '28px' }}>
+                  <span style={{ display: 'inline-block', fontSize: '11px', fontWeight: '600', padding: '4px 12px', background: 'rgba(124,58,237,0.1)', color: '#7C3AED', borderRadius: '100px', marginBottom: '12px' }}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</span>
+                  <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#1a1a1a', marginBottom: '4px' }}>{job.title}</h3>
+                  <div style={{ fontSize: '14px', color: '#EC4899', marginBottom: '8px' }}>{job.company}</div>
+                  {job.description && <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#666666' }}>{job.description}</p>}
+                </div>
+              ))}
+            </section>
+          )}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+            {cvData.skills?.length > 0 && (
+              <section style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #EC4899 100%)', padding: '32px', borderRadius: '24px', color: '#FFFFFF' }}>
+                <h2 style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', opacity: 0.8, marginBottom: '20px' }}>Kompetenser</h2>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                  {cvData.skills.map((skill, i) => (
+                    <span key={i} style={{ fontSize: '13px', fontWeight: '500', padding: '8px 16px', background: 'rgba(255,255,255,0.2)', borderRadius: '100px' }}>{getSkillName(skill)}</span>
+                  ))}
+                </div>
+              </section>
+            )}
+            {cvData.education?.length > 0 && (
+              <section style={{ background: '#FFFFFF', padding: '32px', borderRadius: '24px', boxShadow: '0 4px 20px rgba(0,0,0,0.04)' }}>
+                <h2 style={{ fontSize: '12px', fontWeight: '700', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#7C3AED', marginBottom: '24px' }}>Utbildning</h2>
+                {cvData.education.map(edu => (
+                  <div key={edu.id} style={{ marginBottom: '20px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#1a1a1a' }}>{edu.degree}</h3>
+                    <div style={{ fontSize: '14px', color: '#EC4899' }}>{edu.school}</div>
+                    <div style={{ fontSize: '12px', color: '#888888' }}>{edu.startDate} — {edu.endDate}</div>
+                  </div>
+                ))}
+              </section>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+
+  const renderNordicTemplate = () => (
+    <div style={{ display: 'flex', minHeight: '1122px', fontFamily: 'Inter, Arial, sans-serif', background: '#FFFFFF' }}>
+      <aside style={{ width: '280px', background: '#F8FAFC', padding: '56px 32px', borderRight: '1px solid #E2E8F0' }}>
+        {cvData.profileImage ? (
+          <img src={cvData.profileImage} alt="" style={{ width: '100%', aspectRatio: '1', objectFit: 'cover', borderRadius: '20px', marginBottom: '32px' }} />
+        ) : (
+          <div style={{ width: '100%', aspectRatio: '1', background: '#E2E8F0', borderRadius: '20px', marginBottom: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <span style={{ fontSize: '64px', opacity: 0.3 }}>👤</span>
+          </div>
+        )}
+        <div style={{ marginBottom: '40px' }}>
+          <h3 style={{ fontSize: '11px', fontWeight: '500', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '20px' }}>Kontakt</h3>
+          {cvData.email && <div style={{ fontSize: '13px', color: '#334155', marginBottom: '12px' }}>{cvData.email}</div>}
+          {cvData.phone && <div style={{ fontSize: '13px', color: '#334155', marginBottom: '12px' }}>{cvData.phone}</div>}
+          {cvData.location && <div style={{ fontSize: '13px', color: '#334155', marginBottom: '12px' }}>{cvData.location}</div>}
+        </div>
+        {cvData.skills?.length > 0 && (
+          <div style={{ marginBottom: '40px' }}>
+            <h3 style={{ fontSize: '11px', fontWeight: '500', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '16px' }}>Kompetenser</h3>
+            {cvData.skills.map((skill, i) => (
+              <div key={i} style={{ fontSize: '13px', color: '#334155', marginBottom: '8px' }}>{getSkillName(skill)}</div>
+            ))}
+          </div>
+        )}
+        {cvData.languages?.length > 0 && (
+          <div>
+            <h3 style={{ fontSize: '11px', fontWeight: '500', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '16px' }}>Språk</h3>
+            {cvData.languages.map(lang => (
+              <div key={lang.id} style={{ marginBottom: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                  <span style={{ fontSize: '13px', color: '#334155' }}>{lang.language || lang.name}</span>
+                </div>
+                <div style={{ height: '3px', background: '#E2E8F0', borderRadius: '2px' }}>
+                  <div style={{ width: `${getLanguageLevelPercent(lang.level)}%`, height: '100%', background: '#0EA5E9', borderRadius: '2px' }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </aside>
+      <main style={{ flex: 1, padding: '56px 48px' }}>
+        <header style={{ marginBottom: '48px' }}>
+          <h1 style={{ fontSize: '48px', fontWeight: '600', letterSpacing: '-0.02em', color: '#0F172A', marginBottom: '8px' }}>{fullName}</h1>
+          {cvData.title && <p style={{ fontSize: '20px', color: '#0EA5E9' }}>{cvData.title}</p>}
+        </header>
+        {cvData.summary && (
+          <section style={{ marginBottom: '48px' }}>
+            <p style={{ fontSize: '16px', lineHeight: '1.8', color: '#475569', maxWidth: '560px' }}>{cvData.summary}</p>
+          </section>
+        )}
+        {cvData.workExperience?.length > 0 && (
+          <section style={{ marginBottom: '48px' }}>
+            <h2 style={{ fontSize: '11px', fontWeight: '500', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '28px', paddingBottom: '12px', borderBottom: '1px solid #E2E8F0' }}>Erfarenhet</h2>
+            {cvData.workExperience.map(job => (
+              <div key={job.id} style={{ marginBottom: '32px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#0F172A' }}>{job.title}</h3>
+                    <div style={{ fontSize: '14px', color: '#0EA5E9' }}>{job.company}</div>
+                  </div>
+                  <span style={{ fontSize: '12px', color: '#94A3B8', whiteSpace: 'nowrap' }}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</span>
+                </div>
+                {job.description && <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#64748B', marginTop: '12px' }}>{job.description}</p>}
+              </div>
+            ))}
+          </section>
+        )}
+        {cvData.education?.length > 0 && (
+          <section>
+            <h2 style={{ fontSize: '11px', fontWeight: '500', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#94A3B8', marginBottom: '28px', paddingBottom: '12px', borderBottom: '1px solid #E2E8F0' }}>Utbildning</h2>
+            {cvData.education.map(edu => (
+              <div key={edu.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
+                <div>
+                  <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#0F172A' }}>{edu.degree}</h3>
+                  <div style={{ fontSize: '14px', color: '#64748B' }}>{edu.school}</div>
+                </div>
+                <span style={{ fontSize: '12px', color: '#94A3B8' }}>{edu.startDate} — {edu.endDate}</span>
+              </div>
+            ))}
+          </section>
+        )}
+      </main>
+    </div>
+  )
+
+  const renderCenteredTemplate = () => (
+    <div style={{ minHeight: '1122px', background: '#FFFFFF', fontFamily: 'Inter, Arial, sans-serif' }}>
+      <header style={{ background: 'linear-gradient(135deg, #6366F1 0%, #8B5CF6 50%, #A855F7 100%)', padding: '64px', textAlign: 'center', color: '#FFFFFF', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '-80px', left: '-80px', width: '200px', height: '200px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }} />
+        <div style={{ position: 'absolute', bottom: '-40px', right: '10%', width: '120px', height: '120px', background: 'rgba(255,255,255,0.08)', borderRadius: '50%' }} />
+        {cvData.profileImage && (
+          <img src={cvData.profileImage} alt="" style={{ width: '140px', height: '140px', objectFit: 'cover', borderRadius: '50%', border: '4px solid rgba(255,255,255,0.3)', marginBottom: '24px' }} />
+        )}
+        <h1 style={{ fontSize: '48px', fontWeight: '700', letterSpacing: '-0.02em', marginBottom: '8px' }}>{fullName}</h1>
+        {cvData.title && <p style={{ fontSize: '20px', opacity: 0.9, marginBottom: '28px' }}>{cvData.title}</p>}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '24px', flexWrap: 'wrap' }}>
+          {cvData.email && <span style={{ fontSize: '14px', opacity: 0.9 }}>{cvData.email}</span>}
+          {cvData.phone && <span style={{ fontSize: '14px', opacity: 0.9 }}>{cvData.phone}</span>}
+          {cvData.location && <span style={{ fontSize: '14px', opacity: 0.9 }}>{cvData.location}</span>}
+        </div>
+      </header>
+      <main style={{ padding: '56px 64px' }}>
+        {cvData.summary && (
+          <section style={{ textAlign: 'center', marginBottom: '56px' }}>
+            <p style={{ fontSize: '18px', lineHeight: '1.8', color: '#4B5563', maxWidth: '680px', margin: '0 auto' }}>{cvData.summary}</p>
+          </section>
+        )}
+        {cvData.skills?.length > 0 && (
+          <section style={{ marginBottom: '56px', textAlign: 'center' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center' }}>
+              {cvData.skills.map((skill, i) => (
+                <span key={i} style={{ fontSize: '13px', fontWeight: '500', padding: '8px 20px', background: 'linear-gradient(135deg, rgba(99,102,241,0.1) 0%, rgba(139,92,246,0.1) 100%)', color: '#6366F1', borderRadius: '100px' }}>{getSkillName(skill)}</span>
+              ))}
+            </div>
+          </section>
+        )}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '64px' }}>
+          {cvData.workExperience?.length > 0 && (
+            <section>
+              <h2 style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6366F1', marginBottom: '32px' }}>Erfarenhet</h2>
+              {cvData.workExperience.map(job => (
+                <div key={job.id} style={{ paddingLeft: '20px', borderLeft: '2px solid rgba(99,102,241,0.3)', marginBottom: '32px' }}>
+                  <span style={{ fontSize: '12px', color: '#9CA3AF', display: 'block', marginBottom: '8px' }}>{job.startDate} — {job.current ? 'Nu' : job.endDate}</span>
+                  <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#111827', marginBottom: '4px' }}>{job.title}</h3>
+                  <div style={{ fontSize: '14px', color: '#6366F1', marginBottom: '12px' }}>{job.company}</div>
+                  {job.description && <p style={{ fontSize: '14px', lineHeight: '1.7', color: '#6B7280' }}>{job.description}</p>}
+                </div>
+              ))}
+            </section>
+          )}
+          <div>
+            {cvData.education?.length > 0 && (
+              <section style={{ marginBottom: '48px' }}>
+                <h2 style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6366F1', marginBottom: '32px' }}>Utbildning</h2>
+                {cvData.education.map(edu => (
+                  <div key={edu.id} style={{ padding: '20px', background: '#F9FAFB', borderRadius: '12px', marginBottom: '16px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '600', color: '#111827' }}>{edu.degree}</h3>
+                    <div style={{ fontSize: '14px', color: '#6366F1' }}>{edu.school}</div>
+                    <div style={{ fontSize: '12px', color: '#9CA3AF', marginTop: '4px' }}>{edu.startDate} — {edu.endDate}</div>
+                  </div>
+                ))}
+              </section>
+            )}
+            {cvData.languages?.length > 0 && (
+              <section>
+                <h2 style={{ fontSize: '12px', fontWeight: '600', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#6366F1', marginBottom: '24px' }}>Språk</h2>
+                {cvData.languages.map(lang => (
+                  <div key={lang.id} style={{ marginBottom: '16px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                      <span style={{ fontSize: '14px', color: '#374151' }}>{lang.language || lang.name}</span>
+                      <span style={{ fontSize: '12px', color: '#9CA3AF' }}>{getLanguageLevelDisplay(lang.level)}</span>
+                    </div>
+                    <div style={{ height: '4px', background: '#E5E7EB', borderRadius: '2px' }}>
+                      <div style={{ width: `${getLanguageLevelPercent(lang.level)}%`, height: '100%', background: 'linear-gradient(90deg, #6366F1 0%, #8B5CF6 100%)', borderRadius: '2px' }} />
+                    </div>
+                  </div>
+                ))}
+              </section>
+            )}
+          </div>
+        </div>
+      </main>
+    </div>
+  )
+
+  const renderTemplate = () => {
+    switch (template) {
+      case 'minimal': return renderMinimalTemplate()
+      case 'executive': return renderExecutiveTemplate()
+      case 'creative': return renderCreativeTemplate()
+      case 'nordic': return renderNordicTemplate()
+      case 'centered': return renderCenteredTemplate()
+      case 'sidebar':
+      default: return renderModernTemplate()
+    }
+  }
 
   return (
     <>
       {/* Hidden CV for PDF export */}
-      <div 
+      <div
         ref={pdfRef}
         style={{
           position: 'absolute',
@@ -309,178 +735,9 @@ export function CVExport({ cvData }: CVExportProps) {
           top: 0,
           width: '794px',
           background: 'white',
-          padding: '40px',
-          fontFamily: 'Arial, sans-serif',
-          color: '#333',
-          lineHeight: 1.6
         }}
       >
-        {/* Header */}
-        <div style={{ 
-          background: scheme.primary, 
-          color: 'white', 
-          padding: '30px 40px',
-          margin: '-40px -40px 30px -40px'
-        }}>
-          <h1 style={{ fontSize: '36px', margin: 0, fontWeight: 'bold' }}>{fullName}</h1>
-          {cvData.title && <p style={{ fontSize: '18px', margin: '8px 0 0 0', opacity: 0.9 }}>{cvData.title}</p>}
-          
-          <div style={{ display: 'flex', gap: '20px', marginTop: '15px', fontSize: '14px', flexWrap: 'wrap' }}>
-            {cvData.email && <span>{cvData.email}</span>}
-            {cvData.phone && <span>{cvData.phone}</span>}
-            {cvData.location && <span>{cvData.location}</span>}
-          </div>
-        </div>
-
-        {/* Summary */}
-        {cvData.summary && (
-          <div style={{ marginBottom: '30px', padding: '20px', background: '#f8fafc', borderRadius: '8px' }}>
-            <p style={{ margin: 0, fontStyle: 'italic' }}>{cvData.summary}</p>
-          </div>
-        )}
-
-        {/* Work Experience */}
-        {cvData.workExperience?.length > 0 && (
-          <div style={{ marginBottom: '30px' }}>
-            <h2 style={{ 
-              color: scheme.primary, 
-              borderBottom: `2px solid ${scheme.primary}`,
-              paddingBottom: '8px',
-              fontSize: '20px',
-              marginBottom: '15px'
-            }}>Arbetslivserfarenhet</h2>
-            {cvData.workExperience.map((exp, idx) => (
-              <div key={idx} style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <h3 style={{ margin: 0, color: '#334155', fontSize: '16px' }}>{exp.title}</h3>
-                  <span style={{ color: '#64748b', fontSize: '14px' }}>
-                    {exp.startDate} - {exp.current ? 'Pågående' : exp.endDate}
-                  </span>
-                </div>
-                <p style={{ margin: '4px 0', color: '#64748b', fontSize: '14px' }}>
-                  {exp.company}{exp.location && `, ${exp.location}`}
-                </p>
-                {exp.description && <p style={{ margin: '8px 0 0 0' }}>{exp.description}</p>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Education */}
-        {cvData.education?.length > 0 && (
-          <div style={{ marginBottom: '30px' }}>
-            <h2 style={{ 
-              color: scheme.primary, 
-              borderBottom: `2px solid ${scheme.primary}`,
-              paddingBottom: '8px',
-              fontSize: '20px',
-              marginBottom: '15px'
-            }}>Utbildning</h2>
-            {cvData.education.map((edu, idx) => (
-              <div key={idx} style={{ marginBottom: '20px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
-                  <h3 style={{ margin: 0, color: '#334155', fontSize: '16px' }}>
-                    {edu.degree}{edu.field && ` i ${edu.field}`}
-                  </h3>
-                  <span style={{ color: '#64748b', fontSize: '14px' }}>
-                    {edu.startDate} - {edu.endDate}
-                  </span>
-                </div>
-                <p style={{ margin: '4px 0', color: '#64748b', fontSize: '14px' }}>
-                  {edu.school}{edu.location && `, ${edu.location}`}
-                </p>
-                {edu.description && <p style={{ margin: '8px 0 0 0' }}>{edu.description}</p>}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Skills */}
-        {cvData.skills?.length > 0 && (
-          <div style={{ marginBottom: '30px' }}>
-            <h2 style={{ 
-              color: scheme.primary, 
-              borderBottom: `2px solid ${scheme.primary}`,
-              paddingBottom: '8px',
-              fontSize: '20px',
-              marginBottom: '15px'
-            }}>Kompetenser</h2>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-              {cvData.skills.map((skill, idx) => (
-                <span key={idx} style={{
-                  background: '#e0e7ff',
-                  color: scheme.primary,
-                  padding: '6px 14px',
-                  borderRadius: '16px',
-                  fontSize: '14px'
-                }}>{skill.name}</span>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Languages */}
-        {cvData.languages?.length > 0 && (
-          <div style={{ marginBottom: '30px' }}>
-            <h2 style={{ 
-              color: scheme.primary, 
-              borderBottom: `2px solid ${scheme.primary}`,
-              paddingBottom: '8px',
-              fontSize: '20px',
-              marginBottom: '15px'
-            }}>Språk</h2>
-            <ul style={{ margin: 0, paddingLeft: '20px' }}>
-              {cvData.languages.map((lang, idx) => (
-                <li key={idx} style={{ marginBottom: '4px' }}>
-                  {lang.name} - {getLanguageLevelText(lang.level)}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* Certificates */}
-        {cvData.certificates?.length > 0 && (
-          <div style={{ marginBottom: '30px' }}>
-            <h2 style={{ 
-              color: scheme.primary, 
-              borderBottom: `2px solid ${scheme.primary}`,
-              paddingBottom: '8px',
-              fontSize: '20px',
-              marginBottom: '15px'
-            }}>Certifikat</h2>
-            <ul style={{ margin: 0, paddingLeft: '20px' }}>
-              {cvData.certificates.map((cert, idx) => (
-                <li key={idx} style={{ marginBottom: '4px' }}>
-                  {cert.name}{cert.issuer && ` (${cert.issuer})`}{cert.date && ` - ${cert.date}`}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        {/* References */}
-        {cvData.references?.length > 0 && (
-          <div>
-            <h2 style={{ 
-              color: scheme.primary, 
-              borderBottom: `2px solid ${scheme.primary}`,
-              paddingBottom: '8px',
-              fontSize: '20px',
-              marginBottom: '15px'
-            }}>Referenser</h2>
-            {cvData.references.map((ref, idx) => (
-              <div key={idx} style={{ marginBottom: '15px' }}>
-                <h3 style={{ margin: 0, color: '#334155', fontSize: '16px' }}>{ref.name}</h3>
-                <p style={{ margin: '4px 0', color: '#64748b', fontSize: '14px' }}>
-                  {ref.title}{ref.company && `, ${ref.company}`}
-                </p>
-                {ref.email && <p style={{ margin: '2px 0', fontSize: '14px' }}>{ref.email}</p>}
-                {ref.phone && <p style={{ margin: '2px 0', fontSize: '14px' }}>{ref.phone}</p>}
-              </div>
-            ))}
-          </div>
-        )}
+        {renderTemplate()}
       </div>
 
       {/* UI */}
@@ -496,7 +753,6 @@ export function CVExport({ cvData }: CVExportProps) {
         </div>
 
         <div className="space-y-3">
-          {/* PDF Export */}
           <button
             onClick={handleExportPDF}
             onMouseEnter={preloadPDFLibraries}
@@ -505,44 +761,25 @@ export function CVExport({ cvData }: CVExportProps) {
             className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'pdf' ? (
-              <>
-                <Check className="w-5 h-5" />
-                PDF Sparad!
-              </>
+              <><Check className="w-5 h-5" /> PDF Sparad!</>
             ) : isExportingPDF ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Skapar PDF...
-              </>
+              <><Loader2 className="w-5 h-5 animate-spin" /> Skapar PDF...</>
             ) : (
-              <>
-                <Download className="w-5 h-5" />
-                Ladda ner PDF
-              </>
+              <><Download className="w-5 h-5" /> Ladda ner PDF</>
             )}
           </button>
 
-          {/* Word Export */}
           <button
             onClick={handleExportWord}
             disabled={isExportingPDF || isExportingWord}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-600 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'word' ? (
-              <>
-                <Check className="w-5 h-5" />
-                Word Sparad!
-              </>
+              <><Check className="w-5 h-5" /> Word Sparad!</>
             ) : isExportingWord ? (
-              <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Skapar Word...
-              </>
+              <><Loader2 className="w-5 h-5 animate-spin" /> Skapar Word...</>
             ) : (
-              <>
-                <FileType className="w-5 h-5" />
-                Ladda ner Word (.doc)
-              </>
+              <><FileType className="w-5 h-5" /> Ladda ner Word (.doc)</>
             )}
           </button>
         </div>
@@ -553,7 +790,7 @@ export function CVExport({ cvData }: CVExportProps) {
 
         <div className="mt-4 p-3 bg-slate-50 rounded-lg">
           <p className="text-xs text-slate-500">
-            <strong>Tips:</strong> PDF är bäst för att skicka till arbetsgivare. 
+            <strong>Tips:</strong> PDF är bäst för att skicka till arbetsgivare.
             Word kan du redigera vidare om du behöver anpassa CV:t för specifika ansökningar.
           </p>
         </div>
