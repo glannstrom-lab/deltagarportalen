@@ -197,22 +197,22 @@ export function QuestionCard({
           />
           
           {/* Dots for each value */}
-          <div className="absolute inset-x-0 flex justify-between px-1">
+          <div className="absolute inset-x-0 flex justify-between px-1 z-10">
             {[1, 2, 3, 4, 5].map((dotValue) => {
               const isActive = (value || 0) >= dotValue
               const isCurrent = value === dotValue
-              
+
               return (
                 <button
                   key={dotValue}
                   onClick={() => onChange(dotValue)}
                   className={`
-                    w-6 h-6 rounded-full border-4 transition-all duration-200 ease-out
-                    ${isCurrent 
-                      ? 'bg-white border-indigo-600 scale-125 shadow-lg' 
-                      : isActive 
-                        ? 'bg-white border-emerald-400' 
-                        : 'bg-white border-gray-300'
+                    w-8 h-8 rounded-full border-4 transition-all duration-200 ease-out cursor-pointer
+                    ${isCurrent
+                      ? 'bg-white border-indigo-600 scale-110 shadow-lg'
+                      : isActive
+                        ? 'bg-white border-emerald-400 hover:scale-105'
+                        : 'bg-white border-gray-300 hover:scale-105 hover:border-gray-400'
                     }
                   `}
                   aria-label={`Värde ${dotValue}`}
@@ -221,7 +221,7 @@ export function QuestionCard({
             })}
           </div>
 
-          {/* Hidden range input for accessibility */}
+          {/* Hidden range input for keyboard accessibility only */}
           <input
             type="range"
             min="1"
@@ -229,11 +229,9 @@ export function QuestionCard({
             step="1"
             value={value || 3}
             onChange={handleSliderChange}
-            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            aria-label="Svarsalternativ"
-            aria-valuemin={1}
-            aria-valuemax={5}
-            aria-valuenow={value || 3}
+            className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
+            tabIndex={-1}
+            aria-hidden="true"
           />
         </div>
 
