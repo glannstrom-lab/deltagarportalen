@@ -22,7 +22,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { userApi, type OnboardingProgress } from '@/services/supabaseApi'
+import { userApi, cvApi, type OnboardingProgress } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
 
 // Step configuration
@@ -105,10 +105,11 @@ export default function OverviewTab() {
     }
 
     try {
-      // Fetch both onboarding progress and interest guide status in parallel
-      const [cloudProgress, interestGuideData] = await Promise.all([
+      // Fetch onboarding progress, interest guide status, and CV data in parallel
+      const [cloudProgress, interestGuideData, cvData] = await Promise.all([
         userApi.getOnboardingProgress(),
-        interestGuideApi.getProgress().catch(() => null)
+        interestGuideApi.getProgress().catch(() => null),
+        cvApi.getCV().catch(() => null)
       ])
 
       // Check if interest guide is completed from the actual progress data
@@ -116,17 +117,28 @@ export default function OverviewTab() {
         localStorageProgress.interest ||
         interestGuideData?.is_completed === true
 
+      // Check if CV is completed - user has saved a CV with meaningful content
+      const cvCompleted = cloudProgress.cv ||
+        localStorageProgress.cv ||
+        (cvData && (cvData.firstName || cvData.workExperience?.length > 0 || cvData.skills?.length > 0))
+
       // If interest is completed but not in cloud, sync it
       if (interestCompleted && !cloudProgress.interest) {
         userApi.updateOnboardingStep('interest', true).catch(console.error)
         localStorage.setItem('interest-result', 'true')
       }
 
+      // If CV is completed but not in cloud, sync it
+      if (cvCompleted && !cloudProgress.cv) {
+        userApi.updateOnboardingStep('cv', true).catch(console.error)
+        localStorage.setItem('cv-data', 'true')
+      }
+
       // Merge: use cloud value if true, otherwise use localStorage value, or check actual data
       const mergedProgress: OnboardingProgress = {
         profile: cloudProgress.profile || localStorageProgress.profile,
         interest: interestCompleted,
-        cv: cloudProgress.cv || localStorageProgress.cv,
+        cv: cvCompleted,
         career: cloudProgress.career || localStorageProgress.career,
         jobSearch: cloudProgress.jobSearch || localStorageProgress.jobSearch,
         coverLetter: cloudProgress.coverLetter || localStorageProgress.coverLetter
