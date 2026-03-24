@@ -36,14 +36,14 @@ import { ContextualKnowledgeWidget } from '@/components/workflow'
 import { CVSaveTest } from '@/components/cv/CVSaveTest'
 
 // ============================================
-// STEG
+// STEG - med tidsuppskattningar för bättre UX
 // ============================================
 const STEPS = [
-  { id: 1, title: 'Design', description: 'Mall och färger' },
-  { id: 2, title: 'Om dig', description: 'Kontaktuppgifter' },
-  { id: 3, title: 'Profil', description: 'Sammanfattning' },
-  { id: 4, title: 'Erfarenhet', description: 'Jobb & utbildning' },
-  { id: 5, title: 'Kompetenser', description: 'Skills & övrigt' },
+  { id: 1, title: 'Design', description: 'Mall och färger', minutes: 2 },
+  { id: 2, title: 'Om dig', description: 'Kontaktuppgifter', minutes: 3 },
+  { id: 3, title: 'Profil', description: 'Sammanfattning', minutes: 5 },
+  { id: 4, title: 'Erfarenhet', description: 'Jobb & utbildning', minutes: 10 },
+  { id: 5, title: 'Kompetenser', description: 'Skills & övrigt', minutes: 5 },
 ] as const
 
 // Moderna CV-mallar 2025
@@ -96,49 +96,105 @@ const TEMPLATES = [
 // KOMPONENTER
 // ============================================
 
-function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }: { 
+function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }: {
   currentStep: number
   totalSteps: number
   onStepClick: (step: number) => void
   completedSteps: number[]
 }) {
+  // Calculate time remaining
+  const remainingMinutes = STEPS
+    .filter((_, i) => !completedSteps.includes(i + 1) && i + 1 >= currentStep)
+    .reduce((sum, step) => sum + step.minutes, 0)
+
+  const progress = (completedSteps.length / totalSteps) * 100
+
   return (
-    <div className="flex items-center justify-center gap-2 sm:gap-4">
-      {Array.from({ length: totalSteps }).map((_, i) => {
-        const stepNum = i + 1
-        const isActive = stepNum === currentStep
-        const isCompleted = completedSteps.includes(stepNum)
-        
-        return (
-          <button
-            key={stepNum}
-            onClick={() => onStepClick(stepNum)}
-            className="flex items-center gap-2 group"
-          >
-            <div className={cn(
-              "w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all",
-              isActive 
-                ? "bg-[#4f46e5] text-white shadow-lg" 
-                : isCompleted 
-                  ? "bg-green-500 text-white"
-                  : "bg-slate-200 text-slate-500 group-hover:bg-slate-300"
-            )}>
-              {isCompleted && !isActive ? <Check className="w-4 h-4 sm:w-5 sm:h-5" /> : stepNum}
+    <div className="bg-white rounded-xl border border-slate-200 p-4 mb-6">
+      {/* Progress header */}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-semibold text-slate-800">
+            Steg {currentStep} av {totalSteps}
+          </span>
+          <span className="text-xs text-slate-400">•</span>
+          <span className="text-xs text-slate-500">
+            ~{remainingMinutes} min kvar
+          </span>
+        </div>
+        <span className="text-sm font-medium text-indigo-600">
+          {Math.round(progress)}% klart
+        </span>
+      </div>
+
+      {/* Visual progress bar */}
+      <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
+        <div
+          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 rounded-full"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      {/* Step buttons */}
+      <div className="flex items-center justify-between">
+        {STEPS.map((step, i) => {
+          const stepNum = i + 1
+          const isActive = stepNum === currentStep
+          const isCompleted = completedSteps.includes(stepNum)
+          const isPast = stepNum < currentStep
+
+          return (
+            <div key={stepNum} className="flex items-center flex-1">
+              <button
+                onClick={() => onStepClick(stepNum)}
+                className={cn(
+                  "flex flex-col items-center gap-1 group min-w-[44px] min-h-[44px] py-1",
+                  "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg"
+                )}
+                aria-label={`Gå till steg ${stepNum}: ${step.title}`}
+                aria-current={isActive ? 'step' : undefined}
+              >
+                <div className={cn(
+                  "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all",
+                  isActive
+                    ? "bg-indigo-600 text-white shadow-lg ring-4 ring-indigo-100"
+                    : isCompleted
+                      ? "bg-emerald-500 text-white"
+                      : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                )}>
+                  {isCompleted ? <Check className="w-5 h-5" /> : stepNum}
+                </div>
+                <span className={cn(
+                  "text-xs font-medium hidden sm:block",
+                  isActive ? "text-indigo-600" : isCompleted ? "text-emerald-600" : "text-slate-400"
+                )}>
+                  {step.title}
+                </span>
+              </button>
+
+              {/* Connector line */}
+              {i < totalSteps - 1 && (
+                <div className="flex-1 h-0.5 mx-1 bg-slate-200 relative hidden sm:block">
+                  <div
+                    className={cn(
+                      "h-full transition-all duration-300",
+                      isPast || isCompleted ? "bg-emerald-500 w-full" : "bg-slate-200 w-0"
+                    )}
+                  />
+                </div>
+              )}
             </div>
-            <span className={cn(
-              "hidden sm:block text-sm font-medium",
-              isActive ? "text-[#4f46e5]" : isCompleted ? "text-green-600" : "text-slate-500"
-            )}>
-              {STEPS[i].title}
-            </span>
-            {i < totalSteps - 1 && (
-              <div className="hidden sm:block w-8 h-0.5 mx-1 bg-slate-200">
-                <div className={cn("h-full transition-all", isCompleted ? "bg-green-500 w-full" : "w-0")} />
-              </div>
-            )}
-          </button>
-        )
-      })}
+          )
+        })}
+      </div>
+
+      {/* Current step description */}
+      <div className="mt-3 pt-3 border-t border-slate-100 text-center">
+        <p className="text-sm text-slate-600">
+          <span className="font-medium">{STEPS[currentStep - 1]?.title}:</span>{' '}
+          {STEPS[currentStep - 1]?.description}
+        </p>
+      </div>
     </div>
   )
 }

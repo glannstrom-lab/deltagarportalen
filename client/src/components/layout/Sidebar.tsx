@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { navItems, adminNavItems, consultantNavItems } from './navigation'
+import { navGroups, adminNavItems, consultantNavItems, markFeatureVisited, shouldShowBadge, type NavItem } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
+import { ChevronDown } from 'lucide-react'
 
 interface SidebarProps {
   onClose?: () => void
@@ -14,6 +15,12 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { t } = useTranslation()
   const { profile, signOut } = useAuthStore()
   const [isExpanded, setIsExpanded] = useState(true)
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['job-search', 'development', 'wellbeing', 'resources'])
+
+  // Mark feature as visited when navigating
+  useEffect(() => {
+    markFeatureVisited(location.pathname)
+  }, [location.pathname])
 
   // Använd activeRole för att avgöra vilken vy som visas
   const activeRole = profile?.activeRole || profile?.role || 'USER'
@@ -22,27 +29,39 @@ export function Sidebar({ onClose }: SidebarProps) {
   const isConsultant = activeRole === 'CONSULTANT' || isAdmin
   const isUser = activeRole === 'USER'
 
+  const toggleGroup = (groupId: string) => {
+    setExpandedGroups(prev =>
+      prev.includes(groupId)
+        ? prev.filter(id => id !== groupId)
+        : [...prev, groupId]
+    )
+  }
+
   const Tooltip = ({ children }: { children: React.ReactNode }) => (
     <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity">
       {children}
     </div>
   )
 
-  const NavLink = ({ 
-    to, 
-    icon: Icon, 
-    label, 
+  const NavLinkComponent = ({
+    to,
+    icon: Icon,
+    label,
+    item,
     isActive,
     onClick,
     variant = 'default'
-  }: { 
+  }: {
     to: string
     icon: React.ComponentType<{ className?: string }>
     label: string
+    item?: NavItem
     isActive?: boolean
     onClick?: () => void
     variant?: 'default' | 'admin' | 'consultant' | 'danger'
   }) => {
+    const showBadge = item && shouldShowBadge(item)
+
     const colors = {
       default: isActive
         ? 'bg-white/15 text-white'
@@ -73,7 +92,14 @@ export function Sidebar({ onClose }: SidebarProps) {
       >
         <Icon className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-6 h-6')} />
         {isExpanded ? (
-          <span className="text-sm font-medium truncate">{label}</span>
+          <span className="text-sm font-medium truncate flex items-center gap-2">
+            {label}
+            {showBadge && (
+              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-400 text-amber-900 rounded-full">
+                Ny!
+              </span>
+            )}
+          </span>
         ) : (
           <Tooltip>{label}</Tooltip>
         )}
@@ -118,37 +144,64 @@ export function Sidebar({ onClose }: SidebarProps) {
         </button>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-1">
-        {/* User Section - visas alltid */}
-        <div className={cn('space-y-0.5', !isExpanded && 'space-y-0.5')}>
-          {navItems.map((item) => {
-            const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
-            return (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                icon={item.icon}
-                label={t(item.labelKey)}
-                isActive={isActive}
-              />
-            )
-          })}
-        </div>
+      {/* Navigation with Groups */}
+      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
+        {navGroups.map((group) => {
+          const isGroupExpanded = expandedGroups.includes(group.id)
+
+          return (
+            <div key={group.id} className="space-y-0.5">
+              {/* Group Header */}
+              {isExpanded && (
+                <button
+                  onClick={() => toggleGroup(group.id)}
+                  className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-white/40 uppercase tracking-wider hover:text-white/60 transition-colors"
+                >
+                  <span>{t(group.labelKey)}</span>
+                  <ChevronDown
+                    className={cn(
+                      'w-4 h-4 transition-transform',
+                      !isGroupExpanded && '-rotate-90'
+                    )}
+                  />
+                </button>
+              )}
+
+              {/* Group Items */}
+              {(isGroupExpanded || !isExpanded) && (
+                <div className="space-y-0.5">
+                  {group.items.map((item) => {
+                    const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
+                    return (
+                      <NavLinkComponent
+                        key={item.path}
+                        to={item.path}
+                        icon={item.icon}
+                        label={t(item.labelKey)}
+                        item={item}
+                        isActive={isActive}
+                      />
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )
+        })}
 
         {/* Consultant Section - visas om aktiv roll är CONSULTANT, ADMIN eller SUPERADMIN */}
         {isConsultant && !isUser && (
-          <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-0' : 'mx-0')}>
             {isExpanded && (
-              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-3">
                 {t('sidebar.consultantSection')}
               </p>
             )}
-            <div className={cn(!isExpanded && 'space-y-0.5')}>
+            <div className="space-y-0.5">
               {consultantNavItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path)
                 return (
-                  <NavLink
+                  <NavLinkComponent
                     key={item.path}
                     to={item.path}
                     icon={item.icon}
@@ -164,17 +217,17 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {/* Admin Section - visas om aktiv roll är ADMIN eller SUPERADMIN */}
         {isAdmin && (
-          <div className={cn('mt-1 pt-1 border-t border-white/10', isExpanded ? 'mx-3' : 'mx-3')}>
+          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-0' : 'mx-0')}>
             {isExpanded && (
-              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-1">
+              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-3">
                 {t('sidebar.adminSection')}
               </p>
             )}
-            <div className={cn(!isExpanded && 'space-y-0.5')}>
+            <div className="space-y-0.5">
               {adminNavItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path)
                 return (
-                  <NavLink
+                  <NavLinkComponent
                     key={item.path}
                     to={item.path}
                     icon={item.icon}
@@ -202,7 +255,7 @@ export function Sidebar({ onClose }: SidebarProps) {
             </p>
           </div>
         )}
-        
+
         <div className="flex items-center gap-3 mb-3">
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
             {user?.avatar_url ? (
@@ -225,7 +278,7 @@ export function Sidebar({ onClose }: SidebarProps) {
           )}
         </div>
 
-        <NavLink
+        <NavLinkComponent
           to="/settings"
           icon={() => (
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -96,7 +96,14 @@
     "logout": "Logga ut",
     "adminPanel": "Admin Panel",
     "myParticipants": "Mina Deltagare",
-    "consultantPortal": "Konsultportal"
+    "consultantPortal": "Konsultportal",
+    "applications": "Mina ansökningar",
+    "groups": {
+      "jobSearch": "Jobbsökning",
+      "development": "Min utveckling",
+      "wellbeing": "Välmående",
+      "resources": "Resurser"
+    }
   },
   "roles": {
     "activeRole": "Aktiv roll",

@@ -93,7 +93,17 @@
     "logout": "Log out",
     "adminPanel": "Admin Panel",
     "myParticipants": "My Participants",
-    "consultantPortal": "Consultant Portal"
+    "consultantPortal": "Consultant Portal",
+    "applications": "My Applications",
+    "salary": "Salary & Negotiation",
+    "personalBrand": "Personal Brand",
+    "international": "International Guide",
+    "groups": {
+      "jobSearch": "Job Search",
+      "development": "My Development",
+      "wellbeing": "Wellbeing",
+      "resources": "Resources"
+    }
   },
   "roles": {
     "activeRole": "Active role",
