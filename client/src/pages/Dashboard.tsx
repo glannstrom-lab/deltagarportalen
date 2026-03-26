@@ -5,6 +5,8 @@
 import { useTranslation } from 'react-i18next'
 import { ConsultantRequestBanner } from '@/components/consultant/ConsultantRequestBanner'
 import OverviewTab from './dashboard/tabs/OverviewTab'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 
 export default function DashboardPage() {
   const { t } = useTranslation()
@@ -15,6 +17,7 @@ export default function DashboardPage() {
         <ConsultantRequestBanner />
         <OverviewTab />
       </div>
+      <HelpButton content={helpContent.dashboard} />
     </div>
   )
 }

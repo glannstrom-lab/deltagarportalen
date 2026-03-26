@@ -6,6 +6,8 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { wellnessTabDefs } from '../data/wellnessTabs'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 
 // Tab components
 import HealthTab from './wellness/HealthTab'
@@ -25,22 +27,25 @@ export default function WellnessPage() {
   }))
 
   return (
-    <PageLayout
-      title={t('wellness.title')}
-      description={t('wellness.description')}
-      customTabs={wellnessTabs}
-      tabVariant="glass"
-      showTabs={true}
-      className="space-y-6"
-    >
-      <Routes>
-        <Route path="/" element={<HealthTab />} />
-        <Route path="/energy" element={<EnergyTab />} />
-        <Route path="/routines" element={<RoutinesTab />} />
-        <Route path="/cognitive" element={<CognitiveTab />} />
-        <Route path="/crisis" element={<CrisisTab />} />
-        <Route path="*" element={<Navigate to="/wellness" replace />} />
-      </Routes>
-    </PageLayout>
+    <>
+      <PageLayout
+        title={t('wellness.title')}
+        description={t('wellness.description')}
+        customTabs={wellnessTabs}
+        tabVariant="glass"
+        showTabs={true}
+        className="space-y-6"
+      >
+        <Routes>
+          <Route path="/" element={<HealthTab />} />
+          <Route path="/energy" element={<EnergyTab />} />
+          <Route path="/routines" element={<RoutinesTab />} />
+          <Route path="/cognitive" element={<CognitiveTab />} />
+          <Route path="/crisis" element={<CrisisTab />} />
+          <Route path="*" element={<Navigate to="/wellness" replace />} />
+        </Routes>
+      </PageLayout>
+      <HelpButton content={helpContent.wellness} />
+    </>
   )
 }

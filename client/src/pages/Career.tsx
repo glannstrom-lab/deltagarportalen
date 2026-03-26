@@ -8,6 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { careerTabDefs } from '../data/careerTabs'
 import { userApi } from '@/services/api'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 
 // Tab components
 import ExploreTab from './career/ExploreTab'
@@ -40,25 +42,28 @@ export default function CareerPage() {
   }))
 
   return (
-    <PageLayout
-      title={t('career.title')}
-      description={t('career.description')}
-      customTabs={careerTabs}
-      tabVariant="glass"
-      showTabs={true}
-      className="space-y-6"
-    >
-      <Routes>
-        <Route path="/" element={<ExploreTab />} />
-        <Route path="/network" element={<NetworkTab />} />
-        <Route path="/adaptation" element={<AdaptationTab />} />
-        <Route path="/companies" element={<CompaniesTab />} />
-        <Route path="/credentials" element={<CredentialsTab />} />
-        <Route path="/relocation" element={<RelocationTab />} />
-        <Route path="/plan" element={<PlanTab />} />
-        <Route path="/skills" element={<SkillsTab />} />
-        <Route path="*" element={<Navigate to="/career" replace />} />
-      </Routes>
-    </PageLayout>
+    <>
+      <PageLayout
+        title={t('career.title')}
+        description={t('career.description')}
+        customTabs={careerTabs}
+        tabVariant="glass"
+        showTabs={true}
+        className="space-y-6"
+      >
+        <Routes>
+          <Route path="/" element={<ExploreTab />} />
+          <Route path="/network" element={<NetworkTab />} />
+          <Route path="/adaptation" element={<AdaptationTab />} />
+          <Route path="/companies" element={<CompaniesTab />} />
+          <Route path="/credentials" element={<CredentialsTab />} />
+          <Route path="/relocation" element={<RelocationTab />} />
+          <Route path="/plan" element={<PlanTab />} />
+          <Route path="/skills" element={<SkillsTab />} />
+          <Route path="*" element={<Navigate to="/career" replace />} />
+        </Routes>
+      </PageLayout>
+      <HelpButton content={helpContent.career} />
+    </>
   )
 }

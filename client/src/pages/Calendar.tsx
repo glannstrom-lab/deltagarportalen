@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Plus } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { WeekView } from '@/components/calendar/WeekView'
 import { DayView } from '@/components/calendar/DayView'
@@ -366,6 +368,7 @@ export default function Calendar() {
         onDelete={handleDeleteEvent}
       />
     </div>
+      <HelpButton content={helpContent.calendar} />
     </PageLayout>
   )
 }

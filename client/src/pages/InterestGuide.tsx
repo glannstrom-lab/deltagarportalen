@@ -7,6 +7,8 @@ import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { LoadingState } from '@/components/ui'
 import { interestGuideTabDefs } from '@/data/interestGuideTabs'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 
 // Lazy load tab components
 const TestTab = lazy(() => import('./interest-guide/TestTab'))
@@ -34,22 +36,25 @@ export default function InterestGuide() {
   }))
 
   return (
-    <PageLayout
-      title={t('interestGuide.title')}
-      subtitle={t('interestGuide.discover')}
-      tabs={interestGuideTabs}
-      tabVariant="glass"
-    >
-      <Suspense fallback={<TabLoading />}>
-        <Routes>
-          <Route index element={<TestTab />} />
-          <Route path="results" element={<ResultsTab />} />
-          <Route path="occupations" element={<OccupationsTab />} />
-          <Route path="explore" element={<ExploreTab />} />
-          <Route path="history" element={<HistoryTab />} />
-          <Route path="*" element={<Navigate to="/interest-guide" replace />} />
-        </Routes>
-      </Suspense>
-    </PageLayout>
+    <>
+      <PageLayout
+        title={t('interestGuide.title')}
+        subtitle={t('interestGuide.discover')}
+        tabs={interestGuideTabs}
+        tabVariant="glass"
+      >
+        <Suspense fallback={<TabLoading />}>
+          <Routes>
+            <Route index element={<TestTab />} />
+            <Route path="results" element={<ResultsTab />} />
+            <Route path="occupations" element={<OccupationsTab />} />
+            <Route path="explore" element={<ExploreTab />} />
+            <Route path="history" element={<HistoryTab />} />
+            <Route path="*" element={<Navigate to="/interest-guide" replace />} />
+          </Routes>
+        </Suspense>
+      </PageLayout>
+      <HelpButton content={helpContent.interestGuide} />
+    </>
   )
 }

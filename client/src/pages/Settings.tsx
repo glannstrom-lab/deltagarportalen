@@ -12,6 +12,8 @@ import {
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 import {
   Card, CardHeader, CardSection,
   Input, Button, Toggle,
@@ -510,6 +512,7 @@ export default function Settings() {
           </Card>
         </div>
       </div>
+      <HelpButton content={helpContent.settings} />
     </PageLayout>
   )
 }

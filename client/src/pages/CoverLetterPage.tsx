@@ -7,6 +7,8 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
 import { coverLetterTabDefs } from '@/data/coverLetterTabs'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 import { CoverLetterWrite } from '@/components/cover-letter/CoverLetterWrite'
 import { CoverLetterMyLetters } from '@/components/cover-letter/CoverLetterMyLetters'
 import { CoverLetterApplications } from '@/components/cover-letter/CoverLetterApplications'
@@ -30,22 +32,25 @@ export default function CoverLetterPage() {
   const pageTitle = currentTab?.label || t('coverLetter.title')
 
   return (
-    <PageLayout
-      title={pageTitle}
-      description={t('coverLetter.description')}
-      customTabs={coverLetterTabs}
-      tabVariant="glass"
-      showTabs={true}
-      className="space-y-6"
-    >
-      <Routes>
-        <Route path="/" element={<CoverLetterWrite />} />
-        <Route path="/my-letters" element={<CoverLetterMyLetters />} />
-        <Route path="/applications" element={<CoverLetterApplications />} />
-        <Route path="/templates" element={<CoverLetterTemplates />} />
-        <Route path="/statistics" element={<CoverLetterStatistics />} />
-        <Route path="*" element={<Navigate to="/cover-letter" replace />} />
-      </Routes>
-    </PageLayout>
+    <>
+      <PageLayout
+        title={pageTitle}
+        description={t('coverLetter.description')}
+        customTabs={coverLetterTabs}
+        tabVariant="glass"
+        showTabs={true}
+        className="space-y-6"
+      >
+        <Routes>
+          <Route path="/" element={<CoverLetterWrite />} />
+          <Route path="/my-letters" element={<CoverLetterMyLetters />} />
+          <Route path="/applications" element={<CoverLetterApplications />} />
+          <Route path="/templates" element={<CoverLetterTemplates />} />
+          <Route path="/statistics" element={<CoverLetterStatistics />} />
+          <Route path="*" element={<Navigate to="/cover-letter" replace />} />
+        </Routes>
+      </PageLayout>
+      <HelpButton content={helpContent.coverLetter} />
+    </>
   )
 }

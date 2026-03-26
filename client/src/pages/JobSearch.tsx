@@ -28,6 +28,8 @@ import { ApplicationsTab } from '@/components/jobs/ApplicationsTab';
 import { AlertsTab } from '@/components/jobs/AlertsTab';
 import { MatchesTab } from '@/components/jobs/MatchesTab';
 import { CultureTab } from '@/components/jobs/CultureTab';
+import { HelpButton } from '@/components/HelpButton';
+import { helpContent } from '@/data/helpContent';
 import { CRMTab } from '@/components/jobs/CRMTab';
 
 // Tab definitions with i18n keys
@@ -763,23 +765,26 @@ export default function JobSearch() {
   }));
 
   return (
-    <PageLayout
-      title={t('jobSearch.title')}
-      subtitle={t('jobSearch.subtitle')}
-      tabs={jobSearchTabs}
-      tabVariant="glass"
-      className="max-w-7xl mx-auto"
-    >
-      <Routes>
-        <Route index element={<SearchTab />} />
-        <Route path="saved" element={<SavedJobsTab />} />
-        <Route path="crm" element={<CRMTab />} />
-        <Route path="culture" element={<CultureTab />} />
-        <Route path="applications" element={<ApplicationsTab />} />
-        <Route path="alerts" element={<AlertsTab />} />
-        <Route path="matches" element={<MatchesTab />} />
-        <Route path="*" element={<Navigate to="/job-search" replace />} />
-      </Routes>
-    </PageLayout>
+    <>
+      <PageLayout
+        title={t('jobSearch.title')}
+        subtitle={t('jobSearch.subtitle')}
+        tabs={jobSearchTabs}
+        tabVariant="glass"
+        className="max-w-7xl mx-auto"
+      >
+        <Routes>
+          <Route index element={<SearchTab />} />
+          <Route path="saved" element={<SavedJobsTab />} />
+          <Route path="crm" element={<CRMTab />} />
+          <Route path="culture" element={<CultureTab />} />
+          <Route path="applications" element={<ApplicationsTab />} />
+          <Route path="alerts" element={<AlertsTab />} />
+          <Route path="matches" element={<MatchesTab />} />
+          <Route path="*" element={<Navigate to="/job-search" replace />} />
+        </Routes>
+      </PageLayout>
+      <HelpButton content={helpContent.jobSearch} />
+    </>
   );
 }

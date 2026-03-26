@@ -35,6 +35,8 @@ import {
   Skeleton,
 } from '@/components/ui';
 import { PageLayout, PageSection } from '@/components/layout/PageLayout';
+import { HelpButton } from '@/components/HelpButton';
+import { helpContent } from '@/data/helpContent';
 import {
   educationApi,
   type Education,
@@ -599,6 +601,7 @@ export default function Education() {
           )}
         </div>
       )}
+      <HelpButton content={helpContent.education} />
     </PageLayout>
   );
 }

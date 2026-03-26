@@ -11,6 +11,8 @@ import CVBuilder from './CVBuilder'
 import { MyCVs } from '@/components/cv/MyCVs'
 import { ATSAnalysis } from '@/components/cv/ATSAnalysis'
 import { CVTips } from '@/components/cv/CVTips'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 
 export default function CVPage() {
   const location = useLocation()
@@ -29,21 +31,24 @@ export default function CVPage() {
   const pageTitle = currentTab?.label || t('cv.title')
 
   return (
-    <PageLayout
-      title={pageTitle}
-      description={t('cv.description')}
-      customTabs={cvTabs}
-      tabVariant="glass"
-      showTabs={true}
-      className="space-y-6"
-    >
-      <Routes>
-        <Route path="/" element={<CVBuilder />} />
-        <Route path="/my-cvs" element={<MyCVs />} />
-        <Route path="/ats" element={<ATSAnalysis />} />
-        <Route path="/tips" element={<CVTips />} />
-        <Route path="*" element={<Navigate to="/cv" replace />} />
-      </Routes>
-    </PageLayout>
+    <>
+      <PageLayout
+        title={pageTitle}
+        description={t('cv.description')}
+        customTabs={cvTabs}
+        tabVariant="glass"
+        showTabs={true}
+        className="space-y-6"
+      >
+        <Routes>
+          <Route path="/" element={<CVBuilder />} />
+          <Route path="/my-cvs" element={<MyCVs />} />
+          <Route path="/ats" element={<ATSAnalysis />} />
+          <Route path="/tips" element={<CVTips />} />
+          <Route path="*" element={<Navigate to="/cv" replace />} />
+        </Routes>
+      </PageLayout>
+      <HelpButton content={helpContent.cv} />
+    </>
   )
 }

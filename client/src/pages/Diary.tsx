@@ -12,6 +12,8 @@ import {
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
 import { JournalTab, MoodTab, GoalsTab, GratitudeTab, DailyTask } from '@/components/diary'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 import { useDiaryStreaks, useMoodLogs, useWeeklyGoals, useGratitude } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui'
@@ -323,6 +325,7 @@ export default function Diary() {
           </div>
         </div>
       </div>
+      <HelpButton content={helpContent.diary} />
     </PageLayout>
   )
 }

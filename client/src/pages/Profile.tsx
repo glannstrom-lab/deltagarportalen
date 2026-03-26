@@ -16,6 +16,8 @@ import {
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 
 // ============== CONSTANTS ==============
 
@@ -1468,6 +1470,7 @@ export default function Profile() {
           )}
         </button>
       </div>
+      <HelpButton content={helpContent.profile} />
     </div>
   )
 }
