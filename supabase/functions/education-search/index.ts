@@ -73,44 +73,88 @@ const FORM_LABELS: Record<string, string> = {
   'kompletterande_utbildning': 'Kompletterande utbildning',
 };
 
+// Helper to get Swedish text from multi-language array
+function getSwedishText(arr: any): string {
+  if (!arr) return '';
+  if (typeof arr === 'string') return arr;
+  if (Array.isArray(arr)) {
+    const sweItem = arr.find((item: any) => item.lang === 'swe' || item.lang === 'sv');
+    return sweItem?.content || arr[0]?.content || '';
+  }
+  return '';
+}
+
 // Normalize API response to our format
+// JobEd Connect returns nested structure: {id, education: {...}, providerSummary, eventSummary}
 function normalizeEducation(raw: any): Education {
-  const typeCode = raw.education_type || 'program';
-  const formCode = raw.education_form || '';
+  // Handle nested education object
+  const edu = raw.education || raw;
+  const event = raw.eventSummary || {};
+  const providerInfo = raw.providerSummary || {};
+
+  const formCode = edu.form?.code || raw.education_form || '';
 
   // Determine a simplified type for frontend display
+  // Use lowercase comparison and handle both Swedish (ö) and ASCII (o)
+  const formLower = formCode.toLowerCase();
   let simplifiedType = 'other';
-  if (formCode.includes('yrkeshögskola')) simplifiedType = 'yrkeshogskola';
-  else if (formCode.includes('högskola')) simplifiedType = 'hogskola';
-  else if (formCode.includes('vuxenutbildning')) simplifiedType = 'komvux';
-  else if (formCode.includes('folkhögskola')) simplifiedType = 'folkhogskola';
-  else if (formCode.includes('arbetsmarknad')) simplifiedType = 'arbetsmarknadsutbildning';
+  if (formLower.includes('yrkesh') && (formLower.includes('gskola') || formLower.includes('gskoleutbildning'))) {
+    simplifiedType = 'yrkeshogskola';
+  } else if (formLower.includes('h') && formLower.includes('gskola') && !formLower.includes('folkh')) {
+    simplifiedType = 'hogskola';
+  } else if (formLower.includes('universitet')) {
+    simplifiedType = 'hogskola';
+  } else if (formLower.includes('vuxenutbildning') || formLower.includes('komvux')) {
+    simplifiedType = 'komvux';
+  } else if (formLower.includes('folkh') && formLower.includes('gskola')) {
+    simplifiedType = 'folkhogskola';
+  } else if (formLower.includes('arbetsmarknad')) {
+    simplifiedType = 'arbetsmarknadsutbildning';
+  }
+
+  // Get title - can be array with {lang, content} or string
+  const title = getSwedishText(edu.title) || raw.label || 'Namnlös utbildning';
+
+  // Get description
+  const description = getSwedishText(edu.description);
+
+  // Get provider from providerSummary.providers array
+  const provider = providerInfo.providers?.[0] || edu.provider?.label || 'Okänd utbildningsanordnare';
+
+  // Get start/end from eventSummary.executions
+  const execution = event.executions?.[0] || {};
+
+  // Get pace percentage
+  const pacePercent = event.paceOfStudyPercentage?.[0] || null;
+
+  // Get credits
+  const credits = edu.credits?.credits || edu.credits?.value || null;
 
   return {
-    id: raw.id || raw.education_code || `edu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    title: raw.label || raw.title || raw.name || 'Namnlös utbildning',
-    provider: raw.provider?.label || raw.provider?.name || raw.provider || 'Okänd utbildningsanordnare',
-    providerUrl: raw.provider?.url || raw.provider_url,
+    id: raw.id || edu.identifier || edu.code || `edu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    title,
+    provider,
+    providerUrl: edu.urls?.[0] || undefined,
     type: simplifiedType,
-    typeLabel: FORM_LABELS[formCode] || TYPE_LABELS[typeCode] || formCode || typeCode,
+    typeLabel: FORM_LABELS[formCode] || formCode || 'Utbildning',
     form: formCode,
     formLabel: FORM_LABELS[formCode] || formCode,
-    description: raw.description || raw.content || raw.information,
-    duration: raw.extent?.label || raw.duration,
-    durationMonths: raw.extent?.duration_in_months || raw.duration_months,
-    startDate: raw.start_date || raw.starts,
-    endDate: raw.end_date || raw.ends,
-    applicationDeadline: raw.application_deadline || raw.last_application_date,
-    location: raw.location?.label || raw.place?.label || raw.municipality?.label || raw.location,
-    municipality: raw.municipality?.label || raw.municipality,
-    region: raw.region?.label || raw.region,
-    pace: raw.pace_of_study?.label || raw.pace,
-    pacePercent: raw.pace_of_study?.pace_of_study_percentage || raw.pace_percentage,
-    distance: raw.distance === true || raw.distance === 'ja' || raw.form_of_study?.includes('distans'),
-    url: raw.url || raw.web_address || raw.link,
-    credits: raw.credits?.value || raw.credits || raw.points,
-    level: raw.qualification_level?.label || raw.level,
-    qualificationLevel: raw.qualification_level?.code,
+    description: description || undefined,
+    duration: credits ? `${credits} YH-poäng` : undefined,
+    durationMonths: undefined,
+    startDate: execution.start || undefined,
+    endDate: execution.end || undefined,
+    applicationDeadline: undefined,
+    location: event.municipalityCode?.[0] || event.regionCode?.[0] || (event.distance ? 'Distans' : undefined),
+    municipality: event.municipalityCode?.[0] || undefined,
+    region: event.regionCode?.[0] || undefined,
+    pace: pacePercent ? `${pacePercent}%` : undefined,
+    pacePercent: pacePercent || undefined,
+    distance: event.distance === true,
+    url: edu.urls?.[0] || undefined,
+    credits: credits || undefined,
+    level: edu.educationLevel?.code || undefined,
+    qualificationLevel: edu.educationLevel?.code || undefined,
   };
 }
 
@@ -190,22 +234,23 @@ async function searchEducations(params: SearchParams): Promise<SearchResult> {
 
     const data = await response.json();
 
-    // Handle response - can be array or object with results
+    // Handle response - JobEd Connect returns {hits: number, result: array}
     let educations: Education[] = [];
     let total = 0;
 
     if (Array.isArray(data)) {
       educations = data.map(normalizeEducation);
       total = data.length;
+    } else if (data.result && Array.isArray(data.result)) {
+      // JobEd Connect format: {hits: number, result: array}
+      educations = data.result.map(normalizeEducation);
+      total = data.hits || data.total || data.result.length;
     } else if (data.data && Array.isArray(data.data)) {
       educations = data.data.map(normalizeEducation);
       total = data.total || data.count || data.data.length;
     } else if (data.educations && Array.isArray(data.educations)) {
       educations = data.educations.map(normalizeEducation);
       total = data.total || data.educations.length;
-    } else if (data.hits && Array.isArray(data.hits)) {
-      educations = data.hits.map(normalizeEducation);
-      total = data.total || data.hits.length;
     }
 
     console.log(`[education-search] Found ${educations.length} educations (total: ${total})`);
