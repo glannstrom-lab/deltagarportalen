@@ -1,27 +1,22 @@
-// Supabase Edge Function: Proxy för Skolverkets Susa-navet API v3
-// Söker utbildningar från Sveriges nationella utbildningsdatabas
+// Supabase Edge Function: Proxy för Utbildningssökning
+// Använder JobEd Connect API från Arbetsförmedlingen/JobTech
 // URL: https://<project>.supabase.co/functions/v1/education-search
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 
-// Susa-navet API v3 (ny version som ersätter v2 från april 2026)
-const SUSA_API_BASE = 'https://api.skolverket.se/susa-navet/v3';
+// JobEd Connect API - Real Swedish Education Database
+const JOBED_API_BASE = 'https://jobed-connect-api.jobtechdev.se/v1';
 
-// Utbildningsformer som stöds
-type EducationType =
-  | 'komvux'
-  | 'folkhogskola'
-  | 'yrkeshogskola'
-  | 'hogskola'
-  | 'universitet'
-  | 'all';
-
+// Types
 interface SearchParams {
-  q?: string;           // Sökterm
-  type?: EducationType; // Utbildningsform
-  region?: string;      // Län/kommun
-  limit?: number;       // Max antal resultat
-  offset?: number;      // Pagination offset
+  q?: string;
+  type?: string;        // education_type: program, kurs, etc.
+  form?: string;        // education_form: yrkeshögskoleutbildning, högskoleutbildning, etc.
+  region?: string;      // region_code (2 digits)
+  municipality?: string; // municipality_code (4 digits)
+  distance?: boolean;
+  limit?: number;
+  offset?: number;
 }
 
 interface Education {
@@ -31,6 +26,8 @@ interface Education {
   providerUrl?: string;
   type: string;
   typeLabel: string;
+  form?: string;
+  formLabel?: string;
   description?: string;
   duration?: string;
   durationMonths?: number;
@@ -40,12 +37,13 @@ interface Education {
   location?: string;
   municipality?: string;
   region?: string;
-  pace?: string;         // Studietakt (heltid, deltid)
-  distance?: boolean;    // Distansutbildning
-  url?: string;          // Länk till utbildningen
-  sunCode?: string;      // SUN-klassificering
-  credits?: number;      // Högskolepoäng
-  level?: string;        // Nivå (grundnivå, avancerad, etc.)
+  pace?: string;
+  pacePercent?: number;
+  distance?: boolean;
+  url?: string;
+  credits?: number;
+  level?: string;
+  qualificationLevel?: string;
 }
 
 interface SearchResult {
@@ -55,218 +53,470 @@ interface SearchResult {
   source: string;
 }
 
-// Mappning av utbildningstyper till svenska etiketter
+// Map education_type codes to readable labels
 const TYPE_LABELS: Record<string, string> = {
-  'komvux': 'Kommunal vuxenutbildning',
-  'folkhogskola': 'Folkhögskola',
-  'yrkeshogskola': 'Yrkeshögskola',
-  'hogskola': 'Högskola',
-  'universitet': 'Universitet',
-  'gymnasieskola': 'Gymnasieskola',
-  'grundskola': 'Grundskola',
+  'program': 'Program',
+  'kurs': 'Kurs',
+  'paket': 'Kurspaket',
+  'delkurs': 'Delkurs',
 };
 
+// Map education_form codes to readable labels
+const FORM_LABELS: Record<string, string> = {
+  'yrkeshögskoleutbildning': 'Yrkeshögskola',
+  'högskoleutbildning': 'Högskola/Universitet',
+  'grundläggande_vuxenutbildning': 'Komvux grundläggande',
+  'gymnasial_vuxenutbildning': 'Komvux gymnasial',
+  'folkhögskoleutbildning': 'Folkhögskola',
+  'arbetsmarknadsutbildning': 'Arbetsmarknadsutbildning',
+  'konst_och_kulturutbildning': 'Konst och kultur',
+  'kompletterande_utbildning': 'Kompletterande utbildning',
+};
+
+// Normalize API response to our format
 function normalizeEducation(raw: any): Education {
-  // Normalisera data från Susa-navet till vårt format
-  const typeKey = raw.utbildningsform?.toLowerCase() || raw.type || 'okänd';
+  const typeCode = raw.education_type || 'program';
+  const formCode = raw.education_form || '';
+
+  // Determine a simplified type for frontend display
+  let simplifiedType = 'other';
+  if (formCode.includes('yrkeshögskola')) simplifiedType = 'yrkeshogskola';
+  else if (formCode.includes('högskola')) simplifiedType = 'hogskola';
+  else if (formCode.includes('vuxenutbildning')) simplifiedType = 'komvux';
+  else if (formCode.includes('folkhögskola')) simplifiedType = 'folkhogskola';
+  else if (formCode.includes('arbetsmarknad')) simplifiedType = 'arbetsmarknadsutbildning';
 
   return {
-    id: raw.id || raw.utbildningsId || `edu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-    title: raw.benamning || raw.namn || raw.title || 'Namnlös utbildning',
-    provider: raw.utbildningsanordnare?.namn || raw.anordnare || raw.provider || 'Okänd anordnare',
-    providerUrl: raw.utbildningsanordnare?.webbplats || raw.providerUrl,
-    type: typeKey,
-    typeLabel: TYPE_LABELS[typeKey] || raw.utbildningsform || typeKey,
-    description: raw.beskrivning || raw.description,
-    duration: raw.omfattning?.text || raw.duration,
-    durationMonths: raw.omfattning?.manader || raw.durationMonths,
-    startDate: raw.startdatum || raw.startDate,
-    endDate: raw.slutdatum || raw.endDate,
-    applicationDeadline: raw.sista_ansokan || raw.applicationDeadline,
-    location: raw.studieort || raw.ort || raw.location,
-    municipality: raw.kommun?.namn || raw.municipality,
-    region: raw.lan?.namn || raw.region,
-    pace: raw.studietakt || raw.pace,
-    distance: raw.distans === true || raw.distans === 'ja' || raw.distance,
-    url: raw.webbplats || raw.url,
-    sunCode: raw.sun_kod || raw.sunCode,
-    credits: raw.hogskolepoang || raw.credits,
-    level: raw.niva || raw.level,
+    id: raw.id || raw.education_code || `edu_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    title: raw.label || raw.title || raw.name || 'Namnlös utbildning',
+    provider: raw.provider?.label || raw.provider?.name || raw.provider || 'Okänd utbildningsanordnare',
+    providerUrl: raw.provider?.url || raw.provider_url,
+    type: simplifiedType,
+    typeLabel: FORM_LABELS[formCode] || TYPE_LABELS[typeCode] || formCode || typeCode,
+    form: formCode,
+    formLabel: FORM_LABELS[formCode] || formCode,
+    description: raw.description || raw.content || raw.information,
+    duration: raw.extent?.label || raw.duration,
+    durationMonths: raw.extent?.duration_in_months || raw.duration_months,
+    startDate: raw.start_date || raw.starts,
+    endDate: raw.end_date || raw.ends,
+    applicationDeadline: raw.application_deadline || raw.last_application_date,
+    location: raw.location?.label || raw.place?.label || raw.municipality?.label || raw.location,
+    municipality: raw.municipality?.label || raw.municipality,
+    region: raw.region?.label || raw.region,
+    pace: raw.pace_of_study?.label || raw.pace,
+    pacePercent: raw.pace_of_study?.pace_of_study_percentage || raw.pace_percentage,
+    distance: raw.distance === true || raw.distance === 'ja' || raw.form_of_study?.includes('distans'),
+    url: raw.url || raw.web_address || raw.link,
+    credits: raw.credits?.value || raw.credits || raw.points,
+    level: raw.qualification_level?.label || raw.level,
+    qualificationLevel: raw.qualification_level?.code,
   };
 }
 
-async function searchSusaNavet(params: SearchParams): Promise<SearchResult> {
-  const { q = '', type = 'all', region, limit = 20, offset = 0 } = params;
+// Search educations using JobEd Connect API
+async function searchEducations(params: SearchParams): Promise<SearchResult> {
+  const { q = '', type, form, region, municipality, distance, limit = 20, offset = 0 } = params;
 
-  // Bygg query-parametrar för Susa-navet API
   const queryParams = new URLSearchParams();
 
+  // Free text search
   if (q) {
-    queryParams.set('sok', q);
+    queryParams.set('query', q);
   }
 
+  // Filter by education type
   if (type && type !== 'all') {
-    // Mappa till Susa-navets utbildningsformskoder
-    const typeMap: Record<string, string> = {
-      'komvux': 'KOMVUX',
-      'folkhogskola': 'FHS',
-      'yrkeshogskola': 'YH',
-      'hogskola': 'HO',
-      'universitet': 'UNI',
+    // Map our frontend types to API forms
+    const typeToFormMap: Record<string, string> = {
+      'yrkeshogskola': 'yrkeshögskoleutbildning',
+      'hogskola': 'högskoleutbildning',
+      'universitet': 'högskoleutbildning',
+      'komvux': 'gymnasial_vuxenutbildning',
+      'folkhogskola': 'folkhögskoleutbildning',
     };
-    if (typeMap[type]) {
-      queryParams.set('utbildningsform', typeMap[type]);
+    const apiForm = typeToFormMap[type];
+    if (apiForm) {
+      queryParams.append('education_form', apiForm);
     }
   }
 
-  if (region) {
-    queryParams.set('lan', region);
+  // Filter by form directly
+  if (form) {
+    queryParams.append('education_form', form);
   }
 
-  queryParams.set('antal', String(Math.min(limit, 100)));
-  queryParams.set('start', String(offset));
+  // Filter by region (2-digit code)
+  if (region) {
+    queryParams.set('region_code', region);
+  }
 
-  const url = `${SUSA_API_BASE}/utbildningar?${queryParams.toString()}`;
+  // Filter by municipality (4-digit code)
+  if (municipality) {
+    queryParams.set('municipality_code', municipality);
+  }
+
+  // Filter by distance learning
+  if (distance !== undefined) {
+    queryParams.set('distance', String(distance));
+  }
+
+  // Pagination
+  queryParams.set('limit', String(Math.min(limit, 100)));
+  queryParams.set('offset', String(offset));
+
+  const url = `${JOBED_API_BASE}/educations?${queryParams.toString()}`;
 
   console.log(`[education-search] Fetching: ${url}`);
 
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     const response = await fetch(url, {
+      method: 'GET',
       headers: {
         'Accept': 'application/json',
       },
+      signal: controller.signal,
     });
 
+    clearTimeout(timeoutId);
+
     if (!response.ok) {
-      console.error(`[education-search] Susa-navet error: ${response.status}`);
-      throw new Error(`Susa-navet API error: ${response.status}`);
+      console.error(`[education-search] JobEd API error: ${response.status}`);
+      throw new Error(`JobEd API error: ${response.status}`);
     }
 
     const data = await response.json();
 
-    // Hantera olika responsformat från API:et
+    // Handle response - can be array or object with results
     let educations: Education[] = [];
     let total = 0;
 
     if (Array.isArray(data)) {
       educations = data.map(normalizeEducation);
       total = data.length;
-    } else if (data.utbildningar) {
-      educations = data.utbildningar.map(normalizeEducation);
-      total = data.totalt || data.utbildningar.length;
-    } else if (data.results) {
-      educations = data.results.map(normalizeEducation);
-      total = data.total || data.results.length;
+    } else if (data.data && Array.isArray(data.data)) {
+      educations = data.data.map(normalizeEducation);
+      total = data.total || data.count || data.data.length;
+    } else if (data.educations && Array.isArray(data.educations)) {
+      educations = data.educations.map(normalizeEducation);
+      total = data.total || data.educations.length;
+    } else if (data.hits && Array.isArray(data.hits)) {
+      educations = data.hits.map(normalizeEducation);
+      total = data.total || data.hits.length;
     }
+
+    console.log(`[education-search] Found ${educations.length} educations (total: ${total})`);
 
     return {
       educations,
       total,
       hasMore: offset + educations.length < total,
-      source: 'susa-navet-v3',
+      source: 'jobed-connect',
     };
   } catch (error) {
     console.error('[education-search] Error:', error);
-    // Returnera fallback med mock-data vid fel
+    // Return fallback data
     return getFallbackEducations(params);
   }
 }
 
-// Fallback-data när API:et inte är tillgängligt
+// Get education by ID
+async function getEducationById(id: string): Promise<Education | null> {
+  try {
+    const url = `${JOBED_API_BASE}/educations/${encodeURIComponent(id)}`;
+    console.log(`[education-search] Fetching education: ${url}`);
+
+    const response = await fetch(url, {
+      headers: { 'Accept': 'application/json' },
+    });
+
+    if (!response.ok) {
+      console.error(`[education-search] Failed to get education ${id}: ${response.status}`);
+      return null;
+    }
+
+    const data = await response.json();
+    return normalizeEducation(data);
+  } catch (error) {
+    console.error('[education-search] Error getting education:', error);
+    return null;
+  }
+}
+
+// Match educations by job title
+async function matchByJobTitle(jobTitle: string, params: SearchParams = {}): Promise<SearchResult> {
+  try {
+    const queryParams = new URLSearchParams();
+    if (params.region) queryParams.set('region_code', params.region);
+    if (params.limit) queryParams.set('limit', String(params.limit));
+
+    const url = `${JOBED_API_BASE}/educations/match-by-jobtitle?${queryParams.toString()}`;
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ job_title: jobTitle }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Match API error: ${response.status}`);
+    }
+
+    const data = await response.json();
+    const educations = Array.isArray(data) ? data.map(normalizeEducation) : [];
+
+    return {
+      educations,
+      total: educations.length,
+      hasMore: false,
+      source: 'jobed-connect-match',
+    };
+  } catch (error) {
+    console.error('[education-search] Match error:', error);
+    return { educations: [], total: 0, hasMore: false, source: 'error' };
+  }
+}
+
+// Get available education types
+async function getEducationTypes(): Promise<{ id: string; label: string }[]> {
+  try {
+    const response = await fetch(`${JOBED_API_BASE}/searchparameters/education_forms`, {
+      headers: { 'Accept': 'application/json' },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const types = [{ id: 'all', label: 'Alla utbildningsformer' }];
+
+      if (Array.isArray(data)) {
+        data.forEach((item: any) => {
+          types.push({
+            id: item.id || item.code || item,
+            label: FORM_LABELS[item.id || item.code || item] || item.label || item,
+          });
+        });
+      }
+
+      return types;
+    }
+  } catch (error) {
+    console.error('[education-search] Error getting types:', error);
+  }
+
+  // Return default types
+  return [
+    { id: 'all', label: 'Alla utbildningsformer' },
+    { id: 'yrkeshogskola', label: 'Yrkeshögskola (YH)' },
+    { id: 'hogskola', label: 'Högskola/Universitet' },
+    { id: 'komvux', label: 'Komvux' },
+    { id: 'folkhogskola', label: 'Folkhögskola' },
+  ];
+}
+
+// Get available regions
+async function getRegions(): Promise<{ id: string; label: string }[]> {
+  try {
+    const response = await fetch(`${JOBED_API_BASE}/searchparameters/regions`, {
+      headers: { 'Accept': 'application/json' },
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const regions = [{ id: '', label: 'Hela Sverige' }];
+
+      if (Array.isArray(data)) {
+        data.forEach((item: any) => {
+          regions.push({
+            id: item.region_code || item.code || item.id,
+            label: item.label || item.name || item,
+          });
+        });
+      }
+
+      return regions;
+    }
+  } catch (error) {
+    console.error('[education-search] Error getting regions:', error);
+  }
+
+  // Return default regions with codes
+  return [
+    { id: '', label: 'Hela Sverige' },
+    { id: '01', label: 'Stockholm' },
+    { id: '03', label: 'Uppsala' },
+    { id: '04', label: 'Södermanland' },
+    { id: '05', label: 'Östergötland' },
+    { id: '06', label: 'Jönköping' },
+    { id: '07', label: 'Kronoberg' },
+    { id: '08', label: 'Kalmar' },
+    { id: '09', label: 'Gotland' },
+    { id: '10', label: 'Blekinge' },
+    { id: '12', label: 'Skåne' },
+    { id: '13', label: 'Halland' },
+    { id: '14', label: 'Västra Götaland' },
+    { id: '17', label: 'Värmland' },
+    { id: '18', label: 'Örebro' },
+    { id: '19', label: 'Västmanland' },
+    { id: '20', label: 'Dalarna' },
+    { id: '21', label: 'Gävleborg' },
+    { id: '22', label: 'Västernorrland' },
+    { id: '23', label: 'Jämtland' },
+    { id: '24', label: 'Västerbotten' },
+    { id: '25', label: 'Norrbotten' },
+  ];
+}
+
+// Fallback mock data
 function getFallbackEducations(params: SearchParams): SearchResult {
   const mockEducations: Education[] = [
     {
-      id: 'mock_1',
-      title: 'Webbutvecklare',
+      id: 'mock_yh_1',
+      title: 'Webbutvecklare Fullstack',
       provider: 'Nackademin',
       type: 'yrkeshogskola',
       typeLabel: 'Yrkeshögskola',
-      description: 'Lär dig moderna webbteknologier som React, Node.js och databaser.',
+      description: 'Lär dig moderna webbteknologier som React, Node.js, TypeScript och databaser. Praktik ingår.',
       durationMonths: 24,
       duration: '2 år',
       location: 'Stockholm',
       region: 'Stockholm',
-      pace: 'Heltid',
+      pace: 'Heltid (100%)',
+      pacePercent: 100,
       distance: false,
-      url: 'https://nackademin.se',
+      url: 'https://nackademin.se/utbildningar/webbutvecklare/',
+      applicationDeadline: '2026-04-15',
     },
     {
-      id: 'mock_2',
+      id: 'mock_yh_2',
       title: 'Systemutvecklare Java',
       provider: 'IT-Högskolan',
       type: 'yrkeshogskola',
       typeLabel: 'Yrkeshögskola',
-      description: 'Utbildning i Java-programmering med fokus på enterprise-system.',
+      description: 'Enterprise Java-utveckling med Spring Boot, microservices och cloud. CSN-berättigad.',
       durationMonths: 24,
       duration: '2 år',
       location: 'Göteborg',
       region: 'Västra Götaland',
-      pace: 'Heltid',
+      pace: 'Heltid (100%)',
+      pacePercent: 100,
       distance: true,
       url: 'https://iths.se',
+      applicationDeadline: '2026-04-15',
     },
     {
-      id: 'mock_3',
+      id: 'mock_yh_3',
       title: 'Data Scientist',
       provider: 'Changemaker Educations',
       type: 'yrkeshogskola',
       typeLabel: 'Yrkeshögskola',
-      description: 'Analysera data och bygg AI-modeller för framtidens arbetsmarknad.',
+      description: 'Python, Machine Learning, statistik och dataanalys för framtidens arbetsmarknad.',
       durationMonths: 24,
       duration: '2 år',
       location: 'Stockholm',
       region: 'Stockholm',
-      pace: 'Heltid',
+      pace: 'Heltid (100%)',
+      pacePercent: 100,
       distance: true,
       url: 'https://changemaker.se',
+      applicationDeadline: '2026-05-01',
     },
     {
-      id: 'mock_4',
-      title: 'Ekonomi och redovisning',
-      provider: 'Komvux Stockholm',
-      type: 'komvux',
-      typeLabel: 'Kommunal vuxenutbildning',
-      description: 'Grundläggande kurser i ekonomi, bokföring och redovisning.',
-      durationMonths: 6,
-      duration: '6 månader',
+      id: 'mock_yh_4',
+      title: 'UX-designer',
+      provider: 'Hyper Island',
+      type: 'yrkeshogskola',
+      typeLabel: 'Yrkeshögskola',
+      description: 'Användarcentrerad design, prototyping, research och designsystem.',
+      durationMonths: 24,
+      duration: '2 år',
       location: 'Stockholm',
       region: 'Stockholm',
-      pace: 'Deltid',
-      distance: true,
+      pace: 'Heltid (100%)',
+      pacePercent: 100,
+      distance: false,
+      url: 'https://hyperisland.com',
+      applicationDeadline: '2026-04-01',
     },
     {
-      id: 'mock_5',
+      id: 'mock_uni_1',
+      title: 'Civilingenjör Datateknik',
+      provider: 'KTH',
+      type: 'hogskola',
+      typeLabel: 'Universitet',
+      description: 'Femårig civilingenjörsutbildning inom datateknik och mjukvaruutveckling.',
+      durationMonths: 60,
+      duration: '5 år',
+      location: 'Stockholm',
+      region: 'Stockholm',
+      pace: 'Heltid (100%)',
+      pacePercent: 100,
+      distance: false,
+      credits: 300,
+      level: 'Avancerad nivå',
+      url: 'https://kth.se',
+      applicationDeadline: '2026-04-15',
+    },
+    {
+      id: 'mock_uni_2',
       title: 'Sjuksköterskeexamen',
       provider: 'Karolinska Institutet',
-      type: 'universitet',
+      type: 'hogskola',
       typeLabel: 'Universitet',
-      description: 'Akademisk utbildning till sjuksköterska med legitimation.',
+      description: 'Akademisk utbildning till legitimerad sjuksköterska med verksamhetsförlagd utbildning.',
       durationMonths: 36,
       duration: '3 år',
       location: 'Stockholm',
       region: 'Stockholm',
-      pace: 'Heltid',
+      pace: 'Heltid (100%)',
+      pacePercent: 100,
       distance: false,
       credits: 180,
       level: 'Grundnivå',
+      url: 'https://ki.se',
+      applicationDeadline: '2026-04-15',
     },
     {
-      id: 'mock_6',
-      title: 'Projektledning och organisation',
-      provider: 'Folkuniversitetet',
+      id: 'mock_komvux_1',
+      title: 'Ekonomi och redovisning',
+      provider: 'Hermods',
+      type: 'komvux',
+      typeLabel: 'Komvux',
+      description: 'Gymnasiekurser i ekonomi, bokföring och företagsekonomi. Flexibla starttider.',
+      durationMonths: 6,
+      duration: '6 månader',
+      location: 'Distans',
+      region: 'Hela Sverige',
+      pace: 'Deltid (50%)',
+      pacePercent: 50,
+      distance: true,
+      url: 'https://hermods.se',
+    },
+    {
+      id: 'mock_folkhogskola_1',
+      title: 'Grafisk design och illustration',
+      provider: 'Berghs School of Communication',
       type: 'folkhogskola',
       typeLabel: 'Folkhögskola',
-      description: 'Lär dig leda projekt och team i moderna organisationer.',
+      description: 'Kreativ utbildning med fokus på grafisk design, typografi och digital illustration.',
       durationMonths: 12,
       duration: '1 år',
-      location: 'Malmö',
-      region: 'Skåne',
-      pace: 'Heltid',
+      location: 'Stockholm',
+      region: 'Stockholm',
+      pace: 'Heltid (100%)',
+      pacePercent: 100,
       distance: false,
+      url: 'https://berghs.se',
+      applicationDeadline: '2026-05-15',
     },
   ];
 
-  // Filtrera baserat på sökparametrar
+  // Filter based on params
   let filtered = mockEducations;
 
   if (params.q) {
@@ -283,61 +533,29 @@ function getFallbackEducations(params: SearchParams): SearchResult {
   }
 
   if (params.region) {
-    const region = params.region.toLowerCase();
+    const regionName = params.region.toLowerCase();
     filtered = filtered.filter(edu =>
-      edu.region?.toLowerCase().includes(region) ||
-      edu.location?.toLowerCase().includes(region)
+      edu.region?.toLowerCase().includes(regionName) ||
+      edu.location?.toLowerCase().includes(regionName)
     );
   }
 
+  if (params.distance !== undefined) {
+    filtered = filtered.filter(edu => edu.distance === params.distance);
+  }
+
+  const offset = params.offset || 0;
+  const limit = params.limit || 20;
+
   return {
-    educations: filtered.slice(params.offset || 0, (params.offset || 0) + (params.limit || 20)),
+    educations: filtered.slice(offset, offset + limit),
     total: filtered.length,
-    hasMore: false,
+    hasMore: offset + limit < filtered.length,
     source: 'fallback-mock',
   };
 }
 
-// Hämta utbildningstyper/kategorier
-async function getEducationTypes(): Promise<{ id: string; label: string; count?: number }[]> {
-  return [
-    { id: 'all', label: 'Alla utbildningsformer' },
-    { id: 'yrkeshogskola', label: 'Yrkeshögskola (YH)' },
-    { id: 'hogskola', label: 'Högskola' },
-    { id: 'universitet', label: 'Universitet' },
-    { id: 'komvux', label: 'Komvux' },
-    { id: 'folkhogskola', label: 'Folkhögskola' },
-  ];
-}
-
-// Hämta regioner/län
-async function getRegions(): Promise<{ id: string; label: string }[]> {
-  return [
-    { id: '', label: 'Hela Sverige' },
-    { id: 'stockholm', label: 'Stockholm' },
-    { id: 'vastra-gotaland', label: 'Västra Götaland' },
-    { id: 'skane', label: 'Skåne' },
-    { id: 'ostergotland', label: 'Östergötland' },
-    { id: 'uppsala', label: 'Uppsala' },
-    { id: 'jonkoping', label: 'Jönköping' },
-    { id: 'halland', label: 'Halland' },
-    { id: 'orebro', label: 'Örebro' },
-    { id: 'sodermanland', label: 'Södermanland' },
-    { id: 'gavleborg', label: 'Gävleborg' },
-    { id: 'dalarna', label: 'Dalarna' },
-    { id: 'vastmanland', label: 'Västmanland' },
-    { id: 'varmland', label: 'Värmland' },
-    { id: 'kronoberg', label: 'Kronoberg' },
-    { id: 'kalmar', label: 'Kalmar' },
-    { id: 'vasterbotten', label: 'Västerbotten' },
-    { id: 'norrbotten', label: 'Norrbotten' },
-    { id: 'blekinge', label: 'Blekinge' },
-    { id: 'vasternorrland', label: 'Västernorrland' },
-    { id: 'jamtland', label: 'Jämtland' },
-    { id: 'gotland', label: 'Gotland' },
-  ];
-}
-
+// Main request handler
 serve(async (req) => {
   const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -354,9 +572,9 @@ serve(async (req) => {
     const path = url.pathname.replace('/education-search', '').replace('//', '/') || '/';
     const params = new URLSearchParams(url.search);
 
-    console.log(`[education-search] Request: ${path}`);
+    console.log(`[education-search] ${req.method} ${path}`);
 
-    // Route handling
+    // GET /types - Education types
     if (path === '/types' || path === '/categories') {
       const types = await getEducationTypes();
       return new Response(JSON.stringify({ types }), {
@@ -364,6 +582,7 @@ serve(async (req) => {
       });
     }
 
+    // GET /regions - Available regions
     if (path === '/regions') {
       const regions = await getRegions();
       return new Response(JSON.stringify({ regions }), {
@@ -371,16 +590,48 @@ serve(async (req) => {
       });
     }
 
-    // Default: search educations
+    // GET /:id - Single education
+    if (path.match(/^\/[^/]+$/) && !path.includes('?')) {
+      const id = path.substring(1);
+      if (id && id !== 'search') {
+        const education = await getEducationById(id);
+        if (education) {
+          return new Response(JSON.stringify(education), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+        return new Response(JSON.stringify({ error: 'Education not found' }), {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+    }
+
+    // POST /match - Match by job title
+    if (path === '/match' && req.method === 'POST') {
+      const body = await req.json();
+      const result = await matchByJobTitle(body.jobTitle || body.job_title, {
+        region: body.region,
+        limit: body.limit || 10,
+      });
+      return new Response(JSON.stringify(result), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // Default: Search educations
     const searchParams: SearchParams = {
       q: params.get('q') || params.get('query') || '',
-      type: (params.get('type') || 'all') as EducationType,
-      region: params.get('region') || '',
+      type: params.get('type') || 'all',
+      form: params.get('form') || undefined,
+      region: params.get('region') || undefined,
+      municipality: params.get('municipality') || undefined,
+      distance: params.has('distance') ? params.get('distance') === 'true' : undefined,
       limit: parseInt(params.get('limit') || '20'),
       offset: parseInt(params.get('offset') || '0'),
     };
 
-    const result = await searchSusaNavet(searchParams);
+    const result = await searchEducations(searchParams);
 
     return new Response(JSON.stringify(result), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -391,7 +642,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ error: error.message, educations: [], total: 0 }),
       {
-        status: 200, // Return 200 with error in body to avoid CORS issues
+        status: 200,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );

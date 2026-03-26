@@ -1,11 +1,10 @@
 /**
  * Education API Service
- * Integrerar med Susa-navet (Skolverket) och JobEd Connect (Arbetsförmedlingen)
+ * Integrerar med JobEd Connect API (Arbetsförmedlingen/JobTech)
  * för att söka svenska utbildningar
  */
 
 import { defaultCache } from './cacheService';
-import { jobEdApi } from './afJobEdApi';
 
 // Supabase config
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
@@ -28,6 +27,8 @@ export interface Education {
   providerUrl?: string;
   type: EducationType | string;
   typeLabel: string;
+  form?: string;
+  formLabel?: string;
   description?: string;
   duration?: string;
   durationMonths?: number;
@@ -38,17 +39,20 @@ export interface Education {
   municipality?: string;
   region?: string;
   pace?: string;
+  pacePercent?: number;
   distance?: boolean;
   url?: string;
   sunCode?: string;
   credits?: number;
   level?: string;
+  qualificationLevel?: string;
 }
 
 export interface SearchParams {
   query?: string;
   type?: EducationType;
   region?: string;
+  municipality?: string;
   distance?: boolean;
   limit?: number;
   offset?: number;
@@ -72,7 +76,7 @@ export interface RegionOption {
   label: string;
 }
 
-// Koppling mellan yrke och utbildning (från JobEd Connect)
+// Koppling mellan yrke och utbildning
 export interface OccupationEducationMatch {
   occupationId: string;
   occupationLabel: string;
@@ -90,21 +94,23 @@ export interface OccupationEducationMatch {
 
 async function fetchFromEducationApi<T>(
   endpoint: string,
-  params?: Record<string, string>
+  params?: Record<string, string>,
+  options?: { method?: string; body?: any }
 ): Promise<T> {
   const queryString = params ? '?' + new URLSearchParams(params).toString() : '';
   const url = `${SUPABASE_URL}/functions/v1/education-search${endpoint}${queryString}`;
 
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 15000);
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
 
   try {
     const response = await fetch(url, {
-      method: 'GET',
+      method: options?.method || 'GET',
       headers: {
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
         'Content-Type': 'application/json',
       },
+      body: options?.body ? JSON.stringify(options.body) : undefined,
       signal: controller.signal,
     });
 
@@ -125,7 +131,7 @@ async function fetchFromEducationApi<T>(
 }
 
 /**
- * Sök utbildningar via Susa-navet
+ * Sök utbildningar
  */
 export async function searchEducations(params: SearchParams): Promise<SearchResult> {
   const cacheKey = `edu_search_${JSON.stringify(params)}`;
@@ -133,6 +139,7 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
   // Check cache first (5 min TTL)
   const cached = defaultCache.get<SearchResult>(cacheKey);
   if (cached) {
+    console.log('[educationApi] Cache hit for search');
     return cached;
   }
 
@@ -142,12 +149,14 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
     if (params.query) queryParams.q = params.query;
     if (params.type && params.type !== 'all') queryParams.type = params.type;
     if (params.region) queryParams.region = params.region;
+    if (params.municipality) queryParams.municipality = params.municipality;
+    if (params.distance !== undefined) queryParams.distance = String(params.distance);
     if (params.limit) queryParams.limit = String(params.limit);
     if (params.offset) queryParams.offset = String(params.offset);
 
     const result = await fetchFromEducationApi<SearchResult>('', queryParams);
 
-    // Cache results
+    // Cache results for 5 minutes
     defaultCache.set(cacheKey, result, 5 * 60 * 1000);
 
     return result;
@@ -159,6 +168,23 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
       hasMore: false,
       source: 'error',
     };
+  }
+}
+
+/**
+ * Hämta enskild utbildning
+ */
+export async function getEducation(id: string): Promise<Education | null> {
+  const cacheKey = `edu_${id}`;
+  const cached = defaultCache.get<Education>(cacheKey);
+  if (cached) return cached;
+
+  try {
+    const result = await fetchFromEducationApi<Education>(`/${encodeURIComponent(id)}`);
+    defaultCache.set(cacheKey, result, 30 * 60 * 1000); // 30 min cache
+    return result;
+  } catch {
+    return null;
   }
 }
 
@@ -179,8 +205,7 @@ export async function getEducationTypes(): Promise<EducationTypeOption[]> {
     return [
       { id: 'all', label: 'Alla utbildningsformer' },
       { id: 'yrkeshogskola', label: 'Yrkeshögskola (YH)' },
-      { id: 'hogskola', label: 'Högskola' },
-      { id: 'universitet', label: 'Universitet' },
+      { id: 'hogskola', label: 'Högskola/Universitet' },
       { id: 'komvux', label: 'Komvux' },
       { id: 'folkhogskola', label: 'Folkhögskola' },
     ];
@@ -200,57 +225,49 @@ export async function getRegions(): Promise<RegionOption[]> {
     defaultCache.set(cacheKey, result.regions, 60 * 60 * 1000);
     return result.regions;
   } catch {
-    // Fallback
+    // Fallback with region codes
     return [
       { id: '', label: 'Hela Sverige' },
-      { id: 'stockholm', label: 'Stockholm' },
-      { id: 'vastra-gotaland', label: 'Västra Götaland' },
-      { id: 'skane', label: 'Skåne' },
+      { id: '01', label: 'Stockholm' },
+      { id: '03', label: 'Uppsala' },
+      { id: '12', label: 'Skåne' },
+      { id: '14', label: 'Västra Götaland' },
+      { id: '05', label: 'Östergötland' },
     ];
   }
 }
 
 /**
- * Hämta rekommenderade utbildningar baserat på yrke (via JobEd Connect)
+ * Matcha utbildningar med yrke/jobbtitel
  */
-export async function getEducationsForOccupation(
-  occupationId: string,
-  occupationLabel?: string
-): Promise<OccupationEducationMatch | null> {
-  const cacheKey = `edu_occ_${occupationId}`;
-  const cached = defaultCache.get<OccupationEducationMatch>(cacheKey);
+export async function matchEducationsByJobTitle(
+  jobTitle: string,
+  options?: { region?: string; limit?: number }
+): Promise<SearchResult> {
+  const cacheKey = `edu_match_${jobTitle}_${options?.region || ''}`;
+  const cached = defaultCache.get<SearchResult>(cacheKey);
   if (cached) return cached;
 
   try {
-    const result = await jobEdApi.getEducationsForOccupation(occupationId);
+    const result = await fetchFromEducationApi<SearchResult>('/match', undefined, {
+      method: 'POST',
+      body: {
+        jobTitle,
+        region: options?.region,
+        limit: options?.limit || 10,
+      },
+    });
 
-    if (result) {
-      const match: OccupationEducationMatch = {
-        occupationId: result.occupation_id,
-        occupationLabel: result.occupation_label,
-        educations: result.recommended_educations.map(edu => ({
-          code: edu.education_code,
-          title: edu.education_title,
-          type: edu.education_type,
-          matchScore: edu.match_score,
-          description: edu.description,
-          duration: edu.duration_months ? `${edu.duration_months} månader` : undefined,
-        })),
-      };
-
-      defaultCache.set(cacheKey, match, 30 * 60 * 1000); // 30min cache
-      return match;
-    }
-
-    return null;
+    defaultCache.set(cacheKey, result, 30 * 60 * 1000);
+    return result;
   } catch (error) {
-    console.error('Fel vid hämtning av utbildningar för yrke:', error);
-    return null;
+    console.error('Fel vid matchning av utbildningar:', error);
+    return { educations: [], total: 0, hasMore: false, source: 'error' };
   }
 }
 
 /**
- * Hämta utbildningsrekommendationer baserat på kompetensgap
+ * Hämta rekommenderade utbildningar baserat på kompetensgap
  */
 export async function getEducationsForSkillGaps(
   skills: string[]
@@ -336,13 +353,26 @@ export async function getEducationsForRIASEC(
   }
 }
 
+/**
+ * Populära sökningar (snabbval)
+ */
+export const POPULAR_SEARCHES = [
+  { query: 'webbutvecklare', label: 'Webbutveckling', type: 'yrkeshogskola' as EducationType },
+  { query: 'sjuksköterska', label: 'Vård & Omsorg', type: 'hogskola' as EducationType },
+  { query: 'ekonomi redovisning', label: 'Ekonomi', type: 'all' as EducationType },
+  { query: 'design ux', label: 'Design & UX', type: 'yrkeshogskola' as EducationType },
+  { query: 'projektledare', label: 'Projektledning', type: 'all' as EducationType },
+  { query: 'data scientist ai', label: 'AI & Data', type: 'yrkeshogskola' as EducationType },
+];
+
 // ============== EXPORT ==============
 
 export const educationApi = {
   search: searchEducations,
+  getById: getEducation,
   getTypes: getEducationTypes,
   getRegions,
-  getForOccupation: getEducationsForOccupation,
+  matchByJobTitle: matchEducationsByJobTitle,
   getForSkillGaps: getEducationsForSkillGaps,
   getForRIASEC: getEducationsForRIASEC,
 };
