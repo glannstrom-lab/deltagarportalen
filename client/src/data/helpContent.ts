@@ -1,6 +1,7 @@
 /**
  * Help content for all pages
  * FAQ and tips for each section of the application
+ * Updated to reflect actual implemented features
  */
 
 import { HelpContent } from '@/components/HelpButton'
@@ -8,28 +9,28 @@ import { HelpContent } from '@/components/HelpButton'
 export const helpContent: Record<string, HelpContent> = {
   dashboard: {
     title: 'Hjälp - Översikt',
-    description: 'Din startsida för jobbsökandet',
+    description: 'Din startpunkt för jobbsökandet',
     tips: [
-      'Kolla av dina dagliga uppgifter för att hålla momentum',
-      'Använd widgetarna för att snabbt se din framsteg',
-      'Klicka på korten för att gå direkt till respektive sektion'
+      'Följ de 6 stegen i ordning för bästa resultat',
+      'Grön bock visar att ett steg är klart',
+      'Klicka på ett steg för att gå direkt dit'
     ],
     faqs: [
       {
-        question: 'Vad är onboarding-stegen?',
-        answer: 'Onboarding-stegen hjälper dig komma igång med de viktigaste delarna av din jobbsökning: skapa profil, göra intresseguiden, bygga CV, utforska karriärvägar och söka jobb.'
+        question: 'Vad är de 6 onboarding-stegen?',
+        answer: '1. Profil - fyll i dina uppgifter. 2. Intresseguide - upptäck vilka yrken som passar dig. 3. CV - skapa ett professionellt CV. 4. Karriär - utforska karriärvägar. 5. Jobbsök - hitta lediga jobb. 6. Personligt brev - skriv ansökningar.'
       },
       {
-        question: 'Hur uppdaterar jag min profil?',
-        answer: 'Klicka på "Profil" i menyn eller på profilkortet på översikten. Där kan du lägga till information om dig själv, dina önskemål och intressen.'
+        question: 'Hur markeras ett steg som klart?',
+        answer: 'Stegen markeras automatiskt när du har genomfört dem. T.ex. markeras CV-steget när du har fyllt i grundläggande CV-information, och Intresseguide när du har slutfört testet.'
       },
       {
-        question: 'Vad betyder procenttalet på mitt CV?',
-        answer: 'Procenttalet visar hur komplett ditt CV är. Fyll i fler sektioner som arbetslivserfarenhet, utbildning och kompetenser för att öka det.'
+        question: 'Måste jag göra stegen i ordning?',
+        answer: 'Nej, du kan hoppa mellan stegen som du vill. Men vi rekommenderar att börja med Profil och Intresseguiden för att få bättre matchningar senare.'
       },
       {
-        question: 'Hur fungerar poängsystemet?',
-        answer: 'Du får poäng (XP) för aktiviteter som att uppdatera din profil, söka jobb, och genomföra övningar. Poängen visar din aktivitetsnivå.'
+        question: 'Vad händer när alla steg är klara?',
+        answer: 'När alla 6 steg är klara får du tillgång till "Min Jobbresa" där du kan följa hela din jobbsökningsprocess.'
       }
     ]
   },
@@ -39,29 +40,33 @@ export const helpContent: Record<string, HelpContent> = {
     description: 'Hantera dina uppgifter och preferenser',
     tips: [
       'Alla ändringar sparas automatiskt till molnet',
-      'Lägg till önskade jobb för att få bättre matchningar',
-      'Fyll i tillgänglighet för att visa arbetsgivare när du kan börja'
+      'Se "Sparat" i grönt när dina ändringar har synkats',
+      'Fyll i så mycket som möjligt för bättre jobbmatchningar'
     ],
     faqs: [
       {
-        question: 'Varför ska jag fylla i min profil?',
-        answer: 'En komplett profil hjälper oss ge dig bättre jobbmatchningar och rekommendationer. Det gör det också enklare för handledare att hjälpa dig.'
+        question: 'Vilka sektioner finns i profilen?',
+        answer: 'Det finns 10 sektioner: Kontaktuppgifter, Önskade jobb, Intressen, Intresseprofil (RIASEC), Tillgänglighet, Mobilitet & Körkort, Lön & Förmåner, Arbetsmarknadsstatus, Arbetspreferenser och Fysiska förutsättningar.'
       },
       {
         question: 'Sparas mina uppgifter automatiskt?',
-        answer: 'Ja! Alla ändringar du gör sparas automatiskt till molnet. Du ser en grön "Sparat"-indikator när ändringarna är synkade.'
+        answer: 'Ja! Alla ändringar sparas automatiskt till molnet efter 1-2 sekunder. Du ser en grön "Sparat"-indikator när ändringarna är synkade.'
       },
       {
-        question: 'Vad är intresseguiden?',
-        answer: 'Intresseguiden är ett test som hjälper dig förstå vilka typer av yrken som passar din personlighet. Resultatet visas sedan i din profil.'
+        question: 'Vad är "Önskade jobb"?',
+        answer: 'Här kan du lägga till upp till 3 jobbroller du är intresserad av, t.ex. "Projektledare" eller "UX-designer". Detta hjälper oss ge dig bättre jobbförslag.'
+      },
+      {
+        question: 'Vad är intresseprofilen (RIASEC)?',
+        answer: 'Om du har gjort Intresseguiden visas dina resultat här. Det visar vilka personlighetstyper som passar dig bäst enligt RIASEC-modellen.'
+      },
+      {
+        question: 'Måste jag fylla i allt?',
+        answer: 'Nej, fyll i det som känns relevant för dig. Kontaktuppgifter och Önskade jobb är mest viktiga. Sektionen "Fysiska förutsättningar" är helt frivillig.'
       },
       {
         question: 'Kan jag ändra min e-postadress?',
         answer: 'E-postadressen är kopplad till ditt konto och kan inte ändras direkt. Kontakta din handledare om du behöver byta.'
-      },
-      {
-        question: 'Vad betyder "Fysiska förutsättningar"?',
-        answer: 'Denna sektion är helt frivillig. Om du har behov av anpassningar på arbetsplatsen kan du ange det här för att få bättre matchningar.'
       }
     ]
   },
@@ -70,31 +75,39 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp - CV-byggaren',
     description: 'Skapa ett professionellt CV',
     tips: [
-      'Börja med att fylla i grundläggande information',
-      'Använd konkreta exempel och siffror i dina beskrivningar',
-      'Förhandsgranska ofta för att se hur det kommer se ut',
-      'Exportera som PDF när du är nöjd'
+      'Följ de 5 stegen för att bygga ditt CV',
+      'Förhandsgranska ditt CV i realtid till höger',
+      'Använd AI-assistenten för att förbättra din sammanfattning',
+      'Spara olika versioner för olika jobbtyper'
     ],
     faqs: [
       {
-        question: 'Hur skapar jag ett nytt CV?',
-        answer: 'Fyll i sektionerna i CV-byggaren: personlig info, arbetslivserfarenhet, utbildning, kompetenser och språk. Allt sparas automatiskt.'
+        question: 'Vilka steg finns i CV-byggaren?',
+        answer: '1. Design - välj bland 6 mallar. 2. Om dig - namn, titel, kontaktuppgifter. 3. Profil - sammanfattning med AI-hjälp. 4. Erfarenhet - jobb och utbildning. 5. Kompetenser - färdigheter, språk, certifikat.'
       },
       {
-        question: 'Kan jag ha flera CV-versioner?',
-        answer: 'Ja! Du kan skapa olika versioner av ditt CV anpassade för olika typer av jobb. Använd versionshanteringen för att spara och växla mellan dem.'
+        question: 'Vilka CV-mallar finns?',
+        answer: 'Det finns 6 mallar: Sidebar (sidopanel), Centered (centrerad), Minimal (enkel), Creative (kreativ), Executive (professionell) och Nordic (nordisk design).'
+      },
+      {
+        question: 'Hur använder jag AI-assistenten?',
+        answer: 'I steg 3 (Profil) finns en AI-knapp som hjälper dig skriva eller förbättra din sammanfattning baserat på din erfarenhet.'
       },
       {
         question: 'Hur exporterar jag mitt CV som PDF?',
-        answer: 'Klicka på "Ladda ner PDF" eller "Exportera" knappen. Du kan välja mellan olika mallar och designer innan du laddar ner.'
+        answer: 'Klicka på "Ladda ner PDF" knappen. Du kan välja vilken mall du vill använda innan du laddar ner.'
       },
       {
-        question: 'Vad ska jag skriva i sammanfattningen?',
-        answer: 'Sammanfattningen ska vara 2-4 meningar som beskriver vem du är, din erfarenhet och vad du söker. Tänk på det som din "elevator pitch".'
+        question: 'Kan jag ha flera CV-versioner?',
+        answer: 'Ja! Använd versionshanteringen för att spara olika versioner av ditt CV. Du kan t.ex. ha ett för teknikjobb och ett för ledarroller.'
       },
       {
-        question: 'Hur lägger jag till kompetenser?',
-        answer: 'Gå till kompetens-sektionen och lägg till relevanta färdigheter. Du kan ange nivå (nybörjare till expert) för varje kompetens.'
+        question: 'Sparas mitt CV automatiskt?',
+        answer: 'Ja, alla ändringar sparas automatiskt. Om du stänger webbläsaren kan du fortsätta där du slutade.'
+      },
+      {
+        question: 'Vad är "Fyll med demodata"?',
+        answer: 'Det fyller CV:t med exempeldata så du kan se hur det ser ut. Bra för att testa mallar innan du fyller i din egen information.'
       }
     ]
   },
@@ -104,8 +117,8 @@ export const helpContent: Record<string, HelpContent> = {
     description: 'Hitta och sök lediga tjänster',
     tips: [
       'Använd filter för att hitta jobb som matchar dina preferenser',
-      'Spara intressanta jobb för att läsa senare',
-      'Ställ in jobbnotiser för att få nya jobb direkt till dig'
+      'Spara intressanta jobb med hjärt-ikonen',
+      'Klicka på ett jobb för att se hela annonsen'
     ],
     faqs: [
       {
@@ -113,20 +126,24 @@ export const helpContent: Record<string, HelpContent> = {
         answer: 'Jobben hämtas från Arbetsförmedlingens Platsbanken som samlar annonser från hela Sverige.'
       },
       {
+        question: 'Hur söker jag jobb?',
+        answer: 'Skriv in sökord (t.ex. "utvecklare" eller "säljare") och välj eventuellt ort. Klicka på Sök eller tryck Enter.'
+      },
+      {
+        question: 'Vilka filter finns?',
+        answer: 'Du kan filtrera på: Kommun/region, anställningstyp (heltid, deltid, etc.) och publiceringsdatum.'
+      },
+      {
         question: 'Hur sparar jag ett jobb?',
-        answer: 'Klicka på hjärt-ikonen eller "Spara" på ett jobb. Du hittar sedan alla sparade jobb under "Sparade jobb".'
+        answer: 'Klicka på hjärt-ikonen på ett jobb. Sparade jobb hittar du under fliken "Sparade".'
       },
       {
         question: 'Hur söker jag ett jobb?',
-        answer: 'Klicka på jobbet för att läsa mer, sedan på "Sök jobbet" eller "Till annonsen" för att komma till ansökningssidan.'
+        answer: 'Klicka på jobbet för att läsa mer, sedan på "Till annonsen" för att komma till ansökningssidan hos arbetsgivaren eller Arbetsförmedlingen.'
       },
       {
-        question: 'Vad är jobbnotiser?',
-        answer: 'Med jobbnotiser får du automatiskt nya jobb som matchar dina sökkriterier. Ställ in dem under jobbnotis-sektionen.'
-      },
-      {
-        question: 'Hur hittar jag distansjobb?',
-        answer: 'Använd filtret "Distans" eller sök på "remote" eller "distans" för att hitta jobb som kan utföras hemifrån.'
+        question: 'Vad är flikarna "Ansökningar" och "Varningar"?',
+        answer: 'Under "Ansökningar" kan du hålla koll på jobb du har sökt. "Varningar" låter dig ställa in jobbnotiser för nya jobb som matchar dina kriterier.'
       }
     ]
   },
@@ -135,30 +152,34 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp - Utbildningar',
     description: 'Hitta utbildningar som passar dig',
     tips: [
+      'Använd snabbsökningarna för att komma igång',
       'Filtrera på utbildningstyp för att hitta rätt nivå',
-      'Kolla ansökningsdeadlines - de varierar!',
-      'Distansutbildningar ger flexibilitet'
+      'Kolla ansökningsdeadlines - de varierar!'
     ],
     faqs: [
       {
         question: 'Vilka utbildningar visas här?',
-        answer: 'Vi visar utbildningar från Yrkeshögskolan, Högskolor, Komvux och Folkhögskolor i hela Sverige via JobTech/Arbetsförmedlingen.'
+        answer: 'Utbildningar från Yrkeshögskolan (YH), Högskolor/Universitet, Komvux och Folkhögskolor i hela Sverige via JobTech/Arbetsförmedlingen.'
       },
       {
         question: 'Vad är skillnaden mellan utbildningstyperna?',
-        answer: 'Yrkeshögskola (YH) är praktiska utbildningar 1-2 år. Högskola ger akademisk examen. Komvux är vuxenutbildning på gymnasienivå. Folkhögskola erbjuder allmänna och yrkesinriktade kurser.'
+        answer: 'Yrkeshögskola (YH) = praktiska utbildningar 1-2 år. Högskola = akademisk examen. Komvux = vuxenutbildning på gymnasienivå. Folkhögskola = allmänna och yrkesinriktade kurser.'
+      },
+      {
+        question: 'Vad är snabbsökningarna?',
+        answer: 'De 6 korten (YH-utbildningar, Universitet, IT & Tech, Vård & Omsorg, Ekonomi, Kreativa yrken) är förvalda sökningar som snabbt visar populära utbildningsområden.'
       },
       {
         question: 'Hur ansöker jag till en utbildning?',
-        answer: 'Klicka på utbildningen och sedan "Till utbildningen" för att komma till anordnarens sida där du ansöker.'
+        answer: 'Klicka på utbildningen och sedan "Till utbildningen" för att komma till anordnarens hemsida där du ansöker.'
+      },
+      {
+        question: 'Vad betyder distansikonen?',
+        answer: 'Utbildningar med laptop-ikonen kan läsas på distans, helt eller delvis. Bra om du inte kan pendla.'
       },
       {
         question: 'Kostar utbildningarna pengar?',
         answer: 'De flesta utbildningar i Sverige är kostnadsfria. CSN (studiemedel) kan sökas för godkända utbildningar.'
-      },
-      {
-        question: 'Kan jag studera på distans?',
-        answer: 'Ja, många utbildningar erbjuds på distans. Filtrera på "Distans" för att bara se dessa.'
       }
     ]
   },
@@ -169,28 +190,28 @@ export const helpContent: Record<string, HelpContent> = {
     tips: [
       'Svara ärligt - det finns inga rätt eller fel svar',
       'Testet tar ca 10-15 minuter',
-      'Resultatet baseras på den etablerade RIASEC-modellen'
+      'Ditt resultat sparas och visas i din profil'
     ],
     faqs: [
       {
         question: 'Vad är intresseguiden?',
-        answer: 'Intresseguiden är ett vetenskapligt baserat test som matchar dina intressen och personlighet med olika yrkesområden. Det bygger på Hollands RIASEC-modell.'
+        answer: 'Ett vetenskapligt baserat test som matchar dina intressen med olika yrkesområden. Det bygger på Hollands RIASEC-modell som används världen över.'
       },
       {
-        question: 'Hur lång tid tar testet?',
-        answer: 'Testet tar ungefär 10-15 minuter att genomföra. Du svarar på frågor om vad du tycker om att göra.'
-      },
-      {
-        question: 'Kan jag göra om testet?',
-        answer: 'Ja! Du kan göra testet flera gånger. Ditt senaste resultat sparas i din profil.'
+        question: 'Vilka flikar finns?',
+        answer: 'Test (gör testet), Resultat (se dina resultat), Yrken (matchande yrken), Utforska (läs mer om yrkestyper), Historik (tidigare testresultat).'
       },
       {
         question: 'Vad betyder RIASEC?',
-        answer: 'RIASEC står för sex personlighetstyper: Realistisk, Utforskande (Investigative), Konstnärlig (Artistic), Social, Företagsam (Enterprising) och Konventionell. Ditt resultat visar vilka typer som passar dig bäst.'
+        answer: 'Sex personlighetstyper: Realistisk (praktisk), Investigativ (utforskande), Artistisk (kreativ), Social (hjälpande), Enterprising (företagsam), Konventionell (strukturerad).'
       },
       {
-        question: 'Stämmer resultatet alltid?',
-        answer: 'Resultatet är en vägledning baserat på dina svar. Använd det som inspiration, men lita också på din egen magkänsla!'
+        question: 'Kan jag göra om testet?',
+        answer: 'Ja! Du kan göra testet flera gånger. Alla resultat sparas under Historik så du kan jämföra.'
+      },
+      {
+        question: 'Hur används mitt resultat?',
+        answer: 'Resultatet visas i din profil och kan användas för att få bättre jobbmatchningar och utbildningsförslag.'
       }
     ]
   },
@@ -199,26 +220,26 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp - Karriär',
     description: 'Utforska karriärvägar',
     tips: [
-      'Läs om olika yrken för att få inspiration',
-      'Kolla vilka kompetenser som behövs för ditt drömyrke',
-      'Använd kompetensgap-analysen för att se vad du behöver utveckla'
+      'Börja med "Utforska" för att läsa om olika yrken',
+      'Använd "Kompetens" för att se vad du behöver lära dig',
+      'Skapa en karriärplan under "Karriärplan"'
     ],
     faqs: [
       {
-        question: 'Vad kan jag göra i karriärsektionen?',
-        answer: 'Här kan du utforska olika yrken, se vilka kompetenser de kräver, läsa om arbetsmarknadstrender och planera din karriärväg.'
+        question: 'Vilka flikar finns?',
+        answer: 'Utforska (yrkesbeskrivningar), Nätverk (nätverkstips), Anpassning (karriärbyte), Företag (arbetsgivare), Credentials (certifieringar), Flytta (jobba utomlands), Karriärplan (din plan), Kompetens (kompetensgap).'
       },
       {
-        question: 'Vad är en kompetensgap-analys?',
-        answer: 'Det är en jämförelse mellan dina nuvarande kompetenser och vad som krävs för ett visst yrke. Den visar vad du behöver lära dig.'
+        question: 'Vad är kompetensgap-analysen?',
+        answer: 'Under fliken "Kompetens" kan du jämföra dina nuvarande kompetenser med vad som krävs för ett yrke. Den visar vad du behöver lära dig.'
       },
       {
-        question: 'Hur hittar jag yrken som passar mig?',
-        answer: 'Gör intresseguiden först! Sedan kan du utforska yrken som matchar din profil här i karriärsektionen.'
+        question: 'Hur skapar jag en karriärplan?',
+        answer: 'Gå till fliken "Karriärplan" och sätt upp mål och delmål för din karriärutveckling.'
       },
       {
         question: 'Var kommer yrkesinformationen ifrån?',
-        answer: 'Information hämtas från Arbetsförmedlingen och SCB som har data om olika yrken, löner och arbetsmarknad.'
+        answer: 'Information hämtas från Arbetsförmedlingen och SCB som har data om yrken, löner och arbetsmarknadstrender.'
       }
     ]
   },
@@ -228,25 +249,25 @@ export const helpContent: Record<string, HelpContent> = {
     description: 'Skriv övertygande ansökningar',
     tips: [
       'Anpassa brevet för varje jobb du söker',
-      'Börja med varför du är intresserad av just detta jobb',
-      'Använd konkreta exempel från din erfarenhet'
+      'Använd AI-hjälpen för att komma igång',
+      'Spara brev som mallar för liknande jobb'
     ],
     faqs: [
       {
+        question: 'Vilka flikar finns?',
+        answer: 'Skriv brev (skapa nytt), Mina brev (sparade brev), Ansökningar (skickade ansökningar), Mallar (färdiga mallar), Statistik (din ansökningsstatistik).'
+      },
+      {
         question: 'Hur använder jag AI-hjälpen?',
-        answer: 'Klistra in jobbannonsen och klicka på "Generera". AI:n skapar ett utkast baserat på ditt CV och jobbet. Redigera sedan för att göra det personligt.'
+        answer: 'Under "Skriv brev" kan du klistra in en jobbannons. AI:n skapar ett utkast baserat på ditt CV och jobbet. Redigera sedan för att göra det personligt.'
       },
       {
         question: 'Hur långt ska ett personligt brev vara?',
-        answer: 'Ett personligt brev bör vara cirka en halv till en A4-sida. Håll det koncist och relevant.'
+        answer: 'Cirka en halv till en A4-sida. Håll det koncist och fokusera på varför du passar just det jobbet.'
       },
       {
-        question: 'Vad ska jag inkludera?',
-        answer: 'Inledning (varför du söker), mittdel (dina relevanta erfarenheter och kompetenser), avslutning (sammanfattning och kontaktuppgifter).'
-      },
-      {
-        question: 'Kan jag spara flera brev?',
-        answer: 'Ja! Du kan spara olika brev för olika jobb och komma tillbaka till dem senare.'
+        question: 'Kan jag spara mina brev?',
+        answer: 'Ja! Alla brev du skriver sparas under "Mina brev". Du kan återanvända och redigera dem för nya ansökningar.'
       }
     ]
   },
@@ -256,25 +277,25 @@ export const helpContent: Record<string, HelpContent> = {
     description: 'Anpassa din upplevelse',
     tips: [
       'Aktivera mörkt läge för att minska ögonbelastning',
-      'Välj vilka notiser du vill få',
-      'Anpassa språk och tillgänglighet efter behov'
+      'Använd tillgänglighetsalternativen om du behöver',
+      'Välj vilka notiser du vill få'
     ],
     faqs: [
       {
+        question: 'Vilka inställningar finns?',
+        answer: 'Profil (grundinfo), Tillgänglighet (hög kontrast, stor text, lugnt läge), Notiser (e-post, push), Utseende (ljust/mörkt tema), Sekretess och Säkerhet.'
+      },
+      {
         question: 'Hur byter jag till mörkt läge?',
-        answer: 'Under "Utseende" i inställningarna kan du växla mellan ljust och mörkt tema.'
+        answer: 'Under "Utseende" kan du välja mellan Ljust, Mörkt eller System (följer din dators inställning).'
       },
       {
-        question: 'Kan jag ändra språk?',
-        answer: 'Ja, under "Språk" kan du välja mellan svenska och engelska.'
+        question: 'Vad är "Lugnt läge"?',
+        answer: 'Lugnt läge minskar animationer och rörliga element för en lugnare upplevelse. Bra om du är känslig för rörelse.'
       },
       {
-        question: 'Hur stänger jag av notiser?',
-        answer: 'Under "Notiser" kan du välja vilka typer av meddelanden du vill få.'
-      },
-      {
-        question: 'Hur raderar jag mitt konto?',
-        answer: 'Kontakta din handledare för hjälp med att radera ditt konto. All data tas bort permanent.'
+        question: 'Kan jag stänga av notiser?',
+        answer: 'Ja, under "Notiser" kan du välja exakt vilka typer av meddelanden du vill få.'
       }
     ]
   },
@@ -283,22 +304,30 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp - Dagbok',
     description: 'Reflektera över din jobbsökning',
     tips: [
-      'Skriv regelbundet för att följa din utveckling',
-      'Anteckna både framgångar och utmaningar',
-      'Använd dagboken inför möten med din handledare'
+      'Skriv regelbundet för att bygga en streak',
+      'Logga ditt humör dagligen för att se mönster',
+      'Sätt veckans mål och bocka av dem'
     ],
     faqs: [
       {
-        question: 'Vad ska jag skriva i dagboken?',
-        answer: 'Reflektioner om din jobbsökning: vad du gjort, hur du mår, vad du lärt dig, och vad du planerar framöver.'
+        question: 'Vilka flikar finns?',
+        answer: 'Dagbok (skriv dagboksinlägg), Humör (logga hur du mår), Mål (sätt och följ veckans mål), Tacksamhet (skriv vad du är tacksam för).'
       },
       {
-        question: 'Kan andra se min dagbok?',
-        answer: 'Din dagbok är privat som standard. Du kan välja att dela specifika inlägg med din handledare om du vill.'
+        question: 'Vad är streaks?',
+        answer: 'En streak räknar hur många dagar i rad du har skrivit i dagboken. Håll den vid liv för motivation!'
       },
       {
-        question: 'Hur ofta ska jag skriva?',
-        answer: 'Det finns inget krav, men att skriva några gånger i veckan hjälper dig följa din progress och förbereda för handledarmöten.'
+        question: 'Hur fungerar humörloggningen?',
+        answer: 'Varje dag kan du snabbt logga hur du mår. Över tid ser du mönster som kan hjälpa dig förstå vad som påverkar ditt välmående.'
+      },
+      {
+        question: 'Vad är veckans mål?',
+        answer: 'Under "Mål" kan du sätta upp mål för veckan, t.ex. "Söka 5 jobb" eller "Uppdatera CV". Bocka av när du är klar.'
+      },
+      {
+        question: 'Sparas allt automatiskt?',
+        answer: 'Ja! Alla dagboksinlägg, humörloggar och mål sparas automatiskt till molnet.'
       }
     ]
   },
@@ -307,22 +336,26 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp - Välmående',
     description: 'Ta hand om dig själv',
     tips: [
-      'Logga ditt humör dagligen för att se mönster',
-      'Ta pauser - jobbsökning kan vara krävande',
-      'Använd övningarna för att hantera stress'
+      'Jobbsökning kan vara stressande - ta pauser',
+      'Använd övningarna för att hantera stress',
+      'Akut stöd finns om du behöver prata med någon'
     ],
     faqs: [
       {
+        question: 'Vilka flikar finns?',
+        answer: 'Hälsa (hälsotips), Energi (energihantering), Rutiner (skapa rutiner), Kognitiv träning (hjärnövningar), Akut stöd (krisstöd och hjälplinjer).'
+      },
+      {
+        question: 'Vad är "Kognitiv träning"?',
+        answer: 'Övningar för att träna koncentration, minne och fokus. Bra för att hålla hjärnan aktiv under jobbsökningen.'
+      },
+      {
+        question: 'Vad finns under "Akut stöd"?',
+        answer: 'Kontaktuppgifter till hjälplinjer och resurser om du mår dåligt och behöver prata med någon. T.ex. Mind, Jourhavande präst, etc.'
+      },
+      {
         question: 'Varför finns välmåendesektionen?',
-        answer: 'Jobbsökning kan vara stressande. Den här sektionen hjälper dig ta hand om ditt mentala välmående under processen.'
-      },
-      {
-        question: 'Vad är humörloggning?',
-        answer: 'Du kan snabbt logga hur du mår varje dag. Över tid ser du mönster som kan hjälpa dig förstå vad som påverkar ditt välmående.'
-      },
-      {
-        question: 'Vilka övningar finns?',
-        answer: 'Andningsövningar, mindfulness, och reflektionsövningar för att hantera stress och hålla motivationen uppe.'
+        answer: 'Jobbsökning kan vara mentalt krävande. Den här sektionen hjälper dig ta hand om ditt välmående under processen.'
       }
     ]
   },
@@ -331,22 +364,26 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp - Kalender',
     description: 'Planera dina aktiviteter',
     tips: [
-      'Lägg in alla möten och intervjuer',
-      'Sätt påminnelser för ansökningsdeadlines',
-      'Schemalägg tid för jobbsökning varje dag'
+      'Byt mellan månad, vecka och dag-vy',
+      'Lägg in intervjuer och möten',
+      'Håll koll på dina ansökningsdeadlines'
     ],
     faqs: [
       {
+        question: 'Vilka vyer finns?',
+        answer: 'Månadsvy (översikt), Veckovy (detaljerad) och Dagvy (fokus på en dag). Byt med knapparna i övre högra hörnet.'
+      },
+      {
         question: 'Hur lägger jag till en händelse?',
-        answer: 'Klicka på ett datum eller på "Lägg till" knappen. Fyll i titel, tid och eventuell beskrivning.'
+        answer: 'Klicka på ett datum eller på plus-knappen. Fyll i titel, tid, typ (intervju, möte, deadline, förberedelse) och spara.'
       },
       {
-        question: 'Kan jag få påminnelser?',
-        answer: 'Ja! När du skapar en händelse kan du välja att få en påminnelse innan.'
+        question: 'Vilka händelsetyper finns?',
+        answer: 'Intervju (med förberedelsefrågor), Möte, Deadline och Förberedelse. Varje typ har olika färg och ikon.'
       },
       {
-        question: 'Synkas kalendern med andra appar?',
-        answer: 'Just nu är kalendern fristående i portalen. Exportfunktion till andra kalendrar kommer snart.'
+        question: 'Vad är mål-trackern?',
+        answer: 'I kalendervyn ser du veckans mål för antal ansökningar, intervjuer och uppgifter. Bra för att hålla tempot uppe.'
       }
     ]
   },
@@ -355,22 +392,22 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp',
     description: 'Vägledning och support',
     tips: [
-      'Använd menyn för att navigera mellan olika sektioner',
-      'Dina framsteg sparas automatiskt',
+      'Följ onboarding-stegen på översiktssidan',
+      'Dina framsteg sparas automatiskt till molnet',
       'Kontakta din handledare om du har frågor'
     ],
     faqs: [
       {
         question: 'Hur kommer jag igång?',
-        answer: 'Börja med att fylla i din profil och göra intresseguiden. Sedan kan du bygga ditt CV och börja söka jobb!'
+        answer: 'Börja på Översiktssidan och följ de 6 onboarding-stegen: Profil → Intresseguide → CV → Karriär → Jobbsök → Personligt brev.'
+      },
+      {
+        question: 'Sparas min information automatiskt?',
+        answer: 'Ja! Allt du fyller i sparas automatiskt till molnet. Du kan logga in från vilken enhet som helst och fortsätta där du slutade.'
       },
       {
         question: 'Vem kan se min information?',
         answer: 'Din information är privat. Handledare kan se viss övergripande information för att hjälpa dig bättre.'
-      },
-      {
-        question: 'Var hittar jag min handledare?',
-        answer: 'Information om din handledare finns under "Profil" eller "Inställningar".'
       },
       {
         question: 'Hur loggar jag ut?',
