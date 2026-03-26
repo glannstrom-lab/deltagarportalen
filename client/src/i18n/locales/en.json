@@ -2349,7 +2349,99 @@
     "tipsTitle": "Tips for a great profile",
     "tip1": "Fill in all fields so employers can contact you",
     "tip2": "A short bio helps employers get to know you",
-    "tip3": "Update your profile regularly with current information"
+    "tip3": "Update your profile regularly with current information",
+    "sections": {
+      "desiredJobs": "Desired jobs",
+      "desiredJobsDesc": "What roles are you dreaming of? (max 3)",
+      "interests": "Your interests",
+      "interestsDesc": "What are you passionate about? (max 3)",
+      "interestProfile": "Your interest profile",
+      "interestProfileDesc": "Results from the interest guide",
+      "availability": "Availability",
+      "mobility": "Mobility & Driver's License",
+      "salary": "Salary & Benefits",
+      "laborMarket": "Labor market status",
+      "workPreferences": "Work preferences",
+      "physical": "Physical requirements"
+    },
+    "availability": {
+      "currentStatus": "Current status",
+      "unemployed": "Job seeking",
+      "employed": "Employed",
+      "student": "Studying",
+      "parentalLeave": "Parental leave",
+      "sickLeave": "Sick leave",
+      "other": "Other",
+      "startDate": "When can you start?",
+      "immediately": "Immediately",
+      "twoWeeks": "2 weeks",
+      "oneMonth": "1 month",
+      "twoMonths": "2 months",
+      "threeMonths": "3 months",
+      "employmentType": "Desired employment type",
+      "fulltime": "Full-time",
+      "parttime": "Part-time",
+      "freelance": "Freelance/Consultant",
+      "temporary": "Temporary",
+      "internship": "Internship",
+      "remoteWork": "Open for remote work?",
+      "remoteYes": "Yes, fully remote",
+      "remoteHybrid": "Hybrid (partly remote)",
+      "remoteNo": "No, on-site"
+    },
+    "mobility": {
+      "driversLicense": "Driver's license",
+      "hasCar": "Has access to car",
+      "willingToTravel": "Willing to travel for work",
+      "maxCommute": "Max commute time (minutes one way)",
+      "willingToRelocate": "Willing to relocate for the right job",
+      "willingToRelocateDesc": "Open for jobs in other cities/regions"
+    },
+    "salary": {
+      "expectation": "Salary expectation (per month before tax)",
+      "minimum": "Minimum",
+      "desired": "Desired",
+      "benefits": "Important benefits"
+    },
+    "laborMarket": {
+      "registeredAF": "Registered at Employment Service",
+      "registeredAFDesc": "Registered as job seeker",
+      "inProgram": "Participating in labor market program",
+      "inProgramDesc": "E.g. job guarantee, establishment program, internship",
+      "whichProgram": "Which program?",
+      "hasSupport": "Has activity support/benefits",
+      "hasSupportDesc": "Activity support, unemployment benefits or other compensation",
+      "programs": {
+        "jobbgarantin": "Job and development guarantee",
+        "etablering": "Establishment program",
+        "stodMatchning": "Support and matching",
+        "arbetsmarknadsutbildning": "Labor market training",
+        "praktik": "Internship",
+        "nystartsjobb": "New start job",
+        "other": "Other program"
+      }
+    },
+    "workPreferences": {
+      "sector": "Preferred sector",
+      "private": "Private sector",
+      "public": "Public sector",
+      "nonprofit": "Non-profit sector",
+      "companySize": "Preferred company size",
+      "startup": "Startup (1-10 employees)",
+      "small": "Small company (11-50)",
+      "medium": "Medium (51-200)",
+      "large": "Large company (201-1000)",
+      "enterprise": "Enterprise (1000+)",
+      "values": "Important values in employer"
+    },
+    "physical": {
+      "voluntary": "Voluntary",
+      "description": "This information is completely voluntary and helps us match you with jobs that suit your needs. Information is only shared with employers if you choose.",
+      "hasNeeds": "I have adaptation needs",
+      "hasNeedsDesc": "E.g. accessibility, working time adjustments, assistive devices",
+      "describeNeeds": "Describe your needs (optional)",
+      "describeNeedsPlaceholder": "Describe any adaptations you need in the workplace..."
+    }
   },
   "article": {
     "backToKnowledgeBase": "Back to knowledge base",

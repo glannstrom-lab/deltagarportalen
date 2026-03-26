@@ -2398,7 +2398,99 @@
     "tipsTitle": "Tips för en bra profil",
     "tip1": "Fyll i alla fält för att arbetsförmedlare ska kunna kontakta dig",
     "tip2": "En kort bio hjälper arbetsgivare att lära känna dig",
-    "tip3": "Uppdatera din profil regelbundet med aktuell information"
+    "tip3": "Uppdatera din profil regelbundet med aktuell information",
+    "sections": {
+      "desiredJobs": "Önskade jobb",
+      "desiredJobsDesc": "Vilka roller drömmer du om? (max 3)",
+      "interests": "Dina intressen",
+      "interestsDesc": "Vad brinner du för? (max 3)",
+      "interestProfile": "Din intresseprofil",
+      "interestProfileDesc": "Resultat från intresseguiden",
+      "availability": "Tillgänglighet",
+      "mobility": "Mobilitet & Körkort",
+      "salary": "Lön & Förmåner",
+      "laborMarket": "Arbetsmarknadsstatus",
+      "workPreferences": "Arbetspreferenser",
+      "physical": "Fysiska förutsättningar"
+    },
+    "availability": {
+      "currentStatus": "Nuvarande status",
+      "unemployed": "Arbetssökande",
+      "employed": "Anställd",
+      "student": "Studerar",
+      "parentalLeave": "Föräldraledig",
+      "sickLeave": "Sjukskriven",
+      "other": "Annat",
+      "startDate": "När kan du börja?",
+      "immediately": "Omgående",
+      "twoWeeks": "2 veckor",
+      "oneMonth": "1 månad",
+      "twoMonths": "2 månader",
+      "threeMonths": "3 månader",
+      "employmentType": "Önskad anställningsform",
+      "fulltime": "Heltid",
+      "parttime": "Deltid",
+      "freelance": "Frilans/Konsult",
+      "temporary": "Vikariat",
+      "internship": "Praktik",
+      "remoteWork": "Öppen för distansarbete?",
+      "remoteYes": "Ja, enbart distans",
+      "remoteHybrid": "Hybrid (delvis distans)",
+      "remoteNo": "Nej, på plats"
+    },
+    "mobility": {
+      "driversLicense": "Körkort",
+      "hasCar": "Har tillgång till bil",
+      "willingToTravel": "Villig att resa i tjänsten",
+      "maxCommute": "Max pendlingstid (minuter enkel väg)",
+      "willingToRelocate": "Villig att flytta för rätt jobb",
+      "willingToRelocateDesc": "Öppen för jobb i andra städer/regioner"
+    },
+    "salary": {
+      "expectation": "Löneanspråk (kr/månad före skatt)",
+      "minimum": "Minimum",
+      "desired": "Önskat",
+      "benefits": "Viktiga förmåner"
+    },
+    "laborMarket": {
+      "registeredAF": "Registrerad hos Arbetsförmedlingen",
+      "registeredAFDesc": "Inskriven som arbetssökande",
+      "inProgram": "Deltar i arbetsmarknadsåtgärd",
+      "inProgramDesc": "T.ex. Jobbgarantin, Etablering, praktik",
+      "whichProgram": "Vilket program?",
+      "hasSupport": "Har aktivitetsstöd/ersättning",
+      "hasSupportDesc": "Aktivitetsstöd, a-kassa eller annan ersättning",
+      "programs": {
+        "jobbgarantin": "Jobb- och utvecklingsgarantin",
+        "etablering": "Etableringsprogrammet",
+        "stodMatchning": "Stöd och matchning",
+        "arbetsmarknadsutbildning": "Arbetsmarknadsutbildning",
+        "praktik": "Praktik",
+        "nystartsjobb": "Nystartsjobb",
+        "other": "Annat program"
+      }
+    },
+    "workPreferences": {
+      "sector": "Önskad sektor",
+      "private": "Privat sektor",
+      "public": "Offentlig sektor",
+      "nonprofit": "Ideell sektor",
+      "companySize": "Önskad företagsstorlek",
+      "startup": "Startup (1-10 anställda)",
+      "small": "Litet företag (11-50)",
+      "medium": "Medelstort (51-200)",
+      "large": "Stort företag (201-1000)",
+      "enterprise": "Storföretag (1000+)",
+      "values": "Viktiga värden hos arbetsgivare"
+    },
+    "physical": {
+      "voluntary": "Frivilligt",
+      "description": "Denna information är helt frivillig och hjälper oss att matcha dig med jobb som passar dina behov. Informationen delas endast med arbetsgivare om du väljer det.",
+      "hasNeeds": "Jag har anpassningsbehov",
+      "hasNeedsDesc": "T.ex. tillgänglighet, arbetstidsanpassning, hjälpmedel",
+      "describeNeeds": "Beskriv dina behov (valfritt)",
+      "describeNeedsPlaceholder": "Beskriv eventuella anpassningar du behöver på arbetsplatsen..."
+    }
   },
   "article": {
     "backToKnowledgeBase": "Tillbaka till kunskapsbanken",

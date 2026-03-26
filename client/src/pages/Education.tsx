@@ -34,7 +34,7 @@ import {
   EmptyState,
   Skeleton,
 } from '@/components/ui';
-import { PageLayout, PageSection } from '@/components/layout';
+import { PageLayout, PageSection } from '@/components/layout/PageLayout';
 import {
   educationApi,
   type Education,

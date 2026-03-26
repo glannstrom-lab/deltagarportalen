@@ -4,7 +4,7 @@
  * för att söka svenska utbildningar
  */
 
-import { cacheService } from './cacheService';
+import { defaultCache } from './cacheService';
 import { jobEdApi } from './afJobEdApi';
 
 // Supabase config
@@ -131,7 +131,7 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
   const cacheKey = `edu_search_${JSON.stringify(params)}`;
 
   // Check cache first (5 min TTL)
-  const cached = cacheService.get<SearchResult>(cacheKey);
+  const cached = defaultCache.get<SearchResult>(cacheKey);
   if (cached) {
     return cached;
   }
@@ -148,7 +148,7 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
     const result = await fetchFromEducationApi<SearchResult>('', queryParams);
 
     // Cache results
-    cacheService.set(cacheKey, result, 5 * 60 * 1000);
+    defaultCache.set(cacheKey, result, 5 * 60 * 1000);
 
     return result;
   } catch (error) {
@@ -167,12 +167,12 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
  */
 export async function getEducationTypes(): Promise<EducationTypeOption[]> {
   const cacheKey = 'edu_types';
-  const cached = cacheService.get<EducationTypeOption[]>(cacheKey);
+  const cached = defaultCache.get<EducationTypeOption[]>(cacheKey);
   if (cached) return cached;
 
   try {
     const result = await fetchFromEducationApi<{ types: EducationTypeOption[] }>('/types');
-    cacheService.set(cacheKey, result.types, 60 * 60 * 1000); // 1h cache
+    defaultCache.set(cacheKey, result.types, 60 * 60 * 1000); // 1h cache
     return result.types;
   } catch {
     // Fallback
@@ -192,12 +192,12 @@ export async function getEducationTypes(): Promise<EducationTypeOption[]> {
  */
 export async function getRegions(): Promise<RegionOption[]> {
   const cacheKey = 'edu_regions';
-  const cached = cacheService.get<RegionOption[]>(cacheKey);
+  const cached = defaultCache.get<RegionOption[]>(cacheKey);
   if (cached) return cached;
 
   try {
     const result = await fetchFromEducationApi<{ regions: RegionOption[] }>('/regions');
-    cacheService.set(cacheKey, result.regions, 60 * 60 * 1000);
+    defaultCache.set(cacheKey, result.regions, 60 * 60 * 1000);
     return result.regions;
   } catch {
     // Fallback
@@ -218,7 +218,7 @@ export async function getEducationsForOccupation(
   occupationLabel?: string
 ): Promise<OccupationEducationMatch | null> {
   const cacheKey = `edu_occ_${occupationId}`;
-  const cached = cacheService.get<OccupationEducationMatch>(cacheKey);
+  const cached = defaultCache.get<OccupationEducationMatch>(cacheKey);
   if (cached) return cached;
 
   try {
@@ -238,7 +238,7 @@ export async function getEducationsForOccupation(
         })),
       };
 
-      cacheService.set(cacheKey, match, 30 * 60 * 1000); // 30min cache
+      defaultCache.set(cacheKey, match, 30 * 60 * 1000); // 30min cache
       return match;
     }
 

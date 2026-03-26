@@ -981,6 +981,51 @@ export interface ProfilePreferences {
   desired_jobs?: string[]
   interests?: string[]
   onboarding_progress?: OnboardingProgress
+  // Tillgänglighet & Jobbsökningsstatus
+  availability?: {
+    status?: 'unemployed' | 'employed' | 'student' | 'parental_leave' | 'sick_leave' | 'other'
+    availableFrom?: string // ISO date eller 'immediately'
+    noticePeriod?: string // '1_month', '2_months', '3_months', 'none'
+    employmentTypes?: ('fulltime' | 'parttime' | 'freelance' | 'temporary' | 'internship')[]
+    remoteWork?: 'yes' | 'no' | 'hybrid'
+  }
+  // Mobilitet & Körkort
+  mobility?: {
+    driversLicense?: string[] // ['B', 'A', 'C', etc.]
+    hasCar?: boolean
+    maxCommuteMinutes?: number
+    willingToTravel?: boolean
+    willingToRelocate?: boolean
+    relocateRegions?: string[] // Regioner man kan tänka sig flytta till
+  }
+  // Lön & Förmåner
+  salary?: {
+    expectationMin?: number
+    expectationMax?: number
+    currency?: 'SEK' | 'EUR' | 'USD'
+    period?: 'monthly' | 'yearly' | 'hourly'
+    importantBenefits?: string[] // ['friskvård', 'pension', 'flexibla_tider', etc.]
+  }
+  // Arbetsmarknadsstatus (Sverige-specifikt)
+  labor_market_status?: {
+    registeredAtAF?: boolean
+    participatingInProgram?: boolean
+    programName?: string // 'jobbgarantin', 'etablering', 'stöd_och_matchning', etc.
+    hasActivitySupport?: boolean
+  }
+  // Arbetspreferenser
+  work_preferences?: {
+    sectors?: ('private' | 'public' | 'nonprofit')[]
+    companySizes?: ('startup' | 'small' | 'medium' | 'large' | 'enterprise')[]
+    industries?: string[]
+    importantValues?: string[] // ['hållbarhet', 'innovation', 'work_life_balance', etc.]
+  }
+  // Fysiska förutsättningar (frivilligt)
+  physical_requirements?: {
+    hasAdaptationNeeds?: boolean
+    adaptationDescription?: string
+    ergonomicNeeds?: string[]
+  }
 }
 
 export const userApi = {
@@ -1013,14 +1058,14 @@ export const userApi = {
     return data
   },
 
-  // Get profile preferences (desired jobs, interests, onboarding)
+  // Get profile preferences (desired jobs, interests, onboarding, and extended profile data)
   async getPreferences(): Promise<ProfilePreferences> {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('desired_jobs, interests, onboarding_progress')
+      .select('desired_jobs, interests, onboarding_progress, availability, mobility, salary, labor_market_status, work_preferences, physical_requirements')
       .eq('id', user.id)
       .single()
 
@@ -1035,7 +1080,13 @@ export const userApi = {
     return {
       desired_jobs: data?.desired_jobs || [],
       interests: data?.interests || [],
-      onboarding_progress: data?.onboarding_progress || {}
+      onboarding_progress: data?.onboarding_progress || {},
+      availability: data?.availability || {},
+      mobility: data?.mobility || {},
+      salary: data?.salary || {},
+      labor_market_status: data?.labor_market_status || {},
+      work_preferences: data?.work_preferences || {},
+      physical_requirements: data?.physical_requirements || {}
     }
   },
 
@@ -1048,12 +1099,18 @@ export const userApi = {
     if (prefs.desired_jobs !== undefined) updates.desired_jobs = prefs.desired_jobs
     if (prefs.interests !== undefined) updates.interests = prefs.interests
     if (prefs.onboarding_progress !== undefined) updates.onboarding_progress = prefs.onboarding_progress
+    if (prefs.availability !== undefined) updates.availability = prefs.availability
+    if (prefs.mobility !== undefined) updates.mobility = prefs.mobility
+    if (prefs.salary !== undefined) updates.salary = prefs.salary
+    if (prefs.labor_market_status !== undefined) updates.labor_market_status = prefs.labor_market_status
+    if (prefs.work_preferences !== undefined) updates.work_preferences = prefs.work_preferences
+    if (prefs.physical_requirements !== undefined) updates.physical_requirements = prefs.physical_requirements
 
     const { data, error } = await supabase
       .from('profiles')
       .update(updates)
       .eq('id', user.id)
-      .select('desired_jobs, interests, onboarding_progress')
+      .select('desired_jobs, interests, onboarding_progress, availability, mobility, salary, labor_market_status, work_preferences, physical_requirements')
       .single()
 
     if (error) handleError(error)
