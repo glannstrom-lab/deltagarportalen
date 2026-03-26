@@ -83,6 +83,7 @@
     "coverLetter": "Personligt brev",
     "jobSearch": "Sök jobb",
     "career": "Karriär",
+    "education": "Utbildningar",
     "salary": "Lön & Förhandling",
     "personalBrand": "Personligt Varumärke",
     "international": "Internationell Guide",
@@ -1042,6 +1043,69 @@
         "prioritization": { "title": "Prioriterings-träning", "description": "Sortera uppgifter efter vikt och brådska" },
         "workingmemory": { "title": "Arbetsminne", "description": "Kom ihåg instruktioner medan du gör något annat" },
         "distractedreading": { "title": "Distraherad läsning", "description": "Läsa och förstå text med bakgrundsljud" }
+      }
+    }
+  },
+  "education": {
+    "title": "Utbildningar",
+    "description": "Sök och utforska utbildningar från hela Sverige",
+    "searchPlaceholder": "Sök utbildning, ämne eller skola...",
+    "filters": "Filter",
+    "search": "Sök",
+    "educationType": "Utbildningsform",
+    "region": "Region",
+    "activeFilters": "Aktiva filter",
+    "clearAll": "Rensa alla",
+    "distance": "Distans",
+    "deadline": "Ansök senast",
+    "readMore": "Läs mer",
+    "resultsCount": "{{count}} utbildningar hittades",
+    "demoData": "Demodata",
+    "loadMore": "Ladda fler",
+    "noResults": {
+      "title": "Inga utbildningar hittades",
+      "description": "Prova att ändra dina sökfilter eller sök efter något annat.",
+      "action": "Rensa filter"
+    },
+    "infoBanner": {
+      "title": "Hitta rätt utbildning för dig",
+      "description": "Vi samlar utbildningar från Yrkeshögskolan, universitet, Komvux och folkhögskolor i hela Sverige. Använd sökfunktionen eller snabbvalen nedan för att börja utforska."
+    },
+    "quickSearch": {
+      "title": "Populära kategorier",
+      "yh": {
+        "title": "Yrkeshögskola",
+        "description": "Praktiska utbildningar med hög anställningsgrad"
+      },
+      "university": {
+        "title": "Högskola & Universitet",
+        "description": "Akademiska utbildningar och examina"
+      },
+      "it": {
+        "title": "IT & Programmering",
+        "description": "Webbutveckling, data och teknik"
+      },
+      "healthcare": {
+        "title": "Vård & Omsorg",
+        "description": "Sjukvård, äldreomsorg och socialt arbete"
+      },
+      "business": {
+        "title": "Ekonomi & Affär",
+        "description": "Redovisning, marknadsföring och ledarskap"
+      },
+      "creative": {
+        "title": "Kreativa yrken",
+        "description": "Design, media och kommunikation"
+      }
+    },
+    "links": {
+      "interestGuide": {
+        "title": "Osäker på vad du vill?",
+        "description": "Gör vår intresseguide för att hitta yrken som passar dig"
+      },
+      "skillsGap": {
+        "title": "Kompetensgap-analys",
+        "description": "Se vilka kompetenser du behöver utveckla"
       }
     }
   },

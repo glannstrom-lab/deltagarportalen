@@ -83,6 +83,7 @@
     "coverLetter": "Cover Letter",
     "jobSearch": "Job Search",
     "career": "Career",
+    "education": "Education",
     "interestGuide": "Interest Guide",
     "exercises": "Exercises",
     "diary": "Diary",
@@ -993,6 +994,69 @@
         "prioritization": { "title": "Prioritization training", "description": "Sort tasks by importance and urgency" },
         "workingmemory": { "title": "Working memory", "description": "Remember instructions while doing something else" },
         "distractedreading": { "title": "Distracted reading", "description": "Read and understand text with background noise" }
+      }
+    }
+  },
+  "education": {
+    "title": "Education",
+    "description": "Search and explore education programs across Sweden",
+    "searchPlaceholder": "Search education, subject or school...",
+    "filters": "Filters",
+    "search": "Search",
+    "educationType": "Education type",
+    "region": "Region",
+    "activeFilters": "Active filters",
+    "clearAll": "Clear all",
+    "distance": "Distance",
+    "deadline": "Apply by",
+    "readMore": "Read more",
+    "resultsCount": "{{count}} education programs found",
+    "demoData": "Demo data",
+    "loadMore": "Load more",
+    "noResults": {
+      "title": "No education programs found",
+      "description": "Try adjusting your search filters or search for something else.",
+      "action": "Clear filters"
+    },
+    "infoBanner": {
+      "title": "Find the right education for you",
+      "description": "We collect education programs from vocational colleges, universities, adult education and folk high schools across Sweden. Use the search function or quick selections below to start exploring."
+    },
+    "quickSearch": {
+      "title": "Popular categories",
+      "yh": {
+        "title": "Vocational College",
+        "description": "Practical education with high employment rates"
+      },
+      "university": {
+        "title": "University & College",
+        "description": "Academic education and degrees"
+      },
+      "it": {
+        "title": "IT & Programming",
+        "description": "Web development, data and technology"
+      },
+      "healthcare": {
+        "title": "Healthcare",
+        "description": "Medical care, elderly care and social work"
+      },
+      "business": {
+        "title": "Business & Finance",
+        "description": "Accounting, marketing and leadership"
+      },
+      "creative": {
+        "title": "Creative Professions",
+        "description": "Design, media and communication"
+      }
+    },
+    "links": {
+      "interestGuide": {
+        "title": "Not sure what you want?",
+        "description": "Take our interest guide to find careers that suit you"
+      },
+      "skillsGap": {
+        "title": "Skills Gap Analysis",
+        "description": "See which skills you need to develop"
       }
     }
   },

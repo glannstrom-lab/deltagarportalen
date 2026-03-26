@@ -45,7 +45,7 @@ export interface NavGroup {
 
 // Smart badge system: Only show badge for most recent unvisited feature
 // This is tracked via localStorage in the component
-export const NEWEST_FEATURE = '/personal-brand' // Change this when launching new features
+export const NEWEST_FEATURE = '/education' // Change this when launching new features
 
 // Grouped navigation for reduced cognitive load
 export const navGroups: NavGroup[] = [
@@ -66,8 +66,9 @@ export const navGroups: NavGroup[] = [
     labelKey: 'nav.groups.development',
     items: [
       { path: '/career', labelKey: 'nav.career', icon: Target },
-      { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star, isNew: true },
-      { path: '/salary', labelKey: 'nav.salary', icon: Wallet, isNew: true },
+      { path: '/education', labelKey: 'nav.education', icon: GraduationCap, isNew: true },
+      { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star },
+      { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
       { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
     ],
   },

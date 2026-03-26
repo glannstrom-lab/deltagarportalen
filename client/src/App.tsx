@@ -58,6 +58,7 @@ const LinkedInOptimizer = lazy(() => import('./pages/LinkedInOptimizer'))
 const SkillsGapAnalysis = lazy(() => import('./pages/SkillsGapAnalysis'))
 const InterviewSimulator = lazy(() => import('./pages/InterviewSimulator'))
 const Calendar = lazy(() => import('./pages/Calendar'))
+const Education = lazy(() => import('./pages/Education'))
 
 // Loading fallback
 function PageLoader() {
@@ -384,6 +385,13 @@ function App() {
           <LazyRoute>
             <RouteErrorBoundary>
               <Calendar />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="education/*" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Education />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
