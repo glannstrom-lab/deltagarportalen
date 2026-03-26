@@ -413,10 +413,17 @@ export default function Profile() {
   const [cloudSyncing, setCloudSyncing] = useState(false)
   const [cloudSynced, setCloudSynced] = useState(true)
   const syncTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+  const profileSyncTimeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     loadProfile()
     loadPreferencesFromCloud()
+
+    // Cleanup timeouts on unmount
+    return () => {
+      if (syncTimeoutRef.current) clearTimeout(syncTimeoutRef.current)
+      if (profileSyncTimeoutRef.current) clearTimeout(profileSyncTimeoutRef.current)
+    }
   }, [])
 
   const loadProfile = async () => {
@@ -476,6 +483,32 @@ export default function Profile() {
     }, 1000)
   }, [])
 
+  const saveProfileToCloud = useCallback(async (updatedFormData: typeof formData) => {
+    if (profileSyncTimeoutRef.current) {
+      clearTimeout(profileSyncTimeoutRef.current)
+    }
+
+    setCloudSynced(false)
+
+    profileSyncTimeoutRef.current = setTimeout(async () => {
+      setCloudSyncing(true)
+      try {
+        await userApi.updateProfile(updatedFormData)
+
+        // Mark onboarding step if name and email exist
+        if (updatedFormData.first_name && profile?.email) {
+          await userApi.updateOnboardingStep('profile', true)
+        }
+
+        setCloudSynced(true)
+      } catch (err) {
+        console.error('Error saving profile to cloud:', err)
+      } finally {
+        setCloudSyncing(false)
+      }
+    }, 1500) // Slightly longer delay for profile to reduce API calls while typing
+  }, [profile?.email])
+
   const handleSave = async () => {
     setSaving(true)
     setError(null)
@@ -508,7 +541,9 @@ export default function Profile() {
   }
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    const updatedFormData = { ...formData, [field]: value }
+    setFormData(updatedFormData)
+    saveProfileToCloud(updatedFormData)
   }
 
   const addJob = (job: string) => {
