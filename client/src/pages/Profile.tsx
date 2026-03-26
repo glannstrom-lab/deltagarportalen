@@ -704,31 +704,28 @@ export default function Profile() {
       {/* Main Content */}
       <div className="max-w-4xl mx-auto px-4 -mt-6 space-y-4">
 
-        {/* Cloud Sync Status - Fixed Toast */}
-        <div className={cn(
-          'fixed top-4 right-4 z-50 transition-all duration-300 transform',
-          cloudSyncing || !cloudSynced ? 'translate-y-0 opacity-100' : 'translate-y-0 opacity-100'
-        )}>
+        {/* Cloud Sync Status - Inline indicator */}
+        <div className="flex justify-end mb-2">
           <div className={cn(
-            'flex items-center gap-3 px-4 py-3 rounded-xl shadow-lg border-2 text-sm font-semibold transition-all duration-300',
-            cloudSyncing ? 'bg-indigo-50 text-indigo-700 border-indigo-200 shadow-indigo-100' :
-            cloudSynced ? 'bg-emerald-50 text-emerald-700 border-emerald-200 shadow-emerald-100' :
-            'bg-amber-50 text-amber-700 border-amber-200 shadow-amber-100 animate-pulse'
+            'inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300',
+            cloudSyncing ? 'bg-indigo-100 text-indigo-700' :
+            cloudSynced ? 'bg-emerald-100 text-emerald-700' :
+            'bg-amber-100 text-amber-700 animate-pulse'
           )}>
             {cloudSyncing ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                <span>Sparar ändringar...</span>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                <span>Sparar...</span>
               </>
             ) : cloudSynced ? (
               <>
-                <CheckCircle className="w-5 h-5" />
-                <span>Alla ändringar sparade</span>
+                <CheckCircle className="w-4 h-4" />
+                <span>Sparat</span>
               </>
             ) : (
               <>
-                <CloudOff className="w-5 h-5" />
-                <span>Osparade ändringar</span>
+                <CloudOff className="w-4 h-4" />
+                <span>Ej sparat</span>
               </>
             )}
           </div>
