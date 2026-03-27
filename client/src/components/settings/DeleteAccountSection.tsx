@@ -169,12 +169,44 @@ export function DeleteAccountSection() {
       setIsDeleting(true)
       setError(null)
 
-      // First delete profile data
+      // Get current session for the auth token
+      const { data: sessionData } = await supabase.auth.getSession()
+      const accessToken = sessionData?.session?.access_token
+
+      if (!accessToken) {
+        throw new Error('No active session')
+      }
+
+      // Step 1: Delete profile data via RPC
       const { data, error } = await supabase.rpc('execute_account_deletion_immediate')
 
       if (error) throw error
 
       if (data?.success) {
+        // Step 2: Delete from auth.users via Edge Function
+        try {
+          const response = await fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`,
+            {
+              method: 'POST',
+              headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+
+          const result = await response.json()
+
+          if (!response.ok) {
+            // Log but don't fail - profile is already deleted
+            console.warn('Auth deletion warning:', result)
+          }
+        } catch (authErr) {
+          // Log but don't fail - profile is already deleted
+          console.warn('Auth deletion error:', authErr)
+        }
+
         // Sign out and redirect
         await signOut()
         navigate('/login', {
