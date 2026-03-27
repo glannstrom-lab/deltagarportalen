@@ -22,6 +22,11 @@ export interface Profile {
   consultant_id: string | null
   created_at: string
   updated_at: string
+  // GDPR Consent timestamps
+  terms_accepted_at: string | null
+  privacy_accepted_at: string | null
+  ai_consent_at: string | null
+  marketing_consent_at: string | null
 }
 
 interface AuthState {
@@ -43,6 +48,11 @@ interface AuthState {
     firstName: string
     lastName: string
     role?: UserRole
+    consent?: {
+      terms: boolean
+      privacy: boolean
+      aiProcessing?: boolean
+    }
   }) => Promise<{ error: string | null }>
   signOut: () => Promise<void>
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: string | null }>
@@ -212,9 +222,10 @@ export const useAuthStore = create<AuthState>()(
       signUp: async (userData) => {
         try {
           set({ isLoading: true, error: null })
-          
+
           const role = userData.role || 'USER'
-          
+          const consent = userData.consent || { terms: false, privacy: false, aiProcessing: false }
+
           const { data, error } = await supabase.auth.signUp({
             email: userData.email,
             password: userData.password,
@@ -223,6 +234,10 @@ export const useAuthStore = create<AuthState>()(
                 first_name: userData.firstName,
                 last_name: userData.lastName,
                 role: role,
+                // GDPR consent flags - stored in user metadata
+                terms_accepted: consent.terms,
+                privacy_accepted: consent.privacy,
+                ai_consent: consent.aiProcessing || false,
               },
             },
           })

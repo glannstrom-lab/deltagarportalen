@@ -76,6 +76,17 @@ export const registerSchema = z.object({
     .min(2, 'Efternamnet måste vara minst 2 tecken')
     .max(50, 'Efternamnet får vara max 50 tecken')
     .regex(/^[a-zA-ZåäöÅÄÖéÉüÜ\s\-']+$/, 'Efternamnet innehåller ogiltiga tecken'),
+  // GDPR Consent fields
+  acceptTerms: z
+    .boolean()
+    .refine(val => val === true, 'Du måste godkänna användarvillkoren'),
+  acceptPrivacy: z
+    .boolean()
+    .refine(val => val === true, 'Du måste godkänna integritetspolicyn'),
+  acceptAiProcessing: z
+    .boolean()
+    .optional()
+    .default(false),
 }).refine((data) => data.password === data.confirmPassword, {
   message: 'Lösenorden matchar inte',
   path: ['confirmPassword'],

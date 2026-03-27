@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 import { useSettingsStore } from '../stores/settingsStore'
 import { useAuthStore } from '../stores/authStore'
 import { useTheme } from '@/contexts/ThemeContext'
@@ -8,7 +9,7 @@ import {
   Bell, Lock, User, Palette, Shield,
   ChevronRight, Save,
   Accessibility, X, Menu,
-  Monitor
+  Monitor, FileText, Brain, Mail, AlertTriangle, Check, ExternalLink
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
@@ -53,7 +54,16 @@ export default function Settings() {
     bio: '',
   })
 
-  const { user } = useAuthStore()
+  // Consent data
+  const [consentData, setConsentData] = useState({
+    termsAcceptedAt: null as string | null,
+    privacyAcceptedAt: null as string | null,
+    aiConsentAt: null as string | null,
+    marketingConsentAt: null as string | null,
+  })
+  const [isUpdatingConsent, setIsUpdatingConsent] = useState<string | null>(null)
+
+  const { user, profile } = useAuthStore()
 
   const {
     calmMode, toggleCalmMode,
@@ -83,14 +93,21 @@ export default function Settings() {
             email: user.email || '',
           }))
         }
-        const profile = await userApi.getProfile()
-        if (profile) {
+        const profileData = await userApi.getProfile()
+        if (profileData) {
           setProfileData({
-            firstName: profile.first_name || user?.firstName || '',
-            lastName: profile.last_name || user?.lastName || '',
-            email: profile.email || user?.email || '',
-            phone: profile.phone || '',
-            bio: profile.bio || '',
+            firstName: profileData.first_name || user?.firstName || '',
+            lastName: profileData.last_name || user?.lastName || '',
+            email: profileData.email || user?.email || '',
+            phone: profileData.phone || '',
+            bio: profileData.bio || '',
+          })
+          // Load consent data
+          setConsentData({
+            termsAcceptedAt: profileData.terms_accepted_at || null,
+            privacyAcceptedAt: profileData.privacy_accepted_at || null,
+            aiConsentAt: profileData.ai_consent_at || null,
+            marketingConsentAt: profileData.marketing_consent_at || null,
           })
         }
       } catch (error) {
@@ -116,6 +133,48 @@ export default function Settings() {
     } finally {
       setIsSaving(false)
     }
+  }
+
+  // Handle consent toggle
+  const handleConsentToggle = async (consentType: 'ai' | 'marketing', currentValue: string | null) => {
+    const columnMap = {
+      ai: 'ai_consent_at',
+      marketing: 'marketing_consent_at',
+    }
+    const stateMap = {
+      ai: 'aiConsentAt',
+      marketing: 'marketingConsentAt',
+    }
+
+    try {
+      setIsUpdatingConsent(consentType)
+      const newValue = currentValue ? null : new Date().toISOString()
+
+      await userApi.updateProfile({
+        [columnMap[consentType]]: newValue,
+      })
+
+      setConsentData(prev => ({
+        ...prev,
+        [stateMap[consentType]]: newValue,
+      }))
+    } catch (error) {
+      console.error('Error updating consent:', error)
+    } finally {
+      setIsUpdatingConsent(null)
+    }
+  }
+
+  // Format date for display
+  const formatConsentDate = (dateString: string | null) => {
+    if (!dateString) return null
+    return new Date(dateString).toLocaleDateString('sv-SE', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    })
   }
 
   const renderSectionContent = () => {
@@ -301,30 +360,212 @@ export default function Settings() {
               description={t('settings.privacy.description')}
             />
 
-            <div className="space-y-4">
-              <Card variant="flat">
-                <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">{t('settings.privacy.shareActivity')}</h3>
-                <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.shareActivityDesc')}</p>
-                <button className="text-violet-600 font-medium text-sm hover:text-violet-700">
-                  {t('settings.privacy.learnMore')}
-                </button>
-              </Card>
+            {/* Consent Management Section */}
+            <CardSection title={t('settings.privacy.consent.title')}>
+              <div className="space-y-4">
+                {/* Terms of Service - Read only, required */}
+                <Card variant="flat" padding="sm">
+                  <div className="flex items-start gap-4">
+                    <div className={cn(
+                      "p-2 rounded-lg flex-shrink-0",
+                      consentData.termsAcceptedAt
+                        ? "bg-green-100 dark:bg-green-900/30"
+                        : "bg-amber-100 dark:bg-amber-900/30"
+                    )}>
+                      <FileText size={20} className={consentData.termsAcceptedAt ? "text-green-600" : "text-amber-600"} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                          {t('settings.privacy.consent.terms')}
+                        </h4>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400">
+                          {t('settings.privacy.consent.required')}
+                        </span>
+                      </div>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                        {t('settings.privacy.consent.termsDesc')}
+                      </p>
+                      {consentData.termsAcceptedAt && (
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                          <Check size={14} />
+                          {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.termsAcceptedAt) })}
+                        </p>
+                      )}
+                    </div>
+                    <Link to="/terms" target="_blank" className="text-violet-600 hover:text-violet-700 flex-shrink-0">
+                      <ExternalLink size={18} />
+                    </Link>
+                  </div>
+                </Card>
 
-              <Card variant="flat">
-                <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">{t('settings.privacy.profileVisibility')}</h3>
-                <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.profileVisibilityDesc')}</p>
-                <select className={cn(
-                  "w-full px-4 py-2 border rounded-lg transition-theme",
-                  "bg-white dark:bg-stone-800",
-                  "border-stone-200 dark:border-stone-700",
-                  "text-stone-900 dark:text-stone-100"
-                )}>
-                  <option>{t('settings.privacy.onlyMe')}</option>
-                  <option>{t('settings.privacy.caseworkers')}</option>
-                  <option>{t('settings.privacy.everyone')}</option>
-                </select>
-              </Card>
-            </div>
+                {/* Privacy Policy - Read only, required */}
+                <Card variant="flat" padding="sm">
+                  <div className="flex items-start gap-4">
+                    <div className={cn(
+                      "p-2 rounded-lg flex-shrink-0",
+                      consentData.privacyAcceptedAt
+                        ? "bg-green-100 dark:bg-green-900/30"
+                        : "bg-amber-100 dark:bg-amber-900/30"
+                    )}>
+                      <Shield size={20} className={consentData.privacyAcceptedAt ? "text-green-600" : "text-amber-600"} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                          {t('settings.privacy.consent.privacy')}
+                        </h4>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400">
+                          {t('settings.privacy.consent.required')}
+                        </span>
+                      </div>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                        {t('settings.privacy.consent.privacyDesc')}
+                      </p>
+                      {consentData.privacyAcceptedAt && (
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                          <Check size={14} />
+                          {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.privacyAcceptedAt) })}
+                        </p>
+                      )}
+                    </div>
+                    <Link to="/privacy" target="_blank" className="text-violet-600 hover:text-violet-700 flex-shrink-0">
+                      <ExternalLink size={18} />
+                    </Link>
+                  </div>
+                </Card>
+
+                {/* AI Processing - Toggleable */}
+                <Card variant="flat" padding="sm">
+                  <div className="flex items-start gap-4">
+                    <div className={cn(
+                      "p-2 rounded-lg flex-shrink-0",
+                      consentData.aiConsentAt
+                        ? "bg-green-100 dark:bg-green-900/30"
+                        : "bg-stone-100 dark:bg-stone-700"
+                    )}>
+                      <Brain size={20} className={consentData.aiConsentAt ? "text-green-600" : "text-stone-500"} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                          {t('settings.privacy.consent.ai')}
+                        </h4>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400">
+                          {t('settings.privacy.consent.optional')}
+                        </span>
+                      </div>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                        {t('settings.privacy.consent.aiDesc')}
+                      </p>
+                      {consentData.aiConsentAt ? (
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                          <Check size={14} />
+                          {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.aiConsentAt) })}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
+                          {t('settings.privacy.consent.notAccepted')}
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      variant={consentData.aiConsentAt ? "secondary" : "primary"}
+                      size="sm"
+                      onClick={() => handleConsentToggle('ai', consentData.aiConsentAt)}
+                      isLoading={isUpdatingConsent === 'ai'}
+                      className="flex-shrink-0"
+                    >
+                      {consentData.aiConsentAt
+                        ? t('settings.privacy.consent.withdraw')
+                        : t('settings.privacy.consent.grant')}
+                    </Button>
+                  </div>
+                </Card>
+
+                {/* Marketing - Toggleable */}
+                <Card variant="flat" padding="sm">
+                  <div className="flex items-start gap-4">
+                    <div className={cn(
+                      "p-2 rounded-lg flex-shrink-0",
+                      consentData.marketingConsentAt
+                        ? "bg-green-100 dark:bg-green-900/30"
+                        : "bg-stone-100 dark:bg-stone-700"
+                    )}>
+                      <Mail size={20} className={consentData.marketingConsentAt ? "text-green-600" : "text-stone-500"} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                          {t('settings.privacy.consent.marketing')}
+                        </h4>
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-violet-100 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400">
+                          {t('settings.privacy.consent.optional')}
+                        </span>
+                      </div>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                        {t('settings.privacy.consent.marketingDesc')}
+                      </p>
+                      {consentData.marketingConsentAt ? (
+                        <p className="text-xs text-green-600 dark:text-green-400 mt-2 flex items-center gap-1">
+                          <Check size={14} />
+                          {t('settings.privacy.consent.acceptedOn', { date: formatConsentDate(consentData.marketingConsentAt) })}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-stone-500 dark:text-stone-400 mt-2">
+                          {t('settings.privacy.consent.notAccepted')}
+                        </p>
+                      )}
+                    </div>
+                    <Button
+                      variant={consentData.marketingConsentAt ? "secondary" : "primary"}
+                      size="sm"
+                      onClick={() => handleConsentToggle('marketing', consentData.marketingConsentAt)}
+                      isLoading={isUpdatingConsent === 'marketing'}
+                      className="flex-shrink-0"
+                    >
+                      {consentData.marketingConsentAt
+                        ? t('settings.privacy.consent.withdraw')
+                        : t('settings.privacy.consent.grant')}
+                    </Button>
+                  </div>
+                </Card>
+              </div>
+            </CardSection>
+
+            {/* Withdrawal Warning */}
+            <InfoCard variant="warning" icon={<AlertTriangle size={20} />}>
+              <p className="text-sm">
+                {t('settings.privacy.consent.withdrawalWarning')}
+              </p>
+            </InfoCard>
+
+            {/* Profile Visibility Section */}
+            <CardSection title={t('settings.privacy.profileVisibility')}>
+              <div className="space-y-4">
+                <Card variant="flat">
+                  <h3 className="font-medium text-stone-900 dark:text-stone-100 mb-2">{t('settings.privacy.shareActivity')}</h3>
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.shareActivityDesc')}</p>
+                  <button className="text-violet-600 font-medium text-sm hover:text-violet-700">
+                    {t('settings.privacy.learnMore')}
+                  </button>
+                </Card>
+
+                <Card variant="flat">
+                  <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">{t('settings.privacy.profileVisibilityDesc')}</p>
+                  <select className={cn(
+                    "w-full px-4 py-2 border rounded-lg transition-theme",
+                    "bg-white dark:bg-stone-800",
+                    "border-stone-200 dark:border-stone-700",
+                    "text-stone-900 dark:text-stone-100"
+                  )}>
+                    <option>{t('settings.privacy.onlyMe')}</option>
+                    <option>{t('settings.privacy.caseworkers')}</option>
+                    <option>{t('settings.privacy.everyone')}</option>
+                  </select>
+                </Card>
+              </div>
+            </CardSection>
           </div>
         )
 

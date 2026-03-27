@@ -39,17 +39,25 @@ export default function Register() {
       email: '',
       password: '',
       confirmPassword: '',
+      acceptTerms: false,
+      acceptPrivacy: false,
+      acceptAiProcessing: false,
     },
     onSubmit: async (data) => {
       setSubmitError('')
-      
+
       try {
         const { error: signUpError } = await signUp({
           email: data.email,
           password: data.password,
           firstName: data.firstName,
           lastName: data.lastName,
-          role: 'USER'
+          role: 'USER',
+          consent: {
+            terms: data.acceptTerms,
+            privacy: data.acceptPrivacy,
+            aiProcessing: data.acceptAiProcessing,
+          }
         })
 
         if (signUpError) {
@@ -309,9 +317,9 @@ export default function Register() {
                 {t('auth.confirmPassword')}
               </label>
               <div className="relative">
-                <Lock 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
-                  size={20} 
+                <Lock
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  size={20}
                   aria-hidden="true"
                 />
                 <input
@@ -341,10 +349,81 @@ export default function Register() {
               )}
             </div>
 
+            {/* Consent Section */}
+            <div className="space-y-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
+              <p className="text-sm font-medium text-slate-700 mb-3">{t('auth.consent.title')}</p>
+
+              {/* Terms Checkbox */}
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="acceptTerms"
+                  name="acceptTerms"
+                  checked={values.acceptTerms}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                />
+                <label htmlFor="acceptTerms" className="text-sm text-slate-600">
+                  {t('auth.consent.acceptTerms')}{' '}
+                  <Link to="/terms" target="_blank" className="text-teal-600 hover:underline">
+                    {t('auth.consent.termsLink')}
+                  </Link>
+                  {' '}<span className="text-red-500">*</span>
+                </label>
+              </div>
+              {touched.acceptTerms && errors.acceptTerms && (
+                <p className="ml-7 text-sm text-red-600">{errors.acceptTerms}</p>
+              )}
+
+              {/* Privacy Checkbox */}
+              <div className="flex items-start gap-3">
+                <input
+                  type="checkbox"
+                  id="acceptPrivacy"
+                  name="acceptPrivacy"
+                  checked={values.acceptPrivacy}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                />
+                <label htmlFor="acceptPrivacy" className="text-sm text-slate-600">
+                  {t('auth.consent.acceptPrivacy')}{' '}
+                  <Link to="/privacy" target="_blank" className="text-teal-600 hover:underline">
+                    {t('auth.consent.privacyLink')}
+                  </Link>
+                  {' '}<span className="text-red-500">*</span>
+                </label>
+              </div>
+              {touched.acceptPrivacy && errors.acceptPrivacy && (
+                <p className="ml-7 text-sm text-red-600">{errors.acceptPrivacy}</p>
+              )}
+
+              {/* AI Processing Checkbox (optional) */}
+              <div className="flex items-start gap-3 pt-2 border-t border-slate-200 mt-3">
+                <input
+                  type="checkbox"
+                  id="acceptAiProcessing"
+                  name="acceptAiProcessing"
+                  checked={values.acceptAiProcessing}
+                  onChange={handleChange}
+                  className="mt-1 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                />
+                <div>
+                  <label htmlFor="acceptAiProcessing" className="text-sm text-slate-600">
+                    {t('auth.consent.acceptAi')}
+                  </label>
+                  <p className="text-xs text-slate-500 mt-1">
+                    {t('auth.consent.aiDescription')}
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* Submit */}
             <button
               type="submit"
-              disabled={isSubmitting || !isPasswordValid}
+              disabled={isSubmitting || !isPasswordValid || !values.acceptTerms || !values.acceptPrivacy}
               className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? (

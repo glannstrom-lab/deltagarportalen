@@ -1225,7 +1225,7 @@
     },
     "privacy": {
       "title": "Privacy",
-      "description": "Manage your privacy settings",
+      "description": "Manage your privacy settings and consents",
       "shareActivity": "Share activity",
       "shareActivityDesc": "Allow sharing of anonymized usage statistics to improve the service.",
       "learnMore": "Learn more about data privacy",
@@ -1233,7 +1233,25 @@
       "profileVisibilityDesc": "Choose who can see your profile.",
       "onlyMe": "Only me",
       "caseworkers": "Caseworkers",
-      "everyone": "Everyone"
+      "everyone": "Everyone",
+      "consent": {
+        "title": "Your consents",
+        "terms": "Terms of Service",
+        "termsDesc": "Basic terms for using the service. Required to have an account.",
+        "privacy": "Privacy Policy",
+        "privacyDesc": "How we collect, store, and protect your personal data according to GDPR.",
+        "ai": "AI Processing",
+        "aiDesc": "Allow your data to be processed with AI (e.g., OpenAI) to generate CV texts and cover letters. You can use the service without this, but AI features will not be available.",
+        "marketing": "Marketing",
+        "marketingDesc": "Receive tips, news, and updates via email. We never send spam.",
+        "required": "Required",
+        "optional": "Optional",
+        "acceptedOn": "Accepted {{date}}",
+        "notAccepted": "Not accepted",
+        "grant": "Grant",
+        "withdraw": "Withdraw",
+        "withdrawalWarning": "If you withdraw consent, some features may stop working. You can always grant consent again later."
+      }
     },
     "security": {
       "title": "Security",
@@ -1296,6 +1314,36 @@
     "errors": {
       "userExists": "A user with this email address already exists. Log in instead.",
       "createFailed": "Could not create the account. Please try again later."
+    },
+    "consent": {
+      "title": "Agreements",
+      "acceptTerms": "I have read and accept the",
+      "termsLink": "terms of service",
+      "acceptPrivacy": "I have read and accept the",
+      "privacyLink": "privacy policy",
+      "acceptAi": "I consent to AI processing of my data",
+      "aiDescription": "We use AI to help you write CVs and cover letters. Your data may be processed by third parties (OpenAI). This consent is optional but required for AI features."
+    }
+  },
+  "ai": {
+    "consent": {
+      "requiredTitle": "AI consent required",
+      "requiredDesc": "To use AI features, you need to consent to AI processing of your data.",
+      "requiredForFeature": "To use {{feature}}, you need to consent to AI processing.",
+      "grantNow": "Grant consent",
+      "manageInSettings": "Manage in settings",
+      "grantError": "Could not grant consent. Please try again.",
+      "fullTitle": "Enable AI features",
+      "fullDesc": "AI features help you write better CVs and cover letters. To use them, you need to grant consent.",
+      "fullDescWithFeature": "{{feature}} uses AI to help you. To use this feature, you need to grant consent.",
+      "whatThisMeans": "What does this mean?",
+      "point1": "Your texts are sent to OpenAI to generate suggestions and improvements",
+      "point2": "Your data is processed securely and used only to help you",
+      "point3": "You can withdraw consent at any time in settings",
+      "grantConsent": "Grant AI consent",
+      "goToSettings": "Go to settings",
+      "canWithdraw": "You can withdraw consent at any time.",
+      "privacyPolicy": "Read our privacy policy"
     }
   },
   "errors": {
@@ -2554,6 +2602,7 @@
       "button": "Get help formulating the letter",
       "generating": "Creating your letter...",
       "fillRequired": "Fill in at least company, job title or job posting to get started.",
+      "aiConsentRequired": "You need to consent to AI processing to use this feature. You can do this in settings under Privacy.",
       "noLetterGenerated": "No letter was generated",
       "offlineFallback": "We couldn't connect to our smart help right now, so we've created a suggestion based on your information instead. You can edit it however you like!",
       "yourOwnWordsValueable": "It's also good to write yourself - your words are valuable."

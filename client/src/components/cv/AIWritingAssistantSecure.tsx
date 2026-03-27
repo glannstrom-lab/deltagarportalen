@@ -1,10 +1,13 @@
 /**
  * AI Writing Assistant - Säker version
  * Använder server-side Edge Function istället för direkt API-nyckel
+ * Kräver AI-samtycke för att fungera
  */
 
 import { useState } from 'react'
 import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from 'lucide-react'
+import { AiConsentGate } from '@/components/ai/AiConsentGate'
+import { useAiConsent } from '@/hooks/useAiConsent'
 
 interface AIWritingAssistantProps {
   content: string
@@ -61,6 +64,7 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
   const [activeFeature, setActiveFeature] = useState<keyof typeof features | null>(null)
   const [requestCount, setRequestCount] = useState(0)
   const [lastRequestTime, setLastRequestTime] = useState(0)
+  const { hasConsent } = useAiConsent()
 
   // Client-side rate limiting
   const checkClientRateLimit = (): boolean => {
@@ -176,7 +180,12 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
       </button>
 
       {isOpen && (
-        <div className="mt-3 p-4 bg-[#eef2ff] rounded-xl border border-[#4f46e5]/20">
+        <div className="mt-3">
+          {/* Check for AI consent */}
+          {!hasConsent ? (
+            <AiConsentGate compact featureName="AI-skrivhjälp" />
+          ) : (
+          <div className="p-4 bg-[#eef2ff] rounded-xl border border-[#4f46e5]/20">
           {/* Säkerhetsbadge */}
           <div className="flex items-center gap-2 mb-4 px-3 py-2 bg-emerald-50 border border-emerald-200 rounded-lg">
             <Shield className="w-4 h-4 text-emerald-600" />
@@ -286,6 +295,8 @@ export function AIWritingAssistantSecure({ content, onChange, type }: AIWritingA
             <div className="text-center py-4 text-slate-500 text-sm">
               Välj en funktion ovan för att få hjälp av AI
             </div>
+          )}
+        </div>
           )}
         </div>
       )}

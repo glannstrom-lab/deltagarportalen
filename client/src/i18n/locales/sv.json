@@ -1274,7 +1274,7 @@
     },
     "privacy": {
       "title": "Integritet",
-      "description": "Hantera dina sekretessinställningar",
+      "description": "Hantera dina sekretessinställningar och samtycken",
       "shareActivity": "Dela aktivitet",
       "shareActivityDesc": "Tillåt delning av anonymiserad användningsstatistik för att förbättra tjänsten.",
       "learnMore": "Läs mer om dataintegritet",
@@ -1282,7 +1282,25 @@
       "profileVisibilityDesc": "Välj vem som kan se din profil.",
       "onlyMe": "Endast jag",
       "caseworkers": "Arbetsförmedlare",
-      "everyone": "Alla"
+      "everyone": "Alla",
+      "consent": {
+        "title": "Dina samtycken",
+        "terms": "Användarvillkor",
+        "termsDesc": "Grundläggande villkor för att använda tjänsten. Krävs för att ha ett konto.",
+        "privacy": "Integritetspolicy",
+        "privacyDesc": "Hur vi samlar in, lagrar och skyddar dina personuppgifter enligt GDPR.",
+        "ai": "AI-behandling",
+        "aiDesc": "Tillåt att dina uppgifter behandlas med AI (t.ex. OpenAI) för att generera CV-texter och personliga brev. Du kan använda tjänsten utan detta men AI-funktionerna blir inte tillgängliga.",
+        "marketing": "Marknadsföring",
+        "marketingDesc": "Ta emot tips, nyheter och uppdateringar via e-post. Vi skickar aldrig spam.",
+        "required": "Krävs",
+        "optional": "Valfritt",
+        "acceptedOn": "Godkänt {{date}}",
+        "notAccepted": "Ej godkänt",
+        "grant": "Godkänn",
+        "withdraw": "Återkalla",
+        "withdrawalWarning": "Om du återkallar ett samtycke kan vissa funktioner sluta fungera. Du kan alltid ge samtycke igen senare."
+      }
     },
     "security": {
       "title": "Säkerhet",
@@ -1345,6 +1363,36 @@
     "errors": {
       "userExists": "En användare med denna e-postadress finns redan. Logga in istället.",
       "createFailed": "Det gick inte att skapa kontot. Försök igen om en stund."
+    },
+    "consent": {
+      "title": "Godkännanden",
+      "acceptTerms": "Jag har läst och godkänner",
+      "termsLink": "användarvillkoren",
+      "acceptPrivacy": "Jag har läst och godkänner",
+      "privacyLink": "integritetspolicyn",
+      "acceptAi": "Jag samtycker till AI-behandling av mina uppgifter",
+      "aiDescription": "Vi använder AI för att hjälpa dig skriva CV och personliga brev. Din data kan behandlas av tredje part (OpenAI). Detta samtycke är valfritt men krävs för AI-funktioner."
+    }
+  },
+  "ai": {
+    "consent": {
+      "requiredTitle": "AI-samtycke krävs",
+      "requiredDesc": "För att använda AI-funktioner behöver du ge samtycke till AI-behandling av dina uppgifter.",
+      "requiredForFeature": "För att använda {{feature}} behöver du ge samtycke till AI-behandling.",
+      "grantNow": "Ge samtycke",
+      "manageInSettings": "Hantera i inställningar",
+      "grantError": "Kunde inte ge samtycke. Försök igen.",
+      "fullTitle": "Aktivera AI-funktioner",
+      "fullDesc": "AI-funktionerna hjälper dig skriva bättre CV och personliga brev. För att använda dem behöver du ge samtycke.",
+      "fullDescWithFeature": "{{feature}} använder AI för att hjälpa dig. För att använda denna funktion behöver du ge samtycke.",
+      "whatThisMeans": "Vad innebär detta?",
+      "point1": "Dina texter skickas till OpenAI för att generera förslag och förbättringar",
+      "point2": "Din data behandlas säkert och används endast för att hjälpa dig",
+      "point3": "Du kan återkalla samtycket när som helst i inställningarna",
+      "grantConsent": "Ge samtycke till AI",
+      "goToSettings": "Gå till inställningar",
+      "canWithdraw": "Du kan återkalla samtycket när som helst.",
+      "privacyPolicy": "Läs vår integritetspolicy"
     }
   },
   "errors": {
@@ -2603,6 +2651,7 @@
       "button": "Få hjälp att formulera brevet",
       "generating": "Skapar ditt brev...",
       "fillRequired": "Fyll i åtminstone företag, jobbtitel eller jobbannons för att komma igång.",
+      "aiConsentRequired": "Du behöver ge samtycke till AI-behandling för att använda denna funktion. Du kan göra det i inställningarna under Integritet.",
       "noLetterGenerated": "Inget brev genererades",
       "offlineFallback": "Vi kunde inte ansluta till vår smarta hjälp just nu, så vi har skapat ett förslag baserat på din information istället. Du kan redigera det hur du vill!",
       "yourOwnWordsValueable": "Det är också bra att skriva själv - dina ord är värdefulla."

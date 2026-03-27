@@ -52,6 +52,8 @@ import {
   type CoverLetterTemplate
 } from '@/components/coverletter'
 import { RiasecTips } from '@/components/cover-letter/RiasecTips'
+import { AiConsentGate } from '@/components/ai/AiConsentGate'
+import { useAiConsent } from '@/hooks/useAiConsent'
 
 interface SavedCoverLetter {
   id: string
@@ -137,6 +139,9 @@ export default function CoverLetterGenerator() {
 
   // === MOBILE OPTIMIZATION ===
   const { isMobile } = useMobileOptimization()
+
+  // === AI CONSENT ===
+  const { hasConsent: hasAiConsent } = useAiConsent()
   
   // === SWEDISH NORMS CHECK ===
   const [normIssues, setNormIssues] = useState<ReturnType<typeof checkSwedishNorms>>([])
@@ -402,6 +407,12 @@ export default function CoverLetterGenerator() {
 
   // === GENERATE ===
   const handleGenerate = async () => {
+    // Check AI consent first
+    if (!hasAiConsent) {
+      setError(t('coverLetterGenerator.generate.aiConsentRequired'))
+      return
+    }
+
     if (!jobbAnnons.trim() && !company && !jobTitle) {
       setError(t('coverLetterGenerator.generate.fillRequired'))
       return
@@ -1418,26 +1429,33 @@ export default function CoverLetterGenerator() {
         )}
       </Card>
 
+      {/* AI Consent Gate */}
+      {!hasAiConsent && (
+        <AiConsentGate featureName={t('coverLetterGenerator.title')} />
+      )}
+
       {/* Generate Button */}
-      <div className="flex justify-center">
-        <Button
-          onClick={handleGenerate}
-          disabled={isGenerating}
-          className="px-8 py-3 text-lg bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700"
-        >
-          {isGenerating ? (
-            <>
-              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-              {t('coverLetterGenerator.generate.generating')}
-            </>
-          ) : (
-            <>
-              <Sparkles className="w-5 h-5 mr-2" />
-              {t('coverLetterGenerator.generate.button')}
-            </>
-          )}
-        </Button>
-      </div>
+      {hasAiConsent && (
+        <div className="flex justify-center">
+          <Button
+            onClick={handleGenerate}
+            disabled={isGenerating}
+            className="px-8 py-3 text-lg bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700"
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                {t('coverLetterGenerator.generate.generating')}
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-5 h-5 mr-2" />
+                {t('coverLetterGenerator.generate.button')}
+              </>
+            )}
+          </Button>
+        </div>
+      )}
 
       {/* Error message */}
       {error && (
