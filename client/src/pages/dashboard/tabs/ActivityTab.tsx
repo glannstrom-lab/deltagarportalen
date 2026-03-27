@@ -95,7 +95,7 @@ const milestoneRoutes: Record<string, string> = {
   interview: '/interview-simulator',
   linkedin: '/linkedin-optimizer',
   wellness: '/diary',
-  community: '/'
+  general: '/'
 }
 
 export default function ActivityTab() {
@@ -600,7 +600,7 @@ function calculateRealProgress(data: DashboardData | null): Record<string, numbe
     wellness_streak: data.wellness?.streakDays || 0,
     reflection_pro: data.wellness?.completedActivities || 0,
 
-    // Community Milestones
+    // General Milestones
     first_steps: data.cv?.hasCV ? 1 : 0,
     explorer: 0, // Would need page visit tracking
     streak_7: data.activity?.streakDays || 0,

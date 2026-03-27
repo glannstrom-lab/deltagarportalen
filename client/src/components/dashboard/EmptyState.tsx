@@ -1,11 +1,10 @@
 import { Link } from 'react-router-dom'
-import { 
-  FileText, 
-  Search, 
-  Heart, 
-  Target, 
-  Users, 
-  Lightbulb, 
+import {
+  FileText,
+  Search,
+  Heart,
+  Target,
+  Lightbulb,
   BookOpen,
   ArrowRight,
   Sparkles
@@ -13,7 +12,7 @@ import {
 import { cn } from '@/lib/utils'
 
 interface EmptyStateProps {
-  type: 'cv' | 'jobs' | 'wellness' | 'quests' | 'community' | 'insights' | 'learning'
+  type: 'cv' | 'jobs' | 'wellness' | 'quests' | 'insights' | 'learning'
   title?: string
   description?: string
   actionLabel?: string
@@ -53,14 +52,6 @@ const emptyStateConfig = {
     defaultDescription: 'Dagens quests visas här när de är tillgängliga',
     defaultAction: 'Se alla aktiviteter',
     defaultLink: '/activity'
-  },
-  community: {
-    icon: Users,
-    color: 'emerald',
-    defaultTitle: 'Gå med i communityt',
-    defaultDescription: 'Anslut med andra och dela erfarenheter',
-    defaultAction: 'Utforska grupper',
-    defaultLink: '/community'
   },
   insights: {
     icon: Lightbulb,
@@ -104,12 +95,6 @@ const colorClasses: Record<string, { bg: string; text: string; border: string; b
     text: 'text-amber-700',
     border: 'border-amber-200',
     button: 'bg-amber-600 hover:bg-amber-700'
-  },
-  emerald: {
-    bg: 'bg-emerald-50',
-    text: 'text-emerald-700',
-    border: 'border-emerald-200',
-    button: 'bg-emerald-600 hover:bg-emerald-700'
   },
   teal: {
     bg: 'bg-teal-50',

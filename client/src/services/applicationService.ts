@@ -3,7 +3,6 @@ import { type JobAd } from './arbetsformedlingenApi'
 import { jobApplicationsApi } from './cloudStorage'
 import { supabase } from '@/lib/supabase'
 import { storageLogger } from '@/lib/logger'
-import { logApplicationSent, logInterviewScheduled } from './communityActivityLogger'
 
 export interface ApplicationData {
   id?: string
@@ -113,11 +112,6 @@ class ApplicationService {
         this.saveToLocalStorage(this.localCache)
       }
 
-      // Logga till community feed (om status är 'sent')
-      if (application.status === 'sent') {
-        logApplicationSent(application.employer, application.jobTitle)
-      }
-
       return createdApp
     } catch (error) {
       console.error('Fel vid skapande av ansökan:', error)
@@ -148,11 +142,6 @@ class ApplicationService {
           contact_person: updates.contactPerson,
           follow_up_date: updates.followUpDate,
         })
-
-        // Logga till community feed om status ändras till intervju
-        if (updates.status === 'interview' && app.status !== 'interview') {
-          logInterviewScheduled(app.employer)
-        }
       }
 
       // Uppdatera cache
