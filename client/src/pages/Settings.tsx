@@ -13,6 +13,7 @@ import {
 } from 'lucide-react'
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
+import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
 import {
@@ -565,6 +566,11 @@ export default function Settings() {
                   </select>
                 </Card>
               </div>
+            </CardSection>
+
+            {/* Delete Account Section */}
+            <CardSection title={t('settings.deleteAccount.sectionTitle')}>
+              <DeleteAccountSection />
             </CardSection>
           </div>
         )
