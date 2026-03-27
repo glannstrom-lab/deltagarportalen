@@ -2252,52 +2252,158 @@
   "privacy": {
     "backToHome": "Back to home page",
     "title": "Privacy Policy",
-    "subtitle": "How we handle your personal data",
+    "subtitle": "Complete information on how we process your personal data according to GDPR Art. 13-14",
+    "controller": {
+      "title": "Data Controller",
+      "intro": "Responsible for processing your personal data is:",
+      "name": "Jobin AB",
+      "orgNr": "Org. no: 559XXX-XXXX",
+      "address": "Address: [Address], [Postal code] [City]",
+      "email": "Email: privacy@jobin.se",
+      "dpo": "Data Protection Officer",
+      "dpoDesc": "For data protection questions, contact our DPO at dpo@jobin.se"
+    },
     "whatWeCollect": {
       "title": "What information do we collect?",
-      "intro": "To provide you with a personalized and effective job-seeking experience, we collect the following information:",
+      "intro": "To provide you with a personalized and effective job-seeking experience, we collect the following categories of personal data:",
       "contact": "Contact information:",
       "contactDesc": "Name, email address, and phone number",
       "profile": "Profile information:",
-      "profileDesc": "CV, cover letter, skills, and experiences",
+      "profileDesc": "CV, cover letter, skills, experiences, and education",
       "activity": "Activity data:",
-      "activityDesc": "Saved jobs, applications, and diary entries",
+      "activityDesc": "Saved jobs, applications, diary entries, and exercise results",
       "usage": "Usage data:",
-      "usageDesc": "How you use the platform to improve our services"
+      "usageDesc": "How you use the platform, including logins and page views",
+      "technical": "Technical data:",
+      "technicalDesc": "IP address, browser type, and device information for troubleshooting"
+    },
+    "legalBasis": {
+      "title": "Legal basis for processing",
+      "intro": "We process your personal data based on the following legal grounds under GDPR Art. 6:",
+      "contract": "Contract (Art. 6.1.b):",
+      "contractDesc": "Processing necessary to provide the service according to our terms of use.",
+      "consent": "Consent (Art. 6.1.a):",
+      "consentDesc": "AI processing, marketing, and optional features require your explicit consent.",
+      "legitimate": "Legitimate interest (Art. 6.1.f):",
+      "legitimateDesc": "Service improvement, security, and fraud prevention.",
+      "legal": "Legal obligation (Art. 6.1.c):",
+      "legalDesc": "Accounting and other statutory requirements."
+    },
+    "purposes": {
+      "title": "Purposes of processing",
+      "intro": "We process your data for the following specific purposes:",
+      "account": "Account management - create and administer your user account",
+      "cv": "CV builder - store and display your CV and cover letters",
+      "jobs": "Job search - show relevant job listings and save your favorites",
+      "ai": "AI features - generate CV texts and cover letters (requires consent)",
+      "analytics": "Service improvement - analyze usage patterns to improve the service",
+      "support": "Customer support - answer your questions and provide assistance",
+      "security": "Security - protect against unauthorized access and misuse"
+    },
+    "retention": {
+      "title": "Retention periods",
+      "intro": "We keep your data only as long as necessary:",
+      "active": "Active account:",
+      "activeDesc": "As long as your account is active plus 30 days after deletion",
+      "deleted": "Deleted account:",
+      "deletedDesc": "Profile data is deleted immediately, anonymized statistics may be retained",
+      "logs": "Security logs:",
+      "logsDesc": "90 days for troubleshooting and security",
+      "legal": "Legal requirements:",
+      "legalDesc": "Some data may be retained longer by law (e.g., accounting for 7 years)"
+    },
+    "sharing": {
+      "title": "Sharing with third parties",
+      "intro": "We share your data with the following categories of recipients:",
+      "hosting": "Cloud services:",
+      "hostingDesc": "Supabase (database and authentication) - data is stored within EU/EEA",
+      "ai": "AI providers:",
+      "aiDesc": "OpenAI (only if you consent to AI processing) - data may be processed in the USA under the EU-US Data Privacy Framework",
+      "analytics": "Error tracking:",
+      "analyticsDesc": "Sentry (only if you accept cookies) - to identify and fix technical issues",
+      "none": "We never sell your personal data to third parties."
+    },
+    "transfers": {
+      "title": "Transfer to third countries",
+      "intro": "If you use AI features, your data may be transferred to the USA:",
+      "safeguards": "Safeguards:",
+      "safeguardsDesc": "Transfers are made under the EU-US Data Privacy Framework and/or Standard Contractual Clauses (SCC)",
+      "minimize": "Data minimization:",
+      "minimizeDesc": "We only send information necessary for AI processing"
     },
     "howWeProtect": {
       "title": "How do we protect your information?",
       "intro": "We take security very seriously and use multiple layers of protection:",
       "ssl": "All data is transferred via encrypted SSL/TLS connection",
-      "hash": "Passwords are stored encrypted with modern hashing algorithms",
+      "hash": "Passwords are stored encrypted with modern hashing algorithms (bcrypt)",
+      "rls": "Row Level Security (RLS) ensures you only see your own data",
       "audits": "Regular security audits and updates",
       "access": "Limited access to personal data within the organization"
     },
-    "howWeUse": {
-      "title": "How do we use your information?",
-      "intro": "Your information is used to:",
-      "manage": "Create and manage your account",
-      "personalize": "Personalize your job-seeking experience",
-      "recommend": "Send relevant job recommendations and reminders",
-      "improve": "Improve our services based on usage patterns"
-    },
     "yourRights": {
-      "title": "Your rights",
-      "intro": "Under GDPR, you have the following rights:",
-      "access": "Right of access:",
-      "accessDesc": "Request a copy of your personal data",
-      "correction": "Right to rectification:",
+      "title": "Your rights under GDPR",
+      "intro": "You have the following rights regarding your personal data:",
+      "access": "Right of access (Art. 15):",
+      "accessDesc": "Request a copy of all personal data we have about you",
+      "correction": "Right to rectification (Art. 16):",
       "correctionDesc": "Update or correct inaccurate information",
-      "deletion": "Right to erasure:",
-      "deletionDesc": "Request that we delete your data",
-      "portability": "Right to data portability:",
-      "portabilityDesc": "Get your data in a machine-readable format"
+      "deletion": "Right to erasure (Art. 17):",
+      "deletionDesc": "Request that we delete all your data",
+      "restriction": "Right to restriction (Art. 18):",
+      "restrictionDesc": "Restrict how we process your data",
+      "portability": "Right to data portability (Art. 20):",
+      "portabilityDesc": "Get your data in machine-readable format (JSON)",
+      "object": "Right to object (Art. 21):",
+      "objectDesc": "Object to processing based on legitimate interest",
+      "withdraw": "Right to withdraw consent:",
+      "withdrawDesc": "Withdraw consent at any time under Settings > Privacy",
+      "howTo": "How do you exercise your rights?",
+      "howToDesc": "You can exercise most rights directly in the app under Settings. For access and portability, use the \"Export data\" feature. For deletion, use \"Delete account\"."
+    },
+    "automated": {
+      "title": "Automated decision-making and AI",
+      "intro": "About AI processing:",
+      "noDecisions": "We do not make legally binding decisions based solely on automated processing.",
+      "aiAssist": "AI is only used to provide suggestions that you review and edit yourself.",
+      "consent": "AI features require your explicit consent and you can use the service without them.",
+      "transparency": "You can always see when content has been generated with AI assistance.",
+      "moreInfo": "Learn more about how we use AI"
+    },
+    "cookies": {
+      "title": "Cookies and tracking",
+      "intro": "We use the following types of cookies:",
+      "necessary": "Necessary cookies:",
+      "necessaryDesc": "Authentication and session - required for the service to work",
+      "functional": "Functional cookies:",
+      "functionalDesc": "Saves your settings like language and theme",
+      "analytics": "Analytics cookies:",
+      "analyticsDesc": "Sentry for error tracking - only with your consent",
+      "manage": "You can manage cookies under Settings > Privacy"
+    },
+    "complaint": {
+      "title": "Complaint to supervisory authority",
+      "intro": "If you believe we are processing your personal data incorrectly, you have the right to lodge a complaint with:",
+      "authority": "Swedish Authority for Privacy Protection (IMY)",
+      "website": "www.imy.se",
+      "email": "imy@imy.se"
+    },
+    "mandatory": {
+      "title": "Mandatory information",
+      "intro": "The following information is required to use the service:",
+      "required": "Email address and password - to create an account",
+      "optional": "All other information is optional and improves your experience"
+    },
+    "changes": {
+      "title": "Changes to this policy",
+      "text": "We may update this policy when necessary. For significant changes, we will notify you via email or in the app. Continued use after changes means you accept the updated policy."
     },
     "contact": {
       "title": "Contact us",
-      "text": "Do you have questions about our privacy policy or how we handle your data? Contact us at"
+      "text": "Do you have questions about our privacy policy or how we handle your data? Contact us at",
+      "dpo": "For data protection questions, contact the DPO at"
     },
     "lastUpdated": "Last updated:",
+    "version": "Version 2.0",
     "copyright": "2026 Jobin. All rights reserved."
   },
   "terms": {
@@ -2346,6 +2452,96 @@
     },
     "lastUpdated": "Last updated:",
     "copyright": "2026 Jobin. All rights reserved."
+  },
+  "aiPolicy": {
+    "backToHome": "Back to home page",
+    "title": "AI Transparency",
+    "subtitle": "How we use artificial intelligence in Jobin",
+    "intro": {
+      "title": "Our Commitment",
+      "text": "We believe in transparency about how AI is used. This page explains which AI models we use, what data is processed, and how you maintain control."
+    },
+    "models": {
+      "title": "AI Models We Use",
+      "intro": "Jobin uses the following AI services:",
+      "openai": "OpenAI GPT-4",
+      "openaiDesc": "Used to generate CV texts, cover letters, and provide writing suggestions. GPT-4 is a large language model trained by OpenAI.",
+      "provider": "Provider:",
+      "purpose": "Purpose:",
+      "location": "Data processing:"
+    },
+    "dataFlow": {
+      "title": "What data is sent to AI?",
+      "intro": "When you use AI features, we send the following information:",
+      "cv": "CV Assistant:",
+      "cvData": "Your work history, education, and skills that you chose to include",
+      "coverLetter": "Cover Letter Generator:",
+      "coverLetterData": "The job listing, parts of your CV, and your instructions",
+      "notSent": "The following is NEVER sent to AI:",
+      "notSentList": "Personal ID numbers, passwords, bank details, or other sensitive information"
+    },
+    "userControl": {
+      "title": "Your Control",
+      "intro": "You have full control over AI processing:",
+      "consent": "Consent required:",
+      "consentDesc": "AI features are only activated if you give explicit consent",
+      "review": "Review:",
+      "reviewDesc": "All AI-generated text is shown to you before saving - you edit and approve",
+      "withdraw": "Withdraw:",
+      "withdrawDesc": "You can withdraw consent at any time under Settings > Privacy",
+      "delete": "Deletion:",
+      "deleteDesc": "AI-generated content is deleted when you delete your account"
+    },
+    "noDecisions": {
+      "title": "AI Does Not Make Decisions",
+      "text": "Important to understand: AI is only used as a tool to provide suggestions. AI never makes decisions for you. You always decide what goes in your CV or cover letter. AI-generated content does not affect your opportunities - it's just a tool."
+    },
+    "security": {
+      "title": "Security and Data Protection",
+      "intro": "We take security seriously:",
+      "encryption": "All communication with AI providers is over encrypted connections (TLS)",
+      "minimize": "We only send necessary information - never more than needed",
+      "noTraining": "Your data is not used to train AI models (per our agreement with OpenAI)",
+      "logs": "AI requests are not logged with personally identifiable information"
+    },
+    "compliance": {
+      "title": "Regulatory Compliance",
+      "aiAct": "EU AI Act:",
+      "aiActDesc": "Our AI features are classified as limited risk under the EU AI Regulation. We follow the transparency requirements in Art. 52.",
+      "gdpr": "GDPR:",
+      "gdprDesc": "AI processing is based on your consent under Art. 6.1.a. You can withdraw consent at any time.",
+      "dataAct": "Data Act:",
+      "dataActDesc": "You can export all your data, including AI-generated content, in machine-readable format."
+    },
+    "questions": {
+      "title": "Frequently Asked Questions",
+      "q1": "Do I have to use AI?",
+      "a1": "No, all AI features are completely optional. You can build your CV and write cover letters entirely without AI.",
+      "q2": "Are my AI requests saved?",
+      "a2": "No, we don't save the requests. AI-generated content is only saved if you choose to keep it.",
+      "q3": "Can AI see my personal ID number?",
+      "a3": "No, sensitive information like personal ID numbers is never sent to AI services."
+    },
+    "contact": {
+      "title": "Questions about AI?",
+      "text": "Do you have questions about how we use AI? Contact us at"
+    },
+    "lastUpdated": "Last updated:",
+    "copyright": "2026 Jobin. All rights reserved."
+  },
+  "cookieConsent": {
+    "title": "We use cookies",
+    "description": "We use necessary cookies for the service to work and optional cookies to improve your experience.",
+    "necessary": "Necessary",
+    "necessaryDesc": "Required for login and basic functions",
+    "analytics": "Error tracking",
+    "analyticsDesc": "Helps us find and fix technical issues (Sentry)",
+    "acceptAll": "Accept all",
+    "acceptNecessary": "Necessary only",
+    "customize": "Customize",
+    "save": "Save settings",
+    "moreInfo": "Learn more in our",
+    "privacyPolicy": "privacy policy"
   },
   "interviewSimulator": {
     "title": "Interview Simulator",

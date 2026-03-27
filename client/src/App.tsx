@@ -23,6 +23,8 @@ import Register from './pages/Register'
 import Landing from './pages/Landing'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
+import AiPolicy from './pages/AiPolicy'
+import CookieConsent from './components/CookieConsent'
 import StorageTest from './pages/StorageTest'
 
 // Lazy-loaded sidor
@@ -168,6 +170,7 @@ function App() {
   }
 
   return (
+    <>
     <Routes>
       {/* Public routes */}
       <Route path="/" element={
@@ -197,6 +200,7 @@ function App() {
       {/* Legal pages */}
       <Route path="/privacy" element={<Privacy />} />
       <Route path="/terms" element={<Terms />} />
+      <Route path="/ai-policy" element={<AiPolicy />} />
       <Route path="/test/storage" element={<StorageTest />} />
 
       {/* Protected routes with Layout */}
@@ -426,6 +430,8 @@ function App() {
       {/* Catch all - redirect to home */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    <CookieConsent />
+    </>
   )
 }
 

@@ -2301,52 +2301,158 @@
   "privacy": {
     "backToHome": "Tillbaka till startsidan",
     "title": "Integritetspolicy",
-    "subtitle": "Så här hanterar vi dina personuppgifter",
+    "subtitle": "Fullständig information om hur vi behandlar dina personuppgifter enligt GDPR Art. 13-14",
+    "controller": {
+      "title": "Personuppgiftsansvarig",
+      "intro": "Ansvarig för behandlingen av dina personuppgifter är:",
+      "name": "Jobin AB",
+      "orgNr": "Org.nr: 559XXX-XXXX",
+      "address": "Adress: [Adress], [Postnummer] [Stad]",
+      "email": "E-post: privacy@jobin.se",
+      "dpo": "Dataskyddsombud",
+      "dpoDesc": "För frågor om dataskydd, kontakta vårt dataskyddsombud på dpo@jobin.se"
+    },
     "whatWeCollect": {
       "title": "Vilken information samlar vi in?",
-      "intro": "För att kunna erbjuda dig en personlig och effektiv jobbsökarupplevelse samlar vi in följande information:",
+      "intro": "För att kunna erbjuda dig en personlig och effektiv jobbsökarupplevelse samlar vi in följande kategorier av personuppgifter:",
       "contact": "Kontaktuppgifter:",
       "contactDesc": "Namn, e-postadress och telefonnummer",
       "profile": "Profilinformation:",
-      "profileDesc": "CV, personligt brev, kompetenser och erfarenheter",
+      "profileDesc": "CV, personligt brev, kompetenser, erfarenheter och utbildning",
       "activity": "Aktivitetsdata:",
-      "activityDesc": "Sparade jobb, ansökningar och dagboksanteckningar",
+      "activityDesc": "Sparade jobb, ansökningar, dagboksanteckningar och övningsresultat",
       "usage": "Användningsdata:",
-      "usageDesc": "Hur du använder plattformen för att förbättra våra tjänster"
+      "usageDesc": "Hur du använder plattformen, inklusive inloggningar och sidvisningar",
+      "technical": "Teknisk data:",
+      "technicalDesc": "IP-adress, webbläsartyp och enhetsinformation för felsökning"
+    },
+    "legalBasis": {
+      "title": "Rättslig grund för behandling",
+      "intro": "Vi behandlar dina personuppgifter baserat på följande rättsliga grunder enligt GDPR Art. 6:",
+      "contract": "Avtal (Art. 6.1.b):",
+      "contractDesc": "Behandling som är nödvändig för att tillhandahålla tjänsten enligt våra användarvillkor.",
+      "consent": "Samtycke (Art. 6.1.a):",
+      "consentDesc": "AI-behandling, marknadsföring och valfria funktioner kräver ditt uttryckliga samtycke.",
+      "legitimate": "Berättigat intresse (Art. 6.1.f):",
+      "legitimateDesc": "Förbättring av tjänsten, säkerhet och bedrägeribekämpning.",
+      "legal": "Rättslig förpliktelse (Art. 6.1.c):",
+      "legalDesc": "Bokföring och andra lagstadgade krav."
+    },
+    "purposes": {
+      "title": "Ändamål med behandlingen",
+      "intro": "Vi behandlar dina uppgifter för följande specifika ändamål:",
+      "account": "Kontohantering - skapa och administrera ditt användarkonto",
+      "cv": "CV-byggare - lagra och visa ditt CV och personliga brev",
+      "jobs": "Jobbsökning - visa relevanta jobbannonser och spara dina favoriter",
+      "ai": "AI-funktioner - generera CV-texter och personliga brev (kräver samtycke)",
+      "analytics": "Tjänsteförbättring - analysera användningsmönster för att förbättra tjänsten",
+      "support": "Kundsupport - besvara dina frågor och ge hjälp",
+      "security": "Säkerhet - skydda mot obehörig åtkomst och missbruk"
+    },
+    "retention": {
+      "title": "Lagringsperioder",
+      "intro": "Vi sparar dina uppgifter endast så länge det är nödvändigt:",
+      "active": "Aktivt konto:",
+      "activeDesc": "Så länge ditt konto är aktivt plus 30 dagar efter radering",
+      "deleted": "Raderat konto:",
+      "deletedDesc": "Profildata raderas omedelbart, anonymiserad statistik kan behållas",
+      "logs": "Säkerhetsloggar:",
+      "logsDesc": "90 dagar för felsökning och säkerhet",
+      "legal": "Juridiska krav:",
+      "legalDesc": "Vissa uppgifter kan behållas längre enligt lag (t.ex. bokföring i 7 år)"
+    },
+    "sharing": {
+      "title": "Delning med tredje part",
+      "intro": "Vi delar dina uppgifter med följande kategorier av mottagare:",
+      "hosting": "Molntjänster:",
+      "hostingDesc": "Supabase (databas och autentisering) - data lagras inom EU/EES",
+      "ai": "AI-leverantörer:",
+      "aiDesc": "OpenAI (endast om du samtyckt till AI-behandling) - data kan behandlas i USA under EU-US Data Privacy Framework",
+      "analytics": "Felspårning:",
+      "analyticsDesc": "Sentry (endast om du accepterat cookies) - för att identifiera och åtgärda tekniska problem",
+      "none": "Vi säljer aldrig dina personuppgifter till tredje part."
+    },
+    "transfers": {
+      "title": "Överföring till tredjeland",
+      "intro": "Om du använder AI-funktioner kan dina uppgifter överföras till USA:",
+      "safeguards": "Skyddsåtgärder:",
+      "safeguardsDesc": "Överföringar sker enligt EU-US Data Privacy Framework och/eller standardavtalsklausuler (SCC)",
+      "minimize": "Dataminimering:",
+      "minimizeDesc": "Vi skickar endast den information som är nödvändig för AI-behandlingen"
     },
     "howWeProtect": {
       "title": "Hur skyddar vi din information?",
       "intro": "Vi tar säkerheten på största allvar och använder flera lager av skydd:",
       "ssl": "All data överförs via krypterad SSL/TLS-anslutning",
-      "hash": "Lösenord lagras krypterat med moderna hashningsalgoritmer",
+      "hash": "Lösenord lagras krypterat med moderna hashningsalgoritmer (bcrypt)",
+      "rls": "Row Level Security (RLS) säkerställer att du endast ser din egen data",
       "audits": "Regelbundna säkerhetsgranskningar och uppdateringar",
       "access": "Begränsad åtkomst till personuppgifter inom organisationen"
     },
-    "howWeUse": {
-      "title": "Hur använder vi din information?",
-      "intro": "Din information används för att:",
-      "manage": "Skapa och hantera ditt konto",
-      "personalize": "Personalisera din jobbsökarupplevelse",
-      "recommend": "Skicka relevanta jobbrekommendationer och påminnelser",
-      "improve": "Förbättra våra tjänster baserat på användarmönster"
-    },
     "yourRights": {
-      "title": "Dina rättigheter",
-      "intro": "Enligt GDPR har du följande rättigheter:",
-      "access": "Rätt till tillgång:",
-      "accessDesc": "Begära en kopia av dina personuppgifter",
-      "correction": "Rätt till rättelse:",
+      "title": "Dina rättigheter enligt GDPR",
+      "intro": "Du har följande rättigheter gällande dina personuppgifter:",
+      "access": "Rätt till tillgång (Art. 15):",
+      "accessDesc": "Begära en kopia av alla personuppgifter vi har om dig",
+      "correction": "Rätt till rättelse (Art. 16):",
       "correctionDesc": "Uppdatera eller korrigera felaktig information",
-      "deletion": "Rätt till radering:",
-      "deletionDesc": "Begära att vi tar bort dina uppgifter",
-      "portability": "Rätt till dataportabilitet:",
-      "portabilityDesc": "Få ut din data i ett maskinläsbart format"
+      "deletion": "Rätt till radering (Art. 17):",
+      "deletionDesc": "Begära att vi tar bort alla dina uppgifter",
+      "restriction": "Rätt till begränsning (Art. 18):",
+      "restrictionDesc": "Begränsa hur vi behandlar dina uppgifter",
+      "portability": "Rätt till dataportabilitet (Art. 20):",
+      "portabilityDesc": "Få ut din data i maskinläsbart format (JSON)",
+      "object": "Rätt att invända (Art. 21):",
+      "objectDesc": "Invända mot behandling baserad på berättigat intresse",
+      "withdraw": "Rätt att återkalla samtycke:",
+      "withdrawDesc": "Återkalla samtycke när som helst under Inställningar > Integritet",
+      "howTo": "Hur utövar du dina rättigheter?",
+      "howToDesc": "Du kan utöva de flesta rättigheter direkt i appen under Inställningar. För tillgång och portabilitet, använd \"Exportera data\"-funktionen. För radering, använd \"Radera konto\"."
+    },
+    "automated": {
+      "title": "Automatiserat beslutsfattande och AI",
+      "intro": "Om AI-behandling:",
+      "noDecisions": "Vi fattar inga juridiskt bindande beslut baserat enbart på automatiserad behandling.",
+      "aiAssist": "AI används endast för att ge förslag som du själv granskar och redigerar.",
+      "consent": "AI-funktioner kräver ditt uttryckliga samtycke och du kan använda tjänsten utan dem.",
+      "transparency": "Du kan alltid se när innehåll har genererats med AI-hjälp.",
+      "moreInfo": "Läs mer om hur vi använder AI"
+    },
+    "cookies": {
+      "title": "Cookies och spårning",
+      "intro": "Vi använder följande typer av cookies:",
+      "necessary": "Nödvändiga cookies:",
+      "necessaryDesc": "Autentisering och session - krävs för att tjänsten ska fungera",
+      "functional": "Funktionella cookies:",
+      "functionalDesc": "Sparar dina inställningar som språk och tema",
+      "analytics": "Analys-cookies:",
+      "analyticsDesc": "Sentry för felspårning - endast med ditt samtycke",
+      "manage": "Du kan hantera cookies under Inställningar > Integritet"
+    },
+    "complaint": {
+      "title": "Klagomål till tillsynsmyndighet",
+      "intro": "Om du anser att vi behandlar dina personuppgifter felaktigt har du rätt att lämna klagomål till:",
+      "authority": "Integritetsskyddsmyndigheten (IMY)",
+      "website": "www.imy.se",
+      "email": "imy@imy.se"
+    },
+    "mandatory": {
+      "title": "Obligatoriska uppgifter",
+      "intro": "Följande uppgifter krävs för att använda tjänsten:",
+      "required": "E-postadress och lösenord - för att skapa konto",
+      "optional": "Alla andra uppgifter är frivilliga och förbättrar din upplevelse"
+    },
+    "changes": {
+      "title": "Ändringar i policyn",
+      "text": "Vi kan uppdatera denna policy vid behov. Vid väsentliga ändringar meddelar vi dig via e-post eller i appen. Fortsatt användning efter ändringar innebär att du accepterar den uppdaterade policyn."
     },
     "contact": {
       "title": "Kontakta oss",
-      "text": "Har du frågor om vår integritetspolicy eller hur vi hanterar dina uppgifter? Kontakta oss på"
+      "text": "Har du frågor om vår integritetspolicy eller hur vi hanterar dina uppgifter? Kontakta oss på",
+      "dpo": "För dataskyddsfrågor, kontakta dataskyddsombudet på"
     },
     "lastUpdated": "Senast uppdaterad:",
+    "version": "Version 2.0",
     "copyright": "2026 Jobin. Alla rättigheter förbehållna."
   },
   "terms": {
@@ -2395,6 +2501,96 @@
     },
     "lastUpdated": "Senast uppdaterad:",
     "copyright": "2026 Jobin. Alla rättigheter förbehållna."
+  },
+  "aiPolicy": {
+    "backToHome": "Tillbaka till startsidan",
+    "title": "AI-transparens",
+    "subtitle": "Hur vi använder artificiell intelligens i Jobin",
+    "intro": {
+      "title": "Vårt åtagande",
+      "text": "Vi tror på transparens kring hur AI används. Denna sida förklarar vilka AI-modeller vi använder, vilken data som behandlas och hur du behåller kontrollen."
+    },
+    "models": {
+      "title": "AI-modeller vi använder",
+      "intro": "Jobin använder följande AI-tjänster:",
+      "openai": "OpenAI GPT-4",
+      "openaiDesc": "Används för att generera CV-texter, personliga brev och ge skrivförslag. GPT-4 är en stor språkmodell tränad av OpenAI.",
+      "provider": "Leverantör:",
+      "purpose": "Användningsområde:",
+      "location": "Databehandling:"
+    },
+    "dataFlow": {
+      "title": "Vilken data skickas till AI?",
+      "intro": "När du använder AI-funktioner skickar vi följande information:",
+      "cv": "CV-assistenten:",
+      "cvData": "Din jobbhistorik, utbildning och kompetenser som du valt att inkludera",
+      "coverLetter": "Personligt brev-generatorn:",
+      "coverLetterData": "Jobbannonsen, delar av ditt CV och dina instruktioner",
+      "notSent": "Följande skickas ALDRIG till AI:",
+      "notSentList": "Personnummer, lösenord, bankuppgifter eller andra känsliga uppgifter"
+    },
+    "userControl": {
+      "title": "Din kontroll",
+      "intro": "Du har full kontroll över AI-behandlingen:",
+      "consent": "Samtycke krävs:",
+      "consentDesc": "AI-funktioner aktiveras endast om du ger uttryckligt samtycke",
+      "review": "Granskning:",
+      "reviewDesc": "All AI-genererad text visas för dig innan den sparas - du redigerar och godkänner",
+      "withdraw": "Återkalla:",
+      "withdrawDesc": "Du kan när som helst återkalla samtycket under Inställningar > Integritet",
+      "delete": "Radering:",
+      "deleteDesc": "AI-genererat innehåll raderas när du raderar ditt konto"
+    },
+    "noDecisions": {
+      "title": "AI fattar inga beslut",
+      "text": "Viktigt att förstå: AI används endast som ett verktyg för att ge förslag. AI fattar aldrig beslut åt dig. Du bestämmer alltid vad som ska stå i ditt CV eller personliga brev. AI-genererat innehåll påverkar inte dina möjligheter - det är bara ett hjälpmedel."
+    },
+    "security": {
+      "title": "Säkerhet och dataskydd",
+      "intro": "Vi tar säkerheten på allvar:",
+      "encryption": "All kommunikation med AI-leverantörer sker över krypterade anslutningar (TLS)",
+      "minimize": "Vi skickar endast nödvändig information - aldrig mer än vad som behövs",
+      "noTraining": "Dina uppgifter används inte för att träna AI-modeller (enligt vårt avtal med OpenAI)",
+      "logs": "AI-förfrågningar loggas inte med personidentifierbar information"
+    },
+    "compliance": {
+      "title": "Regelefterlevnad",
+      "aiAct": "EU AI Act:",
+      "aiActDesc": "Våra AI-funktioner klassificeras som begränsad risk enligt EU:s AI-förordning. Vi följer transparenskraven i Art. 52.",
+      "gdpr": "GDPR:",
+      "gdprDesc": "AI-behandling sker baserat på ditt samtycke enligt Art. 6.1.a. Du kan återkalla samtycket när som helst.",
+      "dataAct": "Data Act:",
+      "dataActDesc": "Du kan exportera all din data, inklusive AI-genererat innehåll, i maskinläsbart format."
+    },
+    "questions": {
+      "title": "Vanliga frågor",
+      "q1": "Måste jag använda AI?",
+      "a1": "Nej, alla AI-funktioner är helt valfria. Du kan bygga CV och skriva personliga brev helt utan AI.",
+      "q2": "Sparas mina AI-förfrågningar?",
+      "a2": "Nej, vi sparar inte förfrågningarna. Det AI-genererade innehållet sparas endast om du väljer att behålla det.",
+      "q3": "Kan AI se mitt personnummer?",
+      "a3": "Nej, känslig information som personnummer skickas aldrig till AI-tjänster."
+    },
+    "contact": {
+      "title": "Frågor om AI?",
+      "text": "Har du frågor om hur vi använder AI? Kontakta oss på"
+    },
+    "lastUpdated": "Senast uppdaterad:",
+    "copyright": "2026 Jobin. Alla rättigheter förbehållna."
+  },
+  "cookieConsent": {
+    "title": "Vi använder cookies",
+    "description": "Vi använder nödvändiga cookies för att tjänsten ska fungera och valfria cookies för att förbättra din upplevelse.",
+    "necessary": "Nödvändiga",
+    "necessaryDesc": "Krävs för inloggning och grundläggande funktioner",
+    "analytics": "Felspårning",
+    "analyticsDesc": "Hjälper oss hitta och åtgärda tekniska problem (Sentry)",
+    "acceptAll": "Acceptera alla",
+    "acceptNecessary": "Endast nödvändiga",
+    "customize": "Anpassa",
+    "save": "Spara inställningar",
+    "moreInfo": "Läs mer i vår",
+    "privacyPolicy": "integritetspolicy"
   },
   "interviewSimulator": {
     "title": "Intervju-simulator",

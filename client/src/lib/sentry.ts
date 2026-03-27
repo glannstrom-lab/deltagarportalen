@@ -6,24 +6,71 @@
  * 2. Create a new React project
  * 3. Copy the DSN and add to environment variables:
  *    VITE_SENTRY_DSN=https://xxx@xxx.ingest.sentry.io/xxx
+ *
+ * GDPR Note: Sentry is only initialized if the user has given cookie consent
+ * for analytics/error tracking. See CookieConsent component.
  */
 
 import * as Sentry from '@sentry/react';
 
-// Only initialize in production or if explicitly enabled
+// Cookie consent check
+const COOKIE_CONSENT_KEY = 'jobin_cookie_consent';
+const COOKIE_PREFERENCES_KEY = 'jobin_cookie_preferences';
+
+function hasAnalyticsCookieConsent(): boolean {
+  try {
+    const hasConsent = localStorage.getItem(COOKIE_CONSENT_KEY) === 'true';
+    if (!hasConsent) return false;
+
+    const prefs = localStorage.getItem(COOKIE_PREFERENCES_KEY);
+    if (!prefs) return false;
+
+    const parsed = JSON.parse(prefs);
+    return parsed.analytics === true;
+  } catch {
+    return false;
+  }
+}
+
+// Only initialize in production or if explicitly enabled AND user has given consent
 const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
 const IS_PRODUCTION = import.meta.env.PROD;
-const ENABLE_SENTRY = SENTRY_DSN && (IS_PRODUCTION || import.meta.env.VITE_SENTRY_DEBUG === 'true');
+const HAS_COOKIE_CONSENT = hasAnalyticsCookieConsent();
+const ENABLE_SENTRY = SENTRY_DSN && (IS_PRODUCTION || import.meta.env.VITE_SENTRY_DEBUG === 'true') && HAS_COOKIE_CONSENT;
+
+let sentryInitialized = false;
 
 /**
  * Initialize Sentry error monitoring
  * Call this in main.tsx before rendering the app
+ *
+ * GDPR: Only initializes if user has given cookie consent for analytics
  */
 export function initSentry(): void {
-  if (!ENABLE_SENTRY) {
-    console.log('[Sentry] Disabled - no DSN or not in production');
+  // Check if we should enable Sentry
+  const shouldEnable = SENTRY_DSN && (IS_PRODUCTION || import.meta.env.VITE_SENTRY_DEBUG === 'true') && hasAnalyticsCookieConsent();
+
+  if (!shouldEnable) {
+    console.log('[Sentry] Disabled - no DSN, not in production, or no cookie consent');
+
+    // Listen for cookie consent updates
+    window.addEventListener('cookie-consent-updated', (event: Event) => {
+      const customEvent = event as CustomEvent;
+      if (customEvent.detail?.analytics && !sentryInitialized) {
+        console.log('[Sentry] Cookie consent granted, initializing...');
+        doInitSentry();
+      }
+    });
+
     return;
   }
+
+  doInitSentry();
+}
+
+function doInitSentry(): void {
+  if (sentryInitialized) return;
+  sentryInitialized = true;
 
   Sentry.init({
     dsn: SENTRY_DSN,
@@ -110,7 +157,7 @@ export function captureError(
   error: Error | string,
   context?: Record<string, unknown>
 ): void {
-  if (!ENABLE_SENTRY) {
+  if (!sentryInitialized) {
     console.error('[Error]', error, context);
     return;
   }
@@ -136,7 +183,7 @@ export function setUser(user: {
   email?: string;
   role?: string;
 } | null): void {
-  if (!ENABLE_SENTRY) return;
+  if (!sentryInitialized) return;
 
   if (user) {
     Sentry.setUser({
@@ -160,7 +207,7 @@ export function addBreadcrumb(
   level: Sentry.SeverityLevel = 'info',
   data?: Record<string, unknown>
 ): void {
-  if (!ENABLE_SENTRY) return;
+  if (!sentryInitialized) return;
 
   Sentry.addBreadcrumb({
     message,
