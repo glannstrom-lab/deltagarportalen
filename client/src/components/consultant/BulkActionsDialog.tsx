@@ -192,7 +192,7 @@ export function BulkActionsDialog({
       // Mock implementation - in real app, would update participant tags
       await new Promise(resolve => setTimeout(resolve, 1000))
 
-      console.log('Applying tags:', selectedTags, 'to participants:', selectedParticipants.map(p => p.participant_id))
+      // TODO: Implement actual API call to apply tags
 
       setSuccess(true)
       setTimeout(() => {
@@ -248,8 +248,7 @@ export function BulkActionsDialog({
         link.click()
         URL.revokeObjectURL(url)
       } else if (exportFormat === 'pdf') {
-        // PDF export would use jspdf - for now just log
-        console.log('PDF export not yet implemented')
+        // PDF export would use jspdf - not yet implemented
         setError('PDF-export kommer snart')
         setLoading(false)
         return
@@ -276,7 +275,7 @@ export function BulkActionsDialog({
       // Mock implementation - in real app, would update participant statuses
       await new Promise(resolve => setTimeout(resolve, 1000))
 
-      console.log('Updating status to:', newStatus, 'for participants:', selectedParticipants.map(p => p.participant_id))
+      // TODO: Implement actual API call to update status
 
       setSuccess(true)
       setTimeout(() => {

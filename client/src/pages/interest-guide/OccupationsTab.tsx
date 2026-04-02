@@ -51,12 +51,9 @@ export default function OccupationsTab() {
         setError(null)
         const data = await interestGuideApi.getProgress()
 
-        console.log('OccupationsTab - Interest guide data:', data)
-
         if (data?.is_completed && data.answers) {
           try {
             const calculatedProfile = calculateUserProfile(data.answers)
-            console.log('OccupationsTab - Calculated profile:', calculatedProfile)
             setProfile(calculatedProfile)
           } catch (calcErr) {
             console.error('OccupationsTab - Failed to calculate profile:', calcErr)
@@ -83,7 +80,6 @@ export default function OccupationsTab() {
     }
     try {
       const matches = calculateJobMatches(profile, filterUni)
-      console.log('OccupationsTab - Job matches calculated:', matches.length)
       return { allMatches: matches, calculationError: null }
     } catch (err) {
       console.error('OccupationsTab - Failed to calculate job matches:', err)

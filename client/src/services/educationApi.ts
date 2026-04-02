@@ -139,7 +139,6 @@ export async function searchEducations(params: SearchParams): Promise<SearchResu
   // Check cache first (5 min TTL)
   const cached = defaultCache.get<SearchResult>(cacheKey);
   if (cached) {
-    console.log('[educationApi] Cache hit for search');
     return cached;
   }
 

@@ -760,8 +760,8 @@ export function OverviewTab() {
           email: p.email,
           avatarUrl: undefined,
         }))}
-        onSchedule={(meeting) => {
-          console.log('Meeting scheduled:', meeting)
+        onSchedule={() => {
+          // TODO: Implement meeting persistence
           setShowMeetingDialog(false)
           fetchDashboardData()
         }}
@@ -775,8 +775,8 @@ export function OverviewTab() {
           name: `${p.first_name} ${p.last_name}`,
           email: p.email,
         }))}
-        onCreateGoal={(goal) => {
-          console.log('Goal created:', goal)
+        onCreateGoal={() => {
+          // TODO: Implement goal persistence
           setShowGoalDialog(false)
           fetchDashboardData()
         }}

@@ -489,8 +489,8 @@ export function ParticipantDetailPage() {
                 <GoalCard
                   key={goal.id}
                   goal={goal}
-                  onEdit={g => console.log('Edit goal:', g)}
-                  onComplete={id => console.log('Complete goal:', id)}
+                  onEdit={() => {/* TODO: Implement goal editing */}}
+                  onComplete={() => {/* TODO: Implement goal completion */}}
                 />
               ))}
             </div>
@@ -538,8 +538,8 @@ export function ParticipantDetailPage() {
               <GoalCard
                 key={goal.id}
                 goal={goal}
-                onEdit={g => console.log('Edit goal:', g)}
-                onComplete={id => console.log('Complete goal:', id)}
+                onEdit={() => {/* TODO: Implement goal editing */}}
+                onComplete={() => {/* TODO: Implement goal completion */}}
               />
             ))}
           </div>

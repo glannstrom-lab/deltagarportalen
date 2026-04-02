@@ -62,13 +62,9 @@ export default function ResultsTab() {
           interestGuideApi.getHistory(10)
         ])
 
-        console.log('Results tab - Interest guide data:', data)
-        console.log('Results tab - History:', historyData)
-
         if (data?.is_completed && data.answers) {
           try {
             const calculatedProfile = calculateUserProfile(data.answers)
-            console.log('Results tab - Calculated profile:', calculatedProfile)
             setProfile(calculatedProfile)
           } catch (calcErr) {
             console.error('Failed to calculate profile:', calcErr)
