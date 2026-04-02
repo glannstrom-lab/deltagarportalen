@@ -10,7 +10,7 @@ import { OptimizedImage } from '@/components/ui/OptimizedImage'
 export default function Login() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const { signIn, isAuthenticated, isLoading: authLoading, error: authError, clearError } = useAuthStore()
+  const { signIn, isAuthenticated, isLoading: authLoading, error: authError } = useAuthStore()
   
   const {
     values,
@@ -20,7 +20,6 @@ export default function Login() {
     handleChange,
     handleBlur,
     handleSubmit,
-    setValue,
   } = useZodForm({
     schema: loginSchema,
     initialValues: {
@@ -52,26 +51,6 @@ export default function Login() {
       // Error is displayed below
     }
   }, [authError])
-
-  const handleDemoLogin = async () => {
-    clearError()
-    
-    // Use a fixed demo account to avoid creating new users every time
-    const demoEmail = 'demo@jobin.se'
-    const demoPassword = 'Demo123456!'
-    
-    setValue('email', demoEmail)
-    setValue('password', demoPassword)
-
-    const { error: signInError } = await signIn(demoEmail, demoPassword)
-    
-    if (signInError) {
-      // If login fails, the demo account might not exist yet
-      // Show a helpful message instead of auto-creating
-      console.error('Demo login failed:', signInError)
-      // The authError from store will be displayed
-    }
-  }
 
   // Show loading while checking auth state
   if (authLoading) {
@@ -223,24 +202,6 @@ export default function Login() {
               </Link>
             </p>
           </div>
-
-          {/* Demo Login Divider */}
-          <div className="mt-6 flex items-center gap-4">
-            <div className="flex-1 h-px bg-slate-200"></div>
-            <span className="text-slate-400 text-sm">{t('auth.or')}</span>
-            <div className="flex-1 h-px bg-slate-200"></div>
-          </div>
-
-          {/* Demo Account Button */}
-          <button
-            type="button"
-            onClick={handleDemoLogin}
-            disabled={isSubmitting}
-            className="w-full mt-4 bg-gradient-to-r from-amber-500 to-orange-500 text-white py-3 rounded-lg font-semibold hover:from-amber-600 hover:to-orange-600 transition-all flex items-center justify-center gap-2 disabled:opacity-50"
-          >
-            <span>🚀</span>
-            <span>{isSubmitting ? t('auth.creatingDemo') : t('auth.demoAccount')}</span>
-          </button>
         </div>
 
         {/* Back Link */}
