@@ -1,7 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { z } from 'zod';
-import { Redis } from '@upstash/redis';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -159,30 +158,27 @@ async function verifyAuth(req: VercelRequest): Promise<{ userId: string } | null
   }
 }
 
-// Rate limiting with Upstash Redis (serverless-compatible)
-// Setup: Create free account at https://upstash.com and add:
-// - UPSTASH_REDIS_REST_URL
-// - UPSTASH_REDIS_REST_TOKEN
-// to your Vercel environment variables
+// Rate limiting with Supabase (serverless-compatible)
+// Uses the check_rate_limit() PostgreSQL function
 
-const RATE_LIMIT_WINDOW = 15 * 60; // 15 minutes in seconds
+const RATE_LIMIT_WINDOW_MINUTES = 15;
 const RATE_LIMIT_MAX = 20; // 20 requests per window
 
-// Initialize Redis client (lazy, only when needed)
-let redis: Redis | null = null;
-function getRedis(): Redis | null {
-  if (redis) return redis;
+// Service role client for rate limiting (bypasses RLS)
+let serviceClient: SupabaseClient | null = null;
+function getServiceClient(): SupabaseClient | null {
+  if (serviceClient) return serviceClient;
 
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const url = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+  const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!url || !token) {
-    console.warn('[Rate Limit] Redis not configured - rate limiting disabled in production!');
+  if (!url || !serviceKey) {
+    console.warn('[Rate Limit] Supabase service role not configured');
     return null;
   }
 
-  redis = new Redis({ url, token });
-  return redis;
+  serviceClient = createClient(url, serviceKey);
+  return serviceClient;
 }
 
 interface RateLimitResult {
@@ -192,56 +188,46 @@ interface RateLimitResult {
 }
 
 async function checkRateLimit(identifier: string): Promise<RateLimitResult> {
-  const redisClient = getRedis();
+  const client = getServiceClient();
 
-  // If Redis not configured, fail open in dev, warn in production
-  if (!redisClient) {
+  // If service client not configured, fail open in dev, warn in production
+  if (!client) {
     if (process.env.NODE_ENV === 'production') {
-      console.error('[Rate Limit] WARNING: Redis not configured in production!');
+      console.error('[Rate Limit] WARNING: Supabase service role not configured in production!');
     }
     return { allowed: true, remaining: RATE_LIMIT_MAX, resetAt: 0 };
   }
 
-  const key = `rate_limit:ai:${identifier}`;
-  const now = Math.floor(Date.now() / 1000);
-  const windowStart = now - RATE_LIMIT_WINDOW;
-
   try {
-    // Use Redis sorted set for sliding window rate limiting
-    // Remove old entries outside the window
-    await redisClient.zremrangebyscore(key, 0, windowStart);
+    // Call the PostgreSQL rate limit function
+    const { data, error } = await client.rpc('check_rate_limit', {
+      p_identifier: identifier,
+      p_endpoint: 'ai',
+      p_max_requests: RATE_LIMIT_MAX,
+      p_window_minutes: RATE_LIMIT_WINDOW_MINUTES
+    });
 
-    // Count current requests in window
-    const count = await redisClient.zcard(key);
-
-    if (count >= RATE_LIMIT_MAX) {
-      // Get the oldest entry to calculate reset time
-      const oldest = await redisClient.zrange(key, 0, 0, { withScores: true }) as Array<{ value: string; score: number }>;
-      const resetAt = oldest.length > 0 && oldest[0]?.score
-        ? oldest[0].score + RATE_LIMIT_WINDOW
-        : now + RATE_LIMIT_WINDOW;
-
-      return {
-        allowed: false,
-        remaining: 0,
-        resetAt
-      };
+    if (error) {
+      console.error('[Rate Limit] Supabase error:', error);
+      // On error, fail open but log the issue
+      return { allowed: true, remaining: RATE_LIMIT_MAX, resetAt: 0 };
     }
 
-    // Add current request with timestamp as score
-    await redisClient.zadd(key, { score: now, member: `${now}:${Math.random()}` });
+    // The function returns an array with one row
+    const result = Array.isArray(data) ? data[0] : data;
 
-    // Set TTL on the key to auto-cleanup
-    await redisClient.expire(key, RATE_LIMIT_WINDOW);
+    if (!result) {
+      return { allowed: true, remaining: RATE_LIMIT_MAX, resetAt: 0 };
+    }
 
     return {
-      allowed: true,
-      remaining: RATE_LIMIT_MAX - count - 1,
-      resetAt: 0
+      allowed: result.allowed,
+      remaining: result.remaining,
+      resetAt: result.reset_at ? Math.floor(new Date(result.reset_at).getTime() / 1000) : 0
     };
   } catch (error) {
-    console.error('[Rate Limit] Redis error:', error);
-    // On Redis error, fail open but log the issue
+    console.error('[Rate Limit] Error:', error);
+    // On error, fail open but log the issue
     return { allowed: true, remaining: RATE_LIMIT_MAX, resetAt: 0 };
   }
 }
