@@ -22,7 +22,7 @@ import {
 } from 'lucide-react'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { userApi, cvApi, type OnboardingProgress } from '@/services/supabaseApi'
+import { userApi, cvApi, coverLetterApi, type OnboardingProgress } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
 
 // Step configuration
@@ -105,11 +105,12 @@ export default function OverviewTab() {
     }
 
     try {
-      // Fetch onboarding progress, interest guide status, and CV data in parallel
-      const [cloudProgress, interestGuideData, cvData] = await Promise.all([
+      // Fetch onboarding progress, interest guide status, CV data, and cover letters in parallel
+      const [cloudProgress, interestGuideData, cvData, coverLetters] = await Promise.all([
         userApi.getOnboardingProgress(),
         interestGuideApi.getProgress().catch(() => null),
-        cvApi.getCV().catch(() => null)
+        cvApi.getCV().catch(() => null),
+        coverLetterApi.getAll().catch(() => [])
       ])
 
       // Check if interest guide is completed from the actual progress data
@@ -134,6 +135,17 @@ export default function OverviewTab() {
         localStorage.setItem('cv-data', 'true')
       }
 
+      // Check if cover letter is completed - user has created at least one cover letter
+      const coverLetterCompleted = cloudProgress.coverLetter ||
+        localStorageProgress.coverLetter ||
+        (coverLetters && coverLetters.length > 0)
+
+      // If cover letter is completed but not in cloud, sync it
+      if (coverLetterCompleted && !cloudProgress.coverLetter) {
+        userApi.updateOnboardingStep('coverLetter', true).catch(console.error)
+        localStorage.setItem('cover-letters', 'true')
+      }
+
       // Merge: use cloud value if true, otherwise use localStorage value, or check actual data
       const mergedProgress: OnboardingProgress = {
         profile: cloudProgress.profile || localStorageProgress.profile,
@@ -141,7 +153,7 @@ export default function OverviewTab() {
         cv: cvCompleted,
         career: cloudProgress.career || localStorageProgress.career,
         jobSearch: cloudProgress.jobSearch || localStorageProgress.jobSearch,
-        coverLetter: cloudProgress.coverLetter || localStorageProgress.coverLetter
+        coverLetter: coverLetterCompleted
       }
 
       setOnboardingProgress(mergedProgress)
