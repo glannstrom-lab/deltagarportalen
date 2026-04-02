@@ -1,10 +1,12 @@
 /**
  * PDF Report Generator for Consultant Analytics
  * Uses jsPDF with autotable for professional report generation
+ *
+ * PERFORMANCE: Uses dynamic import to load jsPDF (~167KB + autoTable)
+ * only when PDF generation is actually requested.
  */
 
-import { jsPDF } from 'jspdf'
-import autoTable from 'jspdf-autotable'
+import type { jsPDF } from 'jspdf'
 import { format } from 'date-fns'
 import { sv } from 'date-fns/locale'
 
@@ -15,6 +17,22 @@ declare module 'jspdf' {
       finalY: number
     }
   }
+}
+
+// Lazy-load jsPDF and autoTable to reduce initial bundle
+let jsPDFModule: typeof import('jspdf') | null = null
+let autoTableModule: typeof import('jspdf-autotable') | null = null
+
+async function loadPDFLibraries(): Promise<typeof import('jspdf').jsPDF> {
+  if (!jsPDFModule) {
+    const [jspdfLib, autoTableLib] = await Promise.all([
+      import('jspdf'),
+      import('jspdf-autotable')
+    ])
+    jsPDFModule = jspdfLib
+    autoTableModule = autoTableLib
+  }
+  return jsPDFModule.jsPDF
 }
 
 export interface ReportData {
@@ -161,10 +179,10 @@ const LABELS = {
 /**
  * Generate a professional PDF report for consultant analytics
  */
-export function generateConsultantReport(
+export async function generateConsultantReport(
   data: ReportData,
   options: ReportOptions = {}
-): jsPDF {
+): Promise<jsPDF> {
   const {
     title,
     subtitle,
@@ -175,8 +193,12 @@ export function generateConsultantReport(
     language = 'sv',
   } = options
 
+  // Lazy load PDF libraries
+  const jsPDFClass = await loadPDFLibraries()
+  const { default: autoTable } = autoTableModule!
+
   const labels = LABELS[language]
-  const doc = new jsPDF('p', 'mm', 'a4')
+  const doc = new jsPDFClass('p', 'mm', 'a4')
   const pageWidth = doc.internal.pageSize.getWidth()
   const pageHeight = doc.internal.pageSize.getHeight()
   const margin = 20
@@ -486,12 +508,12 @@ export function generateConsultantReport(
 /**
  * Generate and download the PDF report
  */
-export function downloadConsultantReport(
+export async function downloadConsultantReport(
   data: ReportData,
   options: ReportOptions = {},
   filename?: string
-): void {
-  const doc = generateConsultantReport(data, options)
+): Promise<void> {
+  const doc = await generateConsultantReport(data, options)
   const dateStr = format(new Date(), 'yyyy-MM-dd')
   const defaultFilename = `konsultrapport-${dateStr}.pdf`
   doc.save(filename || defaultFilename)
@@ -500,21 +522,21 @@ export function downloadConsultantReport(
 /**
  * Generate PDF as blob for preview or other operations
  */
-export function generateReportBlob(
+export async function generateReportBlob(
   data: ReportData,
   options: ReportOptions = {}
-): Blob {
-  const doc = generateConsultantReport(data, options)
+): Promise<Blob> {
+  const doc = await generateConsultantReport(data, options)
   return doc.output('blob')
 }
 
 /**
  * Generate PDF as data URL for preview
  */
-export function generateReportDataUrl(
+export async function generateReportDataUrl(
   data: ReportData,
   options: ReportOptions = {}
-): string {
-  const doc = generateConsultantReport(data, options)
+): Promise<string> {
+  const doc = await generateConsultantReport(data, options)
   return doc.output('dataurlstring')
 }

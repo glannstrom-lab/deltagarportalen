@@ -1,7 +1,40 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import { createClient } from '@supabase/supabase-js';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 const DEFAULT_MODEL = process.env.AI_MODEL || 'anthropic/claude-3.5-sonnet';
+
+// Initialize Supabase client for auth verification
+const supabaseUrl = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY;
+
+async function verifyAuth(req: VercelRequest): Promise<{ userId: string } | null> {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Supabase credentials not configured');
+    return null;
+  }
+
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return null;
+  }
+
+  const token = authHeader.substring(7);
+
+  try {
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      return null;
+    }
+
+    return { userId: user.id };
+  } catch (error) {
+    console.error('Auth verification failed:', error);
+    return null;
+  }
+}
 
 // Rate limiting (enkel in-memory implementation)
 // OBS: Vid skalning bör du använda Redis eller liknande
@@ -316,14 +349,40 @@ Håll svaren korta (max 3-4 meningar) om inte användaren ber om mer detaljer.`,
   }
 }
 
+// Allowed origins for CORS
+const ALLOWED_ORIGINS = [
+  'https://deltagarportalen.se',
+  'https://www.deltagarportalen.se',
+  'https://deltagarportal.vercel.app',
+  ...(process.env.NODE_ENV === 'development' ? [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:5173'
+  ] : [])
+];
+
+function getCorsOrigin(requestOrigin: string | undefined): string | null {
+  if (!requestOrigin) return null;
+  return ALLOWED_ORIGINS.includes(requestOrigin) ? requestOrigin : null;
+}
+
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-  res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization');
+  // CORS headers - restrict to allowed origins only
+  const origin = req.headers.origin;
+  const allowedOrigin = getCorsOrigin(origin as string);
+
+  if (allowedOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', allowedOrigin);
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,POST');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
+    if (!allowedOrigin) {
+      return res.status(403).json({ error: 'Origin not allowed' });
+    }
     res.status(200).end();
     return;
   }
@@ -338,6 +397,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(429).json({ error: 'För många förfrågningar. Försök igen om 15 minuter.' });
   }
 
+  // Verify authentication
+  const auth = await verifyAuth(req);
+  if (!auth) {
+    return res.status(401).json({ error: 'Unauthorized. Please log in to use AI features.' });
+  }
+
   try {
     // Get function name from URL path (Vercel dynamic routing) or body
     const fn = req.query.function as string || req.body.function;
@@ -347,23 +412,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Missing function parameter' });
     }
 
-    console.log(`[AI] Function: ${fn}, URL: ${req.url}`);
-    console.log(`[AI] Body keys:`, Object.keys(req.body));
-    console.log(`[AI] Full body (first 500):`, JSON.stringify(req.body).substring(0, 500));
-    
-    // Extra debug för personligt-brev
-    if (fn === 'personligt-brev') {
-      console.log('[AI] === PERSONLIGT BREV DATA ===');
-      console.log('[AI] jobbAnnons length:', data?.jobbAnnons?.length || 0);
-      console.log('[AI] jobbAnnons preview:', data?.jobbAnnons?.substring(0, 150) || 'SAKNAS');
-      console.log('[AI] companyName:', data?.companyName || 'SAKNAS');
-      console.log('[AI] jobTitle:', data?.jobTitle || 'SAKNAS');
-      console.log('[AI] cvData exists:', !!data?.cvData);
-      if (data?.cvData) {
-        console.log('[AI] cvData.firstName:', data.cvData.firstName);
-        console.log('[AI] cvData.skills count:', data.cvData.skills?.length || 0);
-      }
-      console.log('[AI] ============================');
+    // Only log function name in production, no PII
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`[AI] Function: ${fn}`);
     }
 
     const { systemPrompt, userPrompt, maxTokens } = buildPrompt(fn, data);
