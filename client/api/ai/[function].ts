@@ -124,6 +124,60 @@ function validateInput(fn: string, data: unknown): { success: true; data: unknow
 
   return { success: true, data: result.data };
 }
+
+/**
+ * Strip PII (Personally Identifiable Information) from text before sending to LLM
+ * Removes: email addresses, phone numbers, Swedish personal numbers (personnummer)
+ * Replaces with placeholders to maintain text structure
+ */
+function stripPII(text: string): string {
+  if (!text) return text;
+
+  return text
+    // Email addresses
+    .replace(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, '[EMAIL]')
+    // Swedish phone numbers (various formats)
+    .replace(/(?:\+46|0046|0)\s*(?:\d[\s-]*){8,10}/g, '[TELEFON]')
+    // International phone numbers
+    .replace(/\+\d{1,3}[\s-]?\d{1,4}[\s-]?\d{1,4}[\s-]?\d{1,9}/g, '[TELEFON]')
+    // Swedish personal number (personnummer) YYYYMMDD-XXXX or YYMMDD-XXXX
+    .replace(/\b\d{6,8}[-\s]?\d{4}\b/g, '[PERSONNUMMER]')
+    // Street addresses (common Swedish patterns)
+    .replace(/\b[A-ZÅÄÖ][a-zåäö]+(?:gatan|vägen|stigen|allén|torget|platsen)\s+\d+[A-Za-z]?\b/gi, '[ADRESS]')
+    // Postal codes with city
+    .replace(/\b\d{3}\s?\d{2}\s+[A-ZÅÄÖ][a-zåäö]+\b/g, '[POSTNUMMER]');
+}
+
+/**
+ * Strip PII from CV data object
+ */
+function stripPIIFromCV(cvData: any): any {
+  if (!cvData) return cvData;
+
+  return {
+    ...cvData,
+    // Remove contact info entirely
+    email: undefined,
+    phone: undefined,
+    address: undefined,
+    postalCode: undefined,
+    city: undefined,
+    // Keep name but indicate it's anonymized
+    firstName: cvData.firstName ? '[NAMN]' : undefined,
+    lastName: undefined,
+    // Keep professional content
+    title: cvData.title,
+    summary: cvData.summary ? stripPII(cvData.summary) : undefined,
+    workExperience: cvData.workExperience?.map((exp: any) => ({
+      ...exp,
+      description: exp.description ? stripPII(exp.description) : undefined,
+    })),
+    education: cvData.education,
+    skills: cvData.skills,
+    languages: cvData.languages,
+  };
+}
+
 const DEFAULT_MODEL = process.env.AI_MODEL || 'anthropic/claude-3.5-sonnet';
 
 // Initialize Supabase client for auth verification
@@ -234,12 +288,24 @@ async function checkRateLimit(identifier: string): Promise<RateLimitResult> {
   }
 }
 
-async function callOpenRouter(messages: any[], options: any = {}) {
+interface OpenRouterResponse {
+  content: string;
+  usage?: {
+    prompt_tokens: number;
+    completion_tokens: number;
+    total_tokens: number;
+  };
+  model: string;
+}
+
+async function callOpenRouter(messages: any[], options: any = {}): Promise<OpenRouterResponse> {
   const openRouterKey = process.env.OPENROUTER_API_KEY;
-  
+
   if (!openRouterKey) {
     throw new Error('OPENROUTER_API_KEY är inte konfigurerad');
   }
+
+  const model = options.model || DEFAULT_MODEL;
 
   const response = await fetch(OPENROUTER_API_URL, {
     method: 'POST',
@@ -250,7 +316,7 @@ async function callOpenRouter(messages: any[], options: any = {}) {
       'X-Title': 'Deltagarportalen'
     },
     body: JSON.stringify({
-      model: options.model || DEFAULT_MODEL,
+      model,
       messages,
       max_tokens: options.max_tokens || 1000,
       temperature: options.temperature || 0.7
@@ -264,22 +330,35 @@ async function callOpenRouter(messages: any[], options: any = {}) {
   }
 
   const data = await response.json();
-  return data.choices[0].message.content;
+
+  // Log token usage for cost monitoring
+  if (data.usage) {
+    console.log(`[AI Usage] Model: ${model}, Prompt: ${data.usage.prompt_tokens}, Completion: ${data.usage.completion_tokens}, Total: ${data.usage.total_tokens}`);
+  }
+
+  return {
+    content: data.choices[0].message.content,
+    usage: data.usage,
+    model: data.model || model,
+  };
 }
 
 // Bygg prompts baserat på funktion
 function buildPrompt(fn: string, data: any): { systemPrompt: string; userPrompt: string; maxTokens: number } {
   switch (fn) {
     case 'cv-optimering':
+      // Strip PII from CV text before sending to LLM
+      const sanitizedCvText = stripPII(data?.cvText || '');
       return {
-        systemPrompt: `Du är en expert på CV-skrivning för arbetssökande som vill tillbaka till arbetsmarknaden. 
+        systemPrompt: `Du är en expert på CV-skrivning för arbetssökande som vill tillbaka till arbetsmarknaden.
 Ditt mål är att ge konstruktiv feedback på CV:n och föreslå förbättringar.
 Var uppmuntrande och konkret. Fokusera på styrkor, inte svagheter.
-Svara på svenska med tydliga rubriker och punkter.`,
+Svara på svenska med tydliga rubriker och punkter.
+OBS: Personuppgifter har ersatts med platshållare för integritetsskydd.`,
         userPrompt: `Ge feedback på detta CV för yrket "${data?.yrke || 'ospecificerat'}".
 
 CV-TEXT:
-${data?.cvText || ''}
+${sanitizedCvText}
 
 Ge följande i ditt svar:
 1. ÖVERGRIPANDE BEDÖMNING - en positiv sammanfattning av CV:ns styrkor
@@ -317,19 +396,18 @@ Texten ska:
         formell: ' formell och traditionell'
       };
       
-      // Build CV context if available
+      // Build CV context if available - strip PII for privacy
       let cvContext = '';
       if (data?.cvData) {
-        const cv = data.cvData;
+        const cv = stripPIIFromCV(data.cvData);
         cvContext = `
 
 MIN CV-INFORMATION:
-Namn: ${cv.firstName || ''} ${cv.lastName || ''}
 Titel: ${cv.title || 'Ej angiven'}
 Sammanfattning: ${cv.summary || 'Ej angiven'}
 
 ERFARENHET:
-${cv.workExperience?.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.duration ? ` (${exp.duration})` : ''}${exp.description ? `: ${exp.description.substring(0, 150)}` : ''}`).join('\n') || 'Ingen erfarenhet angiven'}
+${cv.workExperience?.map((exp: any) => `- ${exp.title} på ${exp.company}${exp.duration ? ` (${exp.duration})` : ''}${exp.description ? `: ${stripPII(exp.description?.substring(0, 150) || '')}` : ''}`).join('\n') || 'Ingen erfarenhet angiven'}
 
 KOMPETENSER:
 ${cv.skills?.map((s: any) => s.name).join(', ') || 'Inga kompetenser angivna'}
@@ -617,20 +695,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     const { systemPrompt, userPrompt, maxTokens } = buildPrompt(fn, data);
 
-    const content = await callOpenRouter([
+    const aiResponse = await callOpenRouter([
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt }
     ], { max_tokens: maxTokens });
 
     // Parse JSON response for karriarplan
-    let responseData: any = content;
+    let responseData: any = aiResponse.content;
     if (fn === 'karriarplan') {
       try {
-        responseData = JSON.parse(content);
+        responseData = JSON.parse(aiResponse.content);
       } catch (e) {
         console.error('Failed to parse karriarplan JSON:', e);
         // Return raw content if parsing fails
-        responseData = { raw: content, steps: [] };
+        responseData = { raw: aiResponse.content, steps: [] };
       }
     }
 
@@ -638,7 +716,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       success: true,
       [fn === 'chatbot' ? 'svar' : fn === 'personligt-brev' ? 'brev' : fn === 'karriarplan' ? 'plan' : 'result']: responseData,
       function: fn,
-      model: DEFAULT_MODEL
+      model: aiResponse.model,
+      usage: aiResponse.usage, // Include token usage in response for monitoring
     });
 
   } catch (error: any) {

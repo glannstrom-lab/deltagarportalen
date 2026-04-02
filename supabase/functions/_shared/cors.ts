@@ -4,11 +4,13 @@
  */
 
 const ALLOWED_ORIGINS = [
+  // Production domains
+  'https://deltagarportalen.se',
+  'https://www.deltagarportalen.se',
+  'https://deltagarportal.vercel.app',
+  // Legacy domains (if still in use)
   'https://jobin.se',
   'https://www.jobin.se',
-  'https://app.jobin.se',
-  // GitHub Pages (if used)
-  'https://[your-username].github.io',
   // Supabase preview URLs
   'https://odcvrdkvzyrbdzvdrhkz.supabase.co',
 ];

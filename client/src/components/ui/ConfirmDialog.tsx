@@ -6,6 +6,7 @@
 import { useState, useCallback, createContext, useContext, ReactNode } from 'react'
 import { X, AlertTriangle, Info, CheckCircle, AlertCircle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
+import { useFocusTrap } from '@/hooks/useFocusTrap'
 
 type DialogVariant = 'default' | 'danger' | 'warning' | 'info'
 
@@ -106,6 +107,13 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
   const currentVariant = variantStyles[state.variant || 'default']
   const Icon = currentVariant.icon
 
+  // Focus trap for accessibility - traps focus within dialog and handles Escape
+  const dialogRef = useFocusTrap<HTMLDivElement>(state.isOpen, {
+    onEscape: handleCancel,
+    restoreFocus: true,
+    autoFocus: true,
+  })
+
   return (
     <ConfirmDialogContext.Provider value={{ confirm }}>
       {children}
@@ -122,6 +130,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
         >
           {/* Dialog Content */}
           <div
+            ref={dialogRef}
             className="relative w-full max-w-md bg-white rounded-2xl shadow-xl animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >

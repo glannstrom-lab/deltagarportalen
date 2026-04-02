@@ -170,6 +170,30 @@ input[type="radio"]:focus-visible {
   color: #475569; /* slate-600 */
 }
 
+/* Fix placeholder text contrast - must meet 4.5:1 ratio */
+::placeholder {
+  color: #64748b !important; /* slate-500 - 4.5:1 on white */
+  opacity: 1;
+}
+
+/* Tailwind placeholder variants */
+.placeholder-slate-400::placeholder,
+.placeholder-slate-500::placeholder,
+.placeholder-gray-400::placeholder,
+.placeholder-gray-500::placeholder {
+  color: #64748b !important;
+  opacity: 1;
+}
+
+/* Gray color overrides */
+.text-gray-400 {
+  color: #6b7280 !important; /* gray-500 */
+}
+
+.text-gray-500 {
+  color: #4b5563 !important; /* gray-600 */
+}
+
 /* High contrast mode support */
 @media (prefers-contrast: high) {
   *:focus-visible {

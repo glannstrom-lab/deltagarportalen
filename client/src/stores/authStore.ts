@@ -2,10 +2,10 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
-import { useSettingsStore } from './settingsStore'
-import { useEnergyStore } from './energyStoreWithSync'
-import { userPreferencesApi } from '@/services/cloudStorage'
 import { setUser as setSentryUser } from '@/lib/sentry'
+
+// NOTE: Cross-store syncing (settings, energy, preferences) is now handled
+// in useAuthInit hook to avoid circular dependencies between stores
 
 export type UserRole = 'USER' | 'CONSULTANT' | 'ADMIN' | 'SUPERADMIN'
 
@@ -123,13 +123,8 @@ export const useAuthStore = create<AuthState>()(
               isLoading: false,
             })
 
-            // Sync settings and energy from cloud
-            if (user) {
-              useSettingsStore.getState().syncWithServer()
-              useEnergyStore.getState().syncWithServer()
-              // Update last login for streak tracking
-              userPreferencesApi.updateLastLogin()
-            }
+            // NOTE: Settings/energy sync is now handled in useAuthInit hook
+            // to avoid circular store dependencies
           } else {
             set({
               user: null,
