@@ -1,7 +1,127 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
+import { z } from 'zod';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
+
+// Input validation schemas
+const baseInputSchema = z.object({}).passthrough();
+
+const functionSchemas: Record<string, z.ZodSchema> = {
+  'cv-optimering': z.object({
+    cvText: z.string().min(10).max(50000),
+    yrke: z.string().max(200).optional()
+  }),
+  'generera-cv-text': z.object({
+    yrke: z.string().min(2).max(200),
+    erfarenhet: z.string().max(2000).optional(),
+    utbildning: z.string().max(1000).optional(),
+    styrkor: z.string().max(1000).optional()
+  }),
+  'personligt-brev': z.object({
+    cvData: z.any().optional(),
+    companyName: z.string().max(200).optional(),
+    jobTitle: z.string().max(200).optional(),
+    jobDescription: z.string().max(50000).optional(),
+    tone: z.enum(['professionell', 'entusiastisk', 'formell', 'professional', 'enthusiastic', 'formal']).optional(),
+    extraContext: z.string().max(2000).optional(),
+    jobbAnnons: z.string().max(50000).optional(),
+    extraKeywords: z.string().max(1000).optional(),
+    motivering: z.string().max(2000).optional()
+  }),
+  'intervju-forberedelser': z.object({
+    jobbTitel: z.string().max(200).optional(),
+    foretag: z.string().max(200).optional(),
+    erfarenhet: z.string().max(2000).optional(),
+    egenskaper: z.string().max(1000).optional()
+  }),
+  'jobbtips': z.object({
+    intressen: z.string().max(1000).optional(),
+    tidigareErfarenhet: z.string().max(2000).optional(),
+    hinder: z.string().max(1000).optional(),
+    mal: z.string().max(1000).optional()
+  }),
+  'loneforhandling': z.object({
+    roll: z.string().min(2).max(200),
+    erfarenhetAr: z.number().min(0).max(50).optional(),
+    nuvarandeLon: z.number().min(0).max(1000000).optional(),
+    foretagsStorlek: z.string().max(100).optional(),
+    ort: z.string().max(100).optional()
+  }),
+  'karriarplan': z.object({
+    currentOccupation: z.string().min(2).max(200),
+    targetOccupation: z.string().min(2).max(200),
+    experienceYears: z.number().min(0).max(50),
+    currentSalary: z.number().min(0).max(1000000).optional(),
+    targetSalary: z.number().min(0).max(1000000).optional(),
+    demand: z.enum(['high', 'medium', 'low']).optional(),
+    jobCount: z.number().min(0).optional()
+  }),
+  'chatbot': z.object({
+    meddelande: z.string().min(1).max(5000),
+    historik: z.array(z.object({
+      roll: z.string(),
+      innehall: z.string().max(5000)
+    })).max(20).optional()
+  }),
+  'networking': z.object({
+    occupation: z.string().max(200).optional(),
+    experienceLevel: z.enum(['entry', 'mid', 'senior']).optional(),
+    goals: z.array(z.string()).optional(),
+    contactName: z.string().max(200).optional(),
+    contactRole: z.string().max(200).optional(),
+    contactCompany: z.string().max(200).optional(),
+    messageType: z.enum(['initial', 'followup', 'thankyou']).optional(),
+    userOccupation: z.string().max(200).optional(),
+    purpose: z.string().max(1000).optional(),
+    relationship: z.string().max(100).optional(),
+    generateMessage: z.boolean().optional()
+  }),
+  'salary': z.object({
+    occupation: z.string().min(2).max(200),
+    experience: z.number().min(0).max(50).optional()
+  }),
+  'skills': z.object({
+    occupation: z.string().min(2).max(200),
+    currentOccupation: z.string().max(200).optional()
+  }),
+  'career': z.object({
+    currentOccupation: z.string().max(200).optional(),
+    targetOccupation: z.string().max(200).optional(),
+    experienceYears: z.number().min(0).max(50).optional()
+  }),
+  'linkedin-optimering': z.object({
+    typ: z.enum(['headline', 'about', 'post', 'connection']),
+    data: z.record(z.string().max(5000))
+  }),
+  'kompetensgap': z.object({
+    cvText: z.string().min(10).max(50000),
+    dromjobb: z.string().min(2).max(5000)
+  }),
+  'intervju-simulator': z.object({
+    roll: z.string().min(2).max(200),
+    foretag: z.string().max(200).optional(),
+    anvandarSvar: z.string().max(5000).optional(),
+    tidigareFragor: z.array(z.any()).optional()
+  }),
+  'cv-writing': z.object({
+    content: z.string().max(10000),
+    type: z.enum(['summary', 'experience', 'skills']),
+    feature: z.enum(['improve', 'quantify', 'translate', 'generate'])
+  })
+};
+
+function validateInput(fn: string, data: unknown): { success: true; data: unknown } | { success: false; error: string } {
+  const schema = functionSchemas[fn] || baseInputSchema;
+  const result = schema.safeParse(data);
+
+  if (!result.success) {
+    const errors = result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
+    return { success: false, error: `Validation failed: ${errors}` };
+  }
+
+  return { success: true, data: result.data };
+}
 const DEFAULT_MODEL = process.env.AI_MODEL || 'anthropic/claude-3.5-sonnet';
 
 // Initialize Supabase client for auth verification
@@ -406,11 +526,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     // Get function name from URL path (Vercel dynamic routing) or body
     const fn = req.query.function as string || req.body.function;
-    const data = req.body.data || req.body;
+    const rawData = req.body.data || req.body;
 
     if (!fn) {
       return res.status(400).json({ error: 'Missing function parameter' });
     }
+
+    // Validate input data
+    const validation = validateInput(fn, rawData);
+    if (!validation.success) {
+      return res.status(400).json({ error: validation.error });
+    }
+    const data = validation.data;
 
     // Only log function name in production, no PII
     if (process.env.NODE_ENV === 'development') {
