@@ -4,6 +4,7 @@ import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, Chev
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'
+import { callAI } from '@/services/aiApi'
 
 interface FragaSvar {
   fraga: string
@@ -79,15 +80,8 @@ export default function InterviewSimulator() {
     setTimerSeconds(0)
 
     try {
-      const response = await fetch('/api/ai/intervju-simulator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ roll, foretag, tidigareFragor: [] })
-      })
-
-      if (!response.ok) throw new Error('AI error')
-      const data = await response.json()
-      setNuvarandeFraga(data.resultat)
+      const data = await callAI<{ resultat: string }>('intervju-simulator', { roll, foretag, tidigareFragor: [] })
+      setNuvarandeFraga((data as { resultat?: string }).resultat || 'Berätta om dig själv')
     } catch (error) {
       const defaultQuestions = questionCategories[0]?.questions || []
       setNuvarandeFraga(defaultQuestions[0] || 'Berätta om dig själv')
@@ -109,25 +103,18 @@ export default function InterviewSimulator() {
     }
 
     try {
-      const response = await fetch('/api/ai/intervju-simulator', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          roll,
-          foretag,
-          anvandarSvar,
-          tidigareFragor: [...historik, nyFragaSvar]
-        })
+      const data = await callAI<{ resultat: string }>('intervju-simulator', {
+        roll,
+        foretag,
+        anvandarSvar,
+        tidigareFragor: [...historik, nyFragaSvar]
       })
-
-      if (!response.ok) throw new Error('AI error')
-      const data = await response.json()
 
       setHistorik([...historik, {
         ...nyFragaSvar,
         feedback: 'Bra svar! Nästa fråga:'
       }])
-      setNuvarandeFraga(data.resultat)
+      setNuvarandeFraga((data as { resultat?: string }).resultat || 'Vad är dina framtidsplaner?')
       setAnvandarSvar('')
       setAntalFragor(prev => prev + 1)
       setTimerSeconds(0)

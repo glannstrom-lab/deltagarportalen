@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/Button'
+import { chatWithAI } from '@/services/aiApi'
 
 interface Message {
   roll: 'user' | 'assistant'
@@ -43,22 +44,14 @@ export function AICareerChatbot() {
     setIsLoading(true)
 
     try {
-      const response = await fetch('/api/ai/chatbot', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          meddelande: input,
-          historik: messages.slice(-5).map(m => ({ roll: m.roll, innehall: m.innehall }))
-        })
+      const data = await chatWithAI({
+        meddelande: input,
+        historik: messages.slice(-5).map(m => ({ roll: m.roll, innehall: m.innehall }))
       })
 
-      if (!response.ok) throw new Error('AI error')
-
-      const data = await response.json()
-      
       const aiMessage: Message = {
         roll: 'assistant',
-        innehall: data.svar,
+        innehall: (data as { svar?: string }).svar || 'Jag kunde tyvärr inte svara just nu.',
         tid: new Date().toLocaleTimeString('sv-SE', { hour: '2-digit', minute: '2-digit' })
       }
 

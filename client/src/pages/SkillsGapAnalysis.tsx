@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'
+import { callAI } from '@/services/aiApi'
 
 interface Skill {
   name: string
@@ -50,15 +51,8 @@ export default function SkillsGapAnalysis() {
 
     setIsLoading(true)
     try {
-      const response = await fetch('/api/ai/kompetensgap', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ cvText, dromjobb })
-      })
-
-      if (!response.ok) throw new Error('AI error')
-      const data = await response.json()
-      const parsedResult = parseAnalysis(data.analys)
+      const data = await callAI<{ analys: string }>('kompetensgap', { cvText, dromjobb })
+      const parsedResult = parseAnalysis((data as { analys?: string }).analys || '')
       setAnalys(parsedResult)
       sparaAnalys(parsedResult)
     } catch (error) {

@@ -1,10 +1,11 @@
 /**
  * AI Writing Assistant - Säker version
- * Använder server-side Vercel API istället för direkta OpenRouter-anrop
+ * Använder server-side Vercel API med autentisering
  */
 
 import { useState } from 'react'
 import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from 'lucide-react'
+import { callAI } from '@/services/aiApi'
 
 interface AIWritingAssistantProps {
   content: string
@@ -61,7 +62,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
   const [suggestion, setSuggestion] = useState('')
   const [activeFeature, setActiveFeature] = useState<FeatureType | null>(null)
 
-  // SÄKER implementation - anropa Vercel API istället för direkt OpenRouter
+  // SÄKER implementation - anropa autentiserat API
   const callSecureAI = async (feature: FeatureType) => {
     if (!content?.trim()) {
       setError('Skriv något först innan du använder AI-förbättring.')
@@ -73,39 +74,17 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
     setActiveFeature(feature)
 
     try {
-      // Anropa Vercel Serverless Function istället för direkt OpenRouter
-      const response = await fetch('/api/ai/cv-writing', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          content,
-          type,
-          feature
-        })
+      const data = await callAI<{ result: string }>('cv-writing', {
+        content,
+        type,
+        feature
       })
 
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}))
-        
-        if (response.status === 429) {
-          throw new Error('För många förfrågningar. Vänta en stund och försök igen.')
-        }
-        if (response.status === 401) {
-          throw new Error('Inte auktoriserad. Kontrollera att du är inloggad.')
-        }
-        
-        throw new Error(errorData.error || `Serverfel: ${response.status}`)
-      }
-
-      const data = await response.json()
-      
       if (!data.success) {
         throw new Error('AI kunde inte generera ett svar.')
       }
 
-      setSuggestion(data.result)
+      setSuggestion((data as { result?: string }).result || '')
     } catch (err) {
       console.error('AI-fel:', err)
       setError(err instanceof Error ? err.message : 'Kunde inte kontakta AI-tjänsten.')

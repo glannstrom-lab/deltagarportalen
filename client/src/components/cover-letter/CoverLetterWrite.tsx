@@ -39,6 +39,7 @@ import { cn } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { showToast } from '@/components/Toast'
+import { callAI } from '@/services/aiApi'
 import type { CVData } from '@/services/supabaseApi'
 import type { PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 
@@ -64,7 +65,7 @@ interface SavedJob {
   created_at: string
 }
 
-// AI API-anrop för personligt brev
+// AI API-anrop för personligt brev - uses authenticated client
 async function generateCoverLetterWithAI(data: {
   cvData: CVData | null
   jobData: {
@@ -75,26 +76,14 @@ async function generateCoverLetterWithAI(data: {
   tone: 'professional' | 'enthusiastic' | 'formal'
   extraMotivation?: string
 }) {
-  const response = await fetch('/api/ai/personligt-brev', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      cvData: data.cvData,
-      companyName: data.jobData.company,
-      jobTitle: data.jobData.jobTitle,
-      jobDescription: data.jobData.jobAd,
-      tone: data.tone,
-      extraContext: data.extraMotivation
-    })
-  })
-  
-  if (!response.ok) {
-    const errorText = await response.text()
-    console.error('AI API error:', response.status, errorText)
-    throw new Error('Kunde inte generera personligt brev')
-  }
-  
-  return response.json()
+  return callAI('personligt-brev', {
+    cvData: data.cvData,
+    companyName: data.jobData.company,
+    jobTitle: data.jobData.jobTitle,
+    jobDescription: data.jobData.jobAd,
+    tone: data.tone,
+    extraContext: data.extraMotivation
+  });
 }
 
 export function CoverLetterWrite() {

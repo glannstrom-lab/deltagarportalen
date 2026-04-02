@@ -5,29 +5,15 @@ import { careerPathApi, type SavedCareerPath } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import { COMMON_OCCUPATIONS } from './occupations';
+import { callAI } from '@/services/aiApi';
 
-// AI API call
+// AI API call - uses authenticated client
 async function generateCareerPlanWithAI(data: {
   currentOccupation: string;
   targetOccupation: string;
   experienceYears: number;
 }) {
-  const response = await fetch('/api/ai/career', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      function: 'karriarplan',
-      data
-    })
-  });
-  
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error('AI API error:', response.status, errorText);
-    throw new Error('Kunde inte generera karriärplan');
-  }
-  
-  return response.json();
+  return callAI('career', data);
 }
 
 interface CareerStep {

@@ -4,6 +4,7 @@ import { Linkedin, Copy, Check, Sparkles, RefreshCw, User, FileText, Share2, Mes
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
+import { callAI } from '@/services/aiApi'
 
 interface SectionAudit {
   name: string
@@ -34,18 +35,11 @@ export default function LinkedInOptimizer() {
     if (aktivTab === 'audit') return // audit doesn't use the generera function
     setIsLoading(true)
     try {
-      const response = await fetch('/api/ai/linkedin-optimering', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          typ: aktivTab,
-          data: formData[aktivTab as keyof typeof formData]
-        })
+      const data = await callAI<{ text: string }>('linkedin-optimering', {
+        typ: aktivTab,
+        data: formData[aktivTab as keyof typeof formData]
       })
-
-      if (!response.ok) throw new Error('AI error')
-      const data = await response.json()
-      setResultat(data.text)
+      setResultat((data as { text?: string }).text || '')
     } catch (error) {
       const fallbacks: Record<string, string> = {
         headline: `${formData.headline.yrke} | Erfaren specialist inom ${formData.headline.erfarenhet || 'branschen'}`,

@@ -5,23 +5,11 @@ import { salaryApi, type SavedSalarySearch } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import { COMMON_OCCUPATIONS } from './occupations';
+import { callAI } from '@/services/aiApi';
 
-// AI API call for salary data
+// AI API call for salary data - uses authenticated client
 async function getSalaryDataFromAI(occupation: string, experience?: number) {
-  const response = await fetch('/api/ai/salary', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      function: 'salary',
-      data: { occupation, experience }
-    })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Kunde inte hämta lönedata');
-  }
-  
-  return response.json();
+  return callAI('salary', { occupation, experience });
 }
 
 interface SalaryData {

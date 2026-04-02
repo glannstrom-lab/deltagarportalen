@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
-import { 
-  Users, 
-  MessageCircle, 
-  Mail, 
-  Linkedin, 
-  Coffee, 
-  ChevronDown, 
+import {
+  Users,
+  MessageCircle,
+  Mail,
+  Linkedin,
+  Coffee,
+  ChevronDown,
   ChevronUp,
   Copy,
   CheckCircle2,
@@ -30,6 +30,7 @@ import { cn } from '@/lib/utils'
 import { networkApi, type NetworkContact } from '@/services/careerApi'
 import { showToast } from '@/components/Toast'
 import { COMMON_OCCUPATIONS } from './occupations'
+import { callAI } from '@/services/aiApi'
 
 interface NetworkTemplate {
   id: string
@@ -147,26 +148,16 @@ const networkingTips = [
   }
 ]
 
-// AI API call
+// AI API call - uses authenticated client
 async function generateNetworkingStrategyWithAI(data: {
   occupation: string;
   experienceLevel: 'entry' | 'mid' | 'senior';
   goals: string[];
 }) {
-  const response = await fetch('/api/ai/networking', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to generate networking strategy');
-  }
-  
-  return response.json();
+  return callAI('networking', data);
 }
 
-// Generate custom message with AI
+// Generate custom message with AI - uses authenticated client
 async function generateCustomMessageWithAI(data: {
   contactName: string;
   contactRole?: string;
@@ -176,22 +167,7 @@ async function generateCustomMessageWithAI(data: {
   purpose: string;
   relationship: string;
 }) {
-  const response = await fetch('/api/ai/networking', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ 
-      data: {
-        ...data,
-        generateMessage: true
-      }
-    })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to generate message');
-  }
-  
-  return response.json();
+  return callAI('networking', { ...data, generateMessage: true });
 }
 
 interface NetworkingStrategy {

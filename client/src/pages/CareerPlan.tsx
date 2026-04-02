@@ -4,6 +4,7 @@ import { MapPin, Flag, Calendar, Target, Sparkles, RefreshCw, CheckCircle, Clock
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Checkbox } from '@/components/ui'
+import { callAI } from '@/services/aiApi'
 
 interface Milestone {
   id: string
@@ -37,15 +38,8 @@ export default function CareerPlan() {
 
     setIsLoading(true)
     try {
-      const response = await fetch('/api/ai/karriarplan', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nuvarande, mal, tidsram, hinder })
-      })
-
-      if (!response.ok) throw new Error('AI error')
-      const data = await response.json()
-      setPlan(parsePlan(data.plan))
+      const data = await callAI<{ plan: string }>('karriarplan', { nuvarande, mal, tidsram, hinder })
+      setPlan(parsePlan((data as { plan?: string }).plan || ''))
     } catch (error) {
       setPlan(generateFallbackPlan(tidsram))
     } finally {

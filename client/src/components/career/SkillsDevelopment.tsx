@@ -5,23 +5,11 @@ import { skillsApi, type UserSkill } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';
 import { COMMON_OCCUPATIONS } from './occupations';
+import { callAI } from '@/services/aiApi';
 
-// AI API call for skills data
+// AI API call for skills data - uses authenticated client
 async function getSkillsFromAI(occupation: string, currentOccupation?: string) {
-  const response = await fetch('/api/ai/skills', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      function: 'skills',
-      data: { occupation, currentOccupation }
-    })
-  });
-  
-  if (!response.ok) {
-    throw new Error('Kunde inte hämta kompetenser');
-  }
-  
-  return response.json();
+  return callAI('skills', { occupation, currentOccupation });
 }
 
 interface AISkill {
