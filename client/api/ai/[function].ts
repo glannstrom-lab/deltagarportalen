@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { createClient } from '@supabase/supabase-js';
 import { z } from 'zod';
+import { Redis } from '@upstash/redis';
 
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1/chat/completions';
 
@@ -116,8 +117,10 @@ function validateInput(fn: string, data: unknown): { success: true; data: unknow
   const result = schema.safeParse(data);
 
   if (!result.success) {
-    const errors = result.error.errors.map(e => `${e.path.join('.')}: ${e.message}`).join(', ');
-    return { success: false, error: `Validation failed: ${errors}` };
+    // Zod v4 uses 'issues' instead of 'errors'
+    const issues = (result.error as any).issues || (result.error as any).errors || [];
+    const errorStr = issues.map((e: any) => `${(e.path || []).join('.')}: ${e.message}`).join(', ');
+    return { success: false, error: `Validation failed: ${errorStr}` };
   }
 
   return { success: true, data: result.data };
@@ -156,28 +159,91 @@ async function verifyAuth(req: VercelRequest): Promise<{ userId: string } | null
   }
 }
 
-// Rate limiting (enkel in-memory implementation)
-// OBS: Vid skalning bör du använda Redis eller liknande
-const rateLimits = new Map<string, { count: number; resetTime: number }>();
+// Rate limiting with Upstash Redis (serverless-compatible)
+// Setup: Create free account at https://upstash.com and add:
+// - UPSTASH_REDIS_REST_URL
+// - UPSTASH_REDIS_REST_TOKEN
+// to your Vercel environment variables
 
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const windowMs = 15 * 60 * 1000; // 15 minuter
-  const maxRequests = 20;
+const RATE_LIMIT_WINDOW = 15 * 60; // 15 minutes in seconds
+const RATE_LIMIT_MAX = 20; // 20 requests per window
 
-  const current = rateLimits.get(ip);
-  
-  if (!current || now > current.resetTime) {
-    rateLimits.set(ip, { count: 1, resetTime: now + windowMs });
-    return true;
+// Initialize Redis client (lazy, only when needed)
+let redis: Redis | null = null;
+function getRedis(): Redis | null {
+  if (redis) return redis;
+
+  const url = process.env.UPSTASH_REDIS_REST_URL;
+  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+
+  if (!url || !token) {
+    console.warn('[Rate Limit] Redis not configured - rate limiting disabled in production!');
+    return null;
   }
 
-  if (current.count >= maxRequests) {
-    return false;
+  redis = new Redis({ url, token });
+  return redis;
+}
+
+interface RateLimitResult {
+  allowed: boolean;
+  remaining: number;
+  resetAt: number;
+}
+
+async function checkRateLimit(identifier: string): Promise<RateLimitResult> {
+  const redisClient = getRedis();
+
+  // If Redis not configured, fail open in dev, warn in production
+  if (!redisClient) {
+    if (process.env.NODE_ENV === 'production') {
+      console.error('[Rate Limit] WARNING: Redis not configured in production!');
+    }
+    return { allowed: true, remaining: RATE_LIMIT_MAX, resetAt: 0 };
   }
 
-  current.count++;
-  return true;
+  const key = `rate_limit:ai:${identifier}`;
+  const now = Math.floor(Date.now() / 1000);
+  const windowStart = now - RATE_LIMIT_WINDOW;
+
+  try {
+    // Use Redis sorted set for sliding window rate limiting
+    // Remove old entries outside the window
+    await redisClient.zremrangebyscore(key, 0, windowStart);
+
+    // Count current requests in window
+    const count = await redisClient.zcard(key);
+
+    if (count >= RATE_LIMIT_MAX) {
+      // Get the oldest entry to calculate reset time
+      const oldest = await redisClient.zrange(key, 0, 0, { withScores: true }) as Array<{ value: string; score: number }>;
+      const resetAt = oldest.length > 0 && oldest[0]?.score
+        ? oldest[0].score + RATE_LIMIT_WINDOW
+        : now + RATE_LIMIT_WINDOW;
+
+      return {
+        allowed: false,
+        remaining: 0,
+        resetAt
+      };
+    }
+
+    // Add current request with timestamp as score
+    await redisClient.zadd(key, { score: now, member: `${now}:${Math.random()}` });
+
+    // Set TTL on the key to auto-cleanup
+    await redisClient.expire(key, RATE_LIMIT_WINDOW);
+
+    return {
+      allowed: true,
+      remaining: RATE_LIMIT_MAX - count - 1,
+      resetAt: 0
+    };
+  } catch (error) {
+    console.error('[Rate Limit] Redis error:', error);
+    // On Redis error, fail open but log the issue
+    return { allowed: true, remaining: RATE_LIMIT_MAX, resetAt: 0 };
+  }
 }
 
 async function callOpenRouter(messages: any[], options: any = {}) {
@@ -511,10 +577,27 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // Rate limiting
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
-  if (!checkRateLimit(ip as string)) {
-    return res.status(429).json({ error: 'För många förfrågningar. Försök igen om 15 minuter.' });
+  // Rate limiting (Redis-based, serverless-compatible)
+  const ip = (Array.isArray(req.headers['x-forwarded-for'])
+    ? req.headers['x-forwarded-for'][0]
+    : req.headers['x-forwarded-for']?.split(',')[0]) || req.socket.remoteAddress || 'unknown';
+
+  const rateLimit = await checkRateLimit(ip.trim());
+
+  // Add rate limit headers
+  res.setHeader('X-RateLimit-Limit', RATE_LIMIT_MAX.toString());
+  res.setHeader('X-RateLimit-Remaining', rateLimit.remaining.toString());
+  if (rateLimit.resetAt > 0) {
+    res.setHeader('X-RateLimit-Reset', rateLimit.resetAt.toString());
+  }
+
+  if (!rateLimit.allowed) {
+    const retryAfter = Math.max(1, rateLimit.resetAt - Math.floor(Date.now() / 1000));
+    res.setHeader('Retry-After', retryAfter.toString());
+    return res.status(429).json({
+      error: 'För många förfrågningar. Försök igen om några minuter.',
+      retryAfter
+    });
   }
 
   // Verify authentication
@@ -535,9 +618,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Validate input data
     const validation = validateInput(fn, rawData);
     if (!validation.success) {
-      return res.status(400).json({ error: validation.error });
+      return res.status(400).json({ error: (validation as { success: false; error: string }).error });
     }
-    const data = validation.data;
+    const data = (validation as { success: true; data: unknown }).data;
 
     // Only log function name in production, no PII
     if (process.env.NODE_ENV === 'development') {
