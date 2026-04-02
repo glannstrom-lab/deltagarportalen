@@ -44,17 +44,19 @@ export function useZodForm<T extends Record<string, unknown>>({
   // Validera hela formuläret
   const validate = useCallback((): boolean => {
     const result = schema.safeParse(values)
-    
+
     if (!result.success) {
       const formattedErrors: FormErrors<T> = {}
-      result.error.errors.forEach((err) => {
+      // Handle both Zod formats: .issues (standard) or .errors (legacy)
+      const issues = result.error.issues || result.error.errors || []
+      issues.forEach((err) => {
         const path = err.path[0] as keyof T
         formattedErrors[path] = err.message
       })
       setErrors(formattedErrors)
       return false
     }
-    
+
     setErrors({})
     return true
   }, [schema, values])
@@ -220,12 +222,14 @@ export function useZodForm<T extends Record<string, unknown>>({
 // Hjälpfunktion för att formattera Zod-fel till användarvänliga meddelanden
 export function formatZodError(error: z.ZodError): Record<string, string> {
   const formatted: Record<string, string> = {}
-  
-  error.errors.forEach((err) => {
+
+  // Handle both Zod formats: .issues (standard) or .errors (legacy)
+  const issues = error.issues || error.errors || []
+  issues.forEach((err) => {
     const path = err.path.join('.')
     formatted[path] = err.message
   })
-  
+
   return formatted
 }
 

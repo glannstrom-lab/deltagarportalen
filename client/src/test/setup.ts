@@ -1,6 +1,9 @@
 import '@testing-library/jest-dom'
 import { vi } from 'vitest'
 
+// Initialize i18n for tests
+import '../i18n/config'
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,

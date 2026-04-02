@@ -198,12 +198,8 @@ export const useAuthStore = create<AuthState>()(
             role: enrichedProfile?.role,
           })
 
-          // Sync settings and energy from cloud
-          useSettingsStore.getState().syncWithServer()
-          useEnergyStore.getState().syncWithServer()
-
-          // Update last login timestamp for streak tracking
-          userPreferencesApi.updateLastLogin()
+          // NOTE: Settings/energy sync and last login update are handled
+          // by useAuthInit hook to avoid circular store dependencies
 
           return { error: null }
         } catch (error: unknown) {

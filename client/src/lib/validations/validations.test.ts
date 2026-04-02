@@ -35,23 +35,30 @@ describe('Validation Schemas', () => {
       expect(result.success).toBe(false)
     })
 
-    it('rejects short password', () => {
+    it('accepts any password length (server-side validation)', () => {
+      // Login schema intentionally doesn't validate password length
+      // to avoid revealing whether an account exists
       const result = loginSchema.safeParse({
         email: 'test@example.com',
         password: '123',
       })
-      expect(result.success).toBe(false)
+      expect(result.success).toBe(true)
     })
   })
 
   describe('registerSchema', () => {
+    // Strong password: 12+ chars, uppercase, lowercase, number, special char
+    const validPassword = 'SecurePass123!'
+
     it('validates correct registration data', () => {
       const result = registerSchema.safeParse({
         email: 'test@example.com',
-        password: 'Password123',
-        confirmPassword: 'Password123',
+        password: validPassword,
+        confirmPassword: validPassword,
         firstName: 'Anna',
         lastName: 'Andersson',
+        acceptTerms: true,
+        acceptPrivacy: true,
       })
       expect(result.success).toBe(true)
     })
@@ -59,10 +66,12 @@ describe('Validation Schemas', () => {
     it('rejects password without uppercase', () => {
       const result = registerSchema.safeParse({
         email: 'test@example.com',
-        password: 'password123',
-        confirmPassword: 'password123',
+        password: 'securepass123!',
+        confirmPassword: 'securepass123!',
         firstName: 'Anna',
         lastName: 'Andersson',
+        acceptTerms: true,
+        acceptPrivacy: true,
       })
       expect(result.success).toBe(false)
     })
@@ -70,10 +79,12 @@ describe('Validation Schemas', () => {
     it('rejects mismatched passwords', () => {
       const result = registerSchema.safeParse({
         email: 'test@example.com',
-        password: 'Password123',
-        confirmPassword: 'Different123',
+        password: validPassword,
+        confirmPassword: 'DifferentPass1!',
         firstName: 'Anna',
         lastName: 'Andersson',
+        acceptTerms: true,
+        acceptPrivacy: true,
       })
       expect(result.success).toBe(false)
     })
@@ -81,10 +92,12 @@ describe('Validation Schemas', () => {
     it('rejects short names', () => {
       const result = registerSchema.safeParse({
         email: 'test@example.com',
-        password: 'Password123',
-        confirmPassword: 'Password123',
+        password: validPassword,
+        confirmPassword: validPassword,
         firstName: 'A',
         lastName: 'Andersson',
+        acceptTerms: true,
+        acceptPrivacy: true,
       })
       expect(result.success).toBe(false)
     })

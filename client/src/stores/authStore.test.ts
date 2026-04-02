@@ -17,16 +17,21 @@ vi.mock('@/lib/supabase', () => ({
       signOut: (...args: any[]) => mockSignOut(...args),
       getUser: (...args: any[]) => mockGetUser(...args),
       getSession: (...args: any[]) => mockGetSession(...args),
-      onAuthStateChange: vi.fn(() => ({ 
-        data: { 
-          subscription: { 
-            unsubscribe: vi.fn() 
-          } 
-        } 
+      onAuthStateChange: vi.fn(() => ({
+        data: {
+          subscription: {
+            unsubscribe: vi.fn()
+          }
+        }
       })),
     },
     from: (...args: any[]) => mockFrom(...args),
   },
+}))
+
+// Mock Sentry
+vi.mock('@/lib/sentry', () => ({
+  setUser: vi.fn(),
 }))
 
 describe('authStore', () => {
@@ -65,6 +70,12 @@ describe('authStore', () => {
         consultant_id: null,
         created_at: '2024-01-01',
         updated_at: '2024-01-01',
+        terms_accepted_at: null,
+        privacy_accepted_at: null,
+        ai_consent_at: null,
+        marketing_consent_at: null,
+        health_consent_at: null,
+        wellness_consent_at: null,
       }
 
       mockGetSession.mockResolvedValue({ data: { session: mockSession }, error: null })
@@ -135,6 +146,12 @@ describe('authStore', () => {
         consultant_id: null,
         created_at: '2024-01-01',
         updated_at: '2024-01-01',
+        terms_accepted_at: null,
+        privacy_accepted_at: null,
+        ai_consent_at: null,
+        marketing_consent_at: null,
+        health_consent_at: null,
+        wellness_consent_at: null,
       }
 
       mockSignInWithPassword.mockResolvedValue({
@@ -223,6 +240,9 @@ describe('authStore', () => {
             first_name: userData.firstName,
             last_name: userData.lastName,
             role: 'USER',
+            terms_accepted: false,
+            privacy_accepted: false,
+            ai_consent: false,
           },
         },
       })
@@ -278,6 +298,12 @@ describe('authStore', () => {
         consultant_id: null,
         created_at: '2024-01-01',
         updated_at: '2024-01-01',
+        terms_accepted_at: null,
+        privacy_accepted_at: null,
+        ai_consent_at: null,
+        marketing_consent_at: null,
+        health_consent_at: null,
+        wellness_consent_at: null,
       }
 
       // Set initial state
