@@ -43,7 +43,7 @@ import {
   Briefcase as BriefcaseIcon,
   FileText as DocumentText,
   Star
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { savedJobsApi, articleBookmarksApi } from '@/services/cloudStorage'
 import { cvApi, coverLetterApi, interestApi } from '@/services/supabaseApi'

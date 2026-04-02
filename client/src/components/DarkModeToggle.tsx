@@ -4,7 +4,7 @@
  * UPPDATERAD: Använder ThemeContext
  */
 
-import { Moon, Sun, Monitor } from 'lucide-react'
+import { Moon, Sun, Monitor } from '@/components/ui/icons'
 import { useTheme } from '@/contexts/ThemeContext'
 import { cn } from '@/lib/utils'
 

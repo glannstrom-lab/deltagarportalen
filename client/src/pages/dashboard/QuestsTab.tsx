@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
-import { CheckCircle2, Circle, Zap, Trophy, Flame, ChevronRight } from 'lucide-react'
+import { CheckCircle2, Circle, Zap, Trophy, Flame, ChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface Quest {

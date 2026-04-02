@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { 
   X, ChevronRight, ChevronLeft, Sparkles, CheckCircle,
   FileText, User, Briefcase, Award, Eye, Download
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface OnboardingStep {
   id: string

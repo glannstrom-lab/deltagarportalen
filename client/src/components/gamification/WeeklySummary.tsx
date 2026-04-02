@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Calendar, CheckCircle2, Clock, FileText, Briefcase, TrendingUp, Award } from 'lucide-react'
+import { Calendar, CheckCircle2, Clock, FileText, Briefcase, TrendingUp, Award } from '@/components/ui/icons'
 
 interface WeeklyStats {
   logins: number

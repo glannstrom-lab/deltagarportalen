@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Clock, ArrowRight, Zap, Coffee, Target } from 'lucide-react'
+import { Clock, ArrowRight, Zap, Coffee, Target } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface QuickAction {

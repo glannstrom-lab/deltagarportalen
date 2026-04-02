@@ -9,7 +9,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import {
   BookHeart, Smile, Target, Heart, BarChart3,
   Sparkles, TrendingUp, Calendar, Award
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { JournalTab, MoodTab, GoalsTab, GratitudeTab, DailyTask } from '@/components/diary'
 import { HelpButton } from '@/components/HelpButton'
@@ -17,6 +17,7 @@ import { helpContent } from '@/data/helpContent'
 import { useDiaryStreaks, useMoodLogs, useWeeklyGoals, useGratitude } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui'
+import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 
 // Tab configuration
 const TABS = [
@@ -252,6 +253,7 @@ export default function Diary() {
       description={t('diary.description')}
       showTabs={false}
     >
+      <WellnessConsentGate>
       <div className="space-y-4 sm:space-y-6">
         {/* Achievement Banner (shown when relevant) */}
         <AchievementBanner />
@@ -325,6 +327,7 @@ export default function Diary() {
           </div>
         </div>
       </div>
+      </WellnessConsentGate>
       <HelpButton content={helpContent.diary} />
     </PageLayout>
   )

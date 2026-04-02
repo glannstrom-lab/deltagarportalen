@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MapPin, Flag, Calendar, Target, Sparkles, RefreshCw, CheckCircle, Clock, Download, BookMarked, AlertCircle, TrendingUp, CheckSquare, Zap, Send } from 'lucide-react'
+import { MapPin, Flag, Calendar, Target, Sparkles, RefreshCw, CheckCircle, Clock, Download, BookMarked, AlertCircle, TrendingUp, CheckSquare, Zap, Send } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Checkbox } from '@/components/ui'

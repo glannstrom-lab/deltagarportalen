@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Lightbulb, Plus, Check, Loader2 } from 'lucide-react';
+import { Lightbulb, Plus, Check, Loader2 } from '@/components/ui/icons';
 import { taxonomyApi } from '@/services/api';
 
 interface Skill {

@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { 
   ArrowRight, Sparkles, Loader2, RefreshCw,
   FileText, Search, Send, TrendingUp, User
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { nextStepApi, type NextStep, type UserProgress } from '@/services/workflowApi'

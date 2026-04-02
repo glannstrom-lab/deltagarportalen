@@ -14,7 +14,7 @@ import {
   CheckCircle,
   XCircle,
   MoreVertical
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { LoadingState } from '@/components/ui/LoadingState';
 

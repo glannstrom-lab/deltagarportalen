@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react'
-import { Map, RefreshCw, Loader2, Trophy, Target, BarChart3 } from 'lucide-react'
+import { Map, RefreshCw, Loader2, Trophy, Target, BarChart3 } from '@/components/ui/icons'
 import { Button } from '@/components/ui'
 import { useJourney } from '@/hooks/useJourney'
 import {

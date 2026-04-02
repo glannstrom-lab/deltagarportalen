@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '../stores/authStore'
 import { useZodForm } from '../hooks/useZodForm'
 import { loginSchema, type LoginInput } from '../lib/validations'
-import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from 'lucide-react'
+import { Eye, EyeOff, Loader2, Mail, Lock, ArrowRight } from '@/components/ui/icons'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 
 export default function Login() {

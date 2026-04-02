@@ -3,7 +3,7 @@
  * Shows auto-save status in the UI
  */
 
-import { Check, Loader2, AlertCircle, CloudOff } from 'lucide-react'
+import { Check, Loader2, AlertCircle, CloudOff } from '@/components/ui/icons'
 import { useCVStore } from '@/stores/cvStore'
 
 export function SaveIndicator() {

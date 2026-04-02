@@ -17,7 +17,7 @@ import {
   TrendingUp,
   Award,
   Sparkles,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 
 // Kompakta widget-kort för mobil

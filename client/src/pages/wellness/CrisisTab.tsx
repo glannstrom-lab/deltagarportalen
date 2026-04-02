@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import {
   Siren, Phone, MessageCircle, Heart, Wind, Eye, Ear, Hand,
   ExternalLink, AlertTriangle, ChevronRight, X, Activity
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

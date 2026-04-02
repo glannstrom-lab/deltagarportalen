@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import {
   Zap, Sun, Battery, BatteryLow, BatteryMedium, BatteryFull,
   TrendingUp, Calendar, Clock, AlertCircle, CheckCircle2, Lightbulb
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

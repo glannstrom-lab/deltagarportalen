@@ -4,7 +4,7 @@
  */
 
 import { useState, useCallback, createContext, useContext, ReactNode } from 'react'
-import { X, AlertTriangle, Info, CheckCircle, AlertCircle } from 'lucide-react'
+import { X, AlertTriangle, Info, CheckCircle, AlertCircle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 type DialogVariant = 'default' | 'danger' | 'warning' | 'info'

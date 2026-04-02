@@ -19,7 +19,7 @@ import {
   Calendar,
   Heart,
   Dumbbell
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { cvApi, coverLetterApi, activityApi, savedJobsApi } from '@/services/api'
 import { searchPlatsbanken } from '@/services/arbetsformedlingenApi'

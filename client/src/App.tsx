@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { ErrorBoundary } from './components/ErrorBoundary'
 import { swLogger } from './lib/logger'
-import { Loader2 } from 'lucide-react'
+import { Loader2 } from '@/components/ui/icons'
 
 // Wrapper komponent för att hantera redirects med params
 function ArticleRedirect() {

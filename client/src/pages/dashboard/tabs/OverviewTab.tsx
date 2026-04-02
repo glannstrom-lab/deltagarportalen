@@ -19,7 +19,7 @@ import {
   Sparkles,
   Cloud,
   Loader2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { userApi, cvApi, coverLetterApi, type OnboardingProgress } from '@/services/supabaseApi'

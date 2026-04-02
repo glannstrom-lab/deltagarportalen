@@ -1,5 +1,5 @@
 import { type CalendarEvent, eventTypeConfig, formatDuration } from '@/services/calendarData'
-import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell, MapPin, Video, Phone } from 'lucide-react'
+import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell, MapPin, Video, Phone } from '@/components/ui/icons'
 
 interface DayViewProps {
   date: Date

@@ -3,7 +3,7 @@
  */
 
 import { useState } from 'react'
-import { ChevronLeft, ChevronRight, Sparkles, RotateCcw, Bookmark, FileText, Palette, Lightbulb, ChevronDown, ChevronUp, Building2, MapPin, Briefcase, Save } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Sparkles, RotateCcw, Bookmark, FileText, Palette, Lightbulb, ChevronDown, ChevronUp, Building2, MapPin, Briefcase, Save } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { PromptButtons } from './PromptButtons'
 import { WordCounter } from './WordCounter'

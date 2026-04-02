@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, ArrowLeft, RotateCcw, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { ArrowRight, ArrowLeft, RotateCcw, X, CheckCircle, AlertCircle } from '@/components/ui/icons';
 import {
   MOCK_INTERVIEWS,
   analyzeStarAnswer,

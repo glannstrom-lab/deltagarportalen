@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { Card } from '@/components/ui/Card'
 import { LoadingState } from '@/components/ui/LoadingState'
-import { AlertCircle, ArrowRight } from 'lucide-react'
+import { AlertCircle, ArrowRight } from '@/components/ui/icons'
 import type { DashboardWidgetProps, WidgetStat, WidgetStatus, WidgetColor } from '@/types/dashboard'
 
 const SIDEBAR_COLOR = '#4f46e5'

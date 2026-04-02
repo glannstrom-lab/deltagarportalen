@@ -3,7 +3,7 @@
  */
 
 import { Link } from 'react-router-dom'
-import { Compass, Sparkles, ChevronRight } from 'lucide-react'
+import { Compass, Sparkles, ChevronRight } from '@/components/ui/icons'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import { cn } from '@/lib/utils'
 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { FileText, ChevronRight, CheckCircle2, Sparkles, Edit, Download, Eye } from 'lucide-react'
+import { FileText, ChevronRight, CheckCircle2, Sparkles, Edit, Download, Eye } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface CVWidgetProps {

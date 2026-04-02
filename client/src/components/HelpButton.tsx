@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react'
-import { HelpCircle, X, ChevronDown, ChevronUp, MessageCircle, Lightbulb } from 'lucide-react'
+import { HelpCircle, X, ChevronDown, ChevronUp, MessageCircle, Lightbulb } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 export interface HelpItem {

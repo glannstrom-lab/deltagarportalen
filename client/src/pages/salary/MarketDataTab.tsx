@@ -3,7 +3,7 @@
  * Features: interactive sorting, filtering, visual charts, search, expandable rows
  */
 import { useState, useMemo } from 'react'
-import { BarChart3, TrendingUp, MapPin, Building2, Users, ArrowUp, ArrowDown, Search, Filter, ChevronDown, ChevronUp } from 'lucide-react'
+import { BarChart3, TrendingUp, MapPin, Building2, Users, ArrowUp, ArrowDown, Search, Filter, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'

@@ -3,7 +3,7 @@
  */
 
 import { Link } from 'react-router-dom'
-import { ChevronRight, Bookmark, Star, Tag, Dumbbell, Clock } from 'lucide-react'
+import { ChevronRight, Bookmark, Star, Tag, Dumbbell, Clock } from '@/components/ui/icons'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
 import { cn } from '@/lib/utils'

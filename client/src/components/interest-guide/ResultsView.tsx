@@ -10,6 +10,7 @@ import {
 import { RiasecChart } from './RiasecChart'
 import { BigFiveChart } from './BigFiveChart'
 import { ICFSection } from './ICFSection'
+import { HealthConsentGate } from '@/components/consent/HealthConsentGate'
 import { JobCard } from './JobCard'
 import { Button } from '@/components/ui/Button'
 import { 
@@ -29,7 +30,7 @@ import {
   Brain,
   Heart,
   Sparkles
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface ResultsViewProps {
   profile: UserProfile
@@ -440,7 +441,7 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
             </div>
           </section>
 
-          {/* ICF Section */}
+          {/* ICF Section - Wrapped with GDPR Art. 9 health data consent gate */}
           <section className="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
             <div className="p-6 md:p-8">
               <div className="flex items-start gap-4 mb-6">
@@ -457,9 +458,11 @@ export function ResultsView({ profile, onRestart }: ResultsViewProps) {
                 </div>
               </div>
 
-              <div className="max-w-2xl mx-auto mb-8">
-                <ICFSection scores={profile.icf} />
-              </div>
+              <HealthConsentGate>
+                <div className="max-w-2xl mx-auto mb-8">
+                  <ICFSection scores={profile.icf} />
+                </div>
+              </HealthConsentGate>
 
               {/* Pedagogisk info om ICF */}
               <div className="bg-gray-50 rounded-2xl p-6 mb-6">

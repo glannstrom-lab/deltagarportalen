@@ -3,7 +3,7 @@ import {
   GraduationCap, ExternalLink, Search, Loader2, BookOpen, 
   Clock, Award, Filter, ChevronDown, X, SlidersHorizontal,
   MapPin, Building2, Heart, CheckCircle, Bookmark
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { showToast } from '@/components/Toast';
 import { educationApi, type SavedEducation } from '@/services/careerApi';
 import { Autocomplete } from '@/components/common/Autocomplete';

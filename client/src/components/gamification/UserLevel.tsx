@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Flame, Star, Trophy, Target } from 'lucide-react';
+import { Flame, Star, Trophy, Target } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 

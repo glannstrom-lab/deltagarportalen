@@ -24,7 +24,7 @@ import {
   Turtle,
   Walk,
   Running
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 type EnergyLevel = 'high' | 'medium' | 'low' | null
 

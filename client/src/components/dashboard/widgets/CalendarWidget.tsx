@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Calendar, Clock, ChevronRight, Video, Briefcase, Plus } from 'lucide-react'
+import { Calendar, Clock, ChevronRight, Video, Briefcase, Plus } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface CalendarWidgetProps {

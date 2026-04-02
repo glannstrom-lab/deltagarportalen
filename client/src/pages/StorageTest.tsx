@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
-import { Loader2, Check, X, AlertCircle, Upload, Image as ImageIcon } from 'lucide-react'
+import { Loader2, Check, X, AlertCircle, Upload, Image as ImageIcon } from '@/components/ui/icons'
 
 interface TestResult {
   name: string

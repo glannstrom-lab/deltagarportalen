@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Send, Bot, User, Sparkles, X } from 'lucide-react';
+import { Send, Bot, User, Sparkles, X } from '@/components/ui/icons';
 
 interface Message {
   id: string;

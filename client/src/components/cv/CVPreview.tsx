@@ -13,7 +13,7 @@
 import {
   Mail, Phone, MapPin, Briefcase, GraduationCap,
   Award, Sparkles, Circle
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import type { CVData } from '@/services/supabaseApi'
 
 interface CVPreviewProps {

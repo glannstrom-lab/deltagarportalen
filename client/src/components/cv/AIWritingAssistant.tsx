@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react'
-import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from 'lucide-react'
+import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from '@/components/ui/icons'
 import { callAI } from '@/services/aiApi'
 
 interface AIWritingAssistantProps {

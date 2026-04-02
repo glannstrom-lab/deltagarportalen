@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Dumbbell, Trophy, Flame, ChevronRight, Play } from 'lucide-react'
+import { Dumbbell, Trophy, Flame, ChevronRight, Play } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface ExercisesWidgetProps {

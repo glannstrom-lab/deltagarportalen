@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Circle, Star, RefreshCw } from 'lucide-react';
+import { CheckCircle2, Circle, Star, RefreshCw } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 

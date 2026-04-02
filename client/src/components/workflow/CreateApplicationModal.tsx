@@ -12,7 +12,7 @@ import {
   X, FileText, Briefcase, CheckCircle2, 
   ChevronRight, Sparkles, Save, Loader2,
   ArrowRight, Building2, MapPin, ExternalLink
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { workflowApi, type JobData, type ApplicationWorkflow } from '@/services/workflowApi'

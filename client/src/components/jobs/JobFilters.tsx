@@ -3,7 +3,7 @@ import {
   Search, MapPin, Sliders, X, Building2, Briefcase, 
   Clock, GraduationCap, Wallet, Car, Home, Filter,
   ChevronDown, ChevronUp, RotateCcw, MapPinned
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export interface JobFilterState {
   search: string

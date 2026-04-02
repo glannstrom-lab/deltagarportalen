@@ -25,7 +25,7 @@ import {
   Wand2,
   Briefcase,
   RefreshCw
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { networkApi, type NetworkContact } from '@/services/careerApi'
 import { showToast } from '@/components/Toast'

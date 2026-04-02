@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Heart, Brain, Sun, Moon, Activity, Coffee,
   Sparkles, CheckCircle, PenLine, Quote, Loader2, Check
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { moodApi, wellnessDataApi, type MoodType } from '@/services/cloudStorage'
 import { cn } from '@/lib/utils'

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigation, Clock, Train, Car, Bike, Footprints, Wallet, CheckCircle, Circle } from 'lucide-react'
+import { Navigation, Clock, Train, Car, Bike, Footprints, Wallet, CheckCircle, Circle } from '@/components/ui/icons'
 import type { TravelInfo } from '@/services/calendarData'
 
 interface TravelPlannerProps {

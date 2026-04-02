@@ -11,7 +11,7 @@ import {
   Inbox,
   AlertCircle,
   Plus,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface EmptyStateProps {
   icon?: 'search' | 'document' | 'job' | 'calendar' | 'heart' | 'mail' | 'compass' | 'inbox' | 'alert'

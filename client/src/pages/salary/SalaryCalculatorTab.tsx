@@ -4,7 +4,7 @@
  * Features: comparison mode, net salary after tax, visual charts, save/export
  */
 import { useState, useMemo } from 'react'
-import { Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles, Download, Plus, X, BarChart3, PieChart } from 'lucide-react'
+import { Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles, Download, Plus, X, BarChart3, PieChart } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'

@@ -13,7 +13,7 @@ import {
   Sparkles,
   Send,
   Zap,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export type WidgetType = 
   | 'cv'

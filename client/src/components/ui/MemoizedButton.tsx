@@ -4,7 +4,7 @@
  */
 
 import React, { memo, useCallback } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 
 export interface MemoizedButtonProps {

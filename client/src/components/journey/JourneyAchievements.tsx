@@ -7,7 +7,7 @@ import {
   Trophy, Lock, Star, Award, Crown, Zap,
   LogIn, UserCheck, FileText, FileCheck, Send, Inbox, Briefcase,
   BookOpen, GraduationCap, Edit3, Flame, Compass, Linkedin
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import type { Achievement } from '@/services/journeyService'
 

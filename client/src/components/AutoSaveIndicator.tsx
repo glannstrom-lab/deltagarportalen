@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, Save, AlertCircle, RotateCcw } from 'lucide-react'
+import { Check, Save, AlertCircle, RotateCcw } from '@/components/ui/icons'
 
 export type SaveStatus = 'saved' | 'saving' | 'unsaved' | 'error'
 

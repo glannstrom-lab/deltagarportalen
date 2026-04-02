@@ -25,7 +25,7 @@ import {
   BarChart3,
   ChevronDown,
   X,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 export default function OccupationsTab() {

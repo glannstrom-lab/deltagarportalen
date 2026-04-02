@@ -7,7 +7,7 @@
 import { 
   X, ArrowRight, Sparkles, Search, FileText, 
   Briefcase, CheckCircle2, ExternalLink
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'

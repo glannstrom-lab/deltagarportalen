@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useId } from 'react'
-import { X, MapPin, Video, Phone, Link2 } from 'lucide-react'
+import { X, MapPin, Video, Phone, Link2 } from '@/components/ui/icons'
 import type { CalendarEvent } from '@/services/calendarData'
 import { TaskManager } from './TaskManager'
 import { InterviewPrepPanel } from './InterviewPrep'

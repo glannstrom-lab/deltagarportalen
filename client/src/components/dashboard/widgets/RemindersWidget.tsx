@@ -17,7 +17,7 @@ import {
   RotateCcw,
   Calendar,
   TrendingUp
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { DashboardWidget } from '../DashboardWidget'
 import { useDashboardData } from '@/hooks/useDashboardData'

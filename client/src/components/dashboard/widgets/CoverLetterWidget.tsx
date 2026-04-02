@@ -19,7 +19,7 @@ import {
   ExternalLink,
   MoreHorizontal,
   Trash2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'

@@ -5,7 +5,7 @@
 
 import { cn } from '@/lib/utils'
 import { Card } from './Card'
-import { Loader2, RefreshCw } from 'lucide-react'
+import { Loader2, RefreshCw } from '@/components/ui/icons'
 import { Button } from './Button'
 
 // ============================================

@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   ChevronRight, Sparkles, Zap, Clock,
   FileText, Search, BookOpen, Send, Bookmark, Award
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import type { NextStep } from '@/types/journey.types'
 

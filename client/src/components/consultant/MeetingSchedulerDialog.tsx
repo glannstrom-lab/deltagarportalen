@@ -18,7 +18,7 @@ import {
   Check,
   Loader2,
   Link as LinkIcon,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'

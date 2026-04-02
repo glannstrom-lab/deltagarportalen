@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { TrendingUp, MapPin, DollarSign, Star, BarChart3 } from 'lucide-react'
+import { TrendingUp, MapPin, DollarSign, Star, BarChart3 } from '@/components/ui/icons'
 import { marketStatsService, type CompetenceDemand, type RegionalStat } from '../services/marketStatsService'
 
 export default function MarketStats() {

@@ -15,7 +15,7 @@ import { QuestionCard } from '@/components/interest-guide/QuestionCard'
 import { SectionDots } from '@/components/interest-guide/SectionDots'
 import { IntroScreen } from '@/components/interest-guide/IntroScreen'
 import { Button, LoadingState, InfoCard } from '@/components/ui'
-import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChart3, RotateCcw, Briefcase } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Trash2, Loader2, Sparkles, CheckCircle2, BarChart3, RotateCcw, Briefcase } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { userApi } from '@/services/supabaseApi'
 

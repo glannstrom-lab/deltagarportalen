@@ -7,7 +7,7 @@ import type { Tab } from '@/components/layout/PageTabs'
 import {
   LayoutDashboard,
   Trophy,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 // Tab definitions with i18n keys
 export const dashboardTabDefs = [

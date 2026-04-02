@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Star, CheckCircle, Lightbulb } from 'lucide-react';
+import { Star, CheckCircle, Lightbulb } from '@/components/ui/icons';
 
 export const StarMethodGuide: React.FC = () => {
   const examples = [

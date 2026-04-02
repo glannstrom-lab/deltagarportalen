@@ -16,7 +16,7 @@ import {
   ChevronRight,
   Trophy,
   X
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Progress } from '@/components/ui/Progress'
 import { cn } from '@/lib/utils'

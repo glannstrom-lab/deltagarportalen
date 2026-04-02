@@ -3,7 +3,7 @@
  * Features: interactive checklist with progress, scenario simulator, tips carousel, localStorage persistence
  */
 import { useState, useEffect } from 'react'
-import { TrendingUp, CheckCircle, AlertCircle, MessageSquare, Target, Clock, Sparkles, ChevronDown, ChevronUp, RotateCcw, Play, BarChart3, TrendingDown } from 'lucide-react'
+import { TrendingUp, CheckCircle, AlertCircle, MessageSquare, Target, Clock, Sparkles, ChevronDown, ChevronUp, RotateCcw, Play, BarChart3, TrendingDown } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'

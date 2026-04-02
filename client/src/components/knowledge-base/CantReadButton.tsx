@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react'
-import { Heart, Clock, Bookmark, ChevronRight } from 'lucide-react'
+import { Heart, Clock, Bookmark, ChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui'
 import { getSupportiveMessage } from '@/utils/supportiveMessages'

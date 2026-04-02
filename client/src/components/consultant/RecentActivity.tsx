@@ -10,7 +10,7 @@ import {
   MessageSquare, 
   Briefcase,
   Clock 
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 // Placeholder data - ska hämtas från databas senare
 const recentActivities = [

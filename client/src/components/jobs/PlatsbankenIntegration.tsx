@@ -17,7 +17,7 @@ import {
   Bookmark,
   Share2,
   Check
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { afApi, type JobAd, type SearchFilters } from '@/services/arbetsformedlingenApi';
 import { JobCard } from './JobCard';
 

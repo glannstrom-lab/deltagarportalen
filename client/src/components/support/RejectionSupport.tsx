@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Heart, MessageCircle, Lightbulb, Users, ArrowRight, X } from 'lucide-react';
+import { Heart, MessageCircle, Lightbulb, Users, ArrowRight, X } from '@/components/ui/icons';
 
 interface SupportMessage {
   category: string;

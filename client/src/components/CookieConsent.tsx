@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
-import { Cookie, Settings, Check, X } from 'lucide-react'
+import { Cookie, Settings, Check, X } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 
 export interface CookiePreferences {

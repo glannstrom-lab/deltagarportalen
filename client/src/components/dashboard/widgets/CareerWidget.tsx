@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Route, Briefcase, Target, Sparkles, Users, Accessibility, Building2, ChevronRight } from 'lucide-react'
+import { Route, Briefcase, Target, Sparkles, Users, Accessibility, Building2, ChevronRight } from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'

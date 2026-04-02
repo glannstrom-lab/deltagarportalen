@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BookOpen, Bookmark, ChevronRight, Sparkles } from 'lucide-react'
+import { BookOpen, Bookmark, ChevronRight, Sparkles } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface KnowledgeWidgetProps {

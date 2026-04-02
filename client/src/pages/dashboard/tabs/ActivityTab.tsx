@@ -11,7 +11,7 @@ import {
   Heart, Compass, Users, Send, Bookmark, PenLine,
   Footprints, FolderKanban, Copy, Mic, Library, GraduationCap,
   Magnet, LogIn, User, Activity
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useGamification, formatActivityTime, getMilestonePercentage } from '@/hooks/useGamification'
 import { cn } from '@/lib/utils'
 import { useDashboardData } from '@/hooks/useDashboardData'

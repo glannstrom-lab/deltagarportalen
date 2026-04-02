@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Target, Search, TrendingUp, AlertCircle, CheckCircle, BookOpen, Sparkles, RefreshCw, Download, Save, BarChart3, Award, Zap } from 'lucide-react'
+import { Target, Search, TrendingUp, AlertCircle, CheckCircle, BookOpen, Sparkles, RefreshCw, Download, Save, BarChart3, Award, Zap } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'

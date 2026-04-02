@@ -5,7 +5,7 @@ import {
   BarChart3,
   ArrowUpRight,
   Minus,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { afApi, type SkillTrend, type SalaryStats } from '@/services/arbetsformedlingenApi'
 
 interface MarketInsightsProps {

@@ -8,7 +8,7 @@ import {
   Bold, Italic, List, ListOrdered, Quote, 
   AlignLeft, AlignCenter, Link, Undo, Redo,
   Type, Heading
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface RichTextEditorProps {
   value: string

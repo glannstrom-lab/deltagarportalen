@@ -3,7 +3,7 @@
  * Shows completion progress and score
  */
 
-import { Check, Circle } from 'lucide-react'
+import { Check, Circle } from '@/components/ui/icons'
 import { useCVScore, getScoreColor, getScoreBgColor, getOverallTips } from '@/hooks/useCVScore'
 import type { CVData } from '@/services/supabaseApi'
 

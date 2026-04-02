@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Heart, X, Phone, ExternalLink, MessageCircle, Shield } from 'lucide-react'
+import { Heart, X, Phone, ExternalLink, MessageCircle, Shield } from '@/components/ui/icons'
 
 interface CrisisResource {
   nameKey: string

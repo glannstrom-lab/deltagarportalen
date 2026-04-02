@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Share2, Send, X, CheckCircle, User } from 'lucide-react';
+import { Share2, Send, X, CheckCircle, User } from '@/components/ui/icons';
 import { shareJobWithConsultant } from '@/services/jobSharingService';
 import type { ShareJobRequest } from '@/services/jobSharingService';
 import { getProfile } from '@/lib/supabase';

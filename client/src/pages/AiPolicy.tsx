@@ -13,7 +13,7 @@ import {
   XCircle,
   Scale,
   Database
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export default function AiPolicy() {
   const { t, i18n } = useTranslation()

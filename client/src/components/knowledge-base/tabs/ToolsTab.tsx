@@ -3,7 +3,7 @@
  * Downloadable templates, checklists, and practical tools
  */
 
-import { Wrench, Download, FileText, CheckSquare, Calculator, Calendar, Star } from 'lucide-react'
+import { Wrench, Download, FileText, CheckSquare, Calculator, Calendar, Star } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { logger } from '@/lib/logger'
 

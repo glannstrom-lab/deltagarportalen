@@ -9,7 +9,7 @@ import {
   ArrowRight,
   Copy,
   Check,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { afApi } from '@/services/arbetsformedlingenApi'
 import type { CVData } from '@/services/supabaseApi'
 

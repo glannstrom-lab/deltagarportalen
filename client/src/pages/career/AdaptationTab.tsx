@@ -7,7 +7,7 @@ import {
   Accessibility, FileText, Building2, User, CheckCircle2,
   ChevronRight, Download, AlertCircle, HelpCircle, X, Info,
   Zap, Users, Clock, Layout
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button, Checkbox } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

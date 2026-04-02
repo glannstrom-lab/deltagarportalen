@@ -25,7 +25,7 @@ import {
   ThumbsDown,
   Maximize2,
   Minimize2,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'

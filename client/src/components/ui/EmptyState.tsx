@@ -5,7 +5,7 @@
 
 import { cn } from '@/lib/utils'
 import { Button } from './Button'
-import { LucideIcon } from 'lucide-react'
+import { LucideIcon } from '@/components/ui/icons'
 
 // ============================================
 // EMPTY STATE

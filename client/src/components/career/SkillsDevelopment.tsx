@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2, Brain, GraduationCap } from 'lucide-react';
+import { Wrench, TrendingUp, BookOpen, Award, Search, Loader2, ArrowRight, Star, Zap, Heart, CheckCircle, Bookmark, Trash2, Brain, GraduationCap } from '@/components/ui/icons';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { skillsApi, type UserSkill } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';

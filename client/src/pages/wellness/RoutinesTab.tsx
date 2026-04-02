@@ -7,7 +7,7 @@ import { motion, Reorder } from 'framer-motion'
 import {
   CalendarDays, Clock, Sun, Moon, Coffee, Briefcase,
   Plus, Trash2, CheckCircle2, Play, Pause, Flame, GripVertical
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

@@ -12,7 +12,7 @@ import {
   ArrowRight,
   Clock,
   Briefcase
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export interface CoverLetterTemplate {
   id: string

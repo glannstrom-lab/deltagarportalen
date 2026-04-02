@@ -25,7 +25,7 @@ import {
   Bell,
   RefreshCw,
   Download,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'

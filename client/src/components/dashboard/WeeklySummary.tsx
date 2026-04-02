@@ -15,7 +15,7 @@ import {
   Briefcase,
   FileText,
   Heart
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useDashboardData } from '@/hooks/useDashboardData'
 

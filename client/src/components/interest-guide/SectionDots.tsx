@@ -1,5 +1,5 @@
 import { type SectionId, sections } from '@/services/interestGuideData'
-import { UserCircle2, Brain, Heart, Activity } from 'lucide-react'
+import { UserCircle2, Brain, Heart, Activity } from '@/components/ui/icons'
 
 interface SectionDotsProps {
   currentSection: SectionId

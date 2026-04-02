@@ -7,7 +7,7 @@ import { motion } from 'framer-motion'
 import {
   Brain, Clock, Target, RotateCcw, CheckCircle2, AlertCircle,
   ChevronRight, Trophy, Sparkles, Flame, Star
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

@@ -1,5 +1,5 @@
 import { memo, useState } from 'react'
-import { LayoutGrid, LayoutTemplate, Maximize2, X } from 'lucide-react'
+import { LayoutGrid, LayoutTemplate, Maximize2, X } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 export type WidgetSize = 'small' | 'medium' | 'large'

@@ -17,7 +17,7 @@ import {
   FileText,
   Target,
   Award
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface TipSection {

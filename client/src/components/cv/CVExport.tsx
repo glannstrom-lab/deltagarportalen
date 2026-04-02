@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react'
-import { Download, FileText, Check, FileType, Loader2 } from 'lucide-react'
+import { Download, FileText, Check, FileType, Loader2 } from '@/components/ui/icons'
 import { loadPDFLibraries, preloadPDFLibraries } from '@/services/pdfLazyLoad'
 import type { CVData } from '@/services/supabaseApi'
 

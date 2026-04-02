@@ -8,7 +8,7 @@ import {
   Crown,
   CheckCircle2,
   AlertCircle
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 const roleConfig: Record<UserRole, {
   label: string

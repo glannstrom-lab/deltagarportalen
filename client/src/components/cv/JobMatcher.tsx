@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Target, CheckCircle, XCircle, AlertCircle, Plus } from 'lucide-react'
+import { Target, CheckCircle, XCircle, AlertCircle, Plus } from '@/components/ui/icons'
 
 interface JobMatcherProps {
   cvSkills: string

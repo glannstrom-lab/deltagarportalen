@@ -4,7 +4,7 @@ import {
   Menu, X, User, Settings, LogOut,
   LayoutDashboard, FileText, Mail, Briefcase, Target,
   Compass, Dumbbell, Heart, BookOpen, Bookmark
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Sidebar } from './layout/Sidebar'
 import { TopBar } from './layout/TopBar'
 import { MobileBackButton } from './MobileBackButton'

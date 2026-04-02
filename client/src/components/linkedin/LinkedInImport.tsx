@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Linkedin, CheckCircle, AlertCircle, User } from 'lucide-react';
+import { Linkedin, CheckCircle, AlertCircle, User } from '@/components/ui/icons';
 import {
   initiateLinkedInAuth,
   getMockLinkedInProfile,

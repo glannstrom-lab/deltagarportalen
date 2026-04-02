@@ -8,7 +8,7 @@ import {
   Smile, Frown, Meh, Sun, Moon, Battery, Brain,
   TrendingUp, TrendingDown, Minus, Calendar, Check,
   ChevronLeft, ChevronRight, Activity
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useMoodLogs } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'

@@ -9,7 +9,7 @@ import {
   BookOpen, Play, Clock, CheckCircle2, Award, Star, TrendingUp,
   ArrowLeft, Flame, Target, Lightbulb, ChevronRight, Loader2,
   RefreshCw, FileText, Dumbbell, Sparkles, Zap, Compass
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useLearning } from '@/hooks/useLearning'

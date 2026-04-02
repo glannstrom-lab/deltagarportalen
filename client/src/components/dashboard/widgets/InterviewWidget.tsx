@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { MessageSquare, Mic, ChevronRight, Trophy, Star, Play, TrendingUp } from 'lucide-react'
+import { MessageSquare, Mic, ChevronRight, Trophy, Star, Play, TrendingUp } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface InterviewWidgetProps {

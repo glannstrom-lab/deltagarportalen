@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ChevronDown, ChevronRight, Search, X } from 'lucide-react'
+import { ChevronDown, ChevronRight, Search, X } from '@/components/ui/icons'
 import { articleCategories } from '../../services/articleData'
 
 interface CategoryFilterProps {

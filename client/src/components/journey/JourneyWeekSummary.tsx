@@ -2,7 +2,7 @@
  * JourneyWeekSummary - Weekly progress summary widget
  */
 
-import { Calendar, Clock, Zap, Send, BookOpen, Flame, TrendingUp } from 'lucide-react'
+import { Calendar, Clock, Zap, Send, BookOpen, Flame, TrendingUp } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import type { WeeklySummary } from '@/types/journey.types'
 

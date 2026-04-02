@@ -8,7 +8,7 @@ import {
   MapPin,
   Settings,
   Plus
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { notificationsService, type JobNotification, type JobAlert } from '../services/notificationsService'
 import { afApi, type JobAd } from '../services/arbetsformedlingenApi'
 import { sanitizeHTML } from '../utils/sanitize'

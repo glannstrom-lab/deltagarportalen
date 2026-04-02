@@ -3,7 +3,7 @@ import {
   FileSearch, CheckCircle, AlertCircle, TrendingUp, BookOpen, Info, Eye, Sparkles,
   FileText, Type, Layout, Image, Download, Briefcase, Building, HeartPulse, 
   Hammer, ShoppingCart, GraduationCap, Code, Wrench, FileCheck, AlertTriangle
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import type { CVData, Skill } from '@/services/supabaseApi'
 
 interface ATSCheck {

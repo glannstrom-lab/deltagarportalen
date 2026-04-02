@@ -6,7 +6,7 @@ import { useState } from 'react'
 import {
   Target, Plus, Check, Trash2, Calendar,
   Send, BookOpen, Edit3, TrendingUp, X
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import type { UserGoal } from '@/services/journeyService'
 

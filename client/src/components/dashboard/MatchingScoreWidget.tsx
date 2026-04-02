@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Target, TrendingUp, Briefcase, AlertCircle } from 'lucide-react';
+import { Target, TrendingUp, Briefcase, AlertCircle } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 import { trendsApi } from '@/services/api';
 

@@ -20,7 +20,7 @@ import {
   Coffee,
   Target,
   TrendingUp
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useEnergyStore, type EnergyLevel } from '@/stores/energyStoreWithSync'
 import { useDashboardData } from '@/hooks/useDashboardData'

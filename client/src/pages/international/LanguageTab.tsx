@@ -2,7 +2,7 @@
  * Language Tab - Swedish language resources for work
  */
 import { useState } from 'react'
-import { Languages, BookOpen, Headphones, MessageSquare, Trophy, ExternalLink, Play, CheckCircle } from 'lucide-react'
+import { Languages, BookOpen, Headphones, MessageSquare, Trophy, ExternalLink, Play, CheckCircle } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

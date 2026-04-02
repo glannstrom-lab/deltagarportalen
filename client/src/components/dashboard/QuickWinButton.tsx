@@ -16,7 +16,7 @@ import {
   Target,
   ChevronRight,
   RotateCcw
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'
 import { useEnergyStore, type EnergyLevel } from '@/stores/energyStoreWithSync'

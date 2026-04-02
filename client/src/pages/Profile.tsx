@@ -13,7 +13,7 @@ import {
   Plus, X, Loader2, ArrowRight, Cloud, CloudOff,
   Clock, Car, Wallet, Building2, Settings2, Accessibility,
   ChevronDown, Calendar, Globe, Home, Shield, Award
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import { HelpButton } from '@/components/HelpButton'

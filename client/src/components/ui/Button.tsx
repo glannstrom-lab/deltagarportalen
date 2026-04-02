@@ -6,7 +6,7 @@
 
 import { cn } from '@/lib/utils'
 import { buttonVariants, touch, animations } from '@/styles/design-system'
-import { Loader2 } from 'lucide-react'
+import { Loader2 } from '@/components/ui/icons'
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'default'

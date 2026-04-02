@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { MapPin, Briefcase, Clock, Heart, ChevronRight, CheckCircle, XCircle, Bot, ExternalLink } from 'lucide-react'
+import { MapPin, Briefcase, Clock, Heart, ChevronRight, CheckCircle, XCircle, Bot, ExternalLink } from '@/components/ui/icons'
 import type { Job } from '@/services/mockApi'
 import type { JobAd } from '@/services/arbetsformedlingenApi'
 

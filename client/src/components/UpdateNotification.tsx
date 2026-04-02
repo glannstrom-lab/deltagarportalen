@@ -6,7 +6,7 @@
 
 import { useServiceWorker } from '@/hooks/useServiceWorker'
 import { Button } from './ui/Button'
-import { RefreshCw, X } from 'lucide-react'
+import { RefreshCw, X } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 
 export function UpdateNotification() {

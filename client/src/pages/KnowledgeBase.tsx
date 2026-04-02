@@ -5,7 +5,7 @@
 import { useState, useEffect, useCallback, Suspense, lazy, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Sparkles, Rocket, BookOpen, Route, Wrench, Flame, AlertCircle } from 'lucide-react'
+import { Sparkles, Rocket, BookOpen, Route, Wrench, Flame, AlertCircle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Card, LoadingState } from '@/components/ui'
 import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'

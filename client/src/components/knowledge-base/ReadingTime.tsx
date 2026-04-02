@@ -1,4 +1,4 @@
-import { Clock } from 'lucide-react'
+import { Clock } from '@/components/ui/icons'
 
 interface ReadingTimeProps {
   minutes: number

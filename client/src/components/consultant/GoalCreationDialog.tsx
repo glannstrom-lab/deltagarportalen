@@ -22,7 +22,7 @@ import {
   MessageSquare,
   Users,
   GraduationCap,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Button } from '@/components/ui/Button'
 import { cn } from '@/lib/utils'

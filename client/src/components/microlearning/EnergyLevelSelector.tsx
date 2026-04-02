@@ -1,4 +1,4 @@
-import { Battery, BatteryMedium, BatteryFull } from 'lucide-react';
+import { Battery, BatteryMedium, BatteryFull } from '@/components/ui/icons';
 
 interface EnergyLevelSelectorProps {
   value: 'LOW' | 'MEDIUM' | 'HIGH';

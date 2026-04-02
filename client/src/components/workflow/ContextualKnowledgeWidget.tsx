@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { 
   BookOpen, ChevronRight, Lightbulb, 
   FileText, Search, MessageSquare, Target, Award
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { articleData } from '@/services/articleData'

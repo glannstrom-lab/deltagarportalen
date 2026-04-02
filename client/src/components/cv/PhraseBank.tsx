@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BookOpen, Copy, Check } from 'lucide-react'
+import { BookOpen, Copy, Check } from '@/components/ui/icons'
 
 interface PhraseCategory {
   name: string

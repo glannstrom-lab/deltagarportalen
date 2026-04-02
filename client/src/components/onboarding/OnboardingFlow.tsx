@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { ArrowRight, CheckCircle2, Target, Sparkles, FileText, Briefcase } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Target, Sparkles, FileText, Briefcase } from '@/components/ui/icons';
 import { useNavigate } from 'react-router-dom';
 
 interface OnboardingStep {

@@ -3,7 +3,7 @@
  */
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Play, Pause, CheckCircle, Clock, BookOpen } from 'lucide-react'
+import { Play, Pause, CheckCircle, Clock, BookOpen } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 

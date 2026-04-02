@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Send, FileText, CheckCircle, X, Edit3, Clock } from 'lucide-react'
+import { Send, FileText, CheckCircle, X, Edit3, Clock } from '@/components/ui/icons'
 import { type JobAd } from '../services/arbetsformedlingenApi'
 import { applicationService, type ApplicationTemplate } from '../services/applicationService'
 import CVMatcher from './CVMatcher'

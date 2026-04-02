@@ -5,7 +5,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
-import { Star, ClipboardCheck, FolderOpen, Eye, Mic } from 'lucide-react'
+import { Star, ClipboardCheck, FolderOpen, Eye, Mic } from '@/components/ui/icons'
 import type { Tab } from '@/components/layout/PageTabs'
 
 // Tab components

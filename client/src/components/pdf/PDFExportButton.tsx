@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { FileDown, Loader2, Eye, Download } from 'lucide-react';
+import { FileDown, Loader2, Eye, Download } from '@/components/ui/icons';
 import {
   generateCVPDF,
   generateJobPDF,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Check, Loader2 } from 'lucide-react'
+import { Check, Loader2 } from '@/components/ui/icons'
 import { articleChecklistApi } from '@/services/cloudStorage'
 
 interface ChecklistItem {

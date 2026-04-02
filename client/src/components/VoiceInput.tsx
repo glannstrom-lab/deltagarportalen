@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from 'react'
-import { Mic, MicOff, AlertCircle } from 'lucide-react'
+import { Mic, MicOff, AlertCircle } from '@/components/ui/icons'
 
 interface VoiceInputProps {
   onTranscript: (text: string) => void

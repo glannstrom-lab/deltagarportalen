@@ -4,7 +4,7 @@
  */
 
 import { useMemo } from 'react'
-import { Flame, TrendingUp, Clock, Sparkles, Calendar, Eye } from 'lucide-react'
+import { Flame, TrendingUp, Clock, Sparkles, Calendar, Eye } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import type { Article } from '@/types/knowledge'

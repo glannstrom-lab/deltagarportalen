@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Compass, Star, ChevronRight, Target, Play } from 'lucide-react'
+import { Compass, Star, ChevronRight, Target, Play } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface InterestWidgetProps {

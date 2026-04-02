@@ -3,7 +3,7 @@
  */
 
 import { useMemo } from 'react'
-import { Sparkles, Target, Flame, BookOpen, Zap, TrendingUp, ChevronRight, Compass } from 'lucide-react'
+import { Sparkles, Target, Flame, BookOpen, Zap, TrendingUp, ChevronRight, Compass } from '@/components/ui/icons'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import { Card } from '@/components/ui'
 import { cn } from '@/lib/utils'

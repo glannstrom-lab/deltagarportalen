@@ -13,7 +13,7 @@ import {
   Languages,
   Briefcase,
   GraduationCap,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { afApi, type CVMatchAnalysis } from '@/services/arbetsformedlingenApi'
 import type { CVData } from '@/services/supabaseApi'
 

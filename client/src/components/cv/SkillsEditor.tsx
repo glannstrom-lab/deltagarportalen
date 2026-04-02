@@ -8,7 +8,7 @@ import {
   GripVertical, Trash2, Plus, Sparkles, Star,
   Code, Users, Wrench, Palette, BarChart3, Globe,
   CheckCircle, ChevronUp, ChevronDown
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface Skill {
   id: string

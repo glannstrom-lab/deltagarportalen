@@ -5,7 +5,7 @@
  */
 
 import { useState } from 'react'
-import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from 'lucide-react'
+import { Sparkles, Wand2, RefreshCw, Check, AlertCircle, Globe, TrendingUp, Zap, Shield } from '@/components/ui/icons'
 import { AiConsentGate } from '@/components/ai/AiConsentGate'
 import { useAiConsent } from '@/hooks/useAiConsent'
 

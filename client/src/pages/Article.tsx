@@ -21,7 +21,7 @@ import {
   ExternalLink,
   Lightbulb,
   Dumbbell,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { contentArticleApi, contentExerciseApi } from '../services/contentApi'
 import type { Exercise } from '../data/exercises'
 import { articleBookmarksApi } from '../services/cloudStorage'

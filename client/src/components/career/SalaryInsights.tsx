@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info, Save, Star, Trash2, Loader2, Brain } from 'lucide-react';
+import { DollarSign, TrendingUp, MapPin, Briefcase, Award, BarChart3, Search, Info, Save, Star, Trash2, Loader2, Brain } from '@/components/ui/icons';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { salaryApi, type SavedSalarySearch } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';

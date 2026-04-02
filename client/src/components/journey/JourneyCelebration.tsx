@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Award, Star, Zap, PartyPopper, X, Trophy } from 'lucide-react'
+import { Award, Star, Zap, PartyPopper, X, Trophy } from '@/components/ui/icons'
 import { Button } from '@/components/ui'
 import { JOURNEY_PHASES } from '@/data/journeyData'
 import type { Achievement } from '@/services/journeyService'

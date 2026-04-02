@@ -12,7 +12,7 @@ import {
   ChevronUp,
   Sparkles,
   ChevronRight
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import type { DashboardWidgetData } from '@/types/dashboard'
 import { cn } from '@/lib/utils'
 

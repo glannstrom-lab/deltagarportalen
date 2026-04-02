@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Smile, Battery, AlertTriangle, TrendingUp } from 'lucide-react'
+import { Smile, Battery, AlertTriangle, TrendingUp } from '@/components/ui/icons'
 import type { MoodEntry, MoodLevel } from '@/services/calendarData'
 import { getMoodEmoji, getMoodLabel, getEnergyEmoji } from '@/services/calendarData'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'

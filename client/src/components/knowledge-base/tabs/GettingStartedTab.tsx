@@ -3,7 +3,7 @@
  * Quick start guides for new users
  */
 
-import { Rocket, CheckCircle2, Circle, ArrowRight, Sparkles } from 'lucide-react'
+import { Rocket, CheckCircle2, Circle, ArrowRight, Sparkles } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import type { Article } from '@/types/knowledge'
 

@@ -1,4 +1,4 @@
-import { Search, Brain, Activity, Sparkles, Clock, CheckCircle2, ArrowRight, UserCircle } from 'lucide-react'
+import { Search, Brain, Activity, Sparkles, Clock, CheckCircle2, ArrowRight, UserCircle } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 
 interface IntroScreenProps {

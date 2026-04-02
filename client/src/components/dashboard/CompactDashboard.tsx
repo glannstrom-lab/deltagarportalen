@@ -18,7 +18,7 @@ import {
   Award,
   ArrowRight,
   ChevronRight,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 // Default visible widgets
 const defaultVisibleWidgets: WidgetType[] = [

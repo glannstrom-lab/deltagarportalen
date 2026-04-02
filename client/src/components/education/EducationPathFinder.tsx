@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { GraduationCap, Search, ChevronRight, Clock, Building2, BookOpen } from 'lucide-react';
+import { GraduationCap, Search, ChevronRight, Clock, Building2, BookOpen } from '@/components/ui/icons';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { taxonomyApi, jobEdApi } from '@/services/api';
 import type { AutocompleteOption } from '@/components/common/Autocomplete';

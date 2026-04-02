@@ -15,7 +15,7 @@ import {
   Lightbulb,
   Cloud,
   AlertCircle
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { type Exercise } from '@/data/exercises'

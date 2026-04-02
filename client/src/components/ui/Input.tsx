@@ -5,7 +5,7 @@
 
 import { cn } from '@/lib/utils'
 import { inputBase, labelBase, animations, touch } from '@/styles/design-system'
-import { AlertCircle, Eye, EyeOff, ChevronDown } from 'lucide-react'
+import { AlertCircle, Eye, EyeOff, ChevronDown } from '@/components/ui/icons'
 import { useState, forwardRef, useId } from 'react'
 
 // ============================================

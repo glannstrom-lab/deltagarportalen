@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Search, Loader2, Sparkles, CheckCircle, ArrowRight, Target, Lightbulb } from 'lucide-react';
+import { X, Search, Loader2, Sparkles, CheckCircle, ArrowRight, Target, Lightbulb } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { showToast } from '@/components/Toast';
 import { aiService } from '@/services/aiService';

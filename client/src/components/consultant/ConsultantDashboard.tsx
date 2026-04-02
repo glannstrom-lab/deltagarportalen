@@ -18,7 +18,7 @@ import {
   CheckCircle,
   Clock,
   BarChart3
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { LoadingState } from '@/components/ui/LoadingState';
 import { ParticipantList } from './ParticipantList';

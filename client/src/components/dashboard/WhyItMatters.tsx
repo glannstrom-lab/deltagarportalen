@@ -4,7 +4,7 @@
  */
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { HelpCircle, X, Lightbulb, ArrowRight } from 'lucide-react'
+import { HelpCircle, X, Lightbulb, ArrowRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface WhyItMattersProps {

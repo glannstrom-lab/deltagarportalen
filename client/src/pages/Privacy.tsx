@@ -18,7 +18,7 @@ import {
   AlertTriangle,
   Info,
   ExternalLink
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export default function Privacy() {
   const { t, i18n } = useTranslation()

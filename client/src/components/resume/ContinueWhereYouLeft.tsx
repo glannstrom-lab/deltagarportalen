@@ -16,7 +16,7 @@ import {
   Clock,
   X,
   Play
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { interestGuideApi } from '@/services/cloudStorage'
 

@@ -11,7 +11,7 @@ import {
   Heart,
   MoreVertical,
   Check
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { showToast } from '@/components/Toast';
 
 interface Course {

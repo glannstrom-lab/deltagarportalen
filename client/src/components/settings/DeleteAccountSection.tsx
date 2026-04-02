@@ -16,7 +16,7 @@ import {
   Loader2,
   ShieldAlert,
   FileDown
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { useAuthStore } from '@/stores/authStore'
 import { Button } from '@/components/ui/Button'

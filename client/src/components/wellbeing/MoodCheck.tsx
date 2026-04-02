@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { AlertCircle, Heart, TrendingUp, Loader2 } from 'lucide-react'
+import { AlertCircle, Heart, TrendingUp, Loader2 } from '@/components/ui/icons'
 import { moodHistoryApi } from '@/services/cloudStorage'
 
 interface MoodEntry {

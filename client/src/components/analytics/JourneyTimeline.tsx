@@ -2,7 +2,7 @@
  * Journey Timeline - Visualisering av jobbsökar-resan
  */
 import { motion } from 'framer-motion'
-import { TrendingUp, Calendar, Award, Target, Briefcase } from 'lucide-react'
+import { TrendingUp, Calendar, Award, Target, Briefcase } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface Milestone {

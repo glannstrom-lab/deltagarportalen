@@ -3,7 +3,7 @@
  */
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { Target, Calendar, CheckCircle2, Clock, ChevronRight } from 'lucide-react'
+import { Target, Calendar, CheckCircle2, Clock, ChevronRight } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 

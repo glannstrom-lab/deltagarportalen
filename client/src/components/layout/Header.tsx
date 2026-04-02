@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
-import { User } from 'lucide-react'
+import { User } from '@/components/ui/icons'
 
 export function Header() {
   const { user } = useAuthStore()

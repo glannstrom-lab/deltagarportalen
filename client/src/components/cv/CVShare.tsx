@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Share2, Copy, Check, QrCode, X, Download } from 'lucide-react'
+import { Share2, Copy, Check, QrCode, X, Download } from '@/components/ui/icons'
 
 interface CVShareProps {
   onShare: () => Promise<{ shareUrl: string; qrCode: string; expiresAt: string }>

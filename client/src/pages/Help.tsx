@@ -13,7 +13,7 @@ import {
   Target,
   Compass,
   LucideIcon
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface FaqItem {
   qKey: string

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { MessageCircle, X, Send, Bot, User, Sparkles } from 'lucide-react'
+import { MessageCircle, X, Send, Bot, User, Sparkles } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { chatWithAI } from '@/services/aiApi'
 

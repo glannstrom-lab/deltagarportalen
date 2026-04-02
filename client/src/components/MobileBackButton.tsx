@@ -1,5 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
 

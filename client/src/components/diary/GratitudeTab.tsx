@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Heart, Plus, Check, Calendar, Sparkles,
   ChevronLeft, ChevronRight, Sun, Star
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useGratitude } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'

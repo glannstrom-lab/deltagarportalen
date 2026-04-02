@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Target, Plus, Check, Circle, Trash2, MessageSquare,
   ChevronRight, Award, TrendingUp, Calendar, Sparkles
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useWeeklyGoals } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'

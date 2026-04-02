@@ -7,7 +7,7 @@ import {
   Users, Plus, MessageCircle, Mail, Phone, Linkedin,
   ChevronRight, Star, Clock, CheckCircle2, Send, AlertCircle,
   Calendar, BookOpen, Copy, X, TrendingUp, Zap
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

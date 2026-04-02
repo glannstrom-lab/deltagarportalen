@@ -11,7 +11,7 @@ import {
   TrendingUp,
   Award,
   Building2,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { afApi, type CareerPath as CareerPathType } from '@/services/arbetsformedlingenApi'
 import { Link } from 'react-router-dom'
 

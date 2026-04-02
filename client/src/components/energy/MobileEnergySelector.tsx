@@ -11,7 +11,7 @@ import {
   X,
   ChevronRight,
   Sparkles
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useEnergyStore, type EnergyLevel, getEnergyDescription } from '@/stores/energyStoreWithSync'
 

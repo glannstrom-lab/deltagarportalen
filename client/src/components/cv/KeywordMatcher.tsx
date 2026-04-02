@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { FileSearch, CheckCircle, XCircle, Copy, Lightbulb, ArrowRight } from 'lucide-react'
+import { FileSearch, CheckCircle, XCircle, Copy, Lightbulb, ArrowRight } from '@/components/ui/icons'
 import type { CVData } from '@/services/supabaseApi'
 
 interface KeywordMatcherProps {

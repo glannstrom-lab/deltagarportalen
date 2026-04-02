@@ -2,7 +2,7 @@
  * Relocation Tab - Housing and moving assistance
  */
 import { useState } from 'react'
-import { Home, MapPin, Calculator, TrendingUp, ExternalLink, CheckCircle, AlertCircle, Car } from 'lucide-react'
+import { Home, MapPin, Calculator, TrendingUp, ExternalLink, CheckCircle, AlertCircle, Car } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

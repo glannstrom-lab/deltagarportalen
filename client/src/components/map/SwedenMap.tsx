@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react'
-import { MapPin, Briefcase, X, Navigation, Map as MapIcon, List, Grid3X3 } from 'lucide-react'
+import { MapPin, Briefcase, X, Navigation, Map as MapIcon, List, Grid3X3 } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface Region {

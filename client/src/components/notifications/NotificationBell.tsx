@@ -19,7 +19,7 @@ import {
   X,
   Check,
   Trash2,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useNotifications, Notification, NotificationType, notificationConfig } from '@/hooks/useNotifications'
 import { formatDistanceToNow } from 'date-fns'

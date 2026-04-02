@@ -11,7 +11,7 @@ import {
   Sparkles,
   Flame,
   X
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 // Konfetti-komponent

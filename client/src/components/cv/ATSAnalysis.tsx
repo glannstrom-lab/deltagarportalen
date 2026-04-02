@@ -16,7 +16,7 @@ import {
   Lightbulb,
   Award,
   Loader2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { ATSAnalyzer } from './ATSAnalyzer'
 import { cvApi } from '@/services/supabaseApi'

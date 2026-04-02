@@ -27,6 +27,9 @@ export interface Profile {
   privacy_accepted_at: string | null
   ai_consent_at: string | null
   marketing_consent_at: string | null
+  // GDPR Art. 9 - Sensitive data consent
+  health_consent_at: string | null
+  wellness_consent_at: string | null
 }
 
 interface AuthState {

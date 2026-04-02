@@ -21,7 +21,7 @@ import {
   Award,
   Star,
   ThumbsUp
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 type EnergyLevel = 'low' | 'medium' | 'high'
 type DayStatus = 'completed' | 'rest' | 'pending' | 'missed'

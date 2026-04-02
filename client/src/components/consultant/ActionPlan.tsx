@@ -21,7 +21,7 @@ import {
   ChevronUp,
   Sparkles,
   Link as LinkIcon
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export type GoalPriority = 'HIGH' | 'MEDIUM' | 'LOW'
 export type GoalStatus = 'NOT_STARTED' | 'IN_PROGRESS' | 'COMPLETED' | 'BLOCKED'

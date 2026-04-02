@@ -25,7 +25,7 @@ import {
   Star,
   User,
   MapPin
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 

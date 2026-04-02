@@ -4,7 +4,7 @@
  */
 
 import { useState, useMemo } from 'react'
-import { BookOpen, Grid, List, SlidersHorizontal } from 'lucide-react'
+import { BookOpen, Grid, List, SlidersHorizontal } from '@/components/ui/icons'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import CategoryFilter from '../CategoryFilter'
 import { EnergyFilter } from '../EnergyFilter'

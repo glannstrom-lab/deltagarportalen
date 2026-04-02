@@ -2,7 +2,7 @@
  * Integration Tab - Checklist for establishing yourself in Sweden
  */
 import { useState, useEffect } from 'react'
-import { Users, CheckCircle, Circle, Clock, AlertCircle, ExternalLink, ChevronRight } from 'lucide-react'
+import { Users, CheckCircle, Circle, Clock, AlertCircle, ExternalLink, ChevronRight } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

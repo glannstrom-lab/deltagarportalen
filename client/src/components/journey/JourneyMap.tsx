@@ -6,7 +6,7 @@ import { useState } from 'react'
 import {
   User, FileText, Search, TrendingUp, Settings, Trophy,
   Check, Lock, ChevronRight
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import type { JourneyPhase, PhaseProgress } from '@/types/journey.types'
 

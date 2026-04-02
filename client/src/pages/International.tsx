@@ -5,7 +5,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { PageLayout } from '@/components/layout/index'
-import { Globe, FileCheck, Users, Languages } from 'lucide-react'
+import { Globe, FileCheck, Users, Languages } from '@/components/ui/icons'
 import type { Tab } from '@/components/layout/PageTabs'
 
 // Tab components

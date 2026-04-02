@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Sparkles, Loader2, Check } from 'lucide-react'
+import { Sparkles, Loader2, Check } from '@/components/ui/icons'
 
 interface AIHelpButtonProps {
   field: string

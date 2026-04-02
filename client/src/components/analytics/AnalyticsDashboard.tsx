@@ -38,7 +38,7 @@ import {
   AlertCircle,
   CheckCircle2,
   ChevronDown
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface AnalyticsDashboardProps {

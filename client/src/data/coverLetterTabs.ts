@@ -10,7 +10,7 @@ import {
   Send,
   Layout,
   BarChart3,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 // Tab definitions with i18n keys - labels are resolved at render time
 export const coverLetterTabDefs = [

@@ -22,7 +22,7 @@ import {
   Smile,
   Search,
   GraduationCap,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 // ============================================
 // GROUPED NAVIGATION - Reduces cognitive load

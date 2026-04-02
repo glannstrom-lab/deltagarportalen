@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TrendingUp, MapPin, Briefcase, DollarSign, Award, Users, BarChart3 } from 'lucide-react';
+import { TrendingUp, MapPin, Briefcase, DollarSign, Award, Users, BarChart3 } from '@/components/ui/icons';
 import { trendsApi } from '@/services/api';
 import type { MarketStats, TrendingSkill, PopularSearch } from '@/services/afTrendsApi';
 

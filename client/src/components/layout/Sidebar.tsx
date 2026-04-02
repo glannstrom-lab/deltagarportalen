@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { navGroups, adminNavItems, consultantNavItems, markFeatureVisited, shouldShowBadge, type NavItem } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown } from '@/components/ui/icons'
 
 interface SidebarProps {
   onClose?: () => void

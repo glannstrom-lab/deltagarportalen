@@ -3,7 +3,7 @@
  */
 
 import { useState, useEffect } from 'react'
-import { Compass, Lightbulb, ChevronDown, ChevronUp, Sparkles } from 'lucide-react'
+import { Compass, Lightbulb, ChevronDown, ChevronUp, Sparkles } from '@/components/ui/icons'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import { getCoverLetterTips, getPersonalityStrengths, calculateInterestMatch, type RiasecScores } from '@/services/interestPersonalization'
 import { cn } from '@/lib/utils'

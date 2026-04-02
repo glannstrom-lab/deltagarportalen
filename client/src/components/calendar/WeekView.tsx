@@ -1,5 +1,5 @@
 import { getWeekDates, type CalendarEvent, eventTypeConfig } from '@/services/calendarData'
-import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell } from 'lucide-react'
+import { Briefcase, Users, Clock, CheckSquare, RefreshCw, BookOpen, Bell } from '@/components/ui/icons'
 
 interface WeekViewProps {
   currentDate: Date

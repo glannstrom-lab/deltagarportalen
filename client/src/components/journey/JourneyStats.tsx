@@ -5,7 +5,7 @@
 import {
   TrendingUp, Flame, Star, Send, BookOpen, FileText,
   Target, Calendar, Award
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import type { JourneyStats as JourneyStatsType } from '@/types/journey.types'
 

@@ -8,7 +8,7 @@ import {
   Briefcase, Building2, MapPin, Calendar,
   ChevronDown, ChevronUp, GripVertical, Trash2,
   Sparkles, CheckCircle, AlertCircle, ArrowUp, ArrowDown
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { RichTextEditor } from './RichTextEditor'
 import type { WorkExperience } from '@/services/supabaseApi'
 

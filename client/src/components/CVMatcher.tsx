@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Target, CheckCircle, XCircle, AlertCircle, TrendingUp, Award } from 'lucide-react'
+import { Target, CheckCircle, XCircle, AlertCircle, TrendingUp, Award } from '@/components/ui/icons'
 import { cvMatcher, type CVData, type MatchResult } from '../services/cvMatcher'
 import { type JobAd } from '../services/arbetsformedlingenApi'
 

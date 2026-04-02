@@ -29,7 +29,7 @@ import {
   Loader2,
   Edit2,
   Trash2,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { supabase } from '@/lib/supabase'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'

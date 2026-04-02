@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Linkedin, TrendingUp, ChevronRight, CheckCircle2, Sparkles, Play } from 'lucide-react'
+import { Linkedin, TrendingUp, ChevronRight, CheckCircle2, Sparkles, Play } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface LinkedInWidgetProps {

@@ -2,7 +2,7 @@
  * Word and character counter with progress bar and warnings
  */
 
-import { AlertCircle, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { AlertCircle, CheckCircle2, AlertTriangle } from '@/components/ui/icons'
 
 interface WordCounterProps {
   text: string

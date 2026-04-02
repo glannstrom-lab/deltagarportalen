@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { 
   User, FileText, Compass, Mail, Briefcase, 
   MessageSquare, Award, CheckCircle2, Lock
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface RoadmapStep {
   id: string

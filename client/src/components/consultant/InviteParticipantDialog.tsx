@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { X, Mail, User, Phone, MessageSquare, CheckCircle, Loader2, UserPlus, Link2 } from 'lucide-react';
+import { X, Mail, User, Phone, MessageSquare, CheckCircle, Loader2, UserPlus, Link2 } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 
 interface InviteParticipantDialogProps {

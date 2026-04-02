@@ -2,7 +2,7 @@
  * JourneyProgress - Hero section showing user's overall journey progress
  */
 
-import { Trophy, Flame, TrendingUp, Star } from 'lucide-react'
+import { Trophy, Flame, TrendingUp, Star } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import type { UserJourneyProgress, JourneyPhase } from '@/types/journey.types'
 

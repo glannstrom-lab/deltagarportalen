@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   X, Check, Lock, ChevronRight, Sparkles,
   User, FileText, Search, TrendingUp, Settings, Trophy
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui'
 import type { JourneyPhase, PhaseProgress } from '@/types/journey.types'
 

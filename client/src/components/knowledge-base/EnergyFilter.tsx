@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react'
-import { Zap, Battery, BatteryLow, BatteryFull } from 'lucide-react'
+import { Zap, Battery, BatteryLow, BatteryFull } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui'
 

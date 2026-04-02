@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Mic, BookOpen, Target, TrendingUp, Play, Clock, Award } from 'lucide-react';
+import { Mic, BookOpen, Target, TrendingUp, Play, Clock, Award } from '@/components/ui/icons';
 import {
   MOCK_INTERVIEWS,
   getInterviewTips,

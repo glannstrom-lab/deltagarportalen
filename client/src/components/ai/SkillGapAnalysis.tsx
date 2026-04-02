@@ -15,7 +15,7 @@ import {
   BarChart3,
   Lightbulb,
   ArrowRight
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { analyzeSkillGaps, predictFutureMatches, type SkillRecommendation } from '@/services/ai/smartMatching'
 

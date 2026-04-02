@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Lightbulb, TrendingUp, ArrowRight, Briefcase, MapPin } from 'lucide-react'
+import { Lightbulb, TrendingUp, ArrowRight, Briefcase, MapPin } from '@/components/ui/icons'
 import { occupationMatcher, type OccupationSuggestion } from '../services/occupationMatcher'
 import { afApi } from '../services/arbetsformedlingenApi'
 

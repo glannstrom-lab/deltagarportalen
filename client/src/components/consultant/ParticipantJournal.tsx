@@ -20,7 +20,7 @@ import {
   Trash2,
   ChevronDown,
   ChevronUp
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export type NoteCategory = 'GENERAL' | 'PROGRESS' | 'CONCERN' | 'GOAL'
 

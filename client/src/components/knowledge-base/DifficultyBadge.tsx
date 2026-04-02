@@ -1,4 +1,4 @@
-import { GraduationCap, Brain, BookOpen } from 'lucide-react'
+import { GraduationCap, Brain, BookOpen } from '@/components/ui/icons'
 
 interface DifficultyBadgeProps {
   level: 'easy' | 'medium' | 'detailed'

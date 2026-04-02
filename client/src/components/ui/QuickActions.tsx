@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, FileText, Compass, Briefcase } from 'lucide-react'
+import { ArrowRight, FileText, Compass, Briefcase } from '@/components/ui/icons'
 
 interface QuickActionsProps {
   hasCV: boolean

@@ -1,4 +1,4 @@
-import { Check, Layout, Palette, Sparkles, Type, Briefcase, GraduationCap, Code, Building2 } from 'lucide-react'
+import { Check, Layout, Palette, Sparkles, Type, Briefcase, GraduationCap, Code, Building2 } from '@/components/ui/icons'
 
 export interface Template {
   id: string

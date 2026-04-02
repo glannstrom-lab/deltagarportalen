@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Brain, CheckCircle, Lightbulb, Shirt, FileText, HelpCircle, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react'
+import { Brain, CheckCircle, Lightbulb, Shirt, FileText, HelpCircle, ExternalLink, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import type { CalendarEvent, InterviewPrep } from '@/services/calendarData'
 import { interviewQuestions, dressCodeGuide } from '@/services/calendarData'
 

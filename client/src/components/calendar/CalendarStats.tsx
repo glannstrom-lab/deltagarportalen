@@ -1,5 +1,5 @@
 import { useMemo } from 'react'
-import { Target, TrendingUp, CheckCircle, Briefcase, Users, Clock, Zap } from 'lucide-react'
+import { Target, TrendingUp, CheckCircle, Briefcase, Users, Clock, Zap } from '@/components/ui/icons'
 import type { CalendarEvent, CalendarGoal, MoodEntry } from '@/services/calendarData'
 import { getWeekNumber, getMoodEmoji, getMoodLabel } from '@/services/calendarData'
 

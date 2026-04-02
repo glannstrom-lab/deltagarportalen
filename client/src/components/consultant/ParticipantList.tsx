@@ -14,7 +14,7 @@ import {
   Calendar,
   MoreVertical,
   AlertCircle
-} from 'lucide-react';
+} from '@/components/ui/icons';
 
 interface Participant {
   participant_id: string;

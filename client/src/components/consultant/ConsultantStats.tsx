@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { Users, UserCheck, AlertTriangle, Award } from 'lucide-react';
+import { Users, UserCheck, AlertTriangle, Award } from '@/components/ui/icons';
 
 interface Stats {
   total: number;

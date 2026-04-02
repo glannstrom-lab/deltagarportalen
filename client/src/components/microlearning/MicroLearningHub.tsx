@@ -15,7 +15,7 @@ import {
   TrendingUp,
   Award,
   Heart
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { showToast } from '@/components/Toast';
 import { aiService } from '@/services/aiService';

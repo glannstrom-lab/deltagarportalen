@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Coffee, X, Clock, CheckCircle } from 'lucide-react'
+import { Coffee, X, Clock, CheckCircle } from '@/components/ui/icons'
 import { useSettingsStore } from '../stores/settingsStore'
 
 interface BreakReminderProps {

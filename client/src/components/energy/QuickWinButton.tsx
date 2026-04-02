@@ -18,7 +18,7 @@ import {
   Sparkles,
   Info,
   Calendar
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useEnergyAdaptedContent } from './EnergyLevelSelector'
 import type { EnergyLevel } from '@/stores/settingsStore'

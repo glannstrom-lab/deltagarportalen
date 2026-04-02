@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, X, Loader2 } from 'lucide-react';
+import { Search, X, Loader2 } from '@/components/ui/icons';
 
 export interface AutocompleteOption {
   id: string;

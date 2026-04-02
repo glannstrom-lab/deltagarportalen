@@ -25,7 +25,7 @@ import {
   ArrowUpDown,
   GripVertical,
   Share2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { personalBrandApi, type PortfolioItem } from '@/services/cloudStorage'

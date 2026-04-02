@@ -3,7 +3,7 @@
  * Matchar designen från översikten
  */
 import { Link } from 'react-router-dom'
-import { ChevronRight, Sparkles } from 'lucide-react'
+import { ChevronRight, Sparkles } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface PageHeaderProps {

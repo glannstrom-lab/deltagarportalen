@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Sparkles, Wand2, MessageSquare, Lightbulb, X, ChevronDown, ChevronUp } from 'lucide-react'
+import { Sparkles, Wand2, MessageSquare, Lightbulb, X, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import { AIAssistant } from './AIAssistant'
 import { Card } from '@/components/ui/Card'
 

@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react'
 import type { Question } from '@/services/interestGuideData'
-import { Pause, Coffee, Save, RotateCcw } from 'lucide-react'
+import { Pause, Coffee, Save, RotateCcw } from '@/components/ui/icons'
 import { interestGuideApi } from '@/services/cloudStorage'
 
 interface QuestionCardProps {

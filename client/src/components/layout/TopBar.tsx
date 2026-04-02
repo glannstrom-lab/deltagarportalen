@@ -9,7 +9,7 @@ import {
   HelpCircle,
   ChevronDown,
   Flame,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'

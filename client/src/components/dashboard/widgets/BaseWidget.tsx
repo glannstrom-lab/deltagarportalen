@@ -9,7 +9,7 @@
  */
 
 import { Link } from 'react-router-dom'
-import { ChevronRight, LucideIcon } from 'lucide-react'
+import { ChevronRight, LucideIcon } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 export interface BaseWidgetProps {

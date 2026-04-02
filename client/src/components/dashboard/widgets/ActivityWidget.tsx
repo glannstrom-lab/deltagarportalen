@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { TrendingUp, Target, Flame } from 'lucide-react'
+import { TrendingUp, Target, Flame } from '@/components/ui/icons'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 

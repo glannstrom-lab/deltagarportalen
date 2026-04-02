@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { 
   Lightbulb, X, ChevronRight, CheckCircle,
   AlertCircle, Info
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface HelpTip {
   id: string

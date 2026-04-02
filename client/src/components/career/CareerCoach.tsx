@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign, Loader2, Save, History, Trash2, Star } from 'lucide-react';
+import { Target, TrendingUp, GraduationCap, Briefcase, Award, ArrowRight, MapPin, Calendar, DollarSign, Loader2, Save, History, Trash2, Star } from '@/components/ui/icons';
 import { Autocomplete } from '@/components/common/Autocomplete';
 import { careerPathApi, type SavedCareerPath } from '@/services/careerApi';
 import { showToast } from '@/components/Toast';

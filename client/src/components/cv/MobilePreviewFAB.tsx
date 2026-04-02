@@ -3,7 +3,7 @@
  * Quick access to preview on mobile devices
  */
 
-import { Eye, X } from 'lucide-react'
+import { Eye, X } from '@/components/ui/icons'
 import { useState } from 'react'
 import { CVPreview } from './CVPreview'
 import type { CVData } from '@/services/supabaseApi'

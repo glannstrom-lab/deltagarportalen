@@ -1,5 +1,5 @@
 import { icfAdaptations, type ICFScores } from '@/services/interestGuideData'
-import { Brain, MessageCircle, Focus, Hand, Ear, Zap } from 'lucide-react'
+import { Brain, MessageCircle, Focus, Hand, Ear, Zap } from '@/components/ui/icons'
 
 interface ICFSectionProps {
   scores: ICFScores

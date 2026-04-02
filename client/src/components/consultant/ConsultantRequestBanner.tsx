@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { UserPlus, Check, X, Loader2, MessageSquare } from 'lucide-react';
+import { UserPlus, Check, X, Loader2, MessageSquare } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 
 interface ConsultantRequest {

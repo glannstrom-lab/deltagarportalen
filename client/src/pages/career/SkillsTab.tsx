@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Target, Search, CheckCircle, AlertCircle, BookOpen,
   Sparkles, TrendingUp, Award
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 
 interface Skill {

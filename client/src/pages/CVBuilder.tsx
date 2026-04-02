@@ -5,7 +5,7 @@ import {
   Plus, Trash2, ChevronLeft, ChevronRight, Eye, X, Save, Check,
   Sparkles, Layout, Briefcase, GraduationCap, Award, Link2,
   Lightbulb, Wand2, Loader2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { CVPreview } from '@/components/cv/CVPreview'
 import { AIWritingAssistant } from '@/components/cv/AIWritingAssistant'
 import { showToast } from '@/components/Toast'

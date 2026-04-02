@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { CheckCircle2, Circle, Sparkles, ChevronRight, RefreshCw } from 'lucide-react'
+import { CheckCircle2, Circle, Sparkles, ChevronRight, RefreshCw } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { userPreferencesApi } from '@/services/cloudStorage'
 

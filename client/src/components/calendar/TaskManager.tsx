@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { CheckSquare, Square, Plus, Trash2, ChevronDown, ChevronUp } from 'lucide-react'
+import { CheckSquare, Square, Plus, Trash2, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import type { CalendarTask, TaskStatus } from '@/services/calendarData'
 
 interface TaskManagerProps {

@@ -6,7 +6,7 @@ import {
   Info, 
   X,
   Loader2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info' | 'loading'
 

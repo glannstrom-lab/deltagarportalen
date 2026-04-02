@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Inbox, CheckCircle, XCircle, Eye, MessageSquare, ExternalLink, X } from 'lucide-react';
+import { Inbox, CheckCircle, XCircle, Eye, MessageSquare, ExternalLink, X } from '@/components/ui/icons';
 import {
   getIncomingSharedJobs,
   updateSharedJobStatus,

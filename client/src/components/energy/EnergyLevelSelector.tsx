@@ -11,7 +11,7 @@ import {
   useEnergyStore
 } from '@/stores/energyStoreWithSync'
 import { Button } from '@/components/ui/Button'
-import { Sparkles, Battery, BatteryLow, BatteryMedium, BatteryFull } from 'lucide-react'
+import { Sparkles, Battery, BatteryLow, BatteryMedium, BatteryFull } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface EnergyLevelSelectorProps {

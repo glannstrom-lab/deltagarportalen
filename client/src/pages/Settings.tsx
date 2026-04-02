@@ -10,10 +10,11 @@ import {
   ChevronRight, Save,
   Accessibility, X, Menu,
   Monitor, FileText, Brain, Mail, AlertTriangle, Check, ExternalLink
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { RoleSelector } from '@/components/settings/RoleSelector'
 import { DeleteAccountSection } from '@/components/settings/DeleteAccountSection'
+import { DataSharingSettings } from '@/components/consent/DataSharingSettings'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
 import {
@@ -566,6 +567,11 @@ export default function Settings() {
                   </select>
                 </Card>
               </div>
+            </CardSection>
+
+            {/* Data Sharing with Consultant - GDPR Art. 9 */}
+            <CardSection title="Datadelning med konsulent">
+              <DataSharingSettings />
             </CardSection>
 
             {/* Delete Account Section */}

@@ -3,7 +3,7 @@
  * Emergency/urgent help for common job search situations
  */
 
-import { AlertCircle, Clock, ChevronRight, Phone, Calendar, FileText, Briefcase } from 'lucide-react'
+import { AlertCircle, Clock, ChevronRight, Phone, Calendar, FileText, Briefcase } from '@/components/ui/icons'
 import { useNavigate } from 'react-router-dom'
 import { Card } from '@/components/ui'
 import type { Article } from '@/types/knowledge'

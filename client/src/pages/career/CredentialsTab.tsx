@@ -2,7 +2,7 @@
  * Credentials Tab - Track certifications and education requirements
  */
 import { useState, useEffect } from 'react'
-import { GraduationCap, CheckCircle, Circle, Plus, Trash2, ExternalLink, Calendar, Award, BookOpen } from 'lucide-react'
+import { GraduationCap, CheckCircle, Circle, Plus, Trash2, ExternalLink, Calendar, Award, BookOpen } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

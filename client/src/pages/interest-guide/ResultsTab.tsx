@@ -27,7 +27,7 @@ import {
   Calendar,
   ChevronDown,
   ChevronUp
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 // RIASEC type names in Swedish
 const RIASEC_NAMES: Record<string, string> = {

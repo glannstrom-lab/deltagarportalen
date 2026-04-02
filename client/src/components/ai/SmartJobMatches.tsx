@@ -8,7 +8,7 @@ import { useState, useEffect } from 'react'
 import { 
   Sparkles, TrendingUp, Lightbulb, ChevronRight, 
   Target, Briefcase, Loader2, CheckCircle2, Zap
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { embeddingsApi, type SemanticMatch, type SimilarRole } from '@/services/ai/embeddings'

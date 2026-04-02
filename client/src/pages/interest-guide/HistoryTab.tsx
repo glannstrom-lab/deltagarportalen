@@ -23,7 +23,7 @@ import {
   ChevronDown,
   ChevronUp,
   Clock,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface HistoryEntry {
   id: string

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Linkedin, Copy, Check, Sparkles, RefreshCw, User, FileText, Share2, MessageSquare, TrendingUp, Shield, Search, AlertCircle, Eye, EyeOff, ChevronDown, ChevronUp } from 'lucide-react'
+import { Linkedin, Copy, Check, Sparkles, RefreshCw, User, FileText, Share2, MessageSquare, TrendingUp, Shield, Search, AlertCircle, Eye, EyeOff, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'

@@ -9,7 +9,7 @@ import {
   Bell, Plus, Search, Trash2, ToggleLeft, ToggleRight,
   MapPin, Briefcase, Clock, ExternalLink, AlertCircle,
   CheckCircle, RefreshCw, X
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { useJobAlerts } from '@/hooks/useJobAlerts'
 import { cn } from '@/lib/utils'

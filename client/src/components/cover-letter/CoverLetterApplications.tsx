@@ -19,7 +19,7 @@ import {
   Bell,
   Filter,
   Search
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'

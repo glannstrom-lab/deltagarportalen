@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { ArrowLeft, FileText, Scale, Users, AlertCircle, CheckCircle } from 'lucide-react'
+import { ArrowLeft, FileText, Scale, Users, AlertCircle, CheckCircle } from '@/components/ui/icons'
 
 export default function Terms() {
   const { t, i18n } = useTranslation()

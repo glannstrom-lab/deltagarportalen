@@ -9,7 +9,7 @@ import {
   Send, Calendar, CheckCircle, XCircle, MoreVertical,
   MessageSquare, Clock, ExternalLink, ChevronDown, Briefcase,
   TrendingUp, AlertCircle, Trash2, Edit2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs'
 import { cn } from '@/lib/utils'

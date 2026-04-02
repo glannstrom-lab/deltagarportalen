@@ -17,7 +17,7 @@ import {
   Building2,
   Users,
   Compass,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 // Group occupations by field
 const fields = [

@@ -8,7 +8,7 @@ import {
   Users, Play, MessageCircle, Heart, Share2, Filter,
   Quote, Star, ChevronRight, Search, Bookmark, Clock,
   TrendingUp, Award, Zap, X
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

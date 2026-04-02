@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import {
   BookHeart, Plus, Search, X, Heart, Tag, Trash2, Edit2,
   Sparkles, RefreshCw, Calendar, ChevronDown, Filter, Star
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useDiaryEntries, useWritingPrompts, useDiaryStreaks } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'

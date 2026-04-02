@@ -12,7 +12,7 @@ import {
   Edit2, Save, X, Camera, CheckCircle2,
   Target, Sparkles, GraduationCap, Award,
   TrendingUp, ChevronRight, Loader2
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { unifiedProfileApi, type UnifiedProfileData } from '@/services/unifiedProfileApi'

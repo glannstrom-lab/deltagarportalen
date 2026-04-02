@@ -13,7 +13,7 @@ import {
   Target,
   Clock,
   Zap
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { useEnergyStore, type EnergyLevel } from '@/stores/energyStoreWithSync'

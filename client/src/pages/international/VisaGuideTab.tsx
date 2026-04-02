@@ -2,7 +2,7 @@
  * Visa Guide Tab - Work permit information for Sweden
  */
 import { useState } from 'react'
-import { FileCheck, AlertCircle, CheckCircle, ExternalLink, Clock, DollarSign, Building2, ChevronDown, ChevronUp } from 'lucide-react'
+import { FileCheck, AlertCircle, CheckCircle, ExternalLink, Clock, DollarSign, Building2, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

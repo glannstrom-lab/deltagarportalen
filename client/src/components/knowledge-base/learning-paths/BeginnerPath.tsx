@@ -4,7 +4,7 @@
  */
 
 import { useState } from 'react'
-import { ChevronRight, CheckCircle2, Circle, Lock, Unlock, Trophy, ArrowRight } from 'lucide-react'
+import { ChevronRight, CheckCircle2, Circle, Lock, Unlock, Trophy, ArrowRight } from '@/components/ui/icons'
 import { Card, Button, Progress } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

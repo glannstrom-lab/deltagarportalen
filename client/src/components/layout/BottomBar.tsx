@@ -17,7 +17,7 @@ import {
   Lightbulb,
   ChevronRight,
   ExternalLink
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { cvApi, coverLetterApi } from '@/services/api'
 import { activityApi } from '@/services/api'

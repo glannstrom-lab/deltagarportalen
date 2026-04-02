@@ -3,7 +3,7 @@
  */
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Mic, MicOff, Volume2, X, Command } from 'lucide-react'
+import { Mic, MicOff, Volume2, X, Command } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 const commands = [

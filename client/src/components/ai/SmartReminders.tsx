@@ -16,7 +16,7 @@ import {
   ChevronRight,
   Settings,
   Moon
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { 
   generateSmartReminders, 

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { BarChart3, TrendingUp, ChevronRight, Target, Zap, Play } from 'lucide-react'
+import { BarChart3, TrendingUp, ChevronRight, Target, Zap, Play } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface SkillsWidgetProps {

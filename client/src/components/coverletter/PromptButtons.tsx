@@ -3,7 +3,7 @@
  */
 
 import { useState } from 'react'
-import { Sparkles, Building2, Heart, Lightbulb, ArrowRight } from 'lucide-react'
+import { Sparkles, Building2, Heart, Lightbulb, ArrowRight } from '@/components/ui/icons'
 
 interface PromptButtonsProps {
   onSelect: (text: string) => void

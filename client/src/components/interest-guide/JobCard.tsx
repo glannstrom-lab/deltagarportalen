@@ -11,7 +11,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   Briefcase
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 
 interface JobCardProps {

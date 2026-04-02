@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Award, Lock } from 'lucide-react';
+import { Award, Lock } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import * as LucideIcons from 'lucide-react';

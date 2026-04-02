@@ -29,7 +29,7 @@ import {
   Clock,
   Pause,
   Play
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 interface ChecklistItem {
   id: string

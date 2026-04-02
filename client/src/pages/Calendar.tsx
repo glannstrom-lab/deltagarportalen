@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus } from 'lucide-react'
+import { Plus } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'

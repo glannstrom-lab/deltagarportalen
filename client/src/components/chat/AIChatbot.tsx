@@ -17,7 +17,7 @@ import {
   Briefcase,
   FileText,
   BookOpen
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface Message {

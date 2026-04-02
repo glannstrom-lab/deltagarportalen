@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useId } from 'react'
-import { X, MapPin, Briefcase, Clock, DollarSign, Calendar, Heart, Sparkles, Send, Building, Share2, FileDown } from 'lucide-react'
+import { X, MapPin, Briefcase, Clock, DollarSign, Calendar, Heart, Sparkles, Send, Building, Share2, FileDown } from '@/components/ui/icons'
 import type { Job } from '@/services/mockApi'
 import type { CVData } from '@/services/supabaseApi'
 import { jobsApi } from '@/services/api'

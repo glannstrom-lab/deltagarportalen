@@ -6,7 +6,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, AlertCircle, CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, AlertCircle, CheckCircle, Loader2, Eye, EyeOff } from '@/components/ui/icons';
 import { supabase } from '@/lib/supabase';
 import { inviteRegisterSchema } from '@/lib/validations';
 

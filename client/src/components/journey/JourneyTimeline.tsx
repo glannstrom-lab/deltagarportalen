@@ -5,7 +5,7 @@
 import {
   FileText, Bookmark, Send, BookOpen, Edit3, Award,
   Trophy, TrendingUp, Flame, LogIn, Activity
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import type { JourneyActivity } from '@/types/journey.types'
 

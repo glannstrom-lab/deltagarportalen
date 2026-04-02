@@ -7,7 +7,7 @@ import {
   Target, MapPin, Flag, Calendar, CheckCircle, Clock,
   Sparkles, ChevronRight, Plus, Award, TrendingUp, AlertCircle,
   Zap, X
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

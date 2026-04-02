@@ -1,6 +1,6 @@
 import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Send, Clock, CheckCircle2, XCircle, Trophy, Building2, Calendar, AlertCircle, TrendingUp } from 'lucide-react'
+import { Send, Clock, CheckCircle2, XCircle, Trophy, Building2, Calendar, AlertCircle, TrendingUp } from '@/components/ui/icons'
 import { DashboardWidget } from '../DashboardWidget'
 import type { WidgetStatus } from '@/types/dashboard'
 import type { WidgetSize } from '../WidgetSizeSelector'

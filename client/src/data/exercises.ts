@@ -56,7 +56,7 @@ import {
   HelpingHand,
   Sparkles,
   type LucideIcon 
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 export interface ExerciseQuestion {
   id: string

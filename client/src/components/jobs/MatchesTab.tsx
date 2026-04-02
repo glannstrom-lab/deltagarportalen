@@ -12,7 +12,7 @@ import {
   Briefcase, MapPin, Heart, ExternalLink, ChevronDown,
   Loader2, RefreshCw, TrendingUp, Award, Compass,
   Settings2, X
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Link } from 'react-router-dom'
 import { searchJobs, type PlatsbankenJob, SWEDISH_MUNICIPALITIES } from '@/services/arbetsformedlingenApi'
 import { cvApi } from '@/services/supabaseApi'

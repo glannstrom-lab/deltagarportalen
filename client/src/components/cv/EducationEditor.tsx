@@ -8,7 +8,7 @@ import {
   GraduationCap, School, MapPin, Calendar, 
   ChevronDown, ChevronUp, GripVertical, Trash2,
   Award, CheckCircle, AlertCircle, Sparkles
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { RichTextEditor } from './RichTextEditor'
 import type { Education } from '@/services/supabaseApi'
 

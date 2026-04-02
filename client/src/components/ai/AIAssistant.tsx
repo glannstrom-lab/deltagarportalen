@@ -19,7 +19,7 @@ import {
   Zap,
   BarChart3,
   Heart
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/Button'
 import { useDashboardData } from '@/hooks/useDashboardData'

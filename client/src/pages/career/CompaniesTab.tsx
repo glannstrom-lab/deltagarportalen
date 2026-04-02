@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import {
   Building2, Search, MapPin, Star, Heart, ExternalLink,
   TrendingUp, Users, Briefcase, ChevronRight, Filter
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
 
 interface Company {

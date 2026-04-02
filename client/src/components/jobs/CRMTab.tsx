@@ -6,7 +6,7 @@ import {
   ClipboardList, Plus, Clock, CheckCircle, XCircle, Calendar,
   MessageSquare, Building2, ExternalLink, ChevronRight, Bell,
   MoreVertical, Trash2, Edit2, Mail
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

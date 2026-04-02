@@ -11,7 +11,7 @@
  */
 
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { Upload, X, User, Loader2, Camera, Clipboard } from 'lucide-react'
+import { Upload, X, User, Loader2, Camera, Clipboard } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { Button } from './ui/Button'
 

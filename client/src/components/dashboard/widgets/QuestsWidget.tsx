@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Target, Flame, Zap, ChevronRight, CheckCircle2, Circle, Play } from 'lucide-react'
+import { Target, Flame, Zap, ChevronRight, CheckCircle2, Circle, Play } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface QuestsWidgetProps {

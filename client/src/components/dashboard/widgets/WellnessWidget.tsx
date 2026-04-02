@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Heart, ChevronRight, Plus, Flame, Sparkles } from 'lucide-react'
+import { Heart, ChevronRight, Plus, Flame, Sparkles } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface WellnessWidgetProps {

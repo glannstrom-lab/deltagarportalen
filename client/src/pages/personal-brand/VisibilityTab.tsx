@@ -27,7 +27,7 @@ import {
   Trash2,
   X,
   Save
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { personalBrandApi, type VisibilityProgressItem, type ContentCalendarItem } from '@/services/cloudStorage'

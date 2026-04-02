@@ -6,7 +6,7 @@
 import { ReactNode, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Brain, Shield, Settings, ExternalLink, Loader2 } from 'lucide-react'
+import { Brain, Shield, Settings, ExternalLink, Loader2 } from '@/components/ui/icons'
 import { useAiConsent } from '@/hooks/useAiConsent'
 import { useAuthStore } from '@/stores/authStore'
 import { userApi } from '@/services/supabaseApi'

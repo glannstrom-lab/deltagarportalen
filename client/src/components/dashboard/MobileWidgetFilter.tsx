@@ -12,7 +12,7 @@ import {
   ChevronDown,
   Eye,
   Sparkles,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import type { WidgetType, WidgetFilterItem } from './WidgetFilter'
 
 export { availableWidgets, type WidgetType, type WidgetFilterItem } from './WidgetFilter'

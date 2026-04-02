@@ -5,7 +5,7 @@
  */
 
 import React, { Component, ErrorInfo, ReactNode } from 'react';
-import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
+import { AlertTriangle, RefreshCw, Home } from '@/components/ui/icons';
 import { Link } from 'react-router-dom';
 
 interface Props {

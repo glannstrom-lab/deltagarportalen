@@ -30,7 +30,7 @@ import {
   Calendar,
   ArrowLeft,
   Bookmark
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { aiLogger } from '@/lib/logger'

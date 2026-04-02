@@ -7,7 +7,7 @@ import {
   Search, Compass, Briefcase, GraduationCap, DollarSign,
   TrendingUp, MapPin, Clock, Star, Filter, ChevronRight,
   Heart, Share2, X, Eye
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
 import { cn } from '@/lib/utils'
 

@@ -19,7 +19,7 @@ import {
   Settings,
   User,
   Sparkles,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 
 // Import new tab configurations
 import { wellnessTabs } from './wellnessTabs'

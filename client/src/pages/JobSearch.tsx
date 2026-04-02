@@ -6,7 +6,7 @@ import {
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
   Bookmark, Send, Bell, ClipboardList, MoreVertical,
   Trash2, CheckCircle, Clock
-} from 'lucide-react';
+} from '@/components/ui/icons';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
 import { useSavedJobs, type SavedJob } from '@/hooks/useSavedJobs';
