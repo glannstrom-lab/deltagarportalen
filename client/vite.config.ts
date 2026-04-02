@@ -80,8 +80,8 @@ export default defineConfig(({ mode }) => ({
           // Animation library - heavy, kan lazy-loadas
           'vendor-animation': ['framer-motion'],
 
-          // UI utilities
-          'vendor-icons': ['lucide-react'],
+          // NOTE: lucide-react is NOT in manualChunks to enable proper tree-shaking
+          // Only the icons imported in icons.ts barrel will be included
         },
         // Asset naming for better caching
         assetFileNames: (assetInfo) => {

@@ -103,7 +103,11 @@ export default function Login() {
           <p className="text-slate-500 text-center mb-6">{t('auth.loginToContinue')}</p>
 
           {(authError || errors.email || errors.password) && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg"
+            >
               {authError && <p className="text-red-600 text-sm">{authError}</p>}
               {errors.email && <p className="text-red-600 text-sm">{errors.email}</p>}
               {errors.password && <p className="text-red-600 text-sm">{errors.password}</p>}
@@ -125,6 +129,8 @@ export default function Login() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.email && !!errors.email}
+                  aria-describedby={touched.email && errors.email ? 'email-error' : undefined}
                   className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white text-slate-900 ${
                     touched.email && errors.email
                       ? 'border-red-300 focus:border-red-500'
@@ -135,7 +141,9 @@ export default function Login() {
                 />
               </div>
               {touched.email && errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                <p id="email-error" className="mt-1 text-sm text-red-600" role="alert">
+                  {errors.email}
+                </p>
               )}
             </div>
 
@@ -153,6 +161,8 @@ export default function Login() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
+                  aria-invalid={touched.password && !!errors.password}
+                  aria-describedby={touched.password && errors.password ? 'password-error' : undefined}
                   className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white text-slate-900 ${
                     touched.password && errors.password
                       ? 'border-red-300 focus:border-red-500'
@@ -164,13 +174,17 @@ export default function Login() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
+                  aria-pressed={showPassword}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
                 </button>
               </div>
               {touched.password && errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                <p id="password-error" className="mt-1 text-sm text-red-600" role="alert">
+                  {errors.password}
+                </p>
               )}
             </div>
 

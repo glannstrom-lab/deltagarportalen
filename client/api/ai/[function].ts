@@ -190,11 +190,13 @@ interface RateLimitResult {
 async function checkRateLimit(identifier: string): Promise<RateLimitResult> {
   const client = getServiceClient();
 
-  // If service client not configured, fail open in dev, warn in production
+  // If service client not configured, fail CLOSED in production for security
   if (!client) {
     if (process.env.NODE_ENV === 'production') {
-      console.error('[Rate Limit] WARNING: Supabase service role not configured in production!');
+      console.error('[Rate Limit] CRITICAL: Supabase service role not configured - blocking requests!');
+      return { allowed: false, remaining: 0, resetAt: Date.now() / 1000 + 60 };
     }
+    // Only fail open in development
     return { allowed: true, remaining: RATE_LIMIT_MAX, resetAt: 0 };
   }
 

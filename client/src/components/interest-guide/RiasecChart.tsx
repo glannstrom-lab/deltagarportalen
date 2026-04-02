@@ -102,9 +102,45 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
   // Gradient för polygonen
   const gradientId = `riasecGradient-${Math.random().toString(36).substr(2, 9)}`
 
+  // Generate accessible description
+  const sortedScores = keys
+    .map(key => ({ key, score: scores[key], name: riasecNames[key] }))
+    .sort((a, b) => b.score - a.score)
+
+  const accessibleDescription = `RIASEC arbetsintressen: ${sortedScores
+    .map(s => `${s.name}: ${s.score} av 5`)
+    .join(', ')}`
+
   return (
     <div className="relative">
-      <svg width={size} height={size} className="mx-auto">
+      {/* Screen reader accessible data table */}
+      <table className="sr-only" aria-label="RIASEC resultat i tabellform">
+        <caption>Dina RIASEC-resultat visar dina arbetsintressen på en skala 1-5</caption>
+        <thead>
+          <tr>
+            <th scope="col">Intresseområde</th>
+            <th scope="col">Poäng (1-5)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortedScores.map(({ key, score, name }) => (
+            <tr key={key}>
+              <td>{name} ({key})</td>
+              <td>{score} av 5</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <svg
+        width={size}
+        height={size}
+        className="mx-auto"
+        role="img"
+        aria-labelledby="riasec-chart-title riasec-chart-desc"
+      >
+        <title id="riasec-chart-title">RIASEC Arbetsintressen</title>
+        <desc id="riasec-chart-desc">{accessibleDescription}</desc>
         <defs>
           <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="100%">
             <stop offset="0%" stopColor="#6366f1" stopOpacity="0.6" />
@@ -142,8 +178,10 @@ export function RiasecChart({ scores, size = 280 }: RiasecChartProps) {
           )
         })}
         
-        {/* Labels */}
-        {labels}
+        {/* Labels - aria-hidden since data is in sr-only table */}
+        <g aria-hidden="true">
+          {labels}
+        </g>
       </svg>
       
       {/* RIASEC-kod display */}

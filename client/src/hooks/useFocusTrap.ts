@@ -1,4 +1,4 @@
-import { useEffect, useRef, useCallback } from 'react'
+import { useEffect, useRef, useCallback, useLayoutEffect } from 'react'
 
 /**
  * useFocusTrap - Håller fokus inom en container för modaler/menyer
@@ -33,6 +33,12 @@ export function useFocusTrap<T extends HTMLElement = HTMLDivElement>(
   const containerRef = useRef<T>(null)
   const previousFocusRef = useRef<HTMLElement | null>(null)
 
+  // Use ref to store onEscape to avoid re-adding listeners on every render
+  const onEscapeRef = useRef(onEscape)
+  useLayoutEffect(() => {
+    onEscapeRef.current = onEscape
+  })
+
   // Hämta alla fokuserbara element
   const getFocusableElements = useCallback((): HTMLElement[] => {
     if (!containerRef.current) return []
@@ -66,10 +72,10 @@ export function useFocusTrap<T extends HTMLElement = HTMLDivElement>(
     // Hantera tangentbordshändelser
     const handleKeyDown = (e: KeyboardEvent) => {
       // Escape - stäng
-      if (e.key === 'Escape' && onEscape) {
+      if (e.key === 'Escape' && onEscapeRef.current) {
         e.preventDefault()
         e.stopPropagation()
-        onEscape()
+        onEscapeRef.current()
         return
       }
 
@@ -102,13 +108,13 @@ export function useFocusTrap<T extends HTMLElement = HTMLDivElement>(
 
     // Hantera klick utanför (valfritt)
     const handleClickOutside = (e: MouseEvent) => {
-      if (container && !container.contains(e.target as Node) && onEscape) {
-        onEscape()
+      if (container && !container.contains(e.target as Node) && onEscapeRef.current) {
+        onEscapeRef.current()
       }
     }
 
     document.addEventListener('keydown', handleKeyDown)
-    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('mousedown', handleClickOutside, { passive: true })
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown)
@@ -119,7 +125,7 @@ export function useFocusTrap<T extends HTMLElement = HTMLDivElement>(
         previousFocusRef.current.focus()
       }
     }
-  }, [isActive, onEscape, restoreFocus, autoFocus, getFocusableElements])
+  }, [isActive, restoreFocus, autoFocus, getFocusableElements]) // onEscape removed - uses ref instead
 
   return containerRef
 }
