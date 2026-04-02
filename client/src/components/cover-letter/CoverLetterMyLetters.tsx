@@ -24,7 +24,7 @@ import { Button } from '@/components/ui/Button'
 import { EmptyState } from '@/components/ui/EmptyState'
 import { cn } from '@/lib/utils'
 import { coverLetterApi, type CoverLetter } from '@/services/supabaseApi'
-import { jsPDF } from 'jspdf'
+// NOTE: jsPDF is dynamically imported in handleDownload to reduce bundle size
 
 type LetterStatus = 'draft' | 'sent' | 'template'
 
@@ -145,9 +145,12 @@ export function CoverLetterMyLetters() {
     }
   }
 
-  const handleDownload = (letter: Letter) => {
+  const handleDownload = async (letter: Letter) => {
     try {
       setShowActions(null)
+
+      // Dynamic import jsPDF to reduce initial bundle size
+      const { jsPDF } = await import('jspdf')
       const doc = new jsPDF()
 
       // Title
@@ -220,8 +223,13 @@ export function CoverLetterMyLetters() {
   // Loading state
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+      <div
+        className="flex items-center justify-center py-12"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <Loader2 className="w-8 h-8 animate-spin text-indigo-600" aria-hidden="true" />
         <span className="ml-3 text-slate-600">Laddar brev...</span>
       </div>
     )
@@ -230,7 +238,7 @@ export function CoverLetterMyLetters() {
   // Error state
   if (error) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12" role="alert" aria-live="assertive">
         <p className="text-rose-600 mb-4">{error}</p>
         <Button onClick={loadLetters} variant="outline">
           Försök igen

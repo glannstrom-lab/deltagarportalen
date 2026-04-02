@@ -49,7 +49,7 @@ import { savedJobsApi, articleBookmarksApi } from '@/services/cloudStorage'
 import { cvApi, coverLetterApi, interestApi } from '@/services/supabaseApi'
 import { PageLayout } from '@/components/layout/index'
 import { resourcesTabs } from '@/data/pageTabs'
-import jsPDF from 'jspdf'
+// NOTE: jsPDF is dynamically imported in PDF generation functions to reduce bundle size
 
 // Types
 interface SavedJob {
@@ -236,7 +236,9 @@ function DocumentCard({
 }
 
 // PDF Export Functions
-function generateCVPDF(cvData: CVData) {
+async function generateCVPDF(cvData: CVData) {
+  // Dynamic import to reduce initial bundle size
+  const { default: jsPDF } = await import('jspdf')
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
   const margin = 20
@@ -340,7 +342,9 @@ function generateCVPDF(cvData: CVData) {
   doc.save(`CV-${cvData.first_name || 'Mitt'}-${cvData.last_name || ''}.pdf`)
 }
 
-function generateCoverLetterPDF(letter: CoverLetter) {
+async function generateCoverLetterPDF(letter: CoverLetter) {
+  // Dynamic import to reduce initial bundle size
+  const { default: jsPDF } = await import('jspdf')
   const doc = new jsPDF()
   const margin = 25
   let y = 30
@@ -440,12 +444,12 @@ export default function Resources() {
     setUploadedFiles(prev => prev.filter(f => f.id !== fileId))
   }
 
-  const handleDownloadCV = () => {
-    if (cvData) generateCVPDF(cvData)
+  const handleDownloadCV = async () => {
+    if (cvData) await generateCVPDF(cvData)
   }
 
-  const handleDownloadLetter = (letter: CoverLetter) => {
-    generateCoverLetterPDF(letter)
+  const handleDownloadLetter = async (letter: CoverLetter) => {
+    await generateCoverLetterPDF(letter)
   }
 
   // Filtered data
@@ -478,8 +482,14 @@ export default function Resources() {
   if (loading) {
     return (
       <PageLayout title={t('resources.title')} description={t('resources.description')}>
-        <div className="flex items-center justify-center py-20">
-          <Loader2 className="animate-spin text-violet-600" size={48} />
+        <div
+          className="flex items-center justify-center py-20"
+          role="status"
+          aria-live="polite"
+          aria-busy="true"
+        >
+          <Loader2 className="animate-spin text-violet-600" size={48} aria-hidden="true" />
+          <span className="sr-only">{t('common.loading')}</span>
         </div>
       </PageLayout>
     )

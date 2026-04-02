@@ -95,23 +95,31 @@ export function QuestionCard({
     <div className="bg-white rounded-2xl shadow-lg shadow-gray-200/50 border border-gray-100 p-6 sm:p-8 relative">
       {/* Paus-confirmation modal */}
       {showPauseConfirm && (
-        <div className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10">
+        <div
+          className="absolute inset-0 bg-white/95 backdrop-blur-sm rounded-2xl flex items-center justify-center z-10"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="pause-dialog-title"
+          aria-describedby="pause-dialog-description"
+        >
           <div className="text-center p-6">
             <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Pause className="w-8 h-8 text-amber-600" />
+              <Pause className="w-8 h-8 text-amber-600" aria-hidden="true" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Vill du ta en paus?</h3>
-            <p className="text-gray-600 mb-6 max-w-xs">
+            <h3 id="pause-dialog-title" className="text-lg font-semibold text-gray-900 mb-2">Vill du ta en paus?</h3>
+            <p id="pause-dialog-description" className="text-gray-600 mb-6 max-w-xs">
               Dina svar sparas automatiskt. Du kan fortsätta precis där du var när du kommer tillbaka.
             </p>
             <div className="flex gap-3 justify-center">
               <button
+                type="button"
                 onClick={() => setShowPauseConfirm(false)}
                 className="px-4 py-2 text-gray-600 hover:text-gray-800"
               >
                 Fortsätt
               </button>
               <button
+                type="button"
                 onClick={confirmPause}
                 className="px-6 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition-colors"
               >
@@ -168,7 +176,10 @@ export function QuestionCard({
 
       {/* Question text */}
       <div className="text-center mb-8">
-        <h3 className="text-lg sm:text-xl font-medium text-gray-900 leading-relaxed">
+        <h3
+          id={`question-${questionNumber}`}
+          className="text-lg sm:text-xl font-medium text-gray-900 leading-relaxed"
+        >
           {question.text}
         </h3>
         {question.subtext && (
@@ -177,9 +188,9 @@ export function QuestionCard({
       </div>
 
       {/* Slider */}
-      <div className="relative px-2">
+      <div className="relative px-2" role="group" aria-labelledby={`question-${questionNumber}`}>
         {/* Scale labels */}
-        <div className="flex justify-between text-xs text-gray-400 mb-3 px-1">
+        <div className="flex justify-between text-xs text-gray-400 mb-3 px-1" aria-hidden="true">
           <span className="text-center flex-1">Stämmer inte alls</span>
           <span className="text-center flex-1">Stämmer delvis</span>
           <span className="text-center flex-1">Stämmer helt</span>
@@ -188,16 +199,17 @@ export function QuestionCard({
         {/* Slider track */}
         <div className="relative h-12 flex items-center">
           {/* Background track */}
-          <div className="absolute inset-x-0 h-3 bg-gray-200 rounded-full"></div>
-          
+          <div className="absolute inset-x-0 h-3 bg-gray-200 rounded-full" aria-hidden="true"></div>
+
           {/* Active gradient track */}
-          <div 
+          <div
             className={`absolute left-0 h-3 bg-gradient-to-r ${getGradientColor()} rounded-full transition-all duration-300 ease-out`}
             style={{ width: `${getThumbPosition()}%` }}
+            aria-hidden="true"
           />
-          
-          {/* Dots for each value */}
-          <div className="absolute inset-x-0 flex justify-between px-1 z-10">
+
+          {/* Dots for each value (visual only, not keyboard accessible) */}
+          <div className="absolute inset-x-0 flex justify-between px-1 z-10" aria-hidden="true">
             {[1, 2, 3, 4, 5].map((dotValue) => {
               const isActive = (value || 0) >= dotValue
               const isCurrent = value === dotValue
@@ -205,7 +217,9 @@ export function QuestionCard({
               return (
                 <button
                   key={dotValue}
+                  type="button"
                   onClick={() => onChange(dotValue)}
+                  tabIndex={-1}
                   className={`
                     w-8 h-8 rounded-full border-4 transition-all duration-200 ease-out cursor-pointer
                     ${isCurrent
@@ -215,13 +229,12 @@ export function QuestionCard({
                         : 'bg-white border-gray-300 hover:scale-105 hover:border-gray-400'
                     }
                   `}
-                  aria-label={`Värde ${dotValue}`}
                 />
               )
             })}
           </div>
 
-          {/* Hidden range input for keyboard accessibility only */}
+          {/* Accessible range input for keyboard navigation */}
           <input
             type="range"
             min="1"
@@ -229,24 +242,35 @@ export function QuestionCard({
             step="1"
             value={value || 3}
             onChange={handleSliderChange}
-            className="absolute inset-0 w-full h-full opacity-0 pointer-events-none"
-            tabIndex={-1}
-            aria-hidden="true"
+            aria-label={`Svara på fråga ${questionNumber}: ${question.text}`}
+            aria-valuemin={1}
+            aria-valuemax={5}
+            aria-valuenow={value || 3}
+            aria-valuetext={
+              (value || 0) === 1 ? 'Stämmer inte alls' :
+              (value || 0) === 2 ? 'Stämmer ganska dåligt' :
+              (value || 0) === 3 ? 'Stämmer delvis' :
+              (value || 0) === 4 ? 'Stämmer ganska bra' :
+              (value || 0) === 5 ? 'Stämmer helt' :
+              'Inget svar än'
+            }
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20"
           />
         </div>
 
-        {/* Labels below */}
-        <div className="flex justify-between mt-4 px-1">
+        {/* Labels below (visual, clickable) */}
+        <div className="flex justify-between mt-4 px-1" aria-hidden="true">
           {[1, 2, 3, 4, 5].map((num) => (
             <button
               key={num}
+              type="button"
               onClick={() => onChange(num)}
+              tabIndex={-1}
               className={`text-xs font-medium transition-colors ${
-                value === num 
+                value === num
                   ? num <= 2 ? 'text-red-500' : num === 3 ? 'text-yellow-500' : 'text-emerald-500'
                   : 'text-gray-400 hover:text-gray-600'
               }`}
-              aria-label={`Välj ${num}`}
             >
               {num}
             </button>
@@ -292,32 +316,38 @@ export function QuestionCard({
 }
 
 // ResumeModal - visas när användaren återvänder efter paus
-export function ResumeModal({ 
-  onResume, 
-  onRestart, 
-  questionIndex, 
-  savedDate 
-}: { 
+export function ResumeModal({
+  onResume,
+  onRestart,
+  questionIndex,
+  savedDate
+}: {
   onResume: () => void
   onRestart: () => void
   questionIndex: number
   savedDate: Date
 }) {
   const hoursSince = Math.round((Date.now() - savedDate.getTime()) / (1000 * 60 * 60))
-  
+
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+    <div
+      className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="resume-dialog-title"
+      aria-describedby="resume-dialog-description"
+    >
       <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 animate-in fade-in zoom-in-95">
         <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <RotateCcw className="w-8 h-8 text-indigo-600" />
+          <RotateCcw className="w-8 h-8 text-indigo-600" aria-hidden="true" />
         </div>
-        
-        <h2 className="text-xl font-bold text-gray-900 text-center mb-2">
+
+        <h2 id="resume-dialog-title" className="text-xl font-bold text-gray-900 text-center mb-2">
           Välkommen tillbaka!
         </h2>
-        
-        <p className="text-gray-600 text-center mb-6">
-          {hoursSince < 1 
+
+        <p id="resume-dialog-description" className="text-gray-600 text-center mb-6">
+          {hoursSince < 1
             ? 'Du var på fråga ' + (questionIndex + 1) + ' för en stund sedan.'
             : `Du var på fråga ${questionIndex + 1} för ${hoursSince} timme${hoursSince > 1 ? 'r' : ''} sedan.`
           }
@@ -327,14 +357,16 @@ export function ResumeModal({
 
         <div className="space-y-3">
           <button
+            type="button"
             onClick={onResume}
             className="w-full py-3 px-4 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors flex items-center justify-center gap-2"
           >
-            <Save className="w-4 h-4" />
+            <Save className="w-4 h-4" aria-hidden="true" />
             Fortsätt där jag slutade
           </button>
-          
+
           <button
+            type="button"
             onClick={onRestart}
             className="w-full py-3 px-4 border border-gray-200 text-gray-600 rounded-xl font-medium hover:bg-gray-50 transition-colors"
           >

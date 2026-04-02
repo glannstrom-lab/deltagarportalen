@@ -65,9 +65,14 @@ const Education = lazy(() => import('./pages/Education'))
 // Loading fallback
 function PageLoader() {
   return (
-    <div className="min-h-[60vh] flex items-center justify-center">
+    <div
+      className="min-h-[60vh] flex items-center justify-center"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
       <div className="text-center">
-        <Loader2 className="animate-spin text-violet-600 mx-auto mb-3" size={32} />
+        <Loader2 className="animate-spin text-violet-600 mx-auto mb-3" size={32} aria-hidden="true" />
         <p className="text-sm text-slate-500">Laddar sida...</p>
       </div>
     </div>

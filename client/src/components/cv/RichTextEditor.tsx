@@ -3,9 +3,9 @@
  * Simple formatting without heavy dependencies
  */
 
-import { useState, useRef, useCallback } from 'react'
-import { 
-  Bold, Italic, List, ListOrdered, Quote, 
+import { useState, useRef, useCallback, useId } from 'react'
+import {
+  Bold, Italic, List, ListOrdered, Quote,
   AlignLeft, AlignCenter, Link, Undo, Redo,
   Type, Heading
 } from '@/components/ui/icons'
@@ -18,6 +18,7 @@ interface RichTextEditorProps {
   minHeight?: string
   label?: string
   helpText?: string
+  id?: string
 }
 
 export function RichTextEditor({
@@ -27,8 +28,13 @@ export function RichTextEditor({
   maxLength = 2000,
   minHeight = '150px',
   label,
-  helpText
+  helpText,
+  id: providedId
 }: RichTextEditorProps) {
+  const generatedId = useId()
+  const editorId = providedId || `rich-text-${generatedId}`
+  const helpTextId = `${editorId}-help`
+  const counterId = `${editorId}-counter`
   const editorRef = useRef<HTMLTextAreaElement>(null)
   const [history, setHistory] = useState<string[]>([value])
   const [historyIndex, setHistoryIndex] = useState(0)
@@ -134,9 +140,12 @@ export function RichTextEditor({
     <div className="space-y-2">
       {label && (
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-slate-700">{label}</label>
+          <label htmlFor={editorId} className="text-sm font-medium text-slate-700">{label}</label>
           <button
+            type="button"
             onClick={() => setShowToolbar(!showToolbar)}
+            aria-expanded={showToolbar}
+            aria-controls={`${editorId}-toolbar`}
             className="text-xs text-purple-600 hover:text-purple-700 font-medium"
           >
             {showToolbar ? 'Dölj verktygsfält' : 'Visa verktygsfält'}
@@ -146,22 +155,30 @@ export function RichTextEditor({
 
       {/* Toolbar */}
       {showToolbar && (
-        <div className="flex flex-wrap items-center gap-1 p-2 bg-slate-50 border border-slate-200 rounded-t-lg">
-          {toolbarButtons.map((btn, idx) => 
+        <div
+          id={`${editorId}-toolbar`}
+          role="toolbar"
+          aria-label="Formateringsverktyg"
+          aria-controls={editorId}
+          className="flex flex-wrap items-center gap-1 p-2 bg-slate-50 border border-slate-200 rounded-t-lg"
+        >
+          {toolbarButtons.map((btn, idx) =>
             btn.separator ? (
-              <div key={idx} className="w-px h-6 bg-slate-300 mx-1" />
+              <div key={idx} className="w-px h-6 bg-slate-300 mx-1" role="separator" aria-orientation="vertical" />
             ) : (
               <button
                 key={idx}
+                type="button"
                 onClick={btn.action}
                 disabled={btn.disabled}
+                aria-label={btn.title}
                 title={btn.title}
                 className={`
                   p-1.5 rounded hover:bg-slate-200 transition-colors
                   ${btn.disabled ? 'opacity-30 cursor-not-allowed' : 'text-slate-600 hover:text-slate-800'}
                 `}
               >
-                <btn.icon className="w-4 h-4" />
+                <btn.icon className="w-4 h-4" aria-hidden="true" />
               </button>
             )
           )}
@@ -172,12 +189,15 @@ export function RichTextEditor({
       <div className="relative">
         <textarea
           ref={editorRef}
+          id={editorId}
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
           placeholder={placeholder}
+          aria-describedby={`${helpText ? helpTextId : ''} ${counterId}`.trim() || undefined}
+          aria-label={label || 'Textredigerare'}
           className={`
-            w-full px-4 py-3 border border-slate-200 
+            w-full px-4 py-3 border border-slate-200
             ${showToolbar ? 'rounded-b-lg' : 'rounded-lg'}
             focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
             text-slate-700 placeholder:text-slate-400
@@ -185,20 +205,32 @@ export function RichTextEditor({
           `}
           style={{ minHeight }}
         />
-        
+
         {/* Character counter */}
         <div className="absolute bottom-2 right-2 flex items-center gap-2">
-          <span className={`
+          <span
+            id={counterId}
+            className={`
             text-xs font-medium
-            ${charPercentage > 90 ? 'text-red-500' : 
+            ${charPercentage > 90 ? 'text-red-500' :
               charPercentage > 75 ? 'text-amber-500' : 'text-slate-400'}
-          `}>
+          `}
+            aria-live="polite"
+            aria-atomic="true"
+          >
             {charCount}/{maxLength}
           </span>
-          <div className="w-12 h-1 bg-slate-200 rounded-full overflow-hidden">
-            <div 
+          <div
+            className="w-12 h-1 bg-slate-200 rounded-full overflow-hidden"
+            role="progressbar"
+            aria-valuenow={charCount}
+            aria-valuemin={0}
+            aria-valuemax={maxLength}
+            aria-label={`Teckenanvändning: ${charCount} av ${maxLength}`}
+          >
+            <div
               className={`h-full transition-all duration-300 ${
-                charPercentage > 90 ? 'bg-red-500' : 
+                charPercentage > 90 ? 'bg-red-500' :
                 charPercentage > 75 ? 'bg-amber-500' : 'bg-green-500'
               }`}
               style={{ width: `${Math.min(charPercentage, 100)}%` }}
@@ -208,7 +240,7 @@ export function RichTextEditor({
       </div>
 
       {helpText && (
-        <p className="text-xs text-slate-500">{helpText}</p>
+        <p id={helpTextId} className="text-xs text-slate-500">{helpText}</p>
       )}
     </div>
   )

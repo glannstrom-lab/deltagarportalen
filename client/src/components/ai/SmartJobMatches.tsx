@@ -4,7 +4,7 @@
  * Visar semantiskt matchade jobb och "utforska liknande roller"
  */
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, memo } from 'react'
 import { 
   Sparkles, TrendingUp, Lightbulb, ChevronRight, 
   Target, Briefcase, Loader2, CheckCircle2, Zap
@@ -173,10 +173,10 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
 }
 
 // ============================================
-// JOB MATCH CARD
+// JOB MATCH CARD (memoized for performance)
 // ============================================
 
-function JobMatchCard({ match }: { match: SemanticMatch }) {
+const JobMatchCard = memo(function JobMatchCard({ match }: { match: SemanticMatch }) {
   const { job, similarity, matchedKeywords, explanation } = match
   
   // Safety check - if job is undefined or missing headline, don't render
@@ -235,13 +235,13 @@ function JobMatchCard({ match }: { match: SemanticMatch }) {
       </div>
     </div>
   )
-}
+})
 
 // ============================================
-// SIMILAR ROLE CARD
+// SIMILAR ROLE CARD (memoized for performance)
 // ============================================
 
-function SimilarRoleCard({ role }: { role: SimilarRole }) {
+const SimilarRoleCard = memo(function SimilarRoleCard({ role }: { role: SimilarRole }) {
   const matchPercentage = Math.round(role.similarity * 100)
   
   return (
@@ -311,7 +311,7 @@ function SimilarRoleCard({ role }: { role: SimilarRole }) {
       </div>
     </div>
   )
-}
+})
 
 // ============================================
 // SKILL GAP ANALYSIS COMPONENT

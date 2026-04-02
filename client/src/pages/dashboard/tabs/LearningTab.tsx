@@ -76,9 +76,14 @@ export default function LearningTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div
+        className="flex items-center justify-center py-12"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" />
+          <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-slate-500">Laddar lärande...</p>
         </div>
       </div>

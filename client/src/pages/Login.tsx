@@ -76,8 +76,14 @@ export default function Login() {
   // Show loading while checking auth state
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-violet-600 to-stone-800 flex items-center justify-center">
-        <Loader2 className="animate-spin text-white" size={48} />
+      <div
+        className="min-h-screen bg-gradient-to-br from-violet-600 to-stone-800 flex items-center justify-center"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <Loader2 className="animate-spin text-white" size={48} aria-hidden="true" />
+        <span className="sr-only">Laddar...</span>
       </div>
     )
   }

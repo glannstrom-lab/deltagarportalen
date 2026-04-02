@@ -5,7 +5,7 @@
  * No combination or weighting - each source gives its own results.
  */
 
-import { useState, useEffect, useMemo, useCallback } from 'react'
+import { useState, useEffect, useMemo, useCallback, memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Sparkles, Target, CheckCircle, AlertCircle, FileText,
@@ -220,7 +220,8 @@ function LocationSelector({
   )
 }
 
-function MatchCard({
+// Memoized to prevent unnecessary re-renders when filtering/sorting doesn't change this card's data
+const MatchCard = memo(function MatchCard({
   matchedJob,
   onSave,
   isSaved
@@ -344,7 +345,7 @@ function MatchCard({
       </div>
     </div>
   )
-}
+})
 
 function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
   if (type === 'no-data') {

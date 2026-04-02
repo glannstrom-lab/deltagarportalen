@@ -246,8 +246,14 @@ export default function BrandAuditTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-violet-600" />
+      <div
+        className="flex items-center justify-center py-12"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
+        <Loader2 className="w-8 h-8 animate-spin text-violet-600" aria-hidden="true" />
+        <span className="sr-only">Laddar varumärkesaudit...</span>
       </div>
     )
   }

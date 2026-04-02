@@ -49,9 +49,14 @@ export default function Journey() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div
+        className="min-h-screen bg-slate-50 flex items-center justify-center"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div className="text-center">
-          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" />
+          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" aria-hidden="true" />
           <p className="text-slate-600">Laddar din jobbresa...</p>
         </div>
       </div>

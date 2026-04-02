@@ -182,9 +182,14 @@ export default function OverviewTab() {
 
   if (loading) {
     return (
-      <div className="max-w-2xl mx-auto flex items-center justify-center py-12">
+      <div
+        className="max-w-2xl mx-auto flex items-center justify-center py-12"
+        role="status"
+        aria-live="polite"
+        aria-busy="true"
+      >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-slate-600">Laddar din framsteg...</p>
         </div>
       </div>
