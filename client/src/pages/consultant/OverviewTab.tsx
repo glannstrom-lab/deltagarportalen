@@ -754,14 +754,7 @@ export function OverviewTab() {
       <MeetingSchedulerDialog
         isOpen={showMeetingDialog}
         onClose={() => setShowMeetingDialog(false)}
-        participants={participants.map(p => ({
-          id: p.participant_id,
-          name: `${p.first_name} ${p.last_name}`,
-          email: p.email,
-          avatarUrl: undefined,
-        }))}
-        onSchedule={() => {
-          // TODO: Implement meeting persistence
+        onSuccess={() => {
           setShowMeetingDialog(false)
           fetchDashboardData()
         }}
@@ -770,13 +763,7 @@ export function OverviewTab() {
       <GoalCreationDialog
         isOpen={showGoalDialog}
         onClose={() => setShowGoalDialog(false)}
-        participants={participants.map(p => ({
-          id: p.participant_id,
-          name: `${p.first_name} ${p.last_name}`,
-          email: p.email,
-        }))}
-        onCreateGoal={() => {
-          // TODO: Implement goal persistence
+        onSuccess={() => {
           setShowGoalDialog(false)
           fetchDashboardData()
         }}

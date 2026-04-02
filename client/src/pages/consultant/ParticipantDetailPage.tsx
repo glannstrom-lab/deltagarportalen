@@ -257,60 +257,46 @@ export function ParticipantDetailPage() {
       if (participantData) {
         setParticipant(participantData)
 
-        // Generate mock goals (TODO: Fetch from real table)
-        const mockGoals: Goal[] = [
-          {
-            id: '1',
-            title: 'Förbättra CV till 80+ poäng',
-            description: 'Uppdatera CV med relevanta nyckelord och förbättra ATS-poängen',
-            status: 'IN_PROGRESS',
-            priority: 'HIGH',
-            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-            progress: 65,
-          },
-          {
-            id: '2',
-            title: 'Skicka 10 ansökningar denna vecka',
-            description: 'Systematiskt jobbsökande med fokus på IT-branschen',
-            status: 'IN_PROGRESS',
-            priority: 'MEDIUM',
-            deadline: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(),
-            progress: 40,
-          },
-          {
-            id: '3',
-            title: 'Genomför intressetest',
-            description: 'Slutför Holland-koden för att matcha med rätt yrken',
-            status: 'COMPLETED',
-            priority: 'LOW',
-            deadline: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-            progress: 100,
-          },
-        ]
-        setGoals(mockGoals)
+        // Fetch real goals from database
+        const { data: goalsData } = await supabase
+          .from('consultant_goals')
+          .select('*')
+          .eq('consultant_id', user.id)
+          .eq('participant_id', participantId)
+          .order('created_at', { ascending: false })
 
-        // Generate mock journal entries
-        const mockJournal: JournalEntry[] = [
-          {
-            id: '1',
-            content: 'Bra samtal idag. Deltagaren är motiverad och har tydliga mål. Fokus på CV-förbättring nästa vecka.',
-            category: 'GENERAL',
-            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-          },
-          {
-            id: '2',
-            content: 'CV:t har förbättrats från 55 till 72 poäng. Fortsätter med nyckelord för IT-branschen.',
-            category: 'PROGRESS',
-            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-          },
-          {
-            id: '3',
-            content: 'Lite nedstämd efter avslag. Diskuterade strategier för att hantera motgångar.',
-            category: 'CONCERN',
-            createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
-          },
-        ]
-        setJournal(mockJournal)
+        if (goalsData && goalsData.length > 0) {
+          setGoals(goalsData.map(g => ({
+            id: g.id,
+            title: g.title,
+            description: g.description || '',
+            status: g.status,
+            priority: g.priority,
+            deadline: g.deadline || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+            progress: g.progress || 0,
+          })))
+        } else {
+          // No goals yet - start with empty array
+          setGoals([])
+        }
+
+        // Fetch real journal entries from database
+        const { data: journalData } = await supabase
+          .from('consultant_journal')
+          .select('*')
+          .eq('consultant_id', user.id)
+          .eq('participant_id', participantId)
+          .order('created_at', { ascending: false })
+          .limit(20)
+
+        if (journalData) {
+          setJournal(journalData.map(j => ({
+            id: j.id,
+            content: j.content,
+            category: j.category,
+            createdAt: j.created_at,
+          })))
+        }
 
         // Generate mock timeline
         const mockTimeline: TimelineEvent[] = [
@@ -329,17 +315,80 @@ export function ParticipantDetailPage() {
     }
   }
 
-  const handleAddNote = () => {
-    if (!newNote.trim()) return
-    const newEntry: JournalEntry = {
-      id: `note-${Date.now()}`,
-      content: newNote,
-      category: 'GENERAL',
-      createdAt: new Date().toISOString(),
+  const handleAddNote = async () => {
+    if (!newNote.trim() || !participantId) return
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const { data, error } = await supabase
+        .from('consultant_journal')
+        .insert({
+          consultant_id: user.id,
+          participant_id: participantId,
+          content: newNote,
+          category: 'GENERAL',
+        })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      if (data) {
+        const newEntry: JournalEntry = {
+          id: data.id,
+          content: data.content,
+          category: data.category,
+          createdAt: data.created_at,
+        }
+        setJournal(prev => [newEntry, ...prev])
+      }
+      setNewNote('')
+    } catch (error) {
+      console.error('Error adding note:', error)
     }
-    setJournal(prev => [newEntry, ...prev])
-    setNewNote('')
-    // TODO: Save to database
+  }
+
+  const handleCompleteGoal = async (goalId: string) => {
+    try {
+      const { error } = await supabase
+        .from('consultant_goals')
+        .update({
+          status: 'COMPLETED',
+          progress: 100,
+          completed_at: new Date().toISOString(),
+        })
+        .eq('id', goalId)
+
+      if (error) throw error
+
+      setGoals(prev => prev.map(g =>
+        g.id === goalId ? { ...g, status: 'COMPLETED', progress: 100 } : g
+      ))
+    } catch (error) {
+      console.error('Error completing goal:', error)
+    }
+  }
+
+  const handleEditGoal = async (goal: Goal) => {
+    // For now, just toggle status between IN_PROGRESS and NOT_STARTED
+    const newStatus = goal.status === 'NOT_STARTED' ? 'IN_PROGRESS' : 'NOT_STARTED'
+
+    try {
+      const { error } = await supabase
+        .from('consultant_goals')
+        .update({ status: newStatus })
+        .eq('id', goal.id)
+
+      if (error) throw error
+
+      setGoals(prev => prev.map(g =>
+        g.id === goal.id ? { ...g, status: newStatus } : g
+      ))
+    } catch (error) {
+      console.error('Error updating goal:', error)
+    }
   }
 
   if (loading) {
@@ -489,8 +538,8 @@ export function ParticipantDetailPage() {
                 <GoalCard
                   key={goal.id}
                   goal={goal}
-                  onEdit={() => {/* TODO: Implement goal editing */}}
-                  onComplete={() => {/* TODO: Implement goal completion */}}
+                  onEdit={handleEditGoal}
+                  onComplete={handleCompleteGoal}
                 />
               ))}
             </div>
@@ -538,8 +587,8 @@ export function ParticipantDetailPage() {
               <GoalCard
                 key={goal.id}
                 goal={goal}
-                onEdit={() => {/* TODO: Implement goal editing */}}
-                onComplete={() => {/* TODO: Implement goal completion */}}
+                onEdit={handleEditGoal}
+                onComplete={handleCompleteGoal}
               />
             ))}
           </div>
