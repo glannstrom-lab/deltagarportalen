@@ -13,11 +13,13 @@ export default function Register() {
   const { signUp } = useAuthStore()
 
   // Password validation rules with translated labels
+  // Must match strongPasswordSchema in lib/validations/index.ts
   const passwordRules = useMemo(() => [
-    { id: 'length', label: t('auth.passwordRules.minLength'), test: (pwd: string) => pwd.length >= 8 },
+    { id: 'length', label: t('auth.passwordRules.minLength'), test: (pwd: string) => pwd.length >= 12 },
     { id: 'uppercase', label: t('auth.passwordRules.uppercase'), test: (pwd: string) => /[A-Z]/.test(pwd) },
     { id: 'lowercase', label: t('auth.passwordRules.lowercase'), test: (pwd: string) => /[a-z]/.test(pwd) },
     { id: 'number', label: t('auth.passwordRules.number'), test: (pwd: string) => /[0-9]/.test(pwd) },
+    { id: 'special', label: t('auth.passwordRules.special'), test: (pwd: string) => /[^A-Za-z0-9]/.test(pwd) },
   ], [t])
   const [showPassword, setShowPassword] = useState(false)
   const [submitError, setSubmitError] = useState('')

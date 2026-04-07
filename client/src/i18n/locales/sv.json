@@ -1397,10 +1397,11 @@
     "passwordsMatch": "Lösenorden matchar",
     "pleaseCorrect": "Vänligen korrigera följande",
     "passwordRules": {
-      "minLength": "Minst 8 tecken",
+      "minLength": "Minst 12 tecken",
       "uppercase": "En stor bokstav (A-Z)",
       "lowercase": "En liten bokstav (a-z)",
-      "number": "En siffra (0-9)"
+      "number": "En siffra (0-9)",
+      "special": "Ett specialtecken (!@#$%^&* etc)"
     },
     "errors": {
       "userExists": "En användare med denna e-postadress finns redan. Logga in istället.",

@@ -77,10 +77,11 @@ describe('Register Flow Integration', () => {
       </QueryClientProvider>
     )
 
-    // Password requirements should be visible (UI shows 8, schema requires 12)
-    expect(screen.getByText(/minst 8 tecken/i)).toBeInTheDocument()
+    // Password requirements should be visible (matches strongPasswordSchema)
+    expect(screen.getByText(/minst 12 tecken/i)).toBeInTheDocument()
     expect(screen.getByText(/en stor bokstav/i)).toBeInTheDocument()
     expect(screen.getByText(/en siffra/i)).toBeInTheDocument()
+    expect(screen.getByText(/ett specialtecken/i)).toBeInTheDocument()
 
     // Enter a strong password
     const passwordInput = screen.getByLabelText(/^lösenord$/i)

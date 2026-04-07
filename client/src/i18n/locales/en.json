@@ -1348,10 +1348,11 @@
     "passwordsMatch": "Passwords match",
     "pleaseCorrect": "Please correct the following",
     "passwordRules": {
-      "minLength": "At least 8 characters",
+      "minLength": "At least 12 characters",
       "uppercase": "One uppercase letter (A-Z)",
       "lowercase": "One lowercase letter (a-z)",
-      "number": "One number (0-9)"
+      "number": "One number (0-9)",
+      "special": "One special character (!@#$%^&* etc)"
     },
     "errors": {
       "userExists": "A user with this email address already exists. Log in instead.",
