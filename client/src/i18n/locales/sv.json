@@ -409,6 +409,44 @@
     "writePersonalLetter": "Skriv personligt brev",
     "somethingWentWrong": "Något gick fel"
   },
+  "applications": {
+    "title": "Mina Ansökningar",
+    "subtitle": "Följ dina jobbansökningar genom hela processen",
+    "addApplication": "Ny ansökan",
+    "tabs": {
+      "pipeline": "Pipeline",
+      "timeline": "Historik",
+      "calendar": "Kalender",
+      "contacts": "Kontakter",
+      "analytics": "Statistik"
+    },
+    "status": {
+      "interested": "Intresserad",
+      "saved": "Sparad",
+      "applied": "Ansökt",
+      "screening": "Screening",
+      "phone": "Telefonintervju",
+      "interview": "Intervju",
+      "assessment": "Arbetsprov",
+      "offer": "Erbjudande",
+      "accepted": "Accepterad",
+      "rejected": "Avslag",
+      "withdrawn": "Återkallad"
+    },
+    "priority": {
+      "high": "Hög",
+      "medium": "Medium",
+      "low": "Låg"
+    },
+    "empty": {
+      "title": "Inga ansökningar än",
+      "description": "Börja spåra dina jobbansökningar genom att spara jobb från jobbsökningen eller lägg till en ansökan manuellt."
+    },
+    "stale": {
+      "title": "Behöver uppföljning",
+      "description": "Dessa har inte uppdaterats på 7+ dagar."
+    }
+  },
   "career": {
     "title": "Karriär",
     "subtitle": "Planera din karriärväg",

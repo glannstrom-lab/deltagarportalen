@@ -61,6 +61,7 @@ const SkillsGapAnalysis = lazy(() => import('./pages/SkillsGapAnalysis'))
 const InterviewSimulator = lazy(() => import('./pages/InterviewSimulator'))
 const Calendar = lazy(() => import('./pages/Calendar'))
 const Education = lazy(() => import('./pages/Education'))
+const Applications = lazy(() => import('./pages/Applications'))
 
 // Loading fallback
 function PageLoader() {
@@ -289,7 +290,13 @@ function App() {
         } />
         <Route path="jobs" element={<Navigate to="/job-search" replace />} />
         <Route path="job-tracker/*" element={<Navigate to="/job-search" replace />} />
-        <Route path="applications" element={<Navigate to="/job-search?tab=applications" replace />} />
+        <Route path="applications/*" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Applications />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
         <Route path="career/*" element={
           <LazyRoute>
             <RouteErrorBoundary>

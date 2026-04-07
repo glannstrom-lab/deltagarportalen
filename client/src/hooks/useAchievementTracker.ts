@@ -178,6 +178,42 @@ export function useAchievementTracker() {
     })
   }, [trackActivity])
 
+  /**
+   * Track interview scheduled (from application pipeline)
+   */
+  const trackInterviewScheduled = useCallback((jobTitle?: string, company?: string) => {
+    trackActivity('interview_completed', {
+      title: 'Bokade intervju',
+      description: jobTitle ? `${jobTitle} på ${company}` : 'Intervju bokad',
+      points: 30,
+      metadata: { jobTitle, company, type: 'scheduled' }
+    })
+  }, [trackActivity])
+
+  /**
+   * Track offer received
+   */
+  const trackOfferReceived = useCallback((jobTitle?: string, company?: string) => {
+    trackActivity('job_applied', {
+      title: 'Fick jobberbjudande!',
+      description: jobTitle ? `${jobTitle} på ${company}` : undefined,
+      points: 100,
+      metadata: { jobTitle, company, type: 'offer' }
+    })
+  }, [trackActivity])
+
+  /**
+   * Track job accepted
+   */
+  const trackJobAccepted = useCallback((jobTitle?: string, company?: string) => {
+    trackActivity('job_applied', {
+      title: 'Accepterade jobberbjudande!',
+      description: jobTitle ? `${jobTitle} på ${company}` : undefined,
+      points: 200,
+      metadata: { jobTitle, company, type: 'accepted' }
+    })
+  }, [trackActivity])
+
   return {
     trackActivity,
     trackCVUpdate,
@@ -189,6 +225,9 @@ export function useAchievementTracker() {
     trackMoodLogged,
     trackDiaryEntry,
     trackLinkedInAnalyzed,
+    trackInterviewScheduled,
+    trackOfferReceived,
+    trackJobAccepted,
   }
 }
 

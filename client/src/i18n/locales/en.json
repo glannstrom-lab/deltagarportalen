@@ -384,6 +384,44 @@
     "writePersonalLetter": "Write personal letter",
     "somethingWentWrong": "Something went wrong"
   },
+  "applications": {
+    "title": "My Applications",
+    "subtitle": "Track your job applications through the entire process",
+    "addApplication": "New application",
+    "tabs": {
+      "pipeline": "Pipeline",
+      "timeline": "History",
+      "calendar": "Calendar",
+      "contacts": "Contacts",
+      "analytics": "Statistics"
+    },
+    "status": {
+      "interested": "Interested",
+      "saved": "Saved",
+      "applied": "Applied",
+      "screening": "Screening",
+      "phone": "Phone interview",
+      "interview": "Interview",
+      "assessment": "Assessment",
+      "offer": "Offer",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "empty": {
+      "title": "No applications yet",
+      "description": "Start tracking your job applications by saving jobs from job search or add an application manually."
+    },
+    "stale": {
+      "title": "Needs follow-up",
+      "description": "These haven't been updated in 7+ days."
+    }
+  },
   "career": {
     "title": "Career",
     "subtitle": "Plan your career path",

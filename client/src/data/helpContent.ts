@@ -148,6 +148,42 @@ export const helpContent: Record<string, HelpContent> = {
     ]
   },
 
+  applications: {
+    title: 'Hjälp - Mina Ansökningar',
+    description: 'Följ dina jobbansökningar genom hela processen',
+    tips: [
+      'Använd Pipeline-vyn för att se alla ansökningar i olika stadier',
+      'Sätt påminnelser för att följa upp ansökningar',
+      'Lägg till kontaktpersoner för varje ansökan'
+    ],
+    faqs: [
+      {
+        question: 'Hur lägger jag till en ansökan?',
+        answer: 'Klicka på "Ny ansökan" i övre högra hörnet. Du kan också spara jobb från Jobbsökningen som automatiskt läggs till här.'
+      },
+      {
+        question: 'Vad är de olika statusarna?',
+        answer: 'Intresserad → Sparad → Ansökt → Screening → Telefonintervju → Intervju → Arbetsprov → Erbjudande → Accepterad/Avslag. Flytta ansökningar genom att klicka på statusknappen.'
+      },
+      {
+        question: 'Vad betyder "Behöver uppföljning"?',
+        answer: 'Ansökningar som inte uppdaterats på 7+ dagar markeras med orange. Det är en påminnelse att följa upp eller uppdatera statusen.'
+      },
+      {
+        question: 'Hur sätter jag en påminnelse?',
+        answer: 'Öppna en ansökan och gå till fliken "Påminnelser". Där kan du lägga till datum och tid för uppföljning.'
+      },
+      {
+        question: 'Kan jag koppla CV och personligt brev?',
+        answer: 'Ja! Öppna en ansökan och under "Dokument" kan du länka CV-versioner och personliga brev du skapat i portalen.'
+      },
+      {
+        question: 'Vad visar Statistik-fliken?',
+        answer: 'Där ser du översikt över dina ansökningar: totalt antal, aktiva, intervjufrekvens och vilka stadier dina ansökningar befinner sig i.'
+      }
+    ]
+  },
+
   education: {
     title: 'Hjälp - Utbildningar',
     description: 'Hitta utbildningar som passar dig',

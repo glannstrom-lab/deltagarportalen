@@ -127,6 +127,7 @@ export {
   Inbox,
   Info,
   Italic,
+  Kanban,
   Landmark,
   Languages,
   Laptop,
