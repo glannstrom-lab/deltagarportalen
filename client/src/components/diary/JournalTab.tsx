@@ -5,10 +5,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  BookHeart, Plus, Search, X, Heart, Tag, Trash2, Edit2,
-  Sparkles, RefreshCw, Calendar, ChevronDown, Filter, Star
+  BookHeart, Plus, Search, X, Trash2,
+  Sparkles, RefreshCw, Calendar, Filter, Star
 } from '@/components/ui/icons'
-import { useDiaryEntries, useWritingPrompts, useDiaryStreaks } from '@/hooks/useDiary'
+import { useDiaryEntries, useWritingPrompts } from '@/hooks/useDiary'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
 
@@ -231,7 +231,6 @@ export function JournalTab() {
   const { t } = useTranslation()
   const { entries, isLoading, createEntry, deleteEntry, toggleFavorite } = useDiaryEntries()
   const { prompt, getNewPrompt, isLoading: promptLoading } = useWritingPrompts()
-  const { currentStreak, totalEntries, totalWords } = useDiaryStreaks()
   const [isWriteModalOpen, setIsWriteModalOpen] = useState(false)
   const [selectedEntry, setSelectedEntry] = useState<DiaryEntry | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
@@ -282,32 +281,7 @@ export function JournalTab() {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Quick Stats */}
-      <div className="grid grid-cols-3 gap-2 sm:gap-4">
-        <Card className="p-3 sm:p-4 bg-gradient-to-br from-violet-50 to-purple-50 border-violet-100">
-          <div className="flex items-center gap-1 sm:gap-2 text-violet-600 mb-1">
-            <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="text-xs sm:text-sm font-medium">Streak</span>
-          </div>
-          <p className="text-lg sm:text-2xl font-bold text-violet-700">{currentStreak} 🔥</p>
-        </Card>
-        <Card className="p-3 sm:p-4">
-          <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
-            <BookHeart className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="text-xs sm:text-sm font-medium">Inlägg</span>
-          </div>
-          <p className="text-lg sm:text-2xl font-bold text-slate-900">{totalEntries}</p>
-        </Card>
-        <Card className="p-3 sm:p-4">
-          <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
-            <Edit2 className="w-3 h-3 sm:w-4 sm:h-4" />
-            <span className="text-xs sm:text-sm font-medium">Ord</span>
-          </div>
-          <p className="text-lg sm:text-2xl font-bold text-slate-900">{totalWords.toLocaleString()}</p>
-        </Card>
-      </div>
-
+    <div className="space-y-5">
       {/* Writing Prompt */}
       {prompt && (
         <Card className="p-5 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
