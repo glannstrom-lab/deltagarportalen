@@ -374,6 +374,8 @@
     "tabs": {
       "search": "Search jobs",
       "saved": "Saved",
+      "crm": "CRM",
+      "culture": "Culture",
       "applications": "Applications",
       "alerts": "Alerts",
       "matches": "Matches"

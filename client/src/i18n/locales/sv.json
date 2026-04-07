@@ -405,13 +405,6 @@
       "createProfileDesc": "För att hitta de bästa matchningarna behöver vi veta mer om dig.",
       "analyzing": "Analyserar din profil och hittar matchningar..."
     },
-    "tabs": {
-      "search": "Sök jobb",
-      "saved": "Sparade",
-      "applications": "Ansökningar",
-      "alerts": "Bevakningar",
-      "matches": "Matchningar"
-    },
     "writeLetter": "Skriv brev",
     "writePersonalLetter": "Skriv personligt brev",
     "somethingWentWrong": "Något gick fel"
