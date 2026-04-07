@@ -995,6 +995,31 @@
         "workingmemory": { "title": "Working memory", "description": "Remember instructions while doing something else" },
         "distractedreading": { "title": "Distracted reading", "description": "Read and understand text with background noise" }
       }
+    },
+    "consent": {
+      "fullTitle": "Health Data Consent",
+      "fullDesc": "To use the diary and health features, we need your consent to collect and store sensitive health data.",
+      "whatWeCollect": "What we collect",
+      "item": {
+        "mood": "Mood and emotions",
+        "energy": "Energy levels",
+        "sleep": "Sleep quality",
+        "diary": "Diary entries",
+        "gratitude": "Gratitude notes"
+      },
+      "whyWeCollect": "Why we collect this",
+      "whyDesc": "The data is used to give you personal insights about your wellbeing and to customize recommendations during your job search. We analyze trends to help you understand what affects your mood.",
+      "whoHasAccess": "Who has access",
+      "whoAccessDesc": "Only you and your counselor (if you have one) can see your health data. Data is never shared with employers or third parties.",
+      "dataProtection": "Your data is protected under GDPR and stored securely in the EU. You can export or delete all your data at any time.",
+      "canWithdraw": "You can withdraw your consent at any time",
+      "withdrawDetail1": "Go to Settings > Privacy",
+      "withdrawDetail2": "All your health data can be deleted upon request",
+      "withdrawDetail3": "Withdrawing consent does not affect previously stored data",
+      "grantConsent": "I consent",
+      "goToSettings": "Manage in settings",
+      "privacyLink": "Read more in our ",
+      "privacyPolicy": "privacy policy"
     }
   },
   "education": {

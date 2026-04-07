@@ -1044,6 +1044,31 @@
         "workingmemory": { "title": "Arbetsminne", "description": "Kom ihåg instruktioner medan du gör något annat" },
         "distractedreading": { "title": "Distraherad läsning", "description": "Läsa och förstå text med bakgrundsljud" }
       }
+    },
+    "consent": {
+      "fullTitle": "Samtycke för hälsodata",
+      "fullDesc": "För att använda dagboken och hälsofunktionerna behöver vi ditt samtycke att samla in och lagra känslig hälsodata.",
+      "whatWeCollect": "Vad vi samlar in",
+      "item": {
+        "mood": "Humör och känslor",
+        "energy": "Energinivåer",
+        "sleep": "Sömnkvalitet",
+        "diary": "Dagboksanteckningar",
+        "gratitude": "Tacksamhetsnoteringar"
+      },
+      "whyWeCollect": "Varför vi samlar in detta",
+      "whyDesc": "Datan används för att ge dig personliga insikter om ditt välmående och för att anpassa rekommendationer under din jobbsökning. Vi analyserar trender för att hjälpa dig förstå vad som påverkar ditt mående.",
+      "whoHasAccess": "Vem har tillgång",
+      "whoAccessDesc": "Endast du och din handledare (om du har en) kan se din hälsodata. Datan delas aldrig med arbetsgivare eller tredje parter.",
+      "dataProtection": "Din data skyddas enligt GDPR och lagras säkert i EU. Du kan när som helst exportera eller radera all din data.",
+      "canWithdraw": "Du kan när som helst återkalla ditt samtycke",
+      "withdrawDetail1": "Gå till Inställningar > Sekretess",
+      "withdrawDetail2": "All din hälsodata kan raderas på begäran",
+      "withdrawDetail3": "Återkallat samtycke påverkar inte tidigare lagrad data",
+      "grantConsent": "Jag samtycker",
+      "goToSettings": "Hantera i inställningar",
+      "privacyLink": "Läs mer i vår ",
+      "privacyPolicy": "integritetspolicy"
     }
   },
   "education": {
