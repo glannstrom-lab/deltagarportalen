@@ -149,7 +149,7 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
     color: 'text-amber-700',
     bgColor: 'bg-amber-100',
     borderColor: 'border-amber-300',
-    icon: 'Gift',
+    icon: 'Trophy',
     order: 7,
     isTerminal: false
   },

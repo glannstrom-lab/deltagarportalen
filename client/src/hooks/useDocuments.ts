@@ -4,7 +4,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query'
-import { supabaseApi } from '@/services/supabaseApi'
+import { cvApi, coverLetterApi } from '@/services/supabaseApi'
 
 export interface CVVersion {
   id: string
@@ -31,7 +31,7 @@ export function useDocuments() {
   } = useQuery({
     queryKey: ['cv-versions'],
     queryFn: async () => {
-      const versions = await supabaseApi.cv.getVersions()
+      const versions = await cvApi.getVersions()
       return versions as CVVersion[]
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -45,7 +45,7 @@ export function useDocuments() {
   } = useQuery({
     queryKey: ['cover-letters'],
     queryFn: async () => {
-      const letters = await supabaseApi.coverLetters.getAll()
+      const letters = await coverLetterApi.getAll()
       return letters as CoverLetter[]
     },
     staleTime: 5 * 60 * 1000, // 5 minutes
@@ -64,7 +64,7 @@ export function useCVVersion(id: string | null | undefined) {
     queryKey: ['cv-version', id],
     queryFn: async () => {
       if (!id) return null
-      const data = await supabaseApi.cv.restoreVersion(id)
+      const data = await cvApi.restoreVersion(id)
       return data
     },
     enabled: !!id,
@@ -77,7 +77,7 @@ export function useCoverLetter(id: string | null | undefined) {
     queryKey: ['cover-letter', id],
     queryFn: async () => {
       if (!id) return null
-      const data = await supabaseApi.coverLetters.getById(id)
+      const data = await coverLetterApi.getById(id)
       return data as CoverLetter | null
     },
     enabled: !!id,

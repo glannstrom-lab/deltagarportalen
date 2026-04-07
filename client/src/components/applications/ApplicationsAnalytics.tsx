@@ -7,7 +7,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   TrendingUp, TrendingDown, BarChart3, PieChart,
-  Clock, CheckCircle, XCircle, Send, Users, Gift,
+  Clock, CheckCircle, XCircle, Send, Users, Trophy,
   Calendar, Target, Briefcase, ArrowRight
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
@@ -134,7 +134,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
       { label: 'Telefonintervju', count: phone, icon: Users },
       { label: 'Intervju', count: interview, icon: Users },
       { label: 'Arbetsprov', count: assessment, icon: Briefcase },
-      { label: 'Erbjudande', count: offer, icon: Gift },
+      { label: 'Erbjudande', count: offer, icon: Trophy },
       { label: 'Accepterat', count: accepted, icon: CheckCircle },
     ].filter(s => s.count > 0 || total > 0)
   }, [applicationsByStatus])

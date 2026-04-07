@@ -6,7 +6,7 @@
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
-  Clock, Send, Phone, Users, Gift, XCircle, CheckCircle,
+  Clock, Send, Phone, Users, Trophy, XCircle, CheckCircle,
   MessageSquare, Bell, User, FileText, Archive, Sparkles, Eye
 } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
@@ -37,7 +37,7 @@ const EVENT_CONFIG: Record<HistoryEventType, {
   contact_added: { icon: User, color: 'text-cyan-600', bgColor: 'bg-cyan-100', label: 'Kontakt tillagd' },
   contact_updated: { icon: User, color: 'text-cyan-600', bgColor: 'bg-cyan-100', label: 'Kontakt uppdaterad' },
   interview_scheduled: { icon: Users, color: 'text-violet-600', bgColor: 'bg-violet-100', label: 'Intervju bokad' },
-  offer_received: { icon: Gift, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Erbjudande mottaget' },
+  offer_received: { icon: Trophy, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Erbjudande mottaget' },
   archived: { icon: Archive, color: 'text-slate-600', bgColor: 'bg-slate-100', label: 'Arkiverad' }
 }
 

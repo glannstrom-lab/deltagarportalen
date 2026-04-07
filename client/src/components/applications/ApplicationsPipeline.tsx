@@ -7,7 +7,7 @@ import { useState, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Plus, Filter, ChevronDown, AlertCircle,
-  Sparkles, Bookmark, Send, Eye, Phone, Users, FileCheck, Gift
+  Sparkles, Bookmark, Send, Eye, Phone, Users, FileCheck, Trophy
 } from '@/components/ui/icons'
 import { Button, Card } from '@/components/ui'
 import { cn } from '@/lib/utils'
@@ -36,7 +36,7 @@ const STATUS_ICONS: Record<ApplicationStatus, React.ElementType> = {
   phone: Phone,
   interview: Users,
   assessment: FileCheck,
-  offer: Gift,
+  offer: Trophy,
   accepted: Sparkles,
   rejected: AlertCircle,
   withdrawn: AlertCircle
