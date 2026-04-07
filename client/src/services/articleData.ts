@@ -7980,6 +7980,1701 @@ Stress under jobbsökning är normalt – du är inte svag för att du känner d
     authorTitle: 'Beteendevetare',
   },
 
+  // === NYA ARTIKLAR JUNI 2024 ===
+
+  {
+    id: 'jobbsokar-ordlista',
+    title: 'Jobbsökarens ordlista - viktiga begrepp',
+    summary: 'En komplett ordlista med över 30 viktiga begrepp och termer du stöter på under jobbsökningen.',
+    content: `# Jobbsökarens ordlista - viktiga begrepp
+
+Att söka jobb innebär att navigera en värld full av förkortningar, facktermer och branschspecifika begrepp. Här har vi samlat de viktigaste termerna du behöver känna till.
+
+## A
+
+**A-kassa (Arbetslöshetskassa)**
+En försäkring som ger dig ersättning om du blir arbetslös. Du måste vara medlem i en a-kassa för att få ersättning. Det finns olika a-kassor för olika branscher.
+
+**Aktivitetsrapport**
+Månatlig rapport till Arbetsförmedlingen om dina jobbsökaraktiviteter. Visar att du aktivt söker arbete.
+
+**Allmän visstid**
+En tidsbegränsad anställning utan särskilt skäl. Kan pågå max 12 månader under en 5-årsperiod innan den automatiskt övergår till tillsvidare.
+
+**Anställningsbevis**
+Skriftligt dokument som bekräftar din anställning och villkoren för den.
+
+**Arbetsgivaravgift**
+Avgifter som arbetsgivaren betalar utöver din lön (ca 31,42% av bruttolönen).
+
+**ATS (Applicant Tracking System)**
+Digitalt system som arbetsgivare använder för att hantera jobbansökningar. Filtrerar och sorterar CV:n baserat på nyckelord.
+
+## B
+
+**Behovsanställning**
+Anställning där du kallas in vid behov, utan fast schema. Kallas även timanställning.
+
+**Bruttolön**
+Din lön före skatt och avgifter.
+
+**Bristyrke**
+Yrke där det finns fler lediga jobb än kvalificerade sökande.
+
+## C
+
+**Cv (Curriculum Vitae)**
+Dokument som sammanfattar din utbildning, arbetslivserfarenhet och kompetenser.
+
+## D
+
+**Diskrimineringslagen**
+Lag som skyddar dig mot diskriminering i arbetslivet baserat på kön, könsöverskridande identitet, etnisk tillhörighet, religion, funktionsnedsättning, sexuell läggning eller ålder.
+
+## E
+
+**Egenanställning**
+Du är anställd av ett egenanställningsföretag men arbetar för egna kunder. Företaget sköter fakturering och administration.
+
+## F
+
+**Fast anställning**
+Se tillsvidareanställning.
+
+**Friskvårdsbidrag**
+Skattefri förmån för träning och hälsa. Maxbeloppet är 5 000 kr per år.
+
+**Förtroendearbetstid**
+Arbetstid utan registrering där du själv ansvarar för att arbetet blir gjort.
+
+## G
+
+**Gig-ekonomi**
+Arbetsmarknad präglad av kortvariga uppdrag och frilansarbete istället för fasta anställningar.
+
+## H
+
+**Headhunter**
+Rekryterare som aktivt söker upp och kontaktar kandidater för specifika tjänster.
+
+**Heltid**
+Arbetstid motsvarande 40 timmar per vecka (eller vad som anges i kollektivavtal).
+
+## I
+
+**Introduktionsavtal**
+Avtal mellan arbetsmarknadens parter som ger nyanlända eller unga utan erfarenhet möjlighet att etablera sig.
+
+## K
+
+**Kollektivavtal**
+Avtal mellan fackförbund och arbetsgivare som reglerar löner, arbetstider, semester och andra villkor.
+
+**Kompetensprofil**
+Sammanställning av dina kunskaper, färdigheter och erfarenheter.
+
+**Konkurrensklausul**
+Avtalspunkt som begränsar din möjlighet att arbeta för konkurrerande företag efter anställningens slut.
+
+## L
+
+**LAS (Lagen om anställningsskydd)**
+Lag som reglerar uppsägning, provanställning och anställningsformer i Sverige.
+
+**Löneväxling**
+Du byter en del av bruttolönen mot en förmån, t.ex. extra pension eller friskvård.
+
+## M
+
+**Medarbetarsamtal**
+Strukturerat samtal mellan chef och medarbetare om arbete, utveckling och trivsel.
+
+## N
+
+**Nettolön**
+Din lön efter skatt – det du faktiskt får utbetalt.
+
+**Nystartsjobb**
+Subventionerad anställning för personer som stått utanför arbetsmarknaden en längre tid. Arbetsgivaren får ekonomiskt stöd.
+
+## O
+
+**OB-tillägg (Obekväm arbetstid)**
+Extra ersättning för arbete på kvällar, nätter och helger.
+
+**Omställningsstöd**
+Stöd vid uppsägning, t.ex. från TRR eller TSL, som hjälper dig hitta nytt jobb.
+
+## P
+
+**Praktik**
+Oavlönad arbetsträning för att få erfarenhet eller prova ett yrke.
+
+**Provanställning**
+Inledande anställning (max 6 månader) där både du och arbetsgivaren kan avsluta utan uppsägningstid.
+
+## R
+
+**Referens**
+Person som kan intyga din kompetens och lämplighet för en arbetsgivare.
+
+**Rekommendationsbrev**
+Skriftligt intyg från tidigare arbetsgivare eller kontakt som beskriver dina kvaliteter.
+
+## S
+
+**Semesterersättning**
+Ekonomisk ersättning istället för betalda semesterdagar, vanligt vid timanställning.
+
+**Sjuklön**
+Lön du får från arbetsgivaren vid sjukdom (dag 2-14).
+
+**STAR-metoden**
+Intervjuteknik: Situation, Task (uppgift), Action (handling), Result (resultat).
+
+**Spontanansökan**
+Ansökan till företag utan att de har en utlyst tjänst.
+
+## T
+
+**Tillsvidareanställning**
+Anställning utan slutdatum som gäller tills någon säger upp den. Fast anställning.
+
+**Tjänstepension**
+Pension som arbetsgivaren betalar in utöver den allmänna pensionen.
+
+**Turordning**
+Regler i LAS om i vilken ordning anställda sägs upp ("sist in, först ut").
+
+## U
+
+**Uppsägningstid**
+Tiden mellan uppsägning och sista arbetsdag. Regleras i avtal eller lag.
+
+## V
+
+**Validering**
+Process för att få dina kunskaper och erfarenheter bedömda och dokumenterade formellt.
+
+**Vikariat**
+Tidsbegränsad anställning där du ersätter någon som är frånvarande.
+
+**Visstidsanställning**
+Samlingsbegrepp för tidsbegränsade anställningar.
+
+## Y
+
+**Yrkesbevis**
+Formellt dokument som visar att du har kompetens inom ett specifikt yrke.
+
+## Tips för att använda ordlistan
+
+1. **Spara sidan** – återvänd när du stöter på nya begrepp
+2. **Fråga din arbetskonsulent** om du är osäker på vad något innebär för just din situation
+3. **Läs kollektivavtalet** för din bransch – där finns specifika termer och villkor
+
+Stöter du på ett begrepp som saknas? Berätta för din arbetskonsulent så kan vi utöka listan!`,
+    category: 'tools',
+    subcategory: 'glossary',
+    tags: ['ordlista', 'begrepp', 'termer', 'förkortningar', 'ATS', 'LAS', 'kollektivavtal', 'jobbsökning'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 10,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    relatedArticles: ['ordlista-begrepp', 'anstallningsformer-guide', 'rattigheter-stod'],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
+  {
+    id: 'sociala-medier-jobbsokning',
+    title: 'Sociala medier i jobbsökningen - mer än bara LinkedIn',
+    summary: 'Hur du använder Instagram, Twitter/X, TikTok och andra plattformar professionellt och skyddar din integritet.',
+    content: `# Sociala medier i jobbsökningen - mer än bara LinkedIn
+
+LinkedIn är inte det enda sociala mediet som spelar roll i din jobbsökning. Allt fler arbetsgivare tittar på kandidaters närvaro på andra plattformar. Här är hur du använder dem smart.
+
+## Varför spelar andra sociala medier roll?
+
+### Arbetsgivare kollar dig
+Studier visar att över 70% av svenska arbetsgivare googlar kandidater. De hittar ofta:
+- Dina offentliga Instagram-inlägg
+- Dina Twitter/X-kommentarer
+- TikTok-videor du skapat
+- Kommentarer i olika forum
+
+### Det kan vara positivt
+Rätt använt visar sociala medier:
+- Din personlighet bortom CV:t
+- Dina intressen och engagemang
+- Att du är digitalt kompetent
+- Din branschkunskap
+
+## Instagram för jobbsökning
+
+### Professionell användning
+- **Följ företag** du vill jobba på
+- **Engagera dig** i deras inlägg (genomtänkta kommentarer)
+- **Dela** relevant innehåll om din bransch
+- **Visa** projekt och resultat (portfolio-stil)
+
+### Vad du INTE bör göra
+- Klaga på nuvarande/tidigare arbetsgivare
+- Dela olämpligt innehåll offentligt
+- Ha ett användarnamn som ser oprofessionellt ut
+
+### Tips för sekretess
+1. Gå till Inställningar > Sekretess
+2. Sätt kontot till "Privat" om du vill begränsa
+3. Granska taggade bilder regelbundet
+4. Ta bort gamla pinsamma inlägg
+
+## Twitter/X för jobbsökning
+
+### Så kan du använda det smart
+- **Följ** branschledare och företag
+- **Delta** i relevanta diskussioner
+- **Dela** artiklar och insikter
+- **Använd hashtags** som #svpol, #techsverige eller branschspecifika
+
+### Bygg ett professionellt rykte
+1. Skriv en tydlig bio med din yrkestitel
+2. Ha en professionell profilbild
+3. Twittra regelbundet om din bransch
+4. Retweeta klokt – det säger något om dig
+
+### Varning
+- Undvik politiska extremer om du inte vill kopplas till dem
+- Tänk på att gamla tweets kan grävas fram
+- Använd Twitters avancerade sökning för att rensa gammalt
+
+## TikTok i jobbsökningen
+
+### Nya möjligheter
+TikTok har vuxit som rekryteringskanal:
+- Företag visar företagskultur
+- "Day in the life"-videor
+- Jobbmässor på TikTok Live
+- #CareerTok och #JobTok är stora
+
+### Ska du ha en professionell TikTok?
+Passar om du:
+- Söker jobb inom kreativa branscher
+- Är bekväm framför kamera
+- Har något unikt att visa
+
+### Om du INTE vill synas
+- Sätt kontot på privat
+- Använd inte ditt riktiga namn
+- Var medveten om att algoritmerna ändå kan sprida ditt innehåll
+
+## Facebook – fortfarande relevant?
+
+### Ja, för vissa saker
+- **Branschgrupper** – många branscher har aktiva Facebookgrupper
+- **Jobbgrupper** – "Lediga jobb i [stad]" är populära
+- **Företagssidor** – följ företag du är intresserad av
+- **Nätverkande** – äldre rekryterare använder ofta Facebook
+
+### Säkra din Facebook
+1. Gå till Inställningar > Sekretess
+2. Sätt "Vem kan se dina framtida inlägg" till "Vänner"
+3. Begränsa gamla inlägg
+4. Stäng av sökbarhet via e-post/telefon
+5. Granska vad andra ser via "Visa som"
+
+## Generella tips för alla plattformar
+
+### Gör en digital rensning
+1. Googla ditt namn – vad kommer upp?
+2. Gå igenom varje plattform
+3. Ta bort/dölj olämpligt innehåll
+4. Uppdatera profilbilder till professionella
+
+### Konsekvent personligt varumärke
+- Samma profilbild överallt (igenkänning)
+- Samma bio/beskrivning av vad du gör
+- Länka mellan plattformar strategiskt
+
+### Vad arbetsgivare reagerar negativt på
+- Alkohol och festbilder
+- Klagomål på arbetsgivare
+- Diskriminerande eller hatiska kommentarer
+- Stavfel och slarvigt språk
+- Överdriven negativitet
+
+### Vad arbetsgivare reagerar positivt på
+- Engagemang i branschen
+- Professionell ton
+- Kreativitet och personlighet (balanserat)
+- Volontärarbete och samhällsengagemang
+
+## Så hanterar du om arbetsgivaren frågar efter dina sociala medier
+
+### De får fråga – men du väljer
+Du har ingen skyldighet att:
+- Bli vän/följare med arbetsgivaren
+- Visa privata konton
+- Avslöja anonyma konton
+
+### Taktiska svar
+- "Jag håller mitt privatliv privat, men du kan följa mig på LinkedIn"
+- "Här är min professionella Twitter där jag delar branschnyheter"
+- "Jag använder sociala medier privat med vänner"
+
+## Skapa en strategi
+
+### Steg 1: Inventera
+Lista alla dina sociala medier-konton (även gamla, glömda)
+
+### Steg 2: Kategorisera
+Dela in dem i:
+- Professionella (öppna)
+- Privata (stängda)
+- Att radera
+
+### Steg 3: Rensa
+Gå igenom och rensa de senaste 2-3 årens innehåll
+
+### Steg 4: Bygg
+Börja medvetet bygga din professionella närvaro
+
+## Sammanfattning
+
+Sociala medier är ett tveeggat svärd i jobbsökningen. Använd dem medvetet:
+
+1. **Granska** vad arbetsgivare kan hitta om dig
+2. **Rensa** olämpligt innehåll
+3. **Säkra** privata konton
+4. **Bygg** en professionell närvaro där det passar
+
+Kom ihåg: Det handlar inte om att vara perfekt eller opersonlig – utan om att medvetet välja vad du vill visa arbetsgivare.`,
+    category: 'digital-presence',
+    subcategory: 'social-media',
+    tags: ['sociala medier', 'Instagram', 'Twitter', 'TikTok', 'Facebook', 'integritet', 'digital närvaro', 'personligt varumärke'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 12,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['linkedin-guide', 'personligt-varumarke', 'sociala-medier-jobbsok'],
+    author: 'Amanda Lindgren',
+    authorTitle: 'Digital strateg',
+  },
+
+  {
+    id: 'arbetsmarknadstrender-nu',
+    title: 'Arbetsmarknadstrender - vad händer just nu?',
+    summary: 'De största trenderna som formar arbetsmarknaden: AI, distansarbete, gig-ekonomi och gröna jobb.',
+    content: `# Arbetsmarknadstrender - vad händer just nu?
+
+Arbetsmarknaden förändras snabbare än någonsin. Här är de viktigaste trenderna du behöver känna till för att ligga steget före.
+
+## AI och automatisering
+
+### Vad händer?
+Artificiell intelligens förändrar arbetsmarknaden i grunden:
+- Rutinuppgifter automatiseras
+- Nya yrken skapas
+- Befintliga jobb transformeras
+- Produktiviteten ökar
+
+### Yrken som påverkas mest
+**Risk för automatisering:**
+- Kassapersonal och butiksbiträden
+- Vissa administrativa roller
+- Enkla analysjobb
+- Delar av kundtjänst
+
+**Växer tack vare AI:**
+- AI-specialister och dataingenjörer
+- Prompt engineers
+- AI-etiker
+- Automationsspecialister
+
+### Vad du kan göra
+1. **Lär dig AI-verktyg** – ChatGPT, Copilot, branschspecifika verktyg
+2. **Fokusera på "mänskliga" färdigheter** – kreativitet, empati, komplex problemlösning
+3. **Var flexibel** – var beredd att lära nytt kontinuerligt
+
+## Distansarbete och hybridmodeller
+
+### Nuläget
+Efter pandemin har arbetslivet förändrats:
+- Många jobb är nu helt eller delvis på distans
+- Hybridarbete (del kontor, del hemma) är vanligast
+- Arbetsgivare testar olika modeller
+
+### Fördelar och utmaningar
+**Fördelar:**
+- Flexibilitet och work-life balance
+- Sparad pendlingstid
+- Bredare arbetsmarknad (du kan jobba för företag i andra städer)
+
+**Utmaningar:**
+- Svårare att bygga relationer
+- Kräver självdisciplin
+- Risk för isolering
+- Inte alla jobb passar
+
+### Tips för distansjobb
+- Lyft fram din förmåga att arbeta självständigt i CV:t
+- Ha konkreta exempel på framgångsrikt distansarbete
+- Visa digital kompetens
+
+## Gig-ekonomin växer
+
+### Vad är gig-ekonomi?
+Kortvariga uppdrag och frilansarbete istället för fasta anställningar:
+- Plattformsbaserade jobb (Uber, Foodora, Upwork)
+- Frilansande specialister
+- Konsultuppdrag
+- Projektanställningar
+
+### Trender
+- Fler väljer gig-arbete frivilligt
+- Plattformarna blir fler och större
+- Diskussion om reglering och rättigheter
+
+### Passar det dig?
+**Fördelar:**
+- Flexibilitet
+- Variation
+- Kontroll över din tid
+
+**Nackdelar:**
+- Ingen fast inkomst
+- Svagare socialt skydd
+- Du måste marknadsföra dig själv
+
+## Gröna jobb och hållbarhet
+
+### Omställningen skapar jobb
+Klimatomställningen driver efterfrågan på:
+- Solcells- och vindkraftstekniker
+- Energirådgivare
+- Hållbarhetschefer
+- Miljökonsulter
+- Elektriker (elbilar, laddinfrastruktur)
+- Cirkulär ekonomi-specialister
+
+### Branscher i tillväxt
+- Förnybar energi
+- Hållbart byggande
+- Elektrifiering av transporter
+- Återvinning och återbruk
+
+### Hur du positionerar dig
+- Lyft fram eventuell hållbarhetskompetens
+- Ta kurser inom miljö och hållbarhet
+- Visa engagemang för klimatfrågor (om genuint)
+
+## Kompetenser som efterfrågas 2024
+
+### Tekniska färdigheter
+1. Digital kompetens (självklar förutsättning)
+2. Dataanalys och dataförståelse
+3. AI-verktyg och automation
+4. Cybersäkerhet
+5. Programmering (i många branscher)
+
+### Mjuka färdigheter
+1. Anpassningsförmåga
+2. Kritiskt tänkande
+3. Kommunikation (även digitalt)
+4. Samarbete över gränser
+5. Emotionell intelligens
+
+### Kombinationer som är värdefulla
+- Teknisk + affärskompetens
+- Data + kommunikation
+- Specialistkunskap + ledarskap
+
+## Bristyrken just nu
+
+### Vård och omsorg
+- Sjuksköterskor
+- Undersköterskor
+- Läkare
+- Specialistsjuksköterskor
+
+### IT och tech
+- Systemutvecklare
+- IT-säkerhetsspecialister
+- DevOps-ingenjörer
+- Data scientists
+
+### Bygg och installation
+- Elektriker
+- VVS-montörer
+- Snickare
+- Byggprojektledare
+
+### Utbildning
+- Lärare (alla stadier)
+- Förskollärare
+- Specialpedagoger
+
+## Så navigerar du trenderna
+
+### 1. Håll dig uppdaterad
+- Läs branschnyheter
+- Följ Arbetsförmedlingens prognoser
+- Prenumerera på nyhetsbrev i din bransch
+
+### 2. Investera i lärande
+- Avsätt tid för kompetensutveckling varje vecka
+- Ta gratiskurser online
+- Gå på webbinarier och branschevent
+
+### 3. Bygg ett brett nätverk
+- Personer i din bransch
+- Personer i angränsande branscher
+- Rekryterare och headhunters
+
+### 4. Var strategisk
+- Välj en nisch eller bred profil medvetet
+- Positionera dig mot växande områden
+- Var beredd att ställa om
+
+## Sammanfattning
+
+Arbetsmarknaden 2024 präglas av:
+- **AI** – lär dig verktygen och fokusera på mänskliga styrkor
+- **Flexibilitet** – distans- och hybridarbete är här för att stanna
+- **Gig-ekonomi** – fler korta uppdrag, mer eget ansvar
+- **Hållbarhet** – gröna jobb växer explosivt
+
+Den som lyckas är den som kombinerar:
+- Teknisk grundkompetens
+- Mjuka färdigheter
+- Kontinuerligt lärande
+- Anpassningsförmåga
+
+Framtiden tillhör de nyfikna och flexibla!`,
+    category: 'job-market',
+    subcategory: 'trends',
+    tags: ['trender', 'arbetsmarknad', 'AI', 'distansarbete', 'gig-ekonomi', 'gröna jobb', 'kompetenser', 'framtid'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 10,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['branscher-brist', 'kompetensutveckling-guide', 'framtidens-arbetsmarknad'],
+    author: 'Karl Svensson',
+    authorTitle: 'Arbetsmarknadsanalytiker',
+  },
+
+  {
+    id: 'branschguide-vard-omsorg',
+    title: 'Branschguide: Vård och omsorg',
+    summary: 'Komplett guide till karriär inom vård och omsorg - utbildningsvägar, yrken, löner och framtidsutsikter.',
+    content: `# Branschguide: Vård och omsorg
+
+Vård- och omsorgssektorn är en av Sveriges största arbetsgivare med konstant behov av personal. Här är allt du behöver veta för att börja eller utvecklas i branschen.
+
+## Varför vård och omsorg?
+
+### Fördelar
+- **Stor efterfrågan** – bristyrke med många lediga jobb
+- **Meningsfullt arbete** – du gör skillnad i människors liv
+- **Trygg anställning** – behoven minskar inte
+- **Många vägar in** – olika utbildningsnivåer
+- **Karriärmöjligheter** – tydliga utvecklingsvägar
+
+### Utmaningar att vara medveten om
+- Fysiskt och psykiskt krävande
+- Ibland låg bemanning
+- Obekväma arbetstider vanligt
+- Lönerna kunde vara högre (men förbättras)
+
+## Vanliga yrken
+
+### Undersköterska
+**Vad du gör:**
+- Hjälper patienter med dagliga aktiviteter
+- Tar blodtryck och puls
+- Dokumenterar och rapporterar
+- Stödjer sjuksköterskor
+
+**Utbildning:** Vård- och omsorgsprogrammet (gymnasiet) eller komvux
+**Lön:** Ca 28 000 - 32 000 kr/mån
+**Efterfrågan:** Mycket hög
+
+### Sjuksköterska
+**Vad du gör:**
+- Utför medicinska behandlingar
+- Ger läkemedel
+- Leder omvårdnadsarbetet
+- Samordnar med läkare och andra
+
+**Utbildning:** Sjuksköterskeprogrammet (3 år högskola)
+**Lön:** Ca 35 000 - 42 000 kr/mån
+**Efterfrågan:** Mycket hög
+
+### Vårdbiträde
+**Vad du gör:**
+- Stödjer i vardagliga aktiviteter
+- Enklare omvårdnadsuppgifter
+- Socialt stöd
+
+**Utbildning:** Kortare utbildning eller lärs upp på arbetsplatsen
+**Lön:** Ca 25 000 - 28 000 kr/mån
+**Efterfrågan:** Hög
+
+### Personlig assistent
+**Vad du gör:**
+- Assisterar personer med funktionsnedsättning
+- Möjliggör ett självständigt liv
+- Varierande arbetsuppgifter
+
+**Utbildning:** Ingen formell krav, men kurser finns
+**Lön:** Ca 25 000 - 30 000 kr/mån
+**Efterfrågan:** Hög
+
+### Specialistsjuksköterska
+**Vad du gör:**
+- Fördjupad kompetens inom ett område
+- T.ex. intensivvård, anestesi, psykiatri, barn
+
+**Utbildning:** Sjuksköterskeexamen + specialistutbildning (1-2 år)
+**Lön:** Ca 42 000 - 50 000 kr/mån
+**Efterfrågan:** Mycket hög
+
+## Utbildningsvägar
+
+### Snabbaste vägen in
+1. **Vårdbiträde** – ingen formell utbildning krävs
+2. **SFI + vårdsvenska** – för dig som lärt dig svenska som vuxen
+3. **Arbetsförmedlingens utbildningar** – snabbutbildning till undersköterska
+
+### Gymnasieutbildning
+**Vård- och omsorgsprogrammet**
+- 3 år
+- Ger undersköterskeexamen
+- Inkluderar praktik (APL)
+
+### Vuxenutbildning (Komvux)
+- Undersköterska på 1-2 år
+- Flexibelt upplägg
+- Möjlighet att kombinera med arbete
+
+### Högskoleutbildning
+- Sjuksköterska: 3 år
+- Arbetsterapeut: 3 år
+- Fysioterapeut: 3 år
+- Läkare: 5,5 år + AT
+
+### Yrkeshögskola (YH)
+- Specialistundersköterska
+- Vårdadministratör
+- Medicinskt kontorsbiträde
+
+## Arbetsgivare
+
+### Offentlig sektor
+- Regioner (sjukhus)
+- Kommuner (äldreomsorg, hemtjänst)
+
+**Fördelar:**
+- Kollektivavtal
+- Pensionsförmåner
+- Trygghet
+
+### Privat sektor
+- Privata vårdföretag
+- Bemanningsföretag
+- Privata äldreboenden
+
+**Fördelar:**
+- Ibland högre lön
+- Flexibilitet
+- Variation
+
+## Karriärutveckling
+
+### Vertikal utveckling
+1. Vårdbiträde → Undersköterska
+2. Undersköterska → Sjuksköterska
+3. Sjuksköterska → Specialistsjuksköterska
+4. Sjuksköterska → Chef/verksamhetsutvecklare
+
+### Horisontell utveckling
+- Byt arbetsplats (sjukhus → hemsjukvård → psykiatri)
+- Byt patientgrupp
+- Gå in i utbildning/handledning
+
+### Nischområden
+- Palliativ vård
+- Demens
+- Psykiatri
+- Barn och unga
+- Beroendevård
+
+## Tips för att komma in i branschen
+
+### Om du saknar utbildning
+1. Börja som vikarie eller timvikarie
+2. Ta korta kurser (första hjälpen, demens)
+3. Sök vårdbiträdestjänster
+4. Visa engagemang och lär dig på jobbet
+
+### Om du har utländsk utbildning
+1. Kontakta Socialstyrelsen för validering
+2. Komplettera eventuella luckor
+3. Ta språkkurser inom vårdsvenska
+4. Gör praktik för svenska referenser
+
+### Volontärarbete
+- Röda Korset
+- Stadsmissionen
+- Frivilligorganisationer
+- Ger erfarenhet och referenser
+
+## Löner och förmåner
+
+### Lönestatistik (månadslön)
+| Yrke | Ingångslön | Erfaren |
+|------|------------|---------|
+| Vårdbiträde | 25 000 | 28 000 |
+| Undersköterska | 28 000 | 32 000 |
+| Sjuksköterska | 35 000 | 42 000 |
+| Specialistsjuksköterska | 42 000 | 50 000 |
+
+### Förmåner att förhandla
+- OB-tillägg (kvällar/nätter/helger)
+- Friskvårdsbidrag
+- Pension
+- Arbetstidsförkortning
+
+## Framtidsutsikter
+
+### Varför efterfrågan ökar
+- Befolkningen åldras
+- Fler behöver vård
+- Pensionsavgångar
+- Utbyggnad av välfärden
+
+### Prognos 2024-2030
+- Fortsatt stor brist på personal
+- Ökad lönenivå (för att attrahera personal)
+- Mer teknik och digitalisering
+- Nya arbetsformer (mer hemsjukvård)
+
+## Sammanfattning
+
+Vård och omsorg är en bransch där:
+- Det finns jobb att få
+- Du gör meningsfullt arbete
+- Det finns tydliga karriärvägar
+- Efterfrågan bara ökar
+
+Är du intresserad av att arbeta med människor och vill ha en trygg karriär? Då kan vård och omsorg vara rätt för dig!`,
+    category: 'job-market',
+    subcategory: 'industries',
+    tags: ['vård', 'omsorg', 'undersköterska', 'sjuksköterska', 'bristyrke', 'karriär', 'utbildning', 'branschguide'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 8,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    relatedArticles: ['branscher-brist', 'kompetensutveckling-guide', 'branschguide-it-tech'],
+    author: 'Maria Lindberg',
+    authorTitle: 'Branschexpert vård och omsorg',
+  },
+
+  {
+    id: 'branschguide-it-tech',
+    title: 'Branschguide: IT och tech',
+    summary: 'Karriärvägar inom IT - från utvecklare till UX-designer. Vilka kompetenser behövs, löner och hur du kommer in.',
+    content: `# Branschguide: IT och tech
+
+IT-branschen är en av de snabbast växande sektorerna med höga löner och stor efterfrågan. Här är din guide till att komma in och utvecklas.
+
+## Varför IT och tech?
+
+### Fördelar
+- **Höga löner** – bland de bäst betalda yrkena
+- **Stor efterfrågan** – konstant brist på kompetens
+- **Flexibilitet** – ofta möjlighet till distansarbete
+- **Variation** – många olika roller och inriktningar
+- **Innovation** – du jobbar med framtidens teknologi
+
+### Utmaningar
+- Snabb förändringstakt – kräver kontinuerligt lärande
+- Kan vara stressigt i vissa roller
+- Konkurrens om de mest attraktiva tjänsterna
+- Ibland långa arbetsdagar vid deadlines
+
+## Vanliga roller
+
+### Utvecklare/Programmerare
+
+**Frontend-utvecklare**
+- Bygger det användare ser (webbsidor, appar)
+- Tekniker: HTML, CSS, JavaScript, React, Vue
+- Lön: 40 000 - 55 000 kr/mån
+
+**Backend-utvecklare**
+- Bygger servrar, databaser, logik "bakom kulisserna"
+- Tekniker: Python, Java, Node.js, SQL
+- Lön: 45 000 - 60 000 kr/mån
+
+**Fullstack-utvecklare**
+- Kan både frontend och backend
+- Lön: 45 000 - 65 000 kr/mån
+
+### UX/UI-designer
+
+**Vad du gör:**
+- Designar användargränssnitt
+- Forskar om användarbeteende
+- Skapar prototyper och wireframes
+- Gör användartester
+
+**Verktyg:** Figma, Sketch, Adobe XD
+**Lön:** 38 000 - 52 000 kr/mån
+
+### Projektledare/Product Manager
+
+**Vad du gör:**
+- Leder IT-projekt
+- Koordinerar team
+- Prioriterar funktioner
+- Kommunicerar med stakeholders
+
+**Lön:** 50 000 - 70 000 kr/mån
+
+### Data scientist/Analytiker
+
+**Vad du gör:**
+- Analyserar stora mängder data
+- Bygger AI/ML-modeller
+- Hittar insikter och mönster
+- Presenterar resultat
+
+**Verktyg:** Python, R, SQL, Tableau
+**Lön:** 45 000 - 65 000 kr/mån
+
+### DevOps-ingenjör
+
+**Vad du gör:**
+- Automatiserar och optimerar utvecklingsprocesser
+- Hanterar molninfrastruktur
+- Säkerställer driftsäkerhet
+
+**Verktyg:** Docker, Kubernetes, AWS/Azure
+**Lön:** 50 000 - 70 000 kr/mån
+
+### IT-säkerhetsspecialist
+
+**Vad du gör:**
+- Skyddar system mot intrång
+- Identifierar säkerhetsrisker
+- Implementerar säkerhetslösningar
+- Hanterar incidenter
+
+**Lön:** 50 000 - 75 000 kr/mån
+
+## Utbildningsvägar
+
+### Självlärd (helt möjligt!)
+Många framgångsrika utvecklare är självlärda:
+1. Gratiskurser online (freeCodeCamp, Codecademy)
+2. YouTube-tutorials
+3. Egna projekt (portfolio)
+4. Bootcamps (3-6 månader intensivt)
+
+### Yrkeshögskola (YH)
+- 1-2 år
+- Praktik inkluderad
+- Arbetslivsanknuten
+- Hög anställningsgrad efter examen
+
+**Exempel på utbildningar:**
+- Webbutvecklare
+- Javautvecklare
+- IT-säkerhet
+- UX-designer
+
+### Högskola/Universitet
+- Datateknik: 3-5 år
+- Systemvetenskap: 3 år
+- Interaktionsdesign: 3 år
+- Data science: 2 år (master)
+
+### Certifieringar
+Värdefulla certifieringar:
+- AWS Certified (molntjänster)
+- Google Professional Certificate
+- Microsoft Azure
+- CISSP (säkerhet)
+- Scrum/Agile
+
+## Vägar in utan formell utbildning
+
+### 1. Bygg en portfolio
+- 3-5 projekt som visar dina färdigheter
+- GitHub-profil med kod
+- Live-demos av dina projekt
+- Case studies av processen
+
+### 2. Bidra till open source
+- Visa att du kan samarbeta
+- Bygg kontakter
+- Lär dig av erfarna utvecklare
+
+### 3. Gå en bootcamp
+- Intensiva kurser (3-6 månader)
+- Fokus på praktiska färdigheter
+- Ofta med jobbgaranti
+- Kostar pengar men går snabbt
+
+### 4. Ta en juniorroll eller praktik
+- Börja som junior
+- IT-support som inkörsport
+- Praktik via Arbetsförmedlingen
+
+## Mest efterfrågade kompetenser
+
+### Programmeringsspråk
+1. JavaScript/TypeScript
+2. Python
+3. Java
+4. C#
+5. Go
+
+### Ramverk och verktyg
+1. React / Angular / Vue
+2. Node.js
+3. Docker / Kubernetes
+4. Git
+5. AWS / Azure / Google Cloud
+
+### Mjuka färdigheter
+1. Problemlösning
+2. Kommunikation
+3. Samarbete (agila team)
+4. Självständighet
+5. Kontinuerligt lärande
+
+## Lönestatistik
+
+| Roll | Junior | Medel | Senior |
+|------|--------|-------|--------|
+| Frontend | 35 000 | 45 000 | 55 000+ |
+| Backend | 38 000 | 50 000 | 65 000+ |
+| Fullstack | 38 000 | 52 000 | 65 000+ |
+| UX-designer | 35 000 | 45 000 | 55 000+ |
+| DevOps | 42 000 | 55 000 | 70 000+ |
+| Data scientist | 40 000 | 52 000 | 70 000+ |
+
+*Löner varierar beroende på stad, företag och erfarenhet*
+
+## Arbetsgivare
+
+### Konsultbolag
+- HiQ, Sogeti, Accenture, Knowit
+- Variation i uppdrag
+- Bra för att lära sig snabbt
+- Konkurrenskraftiga löner
+
+### Produktbolag
+- Spotify, Klarna, iZettle
+- Jobbar med egen produkt
+- Ofta bra förmåner och kultur
+- Hög konkurrens
+
+### Startup
+- Småföretag i tillväxtfas
+- Stor påverkan, brett ansvar
+- Risk men potential
+- Ofta aktieoptioner
+
+### Offentlig sektor
+- Myndigheter, regioner, kommuner
+- Trygghet och balans
+- Meningsfullt arbete
+- Ofta något lägre löner
+
+## Tips för att lyckas
+
+### 1. Lär dig ständigt
+IT förändras snabbt – den som slutar lära sig halkar efter.
+- Avsätt tid varje vecka
+- Följ branschnytt
+- Delta i communities
+
+### 2. Nätverka
+- Gå på meetups och konferenser
+- Var aktiv på LinkedIn
+- Delta i online-communities (Discord, Slack)
+
+### 3. Bygg synlighet
+- Skriv blogg eller tekniska artiklar
+- Bidra till Stack Overflow
+- Håll presentationer (även internt)
+
+### 4. Specialisera eller bredda strategiskt
+- Välj en nisch och bli expert
+- ELLER bli T-formad (bred bas + en spets)
+
+## Framtidsutsikter
+
+### Växande områden
+- AI/Machine Learning
+- Cybersäkerhet
+- Cloud/DevOps
+- Data Engineering
+- AR/VR
+
+### Prognos
+- Fortsatt stor efterfrågan
+- AI förändrar men ersätter inte utvecklare
+- Molntjänster dominerar
+- Security blir allt viktigare
+
+## Sammanfattning
+
+IT-branschen erbjuder:
+- Höga löner och bra villkor
+- Många vägar in (även utan högskoleutbildning)
+- Stor efterfrågan på kompetens
+- Flexibilitet och variation
+
+Nyckeln till framgång: Var nyfiken, bygg saker, och sluta aldrig lära dig!`,
+    category: 'job-market',
+    subcategory: 'industries',
+    tags: ['IT', 'tech', 'programmering', 'utvecklare', 'UX', 'data science', 'karriär', 'branschguide'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 10,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['branscher-brist', 'kompetensutveckling-guide', 'branschguide-vard-omsorg'],
+    author: 'Jonas Andersson',
+    authorTitle: 'Tech-rekryterare',
+  },
+
+  {
+    id: 'mental-halsa-guide',
+    title: 'Mental hälsa under jobbsökningen',
+    summary: 'Hur du tar hand om din psykiska hälsa under jobbsökningen - varningssignaler, självhjälp och var du får stöd.',
+    content: `# Mental hälsa under jobbsökningen
+
+Att söka jobb kan vara psykiskt påfrestande. Avslag, osäkerhet och väntan tar på krafterna. Här är hur du tar hand om dig själv.
+
+## Det är normalt att det är tungt
+
+### Vanliga känslor
+- **Frustration** – varför får inte jag napp?
+- **Oro** – hur ska ekonomin gå ihop?
+- **Självtvivel** – är jag inte tillräckligt bra?
+- **Utmattning** – orken tar slut
+- **Ensamhet** – ingen förstår hur det är
+
+**Du är inte ensam.** Tusentals svenskar upplever samma sak varje dag.
+
+### Varför jobbsökning påverkar oss
+- Jobb är kopplat till identitet och självkänsla
+- Avslag känns personligt (även om det inte är det)
+- Osäkerhet är mentalt krävande
+- Brist på struktur kan göra att dagarna flyter ihop
+
+## Varningssignaler att vara uppmärksam på
+
+### Ta dig själv på allvar om du:
+- Har svårt att ta dig ur sängen flera dagar i rad
+- Inte orkar träffa vänner eller familj
+- Har svårt att koncentrera dig
+- Sover för mycket eller för lite
+- Tappar aptiten eller överäter
+- Känner hopplöshet som inte släpper
+- Har tankar på att skada dig själv
+
+### När du behöver söka hjälp
+Om något av ovanstående pågått i mer än två veckor – kontakta vården. Det är inte ett tecken på svaghet, det är att ta ansvar för din hälsa.
+
+## Strategier för självhjälp
+
+### 1. Struktur i vardagen
+Rutiner skapar trygghet:
+- Gå upp vid samma tid varje dag
+- Ha fasta "arbetstider" för jobbsökning
+- Planera in pauser och fritid
+- Behåll helgerna fria
+
+### 2. Rörelse
+Fysisk aktivitet är en kraftfull medicin:
+- 30 minuters promenad minskar ångest
+- Träning frisätter endorfiner
+- Du sover bättre
+- Du får energi
+
+**Tips:** Börja litet. En promenad runt kvarteret räknas.
+
+### 3. Social kontakt
+Isolering förvärrar måendet:
+- Boka in fika med vänner
+- Ring någon varje dag
+- Gå med i en jobbsökargrupp
+- Prata med din arbetskonsulent
+
+### 4. Begränsa jobbsökningen
+Det är kontraproduktivt att söka jobb hela dagarna:
+- Max 2-4 timmar fokuserad jobbsökning per dag
+- Ta ordentliga pauser
+- Ha aktiviteter som ger energi
+- Undvik att kolla jobbannonser på kvällen
+
+### 5. Självmedkänsla
+Prata med dig själv som du skulle prata med en vän:
+- "Det här är svårt, och jag gör mitt bästa"
+- "Ett avslag betyder inte att jag är värdelös"
+- "Jag förtjänar att ta hand om mig själv"
+
+## Hantera specifika situationer
+
+### Efter ett avslag
+1. Tillåt dig att vara besviken (men sätt en tidsgräns)
+2. Avslag handlar sällan bara om dig
+3. Fråga om feedback om möjligt
+4. Fokusera framåt – nästa ansökan
+
+### När oron tar över
+- **Andningsövning:** Andas in 4 sek, håll 4 sek, andas ut 6 sek
+- **Grounding:** Nämn 5 saker du ser, 4 du hör, 3 du känner
+- **Skriv ner tankarna** – de blir mindre skrämmande på papper
+- **Faktakoll:** Är det jag oroar mig för verkligen troligt?
+
+### När du känner hopplöshet
+- Påminn dig: känslor är inte fakta
+- Du har klarat svåra saker förut
+- Situationen är tillfällig, inte permanent
+- Ring någon – prata om hur du mår
+
+## Resurser för stöd
+
+### Akut hjälp
+- **112** – vid livshotande situation
+- **1177** – vårdguiden, rådgivning
+- **Självmordslinjen:** 90101
+- **Mind:** 90101
+- **Jourhavande medmänniska:** 08-702 16 80
+
+### Samtalsstöd
+- **Vårdcentralen** – boka tid för samtal
+- **Kuratorer** – via vårdcentralen
+- **Psykologer** – remiss via vårdcentral eller privat
+- **Studenthälsan** – om du studerar
+
+### Arbetsförmedlingens stöd
+- **Din arbetskonsulent** – kan stötta och hänvisa vidare
+- **Aktiviteter i grupp** – bryter isolering
+- **Samtal** – om jobbsökning och mående
+
+### Digitala verktyg
+- **1177.se** – information om psykisk hälsa
+- **UMO.se** – för unga vuxna
+- **Habitud** – app för beteendeförändring
+- **Headspace / Calm** – meditation och sömn
+
+## Prata med arbetsgivare om psykisk hälsa?
+
+### Du behöver inte berätta allt
+- Du har rätt till ditt privatliv
+- Du behöver inte förklara luckor i CV:t i detalj
+- "Jag tog en paus av personliga skäl" räcker
+
+### Om du vill berätta
+- Fokusera på vad du lärt dig
+- Betona att du mår bättre nu
+- Lyft fram dina styrkor
+
+### Dina rättigheter
+- Arbetsgivare får inte diskriminera pga. psykisk ohälsa
+- Du har rätt till anpassningar om du behöver
+- Se Diskrimineringslagen
+
+## Bygga långsiktig motståndskraft
+
+### Dagliga vanor
+- Sömn: 7-9 timmar
+- Rörelse: Varje dag, även kort
+- Mat: Regelbundet och näringsrikt
+- Socialt: Daglig kontakt med någon
+
+### Veckovis
+- Minst en aktivitet som ger glädje
+- Reflektion: Vad har gått bra?
+- Planering: Rimlig planering för nästa vecka
+
+### Tankevanor att odla
+- "Jag gör mitt bästa med de förutsättningar jag har"
+- "Ett nej för mig närmare ett ja"
+- "Mitt värde bestäms inte av min anställningsstatus"
+
+## Kom ihåg
+
+- **Det är okej att inte vara okej** – jobbsökning är krävande
+- **Sök hjälp tidigt** – vänta inte tills det blir kris
+- **Du är inte din jobbsökarsituation** – du är så mycket mer
+- **Det kommer att bli bättre** – situationen är tillfällig
+
+Din psykiska hälsa är viktigare än att få ett jobb snabbt. Ta hand om dig först – så ökar faktiskt dina chanser att lyckas med jobbsökningen också.
+
+**Du förtjänar stöd. Tveka inte att söka hjälp.**`,
+    category: 'wellness',
+    subcategory: 'mental-health',
+    tags: ['mental hälsa', 'psykisk hälsa', 'välmående', 'stöd', 'självhjälp', 'depression', 'ångest', 'resurser'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 9,
+    difficulty: 'easy',
+    energyLevel: 'low',
+    relatedArticles: ['hantera-avslag', 'stresshantering', 'mindfulness-jobbsokning', 'motivation-langsiktig'],
+    author: 'Lisa Bergström',
+    authorTitle: 'Beteendevetare',
+  },
+
+  {
+    id: 'anpassningar-arbetsplatsen',
+    title: 'Anpassningar på arbetsplatsen - dina möjligheter',
+    summary: 'Guide till arbetsplatsanpassningar - vilka typer finns, hur du begär dem och vilket stöd du kan få.',
+    content: `# Anpassningar på arbetsplatsen - dina möjligheter
+
+Om du har en funktionsnedsättning eller hälsoutmaning har du rätt till anpassningar som gör att du kan utföra ditt arbete. Här är vad du behöver veta.
+
+## Vad är arbetsplatsanpassningar?
+
+### Definition
+Förändringar i arbetsmiljön, arbetsuppgifter eller arbetstider som gör att en person med funktionsnedsättning kan utföra sitt jobb på lika villkor som andra.
+
+### Exempel på anpassningar
+- Ergonomiska hjälpmedel (höj- och sänkbart skrivbord, specialstol)
+- Tekniska hjälpmedel (skärmläsare, talsyntes)
+- Anpassade arbetstider
+- Möjlighet till distansarbete
+- Tystare arbetsplats
+- Skriftliga instruktioner istället för muntliga
+- Regelbundna pauser
+- Förändrade arbetsuppgifter
+
+## Dina rättigheter
+
+### Diskrimineringslagen
+Arbetsgivare är skyldiga att vidta "skäliga stöd- och anpassningsåtgärder" för att personer med funktionsnedsättning ska komma i en jämförbar situation med personer utan funktionsnedsättning.
+
+### Arbetsmiljölagen
+Arbetsgivaren har ansvar för en god arbetsmiljö och ska anpassa arbetet till individens förutsättningar.
+
+### Vad är "skäligt"?
+Bedöms utifrån:
+- Kostnaden för anpassningen
+- Arbetsgivarens storlek och resurser
+- Hur länge anställningen varar
+- Effekten för arbetstagaren
+
+## Typer av funktionsnedsättningar och vanliga anpassningar
+
+### Fysiska funktionsnedsättningar
+**Möjliga anpassningar:**
+- Tillgängliga lokaler (hiss, ramper)
+- Ergonomiska hjälpmedel
+- Anpassad arbetshöjd
+- Parkeringsplats nära entrén
+- Hjälp med tunga lyft
+
+### Synnedsättning
+**Möjliga anpassningar:**
+- Skärmläsare och talsyntes
+- Förstoringsprogram
+- Punktskriftsdisplay
+- Bättre belysning
+- Muntliga instruktioner och möten
+
+### Hörselnedsättning
+**Möjliga anpassningar:**
+- Hörselslinga i mötesrum
+- Texttelefon
+- Visuella signaler (istället för ljudsignaler)
+- Skriftlig kommunikation
+- Teckenspråkstolk vid möten
+
+### Neuropsykiatriska funktionsnedsättningar (NPF)
+**Möjliga anpassningar för ADHD, autism m.fl.:**
+- Tydliga, skriftliga instruktioner
+- Fast struktur och rutiner
+- Avskild, lugn arbetsplats
+- Hörselskydd/hörlurar
+- Regelbundna pauser
+- Visuell planering
+- Färre avbrott
+- Tydlig kommunikation
+
+### Psykisk ohälsa
+**Möjliga anpassningar:**
+- Flexibla arbetstider
+- Möjlighet att jobba hemifrån
+- Anpassad arbetsbelastning
+- Regelbunden kontakt med chef
+- Tillgång till samtal/stöd
+
+### Kroniska sjukdomar
+**Möjliga anpassningar:**
+- Flexibilitet vid läkarbesök
+- Anpassad fysisk belastning
+- Möjlighet till vila
+- Arbete hemifrån vid behov
+
+## Så begär du anpassningar
+
+### Steg 1: Förbered dig
+- Identifiera vilka anpassningar du behöver
+- Var konkret – vad skulle hjälpa?
+- Ta med eventuell dokumentation (läkarintyg, utredning)
+
+### Steg 2: Kontakta rätt person
+- Din närmaste chef
+- HR-avdelningen
+- Skyddsombud (om du är osäker)
+
+### Steg 3: Ha ett samtal
+**Förbered dig på att:**
+- Förklara vilka utmaningar du har (du behöver inte berätta allt)
+- Föreslå konkreta lösningar
+- Vara öppen för diskussion
+- Dokumentera vad ni kommer överens om
+
+### Exempel på hur du kan formulera dig
+> "Jag har en funktionsnedsättning som gör att jag har svårt att koncentrera mig i öppet kontorslandskap. Jag skulle vilja diskutera möjligheten att få en tystare arbetsplats eller använda hörlurar."
+
+### Steg 4: Följ upp
+- Testa anpassningarna
+- Utvärdera efter ett par veckor
+- Justera vid behov
+
+## Stöd från Arbetsförmedlingen
+
+### Bidrag till hjälpmedel
+Arbetsgivare kan få bidrag för:
+- Arbetshjälpmedel
+- Anpassning av arbetsplats
+- Personligt biträde
+
+### Lönebidrag
+Om din arbetsförmåga är nedsatt kan arbetsgivaren få lönebidrag som kompensation.
+
+### Stöd till personligt biträde
+Bidrag för praktisk hjälp från en kollega.
+
+### SIUS-konsulent
+Särskild stödperson som hjälper till vid introduktion på ny arbetsplats.
+
+### Hur du ansöker
+1. Kontakta Arbetsförmedlingen
+2. Beskriv dina behov
+3. De utreder vilket stöd som passar
+4. Arbetsgivaren kan sedan ansöka om bidrag
+
+## Vanliga frågor
+
+### Måste jag berätta om min funktionsnedsättning?
+Nej, du har ingen skyldighet att berätta. Men om du behöver anpassningar måste arbetsgivaren veta vad du behöver (inte nödvändigtvis diagnosen).
+
+### Kan arbetsgivaren säga nej?
+Endast om anpassningen inte är "skälig" – alltså om den är orimligt dyr eller svår att genomföra. De måste motivera varför.
+
+### Vad gör jag om arbetsgivaren vägrar?
+1. Be om skriftlig motivering
+2. Kontakta facket om du är medlem
+3. Kontakta DO (Diskrimineringsombudsmannen)
+4. Prata med Arbetsförmedlingen
+
+### Kan jag få anpassningar under provanställning?
+Ja, samma rättigheter gäller.
+
+### Kan anpassningar dras tillbaka?
+Inte utan saklig grund. Om dina behov förändras kan anpassningarna justeras.
+
+## Tips för att lyckas
+
+### Var konkret
+Istället för: "Jag behöver hjälp med koncentration"
+Säg: "Jag skulle behöva ett eget rum eller noise-cancelling hörlurar"
+
+### Fokusera på lösningar
+Visa att du har tänkt på hur det kan fungera.
+
+### Ta hjälp
+- Arbetskonsulent på Arbetsförmedlingen
+- Fackförbund
+- Intresseorganisationer (DHR, Attention, SDR, etc.)
+
+### Dokumentera
+Ha skriftlig dokumentation på överenskomna anpassningar.
+
+## Resurser
+
+### Myndigheter
+- **Arbetsförmedlingen** – stöd och bidrag
+- **Försäkringskassan** – ersättningar
+- **DO** – vid diskriminering
+
+### Intresseorganisationer
+- **Funktionsrätt Sverige** – paraplyorganisation
+- **DHR** – fysiska funktionsnedsättningar
+- **Attention** – NPF
+- **Mind** – psykisk hälsa
+- **SDR** – döva
+- **SRF** – synskadade
+
+### Information
+- **1177.se** – hälsoinformation
+- **Arbetsmiljöverket** – regler och riktlinjer
+
+## Sammanfattning
+
+- Du har **rätt** till skäliga anpassningar
+- Var **konkret** om vad du behöver
+- Ta **hjälp** av Arbetsförmedlingen och andra
+- **Dokumentera** överenskommelser
+- Tveka inte att **påminna** om dina rättigheter
+
+Med rätt anpassningar kan de allra flesta utföra ett fullvärdigt arbete. Dina utmaningar behöver inte vara ett hinder – ofta handlar det bara om att hitta rätt lösningar.`,
+    category: 'accessibility',
+    subcategory: 'adaptations',
+    tags: ['anpassningar', 'funktionsnedsättning', 'tillgänglighet', 'rättigheter', 'hjälpmedel', 'Arbetsförmedlingen', 'stöd'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 11,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['rattigheter-stod', 'nystartsjobb-guide', 'jobbsok-funktionsnedsattning'],
+    author: 'Anna Eriksson',
+    authorTitle: 'Arbetsrättsjurist',
+  },
+
+  {
+    id: 'varderingar-karriarval',
+    title: 'Dina värderingar och karriärval',
+    summary: 'Hur du identifierar dina värderingar och använder dem för att hitta ett jobb som passar dig på djupet.',
+    content: `# Dina värderingar och karriärval
+
+Att välja karriär handlar om mer än lön och arbetsuppgifter. Dina värderingar – vad som är viktigt för dig på djupet – avgör om du trivs och mår bra i ditt arbete.
+
+## Vad är värderingar?
+
+### Definition
+Värderingar är de principer och övertygelser som styr dina val och ger ditt liv mening. De är kompassnålen som visar vad som verkligen är viktigt för dig.
+
+### Exempel på värderingar
+- Frihet och självständighet
+- Trygghet och stabilitet
+- Kreativitet och skapande
+- Rättvisa och etik
+- Gemenskap och tillhörighet
+- Prestation och framgång
+- Balans och välmående
+- Lärande och utveckling
+
+### Varför är de viktiga för karriären?
+När ditt arbete stämmer överens med dina värderingar:
+- Du känner mening och motivation
+- Du orkar mer och presterar bättre
+- Du trivs även när det är tufft
+- Du stannar längre på jobbet
+
+När det INTE stämmer:
+- Känsla av tomhet trots "bra" jobb
+- Konstant frustration
+- Utbrändhet och ohälsa
+- Byte efter byte
+
+## Övning: Identifiera dina värderingar
+
+### Steg 1: Värderingslistan
+Gå igenom listan nedan. Markera de 10 som känns viktigast för dig.
+
+**Värderingar:**
+- Ärlighet
+- Kreativitet
+- Trygghet
+- Frihet
+- Rättvisa
+- Lojalitet
+- Äventyr
+- Balans
+- Lärande
+- Hälsa
+- Pengar
+- Status
+- Gemenskap
+- Självständighet
+- Omtanke
+- Respekt
+- Humor
+- Passion
+- Struktur
+- Flexibilitet
+- Makt/inflytande
+- Erkännande
+- Integritet
+- Enkelhet
+- Miljöansvar
+- Tradition
+- Innovation
+- Variation
+- Expertis
+- Samarbete
+
+### Steg 2: Prioritera
+Av dina 10, välj ut de 5 allra viktigaste.
+
+### Steg 3: Definiera
+För varje av dina topp 5, skriv:
+- Vad betyder det för dig konkret?
+- Hur märker du när det uppfylls?
+- Hur känns det när det INTE uppfylls?
+
+**Exempel:**
+> **Värdering:** Kreativitet
+> **Vad det betyder:** Möjlighet att komma med egna idéer och lösa problem på nya sätt
+> **När det uppfylls:** Jag får designa lösningar, brainstorma, prova nya saker
+> **När det inte uppfylls:** Jag får bara följa manualer utan utrymme att påverka
+
+### Steg 4: Historisk reflektion
+Tänk på situationer i ditt liv (jobb, studier, fritid) där du känt dig:
+
+**Riktigt bra och energifylld:**
+- Vad gjorde du?
+- Vilken miljö var du i?
+- Vilka värderingar var uppfyllda?
+
+**Frustrerad och dränerad:**
+- Vad gjorde du?
+- Vilken miljö var du i?
+- Vilka värderingar var hotade?
+
+## Värderingar i olika arbetsmiljöer
+
+### Arbetsgivares värderingar
+Företag har också värderingar (uttalade eller outtalade):
+- **Innovativa startups:** frihet, risk, snabbhet
+- **Offentlig sektor:** trygghet, service, stabilitet
+- **Konsultbolag:** prestation, tillväxt, kundnöjdhet
+- **Ideella organisationer:** syfte, påverkan, gemenskap
+
+### Hitta matchningen
+Fråga dig:
+- Stämmer företagets värderingar med mina?
+- Finns det konflikter jag kan leva med?
+- Är det bara ord eller lever de efter värderingarna?
+
+## Frågor att ställa arbetsgivare
+
+### Under intervjun
+- "Kan du ge ett exempel på hur företagets värderingar märks i vardagen?"
+- "Hur hanterar ni situationer när affärsmål och värderingar krockar?"
+- "Vad uppskattar du mest med att jobba här?"
+- "Hur ser en typisk karriärväg ut här?"
+- "Hur ser balansen mellan arbete och privatliv ut?"
+
+### Vad du kan researcha innan
+- Företagets hemsida (vision, mission, värderingar)
+- Glassdoor och liknande sidor
+- LinkedIn – hur pratar anställda om företaget?
+- Nyhetsartiklar – har de haft skandaler?
+
+## Vanliga värdekonflikter i arbetslivet
+
+### Trygghet vs. Frihet
+- Trygghet: Fast anställning, förutsägbarhet
+- Frihet: Flexibilitet, eget ansvar
+
+**Fråga dig:** Vad är viktigast just nu i livet?
+
+### Pengar vs. Mening
+- Höga löner finns ofta i branscher du kanske inte brinner för
+- Meningsfulla jobb betalar ibland sämre
+
+**Fråga dig:** Hur mycket pengar behöver jag egentligen? Vad kan jag kompromissa med?
+
+### Karriär vs. Balans
+- Snabb karriär kräver ofta mycket tid och energi
+- Work-life balance kan innebära långsammare avancemang
+
+**Fråga dig:** Vad prioriterar jag i denna fas av livet?
+
+### Integritet vs. Lojalitet
+- Ibland krockar dina principer med arbetsgivarens förväntningar
+
+**Fråga dig:** Var går min gräns?
+
+## Att använda värderingar i jobbsökningen
+
+### I ditt CV och personliga brev
+Visa att dina värderingar matchar:
+> "Jag söker till er organisation för att jag brinner för [värdering] och ser att ni..."
+
+### På intervjun
+- Ställ frågor som avslöjar deras verkliga kultur
+- Var ärlig om vad du söker
+- Lyft fram exempel där dina värderingar syns i handling
+
+### I valet mellan erbjudanden
+Gör en värderingsmatris:
+
+| Värdering | Jobb A (1-5) | Jobb B (1-5) |
+|-----------|--------------|--------------|
+| Kreativitet | 5 | 2 |
+| Trygghet | 2 | 5 |
+| Gemenskap | 4 | 4 |
+| Lön | 3 | 4 |
+| **SUMMA** | **14** | **15** |
+
+Men – vikta värderingarna! Kreativitet kanske är dubbelt så viktigt som lön för dig.
+
+## När värderingarna förändras
+
+### Det är normalt
+- Livsfaser förändrar prioriteringar
+- Erfarenheter påverkar vad vi värderar
+- Värderingar mognar med tiden
+
+### Exempel på förändring
+- 25 år: Äventyr, lärande, frihet
+- 35 år: Trygghet, familj, balans
+- 50 år: Mening, påverkan, arv
+
+### Vad du kan göra
+Gör värderingsövningen igen varje år eller vid stora förändringar (nytt jobb, relationsstatus, barn, etc.)
+
+## Sammanfattning
+
+1. **Identifiera** dina värderingar genom övningen
+2. **Prioritera** de 5 viktigaste
+3. **Researcha** potentiella arbetsgivare
+4. **Fråga** på intervjun för att förstå kulturen
+5. **Välj** jobb där det finns matchning
+
+Ett jobb som matchar dina värderingar är inte bara trevligare – det är hållbart i längden. Du förtjänar att må bra på jobbet!
+
+**Nästa steg:** Gör värderingsövningen och ta med dig dina topp 5 till nästa samtal med din arbetskonsulent.`,
+    category: 'self-awareness',
+    subcategory: 'interests',
+    tags: ['värderingar', 'karriärval', 'självkännedom', 'arbetsgivare', 'kultur', 'motivation', 'trivsel'],
+    createdAt: '2024-06-15T10:00:00Z',
+    updatedAt: '2024-06-15T10:00:00Z',
+    readingTime: 10,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['hitta-styrkor', 'personlighetstyper-yrken', 'varden-arbetsgivare', 'arbetsvarden-guide'],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärcoach',
+  },
+
   // === LÄTT SVENSKA ===
   {
     id: 'latt-svenska-cv',
