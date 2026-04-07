@@ -1,117 +1,92 @@
 /**
  * Tools Tab
- * Downloadable templates, checklists, and practical tools
+ * Links to actual app features and tools
  */
 
-import { Wrench, Download, FileText, CheckSquare, Calculator, Calendar, Star } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
-import { logger } from '@/lib/logger'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+import {
+  Wrench,
+  FileText,
+  PenTool,
+  Briefcase,
+  Compass,
+  ArrowRight,
+  Calendar,
+  User
+} from '@/components/ui/icons'
+import { Card } from '@/components/ui'
 
-interface Tool {
+interface AppTool {
   id: string
-  title: string
-  description: string
-  icon: typeof FileText
-  format: string
-  downloads: number
-  category: 'template' | 'checklist' | 'calculator' | 'planner'
-  isNew?: boolean
-  isPopular?: boolean
+  titleKey: string
+  descriptionKey: string
+  icon: React.ElementType
+  link: string
+  color: string
+  iconColor: string
 }
 
-const tools: Tool[] = [
+const appTools: AppTool[] = [
   {
-    id: 'cv-template-modern',
-    title: 'CV-mall (Modern)',
-    description: 'Clean och professionell CV-mall som fungerar för de flesta branscher',
+    id: 'cv-builder',
+    titleKey: 'knowledgeBase.tools.cvBuilder.title',
+    descriptionKey: 'knowledgeBase.tools.cvBuilder.description',
     icon: FileText,
-    format: 'Word + PDF',
-    downloads: 1234,
-    category: 'template',
-    isPopular: true,
+    link: '/cv',
+    color: 'bg-violet-50 border-violet-100',
+    iconColor: 'bg-violet-100 text-violet-600',
   },
   {
-    id: 'cv-template-functional',
-    title: 'CV-mall (Funktionell)',
-    description: 'Perfekt om du har begränsad arbetslivserfarenhet eller byter karriär',
-    icon: FileText,
-    format: 'Word + PDF',
-    downloads: 856,
-    category: 'template',
+    id: 'cover-letter',
+    titleKey: 'knowledgeBase.tools.coverLetter.title',
+    descriptionKey: 'knowledgeBase.tools.coverLetter.description',
+    icon: PenTool,
+    link: '/cover-letter',
+    color: 'bg-emerald-50 border-emerald-100',
+    iconColor: 'bg-emerald-100 text-emerald-600',
   },
   {
-    id: 'cover-letter-template',
-    title: 'Personligt brev-mall',
-    description: 'Strukturerad mall som följer STAR-metoden',
-    icon: FileText,
-    format: 'Word',
-    downloads: 987,
-    category: 'template',
-    isPopular: true,
+    id: 'job-search',
+    titleKey: 'knowledgeBase.tools.jobSearch.title',
+    descriptionKey: 'knowledgeBase.tools.jobSearch.description',
+    icon: Briefcase,
+    link: '/jobs',
+    color: 'bg-blue-50 border-blue-100',
+    iconColor: 'bg-blue-100 text-blue-600',
   },
   {
-    id: 'interview-checklist',
-    title: 'Intervju-checklista',
-    description: 'Komplett förberedelse inför jobbintervjun',
-    icon: CheckSquare,
-    format: 'PDF',
-    downloads: 654,
-    category: 'checklist',
+    id: 'interest-guide',
+    titleKey: 'knowledgeBase.tools.interestGuide.title',
+    descriptionKey: 'knowledgeBase.tools.interestGuide.description',
+    icon: Compass,
+    link: '/interest-guide',
+    color: 'bg-amber-50 border-amber-100',
+    iconColor: 'bg-amber-100 text-amber-600',
   },
   {
-    id: 'salary-calculator',
-    title: 'Lönekalkylator',
-    description: 'Beräkna rimlig lön baserat på roll och erfarenhet',
-    icon: Calculator,
-    format: 'Excel',
-    downloads: 432,
-    category: 'calculator',
-    isNew: true,
-  },
-  {
-    id: 'weekly-planner',
-    title: 'Veckoplanerare för jobbsökare',
-    description: 'Strukturera din vecka med aktiviteter och mål',
+    id: 'diary',
+    titleKey: 'knowledgeBase.tools.diary.title',
+    descriptionKey: 'knowledgeBase.tools.diary.description',
     icon: Calendar,
-    format: 'PDF',
-    downloads: 543,
-    category: 'planner',
+    link: '/diary',
+    color: 'bg-rose-50 border-rose-100',
+    iconColor: 'bg-rose-100 text-rose-600',
   },
   {
-    id: 'application-tracker',
-    title: 'Ansöknings-tracker',
-    description: 'Håll koll på alla dina jobbansökningar',
-    icon: CheckSquare,
-    format: 'Excel',
-    downloads: 321,
-    category: 'planner',
-    isNew: true,
-  },
-  {
-    id: 'networking-script',
-    title: 'Nätverksscript',
-    description: 'Färdiga mallar för LinkedIn och nätverksevent',
-    icon: FileText,
-    format: 'PDF',
-    downloads: 298,
-    category: 'template',
+    id: 'profile',
+    titleKey: 'knowledgeBase.tools.profile.title',
+    descriptionKey: 'knowledgeBase.tools.profile.description',
+    icon: User,
+    link: '/settings',
+    color: 'bg-slate-50 border-slate-200',
+    iconColor: 'bg-slate-100 text-slate-600',
   },
 ]
 
-const categoryLabels: Record<string, { label: string; color: string }> = {
-  template: { label: 'Mall', color: 'bg-blue-100 text-blue-700' },
-  checklist: { label: 'Checklista', color: 'bg-emerald-100 text-emerald-700' },
-  calculator: { label: 'Kalkylator', color: 'bg-amber-100 text-amber-700' },
-  planner: { label: 'Planerare', color: 'bg-violet-100 text-violet-700' },
-}
-
 export default function ToolsTab() {
-  const handleDownload = (toolId: string) => {
-    // Track download
-    logger.debug(`Downloading ${toolId}`)
-    // In real implementation, this would trigger file download
-  }
-  
+  const { t } = useTranslation()
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -122,98 +97,54 @@ export default function ToolsTab() {
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900">
-              Verktyg & Mallar
+              {t('knowledgeBase.tools.title')}
             </h2>
             <p className="text-slate-600 mt-1">
-              Nedladdningsbara resurser som hjälper dig i din jobbsökarprocess. 
-              Alla verktyg är gratis och utvecklade av experter.
+              {t('knowledgeBase.tools.description')}
             </p>
           </div>
         </div>
       </Card>
-      
+
       {/* Tools grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {tools.map((tool) => {
+        {appTools.map((tool) => {
           const Icon = tool.icon
-          const category = categoryLabels[tool.category]
-          
+
           return (
-            <Card 
-              key={tool.id} 
-              className="group hover:shadow-lg transition-all"
+            <Link
+              key={tool.id}
+              to={tool.link}
+              className="block"
             >
-              {/* Header with badges */}
-              <div className="flex items-start justify-between mb-3">
-                <div className={`
-                  w-12 h-12 rounded-xl flex items-center justify-center
-                  ${category.color.split(' ')[0]}
-                `}>
-                  <Icon className={`w-6 h-6 ${category.color.split(' ')[1]}`} />
+              <Card
+                className={`group hover:shadow-lg transition-all h-full ${tool.color}`}
+              >
+                {/* Icon */}
+                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${tool.iconColor}`}>
+                  <Icon className="w-6 h-6" />
                 </div>
-                <div className="flex gap-1">
-                  {tool.isNew && (
-                    <span className="px-2 py-1 bg-emerald-100 text-emerald-700 text-xs font-medium rounded-full">
-                      Ny
-                    </span>
-                  )}
-                  {tool.isPopular && (
-                    <span className="px-2 py-1 bg-amber-100 text-amber-700 text-xs font-medium rounded-full flex items-center gap-1">
-                      <Star className="w-3 h-3 fill-current" />
-                      Populär
-                    </span>
-                  )}
+
+                {/* Content */}
+                <div className="mb-4">
+                  <h3 className="font-semibold text-slate-900 group-hover:text-amber-700 transition-colors">
+                    {t(tool.titleKey)}
+                  </h3>
+                  <p className="text-sm text-slate-600 mt-1">
+                    {t(tool.descriptionKey)}
+                  </p>
                 </div>
-              </div>
-              
-              {/* Content */}
-              <div className="mb-4">
-                <span className={`
-                  inline-block px-2 py-0.5 text-xs font-medium rounded mb-2
-                  ${category.color}
-                `}>
-                  {category.label}
-                </span>
-                <h3 className="font-semibold text-slate-900 group-hover:text-amber-700 transition-colors">
-                  {tool.title}
-                </h3>
-                <p className="text-sm text-slate-600 mt-1">
-                  {tool.description}
-                </p>
-              </div>
-              
-              {/* Footer */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                <div className="text-sm text-slate-500">
-                  <span>{tool.format}</span>
-                  <span className="mx-2">•</span>
-                  <span>{tool.downloads} nedladdningar</span>
+
+                {/* Link indicator */}
+                <div className="flex items-center gap-2 text-amber-600 font-medium text-sm">
+                  {t('knowledgeBase.tools.goTo')}
+                  <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </div>
-                <Button
-                  size="sm"
-                  onClick={() => handleDownload(tool.id)}
-                  className="flex items-center gap-2"
-                >
-                  <Download className="w-4 h-4" />
-                  Ladda ner
-                </Button>
-              </div>
-            </Card>
+              </Card>
+            </Link>
           )
         })}
       </div>
-      
-      {/* Request tool */}
-      <Card className="bg-slate-50 border-slate-200">
-        <div className="text-center py-4">
-          <p className="text-slate-600">
-            Saknar du ett verktyg? 
-            <button className="text-amber-600 font-medium hover:underline ml-1">
-              Föreslå en ny mall
-            </button>
-          </p>
-        </div>
-      </Card>
     </div>
   )
 }

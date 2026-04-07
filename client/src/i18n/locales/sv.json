@@ -1135,7 +1135,173 @@
     "couldNotLoad": "Kunde inte ladda artiklar",
     "tryAgain": "Försök igen",
     "welcome": "Välkommen",
-    "selectTab": "Välj en flik ovan för att utforska kunskapsbanken."
+    "selectTab": "Välj en flik ovan för att utforska kunskapsbanken.",
+    "defaultUser": "du",
+    "forYou": {
+      "greeting": "Hej {{name}}!",
+      "personalizedContent": "Innehåll personaliserat efter din intresseprofil.",
+      "curatedContent": "Utforska våra artiklar och guider.",
+      "recommended": "Rekommenderat för dig",
+      "allArticles": "Artiklar",
+      "basedOnProfile": "Baserat på din intresseprofil",
+      "recentArticles": "Senaste artiklarna",
+      "noArticles": "Inga artiklar tillgängliga",
+      "noArticlesDescription": "Det finns inga artiklar att visa just nu."
+    },
+    "gettingStarted": {
+      "title": "Komma igång",
+      "description": "Du har slutfört {{completed}} av {{total}} steg.",
+      "loading": "Laddar din progress...",
+      "complete": "klart",
+      "completed": "Avklarat",
+      "allComplete": "Grattis!",
+      "allCompleteDescription": "Du har gått igenom alla komma-igång-steg. Fortsätt utforska kunskapsbanken!",
+      "steps": {
+        "cv": {
+          "title": "Skapa ditt CV",
+          "description": "Bygg ditt CV med vår CV-byggare för att visa upp din erfarenhet.",
+          "action": "Gå till CV-byggaren"
+        },
+        "interest": {
+          "title": "Gör intresseguiden",
+          "description": "Upptäck vilka yrken som passar dig baserat på dina intressen.",
+          "action": "Starta guiden"
+        },
+        "jobs": {
+          "title": "Spara intressanta jobb",
+          "description": "Sök och spara jobb som intresserar dig för att hålla koll på dem.",
+          "action": "Sök jobb"
+        },
+        "coverLetter": {
+          "title": "Skriv ett personligt brev",
+          "description": "Skapa ett personligt brev som du kan anpassa till olika ansökningar.",
+          "action": "Skapa brev"
+        }
+      }
+    },
+    "quickHelp": {
+      "title": "Snabbhjälp",
+      "description": "Snabba svar och hjälp när du behöver det som mest.",
+      "quickActions": "Snabba åtgärder",
+      "actions": {
+        "cv": {
+          "title": "Uppdatera ditt CV",
+          "description": "Gå till CV-byggaren och gör ändringar"
+        },
+        "coverLetter": {
+          "title": "Skriv ett personligt brev",
+          "description": "Skapa ett nytt brev eller redigera befintliga"
+        },
+        "jobs": {
+          "title": "Sök jobb",
+          "description": "Hitta nya jobbmöjligheter"
+        },
+        "interest": {
+          "title": "Utforska yrken",
+          "description": "Se vilka yrken som passar dig"
+        }
+      },
+      "checklists": {
+        "title": "Snabbchecklistor",
+        "beforeInterview": {
+          "title": "Innan intervjun",
+          "items": {
+            "clothes": "Klädsel vald och redo",
+            "directions": "Vägbeskrivning eller möteslänk testad",
+            "strengths": "3 styrkor förberedda",
+            "questions": "Frågor att ställa nedskrivna",
+            "documents": "CV och personligt brev utskrivna"
+          }
+        },
+        "afterInterview": {
+          "title": "Efter intervjun",
+          "items": {
+            "thankYou": "Skicka tack-mail inom 24h",
+            "reflect": "Reflektera över vad som gick bra",
+            "notes": "Notera vad du ska fråga om nästa gång",
+            "tracker": "Uppdatera din jobbtracker"
+          }
+        }
+      },
+      "relatedArticles": "Relaterade artiklar",
+      "needSupport": {
+        "title": "Behöver du prata med någon?",
+        "description": "Om du känner dig överväldigad eller behöver stöd, tveka inte att kontakta din arbetskonsulent.",
+        "action": "Boka ett möte"
+      }
+    },
+    "topics": {
+      "filter": "Filter",
+      "searchPlaceholder": "Sök artiklar...",
+      "categories": "Kategorier",
+      "allCategories": "Alla kategorier",
+      "clearFilters": "Rensa filter",
+      "searchResults": "Sökresultat",
+      "allArticles": "Alla artiklar",
+      "articles": "artiklar",
+      "noMatches": "Inga artiklar matchar dina filter",
+      "gridView": "Rutnätsvy",
+      "listView": "Listvy"
+    },
+    "tools": {
+      "title": "Verktyg & funktioner",
+      "description": "Använd våra inbyggda verktyg för att förbättra din jobbsökning.",
+      "goTo": "Öppna",
+      "cvBuilder": {
+        "title": "CV-byggare",
+        "description": "Skapa ett professionellt CV med vår steg-för-steg-guide."
+      },
+      "coverLetter": {
+        "title": "Personligt brev",
+        "description": "Generera anpassade personliga brev med AI-hjälp."
+      },
+      "jobSearch": {
+        "title": "Jobbsök",
+        "description": "Sök bland tusentals jobb från Arbetsförmedlingen."
+      },
+      "interestGuide": {
+        "title": "Intresseguide",
+        "description": "Upptäck vilka yrken som passar din personlighet."
+      },
+      "diary": {
+        "title": "Dagbok",
+        "description": "Reflektera över din resa och håll koll på dina framsteg."
+      },
+      "profile": {
+        "title": "Min profil",
+        "description": "Hantera dina inställningar och personuppgifter."
+      }
+    },
+    "myJourney": {
+      "loading": "Laddar din resa...",
+      "savedJobs": "Sparade jobb",
+      "cvCompleteness": "CV-fullständighet",
+      "interestProfile": "Intresseprofil",
+      "noProfile": "Ej gjord",
+      "coverLetters": "Personliga brev",
+      "yourProfile": "Din intresseprofil",
+      "viewFullProfile": "Se fullständig profil",
+      "nextSteps": "Nästa steg",
+      "createCV": "Skapa ditt CV",
+      "createCVDescription": "Bygg ett professionellt CV",
+      "takeInterestGuide": "Gör intresseguiden",
+      "takeInterestGuideDescription": "Upptäck vilka yrken som passar dig",
+      "searchJobs": "Utforska jobb",
+      "searchJobsDescription": "Hitta och spara intressanta jobb",
+      "start": "Börja",
+      "greatProgress": "Bra jobbat!",
+      "greatProgressDescription": "Du har kommit långt i din jobbsökarresa. Fortsätt så!",
+      "recentSavedJobs": "Senast sparade jobb",
+      "viewAll": "Visa alla",
+      "unknownJob": "Okänt jobb",
+      "jobStatus": {
+        "saved": "Sparad",
+        "applied": "Ansökt",
+        "interview": "Intervju",
+        "accepted": "Erbjudande",
+        "rejected": "Avslag"
+      }
+    }
   },
   "resources": {
     "title": "Mina resurser",

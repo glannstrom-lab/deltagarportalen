@@ -1,10 +1,12 @@
 /**
  * Quick Help Tab
  * Emergency/urgent help for common job search situations
+ * Links to real app features and shows helpful checklists
  */
 
-import { AlertCircle, Clock, ChevronRight, Phone, Calendar, FileText, Briefcase } from '@/components/ui/icons'
-import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
+import { AlertCircle, Clock, ChevronRight, Phone, Calendar, FileText, Briefcase, Compass, PenTool } from '@/components/ui/icons'
 import { Card } from '@/components/ui'
 import type { Article } from '@/types/knowledge'
 
@@ -12,87 +14,68 @@ interface QuickHelpTabProps {
   articles: Article[]
 }
 
-const emergencyTopics = [
-  {
-    id: 'interview-tomorrow',
-    title: 'Jag har intervju imorgon!',
-    description: 'Sista-minuten förberedelse och checklista',
-    icon: Calendar,
-    color: 'bg-rose-100 text-rose-700 border-rose-200',
-    urgency: 'high',
-    readingTime: 5,
-  },
-  {
-    id: 'empty-cv',
-    title: 'Mitt CV ser tomt ut',
-    description: 'Hur du skriver ett starkt CV utan erfarenhet',
-    icon: FileText,
-    color: 'bg-amber-100 text-amber-700 border-amber-200',
-    urgency: 'medium',
-    readingTime: 8,
-  },
-  {
-    id: 'rejection-followup',
-    title: 'Fick avslag – hur går jag vidare?',
-    description: 'Hantera besvikelse och komma tillbaka starkare',
-    icon: AlertCircle,
-    color: 'bg-sky-100 text-sky-700 border-sky-200',
-    urgency: 'medium',
-    readingTime: 6,
-  },
-  {
-    id: 'first-meeting',
-    title: 'Ska på mitt första arbetsmöte',
-    description: 'Vad väntar och hur du förbereder dig',
-    icon: Briefcase,
-    color: 'bg-emerald-100 text-emerald-700 border-emerald-200',
-    urgency: 'medium',
-    readingTime: 7,
-  },
-  {
-    id: 'explain-gap',
-    title: 'Hur förklarar jag ett glapp i CV:t?',
-    description: 'Vänd ett svaghet till en styrka',
-    icon: FileText,
-    color: 'bg-violet-100 text-violet-700 border-violet-200',
-    urgency: 'low',
-    readingTime: 5,
-  },
-  {
-    id: 'phone-interview',
-    title: 'Telefonintervju – vad ska jag säga?',
-    description: 'Tips för att lyckas över telefon',
-    icon: Phone,
-    color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
-    urgency: 'high',
-    readingTime: 4,
-  },
-]
-
-const quickChecklists = [
-  {
-    title: 'Innan intervjun – snabbcheck',
-    items: [
-      'Klädsel vald och redo',
-      'Vägbeskrivning/Zoom-länk testad',
-      '3 styrkor förberedda',
-      'Frågor att ställa nedskrivna',
-      'CV och personligt brev utskrivna',
-    ],
-  },
-  {
-    title: 'Efter intervjun – glöm inte!',
-    items: [
-      'Skicka tack-mail inom 24h',
-      'Reflektera över vad som gick bra',
-      'Notera vad du ska fråga om nästa gång',
-      'Uppdatera din jobbtracker',
-    ],
-  },
-]
-
 export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
-  const navigate = useNavigate()
+  const { t } = useTranslation()
+
+  // Quick action cards that link to real app features
+  const quickActions = [
+    {
+      id: 'cv',
+      titleKey: 'knowledgeBase.quickHelp.actions.cv.title',
+      descriptionKey: 'knowledgeBase.quickHelp.actions.cv.description',
+      icon: FileText,
+      link: '/cv',
+      color: 'bg-violet-50 text-violet-700 border-violet-200',
+    },
+    {
+      id: 'cover-letter',
+      titleKey: 'knowledgeBase.quickHelp.actions.coverLetter.title',
+      descriptionKey: 'knowledgeBase.quickHelp.actions.coverLetter.description',
+      icon: PenTool,
+      link: '/cover-letter',
+      color: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    },
+    {
+      id: 'jobs',
+      titleKey: 'knowledgeBase.quickHelp.actions.jobs.title',
+      descriptionKey: 'knowledgeBase.quickHelp.actions.jobs.description',
+      icon: Briefcase,
+      link: '/jobs',
+      color: 'bg-blue-50 text-blue-700 border-blue-200',
+    },
+    {
+      id: 'interest',
+      titleKey: 'knowledgeBase.quickHelp.actions.interest.title',
+      descriptionKey: 'knowledgeBase.quickHelp.actions.interest.description',
+      icon: Compass,
+      link: '/interest-guide',
+      color: 'bg-amber-50 text-amber-700 border-amber-200',
+    },
+  ]
+
+  // Static checklists for quick reference
+  const quickChecklists = [
+    {
+      titleKey: 'knowledgeBase.quickHelp.checklists.beforeInterview.title',
+      items: [
+        'knowledgeBase.quickHelp.checklists.beforeInterview.items.clothes',
+        'knowledgeBase.quickHelp.checklists.beforeInterview.items.directions',
+        'knowledgeBase.quickHelp.checklists.beforeInterview.items.strengths',
+        'knowledgeBase.quickHelp.checklists.beforeInterview.items.questions',
+        'knowledgeBase.quickHelp.checklists.beforeInterview.items.documents',
+      ],
+    },
+    {
+      titleKey: 'knowledgeBase.quickHelp.checklists.afterInterview.title',
+      items: [
+        'knowledgeBase.quickHelp.checklists.afterInterview.items.thankYou',
+        'knowledgeBase.quickHelp.checklists.afterInterview.items.reflect',
+        'knowledgeBase.quickHelp.checklists.afterInterview.items.notes',
+        'knowledgeBase.quickHelp.checklists.afterInterview.items.tracker',
+      ],
+    },
+  ]
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -103,31 +86,30 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900">
-              Snabbhjälp
+              {t('knowledgeBase.quickHelp.title')}
             </h2>
             <p className="text-slate-600 mt-1">
-              Akuta situationer och snabba svar på vanliga problem. 
-              Här hittar du hjälp när du behöver det som mest.
+              {t('knowledgeBase.quickHelp.description')}
             </p>
           </div>
         </div>
       </Card>
-      
-      {/* Emergency topics */}
+
+      {/* Quick actions - link to real app features */}
       <section>
         <h3 className="text-lg font-semibold text-slate-900 mb-4">
-          Vanliga situationer
+          {t('knowledgeBase.quickHelp.quickActions')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {emergencyTopics.map((topic) => {
-            const Icon = topic.icon
+          {quickActions.map((action) => {
+            const Icon = action.icon
             return (
-              <button
-                key={topic.id}
-                onClick={() => navigate(`/knowledge-base/article/${topic.id}`)}
+              <Link
+                key={action.id}
+                to={action.link}
                 className={`
                   text-left p-4 rounded-xl border transition-all hover:shadow-md
-                  ${topic.color}
+                  ${action.color}
                 `}
               >
                 <div className="flex items-start gap-3">
@@ -135,49 +117,38 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
                     <Icon className="w-5 h-5" />
                   </div>
                   <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold">{topic.title}</h4>
-                      {topic.urgency === 'high' && (
-                        <span className="px-2 py-0.5 bg-rose-500 text-white text-xs font-medium rounded-full">
-                          Akut
-                        </span>
-                      )}
-                    </div>
+                    <h4 className="font-semibold">{t(action.titleKey)}</h4>
                     <p className="text-sm opacity-80 mt-1">
-                      {topic.description}
+                      {t(action.descriptionKey)}
                     </p>
-                    <div className="flex items-center gap-2 mt-3 text-sm">
-                      <Clock className="w-4 h-4" />
-                      <span>{topic.readingTime} min</span>
-                    </div>
                   </div>
                   <ChevronRight className="w-5 h-5 opacity-50" />
                 </div>
-              </button>
+              </Link>
             )
           })}
         </div>
       </section>
-      
+
       {/* Quick checklists */}
       <section>
         <h3 className="text-lg font-semibold text-slate-900 mb-4">
-          Snabbchecklistor
+          {t('knowledgeBase.quickHelp.checklists.title')}
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {quickChecklists.map((checklist) => (
-            <Card key={checklist.title} className="bg-slate-50">
+            <Card key={checklist.titleKey} className="bg-slate-50">
               <h4 className="font-semibold text-slate-800 mb-3">
-                {checklist.title}
+                {t(checklist.titleKey)}
               </h4>
               <ul className="space-y-2">
-                {checklist.items.map((item, i) => (
+                {checklist.items.map((itemKey, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm text-slate-600">
-                    <input 
-                      type="checkbox" 
+                    <input
+                      type="checkbox"
                       className="mt-1 rounded border-slate-300"
                     />
-                    <span>{item}</span>
+                    <span>{t(itemKey)}</span>
                   </li>
                 ))}
               </ul>
@@ -185,8 +156,41 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
           ))}
         </div>
       </section>
-      
-      {/* Crisis support */}
+
+      {/* Related articles from database */}
+      {articles.length > 0 && (
+        <section>
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">
+            {t('knowledgeBase.quickHelp.relatedArticles')}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {articles.slice(0, 4).map((article) => (
+              <Link
+                key={article.id}
+                to={`/knowledge-base/article/${article.id}`}
+                className="block"
+              >
+                <Card className="hover:shadow-md transition-shadow h-full">
+                  <h4 className="font-medium text-slate-900 hover:text-violet-600">
+                    {article.title}
+                  </h4>
+                  <p className="text-sm text-slate-600 mt-1 line-clamp-2">
+                    {article.summary}
+                  </p>
+                  {article.readingTime && (
+                    <div className="flex items-center gap-2 mt-3 text-xs text-slate-500">
+                      <Clock className="w-3 h-3" />
+                      <span>{article.readingTime} min</span>
+                    </div>
+                  )}
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Contact support */}
       <Card className="bg-gradient-to-r from-sky-50 to-blue-50 border-sky-100">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
@@ -194,19 +198,18 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
           </div>
           <div>
             <h3 className="font-bold text-slate-900">
-              Behöver du prata med någon?
+              {t('knowledgeBase.quickHelp.needSupport.title')}
             </h3>
             <p className="text-slate-600 mt-1 text-sm">
-              Om du känner dig överväldigad eller behöver stöd, 
-              tveka inte att kontakta din arbetskonsulent.
+              {t('knowledgeBase.quickHelp.needSupport.description')}
             </p>
-            <a
-              href="#/diary"
+            <Link
+              to="/diary"
               className="inline-flex items-center gap-2 mt-3 text-sky-700 font-medium hover:underline"
             >
-              Boka ett möte
+              {t('knowledgeBase.quickHelp.needSupport.action')}
               <ChevronRight className="w-4 h-4" />
-            </a>
+            </Link>
           </div>
         </div>
       </Card>

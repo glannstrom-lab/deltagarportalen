@@ -5,11 +5,10 @@
 import { useState, useEffect, useCallback, Suspense, lazy, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Sparkles, Rocket, BookOpen, Route, Wrench, Flame, AlertCircle } from '@/components/ui/icons'
-import { cn } from '@/lib/utils'
+import { Sparkles, Rocket, BookOpen, Route, Wrench, AlertCircle } from '@/components/ui/icons'
 import { Card, LoadingState } from '@/components/ui'
 import { useArticles, useBookmarks } from '@/hooks/knowledge-base/useArticles'
-import { useEnergyLevel } from '@/hooks/useEnergyLevel'
+import { useAuthStore } from '@/stores/authStore'
 import { PageLayout, PageTabs } from '@/components/layout/index'
 
 // Lazy load tab components for better performance
@@ -19,7 +18,6 @@ const TopicsTab = lazy(() => import('@/components/knowledge-base/tabs/TopicsTab'
 const QuickHelpTab = lazy(() => import('@/components/knowledge-base/tabs/QuickHelpTab'))
 const MyJourneyTab = lazy(() => import('@/components/knowledge-base/tabs/MyJourneyTab'))
 const ToolsTab = lazy(() => import('@/components/knowledge-base/tabs/ToolsTab'))
-const TrendingTab = lazy(() => import('@/components/knowledge-base/tabs/TrendingTab'))
 
 // Tab definitions with i18n keys
 const tabDefs = [
@@ -29,20 +27,10 @@ const tabDefs = [
   { id: 'quick-help', labelKey: 'knowledgeBase.tabs.quickHelp', path: '/knowledge-base?tab=quick-help', icon: AlertCircle },
   { id: 'my-journey', labelKey: 'knowledgeBase.tabs.myJourney', path: '/knowledge-base?tab=my-journey', icon: Route },
   { id: 'tools', labelKey: 'knowledgeBase.tabs.tools', path: '/knowledge-base?tab=tools', icon: Wrench },
-  { id: 'trending', labelKey: 'knowledgeBase.tabs.trending', path: '/knowledge-base?tab=trending', icon: Flame },
 ] as const
 
 type TabId = typeof tabDefs[number]['id']
 
-// Mock user profile - in real app, this comes from auth context
-const mockUserProfile = {
-  name: 'Maria',
-  interests: ['cv', 'intervju', 'kundservice'],
-  completedArticles: ['welcome', 'first-cv'],
-  streak: 3,
-  weeklyGoal: 5,
-  weeklyProgress: 3,
-}
 
 function TabLoader({ message }: { message?: string }) {
   return (
@@ -56,9 +44,12 @@ export default function KnowledgeBase() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const location = useLocation()
-  const [energyLevel, setEnergyLevel] = useEnergyLevel()
+  const { profile } = useAuthStore()
   const { data: articles, isLoading: articlesLoading } = useArticles()
   const { data: bookmarks = [] } = useBookmarks()
+
+  // Get user's first name from profile
+  const userName = profile?.first_name || t('knowledgeBase.defaultUser')
 
   // Build tabs with translated labels
   const tabs = useMemo(() => tabDefs.map((tab) => ({
@@ -134,20 +125,16 @@ export default function KnowledgeBase() {
       case 'for-you':
         return (
           <Suspense fallback={<TabLoader />}>
-            <ForYouTab 
+            <ForYouTab
               articles={articles}
-              userProfile={mockUserProfile}
-              energyLevel={energyLevel}
+              userName={userName}
             />
           </Suspense>
         )
       case 'getting-started':
         return (
           <Suspense fallback={<TabLoader />}>
-            <GettingStartedTab
-              articles={articles}
-              completedArticles={mockUserProfile.completedArticles}
-            />
+            <GettingStartedTab />
           </Suspense>
         )
       case 'topics':
@@ -155,9 +142,6 @@ export default function KnowledgeBase() {
           <Suspense fallback={<TabLoader />}>
             <TopicsTab
               articles={articles}
-              categories={[]}
-              energyLevel={energyLevel}
-              onEnergyLevelChange={setEnergyLevel}
             />
           </Suspense>
         )
@@ -170,26 +154,13 @@ export default function KnowledgeBase() {
       case 'my-journey':
         return (
           <Suspense fallback={<TabLoader />}>
-            <MyJourneyTab
-              articles={articles}
-              bookmarks={bookmarks}
-              completedArticles={mockUserProfile.completedArticles}
-              streak={mockUserProfile.streak}
-              weeklyGoal={mockUserProfile.weeklyGoal}
-              weeklyProgress={mockUserProfile.weeklyProgress}
-            />
+            <MyJourneyTab />
           </Suspense>
         )
       case 'tools':
         return (
           <Suspense fallback={<TabLoader />}>
             <ToolsTab />
-          </Suspense>
-        )
-      case 'trending':
-        return (
-          <Suspense fallback={<TabLoader />}>
-            <TrendingTab articles={articles} />
           </Suspense>
         )
       default:
@@ -213,24 +184,6 @@ export default function KnowledgeBase() {
         <p className="text-sm sm:text-base text-slate-600 max-w-2xl">
           {t('knowledgeBase.intro')}
         </p>
-
-        {/* Energy indicator */}
-        <div className={cn(
-          "inline-flex flex-wrap items-center gap-1.5 sm:gap-2 mt-3 sm:mt-4 px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-medium",
-          energyLevel === 'low' && "bg-sky-100 text-sky-800",
-          energyLevel === 'medium' && "bg-amber-100 text-amber-800",
-          energyLevel === 'high' && "bg-rose-100 text-rose-800",
-        )}>
-          <span>{t('knowledgeBase.energyLevel')}:</span>
-          <span className="capitalize">
-            {energyLevel === 'low' ? t('knowledgeBase.energyLow') : energyLevel === 'medium' ? t('knowledgeBase.energyMedium') : t('knowledgeBase.energyHigh')}
-          </span>
-          <span className="hidden sm:inline opacity-70">
-            {energyLevel === 'low' && `• ${t('knowledgeBase.energyLowTip')}`}
-            {energyLevel === 'medium' && `• ${t('knowledgeBase.energyMediumTip')}`}
-            {energyLevel === 'high' && `• ${t('knowledgeBase.energyHighTip')}`}
-          </span>
-        </div>
       </div>
       
       {/* Tab navigation - using consistent PageTabs component */}

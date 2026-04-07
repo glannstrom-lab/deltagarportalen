@@ -1086,7 +1086,173 @@
     "couldNotLoad": "Could not load articles",
     "tryAgain": "Try again",
     "welcome": "Welcome",
-    "selectTab": "Select a tab above to explore the knowledge base."
+    "selectTab": "Select a tab above to explore the knowledge base.",
+    "defaultUser": "you",
+    "forYou": {
+      "greeting": "Hi {{name}}!",
+      "personalizedContent": "Content personalized for your interest profile.",
+      "curatedContent": "Explore our articles and guides.",
+      "recommended": "Recommended for you",
+      "allArticles": "Articles",
+      "basedOnProfile": "Based on your interest profile",
+      "recentArticles": "Recent articles",
+      "noArticles": "No articles available",
+      "noArticlesDescription": "There are no articles to display right now."
+    },
+    "gettingStarted": {
+      "title": "Getting Started",
+      "description": "You have completed {{completed}} of {{total}} steps.",
+      "loading": "Loading your progress...",
+      "complete": "complete",
+      "completed": "Completed",
+      "allComplete": "Congratulations!",
+      "allCompleteDescription": "You have completed all getting started steps. Keep exploring the knowledge base!",
+      "steps": {
+        "cv": {
+          "title": "Create your CV",
+          "description": "Build your CV with our CV builder to showcase your experience.",
+          "action": "Go to CV builder"
+        },
+        "interest": {
+          "title": "Take the interest guide",
+          "description": "Discover which careers suit you based on your interests.",
+          "action": "Start guide"
+        },
+        "jobs": {
+          "title": "Save interesting jobs",
+          "description": "Search and save jobs that interest you to keep track of them.",
+          "action": "Search jobs"
+        },
+        "coverLetter": {
+          "title": "Write a cover letter",
+          "description": "Create a cover letter that you can customize for different applications.",
+          "action": "Create letter"
+        }
+      }
+    },
+    "quickHelp": {
+      "title": "Quick Help",
+      "description": "Quick answers and help when you need it most.",
+      "quickActions": "Quick actions",
+      "actions": {
+        "cv": {
+          "title": "Update your CV",
+          "description": "Go to the CV builder and make changes"
+        },
+        "coverLetter": {
+          "title": "Write a cover letter",
+          "description": "Create a new letter or edit existing ones"
+        },
+        "jobs": {
+          "title": "Search jobs",
+          "description": "Find new job opportunities"
+        },
+        "interest": {
+          "title": "Explore careers",
+          "description": "See which careers suit you"
+        }
+      },
+      "checklists": {
+        "title": "Quick checklists",
+        "beforeInterview": {
+          "title": "Before the interview",
+          "items": {
+            "clothes": "Outfit selected and ready",
+            "directions": "Directions or meeting link tested",
+            "strengths": "3 strengths prepared",
+            "questions": "Questions to ask written down",
+            "documents": "CV and cover letter printed"
+          }
+        },
+        "afterInterview": {
+          "title": "After the interview",
+          "items": {
+            "thankYou": "Send thank you email within 24h",
+            "reflect": "Reflect on what went well",
+            "notes": "Note what to ask about next time",
+            "tracker": "Update your job tracker"
+          }
+        }
+      },
+      "relatedArticles": "Related articles",
+      "needSupport": {
+        "title": "Need to talk to someone?",
+        "description": "If you feel overwhelmed or need support, don't hesitate to contact your employment consultant.",
+        "action": "Book a meeting"
+      }
+    },
+    "topics": {
+      "filter": "Filter",
+      "searchPlaceholder": "Search articles...",
+      "categories": "Categories",
+      "allCategories": "All categories",
+      "clearFilters": "Clear filters",
+      "searchResults": "Search results",
+      "allArticles": "All articles",
+      "articles": "articles",
+      "noMatches": "No articles match your filters",
+      "gridView": "Grid view",
+      "listView": "List view"
+    },
+    "tools": {
+      "title": "Tools & features",
+      "description": "Use our built-in tools to improve your job search.",
+      "goTo": "Open",
+      "cvBuilder": {
+        "title": "CV Builder",
+        "description": "Create a professional CV with our step-by-step guide."
+      },
+      "coverLetter": {
+        "title": "Cover Letter",
+        "description": "Generate customized cover letters with AI assistance."
+      },
+      "jobSearch": {
+        "title": "Job Search",
+        "description": "Search among thousands of jobs from the employment office."
+      },
+      "interestGuide": {
+        "title": "Interest Guide",
+        "description": "Discover which careers match your personality."
+      },
+      "diary": {
+        "title": "Diary",
+        "description": "Reflect on your journey and track your progress."
+      },
+      "profile": {
+        "title": "My Profile",
+        "description": "Manage your settings and personal information."
+      }
+    },
+    "myJourney": {
+      "loading": "Loading your journey...",
+      "savedJobs": "Saved jobs",
+      "cvCompleteness": "CV completeness",
+      "interestProfile": "Interest profile",
+      "noProfile": "Not completed",
+      "coverLetters": "Cover letters",
+      "yourProfile": "Your interest profile",
+      "viewFullProfile": "View full profile",
+      "nextSteps": "Next steps",
+      "createCV": "Create your CV",
+      "createCVDescription": "Build a professional CV",
+      "takeInterestGuide": "Take the interest guide",
+      "takeInterestGuideDescription": "Discover which careers suit you",
+      "searchJobs": "Explore jobs",
+      "searchJobsDescription": "Find and save interesting jobs",
+      "start": "Start",
+      "greatProgress": "Great progress!",
+      "greatProgressDescription": "You've come a long way in your job search journey. Keep it up!",
+      "recentSavedJobs": "Recently saved jobs",
+      "viewAll": "View all",
+      "unknownJob": "Unknown job",
+      "jobStatus": {
+        "saved": "Saved",
+        "applied": "Applied",
+        "interview": "Interview",
+        "accepted": "Offer",
+        "rejected": "Rejected"
+      }
+    }
   },
   "resources": {
     "title": "My Resources",

@@ -6,18 +6,15 @@ export { default as ReadingProgress } from './ReadingProgress'
 export { default as ReadingTime } from './ReadingTime'
 export { default as TextToSpeech } from './TextToSpeech'
 export { default as ArticleChecklist } from './ArticleChecklist'
-export { EnergyFilter } from './EnergyFilter'
-export { ZenModeToggle, ZenArticleCard, ZenLayout } from './ZenModeToggle'
 export { CantReadButton } from './CantReadButton'
 
 // Tabs
-export { ForYouTab } from './tabs/ForYouTab'
-export { GettingStartedTab } from './tabs/GettingStartedTab'
-export { TopicsTab } from './tabs/TopicsTab'
+export { default as ForYouTab } from './tabs/ForYouTab'
+export { default as GettingStartedTab } from './tabs/GettingStartedTab'
+export { default as TopicsTab } from './tabs/TopicsTab'
 export { default as QuickHelpTab } from './tabs/QuickHelpTab'
-export { MyJourneyTab } from './tabs/MyJourneyTab'
-export { ToolsTab } from './tabs/ToolsTab'
-export { TrendingTab } from './tabs/TrendingTab'
+export { default as MyJourneyTab } from './tabs/MyJourneyTab'
+export { default as ToolsTab } from './tabs/ToolsTab'
 
 // Learning Paths
 export { BeginnerPath } from './learning-paths/BeginnerPath'
