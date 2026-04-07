@@ -351,50 +351,213 @@ Avslutade du ett avsnitt i CV:t? Sökte du ett jobb? Det är värt att firas!`,
 
 CV står för Curriculum Vitae, vilket betyder "levnadsteckning" på latin. Det är en sammanfattning av din utbildning, arbetslivserfarenhet, kompetenser och andra meriter.
 
+Ett starkt CV gör tre saker:
+1. **Fångar uppmärksamhet** – Rekryterare spenderar i snitt 6-7 sekunder på ett första ögonkast
+2. **Visar relevans** – Det kopplar dina erfarenheter till jobbets krav
+3. **Passerar digitala filter** – Många CV:n sorteras bort av datorsystem innan en människa ser dem
+
 ## Grundstruktur
 
 Ett bra CV innehåller följande avsnitt:
 
 ### 1. Kontaktinformation
-- Namn
-- Telefonnummer
-- E-postadress
-- Ort (valfritt)
-- LinkedIn-profil (valfritt)
+- Namn (stort och tydligt)
+- Telefonnummer (med landskod om du söker internationellt)
+- E-postadress (professionell, undvik "partykungen84@...")
+- Ort (stad räcker, fullständig adress behövs inte)
+- LinkedIn-profil (rekommenderas starkt)
+- Portfolio/hemsida (om relevant för din bransch)
 
 ### 2. Sammanfattning/Profil
 En kort text (3-5 meningar) som sammanfattar vem du är, vad du kan och vad du söker.
 
+**Dåligt exempel:**
+"Jag är en driven och engagerad person som söker nya utmaningar."
+
+**Bra exempel:**
+"Erfaren kundtjänstmedarbetare med 3 års erfarenhet av B2B-support. Specialiserad på CRM-system och har bidragit till 15% förbättrad kundnöjdhet. Söker en roll där jag kan kombinera min tekniska förståelse med kundkontakt."
+
 ### 3. Arbetslivserfarenhet
 Lista dina tidigare anställningar i omvänd kronologisk ordning (senaste först).
+
+**För varje tjänst, inkludera:**
+- Jobbtitel
+- Företagsnamn och ort
+- Anställningsperiod (månad/år - månad/år)
+- 3-5 punkter med dina prestationer och ansvar
+
+**Dåligt exempel:**
+"Ansvarade för kundservice och svarade på telefon."
+
+**Bra exempel:**
+"Hanterade 50+ kundärenden dagligen med 95% kundnöjdhet. Implementerade nytt ärendehanteringssystem som minskade svarstiden med 30%."
 
 ### 4. Utbildning
 Lista din utbildning, också i omvänd kronologisk ordning.
 
+Inkludera:
+- Examen/utbildningsnamn
+- Skola/universitet
+- År (slutår eller pågående)
+- Relevanta kurser, projekt eller examensarbete (om relevant)
+
 ### 5. Kompetenser och färdigheter
-Gruppera dina kompetenser i kategorier.
+Gruppera dina kompetenser i kategorier:
+
+**Tekniska kompetenser:**
+- Programvaror (Excel, SAP, Photoshop)
+- System (CRM, ERP)
+- Programmering (om relevant)
+
+**Språk:**
+- Svenska (modersmål)
+- Engelska (flytande)
+- Andra språk (ange nivå)
+
+**Mjuka färdigheter:**
+- Ledarskap
+- Projektledning
+- Kommunikation
 
 ### 6. Övrigt (valfritt)
-- Certifikat och tillstånd
-- Förtroendeuppdrag
-- Hobbyer (om relevant)
-- Referenser
+- Certifikat och tillstånd (körkort, truckkort, certifieringar)
+- Förtroendeuppdrag (facklig representant, styrelsearbete)
+- Hobbyer (bara om de är relevanta eller visar positiva egenskaper)
+- Referenser (skriv "Lämnas på begäran" eller inkludera 2-3 kontakter)
+
+## Så kvantifierar du dina prestationer
+
+Det som skiljer ett bra CV från ett utmärkt är **mätbara resultat**. Rekryterare älskar siffror!
+
+### Formeln: Handling + Resultat + Mätning
+
+**Istället för:**
+- "Ansvarade för försäljning"
+- "Arbetade med kundservice"
+- "Ledde projekt"
+
+**Skriv:**
+- "Ökade försäljningen med 25% under Q3 2024 genom uppsökande kundarbete"
+- "Hanterade 200+ kundsamtal per vecka med 4.8/5 i kundnöjdhet"
+- "Ledde team om 8 personer och levererade projekt 2 veckor före deadline"
+
+### Frågor för att hitta dina siffror:
+- Hur många kunder/ärenden hanterade du?
+- Hur mycket pengar sparade/genererade du?
+- Hur stor var din förbättring i procent?
+- Hur många i teamet ledde du?
+- Hur mycket tid sparade din lösning?
+
+## Branschspecifika CV-tips
+
+### Vård och omsorg
+- Lyft fram certifieringar (undersköterska, vårdbiträde)
+- Nämn specifika patientgrupper du arbetat med
+- Inkludera delegering och ansvarsområden
+- Visa empati och människokännedom
+
+### Lager och logistik
+- Lista körkort och truckkort
+- Nämn system (WMS, SAP)
+- Kvantifiera volymer (X pallar per dag)
+- Lyft fram säkerhetsmedvetenhet
+
+### IT och teknik
+- Skapa en teknisk sektion med verktyg och programmeringsspråk
+- Länka till GitHub eller portfolio
+- Beskriv projekt med teknisk detalj
+- Nämn certifieringar (AWS, Azure, etc.)
+
+### Ekonomi och administration
+- Lyft fram Excel-färdigheter specifikt
+- Nämn system (Visma, Fortnox, SAP)
+- Kvantifiera budgetar du hanterat
+- Visa analytisk förmåga
+
+### Butik och service
+- Fokusera på kundnöjdhet och försäljningsresultat
+- Nämn kassasystem du använt
+- Visa att du kan arbeta i team
+- Lyft fram flexibilitet och stresstålighet
+
+### Bygg och hantverk
+- Lista certifieringar och behörigheter
+- Nämn verktyg och maskiner du behärskar
+- Beskriv projekttyper och storlekar
+- Visa säkerhetsmedvetenhet
 
 ## ATS – så kommer du igenom filtren
 
-Många företag använder ATS (Applicant Tracking Systems) – datorsystem som sorterar CV:n automatiskt.
+Många företag använder ATS (Applicant Tracking Systems) – datorsystem som sorterar CV:n automatiskt. Upp till 75% av alla CV:n sorteras bort av ATS innan en människa ser dem!
 
-✅ **Använd nyckelord från annonsen**
-✅ **Undvik komplex formatering**
-✅ **Använd standardrubriker**
-✅ **Spara som .docx eller .pdf**
+### Hur ATS fungerar:
+1. Systemet skannar ditt CV efter nyckelord
+2. Det jämför med jobbannonsens krav
+3. Det rankar kandidater efter matchning
+4. Bara de högst rankade går vidare till rekryteraren
+
+### ATS-optimering steg för steg:
+
+**Steg 1: Analysera jobbannonsen**
+Markera alla substantiv, färdigheter och krav i annonsen. Dessa är dina nyckelord.
+
+**Steg 2: Inkludera nyckelorden naturligt**
+Stoppa inte in nyckelord slumpmässigt – de måste passa i meningar.
+
+**Steg 3: Använd exakta formuleringar**
+Om annonsen säger "Microsoft Excel" – skriv "Microsoft Excel", inte bara "Excel" eller "kalkylprogram".
+
+**Steg 4: Standardisera rubriker**
+ATS-system letar efter standardrubriker:
+- Arbetslivserfarenhet (inte "Min resa")
+- Utbildning (inte "Skolor jag gått på")
+- Kompetenser (inte "Vad jag kan")
+
+**Steg 5: Undvik komplex formatering**
+- Inga tabeller eller kolumner
+- Inga textrutor
+- Inga bilder (förutom profilbild i separat fil)
+- Inga sidhuvuden eller sidfötter för viktig info
+- Enkla punktlistor
+
+**Steg 6: Spara rätt**
+- .docx är säkrast för ATS
+- PDF fungerar oftast, men inte alltid
+- Använd aldrig .pages eller andra format
+
+### Testa ditt CV
+Det finns gratisverktyg online som analyserar hur ATS-vänligt ditt CV är. Sök på "ATS CV checker" och testa innan du skickar!
 
 ## Vanliga misstag att undvika
 
-❌ **För långt CV** – Ett CV bör vara 1-2 sidor
-❌ **Allmänna formuleringar** – Var konkret
-❌ **Stavfel och slarv** – Låt någon korrekturläsa
-❌ **Ett CV för alla jobb** – Anpassa för varje ansökan
+❌ **För långt CV** – Ett CV bör vara 1-2 sidor. Över 2 sidor endast om du har 10+ års relevant erfarenhet.
+
+❌ **Allmänna formuleringar** – "Ansvarstagande och driven" säger ingenting. Var specifik med exempel.
+
+❌ **Stavfel och slarv** – Låt minst två personer korrekturläsa. Använd stavningskontroll. Läs högt för dig själv.
+
+❌ **Ett CV för alla jobb** – Anpassa för varje ansökan. Ändra sammanfattningen och lyft fram relevant erfarenhet.
+
+❌ **Inkonsekvent formatering** – Använd samma typsnitt, storlek och stil genomgående.
+
+❌ **Luckor utan förklaring** – Om du har luckor i CV:t, var beredd att förklara dem positivt.
+
+❌ **Personlig information som inte behövs** – Ålder, civilstånd, personnummer och religion behövs inte.
+
+❌ **Oprofessionell e-postadress** – Skapa en ny om din nuvarande är olämplig.
+
+## Checklista innan du skickar
+
+Innan du skickar ditt CV, gå igenom denna checklista:
+
+- Är kontaktinformationen korrekt och komplett?
+- Är sammanfattningen anpassad för detta jobb?
+- Innehåller CV:t nyckelord från jobbannonsen?
+- Är alla prestationer kvantifierade där det är möjligt?
+- Är formateringen konsekvent och enkel?
+- Har någon annan korrekturläst?
+- Är filnamnet professionellt? (Ex: "Anna_Svensson_CV.pdf")
+- Är filen i rätt format (.docx eller .pdf)?
 
 ## Nästa steg
 
@@ -403,13 +566,15 @@ När du har ett grund-CV är det dags att:
 2. Skriva ett personligt brev
 3. Förbereda dig för intervjun
 
-Kom ihåg: Ett CV är aldrig "färdigt". Det är ett levande dokument som utvecklas med dig!`,
+Kom ihåg: Ett CV är aldrig "färdigt". Det är ett levande dokument som utvecklas med dig! Uppdatera det regelbundet och anpassa det för varje ny ansökan.
+
+> **Tips:** Spara en "master-version" av ditt CV med all din erfarenhet. När du söker ett specifikt jobb, kopiera master-versionen och anpassa den för just det jobbet.`,
     category: 'job-search',
     subcategory: 'cv-writing',
     tags: ['CV', 'skriva CV', 'ATS', 'grunder', 'detaljerad'],
     createdAt: '2024-01-10T10:00:00Z',
     updatedAt: '2024-02-15T10:00:00Z',
-    readingTime: 12,
+    readingTime: 20,
     difficulty: 'medium',
     energyLevel: 'medium',
     relatedArticles: ['personligt-brev', 'cv-utan-erfarenhet', 'ats-optimering'],
@@ -437,50 +602,219 @@ Kom ihåg: Ett CV är aldrig "färdigt". Det är ett levande dokument som utveck
     summary: 'Lär dig skriva ett personligt brev som väcker intresse och visar varför just du är rätt för jobbet.',
     content: `Det personliga brevet är din chans att berätta vem du är bakom fakta i CV:t. Här visar du din motivation och förklarar varför just du passar för tjänsten.
 
+## Varför är det personliga brevet viktigt?
+
+Medan CV:t listar dina meriter, förklarar det personliga brevet:
+- **Varför** du vill ha just detta jobb
+- **Hur** dina erfarenheter gör dig till rätt kandidat
+- **Vem** du är som person och kollega
+
+Ett bra personligt brev kan kompensera för ett mindre imponerande CV, och vice versa kan ett dåligt brev förstöra chanserna för en annars stark kandidat.
+
 ## Struktur på det personliga brevet
 
-### 1. Rubrik
-Namn på den du skriver till (om du vet det) eller "Hej!"
+### 1. Rubrik och hälsning
+- Om du vet vem som rekryterar: "Hej Maria!" eller "Till: Maria Svensson"
+- Om du inte vet: "Hej!" eller "Till ansvarig rekryterare"
+- Undvik "Till den det berör" – det är för formellt
 
-### 2. Inledning – väck intresse
-Börja med något som fångar läsarens uppmärksamhet.
+### 2. Inledning – väck intresse (2-3 meningar)
+De första meningarna avgör om rekryteraren läser vidare. Hoppa över "Jag söker tjänsten som..." – det vet de redan!
 
-### 3. Varför detta jobb?
-Visa att du har gjort din hemläxa.
+**Dålig inledning:**
+"Jag skriver för att söka tjänsten som säljare som ni annonserat på Arbetsförmedlingen."
 
-### 4. Varför du?
-Koppla dina erfarenheter och kompetenser till jobbets krav.
+**Bra inledningar:**
 
-### 5. Avslutning
-Sammanfatta kort och visa entusiasm.
+*Koppling till företaget:*
+"När jag läste om er satsning på hållbara produkter i Dagens Industri förra veckan insåg jag att detta är ett företag där mina värderingar och erfarenheter verkligen kan göra skillnad."
+
+*Personlig berättelse:*
+"Min första kontakt med programmering var när jag som 12-åring hackade min systers dataspel för att få fler liv. Sedan dess har jag aldrig slutat lösa tekniska problem."
+
+*Resultatfokuserad:*
+"Under mina två år som kundtjänstmedarbetare ökade jag kundnöjdheten med 23% – och jag ser fram emot att göra samma sak för er."
+
+*Nätverkskoppling:*
+"Min tidigare kollega Sara Eriksson berättade om ert fantastiska team och den spännande tillväxtresa ni är på, vilket gjorde mig nyfiken på att veta mer."
+
+### 3. Varför detta jobb? (3-4 meningar)
+Visa att du har gjort din hemläxa om företaget:
+
+- Vad lockar dig med just detta företag?
+- Hur passar denna roll in i din karriärplan?
+- Vad specifikt i annonsen väckte ditt intresse?
+
+**Exempel:**
+"Er ambition att bli Nordens ledande inom digital marknadsföring matchar perfekt med min egen drivkraft att ligga i framkant. Rollen som Content Manager är särskilt intressant eftersom den kombinerar strategiskt tänkande med kreativt skapande – precis den kombinationen jag trivs bäst med."
+
+### 4. Varför du? (5-8 meningar)
+Detta är brevets hjärta. Koppla 2-3 av dina starkaste erfarenheter till jobbets viktigaste krav.
+
+**Strukturera varje argument:**
+1. Krav från annonsen
+2. Din relevanta erfarenhet
+3. Konkret resultat
+
+**Exempel:**
+"Ni söker någon med erfarenhet av projektledning i snabbföränderliga miljöer. I min nuvarande roll hos TechStart AB har jag lett fem produktlanseringar på 18 månader, samtliga levererade i tid och inom budget. Den senaste lanseringen genererade 2 miljoner kronor i intäkter första kvartalet."
+
+"Er önskan om stark kommunikationsförmåga stämmer väl med mina styrkor. Som talesperson för vår avdelning har jag hållit presentationer för allt från styrelser till externa kunder, och fått genomgående positiv feedback på min förmåga att förklara komplexa frågor enkelt."
+
+### 5. Avslutning (2-3 meningar)
+Sammanfatta kort och visa entusiasm. Inkludera en "call to action":
+
+**Exempel:**
+"Jag är övertygad om att min kombination av teknisk kompetens och kundförståelse skulle vara värdefull för ert team. Jag ser fram emot att berätta mer om hur jag kan bidra till er fortsatta framgång vid en intervju."
 
 ### 6. Hälsning
-"Med vänliga hälsningar" + ditt namn
+- "Med vänliga hälsningar" (säkert och professionellt)
+- "Vänliga hälsningar" (lite mindre formellt)
+- "Hör gärna av dig!" (casual, passar startups)
+
+## Mallexempel: Komplett personligt brev
+
+### Mall 1: Klassisk struktur (för de flesta jobb)
+
+---
+
+**Hej Sofia!**
+
+När jag såg er annons för Kundservicemedarbetare tänkte jag direkt att detta kunde vara något för mig. Jag har följt ert företag sedan ni lanserade er app förra året och har imponerats av hur ni kombinerar teknik med en riktigt personlig kundupplevelse.
+
+Det som lockar mig mest med rollen är möjligheten att arbeta i korsningen mellan teknik och mänsklig kontakt. Som naturlig problemlösare och teknikentusiast ser jag fram emot att hjälpa era kunder få ut det mesta av er produkt.
+
+I min nuvarande roll på Servicebolaget AB hanterar jag dagligen cirka 40 kundärenden via telefon och chatt. Jag har konsekvent fått kundnöjdhetsscore på över 4,8 av 5, och har blivit utsedd till "Månadens medarbetare" tre gånger det senaste året. Min tekniska nyfikenhet gör att jag ofta hjälper kollegor med mer komplexa IT-frågor, något jag verkligen uppskattar.
+
+Jag söker nu nya utmaningar i ett företag där jag kan växa och utvecklas. Er snabba tillväxt och fokus på innovation passar perfekt med min ambition, och jag tror att min kombination av kundserviceerfarenhet och teknikintresse skulle vara värdefull för ert team.
+
+Jag ser fram emot att berätta mer om hur jag kan bidra till ert team vid en intervju.
+
+Med vänliga hälsningar,
+Anna Karlsson
+
+---
+
+### Mall 2: För karriärbytare
+
+---
+
+**Till rekryterande chef,**
+
+Efter tio år inom restaurangbranschen tar jag nu steget mot en ny karriär inom administration – och er tjänst som Receptionist har fångat mitt intresse.
+
+Ni kanske undrar hur en kock passar som receptionist? Restaurangbranschen har lärt mig att leverera under press, hantera många uppgifter samtidigt och alltid sätta gästens upplevelse först. Dessa färdigheter översätts direkt till receptionsrollen: att ta emot besökare med ett leende, jonglera telefonsamtal och bokningar, och skapa en positiv första kontakt.
+
+Under mina år som kock har jag:
+- Hanterat leverantörskontakter och beställningar värda miljoner kronor årligen
+- Lett team om 8 personer under högtrycksperioder
+- Lärt mig att alltid behålla lugnet och professionalismen, oavsett situation
+
+Jag har nyligen genomgått utbildning i Office-paketet och administration genom Arbetsförmedlingen, där jag fick betyget VG. Min starka arbetsmoral och positiva inställning har jag med mig från min tidigare karriär.
+
+Jag är medveten om att jag inte har traditionell administrativ erfarenhet, men jag kompenserar med arbetsglädje, anpassningsförmåga och en genuin vilja att lära. Jag ser fram emot möjligheten att visa vad jag kan bidra med.
+
+Vänliga hälsningar,
+Erik Johansson
+
+---
+
+### Mall 3: Första jobbet/utan erfarenhet
+
+---
+
+**Hej!**
+
+Att just har jag avslutat gymnasiet och är redo att kickstarta min karriär – och er trainee-tjänst inom marknadsföring ser ut som den perfekta starten.
+
+Även om jag inte har formell arbetslivserfarenhet har jag flera relevanta meriter. Som ansvarig för min skolas Instagram under två år växte följarskaran från 200 till 2000, och engagemanget tredubblades. Jag lärde mig allt från innehållsplanering till bildbehandling och copywriting – helt på egen hand.
+
+Parallellt med skolan har jag:
+- Drivit egen blogg om sneakers med 500 unika besökare per månad
+- Arbetat extra i butik där jag utvecklade min kundkommunikation
+- Tagit onlinekurser i Google Analytics och Facebook Ads
+
+Det som driver mig är kombinationen av kreativitet och data. Jag älskar att skapa innehåll, men lika mycket att analysera vad som faktiskt fungerar. Er betoning på "data-driven marknadsföring" i annonsen passar perfekt med mitt sätt att tänka.
+
+Jag är hungrig, läraktig och redo att ge allt. Får jag chansen lovar jag att överträffa era förväntningar.
+
+Hör gärna av dig!
+Lisa Andersson
+
+---
 
 ## Viktiga principer
 
 ✅ **Var personlig men professionell**
+Skriv som du pratar – fast lite mer polerat. Låt din personlighet skina igenom.
+
 ✅ **Var specifik – ge exempel**
+"Jag är driven" säger ingenting. "Jag tog initiativ till att starta en mentorskapsprogram som nu hjälper 30 nyanställda per år" säger allt.
+
 ✅ **Håll det kort (max 1 A4)**
+300-400 ord är idealt. Rekryterare har inte tid för romaner.
+
 ✅ **Anpassa för varje jobb**
+Minst 50% av brevet ska vara unikt för varje ansökan. Generiska brev syns på en kilometer.
 
-❌ **Undvik:**
-- Att upprepa CV:t ord för ord
-- Negativa formuleringar om tidigare arbetsgivare
-- För formellt eller för casual språk
-- Stavfel och slarv
+✅ **Börja starkt**
+De första 2-3 meningarna avgör om resten blir läst.
 
-## Använd vår AI-assistent
+✅ **Visa, berätta inte**
+Istället för "jag är en bra problemlösare" – berätta om ett problem du löste.
+
+## Undvik dessa misstag
+
+❌ **Att upprepa CV:t ord för ord**
+Brevet ska komplettera CV:t, inte duplicera det. Fördjupa istället de viktigaste punkterna.
+
+❌ **Negativa formuleringar om tidigare arbetsgivare**
+"Min förra chef var inkompetent" – Detta är alltid fel, oavsett hur sant det är.
+
+❌ **För formellt eller för casual språk**
+"Undertecknad anhåller härmed..." är lika fel som "Tjena! Sjukt nice jobb!".
+
+❌ **Stavfel och slarv**
+Ett enda stavfel kan sabotera hela din ansökan. Korrekturläs flera gånger.
+
+❌ **Att ljuga eller överdriva**
+Allt du skriver kan komma upp på intervjun. Var ärlig.
+
+❌ **Att fokusera på vad DU vill**
+"Jag vill ha detta jobb för att utvecklas" – fokusera istället på vad du kan ge företaget.
+
+❌ **Att skicka samma brev till alla**
+Rekryterare märker direkt när brevet är generiskt.
+
+## Användning av AI-assistent
 
 Om du har svårt att komma igång kan du använda vår AI-assistent för personliga brev. Den hjälper dig att få en struktur att utgå ifrån.
 
-Kom ihåg: AI:n är ett verktyg, inte en ersättning för din egen röst!`,
+### Så använder du AI på rätt sätt:
+1. **Använd AI för att brainstorma** – låt den föreslå inledningar och struktur
+2. **Skriv om med din egen röst** – AI:n ger en grund, du gör den personlig
+3. **Fyll i med dina egna exempel** – AI:n kan inte veta dina specifika erfarenheter
+4. **Korrekturläs kritiskt** – AI kan missa nyanser och skriva fel
+5. **Anpassa för företaget** – Se till att brevet verkligen handlar om DETTA jobb
+
+Kom ihåg: AI:n är ett verktyg, inte en ersättning för din egen röst! Rekryterare kan ofta känna igen AI-genererade texter, så se till att brevet verkligen låter som dig.
+
+## Checklista innan du skickar
+
+- Har jag nämnt företaget vid namn?
+- Har jag kopplat mina erfarenheter till jobbets krav?
+- Har jag konkreta exempel med resultat?
+- Är brevet under en A4-sida?
+- Har någon annan korrekturläst?
+- Är tonen rätt för företaget och branschen?
+- Har jag undvikit att upprepa CV:t?
+- Slutar brevet med en tydlig "call to action"?`,
     category: 'job-search',
     subcategory: 'cover-letter',
     tags: ['personligt brev', 'ansökan', 'skriva', 'exempel'],
     createdAt: '2024-01-12T10:00:00Z',
     updatedAt: '2024-02-18T10:00:00Z',
-    readingTime: 10,
+    readingTime: 16,
     difficulty: 'medium',
     energyLevel: 'medium',
     relatedArticles: ['cv-grunder', 'intervju-forberedelser'],
@@ -562,76 +896,315 @@ Din brist på erfarenhet kan vara en styrka – du har inga "dåliga vanor" att 
 ## Steg 1: Lär känna företaget
 
 ### Vad ska du veta?
-- Vad gör företaget?
-- Vilka är deras kunder?
-- Vilka är deras värderingar?
-- Vad har de för företagskultur?
+- **Verksamhet:** Vad gör företaget? Vilka produkter/tjänster erbjuder de?
+- **Kunder:** Vilka är deras målgrupp? B2B eller B2C?
+- **Värderingar:** Vad står de för? Hållbarhet? Innovation? Kundservice?
+- **Kultur:** Formell eller avslappnad? Stor eller liten organisation?
+- **Aktuellt:** Vad händer just nu? Expansion? Ny produkt? Utmaningar?
+- **Konkurrenter:** Vilka är deras konkurrenter? Vad skiljer dem åt?
 
 ### Var hittar du information?
-- Företagets hemsida
-- LinkedIn
-- Nyhetsartiklar
-- Google Reviews
+- **Hemsidan:** Läs Om oss, Vision, Värderingar, Nyheter
+- **LinkedIn:** Företagssidan och anställdas profiler
+- **Nyhetsartiklar:** Googla "företagsnamn" + nyheter
+- **Glassdoor/Kununu:** Medarbetarrecensioner (ta med nypa salt)
+- **Sociala medier:** Hur kommunicerar de? Vilken ton?
+- **Årsredovisning:** För större bolag, visar finansiell hälsa och strategi
 
-## Steg 2: Analysera jobbannonsen
+### Skriv ner 5 saker du vill nämna
+Förbered minst 5 specifika saker om företaget som du kan väva in i dina svar:
+1. _________________________________
+2. _________________________________
+3. _________________________________
+4. _________________________________
+5. _________________________________
+
+## Steg 2: Analysera jobbannonsen grundligt
 
 Gå igenom annonsen och identifiera:
-- Vilka är de viktigaste kraven?
-- Vilka är önskvärda egenskaper?
-- Vilka arbetsuppgifter ingår?
 
-## Steg 3: Förbered dina svar
+### Måste-krav (deal-breakers)
+Markera alla krav med ord som "kräver", "ska ha", "nödvändigt":
+- Krav 1: _________________________________
+- Krav 2: _________________________________
+- Krav 3: _________________________________
 
-Öva på vanliga frågor:
-- "Berätta om dig själv"
-- "Varför söker du detta jobb?"
-- "Vad är dina styrkor?"
-- "Vad är din svaghet?"
-- "Varför ska vi anställa just dig?"
+### Meriterande (nice-to-have)
+Markera krav med ord som "meriterande", "önskvärt", "en fördel":
+- Merit 1: _________________________________
+- Merit 2: _________________________________
 
-## Steg 4: Förbered dina frågor
+### Arbetsuppgifter
+Lista de viktigaste uppgifterna och fundera på hur du kan visa att du klarar dem:
+- Uppgift 1: _________________________________
+- Uppgift 2: _________________________________
+- Uppgift 3: _________________________________
 
-Att ställa frågor visar engagemang. Förbered 3-5 frågor om rollen, teamet och utvecklingsmöjligheter.
+### Mjuka färdigheter
+Vilka personliga egenskaper söker de? (lagspelare, självständig, kommunikativ, etc.)
+- _________________________________
 
-## Steg 5: Praktiska förberedelser
+## Steg 3: STAR-metoden – nyckeln till bra svar
+
+STAR är en teknik för att strukturera svar på beteendefrågor. Den hjälper dig att ge konkreta, trovärdiga svar istället för vaga generaliseringar.
+
+### Vad står STAR för?
+
+**S – Situation (Situation)**
+Beskriv kontexten. Var befann du dig? Vad var bakgrunden?
+"I min tidigare roll som teamledare på XYZ AB hade vi en situation där..."
+
+**T – Task (Uppgift)**
+Vad var ditt ansvar eller mål i situationen?
+"Min uppgift var att..."
+
+**A – Action (Handling)**
+Vad gjorde DU specifikt? (Använd "jag", inte "vi")
+"Jag började med att... Sedan..."
+
+**R – Result (Resultat)**
+Vad blev utfallet? Kvantifiera om möjligt!
+"Resultatet blev att... Vi ökade med 25%..."
+
+### STAR-exempel 1: "Berätta om en gång du hanterade en svår kund"
+
+**Situation:** "I mitt jobb på Kundtjänst AB hade vi en kund som var extremt upprörd över en felaktig faktura på 50 000 kr."
+
+**Task:** "Som senior kundtjänstmedarbetare var det mitt ansvar att lösa ärendet och försöka behålla kunden."
+
+**Action:** "Jag lyssnade först aktivt på kundens frustration utan att avbryta. Sedan bad jag om ursäkt för besväret och förklarade att jag skulle undersöka ärendet personligen. Jag kontaktade ekonomiavdelningen, identifierade felet i vårt faktureringssystem, och ringde tillbaka till kunden inom två timmar med en lösning."
+
+**Result:** "Kunden fick en korrigerad faktura samma dag plus 10% rabatt på nästa order som goodwill. Kunden blev så nöjd att de skrev ett positivt omdöme på Trustpilot och fortsatte som kund i två år till, värda cirka 200 000 kr i intäkter."
+
+### STAR-exempel 2: "Berätta om en gång du tog initiativ"
+
+**Situation:** "På mitt förra jobb märkte jag att vi spenderade mycket tid på manuell datainmatning varje vecka."
+
+**Task:** "Det var inte mitt ansvarsområde, men jag ville hitta ett sätt att förbättra processen."
+
+**Action:** "Jag lärde mig grunderna i Excel-makron på egen tid. Sedan skapade jag ett automatiserat kalkylark som hämtade data från vårt system och formaterade det korrekt. Jag presenterade lösningen för min chef och erbjöd mig att utbilda kollegorna."
+
+**Result:** "Processen som tidigare tog 4 timmar i veckan tar nu 30 minuter. Min chef nominerade mig till 'Månadens förbättrare' och jag fick ansvaret för att driva fler effektiviseringsprojekt."
+
+### Förbered dina egna STAR-berättelser
+
+Skriv ner minst 5 STAR-berättelser som täcker olika kompetenser:
+
+1. **Problemlösning:** När du löste ett svårt problem
+2. **Samarbete:** När du arbetade bra i team
+3. **Initiativ:** När du tog initiativ utöver ditt ansvar
+4. **Konflikt:** När du hanterade en konflikt eller svår person
+5. **Misslyckande:** När något gick fel och hur du lärde dig av det
+
+## Steg 4: Vanliga intervjufrågor och hur du svarar
+
+### "Berätta om dig själv"
+**Vad de egentligen frågar:** "Ge mig en professionell översikt som gör mig intresserad."
+
+**Struktur (2-3 minuter):**
+1. Nuvarande roll (30 sek)
+2. Bakgrund/utbildning (30 sek)
+3. Viktigaste prestationen (30 sek)
+4. Varför du är här idag (30 sek)
+
+**Exempel:**
+"Just nu arbetar jag som projektledare på TechStart där jag ansvarar för vår produktutveckling. Jag har en bakgrund inom systemvetenskap och började min karriär som utvecklare innan jag gick över till projektledning. Min stoltaste prestation är att ha lett lanseringen av vår app som nu har 50 000 användare. Jag söker nu nästa steg i min karriär, och er roll som Senior Projektledare matchar perfekt med mina ambitioner att arbeta med större, internationella projekt."
+
+### "Varför söker du detta jobb?"
+**Vad de egentligen frågar:** "Är du genuint intresserad, eller söker du vad som helst?"
+
+**Tre saker att inkludera:**
+1. Varför just detta företag
+2. Varför just denna roll
+3. Hur det passar in i din karriärplan
+
+### "Vad är dina styrkor?"
+**Vad de egentligen frågar:** "Kan du bidra till vårt team?"
+
+**Regler:**
+- Välj 2-3 styrkor som är relevanta för jobbet
+- Backa upp med konkreta exempel
+- Undvik klyschor utan substans
+
+**Exempel:**
+"Min största styrka är min förmåga att strukturera och prioritera. I mitt nuvarande jobb hanterar jag ofta 10-15 parallella projekt, och jag har aldrig missat en deadline. Jag gör det genom att börja varje vecka med att planera och prioritera baserat på affärspåverkan."
+
+### "Vad är din svaghet?"
+**Vad de egentligen frågar:** "Har du självinsikt och förmåga att utvecklas?"
+
+**Regler:**
+- Välj en genuin svaghet (inte "jag är för perfektionist")
+- Välj något som inte är kritiskt för jobbet
+- Visa hur du aktivt arbetar med det
+
+**Exempel:**
+"Jag kan ibland ha svårt att säga nej till nya uppgifter, vilket har lett till att jag tagit på mig för mycket. Jag har lärt mig att hantera detta genom att alltid fråga 'vad ska jag prioritera ner?' när någon ber om något nytt. Det har gjort stor skillnad."
+
+### "Varför ska vi anställa just dig?"
+**Vad de egentligen frågar:** "Sammanfatta ditt värde för oss."
+
+**Strukturera svaret:**
+1. Dina viktigaste relevanta erfarenheter
+2. Vad som skiljer dig från andra
+3. Din entusiasm för just denna möjlighet
+
+### "Var ser du dig själv om 5 år?"
+**Vad de egentligen frågar:** "Kommer du stanna eller hoppa vidare snabbt?"
+
+**Balansera ambition med realism:**
+"Om fem år ser jag mig ha vuxit inom företaget, kanske i en senior eller ledande roll. Jag vill fördjupa min expertis inom [område] och bidra till [företagets mål]. Det viktigaste för mig är att kontinuerligt utvecklas och ta mer ansvar."
+
+### "Varför lämnade du ditt förra jobb?" / "Varför vill du byta?"
+**Vad de egentligen frågar:** "Finns det problem vi borde veta om?"
+
+**Regler:**
+- Var positiv och framåtblickande
+- Fokusera på vad du söker, inte vad du flyr från
+- Prata ALDRIG illa om tidigare arbetsgivare
+
+**Bra svar:**
+"Jag har lärt mig otroligt mycket på mitt nuvarande jobb, men jag känner att jag är redo för nya utmaningar. Er roll erbjuder möjlighet att arbeta med [specifikt], vilket är precis den utveckling jag söker."
+
+## Steg 5: Förbered dina frågor
+
+Att ställa frågor visar engagemang. Förbered 5-7 frågor och välj 3-5 att ställa.
+
+### Bra frågor att ställa:
+
+**Om rollen:**
+- "Hur ser en typisk dag ut i denna roll?"
+- "Vad är de viktigaste målen för den här rollen de första 90 dagarna?"
+- "Vilka är de största utmaningarna personen i denna roll kommer möta?"
+
+**Om teamet:**
+- "Hur ser teamet jag kommer arbeta med ut?"
+- "Hur samarbetar avdelningarna med varandra?"
+- "Hur ser feedbackkulturen ut?"
+
+**Om företaget:**
+- "Vilka är företagets största utmaningar just nu?"
+- "Hur ser tillväxtplanerna ut de kommande åren?"
+- "Vad är det bästa med att arbeta här?"
+
+**Om utveckling:**
+- "Vilka utvecklingsmöjligheter finns det inom företaget?"
+- "Hur stöttar ni medarbetarnas kompetensutveckling?"
+
+**Om processen:**
+- "Hur ser de nästa stegen i processen ut?"
+- "När kan jag förvänta mig att höra från er?"
+
+### Frågor att UNDVIKA:
+- "Vad gör företaget?" (du borde veta det)
+- "Hur mycket semester har jag?" (för tidigt)
+- "Kan jag jobba hemifrån?" (fråga senare, om det inte nämns i annonsen)
+- "Hur snabbt kan jag bli befordrad?" (ger fel intryck)
+
+## Steg 6: Praktiska förberedelser
 
 ### Vad ska du ta med?
-- Extra kopior av CV:t
+- Extra kopior av CV:t (2-3 stycken)
 - Anteckningsblock och penna
 - Lista med dina frågor
+- Portfolio/arbetsprover (om relevant)
+- Legitimation (ibland krävs för att passera reception)
+- Kontaktuppgifter till intervjuaren (ifall du blir försenad)
 
 ### Vad ska du ha på dig?
-- Anpassa efter företagskulturen
-- När du är osäker: hellre för formellt än för casual
+- **Konservativa branscher** (bank, juridik): Kostym eller motsvarande
+- **Kreativa branscher** (reklam, media): Smart casual, visa personlighet
+- **Tech/startup:** Snyggt men avslappnat
+- **Regel:** Klä dig ett snäpp finare än du tror du behöver
+- **Tips:** Testa kläderna dagen innan så du vet att de passar och är bekväma
+
+### Logistik
+- Ta reda på exakt adress och vilken ingång
+- Planera resan så du är framme 10-15 minuter innan
+- Ha en backup-plan vid förseningar
+- Programmera in telefonnumret till kontaktpersonen
+
+### Kvällen innan
+- Läs igenom dina STAR-berättelser
+- Lägg fram kläder
+- Packa väskan
+- Gå och lägg dig i tid
+- Sätt extra alarm
 
 ## Under intervjun
 
-✅ **Gör detta:**
-- Hälsa med ett fast handslag och ögonkontakt
-- Var dig själv
-- Lyssna aktivt
-- Ställ dina förberedda frågor
+### De första 90 sekunderna
+Första intrycket sätts snabbt. Fokusera på:
+- **Leende** – visa att du är positiv
+- **Ögonkontakt** – visa självförtroende
+- **Fast handslag** – inte för hårt, inte för slappt
+- **Hållning** – rak rygg, öppet kroppsspråk
 
-❌ **Undvik detta:**
-- Prata illa om tidigare arbetsgivare
-- Se på klockan
-- Svara bara ja/nej på öppna frågor
+### Aktivt lyssnande
+- Lyssna på hela frågan innan du svarar
+- Det är okej att be om förtydligande
+- Det är okej att ta några sekunder att tänka
+- Nicka och visa att du lyssnar
+
+### Kroppsspråk
+✅ **Gör:**
+- Luta dig lätt framåt (visar intresse)
+- Ha öppna händer
+- Le naturligt
+- Matcha intervjuarens energi
+
+❌ **Undvik:**
+- Korsade armar (defensivt)
+- Att pilla med något (nervöst)
+- Att titta runt i rummet (ointresserat)
+- Att avbryta
+
+### Om du inte vet svaret
+Det är okej att inte veta allt! Bättre alternativ än att gissa:
+- "Det är en bra fråga. Låt mig fundera en sekund..."
+- "Jag har inte stött på exakt den situationen, men jag skulle angripa det så här..."
+- "Ärligt talat har jag inte erfarenhet av det, men jag lär mig snabbt och..."
 
 ## Efter intervjun
 
-1. Skicka ett tackmejl inom 24 timmar
-2. Reflektera över vad som gick bra
-3. Vänta tålmodigt på svar
+### Samma dag
+1. **Skriv ner** vad som diskuterades medan det är färskt
+2. **Reflektera:** Vad gick bra? Vad kunde varit bättre?
+3. **Skicka tackmail** inom 24 timmar
+
+### Tackmailet (exempel)
+---
+Ämne: Tack för intervjun – [Tjänstens namn]
+
+Hej [Namn],
+
+Stort tack för en trevlig intervju idag. Det var givande att få höra mer om rollen som [titel] och om [specifikt ämne ni diskuterade].
+
+Vårt samtal bekräftade mitt intresse för tjänsten. Jag är särskilt entusiastisk över möjligheten att [specifik uppgift/projekt som nämndes] och tror att min erfarenhet av [relevant erfarenhet] skulle vara värdefull i teamet.
+
+Jag ser fram emot att höra från er om nästa steg.
+
+Med vänliga hälsningar,
+[Ditt namn]
+[Telefonnummer]
+---
+
+### Om du inte hör något
+- Vänta tills deadline de nämnde har passerat
+- Skicka en uppföljning 1 vecka efter intervjun
+- Var professionell oavsett utfall
+- Fortsätt söka andra jobb under tiden
 
 ## Kom ihåg
 
-Intervjun är en dialog, inte ett förhör. Arbetsgivaren vill också sälja in företaget till dig!`,
+Intervjun är en dialog, inte ett förhör. Du intervjuar också dem – passar detta företag och denna roll för dig? Arbetsgivaren vill sälja in företaget till dig lika mycket som du vill sälja in dig själv.
+
+> **Tips:** Nervositet är normalt och till och med positivt – det visar att du bryr dig. Ta några djupa andetag innan du går in, och kom ihåg att de har kallat dig för att de redan tror att du kan passa!`,
     category: 'interview',
     subcategory: 'preparation',
-    tags: ['intervju', 'förberedelser', 'detaljerad', 'tips'],
+    tags: ['intervju', 'förberedelser', 'detaljerad', 'tips', 'STAR-metoden'],
     createdAt: '2024-01-16T10:00:00Z',
     updatedAt: '2024-02-20T10:00:00Z',
-    readingTime: 18,
+    readingTime: 28,
     difficulty: 'detailed',
     energyLevel: 'high',
     relatedArticles: ['digital-intervju', 'intervju-fragor', 'loneforhandling'],
@@ -1270,74 +1843,267 @@ Nystartsjobb är ett **trampolin**, inte en livboj. Det är en chans att visa va
     id: 'loneforhandling-guide',
     title: 'Löneförhandling – så får du den lön du förtjänar',
     summary: 'Praktiska strategier för att förbereda, genomföra och avsluta en lyckad löneförhandling.',
-    content: `Att prata om lön kan kännas obekvämt, men det är en viktig del av arbetslivet. Här lär du dig hur du förhandlar på ett professionellt sätt.
+    content: `Att prata om lön kan kännas obekvämt, men det är en viktig del av arbetslivet. Här lär du dig hur du förhandlar på ett professionellt sätt – både vid nya jobb och under lönesamtal.
 
-## Förbered dig innan
+## Varför är löneförhandling viktigt?
 
-### 1. Gör din research
-- Vad tjänar andra i liknande roller?
-- Kolla lönestatistik på SCB, Unionen, Akavia
-- Fråga i nätverket (försiktigt)
+En lyckad löneförhandling kan göra stor skillnad över tid:
+- **5 000 kr mer i månaden** = 60 000 kr mer per år
+- **Över en 10-årsperiod** (med löneökningar) = 700 000+ kr mer i total inkomst
+- **Pensionen** påverkas också positivt
 
-### 2. Definiera ditt lönespann
-- **Minimum:** Vad behöver du för att klara dig?
-- **Mål:** Vad vore rimligt och rättvist?
-- **Drömlön:** Vad vore fantastiskt?
+De flesta arbetsgivare förväntar sig förhandling. Om du inte förhandlar lämnar du sannolikt pengar på bordet.
 
-### 3. Förbered dina argument
-- Vilka resultat har du uppnått?
-- Vilka extra ansvar har du tagit?
-- Vilka kompetenser har du tillfört?
+## Del 1: Grundlig research
 
-## Under förhandlingen
+### Var hittar du lönestatistik?
 
-### Börja positivt
-"Jag trivs jättebra här och uppskattar förtroendet..."
+**Officiella källor:**
+- **SCB (Statistiska centralbyrån):** scb.se/hitta-statistik/sverige-i-siffror/lonesok
+- **Medlingsinstitutets statistik:** mi.se
 
-### Var konkret
-- Använd siffror och exempel
-- Koppla till affärsnytta
-- Var specifik om vad du vill ha
+**Fackförbundens lönestatistik:**
+- **Unionen:** unionen.se/lonestatistik (tjänstemän)
+- **Akavia:** akavia.se/lon (akademiker)
+- **Kommunal:** kommunal.se (offentlig sektor)
+- **IF Metall:** ifmetall.se (industri)
+- **Sveriges Ingenjörer:** sverigesingenjorer.se
 
-### Ligg inte för högt
-Begäran om 20% upprördhet kan stänga dörren. 5-10% är mer realistiskt.
+**Privata tjänster:**
+- **Glassdoor:** glassdoor.com (företagsspecifik)
+- **LinkedIn Salary:** linkedin.com/salary
+- **Levels.fyi:** levels.fyi (tech-branschen)
 
-### Var beredd på motargument
-- "Det finns inte i budgeten" → Fråga när det kan bli aktuellt
-- "Alla har samma lön" → Förklara varför du är exceptionell
+### Faktorer som påverkar din lön
 
-## Vanliga misstag
+När du researchar, ta hänsyn till:
+
+**Geografisk faktor:**
+- Stockholm: +15-20% jämfört med rikssnittet
+- Göteborg/Malmö: +5-10%
+- Mindre orter: -5-15%
+
+**Bransch:**
+- Tech, finans, juridik: Generellt högre
+- Ideella organisationer, offentlig sektor: Generellt lägre
+
+**Företagsstorlek:**
+- Stora företag: Ofta bättre grundlön och förmåner
+- Startups: Lägre grundlön men möjligt med optioner
+
+**Din erfarenhet:**
+- Junior (0-2 år): Lägre spann
+- Mid-level (3-5 år): Medelspann
+- Senior (5+ år): Högre spann
+
+### Gör en löneanalys
+
+Skapa en tabell med din research:
+
+| Källa | Lägsta | Median | Högsta |
+|-------|--------|--------|--------|
+| SCB | | | |
+| Unionen | | | |
+| Glassdoor | | | |
+| Nätverkskontakter | | | |
+
+**Ditt realistiska spann:** _____________ till _____________ kr/mån
+
+## Del 2: Definiera din strategi
+
+### Tre magiska siffror
+
+**1. Ditt golv (walk-away number)**
+Under detta tackfar du nej. Baseras på:
+- Dina minimala levnadskostnader
+- Vad du tjänar nu (minst samma eller mer)
+- Vad marknaden betalar för liknande roller
+
+**2. Ditt mål (target)**
+Den lön du faktiskt vill ha och tror är realistisk. Baseras på:
+- Median för liknande roller
+- Din specifika erfarenhet och kompetens
+- Företagets lönenivå
+
+**3. Din öppning (anchor)**
+Den siffra du startar förhandlingen med. Ska vara:
+- Högre än ditt mål (så du har utrymme att förhandla)
+- Men inte så hög att du blir utskrattad
+- Regel: 10-15% över ditt mål
+
+**Exempel:**
+- Golv: 38 000 kr
+- Mål: 42 000 kr
+- Öppning: 46 000 kr
+
+### Förbered dina argument
+
+Lista dina 5 starkaste argument för varför du förtjänar denna lön:
+
+**Argument 1: Specifik prestation med siffror**
+"Jag ökade försäljningen med 25% förra året, vilket motsvarar 2 miljoner kr i ökade intäkter."
+
+**Argument 2: Unikt värde du tillför**
+"Jag är den enda i teamet med certifiering i X, vilket har sparat oss från att anlita externa konsulter."
+
+**Argument 3: Extra ansvar utöver rollen**
+"Förutom mina ordinarie uppgifter har jag tagit på mig att vara mentor för tre juniora kollegor."
+
+**Argument 4: Marknadsjämförelse**
+"Enligt Unionens statistik ligger medianlönen för denna roll på X kr, och med min erfarenhet borde jag ligga över medianen."
+
+**Argument 5: Framtida bidrag**
+"Med min kompetens inom Y planerar jag att driva projektet Z som förväntas spara/generera..."
+
+## Del 3: Förhandlingssamtalet – steg för steg
+
+### Scenario A: Du får ett jobberbjudande
+
+**När de frågar: "Vad har du för löneanspråk?"**
+
+❌ **Undvik att svara först om möjligt:**
+"Jag vill gärna veta mer om hela paketet innan vi diskuterar specifika siffror. Vad har ni budgeterat för rollen?"
+
+Om de insisterar:
+
+✅ **Ge ett spann:**
+"Baserat på min research och erfarenhet ligger mitt förväntan på 44 000-48 000 kr. Men jag är öppen för diskussion beroende på hela paketet."
+
+**När de ger ett erbjudande:**
+
+1. **Tacka** (oavsett siffran): "Tack för erbjudandet!"
+2. **Pausa** – säg inget mer i några sekunder
+3. **Fråga**: "Är det förhandlingsbart?"
+4. **Om ja**, presentera ditt motbud med argument
+
+**Exempelmanus för motbud:**
+
+"Tack för erbjudandet på 40 000 kr. Jag är väldigt intresserad av rollen och företaget. Baserat på min erfarenhet av [specifik kompetens] och marknadslönen för liknande roller, hade jag förväntat mig en lön närmare 45 000 kr. Är det något vi kan diskutera?"
+
+### Scenario B: Lönesamtal med nuvarande arbetsgivare
+
+**Strukturera samtalet:**
+
+**1. Öppna positivt (30 sekunder)**
+"Tack för att vi ses. Jag vill börja med att säga att jag trivs bra här och uppskattar möjligheterna jag fått."
+
+**2. Presentera ditt case (2-3 minuter)**
+"Under det senaste året har jag [prestation 1], [prestation 2] och [prestation 3]. Dessa bidrag har resulterat i [mätbart resultat]."
+
+**3. Ange din begäran (30 sekunder)**
+"Med tanke på dessa bidrag och var marknaden ligger för liknande roller, önskar jag en löneökning till [siffra] kr."
+
+**4. Tystnad**
+Var tyst och vänta på respons. Fyll inte tystnaden!
+
+**5. Förhandla**
+Baserat på deras svar, fortsätt dialogen.
+
+### Manus för vanliga motargument
+
+**"Det finns inte i budgeten just nu"**
+"Jag förstår att budgeten är tight. När skulle det vara möjligt att återkomma till frågan? Och finns det något jag kan göra under tiden som skulle stärka mitt case?"
+
+**"Alla i teamet har samma lön"**
+"Jag förstår att ni har en lönestruktur. Finns det möjlighet att justera den baserat på prestation och bidrag? Mina resultat [specifika exempel] visar att jag levererar över förväntan."
+
+**"Du är ganska ny i rollen"**
+"Det stämmer att jag varit i rollen i X månader. Under den tiden har jag dock [prestation]. Om vi inte kan justera lönen nu, kan vi komma överens om att utvärdera igen om sex månader?"
+
+**"Vi kan erbjuda X, inte Y"**
+"Tack, det är ett steg i rätt riktning. Skulle det vara möjligt att kompensera skillnaden med [annan förmån: flextid, utbildning, extra semester]?"
+
+## Del 4: Förhandla hela paketet
+
+Lön är inte allt. Om grundlönen är fast, överväg:
+
+### Monetära förmåner
+- Pensionsavsättning (kan vara 4-15% av lönen)
+- Bonus/provision
+- Aktier/optioner (vanligt i startups)
+- Övertidsersättning
+- Friskvårdsbidrag
+
+### Flexibilitet
+- Distansarbete (dagar per vecka)
+- Flextid
+- Komprimerad arbetsvecka (ex: 4 dagar x 10 timmar)
+
+### Tid
+- Extra semesterdagar
+- Föräldraledighetstillägg
+- Tjänstledighet för studier
+
+### Utveckling
+- Utbildningsbudget
+- Konferenser
+- Mentorsprogram
+- Titel/befattning
+
+### Startdatum och annat
+- Tidigare startbonus (sign-on bonus)
+- Relocation-bidrag
+- Bättre utrustning (dator, telefon)
+
+**Exempelmanus:**
+"Jag förstår att lönen är max 40 000 kr. Finns det möjlighet att kompensera med 3 extra semesterdagar och ett utbildningspaket på 30 000 kr per år?"
+
+## Del 5: Vanliga misstag att undvika
 
 ❌ **Att ta det personligt**
-Det är affärer, inte en bedömning av ditt värde som människa
+Det är affärer, inte en bedömning av ditt värde som människa. Håll det professionellt.
 
 ❌ **Att jämföra med kollegor**
-Fokusera på ditt bidrag, inte vad andra tjänar
+"Lisa tjänar mer än jag" är ett svagt argument. Fokusera på ditt eget bidrag och marknadsvärde.
 
 ❌ **Att hota med att sluta**
-Det kan lätt slå tillbaka
+Det kan lätt slå tillbaka och skada relationen. Om du verkligen planerar att sluta, gör det – men använd det inte som förhandlingstaktik om du inte menar allvar.
 
 ❌ **Att ge upp vid första nej**
-Fråga när ni kan återkomma till frågan
+"Nej" betyder ofta "inte just nu" eller "övertyga mig". Fråga varför och vad som krävs för att ändra svaret.
 
-## Efter förhandlingen
+❌ **Att acceptera första erbjudandet direkt**
+Även om det är bra, visa att du tänker efter. "Tack, jag vill gärna fundera över natten och återkomma imorgon."
 
-Om du fick ja: **Fira!** 🎉
+❌ **Att prata för mycket**
+Efter att du sagt din siffra – var tyst. Låt dem svara.
 
-Om du fick nej:
-- Be om en tidsplan för nästa förhandling
-- Fråga vad du behöver uppnå för att få högre lön
-- Överväg om andra förmåner kan kompensera (flextid, utbildning)
+❌ **Att fokusera bara på lönen**
+Glöm inte totalpaketet. Ibland är 38 000 kr + bra förmåner bättre än 42 000 kr utan förmåner.
+
+❌ **Att inte ha gjort research**
+"Jag tycker jag borde tjäna mer" är svagt. "Medianlönen enligt Unionen är X och jag levererar över medel" är starkt.
+
+## Del 6: Efter förhandlingen
+
+### Om du fick ja
+1. Tacka och bekräfta överenskommelsen skriftligt via mejl
+2. Be om skriftligt anställningsavtal/lönebesked
+3. Fira (du förtjänar det!)
+
+### Om du fick nej eller delvis
+1. Behåll professionalismen
+2. Fråga: "Vad behöver jag uppnå för att vi ska kunna ha den här diskussionen igen?"
+3. Be om en konkret tidsplan för ny utvärdering
+4. Få överenskommelsen skriftligt
+5. Fundera på om du ska börja leta andra möjligheter
+
+### Dokumentera alltid
+Oavsett utfall, skicka ett mejl som sammanfattar vad ni kommit överens om:
+
+"Hej [namn], tack för samtalet idag. Som jag förstod det kom vi överens om [överenskommelse]. Vi ska ha en ny utvärdering [datum]. Stämmer det?"
 
 ## Kom ihåg
 
-Du förtjänar att få betalt för ditt värde. Var professionell, förberedd och bestämd!`,
+Du förtjänar att få betalt för ditt värde. Löneförhandling är en normal del av arbetslivet och arbetsgivare respekterar människor som kan förhandla professionellt – det är trots allt en viktig affärsfärdighet.
+
+> **Tips:** Övning ger färdighet! Öva förhandlingen med en vän eller familjemedlem innan. Ju mer du övar, desto tryggare blir du i skarpt läge.`,
     category: 'interview',
     subcategory: 'salary',
-    tags: ['lön', 'förhandling', 'lönesamtal', 'löneanspråk', 'värdera sig själv'],
+    tags: ['lön', 'förhandling', 'lönesamtal', 'löneanspråk', 'värdera sig själv', 'lönestatistik'],
     createdAt: '2024-03-02T10:00:00Z',
     updatedAt: '2024-03-02T10:00:00Z',
-    readingTime: 14,
+    readingTime: 22,
     difficulty: 'medium',
     energyLevel: 'medium',
     relatedArticles: ['anstallningsformer', 'forsta-dagen-jobbet'],
@@ -1356,89 +2122,350 @@ Du förtjänar att få betalt för ditt värde. Var professionell, förberedd oc
     id: 'linkedin-optimering',
     title: 'Optimera din LinkedIn-profil för jobbsökning',
     summary: 'Så gör du din LinkedIn-profil synlig för rekryterare och användbar för nätverkande.',
-    content: `LinkedIn är världens största professionella nätverk – och ett oumbärligt verktyg för jobbsökare. Så här optimerar du din profil.
+    content: `LinkedIn är världens största professionella nätverk med över 900 miljoner användare globalt och cirka 4 miljoner i Sverige. Det är ett oumbärligt verktyg för jobbsökare – 87% av rekryterare använder LinkedIn för att hitta kandidater. Så här optimerar du din profil för maximal synlighet.
 
-## Profilbild
+## Varför LinkedIn är viktigt för jobbsökning
+
+- **Rekryterare söker aktivt** efter kandidater på LinkedIn
+- **Dolda jobb** – många tjänster tillsätts via nätverk innan de annonseras
+- **Research** – arbetsgivare kollar ofta din profil innan intervju
+- **Nätverkande** – du kan nå beslutsfattare direkt
+- **Personal branding** – bygg ditt professionella varumärke
+
+## Del 1: Profilbild och bakgrundsbild
+
+### Profilbild – ditt första intryck
+
+Din profilbild är det första rekryterare ser. Profiler med bild får **14x fler visningar** än de utan.
 
 ✅ **Gör så här:**
-- Professionell bild med neutral bakgrund
-- Se in i kameran och le
-- Ha på dig kläder som passar din bransch
-- Använd en bild från axlarna och uppåt
+- Professionell bild med neutral eller suddig bakgrund
+- Ansiktet tar upp 60-70% av bilden
+- Se in i kameran och le naturligt
+- Bra belysning (dagsljus framifrån är bäst)
+- Klä dig i kläder som passar din bransch
+- Bild från axlarna och uppåt
+- Hög upplösning (minst 400x400 pixlar)
 
 ❌ **Undvik:**
-- Partybilder
-- Självisar
-- Bilder med andra människor
+- Partybilder eller semesterbilder
+- Självisar tagna med mobilkamera
+- Bilder med andra människor (även beskurna)
+- Gamla bilder (inte äldre än 3 år)
 - Oskarpa eller mörka bilder
+- För formella bilder (du ska se approachable ut)
 
-## Rubrik (Headline)
+**Tips:** Fråga en vän att ta bilden mot en vit vägg i dagsljus. Du behöver inte professionell fotograf!
 
-Din rubrik visas överallt – gör den räknas!
+### Bakgrundsbild (Cover photo)
 
-**Dålig:** "Söker jobb"
-**Bättre:** "Erfaren kundtjänstmedarbetare | Fokus på kundnöjdhet"
-**Bäst:** "Projektledare | 5 års erfarenhet av IT-projekt | Certifierad Scrum Master"
+Bakgrundsbilden är underskattat utrymme. Använd det!
 
-**Tips:** Använd nyckelord som rekryterare söker efter
+**Idéer för bakgrundsbild:**
+- Bild som representerar din bransch
+- Ditt företags logga (om du är stolt anställd)
+- En stad/plats kopplad till ditt arbete
+- En grafik som visar dina kompetensområden
+- Konferensbild eller arbetsmiljö
 
-## Om-sektionen (Summary)
+**Storlek:** 1584 x 396 pixlar (rekommenderad)
 
-Skriv i första person och berätta:
-- Vem du är (professionellt)
-- Vad du kan (kompetenser)
-- Vad du söker (mål)
+## Del 2: Rubrik (Headline) – 220 tecken som avgör
 
-**Struktur:**
-1. Stark inledning som väcker intresse
-2. 2-3 meningar om din bakgrund
-3. Dina styrkor och vad du brinner för
-4. Call-to-action ("Jag söker nya möjligheter inom...")
+Din rubrik visas överallt: sökresultat, kommentarer, förfrågningar, meddelanden. Den är avgörande för om någon klickar på din profil.
 
-## Erfarenhet
+### Struktur för rubrik
 
-- Lista alla relevanta jobb
-- Beskriv resultat, inte bara arbetsuppgifter
-- Använd siffror när du kan
-- Be om rekommendationer från tidigare chefer
+**Formel:** [Roll/Titel] | [Specialisering/Styrka] | [Nyckelord]
 
-## Kompetenser (Skills)
+**Dåliga exempel:**
+- "Söker jobb" (desperat, säger ingenting)
+- "Arbetslös" (negativt)
+- Bara en titel utan kontext
 
-- Lista 50 av dina kompetenser (max tillåtet)
-- Prioritera de mest relevanta först
-- Be kollegor att " endorsa" (bekräfta) dina kompetenser
+**Bra exempel:**
+- "Projektledare | IT & Digital transformation | Certifierad PMP & Scrum Master"
+- "Säljare B2B | Hjälper techbolag växa | 15 MSEK i pipeline 2023"
+- "UX Designer | Skapar användarcentrerade digitala upplevelser | Figma, Research, Prototyping"
+- "Ekonomiassistent | Redovisning, Bokföring, Fortnox | Redo för nya utmaningar"
 
-## Aktivitet
+**Om du söker jobb:**
+- "Projektledare | Öppen för nya möjligheter inom IT"
+- "Erfaren kundtjänstmedarbetare | Aktivt jobbsökande"
 
-**Synlighet = Möjligheter**
+### Nyckelord i rubriken
 
-- Dela intressanta artiklar med en personlig kommentar
-- Gratulera kontakter till nya jobb
-- Kommentera inlägg i din bransch
-- Skriv egna inlägg om du vågar
+Tänk: Vad söker rekryterare på? Inkludera:
+- Din yrkestitel (kundtjänst, projektledare, utvecklare)
+- Bransch (IT, finans, vård)
+- Verktyg/system (SAP, Python, Photoshop)
+- Certifieringar (PMP, AWS, ITIL)
 
-## Nätverka strategiskt
+## Del 3: Om-sektionen (About) – berätta din story
 
-- Skicka personliga förfrågningar (inte standardtexten)
-- Följ företag du vill jobba på
-- Kontakta rekryterare i din bransch
+Du har 2 600 tecken. Använd dem väl! Om-sektionen är din chans att visa personlighet och berätta din professionella historia.
 
-## Sök jobb på LinkedIn
+### Struktur för Om-sektionen
 
-- Använd filter för att hitta rätt jobb
-- Spara jobbsökningar
-- Aktivera "Open to work"-funktionen
-- Ansök via "Easy Apply" men skicka alltid personligt brev separat
+**Stycke 1: Hook (2-3 meningar)**
+Fånga uppmärksamhet direkt. Vad gör dig unik?
+
+**Stycke 2: Din bakgrund (3-4 meningar)**
+Vem är du professionellt? Var har du arbetat och vad har du lärt dig?
+
+**Stycke 3: Dina styrkor och värde (3-4 meningar)**
+Vad bidrar du med? Vad brinner du för?
+
+**Stycke 4: Call-to-action (2-3 meningar)**
+Vad vill du att läsaren ska göra? Kontakta dig? Följa dig?
+
+### Exempel på Om-sektion
+
+---
+"Att lösa problem är min drivkraft. Från min första roll som supporttekniker till dagens position som IT-projektledare har jag alltid fascinerats av att hitta smarta lösningar på komplexa utmaningar.
+
+Med 8 års erfarenhet av IT-projekt har jag lett team på upp till 15 personer och levererat projekt värda över 50 MSEK. Min styrka ligger i att översätta tekniska krav till affärsspråk och vice versa – jag är bryggan mellan utvecklare och beslutsfattare.
+
+Jag brinner särskilt för digital transformation och agila metoder. Som certifierad Scrum Master har jag hjälpt tre organisationer att framgångsrikt gå över till agilt arbetssätt.
+
+Just nu utforskar jag nya möjligheter inom projektledning i stockholmsområdet. Har du ett spännande projekt som behöver en strukturerad men flexibel projektledare? Kontakta mig – jag bjuder gärna på en kaffe och ett samtal om hur jag kan bidra!"
+
+Nyckelord: IT-projektledare, Scrum Master, Digital transformation, Agile, PMP, Change Management
+---
+
+### Tips för Om-sektionen:
+- Skriv i första person (jag, mig)
+- Visa personlighet – var inte för formell
+- Inkludera nyckelord (men naturligt)
+- Bryt upp texten med mellanrum
+- Avsluta med kontaktuppmaning
+- Lista nyckelord i slutet för sökbarhet
+
+## Del 4: Erfarenhet – visa resultat, inte uppgifter
+
+### Strukturera varje position
+
+**Inkludera:**
+- Jobbtitel (använd den mest sökbara titeln)
+- Företagsnamn (länka till företagets LinkedIn-sida)
+- Tidsperiod (månad/år - månad/år)
+- Beskrivning med bullet points
+
+**Skriv resultat, inte arbetsuppgifter:**
+
+❌ "Ansvarade för kundservice"
+✅ "Hanterade 50+ kundärenden dagligen med 97% kundnöjdhet. Fick utmärkelsen 'Månadens medarbetare' tre gånger."
+
+❌ "Arbetade med försäljning"
+✅ "Överträffade försäljningsmålen med 130%. Byggde pipeline på 8 MSEK och stängde bolagets största deal 2023."
+
+### Lägg till media
+
+LinkedIn låter dig bifoga:
+- Presentationer
+- Dokument (PDF)
+- Bilder
+- Videor
+- Länkar
+
+**Idéer:**
+- Portfolio-exempel
+- Certifikat
+- Presentationer du hållit
+- Artiklar du skrivit
+- Projektresultat
+
+## Del 5: Kompetenser (Skills) – maximera synlighet
+
+Du kan lista upp till 50 kompetenser. Fyll alla!
+
+### Strategisk kompetenslistning
+
+1. **De 3 första är viktigast** – de visas överst
+2. **Välj sökbara termer** – vad söker rekryterare?
+3. **Blanda hårda och mjuka** – tekniska och personliga
+
+**Exempel för projektledare:**
+- Projektledning (hårt)
+- Agile/Scrum (hårt)
+- Stakeholder Management (mjukt)
+- MS Project (verktyg)
+- Riskhantering (hårt)
+- Kommunikation (mjukt)
+
+### Endorsements (bekräftelser)
+
+- Be kollegor att endorsa dina viktigaste kompetenser
+- Endorsa andras först (de endorsar ofta tillbaka)
+- Fokusera på att få endorsements för topp 3 kompetenser
+
+## Del 6: Rekommendationer – socialt bevis
+
+Rekommendationer är guld! De är trovärdiga referenser direkt på din profil.
+
+### Vem ska du be?
+- Tidigare chefer (starkast)
+- Kollegor du samarbetat nära med
+- Kunder du hjälpt
+- Mentorer
+- Projektpartners
+
+### Hur ber du?
+Personligt meddelande, inte LinkedIn-förfrågan:
+
+"Hej [Namn]! Jag håller på att uppdatera min LinkedIn-profil och undrar om du skulle kunna tänka dig att skriva en kort rekommendation? Det behöver inte vara långt – några meningar om hur det var att jobba tillsammans och vad du uppskattade mest. Tack på förhand!"
+
+### Skriv själv först
+Erbjud dig att skriva ett utkast de kan utgå från – det gör det enklare för dem.
+
+## Del 7: "Open to Work" – använd rätt
+
+### Synligt märke (gröna ramen)
+
+✅ **Fördelar:**
+- Signalerar tydligt att du är tillgänglig
+- Rekryterare söker aktivt efter dessa
+
+❌ **Nackdelar:**
+- Kan se desperat ut
+- Din nuvarande arbetsgivare kan se det
+
+### Dolt läge (endast rekryterare)
+
+LinkedIn kan visa att du är öppen för jobb ENDAST för rekryterare (inte din arbetsgivare).
+
+**Så aktiverar du:**
+1. Klicka på "Open to" under din profilbild
+2. Välj "Finding a new job"
+3. Fyll i preferenser (roll, plats, distans, etc.)
+4. Välj "Recruiters only"
+
+## Del 8: Aktivitet och synlighet
+
+### Varför aktivitet spelar roll
+
+- LinkedIns algoritm gynnar aktiva användare
+- Din aktivitet syns i ditt nätverks flöde
+- Rekryterare ser ditt engagemang
+
+### Enkel aktivitet (5-10 min/dag)
+
+**Reagera:** Gilla relevanta inlägg i din bransch
+**Kommentera:** Skriv genomtänkta kommentarer (inte bara "Bra inlägg!")
+**Dela:** Dela artiklar med din egen reflektion
+**Gratulera:** Gratta kontakter till nya jobb, befordran, jubileum
+
+### Skapa eget innehåll
+
+Om du vågar – eget innehåll ger mest synlighet:
+
+**Inläggstyper som fungerar:**
+- Lärdomar från din karriär
+- Branschinsikter
+- Tips inom ditt expertområde
+- Reflektioner från konferenser/utbildningar
+- Karriärresa och milstolpar
+
+**Tips för inlägg:**
+- Hook i första meningen (fånga uppmärksamhet)
+- Bryt upp i korta stycken
+- Använd bullet points
+- Avsluta med fråga (ökar kommentarer)
+- Posta tisdag-torsdag, 8-10 på morgonen
+
+## Del 9: Nätverkande på LinkedIn
+
+### Bygg ditt nätverk strategiskt
+
+**Vem ska du koppla ihop dig med?**
+- Tidigare kollegor och klasskamrater
+- Branschkollegor
+- Rekryterare i din bransch
+- Anställda på företag du vill jobba på
+- Influencers inom ditt område
+
+### Skicka personliga förfrågningar
+
+❌ Standardtext: "Jag vill gärna lägga till dig i mitt professionella nätverk på LinkedIn"
+
+✅ Personligt: "Hej Maria! Jag såg din presentation om digital marknadsföring på [event] och blev inspirerad. Jag arbetar också inom området och skulle gärna koppla ihop oss. /Erik"
+
+### Underhåll relationer
+
+- Gratulera till nya jobb
+- Kommentera deras inlägg
+- Skicka relevanta artiklar
+- Boka virtuella kaffeträffar
+
+## Del 10: Jobbsökning på LinkedIn
+
+### LinkedIn Jobs – tips
+
+1. **Spara sökningar** med dina kriterier
+2. **Aktivera jobbaviseringar** för nya matchande jobb
+3. **Använd filter:** Plats, erfarenhetsnivå, distansarbete
+4. **"Easy Apply":** Snabbt men skicka även personligt brev
+5. **Företagsföljning:** Följ företag du vill jobba på
+
+### Hitta dolda jobb
+
+1. **Sök på befattning** + "hiring" i inlägg
+2. **Följ rekryterare** i din bransch
+3. **Koppla ihop dig** med anställda på drömföretag
+4. **Skriv direkt** till rekryterare/chefer med personligt meddelande
+
+### InMail och direktmeddelanden
+
+Om du kontaktar någon du inte känner:
+- Var kort och tydlig
+- Förklara varför just de
+- Var specifik med vad du vill
+- Gör det enkelt att hjälpa dig
+
+**Exempel:**
+"Hej Anna! Jag såg att du rekryterar projektledare till [Företag]. Jag har 5 års erfarenhet av IT-projekt och certifiering i PMP. Jag skulle gärna höra mer om rollen om den fortfarande är öppen. Mitt CV finns på min profil. Tack på förhand!"
+
+## Checklista: LinkedIn-profilen
+
+Gå igenom och bocka av:
+
+**Grundläggande:**
+- Professionell profilbild
+- Bakgrundsbild uppladdad
+- Optimerad rubrik med nyckelord
+- Ifylld Om-sektion
+
+**Erfarenhet:**
+- Alla relevanta jobb listade
+- Resultat beskrivna (inte bara uppgifter)
+- Media bifogat (presentationer, certifikat)
+
+**Kompetenser:**
+- 50 kompetenser listade
+- Topp 3 prioriterade
+- Endorsements inhämtade
+
+**Trovärdighet:**
+- Minst 2-3 rekommendationer
+- Utbildningar och certifieringar listade
+- Korrekt kontaktinformation
+
+**Synlighet:**
+- "Open to Work" aktiverat (om lämpligt)
+- 100+ kontakter
+- Regelbunden aktivitet
 
 ## Kom ihåg
 
-LinkedIn är inte Facebook – håll det professionellt men personligt. Visa att du är en människa, inte bara en lista med kompetenser!`,
-    category: 'job-market',
-    subcategory: 'digital-presence',
-    tags: ['LinkedIn', 'digital närvaro', 'nätverkande', 'online-profil', 'rekrytering'],
+LinkedIn är inte Facebook – håll det professionellt men personligt. Visa att du är en människa med passion och personlighet, inte bara en lista med kompetenser! Rekryterare vill hitta riktiga människor, inte polerade robotar.
+
+> **Tips:** Avsätt 15 minuter varje dag för LinkedIn-aktivitet. Konsistent närvaro slår sporadisk aktivitet varje gång!`,
+    category: 'digital-presence',
+    subcategory: 'linkedin',
+    tags: ['LinkedIn', 'digital närvaro', 'nätverkande', 'online-profil', 'rekrytering', 'personal branding'],
     createdAt: '2024-03-03T10:00:00Z',
     updatedAt: '2024-03-03T10:00:00Z',
-    readingTime: 16,
+    readingTime: 24,
     difficulty: 'medium',
     energyLevel: 'medium',
     relatedArticles: ['personligt-varumarke', 'natverka-for-jobb'],
