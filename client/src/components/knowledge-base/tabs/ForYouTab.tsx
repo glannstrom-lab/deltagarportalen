@@ -1,14 +1,16 @@
 /**
- * For You Tab - Personalized content based on user profile and RIASEC
+ * For You Tab - Personalized content based on user profile, RIASEC, and mood
  * Only uses real data from Supabase - no mock data or localStorage
  */
 
 import { useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { Sparkles, Target, Compass, BookOpen } from '@/components/ui/icons'
+import { Sparkles, Target, Compass, BookOpen, Heart, ChevronRight } from '@/components/ui/icons'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import { Card } from '@/components/ui'
 import { useInterestProfile } from '@/hooks/useInterestProfile'
+import { useMoodRecommendations } from '@/hooks/useMoodRecommendations'
 import { calculateArticleRelevance, type RiasecScores } from '@/services/interestPersonalization'
 import { RiasecPersonalizationBanner } from '../RiasecPersonalizationBanner'
 import type { Article } from '@/types/knowledge'
@@ -51,6 +53,7 @@ function getRecommendations(
 export default function ForYouTab({ articles, userName }: ForYouTabProps) {
   const { t } = useTranslation()
   const { profile: riasecProfile } = useInterestProfile()
+  const moodData = useMoodRecommendations(articles as EnhancedArticle[])
 
   // Get recommendations with RIASEC integration
   const recommendations = useMemo(() => {
@@ -99,6 +102,40 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
 
       {/* RIASEC Personalization Banner - prompts user to take test if not done */}
       <RiasecPersonalizationBanner />
+
+      {/* Mood-based suggestion (if mood logged today) */}
+      {moodData.hasMoodToday && moodData.currentMood && (
+        <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-100">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
+              <span className="text-xl">{moodData.moodEmoji}</span>
+            </div>
+            <div className="flex-1">
+              <h3 className="font-semibold text-slate-900 flex items-center gap-2">
+                <Heart className="w-4 h-4 text-rose-500" />
+                Baserat på ditt humör
+              </h3>
+              <p className="text-sm text-slate-600 mt-1">
+                {moodData.encouragingMessage}
+              </p>
+              {moodData.recommendations.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {moodData.recommendations.slice(0, 2).map(rec => (
+                    <Link
+                      key={rec.id}
+                      to={rec.link}
+                      className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-full text-sm text-rose-700 hover:bg-rose-50 transition-colors"
+                    >
+                      {rec.title}
+                      <ChevronRight className="w-3 h-3" />
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Personalized recommendations (if RIASEC done) or all articles */}
       {recommendations.length > 0 && (

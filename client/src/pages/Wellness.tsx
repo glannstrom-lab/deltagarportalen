@@ -1,6 +1,6 @@
 /**
  * Wellness Page - Main entry with tabs
- * 5 tabs: Hälsa, Energi, Rutiner, Kognitiv träning, Akut stöd
+ * 4 tabs: Hälsa, Rutiner, Kognitiv träning, Akut stöd
  */
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -11,7 +11,6 @@ import { helpContent } from '@/data/helpContent'
 
 // Tab components
 import HealthTab from './wellness/HealthTab'
-import EnergyTab from './wellness/EnergyTab'
 import RoutinesTab from './wellness/RoutinesTab'
 import CognitiveTab from './wellness/CognitiveTab'
 import CrisisTab from './wellness/CrisisTab'
@@ -38,10 +37,11 @@ export default function WellnessPage() {
       >
         <Routes>
           <Route path="/" element={<HealthTab />} />
-          <Route path="/energy" element={<EnergyTab />} />
           <Route path="/routines" element={<RoutinesTab />} />
           <Route path="/cognitive" element={<CognitiveTab />} />
           <Route path="/crisis" element={<CrisisTab />} />
+          {/* Redirect old energy URL to health tab */}
+          <Route path="/energy" element={<Navigate to="/wellness" replace />} />
           <Route path="*" element={<Navigate to="/wellness" replace />} />
         </Routes>
       </PageLayout>

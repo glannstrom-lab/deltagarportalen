@@ -3,7 +3,7 @@
  */
 
 import { Link } from 'react-router-dom'
-import { ChevronRight, Tag, Dumbbell, Clock } from '@/components/ui/icons'
+import { ChevronRight, Tag, Dumbbell } from '@/components/ui/icons'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
 import { articleCategories } from '@/services/articleData'
@@ -29,7 +29,6 @@ interface EnhancedArticleCardProps {
     difficulty?: 'easy-swedish' | 'easy' | 'medium' | 'detailed'
     author?: string
     relatedExercises?: string[]
-    energyLevel?: 'low' | 'medium' | 'high'
   }
   variant?: 'default' | 'compact' | 'featured'
 }
@@ -105,26 +104,9 @@ export default function EnhancedArticleCard({
       <div className="flex items-start justify-between gap-4">
         <div className="flex-1">
           <div className="flex items-center gap-2 flex-wrap mb-2">
-            <span className={cn(
-              "inline-block px-2 py-1 text-xs font-medium rounded-full",
-              article.energyLevel === 'low' && "bg-sky-100 text-sky-700",
-              article.energyLevel === 'medium' && "bg-amber-100 text-amber-700",
-              article.energyLevel === 'high' && "bg-rose-100 text-rose-700",
-              !article.energyLevel && "bg-teal-100 text-teal-700"
-            )}>
+            <span className="inline-block px-2 py-1 text-xs font-medium rounded-full bg-teal-100 text-teal-700">
               {categoryNameMap[article.category] || article.category}
             </span>
-            {article.energyLevel && (
-              <span className={cn(
-                "inline-flex items-center gap-1 px-2 py-0.5 text-xs rounded-full",
-                article.energyLevel === 'low' && "bg-sky-50 text-sky-600",
-                article.energyLevel === 'medium' && "bg-amber-50 text-amber-600",
-                article.energyLevel === 'high' && "bg-rose-50 text-rose-600",
-              )}>
-                <Clock className="w-3 h-3" />
-                {article.energyLevel === 'low' ? 'Snabb' : article.energyLevel === 'medium' ? 'Medel' : 'Djupgående'}
-              </span>
-            )}
           </div>
           
           <h3 className="font-semibold text-slate-800 group-hover:text-teal-700 transition-colors mb-2">
