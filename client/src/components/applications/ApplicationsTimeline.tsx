@@ -145,11 +145,6 @@ export function ApplicationsTimeline() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-lg font-semibold text-slate-900">Aktivitetshistorik</h2>
-        <p className="text-sm text-slate-500">Alla ändringar i dina ansökningar</p>
-      </div>
-
       {Object.keys(groupedHistory).length === 0 ? (
         <Card className="p-8 text-center">
           <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />

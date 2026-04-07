@@ -73,7 +73,7 @@ function PipelineColumn({
   }, [applications])
 
   return (
-    <div className="flex-shrink-0 w-72 flex flex-col">
+    <div className="flex-shrink-0 w-64 sm:w-72 flex flex-col">
       {/* Column header */}
       <div className={cn(
         "flex items-center justify-between p-3 rounded-t-xl border-t-4",
@@ -199,11 +199,13 @@ export function ApplicationsPipeline({
   return (
     <div className="space-y-4">
       {/* Toolbar */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-3">
-          <h2 className="text-lg font-semibold text-slate-900">Pipeline</h2>
-          <span className="text-sm text-slate-500">
-            {stats.active} aktiva ansökningar
+          <span className="px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full text-sm font-medium">
+            {stats.active} aktiva
+          </span>
+          <span className="text-sm text-slate-500 hidden sm:inline">
+            {stats.applied} ansökta • {stats.interview} intervjuer
           </span>
         </div>
 
@@ -220,7 +222,9 @@ export function ApplicationsPipeline({
               )}
             >
               <Filter className="w-4 h-4" />
-              {priorityFilter ? `${priorityFilter === 'high' ? 'Hög' : priorityFilter === 'low' ? 'Låg' : 'Medium'} prioritet` : 'Filter'}
+              <span className="hidden sm:inline">
+                {priorityFilter ? `${priorityFilter === 'high' ? 'Hög' : priorityFilter === 'low' ? 'Låg' : 'Medium'} prioritet` : 'Filter'}
+              </span>
               <ChevronDown className="w-4 h-4" />
             </button>
 
@@ -269,7 +273,10 @@ export function ApplicationsPipeline({
             )}
           </div>
 
-          <Button onClick={onAddApplication}>
+          <Button onClick={onAddApplication} className="sm:hidden">
+            <Plus className="w-4 h-4" />
+          </Button>
+          <Button onClick={onAddApplication} className="hidden sm:flex">
             <Plus className="w-4 h-4 mr-1" />
             Ny ansökan
           </Button>
@@ -310,7 +317,7 @@ export function ApplicationsPipeline({
       )}
 
       {/* Pipeline columns */}
-      <div className="flex gap-4 overflow-x-auto pb-4">
+      <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0">
         {PIPELINE_COLUMNS.map((status) => (
           <PipelineColumn
             key={status}

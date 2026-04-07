@@ -88,8 +88,7 @@ export default function Applications() {
         subtitle={t('applications.subtitle', 'Följ dina jobbansökningar genom hela processen')}
         tabs={applicationTabs}
         tabVariant="glass"
-        className="max-w-7xl mx-auto"
-        headerActions={
+        actions={
           <Button onClick={() => setShowAddModal(true)} className="hidden sm:flex">
             <Plus className="w-4 h-4 mr-1" />
             {t('applications.addApplication', 'Ny ansökan')}
