@@ -118,9 +118,9 @@ export async function getJourneyStats(): Promise<JourneyStats | null> {
       .select('*', { count: 'exact', head: true })
       .eq('user_id', user.id)
 
-    // Fetch articles read (from article_progress)
+    // Fetch articles read (from article_reading_progress)
     const { count: articlesRead } = await supabase
-      .from('article_progress')
+      .from('article_reading_progress')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', user.id)
       .gte('progress', 80)
@@ -473,11 +473,11 @@ async function getMilestoneProgress(
 
       case 'interest_guide_complete': {
         const { data } = await supabase
-          .from('user_interests')
-          .select('riasec_results')
+          .from('interest_results')
+          .select('riasec_profile')
           .eq('user_id', user.id)
           .maybeSingle()
-        currentValue = data?.riasec_results ? 1 : 0
+        currentValue = data?.riasec_profile ? 1 : 0
         break
       }
 
@@ -510,7 +510,7 @@ async function getMilestoneProgress(
 
       case 'articles_read': {
         const { count } = await supabase
-          .from('article_progress')
+          .from('article_reading_progress')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .gte('progress', 80)
@@ -1026,7 +1026,7 @@ async function getAchievementProgress(
 
       case 'articles_read': {
         const { count } = await supabase
-          .from('article_progress')
+          .from('article_reading_progress')
           .select('*', { count: 'exact', head: true })
           .eq('user_id', user.id)
           .gte('progress', 80)
@@ -1055,11 +1055,11 @@ async function getAchievementProgress(
 
       case 'interest_guide_complete': {
         const { data } = await supabase
-          .from('user_interests')
-          .select('riasec_results')
+          .from('interest_results')
+          .select('riasec_profile')
           .eq('user_id', user.id)
           .maybeSingle()
-        currentValue = data?.riasec_results ? 1 : 0
+        currentValue = data?.riasec_profile ? 1 : 0
         break
       }
 
