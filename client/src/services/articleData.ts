@@ -10056,6 +10056,4221 @@ Eller prata med din konsulent.`,
     author: 'Jobin Team',
     authorTitle: 'Lätt svenska-redaktionen',
   },
+
+  // === NYA OMFATTANDE ARTIKLAR ===
+
+  {
+    id: 'portfolio-guide',
+    title: 'Så bygger du en professionell portfolio',
+    summary: 'En komplett guide till att skapa en portfolio som imponerar på arbetsgivare, oavsett bransch.',
+    content: `En välgjord portfolio kan vara skillnaden mellan att bli kallad till intervju eller att hamna i högen med avslag. I denna guide går vi igenom allt du behöver veta för att skapa en portfolio som verkligen visar vad du kan.
+
+## Vad är en portfolio?
+
+En portfolio är en samling av ditt bästa arbete som visar dina färdigheter, erfarenheter och prestationer på ett konkret sätt. Till skillnad från ett CV som listar vad du gjort, visar en portfolio *hur* du gjort det och *vilka resultat* du uppnått.
+
+### Varför behöver du en portfolio?
+
+- **Konkreta bevis**: Istället för att bara påstå att du är duktig, visar du det
+- **Differentiera dig**: I en hög med liknande CV:n sticker du ut
+- **Samtalsunderlag**: Ger dig något konkret att prata om på intervjun
+- **Digital synlighet**: En online-portfolio kan hittas av rekryterare som söker aktivt
+
+## Vem behöver en portfolio?
+
+### Traditionella portfolioyrken
+- Grafiska designers och illustratörer
+- Fotografer och videografer
+- Arkitekter och inredningsdesigners
+- Webbutvecklare och UX-designers
+- Skribenter och copywriters
+
+### Yrken där portfolio blir allt vanligare
+- Marknadsförare (kampanjresultat, strategier)
+- Projektledare (projektbeskrivningar, resultat)
+- Säljare (case studies, kundframgångar)
+- Lärare (lektionsplaneringar, elevresultat)
+- Konsulter (rapporter, analyser)
+- Administratörer (processförbättringar, dokumentation)
+
+### Även utan traditionellt "portfolioyrke"
+Du kan alltid dokumentera:
+- Projekt du lett eller deltagit i
+- Problem du löst och hur
+- Förbättringar du genomfört
+- Utbildningar och certifikat
+- Volontärarbete och ideella projekt
+
+## Olika typer av portfolios
+
+### Digital portfolio (hemsida)
+**Fördelar:**
+- Alltid tillgänglig
+- Lätt att uppdatera
+- Kan hittas via Google
+- Visar digital kompetens
+
+**Verktyg att använda:**
+- Wix, Squarespace, WordPress (ingen kodning)
+- GitHub Pages (gratis för utvecklare)
+- Behance, Dribbble (för designers)
+- LinkedIn Portfolio-sektionen
+- Notion (enkelt och snyggt)
+
+### PDF-portfolio
+**Fördelar:**
+- Kontrollerad presentation
+- Fungerar offline
+- Lätt att skicka med ansökan
+- Professionellt intryck
+
+**Tips:**
+- Max 10-15 sidor
+- Inkludera innehållsförteckning
+- Spara som PDF/A för kompabilitet
+- Optimera filstorlek (under 10 MB)
+
+### Fysisk portfolio
+**Fördelar:**
+- Imponerande på möten
+- Taktil upplevelse
+- Visar omsorg om detaljer
+
+**När det passar:**
+- Kreativa yrken
+- Möten ansikte mot ansikte
+- Som komplement till digital
+
+## Vad ska ingå i din portfolio?
+
+### 1. Introduktion/Om mig
+- Kort presentation (2-3 meningar)
+- Din specialitet eller nisch
+- Vad du letar efter
+- Professionellt foto
+
+### 2. Dina bästa projekt (5-10 stycken)
+
+**För varje projekt, inkludera:**
+
+**Bakgrund**
+- Vad var uppdraget/utmaningen?
+- Vem var kunden/arbetsgivaren?
+- Vilka begränsningar fanns?
+
+**Process**
+- Hur gick du tillväga?
+- Vilka verktyg använde du?
+- Vilka beslut fattade du och varför?
+
+**Resultat**
+- Vad blev slutprodukten?
+- Vilka mätbara resultat uppnåddes?
+- Vad lärde du dig?
+
+**Visuellt material**
+- Screenshots, bilder, diagram
+- Före/efter-jämförelser
+- Video om möjligt
+
+### 3. Kompetenser och verktyg
+- Lista relevanta verktyg och system
+- Visa certifikat och utbildningar
+- Inkludera nivå (nybörjare, avancerad, expert)
+
+### 4. Rekommendationer/Testimonials
+- Citat från tidigare chefer eller kunder
+- LinkedIn-rekommendationer
+- Skriftliga omdömen
+
+### 5. Kontaktinformation
+- E-post
+- LinkedIn
+- Telefon (valfritt)
+- Tillgänglighetsstatus
+
+## Branschspecifika tips
+
+### För designers och kreatörer
+- Visa process, inte bara slutresultat
+- Inkludera skisser och tidiga utkast
+- Förklara designbeslut
+- Visa variation i stil och projekt
+- Inkludera personliga projekt
+
+### För utvecklare och tekniker
+- Länka till GitHub/GitLab
+- Visa kod-exempel (väldokumenterade)
+- Inkludera live-demos om möjligt
+- Beskriv teknisk stack
+- Visa problemlösning
+
+### För marknadsförare
+- Visa kampanjresultat med siffror
+- Inkludera A/B-tester och optimeringar
+- Visa strategidokument (anonymiserade)
+- Inkludera content-exempel
+- Visa ROI och konverteringar
+
+### För projektledare
+- Beskriv projektomfattning
+- Visa tidslinjer och milstolpar
+- Inkludera utmaningar och lösningar
+- Visa teamstorlek och budget
+- Kvantifiera resultat
+
+### För säljare
+- Anonymiserade case studies
+- Försäljningssiffror och mål
+- Kundrelationer och retention
+- Strategier som fungerat
+
+## Kvalitet före kvantitet
+
+### Välj rätt projekt
+- Relevans för jobbet du söker
+- Ditt bästa arbete (inte allt arbete)
+- Variation som visar bredd
+- Projekt där du hade stor påverkan
+
+### Kriterier för att inkludera ett projekt
+Fråga dig själv:
+- Är jag stolt över detta?
+- Visar det relevanta färdigheter?
+- Kan jag förklara min roll tydligt?
+- Finns det mätbara resultat?
+- Är det tillräckligt aktuellt?
+
+## Vanliga misstag att undvika
+
+### Designmisstag
+- För mycket text, för lite visuellt
+- Inkonsekvent design
+- Dålig navigering
+- Långsam laddningstid
+- Ej mobilanpassad
+
+### Innehållsmisstag
+- Inkludera allt du någonsin gjort
+- Inte förklara din roll
+- Sakna resultat och kontext
+- Föråldrade projekt
+- Inte anpassa för målgrupp
+
+### Praktiska misstag
+- Brutna länkar
+- Skrivfel
+- Otillgänglig (kräver inloggning)
+- Ingen uppdatering
+- Saknar kontaktinfo
+
+## Hur du presenterar arbete du inte får visa
+
+Ibland är projekt konfidentiella. Så löser du det:
+
+### Anonymisering
+- Byt ut företagsnamn mot "[Stor e-handelsaktör]"
+- Ändra känsliga detaljer
+- Behåll process och resultat
+
+### Generalisering
+- Beskriv typ av utmaning
+- Fokusera på din metod
+- Visa överförbara resultat
+
+### Personliga projekt
+- Skapa egna projekt som visar samma färdigheter
+- Redesigna kända produkter (märk som concept)
+- Bidra till open source
+
+### Be om tillåtelse
+- Många arbetsgivare säger ja om du frågar
+- Erbjud att visa upp dem positivt
+- Låt dem godkänna innan publicering
+
+## Underhåll din portfolio
+
+### Månadsrutin (15 minuter)
+- Kontrollera att alla länkar fungerar
+- Lägg till nya projekt
+- Ta bort föråldrade projekt
+- Uppdatera kontaktinfo
+
+### Kvartalsvis (1 timme)
+- Granska övergripande design
+- Uppdatera introduktionen
+- Lägg till nya färdigheter
+- Be om nya rekommendationer
+
+### Årligen (halv dag)
+- Större designuppdatering
+- Genomgång av alla projekt
+- Anpassa för karriärmål
+- Teknisk uppdatering
+
+## Kom igång idag
+
+### Steg 1: Inventera (30 min)
+Lista alla potentiella projekt från:
+- Nuvarande och tidigare jobb
+- Utbildningar och kurser
+- Personliga projekt
+- Volontärarbete
+
+### Steg 2: Välj format (15 min)
+Baserat på din bransch och mål, välj:
+- Digital hemsida
+- PDF-dokument
+- Kombination
+
+### Steg 3: Skapa struktur (30 min)
+Skissa upp:
+- Vilka sektioner behövs?
+- Vilka projekt ska med?
+- Hur ska navigationen fungera?
+
+### Steg 4: Bygg (2-4 timmar)
+- Börja med en mall
+- Fokusera på innehåll först
+- Finslipa design sist
+
+### Steg 5: Få feedback (1 timme)
+- Visa för kollegor eller vänner
+- Be om specifik feedback
+- Iterera baserat på input
+
+## Kom ihåg
+
+Din portfolio är ett levande dokument som utvecklas med din karriär. Det behöver inte vara perfekt från start – det viktiga är att börja. Varje projekt du lägger till gör den starkare, och varje feedback du får gör den bättre.
+
+> "Visa, berätta inte." Din portfolio är chansen att bevisa vad du kan, inte bara påstå det.`,
+    category: 'digital-presence',
+    subcategory: 'portfolio',
+    tags: ['portfolio', 'digitalt', 'arbetsprover', 'presentation', 'karriär', 'personligt varumärke'],
+    createdAt: '2024-04-01T10:00:00Z',
+    updatedAt: '2024-04-01T10:00:00Z',
+    readingTime: 18,
+    difficulty: 'detailed',
+    energyLevel: 'high',
+    relatedArticles: ['bygg-ditt-personliga-varumarke', 'linkedin-optimering'],
+    relatedExercises: ['personal-brand'],
+    checklist: [
+      { id: '1', text: 'Inventera alla potentiella projekt' },
+      { id: '2', text: 'Välj 5-10 av dina bästa arbeten' },
+      { id: '3', text: 'Välj format (digital/PDF/fysisk)' },
+      { id: '4', text: 'Skapa struktur och navigering' },
+      { id: '5', text: 'Skriv projektbeskrivningar med resultat' },
+      { id: '6', text: 'Lägg till visuellt material' },
+      { id: '7', text: 'Be om feedback' },
+      { id: '8', text: 'Publicera och dela' },
+    ],
+    actions: [
+      { label: 'Skapa LinkedIn-portfolio', href: 'https://www.linkedin.com', type: 'primary' },
+      { label: 'Läs om personligt varumärke', href: '/knowledge/bygg-ditt-personliga-varumarke', type: 'secondary' },
+    ],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärrådgivare',
+  },
+
+  {
+    id: 'linkedin-optimering',
+    title: 'Komplett guide till LinkedIn-optimering',
+    summary: 'Maximera din synlighet på LinkedIn och bli hittad av rekryterare med denna djupgående guide.',
+    content: `LinkedIn är världens största professionella nätverk med över 900 miljoner användare. En optimerad profil kan vara skillnaden mellan att bli kontaktad av drömarbetsgivaren eller att förbli osynlig. Denna guide tar dig igenom varje steg för att maximera din LinkedIn-närvaro.
+
+## Varför LinkedIn är viktigt
+
+### Statistik som övertalar
+- **87% av rekryterare** använder LinkedIn för att hitta kandidater
+- **122 miljoner** personer har fått en intervju via LinkedIn
+- **35,5 miljoner** har blivit anställda av någon de kontaktat på LinkedIn
+- Profiler med foto får **21 gånger fler** visningar
+- Kompletta profiler är **40 gånger mer** sannolika att bli kontaktade
+
+### LinkedIn är din digitala arbetsmarknad
+- Rekryterare söker aktivt efter kandidater
+- Dolda jobb annonseras bara internt eller via nätverk
+- Din profil arbetar för dig 24/7
+- Det är gratis och tillgängligt för alla
+
+## Din profils anatomi
+
+### Profilbild – ditt första intryck
+
+**Krav för en bra profilbild:**
+- Ansiktet fyller 60-70% av bilden
+- Neutral eller enkel bakgrund
+- Bra belysning (naturligt ljus är bäst)
+- Professionell men personlig klädsel
+- Genuint leende (visar vänlighet)
+- Aktuell (max 2-3 år gammal)
+
+**Undvik:**
+- Gruppbilder (även beskurna)
+- Semesterbilder
+- Selfies
+- Dålig bildkvalitet
+- Solglasögon eller hattar
+- För avslappnad klädsel
+
+**Tips:** Be någon ta bilden mot en vit vägg i dagsljus. Det behöver inte vara professionellt fotograferat.
+
+### Bakgrundsbild – din visuella pitch
+
+Bakgrundsbilden är outnyttjad fastighet som de flesta ignorerar. Använd den!
+
+**Idéer:**
+- Din bransch eller arbetsplats
+- En bild som representerar dina värderingar
+- Text med din specialitet
+- Företagets grafik (om du söker internt)
+- Stadsvy där du arbetar
+
+**Storlek:** 1584 x 396 pixlar
+
+### Rubriken (Headline) – 220 tecken som räknas
+
+Din rubrik visas överallt: i sökresultat, kommentarer, meddelanden. Gör den minnesvärd!
+
+**Struktur för effektiv rubrik:**
+[Roll/Titel] | [Specialitet/Nyckelord] | [Värde du skapar] | [Eventuellt: Vad du söker]
+
+**Dåliga exempel:**
+- "Arbetssökande"
+- "Student vid Stockholms universitet"
+- "Erfaren och driven"
+
+**Bra exempel:**
+- "Projektledare inom IT | Agile & Scrum | Levererar digitala transformationer i tid och budget"
+- "Kundtjänstspecialist | B2B Support | Ökar kundnöjdhet genom lösningsorienterat bemötande"
+- "Ekonomiassistent | Redovisning & Fakturering | Söker ny utmaning i växande företag"
+
+**Tips för nyckelord:**
+- Tänk: Vad skulle en rekryterare söka på?
+- Inkludera branschtermer
+- Använd varianter (Projektledare, Project Manager)
+
+### Sammanfattningen (About) – din historia
+
+Sammanfattningen är din chans att visa personlighet bortom CV-punkter. Max 2600 tecken, men de första 300 är viktigast (syns innan "Se mer").
+
+**Struktur:**
+1. **Hook** (första meningen) – fånga intresse
+2. **Vem du är** – bakgrund och expertis
+3. **Vad du gör** – specialiteter och värde
+4. **Hur du gör det** – approach och personlighet
+5. **Vad du söker** – nästa steg i karriären
+6. **Call to action** – hur man kontaktar dig
+
+**Exempel på sammanfattning:**
+
+"Jag tror på att teknik ska förenkla människors vardag, inte komplicera den.
+
+Med 8 års erfarenhet av UX-design har jag hjälpt allt från startups till Fortune 500-företag att skapa digitala produkter som användare älskar. Min specialitet är att översätta komplexa affärskrav till intuitiva gränssnitt.
+
+Vad driver mig? Att se "aha-ögonblicket" när en användare förstår en produkt direkt. Att mäta hur designbeslut påverkar konvertering. Att samarbeta med utvecklare för att skapa något vi alla är stolta över.
+
+Jag söker nu en senior UX-roll i ett produktbolag där jag kan påverka strategiskt och mentora juniora designers.
+
+Vill du prata design, innovation eller bara ta en kaffe? Hör av dig på anna.svensson@email.com"
+
+### Erfarenhetssektionen
+
+**För varje position, inkludera:**
+- Företagsnamn (länka till företagssidan)
+- Exakt titel
+- Tidsperiod (månad och år)
+- Plats
+- 3-5 bullet points med prestationer
+
+**Skriv resultatfokuserat:**
+
+Istället för: "Ansvarade för kundservice"
+
+Skriv: "Hanterade 80+ kundärenden dagligen med 95% kundnöjdhet. Implementerade nytt CRM-system som minskade svarstiden med 40%."
+
+**Använd STAR-metoden:**
+- **S**ituation: Vad var kontexten?
+- **T**ask: Vad var ditt ansvar?
+- **A**ction: Vad gjorde du?
+- **R**esult: Vad blev resultatet (med siffror)?
+
+### Kompetenser (Skills)
+
+LinkedIn låter dig lista upp till 50 kompetenser, men fokusera på kvalitet.
+
+**Strategi:**
+1. Välj 3 huvudkompetenser som ska visas först
+2. Lägg till branschspecifika nyckelord
+3. Inkludera både hårda och mjuka kompetenser
+4. Be kontakter bekräfta dina kompetenser
+
+**Kompetensbekräftelser:**
+- Profiler med 5+ bekräftelser rankas högre
+- Be kollegor bekräfta dina huvudkompetenser
+- Bekräfta andras – de bekräftar ofta tillbaka
+
+### Rekommendationer
+
+Rekommendationer är guld värda – de är trovärdiga tredjepartsutlåtanden.
+
+**Hur du får rekommendationer:**
+1. Ge först – skriv rekommendationer till andra
+2. Be specifikt: "Kan du skriva om projektet vi gjorde?"
+3. Gör det enkelt: Ge punkter de kan utgå från
+4. Tacka och bekräfta deras kompetenser
+
+**Vem ska du be:**
+- Tidigare chefer (mest värdefulla)
+- Kollegor du samarbetat nära med
+- Kunder eller externa partners
+- Mentorer eller lärare
+
+## LinkedIn-sökning: Så rankas du
+
+### Algoritmen förstår
+LinkedIn rankar profiler baserat på:
+1. **Nyckelordsmatchning** – Har du orden rekryteraren söker?
+2. **Profilkomplettering** – Är alla sektioner ifyllda?
+3. **Aktivitetsnivå** – Är du aktiv på plattformen?
+4. **Nätverkets storlek** – Hur många kontakter har du?
+5. **Engagemang** – Får dina inlägg interaktioner?
+
+### Optimera för sökning
+- Använd nyckelord genomgående (rubrik, sammanfattning, erfarenheter)
+- Fyll i alla sektioner
+- Var aktiv regelbundet
+- Bygg ditt nätverk strategiskt
+
+## Nätverkande på LinkedIn
+
+### Vem ska du kontakta?
+- Före detta kollegor och klasskamrater
+- Personer i företag du är intresserad av
+- Branschexperter och influencers
+- Rekryterare i din bransch
+- Alumni från din utbildning
+
+### Kontaktförfrågan med personligt meddelande
+
+**Mall:**
+
+"Hej [Namn],
+
+Jag såg att du arbetar med [område] på [Företag]. Jag är [din roll] med fokus på [relevant område] och skulle uppskatta att ha dig i mitt nätverk.
+
+[Valfritt: Specifik anledning eller gemensam koppling]
+
+Vänliga hälsningar,
+[Ditt namn]"
+
+### Underhåll ditt nätverk
+- Gratulera till nya jobb och jubileum
+- Kommentera på kontakters inlägg
+- Dela relevant innehåll
+- Skicka meddelanden vid tillfälle
+
+## Innehållsstrategi
+
+### Varför posta?
+- Bygger ditt varumärke
+- Visar expertis
+- Ökar synlighet för rekryterare
+- Skapar samtal och möjligheter
+
+### Vad ska du posta?
+- Insikter från din bransch
+- Lärdomar från din karriär
+- Reflektioner om artiklar du läst
+- Framgångar och utmaningar
+- Gratulationer till andra
+
+### Hur ofta?
+- Minimum: 1 gång per vecka
+- Optimalt: 3-5 gånger per vecka
+- Konsistens är viktigare än frekvens
+
+### Engagera dig
+- Kommentera meningsfullt på andras inlägg
+- Delta i relevanta grupper
+- Svara snabbt på kommentarer
+
+## Jobbsökning på LinkedIn
+
+### Aktivera "Open to Work"
+- Gå till din profil
+- Klicka på "Open to work"
+- Välj synlighet (alla eller bara rekryterare)
+- Specificera roller och platser
+
+### LinkedIn Jobs
+- Sätt upp jobbaviseringar
+- Använd "Easy Apply" strategiskt
+- Följ företag du är intresserad av
+- Se vem i ditt nätverk som arbetar där
+
+### Direktkontakt med rekryterare
+- Hitta rekryterare i din bransch
+- Skicka personlig kontaktförfrågan
+- Var tydlig med vad du söker
+- Följ upp professionellt
+
+## Vanliga misstag
+
+### Profilmisstag
+- Ingen eller dålig profilbild
+- Rubrik som bara säger "Arbetssökande"
+- Tom eller kort sammanfattning
+- Inga prestationer, bara arbetsuppgifter
+- Föråldrad information
+
+### Aktivitetsmisstag
+- Skapa profil och sedan försvinna
+- Bara kontakta när du behöver något
+- Spamma med kontaktförfrågningar
+- Inte svara på meddelanden
+
+### Innehållsmisstag
+- Dela kontroversiella åsikter
+- Klaga på arbetsgivare
+- Bara dela andras innehåll
+- Överdriven självpromotion
+
+## Checklista för optimal profil
+
+**Grundläggande:**
+- Professionell profilbild
+- Anpassad bakgrundsbild
+- Nyckelordsrik rubrik
+- Komplett sammanfattning
+- Alla erfarenheter ifyllda
+
+**Avancerat:**
+- 50+ kompetenser listade
+- 3+ rekommendationer
+- 500+ kontakter
+- Regelbunden aktivitet
+- Engagemang i grupper
+
+## Kom igång nu
+
+### Dag 1: Grunderna
+- Uppdatera profilbild
+- Skriv ny rubrik med nyckelord
+- Fyll i alla erfarenheter
+
+### Dag 2: Fördjupning
+- Skriv ny sammanfattning
+- Lägg till kompetenser
+- Be om 2-3 rekommendationer
+
+### Dag 3: Aktivering
+- Kontakta 10 relevanta personer
+- Gå med i 3 branschgrupper
+- Skriv ditt första inlägg
+
+### Vecka 1 och framåt
+- 15 minuter LinkedIn-aktivitet dagligen
+- 2-3 inlägg per vecka
+- Bygg nätverk kontinuerligt
+
+Kom ihåg: LinkedIn är ett maraton, inte en sprint. Konsistent närvaro över tid ger resultat!`,
+    category: 'digital-presence',
+    subcategory: 'linkedin',
+    tags: ['LinkedIn', 'digital närvaro', 'nätverkande', 'profil', 'rekrytering', 'jobbsökning', 'synlighet'],
+    createdAt: '2024-04-02T10:00:00Z',
+    updatedAt: '2024-04-02T10:00:00Z',
+    readingTime: 22,
+    difficulty: 'detailed',
+    energyLevel: 'high',
+    relatedArticles: ['bygg-ditt-personliga-varumarke', 'natverka-for-jobb', 'portfolio-guide'],
+    relatedExercises: ['networking', 'personal-brand'],
+    checklist: [
+      { id: '1', text: 'Uppdatera profilbild till professionell' },
+      { id: '2', text: 'Lägg till anpassad bakgrundsbild' },
+      { id: '3', text: 'Skriv nyckelordsrik rubrik (220 tecken)' },
+      { id: '4', text: 'Skriv komplett sammanfattning' },
+      { id: '5', text: 'Fyll i alla erfarenheter med resultat' },
+      { id: '6', text: 'Lägg till 30+ relevanta kompetenser' },
+      { id: '7', text: 'Be om minst 3 rekommendationer' },
+      { id: '8', text: 'Aktivera "Open to Work"' },
+      { id: '9', text: 'Gå med i 3 branschgrupper' },
+      { id: '10', text: 'Skapa innehållsrutin' },
+    ],
+    actions: [
+      { label: 'Öppna LinkedIn', href: 'https://www.linkedin.com', type: 'primary' },
+      { label: 'Läs om nätverkande', href: '/knowledge/natverka-for-jobb', type: 'secondary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'ats-system-tips',
+    title: 'ATS-system: Så tar du dig förbi robotarna',
+    summary: 'Förstå hur ATS-system (Applicant Tracking Systems) fungerar och hur du optimerar ditt CV för att bli sedd.',
+    content: `Visste du att upp till 75% av alla CV:n aldrig ses av en människa? De sorteras bort av ATS-system innan en rekryterare ens får chansen att läsa dem. I denna guide förklarar vi hur dessa system fungerar och hur du optimerar din ansökan för att ta dig igenom.
+
+## Vad är ett ATS-system?
+
+ATS står för Applicant Tracking System, på svenska ungefär "kandidathanteringssystem". Det är mjukvara som företag använder för att:
+
+- Ta emot och organisera ansökningar
+- Söka och filtrera kandidater baserat på nyckelord
+- Ranka kandidater efter hur väl de matchar jobbeskrivningen
+- Hålla koll på var kandidater befinner sig i processen
+- Kommunicera automatiskt med sökande
+
+### Vanliga ATS-system i Sverige
+- Teamtailor (vanligt i svenska företag)
+- Workday
+- SAP SuccessFactors
+- Taleo (Oracle)
+- Greenhouse
+- Lever
+- ReachMee
+- Varbi (offentlig sektor)
+
+## Hur ATS filtrerar ansökningar
+
+### Steg 1: Parsing (läsning av CV)
+Systemet läser ditt CV och plockar ut information:
+- Kontaktuppgifter
+- Utbildning
+- Arbetslivserfarenhet
+- Kompetenser
+- Nyckelord
+
+**Problem:** Om ditt CV är dåligt formaterat kan systemet missa eller feltolka information.
+
+### Steg 2: Nyckelordsmatchning
+Systemet jämför ditt CV mot jobbannonsens krav:
+- Exakta nyckelord (t.ex. "projektledning")
+- Synonymer (kan variera mellan system)
+- Specifika kompetenser
+- Utbildningskrav
+- Erfarenhetskrav
+
+### Steg 3: Rankningssystem
+Kandidater rankas baserat på:
+- Antal matchande nyckelord
+- Relevans av nyckelord (vissa viktas högre)
+- Erfarenhetslängd
+- Utbildningsnivå
+- Hur väl profilen matchar kravprofilen
+
+### Steg 4: Filtrering
+Rekryteraren kan sätta gränsvärden:
+- "Visa bara kandidater med 80%+ matchning"
+- "Exkludera de utan X kompetens"
+- "Prioritera de med Y erfarenhet"
+
+## Varför CV:n sorteras bort
+
+### 1. Fel format
+- PDF som är bildbaserad (skannad)
+- Komplexa layouter med tabeller och kolumner
+- Bilder, grafik och ikoner
+- Ovanliga typsnitt
+- Header och footer-text
+
+### 2. Saknade nyckelord
+- Inte använda exakta ord från annonsen
+- Förkortningar utan fullständig term (eller tvärtom)
+- Branschspecifika termer som saknas
+- För generiska beskrivningar
+
+### 3. Fel filformat
+- Word-dokument med kompatibilitetsproblem
+- Skyddade PDF:er
+- Bilder (JPG, PNG)
+- Sidor från portfolio-verktyg
+
+### 4. Strukturella problem
+- Information som inte är tydligt uppdelad
+- Datum i ovanliga format
+- Rubriker som systemet inte känner igen
+- Blandning av språk
+
+## Så optimerar du ditt CV för ATS
+
+### Format och layout
+
+**Använd:**
+- Enkelt, linjärt format (en kolumn)
+- Standard-typsnitt (Arial, Calibri, Times New Roman)
+- Tydliga rubriker: "Erfarenhet", "Utbildning", "Kompetenser"
+- Punktlistor med enkla bullet points
+- Standardformat för datum: "januari 2022 – december 2024"
+
+**Undvik:**
+- Tabeller och kolumner
+- Textrutor
+- Grafik, ikoner och bilder
+- Headers och footers
+- Kreativa layouter
+
+### Filformat
+
+**Bäst:**
+- .docx (Word) – mest kompatabelt
+- .pdf (sparad från Word, inte skannad)
+
+**Varning:**
+- Äldre .doc-format
+- PDF skapad från bilder
+- Google Docs-export (kan bli konstigt)
+
+### Nyckelordsoptimering
+
+**Steg 1: Analysera jobbannonsen**
+Läs annonsen noggrant och identifiera:
+- Obligatoriska krav (måste ha)
+- Meriterande (bra att ha)
+- Upprepade ord och fraser
+- Specifika system, verktyg, certifieringar
+
+**Steg 2: Gör en nyckelordslista**
+Från annonsen, plocka ut:
+- Kompetenser: "projektledning", "budgetansvar", "teamledning"
+- System: "SAP", "Excel", "Salesforce"
+- Egenskaper: "analytisk", "strukturerad", "självgående"
+- Certifieringar: "PMP", "Agile", "ITIL"
+
+**Steg 3: Integrera naturligt**
+Stoppa inte in nyckelord överallt – integrera dem naturligt:
+
+❌ "Projektledning projektledning projektledare projekt"
+
+✅ "Som projektledare ansvarade jag för projektledning av tre parallella IT-projekt med budgetansvar på 5 MSEK."
+
+### Sektionsrubriker som ATS förstår
+
+Använd standard-rubriker:
+- **Kontaktinformation** (eller bara namn överst)
+- **Sammanfattning** eller **Profil**
+- **Arbetslivserfarenhet** eller **Erfarenhet**
+- **Utbildning**
+- **Kompetenser** eller **Färdigheter**
+- **Certifieringar** (om relevant)
+- **Språk**
+
+### Datumformat
+
+Konsekvent och tydligt:
+- "Januari 2022 – December 2024"
+- "Jan 2022 – Dec 2024"
+- "2022-01 – 2024-12"
+
+Undvik:
+- "2022-nuvarande" (skriv "pågående" eller aktuell månad)
+- Endast årtal för korta anställningar
+- Oregelbundna format
+
+### Kompetenssektion
+
+Lista kompetenser i kategorier:
+
+**Tekniska kompetenser:**
+Microsoft Excel (avancerad), SAP, Salesforce CRM, Jira, Confluence
+
+**Projektmetodiker:**
+Agile, Scrum, PRINCE2, Vattenfall
+
+**Språk:**
+Svenska (modersmål), Engelska (flytande), Tyska (grundläggande)
+
+## ATS-vänlig CV-mall
+
+\`\`\`
+FÖRNAMN EFTERNAMN
+Telefon: 070-XXX XX XX | E-post: namn@email.com | LinkedIn: linkedin.com/in/namn | Stad
+
+SAMMANFATTNING
+[2-3 meningar med nyckelord som matchar jobbets krav]
+
+ARBETSLIVSERFARENHET
+
+Jobbtitel | Företagsnamn | Stad
+Månad År – Månad År
+
+• [Prestation med mätbart resultat och nyckelord]
+• [Prestation med mätbart resultat och nyckelord]
+• [Prestation med mätbart resultat och nyckelord]
+
+Jobbtitel | Företagsnamn | Stad
+Månad År – Månad År
+
+• [Prestation med mätbart resultat och nyckelord]
+• [Prestation med mätbart resultat och nyckelord]
+
+UTBILDNING
+
+Examen/Program | Skola/Universitet
+År – År (eller förväntat examensår)
+
+KOMPETENSER
+
+Tekniska: [Lista relevanta tekniska kompetenser]
+System: [Lista relevanta system och verktyg]
+Mjuka: [Lista relevanta mjuka kompetenser]
+Språk: [Lista språk med nivå]
+
+CERTIFIERINGAR (valfritt)
+[Certifiering], Utfärdare, År
+\`\`\`
+
+## Testa ditt CV
+
+### Gratis ATS-testverktyg
+- **Jobscan** (jobscan.co) – jämför CV mot jobbannons
+- **Resume Worded** – AI-baserad feedback
+- **SkillSyncer** – nyckelordsanalys
+
+### DIY-test
+1. Kopiera texten från ditt CV
+2. Klistra in i ett tomt textdokument (Notepad)
+3. Kan du läsa all information korrekt?
+4. Är strukturen bevarad?
+5. Har all text kommit med?
+
+Om svaret är ja på alla – ditt CV är troligen ATS-vänligt.
+
+## Balansera ATS och människa
+
+Kom ihåg: ATS är bara första hindret. Ditt CV måste också imponera på rekryteraren.
+
+### För ATS:
+- Rätt nyckelord
+- Korrekt format
+- Tydlig struktur
+
+### För människan:
+- Berättande meningar
+- Mätbara resultat
+- Personlig touch
+- Professionell design (inom ramen för ATS-vänlighet)
+
+### Två-CV-strategin
+Överväg att ha:
+1. **ATS-optimerat CV** – för online-ansökningar
+2. **Snyggt design-CV** – för att ta med till intervjuer eller skicka direkt
+
+## Vanliga myter om ATS
+
+### Myt 1: "ATS läser bara den första sidan"
+**Sanning:** ATS läser hela dokumentet. Men rekryterare kanske inte gör det.
+
+### Myt 2: "Jag måste ha exakt matchning på allt"
+**Sanning:** De flesta system hanterar synonymer och variationer.
+
+### Myt 3: "Jag kan fuska genom att gömma nyckelord i vit text"
+**Sanning:** Moderna system upptäcker detta och det kan diskvalificera dig.
+
+### Myt 4: "PDF fungerar aldrig"
+**Sanning:** Moderna PDF:er (skapade digitalt, inte skannade) fungerar oftast bra.
+
+### Myt 5: "ATS förstår inte karriärväxlare"
+**Sanning:** Med rätt nyckelord och tydlig transferbar kompetens fungerar det.
+
+## Checklista: Är ditt CV ATS-redo?
+
+### Format
+- [ ] Enkelt linjärt format (en kolumn)
+- [ ] Standard-typsnitt
+- [ ] Inga tabeller eller textrutor
+- [ ] Inga bilder eller grafik
+- [ ] Sparad som .docx eller ATS-vänlig PDF
+
+### Struktur
+- [ ] Tydliga standardrubriker
+- [ ] Konsekvent datumformat
+- [ ] Kontaktinfo högst upp (inte i header)
+- [ ] Läsbar i ren text
+
+### Innehåll
+- [ ] Nyckelord från jobbannonsen inkluderade
+- [ ] Både förkortningar och fullständiga termer
+- [ ] Mätbara resultat och prestationer
+- [ ] Relevanta kompetenser listade
+
+## Slutsats
+
+ATS-system är inte fienden – de är verktyg som hjälper rekryterare hantera mängder av ansökningar. Genom att förstå hur de fungerar kan du anpassa ditt CV så att det tar sig igenom den automatiska filtreringen OCH imponerar på rekryteraren när hen väl läser det.
+
+Nyckeln är balans: teknisk optimering för roboten, övertygande innehåll för människan.`,
+    category: 'job-search',
+    subcategory: 'ats',
+    tags: ['ATS', 'CV', 'rekrytering', 'nyckelord', 'jobbansökan', 'format', 'optimering'],
+    createdAt: '2024-04-03T10:00:00Z',
+    updatedAt: '2024-04-03T10:00:00Z',
+    readingTime: 20,
+    difficulty: 'detailed',
+    energyLevel: 'medium',
+    relatedArticles: ['cv-grunder', 'personligt-brev-guide'],
+    relatedTools: ['/cv-builder'],
+    checklist: [
+      { id: '1', text: 'Använd enkelt, linjärt format (en kolumn)' },
+      { id: '2', text: 'Använd standard-typsnitt' },
+      { id: '3', text: 'Ta bort tabeller, textrutor och bilder' },
+      { id: '4', text: 'Använd tydliga standardrubriker' },
+      { id: '5', text: 'Inkludera nyckelord från jobbannonsen' },
+      { id: '6', text: 'Spara som .docx eller ATS-vänlig PDF' },
+      { id: '7', text: 'Testa med ett ATS-testverktyg' },
+      { id: '8', text: 'Kontrollera att all text syns i ren textformat' },
+    ],
+    actions: [
+      { label: 'Skapa ATS-vänligt CV', href: '/cv-builder', type: 'primary' },
+      { label: 'Läs CV-guiden', href: '/knowledge/cv-grunder', type: 'secondary' },
+    ],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärrådgivare',
+  },
+
+  {
+    id: 'styrkor-svagheter',
+    title: 'Identifiera och kommunicera dina styrkor',
+    summary: 'Lär dig att upptäcka dina verkliga styrkor och presentera dem övertygande för arbetsgivare.',
+    content: `Att kunna identifiera och kommunicera dina styrkor är en av de viktigaste färdigheterna i jobbsökningen. Det handlar inte om att skryta, utan om att genuint förstå vad du är bra på och hur du kan bidra. I denna guide går vi igenom hur du upptäcker, utvecklar och presenterar dina styrkor.
+
+## Varför styrkor är viktiga
+
+### I jobbsökningen
+- Ger dig självförtroende i intervjuer
+- Hjälper dig välja rätt jobb
+- Gör ditt CV och personliga brev starkare
+- Differentierar dig från andra kandidater
+
+### På arbetsplatsen
+- Människor som använder sina styrkor dagligen är **6x mer engagerade**
+- Team som fokuserar på styrkor har **12.5% högre produktivitet**
+- Styrkebaserat ledarskap ökar medarbetarnöjdhet med **73%**
+
+### I karriären
+- Snabbare utveckling i områden du redan är stark i
+- Högre arbetsglädje och motivation
+- Naturlig expertis inom ditt fält
+- Bättre work-life balance genom lägre ansträngning
+
+## Skillnaden mellan styrkor och kompetenser
+
+### Kompetenser
+- Saker du lärt dig göra
+- Kan utvecklas genom träning
+- Ofta specifika för jobb eller bransch
+- Exempel: Excel, projektplanering, bokföring
+
+### Styrkor
+- Naturliga talanger som känns lätta
+- Energigivande att använda
+- Ofta överförbara mellan yrken
+- Exempel: analytiskt tänkande, empati, kreativitet
+
+**Nyckelfrågan:** Vad gör du nästan automatiskt, som andra kämpar med?
+
+## Så identifierar du dina styrkor
+
+### Metod 1: Reflektionsövningar
+
+**Tänk tillbaka på framgångar:**
+- När kände du dig som mest kompetent?
+- Vilka projekt har du blivit berömd för?
+- Vad ber folk dig om hjälp med?
+- När går tiden snabbast?
+
+**Identifiera mönster:**
+- Vad är gemensamt för dessa situationer?
+- Vilka förmågor använde du?
+- Vad kom naturligt för dig?
+
+**Frågor att ställa dig själv:**
+1. Vad gör jag bättre än de flesta utan större ansträngning?
+2. Vad tar jag för givet att alla kan, men som visar sig vara ovanligt?
+3. Vad frustrerar mig när andra gör det dåligt?
+4. Vad skulle jag göra gratis för att det är så roligt?
+5. Vilken feedback får jag oftast?
+
+### Metod 2: Be om feedback
+
+**Från kollegor:**
+"Om du skulle beskriva mig för någon som aldrig träffat mig, vad skulle du säga att jag är bäst på?"
+
+**Från vänner och familj:**
+"I vilka situationer brukar du vända dig till mig?"
+
+**Från chefer (nuvarande eller tidigare):**
+"Vilka av mina styrkor tycker du borde utvecklas vidare?"
+
+**Tips:** Be 5-10 personer och leta efter mönster i svaren.
+
+### Metod 3: Styrketester
+
+**VIA Character Strengths** (gratis)
+- Identifierar dina 24 karaktärsstyrkor
+- Vetenskapligt validerat
+- Ta testet på viacharacter.org
+
+**CliftonStrengths (Gallup)**
+- 34 teman som beskriver talanger
+- Kostar pengar men mycket populärt
+- Djupgående resultat
+
+**16Personalities / Myers-Briggs**
+- Ger personlighetstyp med relaterade styrkor
+- Gratis grundversion
+- Bra för självinsikt
+
+### Metod 4: Energikartläggning
+
+Under en vecka, notera:
+- Aktiviteter som ger energi vs. tar energi
+- Uppgifter du ser fram emot vs. skjuter upp
+- Moment där du tappar tidsuppfattningen
+- Situationer där du känner dig i ditt esse
+
+Dina styrkor finns där energin är!
+
+## Kategorier av styrkor
+
+### Utförande-styrkor
+- **Genomförare** – Får saker gjorda, resultatfokuserad
+- **Organisatör** – Skapar struktur och ordning
+- **Strateg** – Ser helheten, planerar framåt
+- **Problemlösare** – Hittar lösningar på utmaningar
+- **Detaljfokuserad** – Ser det andra missar
+
+### Relations-styrkor
+- **Kommunikatör** – Uttrycker sig tydligt
+- **Lyssnare** – Förstår andras perspektiv
+- **Teambyggare** – Skapar sammanhållning
+- **Förhandlare** – Hittar win-win-lösningar
+- **Coach** – Utvecklar andra
+
+### Tänkande-styrkor
+- **Analytiker** – Bryter ner komplex information
+- **Kreativ** – Genererar nya idéer
+- **Lärare** – Förklarar tydligt
+- **Kritisk granskare** – Ser risker och hål
+- **Visionär** – Ser möjligheter
+
+### Influens-styrkor
+- **Inspiratör** – Motiverar andra
+- **Övertygare** – Påverkar beslut
+- **Nätverkare** – Bygger kontakter
+- **Förebild** – Visar vägen genom handling
+
+## Så kommunicerar du dina styrkor
+
+### I CV:et
+
+**Sammanfattning:**
+"Resultatdriven projektledare med stark analytisk förmåga och bevisat track record av att leverera komplexa IT-projekt i tid och budget."
+
+**Erfarenhetspunkter:**
+Istället för: "Ansvarade för kundrelationer"
+Skriv: "Utnyttjade min styrka inom relationsbyggande för att öka kundretention med 25%"
+
+### I personligt brev
+
+**Koppla styrka till jobbkrav:**
+"Ni söker någon med stark problemlösningsförmåga. I min nuvarande roll har jag konsekvent fått de mest komplexa kundärendena eftersom jag är känd för att hitta kreativa lösningar – senast sparade jag 200 000 kr genom att identifiera en processförbättring som ingen annan hade sett."
+
+### På intervjun
+
+**Förbered styrke-berättelser:**
+Använd STAR-metoden (Situation, Task, Action, Result) för 3-5 styrkor.
+
+**Exempel:**
+"Min styrka är strukturerat tänkande. **(Situation)** I mitt förra projekt var det kaos i dokumentationen. **(Task)** Jag fick i uppdrag att lösa det. **(Action)** Jag skapade ett nytt system för versionshantering och utbildade teamet. **(Result)** Vi halverade tiden för att hitta rätt dokument och minskade fel med 40%."
+
+**Autentiska svar:**
+- "Jag skulle säga att min största styrka är..."
+- "Feedback jag ofta får är att jag är bra på..."
+- "Något som kommer naturligt för mig är..."
+
+### Hantera "Vad är din svaghet?"-frågan
+
+**Strategi 1: Genuin svaghet med utvecklingsplan**
+"Jag har en tendens att ta på mig för mycket. Jag har lärt mig att detta beror på min styrka att vilja hjälpa. Nu använder jag ett prioriteringssystem och är bättre på att säga nej till det som inte är mitt ansvar."
+
+**Strategi 2: Styrka som kan uppfattas negativt**
+"Min detaljfokus kan ibland uppfattas som långsam. Men jag har lärt mig att balansera detta genom att först göra en snabb version och sedan finslipa – så får jag både fart och kvalitet."
+
+**Undvik:**
+- "Jag är perfektionist" (klyscha)
+- "Jag jobbar för hårt" (inte trovärdigt)
+- Svagheter som är kritiska för jobbet
+
+## Utveckla dina styrkor
+
+### Styrkebaserad utveckling
+Forskning visar att vi växer snabbast i områden där vi redan har talang. Istället för att ägna all energi åt svagheter – investera i att göra dina styrkor exceptionella.
+
+### Praktiska steg
+1. **Välj 2-3 styrkor att fokusera på**
+2. **Hitta projekt som kräver dessa styrkor**
+3. **Sök mentorer som är excellenta i samma områden**
+4. **Läs, utbilda dig, öva medvetet**
+5. **Be om feedback specifikt på dessa områden**
+
+### Styrkekombinationer
+Dina unika kombinationer är ofta mer värdefulla än enskilda styrkor:
+- Analytisk + Kreativ = Innovativ problemlösare
+- Relationsbyggare + Strateg = Affärsutvecklare
+- Detaljfokuserad + Kommunikativ = Teknisk skribent
+
+Identifiera dina unika kombinationer!
+
+## Vanliga fällor
+
+### 1. Falsk blygsamhet
+Att tona ner styrkor av rädsla för att verka skrytsam. I intervjusammanhang skadar detta dig.
+
+### 2. Impostor syndrome
+"Alla kan väl det här..." Nej, det kan de inte. Dina styrkor känns enkla för dig just för att de ÄR styrkor.
+
+### 3. Fokusera bara på svagheter
+Att ägna all utvecklingstid åt svagheter ger mediokert resultat. Bli exceptionell i dina styrkor istället.
+
+### 4. Generaliseringar
+"Jag är en lagspelare" säger alla. Var specifik: "Jag är bra på att brygga över kommunikation mellan tekniska och icke-tekniska team."
+
+## Övning: Din styrkeberättelse
+
+Välj en styrka och besvara:
+
+1. **Vad är styrkan?** (ett ord eller kort fras)
+2. **Hur vet du att det är en styrka?** (exempel, feedback)
+3. **Hur har du använt den?** (specifik situation)
+4. **Vad blev resultatet?** (mätbart om möjligt)
+5. **Hur passar den i det jobb du söker?** (koppling)
+
+Gör detta för 3-5 styrkor, och du har material för CV, brev och intervju.
+
+## Sammanfattning
+
+Att förstå dina styrkor är inte bara en intervjuteknik – det är en livsfärdighet. När du vet vad du är bra på kan du:
+- Välja rätt jobb från början
+- Prestera på toppnivå med mindre ansträngning
+- Bidra maximalt till dina team och organisationer
+- Uppleva mer arbetsglädje och mening
+
+Investera tid i att verkligen förstå dina styrkor. Det är en av de bästa investeringarna du kan göra i din karriär.`,
+    category: 'self-awareness',
+    subcategory: 'strengths',
+    tags: ['styrkor', 'självkännedom', 'intervju', 'karriär', 'personlig utveckling', 'svagheter'],
+    createdAt: '2024-04-04T10:00:00Z',
+    updatedAt: '2024-04-04T10:00:00Z',
+    readingTime: 18,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['kompetensutvardering', 'personlighetstyper-jobb', 'intervju-forberedelser'],
+    relatedExercises: ['self-reflection', 'strengths-discovery'],
+    checklist: [
+      { id: '1', text: 'Gör reflektionsövningen om framgångar' },
+      { id: '2', text: 'Be 5 personer om feedback på dina styrkor' },
+      { id: '3', text: 'Ta ett styrketest (VIA eller CliftonStrengths)' },
+      { id: '4', text: 'Identifiera dina 3-5 huvudstyrkor' },
+      { id: '5', text: 'Skriv en STAR-berättelse för varje styrka' },
+      { id: '6', text: 'Integrera styrkorna i ditt CV' },
+      { id: '7', text: 'Öva på att prata om styrkor högt' },
+    ],
+    actions: [
+      { label: 'Gör övningen: Identifiera dina styrkor', href: '/exercises', type: 'primary' },
+      { label: 'Läs om personlighetstyper', href: '/knowledge/personlighetstyper-jobb', type: 'secondary' },
+    ],
+    author: 'Anna Bergström',
+    authorTitle: 'Karriärcoach',
+  },
+
+  {
+    id: 'kompetensutvardering',
+    title: 'Kompetensinventering: Kartlägg dina färdigheter',
+    summary: 'En strukturerad metod för att utvärdera och dokumentera alla dina kompetenser – formella och informella.',
+    content: `En kompetensinventering är processen att systematiskt kartlägga allt du kan. Det inkluderar inte bara det du lärt dig i skolan eller på jobbet, utan också färdigheter från hobbyer, volontärarbete och livserfarenheter. Denna guide hjälper dig att upptäcka kompetenser du kanske inte visste att du hade.
+
+## Varför göra en kompetensinventering?
+
+### För jobbsökningen
+- Upptäck överförbara kompetenser från andra områden
+- Hitta kompetenser du missat att lyfta fram
+- Identifiera luckor att fylla
+- Bli säkrare i intervjusituationer
+
+### För karriärplanering
+- Se var du står idag
+- Planera utveckling strategiskt
+- Upptäck nya karriärmöjligheter
+- Förstå ditt marknadsvärde
+
+### För självkänslan
+- Inse hur mycket du faktiskt kan
+- Motverka imposter syndrome
+- Stärk din yrkesidentitet
+
+## Kompetenstyper
+
+### Hårda kompetenser (Hard skills)
+Mätbara, specifika färdigheter som ofta kräver utbildning:
+
+**Tekniska:**
+- Programmering (Python, JavaScript, SQL)
+- Systemkunskap (SAP, Salesforce, HubSpot)
+- Verktyg (Excel, AutoCAD, Photoshop)
+- Maskiner och utrustning
+
+**Certifieringar:**
+- Körkort och truckkort
+- Branschcertifieringar (PMP, ITIL, AWS)
+- Yrkeslegitimationer
+- Behörigheter
+
+**Språk:**
+- Svenska
+- Engelska
+- Andra språk
+- Fackspråk inom bransch
+
+**Administrativa:**
+- Bokföring och redovisning
+- Dokumenthantering
+- Protokollföring
+- Schemaläggning
+
+### Mjuka kompetenser (Soft skills)
+Personliga egenskaper och interpersonella färdigheter:
+
+**Kommunikation:**
+- Muntlig presentation
+- Skriftlig kommunikation
+- Aktivt lyssnande
+- Förhandling
+- Anpassning av budskap
+
+**Ledarskap:**
+- Delegering
+- Motivation av andra
+- Konflikthantering
+- Beslutsfattande
+- Mentorskap
+
+**Samarbete:**
+- Teamarbete
+- Nätverksbyggande
+- Kundrelationer
+- Kulturell kompetens
+- Empati
+
+**Personlig effektivitet:**
+- Tidshantering
+- Prioritering
+- Stresshantering
+- Självmotivation
+- Flexibilitet
+
+### Överförbara kompetenser
+Kompetenser som fungerar i många olika yrken:
+
+- Problemlösning
+- Analytiskt tänkande
+- Kreativitet
+- Organisation
+- Projektledning
+- Kundservice
+- Försäljning
+- Undervisning/träning
+
+## Metod för kompetensinventering
+
+### Steg 1: Samla information
+
+**Gå igenom:**
+- CV och tidigare jobbeskrivningar
+- Utbildningsbevis och certifikat
+- Projektdokumentation
+- Prestationsutvärderingar
+- Feedback du fått
+- LinkedIn-profil
+- Portfolio
+
+**Tänk på alla arenor:**
+- Nuvarande och tidigare jobb
+- Utbildningar (formella och informella)
+- Hobbyer och fritidsintressen
+- Volontärarbete
+- Föreningsliv
+- Privatliv (föräldraskap, renovering, etc.)
+
+### Steg 2: Kategorisera
+
+Skapa en lista med kategorier:
+
+**Mall:**
+\`\`\`
+TEKNISKA KOMPETENSER
+- [Kompetens] - [Nivå: Nybörjare/Mellan/Avancerad/Expert]
+
+SYSTEM OCH VERKTYG
+- [System/Verktyg] - [Nivå]
+
+BRANSCHKUNSKAP
+- [Område] - [Nivå]
+
+MJUKA KOMPETENSER
+- [Kompetens] - [Exempel på användning]
+
+SPRÅK
+- [Språk] - [Nivå: Grundläggande/Bra/Flytande/Modersmål]
+
+CERTIFIERINGAR & BEHÖRIGHETER
+- [Certifikat] - [Utfärdare] - [År]
+
+ÖVRIGT
+- [Kompetens från hobby, volontärarbete etc.]
+\`\`\`
+
+### Steg 3: Bedöm nivå
+
+**Nivåskala:**
+
+**Nybörjare:** Grundläggande förståelse, behöver vägledning
+- "Jag har gjort det några gånger med hjälp"
+
+**Mellan:** Kan arbeta självständigt med vanliga uppgifter
+- "Jag kan hantera de flesta situationer själv"
+
+**Avancerad:** Hög kompetens, kan hantera komplexa situationer
+- "Jag kan lösa svåra problem och hjälpa andra"
+
+**Expert:** Erkänd specialist, kan utbilda och utveckla området
+- "Jag är en go-to-person inom detta område"
+
+### Steg 4: Hitta dolda kompetenser
+
+**Frågor att ställa:**
+
+*Från hobbyer:*
+- Driver du en blogg? → Skrivande, SEO, innehållsstrategi
+- Spelar du teamsport? → Samarbete, strategi, prestation under press
+- Stickar du? → Tålamod, precision, instruktionsföljning
+- Spelar du datorspel? → Problemlösning, snabba beslut, teamkommunikation
+
+*Från vardagen:*
+- Planerar du familjens budget? → Ekonomi, planering, Excel
+- Organiserar du evenemang? → Eventplanering, koordination, förhandling
+- Hjälper du barn med läxor? → Undervisning, tålamod, anpassning
+
+*Från utmaningar:*
+- Har du genomgått svåra perioder? → Resiliens, anpassningsförmåga
+- Har du lärt dig något helt nytt som vuxen? → Inlärningsförmåga
+- Har du löst konflikter? → Medling, kommunikation
+
+### Steg 5: Validera och komplettera
+
+**Be om input:**
+- Kollegor: "Vad brukar du be mig om hjälp med?"
+- Chef: "Vilka av mina kompetenser tycker du är starkast?"
+- Vänner: "Vad är jag bra på som jag kanske underskattar?"
+
+**Jämför med jobbmarknaden:**
+- Läs jobbannonser i din bransch
+- Vilka kompetenser efterfrågas?
+- Hur matchar du?
+- Vilka luckor finns?
+
+## Kompetensmatris
+
+Skapa en överblick med en matris:
+
+| Kompetens | Nivå | Används nu | Vill utveckla | Relevant för mål |
+|-----------|------|------------|---------------|------------------|
+| Excel | Avancerad | Ja | Nej | Ja |
+| Projektledning | Mellan | Ja | Ja | Ja |
+| Python | Nybörjare | Nej | Ja | Kanske |
+| Presentation | Avancerad | Ja | Ja | Ja |
+| Tyska | Grundläggande | Nej | Nej | Nej |
+
+**Användning:**
+- Grön (Ja, Ja, Ja): Dina huvudkompetenser att framhäva
+- Gul (delvis): Utvecklingspotential
+- Röd (Nej, Nej, Nej): Kanske inte värt att fokusera på
+
+## Identifiera kompetensluckor
+
+### Gap-analys
+1. Lista kompetenser som krävs för drömjobbet
+2. Jämför med din nuvarande nivå
+3. Prioritera vilka luckor som är viktigast att fylla
+
+### Prioriteringsmatris
+
+**Fyll först:**
+- Måste ha för att kvalificera sig
+- Relativt snabba att utveckla
+- Stora luckor som är uppenbara
+
+**Fyll sen:**
+- Meriterande men inte kritiska
+- Kräver längre tid/investering
+- Små luckor som kan överbryggas
+
+**Hoppa över:**
+- Inte relevant för dina mål
+- Skulle ta för lång tid
+- Kan kompenseras med andra styrkor
+
+## Dokumentera för användning
+
+### I CV:et
+
+**Kompetenssektion:**
+\`\`\`
+KOMPETENSER
+
+Tekniska:
+Excel (avancerad), PowerBI, SAP, Salesforce CRM
+
+Projektledning:
+Agile/Scrum, PRINCE2, Jira, Confluence
+
+Språk:
+Svenska (modersmål), Engelska (flytande), Tyska (grundläggande)
+\`\`\`
+
+### I LinkedIn
+
+**Skills-sektionen:**
+- Lista dina viktigaste kompetenser
+- Be kontakter bekräfta dem
+- Prioritera de mest relevanta högst upp
+
+**Featured-sektionen:**
+- Visa projekt som demonstrerar kompetenser
+- Länka till certifikat
+- Dela prestationer
+
+### I intervjuer
+
+**Förbered exempel:**
+För varje nyckelkompetens, ha ett STAR-exempel redo:
+- Situation
+- Task (Uppgift)
+- Action (Handling)
+- Result (Resultat)
+
+## Vanliga utmaningar
+
+### "Jag kan ingenting speciellt"
+**Lösning:** Alla har kompetenser, men vi tar dem för givna. Det som känns enkelt för dig kan vara svårt för andra. Be om feedback från andra.
+
+### "Jag har för lite erfarenhet"
+**Lösning:** Inkludera kompetenser från studier, praktik, hobbyer och volontärarbete. Överförbara kompetenser räknas.
+
+### "Mina kompetenser är föråldrade"
+**Lösning:** Grundläggande kompetenser (kommunikation, problemlösning) blir aldrig föråldrade. Kombinera dessa med ny teknisk kunskap.
+
+### "Jag vet inte vilken nivå jag är på"
+**Lösning:** Jämför med kollegor, ta färdighetstester online, be om ärlig feedback.
+
+## Kontinuerlig uppdatering
+
+Din kompetensportfölj är ett levande dokument:
+
+**Kvartalsvis:**
+- Lägg till nya kompetenser
+- Uppdatera nivåer
+- Ta bort irrelevanta
+
+**Efter varje projekt:**
+- Dokumentera vad du lärde dig
+- Notera nya verktyg och metoder
+- Spara feedback
+
+**Årligen:**
+- Stor genomgång
+- Jämför med marknadens krav
+- Planera utveckling
+
+## Övning: Din kompetensinventering
+
+### Del 1: Brainstorm (20 min)
+Skriv ner ALLT du kan tänka på att du kan göra. Döm inte, bara skriv.
+
+### Del 2: Kategorisera (15 min)
+Sortera in i kategorier: Tekniska, System, Mjuka, Språk, Certifikat, Övrigt.
+
+### Del 3: Nivåbedöm (15 min)
+Sätt nivå på varje: Nybörjare, Mellan, Avancerad, Expert.
+
+### Del 4: Dolda kompetenser (10 min)
+Gå igenom frågor om hobbyer, vardag och utmaningar.
+
+### Del 5: Validering (löpande)
+Be 3 personer ge input på din lista.
+
+## Slutsats
+
+En grundlig kompetensinventering ger dig:
+- Ökad självkännedom och självförtroende
+- Bättre underlag för CV och intervjuer
+- Tydlig utvecklingsplan
+- Förståelse för ditt marknadsvärde
+
+Det är väl investerad tid som betalar sig genom hela karriären. Börja idag!`,
+    category: 'self-awareness',
+    subcategory: 'competencies',
+    tags: ['kompetenser', 'självkännedom', 'färdigheter', 'CV', 'karriär', 'inventering'],
+    createdAt: '2024-04-05T10:00:00Z',
+    updatedAt: '2024-04-05T10:00:00Z',
+    readingTime: 18,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['styrkor-svagheter', 'cv-grunder', 'kompetensutveckling-plan'],
+    relatedExercises: ['competency-mapping', 'self-reflection'],
+    checklist: [
+      { id: '1', text: 'Samla alla dokument (CV, betyg, certifikat)' },
+      { id: '2', text: 'Brainstorma alla kompetenser utan att döma' },
+      { id: '3', text: 'Kategorisera i Tekniska/Mjuka/Språk etc.' },
+      { id: '4', text: 'Bedöm nivå för varje kompetens' },
+      { id: '5', text: 'Identifiera dolda kompetenser från hobbyer' },
+      { id: '6', text: 'Be 3 personer validera listan' },
+      { id: '7', text: 'Skapa kompetensmatris' },
+      { id: '8', text: 'Identifiera luckor att fylla' },
+    ],
+    actions: [
+      { label: 'Gör kompetensinventering', href: '/exercises', type: 'primary' },
+      { label: 'Läs om styrkor', href: '/knowledge/styrkor-svagheter', type: 'secondary' },
+    ],
+    author: 'Anna Bergström',
+    authorTitle: 'Karriärcoach',
+  },
+
+  {
+    id: 'personligt-varumarke',
+    title: 'Bygg ditt personliga varumärke',
+    summary: 'Skapa en autentisk och professionell identitet som gör dig synlig och attraktiv för arbetsgivare.',
+    content: `Ditt personliga varumärke är vad människor säger om dig när du inte är i rummet. I en konkurrensutsatt arbetsmarknad kan ett starkt personligt varumärke vara skillnaden mellan att bli upptäckt eller förbli osynlig. Denna guide hjälper dig att bygga ett varumärke som är autentiskt, professionellt och minnesvärt.
+
+## Vad är ett personligt varumärke?
+
+Ditt personliga varumärke är:
+- Den uppfattning andra har av dig professionellt
+- Kombinationen av dina unika kompetenser, personlighet och värderingar
+- Hur du presenterar dig själv online och offline
+- Det du blir känd för i ditt nätverk och din bransch
+
+### Varför det är viktigt
+
+**Jobbsökning:**
+- 70% av arbetsgivare googlar kandidater före intervju
+- Rekryterare söker aktivt efter talanger på LinkedIn
+- Ett starkt varumärke gör att möjligheter kommer till dig
+- Du sticker ut i en hög med liknande CV:n
+
+**Karriär:**
+- Öppnar dörrar till nya möjligheter
+- Positionerar dig som expert
+- Bygger förtroende innan folk ens träffar dig
+- Ger dig förhandlingskraft
+
+**Nätverk:**
+- Människor minns dig och rekommenderar dig
+- Du blir go-to-personen inom ditt område
+- Kontakter söker upp dig istället för tvärtom
+
+## Grunden: Självkännedom
+
+Innan du kan bygga ett varumärke måste du förstå:
+
+### Dina kärnvärderingar
+- Vad är viktigt för dig i arbetslivet?
+- Vilka principer kompromissar du aldrig på?
+- Vad driver dig framåt?
+
+**Exempel på värderingar:**
+- Integritet
+- Innovation
+- Samarbete
+- Kvalitet
+- Balans
+- Lärande
+
+### Din unika kombination
+Vad gör dig speciell? Det är ofta kombinationen:
+- Bakgrund + Kompetens + Personlighet
+- Erfarenheter från olika branscher
+- Ovanliga intressen som kompletterar yrket
+- En unik karriärväg
+
+**Övning:** Fyll i: "Jag hjälper [målgrupp] med [problem] genom [min unika approach]."
+
+### Din professionella identitet
+- Vem är du yrkesmässigt?
+- Vad vill du bli känd för?
+- Hur vill du att folk beskriver dig?
+
+## Bygg ditt varumärke steg för steg
+
+### Steg 1: Definiera din positionering
+
+**Nisch vs. Generalist:**
+- En tydlig nisch är lättare att bli känd för
+- "Expert på digital marknadsföring för e-handel" > "Marknadsförare"
+- Du kan bredda senare, men börja fokuserat
+
+**Din varumärkespelare:**
+Skriv 2-3 meningar som sammanfattar:
+- Vem du är (roll/expertis)
+- Vad du gör (konkret värde)
+- Hur du gör det (din unika stil)
+- För vem (målgrupp)
+
+**Exempel:**
+"Jag är UX-designer med bakgrund i psykologi. Jag skapar digitala produkter som användare älskar, genom att kombinera datadriven design med djup förståelse för mänskligt beteende. Jag jobbar främst med techbolag i tillväxtfas som vill skala sina produkter utan att förlora användarfokus."
+
+### Steg 2: Skapa konsistens
+
+**Visuell identitet:**
+- Samma profilbild på alla plattformar
+- Konsekvent färgschema om du har portfolio
+- Professionell men personlig stil
+- Aktuellt och representativt
+
+**Tonalitet:**
+- Hur låter du i text?
+- Formellt eller avslappnat?
+- Vilka ord och fraser använder du?
+- Håll samma ton överallt
+
+**Budskap:**
+- Samma kärnbudskap på LinkedIn, CV, personligt brev
+- Anpassa detaljer men behåll essensen
+- Var igenkännbar
+
+### Steg 3: Etablera digital närvaro
+
+**LinkedIn (obligatoriskt):**
+- Optimerad profil med nyckelord
+- Regelbunden aktivitet
+- Engagemang med andras innehåll
+- Byggande av relevant nätverk
+
+**Egen webbplats/portfolio (rekommenderat för vissa yrken):**
+- Visar professionalism
+- Du äger plattformen
+- Kan hittas via Google
+- Samlar allt på ett ställe
+
+**Andra plattformar (beroende på bransch):**
+- GitHub för utvecklare
+- Behance/Dribbble för designers
+- Medium/blogg för skribenter
+- Twitter/X för vissa branscher
+
+### Steg 4: Skapa innehåll
+
+**Varför innehåll?**
+- Visar expertis utan att skryta
+- Bygger förtroende över tid
+- Gör dig synlig för nya kontakter
+- Ger samtalsämnen vid nätverkande
+
+**Typer av innehåll:**
+- Insikter och lärdomar från ditt arbete
+- Kommentarer på branschtrender
+- Tips och guider
+- Reflektioner om karriär
+- Gratulationer och stöd till andra
+
+**Frekvens:**
+- Minimum: 1 gång per vecka
+- Optimalt: 2-3 gånger per vecka
+- Konsistens viktigare än kvantitet
+
+**Tips för att komma igång:**
+- Börja med att kommentera på andras inlägg
+- Dela artiklar med egna reflektioner
+- Skriv om saker du lär dig
+- Dokumentera din resa
+
+### Steg 5: Bygg relationer
+
+**Online:**
+- Engagera genuint med andras innehåll
+- Skicka personliga meddelanden
+- Dela andras content med erkännande
+- Var hjälpsam utan att förvänta något
+
+**Offline:**
+- Delta i branschevenemang
+- Gå på nätverksträffar
+- Håll presentationer eller workshops
+- Ta fikamöten med intressanta personer
+
+**Nyckeln:** Ge innan du ber. Bygg relationer långsiktigt, inte transaktionellt.
+
+## Autenticitet är A och O
+
+### Var genuin
+- Ditt varumärke måste vara du på riktigt
+- Överdriv inte eller ljug
+- Visa personlighet, inte bara profession
+- Erkänn misstag och lärdomar
+
+### Varför autenticitet fungerar
+- Folk känner av när något är fejk
+- Genuina personer är mer minnesvärda
+- Det är ohållbart att spela en roll
+- Autenticitet bygger äkta förtroende
+
+### Balansera professionellt och personligt
+- Visa att du är en människa
+- Dela lämpliga delar av ditt privatliv
+- Ha gränser för vad du delar
+- Tänk på att allt är permanent online
+
+## Hantera ditt rykte
+
+### Googla dig själv
+- Vad kommer upp när folk söker på ditt namn?
+- Finns det oönskat innehåll?
+- Är dina profiler uppdaterade?
+- Hur ser bilderna ut?
+
+### Proaktiv rykteshantering
+- Skapa innehåll som rankar högt
+- Håll profiler aktiva och uppdaterade
+- Var medveten om vad du delar
+- Be om att ta bort oönskat innehåll
+
+### Hantera negativa situationer
+- Svara professionellt på kritik
+- Ta diskussioner privat
+- Erkänn misstag snabbt
+- Lär dig och gå vidare
+
+## Mät din framgång
+
+### Kvantitativa mått
+- LinkedIn-profilvisningar
+- Antal kontaktförfrågningar
+- Engagement på innehåll
+- Inkommande jobbförfrågningar
+- Sökbarhet på Google
+
+### Kvalitativa mått
+- Hur beskriver folk dig?
+- Vilken typ av möjligheter kommer?
+- Kvaliteten på ditt nätverk
+- Din position i branschen
+
+### Kontinuerlig förbättring
+- Utvärdera kvartalsvis
+- Testa olika typer av innehåll
+- Be om feedback
+- Anpassa baserat på resultat
+
+## Vanliga misstag
+
+### 1. Kopiera andra
+Inspiration är bra, men kopiera inte. Ditt varumärke måste vara ditt.
+
+### 2. Vara för perfekt
+Perfekta ytor känns fejka. Visa också kamp och lärdomar.
+
+### 3. Fokusera bara på dig själv
+De bästa varumärkena handlar om värdet du skapar för andra.
+
+### 4. Ge upp för tidigt
+Varumärkesbyggande tar tid. Minst 6-12 månader för resultat.
+
+### 5. Glömma offline
+Digital närvaro räcker inte. Möt folk på riktigt också.
+
+### 6. Vara inkonsekvent
+Olika budskap på olika plattformar förvirrar.
+
+## Handlingsplan
+
+### Vecka 1: Grund
+- Gör självkännedomsövningar
+- Definiera dina värderingar
+- Skriv din varumärkespelare
+
+### Vecka 2: Digital närvaro
+- Optimera LinkedIn-profil
+- Sätt upp/uppdatera andra relevanta profiler
+- Googla dig själv och rensa
+
+### Vecka 3-4: Innehållsstart
+- Planera innehållskalender
+- Skriv 2-4 inlägg
+- Börja engagera med andra
+
+### Månad 2-3: Expansion
+- Öka innehållsfrekvens
+- Bygg nätverk aktivt
+- Delta i evenemang
+
+### Löpande: Underhåll
+- Regelbundet innehåll
+- Nätverksaktiviteter
+- Utvärdera och justera
+
+## Sammanfattning
+
+Ditt personliga varumärke är en investering i din karriär. Det handlar inte om att bli berömd, utan om att vara tydlig med vem du är och vad du erbjuder. Med autenticitet, konsistens och tålamod bygger du ett varumärke som öppnar dörrar.
+
+Kom ihåg: Du har redan ett personligt varumärke – frågan är om du aktivt formar det eller låter det formas av slumpen.`,
+    category: 'digital-presence',
+    subcategory: 'personal-brand',
+    tags: ['personligt varumärke', 'personal branding', 'digital närvaro', 'LinkedIn', 'karriär', 'nätverkande'],
+    createdAt: '2024-04-06T10:00:00Z',
+    updatedAt: '2024-04-06T10:00:00Z',
+    readingTime: 18,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['linkedin-optimering', 'portfolio-guide', 'natverka-for-jobb'],
+    relatedExercises: ['personal-brand', 'self-reflection'],
+    checklist: [
+      { id: '1', text: 'Definiera dina kärnvärderingar' },
+      { id: '2', text: 'Skriv din varumärkespelare (2-3 meningar)' },
+      { id: '3', text: 'Uppdatera profilbild på alla plattformar' },
+      { id: '4', text: 'Optimera LinkedIn-profil' },
+      { id: '5', text: 'Googla dig själv och rensa oönskat' },
+      { id: '6', text: 'Skapa innehållskalender' },
+      { id: '7', text: 'Posta ditt första innehåll' },
+      { id: '8', text: 'Engagera med 5 personer i ditt nätverk' },
+    ],
+    actions: [
+      { label: 'Optimera LinkedIn', href: '/knowledge/linkedin-optimering', type: 'primary' },
+      { label: 'Bygg portfolio', href: '/knowledge/portfolio-guide', type: 'secondary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'motivation-jobbsokning',
+    title: 'Behåll motivationen under en lång jobbsökning',
+    summary: 'Strategier för att hålla energin uppe och fortsätta framåt även när jobbsökningen drar ut på tiden.',
+    content: `Jobbsökning kan vara en av de mest psykiskt påfrestande perioderna i livet. Osäkerhet, avslag och känslan av att stå still kan tära på motivationen. I denna guide delar vi beprövade strategier för att behålla energin och fortsätta framåt.
+
+## Varför motivationen sviktar
+
+### Vanliga orsaker
+- **Avslag efter avslag** – Även om det är normalt känns det personligt
+- **Brist på feedback** – "Varför fick jag inte jobbet?" förblir obesvarat
+- **Ekonomisk stress** – Oro för pengar tar energi
+- **Social isolering** – Saknar arbetsgemenskap
+- **Identitetskris** – "Vem är jag utan mitt jobb?"
+- **Osäkerhet** – Inte veta hur länge det kommer ta
+- **Jämförelse med andra** – Alla verkar ha det bättre
+
+### Det är normalt
+- Genomsnittlig jobbsökningsperiod varierar: 3-6 månader är vanligt
+- De flesta upplever motivationssvackor
+- Det är en process med toppar och dalar
+- Känn igen att det är svårt – det är mänskligt
+
+## Mindset för långsiktig uthållighet
+
+### 1. Omformulera synen på jobbsökning
+
+**Från:** "Jag måste hitta ett jobb nu"
+**Till:** "Jag söker rätt jobb för mig"
+
+**Från:** "Varje avslag är ett misslyckande"
+**Till:** "Varje avslag är information och övning"
+
+**Från:** "Jag är desperat"
+**Till:** "Jag utforskar möjligheter"
+
+### 2. Fokusera på det du kan kontrollera
+
+**Kan kontrollera:**
+- Antal ansökningar du skickar
+- Kvaliteten på ditt CV och brev
+- Din förberedelse inför intervjuer
+- Hur du tar hand om dig själv
+- Vilka nya färdigheter du lär dig
+
+**Kan INTE kontrollera:**
+- Om du blir kallad till intervju
+- Vem arbetsgivaren anställer
+- Hur lång tid processen tar
+- Arbetsmarknadens tillstånd
+
+### 3. Acceptera emotionell berg-och-dalbana
+
+Det är normalt att känna:
+- Hopp efter en bra intervju
+- Besvikelse vid avslag
+- Frustration över tystnad
+- Entusiasm vid nya möjligheter
+- Utmattning efter intensiva perioder
+
+Låt känslorna komma och gå utan att döma dig själv.
+
+## Praktiska motivationsstrategier
+
+### Strukturera din tid
+
+**Skapa jobbsökarrutin:**
+- Fasta tider för aktivt sökande (t.ex. 09-12)
+- Pauser inplanerade
+- Tid för annat än jobbsökning
+- Helger lediga om möjligt
+
+**Exempel på dagschema:**
+\`\`\`
+09:00 - Morgonrutin, nyhetskoll
+09:30 - Söka jobb, skriva ansökningar
+12:00 - Lunch och promenad
+13:00 - Nätverksaktiviteter
+14:30 - Kompetensutveckling
+15:30 - Avsluta arbetsdagen
+\`\`\`
+
+**Varför struktur hjälper:**
+- Ger känsla av kontroll
+- Förhindrar att jobbsökning tar över allt
+- Skapar balans och återhämtning
+- Gör det lättare att börja varje dag
+
+### Sätt små, uppnåeliga mål
+
+**Dåligt:** "Hitta ett jobb denna månad"
+**Bra:** "Skicka 5 ansökningar denna vecka"
+
+**Veckomål-exempel:**
+- [ ] Skicka 5 ansökningar
+- [ ] Ta en nätverksfika
+- [ ] Gör en LinkedIn-aktivitet
+- [ ] Lär dig något nytt (kurs, artikel)
+- [ ] Gör en rolig aktivitet
+
+**Fira varje uppnått mål!** Det bygger positiv förstärkning.
+
+### Spåra dina framsteg
+
+**Jobbsökardagbok:**
+- Ansökningar skickade
+- Kontakter gjorda
+- Intervjuer bokade
+- Vad du lärt dig
+- Små vinster
+
+**Varför det hjälper:**
+- Visar att du GÖR något (även om resultat dröjer)
+- Identifierar mönster
+- Ger material att reflektera över
+- Motverkar känslan av stagnation
+
+### Belöna dig själv
+
+**Belöningssystem:**
+- 5 ansökningar = favoritserie på kvällen
+- En intervju = speciell middag
+- Avklarat veckomål = helgaktivitet
+- En månad av konsekvent arbete = större belöning
+
+**Belöningar behöver inte kosta:**
+- En längre promenad i naturen
+- Tid för hobby
+- Möte med vänner
+- En lat morgon
+
+## Ta hand om din hälsa
+
+### Fysisk hälsa
+
+**Rörelse:**
+- Daglig promenad (minst 30 min)
+- Träning 2-3 gånger i veckan
+- Stretching vid skrivbordet
+- Stå upp och rör dig varje timme
+
+**Varför:** Fysisk aktivitet frigör endorfiner, minskar stress och förbättrar sömn.
+
+**Sömn:**
+- Regelbundna tider (även på helger)
+- 7-9 timmar per natt
+- Undvik skärmar före läggdags
+- Skapa sömnrutin
+
+**Kost:**
+- Ät regelbundet
+- Undvik för mycket socker och koffein
+- Drick vatten
+- Billig mat kan vara näringsrik
+
+### Mental hälsa
+
+**Dagliga vanor:**
+- Morgonrutin som startar dagen positivt
+- Begränsa nyhets- och sociala medier-konsumtion
+- Mindfulness eller meditation (5-10 min räcker)
+- Skriv tacksam dagbok (3 saker varje dag)
+
+**Hantera negativa tankar:**
+- Identifiera tankemönster
+- Utmana katastrofstänk
+- Prata med någon om hur du mår
+- Sök professionell hjälp om det blir för tungt
+
+**Varningssignaler att ta på allvar:**
+- Ihållande nedstämdhet
+- Sömnproblem
+- Aptitförändringar
+- Isolation
+- Hopplöshet
+
+*Om du känner igen dig, kontakta vårdcentral eller ring 1177.*
+
+### Social hälsa
+
+**Bryt isoleringen:**
+- Boka in sociala aktiviteter varje vecka
+- Arbeta från café eller bibliotek ibland
+- Gå med i grupper (föreningar, kurser, träning)
+- Håll kontakt med före detta kollegor
+
+**Prata om jobbsökningen:**
+- Välj rätt personer att prata med
+- Sätt gränser för hur mycket du diskuterar det
+- Be om stöd, inte bara jobbkontakter
+- Var ärlig om hur du mår
+
+## Hantera avslag konstruktivt
+
+### Normalisera avslag
+
+**Fakta:**
+- Genomsnittlig jobbsökare får många avslag innan ett ja
+- De flesta ansökningar får inget svar alls
+- Det handlar ofta om matchning, inte ditt värde
+- Även högkvalificerade kandidater får avslag
+
+### Lär av avslag
+
+**Frågor att ställa:**
+- Fick jag feedback? Vad kan jag lära?
+- Var jobbet verkligen rätt för mig?
+- Hur var min förberedelse?
+- Är det ett mönster jag kan ändra?
+
+**Om du får feedback:**
+- Tacka för den
+- Ta den på allvar
+- Implementera förbättringar
+- Be om förtydliganden om något är oklart
+
+### Bearbeta känslomässigt
+
+**Tillåt dig att vara besviken:**
+- Känn känslan (sätt en tidsgräns, t.ex. 24 timmar)
+- Prata med någon
+- Skriv av dig
+- Gör något fysiskt
+
+**Gå vidare:**
+- Påminn dig om vad du lärt dig
+- Fokusera på nästa steg
+- Fira att du vågade söka
+- Nästa möjlighet väntar
+
+## Behåll perspektiv
+
+### Påminn dig om varför
+
+- Varför söker du jobb? (Ekonomi, utveckling, passion?)
+- Vad vill du uppnå i karriären?
+- Hur ser ditt drömscenario ut?
+- Vad har du klarat tidigare i livet?
+
+### Titta bakåt
+
+- Hur långt har du kommit sedan du började?
+- Vilka nya kontakter har du gjort?
+- Vad har du lärt dig?
+- Vilka intervjuer har du gjort?
+
+### Titta framåt
+
+- Den här perioden är temporär
+- Du kommer att ha ett jobb igen
+- Du bygger erfarenhet och resiliens
+- Framtida du kommer tacka nuvarande du
+
+## När motivationen är på botten
+
+### Tillåt dig "off-dagar"
+- Ibland behöver du vila
+- En dag utan jobbsökning är okej
+- Gör något du gillar istället
+- Ladda batterierna
+
+### Minimal dos
+På riktigt dåliga dagar, gör bara en sak:
+- Skicka EN ansökan
+- Skicka ETT meddelande
+- Läs EN artikel
+- Gör EN liten sak
+
+Det är bättre än ingenting och håller momentum.
+
+### Sök stöd
+- Prata med en vän
+- Ring din arbetsförmedlare/konsulent
+- Gå med i en jobbsökargrupp
+- Överväg samtalsstöd
+
+## Använd tiden meningsfullt
+
+### Kompetensutveckling
+- Gratis onlinekurser (Coursera, edX, YouTube)
+- Certifieringar i din bransch
+- Läs branschlitteratur
+- Lyssna på podcasts
+
+### Volontärarbete
+- Håller dig aktiv
+- Ger nya erfarenheter
+- Bygger nätverk
+- Ser bra ut på CV:t
+
+### Egna projekt
+- Starta en blogg
+- Bygg portfolio
+- Utveckla en app eller produkt
+- Skriv
+
+### Nätverkande
+- Kaffe med kontakter
+- Branschevenemang
+- LinkedIn-aktivitet
+- Informationsintervjuer
+
+## Handlingsplan för tuffa perioder
+
+### När du känner dig fast
+1. Pausa och andas
+2. Skriv ner vad du känner
+3. Identifiera en liten sak du kan göra
+4. Gör den saken
+5. Fira att du gjorde det
+6. Planera morgondagen
+
+### Veckoöversikt
+- Måndag: Sätt veckans mål
+- Tisdag-Torsdag: Aktivt sökande
+- Fredag: Reflektera och planera nästa vecka
+- Helg: Vila och återhämtning
+
+## Kom ihåg
+
+- **Jobbsökning är ett jobb** – Behandla det som sådant med arbetstider och ledighet
+- **Du är mer än din anställning** – Din identitet är inte ditt jobb
+- **Det kommer att ordna sig** – Även om det inte känns så just nu
+- **Be om hjälp** – Du behöver inte göra det ensam
+- **Var snäll mot dig själv** – Du gör ditt bästa i en svår situation
+
+Du kommer igenom detta. En dag i taget.`,
+    category: 'wellness',
+    subcategory: 'motivation',
+    tags: ['motivation', 'jobbsökning', 'mental hälsa', 'avslag', 'uthållighet', 'välmående'],
+    createdAt: '2024-04-07T10:00:00Z',
+    updatedAt: '2024-04-07T10:00:00Z',
+    readingTime: 20,
+    difficulty: 'medium',
+    energyLevel: 'low',
+    relatedArticles: ['hantera-avslag', 'stress-jobbsokning'],
+    relatedExercises: ['self-care', 'motivation-boost'],
+    checklist: [
+      { id: '1', text: 'Skapa en daglig jobbsökarrutin' },
+      { id: '2', text: 'Sätt små veckomål (ansökningar, kontakter)' },
+      { id: '3', text: 'Starta en jobbsökardagbok' },
+      { id: '4', text: 'Planera in daglig rörelse' },
+      { id: '5', text: 'Boka en social aktivitet denna vecka' },
+      { id: '6', text: 'Identifiera en kompetensutvecklingsaktivitet' },
+      { id: '7', text: 'Skapa ett belöningssystem' },
+      { id: '8', text: 'Lista personer du kan prata med vid behov' },
+    ],
+    actions: [
+      { label: 'Läs om att hantera avslag', href: '/knowledge/hantera-avslag', type: 'primary' },
+      { label: 'Hitta övningar för välmående', href: '/exercises', type: 'secondary' },
+    ],
+    author: 'Sara Ekström',
+    authorTitle: 'Psykolog',
+  },
+
+  {
+    id: 'informationsintervju-guide',
+    title: 'Informationsintervjuer: Den dolda superkraften',
+    summary: 'Lär dig hur informationsintervjuer kan öppna dörrar till jobb som aldrig annonseras.',
+    content: `Informationsintervjuer är ett av de mest underanvända verktygen i jobbsökningen. Det handlar inte om att be om jobb, utan om att lära sig om branscher, roller och företag – samtidigt som du bygger värdefulla relationer. Denna guide visar hur du gör det effektivt.
+
+## Vad är en informationsintervju?
+
+En informationsintervju är ett kort, informellt möte (ofta 20-30 minuter) där du:
+- Lär dig om en persons karriärväg
+- Får insikt i en bransch eller roll
+- Förstår vad som krävs för att lyckas
+- Bygger en relation för framtiden
+
+### Vad det INTE är
+- En jobbintervju i förklänad form
+- Ett sätt att be om jobb
+- Ett tillfälle att sälja in dig själv
+- En chans att skicka CV
+
+### Varför det fungerar
+
+**För dig:**
+- Få insider-kunskap
+- Hitta dolda jobb (70% annonseras aldrig!)
+- Bygga nätverk
+- Utforska karriärvägar
+- Öva på intervjusituationer
+- Få konkreta råd
+
+**För den du träffar:**
+- Chans att hjälpa någon (folk gillar det)
+- Reflektera över sin egen karriär
+- Hitta potentiella framtida kollegor
+- Bygga sitt eget nätverk
+
+## Vem ska du kontakta?
+
+### Bra målgrupper
+
+**Människor i roller du är intresserad av:**
+- De kan berätta vad jobbet verkligen innebär
+- Ge tips på hur man tar sig dit
+- Varna för fallgropar
+
+**Personer i företag du vill arbeta på:**
+- Lär dig om företagskulturen
+- Förstå rekryteringsprocessen
+- Få kontakter internt
+
+**Branschkunniga:**
+- Experter som kan ge överblick
+- Trendspanare
+- Erfarna proffs med perspektiv
+
+**Alumni:**
+- Delar utbildningsbakgrund (naturlig koppling)
+- Ofta villiga att hjälpa
+- Förstår din situation
+
+### Hur hittar du dem?
+
+**LinkedIn:**
+- Sök på roll + företag
+- Se "People also viewed"
+- Kolla andrahandskontakter
+- Alumni-funktionen
+
+**Ditt befintliga nätverk:**
+- Be kontakter om introduktioner
+- Tidigare kollegor och klasskamrater
+- Vänner och familj
+
+**Evenemang:**
+- Branschkonferenser
+- Nätverksträffar
+- Föreläsningar och seminarier
+
+## Hur tar du kontakt?
+
+### Kontaktmeddelande
+
+**Struktur:**
+1. Kort presentation
+2. Hur du hittade dem / koppling
+3. Varför just de
+4. Vad du vill lära dig
+5. Tidsbegränsning (20-30 min)
+6. Flexibilitet
+
+**Exempel på LinkedIn-meddelande:**
+
+"Hej [Namn],
+
+Jag heter [Ditt namn] och utforskar just nu möjligheter inom [bransch/område]. Din bakgrund inom [specifikt] fångade mitt intresse, särskilt hur du gått från [X] till [Y].
+
+Jag skulle uppskatta en kort pratstund (20-30 min) för att höra dina erfarenheter och få råd om branschen. Jag är flexibel med tid och kan träffas digitalt eller ta en kaffe om det passar.
+
+Tack på förhand!
+[Ditt namn]"
+
+**Exempel via e-post:**
+
+"Ämne: Fråga om din karriärväg inom [område]
+
+Hej [Namn],
+
+Jag fick ditt namn via [kontakt/källa] och förstår att du har gedigen erfarenhet inom [område].
+
+Jag är just nu i en fas där jag utforskar [relevant område] och försöker förstå bättre hur branschen fungerar. Din resa från [X] till [Y] är inspirerande och jag skulle gärna lära mig mer om hur du navigerat din karriär.
+
+Skulle du ha 20-30 minuter för en kaffe eller ett videosamtal de närmaste veckorna? Jag är mycket flexibel med tid.
+
+Med vänliga hälsningar,
+[Ditt namn]
+[Telefon/LinkedIn]"
+
+### Tips för kontakt
+
+**Do:**
+- Var specifik om varför just de
+- Nämn gemensamma kontakter eller kopplingar
+- Håll det kort och respektfullt
+- Gör det lätt att säga ja
+- Följ upp en gång om du inte hör något
+
+**Don't:**
+- Skicka generiska massmeddelanden
+- Fäst CV eller be om jobb
+- Vara för lång eller krävande
+- Ge upp efter ett icke-svar
+- Ljug om din situation
+
+### Hantera svar
+
+**Om de säger ja:**
+Tack, bekräfta tid/plats, förbered dig!
+
+**Om de säger nej/är upptagna:**
+"Tack för att du svarade! Jag förstår att du har mycket. Om du har 5 minuter någon gång eller kan rekommendera någon annan att prata med, vore jag tacksam."
+
+**Om de inte svarar:**
+Följ upp EN gång efter 1-2 veckor. Sedan, gå vidare.
+
+## Förberedelser
+
+### Research
+
+**Om personen:**
+- LinkedIn-profil noggrant
+- Eventuella artiklar de skrivit
+- Presentationer eller intervjuer
+- Gemensamma kontakter
+
+**Om företaget/branschen:**
+- Aktuella nyheter
+- Trender och utmaningar
+- Konkurrenter
+- Företagskultur
+
+### Förbered frågor
+
+**Om deras karriärväg:**
+- Hur började du inom [område]?
+- Vad har varit avgörande för din utveckling?
+- Vilka vägval har format din karriär mest?
+- Vad skulle du gjort annorlunda?
+
+**Om rollen/branschen:**
+- Hur ser en typisk dag ut?
+- Vilka kompetenser är viktigast?
+- Vad är mest utmanande?
+- Hur ser framtiden ut för branschen?
+
+**Om att ta sig in:**
+- Vad letar ni efter hos nya medarbetare?
+- Vilka misstag ser du att sökande gör?
+- Finns det alternativa vägar in?
+- Vilka kurser/erfarenheter rekommenderar du?
+
+**Avslutande:**
+- Finns det någon annan du rekommenderar att jag pratar med?
+- Vilka resurser (böcker, sajter, grupper) är användbara?
+- Hur kan jag vara till hjälp för dig?
+
+### Praktiska förberedelser
+
+- Bekräfta tid och plats dagen innan
+- Planera transport så du är i tid
+- Ta med anteckningsblock och penna
+- Ladda telefon (för eventuellt LinkedIn-utbyte)
+- Klä dig lämpligt för branschen
+
+## Under mötet
+
+### Struktur (30 min)
+
+**0-5 min: Introduktion**
+- Tacka för tiden
+- Kort om dig själv (30 sekunder)
+- Bekräfta tidsram
+
+**5-25 min: Frågor och samtal**
+- Följ din lista men var flexibel
+- Lyssna mer än du pratar (70/30)
+- Ställ följdfrågor
+- Ta anteckningar
+
+**25-30 min: Avslutning**
+- Sammanfatta vad du lärt dig
+- Fråga om de kan rekommendera någon annan
+- Fråga hur du kan hjälpa dem
+- Tacka och bekräfta uppföljning
+
+### Tips under samtalet
+
+**Do:**
+- Var genuint nyfiken
+- Lyssna aktivt
+- Ställ öppna frågor
+- Visa uppskattning
+- Var punktlig
+- Ta anteckningar (fråga om det är okej)
+
+**Don't:**
+- Prata för mycket om dig själv
+- Be om jobb
+- Lämna CV oombedd
+- Gå över tiden
+- Vara negativ eller klagande
+- Kolla telefonen
+
+### Om de frågar om ditt jobbsökande
+
+Var ärlig men inte desperat:
+"Jag utforskar möjligheter inom [område] och vill förstå branschen bättre innan jag tar nästa steg. Just nu fokuserar jag på att lära mig och bygga nätverk."
+
+### Om de erbjuder att hjälpa
+
+Tacka, men överdriv inte:
+"Det uppskattar jag verkligen! Om det dyker upp något som du tänker kan passa, får du gärna höra av dig. Men mest värdefullt just nu är de insikter du delat."
+
+## Efter mötet
+
+### Samma dag
+
+**Skicka tackmeddelande:**
+"Hej [Namn],
+
+Tack så mycket för att du tog dig tid idag! Jag lärde mig massor, särskilt om [specifik insight]. Ditt råd om [konkret tips] tar jag verkligen med mig.
+
+Om det är något jag kan hjälpa dig med, tveka inte att höra av dig.
+
+Varma hälsningar,
+[Ditt namn]"
+
+### Dokumentera
+
+Skriv ner:
+- Vad du lärde dig
+- Konkreta råd
+- Rekommenderade kontakter
+- Nästa steg
+
+### Följ upp på introduktioner
+
+Om de rekommenderade någon:
+- Kontakta inom en vecka
+- Nämn vem som gav kontakten
+- Följ upp med ursprungskontakten: "Jag hörde av mig till [Namn], tack för tipset!"
+
+### Håll kontakten
+
+**Regelbundet:**
+- Gratulera vid karriärhändelser
+- Dela relevanta artiklar
+- Uppdatera om din jobbsökning
+- Var hjälpsam om du kan
+
+**När du får jobb:**
+- Meddela dem!
+- Tacka för deras bidrag
+- Håll relationen vid liv
+
+## Vanliga misstag
+
+### 1. Göra det till en jobbintervju
+Informationsintervju ≠ Jobbintervju. Fokusera på att lära, inte sälja.
+
+### 2. Vara oförberedd
+Visa respekt genom att ha gjort research och förberett frågor.
+
+### 3. Prata för mycket
+Lyssna 70% av tiden. Det är deras kunskap du vill ha.
+
+### 4. Glömma att följa upp
+Tackmeddelande samma dag är obligatoriskt.
+
+### 5. Ge upp för tidigt
+Många svarar inte på första försöket. En påminnelse är acceptabelt.
+
+### 6. Bara kontakta en gång
+Bygg långsiktiga relationer, inte engångsföreteelser.
+
+## Särskilda situationer
+
+### Virtuella informationsintervjuer
+
+**Förberedelser:**
+- Testa tekniken i förväg
+- Bra belysning och bakgrund
+- Stabil internetuppkoppling
+- Stäng andra program
+
+**Under mötet:**
+- Titta i kameran
+- Undvik att titta på dig själv
+- Ha anteckningar bredvid (inte på skärmen)
+
+### Gruppinformationsintervjuer
+
+Ibland kan du ordna en informationsintervju med flera personer (t.ex. ett team):
+- Skicka frågorna i förväg
+- Låt alla komma till tals
+- Tacka varje person individuellt
+
+### Om du är introvert
+
+- Kom ihåg: det handlar om att lyssna
+- Förbered frågor noga
+- Ta pauser mellan möten
+- Börja med mindre formella kontakter
+
+## Handlingsplan
+
+### Vecka 1
+- Identifiera 10 personer att kontakta
+- Skriv kontaktmeddelanden
+- Skicka till de första 5
+
+### Vecka 2-3
+- Följ upp med de som inte svarat
+- Boka de första mötena
+- Förbered frågor
+
+### Löpande
+- 1-2 informationsintervjuer per vecka
+- Dokumentera lärdomar
+- Följ upp alla kontakter
+- Utöka din lista
+
+## Framgångshistorier
+
+**Anna, karriärväxlare:**
+"Jag hade ingen erfarenhet av tech men gjorde 15 informationsintervjuer. På den tolfte träffade jag någon som berättade om en junior-roll som inte var utannonserad. En månad senare hade jag jobbet."
+
+**Erik, nyutexaminerad:**
+"Varje person jag träffade rekommenderade 2-3 andra. Mitt nätverk växte exponentiellt. Ett av de mötena ledde till min första anställning."
+
+## Kom ihåg
+
+Informationsintervjuer handlar om:
+- **Lärande** – Inte sälj
+- **Relationer** – Inte transaktioner
+- **Långsiktighet** – Inte snabba vinster
+- **Genuint intresse** – Inte spel
+
+Med rätt inställning blir informationsintervjuer din hemliga superkraft i jobbsökningen.`,
+    category: 'networking',
+    subcategory: 'informational-interviews',
+    tags: ['informationsintervju', 'nätverkande', 'karriär', 'jobbsökning', 'kontakter', 'dolda jobb'],
+    createdAt: '2024-04-08T10:00:00Z',
+    updatedAt: '2024-04-08T10:00:00Z',
+    readingTime: 20,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['natverka-for-jobb', 'linkedin-optimering', 'natverksbyggande-guide'],
+    relatedExercises: ['networking', 'informational-interview-prep'],
+    checklist: [
+      { id: '1', text: 'Identifiera 10 personer att kontakta' },
+      { id: '2', text: 'Skriv personligt kontaktmeddelande' },
+      { id: '3', text: 'Research personen och företaget' },
+      { id: '4', text: 'Förbered 8-10 frågor' },
+      { id: '5', text: 'Genomför mötet (max 30 min)' },
+      { id: '6', text: 'Skicka tackmeddelande samma dag' },
+      { id: '7', text: 'Dokumentera lärdomar' },
+      { id: '8', text: 'Följ upp med rekommenderade kontakter' },
+    ],
+    actions: [
+      { label: 'Läs om nätverkande', href: '/knowledge/natverka-for-jobb', type: 'primary' },
+      { label: 'Optimera din LinkedIn', href: '/knowledge/linkedin-optimering', type: 'secondary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'under-intervjun-tips',
+    title: 'Under intervjun: Tekniker som gör skillnad',
+    summary: 'Praktiska tips för vad du ska göra, säga och undvika under själva jobbintervjun.',
+    content: `Du har förberett dig, du är på plats, och nu börjar intervjun. De närmaste 30-60 minuterna kan avgöra om du får jobbet. Denna guide ger dig konkreta verktyg för att prestera ditt bästa under själva intervjun.
+
+## De första minuterna avgör mycket
+
+### Forskning visar
+- Rekryterare formar ofta sitt intryck inom de första **7 sekunderna**
+- De första **5 minuterna** är avgörande för helhetsintrycket
+- Positiva första intryck är svåra att ändra
+
+### Före du går in
+
+**Andas:**
+- Djupa andetag lugnar nervsystemet
+- Sänk axlarna, slappna av i käken
+- Le (det frigör endorfiner)
+
+**Power pose:**
+- Stå rak med breda axlar i 2 minuter
+- Forskning visar att det ökar självförtroende
+- Gör det på toaletten innan
+
+**Mental förberedelse:**
+- Visualisera en lyckad intervju
+- Påminn dig om dina styrkor
+- Tänk: "Jag är här för att de tror jag kan bidra"
+
+### Entrén
+
+**Praktiskt:**
+- Var där 10 minuter före
+- Stäng av telefonen helt
+- Ta av ytterkläder i receptionen
+- Var vänlig mot alla du möter
+
+**Kroppsspråk:**
+- Gå in med energi och självsäkerhet
+- Raka axlar, naturlig gång
+- Le genuint
+- Ögonkontakt vid hälsning
+
+**Handskaking (om tillämpligt):**
+- Fast men inte krossande
+- 2-3 skakningar
+- Kombinera med ögonkontakt och leende
+- Om du är osäker, låt intervjuaren initiera
+
+## Kommunikation under intervjun
+
+### Aktivt lyssnande
+
+**Visa att du lyssnar:**
+- Ögonkontakt (men stirra inte)
+- Nicka bekräftande
+- Verbala bekräftelser ("Jag förstår", "Mm")
+- Ställ följdfrågor
+
+**Undvik:**
+- Avbryta
+- Börja tänka på ditt svar medan de pratar
+- Titta på klocka eller telefon
+- Se uttråkad ut
+
+### Svara på frågor
+
+**STAR-metoden (för kompetensbaserade frågor):**
+- **S**ituation – Beskriv kontexten
+- **T**ask – Förklara uppgiften/ansvaret
+- **A**ction – Berätta vad DU gjorde
+- **R**esult – Avsluta med resultatet
+
+**Exempel:**
+*Fråga: "Berätta om en gång du hanterade en svår kund."*
+
+**S:** "På mitt förra jobb hade vi en kund som var mycket missnöjd med en försenad leverans."
+
+**T:** "Som kundansvarig var det mitt ansvar att lösa situationen och behålla kunden."
+
+**A:** "Jag ringde kunden samma dag, lyssnade på deras frustration utan att avbryta, och erbjöd sedan en konkret lösning med expressfrakt och prisavdrag."
+
+**R:** "Kunden blev inte bara nöjd utan ökade faktiskt sina beställningar med 20% det följande kvartalet."
+
+### Svara koncist
+
+**Problem:** Många pratar för länge
+- Rekryteraren tappar fokus
+- Huvudpoängen drunknar
+- Mindre tid för andra frågor
+
+**Riktlinje:**
+- De flesta svar: 1-2 minuter
+- Komplexa STAR-svar: max 3 minuter
+- Om osäker, fråga: "Vill du att jag utvecklar något mer?"
+
+### Hantera svåra frågor
+
+**"Berätta om dig själv"**
+- Inte din livshistoria
+- Fokusera på det relevanta för jobbet
+- Struktur: Nuvarande situation → Relevant bakgrund → Varför du är här
+
+**Exempel:**
+"Just nu arbetar jag som kundtjänstmedarbetare på X där jag hanterar teknisk support för B2B-kunder. Jag har tre års erfarenhet av kundkontakt och har utvecklat en stark förmåga att förklara tekniska lösningar på ett enkelt sätt. Jag söker den här rollen för att den kombinerar min passion för kundservice med möjligheten att arbeta med mer komplexa produkter."
+
+**"Varför vill du ha det här jobbet?"**
+- Visa att du gjort research
+- Koppla till dina mål och intressen
+- Var specifik om företaget och rollen
+
+**"Varför ska vi anställa dig?"**
+- Sammanfatta dina viktigaste kvalifikationer
+- Matcha mot jobbets krav
+- Visa entusiasm
+
+**"Vad är din svaghet?"**
+- Var ärlig men strategisk
+- Välj en genuin svaghet
+- Visa hur du arbetar med den
+- Undvik klyschor ("Jag är perfektionist")
+
+**"Var ser du dig själv om 5 år?"**
+- Visa ambition men var realistisk
+- Koppla till företaget om möjligt
+- Det är okej att inte ha alla svar
+
+### Hantera tystnad och osäkerhet
+
+**Om du inte förstår frågan:**
+"Kan du förtydliga vad du menar med...?"
+"Menar du [din tolkning]?"
+
+**Om du behöver tänka:**
+"Det är en bra fråga, låt mig tänka en sekund..."
+(Kort paus är bättre än att fylla med "öh")
+
+**Om du inte har svar:**
+"Jag har inte erfarenhet av exakt den situationen, men en liknande erfarenhet är..."
+"Det har jag inte stött på, men så här skulle jag troligen närma mig det..."
+
+## Kroppsspråk genom intervjun
+
+### Sitta rätt
+- Luta dig lite framåt (visar intresse)
+- Båda fötterna på golvet
+- Händerna synliga (inte i kors)
+- Undvik att luta dig tillbaka för mycket
+
+### Händer
+- Använd naturliga gester när du pratar
+- Undvik att pilla på saker
+- Håll händerna stilla vid lyssnande
+- Inte i fickorna
+
+### Ögonkontakt
+- Ca 60-70% av tiden
+- Växla mellan intervjuarna om flera
+- Titta bort ibland (naturligt)
+- Undvik att stirra eller undvika helt
+
+### Ansiktsuttryck
+- Le naturligt, inte konstant
+- Visa engagemang och intresse
+- Nicka vid lämpliga tillfällen
+- Undvik att se uttråkad eller nervös ut
+
+## Vanliga frågor och bra svar
+
+### Motivationsfrågor
+
+**"Varför vill du byta jobb?"**
+- Fokusera på vad du söker (inte vad du flyr)
+- Utveckling, nya utmaningar, bättre matchning
+- Undvik att kritisera nuvarande arbetsgivare
+
+**"Vad motiverar dig?"**
+- Var ärlig och specifik
+- Koppla till rollen
+- Ge exempel
+
+### Kompetensbaserade frågor
+
+**"Ge ett exempel på när du löst ett problem"**
+- Använd STAR-metoden
+- Välj ett relevant exempel
+- Fokusera på din insats
+
+**"Berätta om en konflikt och hur du hanterade den"**
+- Visa mognad och professionalitet
+- Fokusera på lösningen, inte dramat
+- Vad lärde du dig?
+
+### Situationsfrågor
+
+**"Vad skulle du göra om...?"**
+- Visa din tankeprocess
+- Fråga följdfrågor om du behöver
+- Koppla till erfarenhet om möjligt
+
+### Stressfrågor
+
+**"Varför har du ett glapp i CV:t?"**
+- Var ärlig men positiv
+- Fokusera på vad du gjorde/lärde dig
+- Kort och koncist
+
+**"Varför blev du uppsagd?"**
+- Ärligt men inte bittert
+- Organisationsförändringar, nedskärningar
+- Vad du lärt dig
+
+## Frågor du ska ställa
+
+### Varför ställa frågor?
+- Visar intresse och förberedelse
+- Hjälper dig avgöra om jobbet passar
+- Gör samtalet tvåvägs
+- Förväntas av intervjuaren
+
+### Bra frågor att ställa
+
+**Om rollen:**
+- "Hur ser en typisk dag/vecka ut i den här rollen?"
+- "Vilka är de viktigaste målen för rollen de första 3 månaderna?"
+- "Vad skiljer någon som lyckas i rollen från någon som inte gör det?"
+
+**Om teamet:**
+- "Kan du berätta om teamet jag skulle arbeta med?"
+- "Hur ser samarbetet ut med andra avdelningar?"
+
+**Om företaget:**
+- "Vad tycker du bäst om att arbeta här?"
+- "Vilka utmaningar står företaget/avdelningen inför just nu?"
+- "Hur ser utvecklingsmöjligheterna ut?"
+
+**Om processen:**
+- "Vilka är nästa steg i rekryteringsprocessen?"
+- "När kan jag förvänta mig att höra från er?"
+
+### Frågor att undvika
+
+- Lön (i första intervjun, om de inte tar upp det)
+- Semester och ledighet
+- Frågor du borde kunna googla
+- Negativa frågor ("Varför slutade förra personen?")
+
+## Vanliga misstag
+
+### Under intervjun
+
+**Prata negativt om tidigare arbetsgivare**
+Även om de var hemska – håll det professionellt.
+
+**Inte anpassa svaren till jobbet**
+Dina exempel ska vara relevanta för rollen.
+
+**Vara för ödmjuk eller skrytsam**
+Hitta balansen – presentera fakta med självförtroende.
+
+**Glömma att ställa frågor**
+"Nej, jag har inga frågor" ger dåligt intryck.
+
+**Prata för mycket eller för lite**
+Känn av rummet och anpassa.
+
+**Låta nervositeten ta över**
+Lite nervositet är normalt och okej.
+
+## Specialfall
+
+### Panelintervju
+- Ögonkontakt med alla, mest med den som frågar
+- Adressera alla i svaren
+- Anteckna namn och roller
+
+### Videointervju
+- Titta i kameran, inte på skärmen
+- Bra belysning och bakgrund
+- Testa tekniken i förväg
+- Ha anteckningar bredvid (inte på skärmen)
+
+### Stressintervju
+- Behåll lugnet
+- Det är ett test
+- Andas och ta din tid
+- Svara sakligt
+
+### Case-intervju
+- Fråga klargörande frågor
+- Visa din tankeprocess högt
+- Struktur är viktigare än rätt svar
+- Be om feedback
+
+## Avslutningen
+
+### De sista minuterna
+
+**Sammanfatta ditt intresse:**
+"Tack för den här intervjun. Efter vårt samtal är jag ännu mer intresserad av rollen. Jag tror att min erfarenhet av [X] och [Y] skulle passa bra med det ni beskrivit."
+
+**Fråga om nästa steg:**
+"Vilka är nästa steg i processen?"
+
+**Tacka:**
+- Tacka alla närvarande
+- Skaka hand om tillämpligt
+- Le och var positiv
+
+**Praktiskt:**
+- Samla dina saker lugnt
+- Gå ut med samma energi som du kom
+- Var vänlig mot alla du passerar
+
+## Efter intervjun
+
+### Samma dag
+- Skriv ner vad som gick bra och vad du kan förbättra
+- Skicka tackmail till intervjuaren
+
+**Tackmail-mall:**
+"Hej [Namn],
+
+Tack för intervjun idag. Det var värdefullt att höra mer om [specifik sak] och jag är mycket intresserad av möjligheten att bidra till [företag/team].
+
+Efter vårt samtal känner jag att min bakgrund inom [relevant område] passar väl för rollen.
+
+Jag ser fram emot att höra från er.
+
+Med vänliga hälsningar,
+[Ditt namn]"
+
+## Checklista för intervjudagen
+
+**Innan:**
+- [ ] Kläder förberedda kvällen innan
+- [ ] Dokument och anteckningar packade
+- [ ] Rutten planerad (kom i tid!)
+- [ ] Telefon fulladdad och på ljudlös
+
+**På plats:**
+- [ ] Djupa andetag, lugna nerverna
+- [ ] Le och var vänlig mot alla
+- [ ] Fast handslag och ögonkontakt
+
+**Under:**
+- [ ] Lyssna aktivt
+- [ ] Svara med STAR-metoden
+- [ ] Håll svar koncisa
+- [ ] Ställ förberedda frågor
+
+**Efter:**
+- [ ] Tacka och fråga om nästa steg
+- [ ] Skicka tackmail samma dag
+- [ ] Reflektera och dokumentera
+
+Lycka till!`,
+    category: 'interview',
+    subcategory: 'during-interview',
+    tags: ['intervju', 'kroppsspråk', 'kommunikation', 'STAR-metoden', 'frågor', 'tips'],
+    createdAt: '2024-04-09T10:00:00Z',
+    updatedAt: '2024-04-09T10:00:00Z',
+    readingTime: 22,
+    difficulty: 'detailed',
+    energyLevel: 'high',
+    relatedArticles: ['intervju-forberedelser', 'tackbrev-intervju', 'digital-intervju'],
+    relatedExercises: ['interview-practice', 'star-method'],
+    checklist: [
+      { id: '1', text: 'Förbered kläder kvällen innan' },
+      { id: '2', text: 'Öva på STAR-svar för vanliga frågor' },
+      { id: '3', text: 'Förbered 3-5 frågor att ställa' },
+      { id: '4', text: 'Planera rutten och var i tid' },
+      { id: '5', text: 'Djupa andetag innan du går in' },
+      { id: '6', text: 'Aktivt lyssnande under intervjun' },
+      { id: '7', text: 'Tacka och fråga om nästa steg' },
+      { id: '8', text: 'Skicka tackmail samma dag' },
+    ],
+    actions: [
+      { label: 'Läs om intervjuförberedelse', href: '/knowledge/intervju-forberedelser', type: 'primary' },
+      { label: 'Skriv tackbrev', href: '/knowledge/tackbrev-intervju', type: 'secondary' },
+    ],
+    author: 'Sara Ekström',
+    authorTitle: 'Rekryterare',
+  },
+
+  {
+    id: 'natverksbyggande-guide',
+    title: 'Bygg ditt professionella nätverk från grunden',
+    summary: 'En komplett guide till att skapa, utveckla och underhålla ett nätverk som öppnar karriärdörrar.',
+    content: `Ett starkt professionellt nätverk är en av de viktigaste tillgångarna du kan ha i din karriär. Upp till 70% av alla jobb tillsätts via kontakter och rekommendationer. I denna guide visar vi hur du bygger ett genuint nätverk, oavsett var du startar.
+
+## Varför nätverkande är avgörande
+
+### Statistiken talar
+- **70% av jobb** tillsätts utan att annonseras offentligt
+- **85% av tillsatta tjänster** sker via nätverk eller rekommendationer
+- Kandidater via nätverk anställs **5x oftare** än de som söker kallt
+- Refererade kandidater stannar **längre** på sina jobb
+
+### Vad ett nätverk ger dig
+- Tillgång till dolda jobb
+- Insiderinformation om företag och branscher
+- Rekommendationer och referenser
+- Mentorskap och råd
+- Stöd och motivation i karriären
+- Affärsmöjligheter och samarbeten
+
+## Myten om nätverkande
+
+### Vanliga missförstånd
+
+**"Nätverkande är smörigt"**
+Det handlar inte om att manipulera människor. Genuint nätverkande bygger på äkta relationer och ömsesidigt värde.
+
+**"Man måste vara extrovert"**
+Introverter kan vara utmärkta nätverkare. Kvalitet > Kvantitet.
+
+**"Jag har inget att erbjuda"**
+Alla har något att bidra med – information, kontakter, perspektiv, stöd.
+
+**"Man nätverkar bara när man söker jobb"**
+De bästa nätverkarna bygger relationer kontinuerligt, inte bara vid behov.
+
+### Det handlar egentligen om
+- Bygga genuina relationer
+- Ge och ta (mest ge)
+- Långsiktigt tänkande
+- Vara hjälpsam och intresserad
+
+## Kartlägg ditt befintliga nätverk
+
+### Du har redan ett nätverk
+
+**Närmaste kretsen:**
+- Nuvarande och tidigare kollegor
+- Chefer och medarbetare
+- Klasskamrater
+- Lärare och mentorer
+
+**Utökad krets:**
+- Vänner och familj
+- Grannar
+- Föreningsmedlemmar
+- Träningskompisar
+- Föräldrar till barnens vänner
+
+**Professionella kontakter:**
+- LinkedIn-kontakter
+- Branschkollegor
+- Leverantörer och kunder
+- Affärspartners
+
+### Övning: Nätverksinventering
+
+Skriv ner alla du känner i dessa kategorier:
+1. Nuvarande arbetsplats (10+ personer)
+2. Tidigare arbetsplatser (10+ per plats)
+3. Utbildningar (20+ personer)
+4. Privatlivet (familj, vänner, bekanta)
+5. Intressen och aktiviteter
+
+Du kommer troligen ha 100+ personer. Det är ditt startkapital!
+
+## Strategier för att expandera
+
+### 1. Aktivera befintligt nätverk
+
+**Reconnect-metoden:**
+Kontakta personer du tappat kontakten med:
+
+"Hej [Namn]!
+
+Vi har inte hörts på ett tag och jag tänkte på dig. Hoppas allt är bra!
+
+Jag utforskar just nu nya möjligheter inom [område] och skulle gärna höra hur det går för dig. Har du tid för en kaffe eller ett samtal snart?
+
+Vänliga hälsningar,
+[Ditt namn]"
+
+**Nyckeln:** Var genuint intresserad, inte bara ute efter något.
+
+### 2. LinkedIn-expansion
+
+**Optimera din profil först:**
+- Komplett och professionell
+- Tydlig rubrik med nyckelord
+- Engagerande sammanfattning
+- Relevant erfarenhet
+
+**Bygg nätverk strategiskt:**
+- Kontakta alla du känner
+- Lägg till personer du träffar
+- Sök efter alumni från skolor
+- Hitta branschkollegor
+- Engagera med innehåll
+
+**Kontaktförfrågan med meddelande:**
+"Hej [Namn], jag arbetar också med [område] och såg ditt intressanta inlägg om [ämne]. Skulle gärna ha dig i mitt nätverk! /[Ditt namn]"
+
+### 3. Evenemang och träffar
+
+**Typer av evenemang:**
+- Branschkonferenser
+- Nätverksträffar (arrangerade meetups)
+- Seminarier och föreläsningar
+- Mässor
+- After works och mingel
+
+**Hitta evenemang:**
+- Eventbrite
+- Meetup.com
+- LinkedIn Events
+- Branschorganisationer
+- Alumnföreningar
+
+**Tips på evenemang:**
+- Sätt ett mål (t.ex. prata med 3 nya personer)
+- Fokusera på kvalitet, inte kvantitet
+- Ställ frågor, lyssna mer än du pratar
+- Följ upp med kontaktförfrågningar efteråt
+
+### 4. Branschgrupper och föreningar
+
+**Fördelar:**
+- Träffa likasinnade regelbundet
+- Visa engagemang för branschen
+- Möjligheter till förtroendeuppdrag
+- Tillgång till exklusiva resurser
+
+**Exempel:**
+- Fackförbundens branschgrupper
+- Yrkesföreningar
+- Alumngrupper
+- LinkedIn-grupper
+- Lokala företagarnätverk
+
+### 5. Informationsintervjuer
+
+Möt människor 1-on-1 för att lära dig om deras karriär och bransch. Se separat guide för detaljer.
+
+## Konsten att nätverka effektivt
+
+### Mindset: Ge först
+
+**Nätverk är inte:**
+- En transaktionslista
+- "Vad kan du göra för mig?"
+- Bara att samla visitkort
+
+**Nätverk är:**
+- Relationer baserade på ömsesidighet
+- "Hur kan jag hjälpa dig?"
+- Genuint intresse för andra
+
+**Sätt att ge värde:**
+- Dela relevant information
+- Introducera personer för varandra
+- Ge feedback och råd
+- Rekommendera bra kandidater
+- Var ett stöd vid utmaningar
+
+### Konversationskonst
+
+**Öppningsfrågor:**
+- "Vad jobbar du med?"
+- "Hur kom du hit ikväll?"
+- "Har du varit på det här evenemanget förut?"
+
+**Fördjupningsfrågor:**
+- "Vad är det bästa med ditt jobb?"
+- "Vilka utmaningar möter ni just nu?"
+- "Hur kom du till den rollen?"
+
+**Avslutning:**
+- "Det har varit trevligt att prata med dig!"
+- "Kan vi hålla kontakten? Här är mitt kort / Kan jag adda dig på LinkedIn?"
+- "Jag hörde att du söker [X], jag kanske vet någon – får jag höra av mig?"
+
+### Minnesvärd på rätt sätt
+
+**Var:**
+- Genuint intresserad
+- En bra lyssnare
+- Hjälpsam utan agenda
+- Positiv och energisk
+- Pålitlig och uppföljande
+
+**Undvik:**
+- Säljpitch och desperation
+- Prata bara om dig själv
+- Klaga på jobb/bransch
+- Glömma att följa upp
+
+## Underhåll och vårda ditt nätverk
+
+### Regelbunden kontakt
+
+**Varje vecka:**
+- Engagera med LinkedIn-inlägg (kommentarer, likes)
+- Svara på meddelanden snabbt
+
+**Varje månad:**
+- Ta en kaffe med en kontakt
+- Skicka något värdefullt till 2-3 personer
+- Gratulera till nya jobb/jubileum
+
+**Kvartalsvis:**
+- Utvärdera ditt nätverk
+- Identifiera kontakter att återansluta med
+- Delta i 1-2 evenemang
+
+### Anledningar att höra av sig
+
+- Såg ett inlägg de skrev
+- Läste en artikel de kanske gillar
+- Tänkte på dem och ville kolla läget
+- Har en fråga inom deras expertis
+- Vill introducera dem för någon
+- Gratulation till prestation
+- Arbetsförändringar (deras eller dina)
+
+**Exempel-meddelande:**
+"Hej [Namn]! Såg just den här artikeln om [ämne] och tänkte på dig direkt med tanke på ditt intresse för [relaterat]. Hoppas allt är bra! /[Ditt namn]"
+
+### CRM för kontakter
+
+Håll koll på ditt nätverk:
+
+**Enkelt:**
+- Anteckningar i telefonens kontakter
+- LinkedIn-meddelanden som logg
+- Kalendernotiser för uppföljning
+
+**Mer strukturerat:**
+- Excel-ark med kontaktinfo och anteckningar
+- Gratisverktyg som Notion eller Airtable
+- CRM-appar som HubSpot (gratis)
+
+**Vad du noterar:**
+- Var ni träffades
+- Vad de jobbar med
+- Personlig info (familj, intressen)
+- Senaste kontakt
+- Vad ni pratade om
+
+## Nätverkande för specifika situationer
+
+### Som introvert
+
+**Strategier:**
+- Kvalitet över kvantitet
+- Förbered frågor i förväg
+- Ta pauser vid evenemang
+- Fokusera på 1-on-1-möten
+- Använd skriftlig kommunikation (LinkedIn, e-post)
+
+**Din styrka:**
+- Introverter är ofta bättre lyssnare
+- Djupare, mer meningsfulla samtal
+- Kommer ihåg detaljer
+
+### Som ny i branschen
+
+**Strategier:**
+- Var ödmjuk och läraktig
+- Erbjud hjälp med det du kan (även utanför branschen)
+- Gör informationsintervjuer
+- Engagera i branschgrupper
+- Var ihärdig – det tar tid
+
+**Vad du kan erbjuda:**
+- Fräscha perspektiv
+- Entusiasm och energi
+- Tekniska färdigheter
+- Hjälp med projekt
+
+### Som arbetslös
+
+**Var öppen, inte desperat:**
+"Jag är just nu i en övergångsperiod och utforskar möjligheter inom [område]."
+
+**Fortsätt ge värde:**
+- Du har fortfarande kontakter att introducera
+- Du kan dela intressant innehåll
+- Du kan bidra med din tid
+
+**Undvik:**
+- Varje konversation handlar om jobb
+- Desperation och frustration
+- Isolation
+
+## Digitala nätverk
+
+### LinkedIn
+
+**Vardagliga aktiviteter:**
+- Kommentera på inlägg (substantiellt, inte bara "Bra!")
+- Dela relevanta artiklar med egna reflektioner
+- Gratulera kontakter till framgångar
+- Svara på kommentarer på dina inlägg
+
+**Veckliga aktiviteter:**
+- Posta eget innehåll (insikter, lärdomar)
+- Skicka några nya kontaktförfrågningar
+- Svara på meddelanden
+
+**Byggstenar:**
+- Profilvisningar → Profilbesökare → Kontaktförfrågningar
+- Innehåll → Engagement → Synlighet → Möjligheter
+
+### Andra plattformar
+
+**Twitter/X:**
+- Bra för vissa branscher (tech, media, policy)
+- Följ och engagera med tankeledare
+- Delta i branschdiskussioner
+
+**Slack-communities:**
+- Branschspecifika kanaler
+- Lokal-orienterade grupper
+- Ämnesnischer
+
+**Discord-servrar:**
+- Populärt i tech och kreativa branscher
+- Mer informella samtal
+- Community-känsla
+
+## Vanliga misstag
+
+### Transaktionellt tänkande
+Att bara kontakta när du behöver något. Bygga relationer innan du behöver dem.
+
+### Glömma uppföljning
+Träffa folk på evenemang och sedan aldrig höra av sig. Följ upp inom 48 timmar.
+
+### Prata bara om dig själv
+Fråga och lyssna mer än du pratar om dig.
+
+### Ge upp för snabbt
+Relationer tar tid. Var konsekvent över månader och år.
+
+### Kvantitet över kvalitet
+100 ytliga kontakter < 20 genuina relationer.
+
+## Handlingsplan
+
+### Vecka 1: Inventering
+- Lista ditt befintliga nätverk (100+ namn)
+- Identifiera 20 att återkoppla med
+- Optimera din LinkedIn-profil
+
+### Vecka 2-4: Aktivering
+- Skicka 5 reconnect-meddelanden per vecka
+- Boka 2-3 kaffemöten
+- Kommentera på 5 LinkedIn-inlägg dagligen
+
+### Månad 2-3: Expansion
+- Delta i 2 branschevenemang
+- Gå med i 1-2 relevanta grupper/föreningar
+- Gör 2-4 informationsintervjuer
+
+### Löpande: Underhåll
+- Veckovis LinkedIn-aktivitet
+- Månadsvis 1-on-1-möten
+- Kvartalsvis utvärdering och justering
+
+## Kom ihåg
+
+Det bästa nätverket byggs innan du behöver det. Varje relation du investerar i idag kan bli den kontakt som öppnar en dörr imorgon. Tänk långsiktigt, var generös, och bygg genuina relationer.
+
+> "Ditt nätverk är din nettovärde." – Porter Gale`,
+    category: 'networking',
+    subcategory: 'building-network',
+    tags: ['nätverkande', 'nätverk', 'kontakter', 'karriär', 'LinkedIn', 'relationer'],
+    createdAt: '2024-04-10T10:00:00Z',
+    updatedAt: '2024-04-10T10:00:00Z',
+    readingTime: 22,
+    difficulty: 'detailed',
+    energyLevel: 'medium',
+    relatedArticles: ['linkedin-optimering', 'informationsintervju-guide', 'personligt-varumarke'],
+    relatedExercises: ['networking', 'network-mapping'],
+    checklist: [
+      { id: '1', text: 'Gör nätverksinventering (100+ namn)' },
+      { id: '2', text: 'Optimera LinkedIn-profilen' },
+      { id: '3', text: 'Skicka 5 reconnect-meddelanden' },
+      { id: '4', text: 'Boka 2 kaffemöten denna månad' },
+      { id: '5', text: 'Delta i ett branschevenemang' },
+      { id: '6', text: 'Gå med i en branschgrupp' },
+      { id: '7', text: 'Engagera dagligen på LinkedIn' },
+      { id: '8', text: 'Gör 2 informationsintervjuer' },
+    ],
+    actions: [
+      { label: 'Läs om informationsintervjuer', href: '/knowledge/informationsintervju-guide', type: 'primary' },
+      { label: 'Optimera LinkedIn', href: '/knowledge/linkedin-optimering', type: 'secondary' },
+    ],
+    author: 'Maria Lindqvist',
+    authorTitle: 'Arbetskonsulent',
+  },
+
+  {
+    id: 'kompetensutveckling-plan',
+    title: 'Planera din kompetensutveckling strategiskt',
+    summary: 'Skapa en personlig utvecklingsplan som stärker din konkurrenskraft och öppnar nya karriärmöjligheter.',
+    content: `I en arbetsmarknad som förändras snabbt är kontinuerlig kompetensutveckling inte längre valfritt – det är nödvändigt. Denna guide hjälper dig att strategiskt planera din utveckling för att nå dina karriärmål.
+
+## Varför kompetensutveckling är kritiskt
+
+### Arbetsmarknadens utveckling
+- **65% av dagens barn** kommer arbeta i yrken som ännu inte finns
+- **Halveringstiden för kompetenser** minskar – det du lärde dig för 5 år sedan kan vara föråldrat
+- **Automatisering** förändrar vilka kompetenser som efterfrågas
+- **Livslångt lärande** är den nya normen
+
+### Fördelar med kontinuerlig utveckling
+- Ökad anställningsbarhet
+- Högre lön och bättre positioner
+- Mer engagerande arbete
+- Bredare karriärmöjligheter
+- Skydd mot arbetsmarknadsförändringar
+
+## Steg 1: Nulägesanalys
+
+### Inventera befintliga kompetenser
+
+**Kategorisera vad du kan:**
+
+**Hårda kompetenser:**
+- Tekniska färdigheter
+- Verktyg och system
+- Certifieringar
+- Språk
+
+**Mjuka kompetenser:**
+- Kommunikation
+- Ledarskap
+- Problemlösning
+- Samarbete
+
+**Branschkunskap:**
+- Domänexpertis
+- Processer och metodik
+- Regelverk och standarder
+- Nätverkskunskap
+
+### Bedöm din nivå
+
+För varje kompetens, bedöm:
+- **Nybörjare:** Grundläggande förståelse
+- **Kompetent:** Kan arbeta självständigt
+- **Skicklig:** Hanterar komplexa situationer
+- **Expert:** Kan lära ut och utveckla området
+
+### Identifiera styrkor och luckor
+
+Fråga dig själv:
+- Vilka kompetenser uppskattas mest på jobbet?
+- Vad efterfrågas i drömjobben?
+- Var har jag störst utvecklingspotential?
+- Vad saknar jag jämfört med konkurrenter?
+
+## Steg 2: Målbildanalys
+
+### Definiera karriärmål
+
+**Kortsiktigt (1 år):**
+- Vilken roll vill du ha?
+- Vilka uppgifter vill du utföra?
+- Vilken lön siktar du på?
+
+**Medellång sikt (3-5 år):**
+- Vilken position vill du nå?
+- Vilken bransch vill du vara i?
+- Vilket ansvar vill du ha?
+
+**Långsiktigt (10+ år):**
+- Vilken typ av karriär vill du ha?
+- Vad vill du bidra med?
+- Vilket arv vill du lämna?
+
+### Kartlägg krav för målroller
+
+**Research:**
+- Läs jobbannonser för drömrollen
+- Intervjua personer i positionen
+- Studera LinkedIn-profiler av personer i rollen
+- Fråga rekryterare vad som efterfrågas
+
+**Identifiera:**
+- Måste ha-kompetenser
+- Meriterande kompetenser
+- Erfarenhetskrav
+- Utbildningskrav
+
+## Steg 3: Gap-analys
+
+### Jämför nuläge med mål
+
+| Kompetens | Nuvarande nivå | Önskad nivå | Gap | Prioritet |
+|-----------|----------------|-------------|-----|-----------|
+| Projektledning | Kompetent | Skicklig | Medium | Hög |
+| Python | Nybörjare | Kompetent | Stor | Medium |
+| Ledarskap | Kompetent | Expert | Stor | Hög |
+| Engelska | Skicklig | Expert | Liten | Låg |
+
+### Prioritera dina luckor
+
+**Prioriteringskriterier:**
+1. Kritiskt för målrollen?
+2. Snabbt att utveckla?
+3. Hög avkastning på investerad tid?
+4. Personligt intressant?
+
+**Fokusera på:**
+- 2-3 huvudsakliga utvecklingsområden åt gången
+- Både hårda och mjuka kompetenser
+- Mix av snabba vinster och långsiktiga investeringar
+
+## Steg 4: Utvecklingsstrategier
+
+### Formell utbildning
+
+**Universitetskurser:**
+- Fristående kurser
+- Certifikatprogram
+- Masterutbildningar
+
+**Yrkesutbildning:**
+- YH-utbildningar (Yrkeshögskola)
+- Branschspecifika utbildningar
+- Arbetsmarknadsutbildningar
+
+**Certifieringar:**
+- Internationella certifieringar (PMP, AWS, Google, etc.)
+- Branschcertifikat
+- Verktygsspecifika certifieringar
+
+### Online-lärande
+
+**MOOC-plattformar:**
+- Coursera (universitetskurser)
+- edX (gratis kurser från toppuniversitet)
+- LinkedIn Learning (affärsfokus)
+- Udemy (bred variation)
+- Pluralsight (tech-fokus)
+
+**Svenska resurser:**
+- Folkuniversitetet
+- Komvux
+- Arbetsförmedlingens kurser
+- Fackförbundens utbildningar
+
+**Gratis resurser:**
+- YouTube-tutorials
+- Podcasts
+- Branschbloggar
+- Dokumentation och guider
+
+### Erfarenhetsbaserat lärande
+
+**På jobbet:**
+- Be om nya ansvarsområden
+- Delta i tvärfunktionella projekt
+- Skugga någon i den roll du vill ha
+- Ta på dig stretch-uppdrag
+
+**Utanför jobbet:**
+- Volontärarbete med relevanta uppgifter
+- Styrelseuppdrag i föreningar
+- Frilansuppdrag
+- Egna projekt
+
+### Mentorskap och coaching
+
+**Hitta en mentor:**
+- Inom organisationen
+- Via branschföreningar
+- Genom LinkedIn
+- Alumnätverk
+
+**Vad en mentor kan ge:**
+- Karriärvägledning
+- Feedback på utveckling
+- Introduktioner till kontakter
+- Perspektiv och erfarenhet
+
+### Självstudier
+
+**Läsning:**
+- Branschlitteratur
+- Ledarskapböcker
+- Tekniska guider
+- Forskningsrapporter
+
+**Öva praktiskt:**
+- Side projects
+- Simuleringar
+- Case studies
+- Rollspel
+
+## Steg 5: Skapa din utvecklingsplan
+
+### Dokumentera planen
+
+**Mall:**
+
+\`\`\`
+PERSONLIG UTVECKLINGSPLAN
+
+Namn: [Ditt namn]
+Datum: [Datum]
+Karriärmål (3 år): [Beskriv]
+
+UTVECKLINGSMÅL 1: [Kompetens]
+- Nuvarande nivå: [Nivå]
+- Målnivå: [Nivå]
+- Deadline: [Datum]
+
+Aktiviteter:
+1. [Aktivitet] - Deadline: [Datum]
+2. [Aktivitet] - Deadline: [Datum]
+3. [Aktivitet] - Deadline: [Datum]
+
+Resurser behövs:
+- Tid: [Antal timmar/vecka]
+- Pengar: [Budget]
+- Stöd: [Vad/vem]
+
+Mätning av framgång:
+- [Hur vet du att du nått målet?]
+
+UTVECKLINGSMÅL 2: [Kompetens]
+[Samma struktur]
+
+UTVECKLINGSMÅL 3: [Kompetens]
+[Samma struktur]
+\`\`\`
+
+### Sätt SMART-mål
+
+**S**pecifikt: Exakt vad ska du lära dig?
+**M**ätbart: Hur vet du att du nått målet?
+**A**ccepterat: Är du motiverad?
+**R**ealistiskt: Är det genomförbart?
+**T**idsbestämt: När ska det vara klart?
+
+**Dåligt mål:** "Bli bättre på Excel"
+**SMART-mål:** "Slutföra Excel-certifiering via LinkedIn Learning och kunna skapa pivot-tabeller och makron senast 31 mars"
+
+### Planera aktiviteter
+
+**Veckovis:**
+- Avsätt X timmar för utveckling
+- Sätt i kalendern som möte med dig själv
+- Skydda tiden
+
+**Månadsvis:**
+- Utvärdera framsteg
+- Justera plan vid behov
+- Fira milstolpar
+
+**Kvartalsvis:**
+- Större utvärdering
+- Omprioriter om nödvändigt
+- Planera nästa kvartal
+
+## Steg 6: Genomförande
+
+### Skapa lärandevanor
+
+**Dagliga mikro-vanor:**
+- 15 min läsning
+- En podcast under pendling
+- Reflektera över dagens lärande
+
+**Veckovanor:**
+- 2-3 timmar fokuserad inlärning
+- Öva det du lärt dig praktiskt
+- Diskutera med andra
+
+### Övervinn hinder
+
+**Tidsbrist:**
+- Prioritera obevekligt
+- Lär dig i småstunder
+- Kombinera (träning + podcast)
+- Säg nej till annat
+
+**Brist på motivation:**
+- Koppla till dina mål
+- Hitta lärkompisar
+- Fira framsteg
+- Variera inlärningsmetoder
+
+**Ekonomi:**
+- Använd gratis resurser
+- Be arbetsgivaren bidra
+- Kolla med fackförbund
+- CSN för längre utbildningar
+
+### Dokumentera din utveckling
+
+**Portfolio:**
+- Certifikat och diplom
+- Projektbeskrivningar
+- Resultat och prestationer
+- Feedback och rekommendationer
+
+**CV-uppdatering:**
+- Lägg till nya kompetenser
+- Uppdatera kurser och certifieringar
+- Visa konkreta tillämpningar
+
+**LinkedIn:**
+- Dela lärdomar
+- Lägg till nya färdigheter
+- Uppdatera certifieringar
+
+## Steg 7: Utvärdering och iteration
+
+### Regelbunden utvärdering
+
+**Månadsvis:**
+- Har jag följt planen?
+- Vad har jag lärt mig?
+- Vad fungerar/fungerar inte?
+
+**Kvartalsvis:**
+- Är målen fortfarande relevanta?
+- Behöver jag justera?
+- Vad är nästa fokusområde?
+
+**Årligen:**
+- Stor översyn av utvecklingsplanen
+- Uppdatera karriärmål
+- Planera nästa års utveckling
+
+### Mät framsteg
+
+**Objektiva mått:**
+- Slutförda kurser
+- Erhållna certifieringar
+- Nya ansvarsområden
+- Löneökning
+
+**Subjektiva mått:**
+- Ökad självförtroende
+- Feedback från andra
+- Enklare att utföra uppgifter
+- Fler möjligheter som dyker upp
+
+## Resurser för kompetensutveckling i Sverige
+
+### Finansiering
+- CSN för studier
+- Arbetsgivarbidrag
+- Omställningsfonder (TRR, TSL, etc.)
+- Fackförbundens utbildningsfonder
+- Arbetsförmedlingens kurser
+
+### Plattformar
+- Folkuniversitetet
+- Komvux
+- Yrkeshögskolan (YH)
+- Universitetens fristående kurser
+- Arbetsförmedlingen Rusta och Matcha
+
+### Branschspecifikt
+- IT: Pluralsight, Codecademy, freeCodeCamp
+- Ekonomi: FAR, Civilekonomerna
+- HR: HRnytt, Personalvetarna
+- Marknadsföring: Google Digital Garage, HubSpot Academy
+- Projekt: PMI, IPMA
+
+## Handlingsplan
+
+### Vecka 1
+- Gör kompetensinventering
+- Definiera karriärmål
+- Identifiera 3 utvecklingsområden
+
+### Vecka 2
+- Research: Vilka kurser/resurser finns?
+- Skapa utvecklingsplan
+- Sätt deadlines
+
+### Vecka 3-4
+- Starta första utvecklingsaktivitet
+- Sätt in tid i kalendern
+- Hitta eventuell lärkompis eller mentor
+
+### Löpande
+- Följ din plan konsekvent
+- Utvärdera och justera månadsvis
+- Fira framsteg!
+
+## Sammanfattning
+
+Kompetensutveckling är en investering i dig själv och din framtid. Med en tydlig plan, konsekvent genomförande och regelbunden utvärdering kan du systematiskt bygga de färdigheter som tar dig dit du vill i karriären.
+
+Kom ihåg: Det är aldrig för sent att lära sig något nytt, och varje liten framsteg adderar upp över tid.`,
+    category: 'career-development',
+    subcategory: 'skills-development',
+    tags: ['kompetensutveckling', 'karriär', 'lärande', 'utbildning', 'utvecklingsplan', 'kurser'],
+    createdAt: '2024-04-11T10:00:00Z',
+    updatedAt: '2024-04-11T10:00:00Z',
+    readingTime: 22,
+    difficulty: 'detailed',
+    energyLevel: 'medium',
+    relatedArticles: ['kompetensutvardering', 'styrkor-svagheter', 'cv-grunder'],
+    relatedExercises: ['competency-mapping', 'career-planning'],
+    checklist: [
+      { id: '1', text: 'Gör kompetensinventering' },
+      { id: '2', text: 'Definiera karriärmål (1, 3, 5 år)' },
+      { id: '3', text: 'Identifiera 3 prioriterade utvecklingsområden' },
+      { id: '4', text: 'Research tillgängliga kurser och resurser' },
+      { id: '5', text: 'Skapa skriftlig utvecklingsplan' },
+      { id: '6', text: 'Avsätt tid i kalendern för lärande' },
+      { id: '7', text: 'Starta första aktivitet inom en vecka' },
+      { id: '8', text: 'Boka in månadsvis utvärdering' },
+    ],
+    actions: [
+      { label: 'Gör kompetensinventering', href: '/knowledge/kompetensutvardering', type: 'primary' },
+      { label: 'Identifiera dina styrkor', href: '/knowledge/styrkor-svagheter', type: 'secondary' },
+    ],
+    author: 'Erik Johansson',
+    authorTitle: 'Karriärrådgivare',
+  },
+
+  {
+    id: 'personlighetstyper-jobb',
+    title: 'Personlighetstyper och karriärval',
+    summary: 'Förstå hur din personlighet påverkar ditt yrkesval och hitta jobb som passar vem du är.',
+    content: `Att förstå din personlighet kan ge värdefulla insikter om vilka yrken och arbetsmiljöer som passar dig bäst. Denna guide utforskar olika personlighetsmodeller och hur du kan använda den kunskapen i ditt karriärval.
+
+## Varför personlighet spelar roll
+
+### Matchning ger framgång
+- Människor som jobbar i linje med sin personlighet är **mer engagerade**
+- De presterar **bättre** och stannar **längre** på jobbet
+- De upplever **mindre stress** och **mer arbetsglädje**
+- **Rätt fit** är viktigare än att välja det "bästa" yrket
+
+### Personlighet vs. kompetens
+- Kompetenser kan läras – personlighet är mer stabil
+- Din naturliga läggning visar vad som känns enkelt
+- "Fel" yrke kan fungera, men kräver mer energi
+- Självkännedom hjälper dig fatta bättre beslut
+
+## Populära personlighetsmodeller
+
+### Big Five (OCEAN)
+
+Den vetenskapligt mest välgrundade modellen mäter fem dimensioner:
+
+**O – Öppenhet (Openness)**
+- Hög: Kreativ, nyfiken, öppen för nya idéer
+- Låg: Praktisk, föredrar rutin, konkret
+- Karriär vid hög O: Forskning, konst, entreprenörskap, innovation
+- Karriär vid låg O: Ekonomi, administration, tillverkning
+
+**C – Samvetsgrannhet (Conscientiousness)**
+- Hög: Organiserad, pålitlig, noggrann
+- Låg: Flexibel, spontan, avslappnad
+- Karriär vid hög C: Revision, medicin, juridik, projektledning
+- Karriär vid låg C: Kreativa yrken, startups, yrken med variation
+
+**E – Extraversion**
+- Hög: Energi från andra, utåtriktad, pratsam
+- Låg (Introversion): Energi från ensamhet, reflekterande, lugn
+- Karriär vid hög E: Försäljning, ledarskap, event, kundservice
+- Karriär vid låg E: Forskning, IT, skrivande, analys
+
+**A – Vänlighet (Agreeableness)**
+- Hög: Samarbetsinriktad, empatisk, tillmötesgående
+- Låg: Konkurrensinriktad, skeptisk, oberoende
+- Karriär vid hög A: Vård, HR, undervisning, rådgivning
+- Karriär vid låg A: Förhandling, kritik, ledarskap, juridik
+
+**N – Neuroticism (emotionell stabilitet)**
+- Hög: Känslosam, orolig, stressbenägen
+- Låg: Lugn, stabil, tålig
+- Karriär vid låg N: Akutvård, krishantering, ledarskap under press
+- Hög N kräver: Stödjande miljö, förutsägbarhet, bra stresshantering
+
+### Myers-Briggs (MBTI)
+
+Populär modell med 16 personlighetstyper baserade på fyra dimensioner:
+
+**E/I – Extraversion / Introversion**
+Var får du energi?
+
+**S/N – Sensing / Intuition**
+Hur tar du in information?
+- S: Konkret, detaljer, nuet
+- N: Mönster, möjligheter, framtiden
+
+**T/F – Thinking / Feeling**
+Hur fattar du beslut?
+- T: Logik, objektivitet, principer
+- F: Värderingar, harmoni, människor
+
+**J/P – Judging / Perceiving**
+Hur organiserar du livet?
+- J: Struktur, planering, beslut
+- P: Flexibilitet, öppenhet, spontanitet
+
+**De 16 typerna (exempel):**
+- ISTJ: "Inspektören" – Pålitlig, grundlig, faktabaserad
+- ENFP: "Aktivisten" – Entusiastisk, kreativ, människoorienterad
+- INTJ: "Strategen" – Analytisk, oberoende, visionär
+- ESFJ: "Konsuln" – Omtänksam, lojal, praktisk
+
+### Holland-koder (RIASEC)
+
+Fokuserar specifikt på yrkesmatchning:
+
+**R – Realistisk**
+- Praktisk, handfast, verktyg och maskiner
+- Yrken: Snickare, elektriker, mekaniker, lantbruk
+
+**I – Undersökande (Investigative)**
+- Analytisk, vetenskaplig, problemlösning
+- Yrken: Forskare, läkare, analytiker, ingenjör
+
+**A – Konstnärlig (Artistic)**
+- Kreativ, uttrycksfull, originell
+- Yrken: Designer, musiker, författare, arkitekt
+
+**S – Social**
+- Hjälpande, undervisande, relationsbyggande
+- Yrken: Lärare, sjuksköterska, psykolog, HR
+
+**E – Entreprenöriell**
+- Ledande, övertalande, tävlingsinriktad
+- Yrken: Säljare, chef, politiker, advokat
+
+**C – Konventionell**
+- Organiserad, detaljerad, systematisk
+- Yrken: Redovisare, administratör, bankman, sekreterare
+
+**Din kod:** De flesta har en kombination av 2-3 dominanta typer (t.ex. SIA = Social-Undersökande-Konstnärlig)
+
+## Ta reda på din personlighet
+
+### Självreflektion
+
+**Frågor att ställa:**
+- När känner du dig mest energisk på jobbet?
+- Vilka uppgifter skjuter du upp?
+- Hur vill du interagera med människor på jobbet?
+- Föredrar du struktur eller frihet?
+- Dras du till detaljer eller helheter?
+- Vad gjorde du spontant som barn?
+
+**Energilogg:**
+Under en vecka, notera:
+- Vilka aktiviteter ger energi?
+- Vilka tar energi?
+- När är du i "flow"?
+
+### Personlighetstester
+
+**Gratis tester:**
+- 16Personalities (MBTI-baserad): 16personalities.com
+- Big Five: outofservice.com/bigfive
+- Holland-koder: Arbetsförmedlingens intressetest
+
+**Professionella tester:**
+- MBTI (officiell, kräver certifierad utövare)
+- DiSC
+- Hogan
+- Predictive Index
+
+### Be om feedback
+- Fråga vänner hur de skulle beskriva dig
+- Be tidigare kollegor om input
+- Läs gamla prestationsutvärderingar
+
+## Personlighet och karriärval
+
+### Introvert vs. Extrovert
+
+**Introverta yrken:**
+- Inte nödvändigtvis ensamma!
+- Djupt fokusarbete
+- En-till-en-interaktioner
+- Skriftlig kommunikation
+- Exempel: Utvecklare, forskare, analytiker, skribent, revisor
+
+**Extroverta yrken:**
+- Mycket social interaktion
+- Varierande arbetssituationer
+- Möten och presentationer
+- Teamarbete
+- Exempel: Säljare, eventplanering, PR, lärare, chef
+
+**Viktigt:** Introverter kan vara framgångsrika i "extroverta" yrken – det kostar bara mer energi. Planera för återhämtning.
+
+### Tänkare vs. Känsla
+
+**Tänkarorienterade yrken:**
+- Logiska beslut
+- Analys och data
+- Objektiv utvärdering
+- Exempel: Ingenjör, finansanalytiker, programmerare, forskare
+
+**Känslaorienterade yrken:**
+- Människofokus
+- Värderingsbaserade beslut
+- Relationsbyggande
+- Exempel: Rådgivare, HR, sjukvård, socialt arbete, coaching
+
+### Struktur vs. Flexibilitet
+
+**Strukturerade yrken:**
+- Tydliga processer
+- Definierade mål
+- Förutsägbarhet
+- Exempel: Redovisning, kvalitetskontroll, administration
+
+**Flexibla yrken:**
+- Varierande arbetsdag
+- Snabba förändringar
+- Kreativt utrymme
+- Exempel: Konsulting, entreprenörskap, journalistik, design
+
+## Personlighet och arbetsmiljö
+
+### Fysisk miljö
+- Öppet landskap vs. eget kontor
+- Tyst vs. aktivt
+- Hemarbete vs. på plats
+- Kreativt utrymme vs. strukturerat
+
+### Sociala aspekter
+- Teamstorlek
+- Möteskultur
+- Samarbete vs. självständighet
+- Hierarki vs. platt organisation
+
+### Arbetsrytm
+- Snabbt tempo vs. långsamt
+- Deadlines vs. flöde
+- Variation vs. rutin
+- Multitasking vs. fokus
+
+## Vanliga fallgropar
+
+### 1. Ta testet för bokstavligt
+Personlighetstester är verktyg, inte öden. Du är mer komplex än fyra bokstäver.
+
+### 2. Ignorera utveckling
+Personlighet är relativt stabil, men vi kan utvecklas och anpassa oss.
+
+### 3. Välja "trendig" karriär
+Välj baserat på din personlighet, inte vad som är populärt.
+
+### 4. Underskatta anpassningsförmåga
+Du kan lyckas i många olika yrken – frågan är vad som känns mest naturligt.
+
+### 5. Glömma miljöfaktorer
+Personlighet är en faktor – kultur, chefer och kollegor spelar också roll.
+
+## Praktisk tillämpning
+
+### Vid jobbsökning
+
+**Research företagskulturen:**
+- Läs på Glassdoor
+- Fråga vid intervju om arbetsmiljön
+- Besök kontoret om möjligt
+- Prata med nuvarande/tidigare anställda
+
+**Anpassa din ansökan:**
+- Betona passande personlighetsdrag
+- Ge exempel som visar din fit
+- Var ärlig – fejkad personlighet håller inte
+
+### Vid intervju
+
+**Förbered personlighetsfrågor:**
+- "Hur skulle dina kollegor beskriva dig?"
+- "Trivs du bäst i team eller självständigt?"
+- "Hur hanterar du stress/deadlines/konflikter?"
+
+**Ställ frågor tillbaka:**
+- "Hur ser en typisk dag ut?"
+- "Hur är teamdynamiken?"
+- "Vilken typ av person trivs bäst här?"
+
+### Vid karriärplanering
+
+**Reflektion:**
+- Vilka delar av mitt nuvarande jobb passar min personlighet?
+- Vad skulle jag ändra?
+- Vilken karriärväg matchar vem jag är?
+
+**Experiment:**
+- Prova uppgifter utanför din komfortzon
+- Skugga någon i ett annat yrke
+- Ta informationsintervjuer
+
+## Övning: Din personlighetsprofil
+
+### Del 1: Självbedömning
+Ranka dig själv 1-10 på:
+- Extraversion (social energi)
+- Struktur (organisation)
+- Analytisk (logik)
+- Kreativitet (nya idéer)
+- Empati (människokännedom)
+
+### Del 2: Arbetspreferenser
+Svara ja eller nej:
+- Föredrar jag att arbeta ensam?
+- Gillar jag snabba beslut?
+- Trivs jag med detaljarbete?
+- Vill jag ha mycket människokontakt?
+- Föredrar jag förutsägbarhet?
+
+### Del 3: Ideal arbetsmiljö
+Beskriv din perfekta arbetsdag:
+- Var arbetar du?
+- Med vem?
+- Vilken typ av uppgifter?
+- Vilket tempo?
+- Hur känns det?
+
+### Del 4: Matchning
+- Vilka yrken matchar din profil?
+- Vilka delar av ditt nuvarande jobb passar?
+- Vad skulle du ändra?
+
+## Sammanfattning
+
+Din personlighet är en värdefull kompass i karriärvalet. Genom att förstå dina naturliga tendenser kan du:
+
+- Välja yrken som känns rätt
+- Hitta arbetsmiljöer där du trivs
+- Fatta bättre karriärbeslut
+- Arbeta med din natur, inte mot den
+
+Kom ihåg: Det finns inget "bästa" personlighet – bara bättre eller sämre matchningar mellan person och roll. Din uppgift är att hitta din bästa matchning.`,
+    category: 'self-awareness',
+    subcategory: 'personality',
+    tags: ['personlighet', 'karriärval', 'MBTI', 'Big Five', 'självkännedom', 'yrken', 'arbetsmiljö'],
+    createdAt: '2024-04-12T10:00:00Z',
+    updatedAt: '2024-04-12T10:00:00Z',
+    readingTime: 20,
+    difficulty: 'medium',
+    energyLevel: 'medium',
+    relatedArticles: ['styrkor-svagheter', 'kompetensutvardering', 'intresseguide-intro'],
+    relatedExercises: ['personality-reflection', 'career-values'],
+    checklist: [
+      { id: '1', text: 'Ta ett personlighetstest (16Personalities eller liknande)' },
+      { id: '2', text: 'Reflektera över vad som ger och tar energi' },
+      { id: '3', text: 'Be 3 personer beskriva din personlighet' },
+      { id: '4', text: 'Lista dina idealarbetsmiljöfaktorer' },
+      { id: '5', text: 'Research yrken som matchar din profil' },
+      { id: '6', text: 'Jämför med ditt nuvarande/önskade jobb' },
+      { id: '7', text: 'Identifiera eventuella gap eller anpassningar' },
+    ],
+    actions: [
+      { label: 'Gör intresseguiden', href: '/interest-guide', type: 'primary' },
+      { label: 'Identifiera dina styrkor', href: '/knowledge/styrkor-svagheter', type: 'secondary' },
+    ],
+    author: 'Anna Bergström',
+    authorTitle: 'Karriärcoach',
+  },
 ]
 
 // Helper function to get related articles
