@@ -8,7 +8,17 @@ import { useTranslation } from 'react-i18next'
 import { BookOpen, Grid, List, SlidersHorizontal, Search } from '@/components/ui/icons'
 import EnhancedArticleCard from '../EnhancedArticleCard'
 import { Card, Input } from '@/components/ui'
+import { articleCategories } from '@/services/articleData'
 import type { Article } from '@/types/knowledge'
+
+// Create a map from category ID to Swedish name
+const categoryNameMap: Record<string, string> = {}
+articleCategories.forEach(cat => {
+  categoryNameMap[cat.id] = cat.name
+  cat.subcategories?.forEach(sub => {
+    categoryNameMap[sub.id] = sub.name
+  })
+})
 
 interface TopicsTabProps {
   articles: Article[]
@@ -98,6 +108,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
             </button>
             {categories.map((category) => {
               const count = articles.filter(a => a.category === category).length
+              const displayName = categoryNameMap[category] || category
               return (
                 <button
                   key={category}
@@ -108,7 +119,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
                       : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
-                  {category} ({count})
+                  {displayName} ({count})
                 </button>
               )
             })}

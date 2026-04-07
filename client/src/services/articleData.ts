@@ -115,6 +115,7 @@ export const articleCategories = [
       { id: 'linkedin', name: 'LinkedIn' },
       { id: 'personal-brand', name: 'Personligt varumärke' },
       { id: 'social-media', name: 'Sociala medier' },
+      { id: 'portfolio', name: 'Portfolio' },
     ]
   },
   {

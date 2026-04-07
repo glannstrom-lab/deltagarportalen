@@ -6,7 +6,17 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, Tag, Dumbbell, Clock } from '@/components/ui/icons'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
+import { articleCategories } from '@/services/articleData'
 import { cn } from '@/lib/utils'
+
+// Create a map from category ID to Swedish name
+const categoryNameMap: Record<string, string> = {}
+articleCategories.forEach(cat => {
+  categoryNameMap[cat.id] = cat.name
+  cat.subcategories?.forEach(sub => {
+    categoryNameMap[sub.id] = sub.name
+  })
+})
 
 interface EnhancedArticleCardProps {
   article: {
@@ -67,7 +77,7 @@ export default function EnhancedArticleCard({
         <div className="flex items-start justify-between gap-4">
           <div className="flex-1">
             <span className="inline-block px-2 py-1 bg-teal-100 text-teal-700 text-xs font-medium rounded-full mb-3">
-              {article.category}
+              {categoryNameMap[article.category] || article.category}
             </span>
             <h3 className="text-lg font-semibold text-slate-800 group-hover:text-teal-700 mb-2">
               {article.title}
@@ -102,7 +112,7 @@ export default function EnhancedArticleCard({
               article.energyLevel === 'high' && "bg-rose-100 text-rose-700",
               !article.energyLevel && "bg-teal-100 text-teal-700"
             )}>
-              {article.category}
+              {categoryNameMap[article.category] || article.category}
             </span>
             {article.energyLevel && (
               <span className={cn(
