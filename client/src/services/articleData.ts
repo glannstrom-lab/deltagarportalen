@@ -23,7 +23,7 @@ export interface EnhancedArticle {
   createdAt: string
   updatedAt: string
   readingTime: number
-  difficulty: 'easy' | 'medium' | 'detailed'
+  difficulty: 'easy-swedish' | 'easy' | 'medium' | 'detailed'
   energyLevel: 'low' | 'medium' | 'high'
   helpfulnessRating?: number
   bookmarkCount?: number
@@ -185,6 +185,18 @@ export const articleCategories = [
       { id: 'glossary', name: 'Ordlista' },
     ]
   },
+  {
+    id: 'easy-swedish',
+    name: '📖 Lätt svenska',
+    description: 'Artiklar skrivna på enkel och lättförståelig svenska',
+    icon: 'Languages',
+    subcategories: [
+      { id: 'cv', name: 'CV' },
+      { id: 'job-search', name: 'Jobbsökning' },
+      { id: 'interview', name: 'Intervju' },
+      { id: 'wellbeing', name: 'Välmående' },
+    ]
+  },
 ]
 
 export const mockArticlesData: EnhancedArticle[] = [
@@ -244,8 +256,6 @@ Behöver du hjälp? Tveka inte att kontakta din arbetskonsulent. Vi finns här f
     readingTime: 5,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 124,
     relatedArticles: ['cv-grunder', 'intresseguide-intro', 'hantera-avslag'],
     relatedTools: ['/cv-builder', '/interest-guide'],
     checklist: [
@@ -326,8 +336,6 @@ Avslutade du ett avsnitt i CV:t? Sökte du ett jobb? Det är värt att firas!`,
     readingTime: 6,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 156,
     relatedArticles: ['komma-igang-intro', 'cv-grunder'],
     relatedTools: ['/cv-builder'],
   },
@@ -404,8 +412,6 @@ Kom ihåg: Ett CV är aldrig "färdigt". Det är ett levande dokument som utveck
     readingTime: 12,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 203,
     relatedArticles: ['personligt-brev', 'cv-utan-erfarenhet', 'ats-optimering'],
     relatedTools: ['/cv-builder'],
     checklist: [
@@ -477,8 +483,6 @@ Kom ihåg: AI:n är ett verktyg, inte en ersättning för din egen röst!`,
     readingTime: 10,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.6,
-    bookmarkCount: 178,
     relatedArticles: ['cv-grunder', 'intervju-forberedelser'],
     relatedTools: ['/cover-letter'],
     relatedExercises: ['application', 'coverletter'],
@@ -543,8 +547,6 @@ Din brist på erfarenhet kan vara en styrka – du har inga "dåliga vanor" att 
     readingTime: 14,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 234,
     relatedArticles: ['cv-grunder', 'personligt-brev'],
     relatedTools: ['/cv-builder'],
     relatedExercises: ['cv-masterclass'],
@@ -632,8 +634,6 @@ Intervjun är en dialog, inte ett förhör. Arbetsgivaren vill också sälja in 
     readingTime: 18,
     difficulty: 'detailed',
     energyLevel: 'high',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 189,
     relatedArticles: ['digital-intervju', 'intervju-fragor', 'loneforhandling'],
     checklist: [
       { id: '1', text: 'Läs på om företaget grundligt' },
@@ -708,8 +708,6 @@ Visa ambition men var realistisk. Fokusera på utveckling inom företaget.
     readingTime: 22,
     difficulty: 'detailed',
     energyLevel: 'high',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 267,
     relatedArticles: ['intervju-forberedelser', 'digital-intervju'],
     relatedExercises: ['interview', 'intervju-traning'],
   },
@@ -775,8 +773,6 @@ En digital intervju är fortfarande en intervju. Förbered dig lika noga!`,
     readingTime: 12,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 198,
     relatedArticles: ['intervju-forberedelser', 'intervju-fragor'],
     checklist: [
       { id: '1', text: 'Testa programvaran i förväg' },
@@ -839,8 +835,6 @@ Det är okej att känna besvikelse, frustration eller oro. Tillåt dig att känn
     readingTime: 10,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 5.0,
-    bookmarkCount: 312,
     relatedArticles: ['motivation-langsiktig', 'stresshantering', 'krisstod'],
     actions: [
       { label: '📅 Boka stödsamtal', href: '/diary', type: 'primary' },
@@ -897,8 +891,6 @@ Prioritera sömn, mat och rörelse.
     readingTime: 16,
     difficulty: 'medium',
     energyLevel: 'low',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 278,
     relatedArticles: ['hantera-avslag', 'stresshantering'],
   },
 
@@ -962,8 +954,6 @@ Du är inte din produktivitet. Det är okej att vila. Du klarar detta – en dag
     readingTime: 18,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 245,
     relatedArticles: ['hantera-avslag', 'motivation-langsiktig', 'krisstod'],
     actions: [
       { label: '🆘 Krissupport', href: '#crisis', type: 'primary' },
@@ -1038,8 +1028,6 @@ Stöd för dig med nedsatt arbetsförmåga.
     readingTime: 20,
     difficulty: 'detailed',
     energyLevel: 'medium',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 189,
     relatedArticles: ['anpassningar-arbetsplats', 'stodinsatser-guide'],
     actions: [
       { label: '📞 Kontakt Arbetsförmedlingen', href: 'tel:0771-416416', type: 'secondary' },
@@ -1115,8 +1103,6 @@ Det är aldrig för sent att byta bransch!`,
     readingTime: 16,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 234,
     relatedArticles: ['kompetenser-efterfragas', 'karriarvaxling'],
     relatedTools: ['/interest-guide'],
     actions: [
@@ -1188,8 +1174,6 @@ Lycka till! 🍀`,
     readingTime: 5,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 345,
     relatedArticles: ['cv-grunder', 'personligt-brev'],
     checklist: [
       { id: '1', text: 'Kontrollera stavning i CV' },
@@ -1274,8 +1258,6 @@ Nystartsjobb är ett **trampolin**, inte en livboj. Det är en chans att visa va
     readingTime: 12,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 178,
     relatedArticles: ['rattigheter-stod', 'anpassningar-arbetsplats'],
     actions: [
       { label: '📞 Kontakta Arbetsförmedlingen', href: 'tel:0771-416416', type: 'primary' },
@@ -1358,8 +1340,6 @@ Du förtjänar att få betalt för ditt värde. Var professionell, förberedd oc
     readingTime: 14,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 267,
     relatedArticles: ['anstallningsformer', 'forsta-dagen-jobbet'],
     checklist: [
       { id: '1', text: 'Researcha marknadslöner' },
@@ -1461,8 +1441,6 @@ LinkedIn är inte Facebook – håll det professionellt men personligt. Visa att
     readingTime: 16,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 223,
     relatedArticles: ['personligt-varumarke', 'natverka-for-jobb'],
     actions: [
       { label: '🔗 Gå till LinkedIn', href: 'https://www.linkedin.com', type: 'primary' },
@@ -1561,8 +1539,6 @@ Ett tackbrev tar 10 minuter att skriva men kan göra skillnaden mellan att få j
     readingTime: 10,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 312,
     relatedArticles: ['intervju-forberedelser', 'digital-intervju'],
     author: 'Sara Ekström',
     authorTitle: 'Rekryterare',
@@ -1654,8 +1630,6 @@ Praktik är en investering i dig själv. Även om det inte leder till jobb direk
     readingTime: 14,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 189,
     relatedArticles: ['nystartsjobb-guide', 'branscher-brist'],
     actions: [
       { label: '📅 Boka möte för praktik', href: '/diary', type: 'primary' },
@@ -1751,8 +1725,6 @@ En bra arbetsmiljö är inte lyx – det är en förutsättning för att du ska 
     readingTime: 12,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 245,
     relatedArticles: ['rattigheter-stod', 'anstallningsformer'],
     author: 'Lisa Bergström',
     authorTitle: 'Beteendevetare',
@@ -1858,8 +1830,6 @@ En portfölj är inte bara för kreativa yrken. Alla kan dra nytta av att visa k
     readingTime: 14,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 198,
     relatedArticles: ['cv-grunder', 'linkedin-optimering'],
     relatedExercises: ['cv-masterclass'],
   },
@@ -1977,8 +1947,6 @@ Dina styrkor är unika för dig. När du jobbar med dem känns det inte som jobb
     readingTime: 12,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 156,
     relatedArticles: ['kompetensinventering-guide', 'hitta-ratt-yrke'],
     relatedExercises: ['strengths', 'kompetensinventering'],
     actions: [
@@ -2244,8 +2212,6 @@ Arbetslivet behöver alla typer för att fungera!`,
     readingTime: 14,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 234,
     relatedArticles: ['upptack-dina-styrkor', 'intresseguide-intro'],
     relatedExercises: ['jobb-jag'],
     actions: [
@@ -2456,8 +2422,6 @@ Du kan mer än du tror! Ta dig tid att verkligen gräva i din bakgrund – du ko
     readingTime: 11,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 189,
     relatedArticles: ['upptack-dina-styrkor', 'cv-grunder'],
     relatedExercises: ['kompetensinventering'],
     actions: [
@@ -2586,8 +2550,6 @@ Det finns inga rätta eller fel värderingar. Dina värderingar är unika för d
     readingTime: 14,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 178,
     relatedArticles: ['upptack-dina-styrkor', 'personlighetstyper-i-arbetslivet', 'karriarplanering-guide'],
     relatedExercises: ['strengths'],
     author: 'Lisa Bergström',
@@ -2704,8 +2666,6 @@ Nätverkande handlar om relationer, inte transaktioner. Var genuint intresserad 
     readingTime: 13,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 212,
     relatedArticles: ['linkedin-optimering', 'tackbrev-intervju'],
     relatedExercises: ['networking'],
     actions: [
@@ -2851,8 +2811,6 @@ Ditt personliga varumärke byggs över tid. Var autentisk, var konsekvent, och v
     readingTime: 14,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 178,
     relatedArticles: ['linkedin-optimering', 'natverka-for-jobb'],
     relatedExercises: ['personligt-varumarke', 'linkedin'],
     actions: [
@@ -3055,8 +3013,6 @@ Fråga arbetsgivaren: "Har ni kollektivavtal? Med vilket förbund?"
     readingTime: 15,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 234,
     relatedArticles: ['nystartsjobb-guide', 'rattigheter-stod', 'loneforhandling-guide'],
     relatedExercises: ['salary'],
     author: 'Katarina Holm',
@@ -3259,8 +3215,6 @@ Om arbetsgivaren inte kan höja lönen, förhandla om:
     readingTime: 12,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 289,
     relatedArticles: ['loneforhandling-guide', 'anstallningsformer-guide'],
     relatedExercises: ['salary'],
     actions: [
@@ -3454,8 +3408,6 @@ Det är OK att ändra din plan om:
     readingTime: 16,
     difficulty: 'medium',
     energyLevel: 'high',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 198,
     relatedArticles: ['dromjobbsanalys', 'kompetensportfolj'],
     relatedExercises: ['careerpath', 'dromjobb', 'vidareutbildning', 'forsta-dagen'],
     actions: [
@@ -3683,8 +3635,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 13,
     difficulty: 'medium',
     energyLevel: 'high',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 245,
     relatedArticles: ['karriarplanering-guide', 'upptack-dina-styrkor'],
     relatedExercises: ['dromjobb'],
     actions: [
@@ -3709,8 +3659,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 16,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 245,
     relatedArticles: ['cv-grunder', 'personligt-brev', 'intervju-forberedelser'],
     relatedExercises: ['application', 'coverletter'],
     author: 'Erik Johansson',
@@ -3731,8 +3679,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 18,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 189,
     relatedArticles: ['natverka-for-jobb', 'linkedin-optimering'],
     relatedExercises: ['networking'],
     author: 'Maria Lindqvist',
@@ -3752,8 +3698,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 14,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.6,
-    bookmarkCount: 156,
     relatedArticles: ['linkedin-optimering', 'bygg-ditt-personliga-varumarke'],
     relatedExercises: ['personligt-varumarke'],
     author: 'Erik Johansson',
@@ -3773,8 +3717,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 19,
     difficulty: 'medium',
     energyLevel: 'high',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 312,
     relatedArticles: ['karriarplanering-guide', 'kompetensutveckling-guide', 'praktik-som-vag-in'],
     relatedExercises: ['karriarskifte'],
     author: 'Lisa Bergström',
@@ -3794,8 +3736,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 13,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 267,
     relatedArticles: ['arbetsmiljo-guide', 'anstallningsformer-guide'],
     relatedExercises: ['forsta-dagen'],
     author: 'Maria Lindqvist',
@@ -3815,8 +3755,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 14,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 234,
     relatedArticles: ['branscher-brist', 'kompetensutveckling-guide'],
     relatedTools: ['/interest-guide'],
     author: 'Erik Johansson',
@@ -3836,8 +3774,6 @@ Du förtjänar ett jobb du älskar!`,
     readingTime: 16,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 456,
     relatedArticles: ['cv-grunder', 'cv-utan-erfarenhet'],
     relatedTools: ['/cv-builder'],
     actions: [
@@ -4048,8 +3984,6 @@ Stöter du på ett begrepp du inte förstår? Fråga din arbetskonsulent – de 
     readingTime: 12,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 234,
     relatedArticles: ['komma-igang-intro', 'anstallningsformer-guide'],
     author: 'Erik Johansson',
     authorTitle: 'Karriärcoach',
@@ -4180,8 +4114,6 @@ Det är aldrig för sent att lära sig något nytt. Varje ny kompetens är en in
     readingTime: 14,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 198,
     relatedArticles: ['karriarplanering-guide', 'karriarvaxling-guide', 'arbetsmarknadstrender-2024'],
     author: 'Erik Johansson',
     authorTitle: 'Karriärcoach',
@@ -4302,8 +4234,6 @@ När ditt CV väl kommer förbi ATS behöver det fortfarande imponera på en mä
     readingTime: 12,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 287,
     relatedArticles: ['cv-grunder', 'cv-mallar-exempel', 'ansokningsstrategi'],
     relatedTools: ['/cv-builder'],
     author: 'Maria Lindqvist',
@@ -4429,8 +4359,6 @@ Om någon du känner söker jobb och mår dåligt:
     readingTime: 14,
     difficulty: 'easy',
     energyLevel: 'low',
-    helpfulnessRating: 4.9,
-    bookmarkCount: 312,
     relatedArticles: ['hantera-avslag', 'stresshantering', 'motivation-langsiktig'],
     actions: [
       { label: '📞 1177 Vårdguiden', href: 'https://1177.se', type: 'primary' },
@@ -4597,8 +4525,6 @@ Ekonomisk stress är verklig och tung. Men det finns hjälp att få. Ta ett steg
     readingTime: 16,
     difficulty: 'easy',
     energyLevel: 'medium',
-    helpfulnessRating: 4.8,
-    bookmarkCount: 256,
     relatedArticles: ['anstallningsformer-guide', 'nystartsjobb-guide', 'rattigheter-stod'],
     author: 'Katarina Holm',
     authorTitle: 'Handläggare Arbetsförmedlingen',
@@ -4731,12 +4657,392 @@ Nätverkande är inte transaktionellt – det handlar om relationer. De bästa p
     readingTime: 13,
     difficulty: 'medium',
     energyLevel: 'medium',
-    helpfulnessRating: 4.7,
-    bookmarkCount: 189,
     relatedArticles: ['natverka-for-jobb', 'linkedin-optimering', 'informationsintervju-guide'],
     relatedExercises: ['networking'],
     author: 'Maria Lindqvist',
     authorTitle: 'Arbetskonsulent',
+  },
+
+  // === LÄTT SVENSKA ===
+  {
+    id: 'latt-svenska-cv',
+    title: 'Vad är ett CV?',
+    summary: 'En enkel guide om vad ett CV är och varför du behöver ett.',
+    content: `# Vad är ett CV?
+
+Ett CV är ett papper om dig.
+
+Det berättar vem du är.
+Det berättar vad du har gjort.
+Det berättar vad du kan.
+
+## Varför behöver du ett CV?
+
+När du söker jobb vill chefen veta:
+- Vad heter du?
+- Vad har du jobbat med förut?
+- Vad har du lärt dig i skolan?
+- Vad är du bra på?
+
+Ditt CV svarar på dessa frågor.
+
+## Vad ska ett CV ha?
+
+**1. Ditt namn**
+Skriv ditt för- och efternamn.
+
+**2. Telefonnummer**
+Så chefen kan ringa dig.
+
+**3. E-post**
+Så chefen kan skriva till dig.
+
+**4. Dina jobb**
+Skriv vilka jobb du har haft.
+Skriv det senaste jobbet först.
+
+**5. Din skola**
+Skriv vilken skola du gått i.
+Skriv vad du läste.
+
+**6. Vad du kan**
+Skriv vad du är bra på.
+Till exempel: körkort, datorer, språk.
+
+## Tips
+
+- Gör ditt CV kort. Max 2 sidor.
+- Skriv tydligt.
+- Låt någon läsa ditt CV.
+- Ändra ditt CV för varje jobb.
+
+## Behöver du hjälp?
+
+Prata med din konsulent.
+De hjälper dig att göra ett bra CV.`,
+    category: 'job-search',
+    subcategory: 'cv-writing',
+    tags: ['lätt svenska', 'cv', 'nybörjare', 'enkel guide'],
+    createdAt: '2024-06-01T10:00:00Z',
+    updatedAt: '2024-06-01T10:00:00Z',
+    readingTime: 3,
+    difficulty: 'easy-swedish',
+    energyLevel: 'low',
+    relatedArticles: ['cv-grunder'],
+    relatedTools: ['/cv'],
+    author: 'Jobin Team',
+    authorTitle: 'Lätt svenska-redaktionen',
+  },
+
+  {
+    id: 'latt-svenska-soka-jobb',
+    title: 'Hur söker man jobb?',
+    summary: 'En enkel guide om hur du söker jobb steg för steg.',
+    content: `# Hur söker man jobb?
+
+Att söka jobb kan vara svårt.
+Men du kan lära dig!
+Här är en enkel guide.
+
+## Steg 1: Hitta jobb
+
+Du kan hitta jobb på:
+- Den här sidan (Jobin)
+- Arbetsförmedlingen
+- Företagens hemsidor
+- LinkedIn
+
+## Steg 2: Läs annonsen
+
+Läs annonsen noga.
+Titta på:
+- Vad ska du göra på jobbet?
+- Vad behöver du kunna?
+- Var är jobbet?
+- När börjar jobbet?
+
+## Steg 3: Gör ditt CV redo
+
+Ditt CV ska passa jobbet.
+Lägg till saker som chefen vill se.
+
+## Steg 4: Skriv ett brev
+
+Skriv ett kort brev.
+Berätta:
+- Vem du är
+- Varför du vill ha jobbet
+- Varför du passar för jobbet
+
+## Steg 5: Skicka ansökan
+
+Skicka ditt CV och brev.
+Oftast gör du det på en hemsida.
+
+## Steg 6: Vänta
+
+Nu får du vänta.
+Det kan ta några veckor.
+Sök fler jobb medan du väntar.
+
+## Om du får svar
+
+Grattis! Du kanske får komma på intervju.
+Intervju = ett möte där chefen pratar med dig.
+
+## Om du inte får svar
+
+Det är okej. Det händer alla.
+Fortsätt söka andra jobb.
+Varje ansökan är bra övning.
+
+## Tips
+
+- Sök många jobb.
+- Fråga din konsulent om hjälp.
+- Ge inte upp!`,
+    category: 'job-search',
+    subcategory: 'application-strategy',
+    tags: ['lätt svenska', 'söka jobb', 'nybörjare', 'enkel guide'],
+    createdAt: '2024-06-01T10:00:00Z',
+    updatedAt: '2024-06-01T10:00:00Z',
+    readingTime: 3,
+    difficulty: 'easy-swedish',
+    energyLevel: 'low',
+    relatedArticles: ['ansokningsstrategi'],
+    relatedTools: ['/jobs'],
+    author: 'Jobin Team',
+    authorTitle: 'Lätt svenska-redaktionen',
+  },
+
+  {
+    id: 'latt-svenska-intervju',
+    title: 'Vad händer på en intervju?',
+    summary: 'En enkel guide om jobbintervjuer.',
+    content: `# Vad händer på en intervju?
+
+En intervju är ett möte.
+Du träffar en chef eller någon från företaget.
+De vill lära känna dig.
+
+## Innan intervjun
+
+**Dag innan:**
+- Ta reda på var intervjun är.
+- Välj kläder som är rena och fina.
+- Sov ordentligt.
+
+**Samma dag:**
+- Ät frukost.
+- Kom i tid. Helst 10 minuter tidigt.
+- Ta med ditt CV.
+
+## Under intervjun
+
+Chefen kommer ställa frågor.
+Vanliga frågor:
+
+**"Berätta om dig själv"**
+Säg:
+- Vad du heter
+- Vad du gjort förut
+- Varför du söker jobbet
+
+**"Varför vill du jobba här?"**
+Säg något bra om företaget.
+Till exempel: "Jag gillar att ni..."
+
+**"Vad är du bra på?"**
+Berätta om något du kan.
+Till exempel: "Jag är bra på att..."
+
+**"Har du frågor?"**
+Ställ en fråga till chefen.
+Till exempel: "Hur ser en vanlig dag ut?"
+
+## Tips under intervjun
+
+- Titta på personen när du pratar.
+- Le ibland.
+- Lyssna noga på frågorna.
+- Svara lugnt. Du behöver inte stressa.
+- Det är okej att säga "Kan du förklara frågan?"
+
+## Efter intervjun
+
+Skicka ett kort meddelande.
+Skriv: "Tack för intervjun. Det var trevligt att träffas."
+
+## Om du är nervös
+
+Det är normalt att vara nervös.
+Andas djupt.
+Tänk: "Jag ska göra mitt bästa."
+
+Din konsulent kan öva intervju med dig.
+Fråga om du vill ha hjälp!`,
+    category: 'interview',
+    subcategory: 'preparation',
+    tags: ['lätt svenska', 'intervju', 'nybörjare', 'enkel guide'],
+    createdAt: '2024-06-01T10:00:00Z',
+    updatedAt: '2024-06-01T10:00:00Z',
+    readingTime: 4,
+    difficulty: 'easy-swedish',
+    energyLevel: 'low',
+    relatedArticles: ['intervju-forberedelse', 'under-intervjun'],
+    author: 'Jobin Team',
+    authorTitle: 'Lätt svenska-redaktionen',
+  },
+
+  {
+    id: 'latt-svenska-avslag',
+    title: 'Du fick inte jobbet - vad gör du nu?',
+    summary: 'Det är okej att känna sig ledsen. Här är tips för att gå vidare.',
+    content: `# Du fick inte jobbet
+
+Ibland får man inte jobbet.
+Det händer alla.
+Det är okej att känna sig ledsen.
+
+## Dina känslor är normala
+
+Du kanske känner dig:
+- Ledsen
+- Arg
+- Besviken
+- Trött
+
+Alla dessa känslor är okej.
+Låt dig känna dem.
+
+## Vad kan du göra?
+
+**1. Vila lite**
+Ta en paus från jobbsökning.
+Gör något du tycker om.
+
+**2. Prata med någon**
+Berätta hur du mår.
+Prata med:
+- En vän
+- Familj
+- Din konsulent
+
+**3. Tänk på vad du lärt dig**
+Varje ansökan lär dig något.
+Varje intervju gör dig bättre.
+
+**4. Börja igen när du är redo**
+Du behöver inte stressa.
+Ta det i din takt.
+
+## Kom ihåg
+
+- Du är inte dålig för att du inte fick jobbet.
+- Rätt jobb finns där ute för dig.
+- Varje "nej" tar dig närmare ett "ja".
+
+## Tips
+
+- Sök flera jobb, inte bara ett.
+- Fråga om feedback efter intervjun.
+- Be din konsulent om hjälp.
+
+## Du klarar det!
+
+Jobbsökning tar tid.
+Men du kommer att hitta ett jobb.
+Vi tror på dig!`,
+    category: 'wellness',
+    subcategory: 'rejection',
+    tags: ['lätt svenska', 'avslag', 'känslor', 'motivation'],
+    createdAt: '2024-06-01T10:00:00Z',
+    updatedAt: '2024-06-01T10:00:00Z',
+    readingTime: 3,
+    difficulty: 'easy-swedish',
+    energyLevel: 'low',
+    relatedArticles: ['hantera-avslag'],
+    author: 'Jobin Team',
+    authorTitle: 'Lätt svenska-redaktionen',
+  },
+
+  {
+    id: 'latt-svenska-personligt-brev',
+    title: 'Vad är ett personligt brev?',
+    summary: 'En enkel guide om personliga brev.',
+    content: `# Vad är ett personligt brev?
+
+Ett personligt brev är ett kort brev till chefen.
+Du skickar det tillsammans med ditt CV.
+
+## Varför behöver du skriva ett?
+
+I brevet kan du berätta:
+- Vem du är
+- Varför du vill ha jobbet
+- Varför just du passar bra
+
+CV:t visar vad du gjort.
+Brevet visar vem du är.
+
+## Hur skriver du ett brev?
+
+**1. Börja med hälsning**
+Skriv: "Hej!" eller "Till [företagets namn]"
+
+**2. Skriv varför du söker**
+Exempel: "Jag söker jobbet som [titel] hos er."
+
+**3. Berätta lite om dig**
+Vad har du gjort förut?
+Vad kan du?
+
+**4. Skriv varför du passar**
+Varför är du bra för just det här jobbet?
+
+**5. Avsluta snyggt**
+Skriv: "Jag hoppas vi kan ses för en intervju."
+Skriv ditt namn.
+
+## Exempel på kort brev
+
+"Hej!
+
+Jag heter Anna och söker jobbet som butiksbiträde.
+
+Jag har jobbat i butik förut.
+Jag gillar att prata med människor.
+Jag är alltid i tid.
+
+Jag tror att jag passar bra hos er.
+Jag hoppas vi kan ses.
+
+Vänliga hälsningar,
+Anna"
+
+## Tips
+
+- Skriv kort. Max en sida.
+- Skriv inte samma sak som i CV:t.
+- Läs igenom innan du skickar.
+- Be någon kolla stavningen.
+
+## Behöver du hjälp?
+
+Vår brev-generator kan hjälpa dig.
+Eller prata med din konsulent.`,
+    category: 'job-search',
+    subcategory: 'cover-letter',
+    tags: ['lätt svenska', 'personligt brev', 'nybörjare', 'enkel guide'],
+    createdAt: '2024-06-01T10:00:00Z',
+    updatedAt: '2024-06-01T10:00:00Z',
+    readingTime: 3,
+    difficulty: 'easy-swedish',
+    energyLevel: 'low',
+    relatedArticles: ['personligt-brev-guide'],
+    relatedTools: ['/cover-letter'],
+    author: 'Jobin Team',
+    authorTitle: 'Lätt svenska-redaktionen',
   },
 ]
 
@@ -4770,4 +5076,14 @@ export const getReadingTimeCategory = (minutes: number): string => {
   if (minutes <= 5) return 'snabb'
   if (minutes <= 10) return 'medel'
   return 'djup'
+}
+
+// Helper function to get easy Swedish articles
+export const getEasySwedishArticles = (): EnhancedArticle[] => {
+  return mockArticlesData.filter(article => article.difficulty === 'easy-swedish')
+}
+
+// Helper function to get articles by difficulty
+export const getArticlesByDifficulty = (difficulty: 'easy-swedish' | 'easy' | 'medium' | 'detailed'): EnhancedArticle[] => {
+  return mockArticlesData.filter(article => article.difficulty === difficulty)
 }

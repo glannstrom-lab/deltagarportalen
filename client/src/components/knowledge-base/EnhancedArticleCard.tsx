@@ -3,7 +3,7 @@
  */
 
 import { Link } from 'react-router-dom'
-import { ChevronRight, Bookmark, Star, Tag, Dumbbell, Clock } from '@/components/ui/icons'
+import { ChevronRight, Tag, Dumbbell, Clock } from '@/components/ui/icons'
 import ReadingTime from './ReadingTime'
 import DifficultyBadge from './DifficultyBadge'
 import { cn } from '@/lib/utils'
@@ -16,9 +16,7 @@ interface EnhancedArticleCardProps {
     category: string
     tags?: string | string[]
     readingTime?: number
-    difficulty?: 'easy' | 'medium' | 'detailed'
-    helpfulnessRating?: number
-    bookmarkCount?: number
+    difficulty?: 'easy-swedish' | 'easy' | 'medium' | 'detailed'
     author?: string
     relatedExercises?: string[]
     energyLevel?: 'low' | 'medium' | 'high'
@@ -80,12 +78,6 @@ export default function EnhancedArticleCard({
             <div className="flex items-center gap-3 flex-wrap">
               {article.readingTime && (
                 <ReadingTime minutes={article.readingTime} variant="compact" />
-              )}
-              {article.helpfulnessRating && (
-                <span className="inline-flex items-center gap-1 text-sm text-amber-600">
-                  <Star size={14} fill="currentColor" />
-                  {article.helpfulnessRating}
-                </span>
               )}
             </div>
           </div>
@@ -149,20 +141,6 @@ export default function EnhancedArticleCard({
             
             {article.difficulty && (
               <DifficultyBadge level={article.difficulty} size="sm" />
-            )}
-            
-            {article.helpfulnessRating && (
-              <span className="inline-flex items-center gap-1 text-sm text-amber-600">
-                <Star size={14} fill="currentColor" />
-                <span>{article.helpfulnessRating}</span>
-              </span>
-            )}
-            
-            {article.bookmarkCount !== undefined && article.bookmarkCount > 0 && (
-              <span className="inline-flex items-center gap-1 text-sm text-slate-500">
-                <Bookmark size={14} />
-                <span>{article.bookmarkCount}</span>
-              </span>
             )}
           </div>
           

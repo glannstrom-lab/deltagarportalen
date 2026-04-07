@@ -36,7 +36,7 @@ export interface ArticleFromDB {
   subcategory: string | null
   tags: string[]
   reading_time: number
-  difficulty: 'easy' | 'medium' | 'detailed'
+  difficulty: 'easy-swedish' | 'easy' | 'medium' | 'detailed'
   energy_level: 'low' | 'medium' | 'high'
   author: string | null
   author_title: string | null
