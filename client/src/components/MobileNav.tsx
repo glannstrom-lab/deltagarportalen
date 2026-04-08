@@ -1,12 +1,15 @@
 import { useEffect } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { cn } from '@/lib/utils'
-import { navGroups, markFeatureVisited, shouldShowBadge } from './layout/navigation'
+import { navGroups, adminNavItems, consultantNavItems, markFeatureVisited, shouldShowBadge } from './layout/navigation'
+import { useAuthStore } from '@/stores/authStore'
 import {
   User,
   Menu,
   X,
   Settings,
+  HelpCircle,
+  LogOut,
 } from '@/components/ui/icons'
 import { useTranslation } from 'react-i18next'
 
@@ -59,6 +62,13 @@ export function SideMenu({
 }) {
   const location = useLocation()
   const { t } = useTranslation()
+  const { profile, signOut } = useAuthStore()
+
+  // Använd activeRole för att avgöra vilken vy som visas
+  const activeRole = profile?.activeRole || profile?.role || 'USER'
+  const isSuperAdmin = activeRole === 'SUPERADMIN'
+  const isAdmin = activeRole === 'ADMIN' || isSuperAdmin
+  const isConsultant = activeRole === 'CONSULTANT' || isAdmin
 
   // Mark feature as visited when navigating
   useEffect(() => {
@@ -143,21 +153,125 @@ export function SideMenu({
             </div>
           ))}
 
-          {/* Settings */}
+          {/* Consultant Section - visas om aktiv roll är CONSULTANT, ADMIN eller SUPERADMIN */}
+          {isConsultant && (
+            <div className="border-t border-slate-200 pt-3 mt-2">
+              <h3 className="px-3 py-2 text-xs font-semibold text-teal-600 uppercase tracking-wider">
+                {t('sidebar.consultantSection')}
+              </h3>
+              <div className="space-y-0.5">
+                {consultantNavItems.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      onClick={onClose}
+                      className={({ isActive }) => cn(
+                        'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                        isActive
+                          ? 'bg-teal-100 text-teal-700 font-medium'
+                          : 'text-teal-600 hover:bg-teal-50 active:bg-teal-100'
+                      )}
+                    >
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <span>{t(item.labelKey)}</span>
+                    </NavLink>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Admin Section - visas om aktiv roll är ADMIN eller SUPERADMIN */}
+          {isAdmin && (
+            <div className="border-t border-slate-200 pt-3 mt-2">
+              <h3 className="px-3 py-2 text-xs font-semibold text-amber-600 uppercase tracking-wider">
+                {t('sidebar.adminSection')}
+              </h3>
+              <div className="space-y-0.5">
+                {adminNavItems.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <NavLink
+                      key={item.path}
+                      to={item.path}
+                      onClick={onClose}
+                      className={({ isActive }) => cn(
+                        'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                        isActive
+                          ? 'bg-amber-100 text-amber-700 font-medium'
+                          : 'text-amber-600 hover:bg-amber-50 active:bg-amber-100'
+                      )}
+                    >
+                      <Icon className="w-5 h-5 flex-shrink-0" />
+                      <span>{t(item.labelKey)}</span>
+                    </NavLink>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Account section: Profile, Settings, Help, Logout */}
           <div className="border-t border-slate-200 pt-3 mt-2">
-            <NavLink
-              to="/settings"
-              onClick={onClose}
-              className={({ isActive }) => cn(
-                'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
-                isActive
-                  ? 'bg-violet-100 text-violet-700 font-medium'
-                  : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
-              )}
-            >
-              <Settings className="w-5 h-5" />
-              <span>{t('nav.settings')}</span>
-            </NavLink>
+            <h3 className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              {t('nav.groups.account', 'Konto')}
+            </h3>
+            <div className="space-y-0.5">
+              <NavLink
+                to="/profile"
+                onClick={onClose}
+                className={({ isActive }) => cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                  isActive
+                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
+                )}
+              >
+                <User className="w-5 h-5" />
+                <span>{t('nav.profile', 'Min profil')}</span>
+              </NavLink>
+
+              <NavLink
+                to="/settings"
+                onClick={onClose}
+                className={({ isActive }) => cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                  isActive
+                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
+                )}
+              >
+                <Settings className="w-5 h-5" />
+                <span>{t('nav.settings')}</span>
+              </NavLink>
+
+              <NavLink
+                to="/help"
+                onClick={onClose}
+                className={({ isActive }) => cn(
+                  'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
+                  isActive
+                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
+                )}
+              >
+                <HelpCircle className="w-5 h-5" />
+                <span>{t('nav.help', 'Hjälp')}</span>
+              </NavLink>
+
+              <button
+                onClick={() => {
+                  onClose()
+                  signOut()
+                }}
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px] text-red-600 hover:bg-red-50 active:bg-red-100"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>{t('nav.logout')}</span>
+              </button>
+            </div>
           </div>
         </nav>
       </div>

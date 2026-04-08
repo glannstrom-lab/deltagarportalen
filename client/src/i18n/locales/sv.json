@@ -99,11 +99,18 @@
     "myParticipants": "Mina Deltagare",
     "consultantPortal": "Konsultportal",
     "applications": "Mina ansökningar",
+    "calendar": "Kalender",
+    "linkedinOptimizer": "LinkedIn-optimering",
+    "skillsGap": "Kompetensanalys",
+    "interviewSimulator": "Intervjuträning",
+    "profile": "Min profil",
+    "help": "Hjälp",
     "groups": {
       "jobSearch": "Jobbsökning",
       "development": "Min utveckling",
       "wellbeing": "Välmående",
-      "resources": "Resurser"
+      "resources": "Resurser",
+      "account": "Konto"
     }
   },
   "roles": {

@@ -22,6 +22,10 @@ import {
   Smile,
   Search,
   GraduationCap,
+  Calendar,
+  Linkedin,
+  TrendingUp,
+  Mic,
 } from '@/components/ui/icons'
 
 // ============================================
@@ -55,10 +59,11 @@ export const navGroups: NavGroup[] = [
     items: [
       { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
       { path: '/journey', labelKey: 'nav.journey', icon: Map, isNew: true },
-      { path: '/cv', labelKey: 'nav.cv', icon: FileUser }, // Unique icon
+      { path: '/cv', labelKey: 'nav.cv', icon: FileUser },
       { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
       { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
-      { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList }, // Separate page
+      { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
+      { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
     ],
   },
   {
@@ -68,6 +73,9 @@ export const navGroups: NavGroup[] = [
       { path: '/career', labelKey: 'nav.career', icon: Target },
       { path: '/education', labelKey: 'nav.education', icon: GraduationCap, isNew: true },
       { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star },
+      { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
+      { path: '/skills-gap-analysis', labelKey: 'nav.skillsGap', icon: TrendingUp },
+      { path: '/interview-simulator', labelKey: 'nav.interviewSimulator', icon: Mic },
       { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
       { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
     ],

@@ -99,11 +99,18 @@
     "salary": "Salary & Negotiation",
     "personalBrand": "Personal Brand",
     "international": "International Guide",
+    "calendar": "Calendar",
+    "linkedinOptimizer": "LinkedIn Optimizer",
+    "skillsGap": "Skills Analysis",
+    "interviewSimulator": "Interview Practice",
+    "profile": "My Profile",
+    "help": "Help",
     "groups": {
       "jobSearch": "Job Search",
       "development": "My Development",
       "wellbeing": "Wellbeing",
-      "resources": "Resources"
+      "resources": "Resources",
+      "account": "Account"
     }
   },
   "roles": {
