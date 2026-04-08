@@ -26,6 +26,7 @@ import {
   Linkedin,
   TrendingUp,
   Mic,
+  Building2,
 } from '@/components/ui/icons'
 
 // ============================================
@@ -49,7 +50,7 @@ export interface NavGroup {
 
 // Smart badge system: Only show badge for most recent unvisited feature
 // This is tracked via localStorage in the component
-export const NEWEST_FEATURE = '/education' // Change this when launching new features
+export const NEWEST_FEATURE = '/spontanansökan' // Change this when launching new features
 
 // Grouped navigation for reduced cognitive load
 export const navGroups: NavGroup[] = [
@@ -63,6 +64,7 @@ export const navGroups: NavGroup[] = [
       { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
       { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
       { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
+      { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2, isNew: true },
       { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
     ],
   },

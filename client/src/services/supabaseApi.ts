@@ -1478,3 +1478,279 @@ export const activityApi = {
     return count || 0
   }
 }
+
+// ============================================
+// SPONTANEOUS COMPANIES API
+// ============================================
+
+export type SpontaneousStatus =
+  | 'saved'
+  | 'to_contact'
+  | 'contacted'
+  | 'waiting'
+  | 'response_positive'
+  | 'response_negative'
+  | 'no_response'
+  | 'archived'
+
+export type SpontaneousPriority = 'high' | 'medium' | 'low'
+export type OutreachMethod = 'email' | 'linkedin' | 'phone' | 'visit' | 'other'
+
+export interface SpontaneousCompany {
+  id: string
+  user_id: string
+  org_number: string
+  company_name: string
+  company_data: {
+    legalForm?: string
+    address?: {
+      street?: string
+      postalCode?: string
+      city?: string
+    }
+    sniCodes?: Array<{ code: string; description?: string }>
+    businessDescription?: string
+    registrationDate?: string
+  }
+  status: SpontaneousStatus
+  priority: SpontaneousPriority
+  notes?: string
+  why_interested?: string
+  contact_name?: string
+  contact_email?: string
+  contact_phone?: string
+  contact_linkedin?: string
+  outreach_method?: OutreachMethod
+  outreach_date?: string
+  followup_date?: string
+  response_date?: string
+  response_notes?: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CreateSpontaneousCompany {
+  org_number: string
+  company_name: string
+  company_data?: SpontaneousCompany['company_data']
+  status?: SpontaneousStatus
+  priority?: SpontaneousPriority
+  notes?: string
+  why_interested?: string
+}
+
+export interface UpdateSpontaneousCompany {
+  status?: SpontaneousStatus
+  priority?: SpontaneousPriority
+  notes?: string
+  why_interested?: string
+  contact_name?: string
+  contact_email?: string
+  contact_phone?: string
+  contact_linkedin?: string
+  outreach_method?: OutreachMethod
+  outreach_date?: string
+  followup_date?: string
+  response_date?: string
+  response_notes?: string
+}
+
+export const spontaneousCompaniesApi = {
+  /**
+   * Get all spontaneous companies for the current user
+   */
+  async getAll(): Promise<SpontaneousCompany[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('spontaneous_companies')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+
+    if (error) handleError(error)
+    return (data || []) as SpontaneousCompany[]
+  },
+
+  /**
+   * Get companies by status
+   */
+  async getByStatus(status: SpontaneousStatus): Promise<SpontaneousCompany[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('spontaneous_companies')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('status', status)
+      .order('created_at', { ascending: false })
+
+    if (error) handleError(error)
+    return (data || []) as SpontaneousCompany[]
+  },
+
+  /**
+   * Get a single company by ID
+   */
+  async getById(id: string): Promise<SpontaneousCompany | null> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('spontaneous_companies')
+      .select('*')
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .single()
+
+    if (error && error.code !== 'PGRST116') handleError(error)
+    return data as SpontaneousCompany | null
+  },
+
+  /**
+   * Check if a company is already saved
+   */
+  async exists(orgNumber: string): Promise<boolean> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const normalized = orgNumber.replace(/[-\s]/g, '')
+    const { count, error } = await supabase
+      .from('spontaneous_companies')
+      .select('*', { count: 'exact', head: true })
+      .eq('user_id', user.id)
+      .eq('org_number', normalized)
+
+    if (error) handleError(error)
+    return (count || 0) > 0
+  },
+
+  /**
+   * Add a new company
+   */
+  async create(company: CreateSpontaneousCompany): Promise<SpontaneousCompany> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const normalized = company.org_number.replace(/[-\s]/g, '')
+
+    const { data, error } = await supabase
+      .from('spontaneous_companies')
+      .insert({
+        user_id: user.id,
+        org_number: normalized,
+        company_name: company.company_name,
+        company_data: company.company_data || {},
+        status: company.status || 'saved',
+        priority: company.priority || 'medium',
+        notes: company.notes,
+        why_interested: company.why_interested,
+      })
+      .select()
+      .single()
+
+    if (error) handleError(error)
+    return data as SpontaneousCompany
+  },
+
+  /**
+   * Update a company
+   */
+  async update(id: string, updates: UpdateSpontaneousCompany): Promise<SpontaneousCompany> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('spontaneous_companies')
+      .update(updates)
+      .eq('id', id)
+      .eq('user_id', user.id)
+      .select()
+      .single()
+
+    if (error) handleError(error)
+    return data as SpontaneousCompany
+  },
+
+  /**
+   * Update status only
+   */
+  async updateStatus(id: string, status: SpontaneousStatus): Promise<SpontaneousCompany> {
+    return this.update(id, { status })
+  },
+
+  /**
+   * Delete a company
+   */
+  async delete(id: string): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { error } = await supabase
+      .from('spontaneous_companies')
+      .delete()
+      .eq('id', id)
+      .eq('user_id', user.id)
+
+    if (error) handleError(error)
+  },
+
+  /**
+   * Get statistics
+   */
+  async getStats(): Promise<Record<SpontaneousStatus, number>> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const { data, error } = await supabase
+      .from('spontaneous_companies')
+      .select('status')
+      .eq('user_id', user.id)
+
+    if (error) handleError(error)
+
+    const stats: Record<SpontaneousStatus, number> = {
+      saved: 0,
+      to_contact: 0,
+      contacted: 0,
+      waiting: 0,
+      response_positive: 0,
+      response_negative: 0,
+      no_response: 0,
+      archived: 0,
+    }
+
+    data?.forEach((item: { status: SpontaneousStatus }) => {
+      if (item.status in stats) {
+        stats[item.status]++
+      }
+    })
+
+    return stats
+  },
+
+  /**
+   * Get companies with upcoming followups
+   */
+  async getUpcomingFollowups(days: number = 7): Promise<SpontaneousCompany[]> {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401)
+
+    const futureDate = new Date()
+    futureDate.setDate(futureDate.getDate() + days)
+
+    const { data, error } = await supabase
+      .from('spontaneous_companies')
+      .select('*')
+      .eq('user_id', user.id)
+      .not('followup_date', 'is', null)
+      .lte('followup_date', futureDate.toISOString().split('T')[0])
+      .not('status', 'in', '("archived","response_positive","response_negative")')
+      .order('followup_date', { ascending: true })
+
+    if (error) handleError(error)
+    return (data || []) as SpontaneousCompany[]
+  },
+}

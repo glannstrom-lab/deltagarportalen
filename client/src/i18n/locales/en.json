@@ -96,6 +96,7 @@
     "myParticipants": "My Participants",
     "consultantPortal": "Consultant Portal",
     "applications": "My Applications",
+    "spontaneous": "Spontaneous Application",
     "salary": "Salary & Negotiation",
     "personalBrand": "Personal Brand",
     "international": "International Guide",
@@ -427,6 +428,73 @@
     "stale": {
       "title": "Needs follow-up",
       "description": "These haven't been updated in 7+ days."
+    }
+  },
+  "spontaneous": {
+    "title": "Spontaneous Application",
+    "description": "Find and contact companies that match your profile",
+    "tabs": {
+      "search": "Search companies",
+      "searchDesc": "Look up companies by organization number",
+      "companies": "My companies",
+      "companiesDesc": "Companies you've saved",
+      "stats": "Statistics",
+      "statsDesc": "Track your success"
+    },
+    "status": {
+      "saved": "Saved",
+      "to_contact": "To contact",
+      "contacted": "Contacted",
+      "waiting": "Awaiting response",
+      "response_positive": "Positive response",
+      "response_negative": "Rejected",
+      "no_response": "No response",
+      "archived": "Archived"
+    },
+    "priority": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    },
+    "search": {
+      "title": "Search companies",
+      "placeholder": "Organization number (e.g., 556074-7551)",
+      "button": "Search",
+      "invalidFormat": "Invalid format. Enter 10 digits.",
+      "notFound": "Company not found in the Swedish Companies Registry",
+      "error": "Something went wrong. Please try again."
+    },
+    "company": {
+      "address": "Address",
+      "industry": "Industry",
+      "registered": "Registered",
+      "business": "Business",
+      "save": "Save company",
+      "alreadySaved": "Already saved"
+    },
+    "stats": {
+      "overview": "Overview",
+      "totalSaved": "Total saved",
+      "contacted": "Contacted",
+      "responses": "Got response",
+      "waiting": "Awaiting response",
+      "responseRate": "Response rate",
+      "positiveRate": "Positive responses"
+    },
+    "followups": {
+      "title": "Upcoming follow-ups",
+      "empty": "No upcoming follow-ups. Set reminders when you contact companies.",
+      "today": "Today",
+      "tomorrow": "Tomorrow",
+      "overdue": "Overdue",
+      "daysLeft": "In {{days}} days"
+    },
+    "tips": {
+      "title": "Tips for better results",
+      "tip1": "Aim to contact 5-10 new companies per week",
+      "tip2": "Always follow up after 1-2 weeks if you haven't heard back",
+      "tip3": "A response rate of 10-20% is normal for spontaneous applications",
+      "tip4": "Quality over quantity – customize each application"
     }
   },
   "career": {

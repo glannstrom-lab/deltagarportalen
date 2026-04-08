@@ -99,6 +99,7 @@
     "myParticipants": "Mina Deltagare",
     "consultantPortal": "Konsultportal",
     "applications": "Mina ansökningar",
+    "spontaneous": "Spontanansökan",
     "calendar": "Kalender",
     "linkedinOptimizer": "LinkedIn-optimering",
     "skillsGap": "Kompetensanalys",
@@ -452,6 +453,73 @@
     "stale": {
       "title": "Behöver uppföljning",
       "description": "Dessa har inte uppdaterats på 7+ dagar."
+    }
+  },
+  "spontaneous": {
+    "title": "Spontanansökan",
+    "description": "Hitta och kontakta företag som passar dig",
+    "tabs": {
+      "search": "Sök företag",
+      "searchDesc": "Sök efter företag med organisationsnummer",
+      "companies": "Mina företag",
+      "companiesDesc": "Företag du sparat",
+      "stats": "Statistik",
+      "statsDesc": "Följ din framgång"
+    },
+    "status": {
+      "saved": "Sparad",
+      "to_contact": "Att kontakta",
+      "contacted": "Kontaktad",
+      "waiting": "Väntar svar",
+      "response_positive": "Positivt svar",
+      "response_negative": "Avslag",
+      "no_response": "Inget svar",
+      "archived": "Arkiverad"
+    },
+    "priority": {
+      "high": "Hög",
+      "medium": "Medium",
+      "low": "Låg"
+    },
+    "search": {
+      "title": "Sök företag",
+      "placeholder": "Organisationsnummer (t.ex. 556074-7551)",
+      "button": "Sök",
+      "invalidFormat": "Ogiltigt format. Ange 10 siffror.",
+      "notFound": "Företaget hittades inte i Bolagsverkets register",
+      "error": "Något gick fel vid sökningen. Försök igen."
+    },
+    "company": {
+      "address": "Adress",
+      "industry": "Bransch",
+      "registered": "Registrerat",
+      "business": "Verksamhet",
+      "save": "Spara företag",
+      "alreadySaved": "Redan sparad"
+    },
+    "stats": {
+      "overview": "Översikt",
+      "totalSaved": "Totalt sparade",
+      "contacted": "Kontaktade",
+      "responses": "Fått svar",
+      "waiting": "Väntar svar",
+      "responseRate": "Svarsfrekvens",
+      "positiveRate": "Positiva svar"
+    },
+    "followups": {
+      "title": "Kommande uppföljningar",
+      "empty": "Inga kommande uppföljningar. Sätt påminnelser när du kontaktar företag.",
+      "today": "Idag",
+      "tomorrow": "Imorgon",
+      "overdue": "Försenad",
+      "daysLeft": "Om {{days}} dagar"
+    },
+    "tips": {
+      "title": "Tips för bättre resultat",
+      "tip1": "Sikta på att kontakta 5-10 nya företag per vecka",
+      "tip2": "Följ alltid upp efter 1-2 veckor om du inte fått svar",
+      "tip3": "En svarsfrekvens på 10-20% är normalt för spontanansökningar",
+      "tip4": "Kvalitet går före kvantitet – anpassa varje ansökan"
     }
   },
   "career": {

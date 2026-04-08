@@ -62,6 +62,7 @@ const InterviewSimulator = lazy(() => import('./pages/InterviewSimulator'))
 const Calendar = lazy(() => import('./pages/Calendar'))
 const Education = lazy(() => import('./pages/Education'))
 const Applications = lazy(() => import('./pages/Applications'))
+const Spontaneous = lazy(() => import('./pages/Spontaneous'))
 
 // Loading fallback
 function PageLoader() {
@@ -294,6 +295,13 @@ function App() {
           <LazyRoute>
             <RouteErrorBoundary>
               <Applications />
+            </RouteErrorBoundary>
+          </LazyRoute>
+        } />
+        <Route path="spontanansökan/*" element={
+          <LazyRoute>
+            <RouteErrorBoundary>
+              <Spontaneous />
             </RouteErrorBoundary>
           </LazyRoute>
         } />
