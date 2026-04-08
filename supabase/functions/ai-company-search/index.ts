@@ -123,52 +123,103 @@ async function verifyCompany(orgNumber: string): Promise<Record<string, unknown>
 }
 
 /**
+ * Normalize org number to 10 digits
+ */
+function normalizeOrgNumber(orgNr: string | null | undefined): string | null {
+  if (!orgNr) return null
+  const cleaned = String(orgNr).replace(/[-\s]/g, '').trim()
+  // Must be exactly 10 digits
+  if (/^\d{10}$/.test(cleaned)) {
+    return cleaned
+  }
+  // Try to extract 10 digits from longer strings
+  const match = cleaned.match(/\d{10}/)
+  return match ? match[0] : null
+}
+
+/**
  * Parse AI response to extract companies
  */
 function parseCompaniesFromResponse(content: string): CompanySearchResult[] {
   const companies: CompanySearchResult[] = []
+  const seenOrgNumbers = new Set<string>()
 
   // Try to find JSON in the response
-  const jsonMatch = content.match(/\[[\s\S]*\]/)
+  const jsonMatch = content.match(/\[[\s\S]*?\]/)
   if (jsonMatch) {
     try {
       const parsed = JSON.parse(jsonMatch[0])
       if (Array.isArray(parsed)) {
-        return parsed.map(c => ({
-          name: c.name || c.namn || '',
-          orgNumber: c.orgNumber || c.organisationsnummer || c.org_number || null,
-          description: c.description || c.beskrivning || '',
-          city: c.city || c.stad || c.ort || null,
-          industry: c.industry || c.bransch || null,
-          verified: false,
-        })).filter(c => c.name)
+        for (const c of parsed) {
+          const name = c.name || c.namn || c.företag || c.company || ''
+          if (!name) continue
+
+          const orgNumber = normalizeOrgNumber(c.orgNumber || c.organisationsnummer || c.org_number || c.orgnr)
+
+          // Skip duplicates
+          if (orgNumber && seenOrgNumbers.has(orgNumber)) continue
+          if (orgNumber) seenOrgNumbers.add(orgNumber)
+
+          companies.push({
+            name: name.trim(),
+            orgNumber,
+            description: c.description || c.beskrivning || c.info || '',
+            city: c.city || c.stad || c.ort || c.location || null,
+            industry: c.industry || c.bransch || c.sector || null,
+            verified: false,
+          })
+        }
+        if (companies.length > 0) {
+          return companies
+        }
       }
-    } catch {
-      // Fall through to regex parsing
+    } catch (e) {
+      console.log('[ai-company-search] JSON parse error, trying regex fallback')
     }
   }
 
-  // Fallback: Try to extract org numbers with regex
+  // Fallback: Try to extract org numbers with regex patterns
+  // Pattern 1: 10 digits together or with dash
   const orgNumberRegex = /(\d{6}[-\s]?\d{4})/g
-  const matches = content.matchAll(orgNumberRegex)
+  let match
 
-  for (const match of matches) {
-    const orgNumber = match[1].replace(/[-\s]/g, '')
-    // Try to find company name near the org number
-    const contextStart = Math.max(0, match.index! - 100)
-    const context = content.substring(contextStart, match.index! + 20)
+  while ((match = orgNumberRegex.exec(content)) !== null) {
+    const orgNumber = normalizeOrgNumber(match[1])
+    if (!orgNumber || seenOrgNumbers.has(orgNumber)) continue
+    seenOrgNumbers.add(orgNumber)
+
+    // Try to find company name near the org number (look backwards)
+    const contextStart = Math.max(0, match.index - 150)
+    const contextEnd = Math.min(content.length, match.index + 50)
+    const context = content.substring(contextStart, contextEnd)
 
     // Look for company name patterns
-    const nameMatch = context.match(/([A-ZÅÄÖ][A-Za-zåäöÅÄÖ\s&]+(?:AB|HB|KB|Aktiebolag|Handelsbolag))/i)
+    const namePatterns = [
+      /([A-ZÅÄÖ][A-Za-zåäöÅÄÖ\s&\-]+(?:\s+AB|\s+HB|\s+KB))/i,
+      /([A-ZÅÄÖ][A-Za-zåäöÅÄÖ\s&\-]+(?:Aktiebolag|Handelsbolag))/i,
+      /\*\*([^*]+)\*\*/,  // Markdown bold
+      /"([^"]+)"/,  // Quoted names
+    ]
 
-    companies.push({
-      name: nameMatch ? nameMatch[1].trim() : `Företag ${orgNumber}`,
-      orgNumber,
-      description: '',
-      city: null,
-      industry: null,
-      verified: false,
-    })
+    let companyName = null
+    for (const pattern of namePatterns) {
+      const nameMatch = context.match(pattern)
+      if (nameMatch && nameMatch[1].trim().length > 2) {
+        companyName = nameMatch[1].trim()
+        break
+      }
+    }
+
+    if (companyName) {
+      companies.push({
+        name: companyName,
+        orgNumber,
+        description: '',
+        city: null,
+        industry: null,
+        verified: false,
+      })
+    }
   }
 
   return companies
@@ -222,29 +273,38 @@ Deno.serve(async (req) => {
 
     console.log(`[ai-company-search] User ${user.id} searching: "${query}"`)
 
-    // Build prompt for Perplexity
-    const systemPrompt = `Du är en expert på att hitta svenska företag. Din uppgift är att söka efter företag baserat på användarens beskrivning.
+    // Build prompt for Perplexity - optimized for finding org numbers
+    const systemPrompt = `Du är expert på att hitta svenska företag med deras organisationsnummer.
 
-VIKTIGT: Du MÅSTE returnera resultatet som en JSON-array med följande format:
+UPPGIFT: Sök på allabolag.se, proff.se, företagsfakta.se och hitta företag som matchar användarens beskrivning.
+
+KRITISKT VIKTIGT:
+1. För VARJE företag du hittar, SÖK AKTIVT efter dess organisationsnummer på allabolag.se
+2. URL-mönster på allabolag.se: allabolag.se/[orgnummer]/[företagsnamn]
+3. Organisationsnummer är ALLTID 10 siffror (t.ex. 5560747551)
+4. Om du nämner ett företag MÅSTE du söka upp dess org.nr
+
+RETURNERA exakt detta JSON-format (inget annat):
 [
   {
     "name": "Företagsnamn AB",
     "orgNumber": "5560123456",
-    "description": "Kort beskrivning av företaget",
-    "city": "Stockholm",
-    "industry": "IT-konsult"
+    "description": "Vad företaget gör",
+    "city": "Stad",
+    "industry": "Bransch"
   }
 ]
 
-Regler:
-- Sök på allabolag.se, företagsfakta.se, hitta.se och liknande källor
-- Inkludera ALLTID organisationsnummer (10 siffror utan bindestreck) om du hittar det
-- Returnera max ${maxResults} företag
-- Fokusera på AKTIVA företag (ej avregistrerade/konkurser)
-- Om du inte hittar org.nr, sätt det till null
-- Svara ENDAST med JSON-arrayen, ingen annan text`
+REGLER:
+- Max ${maxResults} företag
+- Endast AKTIVA företag (ej konkurs/likvidation)
+- orgNumber MÅSTE vara exakt 10 siffror eller null
+- Sök ALLTID på allabolag.se för att hitta org.nr
+- Svara ENDAST med JSON-array`
 
-    const userPrompt = `Hitta svenska företag som matchar: "${query.trim()}"`
+    const userPrompt = `Sök efter svenska företag: "${query.trim()}"
+
+För varje företag du hittar, gå till allabolag.se och hämta organisationsnumret. Det är kritiskt viktigt att inkludera org.nr.`
 
     // Call Perplexity via OpenRouter
     const aiResponse = await fetch(OPENROUTER_API_URL, {
@@ -284,7 +344,79 @@ Regler:
     // Parse companies from response
     let companies = parseCompaniesFromResponse(content)
 
-    // Verify each company against Bolagsverket (in parallel, max 5 at a time)
+    console.log(`[ai-company-search] Parsed ${companies.length} companies, ${companies.filter(c => c.orgNumber).length} with org numbers`)
+
+    // Secondary search for companies missing org numbers
+    const companiesWithoutOrgNr = companies.filter(c => !c.orgNumber && c.name)
+    if (companiesWithoutOrgNr.length > 0 && companiesWithoutOrgNr.length <= 5) {
+      console.log(`[ai-company-search] Searching for org numbers for ${companiesWithoutOrgNr.length} companies...`)
+
+      const orgNrSearchPrompt = `Hitta organisationsnummer för dessa svenska företag. Sök på allabolag.se för varje företag.
+
+Företag att söka:
+${companiesWithoutOrgNr.map(c => `- ${c.name}${c.city ? ` (${c.city})` : ''}`).join('\n')}
+
+RETURNERA exakt detta format (endast JSON):
+[
+  {"name": "Företagsnamn", "orgNumber": "5560123456"}
+]
+
+Om du inte hittar org.nr för ett företag, inkludera det inte i svaret.`
+
+      try {
+        const orgNrResponse = await fetch(OPENROUTER_API_URL, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${openRouterKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': Deno.env.get('SITE_URL') || 'https://jobin.se',
+            'X-Title': 'Jobin OrgNr Lookup',
+          },
+          body: JSON.stringify({
+            model: 'perplexity/sonar',
+            messages: [
+              { role: 'user', content: orgNrSearchPrompt },
+            ],
+            max_tokens: 1000,
+            temperature: 0.1,
+          }),
+        })
+
+        if (orgNrResponse.ok) {
+          const orgNrData = await orgNrResponse.json()
+          const orgNrContent = orgNrData.choices?.[0]?.message?.content
+
+          if (orgNrContent) {
+            const jsonMatch = orgNrContent.match(/\[[\s\S]*\]/)
+            if (jsonMatch) {
+              try {
+                const orgNrResults = JSON.parse(jsonMatch[0])
+
+                // Update companies with found org numbers
+                for (const result of orgNrResults) {
+                  if (result.orgNumber && /^\d{10}$/.test(result.orgNumber.replace(/[-\s]/g, ''))) {
+                    const company = companies.find(c =>
+                      c.name.toLowerCase().includes(result.name.toLowerCase()) ||
+                      result.name.toLowerCase().includes(c.name.toLowerCase())
+                    )
+                    if (company && !company.orgNumber) {
+                      company.orgNumber = result.orgNumber.replace(/[-\s]/g, '')
+                      console.log(`[ai-company-search] Found org number for ${company.name}: ${company.orgNumber}`)
+                    }
+                  }
+                }
+              } catch (e) {
+                console.log('[ai-company-search] Failed to parse org number results')
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.log('[ai-company-search] Secondary org number search failed:', e)
+      }
+    }
+
+    // Verify each company against Bolagsverket (in parallel)
     const verificationPromises = companies.slice(0, maxResults).map(async (company) => {
       if (company.orgNumber) {
         const verified = await verifyCompany(company.orgNumber)
