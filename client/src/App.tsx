@@ -117,7 +117,7 @@ function PrivateRoute({
   }
   
   if (!isAuthenticated) {
-    return <Navigate to="/login" replace />
+    return <Navigate to="/" replace />
   }
   
   if (allowedRoles && profile?.role && !allowedRoles.includes(profile.role)) {
