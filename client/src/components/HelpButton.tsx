@@ -33,7 +33,7 @@ export function HelpButton({ content }: HelpButtonProps) {
       <button
         onClick={() => setIsOpen(true)}
         className={cn(
-          'fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full',
+          'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 w-14 h-14 rounded-full',
           'bg-gradient-to-br from-indigo-500 to-purple-600 text-white',
           'shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:shadow-indigo-500/40',
           'flex items-center justify-center',

@@ -140,7 +140,7 @@ export function QuickWinButton() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         className={cn(
-          "fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
+          "fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
           "bg-gradient-to-r from-violet-500 to-indigo-600 text-white font-medium",
           "hover:shadow-xl hover:shadow-violet-500/25 transition-shadow"
         )}

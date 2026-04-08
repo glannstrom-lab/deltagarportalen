@@ -79,7 +79,7 @@ export function AICareerChatbot() {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-50 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
+        className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-2 px-4 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-105"
       >
         <Sparkles className="w-5 h-5" />
         <span className="font-medium">Fråga AI-coachen</span>
@@ -88,7 +88,7 @@ export function AICareerChatbot() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
+    <div className="fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-w-96 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-teal-600 to-emerald-600 text-white">
         <div className="flex items-center gap-2">
