@@ -2335,6 +2335,7 @@
     "nav": {
       "features": "Features",
       "howItWorks": "How it works",
+      "pricing": "Pricing",
       "faq": "FAQ",
       "login": "Log in",
       "getStarted": "Get started",
@@ -2342,15 +2343,15 @@
       "getStartedFree": "Get started free"
     },
     "hero": {
-      "badge": "New: AI-powered CV generator",
-      "titleStart": "Your path to",
-      "titleHighlight": "employment",
-      "titleEnd": "starts here",
-      "description": "Whether you've been job searching for a while or facing a new career path, the tools to move forward are here. With personal guidance, smart tools, and support all the way, you don't have to take this journey alone.",
-      "cta": "Get started free",
+      "badge": "Complete platform for employment services",
+      "titleStart": "Empower your",
+      "titleHighlight": "participants",
+      "titleEnd": "towards jobs",
+      "description": "A complete digital platform for job coaches and employment service providers. Give your participants modern tools for CV creation, job searching, and career development – with full visibility and follow-up for you as a consultant.",
+      "cta": "Book a demo",
       "watchVideo": "See how it works",
-      "free": "Completely free",
-      "secure": "Safe and secure",
+      "free": "Free for participants",
+      "secure": "GDPR compliant",
       "quickStart": "Get started in 2 minutes",
       "yourOverview": "Your overview",
       "cvProgress": "CV progress",
@@ -2378,6 +2379,111 @@
       "step2Description": "Use our AI-powered CV generator. Optimize for ATS, import from LinkedIn, export as PDF.",
       "step3Title": "Find and apply for jobs",
       "step3Description": "Search among thousands of jobs, prepare with interview training, and keep track of your applications."
+    },
+    "pricing": {
+      "sectionLabel": "Pricing",
+      "title": "Simple and transparent pricing",
+      "description": "Choose the plan that fits your organization. No hidden fees.",
+      "organization": {
+        "title": "Organization License",
+        "price": "2,990",
+        "currency": "SEK",
+        "period": "/month",
+        "description": "Base license for your organization with access to the entire platform.",
+        "features": [
+          "Unlimited participants",
+          "Admin panel with statistics",
+          "Participant tracking",
+          "Group administration",
+          "API integrations",
+          "Priority support",
+          "SSO login (optional)",
+          "Custom branding (optional)"
+        ]
+      },
+      "consultant": {
+        "title": "Per Consultant",
+        "price": "290",
+        "currency": "SEK",
+        "period": "/month",
+        "description": "License per active consultant/job coach using the platform.",
+        "features": [
+          "Personal consultant view",
+          "Manage your participants",
+          "Chat function",
+          "Notes & follow-up",
+          "Shared calendar",
+          "Progress reports",
+          "CV review",
+          "Job matching"
+        ]
+      },
+      "participant": {
+        "title": "Participants",
+        "price": "0",
+        "currency": "SEK",
+        "period": "",
+        "priceLabel": "Free",
+        "description": "Always free for participants – no costs whatsoever.",
+        "features": [
+          "AI-powered CV builder",
+          "Cover letter generator",
+          "Interest guide (RIASEC)",
+          "Job search with filters",
+          "Interview training",
+          "Career coach",
+          "Diary & wellness",
+          "Knowledge base"
+        ]
+      },
+      "cta": "Contact us",
+      "mostPopular": "Most popular",
+      "included": "Included",
+      "perMonth": "per month"
+    },
+    "allFeatures": {
+      "sectionLabel": "All features",
+      "title": "Complete toolkit for job searching",
+      "description": "Everything your participants need to find and land their next job.",
+      "categories": {
+        "cv": "CV & Application",
+        "search": "Job Search",
+        "development": "Development",
+        "wellness": "Wellness",
+        "admin": "Administration"
+      },
+      "list": {
+        "cvBuilder": "AI-powered CV builder with ATS optimization",
+        "cvTemplates": "Professional CV templates",
+        "linkedinImport": "LinkedIn import",
+        "coverLetter": "Cover letter generator",
+        "atsAnalysis": "ATS compatibility analysis",
+        "pdfExport": "PDF export",
+        "jobSearch": "Job search with smart filters",
+        "jobAlerts": "Job alerts",
+        "jobMap": "Geographic job map",
+        "savedJobs": "Saved jobs",
+        "applicationTracker": "Application tracking",
+        "companyResearch": "Company research",
+        "interestGuide": "Interest guide (RIASEC)",
+        "interviewTraining": "Interview training",
+        "careerCoach": "AI career coach",
+        "skillsAnalysis": "Skills analysis",
+        "salaryGuide": "Salary guide",
+        "linkedinOptimizer": "LinkedIn optimization",
+        "exercises": "Exercises and guides",
+        "knowledgeBase": "Knowledge base",
+        "diary": "Reflection diary",
+        "moodTracking": "Mood tracking",
+        "crisisSupport": "Crisis support",
+        "calendar": "Calendar integration",
+        "consultantPortal": "Consultant portal",
+        "participantOverview": "Participant overview",
+        "progressReports": "Progress reports",
+        "groupManagement": "Group management",
+        "statistics": "Statistics and insights",
+        "chat": "Chat function"
+      }
     },
     "features": {
       "sectionLabel": "Features",
@@ -2434,8 +2540,8 @@
       "sectionLabel": "FAQ",
       "title": "Frequently asked questions",
       "description": "What you might wonder about before getting started.",
-      "q1": "Is it really free?",
-      "a1": "Yes, Jobin is completely free for job seekers. No hidden fees, no premium levels – all features are available to everyone. This is possible thanks to collaboration with the Swedish Public Employment Service and municipalities.",
+      "q1": "What does Jobin cost?",
+      "a1": "Jobin is always free for participants. Organizations pay a fixed license of 2,990 SEK/month plus 290 SEK per active consultant. No hidden fees – all features included.",
       "q2": "I've been job searching for a long time without results. Can Jobin really help me?",
       "a2": "Absolutely. Many of our users have been long-term unemployed and have, with the help of our structured tools and personal guidance, gotten back to work. You're not alone, and there are paths forward. The tools are specially designed to provide support even when things feel tough.",
       "q3": "I don't even know what I want to work with. Where should I start?",
@@ -2459,13 +2565,13 @@
       "createFreeAccount": "Create free account"
     },
     "cta": {
-      "title": "Ready to find your job?",
-      "description": "Your new start is just a few clicks away. No matter where you are in life right now, there's a path forward. Take the first step today – we're with you all the way.",
-      "button": "Create free account",
-      "noCard": "No credit card required. No commitment. Just opportunities."
+      "title": "Ready to strengthen your employment services?",
+      "description": "Give your participants the tools they need to succeed. Book a demo and see how Jobin can streamline your operations.",
+      "button": "Book demo",
+      "noCard": "No commitment. No setup fees. Get started within 24 hours."
     },
     "footer": {
-      "brand": "Jobin is a free platform for job seekers. We believe everyone deserves a fair chance in the job market.",
+      "brand": "Jobin is a complete digital platform for employment services. We help organizations support job seekers with modern tools.",
       "featuresTitle": "Features",
       "cvGenerator": "CV generator",
       "interestGuide": "Interest guide",

@@ -2375,6 +2375,7 @@
     "nav": {
       "features": "Funktioner",
       "howItWorks": "Så funkar det",
+      "pricing": "Priser",
       "faq": "Vanliga frågor",
       "login": "Logga in",
       "getStarted": "Kom igång",
@@ -2382,15 +2383,15 @@
       "getStartedFree": "Kom igång gratis"
     },
     "hero": {
-      "badge": "Nytt: AI-stödd CV-generator",
-      "titleStart": "Din väg till",
-      "titleHighlight": "jobbet",
-      "titleEnd": "börjar här",
-      "description": "Oavsett om du sökt jobb länge eller står inför en ny karriär, finns verktygen som hjälper dig framåt. Med personlig vägledning, smarta verktyg och stöd hela vägen behöver du inte gå den här resan ensam.",
-      "cta": "Kom igång gratis",
+      "badge": "Komplett plattform för arbetsmarknadstjänster",
+      "titleStart": "Stärk dina",
+      "titleHighlight": "deltagare",
+      "titleEnd": "mot jobb",
+      "description": "En komplett digital plattform för jobbcoacher och arbetsmarknadsaktörer. Ge dina deltagare moderna verktyg för CV-skapande, jobbsökning och karriärutveckling – med full insyn och uppföljning för dig som konsulent.",
+      "cta": "Boka en demo",
       "watchVideo": "Se hur det fungerar",
-      "free": "Helt gratis",
-      "secure": "Säker och trygg",
+      "free": "Gratis för deltagare",
+      "secure": "GDPR-säkrad",
       "quickStart": "Kom igång på 2 minuter",
       "yourOverview": "Din översikt",
       "cvProgress": "CV-progress",
@@ -2418,6 +2419,111 @@
       "step2Description": "Använd vår AI-stödda CV-generator. Optimera för ATS, importera från LinkedIn, exportera som PDF.",
       "step3Title": "Hitta och sök jobb",
       "step3Description": "Sök bland tusentals jobb, förbered dig med intervjuträningen och håll koll på dina ansökningar."
+    },
+    "pricing": {
+      "sectionLabel": "Priser",
+      "title": "Enkel och transparent prissättning",
+      "description": "Välj det upplägg som passar din organisation. Inga dolda avgifter.",
+      "organization": {
+        "title": "Organisationslicens",
+        "price": "2 990",
+        "currency": "kr",
+        "period": "/månad",
+        "description": "Grundlicens för din organisation med tillgång till hela plattformen.",
+        "features": [
+          "Obegränsat antal deltagare",
+          "Admin-panel med statistik",
+          "Deltagaruppföljning",
+          "Gruppadministration",
+          "API-integrationer",
+          "Prioriterad support",
+          "SSO-inloggning (tillval)",
+          "Anpassad branding (tillval)"
+        ]
+      },
+      "consultant": {
+        "title": "Per konsulent",
+        "price": "290",
+        "currency": "kr",
+        "period": "/månad",
+        "description": "Licens per aktiv konsulent/jobbcoach som använder plattformen.",
+        "features": [
+          "Egen konsultvy",
+          "Hantera egna deltagare",
+          "Chattfunktion",
+          "Anteckningar & uppföljning",
+          "Delad kalender",
+          "Progressrapporter",
+          "CV-granskning",
+          "Jobbmatchning"
+        ]
+      },
+      "participant": {
+        "title": "Deltagare",
+        "price": "0",
+        "currency": "kr",
+        "period": "",
+        "priceLabel": "Gratis",
+        "description": "Alltid gratis för deltagare – inga kostnader överhuvudtaget.",
+        "features": [
+          "AI-stödd CV-byggare",
+          "Personligt brev-generator",
+          "Intresseguide (RIASEC)",
+          "Jobbsökning med filter",
+          "Intervjuträning",
+          "Karriärcoach",
+          "Dagbok & välmående",
+          "Kunskapsbank"
+        ]
+      },
+      "cta": "Kontakta oss",
+      "mostPopular": "Populärast",
+      "included": "Inkluderat",
+      "perMonth": "per månad"
+    },
+    "allFeatures": {
+      "sectionLabel": "Alla funktioner",
+      "title": "Komplett verktygspaket för jobbsökning",
+      "description": "Allt dina deltagare behöver för att hitta och landa sitt nästa jobb.",
+      "categories": {
+        "cv": "CV & Ansökan",
+        "search": "Jobbsökning",
+        "development": "Utveckling",
+        "wellness": "Välmående",
+        "admin": "Administration"
+      },
+      "list": {
+        "cvBuilder": "AI-stödd CV-byggare med ATS-optimering",
+        "cvTemplates": "Professionella CV-mallar",
+        "linkedinImport": "LinkedIn-import",
+        "coverLetter": "Personligt brev-generator",
+        "atsAnalysis": "ATS-kompatibilitetsanalys",
+        "pdfExport": "PDF-export",
+        "jobSearch": "Jobbsökning med smarta filter",
+        "jobAlerts": "Jobbaviseringar",
+        "jobMap": "Geografisk jobbkarta",
+        "savedJobs": "Sparade jobb",
+        "applicationTracker": "Ansökningsspårning",
+        "companyResearch": "Företagsresearch",
+        "interestGuide": "Intresseguide (RIASEC)",
+        "interviewTraining": "Intervjuträning",
+        "careerCoach": "AI-karriärcoach",
+        "skillsAnalysis": "Kompetensanalys",
+        "salaryGuide": "Löneguide",
+        "linkedinOptimizer": "LinkedIn-optimering",
+        "exercises": "Övningar och guider",
+        "knowledgeBase": "Kunskapsbank",
+        "diary": "Reflektionsdagbok",
+        "moodTracking": "Humörspårning",
+        "crisisSupport": "Krisstöd",
+        "calendar": "Kalenderintegration",
+        "consultantPortal": "Konsultportal",
+        "participantOverview": "Deltagaröversikt",
+        "progressReports": "Progressrapporter",
+        "groupManagement": "Grupphantering",
+        "statistics": "Statistik och insikter",
+        "chat": "Chattfunktion"
+      }
     },
     "features": {
       "sectionLabel": "Funktioner",
@@ -2474,8 +2580,8 @@
       "sectionLabel": "FAQ",
       "title": "Vanliga frågor",
       "description": "Det du kanske undrar över innan du kommer igång.",
-      "q1": "Kostar det verkligen ingenting?",
-      "a1": "Ja, Jobin är helt gratis för dig som söker jobb. Inga dolda avgifter, inga premiumnivåer – alla funktioner är tillgängliga för alla. Detta är möjligt tack vare samarbete med Arbetsförmedlingen och kommuner.",
+      "q1": "Vad kostar Jobin?",
+      "a1": "Jobin är alltid gratis för deltagare. Organisationer betalar en fast licens på 2 990 kr/månad plus 290 kr per aktiv konsulent. Inga dolda avgifter – alla funktioner ingår.",
       "q2": "Jag har sökt jobb länge utan resultat. Kan Jobin verkligen hjälpa mig?",
       "a2": "Absolut. Många av våra användare har varit långtidsarbetslösa och har med hjälp av våra strukturerade verktyg och personliga vägledning tagit sig tillbaka till arbete. Du är inte ensam, och det finns vägar framåt. Verktygen är speciellt utformade för att ge stöd även när det känns tufft.",
       "q3": "Jag vet inte ens vad jag vill jobba med. Var ska jag börja?",
@@ -2499,13 +2605,13 @@
       "createFreeAccount": "Skapa konto gratis"
     },
     "cta": {
-      "title": "Redo att hitta ditt jobb?",
-      "description": "Din nya start är bara några klick bort. Oavsett var du är i livet just nu, finns det en väg framåt. Ta det första steget idag – vi är med dig hela vägen.",
-      "button": "Skapa gratis konto",
-      "noCard": "Inga kortuppgifter krävs. Ingen bindningstid. Bara möjligheter."
+      "title": "Redo att stärka dina arbetsmarknadsinsatser?",
+      "description": "Ge dina deltagare verktygen de behöver för att lyckas. Boka en demo och se hur Jobin kan effektivisera er verksamhet.",
+      "button": "Boka demo",
+      "noCard": "Ingen bindningstid. Inga startavgifter. Kom igång inom 24 timmar."
     },
     "footer": {
-      "brand": "Jobin är en gratis plattform för arbetssökande. Vi tror att alla förtjänar en ärlig chans på arbetsmarknaden.",
+      "brand": "Jobin är en komplett digital plattform för arbetsmarknadstjänster. Vi hjälper organisationer stötta arbetssökande med moderna verktyg.",
       "featuresTitle": "Funktioner",
       "cvGenerator": "CV-generator",
       "interestGuide": "Intresseguide",

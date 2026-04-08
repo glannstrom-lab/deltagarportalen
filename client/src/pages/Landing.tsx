@@ -24,7 +24,10 @@ import {
   BookOpen,
   Star,
   User,
-  MapPin
+  MapPin,
+  Building2,
+  Users,
+  UserCheck
 } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
@@ -469,6 +472,10 @@ export default function Landing() {
                 {t('landing.nav.features')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
               </button>
+              <button onClick={() => scrollToSection('priser')} className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
+                {t('landing.nav.pricing')}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
+              </button>
               <button onClick={() => scrollToSection('hur-det-funkar')} className="text-slate-600 hover:text-violet-600 font-medium transition-colors relative group">
                 {t('landing.nav.howItWorks')}
                 <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-violet-600 transition-all duration-300 group-hover:w-full" />
@@ -505,6 +512,7 @@ export default function Landing() {
           <div className={`md:hidden overflow-hidden transition-all duration-300 ${mobileMenuOpen ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
             <div className="py-4 border-t border-slate-100 space-y-2">
               <button onClick={() => scrollToSection('funktioner')} className="block w-full text-left text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors">{t('landing.nav.features')}</button>
+              <button onClick={() => scrollToSection('priser')} className="block w-full text-left text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors">{t('landing.nav.pricing')}</button>
               <button onClick={() => scrollToSection('hur-det-funkar')} className="block w-full text-left text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors">{t('landing.nav.howItWorks')}</button>
               <button onClick={() => scrollToSection('faq')} className="block w-full text-left text-slate-600 hover:text-violet-600 font-medium py-2 px-2 hover:bg-slate-50 rounded-lg transition-colors">{t('landing.nav.faq')}</button>
               <div className="pt-2 flex flex-col gap-2">
@@ -825,6 +833,205 @@ export default function Landing() {
               description={t('landing.features.coach.description')}
               mockup={<CoachMockup />}
             />
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="priser" className="py-20 lg:py-28 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.pricing.sectionLabel')}</span>
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.pricing.title')}</h2>
+            <p className="text-slate-600 text-lg">{t('landing.pricing.description')}</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 max-w-5xl mx-auto">
+            {/* Organization License */}
+            <div className="relative bg-white rounded-2xl p-8 shadow-lg border-2 border-violet-200 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <span className="bg-violet-600 text-white text-xs font-bold px-4 py-1.5 rounded-full">
+                  {t('landing.pricing.mostPopular')}
+                </span>
+              </div>
+              <div className="w-14 h-14 bg-violet-100 rounded-xl flex items-center justify-center mb-5">
+                <Building2 className="w-7 h-7 text-violet-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">{t('landing.pricing.organization.title')}</h3>
+              <p className="text-slate-500 text-sm mb-4">{t('landing.pricing.organization.description')}</p>
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-bold text-slate-900">{t('landing.pricing.organization.price')}</span>
+                <span className="text-slate-500">{t('landing.pricing.organization.currency')}</span>
+                <span className="text-slate-400">{t('landing.pricing.organization.period')}</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {(t('landing.pricing.organization.features', { returnObjects: true }) as string[]).map((feature, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-slate-600 text-sm">
+                    <span className="w-5 h-5 rounded-full bg-violet-100 text-violet-600 flex items-center justify-center text-xs flex-shrink-0">
+                      <Check className="w-3 h-3" />
+                    </span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="mailto:sales@jobin.se"
+                className="block w-full bg-violet-600 text-white text-center py-3 rounded-xl font-semibold hover:bg-violet-700 transition-colors"
+              >
+                {t('landing.pricing.cta')}
+              </a>
+            </div>
+
+            {/* Per Consultant */}
+            <div className="bg-white rounded-2xl p-8 shadow-lg border border-slate-200 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="w-14 h-14 bg-teal-100 rounded-xl flex items-center justify-center mb-5">
+                <UserCheck className="w-7 h-7 text-teal-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">{t('landing.pricing.consultant.title')}</h3>
+              <p className="text-slate-500 text-sm mb-4">{t('landing.pricing.consultant.description')}</p>
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-bold text-slate-900">{t('landing.pricing.consultant.price')}</span>
+                <span className="text-slate-500">{t('landing.pricing.consultant.currency')}</span>
+                <span className="text-slate-400">{t('landing.pricing.consultant.period')}</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {(t('landing.pricing.consultant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-slate-600 text-sm">
+                    <span className="w-5 h-5 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center text-xs flex-shrink-0">
+                      <Check className="w-3 h-3" />
+                    </span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <a
+                href="mailto:sales@jobin.se"
+                className="block w-full bg-white text-teal-600 border-2 border-teal-200 text-center py-3 rounded-xl font-semibold hover:bg-teal-50 hover:border-teal-300 transition-colors"
+              >
+                {t('landing.pricing.cta')}
+              </a>
+            </div>
+
+            {/* Participant - Free */}
+            <div className="bg-gradient-to-br from-green-50 to-white rounded-2xl p-8 shadow-lg border border-green-200 hover:shadow-xl transition-all hover:-translate-y-1">
+              <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-5">
+                <Users className="w-7 h-7 text-green-600" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-800 mb-2">{t('landing.pricing.participant.title')}</h3>
+              <p className="text-slate-500 text-sm mb-4">{t('landing.pricing.participant.description')}</p>
+              <div className="flex items-baseline gap-1 mb-6">
+                <span className="text-4xl font-bold text-green-600">{t('landing.pricing.participant.priceLabel')}</span>
+              </div>
+              <ul className="space-y-3 mb-8">
+                {(t('landing.pricing.participant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
+                  <li key={idx} className="flex items-center gap-3 text-slate-600 text-sm">
+                    <span className="w-5 h-5 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-xs flex-shrink-0">
+                      <Check className="w-3 h-3" />
+                    </span>
+                    {feature}
+                  </li>
+                ))}
+              </ul>
+              <Link
+                to="/register"
+                className="block w-full bg-green-600 text-white text-center py-3 rounded-xl font-semibold hover:bg-green-700 transition-colors"
+              >
+                {t('landing.nav.getStartedFree')}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* All Features Section */}
+      <section className="py-20 lg:py-28 bg-gradient-to-b from-slate-50 to-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="inline-block text-violet-600 font-semibold text-sm uppercase tracking-wider mb-3">{t('landing.allFeatures.sectionLabel')}</span>
+            <h2 className="text-3xl lg:text-5xl font-bold text-slate-900 mb-4 tracking-tight">{t('landing.allFeatures.title')}</h2>
+            <p className="text-slate-600 text-lg">{t('landing.allFeatures.description')}</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+            {/* CV & Ansökan */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+              <h4 className="font-bold text-violet-600 mb-4 flex items-center gap-2">
+                <FileText className="w-5 h-5" />
+                {t('landing.allFeatures.categories.cv')}
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.cvBuilder')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.cvTemplates')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.linkedinImport')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.coverLetter')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.atsAnalysis')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.pdfExport')}</li>
+              </ul>
+            </div>
+
+            {/* Jobbsökning */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+              <h4 className="font-bold text-orange-600 mb-4 flex items-center gap-2">
+                <Briefcase className="w-5 h-5" />
+                {t('landing.allFeatures.categories.search')}
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.jobSearch')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.jobAlerts')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.jobMap')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.savedJobs')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.applicationTracker')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.companyResearch')}</li>
+              </ul>
+            </div>
+
+            {/* Utveckling */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+              <h4 className="font-bold text-teal-600 mb-4 flex items-center gap-2">
+                <Lightbulb className="w-5 h-5" />
+                {t('landing.allFeatures.categories.development')}
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.interestGuide')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.interviewTraining')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.careerCoach')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.skillsAnalysis')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.salaryGuide')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.linkedinOptimizer')}</li>
+              </ul>
+            </div>
+
+            {/* Välmående */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+              <h4 className="font-bold text-pink-600 mb-4 flex items-center gap-2">
+                <Heart className="w-5 h-5" />
+                {t('landing.allFeatures.categories.wellness')}
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.exercises')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.knowledgeBase')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.diary')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.moodTracking')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.crisisSupport')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.calendar')}</li>
+              </ul>
+            </div>
+
+            {/* Administration */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+              <h4 className="font-bold text-indigo-600 mb-4 flex items-center gap-2">
+                <BarChart3 className="w-5 h-5" />
+                {t('landing.allFeatures.categories.admin')}
+              </h4>
+              <ul className="space-y-2 text-sm text-slate-600">
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.consultantPortal')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.participantOverview')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.progressReports')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.groupManagement')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.statistics')}</li>
+                <li className="flex items-start gap-2"><Check className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />{t('landing.allFeatures.list.chat')}</li>
+              </ul>
+            </div>
           </div>
         </div>
       </section>
