@@ -2984,5 +2984,622 @@ export const exercises: Exercise[] = [
         ]
       }
     ]
+  },
+  // === NYA ÖVNINGAR 2026 ===
+  {
+    id: 'references-prep',
+    title: 'Förbered dina referenser',
+    description: 'Välj rätt personer, förbered dem ordentligt och se till att dina referenser stärker din ansökan.',
+    icon: UserCheck,
+    category: 'Jobbsökning',
+    duration: '20-25 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Välj rätt referenser',
+        description: 'Identifiera de bästa personerna att använda som referenser.',
+        questions: [
+          { id: 'ref1-q1', text: 'Lista 5 personer som skulle kunna vara en bra referens för dig (tidigare chefer, kollegor, lärare).', placeholder: '1. Min tidigare chef på...\n2. Min kollega som...' },
+          { id: 'ref1-q2', text: 'För varje person: Vad kan de berätta positivt om dig?', placeholder: 'Min chef kan berätta om min förmåga att...' },
+          { id: 'ref1-q3', text: 'Vilka av dessa har du bäst relation med och senast varit i kontakt med?', placeholder: 'Jag har bäst kontakt med...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Kontakta och förbered',
+        description: 'Be om tillstånd och ge dem information.',
+        questions: [
+          { id: 'ref2-q1', text: 'Skriv ett meddelande där du frågar om någon kan vara din referens.', placeholder: 'Hej [namn], jag hoppas allt är bra med dig...' },
+          { id: 'ref2-q2', text: 'Vilken information bör du ge till din referens om jobbet du söker?', placeholder: 'Jag ska berätta om jobbets krav, företaget och...' },
+          { id: 'ref2-q3', text: 'Vilka av dina styrkor och erfarenheter vill du att de lyfter fram?', placeholder: 'Jag vill att de lyfter fram min...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Referenslistans utformning',
+        description: 'Skapa en professionell referenslista.',
+        questions: [
+          { id: 'ref3-q1', text: 'Hur ska din referenslista se ut? Vilken information ska finnas med?', placeholder: 'Namn, titel, företag, relation till mig, kontaktuppgifter...' },
+          { id: 'ref3-q2', text: 'När ska du ge din referenslista till arbetsgivaren?', placeholder: 'Jag ger den när de ber om det, vanligtvis...' },
+          { id: 'ref3-q3', text: 'Hur ska du tacka dina referenser efter att de hjälpt dig?', placeholder: 'Jag ska skicka ett tack-meddelande där jag...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'feedback-request',
+    title: 'Be om feedback efter avslag',
+    description: 'Lär dig be om konstruktiv feedback från arbetsgivare för att förbättra dina chanser vid nästa ansökan.',
+    icon: MessageCircle,
+    category: 'Jobbsökning',
+    duration: '15-20 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Förstå värdet av feedback',
+        description: 'Varför feedback efter avslag är guld värt.',
+        questions: [
+          { id: 'fb1-q1', text: 'Vad kan du lära dig av feedback efter ett avslag?', placeholder: 'Jag kan lära mig vad jag kan förbättra...' },
+          { id: 'fb1-q2', text: 'Varför är det viktigt att be om feedback på ett professionellt sätt?', placeholder: 'Det är viktigt eftersom...' },
+          { id: 'fb1-q3', text: 'Hur kan feedback hjälpa dig i din nästa ansökan?', placeholder: 'Feedback kan hjälpa mig att...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Formulera din förfrågan',
+        description: 'Skriv ett professionellt mejl som ökar chansen att få svar.',
+        questions: [
+          { id: 'fb2-q1', text: 'Skriv ett kort, artigt mejl där du ber om feedback efter ett avslag.', placeholder: 'Hej [namn],\n\nTack för att ni meddelade mig om ert beslut...' },
+          { id: 'fb2-q2', text: 'Vilka specifika frågor kan du ställa för att få användbar feedback?', placeholder: '1. Vad kunde jag ha gjort annorlunda?\n2. Vilka kompetenser saknades?' },
+          { id: 'fb2-q3', text: 'Hur visar du att du uppskattar deras tid och svar?', placeholder: 'Jag avslutar med att tacka och...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Använd feedbacken',
+        description: 'Omvandla feedback till konkreta förbättringar.',
+        questions: [
+          { id: 'fb3-q1', text: 'Hur ska du dokumentera och komma ihåg feedback du får?', placeholder: 'Jag ska skriva ner det i...' },
+          { id: 'fb3-q2', text: 'Hur kan du göra om feedback till konkreta åtgärder?', placeholder: 'Om de säger att jag saknar X, ska jag...' },
+          { id: 'fb3-q3', text: 'När ska du granska och använda din samlade feedback?', placeholder: 'Innan varje ny ansökan ska jag...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'work-life-balance-plan',
+    title: 'Skapa balans mellan jobb och fritid',
+    description: 'Planera en hållbar balans mellan arbete och privatliv för långsiktigt välmående och produktivitet.',
+    icon: HeartPulse,
+    category: 'Välmående',
+    duration: '25-30 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Din nuvarande situation',
+        description: 'Utvärdera hur din balans ser ut idag.',
+        questions: [
+          { id: 'wlb1-q1', text: 'Hur ser din typiska vecka ut? Hur mycket tid går till jobb vs fritid?', placeholder: 'En vanlig vecka lägger jag... timmar på jobb...' },
+          { id: 'wlb1-q2', text: 'Vilka aktiviteter utanför jobbet ger dig energi?', placeholder: 'Jag får energi av...' },
+          { id: 'wlb1-q3', text: 'Vad fungerar bra med din nuvarande balans? Vad fungerar dåligt?', placeholder: 'Det som fungerar är... Det som inte fungerar är...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Definiera din ideala balans',
+        description: 'Skapa en vision för hur du vill ha det.',
+        questions: [
+          { id: 'wlb2-q1', text: 'Hur skulle en perfekt vecka med god balans se ut för dig?', placeholder: 'En ideal vecka skulle innefatta...' },
+          { id: 'wlb2-q2', text: 'Vilka gränser behöver du sätta för ditt arbete?', placeholder: 'Jag behöver sätta gränser kring...' },
+          { id: 'wlb2-q3', text: 'Vilka fasta aktiviteter vill du prioritera varje vecka?', placeholder: 'Jag vill prioritera träning på..., tid med familjen...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Handlingsplan för balans',
+        description: 'Skapa konkreta förändringar.',
+        questions: [
+          { id: 'wlb3-q1', text: 'Vilka 3 förändringar ska du göra för att förbättra din balans?', placeholder: '1. Jag ska sluta kolla jobbmejl efter kl 18\n2. Jag ska...' },
+          { id: 'wlb3-q2', text: 'Hur ska du kommunicera dina gränser till arbetsgivare/kollegor?', placeholder: 'Jag kommer att säga...' },
+          { id: 'wlb3-q3', text: 'Hur ska du utvärdera om din nya balans fungerar?', placeholder: 'Jag ska checka in med mig själv varje...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'salary-negotiation-practice',
+    title: 'Öva löneförhandling',
+    description: 'Träna på att förhandla lön genom rollspel och scenarioövningar. Bygg självförtroende inför det viktiga samtalet.',
+    icon: Coins,
+    category: 'Arbetsrätt',
+    duration: '30-40 min',
+    difficulty: 'Utmanande',
+    steps: [
+      {
+        id: 1,
+        title: 'Förberedelse och research',
+        description: 'Samla fakta och argument.',
+        questions: [
+          { id: 'sn1-q1', text: 'Vad är marknadslönen för den roll och bransch du söker? Ange ett spann.', placeholder: 'Enligt mina efterforskningar ligger lönen på...' },
+          { id: 'sn1-q2', text: 'Lista 5 konkreta argument för varför du är värd den lönen du vill ha.', placeholder: '1. Jag har X års erfarenhet av...\n2. Jag har uppnått...' },
+          { id: 'sn1-q3', text: 'Vad är ditt ideallön, din målsättning och din lägsta acceptabla nivå?', placeholder: 'Ideal: X kr, Mål: Y kr, Minimum: Z kr' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Scenarioövningar',
+        description: 'Öva på vanliga situationer i löneförhandlingen.',
+        questions: [
+          { id: 'sn2-q1', text: 'Arbetsgivaren frågar: "Vad har du för löneanspråk?" Skriv ditt svar.', placeholder: 'Baserat på min erfarenhet och marknadslönen...' },
+          { id: 'sn2-q2', text: 'Arbetsgivaren säger: "Vi kan tyvärr inte gå så högt." Hur svarar du?', placeholder: 'Jag förstår, men jag undrar om vi kan diskutera...' },
+          { id: 'sn2-q3', text: 'Om lönen inte går att förhandla – vilka andra förmåner kan du be om?', placeholder: 'Jag skulle vilja diskutera flexibilitet, semester...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Rollspel och avslut',
+        description: 'Simulera hela samtalet.',
+        questions: [
+          { id: 'sn3-q1', text: 'Skriv ett manus för hur du inleder löneförhandlingen.', placeholder: 'Tack för erbjudandet. Jag är mycket intresserad av rollen...' },
+          { id: 'sn3-q2', text: 'Hur ska du avsluta förhandlingen om ni når en överenskommelse?', placeholder: 'Jag är nöjd med detta och ser fram emot att...' },
+          { id: 'sn3-q3', text: 'Vem kan du öva denna förhandling med innan det riktiga samtalet?', placeholder: 'Jag ska be [namn] att rollspela med mig...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'digital-cleanup',
+    title: 'Rensa din digitala närvaro',
+    description: 'Gå igenom och uppdatera dina sociala medier och digitala fotspår så att du gör ett bra intryck på potentiella arbetsgivare.',
+    icon: Monitor,
+    category: 'Digital närvaro',
+    duration: '30-40 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Googla dig själv',
+        description: 'Se vad arbetsgivare hittar när de söker på dig.',
+        questions: [
+          { id: 'dc1-q1', text: 'Googla ditt namn. Vad dyker upp på första sidan?', placeholder: 'När jag söker på mitt namn ser jag...' },
+          { id: 'dc1-q2', text: 'Finns det något i sökresultaten som kan ge ett negativt intryck?', placeholder: 'Jag hittade... som kanske inte är bra...' },
+          { id: 'dc1-q3', text: 'Vilka av dina sociala medier-profiler syns i sökningen?', placeholder: 'LinkedIn syns, Instagram syns...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Granska dina profiler',
+        description: 'Gå igenom varje plattform.',
+        questions: [
+          { id: 'dc2-q1', text: 'Facebook: Vad behöver tas bort, döljas eller uppdateras?', placeholder: 'Jag ska ta bort gamla foton som..., uppdatera min...' },
+          { id: 'dc2-q2', text: 'Instagram: Är ditt konto privat? Behöver du rensa gamla inlägg?', placeholder: 'Mitt konto är offentligt/privat. Jag ska...' },
+          { id: 'dc2-q3', text: 'LinkedIn: Är profilen komplett och uppdaterad? Har du en bra profilbild?', placeholder: 'Min LinkedIn behöver uppdateras med...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Bygg en positiv närvaro',
+        description: 'Skapa innehåll som stärker ditt professionella varumärke.',
+        questions: [
+          { id: 'dc3-q1', text: 'Vilket positivt innehåll kan du lägga upp för att förbättra sökresultaten?', placeholder: 'Jag kan lägga upp artiklar om..., projekt jag gjort...' },
+          { id: 'dc3-q2', text: 'Hur kan du använda LinkedIn mer aktivt för att synas positivt?', placeholder: 'Jag kan dela inlägg om..., kommentera på...' },
+          { id: 'dc3-q3', text: 'Hur ofta ska du se över din digitala närvaro framöver?', placeholder: 'Jag ska göra en genomgång varje...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'remote-work-prep',
+    title: 'Förbereda för distansarbete',
+    description: 'Skapa förutsättningar för framgångsrikt distansarbete – från hemmakontor till kommunikation och rutiner.',
+    icon: Laptop,
+    category: 'Karriärutveckling',
+    duration: '25-35 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Hemmakontor och utrustning',
+        description: 'Skapa en produktiv arbetsmiljö hemma.',
+        questions: [
+          { id: 'rw1-q1', text: 'Var i ditt hem kan du skapa en arbetsplats? Vad behöver du?', placeholder: 'Jag kan sitta i... Jag behöver ett skrivbord, bra stol...' },
+          { id: 'rw1-q2', text: 'Vilken teknisk utrustning behöver du för distansarbete?', placeholder: 'Jag behöver dator, headset, webbkamera, bra wifi...' },
+          { id: 'rw1-q3', text: 'Hur kan du minimera störningar under arbetstid?', placeholder: 'Jag kan stänga dörren, använda hörlurar...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Rutiner och struktur',
+        description: 'Bygg hållbara arbetsdagsrutiner.',
+        questions: [
+          { id: 'rw2-q1', text: 'Hur ska en typisk distansarbetsdag se ut för dig?', placeholder: 'Jag börjar kl 8 med... Lunch 12-13... Slutar 17...' },
+          { id: 'rw2-q2', text: 'Hur ska du markera början och slutet av arbetsdagen?', placeholder: 'Jag startar dagen med kaffe vid skrivbordet...' },
+          { id: 'rw2-q3', text: 'Hur ofta ska du ta pauser? Vad gör du på pauserna?', placeholder: 'Jag tar en kort paus var 90:e minut...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Kommunikation och synlighet',
+        description: 'Håll kontakten med kollegor och chef.',
+        questions: [
+          { id: 'rw3-q1', text: 'Hur ska du hålla regelbunden kontakt med chefen och teamet?', placeholder: 'Dagliga standups, veckomöten, check-ins...' },
+          { id: 'rw3-q2', text: 'Hur visar du att du är tillgänglig och produktiv?', placeholder: 'Jag svarar snabbt på meddelanden, uppdaterar i...' },
+          { id: 'rw3-q3', text: 'Vilka kommunikationsverktyg behöver du behärska?', placeholder: 'Teams, Slack, Zoom... Jag ska lära mig...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'onboarding-success',
+    title: 'Lyckas med din onboarding',
+    description: 'Maximera dina första 90 dagar på nya jobbet genom att planera din introduktion och bygga relationer.',
+    icon: Rocket,
+    category: 'Karriärutveckling',
+    duration: '25-35 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Första veckan',
+        description: 'Fokus på lärande och observation.',
+        questions: [
+          { id: 'ob1-q1', text: 'Vilka frågor vill du få svar på under din första vecka?', placeholder: 'Jag vill veta hur teamet fungerar, vilka verktygen är...' },
+          { id: 'ob1-q2', text: 'Hur ska du presentera dig för dina nya kollegor?', placeholder: 'Jag ska berätta kort om min bakgrund och vad jag...' },
+          { id: 'ob1-q3', text: 'Vilken information behöver du samla in? (System, rutiner, kontaktpersoner)', placeholder: 'Jag behöver lära mig systemen för..., vem jag ska...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Första månaden',
+        description: 'Börja bidra och bygga relationer.',
+        questions: [
+          { id: 'ob2-q1', text: 'Vilka nyckelpersoner behöver du bygga relation med?', placeholder: 'Min chef, teamkollegor, personer i andra avdelningar...' },
+          { id: 'ob2-q2', text: 'Vilka "quick wins" kan du åstadkomma tidigt?', placeholder: 'Jag kan föreslå en förbättring av..., hjälpa till med...' },
+          { id: 'ob2-q3', text: 'Hur ska du be om och ta emot feedback?', placeholder: 'Jag ska boka ett möte efter 2 veckor för att...' }
+        ]
+      },
+      {
+        id: 3,
+        title: '90-dagarsplanen',
+        description: 'Sätt upp mål för första kvartalet.',
+        questions: [
+          { id: 'ob3-q1', text: 'Vad ska du ha uppnått efter 90 dagar?', placeholder: 'Jag ska kunna jobba självständigt med..., ha byggt relation med...' },
+          { id: 'ob3-q2', text: 'Hur ska du mäta din framgång under introduktionen?', placeholder: 'Jag vet att det går bra om jag...' },
+          { id: 'ob3-q3', text: 'Vilka utmaningar förväntar du dig och hur ska du hantera dem?', placeholder: 'Jag tror det kan vara svårt att... Jag ska hantera det genom att...' }
+        ]
+      }
+    ]
+  },
+  // === NYA ÖVNINGAR - APRIL 2026 ===
+  {
+    id: 'ai-jobbsokning',
+    title: 'Använd AI smart i jobbsökningen',
+    description: 'Lär dig använda AI-verktyg som ChatGPT för att förbättra CV, personliga brev och intervjuförberedelser.',
+    icon: Brain,
+    category: 'Digital närvaro',
+    duration: '25-35 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'AI för CV och personligt brev',
+        description: 'Använd AI för att förbättra dina ansökningshandlingar.',
+        questions: [
+          { id: 'ai1-q1', text: 'Vilka delar av ditt CV skulle du vilja ha hjälp att förbättra? (Sammanfattning, formuleringar, nyckelord)', placeholder: 'Jag skulle vilja förbättra...' },
+          { id: 'ai1-q2', text: 'Skriv en prompt till AI för att få hjälp med din profiltext. Inkludera din bakgrund och vilken roll du söker.', placeholder: 'Hjälp mig skriva en profiltext för mitt CV. Jag har erfarenhet av... och söker jobb som...' },
+          { id: 'ai1-q3', text: 'Hur kan du säkerställa att texten fortfarande låter som dig och inte som en robot?', placeholder: 'Jag ska anpassa genom att...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'AI för intervjuförberedelser',
+        description: 'Öva intervjufrågor med AI.',
+        questions: [
+          { id: 'ai2-q1', text: 'Vilka intervjufrågor vill du öva på? Lista 5 frågor du är osäker på.', placeholder: '1. Berätta om dig själv\n2. Varför ska vi anställa dig?\n3...' },
+          { id: 'ai2-q2', text: 'Skriv en prompt för att få AI att agera som intervjuare för en specifik roll.', placeholder: 'Agera som en rekryterare som intervjuar mig för en tjänst som...' },
+          { id: 'ai2-q3', text: 'Hur kan du använda AI för att researcha företaget du ska på intervju hos?', placeholder: 'Jag kan be AI sammanfatta...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'AI-etik och begränsningar',
+        description: 'Förstå när AI hjälper och när du bör vara försiktig.',
+        questions: [
+          { id: 'ai3-q1', text: 'Vilka risker finns med att använda AI i jobbsökningen? (Plagiering, opersonligt, fel information)', placeholder: 'Riskerna inkluderar...' },
+          { id: 'ai3-q2', text: 'Hur ska du granska och verifiera det AI producerar?', placeholder: 'Jag ska alltid...' },
+          { id: 'ai3-q3', text: 'Vilka delar av jobbsökningen bör du INTE lämna till AI?', placeholder: 'Jag ska inte låta AI...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'bemanningsforetag',
+    title: 'Jobba med bemanningsföretag',
+    description: 'Förstå hur bemanningsbranschen fungerar och maximera dina chanser att få uppdrag.',
+    icon: Building2,
+    category: 'Jobbsökning',
+    duration: '20-30 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Förstå bemanningsbranschen',
+        description: 'Lär dig hur bemanningsföretag fungerar.',
+        questions: [
+          { id: 'bem1-q1', text: 'Vilka bemanningsföretag finns inom din bransch? Lista minst 5 stycken.', placeholder: '1. Manpower\n2. Adecco\n3. Academic Work\n4...' },
+          { id: 'bem1-q2', text: 'Vilka fördelar och nackdelar ser du med att jobba via bemanning?', placeholder: 'Fördelar: Snabbt in på arbetsmarknaden, prova olika arbetsplatser...\nNackdelar:...' },
+          { id: 'bem1-q3', text: 'Vilken typ av uppdrag söker du? (Kortvarigt, långvarigt, heltid, deltid)', placeholder: 'Jag söker främst...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Registrera dig rätt',
+        description: 'Optimera din profil hos bemanningsföretag.',
+        questions: [
+          { id: 'bem2-q1', text: 'Vilken information behöver du ha redo när du registrerar dig?', placeholder: 'CV, intyg, referensers kontaktuppgifter, körkort...' },
+          { id: 'bem2-q2', text: 'Hur ska du beskriva din tillgänglighet och flexibilitet?', placeholder: 'Jag är tillgänglig för arbete... Jag kan börja med kort varsel...' },
+          { id: 'bem2-q3', text: 'Vilka kompetenser ska du lyfta fram för att vara attraktiv för flera typer av uppdrag?', placeholder: 'Jag ska framhäva min...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Bli vald för uppdrag',
+        description: 'Öka dina chanser att bli utvald.',
+        questions: [
+          { id: 'bem3-q1', text: 'Hur ska du hålla kontakten med bemanningsföretagen?', placeholder: 'Jag ska höra av mig regelbundet genom att...' },
+          { id: 'bem3-q2', text: 'Vad kan du göra för att sticka ut bland andra kandidater?', placeholder: 'Jag kan sticka ut genom att...' },
+          { id: 'bem3-q3', text: 'Hur kan ett bemanningsuppdrag leda till fast anställning?', placeholder: 'Om jag gör ett bra jobb kan det leda till...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'alder-jobbsokning',
+    title: 'Jobbsökning för 50+',
+    description: 'Strategier för dig som är lite äldre på arbetsmarknaden. Vänd erfarenhet till din största fördel.',
+    icon: Award,
+    category: 'Jobbsökning',
+    duration: '25-35 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Vänd ålder till fördel',
+        description: 'Identifiera och kommunicera dina styrkor.',
+        questions: [
+          { id: 'ald1-q1', text: 'Vilka unika styrkor har du tack vare din erfarenhet? Lista minst 5.', placeholder: '1. Mognad och stabilitet\n2. Brett kontaktnät\n3. Erfarenhet av många situationer...' },
+          { id: 'ald1-q2', text: 'Hur kan du visa att du är uppdaterad och lär dig nya saker?', placeholder: 'Jag kan visa det genom att nämna kurser jag tagit, nya verktyg jag lärt mig...' },
+          { id: 'ald1-q3', text: 'Vilka fördomar kan arbetsgivare ha om äldre kandidater och hur bemöter du dem?', placeholder: 'De kan tro att... Jag bemöter det genom att visa...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Anpassa ditt CV',
+        description: 'Modernisera utan att dölja din erfarenhet.',
+        questions: [
+          { id: 'ald2-q1', text: 'Hur långt tillbaka ska du lista arbetslivserfarenhet? Vilka jobb är mest relevanta?', placeholder: 'Jag fokuserar på de senaste 15 åren och lyfter fram...' },
+          { id: 'ald2-q2', text: 'Behöver du uppdatera din digitala kompetens? Vilka verktyg bör du lära dig?', placeholder: 'Jag borde lära mig mer om...' },
+          { id: 'ald2-q3', text: 'Hur ska du beskriva gammal erfarenhet på ett modernt sätt?', placeholder: 'Istället för att skriva... skriver jag...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Nätverk och strategi',
+        description: 'Använd ditt nätverk strategiskt.',
+        questions: [
+          { id: 'ald3-q1', text: 'Vilka i ditt nätverk kan hjälpa dig hitta jobb? Lista minst 10 kontakter.', placeholder: '1. Gamla kollegor\n2. Branschbekanta\n3...' },
+          { id: 'ald3-q2', text: 'Vilka branscher eller företag värdesätter erfarenhet extra högt?', placeholder: 'Jag tror att...' },
+          { id: 'ald3-q3', text: 'Är du öppen för mentorskap, konsultuppdrag eller deltid som väg in?', placeholder: 'Ja, jag skulle kunna tänka mig...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'konflikthantering',
+    title: 'Hantera konflikter på arbetsplatsen',
+    description: 'Lär dig förebygga, hantera och lösa konflikter på jobbet på ett konstruktivt sätt.',
+    icon: Handshake,
+    category: 'Karriärutveckling',
+    duration: '25-35 min',
+    difficulty: 'Utmanande',
+    steps: [
+      {
+        id: 1,
+        title: 'Förstå konflikter',
+        description: 'Identifiera olika typer av konflikter och deras orsaker.',
+        questions: [
+          { id: 'kon1-q1', text: 'Beskriv en konflikt du upplevt på en arbetsplats. Vad handlade den om?', placeholder: 'Det var en situation där...' },
+          { id: 'kon1-q2', text: 'Vilka var de underliggande orsakerna till konflikten?', placeholder: 'Orsakerna var troligen...' },
+          { id: 'kon1-q3', text: 'Hur brukar du reagera när det uppstår konflikter? (Undvika, konfrontera, kompromissa)', placeholder: 'Jag brukar...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Kommunikation i konflikt',
+        description: 'Lär dig kommunicera konstruktivt.',
+        questions: [
+          { id: 'kon2-q1', text: 'Hur kan du framföra kritik utan att den andra personen blir defensiv?', placeholder: 'Jag kan använda jag-budskap som...' },
+          { id: 'kon2-q2', text: 'Vad innebär aktivt lyssnande och hur kan du öva på det?', placeholder: 'Aktivt lyssnande innebär att...' },
+          { id: 'kon2-q3', text: 'Skriv ett exempel på hur du omformulerar en anklagelse till ett konstruktivt samtal.', placeholder: 'Istället för "Du gör alltid fel" kan jag säga...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Lösning och förebyggande',
+        description: 'Hitta lösningar och förebygg framtida konflikter.',
+        questions: [
+          { id: 'kon3-q1', text: 'Vilka strategier finns för att lösa konflikter? (Kompromiss, samarbete, medling)', placeholder: 'Man kan lösa konflikter genom att...' },
+          { id: 'kon3-q2', text: 'Hur kan du förebygga konflikter genom tydlig kommunikation?', placeholder: 'Jag kan förebygga genom att...' },
+          { id: 'kon3-q3', text: 'När bör du involvera en chef eller HR i en konflikt?', placeholder: 'Jag bör involvera andra när...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'eget-foretag-start',
+    title: 'Starta eget – är det för dig?',
+    description: 'Utforska om egenföretagande passar dig och ta de första stegen mot att starta eget.',
+    icon: Lightbulb,
+    category: 'Karriärutveckling',
+    duration: '30-40 min',
+    difficulty: 'Utmanande',
+    steps: [
+      {
+        id: 1,
+        title: 'Passar egenföretagande dig?',
+        description: 'Utvärdera om du har rätt förutsättningar.',
+        questions: [
+          { id: 'eg1-q1', text: 'Vilka egenskaper har framgångsrika företagare? Vilka av dessa har du?', placeholder: 'Framgångsrika företagare är... Jag har...' },
+          { id: 'eg1-q2', text: 'Vad motiverar dig att vilja starta eget? Vad vill du undvika/uppnå?', placeholder: 'Jag vill starta eget för att...' },
+          { id: 'eg1-q3', text: 'Vilka risker ser du med att starta eget? Hur skulle du hantera dem?', placeholder: 'Riskerna är... Jag skulle hantera dem genom...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Din affärsidé',
+        description: 'Utveckla och testa din idé.',
+        questions: [
+          { id: 'eg2-q1', text: 'Vad skulle du erbjuda? Beskriv din produkt eller tjänst.', placeholder: 'Jag skulle erbjuda...' },
+          { id: 'eg2-q2', text: 'Vem är din målgrupp? Vilka behov löser du för dem?', placeholder: 'Min målgrupp är... De behöver...' },
+          { id: 'eg2-q3', text: 'Finns det konkurrenter? Vad skulle skilja dig från dem?', placeholder: 'Mina konkurrenter är... Jag skulle skilja mig genom...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Praktiska steg',
+        description: 'Vad behöver du göra för att komma igång?',
+        questions: [
+          { id: 'eg3-q1', text: 'Vilken företagsform passar dig? (Enskild firma, AB, handelsbolag)', placeholder: 'Jag tror att... passar mig för att...' },
+          { id: 'eg3-q2', text: 'Hur ska du finansiera starten? Vilka kostnader förväntar du dig?', placeholder: 'Jag planerar att finansiera genom... Kostnaderna inkluderar...' },
+          { id: 'eg3-q3', text: 'Vilka resurser och stöd finns för dig som vill starta eget?', placeholder: 'Jag kan få hjälp från Nyföretagarcentrum, Almi...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'kommunikation-arbetsplats',
+    title: 'Professionell kommunikation',
+    description: 'Förbättra din skriftliga och muntliga kommunikation på arbetsplatsen.',
+    icon: MessageCircle,
+    category: 'Karriärutveckling',
+    duration: '25-35 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Skriftlig kommunikation',
+        description: 'Skriv tydliga och professionella meddelanden.',
+        questions: [
+          { id: 'kom1-q1', text: 'Hur strukturerar du ett professionellt e-postmeddelande? Vilka delar ska ingå?', placeholder: 'Ett bra mejl innehåller: tydlig ämnesrad, hälsning, syfte...' },
+          { id: 'kom1-q2', text: 'Skriv ett exempel på ett mejl där du ber om hjälp med något.', placeholder: 'Hej [namn],\n\nJag hoppas du har det bra...' },
+          { id: 'kom1-q3', text: 'Vilka vanliga misstag bör du undvika i skriftlig kommunikation?', placeholder: 'Jag bör undvika...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Muntlig kommunikation',
+        description: 'Kommunicera tydligt i samtal och möten.',
+        questions: [
+          { id: 'kom2-q1', text: 'Hur förbereder du dig inför ett viktigt samtal eller möte?', placeholder: 'Jag förbereder mig genom att...' },
+          { id: 'kom2-q2', text: 'Hur kan du vara tydlig utan att vara otrevlig när du har en avvikande åsikt?', placeholder: 'Jag kan säga något som...' },
+          { id: 'kom2-q3', text: 'Hur ger du och tar emot feedback på ett konstruktivt sätt?', placeholder: 'När jag ger feedback säger jag... När jag får feedback...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Digital kommunikation',
+        description: 'Navigera kommunikation i digitala kanaler.',
+        questions: [
+          { id: 'kom3-q1', text: 'Vilka regler gäller för chattverktyg som Slack/Teams på jobbet?', placeholder: 'I arbetsrelaterade chattar bör man...' },
+          { id: 'kom3-q2', text: 'Hur balanserar du snabbhet med eftertänksamhet i digital kommunikation?', placeholder: 'Jag balanserar genom att...' },
+          { id: 'kom3-q3', text: 'När är det bättre att ringa eller ha ett möte istället för att skriva?', placeholder: 'Det är bättre att prata när...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'kreativt-jobbsokande',
+    title: 'Kreativa metoder för jobbsökning',
+    description: 'Tänk utanför boxen och hitta jobb på okonventionella sätt.',
+    icon: Sparkles,
+    category: 'Jobbsökning',
+    duration: '25-35 min',
+    difficulty: 'Medel',
+    steps: [
+      {
+        id: 1,
+        title: 'Hitta dolda jobb',
+        description: 'De flesta jobb annonseras aldrig – så hittar du dem.',
+        questions: [
+          { id: 'kre1-q1', text: 'Vad är den "dolda arbetsmarknaden" och varför finns den?', placeholder: 'Den dolda arbetsmarknaden är...' },
+          { id: 'kre1-q2', text: 'Hur kan du ta kontakt med företag som inte annonserar just nu?', placeholder: 'Jag kan kontakta dem genom att...' },
+          { id: 'kre1-q3', text: 'Skriv ett utkast till ett "spontanansökan"-mejl till ett företag du är intresserad av.', placeholder: 'Hej,\n\nJag skriver till er för att...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Stick ut från mängden',
+        description: 'Kreativa sätt att få uppmärksamhet.',
+        questions: [
+          { id: 'kre2-q1', text: 'Vilka kreativa metoder har du hört talas om? (Video-CV, projekt, annonskampanj)', placeholder: 'Jag har hört om...' },
+          { id: 'kre2-q2', text: 'Vad skulle du kunna skapa för att visa din kompetens? (Portfolio, demo, case study)', placeholder: 'Jag skulle kunna skapa...' },
+          { id: 'kre2-q3', text: 'Finns det något unikt med dig som du kan använda för att sticka ut?', placeholder: 'Det unika med mig är...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Bygg ditt varumärke',
+        description: 'Bli känd för det du kan.',
+        questions: [
+          { id: 'kre3-q1', text: 'Hur kan du dela med dig av din kunskap online? (Blogg, LinkedIn, podcast)', placeholder: 'Jag kan dela kunskap genom att...' },
+          { id: 'kre3-q2', text: 'Vilka evenemang eller communities kan du engagera dig i för att synas?', placeholder: 'Jag kan delta i...' },
+          { id: 'kre3-q3', text: 'Vad vill du att folk ska tänka när de hör ditt namn?', placeholder: 'Jag vill att de ska tänka...' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'sasongsjobb',
+    title: 'Hitta och lyckas med säsongsjobb',
+    description: 'Strategier för att hitta säsongsarbete och använda det som språngbräda i karriären.',
+    icon: Calendar,
+    category: 'Jobbsökning',
+    duration: '20-25 min',
+    difficulty: 'Lätt',
+    steps: [
+      {
+        id: 1,
+        title: 'Hitta säsongsjobb',
+        description: 'Var finns jobben och när ska du söka?',
+        questions: [
+          { id: 'sas1-q1', text: 'Vilka branscher har säsongsjobb? Lista minst 5 exempel.', placeholder: '1. Turism (sommar)\n2. Detaljhandel (jul)\n3. Jordbruk...' },
+          { id: 'sas1-q2', text: 'När bör du börja söka säsongsjobb? (Hur långt innan säsongen)', placeholder: 'För sommarjobb bör jag söka redan i...' },
+          { id: 'sas1-q3', text: 'Vilka säsongsjobb skulle passa dig och din situation?', placeholder: 'Jag skulle passa för...' }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Ansökan och intervju',
+        description: 'Sälj in dig för tillfälliga tjänster.',
+        questions: [
+          { id: 'sas2-q1', text: 'Vilka egenskaper värderas extra högt för säsongsjobb?', placeholder: 'Flexibilitet, snabbhet att lära, uthållighet...' },
+          { id: 'sas2-q2', text: 'Hur visar du att du är pålitlig och kommer att stanna hela säsongen?', placeholder: 'Jag kan visa det genom att...' },
+          { id: 'sas2-q3', text: 'Hur hanterar du frågan om vad du ska göra efter säsongen?', placeholder: 'Jag säger att...' }
+        ]
+      },
+      {
+        id: 3,
+        title: 'Säsongsjobb som karriärsteg',
+        description: 'Använd säsongsjobb strategiskt.',
+        questions: [
+          { id: 'sas3-q1', text: 'Hur kan ett säsongsjobb leda till fast anställning?', placeholder: 'Genom att göra ett bra jobb kan jag...' },
+          { id: 'sas3-q2', text: 'Vilka kontakter och erfarenheter kan du få under säsongen?', placeholder: 'Jag kan få erfarenhet av... och kontakt med...' },
+          { id: 'sas3-q3', text: 'Hur ska du dokumentera din erfarenhet för framtida jobbsökningar?', placeholder: 'Jag ska spara...' }
+        ]
+      }
+    ]
   }
 ]
