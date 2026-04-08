@@ -1,5 +1,5 @@
 /**
- * Search Tab - Look up companies by organization number
+ * Search Tab - Look up companies by organization number or AI search
  */
 import { useState, useEffect } from 'react'
 import {
@@ -16,6 +16,10 @@ import {
   AlertTriangle,
   CheckCircle2,
   XCircle,
+  Sparkles,
+  Hash,
+  CheckCheck,
+  Save,
 } from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -30,6 +34,7 @@ import {
   type BolagsverketCompany,
   type BolagsverketDocument,
 } from '@/services/bolagsverketApi'
+import { searchCompaniesWithAI, type AICompanyResult } from '@/services/aiCompanySearchApi'
 import { showToast } from '@/components/Toast'
 
 // Company status badge based on raw data from Bolagsverket
@@ -87,7 +92,10 @@ function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
   return null
 }
 
+type SearchMode = 'orgnr' | 'ai'
+
 export default function SearchTab() {
+  const [searchMode, setSearchMode] = useState<SearchMode>('ai')
   const [searchQuery, setSearchQuery] = useState('')
   const [isSearching, setIsSearching] = useState(false)
   const [searchResult, setSearchResult] = useState<BolagsverketCompany | null>(null)
@@ -96,6 +104,12 @@ export default function SearchTab() {
   const [documents, setDocuments] = useState<BolagsverketDocument[]>([])
   const [isLoadingDocs, setIsLoadingDocs] = useState(false)
   const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null)
+
+  // AI Search state
+  const [aiResults, setAiResults] = useState<AICompanyResult[]>([])
+  const [aiSearchStats, setAiSearchStats] = useState<{ total: number; verified: number } | null>(null)
+  const [savingCompanyId, setSavingCompanyId] = useState<string | null>(null)
+  const [selectedForSave, setSelectedForSave] = useState<Set<string>>(new Set())
 
   const { lookupCompany, addCompany, isCompanySaved } = useSpontaneousCompanies()
 
@@ -143,7 +157,110 @@ export default function SearchTab() {
     }
   }
 
+  // AI Search handler
+  const handleAISearch = async () => {
+    const query = searchQuery.trim()
+
+    if (query.length < 3) {
+      setSearchError('Ange minst 3 tecken för AI-sökning')
+      return
+    }
+
+    setIsSearching(true)
+    setSearchError(null)
+    setAiResults([])
+    setAiSearchStats(null)
+    setSearchResult(null)
+    setSelectedForSave(new Set())
+
+    try {
+      const result = await searchCompaniesWithAI(query, 10)
+      setAiResults(result.companies)
+      setAiSearchStats({ total: result.totalFound, verified: result.verified })
+
+      if (result.companies.length === 0) {
+        setSearchError('Inga företag hittades. Prova en annan sökterm.')
+      }
+    } catch (err) {
+      console.error('AI Search error:', err)
+      setSearchError(err instanceof Error ? err.message : 'Sökningen misslyckades')
+    } finally {
+      setIsSearching(false)
+    }
+  }
+
+  // Save AI result company
+  const handleSaveAICompany = async (company: AICompanyResult) => {
+    if (!company.orgNumber) {
+      showToast.error('Kan inte spara företag utan organisationsnummer')
+      return
+    }
+
+    const companyKey = company.orgNumber
+    setSavingCompanyId(companyKey)
+
+    try {
+      await addCompany(company.orgNumber)
+    } finally {
+      setSavingCompanyId(null)
+    }
+  }
+
+  // Save all selected companies
+  const handleSaveSelected = async () => {
+    const toSave = aiResults.filter(c => c.orgNumber && selectedForSave.has(c.orgNumber) && !isCompanySaved(c.orgNumber))
+
+    if (toSave.length === 0) {
+      showToast.warning('Inga nya företag att spara')
+      return
+    }
+
+    setIsSearching(true)
+    let saved = 0
+
+    for (const company of toSave) {
+      try {
+        await addCompany(company.orgNumber!)
+        saved++
+      } catch (err) {
+        console.error('Error saving company:', err)
+      }
+    }
+
+    setSelectedForSave(new Set())
+    setIsSearching(false)
+    showToast.success(`${saved} företag sparade`)
+  }
+
+  // Toggle selection
+  const toggleSelection = (orgNumber: string) => {
+    const newSet = new Set(selectedForSave)
+    if (newSet.has(orgNumber)) {
+      newSet.delete(orgNumber)
+    } else {
+      newSet.add(orgNumber)
+    }
+    setSelectedForSave(newSet)
+  }
+
+  // Select all verified
+  const selectAllVerified = () => {
+    const verified = aiResults.filter(c => c.verified && c.orgNumber && !isCompanySaved(c.orgNumber))
+    setSelectedForSave(new Set(verified.map(c => c.orgNumber!)))
+  }
+
   const handleSearch = async () => {
+    // Clear previous results
+    setAiResults([])
+    setAiSearchStats(null)
+    setSearchResult(null)
+
+    if (searchMode === 'ai') {
+      await handleAISearch()
+      return
+    }
+
+    // Org number search
     const query = searchQuery.trim()
 
     if (!query) {
@@ -158,7 +275,6 @@ export default function SearchTab() {
 
     setIsSearching(true)
     setSearchError(null)
-    setSearchResult(null)
 
     try {
       const result = await lookupCompany(query)
@@ -207,26 +323,61 @@ export default function SearchTab() {
           Sök företag
         </h2>
 
-        <p className="text-slate-600 dark:text-slate-400 mb-4">
-          Ange ett organisationsnummer för att hämta information om ett företag.
-          Du hittar organisationsnummer på{' '}
-          <a
-            href="https://allabolag.se"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary-500 hover:underline inline-flex items-center gap-1"
+        {/* Search Mode Toggle */}
+        <div className="flex gap-2 mb-4">
+          <Button
+            variant={searchMode === 'ai' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setSearchMode('ai')}
+            className="flex items-center gap-2"
           >
-            allabolag.se
-            <ExternalLink className="w-3 h-3" />
-          </a>
+            <Sparkles className="w-4 h-4" />
+            AI-sökning
+          </Button>
+          <Button
+            variant={searchMode === 'orgnr' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setSearchMode('orgnr')}
+            className="flex items-center gap-2"
+          >
+            <Hash className="w-4 h-4" />
+            Org.nummer
+          </Button>
+        </div>
+
+        <p className="text-slate-600 dark:text-slate-400 mb-4">
+          {searchMode === 'ai' ? (
+            <>Beskriv vilka företag du söker, t.ex. "IT-konsulter i Stockholm" eller "advokatbyråer som arbetar med arbetsrätt"</>
+          ) : (
+            <>
+              Ange ett organisationsnummer för att hämta information.
+              Hitta org.nr på{' '}
+              <a
+                href="https://allabolag.se"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary-500 hover:underline inline-flex items-center gap-1"
+              >
+                allabolag.se
+                <ExternalLink className="w-3 h-3" />
+              </a>
+            </>
+          )}
         </p>
 
         <div className="flex gap-3">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            {searchMode === 'ai' ? (
+              <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-400" />
+            ) : (
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            )}
             <Input
               type="text"
-              placeholder="Organisationsnummer (t.ex. 556074-7551)"
+              placeholder={searchMode === 'ai'
+                ? "T.ex. 'Reklambyråer i Göteborg med 10-50 anställda'"
+                : "Organisationsnummer (t.ex. 556074-7551)"
+              }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
@@ -241,6 +392,11 @@ export default function SearchTab() {
           >
             {isSearching ? (
               <Loader2 className="w-4 h-4 animate-spin" />
+            ) : searchMode === 'ai' ? (
+              <>
+                <Sparkles className="w-4 h-4 mr-1" />
+                Sök
+              </>
             ) : (
               'Sök'
             )}
@@ -393,15 +549,176 @@ export default function SearchTab() {
         </Card>
       )}
 
+      {/* AI Search Results */}
+      {aiResults.length > 0 && (
+        <Card className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-lg font-semibold flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-primary-500" />
+                Sökresultat
+              </h3>
+              {aiSearchStats && (
+                <p className="text-sm text-slate-500">
+                  {aiSearchStats.total} företag hittade, {aiSearchStats.verified} verifierade mot Bolagsverket
+                </p>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={selectAllVerified}
+                disabled={aiResults.filter(c => c.verified && c.orgNumber && !isCompanySaved(c.orgNumber)).length === 0}
+              >
+                <CheckCheck className="w-4 h-4 mr-1" />
+                Välj alla verifierade
+              </Button>
+              {selectedForSave.size > 0 && (
+                <Button
+                  size="sm"
+                  onClick={handleSaveSelected}
+                  disabled={isSearching}
+                >
+                  <Save className="w-4 h-4 mr-1" />
+                  Spara valda ({selectedForSave.size})
+                </Button>
+              )}
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {aiResults.map((company, index) => {
+              const isSaved = company.orgNumber ? isCompanySaved(company.orgNumber) : false
+              const isSelected = company.orgNumber ? selectedForSave.has(company.orgNumber) : false
+              const isSaving = savingCompanyId === company.orgNumber
+
+              return (
+                <div
+                  key={company.orgNumber || `company-${index}`}
+                  className={`p-4 rounded-lg border transition-colors ${
+                    isSelected
+                      ? 'border-primary-300 bg-primary-50 dark:bg-primary-900/20'
+                      : 'border-slate-200 dark:border-slate-700 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Selection checkbox */}
+                    {company.orgNumber && !isSaved && (
+                      <div className="pt-1">
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => toggleSelection(company.orgNumber!)}
+                          className="w-4 h-4 text-primary-500 rounded border-slate-300 focus:ring-primary-500"
+                        />
+                      </div>
+                    )}
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <Building2 className="w-4 h-4 text-primary-500 flex-shrink-0" />
+                        <h4 className="font-semibold truncate">{company.name}</h4>
+
+                        {/* Verification badge */}
+                        {company.verified ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+                            <CheckCircle2 className="w-3 h-3" />
+                            Verifierad
+                          </span>
+                        ) : company.orgNumber ? (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+                            <AlertTriangle className="w-3 h-3" />
+                            Ej verifierad
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-600 dark:bg-slate-800">
+                            Saknar org.nr
+                          </span>
+                        )}
+
+                        {isSaved && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30">
+                            <CheckCircle2 className="w-3 h-3" />
+                            Sparad
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-400">
+                        {company.orgNumber && (
+                          <span>Org.nr: {formatOrgNumber(company.orgNumber)}</span>
+                        )}
+                        {(company.verifiedData?.address?.city || company.city) && (
+                          <span className="flex items-center gap-1">
+                            <MapPin className="w-3.5 h-3.5" />
+                            {company.verifiedData?.address?.city || company.city}
+                          </span>
+                        )}
+                        {company.industry && (
+                          <span className="flex items-center gap-1">
+                            <Briefcase className="w-3.5 h-3.5" />
+                            {company.industry}
+                          </span>
+                        )}
+                      </div>
+
+                      {company.description && (
+                        <p className="text-sm text-slate-500 mt-2 line-clamp-2">
+                          {company.description}
+                        </p>
+                      )}
+
+                      {company.verifiedData && (
+                        <p className="text-xs text-slate-400 mt-1">
+                          {company.verifiedData.legalForm}
+                          {company.verifiedData.address?.street && ` • ${company.verifiedData.address.street}`}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Save button */}
+                    {company.orgNumber && !isSaved && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleSaveAICompany(company)}
+                        disabled={isSaving}
+                      >
+                        {isSaving ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Plus className="w-4 h-4" />
+                        )}
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </Card>
+      )}
+
       {/* Tips Section */}
       <Card className="p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
         <h3 className="font-medium mb-2">Tips för spontanansökningar</h3>
         <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-1.5">
-          <li>• Sök efter företag på <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline">allabolag.se</a> för att hitta organisationsnummer</li>
-          <li>• Välj företag som matchar din kompetens och dina intressen</li>
-          <li>• Researcha företaget ordentligt innan du kontaktar dem</li>
-          <li>• Anpassa din ansökan till varje företag – undvik generiska brev</li>
-          <li>• Följ upp om du inte hört något inom 1-2 veckor</li>
+          {searchMode === 'ai' ? (
+            <>
+              <li>• Var specifik i din sökning: bransch, ort, storlek</li>
+              <li>• Exempel: "Arkitektkontor i Malmö", "Startup inom fintech"</li>
+              <li>• Verifierade företag har bekräftade uppgifter från Bolagsverket</li>
+              <li>• Spara flera företag samtidigt med kryssrutorna</li>
+            </>
+          ) : (
+            <>
+              <li>• Hitta org.nr på <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline">allabolag.se</a></li>
+              <li>• Välj företag som matchar din kompetens</li>
+              <li>• Researcha företaget innan du kontaktar dem</li>
+              <li>• Följ upp om du inte hört något inom 1-2 veckor</li>
+            </>
+          )}
         </ul>
       </Card>
     </div>
