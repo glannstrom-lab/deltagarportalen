@@ -1,8 +1,22 @@
 /**
  * Search Tab - Look up companies by organization number
  */
-import { useState } from 'react'
-import { Search, Building2, MapPin, Briefcase, Calendar, Plus, ExternalLink, Loader2 } from 'lucide-react'
+import { useState, useEffect } from 'react'
+import {
+  Search,
+  Building2,
+  MapPin,
+  Briefcase,
+  Calendar,
+  Plus,
+  ExternalLink,
+  Loader2,
+  FileText,
+  Download,
+  AlertTriangle,
+  CheckCircle2,
+  XCircle,
+} from 'lucide-react'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
@@ -11,8 +25,67 @@ import {
   formatOrgNumber,
   isValidOrgNumber,
   getSniDescription,
+  getCompanyDocuments,
+  downloadDocument,
   type BolagsverketCompany,
+  type BolagsverketDocument,
 } from '@/services/bolagsverketApi'
+import { showToast } from '@/components/Toast'
+
+// Company status badge based on raw data from Bolagsverket
+function CompanyStatusBadge({ rawData }: { rawData: Record<string, unknown> }) {
+  // Check for various status indicators
+  const verksamOrg = rawData.verksamOrganisation as Record<string, unknown> | undefined
+  const avregOrg = rawData.avregistreradOrganisation as Record<string, unknown> | undefined
+  const avregOrsak = rawData.avregistreringsorsak as Record<string, unknown> | undefined
+  const pagaende = rawData.pagaendeAvvecklingsEllerOmstruktureringsforfarande as Record<string, unknown> | undefined
+  const pagaendeLista = pagaende?.pagaendeAvvecklingsEllerOmstruktureringsforfarandeLista as Array<Record<string, unknown>> | undefined
+  const reklamsparr = rawData.reklamsparr as Record<string, unknown> | undefined
+
+  // Check if company is deregistered
+  if (avregOrg?.avregistreringsdatum) {
+    const orsak = avregOrsak?.klartext as string || 'Avregistrerat'
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+        <XCircle className="w-3 h-3" />
+        {orsak}
+      </span>
+    )
+  }
+
+  // Check for ongoing liquidation/bankruptcy
+  if (pagaendeLista && pagaendeLista.length > 0) {
+    const process = pagaendeLista[0]
+    const processType = process.klartext as string || process.kod as string || 'Pågående process'
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400">
+        <AlertTriangle className="w-3 h-3" />
+        {processType}
+      </span>
+    )
+  }
+
+  // Check if company is active
+  if (verksamOrg?.kod === 'JA') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400">
+        <CheckCircle2 className="w-3 h-3" />
+        Aktivt
+      </span>
+    )
+  }
+
+  // No marketing block indicator (good for spontaneous applications)
+  if (reklamsparr?.kod === 'NEJ') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+        Öppen för kontakt
+      </span>
+    )
+  }
+
+  return null
+}
 
 export default function SearchTab() {
   const [searchQuery, setSearchQuery] = useState('')
@@ -20,8 +93,55 @@ export default function SearchTab() {
   const [searchResult, setSearchResult] = useState<BolagsverketCompany | null>(null)
   const [searchError, setSearchError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
+  const [documents, setDocuments] = useState<BolagsverketDocument[]>([])
+  const [isLoadingDocs, setIsLoadingDocs] = useState(false)
+  const [downloadingDocId, setDownloadingDocId] = useState<string | null>(null)
 
   const { lookupCompany, addCompany, isCompanySaved } = useSpontaneousCompanies()
+
+  // Load documents when search result changes
+  useEffect(() => {
+    if (searchResult?.orgNumber) {
+      loadDocuments(searchResult.orgNumber)
+    } else {
+      setDocuments([])
+    }
+  }, [searchResult?.orgNumber])
+
+  const loadDocuments = async (orgNumber: string) => {
+    setIsLoadingDocs(true)
+    try {
+      const docs = await getCompanyDocuments(orgNumber)
+      setDocuments(docs)
+    } catch (err) {
+      console.error('Error loading documents:', err)
+      // Don't show error - documents are optional
+    } finally {
+      setIsLoadingDocs(false)
+    }
+  }
+
+  const handleDownloadDocument = async (doc: BolagsverketDocument) => {
+    setDownloadingDocId(doc.id)
+    try {
+      const blob = await downloadDocument(doc.id)
+      // Create download link
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `arsredovisning_${doc.periodEnd}.zip`
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+      showToast.success('Årsredovisning nedladdad')
+    } catch (err) {
+      console.error('Error downloading document:', err)
+      showToast.error('Kunde inte ladda ner dokumentet')
+    } finally {
+      setDownloadingDocId(null)
+    }
+  }
 
   const handleSearch = async () => {
     const query = searchQuery.trim()
@@ -140,6 +260,10 @@ export default function SearchTab() {
               <div className="flex items-center gap-2 mb-2">
                 <Building2 className="w-5 h-5 text-primary-500" />
                 <h3 className="text-xl font-semibold">{searchResult.name}</h3>
+                {/* Company Status Indicator */}
+                {searchResult._raw && (
+                  <CompanyStatusBadge rawData={searchResult._raw} />
+                )}
               </div>
 
               <p className="text-sm text-slate-500 mb-4">
@@ -147,7 +271,7 @@ export default function SearchTab() {
                 {searchResult.legalForm && ` • ${searchResult.legalForm}`}
               </p>
 
-              <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {/* Address */}
                 {searchResult.address && (searchResult.address.street || searchResult.address.city) && (
                   <div className="flex items-start gap-2">
@@ -167,13 +291,19 @@ export default function SearchTab() {
                   <div className="flex items-start gap-2">
                     <Briefcase className="w-4 h-4 text-slate-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">Bransch</p>
+                      <p className="text-sm font-medium">Bransch (SNI)</p>
                       <p className="text-sm text-slate-600 dark:text-slate-400">
-                        {searchResult.sniCodes.map(sni => (
+                        {searchResult.sniCodes.slice(0, 3).map(sni => (
                           <span key={sni.code} className="block">
+                            <span className="text-xs text-slate-400">{sni.code}</span>{' '}
                             {sni.description || getSniDescription(sni.code)}
                           </span>
                         ))}
+                        {searchResult.sniCodes.length > 3 && (
+                          <span className="text-xs text-slate-400">
+                            +{searchResult.sniCodes.length - 3} fler
+                          </span>
+                        )}
                       </p>
                     </div>
                   </div>
@@ -202,10 +332,50 @@ export default function SearchTab() {
                   </p>
                 </div>
               )}
+
+              {/* Annual Reports Section */}
+              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-2 mb-3">
+                  <FileText className="w-4 h-4 text-primary-500" />
+                  <p className="text-sm font-medium">Årsredovisningar</p>
+                  {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
+                </div>
+
+                {!isLoadingDocs && documents.length === 0 && (
+                  <p className="text-sm text-slate-500">Inga årsredovisningar tillgängliga.</p>
+                )}
+
+                {documents.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {documents.slice(0, 5).map((doc) => (
+                      <Button
+                        key={doc.id}
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleDownloadDocument(doc)}
+                        disabled={downloadingDocId === doc.id}
+                        className="text-xs"
+                      >
+                        {downloadingDocId === doc.id ? (
+                          <Loader2 className="w-3 h-3 animate-spin mr-1" />
+                        ) : (
+                          <Download className="w-3 h-3 mr-1" />
+                        )}
+                        {doc.periodEnd}
+                      </Button>
+                    ))}
+                    {documents.length > 5 && (
+                      <span className="text-xs text-slate-400 self-center">
+                        +{documents.length - 5} fler
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             {/* Save Button */}
-            <div>
+            <div className="flex flex-col gap-2">
               <Button
                 onClick={handleSave}
                 disabled={isSaving || alreadySaved}

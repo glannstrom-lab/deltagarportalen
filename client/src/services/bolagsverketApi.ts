@@ -24,9 +24,23 @@ export interface BolagsverketCompany {
   _raw?: Record<string, unknown>
 }
 
+export interface BolagsverketDocument {
+  id: string
+  format: string
+  periodEnd: string
+  registrationDate: string
+}
+
 export interface BolagsverketResponse {
   success: boolean
   company?: BolagsverketCompany
+  error?: string
+}
+
+export interface BolagsverketDocumentsResponse {
+  success: boolean
+  documents?: BolagsverketDocument[]
+  orgNumber?: string
   error?: string
 }
 
@@ -80,23 +94,16 @@ export async function getCompanyInfo(orgNumber: string): Promise<BolagsverketCom
   console.log('[bolagsverket] Fetching company info for', normalized)
 
   try {
-    const { data, error } = await supabase.functions.invoke('bolagsverket', {
-      body: null,
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
+    // Get auth session for the request
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY
 
-    // The Edge Function uses path-based routing, so we need to call it differently
-    // Using fetch directly to the Edge Function URL
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-    const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
     const response = await fetch(`${supabaseUrl}/functions/v1/bolagsverket/company/${normalized}`, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${supabaseKey}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json',
       },
     })
@@ -126,6 +133,84 @@ export async function getCompanyInfo(orgNumber: string): Promise<BolagsverketCom
     console.error('[bolagsverket] Error fetching company:', error)
     throw error
   }
+}
+
+/**
+ * Get list of annual reports for a company
+ */
+export async function getCompanyDocuments(orgNumber: string): Promise<BolagsverketDocument[]> {
+  const normalized = normalizeOrgNumber(orgNumber)
+
+  if (!isValidOrgNumber(normalized)) {
+    throw new Error('Ogiltigt organisationsnummer. Ange 10 siffror.')
+  }
+
+  console.log('[bolagsverket] Fetching documents for', normalized)
+
+  try {
+    const { data: { session } } = await supabase.auth.getSession()
+    const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY
+
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+
+    const response = await fetch(`${supabaseUrl}/functions/v1/bolagsverket/company/${normalized}/documents`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    })
+
+    if (!response.ok) {
+      if (response.status === 404) {
+        return []
+      }
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || `API error: ${response.status}`)
+    }
+
+    const result: BolagsverketDocumentsResponse = await response.json()
+
+    if (!result.success) {
+      return []
+    }
+
+    return result.documents || []
+  } catch (error) {
+    console.error('[bolagsverket] Error fetching documents:', error)
+    throw error
+  }
+}
+
+/**
+ * Get download URL for an annual report
+ */
+export function getDocumentDownloadUrl(dokumentId: string): string {
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+  return `${supabaseUrl}/functions/v1/bolagsverket/document/${dokumentId}`
+}
+
+/**
+ * Download an annual report
+ */
+export async function downloadDocument(dokumentId: string): Promise<Blob> {
+  const { data: { session } } = await supabase.auth.getSession()
+  const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY
+
+  const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+
+  const response = await fetch(`${supabaseUrl}/functions/v1/bolagsverket/document/${dokumentId}`, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+    },
+  })
+
+  if (!response.ok) {
+    throw new Error(`Failed to download document: ${response.status}`)
+  }
+
+  return response.blob()
 }
 
 /**
@@ -196,6 +281,9 @@ export function getSniDescription(sniCode: string): string {
 export default {
   getCompanyInfo,
   getCompaniesInfo,
+  getCompanyDocuments,
+  downloadDocument,
+  getDocumentDownloadUrl,
   normalizeOrgNumber,
   formatOrgNumber,
   isValidOrgNumber,
