@@ -622,7 +622,7 @@ export default function Resources() {
 
   if (loading) {
     return (
-      <PageLayout title={t('resources.title')} description={t('resources.description')}>
+      <PageLayout title={t('resources.title')} description={t('resources.description')} showTabs={false}>
         <div
           className="flex items-center justify-center py-20"
           role="status"
@@ -640,6 +640,7 @@ export default function Resources() {
     <PageLayout
       title={t('resources.title')}
       description={t('resources.description')}
+      showTabs={false}
     >
       {/* Compact Stats Overview */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
