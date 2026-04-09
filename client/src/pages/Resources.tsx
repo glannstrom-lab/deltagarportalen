@@ -405,14 +405,13 @@ export default function Resources() {
   const loadData = async () => {
     setLoading(true)
     try {
-      const [jobs, bookmarks, letters, cv, versions, interest, files] = await Promise.all([
+      const [jobs, bookmarks, letters, cv, versions, interest] = await Promise.all([
         savedJobsApi.getAll(),
         articleBookmarksApi.getBookmarks(),
         coverLetterApi.getAll(),
         cvApi.getCV(),
         cvApi.getVersions(),
-        interestApi.getResults(),
-        Promise.resolve([]), // uploaded files
+        interestApi.getResult(), // Fixed: was getResults()
       ])
 
       setSavedJobs(jobs || [])
@@ -422,7 +421,7 @@ export default function Resources() {
       setHasCV(!!cv)
       setCvVersions(versions || [])
       setInterestResult(interest)
-      setUploadedFiles(files)
+      // Note: uploadedFiles not yet implemented - requires Supabase Storage bucket
     } catch (error) {
       console.error('Error loading resources:', error)
     } finally {

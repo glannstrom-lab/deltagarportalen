@@ -162,12 +162,71 @@ export const articleBookmarksApi = {
       .from('article_bookmarks')
       .select('*')
       .order('bookmarked_at', { ascending: false })
-    
+
     if (error) {
       handleStorageError(error, 'hämta bokmärken')
       return JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
     }
     return data?.map(d => d.article_id) || []
+  },
+
+  /**
+   * Get bookmarked articles with full article data
+   * Returns article objects with title, category, readingTime etc.
+   */
+  async getBookmarks(): Promise<Array<{
+    id: string
+    title: string
+    category: string
+    readingTime?: number
+    summary?: string
+  }>> {
+    const user = await getCurrentUser()
+
+    // First get bookmark IDs
+    const bookmarkIds = user
+      ? await this.getAll()
+      : JSON.parse(localStorage.getItem('article_bookmarks') || '[]')
+
+    if (!bookmarkIds || bookmarkIds.length === 0) {
+      return []
+    }
+
+    // Fetch article data from the articles table
+    const { data: articles, error } = await supabase
+      .from('articles')
+      .select('id, slug, title, category_key, reading_time, summary')
+      .in('slug', bookmarkIds)
+
+    if (error) {
+      handleStorageError(error, 'hämta bokmärkta artiklar')
+      // Return minimal data from local storage
+      return bookmarkIds.map((id: string) => ({
+        id,
+        title: id,
+        category: 'Okänd'
+      }))
+    }
+
+    // Map category_key to display names
+    const categoryNames: Record<string, string> = {
+      'cv-writing': 'CV-skrivning',
+      'cover-letter': 'Personligt brev',
+      'interviews': 'Intervju',
+      'job-search': 'Jobbsökning',
+      'networking': 'Nätverkande',
+      'career': 'Karriär',
+      'wellness': 'Välmående',
+      'rights': 'Arbetsrätt',
+    }
+
+    return (articles || []).map(article => ({
+      id: article.slug || article.id,
+      title: article.title,
+      category: categoryNames[article.category_key || ''] || article.category_key || 'Artikel',
+      readingTime: article.reading_time,
+      summary: article.summary
+    }))
   },
 
   async add(articleId: string) {
@@ -1209,6 +1268,11 @@ export const savedJobsApi = {
       const filtered = saved.filter((j: SavedJob) => j.id !== jobId)
       localStorage.setItem('savedJobs', JSON.stringify(filtered))
     }
+  },
+
+  // Alias for remove (backwards compatibility)
+  async delete(jobId: string) {
+    return this.remove(jobId)
   },
 
   async isSaved(jobId: string) {
