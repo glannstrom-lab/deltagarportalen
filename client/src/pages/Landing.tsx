@@ -105,42 +105,42 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2.5">
+            <Link to="/" className="flex items-center gap-3">
               <OptimizedImage
                 src="/logo-jobin-new.webp"
                 alt="jobin.se"
                 loading="eager"
-                className="w-9 h-9 object-contain"
+                className="w-11 h-11 object-contain"
               />
-              <span className="text-xl font-semibold text-slate-800">jobin.se</span>
+              <span className="text-2xl font-semibold text-slate-900">jobin.se</span>
             </Link>
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-8">
               <button
                 onClick={() => scrollToSection('funktioner')}
-                className="text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-slate-700 hover:text-teal-600 font-medium transition-colors"
               >
                 {t('landing.nav.features')}
               </button>
               <button
                 onClick={() => scrollToSection('hur-det-funkar')}
-                className="text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-slate-700 hover:text-teal-600 font-medium transition-colors"
               >
                 {t('landing.nav.howItWorks')}
               </button>
               <button
                 onClick={() => scrollToSection('priser')}
-                className="text-slate-600 hover:text-slate-900 transition-colors"
+                className="text-slate-700 hover:text-teal-600 font-medium transition-colors"
               >
                 {t('landing.nav.pricing')}
               </button>
-              <Link to="/login" className="text-slate-600 hover:text-slate-900 transition-colors">
+              <Link to="/login" className="text-slate-700 hover:text-teal-600 font-medium transition-colors">
                 {t('landing.nav.login')}
               </Link>
               <Link
                 to="/register"
-                className="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2.5 rounded-full font-medium transition-colors"
+                className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
               >
                 {t('landing.nav.getStarted')}
               </Link>
