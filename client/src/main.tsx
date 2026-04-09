@@ -81,17 +81,21 @@ const queryClient = new QueryClient({
   },
 })
 
-// Registrera Service Worker för offline-stöd
+// TEMPORARILY DISABLED: Service Worker was causing white screen issues
+// Unregister all service workers to fix the problem
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(registration => {
-        swLogger.debug('Registrerad:', registration.scope)
-      })
-      .catch(error => {
-        swLogger.debug('Registrering misslyckades:', error)
-      })
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(registration => {
+      registration.unregister()
+      swLogger.debug('Avregistrerade service worker:', registration.scope)
+    })
   })
+  // Clear all caches
+  if ('caches' in window) {
+    caches.keys().then(names => {
+      names.forEach(name => caches.delete(name))
+    })
+  }
 }
 
 // Initialize app
