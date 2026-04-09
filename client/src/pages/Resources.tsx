@@ -310,6 +310,149 @@ async function generateCoverLetterWord(letter: CoverLetter) {
   saveAs(blob, `Personligt-brev-${letter.company || 'Mitt'}.docx`)
 }
 
+// CV Word Export - Professional styled document
+async function generateCVWord(cvData: CVData) {
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel, BorderStyle, AlignmentType, TableCell, TableRow, Table, WidthType } = await import('docx')
+  const { saveAs } = await import('file-saver')
+
+  const children: Paragraph[] = []
+
+  // Header with name
+  children.push(new Paragraph({
+    children: [
+      new TextRun({ text: `${cvData.firstName || ''} ${cvData.lastName || ''}`.trim(), bold: true, size: 56, color: '1E293B' })
+    ],
+    spacing: { after: 100 },
+    alignment: AlignmentType.CENTER
+  }))
+
+  // Title
+  if (cvData.title) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: cvData.title, size: 28, color: '64748B', italics: true })],
+      spacing: { after: 200 },
+      alignment: AlignmentType.CENTER
+    }))
+  }
+
+  // Contact info
+  const contactParts = []
+  if (cvData.email) contactParts.push(cvData.email)
+  if (cvData.phone) contactParts.push(cvData.phone)
+  if (cvData.location) contactParts.push(cvData.location)
+  if (contactParts.length > 0) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: contactParts.join('  •  '), size: 22, color: '64748B' })],
+      spacing: { after: 400 },
+      alignment: AlignmentType.CENTER
+    }))
+  }
+
+  // Divider line
+  children.push(new Paragraph({
+    border: { bottom: { style: BorderStyle.SINGLE, size: 6, color: '4F46E5' } },
+    spacing: { after: 300 }
+  }))
+
+  // Summary
+  if (cvData.summary) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'SAMMANFATTNING', bold: true, size: 24, color: '4F46E5' })],
+      spacing: { before: 200, after: 150 }
+    }))
+    children.push(new Paragraph({
+      children: [new TextRun({ text: cvData.summary, size: 22, color: '334155' })],
+      spacing: { after: 300 }
+    }))
+  }
+
+  // Work Experience
+  if (cvData.workExperience && cvData.workExperience.length > 0) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'ARBETSLIVSERFARENHET', bold: true, size: 24, color: '4F46E5' })],
+      spacing: { before: 300, after: 150 }
+    }))
+    cvData.workExperience.forEach(job => {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: job.title, bold: true, size: 24, color: '1E293B' })],
+        spacing: { before: 150 }
+      }))
+      children.push(new Paragraph({
+        children: [
+          new TextRun({ text: job.company, size: 22, color: '475569' }),
+          new TextRun({ text: `  •  ${job.startDate || ''} - ${job.current ? 'Nuvarande' : job.endDate || ''}`, size: 20, color: '94A3B8' })
+        ]
+      }))
+      if (job.description) {
+        children.push(new Paragraph({
+          children: [new TextRun({ text: job.description, size: 22, color: '475569' })],
+          spacing: { after: 150 }
+        }))
+      }
+    })
+  }
+
+  // Education
+  if (cvData.education && cvData.education.length > 0) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'UTBILDNING', bold: true, size: 24, color: '4F46E5' })],
+      spacing: { before: 300, after: 150 }
+    }))
+    cvData.education.forEach(edu => {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: edu.degree, bold: true, size: 24, color: '1E293B' })],
+        spacing: { before: 150 }
+      }))
+      children.push(new Paragraph({
+        children: [
+          new TextRun({ text: edu.school, size: 22, color: '475569' }),
+          new TextRun({ text: `  •  ${edu.startDate || ''} - ${edu.endDate || ''}`, size: 20, color: '94A3B8' })
+        ],
+        spacing: { after: 100 }
+      }))
+    })
+  }
+
+  // Skills
+  if (cvData.skills && cvData.skills.length > 0) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'KOMPETENSER', bold: true, size: 24, color: '4F46E5' })],
+      spacing: { before: 300, after: 150 }
+    }))
+    const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : (s as { name: string }).name).join('  •  ')
+    children.push(new Paragraph({
+      children: [new TextRun({ text: skillsText, size: 22, color: '475569' })],
+      spacing: { after: 200 }
+    }))
+  }
+
+  // Languages
+  if (cvData.languages && cvData.languages.length > 0) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: 'SPRÅK', bold: true, size: 24, color: '4F46E5' })],
+      spacing: { before: 300, after: 150 }
+    }))
+    const langText = cvData.languages.map(l => `${l.language} (${l.level})`).join('  •  ')
+    children.push(new Paragraph({
+      children: [new TextRun({ text: langText, size: 22, color: '475569' })],
+      spacing: { after: 200 }
+    }))
+  }
+
+  const doc = new Document({
+    sections: [{
+      properties: {
+        page: {
+          margin: { top: 1000, right: 1000, bottom: 1000, left: 1000 }
+        }
+      },
+      children
+    }]
+  })
+  const blob = await Packer.toBlob(doc)
+  saveAs(blob, `CV-${cvData.firstName || 'Mitt'}-${cvData.lastName || ''}.docx`)
+}
+
 // Main Component
 export default function Resources() {
   const { t, i18n } = useTranslation()
@@ -431,38 +574,71 @@ export default function Resources() {
       description={t('resources.description')}
       showTabs={false}
     >
-      {/* Compact Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <StatCard
-          label={t('resources.stats.savedJobs')}
-          value={savedJobs.length}
-          icon={BriefcaseIcon}
-          color="bg-blue-500"
-          link="/job-search"
-        />
-        <StatCard
-          label={t('resources.stats.documents')}
-          value={coverLetters.length + (hasCV ? 1 : 0)}
-          icon={DocumentText}
-          color="bg-purple-500"
-        />
-        <StatCard
-          label={t('resources.stats.bookmarks')}
-          value={bookmarkedArticles.length}
-          icon={BookOpen}
-          color="bg-teal-500"
-          link="/knowledge-base"
-        />
-        <StatCard
-          label={t('resources.stats.files')}
-          value={uploadedFiles.length}
-          icon={Folder}
-          color="bg-amber-500"
-        />
+      {/* Hero Stats Overview */}
+      <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-violet-500/20">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 className="text-xl font-bold">Mina Resurser</h2>
+            <p className="text-violet-200 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
+          </div>
+          <Link
+            to="/cv"
+            className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium transition-colors backdrop-blur-sm border border-white/20"
+          >
+            <Plus size={18} />
+            Skapa nytt dokument
+          </Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Link to="/job-search" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 transition-colors border border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-blue-400/20 rounded-lg flex items-center justify-center">
+                <BriefcaseIcon className="w-5 h-5 text-blue-200" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{savedJobs.length}</p>
+                <p className="text-xs text-violet-200">{t('resources.stats.savedJobs')}</p>
+              </div>
+            </div>
+          </Link>
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-purple-400/20 rounded-lg flex items-center justify-center">
+                <DocumentText className="w-5 h-5 text-purple-200" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{cvVersions.length + coverLetters.length}</p>
+                <p className="text-xs text-violet-200">{t('resources.stats.documents')}</p>
+              </div>
+            </div>
+          </div>
+          <Link to="/knowledge-base" className="bg-white/10 hover:bg-white/20 backdrop-blur-sm rounded-xl p-4 transition-colors border border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-teal-400/20 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-5 h-5 text-teal-200" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{bookmarkedArticles.length}</p>
+                <p className="text-xs text-violet-200">{t('resources.stats.bookmarks')}</p>
+              </div>
+            </div>
+          </Link>
+          <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-400/20 rounded-lg flex items-center justify-center">
+                <Folder className="w-5 h-5 text-amber-200" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold">{uploadedFiles.length}</p>
+                <p className="text-xs text-violet-200">{t('resources.stats.files')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
-      {/* Tabs & Search - Compact */}
-      <div className="bg-white rounded-xl border border-slate-200 p-3 mb-4">
+      {/* Tabs & Search - Modern */}
+      <div className="bg-white rounded-2xl border border-slate-200 p-4 mb-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Tabs */}
           <div className="flex flex-wrap gap-1.5">
@@ -519,62 +695,76 @@ export default function Resources() {
       </div>
 
       {/* Content */}
-      <div className="space-y-4">
+      <div className="space-y-6">
         {/* Saved CV Versions Section */}
         {(activeTab === 'all' || activeTab === 'documents') && cvVersions.length > 0 && (
-          <section>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                <FileText className="text-amber-600" size={18} />
-                Sparade CV ({cvVersions.length})
-              </h3>
+          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 rounded-2xl p-5 border border-amber-100/50">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                  <FileText className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold text-slate-800">Sparade CV</h3>
+                  <p className="text-xs text-slate-500">{cvVersions.length} {cvVersions.length === 1 ? 'version' : 'versioner'}</p>
+                </div>
+              </div>
               <Link
                 to="/cv"
-                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors shadow-sm"
               >
-                Skapa ny version
-                <Plus size={14} />
+                <Plus size={16} />
+                Ny version
               </Link>
             </div>
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
               {cvVersions.map((version) => {
                 const versionData = version.data || {}
                 return (
-                  <div key={version.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all">
-                    <div className="p-3 bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <FileText className="w-5 h-5 text-white" />
-                        </div>
+                  <div key={version.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-lg hover:border-amber-200 transition-all group">
+                    <div className="p-4 border-b border-slate-100">
+                      <div className="flex items-start justify-between gap-2">
                         <div className="flex-1 min-w-0">
-                          <h4 className="font-medium text-slate-800 text-sm truncate">{version.name}</h4>
-                          <p className="text-xs text-slate-500">
-                            {new Date(version.created_at).toLocaleDateString('sv-SE')}
+                          <h4 className="font-semibold text-slate-800 truncate group-hover:text-amber-700 transition-colors">{version.name}</h4>
+                          <p className="text-xs text-slate-400 mt-0.5">
+                            {new Date(version.created_at).toLocaleDateString('sv-SE', { year: 'numeric', month: 'short', day: 'numeric' })}
                           </p>
                         </div>
-                      </div>
-                    </div>
-                    <div className="p-3">
-                      <div className="text-xs text-slate-600 space-y-1 mb-3">
-                        {versionData.firstName && (
-                          <p className="truncate"><span className="text-slate-400">Namn:</span> {versionData.firstName} {versionData.lastName}</p>
-                        )}
-                        {versionData.title && (
-                          <p className="truncate"><span className="text-slate-400">Titel:</span> {versionData.title}</p>
-                        )}
-                        <p className="flex gap-3">
-                          <span><span className="text-slate-400">Erfarenhet:</span> {versionData.workExperience?.length || 0}</span>
-                          <span><span className="text-slate-400">Utbildning:</span> {versionData.education?.length || 0}</span>
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => setPreviewModal({type: 'cv', data: versionData as CVData})}
-                          className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+                          title="Förhandsgranska"
                         >
-                          <Eye size={14} />
-                          Visa
+                          <Eye size={16} />
                         </button>
+                      </div>
+                      {(versionData.firstName || versionData.title) && (
+                        <div className="mt-3 pt-3 border-t border-slate-100">
+                          {versionData.firstName && (
+                            <p className="text-sm font-medium text-slate-700">{versionData.firstName} {versionData.lastName}</p>
+                          )}
+                          {versionData.title && (
+                            <p className="text-xs text-slate-500 truncate">{versionData.title}</p>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-3 bg-slate-50/50 flex items-center gap-2">
+                      <div className="flex items-center gap-2 text-xs text-slate-500 flex-1">
+                        <span className="flex items-center gap-1">
+                          <Briefcase size={12} className="text-blue-500" />
+                          {versionData.workExperience?.length || 0}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <GraduationCap size={12} className="text-purple-500" />
+                          {versionData.education?.length || 0}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <Award size={12} className="text-amber-500" />
+                          {Array.isArray(versionData.skills) ? versionData.skills.length : 0}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1">
                         <PDFExportButton
                           type="cv"
                           data={versionData}
@@ -583,6 +773,14 @@ export default function Resources() {
                           size="sm"
                           showPreview={false}
                         />
+                        <button
+                          onClick={() => generateCVWord(versionData as CVData)}
+                          className="flex items-center gap-1 px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 rounded font-medium transition-colors"
+                          title="Ladda ner Word"
+                        >
+                          <FileDown size={14} />
+                          Word
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -594,36 +792,44 @@ export default function Resources() {
 
         {/* Current CV (if no versions saved, show current) */}
         {(activeTab === 'all' || activeTab === 'documents') && hasCV && cvData && cvVersions.length === 0 && (
-          <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div className="p-4 border-b border-slate-100 bg-gradient-to-r from-amber-50 to-orange-50">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-sm">
-                    <CheckCircle2 className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h2 className="text-lg font-bold text-slate-800">{cvData.firstName} {cvData.lastName}</h2>
-                    <p className="text-sm text-slate-600">{cvData.title || t('resources.myCV')}</p>
-                    <p className="text-xs text-amber-600 mt-1">Spara en version på CV-sidan för att se den här</p>
-                  </div>
+          <section className="bg-gradient-to-br from-amber-50/50 via-white to-orange-50/50 rounded-2xl p-5 border border-amber-100/50">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-lg shadow-amber-500/20">
+                  <FileText className="w-7 h-7 text-white" />
                 </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Link
-                    to="/cv"
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white text-amber-700 rounded-lg font-medium hover:bg-amber-50 border border-amber-200 transition-colors"
-                  >
-                    <Edit2 className="w-3.5 h-3.5" />
-                    {t('resources.edit')}
-                  </Link>
-                  <PDFExportButton
-                    type="cv"
-                    data={cvData}
-                    filename={`CV_${cvData.firstName || ''}_${cvData.lastName || ''}.pdf`}
-                    variant="primary"
-                    size="sm"
-                    showPreview={false}
-                  />
+                <div>
+                  <h2 className="text-lg font-bold text-slate-800">{cvData.firstName} {cvData.lastName}</h2>
+                  <p className="text-sm text-slate-600">{cvData.title || t('resources.myCV')}</p>
+                  <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                    <Sparkles size={12} />
+                    Spara en version på CV-sidan för att hantera flera versioner
+                  </p>
                 </div>
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <Link
+                  to="/cv"
+                  className="flex items-center gap-1.5 px-4 py-2 text-sm bg-white text-amber-700 rounded-lg font-medium hover:bg-amber-50 border border-amber-200 transition-colors shadow-sm"
+                >
+                  <Edit2 className="w-4 h-4" />
+                  Redigera
+                </Link>
+                <PDFExportButton
+                  type="cv"
+                  data={cvData}
+                  filename={`CV_${cvData.firstName || ''}_${cvData.lastName || ''}.pdf`}
+                  variant="primary"
+                  size="sm"
+                  showPreview={false}
+                />
+                <button
+                  onClick={() => generateCVWord(cvData)}
+                  className="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors shadow-sm"
+                >
+                  <FileDown className="w-4 h-4" />
+                  Word
+                </button>
               </div>
             </div>
           </section>
@@ -1056,7 +1262,7 @@ export default function Resources() {
                     )}
 
                     {/* Download Buttons */}
-                    <div className="pt-3 border-t border-slate-100 flex gap-2">
+                    <div className="pt-4 border-t border-slate-100 flex gap-2">
                       <PDFExportButton
                         type="cv"
                         data={cv}
@@ -1065,6 +1271,13 @@ export default function Resources() {
                         size="sm"
                         showPreview={false}
                       />
+                      <button
+                        onClick={() => generateCVWord(cv)}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                      >
+                        <FileDown size={14} />
+                        Ladda ner Word
+                      </button>
                     </div>
                   </div>
                 )
