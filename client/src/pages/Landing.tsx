@@ -105,14 +105,14 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-2.5">
               <OptimizedImage
-                src="/logo-icon.png"
-                alt=""
+                src="/logo-jobin-new.webp"
+                alt="jobin.se"
                 loading="eager"
-                className="w-10 h-10 rounded-xl object-contain"
+                className="w-9 h-9 object-contain"
               />
-              <span className="text-xl font-semibold text-slate-800">Jobin</span>
+              <span className="text-xl font-semibold text-slate-800">jobin.se</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -523,11 +523,13 @@ export default function Landing() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 bg-teal-600 rounded-xl flex items-center justify-center text-white font-bold">
-                  J
-                </div>
-                <span className="text-white font-semibold text-xl">Jobin</span>
+              <div className="flex items-center gap-2.5 mb-4">
+                <OptimizedImage
+                  src="/logo-jobin-new.webp"
+                  alt="jobin.se"
+                  className="w-9 h-9 object-contain"
+                />
+                <span className="text-white font-semibold text-xl">jobin.se</span>
               </div>
               <p className="text-sm leading-relaxed">
                 {t('landing.footer.brand')}
