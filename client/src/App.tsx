@@ -153,33 +153,9 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
-  console.log('[DEBUG] 7. App component rendering')
-
-  // CRITICAL DEBUG: This div should ALWAYS be visible, even before auth loads
-  // If you don't see this red bar, React is not rendering to DOM at all
-  const debugElement = (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      background: '#ff0000',
-      color: '#ffffff',
-      padding: '20px',
-      zIndex: 999999,
-      fontSize: '18px',
-      fontFamily: 'Arial, sans-serif',
-      textAlign: 'center'
-    }}>
-      🔴 DEBUG: Om du ser detta, fungerar React! 🔴
-    </div>
-  )
-
   const { initialize, isLoading } = useAuthStore()
-  console.log('[DEBUG] 7a. useAuthStore called, isLoading:', isLoading)
 
   useEffect(() => {
-    console.log('[DEBUG] 7b. App useEffect running, calling initialize()')
     initialize()
     
     // Clear old service worker to fix routing issues
@@ -196,83 +172,114 @@ function App() {
   // Show loading screen while auth initializes
   if (isLoading) {
     return (
-      <>
-        {debugElement}
-        <div style={{
-          minHeight: '100vh',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          background: 'linear-gradient(to bottom right, #0d9488, #1e293b)',
-          paddingTop: '60px'
-        }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{
-              width: '48px',
-              height: '48px',
-              border: '4px solid rgba(255,255,255,0.3)',
-              borderTopColor: 'white',
-              borderRadius: '50%',
-              margin: '0 auto 16px',
-              animation: 'spin 1s linear infinite'
-            }} />
-            <p style={{ color: 'rgba(255,255,255,0.8)' }}>Laddar...</p>
-          </div>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-600 to-indigo-800">
+        <div className="text-center">
+          <Loader2 className="animate-spin text-white mx-auto mb-4" size={48} />
+          <p className="text-white/80">Laddar...</p>
         </div>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-      </>
+      </div>
     )
   }
 
-  // TEMPORARY DEBUG: Visible element to confirm React renders
-  console.log('[DEBUG] 7c. App rendering main content, isLoading:', isLoading)
-
-  // Test with minimal Routes
+  // Full routing restored
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif' }}>
-      {debugElement}
+    <>
       <Routes>
+        {/* Public routes - using simple fallback for Landing */}
         <Route path="/" element={
-          <div style={{
-            marginTop: '80px',
-            padding: '40px',
-            maxWidth: '800px',
-            margin: '80px auto 0',
-            textAlign: 'center'
-          }}>
-            <h1 style={{ color: '#1e293b', marginBottom: '20px' }}>
-              🎉 Jobin - Minimal Landing
-            </h1>
-            <p style={{ color: '#64748b', marginBottom: '30px' }}>
-              Routes fungerar! Detta är en inline Landing-sida.
-            </p>
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-              <a href="#/login" style={{
-                padding: '12px 24px',
-                background: '#4f46e5',
-                color: 'white',
-                textDecoration: 'none',
-                borderRadius: '8px'
-              }}>
-                Logga in
-              </a>
-            </div>
-          </div>
+          <PublicRoute>
+            <SimpleLanding />
+          </PublicRoute>
         } />
         <Route path="/login" element={
-          <div style={{ marginTop: '80px', padding: '40px', textAlign: 'center' }}>
-            <h1>Login-sida (test)</h1>
-            <a href="#/">Tillbaka</a>
-          </div>
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
         } />
-        <Route path="*" element={
-          <div style={{ marginTop: '80px', padding: '40px', textAlign: 'center' }}>
-            <h1>404 - Sidan finns inte</h1>
-            <a href="#/">Tillbaka till start</a>
-          </div>
+        <Route path="/register" element={
+          <PublicRoute>
+            <Register />
+          </PublicRoute>
         } />
+        <Route path="/invite/:code" element={
+          <LazyRoute>
+            <InviteHandler />
+          </LazyRoute>
+        } />
+
+        {/* Legal pages */}
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/ai-policy" element={<AiPolicy />} />
+
+        {/* Protected routes with Layout */}
+        <Route path="/" element={
+          <PrivateRoute>
+            <Layout />
+          </PrivateRoute>
+        }>
+          <Route index element={
+            <LazyRoute>
+              <RouteErrorBoundary>
+                <Dashboard />
+              </RouteErrorBoundary>
+            </LazyRoute>
+          } />
+          <Route path="cv/*" element={<LazyRoute><RouteErrorBoundary><CVPage /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="cover-letter/*" element={<LazyRoute><RouteErrorBoundary><CoverLetterPage /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="interest-guide/*" element={<LazyRoute><RouteErrorBoundary><InterestGuide /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="knowledge-base/*" element={<LazyRoute><RouteErrorBoundary><KnowledgeBase /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="knowledge-base/article/:id" element={<LazyRoute><RouteErrorBoundary><Article /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="profile" element={<LazyRoute><RouteErrorBoundary><Profile /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="job-search/*" element={<LazyRoute><RouteErrorBoundary><JobSearch /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="applications/*" element={<LazyRoute><RouteErrorBoundary><Applications /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="career/*" element={<LazyRoute><RouteErrorBoundary><Career /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="diary" element={<LazyRoute><RouteErrorBoundary><Diary /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="wellness/*" element={<LazyRoute><RouteErrorBoundary><Wellness /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="settings" element={<LazyRoute><RouteErrorBoundary><Settings /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="resources" element={<LazyRoute><RouteErrorBoundary><Resources /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="help" element={<LazyRoute><RouteErrorBoundary><Help /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="salary/*" element={<LazyRoute><RouteErrorBoundary><Salary /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="education/*" element={<LazyRoute><RouteErrorBoundary><Education /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="calendar" element={<LazyRoute><RouteErrorBoundary><Calendar /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="consultant/*" element={
+            <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
+              <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
+            </PrivateRoute>
+          } />
+          <Route path="admin" element={
+            <PrivateRoute allowedRoles={['ADMIN', 'SUPERADMIN']}>
+              <LazyRoute><RouteErrorBoundary><SuperAdminPanel /></RouteErrorBoundary></LazyRoute>
+            </PrivateRoute>
+          } />
+        </Route>
+
+        {/* Redirects */}
+        <Route path="/dashboard" element={<Navigate to="/" replace />} />
+        <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <CookieConsent />
+    </>
+  )
+}
+
+// Simple landing page fallback while we fix the real one
+function SimpleLanding() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-violet-600 to-indigo-800 flex items-center justify-center p-4">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
+        <h1 className="text-3xl font-bold text-slate-800 mb-4">Välkommen till Jobin</h1>
+        <p className="text-slate-600 mb-8">Din AI-drivna karriärassistent för jobbsökande</p>
+        <div className="space-y-4">
+          <a href="#/login" className="block w-full py-3 px-6 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700 transition">
+            Logga in
+          </a>
+          <a href="#/register" className="block w-full py-3 px-6 border-2 border-violet-600 text-violet-600 rounded-xl font-semibold hover:bg-violet-50 transition">
+            Skapa konto
+          </a>
+        </div>
+      </div>
     </div>
   )
 }
