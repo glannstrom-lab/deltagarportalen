@@ -254,19 +254,17 @@ function App() {
     </div>
 
     <Routes>
-      {/* TEMPORARY: Simple test route */}
-      <Route path="/" element={
+      {/* TEMPORARY: Catch-all test route */}
+      <Route path="*" element={
         <div style={{
           marginTop: '20px',
           padding: '40px',
-          background: '#3b82f6',
+          background: '#8b5cf6',
           color: 'white',
           fontSize: '32px',
           textAlign: 'center'
         }}>
-          🔵 BLÅTT: Route "/" matchade! Detta är test-innehåll.
-          <br />
-          <a href="#/login" style={{ color: 'yellow' }}>Gå till login</a>
+          🟣 LILA: Catch-all route matchade! Path: {window.location.hash || window.location.pathname}
         </div>
       } />
 
