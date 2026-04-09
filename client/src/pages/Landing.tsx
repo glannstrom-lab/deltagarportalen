@@ -102,7 +102,7 @@ export default function Landing() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
       }`}>
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
             <Link to="/" className="flex items-center gap-3">
@@ -190,24 +190,11 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white via-white to-transparent z-10" />
-
-        {/* Hero Image */}
-        <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent z-10" />
-          <OptimizedImage
-            src="/hero-landing.webp"
-            alt=""
-            className="w-full h-full object-cover object-right"
-            loading="eager"
-          />
-        </div>
-
-        {/* Content */}
-        <div className="relative z-20 max-w-6xl mx-auto px-6 py-32">
-          <div className="max-w-xl">
+      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-50 to-white">
+        <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-32">
+            {/* Content - Left */}
+            <div className="max-w-xl">
             <p className="text-teal-600 font-medium mb-4 tracking-wide">
               {t('landing.hero.badge')}
             </p>
@@ -252,13 +239,26 @@ export default function Landing() {
                 {t('landing.hero.quickStart')}
               </span>
             </div>
+            </div>
+
+            {/* Image - Right */}
+            <div className="hidden lg:block relative">
+              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
+                <OptimizedImage
+                  src="/hero-landing.webp"
+                  alt=""
+                  className="w-full h-auto"
+                  loading="eager"
+                />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Social Proof */}
       <section className="py-16 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-center gap-12 text-center">
             <div>
               <p className="text-3xl font-bold text-slate-900">5 000+</p>
@@ -284,7 +284,7 @@ export default function Landing() {
 
       {/* Features Section */}
       <section id="funktioner" className="py-24">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="text-teal-600 font-medium mb-3">{t('landing.features.sectionLabel')}</p>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -332,7 +332,7 @@ export default function Landing() {
 
       {/* How It Works */}
       <section id="hur-det-funkar" className="py-24 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="text-teal-600 font-medium mb-3">{t('landing.steps.sectionLabel')}</p>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -370,7 +370,7 @@ export default function Landing() {
 
       {/* Pricing Section */}
       <section id="priser" className="py-24">
-        <div className="max-w-6xl mx-auto px-6">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
             <p className="text-teal-600 font-medium mb-3">{t('landing.pricing.sectionLabel')}</p>
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
@@ -521,7 +521,7 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400">
-        <div className="max-w-6xl mx-auto px-6 py-16">
+        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
