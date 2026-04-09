@@ -32,7 +32,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
     <!-- Build timestamp: 2026-04-09 -->
-    
+
+    <!-- CRITICAL: Clear broken service workers FIRST -->
+    <script type="text/javascript">
+      (function() {
+        if ('serviceWorker' in navigator) {
+          navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            registrations.forEach(function(registration) {
+              registration.unregister();
+            });
+          });
+          if ('caches' in window) {
+            caches.keys().then(function(names) {
+              names.forEach(function(name) { caches.delete(name); });
+            });
+          }
+        }
+      })();
+    </script>
+
     <!-- CRITICAL: Chunk Load Error Handler - Must be inline and before any other scripts -->
     <script type="text/javascript">
       // Handle chunk load errors that happen before React loads
