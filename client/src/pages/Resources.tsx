@@ -87,6 +87,7 @@ interface CVVersion {
   id: string
   name: string
   created_at: string
+  data: CVData
 }
 
 interface CVData {
@@ -731,8 +732,94 @@ export default function Resources() {
 
       {/* Content */}
       <div className="space-y-4">
-        {/* CV Section - Compact with details */}
-        {(activeTab === 'all' || activeTab === 'documents') && hasCV && cvData && (
+        {/* Saved CV Versions Section */}
+        {(activeTab === 'all' || activeTab === 'documents') && cvVersions.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                <FileText className="text-amber-600" size={18} />
+                Sparade CV ({cvVersions.length})
+              </h3>
+              <Link
+                to="/cv"
+                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+              >
+                Skapa ny version
+                <Plus size={14} />
+              </Link>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+              {cvVersions.map((version) => {
+                const versionData = version.data || {}
+                return (
+                  <div key={version.id} className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all">
+                    <div className="p-3 bg-gradient-to-r from-amber-50 to-orange-50 border-b border-amber-100">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FileText className="w-5 h-5 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-medium text-slate-800 text-sm truncate">{version.name}</h4>
+                          <p className="text-xs text-slate-500">
+                            {new Date(version.created_at).toLocaleDateString('sv-SE')}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="p-3">
+                      <div className="text-xs text-slate-600 space-y-1 mb-3">
+                        {versionData.first_name && (
+                          <p className="truncate"><span className="text-slate-400">Namn:</span> {versionData.first_name} {versionData.last_name}</p>
+                        )}
+                        {versionData.title && (
+                          <p className="truncate"><span className="text-slate-400">Titel:</span> {versionData.title}</p>
+                        )}
+                        <p className="flex gap-3">
+                          <span><span className="text-slate-400">Erfarenhet:</span> {versionData.work_experience?.length || 0}</span>
+                          <span><span className="text-slate-400">Utbildning:</span> {versionData.education?.length || 0}</span>
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => setPreviewModal({type: 'cv', data: versionData as CVData})}
+                          className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors"
+                        >
+                          <Eye size={14} />
+                          Visa
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (versionData) {
+                              await generateCVPDF(versionData as CVData)
+                            }
+                          }}
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors"
+                        >
+                          <FileDown size={14} />
+                          PDF
+                        </button>
+                        <button
+                          onClick={async () => {
+                            if (versionData) {
+                              await generateCVWord(versionData as CVData)
+                            }
+                          }}
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        >
+                          <FileDown size={14} />
+                          Word
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </section>
+        )}
+
+        {/* Current CV (if no versions saved, show current) */}
+        {(activeTab === 'all' || activeTab === 'documents') && hasCV && cvData && cvVersions.length === 0 && (
           <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
             <div className="p-4 border-b border-slate-100 bg-gradient-to-r from-amber-50 to-orange-50">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -743,6 +830,7 @@ export default function Resources() {
                   <div>
                     <h2 className="text-lg font-bold text-slate-800">{cvData.first_name} {cvData.last_name}</h2>
                     <p className="text-sm text-slate-600">{cvData.title || t('resources.myCV')}</p>
+                    <p className="text-xs text-amber-600 mt-1">Spara en version på CV-sidan för att se den här</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 flex-wrap">
@@ -753,13 +841,6 @@ export default function Resources() {
                     <Edit2 className="w-3.5 h-3.5" />
                     {t('resources.edit')}
                   </Link>
-                  <button
-                    onClick={() => setPreviewModal({type: 'cv', data: cvData})}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white text-amber-700 rounded-lg font-medium hover:bg-amber-50 border border-amber-200 transition-colors"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    {t('resources.view')}
-                  </button>
                   <button
                     onClick={() => handleDownloadCV('pdf')}
                     className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors"
@@ -775,80 +856,6 @@ export default function Resources() {
                     Word
                   </button>
                 </div>
-              </div>
-            </div>
-
-            {/* CV Details Grid */}
-            <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Contact Info */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <Mail className="w-3.5 h-3.5" /> Kontakt
-                </h3>
-                <div className="text-sm text-slate-700 space-y-1">
-                  {cvData.email && <p className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-slate-400" />{cvData.email}</p>}
-                  {cvData.phone && <p className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-slate-400" />{cvData.phone}</p>}
-                  {cvData.location && <p className="flex items-center gap-1.5"><MapPinned className="w-3.5 h-3.5 text-slate-400" />{cvData.location}</p>}
-                </div>
-              </div>
-
-              {/* Work Experience */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <Briefcase className="w-3.5 h-3.5" /> Erfarenhet ({cvData.work_experience?.length || 0})
-                </h3>
-                <div className="text-sm text-slate-700 space-y-1">
-                  {cvData.work_experience?.slice(0, 2).map((job, i) => (
-                    <p key={i} className="truncate">{job.title} @ {job.company}</p>
-                  ))}
-                  {(cvData.work_experience?.length || 0) > 2 && (
-                    <p className="text-slate-400 text-xs">+{cvData.work_experience!.length - 2} fler...</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Education */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5" /> Utbildning ({cvData.education?.length || 0})
-                </h3>
-                <div className="text-sm text-slate-700 space-y-1">
-                  {cvData.education?.slice(0, 2).map((edu, i) => (
-                    <p key={i} className="truncate">{edu.degree}</p>
-                  ))}
-                  {(cvData.education?.length || 0) > 2 && (
-                    <p className="text-slate-400 text-xs">+{cvData.education!.length - 2} fler...</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Skills & Languages */}
-              <div className="space-y-2">
-                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
-                  <Wrench className="w-3.5 h-3.5" /> Kompetenser ({cvData.skills?.length || 0})
-                </h3>
-                <div className="flex flex-wrap gap-1">
-                  {cvData.skills?.slice(0, 4).map((skill, i) => (
-                    <span key={i} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded">
-                      {typeof skill === 'string' ? skill : (skill as { name: string }).name}
-                    </span>
-                  ))}
-                  {(cvData.skills?.length || 0) > 4 && (
-                    <span className="px-2 py-0.5 bg-slate-50 text-slate-400 text-xs rounded">
-                      +{cvData.skills!.length - 4}
-                    </span>
-                  )}
-                </div>
-                {cvData.languages && cvData.languages.length > 0 && (
-                  <div className="mt-2">
-                    <h4 className="text-xs text-slate-400 flex items-center gap-1">
-                      <Languages className="w-3 h-3" /> Språk
-                    </h4>
-                    <p className="text-xs text-slate-600">
-                      {cvData.languages.map(l => l.language).join(', ')}
-                    </p>
-                  </div>
-                )}
               </div>
             </div>
           </section>
