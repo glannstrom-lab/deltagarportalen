@@ -154,6 +154,27 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 
 function App() {
   console.log('[DEBUG] 7. App component rendering')
+
+  // CRITICAL DEBUG: This div should ALWAYS be visible, even before auth loads
+  // If you don't see this red bar, React is not rendering to DOM at all
+  const debugElement = (
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      background: '#ff0000',
+      color: '#ffffff',
+      padding: '20px',
+      zIndex: 999999,
+      fontSize: '18px',
+      fontFamily: 'Arial, sans-serif',
+      textAlign: 'center'
+    }}>
+      🔴 DEBUG: Om du ser detta, fungerar React! 🔴
+    </div>
+  )
+
   const { initialize, isLoading } = useAuthStore()
   console.log('[DEBUG] 7a. useAuthStore called, isLoading:', isLoading)
 
@@ -175,12 +196,15 @@ function App() {
   // Show loading screen while auth initializes
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-slate-800">
-        <div className="text-center">
-          <Loader2 className="animate-spin text-white mx-auto mb-4" size={48} />
-          <p className="text-white/80">Laddar...</p>
+      <>
+        {debugElement}
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-slate-800">
+          <div className="text-center">
+            <Loader2 className="animate-spin text-white mx-auto mb-4" size={48} />
+            <p className="text-white/80">Laddar...</p>
+          </div>
         </div>
-      </div>
+      </>
     )
   }
 
@@ -189,20 +213,7 @@ function App() {
 
   return (
     <>
-    {/* DEBUG: This should ALWAYS be visible if React works */}
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      background: 'red',
-      color: 'white',
-      padding: '10px',
-      zIndex: 99999,
-      fontSize: '14px'
-    }}>
-      DEBUG: React rendererar! isLoading={String(isLoading)}, path={window.location.hash || window.location.pathname}
-    </div>
+    {debugElement}
     <Routes>
       {/* Public routes */}
       <Route path="/" element={
