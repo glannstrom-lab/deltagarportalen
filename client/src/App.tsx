@@ -227,46 +227,52 @@ function App() {
   // TEMPORARY DEBUG: Visible element to confirm React renders
   console.log('[DEBUG] 7c. App rendering main content, isLoading:', isLoading)
 
-  // TEMPORARY: Return simple test page to bypass all routing
+  // Test with minimal Routes
   return (
     <div style={{ fontFamily: 'Arial, sans-serif' }}>
       {debugElement}
-      <div style={{
-        marginTop: '80px',
-        padding: '40px',
-        maxWidth: '600px',
-        margin: '80px auto 0',
-        textAlign: 'center'
-      }}>
-        <h1 style={{ color: '#1e293b', marginBottom: '20px' }}>
-          🎉 Jobin fungerar!
-        </h1>
-        <p style={{ color: '#64748b', marginBottom: '30px', fontSize: '18px' }}>
-          Detta är en temporär testsida. Routing är tillfälligt avstängd för felsökning.
-        </p>
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-          <a href="#/login" style={{
-            padding: '12px 24px',
-            background: '#4f46e5',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '8px',
-            fontWeight: 'bold'
+      <Routes>
+        <Route path="/" element={
+          <div style={{
+            marginTop: '80px',
+            padding: '40px',
+            maxWidth: '800px',
+            margin: '80px auto 0',
+            textAlign: 'center'
           }}>
-            Logga in
-          </a>
-          <a href="#/register" style={{
-            padding: '12px 24px',
-            background: '#22c55e',
-            color: 'white',
-            textDecoration: 'none',
-            borderRadius: '8px',
-            fontWeight: 'bold'
-          }}>
-            Registrera
-          </a>
-        </div>
-      </div>
+            <h1 style={{ color: '#1e293b', marginBottom: '20px' }}>
+              🎉 Jobin - Minimal Landing
+            </h1>
+            <p style={{ color: '#64748b', marginBottom: '30px' }}>
+              Routes fungerar! Detta är en inline Landing-sida.
+            </p>
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+              <a href="#/login" style={{
+                padding: '12px 24px',
+                background: '#4f46e5',
+                color: 'white',
+                textDecoration: 'none',
+                borderRadius: '8px'
+              }}>
+                Logga in
+              </a>
+            </div>
+          </div>
+        } />
+        <Route path="/login" element={
+          <div style={{ marginTop: '80px', padding: '40px', textAlign: 'center' }}>
+            <h1>Login-sida (test)</h1>
+            <a href="#/">Tillbaka</a>
+          </div>
+        } />
+        <Route path="*" element={
+          <div style={{ marginTop: '80px', padding: '40px', textAlign: 'center' }}>
+            <h1>404 - Sidan finns inte</h1>
+            <a href="#/">Tillbaka till start</a>
+          </div>
+        } />
+      </Routes>
+      <CookieConsent />
     </div>
   )
 }
