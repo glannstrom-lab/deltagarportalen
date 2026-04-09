@@ -36,6 +36,30 @@ När något inte fungerar, följ denna ordning:
 
 ---
 
+### 2026-04-09: Sidor laddade Dashboard istället
+
+**Problem:** Flera sidor (Journey, Spontanansökan, PersonalBrand, etc.) visade Dashboard istället för rätt innehåll.
+
+**Rotorsak:** Sidorna var importerade i `App.tsx` men saknade routes. Catch-all routen (`path="*"`) fångade upp dem och visade Dashboard.
+
+**Vad som saknades:**
+```typescript
+// Dessa imports fanns...
+const Journey = lazy(() => import('./pages/Journey'))
+const Spontaneous = lazy(() => import('./pages/Spontaneous'))
+
+// ...men routes saknades i <Routes>:
+<Route path="journey" element={...} />
+<Route path="spontanansökan" element={...} />
+```
+
+**Kontroll att göra vid nya sidor:**
+1. Jämför `navigation.ts` paths med `App.tsx` routes
+2. Sök efter alla `to="/..."` länkar och verifiera att routes finns
+3. Kör: `grep -oh 'path: .*/.*' navigation.ts | sort` och jämför med routes
+
+---
+
 ## Projektstruktur
 
 - `client/` - React frontend (Vite, TypeScript, Tailwind)
