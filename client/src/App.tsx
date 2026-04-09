@@ -242,12 +242,28 @@ function App() {
       🟢 DEBUG: Routes-sektionen renderas! Auth: {String(useAuthStore.getState().isAuthenticated)}
     </div>
     <Routes>
-      {/* Public routes */}
+      {/* TEMPORARY: Simple test route */}
+      <Route path="/" element={
+        <div style={{
+          marginTop: '20px',
+          padding: '40px',
+          background: '#3b82f6',
+          color: 'white',
+          fontSize: '32px',
+          textAlign: 'center'
+        }}>
+          🔵 BLÅTT: Route "/" matchade! Detta är test-innehåll.
+          <br />
+          <a href="#/login" style={{ color: 'yellow' }}>Gå till login</a>
+        </div>
+      } />
+
+      {/* Public routes - TEMPORARILY DISABLED
       <Route path="/" element={
         <PublicRoute>
           <Landing />
         </PublicRoute>
-      } />
+      } /> */}
       <Route path="/login" element={
         <PublicRoute>
           <Login />
