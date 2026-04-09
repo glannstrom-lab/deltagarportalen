@@ -102,17 +102,17 @@ export default function Landing() {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
       }`}>
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex items-center justify-between h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-2 sm:gap-3">
               <OptimizedImage
                 src="/logo-jobin-new.webp"
                 alt="jobin.se"
                 loading="eager"
-                className="w-11 h-11 object-contain"
+                className="w-9 h-9 sm:w-11 sm:h-11 object-contain"
               />
-              <span className="text-2xl font-semibold text-slate-900">jobin.se</span>
+              <span className="text-xl sm:text-2xl font-semibold text-slate-900">jobin.se</span>
             </Link>
 
             {/* Desktop Navigation */}
@@ -162,138 +162,140 @@ export default function Landing() {
 
           {/* Mobile Menu */}
           <div className={`md:hidden overflow-hidden transition-all duration-300 ${
-            mobileMenuOpen ? 'max-h-80 pb-6' : 'max-h-0'
+            mobileMenuOpen ? 'max-h-96 pb-6' : 'max-h-0'
           }`}>
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <button onClick={() => scrollToSection('funktioner')} className="block w-full text-left text-slate-600 hover:text-slate-900 py-2">
+            <div className="space-y-1 pt-4 border-t border-slate-100">
+              <button onClick={() => scrollToSection('funktioner')} className="block w-full text-left text-slate-700 hover:text-teal-600 hover:bg-slate-50 py-3 px-2 rounded-lg font-medium transition-colors">
                 {t('landing.nav.features')}
               </button>
-              <button onClick={() => scrollToSection('hur-det-funkar')} className="block w-full text-left text-slate-600 hover:text-slate-900 py-2">
+              <button onClick={() => scrollToSection('hur-det-funkar')} className="block w-full text-left text-slate-700 hover:text-teal-600 hover:bg-slate-50 py-3 px-2 rounded-lg font-medium transition-colors">
                 {t('landing.nav.howItWorks')}
               </button>
-              <button onClick={() => scrollToSection('priser')} className="block w-full text-left text-slate-600 hover:text-slate-900 py-2">
+              <button onClick={() => scrollToSection('priser')} className="block w-full text-left text-slate-700 hover:text-teal-600 hover:bg-slate-50 py-3 px-2 rounded-lg font-medium transition-colors">
                 {t('landing.nav.pricing')}
               </button>
-              <Link to="/login" className="block text-slate-600 hover:text-slate-900 py-2" onClick={() => setMobileMenuOpen(false)}>
+              <Link to="/login" className="block text-slate-700 hover:text-teal-600 hover:bg-slate-50 py-3 px-2 rounded-lg font-medium transition-colors" onClick={() => setMobileMenuOpen(false)}>
                 {t('landing.nav.login')}
               </Link>
-              <Link
-                to="/register"
-                className="block bg-teal-600 text-white px-5 py-3 rounded-full font-medium text-center"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                {t('landing.nav.getStartedFree')}
-              </Link>
+              <div className="pt-3">
+                <Link
+                  to="/register"
+                  className="block bg-teal-600 text-white px-5 py-3.5 rounded-full font-medium text-center hover:bg-teal-700 transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  {t('landing.nav.getStartedFree')}
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden">
+      <section className="relative min-h-[100svh] flex items-center overflow-hidden">
         {/* Hero Image - Background */}
         <div className="absolute inset-0">
           <OptimizedImage
             src="/hero-landing.webp"
             alt=""
-            className="w-full h-full object-cover object-right"
+            className="w-full h-full object-cover object-center sm:object-right"
             loading="eager"
           />
-          {/* Fade overlay from left */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 via-40% to-transparent" />
+          {/* Fade overlay - stronger on mobile */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/98 via-60% to-white/70 sm:via-white/95 sm:via-40% sm:to-transparent" />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-32">
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 pt-28 sm:py-32">
           <div className="max-w-xl">
-            <p className="text-teal-600 font-medium mb-4 tracking-wide">
+            <p className="text-teal-600 font-medium mb-3 sm:mb-4 tracking-wide text-sm sm:text-base">
               {t('landing.hero.badge')}
             </p>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 mb-4 sm:mb-6 leading-tight">
               {t('landing.hero.titleStart')}{' '}
               <span className="text-teal-600">{t('landing.hero.titleHighlight')}</span>
               {' '}{t('landing.hero.titleEnd')}
             </h1>
 
-            <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+            <p className="text-base sm:text-lg text-slate-600 mb-6 sm:mb-8 leading-relaxed">
               {t('landing.hero.description')}
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-10">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mb-8 sm:mb-10">
               <Link
                 to="/register"
-                className="group bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-medium text-lg inline-flex items-center justify-center gap-2 transition-all"
+                className="group bg-teal-600 hover:bg-teal-700 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg inline-flex items-center justify-center gap-2 transition-all"
               >
                 {t('landing.hero.cta')}
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <button
                 onClick={() => scrollToSection('funktioner')}
-                className="text-slate-700 hover:text-slate-900 px-8 py-4 rounded-full font-medium text-lg inline-flex items-center justify-center gap-2 border border-slate-200 hover:border-slate-300 transition-all"
+                className="text-slate-700 hover:text-slate-900 px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg inline-flex items-center justify-center gap-2 border border-slate-200 hover:border-slate-300 transition-all bg-white/80 sm:bg-transparent"
               >
                 {t('landing.nav.features')}
               </button>
             </div>
 
-            <div className="flex flex-wrap gap-6 text-sm text-slate-600">
+            <div className="flex flex-wrap gap-4 sm:gap-6 text-xs sm:text-sm text-slate-600">
               <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-teal-600" />
+                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
                 {t('landing.hero.free')}
               </span>
               <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-teal-600" />
+                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
                 {t('landing.hero.secure')}
               </span>
               <span className="flex items-center gap-2">
-                <Check className="w-5 h-5 text-teal-600" />
+                <Check className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600" />
                 {t('landing.hero.quickStart')}
               </span>
             </div>
-            </div>
+          </div>
         </div>
       </section>
 
       {/* Social Proof */}
-      <section className="py-16 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-center gap-12 text-center">
+      <section className="py-10 sm:py-16 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-row flex-wrap items-center justify-center gap-8 sm:gap-12 text-center">
             <div>
-              <p className="text-3xl font-bold text-slate-900">5 000+</p>
-              <p className="text-slate-600 mt-1">{t('landing.socialProof.users')}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-slate-900">5 000+</p>
+              <p className="text-slate-600 text-sm sm:text-base mt-1">{t('landing.socialProof.users')}</p>
             </div>
-            <div className="hidden md:block w-px h-12 bg-slate-200" />
+            <div className="hidden sm:block w-px h-12 bg-slate-200" />
             <div>
               <div className="flex justify-center gap-1 mb-1">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-amber-400 text-amber-400" />
+                  <Star key={i} className="w-4 h-4 sm:w-5 sm:h-5 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-slate-600">{t('landing.socialProof.rating')}</p>
+              <p className="text-slate-600 text-sm sm:text-base">{t('landing.socialProof.rating')}</p>
             </div>
-            <div className="hidden md:block w-px h-12 bg-slate-200" />
+            <div className="hidden sm:block w-px h-12 bg-slate-200" />
             <div>
-              <p className="text-3xl font-bold text-slate-900">30+</p>
-              <p className="text-slate-600 mt-1">{t('landing.trust.municipalities')}</p>
+              <p className="text-2xl sm:text-3xl font-bold text-slate-900">30+</p>
+              <p className="text-slate-600 text-sm sm:text-base mt-1">{t('landing.trust.municipalities')}</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="funktioner" className="py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-teal-600 font-medium mb-3">{t('landing.features.sectionLabel')}</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+      <section id="funktioner" className="py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
+            <p className="text-teal-600 font-medium mb-2 sm:mb-3 text-sm sm:text-base">{t('landing.features.sectionLabel')}</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
               {t('landing.features.title')}
             </h2>
-            <p className="text-slate-600 text-lg">
+            <p className="text-slate-600 text-base sm:text-lg">
               {t('landing.features.description')}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-10 lg:gap-12">
             <FeatureCard
               icon={FileText}
               title={t('landing.features.cv.title')}
@@ -329,29 +331,29 @@ export default function Landing() {
       </section>
 
       {/* How It Works */}
-      <section id="hur-det-funkar" className="py-24 bg-slate-50">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-teal-600 font-medium mb-3">{t('landing.steps.sectionLabel')}</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+      <section id="hur-det-funkar" className="py-16 sm:py-24 bg-slate-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
+            <p className="text-teal-600 font-medium mb-2 sm:mb-3 text-sm sm:text-base">{t('landing.steps.sectionLabel')}</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
               {t('landing.steps.title')}
             </h2>
-            <p className="text-slate-600 text-lg">
+            <p className="text-slate-600 text-base sm:text-lg">
               {t('landing.steps.description')}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
             {[1, 2, 3].map((step) => (
               <div key={step} className="relative">
-                <div className="bg-white rounded-2xl p-8 h-full">
-                  <div className="w-12 h-12 bg-teal-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-6">
+                <div className="bg-white rounded-2xl p-6 sm:p-8 h-full">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-teal-600 text-white rounded-full flex items-center justify-center text-lg sm:text-xl font-bold mb-4 sm:mb-6">
                     {step}
                   </div>
-                  <h3 className="text-xl font-semibold text-slate-800 mb-3">
+                  <h3 className="text-lg sm:text-xl font-semibold text-slate-800 mb-2 sm:mb-3">
                     {t(`landing.steps.step${step}Title`)}
                   </h3>
-                  <p className="text-slate-600 leading-relaxed">
+                  <p className="text-slate-600 leading-relaxed text-sm sm:text-base">
                     {t(`landing.steps.step${step}Description`)}
                   </p>
                 </div>
@@ -367,21 +369,21 @@ export default function Landing() {
       </section>
 
       {/* Pricing Section */}
-      <section id="priser" className="py-24">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <p className="text-teal-600 font-medium mb-3">{t('landing.pricing.sectionLabel')}</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+      <section id="priser" className="py-16 sm:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-16">
+            <p className="text-teal-600 font-medium mb-2 sm:mb-3 text-sm sm:text-base">{t('landing.pricing.sectionLabel')}</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
               {t('landing.pricing.title')}
             </h2>
-            <p className="text-slate-600 text-lg">
+            <p className="text-slate-600 text-base sm:text-lg">
               {t('landing.pricing.description')}
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
             {/* Organization */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-teal-200 relative">
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border-2 border-teal-200 relative sm:col-span-2 md:col-span-1">
               <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                 <span className="bg-teal-600 text-white text-xs font-medium px-4 py-1 rounded-full">
                   {t('landing.pricing.mostPopular')}
@@ -414,7 +416,7 @@ export default function Landing() {
             </div>
 
             {/* Consultant */}
-            <div className="bg-white rounded-2xl p-8 border border-slate-200">
+            <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200">
               <h3 className="text-xl font-semibold text-slate-800 mb-2">
                 {t('landing.pricing.consultant.title')}
               </h3>
@@ -442,7 +444,7 @@ export default function Landing() {
             </div>
 
             {/* Free */}
-            <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+            <div className="bg-slate-50 rounded-2xl p-6 sm:p-8 border border-slate-200">
               <h3 className="text-xl font-semibold text-slate-800 mb-2">
                 {t('landing.pricing.participant.title')}
               </h3>
@@ -472,11 +474,11 @@ export default function Landing() {
       </section>
 
       {/* FAQ Section */}
-      <section id="faq" className="py-24 bg-slate-50">
-        <div className="max-w-3xl mx-auto px-6">
-          <div className="text-center mb-16">
-            <p className="text-teal-600 font-medium mb-3">{t('landing.faq.sectionLabel')}</p>
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+      <section id="faq" className="py-16 sm:py-24 bg-slate-50">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-10 sm:mb-16">
+            <p className="text-teal-600 font-medium mb-2 sm:mb-3 text-sm sm:text-base">{t('landing.faq.sectionLabel')}</p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
               {t('landing.faq.title')}
             </h2>
           </div>
@@ -496,22 +498,22 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+      <section className="py-16 sm:py-24">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-slate-900 mb-3 sm:mb-4">
             {t('landing.cta.title')}
           </h2>
-          <p className="text-slate-600 text-lg mb-8">
+          <p className="text-slate-600 text-base sm:text-lg mb-6 sm:mb-8">
             {t('landing.cta.description')}
           </p>
           <Link
             to="/register"
-            className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-8 py-4 rounded-full font-medium text-lg transition-all"
+            className="inline-flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white px-6 sm:px-8 py-3.5 sm:py-4 rounded-full font-medium text-base sm:text-lg transition-all"
           >
             {t('landing.cta.button')}
             <ArrowRight className="w-5 h-5" />
           </Link>
-          <p className="text-slate-500 text-sm mt-4">
+          <p className="text-slate-500 text-xs sm:text-sm mt-4">
             {t('landing.cta.noCard')}
           </p>
         </div>
@@ -519,19 +521,19 @@ export default function Landing() {
 
       {/* Footer */}
       <footer className="bg-slate-900 text-slate-400">
-        <div className="max-w-7xl mx-auto px-6 lg:px-8 py-16">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10 sm:mb-12">
             {/* Brand */}
-            <div className="col-span-2 md:col-span-1">
+            <div className="col-span-2 sm:col-span-2 md:col-span-1">
               <div className="flex items-center gap-2.5 mb-4">
                 <OptimizedImage
                   src="/logo-jobin-new.webp"
                   alt="jobin.se"
-                  className="w-9 h-9 object-contain"
+                  className="w-8 h-8 sm:w-9 sm:h-9 object-contain"
                 />
-                <span className="text-white font-semibold text-xl">jobin.se</span>
+                <span className="text-white font-semibold text-lg sm:text-xl">jobin.se</span>
               </div>
-              <p className="text-sm leading-relaxed">
+              <p className="text-xs sm:text-sm leading-relaxed">
                 {t('landing.footer.brand')}
               </p>
             </div>
