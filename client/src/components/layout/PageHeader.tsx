@@ -36,8 +36,8 @@ export function PageHeader({
         {children}
         
         {showInsightsLink && (
-          <Link 
-            to="/insights" 
+          <Link
+            to="/career"
             className={cn(
               "inline-flex items-center justify-center gap-2 px-5 py-2.5",
               "bg-violet-100 text-violet-700 rounded-xl",

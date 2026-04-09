@@ -428,7 +428,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
             {notifications.length > 0 && (
               <div className="px-4 py-2 border-t border-stone-100 dark:border-stone-700">
                 <Link
-                  to="/settings/notifications"
+                  to="/settings"
                   className="block text-center text-xs text-stone-500 dark:text-stone-400 hover:text-violet-600 dark:hover:text-violet-400"
                   onClick={handleClose}
                 >

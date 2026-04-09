@@ -249,7 +249,7 @@ export default function MyJourneyTab() {
                   </div>
                 </div>
                 <Link
-                  to="/jobs"
+                  to="/job-search"
                   className="px-3 py-1.5 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
                 >
                   {t('knowledgeBase.myJourney.start')}

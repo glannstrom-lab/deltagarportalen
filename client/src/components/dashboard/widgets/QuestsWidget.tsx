@@ -24,7 +24,7 @@ export function QuestsWidget({
   if (size === 'mini') {
     return (
       <Link
-        to="/activity"
+        to="/"
         className={cn(
           "group flex items-center gap-3 bg-white dark:bg-slate-800 p-3 rounded-xl border transition-all duration-200",
           "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-md",
@@ -57,7 +57,7 @@ export function QuestsWidget({
   if (size === 'medium') {
     return (
       <Link
-        to="/activity"
+        to="/"
         className={cn(
           "group block bg-white dark:bg-slate-800 p-4 rounded-xl border transition-all duration-200",
           "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg hover:-translate-y-0.5",
@@ -117,7 +117,7 @@ export function QuestsWidget({
 
   return (
     <Link
-      to="/activity"
+      to="/"
       className={cn(
         "group block bg-white dark:bg-slate-800 p-5 rounded-xl border transition-all duration-200",
         "hover:border-amber-300 dark:hover:border-amber-600 hover:shadow-lg",

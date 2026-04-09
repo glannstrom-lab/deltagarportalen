@@ -735,7 +735,7 @@ export default function Resources() {
                 <span className="text-sm font-normal text-slate-500">({filteredJobs.length})</span>
               </h3>
               <Link
-                to="/job-tracker"
+                to="/applications"
                 className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
               >
                 {t('resources.jobTracker')}
