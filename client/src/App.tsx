@@ -227,320 +227,47 @@ function App() {
   // TEMPORARY DEBUG: Visible element to confirm React renders
   console.log('[DEBUG] 7c. App rendering main content, isLoading:', isLoading)
 
+  // TEMPORARY: Return simple test page to bypass all routing
   return (
-    <>
-    {debugElement}
-    {/* DEBUG: Test content with inline styles */}
-    <div style={{
-      marginTop: '80px',
-      padding: '20px',
-      background: '#22c55e',
-      color: 'white',
-      fontSize: '24px',
-      textAlign: 'center'
-    }}>
-      🟢 DEBUG: Routes-sektionen renderas! Auth: {String(useAuthStore.getState().isAuthenticated)}
-    </div>
-    {/* TEST: Element UTANFÖR Routes */}
-    <div style={{
-      marginTop: '20px',
-      padding: '20px',
-      background: '#f97316',
-      color: 'white',
-      fontSize: '20px',
-      textAlign: 'center'
-    }}>
-      🟠 ORANGE: Detta är UTANFÖR Routes, borde alltid synas
-    </div>
-
-    <Routes>
-      {/* TEMPORARY: Catch-all test route */}
-      <Route path="*" element={
-        <div style={{
-          marginTop: '20px',
-          padding: '40px',
-          background: '#8b5cf6',
-          color: 'white',
-          fontSize: '32px',
-          textAlign: 'center'
-        }}>
-          🟣 LILA: Catch-all route matchade! Path: {window.location.hash || window.location.pathname}
+    <div style={{ fontFamily: 'Arial, sans-serif' }}>
+      {debugElement}
+      <div style={{
+        marginTop: '80px',
+        padding: '40px',
+        maxWidth: '600px',
+        margin: '80px auto 0',
+        textAlign: 'center'
+      }}>
+        <h1 style={{ color: '#1e293b', marginBottom: '20px' }}>
+          🎉 Jobin fungerar!
+        </h1>
+        <p style={{ color: '#64748b', marginBottom: '30px', fontSize: '18px' }}>
+          Detta är en temporär testsida. Routing är tillfälligt avstängd för felsökning.
+        </p>
+        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <a href="#/login" style={{
+            padding: '12px 24px',
+            background: '#4f46e5',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '8px',
+            fontWeight: 'bold'
+          }}>
+            Logga in
+          </a>
+          <a href="#/register" style={{
+            padding: '12px 24px',
+            background: '#22c55e',
+            color: 'white',
+            textDecoration: 'none',
+            borderRadius: '8px',
+            fontWeight: 'bold'
+          }}>
+            Registrera
+          </a>
         </div>
-      } />
-
-      {/* Public routes - TEMPORARILY DISABLED
-      <Route path="/" element={
-        <PublicRoute>
-          <Landing />
-        </PublicRoute>
-      } /> */}
-      <Route path="/login" element={
-        <PublicRoute>
-          <Login />
-        </PublicRoute>
-      } />
-      <Route path="/register" element={
-        <PublicRoute>
-          <Register />
-        </PublicRoute>
-      } />
-      <Route path="/invite/:code" element={
-        <LazyRoute>
-          <InviteHandler />
-        </LazyRoute>
-      } />
-      
-      {/* Landing page preview */}
-      <Route path="/landing" element={<Landing />} />
-      
-      {/* Legal pages */}
-      <Route path="/privacy" element={<Privacy />} />
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/ai-policy" element={<AiPolicy />} />
-      <Route path="/test/storage" element={<StorageTest />} />
-
-      {/* Protected routes with Layout */}
-      <Route path="/" element={
-        <PrivateRoute>
-          <Layout />
-        </PrivateRoute>
-      }>
-        {/* Dashboard with tabs - main route */}
-        <Route index element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Dashboard />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        
-        {/* Other protected routes */}
-        <Route path="cv/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <CVPage />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="cover-letter/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <CoverLetterPage />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="interest-guide/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <InterestGuide />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base/article/:id" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Article />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="knowledge-base/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <KnowledgeBase />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="profile" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Profile />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="unified-profile" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <UnifiedProfile />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="job-search/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <JobSearch />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="jobs" element={<Navigate to="/job-search" replace />} />
-        <Route path="job-tracker/*" element={<Navigate to="/job-search" replace />} />
-        <Route path="applications/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Applications />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="spontanansökan/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Spontaneous />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="career/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Career />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="diary" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Diary />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="wellness/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Wellness />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="exercises" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Exercises />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="settings" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Settings />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="resources" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Resources />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="help" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Help />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="journey" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Journey />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-
-        {/* New feature pages */}
-        <Route path="salary/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Salary />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="international/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <International />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="personal-brand/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <PersonalBrand />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="linkedin-optimizer" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <LinkedInOptimizer />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="skills-gap-analysis" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <SkillsGapAnalysis />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="interview-simulator" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <InterviewSimulator />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="calendar" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Calendar />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-        <Route path="education/*" element={
-          <LazyRoute>
-            <RouteErrorBoundary>
-              <Education />
-            </RouteErrorBoundary>
-          </LazyRoute>
-        } />
-
-        {/* Consultant routes */}
-        <Route path="consultant/*" element={
-          <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
-            <LazyRoute>
-              <RouteErrorBoundary>
-                <Consultant />
-              </RouteErrorBoundary>
-            </LazyRoute>
-          </PrivateRoute>
-        } />
-        
-        {/* Admin routes */}
-        <Route path="admin" element={
-          <PrivateRoute allowedRoles={['ADMIN', 'SUPERADMIN']}>
-            <LazyRoute>
-              <RouteErrorBoundary>
-                <SuperAdminPanel />
-              </RouteErrorBoundary>
-            </LazyRoute>
-          </PrivateRoute>
-        } />
-      </Route>
-
-      {/* Redirect old dashboard routes */}
-      <Route path="/dashboard" element={<Navigate to="/" replace />} />
-      <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
-
-      {/* Catch all - redirect to home */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
-    <CookieConsent />
-    </>
+      </div>
+    </div>
   )
 }
 
