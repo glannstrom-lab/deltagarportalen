@@ -15,7 +15,7 @@ import {
   ThumbsDown,
   Minus,
   Star,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { AiConsentGate } from './AiConsentGate'
 import {

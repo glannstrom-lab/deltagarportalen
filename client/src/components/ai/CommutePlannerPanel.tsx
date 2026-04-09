@@ -14,7 +14,7 @@ import {
   Lightbulb,
   Home,
   Building2,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { AiConsentGate } from './AiConsentGate'

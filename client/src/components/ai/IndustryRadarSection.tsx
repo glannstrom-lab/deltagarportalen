@@ -14,7 +14,7 @@ import {
   ChevronDown,
   ChevronUp,
   RefreshCw,
-} from 'lucide-react'
+} from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { AiConsentGate } from './AiConsentGate'
