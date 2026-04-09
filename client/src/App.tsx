@@ -198,12 +198,28 @@ function App() {
     return (
       <>
         {debugElement}
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-slate-800">
-          <div className="text-center">
-            <Loader2 className="animate-spin text-white mx-auto mb-4" size={48} />
-            <p className="text-white/80">Laddar...</p>
+        <div style={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'linear-gradient(to bottom right, #0d9488, #1e293b)',
+          paddingTop: '60px'
+        }}>
+          <div style={{ textAlign: 'center' }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              border: '4px solid rgba(255,255,255,0.3)',
+              borderTopColor: 'white',
+              borderRadius: '50%',
+              margin: '0 auto 16px',
+              animation: 'spin 1s linear infinite'
+            }} />
+            <p style={{ color: 'rgba(255,255,255,0.8)' }}>Laddar...</p>
           </div>
         </div>
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </>
     )
   }
@@ -214,6 +230,17 @@ function App() {
   return (
     <>
     {debugElement}
+    {/* DEBUG: Test content with inline styles */}
+    <div style={{
+      marginTop: '80px',
+      padding: '20px',
+      background: '#22c55e',
+      color: 'white',
+      fontSize: '24px',
+      textAlign: 'center'
+    }}>
+      🟢 DEBUG: Routes-sektionen renderas! Auth: {String(useAuthStore.getState().isAuthenticated)}
+    </div>
     <Routes>
       {/* Public routes */}
       <Route path="/" element={
