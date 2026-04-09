@@ -148,9 +148,12 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 }
 
 function App() {
+  console.log('[DEBUG] 7. App component rendering')
   const { initialize, isLoading } = useAuthStore()
+  console.log('[DEBUG] 7a. useAuthStore called, isLoading:', isLoading)
 
   useEffect(() => {
+    console.log('[DEBUG] 7b. App useEffect running, calling initialize()')
     initialize()
     
     // Clear old service worker to fix routing issues
