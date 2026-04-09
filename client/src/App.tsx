@@ -184,8 +184,25 @@ function App() {
     )
   }
 
+  // TEMPORARY DEBUG: Visible element to confirm React renders
+  console.log('[DEBUG] 7c. App rendering main content, isLoading:', isLoading)
+
   return (
     <>
+    {/* DEBUG: This should ALWAYS be visible if React works */}
+    <div style={{
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      background: 'red',
+      color: 'white',
+      padding: '10px',
+      zIndex: 99999,
+      fontSize: '14px'
+    }}>
+      DEBUG: React rendererar! isLoading={String(isLoading)}, path={window.location.hash || window.location.pathname}
+    </div>
     <Routes>
       {/* Public routes */}
       <Route path="/" element={
