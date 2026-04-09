@@ -91,14 +91,14 @@ interface CVVersion {
 }
 
 interface CVData {
-  first_name?: string
-  last_name?: string
+  firstName?: string
+  lastName?: string
   title?: string
   email?: string
   phone?: string
   location?: string
   summary?: string
-  work_experience?: Array<{
+  workExperience?: Array<{
     title: string
     company: string
     description?: string
@@ -112,11 +112,15 @@ interface CVData {
     startDate?: string
     endDate?: string
   }>
-  skills?: string[]
+  skills?: Array<{ id: string; name: string; level?: number; category?: string }> | string[]
   languages?: Array<{
     language: string
     level: string
   }>
+  template?: string
+  colorScheme?: string
+  font?: string
+  profileImage?: string | null
 }
 
 interface InterestResult {
@@ -232,7 +236,7 @@ async function generateCVPDF(cvData: CVData) {
 
   doc.setFontSize(24)
   doc.setTextColor(79, 70, 229)
-  doc.text(`${cvData.first_name || ''} ${cvData.last_name || ''}`, margin, y)
+  doc.text(`${cvData.firstName || ''} ${cvData.lastName || ''}`, margin, y)
   y += 10
 
   if (cvData.title) {
@@ -266,12 +270,12 @@ async function generateCVPDF(cvData: CVData) {
     y += splitSummary.length * 5 + 10
   }
 
-  if (cvData.work_experience && cvData.work_experience.length > 0) {
+  if (cvData.workExperience && cvData.workExperience.length > 0) {
     doc.setFontSize(12)
     doc.setTextColor(79, 70, 229)
     doc.text('Arbetslivserfarenhet', margin, y)
     y += 8
-    cvData.work_experience.forEach((job) => {
+    cvData.workExperience.forEach((job) => {
       if (y > 250) { doc.addPage(); y = 20 }
       doc.setFontSize(11)
       doc.setTextColor(40, 40, 40)
@@ -336,7 +340,7 @@ async function generateCVPDF(cvData: CVData) {
     doc.text(langText, margin, y)
   }
 
-  doc.save(`CV-${cvData.first_name || 'Mitt'}-${cvData.last_name || ''}.pdf`)
+  doc.save(`CV-${cvData.firstName || 'Mitt'}-${cvData.lastName || ''}.pdf`)
 }
 
 async function generateCoverLetterPDF(letter: CoverLetter) {
@@ -384,7 +388,7 @@ async function generateCVWord(cvData: CVData) {
 
   // Name
   children.push(new Paragraph({
-    children: [new TextRun({ text: `${cvData.first_name || ''} ${cvData.last_name || ''}`, bold: true, size: 48, color: '4F46E5' })],
+    children: [new TextRun({ text: `${cvData.firstName || ''} ${cvData.lastName || ''}`, bold: true, size: 48, color: '4F46E5' })],
     spacing: { after: 100 }
   }))
 
@@ -415,9 +419,9 @@ async function generateCVWord(cvData: CVData) {
   }
 
   // Work Experience
-  if (cvData.work_experience && cvData.work_experience.length > 0) {
+  if (cvData.workExperience && cvData.workExperience.length > 0) {
     children.push(new Paragraph({ text: 'Arbetslivserfarenhet', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
-    cvData.work_experience.forEach(job => {
+    cvData.workExperience.forEach(job => {
       children.push(new Paragraph({
         children: [new TextRun({ text: job.title, bold: true, size: 24 })],
         spacing: { before: 150 }
@@ -465,7 +469,7 @@ async function generateCVWord(cvData: CVData) {
 
   const doc = new Document({ sections: [{ children }] })
   const blob = await Packer.toBlob(doc)
-  saveAs(blob, `CV-${cvData.first_name || 'Mitt'}-${cvData.last_name || ''}.docx`)
+  saveAs(blob, `CV-${cvData.firstName || 'Mitt'}-${cvData.lastName || ''}.docx`)
 }
 
 async function generateCoverLetterWord(letter: CoverLetter) {
@@ -768,14 +772,14 @@ export default function Resources() {
                     </div>
                     <div className="p-3">
                       <div className="text-xs text-slate-600 space-y-1 mb-3">
-                        {versionData.first_name && (
-                          <p className="truncate"><span className="text-slate-400">Namn:</span> {versionData.first_name} {versionData.last_name}</p>
+                        {versionData.firstName && (
+                          <p className="truncate"><span className="text-slate-400">Namn:</span> {versionData.firstName} {versionData.lastName}</p>
                         )}
                         {versionData.title && (
                           <p className="truncate"><span className="text-slate-400">Titel:</span> {versionData.title}</p>
                         )}
                         <p className="flex gap-3">
-                          <span><span className="text-slate-400">Erfarenhet:</span> {versionData.work_experience?.length || 0}</span>
+                          <span><span className="text-slate-400">Erfarenhet:</span> {versionData.workExperience?.length || 0}</span>
                           <span><span className="text-slate-400">Utbildning:</span> {versionData.education?.length || 0}</span>
                         </p>
                       </div>
@@ -828,7 +832,7 @@ export default function Resources() {
                     <CheckCircle2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-slate-800">{cvData.first_name} {cvData.last_name}</h2>
+                    <h2 className="text-lg font-bold text-slate-800">{cvData.firstName} {cvData.lastName}</h2>
                     <p className="text-sm text-slate-600">{cvData.title || t('resources.myCV')}</p>
                     <p className="text-xs text-amber-600 mt-1">Spara en version på CV-sidan för att se den här</p>
                   </div>
@@ -1192,7 +1196,7 @@ export default function Resources() {
                     {/* Header */}
                     <div className="border-b border-slate-100 pb-4">
                       <h2 className="text-xl font-bold text-slate-800">
-                        {cv.first_name} {cv.last_name}
+                        {cv.firstName} {cv.lastName}
                       </h2>
                       {cv.title && <p className="text-slate-600">{cv.title}</p>}
                       <div className="flex flex-wrap gap-3 mt-2 text-sm text-slate-500">
@@ -1211,14 +1215,14 @@ export default function Resources() {
                     )}
 
                     {/* Work Experience */}
-                    {cv.work_experience && cv.work_experience.length > 0 && (
+                    {cv.workExperience && cv.workExperience.length > 0 && (
                       <div>
                         <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
                           <Briefcase size={16} className="text-blue-500" />
                           Arbetslivserfarenhet
                         </h3>
                         <div className="space-y-3">
-                          {cv.work_experience.map((job, i) => (
+                          {cv.workExperience.map((job, i) => (
                             <div key={i} className="pl-4 border-l-2 border-blue-200">
                               <p className="font-medium text-slate-800">{job.title}</p>
                               <p className="text-sm text-slate-600">{job.company}</p>
