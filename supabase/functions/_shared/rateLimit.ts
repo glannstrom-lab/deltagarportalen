@@ -26,6 +26,11 @@ const ENDPOINT_LIMITS: Record<string, { limit: number; windowMs: number }> = {
   'learning-recommend': { limit: 30, windowMs: 60 * 1000 },
   'learning-progress': { limit: 50, windowMs: 60 * 1000 },
   'af-jobsearch': { limit: 60, windowMs: 60 * 1000 },
+  // AI Career Assistant endpoints
+  'ai-career-assistant': { limit: 20, windowMs: 60 * 1000 },
+  'ai-company-analysis': { limit: 5, windowMs: 60 * 1000 },
+  'ai-industry-radar': { limit: 10, windowMs: 60 * 1000 },
+  'ai-commute-planner': { limit: 10, windowMs: 60 * 1000 },
 };
 
 /**

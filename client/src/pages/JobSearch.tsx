@@ -5,7 +5,7 @@ import {
   ExternalLink, Filter, ChevronDown,
   ChevronLeft, ChevronRight, Sparkles, Heart, FileText,
   Bookmark, Send, Bell, MoreVertical,
-  Trash2, CheckCircle, Clock
+  Trash2, CheckCircle, Clock, MessageSquare, Train
 } from '@/components/ui/icons';
 import { Link, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { searchJobs, getJobDetails, getAutocomplete, SWEDISH_MUNICIPALITIES, type PlatsbankenJob } from '@/services/arbetsformedlingenApi';
@@ -20,6 +20,7 @@ import {
   Button,
   Card,
 } from '@/components/ui';
+import { InterviewPrepPanel, CommutePlannerPanel } from '@/components/ai';
 import { cn } from '@/lib/utils';
 import { CreateApplicationModal } from '@/components/workflow';
 
@@ -97,6 +98,10 @@ function SearchTab() {
 
   // Create Application Modal state
   const [applicationModalJob, setApplicationModalJob] = useState<PlatsbankenJob | null>(null)
+
+  // AI panel state
+  const [showInterviewPrep, setShowInterviewPrep] = useState(false)
+  const [showCommutePlanner, setShowCommutePlanner] = useState(false)
 
   // Sök när filter ändras (med debounce)
   useEffect(() => {
@@ -516,6 +521,53 @@ function SearchTab() {
                     dangerouslySetInnerHTML={{ __html: sanitizeHTMLWithLineBreaks(selectedJob.description?.text) }}
                   />
                 </div>
+
+                {/* AI Feature Buttons */}
+                <div className="flex gap-2 pt-4 border-t border-slate-100">
+                  <button
+                    onClick={() => setShowInterviewPrep(!showInterviewPrep)}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-colors",
+                      showInterviewPrep
+                        ? "bg-violet-100 text-violet-700 border border-violet-200"
+                        : "bg-violet-50 text-violet-600 hover:bg-violet-100"
+                    )}
+                  >
+                    <MessageSquare size={16} />
+                    Intervjuförberedelse
+                  </button>
+                  <button
+                    onClick={() => setShowCommutePlanner(!showCommutePlanner)}
+                    className={cn(
+                      "flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-medium transition-colors",
+                      showCommutePlanner
+                        ? "bg-cyan-100 text-cyan-700 border border-cyan-200"
+                        : "bg-cyan-50 text-cyan-600 hover:bg-cyan-100"
+                    )}
+                  >
+                    <Train size={16} />
+                    Pendlingsinfo
+                  </button>
+                </div>
+
+                {/* Interview Prep Panel */}
+                {showInterviewPrep && (
+                  <InterviewPrepPanel
+                    companyName={selectedJob.employer?.name || ''}
+                    jobTitle={selectedJob.headline}
+                    jobDescription={selectedJob.description?.text?.substring(0, 2000)}
+                  />
+                )}
+
+                {/* Commute Planner Panel */}
+                {showCommutePlanner && (
+                  <CommutePlannerPanel
+                    workAddress={selectedJob.workplace_address?.street_address
+                      ? `${selectedJob.workplace_address.street_address}, ${selectedJob.workplace_address.municipality || ''}`
+                      : selectedJob.workplace_address?.municipality || ''}
+                    workCompanyName={selectedJob.employer?.name}
+                  />
+                )}
 
                 <div className="space-y-2 sm:space-y-3 pt-4 border-t border-slate-100">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">

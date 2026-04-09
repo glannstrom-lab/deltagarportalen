@@ -6,6 +6,7 @@
 import { useState, useMemo } from 'react'
 import { Calculator, MapPin, Briefcase, TrendingUp, Info, Sparkles, Download, Plus, X, BarChart3, PieChart } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
+import { SalaryInsightsPanel } from '@/components/ai'
 import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -467,6 +468,14 @@ export default function SalaryCalculatorTab() {
           </div>
         </Card>
       )}
+
+      {/* AI Salary Insights */}
+      <SalaryInsightsPanel
+        occupation={occupation}
+        region={region}
+        experienceYears={experience ? parseInt(experience.split('-')[0]) : undefined}
+        currentSalary={calculatedSalary?.median}
+      />
 
       {/* Tips section */}
       <Card>

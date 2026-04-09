@@ -9,6 +9,7 @@ import {
   Calendar, BookOpen, Copy, X, TrendingUp, Zap
 } from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
+import { NetworkingAssistant } from '@/components/ai'
 import { cn } from '@/lib/utils'
 
 interface Contact {
@@ -201,6 +202,9 @@ export default function NetworkTab() {
           </div>
         </Card>
       )}
+
+      {/* AI Networking Assistant */}
+      <NetworkingAssistant />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

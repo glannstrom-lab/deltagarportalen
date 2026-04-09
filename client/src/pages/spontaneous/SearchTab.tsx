@@ -35,6 +35,7 @@ import {
   type BolagsverketDocument,
 } from '@/services/bolagsverketApi'
 import { searchCompaniesWithAI, type AICompanyResult } from '@/services/aiCompanySearchApi'
+import { CompanyAnalysisPanel } from '@/components/ai'
 import { showToast } from '@/components/Toast'
 
 // Company status badge based on raw data from Bolagsverket
@@ -110,6 +111,7 @@ export default function SearchTab() {
   const [aiSearchStats, setAiSearchStats] = useState<{ total: number; verified: number } | null>(null)
   const [savingCompanyId, setSavingCompanyId] = useState<string | null>(null)
   const [selectedForSave, setSelectedForSave] = useState<Set<string>>(new Set())
+  const [expandedAnalysis, setExpandedAnalysis] = useState<string | null>(null)
 
   const { lookupCompany, addCompany, isCompanySaved } = useSpontaneousCompanies()
 
@@ -677,22 +679,47 @@ export default function SearchTab() {
                       )}
                     </div>
 
-                    {/* Save button */}
-                    {company.orgNumber && !isSaved && (
+                    {/* Action buttons */}
+                    <div className="flex flex-col gap-2">
+                      {/* Analyze button */}
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => handleSaveAICompany(company)}
-                        disabled={isSaving}
+                        onClick={() => setExpandedAnalysis(expandedAnalysis === company.orgNumber ? null : (company.orgNumber || `idx-${index}`))}
+                        className="text-violet-600 border-violet-200 hover:bg-violet-50"
                       >
-                        {isSaving ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Plus className="w-4 h-4" />
-                        )}
+                        <Sparkles className="w-4 h-4" />
                       </Button>
-                    )}
+
+                      {/* Save button */}
+                      {company.orgNumber && !isSaved && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleSaveAICompany(company)}
+                          disabled={isSaving}
+                        >
+                          {isSaving ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Plus className="w-4 h-4" />
+                          )}
+                        </Button>
+                      )}
+                    </div>
                   </div>
+
+                  {/* Company Analysis Panel - Expandable */}
+                  {expandedAnalysis === (company.orgNumber || `idx-${index}`) && (
+                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                      <CompanyAnalysisPanel
+                        companyName={company.name}
+                        orgNumber={company.orgNumber || undefined}
+                        industry={company.industry || undefined}
+                        onClose={() => setExpandedAnalysis(null)}
+                      />
+                    </div>
+                  )}
                 </div>
               )
             })}

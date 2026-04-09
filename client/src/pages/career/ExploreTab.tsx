@@ -9,6 +9,7 @@ import {
   Heart, Share2, X, Eye
 } from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
+import { IndustryRadarSection, EducationPathPanel } from '@/components/ai'
 import { cn } from '@/lib/utils'
 
 // Occupation definitions with i18n - these would typically come from an API
@@ -167,8 +168,18 @@ export default function ExploreTab() {
 
   const comparedOccupations = occupations.filter(o => comparison.has(o.id))
 
+  // Get selected occupation for education panel
+  const selectedOccupation = useMemo(() => {
+    if (favorites.size === 0) return null
+    const firstFavoriteId = Array.from(favorites)[0]
+    return occupations.find(o => o.id === firstFavoriteId)
+  }, [favorites, occupations])
+
   return (
     <div className="space-y-6">
+      {/* Industry Radar */}
+      <IndustryRadarSection />
+
       {/* Search */}
       <Card className="p-6">
         <div className="relative">
@@ -378,6 +389,11 @@ export default function ExploreTab() {
           <h3 className="text-lg font-semibold text-slate-700">{t('career.explore.noOccupationsFound') || 'Inga yrken hittades'}</h3>
           <p className="text-slate-500">{t('career.explore.tryDifferentSearch') || 'Försök med en annan sökning'}</p>
         </div>
+      )}
+
+      {/* Education Path Panel - Shows when user has selected a favorite occupation */}
+      {selectedOccupation && (
+        <EducationPathPanel targetOccupation={selectedOccupation.title} />
       )}
     </div>
   )
