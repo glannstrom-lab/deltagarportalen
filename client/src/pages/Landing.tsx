@@ -190,11 +190,22 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-50 to-white">
-        <div className="w-full max-w-7xl mx-auto px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-32">
-            {/* Content - Left */}
-            <div className="max-w-xl">
+      <section className="relative min-h-screen flex items-center overflow-hidden">
+        {/* Hero Image - Background */}
+        <div className="absolute inset-0">
+          <OptimizedImage
+            src="/hero-landing.webp"
+            alt=""
+            className="w-full h-full object-cover object-right"
+            loading="eager"
+          />
+          {/* Fade overlay from left */}
+          <div className="absolute inset-0 bg-gradient-to-r from-white via-white/95 via-40% to-transparent" />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-8 py-32">
+          <div className="max-w-xl">
             <p className="text-teal-600 font-medium mb-4 tracking-wide">
               {t('landing.hero.badge')}
             </p>
@@ -240,19 +251,6 @@ export default function Landing() {
               </span>
             </div>
             </div>
-
-            {/* Image - Right */}
-            <div className="hidden lg:block relative">
-              <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-                <OptimizedImage
-                  src="/hero-landing.webp"
-                  alt=""
-                  className="w-full h-auto"
-                  loading="eager"
-                />
-              </div>
-            </div>
-          </div>
         </div>
       </section>
 
