@@ -2472,11 +2472,22 @@
       "cvApproved": "CV godkänt av ATS!",
       "newJobMatches": "3 nya jobbmatchningar"
     },
+    "socialProof": {
+      "users": "aktiva användare",
+      "growing": "Växer varje dag",
+      "everyDay": "Nya användare registreras",
+      "rating": "betyg från användare",
+      "quote": "Användare och arbetskonsulenter älskar att kunna fokusera på det som är viktigt och enkelt anpassa planering och genomförande av arbetsmarknadskunskap.",
+      "quoteSource": "Användare & arbetskonsulenter över hela Sverige"
+    },
     "trust": {
-      "partnersTitle": "Samarbetar med",
+      "partnersTitle": "Betrodda av organisationer över hela Sverige",
       "arbetsformedlingen": "Arbetsförmedlingen",
       "platsbanken": "Platsbanken",
-      "municipalities": "Sveriges kommuner"
+      "municipalities": "Kommuner",
+      "unions": "Fackförbund",
+      "jobCoaches": "Jobbcoacher",
+      "companies": "Företag"
     },
     "steps": {
       "sectionLabel": "Processen",

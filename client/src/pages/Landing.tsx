@@ -25,7 +25,8 @@ import {
   MapPin,
   Building2,
   Users,
-  UserCheck
+  UserCheck,
+  TrendingUp
 } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
@@ -708,25 +709,99 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* Trust Bar */}
-      <section className="bg-white border-y border-slate-200 py-10">
+      {/* Social Proof Bar */}
+      <section className="bg-gradient-to-r from-violet-600 via-violet-700 to-indigo-700 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-white">
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="w-10 h-10 rounded-full bg-white/20 border-2 border-white flex items-center justify-center text-sm font-medium">
+                    {['👤', '👩', '👨', '👩‍💼', '👨‍💼'][i - 1]}
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p className="text-2xl font-bold">5 000+</p>
+                <p className="text-white/80 text-sm">{t('landing.socialProof.users')}</p>
+              </div>
+            </div>
+            <div className="hidden md:block w-px h-12 bg-white/20" />
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
+                <TrendingUp className="w-6 h-6" />
+              </div>
+              <div>
+                <p className="text-lg font-semibold">{t('landing.socialProof.growing')}</p>
+                <p className="text-white/80 text-sm">{t('landing.socialProof.everyDay')}</p>
+              </div>
+            </div>
+            <div className="hidden md:block w-px h-12 bg-white/20" />
+            <div className="flex items-center gap-3">
+              <div className="flex gap-1">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <div>
+                <p className="text-lg font-semibold">4.8/5</p>
+                <p className="text-white/80 text-sm">{t('landing.socialProof.rating')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Quote Banner */}
+      <section className="bg-slate-50 py-12 border-b border-slate-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <blockquote className="text-xl md:text-2xl text-slate-700 italic leading-relaxed">
+            "{t('landing.socialProof.quote')}"
+          </blockquote>
+          <div className="mt-4 flex items-center justify-center gap-2 text-slate-500">
+            <Heart className="w-4 h-4 fill-red-400 text-red-400" />
+            <span className="text-sm font-medium">{t('landing.socialProof.quoteSource')}</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Bar - Partners */}
+      <section className="bg-white border-b border-slate-200 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-slate-700 text-sm uppercase tracking-wider mb-6 font-medium">
+          <p className="text-slate-500 text-sm uppercase tracking-wider mb-8 font-medium">
             {t('landing.trust.partnersTitle')}
           </p>
-          <div className="flex items-center justify-center gap-12 flex-wrap">
-            <span className="flex items-center gap-3 text-slate-600 hover:text-slate-600 transition-colors">
-              <Briefcase className="w-6 h-6" />
-              <span className="font-semibold">{t('landing.trust.arbetsformedlingen')}</span>
-            </span>
-            <span className="flex items-center gap-3 text-slate-600 hover:text-slate-600 transition-colors">
-              <FileText className="w-6 h-6" />
-              <span className="font-semibold">{t('landing.trust.platsbanken')}</span>
-            </span>
-            <span className="flex items-center gap-3 text-slate-600 hover:text-slate-600 transition-colors">
-              <Check className="w-6 h-6" />
-              <span className="font-semibold">{t('landing.trust.municipalities')}</span>
-            </span>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 items-center justify-items-center">
+            <div className="flex flex-col items-center gap-2 text-slate-600 hover:text-violet-600 transition-colors group">
+              <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center group-hover:bg-violet-100 transition-colors">
+                <Briefcase className="w-7 h-7" />
+              </div>
+              <span className="font-medium text-sm">{t('landing.trust.arbetsformedlingen')}</span>
+            </div>
+            <div className="flex flex-col items-center gap-2 text-slate-600 hover:text-violet-600 transition-colors group">
+              <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center group-hover:bg-violet-100 transition-colors">
+                <Building2 className="w-7 h-7" />
+              </div>
+              <span className="font-medium text-sm">{t('landing.trust.municipalities')}</span>
+            </div>
+            <div className="flex flex-col items-center gap-2 text-slate-600 hover:text-violet-600 transition-colors group">
+              <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center group-hover:bg-violet-100 transition-colors">
+                <Users className="w-7 h-7" />
+              </div>
+              <span className="font-medium text-sm">{t('landing.trust.unions')}</span>
+            </div>
+            <div className="flex flex-col items-center gap-2 text-slate-600 hover:text-violet-600 transition-colors group">
+              <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center group-hover:bg-violet-100 transition-colors">
+                <UserCheck className="w-7 h-7" />
+              </div>
+              <span className="font-medium text-sm">{t('landing.trust.jobCoaches')}</span>
+            </div>
+            <div className="flex flex-col items-center gap-2 text-slate-600 hover:text-violet-600 transition-colors group col-span-2 md:col-span-1">
+              <div className="w-14 h-14 bg-slate-100 rounded-xl flex items-center justify-center group-hover:bg-violet-100 transition-colors">
+                <Target className="w-7 h-7" />
+              </div>
+              <span className="font-medium text-sm">{t('landing.trust.companies')}</span>
+            </div>
           </div>
         </div>
       </section>

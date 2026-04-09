@@ -2432,11 +2432,22 @@
       "cvApproved": "CV approved by ATS!",
       "newJobMatches": "3 new job matches"
     },
+    "socialProof": {
+      "users": "active users",
+      "growing": "Growing every day",
+      "everyDay": "New users registering",
+      "rating": "rating from users",
+      "quote": "Users and job consultants love being able to focus on what matters and easily customize the planning and execution of labor market training.",
+      "quoteSource": "Users & job consultants across Sweden"
+    },
     "trust": {
-      "partnersTitle": "Partners with",
-      "arbetsformedlingen": "Swedish Public Employment Service",
+      "partnersTitle": "Trusted by organizations across Sweden",
+      "arbetsformedlingen": "Employment Agency",
       "platsbanken": "Platsbanken",
-      "municipalities": "Swedish municipalities"
+      "municipalities": "Municipalities",
+      "unions": "Trade Unions",
+      "jobCoaches": "Job Coaches",
+      "companies": "Companies"
     },
     "steps": {
       "sectionLabel": "The process",

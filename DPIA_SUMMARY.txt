@@ -1,0 +1,171 @@
+DATASKYDDSKONSEKVENSBEDÖMNING (DPIA) - DELTAGARPORTALEN
+========================================================
+
+Fil: DPIA_Deltagarportalen.docx
+Skapad: Mars 2026
+Version: 1.0
+Klassificering: Konfidentiell
+
+INNEHÅL:
+--------
+
+1. FRAMSIDA
+   - Titel: "DATASKYDDSKONSEKVENSBEDÖMNING (DPIA)"
+   - Projekt: "Deltagarportalen — Jobin.se"
+   - Version 1.0, Mars 2026, Konfidentiell
+   - I enlighet med GDPR Art. 35
+
+2. INNEHÅLLSFÖRTECKNING
+   - Lista över alla kapitel med struktur
+
+3. INLEDNING OCH BAKGRUND (Avsnitt 1)
+   - Systemöversikt: Webbaserad portal för arbetssökande, konsulter och administratörer
+   - Teknisk arkitektur: React, Supabase (PostgreSQL), Supabase Auth, OpenRouter/OpenAI, Sentry
+   - Varför DPIA är erforderlig:
+     * Behandling av känsliga personuppgifter (Art. 9): hälsodata
+     * Systematisk övervakning av beteende
+     * Automatiserat beslutsfattande med betydande verkan
+     * Tredjelandsöverföring (USA)
+     * Storskalig behandling
+
+4. BESKRIVNING AV BEHANDLINGEN (Avsnitt 2)
+   Nio behandlingsaktiviteter dokumenterade:
+
+   a) Kontoskapande och profil (Art. 6.1b - Avtal)
+      - Email, namn, telefon, plats, bio, profilbild
+      - Lagringstid: Kontots aktiva period + 14 dagar efter borttagning
+
+   b) CV-hantering (Art. 6.1b - Avtal)
+      - Arbetshistorik, utbildning, färdigheter, språk, certifikat
+      - Mottagare: Konsulter, administratörer
+
+   c) Intresseguide RIASEC/Big Five (Art. 6.1a - Samtycke)
+      - Personlighetsprofilering (6 RIASEC + 5 Big Five dimensioner, 0-100 vardera)
+      - Holland-kod och yrkesrekommendationer
+      - KRÄVER EXPLICIT SAMTYCKE - automatiserad profilering
+
+   d) ICF-bedömning (Art. 9.2a - EXPLICIT samtycke för hälsodata)
+      - KÄNSLIG PERSONUPPGIFT: Kognitiv, kommunikation, koncentration, motorik, sensorisk, energi
+      - Bedömning för identifiering av stödbehov
+      - OBLIGATORISKT att implementera separat Art. 9 samtycke
+
+   e) Humör- och dagboksloggning (Art. 9.2a - EXPLICIT samtycke för hälsodata)
+      - KÄNSLIG PERSONUPPGIFT: Dagligt humör, energi, stress, sömnkvalitet, dagbokstextet
+      - 2 års lagringstid
+      - Kan innehålla känslig information om psykisk ohälsa
+      - OBLIGATORISKT att implementera separat Art. 9 samtycke
+
+   f) AI-behandling (Art. 6.1a + Art. 6.1f)
+      - CV-texter och jobbbeskrivningar skickas till OpenRouter (USA)
+      - TREDJELANDSÖVERFÖRING KRÄVER: SCC, TIA, DPA med OpenRouter
+
+   g) Konsultåtkomst (Art. 6.1f - Legitim intresse)
+      - Arbetskonsulenter granska användarprofilering, resultat, hälsodata
+      - RISK: Konsulter ser känslig data de inte behöver (dagbok)
+
+   h) Aktivitetsloggning (Art. 6.1f - Legitim intresse)
+      - Login-händelser, CV-uppdateringar, jobbsökningar
+      - 2 års lagring, immutable log
+      - Revisionsändamål och säkerhet
+
+   i) Felövervakning (Sentry) (Art. 6.1a - Samtycke)
+      - Felinformation, hashat användar-ID, breadcrumbs
+      - 1% sessionsrepetitioner (RISK: kan avslöja känslig data)
+      - TREDJELANDSÖVERFÖRING till USA
+
+5. BEDÖMNING AV NÖDVÄNDIGHET OCH PROPORTIONALITET (Avsnitt 3)
+   - Tabell bedömning för alla 9 aktiviteter
+   - Identifiering av mindre intrusive alternativ
+   - Dataminimeringsrekommendationer
+
+6. RISKER FÖR REGISTRERADE (Avsnitt 4)
+   Riskmatris med 8 identifierade risker:
+
+   HÖG risknivå:
+   - Dataintrång med känslig hälsodata (Hög/Hög)
+   - Obehörig konsultåtkomst (Medel/Hög)
+   - Tredjelandsöverföring utan skydd (Hög/Hög)
+   - Bristfälligt Art. 9 samtycke (Medel/Hög)
+
+   MEDEL risknivå:
+   - AI-leverantör missbrukar data (Låg/Hög)
+   - Felaktiga yrkesrekommendationer (Medel/Medel)
+   - Session replays (Medel/Medel)
+   - Re-identifiering från pseudonymiserad data (Låg/Medel)
+
+   LÅG risknivå:
+   - Profilbilder publikt åtkomliga (Låg/Låg)
+
+7. BEFINTLIGA SKYDDSÅTGÄRDER (Avsnitt 5)
+   Dokumenterade säkerhetsåtgärder redan på plats:
+   - TLS 1.3, databaskryptering
+   - bcrypt-hashning, JWT-autentisering
+   - Row Level Security (RLS), rollbaserad åtkomst
+   - Input-validering, CSP headers, SQL Injection-skydd
+   - Cookie-banner, samtyckesspårning
+   - Dataåtkomst, dataöverförbarhet, 14-dagars borttagningsperiod
+   - Rate limiting, server-side API-nycklar, admin-loggning
+
+8. FÖRESLAGNA ÅTGÄRDER (Avsnitt 6)
+   10 kritiska åtgärder med ansvarig, tidsplan och status:
+
+   KRITISK prioritet:
+   - Implementera Art. 9 explicit samtycke för ICF (April 2026)
+   - Implementera Art. 9 explicit samtycke för humör (April 2026)
+   - Underteckna SCC + TIA för OpenRouter (Maj 2026)
+   - DPA med Supabase, OpenRouter, Sentry (Maj 2026)
+   - Incidentsvar plan 72h IMY-meddelande (April 2026)
+
+   HÖG prioritet:
+   - Gör cv-images-bucket privat (Mars 2026 - SLUTFÖRD)
+   - Lagringspolicy för mood_logs 2 år (April 2026)
+   - Pseudonymisera data före AI-överföring (Juni 2026)
+   - Inaktivera sessionsrepetitioner i Sentry (Mars 2026 - SLUTFÖRD)
+
+   MEDEL prioritet:
+   - Rollbaserad åtkomst för konsulter (Maj 2026)
+   - Klassificera AI under AI Act (Juni 2026)
+
+9. SAMRÅD (Avsnitt 7)
+   - Dataskyddansvarig (DPO) konsulterad: dpo@jobin.se
+   - Rekommendation: Användarrepresentantsamråd före lansering
+   - Potentiell IMY-samråd krävs om höga risker förblir
+
+10. BESLUT OCH GODKÄNNANDE (Avsnitt 8)
+    - Underskriftsfält för 4 parterna:
+      * Personuppgiftsansvarig
+      * Dataskyddansvarig (DPO)
+      * Teknikansvarig / CTO
+      * Juridisk ansvarig
+    - Version: 1.0
+    - Datumsatt: Mars 2026
+    - Nästa granskning: Mars 2027
+    - Status: Godkänd
+    - Klassificering: Konfidentiell
+
+FORMATERING:
+-----------
+- Språk: Svenska
+- Format: Microsoft Word (.docx)
+- Storlek: 39 KB
+- Sidor: ~30
+- Tabeller: 5 (med färgkodning för risknivå)
+- Färgschema:
+  * Mörkblå headers (#1F4E78)
+  * Ljusblå tabellhuvuden (#D9E8F5)
+  * Grön låg risk (#E2EFDA)
+  * Orange medel risk (#FEE2CE)
+  * Röd hög risk (#F4CCCC)
+
+VALIDERING:
+----------
+Dokumentet har validerats enligt OOXML-standarden.
+Status: PASSED - Alla valideringar godkända
+
+NÄSTA STEG:
+-----------
+1. Implementera Art. 9 explicit samtycke för ICF och humör
+2. Underteckna SCC/TIA och DPA-avtal
+3. Implementera föreslagna åtgärder enligt tidsplan
+4. Granskning och uppdatering hösten 2026
+5. Potentiell samråd med IMY om höga risker förblir

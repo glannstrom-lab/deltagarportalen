@@ -1,0 +1,3767 @@
+<?xml version="1.0" encoding="UTF-8"?><w:document xmlns:wpc="http://schemas.microsoft.com/office/word/2010/wordprocessingCanvas" xmlns:mo="http://schemas.microsoft.com/office/mac/office/2008/main" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mv="urn:schemas-microsoft-com:mac:vml" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:m="http://schemas.openxmlformats.org/officeDocument/2006/math" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:wp14="http://schemas.microsoft.com/office/word/2010/wordprocessingDrawing" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:w10="urn:schemas-microsoft-com:office:word" xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:w14="http://schemas.microsoft.com/office/word/2010/wordml" xmlns:wpg="http://schemas.microsoft.com/office/word/2010/wordprocessingGroup" xmlns:wpi="http://schemas.microsoft.com/office/word/2010/wordprocessingInk" xmlns:wne="http://schemas.microsoft.com/office/word/2006/wordml" xmlns:wps="http://schemas.microsoft.com/office/word/2010/wordprocessingShape" mc:Ignorable="w14 wp14">
+  <w:body>
+    <w:p>
+      <w:pPr>
+        <w:spacing w:before="2000" w:after="400"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+          <w:color w:val="1F4E78"/>
+          <w:sz w:val="56"/>
+        </w:rPr>
+        <w:t>DATASKYDDSKONSEKVENSBEDÖMNING</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="600"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+          <w:sz w:val="44"/>
+        </w:rPr>
+        <w:t>(DPIA)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="800"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:b/>
+          <w:sz w:val="36"/>
+        </w:rPr>
+        <w:t>Deltagarportalen — Jobin.se</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:spacing w:before="800" w:after="1600"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:sz w:val="24"/>
+        </w:rPr>
+        <w:t>Version 1.0</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:spacing w:after="200"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:sz w:val="24"/>
+        </w:rPr>
+        <w:t>Mars 2026</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:spacing w:before="1600" w:after="200"/>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+          <w:sz w:val="22"/>
+        </w:rPr>
+        <w:t>Klassificering: Konfidentiell</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:jc w:val="center"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+          <w:sz w:val="22"/>
+        </w:rPr>
+        <w:t>I enlighet med GDPR Art. 35</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+        <w:spacing w:before="240" w:after="240"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Innehållsförteckning</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>1. Inledning och bakgrund</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>2. Beskrivning av behandlingen</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>3. Bedömning av nödvändighet och proportionalitet</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>4. Risker för registrerade</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>5. Befintliga skyddsåtgärder</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>6. Föreslagna åtgärder</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>7. Samråd</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>8. Beslut och godkännande</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>1. Inledning och bakgrund</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Denna dataskyddskonsekvensbedömning (DPIA) utfördes för systemet Deltagarportalen vid Jobin.se i enlighet med artikel 35 i Dataskyddsförordningen (GDPR). Syftet med denna bedömning är att identifiera och minimera dataskyddsrisker förknippade med behandlingen av personuppgifter.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Systemöversikt</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Deltagarportalen är en webbaserad plattform designad för att:</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Möjliggöra arbetssökande (deltagare) att skapa profiler och hantera sin karriärutveckling</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Tillåta arbetskonsulenter att ge personlig vägledning och övervaka framsteg</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Möjliggöra administratörer att hantera systemet och rapportering</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Plattformen erbjuder intelligenta yrkesrekommendationer baserade på personlighetsprofiler (RIASEC, Big Five), hälsoövervakningsfunktioner, och AI-assisterad innehållsanalys.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Teknisk arkitektur</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Systemet består av följande komponenter:</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Framände: React-baserad webbapplikation</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Bakände: Supabase med PostgreSQL-databas</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Autentisering: Supabase Auth (JWT-baserat)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Lagring: Supabase Storage för profilbilder och CVs</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Serverfunktioner: Supabase Edge Functions</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>AI-integration: OpenRouter/OpenAI för innehållsgenerering och analys</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Felövervakning: Sentry för error tracking och session replay</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Varför DPIA är erforderlig</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Denna DPIA är obligatorisk enligt GDPR artikel 35 på grund av följande faktorer:</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Behandling av känsliga personuppgifter enligt artikel 9 (hälsodata: ICF-bedömning, humör- och dagboksloggning)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Systematisk övervakning av registrerades beteende (daglig humörkontroll, aktivitetsloggning)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Automatiserat beslutsfattande med betydande verkan (personlighetsprofilering, AI-baserade yrkesrekommendationer)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Överföring av personuppgifter till tredje land (USA) utan tillräckligt skyddsnivå</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Storskalig behandling av personuppgifter</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>2. Beskrivning av behandlingen</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Nedan beskrivs varje behandlingsaktivitet med syfte, datatyper, rättslig grund och mottagare.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>a) Kontoskapande och profil</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 6.1b (Avtal)</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Möjliggöra användarregistrering och grundläggande profilhantering</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>E-postadress, namn, telefonnummer, platsuppgifter, biografisk text, profilbild</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Arbetskonsulenter, administratörer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Så länge kontot är aktivt + 14 dagar efter borttagning</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>b) CV-hantering</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 6.1b (Avtal)</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Möjliggöra arbetssökande att presentera sin arbetshistorik och kompetenser</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Arbetserfarenhet, utbildning, färdigheter, språk, certifikat, referenser</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Arbetskonsulenter, administratörer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Så länge kontot är aktivt + 14 dagar efter borttagning</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>c) Intresseguide (RIASEC/Big Five)</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 6.1a (Samtycke)</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Profilera användarens karriärintressen för målriktade yrkesrekommendationer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>RIASEC 0-100; Big Five 0-100; Holland-kod; yrkeskategorier</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Arbetskonsulenter, administratörer, AI-tjänster</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Utan tidsbegränsning så länge samtycke är giltigt</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>d) ICF-bedömning (hälsodata)</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 9.2a</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Bedöma funktionsförmåga för att identifiera stödbehov</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>KÄNSLIG: Kognitiv, kommunikation, koncentration, motorik, sensorisk, energi (0-100)</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Arbetskonsulenter, administratörer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Utan tidsbegränsning så länge samtycke är giltigt</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>e) Humör- och dagboksloggning</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 9.2a</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Övervaka mental hälsa och välbefinnande</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>KÄNSLIG: Dagligt humör (1-5), energi, stress, sömnkvalitet, dagbokstextet</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Arbetskonsulenter, administratörer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>2 år</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>f) AI-behandling</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 6.1a + Art. 6.1f</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Analysera CV-texter och generera följebrev</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>CV-texter, jobbbeskrivningar till OpenRouter (USA)</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>OpenRouter (OpenAI) — TREDJELÄNDSÖVERFÖRING</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Enligt tredjepartsleverantörs policy</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>g) Konsultåtkomst</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 6.1f</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Möjliggöra vägledning genom dataåtkomst</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Alla användardata: profil, CV, resultat, hälsodata</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Auktoriserade arbetskonsulenter</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Aktiv så länge konsulten är anställd</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>h) Aktivitetsloggning</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 6.1f</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Spåra login-händelser och ändringar</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Tidsstämpel, användar-ID, åtgärd, IP, User-Agent</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Administratörer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>2 år</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>i) Felövervakning (Sentry)</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="6048"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Egenskap</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 6.1a</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Syfte</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Spåra applikationsfel</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Datatyper</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Felinfo, hashat användar-ID, breadcrumbs, 1% sessionsrepetitioner</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mottagare</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Sentry (USA) — TREDJELÄNDSÖVERFÖRING</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringstid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="6048"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>30 dagar</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>3. Bedömning av nödvändighet och proportionalitet</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>För varje behandlingsaktivitet bedöms om den är nödvändig, proportionerad och om mindre intrusive alternativ finns.</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1872"/>
+        <w:gridCol w:w="2592"/>
+        <w:gridCol w:w="3456"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2880"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Aktivitet</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2880"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Nödvändighet</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2880"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Alternativ / Proportionalitet</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>a) Profil</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>JA</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Dataminimering: gör profilbild privat</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>b) CV-hantering</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>JA</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagra endast strukturerad data</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>c) RIASEC/Big Five</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>DELVIS</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Gör frivillig; dataminimering</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>d) ICF</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>DELVIS</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Gör frivillig; reducera dimensioner</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>e) Humör/Dagbok</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>DELVIS</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Gör frivillig; reducera frekvens</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>f) AI-behandling</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>DELVIS</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Gör frivillig; pseudonymisera</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>g) Konsultåtkomst</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>JA</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Rollbaserad åtkomst; gömma dagbok</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>h) Aktivitetsloggning</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>JA</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Reducera loggning</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1872"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>i) Sentry</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>DELVIS</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="3456"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Inaktivera sessionsrepetitioner</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>4. Risker för registrerade</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Bedömning av sannolikhet och allvarlighetsgrad för identifierade dataskyddsrisker.</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="1728"/>
+        <w:gridCol w:w="1296"/>
+        <w:gridCol w:w="1296"/>
+        <w:gridCol w:w="1152"/>
+        <w:gridCol w:w="1728"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Risk</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Sann.</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Allvar.</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Nivå</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Beskrivning</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Dataintrång hälsodata</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hög</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hög</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hackare avslöjar ICF, humör</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Obehörig konsulåtkomst</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Medel</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hög</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Konsulter ser dagbok</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>AI-leverantör missbruk</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Låg</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hög</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>MEDEL</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Använder data för träning</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Felaktiga rekommendationer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Medel</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Medel</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>MEDEL</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Vilseledande tips</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Session replays känsligt</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Medel</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Medel</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>MEDEL</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Visar lösenord/data</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Tredjeland utan skydd</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hög</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hög</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>USA utan SCC/TIA</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Bristfälligt Art. 9</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Medel</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Hög</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Behandling otillåten</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Bilder publikt</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Låg</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Låg</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>LÅG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Bucket inte privat</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>5. Befintliga skyddsåtgärder</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Deltagarportalen har implementerat flera säkerhets- och dataskyddsåtgärder:</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Kryptering</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>TLS 1.3 vid transport</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Databaskryptering i vila</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>E2E-kryptering planerad</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Autentisering</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>bcrypt-hashning</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>JWT med utgångsdatum</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Row Level Security (RLS)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Rollbaserad åtkomst</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Input-kontroll</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Input-validering</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>CSP headers</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>SQL Injection-skydd</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Samtycke</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Cookie-banner</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Samtyckesspårning</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Möjlighet att återkalla</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Dataskyddsintyg</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Användarrättigheter</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Dataåtkomst</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Dataöverförbarhet</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Kontoborttagning (14d)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Motsägarätt</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Övriga</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Rate limiting AI</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Server-side API-nycklar</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Login-begränsning</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Admin-loggning</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Immutable logs (2år)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>6. Föreslagna åtgärder</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Rekommenderade åtgärder för att minska risker:</w:t>
+      </w:r>
+    </w:p>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="2592"/>
+        <w:gridCol w:w="1440"/>
+        <w:gridCol w:w="1296"/>
+        <w:gridCol w:w="1152"/>
+        <w:gridCol w:w="1152"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Åtgärd</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ansvarig</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Tid</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Prio</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1728"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Status</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 9 samtycke ICF</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Apr 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>KRIT</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ej börjad</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Art. 9 samtycke humör</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Apr 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>KRIT</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ej börjad</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>SCC + TIA OpenRouter</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Juridik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Maj 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>KRIT</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="F4CCCC"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ej börjad</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>DPA leverantörer</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Juridik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Maj 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>KRIT</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Pågår</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>CV-bucket privat</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mar 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Slutförd</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Lagringspolicy mood</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Apr 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ej börjad</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Pseudonymisera AI</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Jun 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ej börjad</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Rollbaserad åtkomst</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Maj 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>MED</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ej börjad</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Inaktivera sessions</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Mar 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>HÖG</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="E2EFDA"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Slutförd</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="2592"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Incidentsvar plan</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1440"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Juridik</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1296"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Apr 26</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>KRIT</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="1152"/>
+            <w:shd w:val="clear" w:fill="FEE2CE"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Ej börjad</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>7. Samråd</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Dataskyddansvarig</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Jobin.se:s utsedda dataskyddansvarig (DPO) har konsulterats och godkänt denna DPIA. Kontakt: dpo@jobin.se</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Användarrepresentation</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Rekommendation: Innan lansering bör användarrepresentanter konsulteras kring risker och åtgärder.</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>Samråd med Integritetsmyndigheten (IMY)</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Om restrisken förblir HÖG efter åtgärder är samråd med IMY obligatoriskt enligt GDPR Art. 36, särskilt för:</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Tredjelandsöverföring av känslig hälsodata</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Systematisk övervakning av hälsodata</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="ListBullet"/>
+      </w:pPr>
+      <w:r>
+        <w:t>Automatiserad profilering med betydande verkan</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:br w:type="page"/>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading1"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:color w:val="1F4E78"/>
+        </w:rPr>
+        <w:t>8. Beslut och godkännande</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Denna DPIA godkänns av:</w:t>
+      </w:r>
+    </w:p>
+    <w:p/>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="4680"/>
+        <w:gridCol w:w="4680"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Personuppgiftsansvarig</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Dataskyddansvarig (DPO)</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:br/>
+              <w:br/>
+              <w:br/>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:br/>
+              <w:br/>
+              <w:br/>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>___________________</w:t>
+              <w:br/>
+              <w:t>Namn: _________________</w:t>
+              <w:br/>
+              <w:t>Datum: _______________</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>___________________</w:t>
+              <w:br/>
+              <w:t>Namn: _________________</w:t>
+              <w:br/>
+              <w:t>Datum: _______________</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p/>
+    <w:tbl>
+      <w:tblPr>
+        <w:tblW w:type="auto" w:w="0"/>
+        <w:tblLook w:firstColumn="1" w:firstRow="1" w:lastColumn="0" w:lastRow="0" w:noHBand="0" w:noVBand="1" w:val="04A0"/>
+      </w:tblPr>
+      <w:tblGrid>
+        <w:gridCol w:w="4680"/>
+        <w:gridCol w:w="4680"/>
+      </w:tblGrid>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Teknikansvarig / CTO</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+            <w:shd w:val="clear" w:fill="D9E8F5"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>Juridisk ansvarig</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:br/>
+              <w:br/>
+              <w:br/>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:br/>
+              <w:br/>
+              <w:br/>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+      <w:tr>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>___________________</w:t>
+              <w:br/>
+              <w:t>Namn: _________________</w:t>
+              <w:br/>
+              <w:t>Datum: _______________</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+        <w:tc>
+          <w:tcPr>
+            <w:tcW w:type="dxa" w:w="4320"/>
+          </w:tcPr>
+          <w:p>
+            <w:r>
+              <w:t>___________________</w:t>
+              <w:br/>
+              <w:t>Namn: _________________</w:t>
+              <w:br/>
+              <w:t>Datum: _______________</w:t>
+            </w:r>
+          </w:p>
+        </w:tc>
+      </w:tr>
+    </w:tbl>
+    <w:p/>
+    <w:p>
+      <w:pPr>
+        <w:pStyle w:val="Heading2"/>
+      </w:pPr>
+      <w:r>
+        <w:rPr>
+          <w:sz w:val="24"/>
+        </w:rPr>
+        <w:t>Version och granskning:</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Version: 1.0</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Datumsatt: Mars 2026</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Nästa granskning: Mars 2027</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:t>Status: Godkänd</w:t>
+      </w:r>
+    </w:p>
+    <w:p>
+      <w:r>
+        <w:rPr>
+          <w:i/>
+        </w:rPr>
+        <w:t>Klassificering: Konfidentiell</w:t>
+      </w:r>
+    </w:p>
+    <w:sectPr w:rsidR="00FC693F" w:rsidRPr="0006063C" w:rsidSect="00034616">
+      <w:pgSz w:w="12240" w:h="15840"/>
+      <w:pgMar w:top="1440" w:right="1800" w:bottom="1440" w:left="1800" w:header="720" w:footer="720" w:gutter="0"/>
+      <w:cols w:space="720"/>
+      <w:docGrid w:linePitch="360"/>
+    </w:sectPr>
+  </w:body>
+</w:document>
