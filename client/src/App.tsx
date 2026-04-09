@@ -241,6 +241,18 @@ function App() {
     }}>
       🟢 DEBUG: Routes-sektionen renderas! Auth: {String(useAuthStore.getState().isAuthenticated)}
     </div>
+    {/* TEST: Element UTANFÖR Routes */}
+    <div style={{
+      marginTop: '20px',
+      padding: '20px',
+      background: '#f97316',
+      color: 'white',
+      fontSize: '20px',
+      textAlign: 'center'
+    }}>
+      🟠 ORANGE: Detta är UTANFÖR Routes, borde alltid synas
+    </div>
+
     <Routes>
       {/* TEMPORARY: Simple test route */}
       <Route path="/" element={
