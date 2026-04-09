@@ -116,31 +116,31 @@ export default function Landing() {
             </Link>
 
             {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden md:flex items-center gap-8 h-full">
               <button
                 onClick={() => scrollToSection('funktioner')}
-                className="text-slate-700 hover:text-teal-600 font-medium transition-colors"
+                className="h-full inline-flex items-center text-slate-700 hover:text-teal-600 font-medium transition-colors"
               >
                 {t('landing.nav.features')}
               </button>
               <button
                 onClick={() => scrollToSection('hur-det-funkar')}
-                className="text-slate-700 hover:text-teal-600 font-medium transition-colors"
+                className="h-full inline-flex items-center text-slate-700 hover:text-teal-600 font-medium transition-colors"
               >
                 {t('landing.nav.howItWorks')}
               </button>
               <button
                 onClick={() => scrollToSection('priser')}
-                className="text-slate-700 hover:text-teal-600 font-medium transition-colors"
+                className="h-full inline-flex items-center text-slate-700 hover:text-teal-600 font-medium transition-colors"
               >
                 {t('landing.nav.pricing')}
               </button>
-              <Link to="/login" className="text-slate-700 hover:text-teal-600 font-medium transition-colors">
+              <Link to="/login" className="h-full inline-flex items-center text-slate-700 hover:text-teal-600 font-medium transition-colors">
                 {t('landing.nav.login')}
               </Link>
               <Link
                 to="/register"
-                className="bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
+                className="inline-flex items-center bg-teal-600 hover:bg-teal-700 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
               >
                 {t('landing.nav.getStarted')}
               </Link>
