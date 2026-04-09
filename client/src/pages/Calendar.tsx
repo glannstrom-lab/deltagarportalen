@@ -1,6 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus } from '@/components/ui/icons'
+import { Plus, Loader2 } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
@@ -10,6 +10,7 @@ import { DayView } from '@/components/calendar/DayView'
 import { EventModal } from '@/components/calendar/EventModal'
 import { CalendarStats } from '@/components/calendar/CalendarStats'
 import { MoodTracker } from '@/components/calendar/MoodTracker'
+import { calendarApi } from '@/services/cloudStorage'
 import type {
   CalendarEvent,
   CalendarView,
@@ -18,95 +19,41 @@ import type {
 } from '@/services/calendarData'
 import { eventTypeConfig } from '@/services/calendarData'
 
-// Mock data - i verkligheten skulle detta komma från API/localStorage
-const mockEvents: CalendarEvent[] = [
-  {
-    id: '1',
-    title: 'Jobbintervju - Tech Solutions',
-    date: new Date(Date.now() + 86400000 * 2).toISOString().split('T')[0], // om 2 dagar
-    time: '10:00',
-    endTime: '11:00',
-    type: 'interview',
-    location: 'Stockholm, Kungsgatan 12',
-    with: 'Anna Svensson, CTO',
-    description: 'Andra intervjun med tekniska frågor',
-    tasks: [
-      { id: 't1', eventId: '1', title: 'Uppdatera CV', status: 'done', order: 0 },
-      { id: 't2', eventId: '1', title: 'Förbereda tekniska frågor', status: 'in_progress', order: 1 },
-      { id: 't3', eventId: '1', title: 'Kolla upp företaget', status: 'todo', order: 2 },
-    ],
-    interviewPrep: {
-      commonQuestions: ['Berätta om dig själv', 'Varför vill du jobba här?'],
-      dressCode: 'Smart casual',
-    },
-    travel: {
-      destination: 'Kungsgatan 12, Stockholm',
-      duration: 45,
-      transportMode: 'public',
-      cost: 78,
-    },
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    title: 'Möte med arbetskonsulent',
-    date: new Date().toISOString().split('T')[0], // idag
-    time: '14:00',
-    type: 'meeting',
-    isVideo: true,
-    with: 'Maria Karlsson',
-    description: 'Veckovis uppföljning av jobbsökande',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    title: 'Sista ansökningsdag - Digital Agency',
-    date: new Date(Date.now() + 86400000 * 5).toISOString().split('T')[0], // om 5 dagar
-    time: '23:59',
-    type: 'deadline',
-    description: 'React-utvecklare position',
-    tasks: [
-      { id: 't4', eventId: '3', title: 'Skriva personligt brev', status: 'todo', order: 0 },
-      { id: 't5', eventId: '3', title: 'Uppdatera portfolio', status: 'todo', order: 1 },
-    ],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '4',
-    title: 'Förberedelse inför intervju',
-    date: new Date(Date.now() + 86400000).toISOString().split('T')[0], // imorgon
-    time: '09:00',
-    type: 'preparation',
-    description: 'Gå igenom vanliga intervjufrågor',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-]
-
-const mockGoals: CalendarGoal[] = [
-  { id: 'g1', type: 'applications', target: 5, period: 'week', startDate: new Date().toISOString() },
-  { id: 'g2', type: 'interviews', target: 2, period: 'week', startDate: new Date().toISOString() },
-  { id: 'g3', type: 'tasks', target: 10, period: 'week', startDate: new Date().toISOString() },
-]
-
-const mockMoodEntries: MoodEntry[] = [
-  { date: new Date(Date.now() - 86400000 * 2).toISOString().split('T')[0], level: 4, energyLevel: 3, stressLevel: 2 },
-  { date: new Date(Date.now() - 86400000).toISOString().split('T')[0], level: 3, energyLevel: 3, stressLevel: 3 },
-  { date: new Date().toISOString().split('T')[0], level: 4, energyLevel: 4, stressLevel: 2 },
-]
-
 export default function Calendar() {
   const { t, i18n } = useTranslation()
   const [currentDate, setCurrentDate] = useState(new Date())
   const [view, setView] = useState<CalendarView>('month')
-  const [events, setEvents] = useState<CalendarEvent[]>(mockEvents)
-  const [goals] = useState<CalendarGoal[]>(mockGoals)
-  const [moodEntries, setMoodEntries] = useState<MoodEntry[]>(mockMoodEntries)
+  const [events, setEvents] = useState<CalendarEvent[]>([])
+  const [goals, setGoals] = useState<CalendarGoal[]>([])
+  const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([])
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  // Load data from cloud
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const loadData = async () => {
+    setLoading(true)
+    try {
+      const [eventsData, goalsData, moodData] = await Promise.all([
+        calendarApi.getEvents(),
+        calendarApi.getGoals(),
+        calendarApi.getMoodEntries()
+      ])
+
+      // API already transforms to camelCase format
+      setEvents(eventsData as unknown as CalendarEvent[])
+      setGoals(goalsData as unknown as CalendarGoal[])
+      setMoodEntries(moodData as unknown as MoodEntry[])
+    } catch (error) {
+      console.error('Error loading calendar data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const navigate = (direction: 'prev' | 'next' | 'today') => {
     if (direction === 'today') {
@@ -134,22 +81,84 @@ export default function Calendar() {
     setView('day')
   }
 
-  const handleSaveEvent = (event: CalendarEvent) => {
-    if (selectedEvent) {
-      setEvents(events.map(e => e.id === event.id ? event : e))
-    } else {
-      setEvents([...events, event])
+  const handleSaveEvent = async (event: CalendarEvent) => {
+    try {
+      // Transform to API format
+      const apiEvent = {
+        id: event.id,
+        title: event.title,
+        date: event.date,
+        time: event.time,
+        end_time: event.endTime,
+        type: event.type,
+        location: event.location,
+        is_video: event.isVideo,
+        is_phone: event.isPhone,
+        description: event.description,
+        with_person: event.with,
+        job_id: event.jobId,
+        job_application_id: event.jobApplicationId,
+        tasks: event.tasks,
+        travel: event.travel,
+        interview_prep: event.interviewPrep,
+        is_recurring: event.isRecurring,
+        recurring_config: event.recurringConfig,
+        parent_event_id: event.parentEventId,
+        reminders: event.reminders,
+        shared_with: event.sharedWith,
+        is_shared: event.isShared
+      }
+
+      if (selectedEvent) {
+        // Update existing event
+        const success = await calendarApi.updateEvent(event.id, apiEvent)
+        if (success) {
+          setEvents(events.map(e => e.id === event.id ? event : e))
+        }
+      } else {
+        // Create new event
+        const created = await calendarApi.createEvent(apiEvent)
+        if (created) {
+          const newEvent = { ...event, id: created.id || event.id }
+          setEvents([...events, newEvent])
+        }
+      }
+    } catch (error) {
+      console.error('Error saving event:', error)
     }
   }
 
-  const handleDeleteEvent = (eventId: string) => {
-    setEvents(events.filter(e => e.id !== eventId))
+  const handleDeleteEvent = async (eventId: string) => {
+    try {
+      const success = await calendarApi.deleteEvent(eventId)
+      if (success) {
+        setEvents(events.filter(e => e.id !== eventId))
+      }
+    } catch (error) {
+      console.error('Error deleting event:', error)
+    }
   }
 
-  const handleAddMood = (entry: MoodEntry) => {
-    // Ta bort befintlig entry för samma dag om den finns
-    const filtered = moodEntries.filter(e => e.date !== entry.date)
-    setMoodEntries([...filtered, entry])
+  const handleAddMood = async (entry: MoodEntry) => {
+    try {
+      // Transform to API format
+      const apiEntry = {
+        date: entry.date,
+        level: entry.level,
+        note: entry.note,
+        energy_level: entry.energyLevel,
+        stress_level: entry.stressLevel
+      }
+
+      const saved = await calendarApi.saveMoodEntry(apiEntry)
+      if (saved) {
+        // Ta bort befintlig entry för samma dag om den finns
+        const filtered = moodEntries.filter(e => e.date !== entry.date)
+        setMoodEntries([...filtered, entry])
+      }
+    } catch (error) {
+      console.error('Error saving mood entry:', error)
+    }
   }
 
   // Month view render
@@ -301,6 +310,13 @@ export default function Calendar() {
       showTabs={false}
     >
     <div className="space-y-6">
+      {loading && (
+        <div className="flex items-center justify-center py-8">
+          <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
+          <span className="ml-3 text-slate-600">{t('common.loading')}</span>
+        </div>
+      )}
+
       <CalendarHeader
         currentDate={currentDate}
         view={view}

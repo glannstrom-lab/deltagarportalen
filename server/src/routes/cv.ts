@@ -102,9 +102,19 @@ router.put('/', authMiddleware, async (req: AuthRequest, res) => {
     // Sanera all strängdata från potentiell XSS
     const sanitizedData = sanitizeObject(parseResult.data);
 
+    // Konvertera arrayer till JSON-strängar för Prisma
+    const dbData: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(sanitizedData)) {
+      if (Array.isArray(value)) {
+        dbData[key] = JSON.stringify(value);
+      } else {
+        dbData[key] = value;
+      }
+    }
+
     const cv = await prisma.cV.update({
       where: { userId: req.user!.id },
-      data: sanitizedData,
+      data: dbData,
     });
 
     res.json(cv);
