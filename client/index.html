@@ -33,21 +33,47 @@
     
     <!-- Build timestamp: 2026-04-09 -->
 
+    <!-- DEBUG: Track app loading -->
+    <script type="text/javascript">
+      window.__APP_DEBUG = [];
+      window.__logDebug = function(msg) {
+        window.__APP_DEBUG.push({ time: Date.now(), msg: msg });
+        console.log('[DEBUG]', msg);
+      };
+      window.__logDebug('1. Debug script loaded');
+
+      // Catch ALL errors
+      window.onerror = function(msg, url, line, col, error) {
+        window.__logDebug('ERROR: ' + msg + ' at ' + url + ':' + line);
+        return false;
+      };
+      window.addEventListener('error', function(e) {
+        window.__logDebug('EVENT ERROR: ' + (e.message || e.error?.message || 'unknown'));
+      }, true);
+      window.addEventListener('unhandledrejection', function(e) {
+        window.__logDebug('PROMISE REJECTION: ' + (e.reason?.message || e.reason || 'unknown'));
+      }, true);
+    </script>
+
     <!-- CRITICAL: Clear broken service workers FIRST -->
     <script type="text/javascript">
+      window.__logDebug('2. SW cleanup starting');
       (function() {
         if ('serviceWorker' in navigator) {
           navigator.serviceWorker.getRegistrations().then(function(registrations) {
+            window.__logDebug('2a. Found ' + registrations.length + ' service workers');
             registrations.forEach(function(registration) {
               registration.unregister();
             });
           });
           if ('caches' in window) {
             caches.keys().then(function(names) {
+              window.__logDebug('2b. Found ' + names.length + ' caches');
               names.forEach(function(name) { caches.delete(name); });
             });
           }
         }
+        window.__logDebug('2c. SW cleanup done');
       })();
     </script>
 
