@@ -50,7 +50,7 @@ export default function Journey() {
   if (isLoading) {
     return (
       <div
-        className="min-h-screen bg-slate-50 flex items-center justify-center"
+        className="min-h-screen bg-[var(--bg-page)] page-transition flex items-center justify-center"
         role="status"
         aria-live="polite"
         aria-busy="true"
@@ -66,7 +66,7 @@ export default function Journey() {
   // Error state
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-[var(--bg-page)] page-transition flex items-center justify-center p-4">
         <div className="text-center max-w-md">
           <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <Map className="w-8 h-8 text-red-500" />
@@ -87,7 +87,7 @@ export default function Journey() {
   // Empty state (new user)
   if (!progress || !currentPhase) {
     return (
-      <div className="min-h-screen bg-slate-50">
+      <div className="min-h-screen bg-[var(--bg-page)] page-transition">
         <div className="max-w-4xl mx-auto px-4 py-12">
           <div className="text-center mb-12">
             <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
@@ -120,7 +120,7 @@ export default function Journey() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className="min-h-screen bg-[var(--bg-page)] page-transition">
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-8">

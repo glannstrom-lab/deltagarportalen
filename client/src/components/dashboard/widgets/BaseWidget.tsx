@@ -164,8 +164,8 @@ export const BaseWidget = memo(function BaseWidget({
     <Link
       to={to}
       className={cn(
-        "group block bg-white dark:bg-slate-800 rounded-2xl border-2 transition-all duration-200",
-        "hover:shadow-lg hover:-translate-y-0.5",
+        "group block bg-white dark:bg-slate-800 rounded-2xl border-2",
+        "card-interactive", // Consistent hover lift effect
         "focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-slate-900",
         colors.hover,
         `focus:ring-${color}-500`,

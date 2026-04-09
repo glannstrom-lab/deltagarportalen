@@ -123,35 +123,36 @@ export function EmptyState({
 
   const content = (
     <div className={cn(
-      "flex flex-col items-center text-center p-6 rounded-2xl border-2 border-dashed transition-all duration-200",
+      "flex flex-col items-center text-center py-12 px-6 rounded-2xl border-2 border-dashed transition-all duration-200",
       colors.bg,
       colors.border,
       "hover:border-solid hover:shadow-md"
     )}>
-      {/* Icon */}
+      {/* Icon with gradient background */}
       <div className={cn(
-        "w-16 h-16 rounded-2xl flex items-center justify-center mb-4 shadow-sm",
-        "bg-white",
+        "w-20 h-20 rounded-3xl flex items-center justify-center mb-6 shadow-lg",
+        "empty-state-icon", // Use the gradient utility
+        "animate-bounce-subtle",
         colors.text
       )}>
-        <Icon size={32} />
+        <Icon size={36} />
       </div>
-      
+
       {/* Decorative sparkles */}
-      <div className="relative mb-4">
-        <Sparkles 
-          size={16} 
+      <div className="relative mb-2">
+        <Sparkles
+          size={16}
           className={cn(
             "absolute -top-6 -left-8 opacity-50",
             colors.text
-          )} 
+          )}
         />
-        <Sparkles 
-          size={12} 
+        <Sparkles
+          size={12}
           className={cn(
             "absolute -top-4 -right-6 opacity-30",
             colors.text
-          )} 
+          )}
         />
       </div>
       

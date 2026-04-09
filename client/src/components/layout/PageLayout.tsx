@@ -47,7 +47,12 @@ export function PageLayout({
   const shouldShowTabs = tabs.length > 1 && showTabs
 
   return (
-    <div className={cn('space-y-4 sm:space-y-5 md:space-y-6', className)}>
+    <div className={cn(
+      'min-h-screen bg-[var(--bg-page)]',
+      'space-y-4 sm:space-y-5 md:space-y-6',
+      'page-transition',
+      className
+    )}>
       {/* Page Header with Tabs */}
       {showHeader && (title || shouldShowTabs) && (
         <PageHeader
@@ -120,9 +125,11 @@ export function PageSection({
   return (
     <section className={cn(
       'bg-white dark:bg-stone-900',
-      'rounded-xl sm:rounded-2xl',
-      'border sm:border-2 border-stone-200 dark:border-stone-700 overflow-hidden',
-      'hover:border-stone-300 dark:hover:border-stone-600 transition-colors duration-300',
+      'rounded-2xl', // Consistent border radius
+      'border-2 border-stone-200 dark:border-stone-700 overflow-hidden',
+      'hover:border-stone-300 dark:hover:border-stone-600',
+      'transition-all duration-200',
+      'surface-2', // Consistent shadow hierarchy
       className
     )}>
       {(title || actions) && (

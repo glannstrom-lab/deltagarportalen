@@ -633,7 +633,7 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen bg-[var(--bg-page)] flex items-center justify-center page-transition">
         <div className="text-center">
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center animate-pulse">
             <User className="w-8 h-8 text-white" />
@@ -646,7 +646,7 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen pb-8">
+    <div className="min-h-screen bg-[var(--bg-page)] pb-8 page-transition">
       {/* Hero Header */}
       <div className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-800" />

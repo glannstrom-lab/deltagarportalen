@@ -12,12 +12,13 @@ interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {
 
 /**
  * Bas Skeleton-komponent
+ * Uses shimmer animation for a more polished look
  */
 export function Skeleton({ className, ...props }: SkeletonProps) {
   return (
     <div
       className={cn(
-        'animate-pulse bg-slate-200 rounded',
+        'skeleton-shimmer rounded',
         className
       )}
       {...props}

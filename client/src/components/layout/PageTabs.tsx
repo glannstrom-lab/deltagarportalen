@@ -198,11 +198,11 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             to={tab.path}
             className={cn(
               'flex items-center gap-2 px-4 py-2.5 rounded-xl',
-              'text-sm font-medium transition-all duration-300 whitespace-nowrap',
+              'text-sm font-medium transition-all duration-200 ease-out whitespace-nowrap',
               'min-h-[44px]',
               isActive
                 ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
-                : 'text-slate-600 hover:bg-white/80 hover:text-slate-900'
+                : 'text-slate-600 hover:bg-white/90 hover:text-slate-900 hover:scale-[1.02]'
             )}
           >
             {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive && 'text-white/90')} />}
