@@ -68,7 +68,7 @@ export function PromptButtons({ onSelect, type }: PromptButtonsProps) {
 
   return (
     <div className="space-y-2">
-      <p className="text-xs text-slate-500 font-medium">
+      <p className="text-xs text-slate-700 font-medium">
         {type === 'opening' && 'Välj en inledning:'}
         {type === 'motivation' && 'Välj vad som motiverar dig:'}
         {type === 'experience' && 'Välj hur du beskriver erfarenhet:'}

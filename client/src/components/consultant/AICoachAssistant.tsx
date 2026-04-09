@@ -220,7 +220,7 @@ function InsightCard({ insight, onAction }: { insight: Insight; onAction?: () =>
           <p className="font-medium text-sm text-stone-900 dark:text-stone-100">
             {insight.title}
           </p>
-          <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+          <p className="text-xs text-stone-500 dark:text-stone-600 mt-0.5">
             {insight.description}
           </p>
           {insight.participant && (
@@ -447,7 +447,7 @@ export function AICoachAssistant({
                 </div>
               ) : insights.length === 0 ? (
                 <div className="text-center py-8">
-                  <Sparkles className="w-8 h-8 text-stone-400 mx-auto mb-2" />
+                  <Sparkles className="w-8 h-8 text-stone-600 mx-auto mb-2" />
                   <p className="text-sm text-stone-500">
                     {t('consultant.aiCoach.noInsights', 'Inga insikter just nu')}
                   </p>
@@ -472,7 +472,7 @@ export function AICoachAssistant({
             {/* Quick Actions */}
             {participantId && (
               <div className="p-4 border-t border-stone-200 dark:border-stone-700">
-                <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-2">
+                <p className="text-xs font-medium text-stone-500 dark:text-stone-600 mb-2">
                   {t('consultant.aiCoach.quickActions', 'Snabbåtgärder')}
                 </p>
                 <div className="flex gap-2">
@@ -527,7 +527,7 @@ export function AICoachAssistant({
                   <p className="text-sm text-stone-600 dark:text-stone-300 mb-1">
                     {t('consultant.aiCoach.welcomeTitle', 'Hur kan jag hjälpa dig?')}
                   </p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">
+                  <p className="text-xs text-stone-500 dark:text-stone-600">
                     {t(
                       'consultant.aiCoach.welcomeSubtitle',
                       'Ställ frågor om deltagare, strategier eller best practices'
@@ -628,7 +628,7 @@ export function AICoachAssistant({
                     'border-2 border-transparent',
                     'focus:border-violet-500 focus:outline-none',
                     'text-stone-900 dark:text-stone-100',
-                    'placeholder:text-stone-400 text-sm'
+                    'placeholder:text-stone-600 text-sm'
                   )}
                 />
                 <button

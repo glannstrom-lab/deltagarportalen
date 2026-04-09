@@ -52,7 +52,7 @@ export function JourneyTimeline() {
             </div>
             
             <div className="flex-1 pb-6">
-              <p className="text-xs text-slate-400">{milestone.date}</p>
+              <p className="text-xs text-slate-600">{milestone.date}</p>
               <h3 className="font-semibold text-slate-800">{milestone.title}</h3>
               <p className="text-sm text-slate-600">{milestone.description}</p>
             </div>

@@ -56,7 +56,7 @@ export default function MarketStats() {
       {/* Header */}
       <div className="text-center">
         <h2 className="text-2xl font-bold text-slate-900">Arbetsmarknadsstatistik</h2>
-        <p className="text-slate-500 mt-1">Aktuella trender och efterfrågan</p>
+        <p className="text-slate-700 mt-1">Aktuella trender och efterfrågan</p>
       </div>
 
       {/* General Stats */}
@@ -65,7 +65,7 @@ export default function MarketStats() {
           <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-slate-500">{stat.label}</p>
+                <p className="text-sm text-slate-700">{stat.label}</p>
                 <p className="text-2xl font-bold text-slate-900 mt-1">
                   {stat.value.toLocaleString('sv-SE')}
                 </p>
@@ -119,7 +119,7 @@ export default function MarketStats() {
                 </span>
                 <div>
                   <p className="font-medium text-slate-900 capitalize">{comp.competence}</p>
-                  <p className="text-sm text-slate-500">{comp.count.toLocaleString('sv-SE')} annonser</p>
+                  <p className="text-sm text-slate-700">{comp.count.toLocaleString('sv-SE')} annonser</p>
                 </div>
               </div>
               <span className="text-2xl" title={comp.trend === 'up' ? 'Ökande efterfrågan' : 'Stabil efterfrågan'}>
@@ -149,7 +149,7 @@ export default function MarketStats() {
               </div>
               <div className="flex items-center justify-between text-sm text-slate-600">
                 <span>{region.totalJobs.toLocaleString('sv-SE')} lediga jobb</span>
-                <span className="text-slate-400">
+                <span className="text-slate-600">
                   Toppar: {region.topOccupations.slice(0, 2).join(', ')}
                 </span>
               </div>
@@ -188,7 +188,7 @@ export default function MarketStats() {
       </div>
 
       {/* Footer */}
-      <div className="text-center text-sm text-slate-500">
+      <div className="text-center text-sm text-slate-700">
         <p>Data från Arbetsförmedlingen och SCB • Uppdateras dagligen</p>
       </div>
     </div>

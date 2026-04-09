@@ -57,7 +57,7 @@ export function CoverLetterStatistics() {
     return (
       <div className="text-center py-16">
         <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <FileText className="w-10 h-10 text-slate-400" />
+          <FileText className="w-10 h-10 text-slate-600" />
         </div>
         <h2 className="text-xl font-semibold text-slate-800 mb-2">
           Din statistik visas här
@@ -121,7 +121,7 @@ export function CoverLetterStatistics() {
             <div className="flex items-center justify-between mb-6">
               <div>
                 <h3 className="font-semibold text-slate-800">Din aktivitet</h3>
-                <p className="text-sm text-slate-500">Antal skickade brev och svar per månad</p>
+                <p className="text-sm text-slate-700">Antal skickade brev och svar per månad</p>
               </div>
               <div className="flex gap-1 bg-slate-100 rounded-lg p-1">
                 {(['month', 'quarter', 'year'] as const).map((range) => (
@@ -132,7 +132,7 @@ export function CoverLetterStatistics() {
                       'px-3 py-1 text-sm font-medium rounded-md transition-colors',
                       timeRange === range
                         ? 'bg-white text-slate-800 shadow-sm'
-                        : 'text-slate-500 hover:text-slate-700'
+                        : 'text-slate-700 hover:text-slate-700'
                     )}
                   >
                     {range === 'month' && 'Månad'}
@@ -169,7 +169,7 @@ export function CoverLetterStatistics() {
                         />
                       )}
                     </div>
-                    <span className="text-xs text-slate-500">{month.month}</span>
+                    <span className="text-xs text-slate-700">{month.month}</span>
                   </div>
                 )
               })}
@@ -200,7 +200,7 @@ export function CoverLetterStatistics() {
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
                       <span className="font-medium text-slate-800">{industry.name}</span>
-                      <span className="text-sm text-slate-500">{industry.count} brev</span>
+                      <span className="text-sm text-slate-700">{industry.count} brev</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -246,7 +246,7 @@ export function CoverLetterStatistics() {
                 <p className="text-sm text-slate-700">
                   {mockStats.totalSent >= 5 
                     ? <> <strong>Aktiv jobbsökare</strong> - du är ute och provar! </>
-                    : <span className="text-slate-500">Skicka 5 brev för att låsa upp detta</span>
+                    : <span className="text-slate-700">Skicka 5 brev för att låsa upp detta</span>
                   }
                 </p>
               </div>
@@ -263,14 +263,14 @@ export function CoverLetterStatistics() {
               <div className="text-4xl font-bold text-slate-800 mb-1">
                 {mockStats.thisMonth.sent}
               </div>
-              <p className="text-sm text-slate-500 mb-4">brev skickade</p>
+              <p className="text-sm text-slate-700 mb-4">brev skickade</p>
               <div className="bg-slate-100 rounded-full h-3 overflow-hidden">
                 <div 
                   className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all"
                   style={{ width: `${Math.min(100, (mockStats.thisMonth.sent / 5) * 100)}%` }}
                 />
               </div>
-              <p className="text-xs text-slate-500 mt-2">
+              <p className="text-xs text-slate-700 mt-2">
                 {mockStats.thisMonth.sent >= 5 
                   ? '🎉 Du har nått veckomålet!' 
                   : `${5 - mockStats.thisMonth.sent} till för att nå veckomålet (5)`}
@@ -359,7 +359,7 @@ function StatCard({
       <div className="mt-2 sm:mt-3">
         <div className={cn('text-xl sm:text-2xl font-bold', colors[color].text)}>{value}</div>
         <div className="text-xs sm:text-sm font-medium text-slate-700">{label}</div>
-        <div className="text-xs text-slate-500 mt-0.5 hidden sm:block">{subtext}</div>
+        <div className="text-xs text-slate-700 mt-0.5 hidden sm:block">{subtext}</div>
       </div>
     </Card>
   )
@@ -369,7 +369,7 @@ function CheckValue({ value }: { value: boolean }) {
   return (
     <div className={cn(
       'w-5 h-5 rounded-full flex items-center justify-center shrink-0 mt-0.5',
-      value ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-400'
+      value ? 'bg-emerald-100 text-emerald-600' : 'bg-slate-100 text-slate-600'
     )}>
       {value ? '✓' : '○'}
     </div>

@@ -160,7 +160,7 @@ export default function MarketDataTab() {
 
         {/* Search bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-600" />
           <input
             type="text"
             placeholder={selectedView === 'industry' ? 'Sök bransch...' : 'Sök region...'}
@@ -179,7 +179,7 @@ export default function MarketDataTab() {
               <Building2 className="w-5 h-5 text-blue-600" />
               Medianlön per bransch
             </h3>
-            <span className="text-xs text-slate-500">{filteredAndSortedIndustries.length} resultat</span>
+            <span className="text-xs text-slate-700">{filteredAndSortedIndustries.length} resultat</span>
           </div>
 
           {/* Sort controls */}
@@ -242,14 +242,14 @@ export default function MarketDataTab() {
                               'transition-transform',
                               isExpanded && 'rotate-180'
                             )}>
-                              <ChevronDown className="w-4 h-4 text-slate-400" />
+                              <ChevronDown className="w-4 h-4 text-slate-600" />
                             </span>
                             <span className="text-sm font-medium text-slate-700">{industry.name}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className={cn(
                               "text-xs flex items-center gap-0.5 font-medium",
-                              industry.change >= 3 ? "text-emerald-600" : "text-slate-500"
+                              industry.change >= 3 ? "text-emerald-600" : "text-slate-700"
                             )}>
                               {industry.change >= 3 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3 opacity-30" />}
                               {industry.change}%/år
@@ -286,7 +286,7 @@ export default function MarketDataTab() {
                                   <p className="text-slate-600 text-xs mb-1">Årlig tillväxt</p>
                                   <p className={cn(
                                     'font-semibold',
-                                    industry.change >= 3 ? 'text-emerald-600' : 'text-slate-500'
+                                    industry.change >= 3 ? 'text-emerald-600' : 'text-slate-700'
                                   )}>
                                     +{industry.change}%
                                   </p>
@@ -308,7 +308,7 @@ export default function MarketDataTab() {
                 })}
               </div>
             ) : (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-700">
                 <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>Ingen bransch hittad för "{searchTerm}"</p>
               </div>
@@ -325,7 +325,7 @@ export default function MarketDataTab() {
               <MapPin className="w-5 h-5 text-blue-600" />
               Lönenivå per region
             </h3>
-            <span className="text-xs text-slate-500">{filteredRegions.length} resultat</span>
+            <span className="text-xs text-slate-700">{filteredRegions.length} resultat</span>
           </div>
 
           <div className="space-y-3">
@@ -366,7 +366,7 @@ export default function MarketDataTab() {
                           'transition-transform',
                           isExpanded && 'rotate-180'
                         )}>
-                          <ChevronDown className="w-4 h-4 text-slate-400" />
+                          <ChevronDown className="w-4 h-4 text-slate-600" />
                         </span>
                       </div>
                     </button>
@@ -428,7 +428,7 @@ export default function MarketDataTab() {
                 )
               })
             ) : (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-700">
                 <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>Ingen region hittad för "{searchTerm}"</p>
               </div>
@@ -452,7 +452,7 @@ export default function MarketDataTab() {
             >
               <p className="font-medium text-slate-800">{item.skill}</p>
               <p className="text-lg font-bold text-amber-700 mt-1">{item.premium}</p>
-              <p className="text-xs text-slate-500 mt-1">Efterfrågan: {item.demand}</p>
+              <p className="text-xs text-slate-700 mt-1">Efterfrågan: {item.demand}</p>
             </div>
           ))}
         </div>
@@ -460,7 +460,7 @@ export default function MarketDataTab() {
 
       {/* Disclaimer */}
       <Card className="bg-slate-50 border-slate-200">
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-700">
           <strong>Om statistiken:</strong> Data baseras på branschrapporter, SCB-statistik och löneundersökningar.
           Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer.
           Senast uppdaterad: Q1 2026.

@@ -211,26 +211,26 @@ export default function NetworkTab() {
         <Card className="p-4 text-center">
           <Users className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
           <p className="text-2xl font-bold text-slate-800">{contacts.length}</p>
-          <p className="text-xs text-slate-500">Kontakter</p>
+          <p className="text-xs text-slate-700">Kontakter</p>
         </Card>
         <Card className="p-4 text-center">
           <MessageCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
           <p className="text-2xl font-bold text-slate-800">
             {contacts.filter(c => c.lastContact && getDaysSinceContact(c.lastContact)! < 30).length}
           </p>
-          <p className="text-xs text-slate-500">Aktiv denna månad</p>
+          <p className="text-xs text-slate-700">Aktiv denna månad</p>
         </Card>
         <Card className="p-4 text-center">
           <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
           <p className="text-2xl font-bold text-slate-800">
             {contacts.filter(c => c.priority === 'high').length}
           </p>
-          <p className="text-xs text-slate-500">Högt prioriterad</p>
+          <p className="text-xs text-slate-700">Högt prioriterad</p>
         </Card>
         <Card className="p-4 text-center">
           <Calendar className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
           <p className="text-2xl font-bold text-slate-800">{needsFollowUp}</p>
-          <p className="text-xs text-slate-500">Uppföljning denna veckan</p>
+          <p className="text-xs text-slate-700">Uppföljning denna veckan</p>
         </Card>
       </div>
 
@@ -308,7 +308,7 @@ export default function NetworkTab() {
                         </h4>
                         <p className="text-xs text-slate-600">{contact.relationship}</p>
                         {contact.company && (
-                          <p className="text-xs text-slate-500">{contact.company}</p>
+                          <p className="text-xs text-slate-700">{contact.company}</p>
                         )}
                       </div>
 
@@ -330,7 +330,7 @@ export default function NetworkTab() {
                               ? 'text-red-600 font-semibold'
                               : isReminderSoon
                               ? 'text-amber-600 font-semibold'
-                              : 'text-slate-500'
+                              : 'text-slate-700'
                           )}>
                             {isReminderOverdue && '⚠️ '}
                             {daysUntilReminder === 0

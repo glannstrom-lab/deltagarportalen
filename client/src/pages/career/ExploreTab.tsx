@@ -183,7 +183,7 @@ export default function ExploreTab() {
       {/* Search */}
       <Card className="p-6">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
           <Input
             type="text"
             placeholder={t('career.explore.searchPlaceholder') || 'Sök efter yrken...'}
@@ -387,7 +387,7 @@ export default function ExploreTab() {
         <div className="text-center py-12">
           <Compass className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-slate-700">{t('career.explore.noOccupationsFound') || 'Inga yrken hittades'}</h3>
-          <p className="text-slate-500">{t('career.explore.tryDifferentSearch') || 'Försök med en annan sökning'}</p>
+          <p className="text-slate-700">{t('career.explore.tryDifferentSearch') || 'Försök med en annan sökning'}</p>
         </div>
       )}
 

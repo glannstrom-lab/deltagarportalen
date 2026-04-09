@@ -51,7 +51,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
               isToday(date) ? 'bg-teal-50' : 'hover:bg-slate-50'
             }`}
           >
-            <p className="text-xs font-medium text-slate-500 uppercase">{days[i]}</p>
+            <p className="text-xs font-medium text-slate-700 uppercase">{days[i]}</p>
             <p className={`text-lg font-semibold mt-1 ${
               isToday(date) ? 'text-teal-700' : 'text-slate-900'
             }`}>
@@ -66,7 +66,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
         {hours.map((hour) => (
           <div key={hour} className="grid grid-cols-8 border-b border-slate-100 min-h-[80px]">
             {/* Time label */}
-            <div className="p-2 border-r border-slate-100 bg-slate-50 text-xs text-slate-500 text-right sticky left-0">
+            <div className="p-2 border-r border-slate-100 bg-slate-50 text-xs text-slate-700 text-right sticky left-0">
               {String(hour).padStart(2, '0')}:00
             </div>
             

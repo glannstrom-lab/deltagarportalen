@@ -210,7 +210,7 @@ export function MeetingSchedulerDialog({
             <h2 className="text-xl font-bold text-stone-900 dark:text-stone-100">
               Boka möte
             </h2>
-            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
+            <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">
               {step === 'participant' && 'Välj deltagare'}
               {step === 'datetime' && 'Välj datum och tid'}
               {step === 'details' && 'Mötesdetaljer'}
@@ -233,7 +233,7 @@ export function MeetingSchedulerDialog({
           {step === 'participant' && (
             <div className="space-y-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                 <input
                   type="text"
                   placeholder="Sök deltagare..."
@@ -269,7 +269,7 @@ export function MeetingSchedulerDialog({
                       <p className="font-medium text-stone-900 dark:text-stone-100">
                         {p.first_name} {p.last_name}
                       </p>
-                      <p className="text-sm text-stone-500 dark:text-stone-400">
+                      <p className="text-sm text-stone-500 dark:text-stone-600">
                         {p.email}
                       </p>
                     </div>
@@ -461,7 +461,7 @@ export function MeetingSchedulerDialog({
                     Möteslänk
                   </label>
                   <div className="relative">
-                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                    <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                     <input
                       type="url"
                       value={meetingLink}
@@ -485,7 +485,7 @@ export function MeetingSchedulerDialog({
                     Plats
                   </label>
                   <div className="relative">
-                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+                    <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
                     <input
                       type="text"
                       value={location}

@@ -76,7 +76,7 @@ export function DashboardWidget({
         </Link>
         <div className="flex items-center shrink-0 ml-1">
           {sizeSelector}
-          <Link to={to} className="p-0.5 text-slate-400 hover:text-slate-600">
+          <Link to={to} className="p-0.5 text-slate-600 hover:text-slate-600">
             <ArrowRight size={12} />
           </Link>
         </div>
@@ -86,7 +86,7 @@ export function DashboardWidget({
       {progress > 0 && (
         <div className="mb-1.5">
           <div className="flex items-center justify-between text-xs mb-0.5">
-            <span className="text-slate-400">{progress}%</span>
+            <span className="text-slate-600">{progress}%</span>
           </div>
           <div className="h-1 bg-slate-100 rounded-full overflow-hidden">
             <div className={cn('h-full rounded-full', statusInfo.barColor)} style={{ width: `${progress}%` }} />

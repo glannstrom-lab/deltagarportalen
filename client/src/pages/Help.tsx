@@ -115,7 +115,7 @@ export default function Help() {
                 <Icon className="w-5 h-5 text-violet-600" />
               </div>
               <h3 className="font-medium text-slate-800 text-sm">{t(item.titleKey)}</h3>
-              <p className="text-xs text-slate-500 mt-0.5">{t(item.descKey)}</p>
+              <p className="text-xs text-slate-700 mt-0.5">{t(item.descKey)}</p>
             </Link>
           )
         })}
@@ -187,7 +187,7 @@ export default function Help() {
       </section>
 
       {/* Version Info */}
-      <div className="mt-10 text-center text-sm text-slate-400">
+      <div className="mt-10 text-center text-sm text-slate-600">
         <p>{t('helpPage.version')}</p>
       </div>
     </div>

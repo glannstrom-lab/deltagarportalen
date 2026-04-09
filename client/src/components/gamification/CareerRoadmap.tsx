@@ -121,7 +121,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="font-semibold text-slate-800 text-lg">Din väg till jobbet</h3>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-700 mt-1">
             {progressPercent === 100 
               ? '🎉 Du är redo för intervjuer!'
               : `Du har kommit ${progressPercent}% på vägen`
@@ -132,7 +132,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
           <div className="text-2xl font-bold text-teal-600">
             {completedCount}/{steps.length}
           </div>
-          <div className="text-xs text-slate-400">steg klara</div>
+          <div className="text-xs text-slate-600">steg klara</div>
         </div>
       </div>
 
@@ -167,7 +167,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
                 step.completed
                   ? 'bg-teal-500 text-white'
                   : step.locked
-                    ? 'bg-slate-200 text-slate-400'
+                    ? 'bg-slate-200 text-slate-600'
                     : 'bg-teal-100 text-teal-600'
               }`}>
                 {step.completed ? (
@@ -194,7 +194,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
                   )}
                 </div>
                 <p className={`text-sm ${
-                  step.locked ? 'text-slate-400' : 'text-slate-500'
+                  step.locked ? 'text-slate-600' : 'text-slate-700'
                 }`}>
                   {step.locked ? 'Låst - slutför föregående steg' : step.description}
                 </p>
@@ -203,7 +203,7 @@ export function CareerRoadmap({ stats }: CareerRoadmapProps) {
               {/* Action */}
               {step.locked ? (
                 <span
-                  className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg text-slate-400 cursor-not-allowed ${
+                  className={`flex-shrink-0 text-sm font-medium px-3 py-1.5 rounded-lg text-slate-600 cursor-not-allowed ${
                     step.completed ? 'bg-teal-100 text-teal-700' : 'bg-slate-100'
                   }`}
                 >

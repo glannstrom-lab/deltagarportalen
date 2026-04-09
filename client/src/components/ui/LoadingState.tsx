@@ -71,7 +71,7 @@ export function LoadingState({
         <h3 className="mt-4 text-lg font-semibold text-slate-800">{title}</h3>
       )}
       <p className={cn(
-        'text-slate-500',
+        'text-slate-700',
         title ? 'mt-1' : 'mt-4'
       )}>
         {message}
@@ -250,7 +250,7 @@ export function ErrorState({
         </div>
       )}
       <h3 className="text-lg font-semibold text-slate-800 mb-2">{title}</h3>
-      <p className="text-slate-500 mb-6 max-w-sm">{message}</p>
+      <p className="text-slate-700 mb-6 max-w-sm">{message}</p>
       {onRetry && (
         <Button
           variant="secondary"
@@ -301,7 +301,7 @@ export function InlineLoading({
 }: InlineLoadingProps) {
   return (
     <span
-      className="inline-flex items-center gap-2 text-slate-500"
+      className="inline-flex items-center gap-2 text-slate-700"
       role="status"
       aria-live="polite"
     >

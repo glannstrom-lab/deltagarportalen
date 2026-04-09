@@ -315,7 +315,7 @@ export function AIChatbot({ className }: AIChatbotProps) {
                 <Send className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-xs text-slate-400 mt-2 text-center">
+            <p className="text-xs text-slate-600 mt-2 text-center">
               AI:n kan göra fel. Dubbelkolla viktig information.
             </p>
           </div>

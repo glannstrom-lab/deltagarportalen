@@ -166,7 +166,7 @@ Framgångsmått: ${milestone.metrics}
           <div className="space-y-6">
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <MapPin className="w-4 h-4 text-slate-400" />
+                <MapPin className="w-4 h-4 text-slate-600" />
                 {t('careerPlan.whereAreYou')}
               </label>
               <textarea
@@ -195,7 +195,7 @@ Framgångsmått: ${milestone.metrics}
             <div className="grid md:grid-cols-2 gap-4">
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                  <Calendar className="w-4 h-4 text-slate-400" />
+                  <Calendar className="w-4 h-4 text-slate-600" />
                   {t('careerPlan.timeline')}
                 </label>
                 <select
@@ -211,7 +211,7 @@ Framgångsmått: ${milestone.metrics}
 
               <div>
                 <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                  <Target className="w-4 h-4 text-slate-400" />
+                  <Target className="w-4 h-4 text-slate-600" />
                   {t('careerPlan.obstacles')}
                 </label>
                 <input
@@ -303,10 +303,10 @@ Framgångsmått: ${milestone.metrics}
                         className="mt-1 w-5 h-5 rounded border-slate-300 text-emerald-600 cursor-pointer"
                       />
                       <div className="flex-1">
-                        <p className={`text-sm ${completedTasks.has(task.id) ? 'line-through text-slate-400' : 'text-slate-700'}`}>
+                        <p className={`text-sm ${completedTasks.has(task.id) ? 'line-through text-slate-600' : 'text-slate-700'}`}>
                           {task.description}
                         </p>
-                        <p className="text-xs text-slate-500 mt-1">{task.dueDate}</p>
+                        <p className="text-xs text-slate-700 mt-1">{task.dueDate}</p>
                       </div>
                     </label>
                   ))}

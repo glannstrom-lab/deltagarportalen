@@ -325,7 +325,7 @@ export default function Onboarding() {
                     <Turtle className="w-8 h-8 text-teal-600" />
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">Utforska lugnt</div>
-                  <div className="text-xs text-slate-500 mt-1">Visa mig bara det viktigaste</div>
+                  <div className="text-xs text-slate-700 mt-1">Visa mig bara det viktigaste</div>
                 </button>
                 <button
                   onClick={() => handleEnergySelect('medium')}
@@ -339,7 +339,7 @@ export default function Onboarding() {
                     <Walk className="w-8 h-8 text-blue-600" />
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">Steg för steg</div>
-                  <div className="text-xs text-slate-500 mt-1">Jag vill ha guidad hjälp</div>
+                  <div className="text-xs text-slate-700 mt-1">Jag vill ha guidad hjälp</div>
                 </button>
                 <button
                   onClick={() => handleEnergySelect('high')}
@@ -353,11 +353,11 @@ export default function Onboarding() {
                     <Running className="w-8 h-8 text-orange-600" />
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">Kom igång snabbt</div>
-                  <div className="text-xs text-slate-500 mt-1">Jag vet vad jag vill</div>
+                  <div className="text-xs text-slate-700 mt-1">Jag vet vad jag vill</div>
                 </button>
               </div>
 
-              <p className="text-xs text-center text-slate-400">
+              <p className="text-xs text-center text-slate-600">
                 Du kan alltid ändra tempo senare. Allt sparas automatiskt.
               </p>
             </div>
@@ -396,7 +396,7 @@ export default function Onboarding() {
                   </div>
                   <div className="flex-1">
                     <div className="font-semibold text-slate-800">Jag vet inte vad jag vill jobba med</div>
-                    <div className="text-sm text-slate-500">Gör intresseguiden för att upptäcka yrken som passar dig</div>
+                    <div className="text-sm text-slate-700">Gör intresseguiden för att upptäcka yrken som passar dig</div>
                   </div>
                   {selectedPath === 'interest' && <CheckCircle className="w-5 h-5 text-purple-500" />}
                 </button>
@@ -417,7 +417,7 @@ export default function Onboarding() {
                   </div>
                   <div className="flex-1">
                     <div className="font-semibold text-slate-800">Jag vet vad jag vill men behöver CV</div>
-                    <div className="text-sm text-slate-500">Använd vår CV-byggare för att skapa ett professionellt CV</div>
+                    <div className="text-sm text-slate-700">Använd vår CV-byggare för att skapa ett professionellt CV</div>
                   </div>
                   {selectedPath === 'cv' && <CheckCircle className="w-5 h-5 text-teal-500" />}
                 </button>
@@ -438,13 +438,13 @@ export default function Onboarding() {
                   </div>
                   <div className="flex-1">
                     <div className="font-semibold text-slate-800">Jag är redo att börja söka jobb</div>
-                    <div className="text-sm text-slate-500">Hoppa direkt till jobbsökningen om du redan har CV</div>
+                    <div className="text-sm text-slate-700">Hoppa direkt till jobbsökningen om du redan har CV</div>
                   </div>
                   {selectedPath === 'jobs' && <CheckCircle className="w-5 h-5 text-blue-500" />}
                 </button>
               </div>
 
-              <p className="text-xs text-slate-400 text-center">
+              <p className="text-xs text-slate-600 text-center">
                 Du kan alltid byta väg senare. Alla verktyg finns tillgängliga i din dashboard.
               </p>
             </div>
@@ -502,7 +502,7 @@ export default function Onboarding() {
                 </div>
               </div>
 
-              <p className="text-center text-sm text-slate-500">
+              <p className="text-center text-sm text-slate-700">
                 Kom ihåg: Du kan alltid byta väg eller pausa. Allt sparas automatiskt.
               </p>
             </div>
@@ -556,7 +556,7 @@ export default function Onboarding() {
           <div className="text-center">
             <button
               onClick={handleSkip}
-              className="inline-flex items-center gap-2 text-sm text-slate-500 hover:text-slate-700 transition-colors py-2"
+              className="inline-flex items-center gap-2 text-sm text-slate-700 hover:text-slate-700 transition-colors py-2"
             >
               <SkipForward className="w-4 h-4" />
               Hoppa över - du kan alltid återkomma till detta senare

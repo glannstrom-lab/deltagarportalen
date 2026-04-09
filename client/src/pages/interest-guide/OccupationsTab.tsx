@@ -388,7 +388,7 @@ export default function OccupationsTab() {
                           <h3 className="text-lg font-bold text-slate-900 truncate">
                             {match.occupation.name}
                           </h3>
-                          <p className="text-sm text-slate-500 line-clamp-2">
+                          <p className="text-sm text-slate-700 line-clamp-2">
                             {match.occupation.description}
                           </p>
                         </div>

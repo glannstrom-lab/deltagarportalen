@@ -49,7 +49,7 @@ function StatCard({ title, value, subtitle, icon: Icon, trend, color = 'text-sla
       <div className="mt-3">
         <p className="text-2xl font-bold text-slate-900">{value}</p>
         <p className="text-sm font-medium text-slate-700">{title}</p>
-        {subtitle && <p className="text-xs text-slate-500 mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-slate-700 mt-1">{subtitle}</p>}
       </div>
     </Card>
   )
@@ -107,7 +107,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
             <div key={status} className="flex items-center gap-2 text-sm">
               <span className={cn("w-3 h-3 rounded-full", config.bgColor)} />
               <span className="text-slate-600">{getStatusLabel(status)}</span>
-              <span className="text-slate-400 ml-auto">{count}</span>
+              <span className="text-slate-600 ml-auto">{count}</span>
             </div>
           )
         })}
@@ -155,7 +155,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
           return (
             <div key={stage.label} className="flex items-center gap-3">
               <div className="w-24 flex items-center gap-2 text-sm text-slate-600">
-                <Icon className="w-4 h-4 text-slate-400" />
+                <Icon className="w-4 h-4 text-slate-600" />
                 {stage.label}
               </div>
               <div className="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
@@ -204,7 +204,7 @@ function RecentActivity({ applications }: { applications: any[] }) {
               <div className={cn("w-2 h-2 rounded-full flex-shrink-0", config.bgColor)} />
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-slate-900 truncate">{jobTitle}</p>
-                <p className="text-xs text-slate-500">{companyName}</p>
+                <p className="text-xs text-slate-700">{companyName}</p>
               </div>
               <span className={cn("text-xs px-2 py-0.5 rounded-full", config.bgColor, config.color)}>
                 {getStatusLabel(app.status)}
@@ -363,10 +363,10 @@ export function ApplicationsAnalytics() {
       {stats.total === 0 && (
         <Card className="p-12 text-center">
           <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <BarChart3 className="w-8 h-8 text-slate-400" />
+            <BarChart3 className="w-8 h-8 text-slate-600" />
           </div>
           <h3 className="text-xl font-semibold text-slate-700 mb-2">Ingen data än</h3>
-          <p className="text-slate-500 max-w-md mx-auto">
+          <p className="text-slate-700 max-w-md mx-auto">
             Börja spåra dina jobbansökningar för att se statistik och insikter om din ansökningsprocess.
           </p>
         </Card>

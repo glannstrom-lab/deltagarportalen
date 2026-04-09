@@ -3,14 +3,18 @@
  * Protects against XSS, injection attacks, and other security vulnerabilities
  */
 
+// Import and re-export DOMPurify-based sanitization from sanitize.ts (authoritative implementation)
+import { sanitizeHTML, sanitizeHTMLWithLineBreaks, stripHTML, containsDangerousHTML } from './sanitize';
+export { sanitizeHTML, sanitizeHTMLWithLineBreaks, stripHTML, containsDangerousHTML };
+
 // XSS Sanitization - removes potentially dangerous HTML
 type StringOrObject = string | object | null | undefined;
 
 export function sanitizeInput(input: StringOrObject): string {
   if (input === null || input === undefined) return '';
-  
+
   const str = typeof input === 'object' ? JSON.stringify(input) : String(input);
-  
+
   return str
     // Remove script tags and their content
     .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
@@ -26,65 +30,6 @@ export function sanitizeInput(input: StringOrObject): string {
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;')
     .replace(/\//g, '&#x2F;');
-}
-
-// Sanitize HTML but allow safe tags (for rich text content)
-const ALLOWED_TAGS = ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li'];
-const ALLOWED_ATTRIBUTES: Record<string, string[]> = {
-  'a': ['href', 'title', 'target'],
-};
-
-export function sanitizeHTML(html: string): string {
-  if (!html) return '';
-  
-  // Create a temporary div to parse HTML
-  const temp = document.createElement('div');
-  temp.innerHTML = html;
-  
-  // Remove all script and style tags
-  const scripts = temp.querySelectorAll('script, style, iframe, object, embed');
-  scripts.forEach(el => el.remove());
-  
-  // Process all elements
-  const allElements = temp.querySelectorAll('*');
-  allElements.forEach(el => {
-    const tagName = el.tagName.toLowerCase();
-    
-    // Remove disallowed tags but keep their content
-    if (!ALLOWED_TAGS.includes(tagName) && tagName !== 'a') {
-      const parent = el.parentNode;
-      if (parent) {
-        while (el.firstChild) {
-          parent.insertBefore(el.firstChild, el);
-        }
-        parent.removeChild(el);
-      }
-    } else {
-      // Remove disallowed attributes
-      const attributes = Array.from(el.attributes);
-      attributes.forEach(attr => {
-        const allowed = ALLOWED_ATTRIBUTES[tagName] || [];
-        if (!allowed.includes(attr.name.toLowerCase())) {
-          el.removeAttribute(attr.name);
-        }
-      });
-      
-      // Sanitize href attributes
-      if (tagName === 'a' && el.hasAttribute('href')) {
-        const href = el.getAttribute('href') || '';
-        if (href.startsWith('javascript:') || href.startsWith('data:')) {
-          el.removeAttribute('href');
-        }
-        // Add rel="noopener noreferrer" for external links
-        if (href.startsWith('http') && !href.includes(window.location.hostname)) {
-          el.setAttribute('rel', 'noopener noreferrer');
-          el.setAttribute('target', '_blank');
-        }
-      }
-    }
-  });
-  
-  return temp.innerHTML;
 }
 
 // Validate email format

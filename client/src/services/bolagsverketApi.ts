@@ -96,7 +96,10 @@ export async function getCompanyInfo(orgNumber: string): Promise<BolagsverketCom
   try {
     // Get auth session for the request
     const { data: { session } } = await supabase.auth.getSession()
-    const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY
+    if (!session?.access_token) {
+      throw new Error('Inloggning krävs för att söka företagsinformation')
+    }
+    const token = session.access_token
 
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 
@@ -149,7 +152,10 @@ export async function getCompanyDocuments(orgNumber: string): Promise<Bolagsverk
 
   try {
     const { data: { session } } = await supabase.auth.getSession()
-    const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY
+    if (!session?.access_token) {
+      throw new Error('Inloggning krävs för att hämta företagsdokument')
+    }
+    const token = session.access_token
 
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 
@@ -195,7 +201,10 @@ export function getDocumentDownloadUrl(dokumentId: string): string {
  */
 export async function downloadDocument(dokumentId: string): Promise<Blob> {
   const { data: { session } } = await supabase.auth.getSession()
-  const token = session?.access_token || import.meta.env.VITE_SUPABASE_ANON_KEY
+  if (!session?.access_token) {
+    throw new Error('Inloggning krävs för att ladda ner dokument')
+  }
+  const token = session.access_token
 
   const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 

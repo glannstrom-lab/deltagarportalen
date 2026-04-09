@@ -232,7 +232,7 @@ export default function HealthTab() {
             </div>
             <div>
               <h2 className="text-base sm:text-lg font-bold text-slate-800">{t('wellness.health.howAreYou')}</h2>
-              <p className="text-xs sm:text-sm text-slate-500">
+              <p className="text-xs sm:text-sm text-slate-700">
                 {moodSaved ? t('wellness.health.moodLoggedToday') : t('wellness.health.logMoodToTrack')}
               </p>
             </div>
@@ -344,7 +344,7 @@ export default function HealthTab() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-slate-800">{t('wellness.health.dailyActivities')}</h3>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {t('wellness.health.xOfYCompleted', { completed: completedCount, total: activities.length })}
             </p>
           </div>
@@ -374,7 +374,7 @@ export default function HealthTab() {
                   {activity.completed ? (
                     <CheckCircle className="w-5 h-5 text-green-600" />
                   ) : (
-                    <Icon className="w-5 h-5 text-slate-500" />
+                    <Icon className="w-5 h-5 text-slate-700" />
                   )}
                 </div>
                 <span className={cn(

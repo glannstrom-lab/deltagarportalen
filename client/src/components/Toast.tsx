@@ -119,7 +119,7 @@ function ToastItem({ toast, onRemove }: ToastItemProps) {
       <button
         onClick={handleRemove}
         aria-label="Stäng meddelande"
-        className="flex-shrink-0 p-1 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+        className="flex-shrink-0 p-1 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
       >
         <X className="w-4 h-4" aria-hidden="true" />
       </button>

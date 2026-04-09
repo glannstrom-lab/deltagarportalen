@@ -144,12 +144,12 @@ export function ApplicationDetailModal({
               onClick={onClose}
               className="p-2 hover:bg-slate-100 rounded-full transition-colors flex-shrink-0"
             >
-              <X className="w-5 h-5 text-slate-500" />
+              <X className="w-5 h-5 text-slate-700" />
             </button>
           </div>
 
           {/* Quick info */}
-          <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center gap-3 mt-3 text-sm text-slate-700">
             {location && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
@@ -225,21 +225,21 @@ export function ApplicationDetailModal({
             {/* Actions */}
             <button
               onClick={() => onEdit(application)}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-600"
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600 hover:text-slate-600"
               title="Redigera"
             >
               <Edit2 className="w-4 h-4" />
             </button>
             <button
               onClick={handleArchive}
-              className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-400 hover:text-slate-600"
+              className="p-2 hover:bg-slate-100 rounded-lg transition-colors text-slate-600 hover:text-slate-600"
               title="Arkivera"
             >
               <Archive className="w-4 h-4" />
             </button>
             <button
               onClick={handleDelete}
-              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-400 hover:text-red-600"
+              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-600 hover:text-red-600"
               title="Ta bort"
             >
               <Trash2 className="w-4 h-4" />
@@ -264,7 +264,7 @@ export function ApplicationDetailModal({
                   "py-3 px-1 text-sm font-medium border-b-2 transition-colors",
                   activeTab === tab.id
                     ? "border-violet-600 text-violet-600"
-                    : "border-transparent text-slate-500 hover:text-slate-700"
+                    : "border-transparent text-slate-700 hover:text-slate-700"
                 )}
               >
                 {tab.label}
@@ -313,7 +313,7 @@ export function ApplicationDetailModal({
                       CV kopplat
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 text-slate-500 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs">
                       <FileText className="w-3 h-3" />
                       Inget CV
                     </span>
@@ -324,7 +324,7 @@ export function ApplicationDetailModal({
                       Brev kopplat
                     </span>
                   ) : (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 text-slate-500 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs">
                       <FileText className="w-3 h-3" />
                       Inget brev
                     </span>
@@ -352,7 +352,7 @@ export function ApplicationDetailModal({
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-medium text-slate-900">Koppla dokument</h3>
-                  <p className="text-sm text-slate-500">Välj CV och personligt brev för denna ansökan</p>
+                  <p className="text-sm text-slate-700">Välj CV och personligt brev för denna ansökan</p>
                 </div>
                 {documentsChanged && (
                   <Button
@@ -391,7 +391,7 @@ export function ApplicationDetailModal({
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
                 </div>
               ) : history.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 text-slate-700">
                   <Clock className="w-8 h-8 mx-auto mb-2 text-slate-300" />
                   <p>Ingen historik än</p>
                 </div>
@@ -399,7 +399,7 @@ export function ApplicationDetailModal({
                 history.map((entry) => (
                   <div key={entry.id} className="flex gap-3 p-3 bg-slate-50 rounded-lg">
                     <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                      <Clock className="w-4 h-4 text-slate-400" />
+                      <Clock className="w-4 h-4 text-slate-600" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-slate-700">
@@ -408,9 +408,9 @@ export function ApplicationDetailModal({
                           : entry.eventType.replace(/_/g, ' ')}
                       </p>
                       {entry.note && (
-                        <p className="text-sm text-slate-500 mt-1">{entry.note}</p>
+                        <p className="text-sm text-slate-700 mt-1">{entry.note}</p>
                       )}
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-600 mt-1">
                         {new Date(entry.createdAt).toLocaleString('sv-SE')}
                       </p>
                     </div>
@@ -427,7 +427,7 @@ export function ApplicationDetailModal({
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
                 </div>
               ) : contacts.length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 text-slate-700">
                   <User className="w-8 h-8 mx-auto mb-2 text-slate-300" />
                   <p>Inga kontakter tillagda</p>
                   <Button variant="outline" size="sm" className="mt-3">
@@ -440,12 +440,12 @@ export function ApplicationDetailModal({
                   <Card key={contact.id} className="p-3">
                     <div className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center">
-                        <User className="w-5 h-5 text-slate-400" />
+                        <User className="w-5 h-5 text-slate-600" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-slate-900">{contact.name}</p>
                         {contact.title && (
-                          <p className="text-sm text-slate-500">{contact.title}</p>
+                          <p className="text-sm text-slate-700">{contact.title}</p>
                         )}
                         {contact.email && (
                           <a href={`mailto:${contact.email}`} className="text-sm text-indigo-600 hover:underline">
@@ -467,7 +467,7 @@ export function ApplicationDetailModal({
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
-                <div className="text-center py-8 text-slate-500">
+                <div className="text-center py-8 text-slate-700">
                   <Bell className="w-8 h-8 mx-auto mb-2 text-slate-300" />
                   <p>Inga aktiva påminnelser</p>
                   <Button variant="outline" size="sm" className="mt-3">
@@ -484,12 +484,12 @@ export function ApplicationDetailModal({
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-medium text-slate-900">{reminder.title}</p>
-                        <p className="text-sm text-slate-500">
+                        <p className="text-sm text-slate-700">
                           {new Date(reminder.reminderDate).toLocaleDateString('sv-SE')}
                           {reminder.reminderTime && ` kl ${reminder.reminderTime.slice(0, 5)}`}
                         </p>
                       </div>
-                      <button className="p-2 hover:bg-green-50 rounded-lg text-slate-400 hover:text-green-600">
+                      <button className="p-2 hover:bg-green-50 rounded-lg text-slate-600 hover:text-green-600">
                         <CheckCircle className="w-5 h-5" />
                       </button>
                     </div>

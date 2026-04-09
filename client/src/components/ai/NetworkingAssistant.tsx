@@ -118,7 +118,7 @@ export function NetworkingAssistant({
               <h4 className="font-medium text-slate-800 dark:text-slate-200">
                 AI Nätverksassistent
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-slate-600 dark:text-slate-600">
                 Generera personliga nätverksmeddelanden
               </p>
             </div>
@@ -208,7 +208,7 @@ export function NetworkingAssistant({
             {/* Main Message */}
             <div className="relative">
               <div className="absolute top-2 right-2 flex items-center gap-1">
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-600">
                   {result.suggestedMessage.length} tecken
                 </span>
                 <button
@@ -302,11 +302,11 @@ export function NetworkingAssistant({
                         <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
                           {group.name}
                         </span>
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-xs text-slate-600 dark:text-slate-400">
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-xs text-slate-600 dark:text-slate-600">
                           {group.platform}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                      <p className="text-xs text-slate-600 dark:text-slate-600">
                         {group.relevance}
                       </p>
                     </div>

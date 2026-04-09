@@ -46,7 +46,7 @@ function FAQItem({ question, answer, isOpen, onClick }: {
       >
         <span className="font-semibold text-slate-800 pr-4 group-hover:text-violet-600 transition-colors">{question}</span>
         <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${isOpen ? 'bg-violet-100 rotate-180' : 'bg-slate-100'}`}>
-          <ChevronDown className={`w-5 h-5 transition-colors ${isOpen ? 'text-violet-600' : 'text-slate-400'}`} />
+          <ChevronDown className={`w-5 h-5 transition-colors ${isOpen ? 'text-violet-600' : 'text-slate-600'}`} />
         </div>
       </button>
       <div 
@@ -585,7 +585,7 @@ export default function Landing() {
                 </button>
               </div>
 
-              <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-slate-500">
+              <div className="flex flex-wrap justify-center lg:justify-start gap-6 text-sm text-slate-700">
                 <span className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm">
                   <Check className="w-5 h-5 text-green-500" />
                   {t('landing.hero.free')}
@@ -610,7 +610,7 @@ export default function Landing() {
                     <span className="w-3 h-3 rounded-full bg-amber-400" />
                     <span className="w-3 h-3 rounded-full bg-green-400" />
                   </div>
-                  <span className="text-sm text-slate-400 font-medium">{t('landing.hero.yourOverview')}</span>
+                  <span className="text-sm text-slate-600 font-medium">{t('landing.hero.yourOverview')}</span>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -619,7 +619,7 @@ export default function Landing() {
                     <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <FileText className="w-5 h-5 text-violet-600" />
                     </div>
-                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.cvProgress')}</p>
+                    <p className="text-xs text-slate-700 mb-1">{t('landing.hero.cvProgress')}</p>
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-slate-800">85%</p>
                       <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
@@ -633,7 +633,7 @@ export default function Landing() {
                     <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <Lightbulb className="w-5 h-5 text-teal-600" />
                     </div>
-                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.interestGuide')}</p>
+                    <p className="text-xs text-slate-700 mb-1">{t('landing.hero.interestGuide')}</p>
                     <div className="flex items-center gap-1">
                       {['R', 'I', 'A', 'S', 'E', 'C'].map((l, i) => (
                         <span key={l} className={`w-5 h-5 rounded text-[10px] font-bold flex items-center justify-center transition-all ${i === 3 ? 'bg-teal-500 text-white scale-110' : 'bg-teal-100 text-teal-600'}`}>{l}</span>
@@ -646,7 +646,7 @@ export default function Landing() {
                     <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <Briefcase className="w-5 h-5 text-orange-600" />
                     </div>
-                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.savedJobs')}</p>
+                    <p className="text-xs text-slate-700 mb-1">{t('landing.hero.savedJobs')}</p>
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-slate-800">12</p>
                       <div className="flex -space-x-1">
@@ -663,7 +663,7 @@ export default function Landing() {
                     <div className="w-10 h-10 bg-pink-100 rounded-lg flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                       <Mic className="w-5 h-5 text-pink-600" />
                     </div>
-                    <p className="text-xs text-slate-500 mb-1">{t('landing.hero.interviews')}</p>
+                    <p className="text-xs text-slate-700 mb-1">{t('landing.hero.interviews')}</p>
                     <div className="flex items-center gap-2">
                       <p className="font-semibold text-slate-800">2</p>
                       <div className="flex gap-0.5">
@@ -677,7 +677,7 @@ export default function Landing() {
 
                 {/* Animated Activity Indicator */}
                 <div className="mt-4 pt-4 border-t border-slate-100">
-                  <div className="flex items-center justify-between text-xs text-slate-500">
+                  <div className="flex items-center justify-between text-xs text-slate-700">
                     <span className="flex items-center gap-1">
                       <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                       Live-uppdateringar
@@ -711,19 +711,19 @@ export default function Landing() {
       {/* Trust Bar */}
       <section className="bg-white border-y border-slate-200 py-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-slate-500 text-sm uppercase tracking-wider mb-6 font-medium">
+          <p className="text-slate-700 text-sm uppercase tracking-wider mb-6 font-medium">
             {t('landing.trust.partnersTitle')}
           </p>
           <div className="flex items-center justify-center gap-12 flex-wrap">
-            <span className="flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-colors">
+            <span className="flex items-center gap-3 text-slate-600 hover:text-slate-600 transition-colors">
               <Briefcase className="w-6 h-6" />
               <span className="font-semibold">{t('landing.trust.arbetsformedlingen')}</span>
             </span>
-            <span className="flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-colors">
+            <span className="flex items-center gap-3 text-slate-600 hover:text-slate-600 transition-colors">
               <FileText className="w-6 h-6" />
               <span className="font-semibold">{t('landing.trust.platsbanken')}</span>
             </span>
-            <span className="flex items-center gap-3 text-slate-400 hover:text-slate-600 transition-colors">
+            <span className="flex items-center gap-3 text-slate-600 hover:text-slate-600 transition-colors">
               <Check className="w-6 h-6" />
               <span className="font-semibold">{t('landing.trust.municipalities')}</span>
             </span>
@@ -856,11 +856,11 @@ export default function Landing() {
                 <Building2 className="w-7 h-7 text-violet-600" />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2">{t('landing.pricing.organization.title')}</h3>
-              <p className="text-slate-500 text-sm mb-4">{t('landing.pricing.organization.description')}</p>
+              <p className="text-slate-700 text-sm mb-4">{t('landing.pricing.organization.description')}</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-bold text-slate-900">{t('landing.pricing.organization.price')}</span>
-                <span className="text-slate-500">{t('landing.pricing.organization.currency')}</span>
-                <span className="text-slate-400">{t('landing.pricing.organization.period')}</span>
+                <span className="text-slate-700">{t('landing.pricing.organization.currency')}</span>
+                <span className="text-slate-600">{t('landing.pricing.organization.period')}</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {(t('landing.pricing.organization.features', { returnObjects: true }) as string[]).map((feature, idx) => (
@@ -886,11 +886,11 @@ export default function Landing() {
                 <UserCheck className="w-7 h-7 text-teal-600" />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2">{t('landing.pricing.consultant.title')}</h3>
-              <p className="text-slate-500 text-sm mb-4">{t('landing.pricing.consultant.description')}</p>
+              <p className="text-slate-700 text-sm mb-4">{t('landing.pricing.consultant.description')}</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-bold text-slate-900">{t('landing.pricing.consultant.price')}</span>
-                <span className="text-slate-500">{t('landing.pricing.consultant.currency')}</span>
-                <span className="text-slate-400">{t('landing.pricing.consultant.period')}</span>
+                <span className="text-slate-700">{t('landing.pricing.consultant.currency')}</span>
+                <span className="text-slate-600">{t('landing.pricing.consultant.period')}</span>
               </div>
               <ul className="space-y-3 mb-8">
                 {(t('landing.pricing.consultant.features', { returnObjects: true }) as string[]).map((feature, idx) => (
@@ -916,7 +916,7 @@ export default function Landing() {
                 <Users className="w-7 h-7 text-green-600" />
               </div>
               <h3 className="text-xl font-bold text-slate-800 mb-2">{t('landing.pricing.participant.title')}</h3>
-              <p className="text-slate-500 text-sm mb-4">{t('landing.pricing.participant.description')}</p>
+              <p className="text-slate-700 text-sm mb-4">{t('landing.pricing.participant.description')}</p>
               <div className="flex items-baseline gap-1 mb-6">
                 <span className="text-4xl font-bold text-green-600">{t('landing.pricing.participant.priceLabel')}</span>
               </div>
@@ -1149,7 +1149,7 @@ export default function Landing() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400">
+      <footer className="bg-slate-900 text-slate-600">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 lg:gap-12">
             {/* Brand */}

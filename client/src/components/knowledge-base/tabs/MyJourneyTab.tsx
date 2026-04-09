@@ -125,7 +125,7 @@ export default function MyJourneyTab() {
                 </>
               ) : (
                 <>
-                  <p className="text-lg font-bold text-slate-400">—</p>
+                  <p className="text-lg font-bold text-slate-600">—</p>
                   <p className="text-sm text-slate-600">{t('knowledgeBase.myJourney.noProfile')}</p>
                 </>
               )}
@@ -174,7 +174,7 @@ export default function MyJourneyTab() {
                             style={{ width: `${type.score}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-500 mt-1">{type.score}%</span>
+                        <span className="text-xs text-slate-700 mt-1">{type.score}%</span>
                       </div>
                     </div>
                   </div>
@@ -205,7 +205,7 @@ export default function MyJourneyTab() {
                   <FileText className="w-5 h-5 text-violet-600" />
                   <div>
                     <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.createCV')}</h4>
-                    <p className="text-sm text-slate-500">{t('knowledgeBase.myJourney.createCVDescription')}</p>
+                    <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.createCVDescription')}</p>
                   </div>
                 </div>
                 <Link
@@ -225,7 +225,7 @@ export default function MyJourneyTab() {
                   <Compass className="w-5 h-5 text-amber-600" />
                   <div>
                     <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.takeInterestGuide')}</h4>
-                    <p className="text-sm text-slate-500">{t('knowledgeBase.myJourney.takeInterestGuideDescription')}</p>
+                    <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.takeInterestGuideDescription')}</p>
                   </div>
                 </div>
                 <Link
@@ -245,7 +245,7 @@ export default function MyJourneyTab() {
                   <Briefcase className="w-5 h-5 text-blue-600" />
                   <div>
                     <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.searchJobs')}</h4>
-                    <p className="text-sm text-slate-500">{t('knowledgeBase.myJourney.searchJobsDescription')}</p>
+                    <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.searchJobsDescription')}</p>
                   </div>
                 </div>
                 <Link
@@ -295,7 +295,7 @@ export default function MyJourneyTab() {
                     <h4 className="font-medium text-slate-900">
                       {job.job_data?.headline || job.job_data?.title || t('knowledgeBase.myJourney.unknownJob')}
                     </h4>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-700">
                       {job.job_data?.employer?.name || job.job_data?.company || ''}
                     </p>
                   </div>

@@ -87,7 +87,7 @@ export function ZenArticleCard({ article, onClick }: ZenArticleCardProps) {
         {article.summary}
       </p>
       {article.readingTime && (
-        <span className="text-xs text-slate-400">
+        <span className="text-xs text-slate-600">
           {article.readingTime} min läsning
         </span>
       )}

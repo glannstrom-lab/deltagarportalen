@@ -1,4 +1,5 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef, useId } from 'react';
+import { useFocusTrap } from '@/hooks/useFocusTrap';
 import { useTranslation } from 'react-i18next';
 import {
   Search, MapPin, Briefcase, X, Building2,
@@ -101,6 +102,12 @@ function SearchTab() {
 
   // AI panel state
   const [showInterviewPrep, setShowInterviewPrep] = useState(false)
+
+  // Focus trap for job detail modal
+  const jobModalRef = useFocusTrap<HTMLDivElement>(!!selectedJob, {
+    onEscape: () => setSelectedJob(null),
+    restoreFocus: true,
+  })
   const [showCommutePlanner, setShowCommutePlanner] = useState(false)
 
   // Sök när filter ändras (med debounce)
@@ -194,14 +201,14 @@ function SearchTab() {
             </div>
             <div className="text-left">
               <h3 className="font-semibold text-slate-900">{t('jobSearch.searchAndFilter')}</h3>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-700">
                 {filters.query || activeFilterCount > 0
                   ? `${filters.query ? `"${filters.query}"` : ''} ${activeFilterCount > 0 ? `• ${t('jobSearch.filtersActive', { count: activeFilterCount })}` : ''}`
                   : t('jobSearch.clickToSearch')}
               </p>
             </div>
           </div>
-          <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${isSearchExpanded ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-5 h-5 text-slate-600 transition-transform duration-200 ${isSearchExpanded ? 'rotate-180' : ''}`} />
         </button>
 
         {/* Expandable Content */}
@@ -209,8 +216,12 @@ function SearchTab() {
           <div className="px-4 pb-4 border-t border-slate-100 space-y-4">
             {/* Search Input */}
             <div className="pt-4 relative">
-              <Search className="absolute left-3 top-1/2 mt-2 -translate-y-1/2 text-slate-400" size={20} />
+              <label htmlFor="job-search-input" className="sr-only">
+                {t('jobSearch.whatDoYouWantToWork')}
+              </label>
+              <Search className="absolute left-3 top-1/2 mt-2 -translate-y-1/2 text-slate-600" size={20} aria-hidden="true" />
               <input
+                id="job-search-input"
                 type="text"
                 placeholder={t('jobSearch.whatDoYouWantToWork')}
                 value={filters.query}
@@ -220,21 +231,32 @@ function SearchTab() {
                 }}
                 onFocus={() => setShowSuggestions(true)}
                 className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+                role="combobox"
+                aria-expanded={showSuggestions && suggestions.length > 0}
+                aria-controls="job-search-suggestions"
+                aria-autocomplete="list"
               />
 
               {/* Autocomplete */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg">
+                <div
+                  id="job-search-suggestions"
+                  role="listbox"
+                  aria-label={t('jobSearch.suggestions')}
+                  className="absolute z-20 w-full mt-1 bg-white border border-slate-200 rounded-xl shadow-lg"
+                >
                   {suggestions.map((suggestion, idx) => (
                     <button
                       key={idx}
+                      role="option"
+                      aria-selected={false}
                       onClick={() => {
                         setFilters({ ...filters, query: suggestion });
                         setShowSuggestions(false);
                       }}
                       className="w-full text-left px-4 py-3 hover:bg-violet-50 first:rounded-t-xl last:rounded-b-xl border-b border-slate-100 last:border-0"
                     >
-                      <Search size={16} className="inline mr-2 text-slate-400" />
+                      <Search size={16} className="inline mr-2 text-slate-600" aria-hidden="true" />
                       {suggestion}
                     </button>
                   ))}
@@ -243,63 +265,79 @@ function SearchTab() {
             </div>
 
             {/* Location Filters */}
-            <div>
-              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
-                <MapPin className="w-3 h-3" />
+            <fieldset>
+              <legend className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+                <MapPin className="w-3 h-3" aria-hidden="true" />
                 {t('jobSearch.location')}
-              </h4>
+              </legend>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <select
-                  value={filters.municipality}
-                  onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
-                >
-                  <option value="">{t('jobSearch.allMunicipalities')}</option>
-                  {SWEDISH_MUNICIPALITIES.map((m) => (
-                    <option key={m.concept_id} value={m.label}>{m.label}</option>
-                  ))}
-                </select>
-                <select
-                  value={filters.region}
-                  onChange={(e) => setFilters({ ...filters, region: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
-                >
-                  <option value="">{t('jobSearch.allRegions')}</option>
-                  {REGIONS.map((r) => (
-                    <option key={r.code} value={r.code}>{r.name}</option>
-                  ))}
-                </select>
+                <div>
+                  <label htmlFor="filter-municipality" className="sr-only">{t('jobSearch.municipality')}</label>
+                  <select
+                    id="filter-municipality"
+                    value={filters.municipality}
+                    onChange={(e) => setFilters({ ...filters, municipality: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                  >
+                    <option value="">{t('jobSearch.allMunicipalities')}</option>
+                    {SWEDISH_MUNICIPALITIES.map((m) => (
+                      <option key={m.concept_id} value={m.label}>{m.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="filter-region" className="sr-only">{t('jobSearch.region')}</label>
+                  <select
+                    id="filter-region"
+                    value={filters.region}
+                    onChange={(e) => setFilters({ ...filters, region: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                  >
+                    <option value="">{t('jobSearch.allRegions')}</option>
+                    {REGIONS.map((r) => (
+                      <option key={r.code} value={r.code}>{r.name}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
-            </div>
+            </fieldset>
 
             {/* Job Type Filters */}
-            <div>
-              <h4 className="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2 flex items-center gap-1">
-                <Briefcase className="w-3 h-3" />
+            <fieldset>
+              <legend className="text-xs font-semibold text-slate-700 uppercase tracking-wide mb-2 flex items-center gap-1">
+                <Briefcase className="w-3 h-3" aria-hidden="true" />
                 {t('jobSearch.jobType')}
-              </h4>
+              </legend>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <select
-                  value={filters.employmentType}
-                  onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
-                >
-                  <option value="">{t('jobSearch.allTypes')}</option>
-                  <option value="Heltid">{t('jobSearch.fullTime')}</option>
-                  <option value="Deltid">{t('jobSearch.partTime')}</option>
-                </select>
-                <select
-                  value={filters.publishedWithin}
-                  onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
-                >
-                  <option value="all">{t('jobSearch.publishedAnytime')}</option>
-                  <option value="today">{t('jobSearch.today')}</option>
-                  <option value="week">{t('jobSearch.lastWeek')}</option>
-                  <option value="month">{t('jobSearch.lastMonth')}</option>
-                </select>
+                <div>
+                  <label htmlFor="filter-employment-type" className="sr-only">{t('jobSearch.employmentType')}</label>
+                  <select
+                    id="filter-employment-type"
+                    value={filters.employmentType}
+                    onChange={(e) => setFilters({ ...filters, employmentType: e.target.value })}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                  >
+                    <option value="">{t('jobSearch.allTypes')}</option>
+                    <option value="Heltid">{t('jobSearch.fullTime')}</option>
+                    <option value="Deltid">{t('jobSearch.partTime')}</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="filter-published" className="sr-only">{t('jobSearch.publishedWithin')}</label>
+                  <select
+                    id="filter-published"
+                    value={filters.publishedWithin}
+                    onChange={(e) => setFilters({ ...filters, publishedWithin: e.target.value as any })}
+                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 bg-white"
+                  >
+                    <option value="all">{t('jobSearch.publishedAnytime')}</option>
+                    <option value="today">{t('jobSearch.today')}</option>
+                    <option value="week">{t('jobSearch.lastWeek')}</option>
+                    <option value="month">{t('jobSearch.lastMonth')}</option>
+                  </select>
+                </div>
               </div>
-            </div>
+            </fieldset>
 
             {/* Active Filters & Clear */}
             {hasActiveFilters && (
@@ -362,26 +400,35 @@ function SearchTab() {
           </Card>
         ) : paginatedJobs.length > 0 ? (
           <div className="space-y-3 sm:space-y-4">
-            {/* Results count */}
-            <p className="text-sm text-slate-500">
+            {/* Results count - announced to screen readers */}
+            <p className="text-sm text-slate-700" role="status" aria-live="polite" aria-atomic="true">
               {t('jobSearch.showingXofY', { shown: paginatedJobs.length, total: totalJobs })}
             </p>
 
             {paginatedJobs.map((job) => (
               <div
                 key={job.id}
+                role="button"
+                tabIndex={0}
                 onClick={() => handleJobClick(job.id)}
-                className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 hover:shadow-md hover:border-violet-300 transition-all cursor-pointer"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    handleJobClick(job.id)
+                  }
+                }}
+                aria-label={`${job.headline} - ${job.employer?.name || t('common.employerNotSpecified')}`}
+                className="bg-white rounded-xl sm:rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 hover:shadow-md hover:border-violet-300 transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
               >
                 <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                   <div className="flex-1 min-w-0">
                     <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-1 line-clamp-2">{job.headline}</h3>
                     <p className="text-slate-600 text-sm font-medium flex items-center gap-2">
-                      <Building2 size={16} className="text-slate-400 flex-shrink-0" />
+                      <Building2 size={16} className="text-slate-600 flex-shrink-0" />
                       <span className="truncate">{job.employer?.name || t('common.employerNotSpecified')}</span>
                     </p>
 
-                    <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-slate-500">
+                    <div className="flex flex-wrap items-center gap-2 mt-2 text-xs sm:text-sm text-slate-700">
                       <span className="flex items-center gap-1">
                         <MapPin size={14} />
                         <span className="truncate max-w-[150px] sm:max-w-none">
@@ -393,7 +440,7 @@ function SearchTab() {
                           {job.employment_type.label}
                         </span>
                       )}
-                      <span className="text-slate-400">
+                      <span className="text-slate-600">
                         {new Date(job.publication_date).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                       </span>
                     </div>
@@ -484,21 +531,32 @@ function SearchTab() {
 
       {/* Job Detail Modal */}
       {selectedJob && (
-        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50">
-          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+        <div
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center sm:p-4 bg-black/50"
+          role="presentation"
+          onClick={(e) => e.target === e.currentTarget && setSelectedJob(null)}
+        >
+          <div
+            ref={jobModalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="job-modal-title"
+            className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-2xl max-h-[95vh] sm:max-h-[90vh] overflow-y-auto"
+          >
             <div className="sticky top-0 bg-white border-b border-slate-100 p-3 sm:p-4 flex items-center justify-between">
-              <h2 className="text-base sm:text-lg font-semibold text-slate-900 pr-8 line-clamp-1">{selectedJob.headline}</h2>
+              <h2 id="job-modal-title" className="text-base sm:text-lg font-semibold text-slate-900 pr-8 line-clamp-1">{selectedJob.headline}</h2>
               <button
                 onClick={() => setSelectedJob(null)}
+                aria-label={t('common.close')}
                 className="p-2 hover:bg-slate-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
               >
-                <X size={24} className="text-slate-500" />
+                <X size={24} className="text-slate-700" aria-hidden="true" />
               </button>
             </div>
             <div className="p-4 sm:p-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-2 text-slate-600">
-                  <Building2 size={20} className="text-slate-400" />
+                  <Building2 size={20} className="text-slate-600" />
                   <span className="font-medium">{selectedJob.employer?.name}</span>
                 </div>
 
@@ -688,10 +746,10 @@ function SavedJobsTab() {
     return (
       <Card className="p-12 text-center">
         <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Bookmark className="w-8 h-8 text-slate-400" />
+          <Bookmark className="w-8 h-8 text-slate-600" />
         </div>
         <h3 className="text-xl font-semibold text-slate-700 mb-2">{t('jobSearch.noSavedJobsTitle')}</h3>
-        <p className="text-slate-500 mb-4">{t('jobSearch.noSavedJobsDesc')}</p>
+        <p className="text-slate-700 mb-4">{t('jobSearch.noSavedJobsDesc')}</p>
         <Link to="/job-search">
           <Button>{t('jobSearch.title')}</Button>
         </Link>
@@ -705,7 +763,7 @@ function SavedJobsTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Sparade jobb</h2>
-          <p className="text-sm text-slate-500">{onlySaved.length} jobb sparade</p>
+          <p className="text-sm text-slate-700">{onlySaved.length} jobb sparade</p>
         </div>
         <div className="flex items-center gap-2">
           <select
@@ -728,7 +786,7 @@ function SavedJobsTab() {
               <div className="flex items-start gap-4">
                 {/* Company logo placeholder */}
                 <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Building2 className="w-6 h-6 text-slate-400" />
+                  <Building2 className="w-6 h-6 text-slate-600" />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -740,14 +798,14 @@ function SavedJobsTab() {
                     {jobData?.employer?.name || 'Okänt företag'}
                   </p>
                   {jobData?.workplace_address?.municipality && (
-                    <p className="text-sm text-slate-500 flex items-center gap-1 mt-0.5">
+                    <p className="text-sm text-slate-700 flex items-center gap-1 mt-0.5">
                       <MapPin className="w-3.5 h-3.5" />
                       {jobData.workplace_address.municipality}
                     </p>
                   )}
 
                   {/* Saved date */}
-                  <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
+                  <p className="text-xs text-slate-600 mt-2 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     Sparad {new Date(job.savedAt).toLocaleDateString('sv-SE')}
                   </p>
@@ -757,7 +815,7 @@ function SavedJobsTab() {
                 <div className="flex flex-col gap-2">
                   <button
                     onClick={() => handleMarkAsApplied(job.id)}
-                    className="p-2 hover:bg-green-50 rounded-lg transition-colors text-slate-400 hover:text-green-600"
+                    className="p-2 hover:bg-green-50 rounded-lg transition-colors text-slate-600 hover:text-green-600"
                     title="Markera som ansökt"
                   >
                     <CheckCircle className="w-5 h-5" />
@@ -768,7 +826,7 @@ function SavedJobsTab() {
                         removeJob(job.id);
                       }
                     }}
-                    className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-400 hover:text-red-600"
+                    className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-600 hover:text-red-600"
                     title="Ta bort"
                   >
                     <Trash2 className="w-5 h-5" />

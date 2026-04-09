@@ -66,7 +66,7 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
               selectedLevel === 'low' && "text-sky-600",
               selectedLevel === 'medium' && "text-amber-600",
               selectedLevel === 'high' && "text-rose-600",
-              !selectedLevel && "text-slate-500"
+              !selectedLevel && "text-slate-700"
             )} />
           </div>
           <div className="text-left">
@@ -75,7 +75,7 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
                 ? `Filtrerat: ${energyOptions.find(e => e.level === selectedLevel)?.label}`
                 : 'Filtrera efter energinivå'}
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {selectedLevel
                 ? `${articleCount[selectedLevel]} artiklar passar din energi`
                 : 'Anpassa innehåll efter hur du mår idag'}
@@ -83,7 +83,7 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
           </div>
         </div>
         <svg 
-          className={cn("w-5 h-5 text-slate-400 transition-transform", isExpanded && "rotate-180")}
+          className={cn("w-5 h-5 text-slate-600 transition-transform", isExpanded && "rotate-180")}
           fill="none" 
           viewBox="0 0 24 24" 
           stroke="currentColor"
@@ -104,11 +104,11 @@ export function EnergyFilter({ selectedLevel, onChange, articleCount }: EnergyFi
             )}
           >
             <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
-              <Zap className="w-4 h-4 text-slate-500" />
+              <Zap className="w-4 h-4 text-slate-700" />
             </div>
             <div className="text-left flex-1">
               <p className="font-medium">Visa alla</p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700">
                 {articleCount.low + articleCount.medium + articleCount.high} artiklar
               </p>
             </div>

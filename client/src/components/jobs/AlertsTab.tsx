@@ -77,7 +77,7 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
           onClick={onClose}
           className="absolute top-4 right-4 p-2 hover:bg-slate-100 rounded-lg"
         >
-          <X className="w-5 h-5 text-slate-400" />
+          <X className="w-5 h-5 text-slate-600" />
         </button>
 
         <div className="flex items-center gap-3 mb-6">
@@ -86,7 +86,7 @@ function CreateAlertModal({ isOpen, onClose, onCreate }: CreateAlertModalProps) 
           </div>
           <div>
             <h2 className="text-xl font-bold text-slate-900">Skapa bevakning</h2>
-            <p className="text-sm text-slate-500">Få notiser om nya jobb</p>
+            <p className="text-sm text-slate-700">Få notiser om nya jobb</p>
           </div>
         </div>
 
@@ -241,7 +241,7 @@ function AlertCard({
 
           {/* Last checked */}
           {alert.last_checked_at && (
-            <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
+            <p className="text-xs text-slate-600 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               Senast kollad: {new Date(alert.last_checked_at).toLocaleDateString('sv-SE')}
             </p>
@@ -258,7 +258,7 @@ function AlertCard({
             {alert.is_active ? (
               <ToggleRight className="w-6 h-6 text-green-600" />
             ) : (
-              <ToggleLeft className="w-6 h-6 text-slate-400" />
+              <ToggleLeft className="w-6 h-6 text-slate-600" />
             )}
           </button>
 
@@ -268,7 +268,7 @@ function AlertCard({
                 onDelete(alert.id)
               }
             }}
-            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-400 hover:text-red-600"
+            className="p-2 hover:bg-red-50 rounded-lg transition-colors text-slate-600 hover:text-red-600"
             title="Ta bort"
           >
             <Trash2 className="w-5 h-5" />
@@ -284,7 +284,7 @@ function AlertCard({
           "w-full mt-4 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-colors",
           alert.is_active
             ? "bg-indigo-600 text-white hover:bg-indigo-700"
-            : "bg-slate-100 text-slate-400 cursor-not-allowed"
+            : "bg-slate-100 text-slate-600 cursor-not-allowed"
         )}
       >
         {isChecking ? (
@@ -344,7 +344,7 @@ export function AlertsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Dina bevakningar</h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-700">
             {alerts.length === 0
               ? 'Skapa bevakningar för att få notiser om nya jobb'
               : `${alerts.filter(a => a.is_active).length} aktiva av ${alerts.length} bevakningar`}
@@ -365,7 +365,7 @@ export function AlertsTab() {
           <h3 className="text-xl font-semibold text-slate-700 mb-2">
             Inga bevakningar
           </h3>
-          <p className="text-slate-500 mb-6 max-w-md mx-auto">
+          <p className="text-slate-700 mb-6 max-w-md mx-auto">
             Skapa en bevakning för att få notifieringar när nya jobb som matchar dina kriterier publiceras.
           </p>
           <Button onClick={() => setShowCreateModal(true)}>

@@ -150,11 +150,11 @@ export default function LanguageTab() {
               )}
             >
               <p className="font-bold text-slate-800">{level.id}</p>
-              <p className="text-xs text-slate-500 mt-1">{level.description}</p>
+              <p className="text-xs text-slate-700 mt-1">{level.description}</p>
             </div>
           ))}
         </div>
-        <p className="text-sm text-slate-500 mt-3">
+        <p className="text-sm text-slate-700 mt-3">
           <strong>Tips:</strong> B1-nivå är ofta tillräckligt för att fungera bra på en svensk arbetsplats
           där engelska också används.
         </p>
@@ -247,9 +247,9 @@ export default function LanguageTab() {
                     </div>
                   </div>
                 </div>
-                <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-indigo-600" />
+                <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-indigo-600" />
               </div>
-              <p className="text-sm text-slate-500 mt-2">{resource.description}</p>
+              <p className="text-sm text-slate-700 mt-2">{resource.description}</p>
             </a>
           ))}
         </div>
@@ -268,9 +268,9 @@ export default function LanguageTab() {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="font-medium text-slate-800">{phrase.swedish}</p>
-                  <p className="text-sm text-slate-500">{phrase.english}</p>
+                  <p className="text-sm text-slate-700">{phrase.english}</p>
                 </div>
-                <span className="text-xs px-2 py-1 bg-white rounded-full text-slate-500 border">
+                <span className="text-xs px-2 py-1 bg-white rounded-full text-slate-700 border">
                   {phrase.context}
                 </span>
               </div>

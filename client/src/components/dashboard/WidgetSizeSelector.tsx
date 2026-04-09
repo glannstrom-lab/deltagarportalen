@@ -42,7 +42,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+        className="p-1.5 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
         title="Ändra storlek"
         aria-label="Ändra widget-storlek"
       >
@@ -60,7 +60,7 @@ export const WidgetSizeSelector = memo(function WidgetSizeSelector({
             setIsOpen(false)
             onClose?.()
           }}
-          className="p-0.5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
+          className="p-0.5 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded transition-colors"
         >
           <X size={12} />
         </button>

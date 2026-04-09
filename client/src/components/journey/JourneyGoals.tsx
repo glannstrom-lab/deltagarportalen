@@ -117,7 +117,7 @@ export function JourneyGoals({
       {/* Quick create templates */}
       {activeGoals.length === 0 && !showCreateForm && (
         <div className="mb-6">
-          <p className="text-sm text-slate-500 mb-3">Snabbskapa veckomål:</p>
+          <p className="text-sm text-slate-700 mb-3">Snabbskapa veckomål:</p>
           <div className="grid grid-cols-2 gap-2">
             {GOAL_TEMPLATES.map(template => {
               const Icon = template.icon
@@ -128,7 +128,7 @@ export function JourneyGoals({
                   disabled={isCreating}
                   className="flex items-center gap-2 p-3 rounded-lg border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50/50 transition-colors text-left"
                 >
-                  <Icon className="w-4 h-4 text-slate-500" />
+                  <Icon className="w-4 h-4 text-slate-700" />
                   <span className="text-sm text-slate-700">{template.title}</span>
                 </button>
               )
@@ -144,7 +144,7 @@ export function JourneyGoals({
             <h4 className="font-medium text-slate-900">Skapa nytt mål</h4>
             <button
               onClick={() => setShowCreateForm(false)}
-              className="text-slate-400 hover:text-slate-600"
+              className="text-slate-600 hover:text-slate-600"
             >
               <X className="w-5 h-5" />
             </button>
@@ -221,7 +221,7 @@ export function JourneyGoals({
                   <div className="flex-1">
                     <h4 className="font-medium text-slate-900">{goal.title}</h4>
                     {deadline && (
-                      <div className="flex items-center gap-1 text-xs text-slate-500 mt-1">
+                      <div className="flex items-center gap-1 text-xs text-slate-700 mt-1">
                         <Calendar className="w-3 h-3" />
                         {deadline}
                       </div>
@@ -229,7 +229,7 @@ export function JourneyGoals({
                   </div>
                   <button
                     onClick={() => onDeleteGoal(goal.id)}
-                    className="text-slate-400 hover:text-red-500 transition-colors"
+                    className="text-slate-600 hover:text-red-500 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -278,7 +278,7 @@ export function JourneyGoals({
 
       {/* Empty state */}
       {activeGoals.length === 0 && !showCreateForm && goals.length === 0 && (
-        <div className="text-center py-6 text-slate-500">
+        <div className="text-center py-6 text-slate-700">
           <Target className="w-10 h-10 mx-auto mb-2 text-slate-300" />
           <p>Du har inga aktiva mål.</p>
           <p className="text-sm">Sätt upp ett mål för att hålla dig motiverad!</p>
@@ -288,7 +288,7 @@ export function JourneyGoals({
       {/* Completed goals */}
       {completedGoals.length > 0 && (
         <div className="mt-6 pt-6 border-t border-slate-200">
-          <h4 className="text-sm font-medium text-slate-500 mb-3">
+          <h4 className="text-sm font-medium text-slate-700 mb-3">
             Avklarade mål ({completedGoals.length})
           </h4>
           <div className="space-y-2">

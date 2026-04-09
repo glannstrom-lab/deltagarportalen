@@ -85,7 +85,7 @@ export function IndustryRadarSection({
       case 'down':
         return <TrendingDown className="w-4 h-4 text-red-500" />
       default:
-        return <Minus className="w-4 h-4 text-slate-400" />
+        return <Minus className="w-4 h-4 text-slate-600" />
     }
   }
 
@@ -96,7 +96,7 @@ export function IndustryRadarSection({
       case 'medium':
         return 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300'
       default:
-        return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+        return 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-600'
     }
   }
 
@@ -148,7 +148,7 @@ export function IndustryRadarSection({
 
             {error && (
               <div className="text-center py-6">
-                <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">{error}</p>
+                <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">{error}</p>
                 <Button variant="outline" size="sm" onClick={fetchData}>
                   Försök igen
                 </Button>
@@ -180,7 +180,7 @@ export function IndustryRadarSection({
                                 'text-xs font-medium',
                                 industry.growthIndicator === 'up' && 'text-green-600',
                                 industry.growthIndicator === 'down' && 'text-red-600',
-                                industry.growthIndicator === 'stable' && 'text-slate-500'
+                                industry.growthIndicator === 'stable' && 'text-slate-700'
                               )}>
                                 {industry.growthIndicator === 'up' && '+'}
                                 {industry.growthPercent}%
@@ -196,7 +196,7 @@ export function IndustryRadarSection({
                                industry.demandLevel === 'medium' ? 'Medel' : 'Låg'}
                             </span>
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">
+                          <p className="text-xs text-slate-700 dark:text-slate-600 mt-2">
                             Lönetrend: {industry.salaryTrend}
                           </p>
                         </div>
@@ -230,13 +230,13 @@ export function IndustryRadarSection({
                             {skill.industries.map((ind, j) => (
                               <span
                                 key={j}
-                                className="px-2 py-0.5 bg-white/50 dark:bg-slate-800/50 rounded-full text-xs text-slate-600 dark:text-slate-400"
+                                className="px-2 py-0.5 bg-white/50 dark:bg-slate-800/50 rounded-full text-xs text-slate-600 dark:text-slate-600"
                               >
                                 {ind}
                               </span>
                             ))}
                           </div>
-                          <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                          <p className="text-xs text-slate-700 dark:text-slate-600 flex items-center gap-1">
                             <BookOpen className="w-3 h-3" />
                             Lärtid: {skill.learningTime}
                           </p>
@@ -261,7 +261,7 @@ export function IndustryRadarSection({
                           <h5 className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1">
                             {insight.title}
                           </h5>
-                          <p className="text-xs text-slate-600 dark:text-slate-400 mb-2">
+                          <p className="text-xs text-slate-600 dark:text-slate-600 mb-2">
                             {insight.summary}
                           </p>
                           <p className="text-xs text-violet-600 dark:text-violet-400">
@@ -294,7 +294,7 @@ export function IndustryRadarSection({
 
                 {/* Last Updated */}
                 {result.lastUpdated && (
-                  <p className="text-xs text-slate-400 text-center">
+                  <p className="text-xs text-slate-600 text-center">
                     Senast uppdaterad: {result.lastUpdated}
                   </p>
                 )}

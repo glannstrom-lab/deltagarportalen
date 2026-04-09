@@ -111,7 +111,7 @@ export function JourneyCelebration({
             onClick={onDismiss}
             className="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition-colors z-10"
           >
-            <X className="w-5 h-5 text-slate-500" />
+            <X className="w-5 h-5 text-slate-700" />
           </button>
 
           {/* Header */}
@@ -168,7 +168,7 @@ export function JourneyCelebration({
             {/* Achievements list */}
             {hasAchievements && (
               <div className="space-y-3 mb-6">
-                <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Badges</h4>
+                <h4 className="text-sm font-medium text-slate-700 uppercase tracking-wide">Badges</h4>
                 {unlockedAchievements.map((achievement, index) => (
                   <motion.div
                     key={achievement.id}
@@ -182,7 +182,7 @@ export function JourneyCelebration({
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-slate-900">{achievement.name}</h4>
-                      <p className="text-sm text-slate-500">{achievement.description}</p>
+                      <p className="text-sm text-slate-700">{achievement.description}</p>
                     </div>
                     <div className="flex items-center gap-1 text-amber-600">
                       <Star className="w-4 h-4" fill="currentColor" />
@@ -197,7 +197,7 @@ export function JourneyCelebration({
             {hasMilestones && (
               <div className="space-y-3 mb-6">
                 {hasAchievements && (
-                  <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wide">Milstolpar</h4>
+                  <h4 className="text-sm font-medium text-slate-700 uppercase tracking-wide">Milstolpar</h4>
                 )}
                 {milestoneDetails.map((milestone, index) => (
                   <motion.div
@@ -212,7 +212,7 @@ export function JourneyCelebration({
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-slate-900">{milestone!.name}</h4>
-                      <p className="text-sm text-slate-500">{milestone!.phaseName}</p>
+                      <p className="text-sm text-slate-700">{milestone!.phaseName}</p>
                     </div>
                     <div className="flex items-center gap-1 text-amber-600">
                       <Star className="w-4 h-4" fill="currentColor" />

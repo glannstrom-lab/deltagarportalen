@@ -208,7 +208,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
             <h4 className="font-medium text-slate-800 flex items-center gap-2">
               <category.icon className="w-4 h-4 text-purple-500" />
               {category.label}
-              <span className="text-sm font-normal text-slate-400">({categorySkills.length})</span>
+              <span className="text-sm font-normal text-slate-600">({categorySkills.length})</span>
             </h4>
             
             <div className="space-y-2" role="list">
@@ -281,7 +281,7 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
 
                   <button
                     onClick={() => removeSkill(skill.id)}
-                    className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                    className="p-1.5 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
                     aria-label={`Ta bort ${skill.name}`}
                   >
                     <Trash2 className="w-4 h-4" />
@@ -296,8 +296,8 @@ export function SkillsEditor({ skills, onChange }: SkillsEditorProps) {
       {skills.length === 0 && (
         <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl">
           <Wrench className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 mb-1">Inga kompetenser tillagda ännu</p>
-          <p className="text-sm text-slate-400">Lägg till dina kompetenser ovan</p>
+          <p className="text-slate-700 mb-1">Inga kompetenser tillagda ännu</p>
+          <p className="text-sm text-slate-600">Lägg till dina kompetenser ovan</p>
         </div>
       )}
     </div>

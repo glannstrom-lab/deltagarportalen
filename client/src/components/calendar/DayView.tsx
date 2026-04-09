@@ -54,7 +54,7 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
           return (
             <div key={hour} className="flex border-b border-slate-100 min-h-[100px]">
               {/* Time label */}
-              <div className="w-20 p-3 border-r border-slate-100 bg-slate-50 text-sm text-slate-500 font-medium text-right sticky left-0">
+              <div className="w-20 p-3 border-r border-slate-100 bg-slate-50 text-sm text-slate-700 font-medium text-right sticky left-0">
                 {String(hour).padStart(2, '0')}:00
               </div>
               
@@ -84,17 +84,17 @@ export function DayView({ date, events, onEventClick }: DayViewProps) {
                               {config.label}
                             </span>
                           </div>
-                          <p className="text-sm text-slate-500 mt-1">
+                          <p className="text-sm text-slate-700 mt-1">
                             {event.time} - {event.endTime || `${duration}`}
                           </p>
                           {event.location && (
-                            <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                            <p className="text-sm text-slate-700 mt-1 flex items-center gap-1">
                               <MapPin size={14} />
                               {event.location}
                             </p>
                           )}
                           {(event.isVideo || event.isPhone) && (
-                            <p className="text-sm text-slate-500 mt-1 flex items-center gap-1">
+                            <p className="text-sm text-slate-700 mt-1 flex items-center gap-1">
                               {event.isVideo && <><Video size={14} /> Videosamtal</>}
                               {event.isPhone && <><Phone size={14} /> Telefon</>}
                             </p>

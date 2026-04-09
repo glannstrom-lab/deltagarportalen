@@ -200,7 +200,7 @@ export default function StoriesTab() {
       >
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
             <Input
               type="text"
               placeholder={t('common.search') || 'Sök berättelser...'}
@@ -285,8 +285,8 @@ export default function StoriesTab() {
         {filteredStories.length === 0 ? (
           <Card className="p-12 text-center">
             <Search className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-            <p className="text-slate-500 font-medium">Inga berättelser hittades</p>
-            <p className="text-slate-400 text-sm mt-2">Försök med en annan sökning eller kategori</p>
+            <p className="text-slate-700 font-medium">Inga berättelser hittades</p>
+            <p className="text-slate-600 text-sm mt-2">Försök med en annan sökning eller kategori</p>
           </Card>
         ) : (
           <AnimatePresence>
@@ -320,7 +320,7 @@ export default function StoriesTab() {
                         <div>
                           <h4 className="text-lg font-bold text-slate-900">{story.name}</h4>
                           <p className="text-indigo-600 font-semibold">{story.occupation}</p>
-                          <p className="text-sm text-slate-500 mt-0.5">{story.background}</p>
+                          <p className="text-sm text-slate-700 mt-0.5">{story.background}</p>
                         </div>
                         <div className="flex gap-2 flex-wrap justify-end">
                           {story.hasVideo && (
@@ -348,13 +348,13 @@ export default function StoriesTab() {
                           ✓ {story.duration}
                         </span>
                         {story.readingTime && (
-                          <span className="flex items-center gap-1 text-xs text-slate-500">
+                          <span className="flex items-center gap-1 text-xs text-slate-700">
                             <Clock className="w-3 h-3" />
                             {story.readingTime} min läsning
                           </span>
                         )}
                         {story.views && (
-                          <span className="text-xs text-slate-500">
+                          <span className="text-xs text-slate-700">
                             👁️ {story.views} visningar
                           </span>
                         )}
@@ -380,7 +380,7 @@ export default function StoriesTab() {
                             'flex items-center gap-1.5 text-sm transition-colors font-medium',
                             likedStories.includes(story.id)
                               ? 'text-red-500'
-                              : 'text-slate-500 hover:text-red-500'
+                              : 'text-slate-700 hover:text-red-500'
                           )}
                         >
                           <Heart
@@ -398,7 +398,7 @@ export default function StoriesTab() {
                             'flex items-center gap-1.5 text-sm transition-colors font-medium',
                             bookmarkedStories.includes(story.id)
                               ? 'text-amber-500'
-                              : 'text-slate-500 hover:text-amber-500'
+                              : 'text-slate-700 hover:text-amber-500'
                           )}
                         >
                           <Bookmark
@@ -407,11 +407,11 @@ export default function StoriesTab() {
                           />
                           Spara
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-slate-700 hover:text-indigo-600 transition-colors font-medium">
                           <MessageCircle className="w-4 h-4" />
                           Kommentera
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-slate-500 hover:text-indigo-600 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-slate-700 hover:text-indigo-600 transition-colors font-medium">
                           <Share2 className="w-4 h-4" />
                           Dela
                         </button>

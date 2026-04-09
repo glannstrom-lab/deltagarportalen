@@ -92,7 +92,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             className="p-2 hover:bg-slate-100 rounded-full transition-colors"
             aria-label="Stäng dialog"
           >
-            <X size={20} className="text-slate-500" aria-hidden="true" />
+            <X size={20} className="text-slate-700" aria-hidden="true" />
           </button>
         </div>
 
@@ -175,7 +175,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           </div>
 
           {/* Dates */}
-          <div className="flex items-center gap-4 text-sm text-slate-500 mb-6">
+          <div className="flex items-center gap-4 text-sm text-slate-700 mb-6">
             <div className="flex items-center gap-1">
               <Calendar size={14} />
               Publicerad: {new Date(job.publishedDate || job.publishedAt || Date.now()).toLocaleDateString('sv-SE')}

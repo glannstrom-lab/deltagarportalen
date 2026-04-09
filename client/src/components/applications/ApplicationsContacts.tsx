@@ -36,7 +36,7 @@ function ContactCard({
     <Card className="p-4 hover:shadow-md transition-shadow group">
       <div className="flex items-start gap-3">
         <div className="w-12 h-12 bg-gradient-to-br from-slate-100 to-slate-200 rounded-xl flex items-center justify-center flex-shrink-0">
-          <User className="w-6 h-6 text-slate-400" />
+          <User className="w-6 h-6 text-slate-600" />
         </div>
 
         <div className="flex-1 min-w-0">
@@ -51,7 +51,7 @@ function ContactCard({
                 )}
               </h3>
               {contact.title && (
-                <p className="text-sm text-slate-500">{contact.title}</p>
+                <p className="text-sm text-slate-700">{contact.title}</p>
               )}
             </div>
 
@@ -60,7 +60,7 @@ function ContactCard({
                 onClick={() => setShowMenu(!showMenu)}
                 className="p-1.5 hover:bg-slate-100 rounded opacity-0 group-hover:opacity-100 transition-opacity"
               >
-                <MoreVertical className="w-4 h-4 text-slate-400" />
+                <MoreVertical className="w-4 h-4 text-slate-600" />
               </button>
 
               {showMenu && (
@@ -129,12 +129,12 @@ function ContactCard({
 
           {/* Notes */}
           {contact.notes && (
-            <p className="text-sm text-slate-500 mt-2 italic">"{contact.notes}"</p>
+            <p className="text-sm text-slate-700 mt-2 italic">"{contact.notes}"</p>
           )}
 
           {/* Last contacted */}
           {contact.lastContactedAt && (
-            <p className="text-xs text-slate-400 mt-2 flex items-center gap-1">
+            <p className="text-xs text-slate-600 mt-2 flex items-center gap-1">
               <Clock className="w-3 h-3" />
               Senast kontaktad: {daysSinceContact === 0 ? 'Idag' : `${daysSinceContact} dagar sedan`}
             </p>
@@ -197,7 +197,7 @@ export function ApplicationsContacts() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900">Kontakter</h2>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-700">
             {contacts.length} kontakt{contacts.length !== 1 ? 'er' : ''} sparade
           </p>
         </div>
@@ -206,10 +206,10 @@ export function ApplicationsContacts() {
       {contacts.length === 0 ? (
         <Card className="p-12 text-center">
           <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <User className="w-8 h-8 text-slate-400" />
+            <User className="w-8 h-8 text-slate-600" />
           </div>
           <h3 className="text-xl font-semibold text-slate-700 mb-2">Inga kontakter än</h3>
-          <p className="text-slate-500 mb-4 max-w-md mx-auto">
+          <p className="text-slate-700 mb-4 max-w-md mx-auto">
             Lägg till kontakter från dina ansökningar för att hålla koll på rekryterare och kontaktpersoner.
           </p>
         </Card>

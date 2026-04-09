@@ -118,11 +118,11 @@ function QuickStat({
 
   return (
     <div className="text-center p-4 bg-stone-50 dark:bg-stone-800 rounded-xl">
-      <Icon className="w-6 h-6 text-stone-400 mx-auto mb-2" />
+      <Icon className="w-6 h-6 text-stone-600 mx-auto mb-2" />
       <p className={cn('text-2xl font-bold', statusColors[status || 'undefined'])}>
         {value}
       </p>
-      <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{label}</p>
+      <p className="text-xs text-stone-500 dark:text-stone-600 mt-1">{label}</p>
     </div>
   )
 }
@@ -167,12 +167,12 @@ function GoalCard({
               <AlertTriangle className="w-4 h-4 text-rose-600" />
             )}
           </div>
-          <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">
+          <p className="text-sm text-stone-500 dark:text-stone-600 line-clamp-2">
             {goal.description}
           </p>
         </div>
         <button className="p-1 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg">
-          <MoreVertical className="w-4 h-4 text-stone-400" />
+          <MoreVertical className="w-4 h-4 text-stone-600" />
         </button>
       </div>
 
@@ -416,7 +416,7 @@ export function ParticipantDetailPage() {
       {/* Back Button */}
       <Link
         to="/consultant/participants"
-        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Tillbaka till deltagare
@@ -437,7 +437,7 @@ export function ParticipantDetailPage() {
                 <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
                   {participant.first_name} {participant.last_name}
                 </h1>
-                <div className="flex items-center gap-4 mt-2 text-stone-500 dark:text-stone-400">
+                <div className="flex items-center gap-4 mt-2 text-stone-500 dark:text-stone-600">
                   <span className="flex items-center gap-1">
                     <Mail className="w-4 h-4" />
                     {participant.email}
@@ -674,7 +674,7 @@ export function ParticipantDetailPage() {
                     <p className="font-medium text-stone-900 dark:text-stone-100">
                       {event.description}
                     </p>
-                    <p className="text-sm text-stone-500 dark:text-stone-400">
+                    <p className="text-sm text-stone-500 dark:text-stone-600">
                       {new Date(event.timestamp).toLocaleDateString('sv-SE', {
                         month: 'long',
                         day: 'numeric',

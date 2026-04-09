@@ -178,7 +178,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
                     {article.summary}
                   </p>
                   {article.readingTime && (
-                    <div className="flex items-center gap-2 mt-3 text-xs text-slate-500">
+                    <div className="flex items-center gap-2 mt-3 text-xs text-slate-700">
                       <Clock className="w-3 h-3" />
                       <span>{article.readingTime} min</span>
                     </div>

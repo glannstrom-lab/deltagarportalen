@@ -84,7 +84,7 @@ export function CompanyAnalysisPanel({
       case 'negative':
         return <ThumbsDown className="w-3 h-3 text-red-500" />
       default:
-        return <Minus className="w-3 h-3 text-slate-400" />
+        return <Minus className="w-3 h-3 text-slate-600" />
     }
   }
 
@@ -111,7 +111,7 @@ export function CompanyAnalysisPanel({
               <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
                 Analysera {companyName}
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">
                 Få AI-genererade insikter om nyheter, kultur och tips för din spontanansökan.
               </p>
               <Button
@@ -176,11 +176,11 @@ export function CompanyAnalysisPanel({
                           {getSentimentIcon(news.sentiment)}
                           {news.title}
                         </h5>
-                        <span className="text-xs text-slate-400 flex-shrink-0">
+                        <span className="text-xs text-slate-600 flex-shrink-0">
                           {news.date}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                      <p className="text-xs text-slate-600 dark:text-slate-600">
                         {news.summary}
                       </p>
                     </div>
@@ -201,7 +201,7 @@ export function CompanyAnalysisPanel({
               <div className="grid grid-cols-3 gap-2">
                 {result.financialStatus.revenue && (
                   <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-center">
-                    <p className="text-xs text-slate-500 mb-0.5">Omsättning</p>
+                    <p className="text-xs text-slate-700 mb-0.5">Omsättning</p>
                     <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
                       {result.financialStatus.revenue}
                     </p>
@@ -209,7 +209,7 @@ export function CompanyAnalysisPanel({
                 )}
                 {result.financialStatus.employees && (
                   <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-center">
-                    <p className="text-xs text-slate-500 mb-0.5">Anställda</p>
+                    <p className="text-xs text-slate-700 mb-0.5">Anställda</p>
                     <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
                       {result.financialStatus.employees}
                     </p>
@@ -217,7 +217,7 @@ export function CompanyAnalysisPanel({
                 )}
                 {result.financialStatus.growth && (
                   <div className="p-2 rounded-lg bg-slate-50 dark:bg-slate-800/50 text-center">
-                    <p className="text-xs text-slate-500 mb-0.5">Tillväxt</p>
+                    <p className="text-xs text-slate-700 mb-0.5">Tillväxt</p>
                     <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
                       {result.financialStatus.growth}
                     </p>
@@ -237,7 +237,7 @@ export function CompanyAnalysisPanel({
                     'px-2 py-0.5 rounded-full text-xs font-medium',
                     result.recruitmentNeeds.hiring
                       ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
-                      : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                      : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-600'
                   )}
                 >
                   {result.recruitmentNeeds.hiring ? 'Rekryterar aktivt' : 'Ej aktiv rekrytering'}
@@ -246,7 +246,7 @@ export function CompanyAnalysisPanel({
 
               {result.recruitmentNeeds.roles.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Roller som efterfrågas
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -264,7 +264,7 @@ export function CompanyAnalysisPanel({
 
               {result.recruitmentNeeds.signals.length > 0 && (
                 <>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Signaler
                   </p>
                   <AIList items={result.recruitmentNeeds.signals} />
@@ -283,7 +283,7 @@ export function CompanyAnalysisPanel({
 
               {result.companyCulture.values.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Värderingar
                   </p>
                   <div className="flex flex-wrap gap-1">
@@ -299,7 +299,7 @@ export function CompanyAnalysisPanel({
                 </div>
               )}
 
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-slate-600 dark:text-slate-600">
                 {result.companyCulture.workEnvironment}
               </p>
 
@@ -308,7 +308,7 @@ export function CompanyAnalysisPanel({
                   {result.companyCulture.ratings.glassdoor && (
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-slate-600 dark:text-slate-400">
+                      <span className="text-xs text-slate-600 dark:text-slate-600">
                         Glassdoor: {result.companyCulture.ratings.glassdoor}
                       </span>
                     </div>
@@ -316,7 +316,7 @@ export function CompanyAnalysisPanel({
                   {result.companyCulture.ratings.indeed && (
                     <div className="flex items-center gap-1">
                       <Star className="w-3 h-3 text-amber-500" />
-                      <span className="text-xs text-slate-600 dark:text-slate-400">
+                      <span className="text-xs text-slate-600 dark:text-slate-600">
                         Indeed: {result.companyCulture.ratings.indeed}
                       </span>
                     </div>
@@ -342,7 +342,7 @@ export function CompanyAnalysisPanel({
                 </div>
 
                 <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Samtalsämnen att lyfta
                   </p>
                   <div className="space-y-1">

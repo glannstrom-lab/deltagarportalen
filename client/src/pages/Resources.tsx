@@ -172,13 +172,13 @@ function StatCard({
           <Icon className="w-6 h-6 text-white" />
         </div>
         {link && (
-          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-slate-600 transition-colors" />
+          <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-slate-600 transition-colors" />
         )}
       </div>
       <div className="mt-4">
         <p className="text-3xl font-bold text-slate-800">{value}</p>
         <p className="text-sm font-medium text-slate-600">{label}</p>
-        {subtitle && <p className="text-xs text-slate-400 mt-1">{subtitle}</p>}
+        {subtitle && <p className="text-xs text-slate-600 mt-1">{subtitle}</p>}
       </div>
     </div>
   )
@@ -218,10 +218,10 @@ function DocumentCard({
             <div className="flex items-start justify-between gap-2">
               <div>
                 <h3 className="font-semibold text-slate-800 truncate">{title}</h3>
-                {subtitle && <p className="text-sm text-slate-500">{subtitle}</p>}
+                {subtitle && <p className="text-sm text-slate-700">{subtitle}</p>}
                 <div className="flex items-center gap-3 mt-2">
                   <span className="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded-full">{type}</span>
-                  <span className="text-xs text-slate-400">{date}</span>
+                  <span className="text-xs text-slate-600">{date}</span>
                 </div>
               </div>
             </div>
@@ -560,7 +560,7 @@ export default function Resources() {
           {/* Search */}
           <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
               <input
                 type="text"
                 placeholder={t('resources.search')}
@@ -572,13 +572,13 @@ export default function Resources() {
             <div className="flex bg-slate-100 rounded-xl p-1">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-500'}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-700'}`}
               >
                 <Grid3X3 size={18} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-500'}`}
+                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-700'}`}
               >
                 <List size={18} />
               </button>
@@ -604,7 +604,7 @@ export default function Resources() {
                       {cvData.first_name} {cvData.last_name}
                       {cvData.title && ` • ${cvData.title}`}
                     </p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-slate-500">
+                    <div className="flex items-center gap-4 mt-2 text-sm text-slate-700">
                       <span>{cvData.work_experience?.length || 0} {t('resources.experiences')}</span>
                       <span>{cvData.education?.length || 0} {t('resources.educations')}</span>
                       <span>{cvData.skills?.length || 0} {t('resources.skills')}</span>
@@ -732,7 +732,7 @@ export default function Resources() {
               <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
                 <BriefcaseIcon className="text-blue-600" size={24} />
                 {t('resources.savedJobs')}
-                <span className="text-sm font-normal text-slate-500">({filteredJobs.length})</span>
+                <span className="text-sm font-normal text-slate-700">({filteredJobs.length})</span>
               </h3>
               <Link
                 to="/applications"
@@ -758,7 +758,7 @@ export default function Resources() {
                         <div className="flex items-start justify-between gap-4">
                           <div>
                             <h4 className="font-semibold text-slate-800 text-lg">{job.job_data?.headline || t('resources.jobAd')}</h4>
-                            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-500 mt-1">
+                            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-700 mt-1">
                               {job.job_data?.employer?.name && (
                                 <span className="flex items-center gap-1">
                                   <Building2 size={14} />
@@ -803,7 +803,7 @@ export default function Resources() {
                           )}
                           <button
                             onClick={() => handleDeleteJob(job.job_id)}
-                            className="ml-auto p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                            className="ml-auto p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           >
                             <Trash2 size={18} />
                           </button>
@@ -824,7 +824,7 @@ export default function Resources() {
               <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
                 <BookOpen className="text-teal-600" size={24} />
                 {t('resources.bookmarkedArticles')}
-                <span className="text-sm font-normal text-slate-500">({bookmarkedArticles.length})</span>
+                <span className="text-sm font-normal text-slate-700">({bookmarkedArticles.length})</span>
               </h3>
               <Link
                 to="/knowledge-base"
@@ -850,7 +850,7 @@ export default function Resources() {
                     </span>
                     <h4 className="font-semibold text-slate-800 group-hover:text-teal-600 transition-colors">{article.title}</h4>
                     {article.readingTime && (
-                      <span className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                      <span className="text-xs text-slate-700 flex items-center gap-1 mt-1">
                         <Clock size={12} />
                         {article.readingTime} {t('resources.minReading')}
                       </span>
@@ -862,7 +862,7 @@ export default function Resources() {
                       e.stopPropagation()
                       handleRemoveBookmark(article.id)
                     }}
-                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   >
                     <Trash2 size={18} />
                   </button>
@@ -891,13 +891,13 @@ export default function Resources() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium text-slate-800 truncate">{file.name}</p>
-                      <p className="text-xs text-slate-500">
+                      <p className="text-xs text-slate-700">
                         {file.type === 'CV' ? 'CV' : file.type === 'COVER_LETTER' ? t('resources.coverLetter') : t('resources.other')}
                       </p>
                     </div>
                     <button
                       onClick={() => handleDeleteFile(file.id)}
-                      className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                     >
                       <Trash2 size={16} />
                     </button>
@@ -912,7 +912,7 @@ export default function Resources() {
         {totalItems === 0 && (
           <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 border-dashed">
             <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Bookmark className="w-10 h-10 text-slate-400" />
+              <Bookmark className="w-10 h-10 text-slate-600" />
             </div>
             <h3 className="text-xl font-semibold text-slate-800 mb-2">{t('resources.noResourcesTitle')}</h3>
             <p className="text-slate-600 max-w-md mx-auto mb-6">

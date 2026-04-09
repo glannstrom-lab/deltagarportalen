@@ -96,11 +96,11 @@ export default function RelocationTab() {
           <table className="w-full">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Region</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Snittshyra</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Snittlön</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Bostadskö</th>
-                <th className="text-left py-3 px-2 text-sm font-medium text-slate-500">Pendling</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-slate-700">Region</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-slate-700">Snittshyra</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-slate-700">Snittlön</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-slate-700">Bostadskö</th>
+                <th className="text-left py-3 px-2 text-sm font-medium text-slate-700">Pendling</th>
               </tr>
             </thead>
             <tbody>
@@ -189,13 +189,13 @@ export default function RelocationTab() {
           )}>
             <div className="grid grid-cols-3 gap-4 text-center">
               <div>
-                <p className="text-sm text-slate-500">Netto (ca)</p>
+                <p className="text-sm text-slate-700">Netto (ca)</p>
                 <p className="text-xl font-bold text-slate-800">
                   {affordability.afterTax.toLocaleString('sv-SE')} kr
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Hyra av lön</p>
+                <p className="text-sm text-slate-700">Hyra av lön</p>
                 <p className={cn(
                   "text-xl font-bold",
                   affordability.isAffordable ? "text-emerald-600" : "text-amber-600"
@@ -204,7 +204,7 @@ export default function RelocationTab() {
                 </p>
               </div>
               <div>
-                <p className="text-sm text-slate-500">Kvar efter hyra</p>
+                <p className="text-sm text-slate-700">Kvar efter hyra</p>
                 <p className="text-xl font-bold text-slate-800">
                   {affordability.remaining.toLocaleString('sv-SE')} kr
                 </p>
@@ -242,9 +242,9 @@ export default function RelocationTab() {
                 <h4 className="font-medium text-slate-800 group-hover:text-rose-600">
                   {link.name}
                 </h4>
-                <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-rose-600" />
+                <ExternalLink className="w-4 h-4 text-slate-600 group-hover:text-rose-600" />
               </div>
-              <p className="text-sm text-slate-500 mt-1">{link.desc}</p>
+              <p className="text-sm text-slate-700 mt-1">{link.desc}</p>
             </a>
           ))}
         </div>
@@ -282,13 +282,13 @@ export default function RelocationTab() {
                   {item.label}
                 </span>
               </div>
-              <span className="text-xs text-slate-400">{item.timeframe}</span>
+              <span className="text-xs text-slate-600">{item.timeframe}</span>
             </button>
           ))}
         </div>
 
         {checkedItems.length > 0 && (
-          <p className="text-sm text-slate-500 mt-4">
+          <p className="text-sm text-slate-700 mt-4">
             {checkedItems.length} av {MOVING_CHECKLIST.length} punkter klara
           </p>
         )}

@@ -208,12 +208,12 @@ export function DailyTask() {
           <div>
             <h3 className={cn(
               'font-semibold transition-all',
-              completed ? 'text-slate-500 line-through' : 'text-slate-900'
+              completed ? 'text-slate-700 line-through' : 'text-slate-900'
             )}>
               Dagens uppgift
             </h3>
             {!completed && (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-700">
                 Tar cirka {currentTask.estimatedTime}
               </span>
             )}
@@ -223,7 +223,7 @@ export function DailyTask() {
         {!completed && (
           <button
             onClick={handleRefresh}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
             title="Få en annan uppgift"
           >
             <RefreshCw size={18} />
@@ -235,13 +235,13 @@ export function DailyTask() {
       <div className="mb-4">
         <h4 className={cn(
           'font-medium mb-1 transition-all',
-          completed ? 'text-slate-500 line-through' : 'text-slate-800'
+          completed ? 'text-slate-700 line-through' : 'text-slate-800'
         )}>
           {currentTask.title}
         </h4>
         <p className={cn(
           'text-sm transition-all',
-          completed ? 'text-slate-400' : 'text-slate-600'
+          completed ? 'text-slate-600' : 'text-slate-600'
         )}>
           {currentTask.description}
         </p>
@@ -276,7 +276,7 @@ export function DailyTask() {
           className={cn(
             'py-2.5 px-4 rounded-xl font-medium text-sm transition-all flex items-center gap-2',
             completed
-              ? 'bg-slate-100 text-slate-400 cursor-not-allowed pointer-events-none'
+              ? 'bg-slate-100 text-slate-600 cursor-not-allowed pointer-events-none'
               : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
           )}
         >

@@ -71,7 +71,7 @@ export function LanguageSelector() {
         <Globe
           size={18}
           className={cn(
-            isOpen ? 'text-violet-600 dark:text-violet-400' : 'text-stone-500 dark:text-stone-400'
+            isOpen ? 'text-violet-600 dark:text-violet-400' : 'text-stone-500 dark:text-stone-600'
           )}
         />
       </button>

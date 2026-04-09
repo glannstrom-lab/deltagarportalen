@@ -75,8 +75,8 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
   if (isLoading) {
     return (
       <div className="bg-slate-50 rounded-xl p-5 my-6 flex items-center justify-center">
-        <Loader2 className="w-5 h-5 text-slate-400 animate-spin" />
-        <span className="ml-2 text-sm text-slate-500">Laddar checklista...</span>
+        <Loader2 className="w-5 h-5 text-slate-600 animate-spin" />
+        <span className="ml-2 text-sm text-slate-700">Laddar checklista...</span>
       </div>
     )
   }
@@ -87,7 +87,7 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
         <h4 className="font-semibold text-slate-800">Din checklista</h4>
         <div className="flex items-center gap-2">
           {isSaving && (
-            <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
+            <Loader2 className="w-4 h-4 text-slate-600 animate-spin" />
           )}
           <span className="text-sm text-slate-600">{progress}%</span>
         </div>
@@ -127,7 +127,7 @@ export default function ArticleChecklist({ articleId, items }: ArticleChecklistP
               `}>
                 {isChecked && <Check size={14} className="text-white" />}
               </div>
-              <span className={`text-sm ${isChecked ? 'text-slate-500 line-through' : 'text-slate-700'}`}>
+              <span className={`text-sm ${isChecked ? 'text-slate-700 line-through' : 'text-slate-700'}`}>
                 {item.text}
               </span>
             </li>

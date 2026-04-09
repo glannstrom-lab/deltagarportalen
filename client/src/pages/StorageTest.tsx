@@ -172,9 +172,9 @@ export default function StorageTest() {
 
         {/* User info */}
         <div className="bg-white rounded-xl p-4 mb-6 shadow-sm border border-slate-200">
-          <p className="text-sm text-slate-500">Inloggad användare:</p>
+          <p className="text-sm text-slate-700">Inloggad användare:</p>
           <p className="font-medium text-slate-800">{user?.email || 'Inte inloggad'}</p>
-          <p className="text-xs text-slate-400 mt-1">User ID: {user?.id || 'N/A'}</p>
+          <p className="text-xs text-slate-600 mt-1">User ID: {user?.id || 'N/A'}</p>
         </div>
 
         {/* Run button */}

@@ -87,7 +87,7 @@ export function InterviewPrepPanel({
               <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
                 Förbered dig för intervjun
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">
                 Få AI-genererade intervjutips, företagsinformation och förväntade frågor.
               </p>
               <Button
@@ -130,7 +130,7 @@ export function InterviewPrepPanel({
 
               {result.companyInfo.recentNews.length > 0 && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2 flex items-center gap-1">
                     <Newspaper className="w-3 h-3" />
                     Senaste nyheterna
                   </p>
@@ -140,7 +140,7 @@ export function InterviewPrepPanel({
 
               {result.companyInfo.culture && (
                 <div className="mb-3">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2 flex items-center gap-1">
                     <Users className="w-3 h-3" />
                     Företagskultur
                   </p>
@@ -152,7 +152,7 @@ export function InterviewPrepPanel({
 
               {result.companyInfo.challenges.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2 flex items-center gap-1">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2 flex items-center gap-1">
                     <AlertTriangle className="w-3 h-3" />
                     Utmaningar att diskutera
                   </p>
@@ -174,7 +174,7 @@ export function InterviewPrepPanel({
             >
               {result.interviewQuestions.common.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Vanliga frågor
                   </p>
                   <AIList items={result.interviewQuestions.common} />
@@ -183,7 +183,7 @@ export function InterviewPrepPanel({
 
               {result.interviewQuestions.roleSpecific.length > 0 && (
                 <div className="mb-4">
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Rollspecifika frågor
                   </p>
                   <AIList items={result.interviewQuestions.roleSpecific} />
@@ -192,7 +192,7 @@ export function InterviewPrepPanel({
 
               {result.interviewQuestions.behavioral.length > 0 && (
                 <div>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Beteendefrågor
                   </p>
                   <AIList items={result.interviewQuestions.behavioral} />
@@ -242,7 +242,7 @@ export function InterviewPrepPanel({
               </div>
               {result.salaryExpectations.negotiationTips.length > 0 && (
                 <>
-                  <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mb-2">
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-600 mb-2">
                     Förhandlingstips
                   </p>
                   <AIList items={result.salaryExpectations.negotiationTips} />

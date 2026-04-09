@@ -179,12 +179,12 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
               )}>
                 {task.label}
               </div>
-              <div className="flex items-center gap-2 text-xs text-slate-500">
+              <div className="flex items-center gap-2 text-xs text-slate-700">
                 <Clock className="w-3 h-3" />
                 {task.duration}
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-slate-400" />
+            <ChevronRight className="w-4 h-4 text-slate-600" />
           </button>
         ))}
       </div>
@@ -200,7 +200,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">Gör något litet</h3>
-            <p className="text-sm text-slate-500">Anpassat efter din energi idag</p>
+            <p className="text-sm text-slate-700">Anpassat efter din energi idag</p>
           </div>
         </div>
 
@@ -222,20 +222,20 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                   <p className={cn('font-medium text-sm', colorClasses.text)}>{task.label}</p>
                   <p className="text-xs text-slate-600 mt-1">{task.description}</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-500">
+                    <span className="inline-flex items-center gap-1 text-xs text-slate-700">
                       <Clock className="w-3 h-3" />
                       {task.duration}
                     </span>
                     <button
                       onClick={() => setShowWhy(showWhy === task.label ? null : task.label)}
-                      className="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-slate-600"
+                      className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-slate-600"
                     >
                       <Info className="w-3 h-3" />
                       Varför?
                     </button>
                   </div>
                   {showWhy === task.label && (
-                    <p className="mt-2 text-xs text-slate-500 bg-white/70 p-2 rounded-lg animate-in fade-in">
+                    <p className="mt-2 text-xs text-slate-700 bg-white/70 p-2 rounded-lg animate-in fade-in">
                       {task.whyHelpful}
                     </p>
                   )}
@@ -332,7 +332,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
 
             {/* Task List */}
             <div className="p-4 overflow-y-auto max-h-[60vh]">
-              <p className="text-xs font-medium text-slate-400 uppercase tracking-wider mb-3 px-2">
+              <p className="text-xs font-medium text-slate-600 uppercase tracking-wider mb-3 px-2">
                 Föreslagna uppgifter
               </p>
               
@@ -359,7 +359,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                         ) : (
                           <span className={cn(
                             'text-sm font-bold',
-                            completedTasks.has(task.label) ? 'text-white' : 'text-slate-500 group-hover:text-white'
+                            completedTasks.has(task.label) ? 'text-white' : 'text-slate-700 group-hover:text-white'
                           )}>
                             {index + 1}
                           </span>
@@ -373,10 +373,10 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
                         )}>
                           {task.label}
                         </h3>
-                        <p className="text-sm text-slate-500 mt-0.5">{task.description}</p>
+                        <p className="text-sm text-slate-700 mt-0.5">{task.description}</p>
                         
                         <div className="flex items-center gap-3 mt-2">
-                          <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                          <span className="inline-flex items-center gap-1 text-xs text-slate-600">
                             <Clock className="w-3 h-3" />
                             {task.duration}
                           </span>
@@ -428,10 +428,10 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
               {availableTasks.length === 0 && (
                 <div className="text-center py-8">
                   <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Calendar className="w-8 h-8 text-slate-400" />
+                    <Calendar className="w-8 h-8 text-slate-600" />
                   </div>
                   <p className="text-slate-600 font-medium">Du har snoozat alla uppgifter</p>
-                  <p className="text-sm text-slate-500 mt-1">
+                  <p className="text-sm text-slate-700 mt-1">
                     De visas igen imorgon, eller så kan du ändra din energinivå
                   </p>
                 </div>
@@ -440,7 +440,7 @@ export function QuickWinButton({ variant = 'floating', className }: QuickWinButt
 
             {/* Footer */}
             <div className="p-4 border-t border-slate-100 bg-slate-50">
-              <p className="text-xs text-slate-500 text-center">
+              <p className="text-xs text-slate-700 text-center">
                 💡 Dessa förslag är baserade på din valda energinivå. 
                 Du kan ändra den i inställningarna.
               </p>

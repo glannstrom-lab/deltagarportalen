@@ -105,7 +105,7 @@ function MessageItem({
             )}>
               {message.participantName}
             </p>
-            <span className="text-xs text-stone-500 dark:text-stone-400 flex-shrink-0">
+            <span className="text-xs text-stone-500 dark:text-stone-600 flex-shrink-0">
               {new Date(message.createdAt).toLocaleDateString('sv-SE', {
                 month: 'short',
                 day: 'numeric',
@@ -128,7 +128,7 @@ function MessageItem({
         >
           <Star className={cn(
             'w-4 h-4',
-            message.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-400'
+            message.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-600'
           )} />
         </button>
       </div>
@@ -176,7 +176,7 @@ function MeetingCard({
               {meeting.participantName}
             </p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-sm text-stone-500 dark:text-stone-400">
+              <span className="text-sm text-stone-500 dark:text-stone-600">
                 {new Date(meeting.scheduledAt).toLocaleDateString('sv-SE', {
                   weekday: 'short',
                   month: 'short',
@@ -184,19 +184,19 @@ function MeetingCard({
                 })}
               </span>
               <span className="text-stone-300 dark:text-stone-600">|</span>
-              <span className="text-sm text-stone-500 dark:text-stone-400">
+              <span className="text-sm text-stone-500 dark:text-stone-600">
                 {new Date(meeting.scheduledAt).toLocaleTimeString('sv-SE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })}
               </span>
               <span className="text-stone-300 dark:text-stone-600">|</span>
-              <span className="text-sm text-stone-500 dark:text-stone-400">
+              <span className="text-sm text-stone-500 dark:text-stone-600">
                 {meeting.duration} min
               </span>
             </div>
             {meeting.location && (
-              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 flex items-center gap-1">
+              <p className="text-sm text-stone-500 dark:text-stone-600 mt-1 flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
                 {meeting.location}
               </p>
@@ -288,7 +288,7 @@ function NewMessageDialog({
               Till
             </label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
               <input
                 type="text"
                 placeholder="Sök deltagare..."
@@ -744,7 +744,7 @@ export function CommunicationTab() {
               ) : (
                 <div className="p-8 text-center">
                   <Inbox className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
-                  <p className="text-stone-500 dark:text-stone-400">
+                  <p className="text-stone-500 dark:text-stone-600">
                     Inga meddelanden
                   </p>
                 </div>
@@ -790,7 +790,7 @@ export function CommunicationTab() {
               <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-3">
                 Gruppmeddelande
               </h4>
-              <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
+              <p className="text-sm text-stone-500 dark:text-stone-600 mb-3">
                 Skicka samma meddelande till alla eller valda deltagare.
               </p>
               <Button className="w-full" onClick={() => setShowNewMessage(true)}>
@@ -820,7 +820,7 @@ export function CommunicationTab() {
             new Date(m.scheduledAt).toDateString() === new Date().toDateString()
           ) && (
             <div>
-              <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
+              <h4 className="text-sm font-medium text-stone-500 dark:text-stone-600 mb-3">
                 Idag
               </h4>
               <div className="space-y-3">
@@ -840,7 +840,7 @@ export function CommunicationTab() {
 
           {/* This Week */}
           <div>
-            <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
+            <h4 className="text-sm font-medium text-stone-500 dark:text-stone-600 mb-3">
               Denna vecka
             </h4>
             <div className="space-y-3">
@@ -863,7 +863,7 @@ export function CommunicationTab() {
               <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
                 Inga kommande möten
               </h3>
-              <p className="text-stone-500 dark:text-stone-400 mb-6">
+              <p className="text-stone-500 dark:text-stone-600 mb-6">
                 Boka ett möte med en deltagare för att komma igång.
               </p>
               <Button onClick={() => setShowMeetingDialog(true)}>

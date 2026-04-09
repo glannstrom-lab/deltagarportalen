@@ -123,10 +123,10 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
                       onClick={onClose}
                       className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"
                     >
-                      <X size={16} className="text-slate-500" />
+                      <X size={16} className="text-slate-700" />
                     </button>
                   </div>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-700">
                     Vi anpassar din översikt
                   </p>
                 </div>
@@ -161,7 +161,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
                             {option.description}
                           </p>
                         </div>
-                        <ChevronRight size={20} className="text-slate-400" />
+                        <ChevronRight size={20} className="text-slate-600" />
                       </div>
                       
                       {/* Features */}
@@ -185,7 +185,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
                 <div className="px-5 pb-6">
                   <button
                     onClick={handleBack}
-                    className="text-sm text-slate-500 mb-4 flex items-center gap-1"
+                    className="text-sm text-slate-700 mb-4 flex items-center gap-1"
                   >
                     ← Tillbaka
                   </button>
@@ -204,7 +204,7 @@ export function MobileEnergySelector({ isOpen, onClose }: MobileEnergySelectorPr
                     <h3 className="text-xl font-bold text-slate-800 mb-1">
                       {selectedOption.label}
                     </h3>
-                    <p className="text-slate-500">
+                    <p className="text-slate-700">
                       {getEnergyDescription(selectedOption.level)}
                     </p>
                   </div>

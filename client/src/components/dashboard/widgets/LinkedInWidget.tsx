@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Linkedin, TrendingUp, ChevronRight, CheckCircle2, Sparkles, Play } from '@/components/ui/icons'
@@ -11,7 +12,7 @@ interface LinkedInWidgetProps {
   size?: 'mini' | 'medium' | 'large'
 }
 
-export function LinkedInWidget({
+export const LinkedInWidget = memo(function LinkedInWidget({
   profileScore = 0,
   optimizedSections = 0,
   totalSections = 6,
@@ -40,7 +41,7 @@ export function LinkedInWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">LinkedIn</p>
-          <p className={cn("text-xs", hasAnalysis ? (isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400") : "text-slate-500 dark:text-slate-400")}>
+          <p className={cn("text-xs", hasAnalysis ? (isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400") : "text-slate-700 dark:text-slate-600")}>
             {hasAnalysis ? `${profileScore}%` : t('linkedInWidget.analyze')}
           </p>
         </div>
@@ -72,7 +73,7 @@ export function LinkedInWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">LinkedIn</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-600">
                 {hasAnalysis ? t('linkedInWidget.profileAnalyzed') : t('linkedInWidget.optimizeProfile')}
               </p>
             </div>
@@ -85,7 +86,7 @@ export function LinkedInWidget({
             <span className={cn("text-2xl font-bold", isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400")}>
               {profileScore}%
             </span>
-            <span className="text-sm text-slate-500 dark:text-slate-400">{t('linkedInWidget.profileStrength')}</span>
+            <span className="text-sm text-slate-700 dark:text-slate-600">{t('linkedInWidget.profileStrength')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-blue-600 dark:text-blue-400">
@@ -119,7 +120,7 @@ export function LinkedInWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('linkedInWidget.linkedInOptimization')}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-700 dark:text-slate-600">
               {hasAnalysis ? t('linkedInWidget.profileAnalyzed') : t('linkedInWidget.analyzeYourProfile')}
             </p>
           </div>
@@ -131,7 +132,7 @@ export function LinkedInWidget({
       {hasAnalysis ? (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-600 dark:text-slate-400">{t('linkedInWidget.profileStrength')}</span>
+            <span className="text-sm font-medium text-slate-600 dark:text-slate-600">{t('linkedInWidget.profileStrength')}</span>
             <span className={cn("text-lg font-bold", isOptimized ? "text-emerald-600 dark:text-emerald-400" : "text-blue-600 dark:text-blue-400")}>
               {profileScore}%
             </span>
@@ -167,14 +168,14 @@ export function LinkedInWidget({
             <TrendingUp size={16} className={isOptimized ? "text-emerald-500 dark:text-emerald-400" : "text-blue-500 dark:text-blue-400"} />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{profileScore}%</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('linkedInWidget.profileStrength')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{t('linkedInWidget.profileStrength')}</p>
         </div>
         <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <CheckCircle2 size={16} className="text-slate-500 dark:text-slate-400" />
+            <CheckCircle2 size={16} className="text-slate-700 dark:text-slate-600" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{optimizedSections}/{totalSections}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('linkedInWidget.sections')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{t('linkedInWidget.sections')}</p>
         </div>
       </div>
 
@@ -192,6 +193,6 @@ export function LinkedInWidget({
       </div>
     </Link>
   )
-}
+})
 
 export default LinkedInWidget

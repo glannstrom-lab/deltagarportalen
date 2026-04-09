@@ -142,13 +142,13 @@ export default function VisaGuideTab() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-slate-900">{visa.name}</h3>
-                    <p className="text-sm text-slate-500">{visa.description}</p>
+                    <p className="text-sm text-slate-700">{visa.description}</p>
                   </div>
                 </div>
                 {expandedVisa === visa.id ? (
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
+                  <ChevronUp className="w-5 h-5 text-slate-600" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
+                  <ChevronDown className="w-5 h-5 text-slate-600" />
                 )}
               </div>
             </button>
@@ -158,14 +158,14 @@ export default function VisaGuideTab() {
                 {/* Quick facts */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   <div className="p-3 bg-slate-50 rounded-lg">
-                    <div className="flex items-center gap-1 text-xs text-slate-500 mb-1">
+                    <div className="flex items-center gap-1 text-xs text-slate-700 mb-1">
                       <Clock className="w-3 h-3" />
                       Handläggningstid
                     </div>
                     <p className="font-medium text-slate-800">{visa.processingTime}</p>
                   </div>
                   <div className="p-3 bg-slate-50 rounded-lg">
-                    <div className="flex items-center gap-1 text-xs text-slate-500 mb-1">
+                    <div className="flex items-center gap-1 text-xs text-slate-700 mb-1">
                       <FileCheck className="w-3 h-3" />
                       Giltighet
                     </div>
@@ -173,7 +173,7 @@ export default function VisaGuideTab() {
                   </div>
                   {visa.minSalary && (
                     <div className="p-3 bg-slate-50 rounded-lg">
-                      <div className="flex items-center gap-1 text-xs text-slate-500 mb-1">
+                      <div className="flex items-center gap-1 text-xs text-slate-700 mb-1">
                         <DollarSign className="w-3 h-3" />
                         Minimilön
                       </div>
@@ -181,13 +181,13 @@ export default function VisaGuideTab() {
                     </div>
                   )}
                   <div className="p-3 bg-slate-50 rounded-lg">
-                    <div className="flex items-center gap-1 text-xs text-slate-500 mb-1">
+                    <div className="flex items-center gap-1 text-xs text-slate-700 mb-1">
                       <Building2 className="w-3 h-3" />
                       Permanent uppehåll
                     </div>
                     <p className={cn(
                       "font-medium",
-                      visa.canLeadToPR ? "text-emerald-600" : "text-slate-500"
+                      visa.canLeadToPR ? "text-emerald-600" : "text-slate-700"
                     )}>
                       {visa.canLeadToPR ? 'Ja, efter 4 år' : 'Nej'}
                     </p>
@@ -234,28 +234,28 @@ export default function VisaGuideTab() {
               <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">1</div>
               <div>
                 <p className="font-medium text-slate-800">År 0: Arbetstillstånd</p>
-                <p className="text-sm text-slate-500">Få ditt första arbetstillstånd (max 2 år)</p>
+                <p className="text-sm text-slate-700">Få ditt första arbetstillstånd (max 2 år)</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">2</div>
               <div>
                 <p className="font-medium text-slate-800">År 2: Förläng tillståndet</p>
-                <p className="text-sm text-slate-500">Ansök om förlängning innan det går ut</p>
+                <p className="text-sm text-slate-700">Ansök om förlängning innan det går ut</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">3</div>
               <div>
                 <p className="font-medium text-slate-800">År 4: Ansök om PUT</p>
-                <p className="text-sm text-slate-500">Permanent uppehållstillstånd möjligt efter 4 års arbete</p>
+                <p className="text-sm text-slate-700">Permanent uppehållstillstånd möjligt efter 4 års arbete</p>
               </div>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-8 h-8 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold text-sm z-10">✓</div>
               <div>
                 <p className="font-medium text-slate-800">År 5+: Medborgarskap</p>
-                <p className="text-sm text-slate-500">Kan ansöka om svenskt medborgarskap</p>
+                <p className="text-sm text-slate-700">Kan ansöka om svenskt medborgarskap</p>
               </div>
             </div>
           </div>

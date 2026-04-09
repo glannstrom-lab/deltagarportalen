@@ -119,7 +119,7 @@ export function BottomSheet({
                 <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
               )}
               {description && (
-                <p className="text-sm text-slate-500 mt-1">{description}</p>
+                <p className="text-sm text-slate-700 mt-1">{description}</p>
               )}
             </div>
             {showCloseButton && (
@@ -178,7 +178,7 @@ export function BottomSheetItem({
       {icon && (
         <div className={cn(
           'flex-shrink-0',
-          isSelected ? 'text-indigo-600' : isDestructive ? 'text-red-500' : 'text-slate-500'
+          isSelected ? 'text-indigo-600' : isDestructive ? 'text-red-500' : 'text-slate-700'
         )}>
           {icon}
         </div>
@@ -192,7 +192,7 @@ export function BottomSheetItem({
           {label}
         </div>
         {description && (
-          <div className="text-sm text-slate-500 mt-0.5">{description}</div>
+          <div className="text-sm text-slate-700 mt-0.5">{description}</div>
         )}
       </div>
       {isSelected && (

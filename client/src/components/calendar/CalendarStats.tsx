@@ -149,7 +149,7 @@ export function CalendarStats({ events, goals, moodEntries }: CalendarStatsProps
             <span className="text-4xl">{getMoodEmoji(latestMood.level)}</span>
             <div>
               <p className="font-medium text-slate-900">{getMoodLabel(latestMood.level)}</p>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-700">
                 Energi: {latestMood.energyLevel}/5 • Stress: {latestMood.stressLevel}/5
               </p>
             </div>
@@ -175,7 +175,7 @@ export function CalendarStats({ events, goals, moodEntries }: CalendarStatsProps
                   className={`w-full rounded-t ${colors[intensity]} transition-all`}
                   style={{ height: `${(intensity + 1) * 20}%` }}
                 />
-                <span className="text-xs text-slate-400">{dayNames[d.getDay()]}</span>
+                <span className="text-xs text-slate-600">{dayNames[d.getDay()]}</span>
               </div>
             )
           })}

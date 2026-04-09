@@ -125,7 +125,7 @@ export function AICareerChatbot() {
               }`}>
                 {message.innehall}
               </div>
-              <div className="text-xs text-slate-400 mt-1">
+              <div className="text-xs text-slate-600 mt-1">
                 {message.tid}
               </div>
             </div>
@@ -167,7 +167,7 @@ export function AICareerChatbot() {
             <Send className="w-4 h-4" />
           </Button>
         </div>
-        <p className="text-xs text-slate-400 mt-2 text-center">
+        <p className="text-xs text-slate-600 mt-2 text-center">
           Tips: Fråga om CV, ansökningar, intervjuer eller motivation!
         </p>
       </div>

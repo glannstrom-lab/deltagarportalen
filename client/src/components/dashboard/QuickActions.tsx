@@ -97,7 +97,7 @@ export function QuickActions() {
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center gap-2">
-        <Clock size={18} className="text-slate-500" />
+        <Clock size={18} className="text-slate-700" />
         <h3 className="text-sm font-semibold text-slate-700">
           Vad vill du göra?
         </h3>
@@ -152,7 +152,7 @@ export function QuickActions() {
               {/* Arrow indicator */}
               <div className={cn(
                 "absolute top-4 right-4 w-6 h-6 rounded-full flex items-center justify-center",
-                "bg-white/50 text-slate-400 transition-all duration-300",
+                "bg-white/50 text-slate-600 transition-all duration-300",
                 "group-hover:bg-white group-hover:text-slate-600",
                 isSelected && "rotate-90"
               )}>

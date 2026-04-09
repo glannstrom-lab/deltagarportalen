@@ -141,7 +141,7 @@ export default function EnhancedArticleCard({
               {tags.map((tag, i) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 text-xs text-slate-500"
+                  className="inline-flex items-center gap-1 text-xs text-slate-700"
                 >
                   <Tag size={10} />
                   {tag.trim()}

@@ -124,7 +124,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium text-slate-800 text-sm truncate">{topReminder.title}</p>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700">
               {topReminder.dueDate < new Date(Date.now() + 24 * 60 * 60 * 1000) 
                 ? 'Idag' 
                 : 'Imorgon'}
@@ -154,7 +154,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
             </div>
             <div>
               <h3 className="font-semibold text-slate-800">Smart påminnelser</h3>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-700">
                 {criticalCount > 0 ? (
                   <span className="text-rose-600 font-medium">{criticalCount} brådskande</span>
                 ) : (
@@ -165,7 +165,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
           </div>
           <button
             onClick={() => setShowSettings(!showSettings)}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+            className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
           >
             <Settings className="w-5 h-5" />
           </button>
@@ -224,7 +224,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
               <CheckCircle2 className="w-8 h-8 text-emerald-600" />
             </div>
             <p className="text-slate-600 font-medium">Allt är uppdaterat!</p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-slate-600 mt-1">
               Inga brådskande påminnelser just nu
             </p>
           </div>
@@ -267,7 +267,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                         {reminder.priority === 'high' ? 'Brådskande' :
                          reminder.priority === 'medium' ? 'Viktigt' : 'Tips'}
                       </span>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-slate-600">
                         {formatDueDate(reminder.dueDate)}
                       </span>
                     </div>
@@ -293,7 +293,7 @@ export function SmartReminders({ className, compact = false }: SmartRemindersPro
                       </button>
                       <button
                         onClick={() => handleDismiss(reminder.id)}
-                        className="px-3 py-1.5 text-slate-400 text-sm hover:text-slate-600 ml-auto"
+                        className="px-3 py-1.5 text-slate-600 text-sm hover:text-slate-600 ml-auto"
                       >
                         <X className="w-4 h-4" />
                       </button>

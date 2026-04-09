@@ -97,7 +97,7 @@ function PipelineColumn({
       {/* Column content */}
       <div className="flex-1 bg-slate-50 border border-t-0 border-slate-200 rounded-b-xl p-2 space-y-2 min-h-[200px] max-h-[calc(100vh-300px)] overflow-y-auto">
         {sortedApps.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8 text-slate-400">
+          <div className="flex flex-col items-center justify-center py-8 text-slate-600">
             <Icon className="w-8 h-8 mb-2 opacity-50" />
             <p className="text-xs text-center">Inga ansökningar</p>
           </div>
@@ -204,7 +204,7 @@ export function ApplicationsPipeline({
           <span className="px-3 py-1.5 bg-violet-100 text-violet-700 rounded-full text-sm font-medium">
             {stats.active} aktiva
           </span>
-          <span className="text-sm text-slate-500 hidden sm:inline">
+          <span className="text-sm text-slate-700 hidden sm:inline">
             {stats.applied} ansökta • {stats.interview} intervjuer
           </span>
         </div>
@@ -341,7 +341,7 @@ export function ApplicationsPipeline({
           <h3 className="text-xl font-semibold text-slate-700 mb-2">
             Inga ansökningar än
           </h3>
-          <p className="text-slate-500 mb-6 max-w-md mx-auto">
+          <p className="text-slate-700 mb-6 max-w-md mx-auto">
             Börja spåra dina jobbansökningar genom att spara jobb från jobbsökningen
             eller lägg till en ansökan manuellt.
           </p>

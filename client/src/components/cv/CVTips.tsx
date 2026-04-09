@@ -215,13 +215,13 @@ export function CVTips() {
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-slate-800">{section.title}</h3>
-                    <p className="text-sm text-slate-500">{section.description}</p>
+                    <p className="text-sm text-slate-700">{section.description}</p>
                   </div>
                 </div>
                 {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
+                  <ChevronUp className="w-5 h-5 text-slate-600" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
+                  <ChevronDown className="w-5 h-5 text-slate-600" />
                 )}
               </button>
               

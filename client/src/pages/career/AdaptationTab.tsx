@@ -168,7 +168,7 @@ export default function AdaptationTab() {
                     )}
                   </div>
                   <ChevronRight className={cn(
-                    'w-5 h-5 text-slate-400 transition-transform',
+                    'w-5 h-5 text-slate-600 transition-transform',
                     expandedCategory === category.id && 'rotate-90'
                   )} />
                 </div>
@@ -199,7 +199,7 @@ export default function AdaptationTab() {
                             e.preventDefault()
                             setShowTooltip(showTooltip === option.key ? null : option.key)
                           }}
-                          className="text-slate-400 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                          className="text-slate-600 hover:text-slate-600 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
                         >
                           <Info className="w-4 h-4" />
                         </button>
@@ -287,7 +287,7 @@ export default function AdaptationTab() {
                 <h4 className="font-semibold text-slate-800">{template.title}</h4>
                 <p className="text-sm text-slate-600">{template.description}</p>
               </div>
-              <ChevronRight className="w-5 h-5 text-slate-400" />
+              <ChevronRight className="w-5 h-5 text-slate-600" />
             </div>
           ))}
         </div>

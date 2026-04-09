@@ -73,13 +73,13 @@ function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor,
             </span>
           )}
         </div>
-        <p className="text-xs text-slate-500 truncate">{subtitle}</p>
+        <p className="text-xs text-slate-700 truncate">{subtitle}</p>
       </div>
       <div className="flex items-center gap-2">
         {progress !== undefined && (
           <span className="text-sm font-semibold text-slate-700">{progress}%</span>
         )}
-        <ChevronRight size={16} className="text-slate-400" />
+        <ChevronRight size={16} className="text-slate-600" />
       </div>
     </Link>
   )
@@ -256,7 +256,7 @@ export function MobileDashboard() {
         <h1 className="text-lg font-semibold text-slate-800">
           Hej{user?.firstName ? `, ${user.firstName}` : ''}!
         </h1>
-        <p className="text-sm text-slate-500">Vad vill du göra idag?</p>
+        <p className="text-sm text-slate-700">Vad vill du göra idag?</p>
       </div>
 
       {/* Collapsible Filter */}
@@ -277,8 +277,8 @@ export function MobileDashboard() {
       {/* Empty state */}
       {visibleWidgetItems.length === 0 && (
         <div className="text-center py-8 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-500 text-sm mb-1">Inga moduler synliga</p>
-          <p className="text-xs text-slate-400">
+          <p className="text-slate-700 text-sm mb-1">Inga moduler synliga</p>
+          <p className="text-xs text-slate-600">
             Öppna filtret ovan för att välja moduler
           </p>
         </div>

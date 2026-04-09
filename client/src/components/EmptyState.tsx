@@ -70,7 +70,7 @@ export default function EmptyState({
 
       {/* Description */}
       {description && (
-        <p className="text-slate-500 dark:text-slate-400 max-w-md mb-6">
+        <p className="text-slate-700 dark:text-slate-600 max-w-md mb-6">
           {description}
         </p>
       )}

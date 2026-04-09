@@ -84,7 +84,7 @@ export default function LearningTab() {
       >
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-500">Laddar lärande...</p>
+          <p className="text-slate-700">Laddar lärande...</p>
         </div>
       </div>
     )
@@ -99,7 +99,7 @@ export default function LearningTab() {
         <h3 className="text-lg font-semibold text-slate-800 mb-2">
           Kunde inte ladda lärande
         </h3>
-        <p className="text-slate-500 mb-4">{error}</p>
+        <p className="text-slate-700 mb-4">{error}</p>
         <Button onClick={refresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
           Försök igen
@@ -152,7 +152,7 @@ export default function LearningTab() {
             <BookOpen className="text-violet-500" size={28} />
             Lärande
           </h2>
-          <p className="text-slate-500">Utveckla dina färdigheter för jobbsökningen</p>
+          <p className="text-slate-700">Utveckla dina färdigheter för jobbsökningen</p>
         </div>
         <Button onClick={refresh} variant="secondary" size="sm">
           <RefreshCw className="w-4 h-4" />
@@ -200,7 +200,7 @@ export default function LearningTab() {
         icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-violet-500" />}
       >
         {hasInterestProfile && (
-          <p className="text-sm text-slate-500 -mt-2 mb-4 flex items-center gap-1">
+          <p className="text-sm text-slate-700 -mt-2 mb-4 flex items-center gap-1">
             <Sparkles size={14} className="text-amber-500" />
             Baserat på din intresseprofil
           </p>
@@ -337,7 +337,7 @@ function StatCard({ icon, value, label, color }: StatCardProps) {
         {icon}
         <span className="text-2xl font-bold text-slate-800">{value}</span>
       </div>
-      <p className="text-xs text-slate-500">{label}</p>
+      <p className="text-xs text-slate-700">{label}</p>
     </div>
   )
 }
@@ -442,7 +442,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
         <div className="flex-1 min-w-0">
           <h4 className={cn(
             "font-semibold line-clamp-2",
-            article.isCompleted ? "text-slate-500" : "text-slate-800"
+            article.isCompleted ? "text-slate-700" : "text-slate-800"
           )}>
             {article.title}
           </h4>
@@ -453,7 +453,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
             )}>
               {difficultyLabels[article.difficulty]}
             </span>
-            <span className="text-xs text-slate-500 flex items-center gap-1">
+            <span className="text-xs text-slate-700 flex items-center gap-1">
               <Clock size={12} />
               {article.readingTime} min
             </span>
@@ -472,7 +472,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
                   style={{ width: `${article.progress}%` }}
                 />
               </div>
-              <span className="text-xs text-slate-500 mt-1">{article.progress}% läst</span>
+              <span className="text-xs text-slate-700 mt-1">{article.progress}% läst</span>
             </div>
           )}
         </div>
@@ -534,7 +534,7 @@ function ExerciseCard({ exercise, onClick, showRelevance }: ExerciseCardProps) {
         <div className="flex-1 min-w-0">
           <h4 className={cn(
             "font-semibold line-clamp-2",
-            exercise.isCompleted ? "text-slate-500" : "text-slate-800"
+            exercise.isCompleted ? "text-slate-700" : "text-slate-800"
           )}>
             {exercise.title}
           </h4>
@@ -545,7 +545,7 @@ function ExerciseCard({ exercise, onClick, showRelevance }: ExerciseCardProps) {
             )}>
               {exercise.difficulty}
             </span>
-            <span className="text-xs text-slate-500 flex items-center gap-1">
+            <span className="text-xs text-slate-700 flex items-center gap-1">
               <Clock size={12} />
               {exercise.duration}
             </span>
@@ -589,11 +589,11 @@ function CategoryCard({ category, onClick }: CategoryCardProps) {
     >
       <div className="flex items-center justify-between mb-2">
         <h4 className="font-semibold text-slate-800">{category.name}</h4>
-        <ChevronRight className="text-slate-400" size={20} />
+        <ChevronRight className="text-slate-600" size={20} />
       </div>
-      <p className="text-sm text-slate-500 line-clamp-2 mb-3">{category.description}</p>
+      <p className="text-sm text-slate-700 line-clamp-2 mb-3">{category.description}</p>
       <div className="flex items-center justify-between text-xs">
-        <span className="text-slate-500">
+        <span className="text-slate-700">
           {category.completedCount}/{category.articleCount} artiklar
         </span>
         {progress > 0 && (
@@ -645,7 +645,7 @@ function CategoryView({ category, articles, isLoading, onBack, onSelectArticle }
 
       <div>
         <h2 className="text-2xl font-bold text-slate-800">{category.name}</h2>
-        <p className="text-slate-500 mt-1">{category.description}</p>
+        <p className="text-slate-700 mt-1">{category.description}</p>
       </div>
 
       <div className="space-y-3">
@@ -708,7 +708,7 @@ function ArticleView({ article, onBack, onComplete }: ArticleViewProps) {
             <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded-full">
               {article.category}
             </span>
-            <span className="text-xs text-slate-500 flex items-center gap-1">
+            <span className="text-xs text-slate-700 flex items-center gap-1">
               <Clock size={12} /> {article.readingTime} min
             </span>
           </div>
@@ -782,7 +782,7 @@ function ExerciseView({ exercise, onBack }: ExerciseViewProps) {
             <span className="text-xs px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full">
               {exercise.category}
             </span>
-            <span className="text-xs text-slate-500 flex items-center gap-1">
+            <span className="text-xs text-slate-700 flex items-center gap-1">
               <Clock size={12} /> {exercise.duration}
             </span>
           </div>
@@ -794,7 +794,7 @@ function ExerciseView({ exercise, onBack }: ExerciseViewProps) {
         <div className="mb-6">
           <div className="flex items-center justify-between text-sm mb-2">
             <span className="text-slate-600">Steg {currentStep + 1} av {exercise.steps.length}</span>
-            <span className="text-slate-500">{Math.round(((currentStep + 1) / exercise.steps.length) * 100)}%</span>
+            <span className="text-slate-700">{Math.round(((currentStep + 1) / exercise.steps.length) * 100)}%</span>
           </div>
           <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
             <div

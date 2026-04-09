@@ -69,7 +69,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
       <div className="bg-white rounded-2xl p-8 text-center">
         <Loader2 size={48} className="mx-auto text-teal-600 animate-spin mb-4" />
         <h3 className="text-lg font-semibold text-slate-800">Analyserar matchning...</h3>
-        <p className="text-slate-500">Vi jämför ditt CV med jobbets krav</p>
+        <p className="text-slate-700">Vi jämför ditt CV med jobbets krav</p>
       </div>
     )
   }
@@ -184,7 +184,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                   <span className="font-medium">Detta har du</span>
                 </div>
                 <p className="text-2xl font-bold text-slate-800">{analysis.matching_skills.length}</p>
-                <p className="text-sm text-slate-500">Matchande kompetenser</p>
+                <p className="text-sm text-slate-700">Matchande kompetenser</p>
               </div>
               
               <div className="bg-slate-50 rounded-xl p-4">
@@ -193,7 +193,7 @@ export default function JobMatchAnalyzer({ jobId, cvData, onClose }: JobMatchAna
                   <span className="font-medium">Att utveckla</span>
                 </div>
                 <p className="text-2xl font-bold text-slate-800">{analysis.missing_skills.length}</p>
-                <p className="text-sm text-slate-500">Saknade kompetenser</p>
+                <p className="text-sm text-slate-700">Saknade kompetenser</p>
               </div>
             </div>
 

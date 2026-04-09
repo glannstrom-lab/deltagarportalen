@@ -244,7 +244,7 @@ export default function SalaryInsights() {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-2">
                 <TrendingUp size={20} className="text-blue-500" />
-                <span className="text-sm text-slate-500">Lönepåverkan</span>
+                <span className="text-sm text-slate-700">Lönepåverkan</span>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
@@ -269,7 +269,7 @@ export default function SalaryInsights() {
             <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
               <div className="flex items-center gap-2 mb-2">
                 <Briefcase size={20} className="text-purple-500" />
-                <span className="text-sm text-slate-500">Marknadsläge</span>
+                <span className="text-sm text-slate-700">Marknadsläge</span>
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
@@ -310,7 +310,7 @@ export default function SalaryInsights() {
                 >
                   <div className="w-4 h-4 bg-white border-2 border-blue-400 rounded-full" />
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center">
-                    <p className="text-xs text-slate-500">25%</p>
+                    <p className="text-xs text-slate-700">25%</p>
                     <p className="text-sm font-medium">{formatSalary(salaryData.percentile25)}</p>
                   </div>
                 </div>
@@ -321,7 +321,7 @@ export default function SalaryInsights() {
                 >
                   <div className="w-5 h-5 bg-[#4f46e5] border-2 border-white rounded-full shadow-lg" />
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center">
-                    <p className="text-xs text-slate-500">Median</p>
+                    <p className="text-xs text-slate-700">Median</p>
                     <p className="text-sm font-bold text-[#4f46e5]">{formatSalary(salaryData.median)}</p>
                   </div>
                 </div>
@@ -332,14 +332,14 @@ export default function SalaryInsights() {
                 >
                   <div className="w-4 h-4 bg-white border-2 border-purple-500 rounded-full" />
                   <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-center">
-                    <p className="text-xs text-slate-500">75%</p>
+                    <p className="text-xs text-slate-700">75%</p>
                     <p className="text-sm font-medium">{formatSalary(salaryData.percentile75)}</p>
                   </div>
                 </div>
               </div>
             </div>
 
-            <p className="text-sm text-slate-500 mt-12 text-center">
+            <p className="text-sm text-slate-700 mt-12 text-center">
               25% tjänar mindre än {formatSalary(salaryData.percentile25)} | 
               50% tjänar mindre än {formatSalary(salaryData.median)} | 
               75% tjänar mindre än {formatSalary(salaryData.percentile75)}
@@ -375,7 +375,7 @@ export default function SalaryInsights() {
                       </div>
                     </div>
                     <span className={`text-xs font-medium w-16 text-right ${
-                      diff > 0 ? 'text-green-600' : diff < 0 ? 'text-red-500' : 'text-slate-500'
+                      diff > 0 ? 'text-green-600' : diff < 0 ? 'text-red-500' : 'text-slate-700'
                     }`}>
                       {diff > 0 ? '+' : ''}{((diff / salaryData.median) * 100).toFixed(0)}%
                     </span>
@@ -395,7 +395,7 @@ export default function SalaryInsights() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               {salaryData.byExperience.map((exp) => (
                 <div key={exp.years} className="text-center p-4 bg-slate-50 rounded-xl">
-                  <p className="text-sm text-slate-500 mb-1">{exp.years} år</p>
+                  <p className="text-sm text-slate-700 mb-1">{exp.years} år</p>
                   <p className="text-lg font-bold text-slate-800">{formatSalary(exp.median)}</p>
                   <div className="mt-2 w-full bg-slate-200 rounded-full h-1.5">
                     <div 
@@ -466,7 +466,7 @@ export default function SalaryInsights() {
                 ✓ Data från: {salaryData.source}
               </p>
             )}
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-slate-600">
               Lönestatistik baserat på aktuella jobbannonser från Arbetsförmedlingen
             </p>
           </div>
@@ -477,10 +477,10 @@ export default function SalaryInsights() {
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Info size={48} className="text-amber-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Ingen lönedata tillgänglig</h3>
-          <p className="text-slate-500 mb-4">
+          <p className="text-slate-700 mb-4">
             Vi kunde inte hitta tillräckligt med löneinformation för <strong>{selectedOccupation.label}</strong> i aktuella jobbannonser.
           </p>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-600">
             Detta kan bero på att få arbetsgivare anger lön i sina annonser, eller att yrkestiteln är ovanlig.
           </p>
         </div>
@@ -490,7 +490,7 @@ export default function SalaryInsights() {
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Search size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Sök ett yrke för att se lönestatistik</h3>
-          <p className="text-slate-500">Vi visar medianlön, lönespridning och regionala skillnader baserat på riktiga jobbannonser</p>
+          <p className="text-slate-700">Vi visar medianlön, lönespridning och regionala skillnader baserat på riktiga jobbannonser</p>
         </div>
       )}
     </div>

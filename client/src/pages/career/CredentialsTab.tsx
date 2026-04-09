@@ -131,15 +131,15 @@ export default function CredentialsTab() {
         <div className="grid grid-cols-3 gap-4">
           <Card className="text-center">
             <div className="text-2xl font-bold text-emerald-600">{stats.completed}</div>
-            <p className="text-sm text-slate-500">Avslutade</p>
+            <p className="text-sm text-slate-700">Avslutade</p>
           </Card>
           <Card className="text-center">
             <div className="text-2xl font-bold text-amber-600">{stats.inProgress}</div>
-            <p className="text-sm text-slate-500">Pågående</p>
+            <p className="text-sm text-slate-700">Pågående</p>
           </Card>
           <Card className="text-center">
             <div className="text-2xl font-bold text-slate-600">{stats.planned}</div>
-            <p className="text-sm text-slate-500">Planerade</p>
+            <p className="text-sm text-slate-700">Planerade</p>
           </Card>
         </div>
       )}
@@ -244,7 +244,7 @@ export default function CredentialsTab() {
                       </div>
                       <div>
                         <h4 className="font-medium text-slate-900">{cred.name}</h4>
-                        <p className="text-sm text-slate-500">{cred.issuer}</p>
+                        <p className="text-sm text-slate-700">{cred.issuer}</p>
                         <div className="flex items-center gap-2 mt-2">
                           <span className={cn(
                             "px-2 py-0.5 rounded-full text-xs font-medium",
@@ -253,7 +253,7 @@ export default function CredentialsTab() {
                             {typeInfo.label}
                           </span>
                           {cred.targetDate && cred.status !== 'completed' && (
-                            <span className="text-xs text-slate-400 flex items-center gap-1">
+                            <span className="text-xs text-slate-600 flex items-center gap-1">
                               <Calendar className="w-3 h-3" />
                               Mål: {cred.targetDate}
                             </span>
@@ -333,7 +333,7 @@ export default function CredentialsTab() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-medium text-slate-800 text-sm truncate">{cred.name}</p>
-                <p className="text-xs text-slate-500">{cred.issuer}</p>
+                <p className="text-xs text-slate-700">{cred.issuer}</p>
               </div>
             </button>
           ))}

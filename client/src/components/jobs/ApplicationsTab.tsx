@@ -27,7 +27,7 @@ const COLUMNS: StatusColumn[] = [
   { status: 'applied', title: 'Ansökt', color: 'text-blue-600', bgColor: 'bg-blue-50 border-blue-200', icon: Send },
   { status: 'interview', title: 'Intervju', color: 'text-amber-600', bgColor: 'bg-amber-50 border-amber-200', icon: Calendar },
   { status: 'offer', title: 'Erbjudande', color: 'text-green-600', bgColor: 'bg-green-50 border-green-200', icon: CheckCircle },
-  { status: 'rejected', title: 'Avslag', color: 'text-slate-500', bgColor: 'bg-slate-50 border-slate-200', icon: XCircle }
+  { status: 'rejected', title: 'Avslag', color: 'text-slate-700', bgColor: 'bg-slate-50 border-slate-200', icon: XCircle }
 ]
 
 function ApplicationCard({
@@ -53,7 +53,7 @@ function ApplicationCard({
           <h4 className="font-semibold text-slate-900 text-sm line-clamp-2">
             {jobData?.headline || 'Okänd tjänst'}
           </h4>
-          <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
+          <p className="text-xs text-slate-700 mt-0.5 flex items-center gap-1">
             <Briefcase className="w-3 h-3" />
             {jobData?.employer?.name || 'Okänt företag'}
           </p>
@@ -65,14 +65,14 @@ function ApplicationCard({
             onClick={() => setShowMenu(!showMenu)}
             className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            <MoreVertical className="w-4 h-4 text-slate-400" />
+            <MoreVertical className="w-4 h-4 text-slate-600" />
           </button>
 
           {showMenu && (
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
               <div className="absolute right-0 top-8 z-20 bg-white rounded-lg shadow-lg border border-slate-200 py-1 min-w-[160px]">
-                <div className="px-2 py-1 text-xs font-medium text-slate-400 uppercase">Ändra status</div>
+                <div className="px-2 py-1 text-xs font-medium text-slate-600 uppercase">Ändra status</div>
                 {COLUMNS.map(col => (
                   <button
                     key={col.status}
@@ -108,7 +108,7 @@ function ApplicationCard({
 
       {/* Location */}
       {jobData?.workplace_address?.municipality && (
-        <p className="text-xs text-slate-400 mb-3">
+        <p className="text-xs text-slate-600 mb-3">
           📍 {jobData.workplace_address.municipality}
         </p>
       )}
@@ -123,14 +123,14 @@ function ApplicationCard({
             "flex items-start gap-2 p-2 rounded-lg bg-slate-50 text-xs",
             showNotes ? "" : "line-clamp-2"
           )}>
-            <MessageSquare className="w-3 h-3 text-slate-400 flex-shrink-0 mt-0.5" />
+            <MessageSquare className="w-3 h-3 text-slate-600 flex-shrink-0 mt-0.5" />
             <span className="text-slate-600">{job.notes}</span>
           </div>
         </button>
       )}
 
       {/* Footer */}
-      <div className="flex items-center justify-between text-xs text-slate-400 pt-2 border-t border-slate-100">
+      <div className="flex items-center justify-between text-xs text-slate-600 pt-2 border-t border-slate-100">
         <span className="flex items-center gap-1">
           <Clock className="w-3 h-3" />
           {new Date(job.savedAt).toLocaleDateString('sv-SE')}
@@ -169,7 +169,7 @@ function StatsHeader({ jobs }: { jobs: SavedJob[] }) {
     <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
       <div className="bg-white rounded-xl border border-slate-200 p-2 sm:p-4 text-center">
         <div className="text-lg sm:text-2xl font-bold text-slate-900">{stats.total}</div>
-        <div className="text-[10px] sm:text-xs text-slate-500">Totalt</div>
+        <div className="text-[10px] sm:text-xs text-slate-700">Totalt</div>
       </div>
       <div className="bg-blue-50 rounded-xl border border-blue-200 p-2 sm:p-4 text-center">
         <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.applied}</div>
@@ -226,12 +226,12 @@ export function ApplicationsTab() {
     return (
       <Card className="p-12 text-center">
         <div className="w-16 h-16 bg-slate-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <Send className="w-8 h-8 text-slate-400" />
+          <Send className="w-8 h-8 text-slate-600" />
         </div>
         <h3 className="text-xl font-semibold text-slate-700 mb-2">
           Inga ansökningar än
         </h3>
-        <p className="text-slate-500 mb-6 max-w-md mx-auto">
+        <p className="text-slate-700 mb-6 max-w-md mx-auto">
           När du sparar ett jobb och ändrar status till "Ansökt" kommer det visas här.
           Spåra dina ansökningar och håll koll på din jobbsökning.
         </p>
@@ -276,7 +276,7 @@ export function ApplicationsTab() {
               {/* Cards */}
               <div className="space-y-3">
                 {columnJobs.length === 0 ? (
-                  <div className="text-center py-8 text-sm text-slate-400">
+                  <div className="text-center py-8 text-sm text-slate-600">
                     Inga jobb här
                   </div>
                 ) : (

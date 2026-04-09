@@ -309,7 +309,7 @@ export default function SkillsDevelopment() {
                       <button
                         onClick={() => occupation && saveSkill(skill.name, skill.category, occupation.label)}
                         disabled={!occupation}
-                        className="p-1 text-slate-400 hover:text-emerald-500 transition-colors"
+                        className="p-1 text-slate-600 hover:text-emerald-500 transition-colors"
                         title="Spara kompetens"
                       >
                         <Heart size={18} />
@@ -319,7 +319,7 @@ export default function SkillsDevelopment() {
                 </div>
                 
                 <div className="mb-3">
-                  <div className="flex items-center gap-2 text-sm text-slate-500 mb-1">
+                  <div className="flex items-center gap-2 text-sm text-slate-700 mb-1">
                     <TrendingUp size={14} />
                     Viktighet: {skill.importance}
                   </div>
@@ -344,7 +344,7 @@ export default function SkillsDevelopment() {
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
           <Wrench size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Inga kompetenser hittades</h3>
-          <p className="text-slate-500">
+          <p className="text-slate-700">
             Kunde inte extrahera kompetenser från jobbannonser. Detta kan bero på att få annonser nämner specifika kompetenser eller att yrket är ovanligt.
           </p>
         </div>
@@ -354,7 +354,7 @@ export default function SkillsDevelopment() {
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Search size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Analysera kompetensbehov</h3>
-          <p className="text-slate-500 max-w-md mx-auto">
+          <p className="text-slate-700 max-w-md mx-auto">
             Välj ett yrke ovan för att se vilka kompetenser som efterfrågas mest 
             baserat på aktuella jobbannonser från Arbetsförmedlingen.
           </p>

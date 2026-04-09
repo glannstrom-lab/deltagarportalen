@@ -4,7 +4,7 @@
  */
 
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, devtools } from 'zustand/middleware'
 
 interface CVUIState {
   // UI State
@@ -32,8 +32,9 @@ interface CVUIState {
 }
 
 export const useCVStore = create<CVUIState>()(
-  persist(
-    (set) => ({
+  devtools(
+    persist(
+      (set) => ({
       // Initial state
       currentStep: 1,
       isPreviewOpen: false,
@@ -72,13 +73,15 @@ export const useCVStore = create<CVUIState>()(
       setCVScore: (score) => set({ cvScore: score }),
       setPendingCount: (count) => set({ pendingCount: count }),
       setHasDraft: (hasDraft) => set({ hasDraft }),
-    }),
-    {
-      name: 'cv-ui-storage',
-      partialize: (state) => ({ 
-        currentStep: state.currentStep,
-        hasDraft: state.hasDraft 
       }),
-    }
+      {
+        name: 'cv-ui-storage',
+        partialize: (state) => ({
+          currentStep: state.currentStep,
+          hasDraft: state.hasDraft
+        }),
+      }
+    ),
+    { name: 'CVStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )

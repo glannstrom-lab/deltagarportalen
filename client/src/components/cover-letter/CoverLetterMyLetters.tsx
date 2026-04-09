@@ -271,7 +271,7 @@ export function CoverLetterMyLetters() {
       {/* Header med sök */}
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-between sm:items-center">
         <div className="relative w-full sm:flex-1 sm:max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
           <input
             type="text"
             placeholder="Sök bland dina brev..."
@@ -280,7 +280,7 @@ export function CoverLetterMyLetters() {
             className="w-full pl-10 pr-4 py-2.5 sm:py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all text-base sm:text-sm"
           />
         </div>
-        <div className="text-sm text-slate-500">
+        <div className="text-sm text-slate-700">
           {filteredLetters.length} {filteredLetters.length === 1 ? 'brev' : 'brev'}
         </div>
       </div>
@@ -325,7 +325,7 @@ export function CoverLetterMyLetters() {
                     <h3 className="font-semibold text-slate-800 truncate">
                       {letter.title}
                     </h3>
-                    <div className="flex items-center gap-3 mt-1 text-sm text-slate-500">
+                    <div className="flex items-center gap-3 mt-1 text-sm text-slate-700">
                       <span className="flex items-center gap-1">
                         <Building2 size={14} />
                         {letter.company}
@@ -340,7 +340,7 @@ export function CoverLetterMyLetters() {
                 </div>
 
                 {/* Mobile company & word count */}
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500 sm:hidden">
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700 sm:hidden">
                   <span className="flex items-center gap-1">
                     <Building2 size={12} />
                     {letter.company}
@@ -350,7 +350,7 @@ export function CoverLetterMyLetters() {
                 </div>
 
                 {/* Metadata */}
-                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs text-slate-400">
+                <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs text-slate-600">
                   <span className="flex items-center gap-1">
                     <Calendar size={12} />
                     {formatDate(letter.createdAt)}
@@ -394,9 +394,9 @@ export function CoverLetterMyLetters() {
                           className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2 disabled:opacity-50"
                         >
                           {actionLoading === letter.id ? (
-                            <Loader2 size={14} className="text-slate-400 animate-spin" />
+                            <Loader2 size={14} className="text-slate-600 animate-spin" />
                           ) : (
-                            <Copy size={14} className="text-slate-400" />
+                            <Copy size={14} className="text-slate-600" />
                           )}
                           Duplicera
                         </button>
@@ -404,7 +404,7 @@ export function CoverLetterMyLetters() {
                           onClick={() => handleDownload(letter)}
                           className="w-full px-3 py-2.5 text-left text-sm hover:bg-slate-50 flex items-center gap-2"
                         >
-                          <Download size={14} className="text-slate-400" />
+                          <Download size={14} className="text-slate-600" />
                           Ladda ner PDF
                         </button>
                         <hr className="my-1 border-slate-100" />

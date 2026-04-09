@@ -96,7 +96,7 @@ export function JourneyStats({ stats }: JourneyStatsProps) {
                 <Icon className={`w-5 h-5 ${item.color}`} />
               </div>
               <div>
-                <div className="text-sm text-slate-500">{item.label}</div>
+                <div className="text-sm text-slate-700">{item.label}</div>
                 <div className="font-semibold text-slate-900">{item.value}</div>
               </div>
             </div>

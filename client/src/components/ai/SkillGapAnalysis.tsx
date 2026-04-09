@@ -70,7 +70,7 @@ export function SkillGapAnalysis({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 text-lg">Kompetensanalys</h3>
-            <p className="text-sm text-slate-500">För {jobTitle}</p>
+            <p className="text-sm text-slate-700">För {jobTitle}</p>
           </div>
         </div>
 
@@ -94,7 +94,7 @@ export function SkillGapAnalysis({
               {matchPercentage >= 80 ? 'Utmärkt matchning!' :
                matchPercentage >= 60 ? 'God matchning' : 'Grundläggande matchning'}
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               Du har {analysis.matching.length} av {targetJobSkills.length} efterfrågade kompetenser
             </p>
             <div className="mt-2 h-2 bg-slate-100 rounded-full overflow-hidden">
@@ -165,7 +165,7 @@ export function SkillGapAnalysis({
                       </span>
                     </div>
                     <ChevronRight className={cn(
-                      'w-5 h-5 text-slate-400 transition-transform',
+                      'w-5 h-5 text-slate-600 transition-transform',
                       selectedSkill === prediction.skill && 'rotate-90'
                     )} />
                   </div>
@@ -174,14 +174,14 @@ export function SkillGapAnalysis({
                     <div className="mt-4 pt-4 border-t border-indigo-100 animate-in fade-in">
                       <div className="grid grid-cols-2 gap-4 mb-4">
                         <div className="bg-white rounded-lg p-3">
-                          <p className="text-xs text-slate-500 mb-1">Uppskattad tid</p>
+                          <p className="text-xs text-slate-700 mb-1">Uppskattad tid</p>
                           <p className="font-medium text-slate-800 flex items-center gap-1">
                             <Clock className="w-4 h-4" />
                             {prediction.estimatedTime}
                           </p>
                         </div>
                         <div className="bg-white rounded-lg p-3">
-                          <p className="text-xs text-slate-500 mb-1">Jobb som låses upp</p>
+                          <p className="text-xs text-slate-700 mb-1">Jobb som låses upp</p>
                           <p className="font-medium text-emerald-600 flex items-center gap-1">
                             <TrendingUp className="w-4 h-4" />
                             +{prediction.newJobsUnlocked}

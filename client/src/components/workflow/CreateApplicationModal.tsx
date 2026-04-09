@@ -162,7 +162,7 @@ export function CreateApplicationModal({
             <h2 className="text-lg font-semibold text-slate-900">
               Skapa ansökan
             </h2>
-            <p className="text-sm text-slate-500 mt-0.5 line-clamp-1">
+            <p className="text-sm text-slate-700 mt-0.5 line-clamp-1">
               {job.headline}
             </p>
           </div>
@@ -170,7 +170,7 @@ export function CreateApplicationModal({
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-full transition-colors"
           >
-            <X size={20} className="text-slate-500" />
+            <X size={20} className="text-slate-700" />
           </button>
         </div>
 
@@ -221,13 +221,13 @@ export function CreateApplicationModal({
                     </div>
                     <div>
                       <p className="font-medium text-slate-900">Din matchning</p>
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-slate-700">
                         {cvMatchScore >= 70 ? 'Utmärkt match!' :
                          cvMatchScore >= 40 ? 'God match - kan förbättras' :
                          'Lägg till mer relevant erfarenhet'}
                       </p>
                       {cvAnalysis && (
-                        <p className="text-xs text-slate-400 mt-0.5">
+                        <p className="text-xs text-slate-600 mt-0.5">
                           {cvAnalysis.matchedKeywords} av {cvAnalysis.totalKeywords} keywords matchade
                         </p>
                       )}
@@ -264,7 +264,7 @@ export function CreateApplicationModal({
                               </span>
                             ))}
                             {cvAnalysis.missingKeywords.length > 8 && (
-                              <span className="text-xs text-slate-500 px-1">
+                              <span className="text-xs text-slate-700 px-1">
                                 +{cvAnalysis.missingKeywords.length - 8} till
                               </span>
                             )}
@@ -294,7 +294,7 @@ export function CreateApplicationModal({
                   )}
                 </>
               ) : (
-                <div className="flex items-center gap-2 text-slate-500">
+                <div className="flex items-center gap-2 text-slate-700">
                   <Loader2 size={18} className="animate-spin" />
                   Beräknar matchning...
                 </div>

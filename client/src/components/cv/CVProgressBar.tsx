@@ -48,7 +48,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
       </div>
       
       {/* Tips */}
-      <p className="text-sm text-slate-500 mb-4">
+      <p className="text-sm text-slate-700 mb-4">
         💡 {tips}
       </p>
       
@@ -68,7 +68,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
                   ? 'bg-indigo-100 text-indigo-700 font-medium' 
                   : isCompleted 
                     ? 'bg-green-50 text-green-700' 
-                    : 'bg-slate-50 text-slate-500 hover:bg-slate-100'
+                    : 'bg-slate-50 text-slate-700 hover:bg-slate-100'
                 }
               `}
             >
@@ -95,7 +95,7 @@ export function CVProgressBar({ data, currentStep, onStepClick }: CVProgressBarP
                   ? 'bg-green-50 text-green-700' 
                   : section.score > 0 
                     ? 'bg-amber-50 text-amber-700'
-                    : 'bg-slate-50 text-slate-500'
+                    : 'bg-slate-50 text-slate-700'
               }`}
             >
               <div className="text-xs font-medium">{section.name}</div>

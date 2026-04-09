@@ -186,8 +186,8 @@ export function CVTemplateSelector({
                 )}
               </div>
               <h4 className="font-semibold text-slate-800">{template.name}</h4>
-              <p className="text-xs text-slate-500 mt-1 capitalize">{template.category}</p>
-              <p className="text-sm text-slate-500 mt-1">{template.description}</p>
+              <p className="text-xs text-slate-700 mt-1 capitalize">{template.category}</p>
+              <p className="text-sm text-slate-700 mt-1">{template.description}</p>
             </button>
           ))}
         </div>
@@ -240,7 +240,7 @@ export function CVTemplateSelector({
                 >
                   {font.name}
                 </p>
-                <p className="text-xs text-slate-500 capitalize">{font.category}</p>
+                <p className="text-xs text-slate-700 capitalize">{font.category}</p>
               </button>
             ))}
           </div>

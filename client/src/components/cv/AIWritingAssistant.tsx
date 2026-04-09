@@ -194,14 +194,14 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
             <div className="p-4 bg-white rounded-lg border border-slate-200 text-center">
               <RefreshCw size={20} className="animate-spin mx-auto mb-2 text-[#4f46e5]" />
               <p className="text-sm text-slate-600">AI arbetar...</p>
-              <p className="text-xs text-slate-400 mt-1">Detta kan ta några sekunder</p>
+              <p className="text-xs text-slate-600 mt-1">Detta kan ta några sekunder</p>
             </div>
           )}
 
           {/* Suggestion */}
           {!loading && suggestion && (
             <div className="bg-white p-4 rounded-lg border border-slate-200">
-              <p className="text-xs font-medium text-slate-500 mb-2 uppercase tracking-wide">
+              <p className="text-xs font-medium text-slate-700 mb-2 uppercase tracking-wide">
                 {activeFeature && features[activeFeature]?.label}
               </p>
               <p className="text-sm text-slate-700 whitespace-pre-wrap">{suggestion}</p>
@@ -232,7 +232,7 @@ export function AIWritingAssistant({ content, onChange, type }: AIWritingAssista
 
           {/* Empty state */}
           {!loading && !suggestion && !error && (
-            <div className="text-center py-4 text-slate-500 text-sm">
+            <div className="text-center py-4 text-slate-700 text-sm">
               Välj en funktion ovan för att få hjälp av AI
             </div>
           )}

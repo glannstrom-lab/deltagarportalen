@@ -346,10 +346,10 @@ export function ContextualKnowledgeWidget({
                   <h4 className="font-medium text-slate-900 text-sm line-clamp-1 group-hover:text-amber-700">
                     {article.title}
                   </h4>
-                  <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">
+                  <p className="text-xs text-slate-700 mt-0.5 line-clamp-1">
                     {article.excerpt}
                   </p>
-                  <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-400">
+                  <div className="flex items-center gap-2 mt-1.5 text-xs text-slate-600">
                     <span>{article.readTime} min läsning</span>
                     <span>•</span>
                     <span className={cn(
@@ -391,7 +391,7 @@ export function ContextualKnowledgeWidget({
         </div>
         <div>
           <h3 className="font-semibold text-slate-900">{getContextTitle(currentContext)}</h3>
-          <p className="text-sm text-slate-500">Artiklar valda för där du är nu</p>
+          <p className="text-sm text-slate-700">Artiklar valda för där du är nu</p>
         </div>
       </div>
 
@@ -403,16 +403,16 @@ export function ContextualKnowledgeWidget({
             className="flex items-start gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors group"
           >
             <div className="w-12 h-12 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-amber-100 transition-colors">
-              <article.icon size={20} className="text-slate-400 group-hover:text-amber-600" />
+              <article.icon size={20} className="text-slate-600 group-hover:text-amber-600" />
             </div>
             <div className="flex-1 min-w-0">
               <h4 className="font-medium text-slate-900 group-hover:text-violet-600 transition-colors">
                 {article.title}
               </h4>
-              <p className="text-sm text-slate-500 mt-1 line-clamp-2">
+              <p className="text-sm text-slate-700 mt-1 line-clamp-2">
                 {article.excerpt}
               </p>
-              <div className="flex items-center gap-3 mt-2 text-xs text-slate-400">
+              <div className="flex items-center gap-3 mt-2 text-xs text-slate-600">
                 <span>{article.readTime} min läsning</span>
                 <span className={cn(
                   article.difficulty === 'beginner' ? "text-green-600" :

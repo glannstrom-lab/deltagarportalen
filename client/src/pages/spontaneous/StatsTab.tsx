@@ -39,7 +39,7 @@ function StatCard({
         </div>
         <div>
           <p className="text-2xl font-bold">{value}</p>
-          <p className="text-sm text-slate-600 dark:text-slate-400">{label}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-600">{label}</p>
         </div>
       </div>
     </Card>
@@ -140,7 +140,7 @@ export default function StatsTab() {
               </div>
             </div>
           ) : (
-            <p className="text-slate-500 text-sm">
+            <p className="text-slate-700 text-sm">
               Kontakta företag för att se statistik här.
             </p>
           )}
@@ -174,7 +174,7 @@ export default function StatsTab() {
               >
                 <div>
                   <p className="font-medium">{company.company_name}</p>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-700">
                     {formatOrgNumber(company.org_number)}
                   </p>
                 </div>
@@ -182,7 +182,7 @@ export default function StatsTab() {
                   <p className="text-sm font-medium text-amber-600">
                     {company.followup_date && new Date(company.followup_date).toLocaleDateString('sv-SE')}
                   </p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-700">
                     {company.followup_date && getDaysUntil(new Date(company.followup_date))}
                   </p>
                 </div>
@@ -190,7 +190,7 @@ export default function StatsTab() {
             ))}
           </div>
         ) : (
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-700 text-sm">
             Inga kommande uppföljningar. Sätt påminnelser när du kontaktar företag.
           </p>
         )}
@@ -199,7 +199,7 @@ export default function StatsTab() {
       {/* Tips */}
       <Card className="p-6 bg-gradient-to-br from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 border-primary-200 dark:border-primary-800">
         <h3 className="font-semibold mb-2">Tips för bättre resultat</h3>
-        <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-1.5">
+        <ul className="text-sm text-slate-600 dark:text-slate-600 space-y-1.5">
           <li>• Sikta på att kontakta 5-10 nya företag per vecka</li>
           <li>• Följ alltid upp efter 1-2 veckor om du inte fått svar</li>
           <li>• En svarsfrekvens på 10-20% är normalt för spontanansökningar</li>

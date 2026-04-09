@@ -206,7 +206,7 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
             <Trophy className="text-amber-500" size={24} />
             Dina Badges
           </h2>
-          <p className="text-slate-500">
+          <p className="text-slate-700">
             {unlockedCount} av {totalCount} upplåsta
           </p>
         </div>
@@ -258,14 +258,14 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
               {badge.isUnlocked ? (
                 badge.icon
               ) : (
-                <Lock size={20} className="text-slate-400" />
+                <Lock size={20} className="text-slate-600" />
               )}
             </div>
 
             {/* Badge Name */}
             <p className={cn(
               "text-xs font-medium text-center line-clamp-2",
-              badge.isUnlocked ? 'text-slate-800' : 'text-slate-400'
+              badge.isUnlocked ? 'text-slate-800' : 'text-slate-600'
             )}>
               {badge.name}
             </p>
@@ -279,7 +279,7 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
                     style={{ width: `${(badge.progress / (badge.total || 1)) * 100}%` }}
                   />
                 </div>
-                <p className="text-xs text-slate-400 text-center mt-0.5">
+                <p className="text-xs text-slate-600 text-center mt-0.5">
                   {badge.progress}/{badge.total}
                 </p>
               </div>
@@ -317,7 +317,7 @@ function ProgressBadge({ unlocked, total }: { unlocked: number; total: number })
     <div className="flex items-center gap-3">
       <div className="text-right">
         <p className="text-2xl font-bold text-slate-800">{percentage}%</p>
-        <p className="text-xs text-slate-500">Komplett</p>
+        <p className="text-xs text-slate-700">Komplett</p>
       </div>
       <div className="w-12 h-12 relative">
         <svg className="w-12 h-12 transform -rotate-90">
@@ -391,7 +391,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
           onClick={onClose}
           className="absolute top-4 right-4 w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center"
         >
-          <X size={18} className="text-slate-400" />
+          <X size={18} className="text-slate-600" />
         </button>
 
         {/* Badge Icon */}
@@ -409,7 +409,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
           {badge.isUnlocked ? (
             <div className="text-4xl">{badge.icon}</div>
           ) : (
-            <Lock size={32} className="text-slate-400" />
+            <Lock size={32} className="text-slate-600" />
           )}
         </motion.div>
 
@@ -418,7 +418,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
         <p className={cn(
           "text-sm font-medium mb-4",
           badge.tier === 'bronze' ? 'text-amber-600' :
-          badge.tier === 'silver' ? 'text-slate-500' :
+          badge.tier === 'silver' ? 'text-slate-700' :
           badge.tier === 'gold' ? 'text-yellow-600' :
           'text-violet-600'
         )}>
@@ -447,7 +447,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
                     className="h-full bg-violet-500 rounded-full"
                   />
                 </div>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-700">
                   {badge.progress} av {badge.total} ({Math.round((badge.progress / (badge.total || 1)) * 100)}%)
                 </p>
               </div>

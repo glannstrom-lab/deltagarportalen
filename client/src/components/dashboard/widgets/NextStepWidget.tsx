@@ -2,6 +2,7 @@
  * NextStepWidget - Visar det mest relevanta nästa steget för användaren
  * Dynamiskt baserat på användarens progress
  */
+import { memo } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
@@ -36,7 +37,7 @@ interface NextStep {
   interpolation?: Record<string, string | number>
 }
 
-export function NextStepWidget() {
+export const NextStepWidget = memo(function NextStepWidget() {
   const { t } = useTranslation()
   const { data, loading } = useDashboardData()
   const { level: userEnergy } = useEnergyStore()
@@ -250,10 +251,10 @@ export function NextStepWidget() {
       </Link>
     </motion.div>
   )
-}
+})
 
 // Small variant for compact spaces
-export function NextStepWidgetCompact() {
+export const NextStepWidgetCompact = memo(function NextStepWidgetCompact() {
   const { t } = useTranslation()
   const { data } = useDashboardData()
   const { level: userEnergy } = useEnergyStore()
@@ -296,4 +297,4 @@ export function NextStepWidgetCompact() {
       <ArrowRight size={14} className="ml-auto" />
     </Link>
   )
-}
+})

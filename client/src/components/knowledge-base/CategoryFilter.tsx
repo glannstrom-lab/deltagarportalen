@@ -40,7 +40,7 @@ export default function CategoryFilter({
     <div className="space-y-4">
       {/* Search */}
       <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
         <input
           type="text"
           value={searchQuery}
@@ -51,7 +51,7 @@ export default function CategoryFilter({
         {searchQuery && (
           <button
             onClick={() => onSearchChange('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-600"
           >
             <X size={16} />
           </button>
@@ -60,7 +60,7 @@ export default function CategoryFilter({
 
       {/* Categories */}
       <div className="space-y-1">
-        <label className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+        <label className="text-xs font-medium text-slate-700 uppercase tracking-wider">
           Kategorier
         </label>
         

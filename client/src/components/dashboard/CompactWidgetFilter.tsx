@@ -59,10 +59,10 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
       >
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <LayoutGrid size={16} className="text-slate-500" />
+            <LayoutGrid size={16} className="text-slate-700" />
             <span className="text-sm font-medium text-slate-700">Moduler</span>
           </div>
-          <span className="text-xs text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+          <span className="text-xs text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full">
             {visibleCount}/{compactWidgets.length}
           </span>
         </div>
@@ -87,7 +87,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
                 )
               })}
             {visibleCount > 5 && (
-              <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-xs text-slate-500 font-medium">
+              <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-xs text-slate-700 font-medium">
                 +{visibleCount - 5}
               </div>
             )}
@@ -95,7 +95,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
           <ChevronDown 
             size={18} 
             className={cn(
-              'text-slate-400 transition-transform duration-200',
+              'text-slate-600 transition-transform duration-200',
               isExpanded && 'rotate-180'
             )} 
           />
@@ -107,7 +107,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
         <div className="px-3 pb-3 border-t border-slate-100">
           {/* Quick actions */}
           <div className="flex items-center justify-between py-2 mb-2">
-            <span className="text-xs text-slate-500">Välj moduler att visa:</span>
+            <span className="text-xs text-slate-700">Välj moduler att visa:</span>
             <div className="flex items-center gap-1">
               <button
                 onClick={onShowAll}
@@ -118,7 +118,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
               <span className="text-slate-300">|</span>
               <button
                 onClick={onHideAll}
-                className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
+                className="text-xs text-slate-700 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
               >
                 Ingen
               </button>
@@ -139,7 +139,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
                     'flex flex-col items-center gap-1.5 p-2 rounded-lg text-xs font-medium transition-all duration-200',
                     isVisible
                       ? `${widget.color} border border-current`
-                      : 'bg-slate-50 text-slate-400 border border-transparent opacity-60 hover:opacity-80'
+                      : 'bg-slate-50 text-slate-600 border border-transparent opacity-60 hover:opacity-80'
                   )}
                 >
                   <Icon size={16} />
@@ -149,7 +149,7 @@ export const CompactWidgetFilter = memo(function CompactWidgetFilter({
             })}
           </div>
 
-          <p className="mt-3 text-xs text-slate-400">
+          <p className="mt-3 text-xs text-slate-600">
             Tips: Du kan ändra storlek på varje widget med ikonen uppe till höger på kortet.
           </p>
         </div>

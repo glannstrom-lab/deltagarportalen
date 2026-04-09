@@ -71,11 +71,11 @@ export const WidgetFilter = memo(function WidgetFilter({
       {/* Header */}
       <div className="flex items-center justify-between mb-2 sm:mb-3">
         <div className="flex items-center gap-2">
-          <LayoutGrid size={16} className="text-slate-500 sm:w-[18px] sm:h-[18px]" />
+          <LayoutGrid size={16} className="text-slate-700 sm:w-[18px] sm:h-[18px]" />
           <h3 className="text-sm font-medium text-slate-700">
             Visa moduler
           </h3>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-600">
             ({visibleCount}/{totalCount})
           </span>
         </div>
@@ -89,7 +89,7 @@ export const WidgetFilter = memo(function WidgetFilter({
           <span className="text-slate-300">|</span>
           <button
             onClick={onHideAll}
-            className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
+            className="text-xs text-slate-700 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
           >
             Dölj
           </button>
@@ -110,7 +110,7 @@ export const WidgetFilter = memo(function WidgetFilter({
                 'flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 shrink-0',
                 isVisible
                   ? `${widget.color} border border-current opacity-100`
-                  : 'bg-slate-100 text-slate-400 border border-transparent opacity-60 hover:opacity-80'
+                  : 'bg-slate-100 text-slate-600 border border-transparent opacity-60 hover:opacity-80'
               )}
               title={isVisible ? 'Klicka för att dölja' : 'Klicka för att visa'}
             >
@@ -125,7 +125,7 @@ export const WidgetFilter = memo(function WidgetFilter({
       </div>
 
       {/* Hint - endast desktop */}
-      <p className="hidden sm:block text-xs text-slate-400 mt-3">
+      <p className="hidden sm:block text-xs text-slate-600 mt-3">
         Klicka på en modul för att visa eller dölja den. Ändra storlek på varje widget med ikonen uppe till höger.
       </p>
     </div>

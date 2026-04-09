@@ -82,7 +82,7 @@ export default function Privacy() {
           </div>
           <h1 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">{t('privacy.title')}</h1>
           <p className="text-slate-600 max-w-2xl mx-auto">{t('privacy.subtitle')}</p>
-          <p className="text-sm text-slate-500 mt-2">{t('privacy.version')}</p>
+          <p className="text-sm text-slate-700 mt-2">{t('privacy.version')}</p>
         </div>
 
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-8 lg:p-12 space-y-10">
@@ -227,7 +227,7 @@ export default function Privacy() {
               <ListItem title={t('privacy.cookies.functional')} desc={t('privacy.cookies.functionalDesc')} />
               <ListItem title={t('privacy.cookies.analytics')} desc={t('privacy.cookies.analyticsDesc')} />
             </ul>
-            <p className="mt-4 text-slate-500 text-sm">{t('privacy.cookies.manage')}</p>
+            <p className="mt-4 text-slate-700 text-sm">{t('privacy.cookies.manage')}</p>
           </Section>
 
           {/* Complaint */}
@@ -272,7 +272,7 @@ export default function Privacy() {
           </Section>
 
           <div className="border-t border-slate-200 pt-8">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {t('privacy.lastUpdated')} {formatDate()}
             </p>
           </div>
@@ -280,7 +280,7 @@ export default function Privacy() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-8">
+      <footer className="bg-slate-900 text-slate-600 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm">&copy; {t('privacy.copyright')}</p>
         </div>

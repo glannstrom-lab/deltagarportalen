@@ -86,7 +86,7 @@ export function RoleSelector() {
       {/* Header */}
       <div className="px-6 py-4 border-b border-slate-100">
         <h3 className="text-lg font-semibold text-slate-900">Roll och behörigheter</h3>
-        <p className="text-sm text-slate-500 mt-1">
+        <p className="text-sm text-slate-700 mt-1">
           Välj vilken roll du vill använda just nu. Dina tillgängliga roller bestämmer vilka funktioner du har tillgång till.
         </p>
       </div>
@@ -128,7 +128,7 @@ export function RoleSelector() {
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 mt-0.5">{config.description}</p>
+                  <p className="text-sm text-slate-700 mt-0.5">{config.description}</p>
                 </div>
 
                 <div className={cn(
@@ -187,7 +187,7 @@ export function RoleSelector() {
                         <Icon className={cn('w-5 h-5', config.color)} />
                         <div>
                           <span className="font-medium text-slate-900">{config.label}</span>
-                          <p className="text-xs text-slate-500">{config.description}</p>
+                          <p className="text-xs text-slate-700">{config.description}</p>
                         </div>
                       </label>
                     )
@@ -225,7 +225,7 @@ export function RoleSelector() {
       {/* Info */}
       <div className="px-6 py-4 bg-slate-50 border-t border-slate-100">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-slate-400 flex-shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-slate-600 flex-shrink-0 mt-0.5" />
           <div className="text-sm text-slate-600">
             <p className="font-medium text-slate-700 mb-1">Om roller</p>
             <ul className="space-y-1 list-disc list-inside">

@@ -82,7 +82,7 @@ export function ApplicationCard({
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-slate-900 text-sm line-clamp-1">{jobTitle}</h4>
-            <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+            <p className="text-xs text-slate-700 flex items-center gap-1 mt-0.5">
               <Building2 className="w-3 h-3 flex-shrink-0" />
               <span className="truncate">{companyName}</span>
             </p>
@@ -93,7 +93,7 @@ export function ApplicationCard({
         </div>
 
         <div className="flex items-center justify-between mt-2">
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-600">
             {daysSinceUpdate === 0 ? 'Idag' : `${daysSinceUpdate}d sedan`}
           </span>
           {isStale && (
@@ -192,7 +192,7 @@ export function ApplicationCard({
                     }}
                     className="p-1.5 hover:bg-slate-100 rounded"
                   >
-                    <MoreVertical className="w-4 h-4 text-slate-400" />
+                    <MoreVertical className="w-4 h-4 text-slate-600" />
                   </button>
 
                   {showMenu && (
@@ -249,7 +249,7 @@ export function ApplicationCard({
           </div>
 
           {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-slate-500">
+          <div className="flex flex-wrap items-center gap-2 mt-2 text-xs text-slate-700">
             {location && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
@@ -307,7 +307,7 @@ export function ApplicationCard({
 
           {/* Notes preview */}
           {application.notes && variant === 'expanded' && (
-            <p className="text-sm text-slate-500 mt-2 line-clamp-2 italic">
+            <p className="text-sm text-slate-700 mt-2 line-clamp-2 italic">
               "{application.notes}"
             </p>
           )}

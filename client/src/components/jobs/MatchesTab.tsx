@@ -86,7 +86,7 @@ function SourceToggle({
       disabled={!available}
       className={cn(
         "flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 transition-all",
-        active && available ? colors[source] : "bg-white border-slate-200 text-slate-500",
+        active && available ? colors[source] : "bg-white border-slate-200 text-slate-700",
         !available && "opacity-50 cursor-not-allowed",
         available && !active && "hover:border-slate-300"
       )}
@@ -141,14 +141,14 @@ function LocationSelector({
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center gap-2 px-4 py-2.5 rounded-xl border-2 border-slate-200 bg-white hover:border-slate-300 transition-colors"
       >
-        <MapPin className="w-4 h-4 text-slate-500" />
+        <MapPin className="w-4 h-4 text-slate-700" />
         <span className="font-medium text-sm text-slate-700">
           {selected.length === 0
             ? 'Alla orter'
             : `${selected.length} ${selected.length === 1 ? 'ort' : 'orter'}`
           }
         </span>
-        <ChevronDown className={cn("w-4 h-4 text-slate-400 transition-transform", isOpen && "rotate-180")} />
+        <ChevronDown className={cn("w-4 h-4 text-slate-600 transition-transform", isOpen && "rotate-180")} />
       </button>
 
       {isOpen && (
@@ -184,7 +184,7 @@ function LocationSelector({
 
             <div className="max-h-60 overflow-y-auto p-2">
               {filteredMunicipalities.length === 0 ? (
-                <p className="text-sm text-slate-500 text-center py-4">Inga träffar</p>
+                <p className="text-sm text-slate-700 text-center py-4">Inga träffar</p>
               ) : (
                 filteredMunicipalities.map(m => (
                   <button
@@ -272,7 +272,7 @@ const MatchCard = memo(function MatchCard({
             {job.employer?.name || 'Okänt företag'}
           </p>
           {job.workplace_address?.municipality && (
-            <p className="text-sm text-slate-500 flex items-center gap-1 mt-0.5">
+            <p className="text-sm text-slate-700 flex items-center gap-1 mt-0.5">
               <MapPin className="w-3.5 h-3.5" />
               {job.workplace_address.municipality}
             </p>
@@ -286,7 +286,7 @@ const MatchCard = memo(function MatchCard({
             "p-2 rounded-lg transition-colors",
             isSaved
               ? "bg-red-100 text-red-600"
-              : "hover:bg-slate-100 text-slate-400 hover:text-red-500"
+              : "hover:bg-slate-100 text-slate-600 hover:text-red-500"
           )}
         >
           <Heart className={cn("w-5 h-5", isSaved && "fill-current")} />
@@ -297,7 +297,7 @@ const MatchCard = memo(function MatchCard({
         <div className="px-5 pb-3">
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="flex items-center gap-2 text-xs text-slate-500 hover:text-slate-700"
+            className="flex items-center gap-2 text-xs text-slate-700 hover:text-slate-700"
           >
             <Settings2 className="w-3 h-3" />
             Visa matchningsdetaljer
@@ -328,7 +328,7 @@ const MatchCard = memo(function MatchCard({
       )}
 
       <div className="flex items-center justify-between px-5 py-3 border-t border-slate-100 bg-slate-50">
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-slate-700">
           {new Date(job.publication_date).toLocaleDateString('sv-SE')}
         </span>
         {job.webpage_url && (
@@ -357,7 +357,7 @@ function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
         <h3 className="text-2xl font-bold text-slate-800 mb-3">
           Skapa din profil först
         </h3>
-        <p className="text-slate-500 mb-8 max-w-md mx-auto">
+        <p className="text-slate-700 mb-8 max-w-md mx-auto">
           För att hitta matchningar behöver du skapa ditt CV, ta intresseguiden eller sätta karriärmål.
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -387,7 +387,7 @@ function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
   return (
     <Card className="p-8 text-center">
       <Sparkles className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-      <p className="text-slate-500">
+      <p className="text-slate-700">
         Inga jobb hittades. Prova att välja en annan källa eller ändra ortsfilter.
       </p>
     </Card>
@@ -803,7 +803,7 @@ export function MatchesTab() {
       <Card className="p-12 text-center">
         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-slate-700 mb-2">Något gick fel</h3>
-        <p className="text-slate-500 mb-4">{error}</p>
+        <p className="text-slate-700 mb-4">{error}</p>
         <Button onClick={loadData}>
           <RefreshCw className="w-4 h-4 mr-2" />
           Försök igen
@@ -822,7 +822,7 @@ export function MatchesTab() {
               <Sparkles className="w-5 h-5 text-amber-500" />
               Jobbmatchningar
             </h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               Välj källa för att se matchande jobb
             </p>
           </div>

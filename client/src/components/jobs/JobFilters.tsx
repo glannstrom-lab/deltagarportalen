@@ -150,10 +150,10 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           className="w-full flex items-center justify-between py-3 px-1 hover:bg-slate-50 rounded-lg transition-colors"
         >
           <div className="flex items-center gap-2">
-            {Icon && <Icon size={18} className="text-slate-500" />}
+            {Icon && <Icon size={18} className="text-slate-700" />}
             <span className="font-medium text-slate-700">{title}</span>
           </div>
-          {isExpanded ? <ChevronUp size={18} className="text-slate-400" /> : <ChevronDown size={18} className="text-slate-400" />}
+          {isExpanded ? <ChevronUp size={18} className="text-slate-600" /> : <ChevronDown size={18} className="text-slate-600" />}
         </button>
         {isExpanded && (
           <div className="pb-4 px-1">
@@ -169,7 +169,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       {/* Search */}
       <FilterSection title="Sökord" section="search" icon={Search}>
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
           <input
             type="text"
             placeholder="Yrke, företag, nyckelord..."
@@ -185,7 +185,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         <div className="space-y-3">
           {/* Kommun/Ort */}
           <div className="relative">
-            <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+            <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" />
             <input
               type="text"
               placeholder="Skriv ort eller kommun..."
@@ -332,7 +332,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               onChange={(e) => updateFilter('salaryMin', parseInt(e.target.value) || 0)}
               className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm"
             />
-            <span className="text-slate-400">-</span>
+            <span className="text-slate-600">-</span>
             <input
               type="number"
               placeholder="Max"
@@ -341,7 +341,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm"
             />
           </div>
-          <p className="text-xs text-slate-500">Ange önskad månadslön i kr</p>
+          <p className="text-xs text-slate-700">Ange önskad månadslön i kr</p>
         </div>
       </FilterSection>
 
@@ -375,7 +375,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           />
           <div>
             <div className="font-medium text-sm text-slate-700">Körkort krävs</div>
-            <div className="text-xs text-slate-500">Visa endast jobb som kräver körkort</div>
+            <div className="text-xs text-slate-700">Visa endast jobb som kräver körkort</div>
           </div>
         </label>
       </FilterSection>
@@ -438,7 +438,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               Visar <strong className="text-slate-900">{jobCount}</strong> jobb
             </span>
             {totalJobs > jobCount && (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-700">
                 av {totalJobs} totala
               </span>
             )}
@@ -476,7 +476,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                   onClick={() => setShowMobileFilters(false)}
                   className="p-2 hover:bg-slate-100 rounded-lg"
                 >
-                  <X size={20} className="text-slate-500" />
+                  <X size={20} className="text-slate-700" />
                 </button>
               </div>
 

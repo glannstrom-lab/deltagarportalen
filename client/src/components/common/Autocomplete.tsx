@@ -158,7 +158,7 @@ export function Autocomplete({
       )}
       
       <div className="relative">
-        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
+        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600">
           <Search size={18} />
         </div>
         
@@ -175,21 +175,21 @@ export function Autocomplete({
           disabled={disabled}
           className="w-full pl-10 pr-10 py-2.5 border border-slate-200 rounded-xl 
                      focus:outline-none focus:ring-2 focus:ring-[#4f46e5] focus:border-transparent
-                     disabled:bg-slate-100 disabled:text-slate-500
+                     disabled:bg-slate-100 disabled:text-slate-700
                      transition-all"
           autoComplete="off"
         />
         
         {isLoading && (
           <div className="absolute right-3 top-1/2 -translate-y-1/2">
-            <Loader2 size={18} className="animate-spin text-slate-400" />
+            <Loader2 size={18} className="animate-spin text-slate-600" />
           </div>
         )}
         
         {!isLoading && inputValue && (
           <button
             onClick={handleClear}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 
                        hover:text-slate-600 transition-colors"
             type="button"
           >
@@ -206,7 +206,7 @@ export function Autocomplete({
           {Object.entries(groupedSuggestions).map(([category, items]) => (
             <div key={category}>
               {showCategories && category !== '' && (
-                <div className="px-3 py-1.5 text-xs font-semibold text-slate-500 bg-slate-50 uppercase tracking-wider">
+                <div className="px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50 uppercase tracking-wider">
                   {category}
                 </div>
               )}
@@ -229,7 +229,7 @@ export function Autocomplete({
                     <div className="font-medium">{suggestion.label}</div>
                     {suggestion.description && (
                       <div className={`text-xs mt-0.5 truncate
-                        ${isHighlighted ? 'text-white/80' : 'text-slate-500'}`}>
+                        ${isHighlighted ? 'text-white/80' : 'text-slate-700'}`}>
                         {suggestion.description}
                       </div>
                     )}
@@ -240,7 +240,7 @@ export function Autocomplete({
           ))}
           
           {suggestions.length === 0 && inputValue.length >= minLength && !isLoading && (
-            <div className="px-3 py-4 text-sm text-slate-500 text-center">
+            <div className="px-3 py-4 text-sm text-slate-700 text-center">
               Inga resultat hittades
             </div>
           )}

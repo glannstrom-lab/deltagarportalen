@@ -143,7 +143,7 @@ export function KeywordMatcher({ cvData, jobDescription = '' }: KeywordMatcherPr
         </div>
         <div>
           <h3 className="font-semibold text-slate-800">Matcha mot jobbannons</h3>
-          <p className="text-sm text-slate-500">Klistra in en jobbannons för att se matchning</p>
+          <p className="text-sm text-slate-700">Klistra in en jobbannons för att se matchning</p>
         </div>
       </div>
 

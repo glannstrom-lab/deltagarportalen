@@ -347,7 +347,7 @@ export function BulkActionsDialog({
               <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                 {getTitle()}
               </h2>
-              <p className="text-sm text-stone-500 dark:text-stone-400">
+              <p className="text-sm text-stone-500 dark:text-stone-600">
                 {selectedParticipants.length} {t('consultant.bulk.participantsSelected', 'deltagare valda')}
               </p>
             </div>
@@ -445,7 +445,7 @@ export function BulkActionsDialog({
                         'border-2 border-transparent',
                         'focus:border-violet-500 focus:outline-none',
                         'text-stone-900 dark:text-stone-100',
-                        'placeholder:text-stone-400',
+                        'placeholder:text-stone-600',
                         'resize-none'
                       )}
                     />
@@ -513,7 +513,7 @@ export function BulkActionsDialog({
                             : 'bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700'
                         )}
                       >
-                        <format.icon className="w-6 h-6 mx-auto mb-2 text-stone-600 dark:text-stone-400" />
+                        <format.icon className="w-6 h-6 mx-auto mb-2 text-stone-600 dark:text-stone-600" />
                         <p className="font-medium text-sm text-stone-900 dark:text-stone-100">
                           {format.label}
                         </p>

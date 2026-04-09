@@ -92,7 +92,7 @@ export function CookieConsent() {
               <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-2">
                 {t('cookieConsent.title')}
               </h2>
-              <p className="text-sm text-stone-600 dark:text-stone-400 mb-4">
+              <p className="text-sm text-stone-600 dark:text-stone-600 mb-4">
                 {t('cookieConsent.description')}
               </p>
 
@@ -105,12 +105,12 @@ export function CookieConsent() {
                       <p className="font-medium text-stone-800 dark:text-stone-200">
                         {t('cookieConsent.necessary')}
                       </p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">
+                      <p className="text-xs text-stone-500 dark:text-stone-600">
                         {t('cookieConsent.necessaryDesc')}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs text-stone-400">
+                      <span className="text-xs text-stone-600">
                         {t('settings.privacy.consent.required')}
                       </span>
                       <div className="w-10 h-6 bg-green-500 rounded-full flex items-center justify-end px-1">
@@ -125,7 +125,7 @@ export function CookieConsent() {
                       <p className="font-medium text-stone-800 dark:text-stone-200">
                         {t('cookieConsent.analytics')}
                       </p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400">
+                      <p className="text-xs text-stone-500 dark:text-stone-600">
                         {t('cookieConsent.analyticsDesc')}
                       </p>
                     </div>
@@ -144,7 +144,7 @@ export function CookieConsent() {
               )}
 
               {/* Links */}
-              <p className="text-xs text-stone-500 dark:text-stone-400 mb-4">
+              <p className="text-xs text-stone-500 dark:text-stone-600 mb-4">
                 {t('cookieConsent.moreInfo')}{' '}
                 <Link to="/privacy" className="text-indigo-600 hover:underline">
                   {t('cookieConsent.privacyPolicy')}

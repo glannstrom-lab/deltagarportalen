@@ -29,7 +29,7 @@ export function LoadingState({ message, size = 'md' }: LoadingStateProps) {
           className={`absolute inset-0 ${spinnerSizes[size]} rounded-full border-4 border-transparent border-t-violet-600 dark:border-t-violet-400 animate-spin`}
         />
       </div>
-      <p className="text-stone-500 dark:text-stone-400 text-sm font-medium">{displayMessage}</p>
+      <p className="text-stone-500 dark:text-stone-600 text-sm font-medium">{displayMessage}</p>
     </div>
   )
 }

@@ -110,7 +110,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
             className="p-2 hover:bg-slate-100 rounded-lg"
             aria-label="Stäng dialog"
           >
-            <X size={20} className="text-slate-500" aria-hidden="true" />
+            <X size={20} className="text-slate-700" aria-hidden="true" />
           </button>
         </div>
 
@@ -123,7 +123,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-teal-600 text-teal-600'
-                  : 'border-transparent text-slate-500 hover:text-slate-700'
+                  : 'border-transparent text-slate-700 hover:text-slate-700'
               }`}
             >
               {tab.label}

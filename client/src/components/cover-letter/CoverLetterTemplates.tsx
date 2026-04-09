@@ -94,7 +94,7 @@ export function CoverLetterTemplates() {
                   <h3 className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">
                     {template.name}
                   </h3>
-                  <p className="text-xs text-slate-500 mt-0.5">
+                  <p className="text-xs text-slate-700 mt-0.5">
                     {template.category === 'standard' && 'Allround'}
                     {template.category === 'short' && 'Kort & koncis'}
                     {template.category === 'formal' && 'Formell'}
@@ -115,17 +115,17 @@ export function CoverLetterTemplates() {
                 {Object.entries(template.structure).slice(0, 2).map(([key, value]) => (
                   <div key={key} className="flex items-start gap-2 text-xs">
                     <CheckCircle2 size={12} className="text-indigo-500 mt-0.5 shrink-0" />
-                    <span className="text-slate-500 line-clamp-1">{value}</span>
+                    <span className="text-slate-700 line-clamp-1">{value}</span>
                   </div>
                 ))}
-                <div className="text-xs text-slate-400 pl-5">
+                <div className="text-xs text-slate-600 pl-5">
                   + {Object.keys(template.structure).length - 2} delar till
                 </div>
               </div>
 
               {/* Action */}
               <div className="flex items-center justify-between pt-3 border-t border-slate-100">
-                <span className="text-xs text-slate-400">
+                <span className="text-xs text-slate-600">
                   {template.tips.length} tips
                 </span>
                 <Button 
@@ -190,7 +190,7 @@ function TemplateModal({
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            <X size={20} className="text-slate-400" />
+            <X size={20} className="text-slate-600" />
           </button>
         </div>
 
@@ -209,7 +209,7 @@ function TemplateModal({
                   'px-6 py-3 text-sm font-medium border-b-2 transition-colors',
                   activeTab === tab.id
                     ? 'border-indigo-500 text-indigo-600'
-                    : 'border-transparent text-slate-500 hover:text-slate-700'
+                    : 'border-transparent text-slate-700 hover:text-slate-700'
                 )}
               >
                 {tab.label}

@@ -166,7 +166,7 @@ export default function Terms() {
           </section>
 
           <div className="border-t border-slate-200 pt-8">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {t('terms.lastUpdated')} {formatDate()}
             </p>
           </div>
@@ -174,7 +174,7 @@ export default function Terms() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 py-8">
+      <footer className="bg-slate-900 text-slate-600 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <p className="text-sm">
             &copy; {t('terms.copyright')}

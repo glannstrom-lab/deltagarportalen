@@ -320,8 +320,8 @@ export default function OverviewTab() {
       {/* Empty state */}
       {visibleWidgets.length === 0 && (
         <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-500 mb-1">Inga widgets synliga</p>
-          <p className="text-sm text-slate-400">
+          <p className="text-slate-700 mb-1">Inga widgets synliga</p>
+          <p className="text-sm text-slate-600">
             Klicka på "Filter" för att välja vad du vill se
           </p>
         </div>

@@ -49,12 +49,12 @@ export function QuickActions({ hasCV, hasInterestResult }: QuickActionsProps) {
               <p className={`text-sm ${
                 action.status === 'Påbörjat' || action.status === 'Genomförd' 
                   ? 'text-accent-green' 
-                  : 'text-slate-500'
+                  : 'text-slate-700'
               }`}>
                 {action.status}
               </p>
             </div>
-            <ArrowRight size={20} className="text-slate-400 group-hover:text-slate-600" />
+            <ArrowRight size={20} className="text-slate-600 group-hover:text-slate-600" />
           </Link>
         ))}
       </div>

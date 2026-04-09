@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Heart, ChevronRight, Plus, Flame, Sparkles } from '@/components/ui/icons'
@@ -19,7 +20,7 @@ const moodConfig: Record<string, { icon: string; color: string; bgColor: string;
   terrible: { icon: '😢', color: 'text-rose-600', bgColor: 'bg-rose-100', labelKey: 'wellnessWidget.mood.terrible' }
 }
 
-export function WellnessWidget({
+export const WellnessWidget = memo(function WellnessWidget({
   completedActivities = 0,
   streakDays = 0,
   moodToday = null,
@@ -41,7 +42,7 @@ export function WellnessWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('wellnessWidget.wellness')}</p>
-          <p className={cn("text-xs", moodInfo ? moodInfo.color : "text-slate-500 dark:text-slate-400")}>
+          <p className={cn("text-xs", moodInfo ? moodInfo.color : "text-slate-700 dark:text-slate-600")}>
             {moodInfo ? t(moodInfo.labelKey) : t('wellnessWidget.logMood')}
           </p>
         </div>
@@ -69,7 +70,7 @@ export function WellnessWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('wellnessWidget.wellness')}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.howAreYou')}</p>
+              <p className="text-xs text-slate-700 dark:text-slate-600">{t('wellnessWidget.howAreYou')}</p>
             </div>
           </div>
           <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-rose-500 dark:group-hover:text-rose-400 transition-colors" />
@@ -119,7 +120,7 @@ export function WellnessWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('wellnessWidget.yourWellness')}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t('wellnessWidget.activitiesThisWeek', { count: completedActivities })}</p>
+            <p className="text-sm text-slate-700 dark:text-slate-600">{t('wellnessWidget.activitiesThisWeek', { count: completedActivities })}</p>
           </div>
         </div>
         {streakDays > 0 && (
@@ -166,14 +167,14 @@ export function WellnessWidget({
             <Sparkles size={16} className="text-rose-500 dark:text-rose-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{completedActivities}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.activities')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{t('wellnessWidget.activities')}</p>
         </div>
         <div className="p-3 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
           <div className="flex items-center gap-2">
             <Flame size={16} className="text-orange-500 dark:text-orange-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{streakDays}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('wellnessWidget.daysStreak')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{t('wellnessWidget.daysStreak')}</p>
         </div>
       </div>
 
@@ -186,6 +187,6 @@ export function WellnessWidget({
       </div>
     </Link>
   )
-}
+})
 
 export default WellnessWidget

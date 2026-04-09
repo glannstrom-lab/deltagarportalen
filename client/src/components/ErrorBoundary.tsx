@@ -127,7 +127,7 @@ export class ErrorBoundary extends Component<Props, State> {
               </Link>
             </div>
 
-            <p className="text-xs text-slate-400 mt-6">
+            <p className="text-xs text-slate-600 mt-6">
               Om problemet kvarstår, kontakta support.
             </p>
           </div>

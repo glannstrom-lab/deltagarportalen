@@ -57,7 +57,7 @@ export const MobileWidgetFilter = memo(function MobileWidgetFilter({
         className="w-full flex items-center justify-between p-3 active:bg-slate-50 transition-colors"
       >
         <div className="flex items-center gap-2">
-          <Eye size={16} className="text-slate-500" />
+          <Eye size={16} className="text-slate-700" />
           <span className="text-sm font-medium text-slate-700">
             {visibleCount} {visibleCount === 1 ? 'modul' : 'moduler'} synliga
           </span>
@@ -80,7 +80,7 @@ export const MobileWidgetFilter = memo(function MobileWidgetFilter({
               )
             })}
             {visibleCount > 3 && (
-              <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-xs text-slate-500 font-medium">
+              <div className="w-6 h-6 rounded-full bg-slate-100 border-2 border-white flex items-center justify-center text-xs text-slate-700 font-medium">
                 +{visibleCount - 3}
               </div>
             )}
@@ -88,7 +88,7 @@ export const MobileWidgetFilter = memo(function MobileWidgetFilter({
           <ChevronDown 
             size={18} 
             className={cn(
-              'text-slate-400 transition-transform duration-200',
+              'text-slate-600 transition-transform duration-200',
               isExpanded && 'rotate-180'
             )} 
           />
@@ -100,7 +100,7 @@ export const MobileWidgetFilter = memo(function MobileWidgetFilter({
         <div className="px-3 pb-3 border-t border-slate-100">
           {/* Quick actions */}
           <div className="flex items-center justify-between py-2 mb-2">
-            <span className="text-xs text-slate-500">Välj vad du vill se:</span>
+            <span className="text-xs text-slate-700">Välj vad du vill se:</span>
             <div className="flex items-center gap-1">
               <button
                 onClick={onShowAll}
@@ -111,7 +111,7 @@ export const MobileWidgetFilter = memo(function MobileWidgetFilter({
               <span className="text-slate-300">|</span>
               <button
                 onClick={onHideAll}
-                className="text-xs text-slate-500 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
+                className="text-xs text-slate-700 hover:text-slate-700 px-2 py-1 hover:bg-slate-100 rounded transition-colors"
               >
                 Ingen
               </button>
@@ -132,7 +132,7 @@ export const MobileWidgetFilter = memo(function MobileWidgetFilter({
                     'flex flex-col items-center gap-1 p-2 rounded-lg text-xs font-medium transition-all duration-200',
                     isVisible
                       ? `${widget.color} border border-current`
-                      : 'bg-slate-50 text-slate-400 border border-transparent opacity-60'
+                      : 'bg-slate-50 text-slate-600 border border-transparent opacity-60'
                   )}
                 >
                   <Icon size={18} />

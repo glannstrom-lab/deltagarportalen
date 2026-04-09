@@ -85,7 +85,7 @@ export default function Login() {
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">{t('auth.welcomeBack')}</h2>
-          <p className="text-slate-500 text-center mb-6">{t('auth.loginToContinue')}</p>
+          <p className="text-slate-700 text-center mb-6">{t('auth.loginToContinue')}</p>
 
           {(authError || errors.email || errors.password) && (
             <div
@@ -106,7 +106,7 @@ export default function Login() {
                 {t('auth.email')}
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={20} />
                 <input
                   id="email"
                   name="email"
@@ -138,7 +138,7 @@ export default function Login() {
                 {t('auth.password')}
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={20} />
                 <input
                   id="password"
                   name="password"
@@ -161,7 +161,7 @@ export default function Login() {
                   onClick={() => setShowPassword(!showPassword)}
                   aria-label={showPassword ? 'Dölj lösenord' : 'Visa lösenord'}
                   aria-pressed={showPassword}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-600"
                 >
                   {showPassword ? <EyeOff size={20} aria-hidden="true" /> : <Eye size={20} aria-hidden="true" />}
                 </button>

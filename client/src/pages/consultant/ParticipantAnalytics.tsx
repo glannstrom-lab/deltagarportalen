@@ -140,7 +140,7 @@ export default function ParticipantAnalytics() {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-slate-500">{p.email} • {p.lastActive}</p>
+                <p className="text-sm text-slate-700">{p.email} • {p.lastActive}</p>
               </div>
               <ChevronRight size={20} className="text-slate-300" />
             </div>
@@ -174,7 +174,7 @@ function StatCard({ icon, label, value, color }: {
         {icon}
       </div>
       <p className="text-2xl font-bold">{value}</p>
-      <p className="text-sm text-slate-500">{label}</p>
+      <p className="text-sm text-slate-700">{label}</p>
     </div>
   )
 }

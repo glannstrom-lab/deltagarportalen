@@ -38,7 +38,7 @@ export function CircleChart({ percentage, label, sublabel }: CircleChartProps) {
         </div>
       </div>
       <h4 className="font-semibold text-slate-800">{label}</h4>
-      {sublabel && <p className="text-sm text-slate-500 mt-1">{sublabel}</p>}
+      {sublabel && <p className="text-sm text-slate-700 mt-1">{sublabel}</p>}
     </div>
   )
 }

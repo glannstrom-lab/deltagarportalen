@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
+import { persist, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import type { User, Session } from '@supabase/supabase-js'
 import { setUser as setSentryUser } from '@/lib/sentry'
@@ -65,8 +65,9 @@ interface AuthState {
 }
 
 export const useAuthStore = create<AuthState>()(
-  persist(
-    (set, get) => ({
+  devtools(
+    persist(
+      (set, get) => ({
       // Initial state
       user: null,
       profile: null,
@@ -372,16 +373,18 @@ export const useAuthStore = create<AuthState>()(
       setSigningOut: (value: boolean) => {
         set({ isSigningOut: value })
       },
-    }),
-    {
-      name: 'auth-storage',
-      // SECURITY: Only persist non-sensitive state
-      // Session tokens are managed by Supabase's own secure storage
-      partialize: (state) => ({
-        profile: state.profile,
-        isAuthenticated: state.isAuthenticated,
       }),
-    }
+      {
+        name: 'auth-storage',
+        // SECURITY: Only persist non-sensitive state
+        // Session tokens are managed by Supabase's own secure storage
+        partialize: (state) => ({
+          profile: state.profile,
+          isAuthenticated: state.isAuthenticated,
+        }),
+      }
+    ),
+    { name: 'AuthStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
 

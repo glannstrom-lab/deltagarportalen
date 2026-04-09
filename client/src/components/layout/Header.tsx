@@ -12,7 +12,7 @@ export function Header() {
           <p className="text-sm font-medium text-slate-900">
             {user?.firstName} {user?.lastName}
           </p>
-          <p className="text-xs text-slate-500">{user?.email}</p>
+          <p className="text-xs text-slate-700">{user?.email}</p>
         </div>
         <div className="w-9 h-9 bg-violet-100 rounded-full flex items-center justify-center">
           <User size={18} className="text-violet-600" />

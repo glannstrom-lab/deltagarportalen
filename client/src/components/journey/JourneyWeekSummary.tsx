@@ -42,7 +42,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
           <div className="text-2xl font-bold text-slate-900">
             {summary.daysActive}/{summary.totalDays}
           </div>
-          <div className="text-xs text-slate-500">dagar aktiv</div>
+          <div className="text-xs text-slate-700">dagar aktiv</div>
         </div>
 
         <div className="bg-white rounded-xl p-4 text-center shadow-sm">
@@ -52,7 +52,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
           <div className="text-2xl font-bold text-slate-900">
             {summary.xpEarned}
           </div>
-          <div className="text-xs text-slate-500">XP intjänat</div>
+          <div className="text-xs text-slate-700">XP intjänat</div>
         </div>
 
         <div className="bg-white rounded-xl p-4 text-center shadow-sm">
@@ -62,7 +62,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
           <div className="text-2xl font-bold text-slate-900">
             {summary.applicationsSubmitted}
           </div>
-          <div className="text-xs text-slate-500">ansökningar</div>
+          <div className="text-xs text-slate-700">ansökningar</div>
         </div>
 
         <div className="bg-white rounded-xl p-4 text-center shadow-sm">
@@ -72,7 +72,7 @@ export function JourneyWeekSummary({ summary }: JourneyWeekSummaryProps) {
           <div className="text-2xl font-bold text-slate-900">
             {summary.articlesRead}
           </div>
-          <div className="text-xs text-slate-500">artiklar lästa</div>
+          <div className="text-xs text-slate-700">artiklar lästa</div>
         </div>
       </div>
 

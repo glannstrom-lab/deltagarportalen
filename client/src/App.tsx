@@ -75,7 +75,7 @@ function PageLoader() {
     >
       <div className="text-center">
         <Loader2 className="animate-spin text-violet-600 mx-auto mb-3" size={32} aria-hidden="true" />
-        <p className="text-sm text-slate-500">Laddar sida...</p>
+        <p className="text-sm text-slate-700">Laddar sida...</p>
       </div>
     </div>
   )

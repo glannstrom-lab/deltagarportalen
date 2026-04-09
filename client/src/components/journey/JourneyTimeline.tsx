@@ -85,7 +85,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
         <h3 className="text-lg font-semibold text-slate-900 mb-4">Din resa hittills</h3>
         <div className="text-center py-8">
           <Activity className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500">
+          <p className="text-slate-700">
             Dina aktiviteter kommer att visas här när du börjar använda portalen.
           </p>
         </div>
@@ -107,7 +107,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
       <div className="space-y-6">
         {Object.entries(groupedActivities).map(([dateGroup, dateActivities]) => (
           <div key={dateGroup}>
-            <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wide mb-3">
+            <h4 className="text-sm font-medium text-slate-700 uppercase tracking-wide mb-3">
               {dateGroup}
             </h4>
 
@@ -162,7 +162,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
                         </div>
 
                         {activity.description && (
-                          <p className="text-xs text-slate-500 mt-0.5">
+                          <p className="text-xs text-slate-700 mt-0.5">
                             {activity.description}
                           </p>
                         )}
@@ -175,7 +175,7 @@ export function JourneyTimeline({ activities, maxItems = 10 }: JourneyTimelinePr
                         )}
                       </div>
 
-                      <span className="text-xs text-slate-400 flex-shrink-0">
+                      <span className="text-xs text-slate-600 flex-shrink-0">
                         {formatTimeAgo(activity.timestamp)}
                       </span>
                     </div>

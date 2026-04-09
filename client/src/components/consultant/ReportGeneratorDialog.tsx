@@ -184,7 +184,7 @@ export function ReportGeneratorDialog({
               <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100">
                 {t('consultant.report.title', 'Generera PDF-rapport')}
               </h2>
-              <p className="text-sm text-stone-500 dark:text-stone-400">
+              <p className="text-sm text-stone-500 dark:text-stone-600">
                 {step === 'options'
                   ? t('consultant.report.configureOptions', 'Anpassa rapportinnehåll')
                   : t('consultant.report.previewReport', 'Förhandsgranska rapporten')}
@@ -207,7 +207,7 @@ export function ReportGeneratorDialog({
               <div>
                 <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-2">
                   {t('consultant.report.reportTitle', 'Rapporttitel')}
-                  <span className="text-stone-400 font-normal ml-1">
+                  <span className="text-stone-600 font-normal ml-1">
                     ({t('common.optional', 'valfritt')})
                   </span>
                 </label>
@@ -222,7 +222,7 @@ export function ReportGeneratorDialog({
                     'border-2 border-transparent',
                     'focus:border-violet-500 focus:outline-none',
                     'text-stone-900 dark:text-stone-100',
-                    'placeholder:text-stone-400'
+                    'placeholder:text-stone-600'
                   )}
                 />
               </div>
@@ -322,12 +322,12 @@ export function ReportGeneratorDialog({
                               {section.title}
                             </p>
                             {section.required && (
-                              <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-400">
+                              <span className="text-xs px-2 py-0.5 rounded-full bg-stone-200 dark:bg-stone-700 text-stone-600 dark:text-stone-600">
                                 {t('common.required', 'Obligatorisk')}
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-stone-500 dark:text-stone-400">
+                          <p className="text-sm text-stone-500 dark:text-stone-600">
                             {section.description}
                           </p>
                         </div>

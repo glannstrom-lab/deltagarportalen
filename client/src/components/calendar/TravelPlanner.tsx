@@ -152,9 +152,9 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
             {travel?.reimbursed ? (
               <CheckCircle className="w-5 h-5 text-green-600" />
             ) : (
-              <Circle className="w-5 h-5 text-slate-400" />
+              <Circle className="w-5 h-5 text-slate-600" />
             )}
-            <span className={travel?.reimbursed ? 'text-green-600' : 'text-slate-500'}>
+            <span className={travel?.reimbursed ? 'text-green-600' : 'text-slate-700'}>
               Ersätts
             </span>
           </button>

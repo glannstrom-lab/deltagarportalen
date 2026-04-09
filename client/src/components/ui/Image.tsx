@@ -239,7 +239,7 @@ export const Image = forwardRef<HTMLImageElement, ImageProps>(
         {/* Error state */}
         {hasError && supportsModernFormat === 'original' && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-100">
-            <span className="text-slate-400 text-sm">Kunde inte ladda bilden</span>
+            <span className="text-slate-600 text-sm">Kunde inte ladda bilden</span>
           </div>
         )}
       </div>

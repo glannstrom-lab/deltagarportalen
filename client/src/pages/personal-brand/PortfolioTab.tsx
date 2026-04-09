@@ -241,10 +241,10 @@ export default function PortfolioTab() {
                         >
                           <Icon className={cn(
                             "w-5 h-5 mb-1",
-                            formData.item_type === key ? "text-amber-600" : "text-slate-400"
+                            formData.item_type === key ? "text-amber-600" : "text-slate-600"
                           )} />
                           <p className="font-medium text-sm">{type.label}</p>
-                          <p className="text-xs text-slate-500 hidden sm:block">{type.description}</p>
+                          <p className="text-xs text-slate-700 hidden sm:block">{type.description}</p>
                         </button>
                       )
                     })}
@@ -386,7 +386,7 @@ export default function PortfolioTab() {
         <Card className="text-center py-12">
           <FolderOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="font-semibold text-slate-700 mb-2">Ingen portfolio ännu</h3>
-          <p className="text-sm text-slate-500 mb-4 max-w-md mx-auto">
+          <p className="text-sm text-slate-700 mb-4 max-w-md mx-auto">
             Lägg till dina projekt, arbeten och certifikat för att visa din kompetens.
             En stark portfolio kan göra skillnaden i jobbsökandet.
           </p>
@@ -407,7 +407,7 @@ export default function PortfolioTab() {
             </div>
             <div>
               <p className="font-medium text-slate-700 text-sm">Kvalitet över kvantitet</p>
-              <p className="text-xs text-slate-500">Visa dina bästa 5-10 projekt</p>
+              <p className="text-xs text-slate-700">Visa dina bästa 5-10 projekt</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -416,7 +416,7 @@ export default function PortfolioTab() {
             </div>
             <div>
               <p className="font-medium text-slate-700 text-sm">Beskriv din roll</p>
-              <p className="text-xs text-slate-500">Vad bidrog du med specifikt?</p>
+              <p className="text-xs text-slate-700">Vad bidrog du med specifikt?</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
@@ -425,7 +425,7 @@ export default function PortfolioTab() {
             </div>
             <div>
               <p className="font-medium text-slate-700 text-sm">Visa resultat</p>
-              <p className="text-xs text-slate-500">Siffror och konkreta outcomes</p>
+              <p className="text-xs text-slate-700">Siffror och konkreta outcomes</p>
             </div>
           </div>
         </div>
@@ -468,14 +468,14 @@ function PortfolioCard({
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-slate-900 truncate">{item.title}</h4>
-            <p className="text-xs text-slate-500">{typeInfo.label}</p>
+            <p className="text-xs text-slate-700">{typeInfo.label}</p>
           </div>
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button onClick={() => onToggleFeatured(item)} className="p-1 hover:bg-slate-100 rounded">
               <Star className={cn("w-4 h-4", item.is_featured ? "text-amber-500 fill-amber-500" : "text-slate-300")} />
             </button>
             <button onClick={() => onEdit(item)} className="p-1 hover:bg-slate-100 rounded">
-              <Edit2 className="w-4 h-4 text-slate-400" />
+              <Edit2 className="w-4 h-4 text-slate-600" />
             </button>
             <button onClick={() => item.id && onDelete(item.id)} className="p-1 hover:bg-rose-100 rounded">
               <Trash2 className="w-4 h-4 text-rose-400" />
@@ -505,7 +505,7 @@ function PortfolioCard({
           <div className="flex items-start justify-between">
             <div>
               <h4 className="font-semibold text-slate-900">{item.title}</h4>
-              <p className="text-xs text-slate-500 flex items-center gap-1 mt-0.5">
+              <p className="text-xs text-slate-700 flex items-center gap-1 mt-0.5">
                 {typeInfo.label}
                 {item.start_date && (
                   <>
@@ -530,7 +530,7 @@ function PortfolioCard({
                 onClick={() => onEdit(item)}
                 className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
               >
-                <Edit2 className="w-4 h-4 text-slate-400" />
+                <Edit2 className="w-4 h-4 text-slate-600" />
               </button>
               <button
                 onClick={() => item.id && onDelete(item.id)}

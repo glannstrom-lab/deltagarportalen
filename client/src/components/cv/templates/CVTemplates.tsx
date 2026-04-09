@@ -1496,7 +1496,7 @@ CV skapat med mallen "${template.name}" från Jobin
             {/* Info */}
             <div className="p-5">
               <h3 className="font-semibold text-slate-800 text-lg mb-1">{template.name}</h3>
-              <p className="text-slate-500 text-sm mb-4">{template.description}</p>
+              <p className="text-slate-700 text-sm mb-4">{template.description}</p>
 
               {/* Features */}
               <div className="flex flex-wrap gap-2 mb-4">
@@ -1506,14 +1506,14 @@ CV skapat med mallen "${template.name}" från Jobin
                   </span>
                 ))}
                 {template.features.length > 2 && (
-                  <span className="text-xs text-slate-400 px-2 py-1">
+                  <span className="text-xs text-slate-600 px-2 py-1">
                     +{template.features.length - 2}
                   </span>
                 )}
               </div>
 
               {/* Stats */}
-              <div className="flex items-center justify-between text-sm text-slate-500 mb-4">
+              <div className="flex items-center justify-between text-sm text-slate-700 mb-4">
                 <span className="flex items-center gap-1">
                   <Download className="w-4 h-4" />
                   {template.downloads.toLocaleString('sv-SE')}
@@ -1650,8 +1650,8 @@ CV skapat med mallen "${template.name}" från Jobin
                     <div className="p-8 min-h-[400px]">
                       <div className="text-center mb-6 pb-6 border-b border-slate-200">
                         <h2 className="text-2xl font-light tracking-widest text-slate-800 uppercase mb-2">Anna Andersson</h2>
-                        <p className="text-sm text-slate-500 tracking-wide">Projektledare</p>
-                        <div className="flex justify-center gap-6 mt-4 text-xs text-slate-400">
+                        <p className="text-sm text-slate-700 tracking-wide">Projektledare</p>
+                        <div className="flex justify-center gap-6 mt-4 text-xs text-slate-600">
                           <span>anna@exempel.se</span>
                           <span>•</span>
                           <span>070-123 45 67</span>
@@ -1662,17 +1662,17 @@ CV skapat med mallen "${template.name}" från Jobin
 
                       <div className="space-y-6">
                         <div>
-                          <p className="text-[10px] uppercase tracking-[3px] text-slate-400 mb-3">Profil</p>
+                          <p className="text-[10px] uppercase tracking-[3px] text-slate-600 mb-3">Profil</p>
                           <p className="text-sm text-slate-600 leading-relaxed">
                             Erfaren projektledare med 8+ års erfarenhet av att leda tvärfunktionella team och leverera komplexa projekt.
                           </p>
                         </div>
 
                         <div className="flex gap-8">
-                          <div className="w-24 text-right text-xs text-slate-400">2020 — Nu</div>
+                          <div className="w-24 text-right text-xs text-slate-600">2020 — Nu</div>
                           <div className="flex-1">
                             <p className="font-semibold text-slate-800">Senior Projektledare</p>
-                            <p className="text-sm text-slate-500">Tech AB, Stockholm</p>
+                            <p className="text-sm text-slate-700">Tech AB, Stockholm</p>
                           </div>
                         </div>
                       </div>
@@ -1683,7 +1683,7 @@ CV skapat med mallen "${template.name}" från Jobin
                       <div className="bg-slate-900 text-white p-6">
                         <h2 className="text-2xl font-serif tracking-wide mb-1">ANNA ANDERSSON</h2>
                         <p className="text-amber-400 italic">Projektledare</p>
-                        <div className="flex gap-6 mt-3 text-xs text-slate-400">
+                        <div className="flex gap-6 mt-3 text-xs text-slate-600">
                           <span>anna@exempel.se</span>
                           <span>070-123 45 67</span>
                           <span>Stockholm</span>

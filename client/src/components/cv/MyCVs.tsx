@@ -301,7 +301,7 @@ export function MyCVs() {
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
           <input
             type="text"
             placeholder="Sök bland dina CV..."
@@ -328,7 +328,7 @@ export function MyCVs() {
       {filteredCVs.length === 0 ? (
         <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
           <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Folder className="w-10 h-10 text-slate-400" />
+            <Folder className="w-10 h-10 text-slate-600" />
           </div>
           <h3 className="text-lg font-semibold text-slate-800 mb-2">
             {searchQuery ? 'Inga CV matchade sökningen' : 'Inga CV hittades'}
@@ -383,27 +383,27 @@ export function MyCVs() {
                     
                     {/* Stats row */}
                     <div className="flex flex-wrap items-center gap-3 mt-2 text-sm">
-                      <span className="flex items-center gap-1 text-slate-500">
+                      <span className="flex items-center gap-1 text-slate-700">
                         <Calendar className="w-4 h-4" />
                         {formatDate(cv.created_at)}
                       </span>
                       
                       {cv.data?.workExperience && cv.data.workExperience.length > 0 && (
-                        <span className="flex items-center gap-1 text-slate-500">
+                        <span className="flex items-center gap-1 text-slate-700">
                           <Briefcase className="w-4 h-4" />
                           {cv.data.workExperience.length} erfarenheter
                         </span>
                       )}
                       
                       {cv.data?.education && cv.data.education.length > 0 && (
-                        <span className="flex items-center gap-1 text-slate-500">
+                        <span className="flex items-center gap-1 text-slate-700">
                           <GraduationCap className="w-4 h-4" />
                           {cv.data.education.length} utbildningar
                         </span>
                       )}
                       
                       {cv.data?.skills && cv.data.skills.length > 0 && (
-                        <span className="flex items-center gap-1 text-slate-500">
+                        <span className="flex items-center gap-1 text-slate-700">
                           <Award className="w-4 h-4" />
                           {cv.data.skills.length} kompetenser
                         </span>
@@ -430,7 +430,7 @@ export function MyCVs() {
                   {/* Preview */}
                   <button
                     onClick={() => setPreviewCV(cv)}
-                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                     title="Förhandsgranska"
                   >
                     <Eye className="w-5 h-5" />
@@ -439,7 +439,7 @@ export function MyCVs() {
                   {/* Edit */}
                   <button
                     onClick={() => handleEdit(cv)}
-                    className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                     title="Redigera"
                   >
                     <Edit2 className="w-5 h-5" />
@@ -462,7 +462,7 @@ export function MyCVs() {
                     <button
                       onClick={() => setActionMenuOpen(actionMenuOpen === cv.id ? null : cv.id)}
                       disabled={duplicatingId === cv.id || deletingId === cv.id}
-                      className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50"
+                      className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50"
                     >
                       {duplicatingId === cv.id || deletingId === cv.id ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -540,7 +540,7 @@ export function MyCVs() {
             <div className="flex items-center justify-between p-4 border-b">
               <div>
                 <h3 className="font-semibold text-slate-800">{previewCV.name}</h3>
-                <p className="text-sm text-slate-500">Förhandsgranskning</p>
+                <p className="text-sm text-slate-700">Förhandsgranskning</p>
               </div>
               <div className="flex items-center gap-2">
                 <PDFExportButton
@@ -553,7 +553,7 @@ export function MyCVs() {
                 />
                 <button
                   onClick={() => setPreviewCV(null)}
-                  className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg"
+                  className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>

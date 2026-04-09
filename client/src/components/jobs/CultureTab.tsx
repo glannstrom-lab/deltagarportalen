@@ -178,7 +178,7 @@ export function CultureTab() {
                     </p>
                     <p className={cn(
                       "text-sm",
-                      isSelected ? "text-violet-600" : "text-slate-500"
+                      isSelected ? "text-violet-600" : "text-slate-700"
                     )}>
                       {value.description}
                     </p>

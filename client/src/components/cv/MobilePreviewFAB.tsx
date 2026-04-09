@@ -50,7 +50,7 @@ export function MobilePreviewFAB({ data }: MobilePreviewFABProps) {
             </div>
             
             {/* Footer hint */}
-            <div className="p-4 bg-white border-t text-center text-sm text-slate-500">
+            <div className="p-4 bg-white border-t text-center text-sm text-slate-700">
               Svep nedåt eller tryck X för att stänga
             </div>
           </div>

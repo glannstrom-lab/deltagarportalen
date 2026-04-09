@@ -162,7 +162,7 @@ export default function LinkedInOptimizer() {
                 : 'border-slate-200 hover:border-blue-200 bg-white'
             }`}
           >
-            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-blue-600' : 'text-slate-400'}`} />
+            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-blue-600' : 'text-slate-600'}`} />
             <div className="font-medium text-slate-800 text-xs">{tab.label}</div>
           </button>
         ))}
@@ -308,7 +308,7 @@ export default function LinkedInOptimizer() {
               <div className="bg-white p-4 rounded-lg border border-blue-100">
                 <p className="text-slate-700 whitespace-pre-wrap">{resultat}</p>
               </div>
-              <p className="text-xs text-slate-500 mt-3">
+              <p className="text-xs text-slate-700 mt-3">
                 💡 {t('linkedInOptimizer.result.tip')}
               </p>
             </Card>
@@ -361,9 +361,9 @@ export default function LinkedInOptimizer() {
                     </div>
                   </div>
                   {expandedSection === section.name ? (
-                    <ChevronUp className="w-5 h-5 text-slate-400" />
+                    <ChevronUp className="w-5 h-5 text-slate-600" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-slate-400" />
+                    <ChevronDown className="w-5 h-5 text-slate-600" />
                   )}
                 </button>
 
@@ -388,7 +388,7 @@ export default function LinkedInOptimizer() {
                               }}
                               className="w-4 h-4 rounded border-slate-300 text-blue-600 cursor-pointer"
                             />
-                            <span className={item.completed ? 'line-through text-slate-400' : 'text-slate-700'}>{item.item}</span>
+                            <span className={item.completed ? 'line-through text-slate-600' : 'text-slate-700'}>{item.item}</span>
                           </label>
                         ))}
                       </div>

@@ -369,7 +369,7 @@ function StepBadge({ count, total = 3 }: { count: number; total?: number }) {
             className={`w-6 h-6 rounded-full flex items-center justify-center text-xs border-2 border-white transition-all duration-300 ${
               i < count 
                 ? 'bg-teal-500 text-white' 
-                : 'bg-slate-200 text-slate-400'
+                : 'bg-slate-200 text-slate-600'
             }`}
           >
             {i < count ? <Check className="w-3 h-3" /> : i + 1}
@@ -398,7 +398,7 @@ function EnergyIndicator({ level }: { level: EnergyLevel }) {
       <span className="text-lg">{config.emoji}</span>
       <div>
         <span className="font-medium text-slate-700">{config.label}</span>
-        <span className="text-slate-500 ml-1">· {config.desc}</span>
+        <span className="text-slate-700 ml-1">· {config.desc}</span>
       </div>
     </div>
   )
@@ -495,7 +495,7 @@ function TaskCard({
           <div className="flex gap-2 mt-3 pt-3 border-t border-current border-opacity-20">
             <button
               onClick={onSkip}
-              className="text-xs text-slate-500 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-white/50 transition-colors"
+              className="text-xs text-slate-700 hover:text-slate-700 flex items-center gap-1 px-2 py-1 rounded hover:bg-white/50 transition-colors"
             >
               <RotateCcw className="w-3 h-3" />
               Föreslå annat
@@ -505,7 +505,7 @@ function TaskCard({
               className={`text-xs flex items-center gap-1 px-2 py-1 rounded transition-colors ${
                 isSaved 
                   ? 'text-amber-600 bg-amber-50' 
-                  : 'text-slate-500 hover:text-slate-700 hover:bg-white/50'
+                  : 'text-slate-700 hover:text-slate-700 hover:bg-white/50'
               }`}
             >
               <Bookmark className={`w-3 h-3 ${isSaved ? 'fill-current' : ''}`} />
@@ -775,7 +775,7 @@ export function DailyStep({
             <Sparkles className="w-5 h-5 text-amber-500" />
             Dagens lilla steg
           </h3>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-700 mt-1">
             Ett litet steg i taget tar dig framåt
           </p>
         </div>
@@ -831,7 +831,7 @@ export function DailyStep({
       <div className="mb-6 p-4 bg-slate-50 rounded-xl">
         <div className="flex items-center justify-between mb-3">
           <StepBadge count={todayCompletedCount} total={dailyGoal} />
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-700">
             Mål: {dailyGoal} steg
           </span>
         </div>
@@ -856,7 +856,7 @@ export function DailyStep({
         </div>
         
         {/* Motiverande meddelande */}
-        <p className="text-xs text-slate-500 mt-2 text-center">
+        <p className="text-xs text-slate-700 mt-2 text-center">
           {todayCompletedCount === 0 
             ? 'Börja med ett enkelt steg - du klarar det! 🌟'
             : todayCompletedCount === 1
@@ -874,7 +874,7 @@ export function DailyStep({
             <Trophy className="w-4 h-4 text-amber-500" />
             Veckans resa
           </h4>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-700">
             {completedTasks.length} av 7 steg
           </span>
         </div>
@@ -890,15 +890,15 @@ export function DailyStep({
                   ${day.status === 'completed' 
                     ? 'bg-teal-500 text-white shadow-md scale-110' 
                     : day.status === 'missed'
-                    ? 'bg-slate-100 text-slate-400'
+                    ? 'bg-slate-100 text-slate-600'
                     : day.status === 'rest'
                     ? 'bg-indigo-100 text-indigo-600'
-                    : 'bg-slate-50 text-slate-500 border border-slate-200'}
+                    : 'bg-slate-50 text-slate-700 border border-slate-200'}
                 `}
               >
                 {dayStatusIcons[day.status] || day.day.charAt(0)}
               </div>
-              <span className="text-xs text-slate-400 mt-1">{day.day}</span>
+              <span className="text-xs text-slate-600 mt-1">{day.day}</span>
             </div>
           ))}
         </div>
@@ -934,7 +934,7 @@ export function DailyStep({
                 ? 'Halvvägs! Bra jobbat! 💪'
                 : 'Bra början! Fortsätt så! 🌟'}
             </p>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {Math.round(weekProgress)}% av veckans steg
             </p>
           </div>
@@ -969,7 +969,7 @@ export function DailyStep({
           <EnergyIndicator level={energyLevel} />
         </div>
         
-        <p className="text-xs text-slate-500 mt-2">
+        <p className="text-xs text-slate-700 mt-2">
           Vi anpassar uppgifterna efter hur du mår idag
         </p>
       </div>
@@ -988,7 +988,7 @@ export function DailyStep({
               ? 'Så nära! Ett steg till!' 
               : 'Bra jobbat! Du tog ett steg idag!'}
           </p>
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-sm text-slate-700 mt-2">
             {todayCompletedCount === dailyGoal 
               ? 'Ta en stund och känn dig stolt över dig själv.' 
               : 'Varje litet steg räknas'}
@@ -1010,7 +1010,7 @@ export function DailyStep({
           <p className="text-lg font-semibold text-indigo-700">
             Så klokt av dig att lyssna på kroppen!
           </p>
-          <p className="text-sm text-slate-500 mt-2">
+          <p className="text-sm text-slate-700 mt-2">
             Vila är också ett steg framåt. Kom tillbaka när du är redo. 💙
           </p>
         </div>
@@ -1029,7 +1029,7 @@ export function DailyStep({
               isSaved={savedTaskIds.has(selectedTask.id)}
             />
           ) : (
-            <div className="text-center py-8 text-slate-500">
+            <div className="text-center py-8 text-slate-700">
               <p>Inga uppgifter tillgängliga just nu</p>
               <button
                 onClick={() => setDismissedTasks([])}
@@ -1057,7 +1057,7 @@ export function DailyStep({
           <div className="mt-6 pt-4 border-t border-slate-100 flex flex-wrap gap-2 justify-between">
             <button
               onClick={handleNewTask}
-              className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
+              className="flex items-center gap-1 text-sm text-slate-700 hover:text-slate-700 px-3 py-1.5 rounded-lg hover:bg-slate-50 transition-colors"
             >
               <RotateCcw className="w-4 h-4" />
               Föreslå annan uppgift
@@ -1080,12 +1080,12 @@ export function DailyStep({
       {completedTasks.length > 0 && (
         <div className="mt-6 pt-4 border-t border-slate-100">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               Du har gjort <span className="font-semibold text-teal-600">{completedTasks.length}</span> steg denna vecka.
             </p>
             <span className="text-lg">🌟</span>
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-600 mt-1">
             {completedTasks.length >= 7 
               ? 'En hel vecka av små steg - imponerande!' 
               : completedTasks.length >= 3 
@@ -1098,9 +1098,9 @@ export function DailyStep({
       {/* Long-term goal reminder */}
       <div className="mt-4 p-3 bg-gradient-to-r from-slate-50 to-slate-100 rounded-lg">
         <div className="flex items-start gap-2">
-          <ThumbsUp className="w-4 h-4 text-slate-400 mt-0.5" />
+          <ThumbsUp className="w-4 h-4 text-slate-600 mt-0.5" />
           <div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700">
               Kom ihåg: Du arbetar mot ett bättre mående och en starkare framtid. 
               Varje litet steg tar dig närmare dit du vill vara.
             </p>

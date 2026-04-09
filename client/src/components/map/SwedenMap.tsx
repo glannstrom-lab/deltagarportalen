@@ -88,7 +88,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
   }
 
   const getTextColor = (count: number): string => {
-    if (count === 0) return 'text-slate-400'
+    if (count === 0) return 'text-slate-600'
     const ratio = count / maxJobs
     if (ratio < 0.6) return 'text-blue-700'
     return 'text-white'
@@ -145,7 +145,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800">Jobb i Sverige</h3>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700">
                 {totalJobs.toLocaleString()} lediga jobb
               </p>
             </div>
@@ -157,7 +157,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('map')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'map' ? "bg-white shadow-sm text-blue-600" : "text-slate-500"
+                viewMode === 'map' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
               )}
               title="Kartvy"
             >
@@ -167,7 +167,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('list')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'list' ? "bg-white shadow-sm text-blue-600" : "text-slate-500"
+                viewMode === 'list' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
               )}
               title="Listvy"
             >
@@ -177,7 +177,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
               onClick={() => setViewMode('grid')}
               className={cn(
                 "p-1.5 rounded-md transition-colors",
-                viewMode === 'grid' ? "bg-white shadow-sm text-blue-600" : "text-slate-500"
+                viewMode === 'grid' ? "bg-white shadow-sm text-blue-600" : "text-slate-700"
               )}
               title="Rutnät"
             >
@@ -188,7 +188,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
 
         {/* Legend */}
         <div className="flex items-center justify-between text-xs">
-          <span className="text-slate-500">Färre jobb</span>
+          <span className="text-slate-700">Färre jobb</span>
           <div className="flex gap-1">
             <div className="w-6 h-3 rounded bg-slate-100" />
             <div className="w-6 h-3 rounded bg-blue-100" />
@@ -197,7 +197,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
             <div className="w-6 h-3 rounded bg-blue-400" />
             <div className="w-6 h-3 rounded bg-blue-500" />
           </div>
-          <span className="text-slate-500">Fler jobb</span>
+          <span className="text-slate-700">Fler jobb</span>
         </div>
       </div>
 
@@ -348,7 +348,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
           <div className="space-y-2 max-h-[400px] overflow-y-auto">
             {/* Sort toggle */}
             <div className="flex items-center justify-between mb-3">
-              <span className="text-sm text-slate-500">
+              <span className="text-sm text-slate-700">
                 {sortedRegions.length} regioner med jobb
               </span>
               <select
@@ -377,11 +377,11 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                     "w-10 h-10 rounded-lg flex items-center justify-center",
                     getColorIntensity(region.jobCount)
                   )}>
-                    <MapPin size={18} className={region.jobCount > 0 ? "text-blue-600" : "text-slate-400"} />
+                    <MapPin size={18} className={region.jobCount > 0 ? "text-blue-600" : "text-slate-600"} />
                   </div>
                   <div>
                     <div className="font-medium text-slate-800 text-sm">{region.name}</div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs text-slate-700">
                       {region.population.toLocaleString()} invånare
                     </div>
                   </div>
@@ -390,13 +390,13 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                   <div className="font-semibold text-slate-800">
                     {region.jobCount.toLocaleString()}
                   </div>
-                  <div className="text-xs text-slate-500">jobb</div>
+                  <div className="text-xs text-slate-700">jobb</div>
                 </div>
               </button>
             ))}
 
             {sortedRegions.length === 0 && (
-              <div className="text-center py-8 text-slate-500">
+              <div className="text-center py-8 text-slate-700">
                 <MapPin className="w-12 h-12 mx-auto mb-3 opacity-30" />
                 <p>Inga jobb hittades i någon region</p>
                 <p className="text-sm mt-1">Ändra dina sökkriterier</p>
@@ -422,13 +422,13 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
                   "w-8 h-8 rounded-lg flex items-center justify-center mb-2",
                   getColorIntensity(region.jobCount)
                 )}>
-                  <Briefcase size={14} className={region.jobCount > 0 ? "text-blue-600" : "text-slate-400"} />
+                  <Briefcase size={14} className={region.jobCount > 0 ? "text-blue-600" : "text-slate-600"} />
                 </div>
                 <div className="font-medium text-slate-800 text-sm truncate">{region.name}</div>
                 <div className="text-lg font-semibold text-slate-700">
                   {region.jobCount.toLocaleString()}
                 </div>
-                <div className="text-xs text-slate-500">lediga jobb</div>
+                <div className="text-xs text-slate-700">lediga jobb</div>
               </button>
             ))}
           </div>
@@ -454,7 +454,7 @@ export const SwedenMap: React.FC<SwedenMapProps> = ({
             </div>
             <button
               onClick={() => onRegionSelect?.('')}
-              className="p-2 text-slate-400 hover:text-slate-600 hover:bg-white rounded-lg transition-colors"
+              className="p-2 text-slate-600 hover:text-slate-600 hover:bg-white rounded-lg transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

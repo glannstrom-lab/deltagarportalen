@@ -244,7 +244,7 @@ export function JobCard({
           <p className="text-slate-600 font-medium">{getDisplayCompany()}</p>
           
           {/* Meta info */}
-          <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-slate-500">
+          <div className="flex flex-wrap items-center gap-3 mt-2 text-sm text-slate-700">
             <div className="flex items-center gap-1">
               <MapPin size={14} />
               {getDisplayLocation()}
@@ -267,7 +267,7 @@ export function JobCard({
           {/* Matching skills */}
           {showMatch && matchingSkills.length > 0 && (
             <div className="mt-3">
-              <p className="text-xs text-slate-500 mb-1">Matchar ditt CV:</p>
+              <p className="text-xs text-slate-700 mb-1">Matchar ditt CV:</p>
               <div className="flex flex-wrap gap-1">
                 {matchingSkills.slice(0, 3).map((skill, index) => (
                   <span 
@@ -279,7 +279,7 @@ export function JobCard({
                   </span>
                 ))}
                 {matchingSkills.length > 3 && (
-                  <span className="text-xs px-2 py-1 text-slate-500">
+                  <span className="text-xs px-2 py-1 text-slate-700">
                     +{matchingSkills.length - 3}
                   </span>
                 )}
@@ -290,7 +290,7 @@ export function JobCard({
           {/* Missing skills */}
           {showMatch && missingSkills.length > 0 && (
             <div className="mt-2">
-              <p className="text-xs text-slate-500 mb-1">Saknas i ditt CV:</p>
+              <p className="text-xs text-slate-700 mb-1">Saknas i ditt CV:</p>
               <div className="flex flex-wrap gap-1">
                 {missingSkills.slice(0, 2).map((skill, index) => (
                   <span 
@@ -313,7 +313,7 @@ export function JobCard({
             className={`p-2 rounded-full transition-colors ${
               isSaved 
                 ? 'bg-red-50 text-red-500' 
-                : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
             title={isSaved ? 'Ta bort från sparade' : 'Spara jobb'}
           >
@@ -346,7 +346,7 @@ export function JobCard({
 
       {/* Footer */}
       <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-        <div className="flex items-center gap-4 text-xs text-slate-500">
+        <div className="flex items-center gap-4 text-xs text-slate-700">
           {salary && <span>💰 {salary}</span>}
           {deadline && (
             <span className="text-red-500">

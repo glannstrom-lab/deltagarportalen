@@ -152,7 +152,7 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
                 : t('knowledgeBase.forYou.allArticles')}
             </h3>
             {riasecProfile.hasResult && (
-              <span className="text-sm text-slate-400">
+              <span className="text-sm text-slate-600">
                 {t('knowledgeBase.forYou.basedOnProfile')}
               </span>
             )}
@@ -196,7 +196,7 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
           <h3 className="text-lg font-semibold text-slate-900 mb-2">
             {t('knowledgeBase.forYou.noArticles')}
           </h3>
-          <p className="text-slate-500">
+          <p className="text-slate-700">
             {t('knowledgeBase.forYou.noArticlesDescription')}
           </p>
         </Card>

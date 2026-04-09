@@ -151,11 +151,11 @@ export default function CourseCard({
     return (
       <div className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50 transition-colors group">
         <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center shrink-0">
-          <Play size={16} className="text-slate-400" />
+          <Play size={16} className="text-slate-600" />
         </div>
         <div className="flex-1 min-w-0">
           <h4 className="font-medium text-slate-800 truncate">{course.title}</h4>
-          <div className="flex items-center gap-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2 text-xs text-slate-700">
             <Clock size={12} />
             {formatDuration(course.duration_minutes)}
             <span className="w-1 h-1 bg-slate-300 rounded-full" />
@@ -307,7 +307,7 @@ export default function CourseCard({
         )}
         
         {/* Meta info */}
-        <div className="flex items-center gap-3 text-sm text-slate-500 mb-4">
+        <div className="flex items-center gap-3 text-sm text-slate-700 mb-4">
           <span className="flex items-center gap-1">
             <Clock size={14} />
             {formatDuration(course.duration_minutes)}
@@ -379,7 +379,7 @@ export default function CourseCard({
                   className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
                   title="Spara för senare"
                 >
-                  <Bookmark size={18} className="text-slate-400" />
+                  <Bookmark size={18} className="text-slate-600" />
                 </button>
               )}
             </>

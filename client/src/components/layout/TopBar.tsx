@@ -127,7 +127,7 @@ export function TopBar() {
             />
           </Link>
           
-          <div className="hidden sm:flex items-center gap-2 text-stone-600 dark:text-stone-400">
+          <div className="hidden sm:flex items-center gap-2 text-stone-600 dark:text-stone-600">
             <span className="text-sm font-medium capitalize">{currentDate}</span>
             {streak > 1 && (
               <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium">
@@ -141,7 +141,7 @@ export function TopBar() {
         {/* Mitten - Global sök */}
         <form onSubmit={handleSearch} className="flex-1 max-w-md">
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-400 group-focus-within:text-violet-500 transition-colors" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-violet-500 transition-colors" size={18} />
             <input
               type="text"
               placeholder={getSearchPlaceholder()}
@@ -149,7 +149,7 @@ export function TopBar() {
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-stone-100/80 dark:bg-stone-800/80 rounded-2xl border border-transparent
                          focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:bg-white dark:focus:bg-stone-800 focus:border-violet-200 dark:focus:border-violet-700
-                         text-sm transition-all placeholder:text-stone-400 dark:text-stone-100"
+                         text-sm transition-all placeholder:text-stone-600 dark:text-stone-100"
             />
           </div>
         </form>
@@ -168,7 +168,7 @@ export function TopBar() {
             {isDark ? (
               <Sun size={18} className="text-amber-500" />
             ) : (
-              <Moon size={18} className="text-stone-500 dark:text-stone-400" />
+              <Moon size={18} className="text-stone-500 dark:text-stone-600" />
             )}
           </button>
 
@@ -178,7 +178,7 @@ export function TopBar() {
             className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
             title={t('topbar.help')}
           >
-            <HelpCircle size={18} className="text-stone-500 dark:text-stone-400" />
+            <HelpCircle size={18} className="text-stone-500 dark:text-stone-600" />
           </Link>
 
           {/* Crisis Support / Hjärtat */}
@@ -204,7 +204,7 @@ export function TopBar() {
               <div className="w-7 h-7 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-medium text-sm">
                 {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
               </div>
-              <ChevronDown size={14} className="hidden sm:block text-stone-400 dark:text-stone-500" />
+              <ChevronDown size={14} className="hidden sm:block text-stone-600 dark:text-stone-500" />
             </button>
 
             {/* User dropdown */}
@@ -219,7 +219,7 @@ export function TopBar() {
                     <p className="font-semibold text-stone-800 dark:text-stone-100">
                       {profile?.first_name ? `${profile.first_name} ${profile.last_name}` : user?.email}
                     </p>
-                    <p className="text-xs text-stone-500 dark:text-stone-400">{user?.email}</p>
+                    <p className="text-xs text-stone-500 dark:text-stone-600">{user?.email}</p>
                   </div>
                   
                   <Link
@@ -227,7 +227,7 @@ export function TopBar() {
                     onClick={() => setShowUserMenu(false)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors mt-1"
                   >
-                    <User size={18} className="text-stone-500 dark:text-stone-400" />
+                    <User size={18} className="text-stone-500 dark:text-stone-600" />
                     <span className="text-stone-700 dark:text-stone-200">{t('topbar.profile')}</span>
                   </Link>
 
@@ -236,7 +236,7 @@ export function TopBar() {
                     onClick={() => setShowUserMenu(false)}
                     className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
                   >
-                    <Settings size={18} className="text-stone-500 dark:text-stone-400" />
+                    <Settings size={18} className="text-stone-500 dark:text-stone-600" />
                     <span className="text-stone-700 dark:text-stone-200">{t('nav.settings')}</span>
                   </Link>
 

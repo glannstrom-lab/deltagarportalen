@@ -274,7 +274,7 @@ export default function BrandAuditTab() {
             </p>
           </div>
           {isSaving && (
-            <span className="text-xs text-slate-400 flex items-center gap-1">
+            <span className="text-xs text-slate-600 flex items-center gap-1">
               <RefreshCw className="w-3 h-3 animate-spin" />
               Sparar...
             </span>
@@ -345,7 +345,7 @@ export default function BrandAuditTab() {
                   <p className={cn("text-lg font-semibold", getScoreColor(totalScore))}>
                     {getScoreEmoji(totalScore)} {getScoreLabel(totalScore)}
                   </p>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-700">
                     {Object.values(answers).filter(Boolean).length} av {AUDIT_QUESTIONS.length} punkter uppfyllda
                   </p>
                 </div>
@@ -376,7 +376,7 @@ export default function BrandAuditTab() {
                           )}>
                             {score}%
                           </div>
-                          <p className="text-xs text-slate-500">{cat.label}</p>
+                          <p className="text-xs text-slate-700">{cat.label}</p>
                         </div>
                       )
                     })}
@@ -404,9 +404,9 @@ export default function BrandAuditTab() {
               >
                 <div>
                   <p className="font-medium text-slate-800">{action.actionLabel}</p>
-                  <p className="text-sm text-slate-500">{action.question}</p>
+                  <p className="text-sm text-slate-700">{action.question}</p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-blue-600 transition-colors" />
               </Link>
             ))}
           </div>
@@ -498,7 +498,7 @@ export default function BrandAuditTab() {
                       ) : (
                         <button
                           onClick={() => setExpandedTip(question.id)}
-                          className="ml-8 mt-1 text-xs text-slate-400 hover:text-slate-600"
+                          className="ml-8 mt-1 text-xs text-slate-600 hover:text-slate-600"
                         >
                           Visa tips
                         </button>

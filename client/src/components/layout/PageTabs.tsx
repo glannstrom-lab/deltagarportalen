@@ -130,7 +130,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                 : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-white/80' : 'text-slate-400 group-hover:text-slate-600')} />}
+            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-white/80' : 'text-slate-600 group-hover:text-slate-600')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
@@ -159,10 +159,10 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             to={tab.path}
             className={cn(
               'group relative flex items-center gap-2 px-1 py-3 text-sm font-medium transition-colors',
-              isActive ? 'text-violet-600' : 'text-slate-500 hover:text-slate-900'
+              isActive ? 'text-violet-600' : 'text-slate-700 hover:text-slate-900'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-violet-500' : 'text-slate-400 group-hover:text-slate-600')} />}
+            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-violet-500' : 'text-slate-600 group-hover:text-slate-600')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className="px-1.5 py-0.5 text-xs rounded-full font-bold bg-violet-100 text-violet-700">
@@ -252,7 +252,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
           <span className="font-semibold">{activeTab?.label || 'Välj sida'}</span>
         </div>
         <ChevronDown className={cn(
-          'w-5 h-5 text-slate-400 transition-transform duration-300',
+          'w-5 h-5 text-slate-600 transition-transform duration-300',
           isExpanded && 'rotate-180'
         )} />
       </button>
@@ -283,7 +283,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                       'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
                       isActive ? 'bg-violet-100' : 'bg-slate-100'
                     )}>
-                      <Icon className={cn('w-4 h-4', isActive ? 'text-violet-600' : 'text-slate-500')} />
+                      <Icon className={cn('w-4 h-4', isActive ? 'text-violet-600' : 'text-slate-700')} />
                     </div>
                   )}
                   <span className="font-medium">{tab.label}</span>
@@ -331,7 +331,7 @@ export function PageHeader({ title, description, tabs, tabVariant = 'minimal', a
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
           {description && (
-            <p className="text-base text-slate-500 mt-1">{description}</p>
+            <p className="text-base text-slate-700 mt-1">{description}</p>
           )}
         </div>
         {actions && (

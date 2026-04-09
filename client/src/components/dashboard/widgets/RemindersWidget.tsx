@@ -2,7 +2,7 @@
  * RemindersWidget - Påminnelser om påbörjade uppgifter, streak-hot, mm
  * "Don't let users forget what they started"
  */
-import { useMemo, useState, useEffect } from 'react'
+import { memo, useMemo, useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import {
@@ -41,7 +41,7 @@ interface Reminder {
   interpolation?: Record<string, string | number>
 }
 
-export function RemindersWidget({
+export const RemindersWidget = memo(function RemindersWidget({
   size = 'medium',
   loading
 }: {
@@ -191,7 +191,7 @@ export function RemindersWidget({
             </>
           ) : reminders.length > 0 ? (
             <>
-              <Bell size={14} className="text-slate-400" />
+              <Bell size={14} className="text-slate-600" />
               <span className="text-sm text-slate-600">
                 {t('remindersWidget.remindersCount', { count: reminders.length })}
               </span>
@@ -199,7 +199,7 @@ export function RemindersWidget({
           ) : (
             <>
               <CheckCircle2 size={14} className="text-emerald-500" />
-              <span className="text-sm text-slate-500">{t('remindersWidget.allDone')}</span>
+              <span className="text-sm text-slate-700">{t('remindersWidget.allDone')}</span>
             </>
           )}
         </div>
@@ -223,7 +223,7 @@ export function RemindersWidget({
               <CheckCircle2 size={24} className="text-emerald-600" />
             </div>
             <p className="text-slate-600 font-medium">{t('remindersWidget.allUpToDate')}</p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-sm text-slate-600 mt-1">
               {t('remindersWidget.noReminders')}
             </p>
           </div>
@@ -250,13 +250,13 @@ export function RemindersWidget({
                     onClick={(e) => handleDismiss(e, reminder.id)}
                     className="absolute top-2 right-2 w-6 h-6 rounded-full hover:bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                   >
-                    <X size={14} className="text-slate-400" />
+                    <X size={14} className="text-slate-600" />
                   </button>
 
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-                      reminder.priority === 'high' ? 'bg-amber-100 text-amber-600' : 'bg-white text-slate-500'
+                      reminder.priority === 'high' ? 'bg-amber-100 text-amber-600' : 'bg-white text-slate-700'
                     )}>
                       {reminder.icon}
                     </div>
@@ -289,7 +289,7 @@ export function RemindersWidget({
                               )}
                             />
                           </div>
-                          <p className="text-xs text-slate-400 mt-1">
+                          <p className="text-xs text-slate-600 mt-1">
                             {t('remindersWidget.percentComplete', { percent: Math.round(reminder.progress) })}
                           </p>
                         </div>
@@ -306,7 +306,7 @@ export function RemindersWidget({
             ))}
 
             {reminders.length > (size === 'large' ? 5 : 3) && (
-              <p className="text-center text-sm text-slate-400 pt-2">
+              <p className="text-center text-sm text-slate-600 pt-2">
                 {t('remindersWidget.moreReminders', { count: reminders.length - (size === 'large' ? 5 : 3) })}
               </p>
             )}
@@ -315,6 +315,6 @@ export function RemindersWidget({
       </div>
     </DashboardWidget>
   )
-}
+})
 
 export default RemindersWidget

@@ -138,7 +138,7 @@ export function PageSection({
               </h2>
             )}
             {description && (
-              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-400 mt-0.5 sm:mt-1 line-clamp-2">
+              <p className="text-xs sm:text-sm text-stone-500 dark:text-stone-600 mt-0.5 sm:mt-1 line-clamp-2">
                 {description}
               </p>
             )}

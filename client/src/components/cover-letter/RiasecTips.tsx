@@ -75,9 +75,9 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
           </div>
         </div>
         {isExpanded ? (
-          <ChevronUp className="w-5 h-5 text-slate-400" />
+          <ChevronUp className="w-5 h-5 text-slate-600" />
         ) : (
-          <ChevronDown className="w-5 h-5 text-slate-400" />
+          <ChevronDown className="w-5 h-5 text-slate-600" />
         )}
       </button>
 
@@ -101,7 +101,7 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
               <span className={cn(
                 "font-bold text-sm",
                 matchScore >= 60 ? "text-green-600" :
-                  matchScore >= 30 ? "text-amber-600" : "text-slate-500"
+                  matchScore >= 30 ? "text-amber-600" : "text-slate-700"
               )}>
                 {matchScore}%
               </span>
@@ -115,7 +115,7 @@ export function RiasecTips({ jobDescription, className }: RiasecTipsProps) {
               <p className="font-medium text-slate-800">
                 {dominantRiasec.nameSv} ({dominantRiasec.code.charAt(0).toUpperCase()})
               </p>
-              <p className="text-xs text-slate-500 mt-1">{dominantRiasec.description}</p>
+              <p className="text-xs text-slate-700 mt-1">{dominantRiasec.description}</p>
             </div>
           )}
 

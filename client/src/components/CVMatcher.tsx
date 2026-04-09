@@ -71,12 +71,12 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
               </div>
               <div>
                 <h2 className="text-xl font-bold text-slate-900">CV-matchning</h2>
-                <p className="text-slate-500">{job.headline}</p>
+                <p className="text-slate-700">{job.headline}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-600"
+              className="p-2 hover:bg-slate-100 rounded-lg text-slate-600 hover:text-slate-600"
             >
               ✕
             </button>
@@ -192,7 +192,7 @@ export default function CVMatcher({ job, onClose }: CVMatcherProps) {
 
         {/* Footer */}
         <div className="p-6 border-t border-slate-200 bg-slate-50">
-          <p className="text-xs text-slate-500 text-center">
+          <p className="text-xs text-slate-700 text-center">
             Matchningen är baserad på ditt sparade CV. Uppdatera ditt CV för bättre träffsäkerhet.
           </p>
         </div>

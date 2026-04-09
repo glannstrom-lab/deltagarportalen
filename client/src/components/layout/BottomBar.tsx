@@ -403,7 +403,7 @@ export function BottomBar() {
   const getScoreColor = (score: number) => {
     if (score >= 80) return 'text-green-500'
     if (score >= 50) return 'text-yellow-500'
-    return 'text-slate-400'
+    return 'text-slate-600'
   }
 
   const getScoreBg = (score: number) => {
@@ -435,7 +435,7 @@ export function BottomBar() {
                   <TrendingUp size={18} className={getScoreColor(stats.cvScore)} />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-xs text-slate-500">CV-poäng</p>
+                  <p className="text-xs text-slate-700">CV-poäng</p>
                   <p className={cn("font-semibold text-sm", getScoreColor(stats.cvScore))}>
                     {stats.cvScore}/100
                   </p>
@@ -451,7 +451,7 @@ export function BottomBar() {
                   <Send size={18} className="text-orange-600" />
                 </div>
                 <div className="hidden sm:block">
-                  <p className="text-xs text-slate-500">Ansökningar</p>
+                  <p className="text-xs text-slate-700">Ansökningar</p>
                   <p className="font-semibold text-sm text-slate-700">{stats.applications}</p>
                 </div>
               </Link>
@@ -462,7 +462,7 @@ export function BottomBar() {
                   <CheckCircle2 size={18} className="text-violet-600" />
                 </div>
                 <div>
-                  <p className="text-xs text-slate-500">Dagens mål</p>
+                  <p className="text-xs text-slate-700">Dagens mål</p>
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div 
@@ -523,7 +523,7 @@ export function BottomBar() {
           {/* Expanderad sektion - Nästa steg */}
           {showNextSteps && (
             <div className="mt-3 pt-3 border-t border-slate-100">
-              <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-2">
+              <p className="text-xs font-medium text-slate-700 uppercase tracking-wider mb-2">
                 Förslag för att komma vidare
               </p>
               <div className="flex flex-wrap gap-2">

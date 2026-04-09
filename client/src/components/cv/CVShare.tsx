@@ -93,7 +93,7 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
                 onClick={() => setShowModal(false)}
                 className="p-1 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <X size={20} className="text-slate-500" />
+                <X size={20} className="text-slate-700" />
               </button>
             </div>
 
@@ -118,7 +118,7 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
                     {copied ? <Check size={18} /> : <Copy size={18} />}
                   </button>
                 </div>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-700 mt-1">
                   Länken är giltig till {new Date(shareData.expiresAt).toLocaleDateString('sv-SE')}
                 </p>
               </div>
@@ -137,7 +137,7 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
                     />
                   ) : (
                     <div className="w-48 h-48 flex items-center justify-center bg-slate-100">
-                      <QrCode size={64} className="text-slate-400" />
+                      <QrCode size={64} className="text-slate-600" />
                     </div>
                   )}
                 </div>
@@ -152,7 +152,7 @@ export function CVShare({ onShare, variant = 'default' }: CVShareProps) {
 
               {/* Info */}
               <div className="p-3 bg-slate-50 rounded-lg">
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-700">
                   <strong>Tips:</strong> QR-koden är perfekt att skriva ut på visitkort 
                   eller visa på nätverksträffar. Mottagaren kan enkelt scanna och se ditt CV.
                 </p>

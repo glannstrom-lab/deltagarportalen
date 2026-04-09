@@ -61,7 +61,7 @@ export default function MarketInsights({ occupation }: MarketInsightsProps) {
               <p className="text-2xl font-bold text-slate-800">
                 {salaryStats.salary_range.min.toLocaleString('sv-SE')}
               </p>
-              <p className="text-xs text-slate-500">Lägsta</p>
+              <p className="text-xs text-slate-700">Lägsta</p>
             </div>
             <div className="bg-green-50 rounded-lg p-4 text-center">
               <p className="text-2xl font-bold text-green-700">
@@ -73,7 +73,7 @@ export default function MarketInsights({ occupation }: MarketInsightsProps) {
               <p className="text-2xl font-bold text-slate-800">
                 {salaryStats.salary_range.max.toLocaleString('sv-SE')}
               </p>
-              <p className="text-xs text-slate-500">Högsta</p>
+              <p className="text-xs text-slate-700">Högsta</p>
             </div>
           </div>
         </div>

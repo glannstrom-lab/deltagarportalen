@@ -267,7 +267,7 @@ export default function VisibilityTab() {
           </div>
           <div className="text-right">
             <p className="text-2xl font-bold text-cyan-600">{completedCount}/{VISIBILITY_STRATEGIES.length}</p>
-            <p className="text-xs text-slate-500">strategier klara</p>
+            <p className="text-xs text-slate-700">strategier klara</p>
           </div>
         </div>
       </Card>
@@ -331,7 +331,7 @@ export default function VisibilityTab() {
               >
                 <p className={cn(
                   "text-xs font-medium mb-1",
-                  isCurrentDay ? "text-cyan-700" : "text-slate-500"
+                  isCurrentDay ? "text-cyan-700" : "text-slate-700"
                 )}>
                   {format(day, 'EEE d', { locale: sv })}
                 </p>
@@ -473,7 +473,7 @@ export default function VisibilityTab() {
                         <Play className="w-4 h-4 text-blue-600 fill-blue-600" />
                       )}
                     </div>
-                    <p className="text-sm text-slate-500 mt-1">{strategy.description}</p>
+                    <p className="text-sm text-slate-700 mt-1">{strategy.description}</p>
 
                     <div className="flex items-center gap-4 mt-3">
                       <span className={cn(
@@ -492,7 +492,7 @@ export default function VisibilityTab() {
                       )}>
                         {strategy.impact === 'low' ? 'Låg' : strategy.impact === 'medium' ? 'Medel' : 'Hög'} påverkan
                       </span>
-                      <span className="text-xs text-slate-400 flex items-center gap-1">
+                      <span className="text-xs text-slate-600 flex items-center gap-1">
                         <Clock className="w-3 h-3" />
                         {strategy.timePerWeek}
                       </span>
@@ -515,7 +515,7 @@ export default function VisibilityTab() {
                           className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                           title="Hoppa över"
                         >
-                          <SkipForward className="w-4 h-4 text-slate-400" />
+                          <SkipForward className="w-4 h-4 text-slate-600" />
                         </button>
                       </>
                     )}
@@ -533,7 +533,7 @@ export default function VisibilityTab() {
                           className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                           title="Pausa"
                         >
-                          <Pause className="w-4 h-4 text-slate-400" />
+                          <Pause className="w-4 h-4 text-slate-600" />
                         </button>
                       </>
                     )}
@@ -543,7 +543,7 @@ export default function VisibilityTab() {
                         className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                         title="Återställ"
                       >
-                        <RefreshCw className="w-4 h-4 text-slate-400" />
+                        <RefreshCw className="w-4 h-4 text-slate-600" />
                       </button>
                     )}
                     {status === 'skipped' && (
@@ -552,7 +552,7 @@ export default function VisibilityTab() {
                         className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                         title="Återställ"
                       >
-                        <RefreshCw className="w-4 h-4 text-slate-400" />
+                        <RefreshCw className="w-4 h-4 text-slate-600" />
                       </button>
                     )}
                   </div>

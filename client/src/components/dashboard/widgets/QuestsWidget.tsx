@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Target, Flame, Zap, ChevronRight, CheckCircle2, Circle, Play } from '@/components/ui/icons'
@@ -10,7 +11,7 @@ interface QuestsWidgetProps {
   size?: 'mini' | 'medium' | 'large'
 }
 
-export function QuestsWidget({
+export const QuestsWidget = memo(function QuestsWidget({
   completedQuests = 0,
   totalQuests = 3,
   streakDays = 0,
@@ -39,7 +40,7 @@ export function QuestsWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">Quests</p>
-          <p className={cn("text-xs", isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400")}>
+          <p className={cn("text-xs", isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-slate-700 dark:text-slate-600")}>
             {completedQuests}/{totalQuests}
           </p>
         </div>
@@ -74,7 +75,7 @@ export function QuestsWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('quests.todaysQuests')}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-600">
                 {isComplete ? t('quests.allDone') : t('quests.remaining', { count: totalQuests - completedQuests })}
               </p>
             </div>
@@ -136,7 +137,7 @@ export function QuestsWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('quests.todaysQuests')}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-700 dark:text-slate-600">
               {isComplete ? t('quests.youCompletedAll') : t('quests.completeTasks')}
             </p>
           </div>
@@ -152,7 +153,7 @@ export function QuestsWidget({
       {/* Progress */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600 dark:text-slate-400">{t('quests.progress')}</span>
+          <span className="text-sm text-slate-600 dark:text-slate-600">{t('quests.progress')}</span>
           <span className={cn(
             "text-lg font-bold",
             isComplete ? "text-emerald-600 dark:text-emerald-400" : "text-amber-600 dark:text-amber-400"
@@ -212,6 +213,6 @@ export function QuestsWidget({
       </div>
     </Link>
   )
-}
+})
 
 export default QuestsWidget

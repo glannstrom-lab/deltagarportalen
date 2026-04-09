@@ -239,7 +239,7 @@ export function ImageUpload({
               {isUploading ? (
                 <Loader2 className="w-8 h-8 text-violet-600 animate-spin" />
               ) : (
-                <User className="w-8 h-8 text-slate-400" />
+                <User className="w-8 h-8 text-slate-600" />
               )}
             </div>
             
@@ -247,10 +247,10 @@ export function ImageUpload({
               <p className="text-sm font-medium text-slate-700">
                 {isDragging ? 'Släpp bilden här' : 'Ladda upp profilbild'}
               </p>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700">
                 Klicka, dra och släpp, eller klistra in (Ctrl+V)
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-600">
                 {acceptedTypes.map(t => t.replace('image/', '.').toUpperCase()).join(', ')} upp till {maxSizeMB}MB
               </p>
             </div>
@@ -279,7 +279,7 @@ export function ImageUpload({
 
       {/* Helper Text */}
       {previewUrl && !error && (
-        <p className="text-xs text-slate-500 text-center">
+        <p className="text-xs text-slate-700 text-center">
           Rekommenderad storlek: 400x400px
         </p>
       )}
@@ -395,7 +395,7 @@ export function CompactImageUpload({
               className="w-full h-full object-cover"
             />
           ) : (
-            <User className="w-8 h-8 text-slate-400" />
+            <User className="w-8 h-8 text-slate-600" />
           )}
         </div>
         
@@ -455,10 +455,10 @@ export function CompactImageUpload({
           </p>
         )}
         
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-slate-700">
           JPG, PNG eller WebP, max {maxSizeMB}MB
         </p>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-600">
           Tips: Kopiera en bild och tryck Ctrl+V för att klistra in
         </p>
       </div>

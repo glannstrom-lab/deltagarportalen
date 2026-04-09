@@ -47,9 +47,9 @@ export function ActionPlan() {
   if (selectedPlan) {
     return (
       <div className="p-6 bg-white rounded-2xl border border-slate-200">
-        <button onClick={() => setSelectedPlan(null)} className="text-sm text-slate-500 mb-4">← Tillbaka</button>
+        <button onClick={() => setSelectedPlan(null)} className="text-sm text-slate-700 mb-4">← Tillbaka</button>
         <h2 className="text-xl font-bold mb-2">{selectedPlan.name}</h2>
-        <p className="text-slate-500 mb-6">{selectedPlan.description}</p>
+        <p className="text-slate-700 mb-6">{selectedPlan.description}</p>
 
         <div className="mb-6">
           <div className="flex items-center justify-between text-sm mb-2">
@@ -73,8 +73,8 @@ export function ActionPlan() {
               )}>
                 {goal.completed && <CheckCircle2 size={14} />}
               </div>
-              <span className={cn("flex-1", goal.completed && 'line-through text-slate-400')}>{goal.goal}</span>
-              <span className="text-xs text-slate-400">Vecka {goal.week}</span>
+              <span className={cn("flex-1", goal.completed && 'line-through text-slate-600')}>{goal.goal}</span>
+              <span className="text-xs text-slate-600">Vecka {goal.week}</span>
             </div>
           ))}
         </div>
@@ -88,7 +88,7 @@ export function ActionPlan() {
         <Target className="text-violet-500" size={24} />
         Välj din väg
       </h2>
-      <p className="text-slate-500 mb-6">Strukturerade planer för att nå ditt mål</p>
+      <p className="text-slate-700 mb-6">Strukturerade planer för att nå ditt mål</p>
 
       <div className="space-y-4">
         {plans.map(plan => (
@@ -97,7 +97,7 @@ export function ActionPlan() {
               <h3 className="font-semibold">{plan.name}</h3>
               <span className="text-xs px-2 py-1 bg-slate-100 rounded-full">{plan.duration}</span>
             </div>
-            <p className="text-sm text-slate-500">{plan.description}</p>
+            <p className="text-sm text-slate-700">{plan.description}</p>
             <div className="flex items-center gap-1 text-violet-600 text-sm mt-3">
               <span>Välj denna väg</span>
               <ChevronRight size={16} />

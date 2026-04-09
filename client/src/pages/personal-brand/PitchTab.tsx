@@ -265,7 +265,7 @@ export default function PitchTab() {
           {pitches.length === 0 && !isLoading ? (
             <Card className="text-center py-8">
               <MessageSquare className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-500 text-sm">Inga pitchar ännu</p>
+              <p className="text-slate-700 text-sm">Inga pitchar ännu</p>
               <Button
                 size="sm"
                 variant="outline"
@@ -303,7 +303,7 @@ export default function PitchTab() {
                           )}>
                             {typeInfo.label}
                           </span>
-                          <span className="text-xs text-slate-400 flex items-center gap-1">
+                          <span className="text-xs text-slate-600 flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             {pitch.duration_seconds}s
                           </span>
@@ -314,7 +314,7 @@ export default function PitchTab() {
                       )}
                     </div>
                     {pitch.practice_count && pitch.practice_count > 0 && (
-                      <p className="text-xs text-slate-400 mt-2">
+                      <p className="text-xs text-slate-600 mt-2">
                         Övat {pitch.practice_count} gånger
                       </p>
                     )}
@@ -345,7 +345,7 @@ export default function PitchTab() {
                     )}>
                       {formatTime(practiceTime)}
                     </div>
-                    <p className="text-slate-500 mb-6">
+                    <p className="text-slate-700 mb-6">
                       Mål: {formatTime(getTargetTime())}
                       {isNearTarget && " - Perfekt timing!"}
                       {isOverTime && " - Försök korta ner"}
@@ -425,7 +425,7 @@ export default function PitchTab() {
                             className="p-3 rounded-lg border border-slate-200 hover:border-rose-300 hover:bg-rose-50 transition-all text-left"
                           >
                             <h4 className="font-medium text-slate-800 text-sm">{template.name}</h4>
-                            <p className="text-xs text-slate-500 mt-1">
+                            <p className="text-xs text-slate-700 mt-1">
                               {template.structure.length} delar
                             </p>
                           </button>
@@ -495,7 +495,7 @@ export default function PitchTab() {
                         className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500 min-h-[150px]"
                         placeholder="Skriv din pitch här..."
                       />
-                      <p className="text-xs text-slate-400 mt-1">
+                      <p className="text-xs text-slate-600 mt-1">
                         Ca {Math.round((formData.content?.length || 0) / 15)} sekunder att läsa ({formData.content?.length || 0} tecken)
                       </p>
                     </div>
@@ -566,7 +566,7 @@ export default function PitchTab() {
                         )}>
                           {PITCH_TYPES[selectedPitch.pitch_type].label}
                         </span>
-                        <span className="text-sm text-slate-500 flex items-center gap-1">
+                        <span className="text-sm text-slate-700 flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           {selectedPitch.duration_seconds} sek
                         </span>
@@ -577,7 +577,7 @@ export default function PitchTab() {
                         onClick={() => handleEdit(selectedPitch)}
                         className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
                       >
-                        <Edit2 className="w-4 h-4 text-slate-500" />
+                        <Edit2 className="w-4 h-4 text-slate-700" />
                       </button>
                       <button
                         onClick={() => selectedPitch.id && handleDelete(selectedPitch.id)}
@@ -629,7 +629,7 @@ export default function PitchTab() {
                   </div>
 
                   {selectedPitch.practice_count && selectedPitch.practice_count > 0 && (
-                    <p className="text-sm text-slate-400 mt-4">
+                    <p className="text-sm text-slate-600 mt-4">
                       Du har övat på denna pitch {selectedPitch.practice_count} gånger
                       {selectedPitch.last_practiced_at && (
                         <span>, senast {new Date(selectedPitch.last_practiced_at).toLocaleDateString('sv-SE')}</span>
@@ -650,7 +650,7 @@ export default function PitchTab() {
                 <Card className="text-center py-12">
                   <Mic className="w-16 h-16 text-slate-200 mx-auto mb-4" />
                   <h3 className="text-lg font-semibold text-slate-700 mb-2">Skapa din första pitch</h3>
-                  <p className="text-slate-500 mb-6 max-w-md mx-auto">
+                  <p className="text-slate-700 mb-6 max-w-md mx-auto">
                     En bra elevator pitch är nyckeln till att göra ett starkt första intryck.
                     Börja med att skapa en generell pitch som du kan anpassa efter situation.
                   </p>

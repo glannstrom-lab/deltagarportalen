@@ -165,7 +165,7 @@ export function CoverLetterApplications() {
       <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 sm:justify-between sm:items-center">
         <div className="flex gap-2 flex-1 w-full sm:max-w-lg">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
             <input
               type="text"
               placeholder="Sök..."
@@ -224,7 +224,7 @@ export function CoverLetterApplications() {
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-slate-400 text-center py-4">Inga ansökningar</p>
+                <p className="text-xs text-slate-600 text-center py-4">Inga ansökningar</p>
               )}
             </div>
           )
@@ -252,7 +252,7 @@ export function CoverLetterApplications() {
                   </div>
                   <div>
                     <h3 className="font-semibold text-slate-800 text-sm">{column.label}</h3>
-                    <span className="text-xs text-slate-500">{columnApps.length} st</span>
+                    <span className="text-xs text-slate-700">{columnApps.length} st</span>
                   </div>
                 </div>
               </div>
@@ -271,7 +271,7 @@ export function CoverLetterApplications() {
 
                 {columnApps.length === 0 && (
                   <div className="border-2 border-dashed border-slate-200 rounded-xl p-6 text-center">
-                    <p className="text-sm text-slate-400">Dra ansökningar hit</p>
+                    <p className="text-sm text-slate-600">Dra ansökningar hit</p>
                   </div>
                 )}
               </div>
@@ -329,13 +329,13 @@ function ApplicationCard({
           <h4 className="font-medium text-slate-800 truncate">
             {application.jobTitle}
           </h4>
-          <div className="flex items-center gap-1.5 text-sm text-slate-500 mt-0.5">
+          <div className="flex items-center gap-1.5 text-sm text-slate-700 mt-0.5">
             <Building2 size={14} />
             <span className="truncate">{application.company}</span>
           </div>
         </div>
         <button className="p-1 hover:bg-slate-100 rounded opacity-0 group-hover:opacity-100 transition-opacity">
-          <MoreHorizontal size={16} className="text-slate-400" />
+          <MoreHorizontal size={16} className="text-slate-600" />
         </button>
       </div>
 
@@ -358,7 +358,7 @@ function ApplicationCard({
       )}
 
       {/* Datum och info */}
-      <div className="flex items-center gap-3 mt-3 text-xs text-slate-400">
+      <div className="flex items-center gap-3 mt-3 text-xs text-slate-600">
         {application.appliedDate && (
           <span className="flex items-center gap-1">
             <Send size={12} />
@@ -388,7 +388,7 @@ function ApplicationCard({
 
       {/* Drag-hint */}
       <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-        <span className="text-xs text-slate-400 flex items-center gap-1">
+        <span className="text-xs text-slate-600 flex items-center gap-1">
           Dra till annan kolumn för att ändra status
         </span>
       </div>

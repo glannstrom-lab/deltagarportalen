@@ -134,7 +134,7 @@ export default function CompaniesTab() {
       {/* Search and Filters */}
       <Card className="p-6">
         <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
           <Input
             type="text"
             placeholder={t('career.companies.searchPlaceholder')}
@@ -146,7 +146,7 @@ export default function CompaniesTab() {
 
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-400" />
+            <Filter className="w-4 h-4 text-slate-600" />
             <span className="text-sm text-slate-600">{t('career.companies.industry')}:</span>
             <select
               value={selectedIndustry}
@@ -158,7 +158,7 @@ export default function CompaniesTab() {
           </div>
 
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-slate-400" />
+            <MapPin className="w-4 h-4 text-slate-600" />
             <span className="text-sm text-slate-600">{t('career.companies.location')}:</span>
             <select
               value={selectedLocation}
@@ -193,7 +193,7 @@ export default function CompaniesTab() {
           <Card key={company.id} className="p-6 hover:shadow-lg transition-shadow">
             <div className="flex items-start gap-4">
               <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
-                <Building2 className="w-8 h-8 text-slate-400" />
+                <Building2 className="w-8 h-8 text-slate-600" />
               </div>
 
               <div className="flex-1">
@@ -222,7 +222,7 @@ export default function CompaniesTab() {
                       className={`p-2 rounded-lg transition-colors ${
                         following.includes(company.id)
                           ? 'bg-red-100 text-red-600'
-                          : 'bg-slate-100 text-slate-400 hover:bg-slate-200'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                       }`}
                     >
                       <Heart className={`w-5 h-5 ${following.includes(company.id) ? 'fill-current' : ''}`} />
@@ -237,7 +237,7 @@ export default function CompaniesTab() {
                   <div className="flex items-center gap-1">
                     <Star className="w-5 h-5 text-yellow-400 fill-current" />
                     <span className="font-semibold text-slate-800">{company.rating}</span>
-                    <span className="text-sm text-slate-500">({company.reviews} {t('career.companies.reviews')})</span>
+                    <span className="text-sm text-slate-700">({company.reviews} {t('career.companies.reviews')})</span>
                   </div>
                   <div className="flex items-center gap-1 text-green-600">
                     <TrendingUp className="w-4 h-4" />
@@ -278,7 +278,7 @@ export default function CompaniesTab() {
         <div className="text-center py-12">
           <Building2 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-slate-700">{t('career.companies.noCompaniesFound')}</h3>
-          <p className="text-slate-500">{t('career.companies.tryDifferentFilters')}</p>
+          <p className="text-slate-700">{t('career.companies.tryDifferentFilters')}</p>
         </div>
       )}
 

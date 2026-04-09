@@ -104,8 +104,8 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
       {education.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
           <GraduationCap className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 mb-1">Inga utbildningar tillagda ännu</p>
-          <p className="text-sm text-slate-400 mb-4">Lägg till din utbildningsbakgrund</p>
+          <p className="text-slate-700 mb-1">Inga utbildningar tillagda ännu</p>
+          <p className="text-sm text-slate-600 mb-4">Lägg till din utbildningsbakgrund</p>
           <button
             onClick={addEducation}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
@@ -138,7 +138,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                     onClick={() => setExpandedId(isExpanded ? null : ed.id)}
                     className="flex items-center gap-3 p-4 cursor-pointer hover:bg-slate-50 transition-colors"
                   >
-                    <div className="text-slate-300 hover:text-slate-500 cursor-grab active:cursor-grabbing">
+                    <div className="text-slate-300 hover:text-slate-700 cursor-grab active:cursor-grabbing">
                       <GripVertical className="w-5 h-5" />
                     </div>
                     
@@ -157,17 +157,17 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                       <h4 className="font-medium text-slate-800 truncate">
                         {ed.degree || 'Ny utbildning'}
                       </h4>
-                      <p className="text-sm text-slate-500 truncate">
+                      <p className="text-sm text-slate-700 truncate">
                         {ed.school || 'Skola/Universitet'}
-                        {ed.field && <span className="text-slate-400"> · {ed.field}</span>}
+                        {ed.field && <span className="text-slate-600"> · {ed.field}</span>}
                       </p>
                     </div>
                     
                     <button className="p-1 hover:bg-slate-200 rounded">
                       {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-slate-400" />
+                        <ChevronUp className="w-5 h-5 text-slate-600" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                        <ChevronDown className="w-5 h-5 text-slate-600" />
                       )}
                     </button>
                   </div>
@@ -201,7 +201,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                             Examen/Program *
                           </label>
                           <div className="relative">
-                            <Award className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                            <Award className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                             <input
                               type="text"
                               value={ed.degree}
@@ -232,7 +232,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                             Skola/Universitet *
                           </label>
                           <div className="relative">
-                            <School className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                            <School className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                             <input
                               type="text"
                               value={ed.school}
@@ -249,7 +249,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                             Ort
                           </label>
                           <div className="relative">
-                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                             <input
                               type="text"
                               value={ed.location}
@@ -267,7 +267,7 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                               Startdatum *
                             </label>
                             <div className="relative">
-                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                               <input
                                 type="month"
                                 value={ed.startDate}
@@ -282,13 +282,13 @@ export function EducationEditor({ education, onChange }: EducationEditorProps) {
                               Slutdatum
                             </label>
                             <div className="relative">
-                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                               <input
                                 type="month"
                                 value={ed.endDate}
                                 onChange={(e) => updateEducation(ed.id, 'endDate', e.target.value)}
                                 disabled={ed.current}
-                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-400"
+                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600"
                               />
                             </div>
                           </div>

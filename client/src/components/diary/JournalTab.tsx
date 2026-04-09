@@ -111,11 +111,11 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900">Ny dagboksanteckning</h2>
-              <p className="text-sm text-slate-500">{wordCount} ord</p>
+              <p className="text-sm text-slate-700">{wordCount} ord</p>
             </div>
           </div>
           <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-lg">
-            <X className="w-5 h-5 text-slate-400" />
+            <X className="w-5 h-5 text-slate-600" />
           </button>
         </div>
 
@@ -313,7 +313,7 @@ export function JournalTab() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="relative flex-1 sm:w-64">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
             <input
               type="text"
               value={searchQuery}
@@ -328,7 +328,7 @@ export function JournalTab() {
               "p-2 rounded-lg border transition-colors",
               showFilters || filterTag
                 ? "border-violet-300 bg-violet-50 text-violet-600"
-                : "border-slate-200 text-slate-500 hover:bg-slate-50"
+                : "border-slate-200 text-slate-700 hover:bg-slate-50"
             )}
           >
             <Filter className="w-5 h-5" />
@@ -380,7 +380,7 @@ export function JournalTab() {
             <h3 className="text-lg font-semibold text-slate-700 mb-2">
               {searchQuery || filterTag ? 'Inga träffar' : 'Din dagbok är tom'}
             </h3>
-            <p className="text-slate-500 mb-6">
+            <p className="text-slate-700 mb-6">
               {searchQuery || filterTag
                 ? 'Prova att ändra din sökning'
                 : 'Börja skriva och samla dina tankar på ett ställe'}
@@ -420,7 +420,7 @@ export function JournalTab() {
                   <p className="text-sm text-slate-600 line-clamp-2 mb-2">
                     {entry.content}
                   </p>
-                  <div className="flex items-center gap-3 text-xs text-slate-400">
+                  <div className="flex items-center gap-3 text-xs text-slate-600">
                     <span className="flex items-center gap-1">
                       <Calendar className="w-3 h-3" />
                       {new Date(entry.entry_date).toLocaleDateString('sv-SE', {
@@ -449,7 +449,7 @@ export function JournalTab() {
                       "p-2 rounded-lg transition-colors",
                       entry.is_favorite
                         ? "text-amber-500 hover:bg-amber-50"
-                        : "text-slate-400 hover:bg-slate-100"
+                        : "text-slate-600 hover:bg-slate-100"
                     )}
                   >
                     <Star className={cn("w-4 h-4", entry.is_favorite && "fill-current")} />
@@ -461,7 +461,7 @@ export function JournalTab() {
                         deleteEntry(entry.id)
                       }
                     }}
-                    className="p-2 rounded-lg text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    className="p-2 rounded-lg text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -494,7 +494,7 @@ export function JournalTab() {
             <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-slate-900">{selectedEntry.title}</h2>
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-700">
                   {new Date(selectedEntry.entry_date).toLocaleDateString('sv-SE', {
                     weekday: 'long',
                     day: 'numeric',
@@ -504,7 +504,7 @@ export function JournalTab() {
                 </p>
               </div>
               <button onClick={() => setSelectedEntry(null)} className="p-2 hover:bg-slate-100 rounded-lg">
-                <X className="w-5 h-5 text-slate-400" />
+                <X className="w-5 h-5 text-slate-600" />
               </button>
             </div>
 

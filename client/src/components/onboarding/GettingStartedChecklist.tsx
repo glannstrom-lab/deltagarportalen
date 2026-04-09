@@ -291,10 +291,10 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
       <div className={cn('bg-slate-50 rounded-xl border border-slate-200 p-4', className)}>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Pause className="w-5 h-5 text-slate-400" />
+            <Pause className="w-5 h-5 text-slate-600" />
             <div>
               <p className="text-sm font-medium text-slate-700">Kom igång pausad</p>
-              <p className="text-xs text-slate-500">Klicka för att fortsätta</p>
+              <p className="text-xs text-slate-700">Klicka för att fortsätta</p>
             </div>
           </div>
           <button
@@ -324,7 +324,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
               </div>
               <div>
                 <h3 className="font-bold text-slate-800">Steg {completedCount + 1} av {totalCount}</h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-700">
                   ~{totalMinutesRemaining} min kvar
                 </p>
               </div>
@@ -346,14 +346,14 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
           <div className="flex items-center gap-1">
             <button
               onClick={handleSnooze}
-              className="p-2 min-w-[44px] min-h-[44px] text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+              className="p-2 min-w-[44px] min-h-[44px] text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
               title="Pausa i 24 timmar"
             >
               <Pause className="w-4 h-4" />
             </button>
             <ChevronDown
               className={cn(
-                'w-5 h-5 text-slate-400 transition-transform',
+                'w-5 h-5 text-slate-600 transition-transform',
                 expanded && 'rotate-180'
               )}
             />
@@ -383,7 +383,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
               >
                 <div className={cn(
                   'w-12 h-12 rounded-full flex items-center justify-center shrink-0 transition-transform group-hover:scale-110',
-                  isNext ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'
+                  isNext ? 'bg-indigo-500 text-white' : 'bg-slate-100 text-slate-700 group-hover:bg-slate-200'
                 )}>
                   <Icon className="w-6 h-6" />
                 </div>
@@ -401,15 +401,15 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-slate-500 mt-0.5">{item.description}</p>
-                  <div className="flex items-center gap-1 mt-1.5 text-xs text-slate-400">
+                  <p className="text-sm text-slate-700 mt-0.5">{item.description}</p>
+                  <div className="flex items-center gap-1 mt-1.5 text-xs text-slate-600">
                     <Clock className="w-3 h-3" />
                     <span>~{item.estimatedMinutes} min</span>
                   </div>
                 </div>
                 <ChevronRight className={cn(
                   'w-5 h-5 transition-all',
-                  isNext ? 'text-indigo-400 group-hover:text-indigo-600' : 'text-slate-300 group-hover:text-slate-400',
+                  isNext ? 'text-indigo-400 group-hover:text-indigo-600' : 'text-slate-300 group-hover:text-slate-600',
                   'group-hover:translate-x-0.5'
                 )} />
               </button>
@@ -418,7 +418,7 @@ export function GettingStartedChecklist({ className, expanded = true, onToggle }
 
           {/* Hidden steps indicator */}
           {hiddenStepsCount > 0 && (
-            <p className="text-center text-sm text-slate-400 py-2">
+            <p className="text-center text-sm text-slate-600 py-2">
               +{hiddenStepsCount} fler steg kommer att visas
             </p>
           )}

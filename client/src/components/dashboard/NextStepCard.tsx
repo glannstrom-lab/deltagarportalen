@@ -170,7 +170,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
             <div className="text-left">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={14} className="text-amber-500" />
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                   Rekommenderat nästa steg
                 </span>
               </div>
@@ -179,7 +179,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
           </div>
           
           <div className="flex items-center gap-4">
-            <span className="hidden sm:flex items-center gap-1.5 text-sm text-slate-500 font-medium">
+            <span className="hidden sm:flex items-center gap-1.5 text-sm text-slate-700 font-medium">
               <Clock size={14} />
               {step.time}
             </span>

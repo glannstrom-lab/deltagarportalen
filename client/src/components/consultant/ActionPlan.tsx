@@ -73,7 +73,7 @@ const priorityConfig: Record<GoalPriority, { label: string; color: string; bg: s
 }
 
 const statusConfig: Record<GoalStatus, { label: string; color: string; icon: typeof CheckCircle2 }> = {
-  NOT_STARTED: { label: 'Inte påbörjad', color: 'text-slate-500', icon: Clock },
+  NOT_STARTED: { label: 'Inte påbörjad', color: 'text-slate-700', icon: Clock },
   IN_PROGRESS: { label: 'Pågående', color: 'text-blue-500', icon: TrendingUp },
   COMPLETED: { label: 'Avklarad', color: 'text-emerald-500', icon: CheckCircle2 },
   BLOCKED: { label: 'Blockerad', color: 'text-rose-500', icon: AlertCircle },
@@ -295,7 +295,7 @@ export function ActionPlan({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800">Handlingsplan</h3>
-              <p className="text-sm text-slate-500">SMARTA-mål för {participantName}</p>
+              <p className="text-sm text-slate-700">SMARTA-mål för {participantName}</p>
             </div>
           </div>
           
@@ -313,7 +313,7 @@ export function ActionPlan({
         <div className="grid grid-cols-4 gap-3">
           <div className="bg-slate-50 rounded-xl p-3 text-center">
             <p className="text-2xl font-bold text-slate-800">{stats.total}</p>
-            <p className="text-xs text-slate-500">Totalt</p>
+            <p className="text-xs text-slate-700">Totalt</p>
           </div>
           <div className="bg-emerald-50 rounded-xl p-3 text-center">
             <p className="text-2xl font-bold text-emerald-600">{stats.completed}</p>
@@ -340,7 +340,7 @@ export function ActionPlan({
             </h4>
             <button
               onClick={() => setShowTemplates(false)}
-              className="text-sm text-slate-500 hover:text-slate-700"
+              className="text-sm text-slate-700 hover:text-slate-700"
             >
               Stäng
             </button>
@@ -360,10 +360,10 @@ export function ActionPlan({
                   )}>
                     {priorityConfig[template.priority].label}
                   </span>
-                  <span className="text-xs text-slate-400">{template.timeBound}</span>
+                  <span className="text-xs text-slate-600">{template.timeBound}</span>
                 </div>
                 <p className="font-medium text-slate-800">{template.title}</p>
-                <p className="text-sm text-slate-500 mt-1">{template.specific}</p>
+                <p className="text-sm text-slate-700 mt-1">{template.specific}</p>
               </button>
             ))}
           </div>
@@ -514,8 +514,8 @@ export function ActionPlan({
         {goals.length === 0 ? (
           <div className="p-8 text-center">
             <Target className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500">Inga mål ännu</p>
-            <p className="text-sm text-slate-400 mt-1">
+            <p className="text-slate-700">Inga mål ännu</p>
+            <p className="text-sm text-slate-600 mt-1">
               Skapa SMARTA-mål för att hjälpa deltagaren framåt
             </p>
           </div>
@@ -560,7 +560,7 @@ export function ActionPlan({
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <h4 className={cn(
                           'font-semibold text-slate-800',
-                          goal.status === 'COMPLETED' && 'line-through text-slate-500'
+                          goal.status === 'COMPLETED' && 'line-through text-slate-700'
                         )}>
                           {goal.title}
                         </h4>
@@ -572,7 +572,7 @@ export function ActionPlan({
                           {statusStyle.label}
                         </span>
                         {goal.relatedTo && (
-                          <span className="text-xs text-slate-400 flex items-center gap-1">
+                          <span className="text-xs text-slate-600 flex items-center gap-1">
                             <LinkIcon className="w-3 h-3" />
                             {goal.relatedTo.description}
                           </span>
@@ -590,8 +590,8 @@ export function ActionPlan({
                             style={{ width: `${goal.progress}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-500">{goal.progress}%</span>
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-slate-700">{goal.progress}%</span>
+                        <span className="text-xs text-slate-600">
                           Deadline: {new Date(goal.deadline).toLocaleDateString('sv-SE')}
                         </span>
                       </div>
@@ -600,16 +600,16 @@ export function ActionPlan({
                       {isExpanded && (
                         <div className="mt-3 p-3 bg-slate-50 rounded-lg space-y-2 animate-in fade-in">
                           <div>
-                            <span className="text-xs font-medium text-slate-500">Mätbart:</span>
+                            <span className="text-xs font-medium text-slate-700">Mätbart:</span>
                             <p className="text-sm text-slate-700">{goal.measurable}</p>
                           </div>
                           <div className="grid grid-cols-2 gap-2">
                             <div>
-                              <span className="text-xs font-medium text-slate-500">Genomförbart:</span>
+                              <span className="text-xs font-medium text-slate-700">Genomförbart:</span>
                               <p className="text-sm text-slate-700">{goal.achievable}</p>
                             </div>
                             <div>
-                              <span className="text-xs font-medium text-slate-500">Relevant:</span>
+                              <span className="text-xs font-medium text-slate-700">Relevant:</span>
                               <p className="text-sm text-slate-700">{goal.relevant}</p>
                             </div>
                           </div>
@@ -617,7 +617,7 @@ export function ActionPlan({
                           {/* Progress update */}
                           {goal.status !== 'COMPLETED' && (
                             <div className="pt-2 border-t border-slate-200">
-                              <label className="text-xs font-medium text-slate-500 block mb-1">
+                              <label className="text-xs font-medium text-slate-700 block mb-1">
                                 Uppdatera framsteg:
                               </label>
                               <input
@@ -660,14 +660,14 @@ export function ActionPlan({
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => handleEdit(goal)}
-                        className="p-1.5 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
                         title="Redigera"
                       >
                         <Edit2 className="w-4 h-4" />
                       </button>
                       <button
                         onClick={() => onDeleteGoal(goal.id)}
-                        className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1.5 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Ta bort"
                       >
                         <Trash2 className="w-4 h-4" />

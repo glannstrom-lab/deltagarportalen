@@ -100,7 +100,7 @@ function KPICard({
     green: 'text-emerald-600 dark:text-emerald-400',
     yellow: 'text-amber-600 dark:text-amber-400',
     red: 'text-rose-600 dark:text-rose-400',
-    neutral: 'text-stone-600 dark:text-stone-400',
+    neutral: 'text-stone-600 dark:text-stone-600',
   }
 
   return (
@@ -114,12 +114,12 @@ function KPICard({
     >
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <p className="text-sm font-medium text-stone-600 dark:text-stone-400">{title}</p>
+          <p className="text-sm font-medium text-stone-600 dark:text-stone-600">{title}</p>
           <p className="text-2xl sm:text-3xl font-bold text-stone-900 dark:text-stone-100 mt-1">
             {value}
           </p>
           {subtitle && (
-            <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{subtitle}</p>
+            <p className="text-xs text-stone-500 dark:text-stone-600 mt-1">{subtitle}</p>
           )}
           {trend && (
             <div className={cn(
@@ -132,7 +132,7 @@ function KPICard({
                 <TrendingDown className="w-4 h-4" />
               )}
               <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
-              <span className="text-stone-400 font-normal">vs förra veckan</span>
+              <span className="text-stone-600 font-normal">vs förra veckan</span>
             </div>
           )}
         </div>
@@ -196,9 +196,9 @@ function AttentionAlert({
         <p className="font-medium text-stone-900 dark:text-stone-100 truncate">
           {participant.first_name} {participant.last_name}
         </p>
-        <p className="text-sm text-stone-500 dark:text-stone-400">{alert.message}</p>
+        <p className="text-sm text-stone-500 dark:text-stone-600">{alert.message}</p>
       </div>
-      <ChevronRight className="w-4 h-4 text-stone-400" />
+      <ChevronRight className="w-4 h-4 text-stone-600" />
     </Link>
   )
 }
@@ -555,7 +555,7 @@ export function OverviewTab() {
                 <p className="font-medium text-stone-900 dark:text-stone-100">
                   Alla deltagare följs upp!
                 </p>
-                <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">
                   Inga deltagare kräver omedelbar uppmärksamhet.
                 </p>
               </div>
@@ -641,11 +641,11 @@ export function OverviewTab() {
                       <p className="font-medium text-stone-900 dark:text-stone-100 truncate">
                         {activity.participantName}
                       </p>
-                      <p className="text-sm text-stone-500 dark:text-stone-400">
+                      <p className="text-sm text-stone-500 dark:text-stone-600">
                         {activity.description}
                       </p>
                     </div>
-                    <span className="text-xs text-stone-400">
+                    <span className="text-xs text-stone-600">
                       {new Date(activity.timestamp).toLocaleTimeString('sv-SE', {
                         hour: '2-digit',
                         minute: '2-digit',
@@ -684,13 +684,13 @@ export function OverviewTab() {
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl">
                 <p className="text-3xl font-bold text-emerald-600">{stats.goalsCompleted}</p>
-                <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+                <p className="text-sm text-stone-600 dark:text-stone-600 mt-1">
                   Avklarade mål
                 </p>
               </div>
               <div className="text-center p-4 bg-rose-50 dark:bg-rose-900/20 rounded-xl">
                 <p className="text-3xl font-bold text-rose-600">{stats.goalsOverdue}</p>
-                <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+                <p className="text-sm text-stone-600 dark:text-stone-600 mt-1">
                   Försenade mål
                 </p>
               </div>
@@ -704,7 +704,7 @@ export function OverviewTab() {
                 {goalCategories.length > 0 ? (
                   goalCategories.map((cat, index) => (
                     <div key={index} className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">{cat.category}</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-600">{cat.category}</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div
                           className="h-full bg-violet-600 rounded-full transition-all"
@@ -716,19 +716,19 @@ export function OverviewTab() {
                 ) : (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">CV-förbättring</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-600">CV-förbättring</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div className="h-full bg-violet-600 rounded-full" style={{ width: '75%' }} />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">Jobbansökningar</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-600">Jobbansökningar</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div className="h-full bg-violet-600 rounded-full" style={{ width: '60%' }} />
                       </div>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-stone-600 dark:text-stone-400">Intervjuträning</span>
+                      <span className="text-sm text-stone-600 dark:text-stone-600">Intervjuträning</span>
                       <div className="w-24 h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                         <div className="h-full bg-violet-600 rounded-full" style={{ width: '45%' }} />
                       </div>

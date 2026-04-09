@@ -283,7 +283,7 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">Din prognos</h3>
-            <p className="text-sm text-slate-500">Baserat på din aktivitet</p>
+            <p className="text-sm text-slate-700">Baserat på din aktivitet</p>
           </div>
         </div>
         
@@ -412,7 +412,7 @@ function ActionsTab({ analysis, onClose }: { analysis: BehaviorAnalysis; onClose
               <h4 className="font-semibold text-slate-800">{action.action}</h4>
               <p className="text-sm text-slate-600 mt-1">{action.reason}</p>
               <div className="flex items-center gap-4 mt-3">
-                <span className="text-xs text-slate-500 flex items-center gap-1">
+                <span className="text-xs text-slate-700 flex items-center gap-1">
                   <Clock size={12} />
                   {action.timeEstimate}
                 </span>
@@ -438,12 +438,12 @@ function PatternCard({ icon, label, value, subtext }: {
 }) {
   return (
     <div className="p-4 bg-slate-50 rounded-xl">
-      <div className="flex items-center gap-2 text-slate-400 mb-2">
+      <div className="flex items-center gap-2 text-slate-600 mb-2">
         {icon}
         <span className="text-xs">{label}</span>
       </div>
       <p className="font-semibold text-slate-800">{value}</p>
-      <p className="text-xs text-slate-500">{subtext}</p>
+      <p className="text-xs text-slate-700">{subtext}</p>
     </div>
   )
 }

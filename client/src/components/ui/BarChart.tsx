@@ -11,7 +11,7 @@ export function BarChart({ data }: BarChartProps) {
       <div className="space-y-4">
         {data.map((item) => (
           <div key={item.label} className="flex items-center gap-3">
-            <span className="text-sm text-slate-500 w-16">{item.label}</span>
+            <span className="text-sm text-slate-700 w-16">{item.label}</span>
             <div className="flex-1 h-8 bg-slate-100 rounded-lg overflow-hidden">
               <div
                 className={`h-full rounded-lg transition-all duration-500 ${item.color}`}

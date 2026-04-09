@@ -89,7 +89,7 @@ export function JourneyPhaseDetail({
 
         {/* Milestones List */}
         <div className="p-6 overflow-y-auto max-h-[50vh]">
-          <h3 className="text-sm font-medium text-slate-500 uppercase tracking-wide mb-4">
+          <h3 className="text-sm font-medium text-slate-700 uppercase tracking-wide mb-4">
             Milstolpar i denna fas
           </h3>
 
@@ -115,7 +115,7 @@ export function JourneyPhaseDetail({
                       w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0
                       ${isCompleted
                         ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-100 text-slate-400'
+                        : 'bg-slate-100 text-slate-600'
                       }
                     `}>
                       {isCompleted ? (
@@ -141,7 +141,7 @@ export function JourneyPhaseDetail({
                           +{milestone.xpReward} XP
                         </span>
                       </div>
-                      <p className={`text-sm ${isCompleted ? 'text-emerald-600' : 'text-slate-500'}`}>
+                      <p className={`text-sm ${isCompleted ? 'text-emerald-600' : 'text-slate-700'}`}>
                         {milestone.description}
                       </p>
                     </div>

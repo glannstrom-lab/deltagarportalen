@@ -55,16 +55,16 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
             <div>
               <h3 className="font-semibold text-slate-900">Hur mår du idag?</h3>
               {todayEntry ? (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-700">
                   Registrerat: {getMoodEmoji(todayEntry.level)} {getMoodLabel(todayEntry.level).toLowerCase()}
                 </p>
               ) : (
-                <p className="text-sm text-slate-500">Klicka för att registrera</p>
+                <p className="text-sm text-slate-700">Klicka för att registrera</p>
               )}
             </div>
           </div>
           {avgMood > 0 && (
-            <div className="flex items-center gap-1 text-sm text-slate-500">
+            <div className="flex items-center gap-1 text-sm text-slate-700">
               <TrendingUp size={16} />
               Snitt vecka: {avgMood.toFixed(1)}/5
             </div>
@@ -79,7 +79,7 @@ export function MoodTracker({ entries, onAddEntry }: MoodTrackerProps) {
             </h3>
             <button
               onClick={() => setIsExpanded(false)}
-              className="text-sm text-slate-500 hover:text-slate-700"
+              className="text-sm text-slate-700 hover:text-slate-700"
             >
               Stäng
             </button>

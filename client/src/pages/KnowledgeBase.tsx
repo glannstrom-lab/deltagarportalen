@@ -110,7 +110,7 @@ export default function KnowledgeBase() {
     if (!articles) {
       return (
         <Card className="p-6 text-center">
-          <p className="text-slate-500">{t('knowledgeBase.couldNotLoad')}</p>
+          <p className="text-slate-700">{t('knowledgeBase.couldNotLoad')}</p>
           <button
             onClick={() => window.location.reload()}
             className="text-violet-600 hover:underline mt-2"

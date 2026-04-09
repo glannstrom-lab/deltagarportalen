@@ -200,7 +200,7 @@ export function RichTextEditor({
             w-full px-4 py-3 border border-slate-200
             ${showToolbar ? 'rounded-b-lg' : 'rounded-lg'}
             focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent
-            text-slate-700 placeholder:text-slate-400
+            text-slate-700 placeholder:text-slate-600
             resize-y
           `}
           style={{ minHeight }}
@@ -213,7 +213,7 @@ export function RichTextEditor({
             className={`
             text-xs font-medium
             ${charPercentage > 90 ? 'text-red-500' :
-              charPercentage > 75 ? 'text-amber-500' : 'text-slate-400'}
+              charPercentage > 75 ? 'text-amber-500' : 'text-slate-600'}
           `}
             aria-live="polite"
             aria-atomic="true"
@@ -240,7 +240,7 @@ export function RichTextEditor({
       </div>
 
       {helpText && (
-        <p id={helpTextId} className="text-xs text-slate-500">{helpText}</p>
+        <p id={helpTextId} className="text-xs text-slate-700">{helpText}</p>
       )}
     </div>
   )

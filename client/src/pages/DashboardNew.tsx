@@ -207,7 +207,7 @@ export default function DashboardNew() {
         <h1 className="text-xl sm:text-2xl font-bold text-slate-800">
           {t('dashboard.greeting', { name: user?.firstName || t('dashboard.greetingDefault') })}
         </h1>
-        <p className="text-slate-500 text-sm sm:text-base mt-1">
+        <p className="text-slate-700 text-sm sm:text-base mt-1">
           {getWelcomeMessage()}
         </p>
       </header>

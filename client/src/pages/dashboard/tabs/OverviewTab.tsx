@@ -216,7 +216,7 @@ export default function OverviewTab() {
           }
         </p>
         {/* Cloud sync indicator */}
-        <div className="flex items-center justify-center gap-1.5 mt-2 text-xs text-slate-400">
+        <div className="flex items-center justify-center gap-1.5 mt-2 text-xs text-slate-600">
           <Cloud className="w-3.5 h-3.5" />
           <span>Synkas automatiskt</span>
         </div>
@@ -263,7 +263,7 @@ export default function OverviewTab() {
                   ? 'bg-emerald-500 text-white'
                   : isNext
                     ? 'bg-indigo-600 text-white'
-                    : 'bg-slate-100 text-slate-400'
+                    : 'bg-slate-100 text-slate-600'
               )}>
                 {isComplete ? (
                   <Check className="w-6 h-6" />
@@ -294,7 +294,7 @@ export default function OverviewTab() {
                 </div>
                 <p className={cn(
                   'text-sm mt-0.5',
-                  isComplete ? 'text-emerald-600' : isNext ? 'text-indigo-600' : 'text-slate-500'
+                  isComplete ? 'text-emerald-600' : isNext ? 'text-indigo-600' : 'text-slate-700'
                 )}>
                   {step.description}
                 </p>
@@ -313,7 +313,7 @@ export default function OverviewTab() {
       {/* All complete celebration */}
       {allComplete && (
         <div className="mt-8 text-center">
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-700 text-sm">
             💡 Tips: Besök <Link to="/journey" className="text-indigo-600 hover:underline font-medium">Min Jobbresa</Link> för att följa din utveckling
           </p>
         </div>

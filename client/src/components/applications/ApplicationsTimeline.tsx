@@ -51,8 +51,8 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
     const newLabel = entry.newValue ? getStatusLabel(entry.newValue.toLowerCase() as any) : null
     return (
       <span>
-        {oldLabel && <span className="text-slate-500">{oldLabel}</span>}
-        {oldLabel && newLabel && <span className="text-slate-400"> → </span>}
+        {oldLabel && <span className="text-slate-700">{oldLabel}</span>}
+        {oldLabel && newLabel && <span className="text-slate-600"> → </span>}
         {newLabel && <span className="font-medium">{newLabel}</span>}
       </span>
     )
@@ -74,7 +74,7 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
           <p className="font-medium text-slate-900 text-sm">
             {config.label}
           </p>
-          <span className="text-xs text-slate-400">
+          <span className="text-xs text-slate-600">
             {new Date(entry.createdAt).toLocaleDateString('sv-SE', {
               day: 'numeric',
               month: 'short',
@@ -85,7 +85,7 @@ function TimelineEntry({ entry, applicationName }: { entry: ApplicationHistoryEn
         </div>
 
         {applicationName && (
-          <p className="text-xs text-slate-500 mt-0.5">{applicationName}</p>
+          <p className="text-xs text-slate-700 mt-0.5">{applicationName}</p>
         )}
 
         {entry.eventType === 'status_change' && (
@@ -149,7 +149,7 @@ export function ApplicationsTimeline() {
         <Card className="p-8 text-center">
           <Clock className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="font-semibold text-slate-700 mb-2">Ingen aktivitet än</h3>
-          <p className="text-slate-500">
+          <p className="text-slate-700">
             Din aktivitetshistorik visas här när du börjar spåra ansökningar.
           </p>
         </Card>
@@ -157,7 +157,7 @@ export function ApplicationsTimeline() {
         <div className="space-y-8">
           {Object.entries(groupedHistory).map(([date, entries]) => (
             <div key={date}>
-              <h3 className="text-sm font-medium text-slate-500 mb-4 capitalize">{date}</h3>
+              <h3 className="text-sm font-medium text-slate-700 mb-4 capitalize">{date}</h3>
               <Card className="p-4">
                 {entries.map((entry) => (
                   <TimelineEntry

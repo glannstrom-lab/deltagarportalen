@@ -199,7 +199,7 @@ function GoalCard({
 
           <p className={cn(
             "text-slate-800 font-medium",
-            goal.is_completed && "line-through text-slate-500"
+            goal.is_completed && "line-through text-slate-700"
           )}>
             {goal.goal_text}
           </p>
@@ -234,7 +234,7 @@ function GoalCard({
           )}
 
           {goal.is_completed && goal.completed_at && !showReflection && (
-            <p className="text-xs text-slate-400 mt-2">
+            <p className="text-xs text-slate-600 mt-2">
               Avklarad {new Date(goal.completed_at).toLocaleDateString('sv-SE')}
             </p>
           )}
@@ -256,7 +256,7 @@ function GoalCard({
                 onDelete()
               }
             }}
-            className="p-1.5 hover:bg-red-50 rounded text-slate-400 hover:text-red-600"
+            className="p-1.5 hover:bg-red-50 rounded text-slate-600 hover:text-red-600"
           >
             <Trash2 className="w-4 h-4" />
           </button>
@@ -344,7 +344,7 @@ export function GoalsTab() {
             <Target className="w-6 h-6 text-violet-600" />
             Veckans mål
           </h2>
-          <p className="text-sm text-slate-500 flex items-center gap-1">
+          <p className="text-sm text-slate-700 flex items-center gap-1">
             <Calendar className="w-4 h-4" />
             {weekRange}
           </p>
@@ -375,7 +375,7 @@ export function GoalsTab() {
           <h3 className="text-lg font-semibold text-slate-700 mb-2">
             Inga mål satta för denna vecka
           </h3>
-          <p className="text-slate-500 mb-6">
+          <p className="text-slate-700 mb-6">
             Sätt upp mål för att hålla fokus och spåra dina framsteg
           </p>
           <Button onClick={() => setShowAddForm(true)}>
@@ -388,7 +388,7 @@ export function GoalsTab() {
           {/* Pending goals */}
           {pendingGoals.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
+              <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider">
                 Pågående ({pendingGoals.length})
               </h3>
               {pendingGoals.map(goal => (
@@ -406,7 +406,7 @@ export function GoalsTab() {
           {/* Completed goals */}
           {completedGoals.length > 0 && (
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+              <h3 className="text-sm font-semibold text-slate-700 uppercase tracking-wider flex items-center gap-2">
                 <Check className="w-4 h-4 text-green-500" />
                 Avklarade ({completedGoals.length})
               </h3>

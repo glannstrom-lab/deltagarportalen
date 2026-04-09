@@ -99,11 +99,11 @@ function DiaryWidgetSmall({
         <Calendar size={14} className="text-rose-500" />
         <div className="flex-1 min-w-0">
           {upcomingEvents.length === 0 ? (
-            <span className="text-xs text-slate-500">{t('diaryWidget.noEvents')}</span>
+            <span className="text-xs text-slate-700">{t('diaryWidget.noEvents')}</span>
           ) : (
             <div className="flex items-center gap-1">
               <span className="text-sm font-bold text-slate-800">{upcomingEvents.length}</span>
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-700">
                 {t('diaryWidget.upcoming')}
               </span>
               {streakDays > 0 && (
@@ -161,12 +161,12 @@ function DiaryWidgetMedium({
           </div>
           <div>
             <p className="text-2xl font-bold text-slate-800">{upcomingEvents.length}</p>
-            <p className="text-xs text-slate-500">{t('diaryWidget.upcomingEvents')}</p>
+            <p className="text-xs text-slate-700">{t('diaryWidget.upcomingEvents')}</p>
           </div>
           {eventsThisWeek > 0 && (
             <div className="ml-auto text-right">
               <p className="text-sm font-bold text-rose-600">{eventsThisWeek}</p>
-              <p className="text-xs text-slate-500">{t('diaryWidget.thisWeek')}</p>
+              <p className="text-xs text-slate-700">{t('diaryWidget.thisWeek')}</p>
             </div>
           )}
         </div>
@@ -174,7 +174,7 @@ function DiaryWidgetMedium({
         {/* Nästa händelser */}
         {upcomingEvents.length > 0 && (
           <div className="space-y-2">
-            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t('diaryWidget.nextUp')}</p>
+            <p className="text-xs font-semibold text-slate-600 uppercase tracking-wider">{t('diaryWidget.nextUp')}</p>
             {upcomingEvents.slice(0, 2).map((event) => {
               const config = eventTypeConfig[event.type] || eventTypeConfig.default
               const Icon = config.icon
@@ -194,8 +194,8 @@ function DiaryWidgetMedium({
                       <span className="text-xs text-rose-600 font-medium">{getRelativeDate(event.date)}</span>
                       {event.time && (
                         <>
-                          <span className="text-xs text-slate-400">•</span>
-                          <span className="text-xs text-slate-500">{event.time}</span>
+                          <span className="text-xs text-slate-600">•</span>
+                          <span className="text-xs text-slate-700">{event.time}</span>
                         </>
                       )}
                     </div>
@@ -281,7 +281,7 @@ function DiaryWidgetLarge({
           </div>
           <div className="p-3 bg-slate-50 rounded-xl text-center">
             <p className="text-2xl font-bold text-slate-700">{eventsThisWeek}</p>
-            <p className="text-xs text-slate-500">{t('diaryWidget.thisWeek')}</p>
+            <p className="text-xs text-slate-700">{t('diaryWidget.thisWeek')}</p>
           </div>
           <div className="p-3 bg-amber-50 rounded-xl text-center">
             <div className="flex items-center justify-center gap-1">
@@ -312,7 +312,7 @@ function DiaryWidgetLarge({
                     <div className="w-14 text-center shrink-0">
                       <p className="text-xs font-bold text-rose-600">{getRelativeDate(event.date)}</p>
                       {event.time && (
-                        <p className="text-xs text-slate-500">{event.time}</p>
+                        <p className="text-xs text-slate-700">{event.time}</p>
                       )}
                     </div>
 

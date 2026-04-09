@@ -80,7 +80,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
           {/* Search */}
           <div className="mb-4">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
               <Input
                 type="text"
                 placeholder={t('knowledgeBase.topics.searchPlaceholder')}
@@ -150,7 +150,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
                 ? t('knowledgeBase.topics.searchResults')
                 : t('knowledgeBase.topics.allArticles')}
             </h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {filteredArticles.length} {t('knowledgeBase.topics.articles')}
             </p>
           </div>
@@ -159,14 +159,14 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
           <div className="flex items-center gap-2 bg-slate-100 rounded-lg p-1">
             <button
               onClick={() => setViewMode('grid')}
-              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
+              className={`p-2 rounded ${viewMode === 'grid' ? 'bg-white shadow-sm' : 'text-slate-700'}`}
               aria-label={t('knowledgeBase.topics.gridView')}
             >
               <Grid className="w-4 h-4" />
             </button>
             <button
               onClick={() => setViewMode('list')}
-              className={`p-2 rounded ${viewMode === 'list' ? 'bg-white shadow-sm' : 'text-slate-500'}`}
+              className={`p-2 rounded ${viewMode === 'list' ? 'bg-white shadow-sm' : 'text-slate-700'}`}
               aria-label={t('knowledgeBase.topics.listView')}
             >
               <List className="w-4 h-4" />
@@ -178,7 +178,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
         {filteredArticles.length === 0 ? (
           <Card className="text-center py-12">
             <BookOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-            <p className="text-slate-500">{t('knowledgeBase.topics.noMatches')}</p>
+            <p className="text-slate-700">{t('knowledgeBase.topics.noMatches')}</p>
             <button
               onClick={() => {
                 setSearchQuery('')

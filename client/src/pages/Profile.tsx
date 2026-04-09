@@ -169,7 +169,7 @@ function CollapsibleSection({ title, icon, children, defaultOpen = false, badge,
                   style={{ width: `${completionPercent}%` }}
                 />
               </div>
-              <span className="text-xs text-slate-500">{completionPercent}%</span>
+              <span className="text-xs text-slate-700">{completionPercent}%</span>
             </div>
           )}
           <div className={cn(
@@ -178,7 +178,7 @@ function CollapsibleSection({ title, icon, children, defaultOpen = false, badge,
           )}>
             <ChevronDown className={cn(
               'w-5 h-5 transition-transform duration-200',
-              isOpen ? 'rotate-180 text-slate-700' : 'text-slate-400'
+              isOpen ? 'rotate-180 text-slate-700' : 'text-slate-600'
             )} />
           </div>
         </div>
@@ -249,7 +249,7 @@ function TagInput({ tags, onAdd, onRemove, suggestions = [], placeholder, maxTag
           </span>
         ))}
         {tags.length === 0 && (
-          <span className="text-sm text-slate-400 italic">Inga valda ännu</span>
+          <span className="text-sm text-slate-600 italic">Inga valda ännu</span>
         )}
       </div>
       {tags.length < maxTags && (
@@ -275,7 +275,7 @@ function TagInput({ tags, onAdd, onRemove, suggestions = [], placeholder, maxTag
                 'px-4 py-3 rounded-xl font-medium transition-all flex items-center gap-2',
                 input.trim()
                   ? 'bg-indigo-600 text-white hover:bg-indigo-700 active:scale-95'
-                  : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                  : 'bg-slate-100 text-slate-600 cursor-not-allowed'
               )}
             >
               <Plus className="w-4 h-4" />
@@ -284,7 +284,7 @@ function TagInput({ tags, onAdd, onRemove, suggestions = [], placeholder, maxTag
           </div>
           {showSuggestions && filteredSuggestions.length > 0 && (
             <div className="absolute top-full left-0 right-0 mt-2 bg-white border-2 border-slate-200 rounded-xl shadow-xl z-10 overflow-hidden">
-              <div className="p-2 text-xs font-medium text-slate-500 border-b border-slate-100">Förslag</div>
+              <div className="p-2 text-xs font-medium text-slate-700 border-b border-slate-100">Förslag</div>
               {filteredSuggestions.map((suggestion) => (
                 <button
                   key={suggestion}
@@ -299,7 +299,7 @@ function TagInput({ tags, onAdd, onRemove, suggestions = [], placeholder, maxTag
           )}
         </div>
       )}
-      <p className="mt-2 text-xs text-slate-500">{tags.length} av {maxTags} valda</p>
+      <p className="mt-2 text-xs text-slate-700">{tags.length} av {maxTags} valda</p>
     </div>
   )
 }
@@ -365,8 +365,8 @@ function StyledInput({ label, ...props }: { label: string } & React.InputHTMLAtt
         className={cn(
           'w-full px-4 py-3 bg-white border-2 border-slate-200 rounded-xl',
           'focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400',
-          'text-sm transition-all placeholder:text-slate-400',
-          props.disabled && 'bg-slate-50 text-slate-500 cursor-not-allowed',
+          'text-sm transition-all placeholder:text-slate-600',
+          props.disabled && 'bg-slate-50 text-slate-700 cursor-not-allowed',
           props.className
         )}
       />
@@ -771,7 +771,7 @@ export default function Profile() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-800">Kontaktuppgifter</h2>
-              <p className="text-sm text-slate-500">Grundläggande information</p>
+              <p className="text-sm text-slate-700">Grundläggande information</p>
             </div>
           </div>
 
@@ -811,7 +811,7 @@ export default function Profile() {
                 value={profile?.email || ''}
                 disabled
               />
-              <p className="text-xs text-slate-500 mt-1.5 flex items-center gap-1">
+              <p className="text-xs text-slate-700 mt-1.5 flex items-center gap-1">
                 <Shield className="w-3 h-3" />
                 E-postadressen kan inte ändras
               </p>
@@ -831,7 +831,7 @@ export default function Profile() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-800">Önskade jobb</h2>
-              <p className="text-sm text-slate-500">Vilka roller drömmer du om? (max 3)</p>
+              <p className="text-sm text-slate-700">Vilka roller drömmer du om? (max 3)</p>
             </div>
           </div>
           <TagInput
@@ -857,7 +857,7 @@ export default function Profile() {
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-800">Dina intressen</h2>
-              <p className="text-sm text-slate-500">Vad brinner du för? (max 3)</p>
+              <p className="text-sm text-slate-700">Vad brinner du för? (max 3)</p>
             </div>
           </div>
           <TagInput
@@ -884,7 +884,7 @@ export default function Profile() {
               </div>
               <div>
                 <h2 className="text-lg font-bold text-slate-800">Din intresseprofil</h2>
-                <p className="text-sm text-slate-500">Resultat från intresseguiden</p>
+                <p className="text-sm text-slate-700">Resultat från intresseguiden</p>
               </div>
             </div>
             <div className="space-y-4">
@@ -1066,7 +1066,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <span className="text-sm font-semibold text-slate-700 block">Har tillgång till bil</span>
-                  <span className="text-xs text-slate-500">För att ta dig till jobbet</span>
+                  <span className="text-xs text-slate-700">För att ta dig till jobbet</span>
                 </div>
               </label>
 
@@ -1088,7 +1088,7 @@ export default function Profile() {
                 </div>
                 <div>
                   <span className="text-sm font-semibold text-slate-700 block">Villig att resa i tjänsten</span>
-                  <span className="text-xs text-slate-500">Resor inom jobbet</span>
+                  <span className="text-xs text-slate-700">Resor inom jobbet</span>
                 </div>
               </label>
             </div>
@@ -1106,9 +1106,9 @@ export default function Profile() {
                   className="w-full accent-violet-600 h-2"
                 />
                 <div className="flex justify-between text-sm mt-3">
-                  <span className="text-slate-500">15 min</span>
+                  <span className="text-slate-700">15 min</span>
                   <span className="font-bold text-violet-700 text-lg">{mobility?.maxCommuteMinutes || 45} min</span>
-                  <span className="text-slate-500">120 min</span>
+                  <span className="text-slate-700">120 min</span>
                 </div>
               </div>
             </div>
@@ -1131,7 +1131,7 @@ export default function Profile() {
               </div>
               <div>
                 <span className="text-sm font-semibold text-slate-700 block">Villig att flytta för rätt jobb</span>
-                <span className="text-xs text-slate-500">Öppen för jobb i andra städer eller regioner</span>
+                <span className="text-xs text-slate-700">Öppen för jobb i andra städer eller regioner</span>
               </div>
             </label>
           </div>
@@ -1149,7 +1149,7 @@ export default function Profile() {
               <label className="block text-sm font-semibold text-slate-700 mb-3">Löneanspråk (kr/månad före skatt)</label>
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white rounded-xl border-2 border-slate-200 p-4">
-                  <label className="text-xs font-medium text-slate-500 mb-2 block">Minimum</label>
+                  <label className="text-xs font-medium text-slate-700 mb-2 block">Minimum</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1158,11 +1158,11 @@ export default function Profile() {
                       placeholder="25 000"
                       className="w-full text-xl font-bold text-slate-800 bg-transparent border-none focus:outline-none"
                     />
-                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-600 text-sm">kr</span>
                   </div>
                 </div>
                 <div className="bg-white rounded-xl border-2 border-slate-200 p-4">
-                  <label className="text-xs font-medium text-slate-500 mb-2 block">Önskat</label>
+                  <label className="text-xs font-medium text-slate-700 mb-2 block">Önskat</label>
                   <div className="relative">
                     <input
                       type="number"
@@ -1171,7 +1171,7 @@ export default function Profile() {
                       placeholder="35 000"
                       className="w-full text-xl font-bold text-slate-800 bg-transparent border-none focus:outline-none"
                     />
-                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-400 text-sm">kr</span>
+                    <span className="absolute right-0 top-1/2 -translate-y-1/2 text-slate-600 text-sm">kr</span>
                   </div>
                 </div>
               </div>
@@ -1236,7 +1236,7 @@ export default function Profile() {
               </div>
               <div>
                 <span className="text-sm font-semibold text-slate-700 block">Registrerad hos Arbetsförmedlingen</span>
-                <span className="text-xs text-slate-500">Inskriven som arbetssökande</span>
+                <span className="text-xs text-slate-700">Inskriven som arbetssökande</span>
               </div>
             </label>
 
@@ -1258,7 +1258,7 @@ export default function Profile() {
               </div>
               <div>
                 <span className="text-sm font-semibold text-slate-700 block">Deltar i arbetsmarknadsåtgärd</span>
-                <span className="text-xs text-slate-500">T.ex. Jobbgarantin, Etablering, praktik</span>
+                <span className="text-xs text-slate-700">T.ex. Jobbgarantin, Etablering, praktik</span>
               </div>
             </label>
 
@@ -1296,7 +1296,7 @@ export default function Profile() {
               </div>
               <div>
                 <span className="text-sm font-semibold text-slate-700 block">Har aktivitetsstöd/ersättning</span>
-                <span className="text-xs text-slate-500">Aktivitetsstöd, a-kassa eller annan ersättning</span>
+                <span className="text-xs text-slate-700">Aktivitetsstöd, a-kassa eller annan ersättning</span>
               </div>
             </label>
           </div>
@@ -1341,7 +1341,7 @@ export default function Profile() {
                     )}
                   >
                     <span className="block text-sm font-semibold">{size.label}</span>
-                    <span className="block text-xs text-slate-500">{size.desc}</span>
+                    <span className="block text-xs text-slate-700">{size.desc}</span>
                   </button>
                 ))}
               </div>
@@ -1408,7 +1408,7 @@ export default function Profile() {
               </div>
               <div>
                 <span className="text-sm font-semibold text-slate-700 block">Jag har anpassningsbehov</span>
-                <span className="text-xs text-slate-500">T.ex. tillgänglighet, arbetstidsanpassning, hjälpmedel</span>
+                <span className="text-xs text-slate-700">T.ex. tillgänglighet, arbetstidsanpassning, hjälpmedel</span>
               </div>
             </label>
 

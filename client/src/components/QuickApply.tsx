@@ -79,7 +79,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
             <h2 className="text-xl font-bold text-slate-900">
               {step === 'success' ? 'Ansökan skickad!' : 'Snabbansökan'}
             </h2>
-            <p className="text-slate-500">{job.headline} på {job.employer.name}</p>
+            <p className="text-slate-700">{job.headline} på {job.employer.name}</p>
           </div>
           <button
             onClick={onClose}
@@ -140,7 +140,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                     <div className="flex items-center justify-between">
                       <div>
                         <h4 className="font-medium text-slate-900">{template.name}</h4>
-                        <p className="text-sm text-slate-500 mt-1">{template.subject}</p>
+                        <p className="text-sm text-slate-700 mt-1">{template.subject}</p>
                       </div>
                       {template.isDefault && (
                         <span className="px-2 py-1 bg-teal-100 text-teal-700 text-xs rounded-full">
@@ -178,7 +178,7 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                   rows={12}
                   className="w-full px-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 font-mono text-sm"
                 />
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-slate-700 mt-1">
                   Redigera mallen så den passar dig och jobbet. Se till att alla [PLACEHOLDERS] ersätts.
                 </p>
               </div>
@@ -206,10 +206,10 @@ export default function QuickApply({ job, onClose, onApplied }: QuickApplyProps)
                 <h3 className="font-semibold text-slate-900 mb-4">Sammanfattning</h3>
                 
                 <div className="space-y-2 text-sm">
-                  <p><span className="text-slate-500">Till:</span> {job.employer.name}</p>
-                  <p><span className="text-slate-500">Ämne:</span> {subject}</p>
-                  <p><span className="text-slate-500">Från:</span> {userData.name} ({userData.email})</p>
-                  <p><span className="text-slate-500">Bifogat:</span> CV (från din profil)</p>
+                  <p><span className="text-slate-700">Till:</span> {job.employer.name}</p>
+                  <p><span className="text-slate-700">Ämne:</span> {subject}</p>
+                  <p><span className="text-slate-700">Från:</span> {userData.name} ({userData.email})</p>
+                  <p><span className="text-slate-700">Bifogat:</span> CV (från din profil)</p>
                 </div>
               </div>
 

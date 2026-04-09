@@ -199,7 +199,7 @@ const JobMatchCard = memo(function JobMatchCard({ match }: { match: SemanticMatc
           <h4 className="font-medium text-slate-900 line-clamp-1">
             {job.headline}
           </h4>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-700">
             {job.employer?.name || 'Okänd arbetsgivare'}
           </p>
           
@@ -213,7 +213,7 @@ const JobMatchCard = memo(function JobMatchCard({ match }: { match: SemanticMatc
             </span>
             
             {matchedKeywords.length > 0 && (
-              <span className="text-xs text-slate-500">
+              <span className="text-xs text-slate-700">
                 {matchedKeywords.slice(0, 2).join(', ')}
                 {matchedKeywords.length > 2 && ` +${matchedKeywords.length - 2}`}
               </span>
@@ -284,7 +284,7 @@ const SimilarRoleCard = memo(function SimilarRoleCard({ role }: { role: SimilarR
           {/* Missing skills */}
           {role.requiredSkills.length > role.transferableSkills.length && (
             <div className="mt-2">
-              <p className="text-xs text-slate-500 mb-1">Att lära sig:</p>
+              <p className="text-xs text-slate-700 mb-1">Att lära sig:</p>
               <div className="flex flex-wrap gap-1">
                 {role.requiredSkills
                   .filter(s => !role.transferableSkills.includes(s))
@@ -429,7 +429,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
                 {(gap.learningTime || gap.newJobsIfLearned) && (
                   <div className="flex items-center gap-4 mt-2 text-xs">
                     {gap.learningTime && (
-                      <span className="flex items-center gap-1 text-slate-500">
+                      <span className="flex items-center gap-1 text-slate-700">
                         <Zap size={12} />
                         Lär dig på: {gap.learningTime}
                       </span>

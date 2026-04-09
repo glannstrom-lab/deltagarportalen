@@ -49,10 +49,10 @@ export function CVExport({ cvData }: CVExportProps) {
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">Exportera CV</h3>
-            <p className="text-sm text-slate-500">Ladda ner som PDF eller Word</p>
+            <p className="text-sm text-slate-700">Ladda ner som PDF eller Word</p>
           </div>
         </div>
-        <p className="text-sm text-slate-500">Skapa ett CV först för att exportera</p>
+        <p className="text-sm text-slate-700">Skapa ett CV först för att exportera</p>
       </div>
     )
   }
@@ -748,7 +748,7 @@ export function CVExport({ cvData }: CVExportProps) {
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">Exportera CV</h3>
-            <p className="text-sm text-slate-500">Ladda ner som PDF eller Word</p>
+            <p className="text-sm text-slate-700">Ladda ner som PDF eller Word</p>
           </div>
         </div>
 
@@ -772,7 +772,7 @@ export function CVExport({ cvData }: CVExportProps) {
           <button
             onClick={handleExportWord}
             disabled={isExportingPDF || isExportingWord}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-600 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-600 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'word' ? (
               <><Check className="w-5 h-5" /> Word Sparad!</>
@@ -784,12 +784,12 @@ export function CVExport({ cvData }: CVExportProps) {
           </button>
         </div>
 
-        <p className="text-xs text-slate-400 mt-4 text-center">
+        <p className="text-xs text-slate-600 mt-4 text-center">
           Filnamn: {cvData.firstName?.toLowerCase() || 'ditt'}-{cvData.lastName?.toLowerCase() || 'namn'}-cv.pdf / .doc
         </p>
 
         <div className="mt-4 p-3 bg-slate-50 rounded-lg">
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-700">
             <strong>Tips:</strong> PDF är bäst för att skicka till arbetsgivare.
             Word kan du redigera vidare om du behöver anpassa CV:t för specifika ansökningar.
           </p>

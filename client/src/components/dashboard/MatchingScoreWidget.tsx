@@ -84,7 +84,7 @@ export default function MatchingScoreWidget() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">Din matchningsgrad</h3>
-            <p className="text-sm text-slate-500">Hur val ditt CV matchar arbetsmarknaden</p>
+            <p className="text-sm text-slate-700">Hur val ditt CV matchar arbetsmarknaden</p>
           </div>
         </div>
         <div className="text-right">

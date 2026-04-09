@@ -55,7 +55,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         <div className="relative">
           {leftIcon && (
-            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" aria-hidden="true">
+            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none" aria-hidden="true">
               {leftIcon}
             </div>
           )}
@@ -75,7 +75,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400">
+            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600">
               {rightIcon}
             </div>
           )}
@@ -87,7 +87,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={hintId} className="mt-1.5 text-sm text-slate-500">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-700">{hint}</p>
         )}
       </div>
     )
@@ -119,9 +119,9 @@ export const PasswordInput = forwardRef<HTMLInputElement, PasswordInputProps>(
             aria-pressed={showPassword}
           >
             {showPassword ? (
-              <EyeOff className="w-4 h-4 text-slate-500" aria-hidden="true" />
+              <EyeOff className="w-4 h-4 text-slate-700" aria-hidden="true" />
             ) : (
-              <Eye className="w-4 h-4 text-slate-500" aria-hidden="true" />
+              <Eye className="w-4 h-4 text-slate-700" aria-hidden="true" />
             )}
           </button>
         }
@@ -196,7 +196,7 @@ export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={hintId} className="mt-1.5 text-sm text-slate-500">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-700">{hint}</p>
         )}
       </div>
     )
@@ -273,7 +273,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
               </option>
             ))}
           </select>
-          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 pointer-events-none" aria-hidden="true" />
+          <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 pointer-events-none" aria-hidden="true" />
         </div>
         {error && (
           <p id={errorId} className="mt-1.5 text-sm text-red-600 flex items-center gap-1" role="alert">
@@ -282,7 +282,7 @@ export const Select = forwardRef<HTMLSelectElement, SelectProps>(
           </p>
         )}
         {hint && !error && (
-          <p id={hintId} className="mt-1.5 text-sm text-slate-500">{hint}</p>
+          <p id={hintId} className="mt-1.5 text-sm text-slate-700">{hint}</p>
         )}
       </div>
     )
@@ -338,7 +338,7 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
             {label}
           </span>
           {description && (
-            <p className="text-sm text-slate-500 mt-0.5">{description}</p>
+            <p className="text-sm text-slate-700 mt-0.5">{description}</p>
           )}
         </div>
       </label>
@@ -368,7 +368,7 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
               <span className="text-sm font-medium text-slate-700">{label}</span>
             )}
             {description && (
-              <p className="text-sm text-slate-500 mt-0.5">{description}</p>
+              <p className="text-sm text-slate-700 mt-0.5">{description}</p>
             )}
           </div>
         )}

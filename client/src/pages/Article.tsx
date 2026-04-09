@@ -161,8 +161,8 @@ export default function Article() {
   if (!id || id === ':id' || !id.match(/^[a-z0-9-]+$/)) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-500 mb-2">{t('article.invalidLink')}</p>
-        <p className="text-slate-400 text-sm mb-4">
+        <p className="text-slate-700 mb-2">{t('article.invalidLink')}</p>
+        <p className="text-slate-600 text-sm mb-4">
           {!id || id === ':id'
             ? t('article.idMissingOrInvalid')
             : t('article.invalidIdFormat', { id })
@@ -178,8 +178,8 @@ export default function Article() {
   if (!article) {
     return (
       <div className="text-center py-12">
-        <p className="text-slate-500">{t('article.notFound')}</p>
-        <p className="text-slate-400 text-sm mt-1 mb-4">
+        <p className="text-slate-700">{t('article.notFound')}</p>
+        <p className="text-slate-600 text-sm mt-1 mb-4">
           ID: {id}
         </p>
         <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
@@ -227,7 +227,7 @@ export default function Article() {
         </h1>
 
         {/* Author & Date */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-6">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-700 mb-6">
           {article.author && (
             <span className="flex items-center gap-1.5">
               <User size={16} />
@@ -266,7 +266,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('normal')}
                 className={`px-2 py-1 rounded text-sm font-medium transition-colors ${
-                  fontSize === 'normal' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
+                  fontSize === 'normal' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-700'
                 }`}
                 title={t('article.fontSizeNormal')}
               >
@@ -275,7 +275,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('large')}
                 className={`px-2 py-1 rounded text-base font-medium transition-colors ${
-                  fontSize === 'large' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
+                  fontSize === 'large' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-700'
                 }`}
                 title={t('article.fontSizeLarge')}
               >
@@ -284,7 +284,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('xlarge')}
                 className={`px-2 py-1 rounded text-lg font-medium transition-colors ${
-                  fontSize === 'xlarge' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500'
+                  fontSize === 'xlarge' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-700'
                 }`}
                 title={t('article.fontSizeXLarge')}
               >
@@ -418,7 +418,7 @@ export default function Article() {
         {article.tags && (
           <footer className="mt-8 pt-6 border-t border-slate-200">
             <div className="flex items-center gap-2 flex-wrap">
-              <Tag size={16} className="text-slate-400" />
+              <Tag size={16} className="text-slate-600" />
               {(Array.isArray(article.tags) ? article.tags : article.tags.split(',')).map((tag) => (
                 <span
                   key={tag}
@@ -432,7 +432,7 @@ export default function Article() {
         )}
 
         {/* Meta info */}
-        <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500">
+        <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-700">
           {article.helpfulnessRating && (
             <span className="flex items-center gap-1">
               <span className="text-amber-500">★</span>
@@ -478,7 +478,7 @@ export default function Article() {
                       <p className="text-sm text-slate-600 line-clamp-2 mb-2">
                         {exercise.description}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-slate-500">
+                      <div className="flex items-center gap-2 text-xs text-slate-700">
                         <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-full">
                           {exercise.category}
                         </span>

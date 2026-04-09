@@ -205,7 +205,7 @@ export default function CVOptimizer({ cvData }: CVOptimizerProps) {
         )}
 
         {!optimization && !loading && (
-          <div className="text-center py-8 text-slate-500">
+          <div className="text-center py-8 text-slate-700">
             <Target size={48} className="mx-auto mb-4 opacity-30" />
             <p>Ange ett yrke ovan för att få personliga optimeringsförslag</p>
           </div>

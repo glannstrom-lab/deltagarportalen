@@ -175,7 +175,7 @@ export function QuickWinButton() {
                     </div>
                     <div>
                       <h3 className="font-bold text-slate-800">Gör något litet</h3>
-                      <p className="text-sm text-slate-500">
+                      <p className="text-sm text-slate-700">
                         5-minuters uppgifter för att komma igång
                       </p>
                     </div>
@@ -184,7 +184,7 @@ export function QuickWinButton() {
                     onClick={() => setIsOpen(false)}
                     className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors"
                   >
-                    <X size={18} className="text-slate-400" />
+                    <X size={18} className="text-slate-600" />
                   </button>
                 </div>
               </div>
@@ -197,7 +197,7 @@ export function QuickWinButton() {
                       <CheckCircle2 size={32} className="text-emerald-600" />
                     </div>
                     <h4 className="font-semibold text-slate-800 mb-2">Bra jobbat!</h4>
-                    <p className="text-slate-500 text-sm">
+                    <p className="text-slate-700 text-sm">
                       Du har inga små uppgifter just nu. Ta en välförtjänt paus!
                     </p>
                   </div>
@@ -261,7 +261,7 @@ export function QuickWinButton() {
                 <div className="mt-6 pt-4 border-t border-slate-100">
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="w-full py-2 text-sm text-slate-500 hover:text-slate-700 transition-colors"
+                    className="w-full py-2 text-sm text-slate-700 hover:text-slate-700 transition-colors"
                   >
                     Kanske senare
                   </button>

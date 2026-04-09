@@ -227,7 +227,7 @@ export function ParticipantsTab() {
         <div className="flex flex-col sm:flex-row gap-4">
           {/* Search */}
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
             <input
               type="text"
               placeholder="Sök efter namn eller email..."
@@ -239,7 +239,7 @@ export function ParticipantsTab() {
                 'border-2 border-transparent',
                 'focus:border-violet-500 focus:bg-white dark:focus:bg-stone-900',
                 'text-stone-900 dark:text-stone-100',
-                'placeholder:text-stone-400',
+                'placeholder:text-stone-600',
                 'transition-all duration-200'
               )}
             />
@@ -293,9 +293,9 @@ export function ParticipantsTab() {
                 className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
               >
                 {sortOrder === 'asc' ? (
-                  <SortAsc className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                  <SortAsc className="w-5 h-5 text-stone-600 dark:text-stone-600" />
                 ) : (
-                  <SortDesc className="w-5 h-5 text-stone-600 dark:text-stone-400" />
+                  <SortDesc className="w-5 h-5 text-stone-600 dark:text-stone-600" />
                 )}
               </button>
             </div>
@@ -308,7 +308,7 @@ export function ParticipantsTab() {
                   'p-2.5 rounded-xl transition-colors',
                   view === 'grid'
                     ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-600'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-400 hover:text-stone-600'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 hover:text-stone-600'
                 )}
               >
                 <Grid3X3 className="w-5 h-5" />
@@ -319,7 +319,7 @@ export function ParticipantsTab() {
                   'p-2.5 rounded-xl transition-colors',
                   view === 'list'
                     ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-600'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-400 hover:text-stone-600'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 hover:text-stone-600'
                 )}
               >
                 <List className="w-5 h-5" />
@@ -390,7 +390,7 @@ export function ParticipantsTab() {
 
       {/* Results Count */}
       <div className="flex items-center justify-between px-1">
-        <p className="text-sm text-stone-500 dark:text-stone-400">
+        <p className="text-sm text-stone-500 dark:text-stone-600">
           Visar {filteredParticipants.length} av {participants.length} deltagare
         </p>
         {filteredParticipants.length > 0 && (
@@ -412,7 +412,7 @@ export function ParticipantsTab() {
           <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
             Inga deltagare hittades
           </h3>
-          <p className="text-stone-500 dark:text-stone-400 mb-6">
+          <p className="text-stone-500 dark:text-stone-600 mb-6">
             {searchQuery || filterStatus !== 'all'
               ? 'Prova att ändra dina filter eller sökord.'
               : 'Du har inte tilldelats några deltagare ännu.'}
@@ -471,7 +471,7 @@ export function ParticipantsTab() {
                         <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                           {p.first_name} {p.last_name}
                         </h3>
-                        <p className="text-sm text-stone-500 dark:text-stone-400">
+                        <p className="text-sm text-stone-500 dark:text-stone-600">
                           {p.email}
                         </p>
                       </div>
@@ -493,21 +493,21 @@ export function ParticipantsTab() {
                   {/* Stats Grid */}
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <FileText className="w-5 h-5 text-stone-400 mx-auto mb-1" />
+                      <FileText className="w-5 h-5 text-stone-600 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : 'Ja') : '—'}
                       </p>
                       <p className="text-xs text-stone-500">CV</p>
                     </div>
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <Briefcase className="w-5 h-5 text-stone-400 mx-auto mb-1" />
+                      <Briefcase className="w-5 h-5 text-stone-600 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.saved_jobs_count}
                       </p>
                       <p className="text-xs text-stone-500">Jobb</p>
                     </div>
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <MessageSquare className="w-5 h-5 text-stone-400 mx-auto mb-1" />
+                      <MessageSquare className="w-5 h-5 text-stone-600 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.notes_count}
                       </p>
@@ -524,7 +524,7 @@ export function ParticipantsTab() {
                       <Clock className="w-4 h-4" />
                       {getLastContactText(p.last_contact_at)}
                     </span>
-                    <ChevronRight className="w-5 h-5 text-stone-400" />
+                    <ChevronRight className="w-5 h-5 text-stone-600" />
                   </div>
                 </Link>
               </Card>
@@ -552,22 +552,22 @@ export function ParticipantsTab() {
                       )}
                     </button>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
                     Namn
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
                     CV
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
                     Sparade jobb
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
                     Senast kontakt
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
                     Åtgärder
                   </th>
                 </tr>
@@ -611,7 +611,7 @@ export function ParticipantsTab() {
                             <p className="font-medium text-stone-900 dark:text-stone-100">
                               {p.first_name} {p.last_name}
                             </p>
-                            <p className="text-sm text-stone-500 dark:text-stone-400">
+                            <p className="text-sm text-stone-500 dark:text-stone-600">
                               {p.email}
                             </p>
                           </div>
@@ -629,7 +629,7 @@ export function ParticipantsTab() {
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-400">
+                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-600">
                         {p.has_cv ? (
                           <span className={cn(
                             'font-medium',
@@ -640,7 +640,7 @@ export function ParticipantsTab() {
                           </span>
                         ) : '—'}
                       </td>
-                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-400">
+                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-600">
                         {p.saved_jobs_count}
                       </td>
                       <td className="px-4 py-4">

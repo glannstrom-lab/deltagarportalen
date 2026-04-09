@@ -211,7 +211,7 @@ export default function IntegrationTab() {
       {CHECKLIST_CATEGORIES.map((category) => (
         <Card key={category.id}>
           <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-slate-400" />
+            <Clock className="w-5 h-5 text-slate-600" />
             {category.title}
           </h3>
 
@@ -253,12 +253,12 @@ export default function IntegrationTab() {
                     </div>
                     <p className={cn(
                       "text-sm mt-1",
-                      completed[item.id] ? "text-emerald-600" : "text-slate-500"
+                      completed[item.id] ? "text-emerald-600" : "text-slate-700"
                     )}>
                       {item.description}
                     </p>
                     <div className="flex items-center gap-4 mt-2">
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-slate-600">
                         <Clock className="w-3 h-3 inline mr-1" />
                         {item.timeframe}
                       </span>

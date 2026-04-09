@@ -123,8 +123,8 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
           <span className="text-sm font-semibold text-slate-800">
             Steg {currentStep} av {totalSteps}
           </span>
-          <span className="text-xs text-slate-400">•</span>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-600">•</span>
+          <span className="text-xs text-slate-700">
             ~{remainingMinutes} min kvar
           </span>
         </div>
@@ -166,13 +166,13 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                     ? "bg-indigo-600 text-white shadow-lg ring-4 ring-indigo-100"
                     : isCompleted
                       ? "bg-emerald-500 text-white"
-                      : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                      : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
                 )}>
                   {isCompleted ? <Check className="w-5 h-5" /> : stepNum}
                 </div>
                 <span className={cn(
                   "text-xs font-medium hidden sm:block",
-                  isActive ? "text-indigo-600" : isCompleted ? "text-emerald-600" : "text-slate-400"
+                  isActive ? "text-indigo-600" : isCompleted ? "text-emerald-600" : "text-slate-600"
                 )}>
                   {step.title}
                 </span>
@@ -202,7 +202,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
               Steg {currentStep}: {STEPS[currentStep - 1]?.title}
             </span>
             <span className="hidden sm:inline"> – </span>
-            <span className="block sm:inline text-slate-500 mt-0.5 sm:mt-0">
+            <span className="block sm:inline text-slate-700 mt-0.5 sm:mt-0">
               {STEPS[currentStep - 1]?.description}
             </span>
           </p>
@@ -446,7 +446,7 @@ export default function CVBuilder() {
     <div className="space-y-8">
       <div className="text-center">
         <h3 className="text-2xl font-bold text-slate-800 mb-2">{t('cvBuilder.templates.chooseTemplate')}</h3>
-        <p className="text-slate-500">{t('cvBuilder.templates.templateDescription')}</p>
+        <p className="text-slate-700">{t('cvBuilder.templates.templateDescription')}</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -528,7 +528,7 @@ export default function CVBuilder() {
                   <h4 className="font-bold text-lg text-slate-800">{tpl.name}</h4>
                   {selected && <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
-                <p className="text-sm text-slate-500 mb-3">{tpl.desc}</p>
+                <p className="text-sm text-slate-700 mb-3">{tpl.desc}</p>
 
                 {/* Features */}
                 <div className="flex flex-wrap gap-1.5">
@@ -581,7 +581,7 @@ export default function CVBuilder() {
           </div>
         )}
         <h3 className="font-semibold text-slate-800 mb-4">{t('cvBuilder.profileImage.title')}</h3>
-        <p className="text-sm text-slate-500 mb-4">
+        <p className="text-sm text-slate-700 mb-4">
           {t('cvBuilder.profileImage.description')}
         </p>
         <CompactImageUpload
@@ -628,7 +628,7 @@ export default function CVBuilder() {
     <div className="space-y-4">
       <Card>
         <h3 className="font-semibold text-slate-800 mb-2">{t('cvBuilder.summary.title')}</h3>
-        <p className="text-sm text-slate-500 mb-4">{t('cvBuilder.summary.description')}</p>
+        <p className="text-sm text-slate-700 mb-4">{t('cvBuilder.summary.description')}</p>
         <RichTextEditor
           value={data.summary || ''}
           onChange={(v) => setData({ ...data, summary: v })}
@@ -879,7 +879,7 @@ export default function CVBuilder() {
           {/* Help - Show onboarding again */}
           <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
             <h3 className="font-semibold text-slate-800 mb-2">{t('cvBuilder.help.title')}</h3>
-            <p className="text-sm text-slate-500 mb-3">
+            <p className="text-sm text-slate-700 mb-3">
               {t('cvBuilder.help.description')}
             </p>
             <button
@@ -933,13 +933,13 @@ export default function CVBuilder() {
             )}
             <div className="space-y-2 max-h-32 overflow-y-auto">
               {versions.length === 0 ? (
-                <p className="text-sm text-slate-400 text-center py-2">{t('cvBuilder.versions.noVersions')}</p>
+                <p className="text-sm text-slate-600 text-center py-2">{t('cvBuilder.versions.noVersions')}</p>
               ) : (
                 versions.map((v) => (
                   <div key={v.id} className="flex items-center justify-between p-2 bg-slate-50 rounded-lg">
                     <div>
                       <p className="text-sm font-medium text-slate-800">{v.name}</p>
-                      <p className="text-xs text-slate-500">{new Date(v.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}</p>
+                      <p className="text-xs text-slate-700">{new Date(v.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}</p>
                     </div>
                     <button
                       onClick={() => restoreVersion(v.id)}

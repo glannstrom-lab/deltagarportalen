@@ -424,7 +424,7 @@ export function ATSAnalyzer({
         </div>
         <div>
           <h3 className="font-semibold text-slate-800">ATS-analys</h3>
-          <p className="text-sm text-slate-500">Optimera för rekryteringssystem</p>
+          <p className="text-sm text-slate-700">Optimera för rekryteringssystem</p>
         </div>
       </div>
 
@@ -433,8 +433,8 @@ export function ATSAnalyzer({
         <div className={`inline-flex items-center justify-center w-24 h-24 rounded-full ${getScoreBg(score)} mb-2`}>
           <span className={`text-3xl font-bold ${getScoreColor(score)}`}>{score}</span>
         </div>
-        <p className="text-sm text-slate-500">av 100 poäng</p>
-        <p className="text-xs text-slate-400 mt-1">
+        <p className="text-sm text-slate-700">av 100 poäng</p>
+        <p className="text-xs text-slate-600 mt-1">
           Du har {passedChecks} av {allChecks.length} på plats
         </p>
       </div>
@@ -528,10 +528,10 @@ export function ATSAnalyzer({
       {/* Branschspecifika mallar */}
       <div className="mb-6">
         <div className="flex items-center gap-2 mb-3">
-          <Briefcase size={18} className="text-slate-500" />
+          <Briefcase size={18} className="text-slate-700" />
           <h4 className="font-medium text-slate-700">Branschspecifika nyckelord</h4>
         </div>
-        <p className="text-xs text-slate-500 mb-3">
+        <p className="text-xs text-slate-700 mb-3">
           Välj din bransch för att se vilka nyckelord som är vanliga
         </p>
         <div className="grid grid-cols-4 gap-2">
@@ -583,7 +583,7 @@ export function ATSAnalyzer({
               </p>
             )}
             {industryMatch.missing.length > 0 && (
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700">
                 Saknas: {industryMatch.missing.slice(0, 4).join(', ')}
                 {industryMatch.missing.length > 4 && ` +${industryMatch.missing.length - 4}`}
               </p>
@@ -614,7 +614,7 @@ export function ATSAnalyzer({
               <div key={category.name} className="p-3 bg-slate-50 rounded-lg">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-sm font-medium text-slate-700">{category.name}</span>
-                  <span className="text-xs text-slate-500">{category.found.length}/{category.keywords.length}</span>
+                  <span className="text-xs text-slate-700">{category.found.length}/{category.keywords.length}</span>
                 </div>
                 <div className="w-full h-2 bg-slate-200 rounded-full mb-2">
                   <div 
@@ -630,13 +630,13 @@ export function ATSAnalyzer({
                 )}
                 {category.missing.length > 0 && (
                   <div>
-                    <span className="text-xs text-slate-500">Förslag: </span>
-                    <span className="text-xs text-slate-400">{category.missing.slice(0, 4).join(', ')}{category.missing.length > 4 && '...'}</span>
+                    <span className="text-xs text-slate-700">Förslag: </span>
+                    <span className="text-xs text-slate-600">{category.missing.slice(0, 4).join(', ')}{category.missing.length > 4 && '...'}</span>
                   </div>
                 )}
               </div>
             ))}
-            <p className="text-xs text-slate-500 italic">
+            <p className="text-xs text-slate-700 italic">
               💡 Tips: Använd nyckelorden naturligt i dina beskrivningar – koppla dem till dina faktiska erfarenheter
             </p>
           </div>
@@ -650,7 +650,7 @@ export function ATSAnalyzer({
           className="w-full flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <FileText size={18} className="text-slate-500" />
+            <FileText size={18} className="text-slate-700" />
             <span className="font-medium text-slate-700">ATS-kompatibilitet</span>
             <span className={`text-xs px-2 py-0.5 rounded-full ${
               technicalChecks.filter(c => c.passed).length === technicalChecks.length 
@@ -695,14 +695,14 @@ export function ATSAnalyzer({
       {/* Readability Stats */}
       <div className="grid grid-cols-2 gap-3 mb-4">
         <div className="p-3 bg-slate-50 rounded-lg text-center">
-          <BookOpen size={16} className="mx-auto mb-1 text-slate-400" />
+          <BookOpen size={16} className="mx-auto mb-1 text-slate-600" />
           <p className="text-lg font-semibold text-slate-800">{totalWordCount}</p>
-          <p className="text-xs text-slate-500">ord totalt</p>
+          <p className="text-xs text-slate-700">ord totalt</p>
         </div>
         <div className="p-3 bg-slate-50 rounded-lg text-center">
-          <TrendingUp size={16} className="mx-auto mb-1 text-slate-400" />
+          <TrendingUp size={16} className="mx-auto mb-1 text-slate-600" />
           <p className="text-lg font-semibold text-slate-800">{summaryReadability.level}</p>
-          <p className="text-xs text-slate-500">läsnivå</p>
+          <p className="text-xs text-slate-700">läsnivå</p>
         </div>
       </div>
 
@@ -724,7 +724,7 @@ export function ATSAnalyzer({
               <p className={`text-sm ${check.passed ? 'text-slate-600' : 'text-slate-800'}`}>
                 {check.name}
               </p>
-              <p className="text-xs text-slate-400">{check.description}</p>
+              <p className="text-xs text-slate-600">{check.description}</p>
             </div>
             {check.importance === 'high' && !check.passed && (
               <span className="text-xs text-amber-600 font-medium">Viktigt</span>

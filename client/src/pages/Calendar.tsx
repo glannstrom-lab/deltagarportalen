@@ -180,7 +180,7 @@ export default function Calendar() {
         {/* Header */}
         <div className="grid grid-cols-7 border-b border-slate-200">
           {days.map((day) => (
-            <div key={day} className="py-2 text-center text-sm font-medium text-slate-500">
+            <div key={day} className="py-2 text-center text-sm font-medium text-slate-700">
               {day}
             </div>
           ))}
@@ -223,7 +223,7 @@ export default function Calendar() {
                       )
                     })}
                     {dayEvents.length > 3 && (
-                      <div className="text-xs text-slate-500 px-1.5">
+                      <div className="text-xs text-slate-700 px-1.5">
                         {t('calendar.moreEvents', { count: dayEvents.length - 3 })}
                       </div>
                     )}
@@ -272,20 +272,20 @@ export default function Calendar() {
                       {config.label}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-500 mt-1">
+                  <p className="text-sm text-slate-700 mt-1">
                     {date.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
                     {' · '}
                     {event.time}
                   </p>
                   {event.location && (
-                    <p className="text-sm text-slate-400 mt-1">{event.location}</p>
+                    <p className="text-sm text-slate-600 mt-1">{event.location}</p>
                   )}
                 </div>
               </button>
             )
           })}
           {sortedEvents.length === 0 && (
-            <div className="p-8 text-center text-slate-400">
+            <div className="p-8 text-center text-slate-600">
               {t('calendar.noEventsPlanned')}
             </div>
           )}

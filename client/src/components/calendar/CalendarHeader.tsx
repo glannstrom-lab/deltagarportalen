@@ -58,7 +58,7 @@ export function CalendarHeader({
     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div>
         <h1 className="text-2xl font-bold text-slate-900">Kalender</h1>
-        <p className="text-slate-500 mt-1">Planera ditt jobbsökande</p>
+        <p className="text-slate-700 mt-1">Planera ditt jobbsökande</p>
       </div>
 
       <div className="flex items-center gap-2 flex-wrap">

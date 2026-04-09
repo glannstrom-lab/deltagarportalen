@@ -98,7 +98,7 @@ export function SalaryInsightsPanel({
               <h4 className="font-medium text-slate-800 dark:text-slate-200">
                 AI Lönekompass
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-slate-600 dark:text-slate-600">
                 Få aktuell lönedata och förhandlingstips
               </p>
             </div>
@@ -196,25 +196,25 @@ export function SalaryInsightsPanel({
                   <div className="h-16 w-12 bg-gradient-to-t from-violet-500 to-violet-400 rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">1 år</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                  <p className="text-xs text-slate-600 dark:text-slate-600 mt-2">
                     {result.progression.year1}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 mb-8" />
+                <ChevronRight className="w-4 h-4 text-slate-600 mb-8" />
                 <div className="text-center">
                   <div className="h-24 w-12 bg-gradient-to-t from-indigo-500 to-indigo-400 rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">3 år</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                  <p className="text-xs text-slate-600 dark:text-slate-600 mt-2">
                     {result.progression.year3}
                   </p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-slate-400 mb-8" />
+                <ChevronRight className="w-4 h-4 text-slate-600 mb-8" />
                 <div className="text-center">
                   <div className="h-32 w-12 bg-gradient-to-t from-emerald-500 to-emerald-400 rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">5 år</span>
                   </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 mt-2">
+                  <p className="text-xs text-slate-600 dark:text-slate-600 mt-2">
                     {result.progression.year5}
                   </p>
                 </div>
@@ -270,13 +270,13 @@ export function SalaryInsightsPanel({
                       className="p-3 rounded-lg border border-slate-200 dark:border-slate-700"
                     >
                       <div className="flex flex-wrap gap-2 text-xs">
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400">
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-600">
                           {comp.industry}
                         </span>
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400">
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-600">
                           {comp.region}
                         </span>
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-400">
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 rounded-full text-slate-600 dark:text-slate-600">
                           {comp.experience}
                         </span>
                       </div>

@@ -276,7 +276,7 @@ export default function CognitiveTab() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold text-slate-800">{t('wellness.cognitive.title')}</h3>
-            <p className="text-slate-500">{t('wellness.cognitive.description')}</p>
+            <p className="text-slate-700">{t('wellness.cognitive.description')}</p>
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-purple-100 rounded-full">
             <Star className="w-5 h-5 text-purple-600" />
@@ -325,7 +325,7 @@ export default function CognitiveTab() {
                 setActiveExercise(null)
                 setCurrentGameType(null)
               }}
-              className="text-slate-400 hover:text-slate-600"
+              className="text-slate-600 hover:text-slate-600"
             >
               <RotateCcw className="w-5 h-5" />
             </button>
@@ -407,7 +407,7 @@ export default function CognitiveTab() {
                     <span className={cn('text-xs px-2 py-1 rounded-full', difficulty.bg, difficulty.color)}>
                       {difficulty.label}
                     </span>
-                    <span className="text-xs text-slate-500 flex items-center gap-1">
+                    <span className="text-xs text-slate-700 flex items-center gap-1">
                       <Clock className="w-3 h-3" />
                       {exercise.duration} {t('wellness.cognitive.min')}
                     </span>

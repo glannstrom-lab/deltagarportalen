@@ -106,7 +106,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
             <Trophy className="w-4 h-4 text-amber-500" />
             <span className="text-sm font-medium text-slate-900">Badges</span>
           </div>
-          <span className="text-xs text-slate-500">{unlockedCount}/{totalCount}</span>
+          <span className="text-xs text-slate-700">{unlockedCount}/{totalCount}</span>
         </div>
 
         <div className="flex gap-2 flex-wrap">
@@ -129,7 +129,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
           })}
 
           {unlockedAchievements.length === 0 && (
-            <p className="text-xs text-slate-400">Inga badges ännu</p>
+            <p className="text-xs text-slate-600">Inga badges ännu</p>
           )}
         </div>
       </Card>
@@ -146,7 +146,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
           </div>
           <div>
             <h3 className="text-lg font-semibold text-slate-900">Achievements</h3>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {unlockedCount} av {totalCount} upplåsta
             </p>
           </div>
@@ -245,11 +245,11 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
                 {isUnlocked ? (
                   <Icon className={`w-6 h-6 ${colors.text}`} />
                 ) : (
-                  <Lock className="w-5 h-5 text-slate-400" />
+                  <Lock className="w-5 h-5 text-slate-600" />
                 )}
               </div>
               <span className={`text-xs font-medium text-center line-clamp-2 ${
-                isUnlocked ? 'text-slate-700' : 'text-slate-400'
+                isUnlocked ? 'text-slate-700' : 'text-slate-600'
               }`}>
                 {achievement.name}
               </span>
@@ -321,7 +321,7 @@ export function JourneyAchievements({ achievements, compact = false }: JourneyAc
               </div>
 
               {selectedAchievement.is_unlocked && selectedAchievement.unlocked_at && (
-                <p className="text-center text-xs text-slate-400 mt-4">
+                <p className="text-center text-xs text-slate-600 mt-4">
                   Upplåst {new Date(selectedAchievement.unlocked_at).toLocaleDateString('sv-SE')}
                 </p>
               )}

@@ -99,7 +99,7 @@ vi.mock('@/hooks/useCVScore', () => ({
     tips: [],
   })),
   getOverallTips: vi.fn(() => []),
-  getScoreColor: vi.fn(() => 'text-slate-500'),
+  getScoreColor: vi.fn(() => 'text-slate-700'),
 }))
 
 vi.mock('@/hooks/useVercelImageUpload', () => ({

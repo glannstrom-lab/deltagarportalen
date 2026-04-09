@@ -107,6 +107,7 @@
     "profile": "Min profil",
     "help": "Hjälp",
     "groups": {
+      "overview": "Översikt",
       "jobSearch": "Jobbsökning",
       "development": "Min utveckling",
       "wellbeing": "Välmående",

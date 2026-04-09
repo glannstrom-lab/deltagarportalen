@@ -196,7 +196,7 @@ export default function GettingStartedTab() {
                         ? 'border-blue-500 bg-blue-50'
                         : 'border-slate-300'}
                     `}>
-                      <Icon className={`w-3 h-3 ${isNext ? 'text-blue-600' : 'text-slate-400'}`} />
+                      <Icon className={`w-3 h-3 ${isNext ? 'text-blue-600' : 'text-slate-600'}`} />
                     </div>
                   )}
                 </div>
@@ -207,7 +207,7 @@ export default function GettingStartedTab() {
                     <div>
                       <h3 className={`
                         font-semibold text-lg
-                        ${step.isCompleted ? 'text-slate-500 line-through' : 'text-slate-900'}
+                        ${step.isCompleted ? 'text-slate-700 line-through' : 'text-slate-900'}
                       `}>
                         {step.title}
                       </h3>

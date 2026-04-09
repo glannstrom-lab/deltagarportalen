@@ -183,7 +183,7 @@ export function QuickActionBanner({
         {onDismiss && (
           <button
             onClick={handleDismiss}
-            className="flex-shrink-0 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-white/50 rounded-lg transition-colors"
+            className="flex-shrink-0 p-1.5 text-slate-600 hover:text-slate-600 hover:bg-white/50 rounded-lg transition-colors"
           >
             <X size={16} />
           </button>
@@ -215,7 +215,7 @@ export function JobTrackerActions({
     <div className="flex items-center gap-1">
       <button
         onClick={() => navigate(`/cover-letter?jobId=${jobId}&company=${encodeURIComponent(employer)}&title=${encodeURIComponent(jobTitle)}`)}
-        className="p-1.5 text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+        className="p-1.5 text-slate-700 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
         title="Skriv personligt brev"
       >
         <FileText size={16} />
@@ -223,7 +223,7 @@ export function JobTrackerActions({
       
       <button
         onClick={() => navigate(`/cv?optimizeFor=${jobId}`)}
-        className="p-1.5 text-slate-500 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+        className="p-1.5 text-slate-700 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
         title="Optimera CV för detta jobb"
       >
         <Sparkles size={16} />
@@ -232,7 +232,7 @@ export function JobTrackerActions({
       {status !== 'APPLIED' && (
         <button
           onClick={() => onStatusChange?.('APPLIED')}
-          className="p-1.5 text-slate-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+          className="p-1.5 text-slate-700 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
           title="Markera som ansökt"
         >
           <CheckCircle2 size={16} />

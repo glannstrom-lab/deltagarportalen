@@ -54,7 +54,7 @@ function CareerWidgetSmall({
         <Briefcase size={14} className="text-indigo-500" />
         <div className="flex items-center gap-1">
           <span className="text-lg font-bold text-slate-800">{exploredCount}</span>
-          <span className="text-xs text-slate-500">
+          <span className="text-xs text-slate-700">
             {t('careerWidget.occupations', { count: exploredCount })}
           </span>
         </div>
@@ -106,7 +106,7 @@ function CareerWidgetMedium({
           <Briefcase size={22} className="text-indigo-500" />
           <div>
             <p className="text-2xl font-bold text-slate-800">{exploredCount}</p>
-            <p className="text-xs text-slate-500">{t('careerWidget.exploredOccupations')}</p>
+            <p className="text-xs text-slate-700">{t('careerWidget.exploredOccupations')}</p>
           </div>
         </div>
 
@@ -174,11 +174,11 @@ function CareerWidgetLarge({
           </div>
           <div>
             <p className="text-3xl font-bold text-slate-800">{exploredCount}</p>
-            <p className="text-sm text-slate-500">{t('careerWidget.exploredOccupations')}</p>
+            <p className="text-sm text-slate-700">{t('careerWidget.exploredOccupations')}</p>
           </div>
           <div className="ml-auto text-right">
             <p className="text-2xl font-bold text-slate-800">{savedPaths.length}</p>
-            <p className="text-sm text-slate-500">{t('careerWidget.savedPaths')}</p>
+            <p className="text-sm text-slate-700">{t('careerWidget.savedPaths')}</p>
           </div>
         </div>
 

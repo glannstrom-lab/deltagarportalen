@@ -3,7 +3,7 @@
  * Spara energinivå i databasen för synk mellan enheter
  */
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 
 export type EnergyLevel = 'low' | 'medium' | 'high'
@@ -65,8 +65,9 @@ export const getWidgetsForEnergyLevel = (
 }
 
 export const useEnergyStore = create<EnergyState>()(
-  persist(
-    (set, get) => ({
+  devtools(
+    persist(
+      (set, get) => ({
       level: 'medium',
       lastUpdated: null,
       loginStreak: 0,
@@ -192,17 +193,19 @@ export const useEnergyStore = create<EnergyState>()(
           set({ error: 'Synkroniseringsfel', isLoading: false })
         }
       }
-    }),
-    {
-      name: 'energy-storage',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        level: state.level,
-        lastUpdated: state.lastUpdated,
-        loginStreak: state.loginStreak,
-        lastLoginDate: state.lastLoginDate
-      })
-    }
+      }),
+      {
+        name: 'energy-storage',
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          level: state.level,
+          lastUpdated: state.lastUpdated,
+          loginStreak: state.loginStreak,
+          lastLoginDate: state.lastLoginDate
+        })
+      }
+    ),
+    { name: 'EnergyStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
 

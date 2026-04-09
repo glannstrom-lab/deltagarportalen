@@ -148,7 +148,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               to={item.isLocked ? '#' : item.link}
               className={cn(
                 "flex items-center gap-2 text-sm",
-                item.isLocked ? 'text-slate-400 cursor-not-allowed' : 'text-slate-700 hover:text-violet-600'
+                item.isLocked ? 'text-slate-600 cursor-not-allowed' : 'text-slate-700 hover:text-violet-600'
               )}
             >
               {item.isCompleted ? (
@@ -278,16 +278,16 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               {item.isLocked ? (
                 <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200 opacity-60">
                   <div className="w-12 h-12 rounded-xl bg-slate-200 flex items-center justify-center">
-                    <Lock size={20} className="text-slate-400" />
+                    <Lock size={20} className="text-slate-600" />
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-semibold text-slate-500">{item.title}</h3>
-                      <span className="text-xs bg-slate-200 text-slate-500 px-2 py-0.5 rounded-full">
+                      <h3 className="font-semibold text-slate-700">{item.title}</h3>
+                      <span className="text-xs bg-slate-200 text-slate-700 px-2 py-0.5 rounded-full">
                         Låst
                       </span>
                     </div>
-                    <p className="text-sm text-slate-400">
+                    <p className="text-sm text-slate-600">
                       Avsluta föregående steg först
                     </p>
                   </div>
@@ -322,11 +322,11 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
                       <h3 className="font-semibold text-slate-800 group-hover:text-violet-700 transition-colors">
                         {item.title}
                       </h3>
-                      <span className="text-xs text-slate-400">
+                      <span className="text-xs text-slate-600">
                         ~{item.estimatedTime}
                       </span>
                     </div>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-700">
                       {item.description}
                     </p>
                   </div>

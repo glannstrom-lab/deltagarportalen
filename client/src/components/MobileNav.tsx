@@ -117,7 +117,7 @@ export function SideMenu({
           {navGroups.map((group) => (
             <div key={group.id} className="mb-4">
               {/* Group Label */}
-              <h3 className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+              <h3 className="px-3 py-2 text-xs font-semibold text-slate-600 uppercase tracking-wider">
                 {t(group.labelKey)}
               </h3>
 
@@ -215,7 +215,7 @@ export function SideMenu({
 
           {/* Account section: Profile, Settings, Help, Logout */}
           <div className="border-t border-slate-200 pt-3 mt-2">
-            <h3 className="px-3 py-2 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+            <h3 className="px-3 py-2 text-xs font-semibold text-slate-600 uppercase tracking-wider">
               {t('nav.groups.account', 'Konto')}
             </h3>
             <div className="space-y-0.5">

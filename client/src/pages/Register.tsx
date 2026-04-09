@@ -109,7 +109,7 @@ export default function Register() {
         {/* Register Card */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">{t('auth.createAccount')}</h2>
-          <p className="text-slate-500 text-center mb-6">{t('auth.firstStep')}</p>
+          <p className="text-slate-700 text-center mb-6">{t('auth.firstStep')}</p>
 
           {/* Error Message */}
           {submitError && (
@@ -146,7 +146,7 @@ export default function Register() {
                 </label>
                 <div className="relative">
                   <User 
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" 
                     size={20} 
                     aria-hidden="true"
                   />
@@ -208,7 +208,7 @@ export default function Register() {
               </label>
               <div className="relative">
                 <Mail 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" 
                   size={20} 
                   aria-hidden="true"
                 />
@@ -243,7 +243,7 @@ export default function Register() {
               </label>
               <div className="relative">
                 <Lock 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" 
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" 
                   size={20} 
                   aria-hidden="true"
                 />
@@ -265,7 +265,7 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-600"
                   aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -286,10 +286,10 @@ export default function Register() {
                         key={rule.id}
                         className={`flex items-center gap-2 text-sm ${
                           values.password === '' 
-                            ? 'text-slate-500' 
+                            ? 'text-slate-700' 
                             : isPassed 
                               ? 'text-green-600' 
-                              : 'text-slate-400'
+                              : 'text-slate-600'
                         }`}
                       >
                         {isPassed ? (
@@ -320,7 +320,7 @@ export default function Register() {
               </label>
               <div className="relative">
                 <Lock
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
                   size={20}
                   aria-hidden="true"
                 />
@@ -415,7 +415,7 @@ export default function Register() {
                   <label htmlFor="acceptAiProcessing" className="text-sm text-slate-600">
                     {t('auth.consent.acceptAi')}
                   </label>
-                  <p className="text-xs text-slate-500 mt-1">
+                  <p className="text-xs text-slate-700 mt-1">
                     {t('auth.consent.aiDescription')}
                   </p>
                 </div>

@@ -56,7 +56,7 @@ function TabNavigation({
                 "min-h-[44px]",
                 isActive
                   ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50"
+                  : "text-slate-700 hover:text-slate-700 hover:bg-white/50"
               )}
             >
               <Icon className={cn(

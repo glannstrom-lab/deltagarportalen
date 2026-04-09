@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Dumbbell, Trophy, Flame, ChevronRight, Play } from '@/components/ui/icons'
@@ -11,7 +12,7 @@ interface ExercisesWidgetProps {
   size?: 'mini' | 'medium' | 'large'
 }
 
-export function ExercisesWidget({
+export const ExercisesWidget = memo(function ExercisesWidget({
   totalExercises = 38,
   completedCount = 0,
   completionRate = 0,
@@ -31,7 +32,7 @@ export function ExercisesWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('exercisesWidget.exercises')}</p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{completedCount}/{totalExercises}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{completedCount}/{totalExercises}</p>
         </div>
         {streakDays > 0 && (
           <div className="flex items-center gap-1 text-orange-500 dark:text-orange-400">
@@ -57,7 +58,7 @@ export function ExercisesWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('exercisesWidget.exercises')}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">{t('exercisesWidget.trainSkills')}</p>
+              <p className="text-xs text-slate-700 dark:text-slate-600">{t('exercisesWidget.trainSkills')}</p>
             </div>
           </div>
           <ChevronRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:text-emerald-500 dark:group-hover:text-emerald-400 transition-colors" />
@@ -65,7 +66,7 @@ export function ExercisesWidget({
 
         <div className="flex items-center gap-3">
           <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{completedCount}</span>
-          <span className="text-sm text-slate-500 dark:text-slate-400">/ {totalExercises}</span>
+          <span className="text-sm text-slate-700 dark:text-slate-600">/ {totalExercises}</span>
           <div className="flex-1 h-2 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
             <div
               className="h-full rounded-full bg-emerald-500 transition-all duration-500"
@@ -90,7 +91,7 @@ export function ExercisesWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('exercisesWidget.exercises')}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">{t('exercisesWidget.trainToBetter')}</p>
+            <p className="text-sm text-slate-700 dark:text-slate-600">{t('exercisesWidget.trainToBetter')}</p>
           </div>
         </div>
         {streakDays > 0 && (
@@ -104,7 +105,7 @@ export function ExercisesWidget({
       {/* Progress */}
       <div className="mb-4">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-600 dark:text-slate-400">{t('exercisesWidget.yourProgress')}</span>
+          <span className="text-sm text-slate-600 dark:text-slate-600">{t('exercisesWidget.yourProgress')}</span>
           <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{completionRate}%</span>
         </div>
         <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -122,14 +123,14 @@ export function ExercisesWidget({
             <Trophy size={16} className="text-emerald-500 dark:text-emerald-400" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{completedCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('exercisesWidget.completed')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{t('exercisesWidget.completed')}</p>
         </div>
         <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <Dumbbell size={16} className="text-slate-500 dark:text-slate-400" />
+            <Dumbbell size={16} className="text-slate-700 dark:text-slate-600" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{totalExercises - completedCount}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('exercisesWidget.remaining')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{t('exercisesWidget.remaining')}</p>
         </div>
       </div>
 
@@ -142,6 +143,6 @@ export function ExercisesWidget({
       </div>
     </Link>
   )
-}
+})
 
 export default ExercisesWidget

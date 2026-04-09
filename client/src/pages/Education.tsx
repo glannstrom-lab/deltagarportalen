@@ -86,7 +86,7 @@ function EducationCard({ education }: { education: Education }) {
             <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-2 group-hover:text-violet-700 dark:group-hover:text-violet-400 transition-colors">
               {education.title}
             </h3>
-            <p className="text-sm text-stone-600 dark:text-stone-400 mt-0.5">
+            <p className="text-sm text-stone-600 dark:text-stone-600 mt-0.5">
               {education.provider}
             </p>
           </div>
@@ -110,13 +110,13 @@ function EducationCard({ education }: { education: Education }) {
 
         {/* Description */}
         {education.description && (
-          <p className="text-sm text-stone-600 dark:text-stone-400 line-clamp-2 mb-3">
+          <p className="text-sm text-stone-600 dark:text-stone-600 line-clamp-2 mb-3">
             {education.description}
           </p>
         )}
 
         {/* Meta info */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-stone-500 dark:text-stone-400">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-stone-500 dark:text-stone-600">
           {education.location && (
             <span className="inline-flex items-center gap-1">
               <MapPin className="w-4 h-4" />
@@ -130,12 +130,12 @@ function EducationCard({ education }: { education: Education }) {
             </span>
           )}
           {education.pace && (
-            <span className="text-stone-400 dark:text-stone-500">
+            <span className="text-stone-600 dark:text-stone-500">
               {education.pace}
             </span>
           )}
           {education.credits && (
-            <span className="text-stone-400 dark:text-stone-500">
+            <span className="text-stone-600 dark:text-stone-500">
               {education.credits} hp
             </span>
           )}
@@ -144,7 +144,7 @@ function EducationCard({ education }: { education: Education }) {
         {/* Actions */}
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-stone-100 dark:border-stone-800">
           {education.applicationDeadline && (
-            <span className="text-xs text-stone-500 dark:text-stone-400">
+            <span className="text-xs text-stone-500 dark:text-stone-600">
               {t('education.deadline')}: {new Date(education.applicationDeadline).toLocaleDateString('sv-SE')}
             </span>
           )}
@@ -216,9 +216,9 @@ function QuickSearchCard({
       </div>
       <div>
         <h4 className="font-medium text-stone-900 dark:text-stone-100">{title}</h4>
-        <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">{description}</p>
+        <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">{description}</p>
       </div>
-      <ChevronRight className="w-5 h-5 text-stone-400 ml-auto self-center" />
+      <ChevronRight className="w-5 h-5 text-stone-600 ml-auto self-center" />
     </button>
   );
 }
@@ -339,7 +339,7 @@ export default function Education() {
           {/* Search Bar */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
               <Input
                 type="text"
                 value={searchQuery}
@@ -454,7 +454,7 @@ export default function Education() {
                 <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                   {t('education.infoBanner.title')}
                 </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-400 mt-1">
+                <p className="text-sm text-stone-600 dark:text-stone-600 mt-1">
                   {t('education.infoBanner.description')}
                 </p>
               </div>
@@ -519,11 +519,11 @@ export default function Education() {
                 <h4 className="font-medium text-stone-900 dark:text-stone-100">
                   {t('education.links.interestGuide.title')}
                 </h4>
-                <p className="text-sm text-stone-500 dark:text-stone-400">
+                <p className="text-sm text-stone-500 dark:text-stone-600">
                   {t('education.links.interestGuide.description')}
                 </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-stone-400" />
+              <ChevronRight className="w-5 h-5 text-stone-600" />
             </Link>
             <Link
               to="/skills-gap-analysis"
@@ -536,11 +536,11 @@ export default function Education() {
                 <h4 className="font-medium text-stone-900 dark:text-stone-100">
                   {t('education.links.skillsGap.title')}
                 </h4>
-                <p className="text-sm text-stone-500 dark:text-stone-400">
+                <p className="text-sm text-stone-500 dark:text-stone-600">
                   {t('education.links.skillsGap.description')}
                 </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-stone-400" />
+              <ChevronRight className="w-5 h-5 text-stone-600" />
             </Link>
           </div>
         </div>
@@ -559,7 +559,7 @@ export default function Education() {
             <>
               {/* Results header */}
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-stone-600 dark:text-stone-400">
+                <p className="text-sm text-stone-600 dark:text-stone-600">
                   {t('education.resultsCount', { count: searchResult.total })}
                   {searchResult.source === 'fallback-mock' && (
                     <span className="ml-2 text-amber-600 dark:text-amber-400">

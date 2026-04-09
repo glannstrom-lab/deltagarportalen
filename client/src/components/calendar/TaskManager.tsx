@@ -64,7 +64,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
         <div className="flex items-center gap-3">
           <CheckSquare className="w-5 h-5 text-purple-600" />
           <h3 className="font-semibold text-slate-900">Att göra</h3>
-          <span className="text-sm text-slate-500">
+          <span className="text-sm text-slate-700">
             ({completedCount}/{tasks.length})
           </span>
         </div>
@@ -76,7 +76,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
               style={{ width: `${progress}%` }}
             />
           </div>
-          {isExpanded ? <ChevronUp size={20} className="text-slate-400" /> : <ChevronDown size={20} className="text-slate-400" />}
+          {isExpanded ? <ChevronUp size={20} className="text-slate-600" /> : <ChevronDown size={20} className="text-slate-600" />}
         </div>
       </button>
 
@@ -117,13 +117,13 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
                   {task.status === 'done' ? (
                     <CheckSquare className="w-5 h-5 text-purple-600" />
                   ) : (
-                    <Square className="w-5 h-5 text-slate-400 hover:text-purple-600 transition-colors" />
+                    <Square className="w-5 h-5 text-slate-600 hover:text-purple-600 transition-colors" />
                   )}
                 </button>
                 
                 <span className={`flex-1 text-sm ${
                   task.status === 'done' 
-                    ? 'text-slate-400 line-through' 
+                    ? 'text-slate-600 line-through' 
                     : 'text-slate-700'
                 }`}>
                   {task.title}
@@ -136,14 +136,14 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
                     disabled={index === 0}
                     className="p-1 hover:bg-slate-200 rounded disabled:opacity-30"
                   >
-                    <ChevronUp size={14} className="text-slate-400" />
+                    <ChevronUp size={14} className="text-slate-600" />
                   </button>
                   <button
                     onClick={() => moveTask(index, 'down')}
                     disabled={index === tasks.length - 1}
                     className="p-1 hover:bg-slate-200 rounded disabled:opacity-30"
                   >
-                    <ChevronDown size={14} className="text-slate-400" />
+                    <ChevronDown size={14} className="text-slate-600" />
                   </button>
                   <button
                     onClick={() => deleteTask(task.id)}
@@ -157,7 +157,7 @@ export function TaskManager({ eventId, tasks, onTasksChange }: TaskManagerProps)
           </div>
 
           {tasks.length === 0 && (
-            <p className="text-center text-slate-400 text-sm py-4">
+            <p className="text-center text-slate-600 text-sm py-4">
               Inga uppgifter ännu. Lägg till en för att komma igång!
             </p>
           )}

@@ -438,13 +438,13 @@ export default function MicroLearningHub() {
               <Zap className="text-amber-500" size={20} />
               Rekommenderat för dig
               {learningPaths.length > 0 && (
-                <span className="text-sm font-normal text-slate-500">
+                <span className="text-sm font-normal text-slate-700">
                   (baserat på: {learningPaths[0]?.target_skill})
                 </span>
               )}
             </h3>
             <div className="flex items-center gap-2">
-              <Filter size={16} className="text-slate-400" />
+              <Filter size={16} className="text-slate-600" />
               <select
                 value={activeFilter}
                 onChange={(e) => setActiveFilter(e.target.value as 'all' | 'short' | 'beginner')}

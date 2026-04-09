@@ -161,8 +161,8 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
       {experiences.length === 0 ? (
         <div className="text-center py-12 border-2 border-dashed border-slate-200 rounded-xl bg-slate-50">
           <Briefcase className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-          <p className="text-slate-500 mb-1">Inga jobb tillagda ännu</p>
-          <p className="text-sm text-slate-400 mb-4">Lägg till din första arbetslivserfarenhet</p>
+          <p className="text-slate-700 mb-1">Inga jobb tillagda ännu</p>
+          <p className="text-sm text-slate-600 mb-4">Lägg till din första arbetslivserfarenhet</p>
           <button
             onClick={addExperience}
             className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors font-medium"
@@ -244,18 +244,18 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                       <h4 className="font-medium text-slate-800 truncate">
                         {exp.title || 'Ny position'}
                       </h4>
-                      <p className="text-sm text-slate-500 truncate">
+                      <p className="text-sm text-slate-700 truncate">
                         {exp.company || 'Företagsnamn'} 
-                        {duration && <span className="text-slate-400"> · {duration}</span>}
+                        {duration && <span className="text-slate-600"> · {duration}</span>}
                       </p>
                     </div>
                     
                     {/* Expand/collapse */}
                     <button className="p-1 hover:bg-slate-200 rounded">
                       {isExpanded ? (
-                        <ChevronUp className="w-5 h-5 text-slate-400" />
+                        <ChevronUp className="w-5 h-5 text-slate-600" />
                       ) : (
-                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                        <ChevronDown className="w-5 h-5 text-slate-600" />
                       )}
                     </button>
                   </div>
@@ -270,7 +270,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             Jobbtitel *
                           </label>
                           <div className="relative">
-                            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                            <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                             <input
                               type="text"
                               value={exp.title}
@@ -306,7 +306,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             Företag *
                           </label>
                           <div className="relative">
-                            <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                            <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                             <input
                               type="text"
                               value={exp.company}
@@ -342,7 +342,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                             Plats
                           </label>
                           <div className="relative">
-                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                            <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                             <input
                               type="text"
                               value={exp.location}
@@ -360,7 +360,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               Startdatum *
                             </label>
                             <div className="relative">
-                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                               <input
                                 type="month"
                                 value={exp.startDate}
@@ -393,7 +393,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                               Slutdatum
                             </label>
                             <div className="relative">
-                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                              <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
                               <input
                                 type="month"
                                 value={exp.endDate}
@@ -401,7 +401,7 @@ export function ExperienceEditor({ experiences, onChange }: ExperienceEditorProp
                                 disabled={exp.current}
                                 min={exp.startDate || undefined}
                                 max={new Date().toISOString().slice(0, 7)}
-                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-400"
+                                className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 disabled:bg-slate-100 disabled:text-slate-600"
                               />
                             </div>
                           </div>

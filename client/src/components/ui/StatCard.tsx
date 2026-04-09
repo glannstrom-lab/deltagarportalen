@@ -18,7 +18,7 @@ export function StatCard({ label, value, trend, trendValue, color = 'purple' }: 
 
   return (
     <div className="card card-hover">
-      <p className="text-slate-500 text-sm mb-2">{label}</p>
+      <p className="text-slate-700 text-sm mb-2">{label}</p>
       <div className="flex items-end gap-3">
         <span className={`text-3xl font-bold ${colors[color]}`}>{value}</span>
         {trend && trendValue && (

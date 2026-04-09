@@ -95,7 +95,7 @@ export default function SkillsTab() {
           <div className="grid md:grid-cols-2 gap-6">
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <CheckCircle className="w-4 h-4 text-slate-400" />
+                <CheckCircle className="w-4 h-4 text-slate-600" />
                 {t('career.skills.yourProfile')}
               </label>
               <textarea
@@ -175,7 +175,7 @@ export default function SkillsTab() {
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center justify-between text-sm text-slate-500 mb-1">
+                  <div className="flex items-center justify-between text-sm text-slate-700 mb-1">
                     <span>{t('career.skills.current')}: {skill.current}/5</span>
                     <span>{t('career.skills.target')}: {skill.target}/5</span>
                   </div>
@@ -203,7 +203,7 @@ export default function SkillsTab() {
             <div key={index} className="flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-purple-300 transition-colors">
               <div>
                 <h4 className="font-semibold text-slate-800">{course.title}</h4>
-                <div className="flex items-center gap-3 text-sm text-slate-500 mt-1">
+                <div className="flex items-center gap-3 text-sm text-slate-700 mt-1">
                   <span>{course.provider}</span>
                   <span>•</span>
                   <span>{course.duration}</span>

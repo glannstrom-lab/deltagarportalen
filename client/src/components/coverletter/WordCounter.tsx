@@ -67,7 +67,7 @@ export function WordCounter({
 
   if (compact) {
     return (
-      <div className="flex items-center gap-2 text-xs text-slate-500">
+      <div className="flex items-center gap-2 text-xs text-slate-700">
         <span>{words} ord</span>
         <span className="text-slate-300">|</span>
         <span>{chars} tecken</span>
@@ -124,7 +124,7 @@ export function InlineCounter({ text, maxLength }: { text: string; maxLength?: n
   const words = text.trim() ? text.trim().split(/\s+/).length : 0
   
   return (
-    <div className="flex items-center gap-3 text-xs text-slate-400">
+    <div className="flex items-center gap-3 text-xs text-slate-600">
       <span className={words < 50 ? 'text-amber-500' : words > 400 ? 'text-red-500' : ''}>
         {words} ord
       </span>

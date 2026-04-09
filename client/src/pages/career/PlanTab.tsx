@@ -105,7 +105,7 @@ export default function PlanTab() {
           <div className="space-y-4">
             <div>
               <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <MapPin className="w-4 h-4 text-slate-400" />
+                <MapPin className="w-4 h-4 text-slate-600" />
                 {t('career.plan.whereAreYou')}
               </label>
               <textarea

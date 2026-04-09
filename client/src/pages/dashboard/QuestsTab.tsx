@@ -225,7 +225,7 @@ export default function QuestsTab() {
             style={{ width: `${progress}%` }}
           />
         </div>
-        <p className="text-sm text-slate-500 mt-3">
+        <p className="text-sm text-slate-700 mt-3">
           {t('quests.ofQuestsCompleted', { completed: completedCount, total: quests.length })}
         </p>
       </div>
@@ -237,7 +237,7 @@ export default function QuestsTab() {
         {quests.length === 0 ? (
           <div className="p-8 bg-slate-50 rounded-2xl text-center">
             <p className="text-slate-600">{t('quests.noQuestsYet')}</p>
-            <p className="text-sm text-slate-500 mt-1">{t('quests.comeBackTomorrow')}</p>
+            <p className="text-sm text-slate-700 mt-1">{t('quests.comeBackTomorrow')}</p>
           </div>
         ) : (
           quests.map((quest) => {
@@ -262,7 +262,7 @@ export default function QuestsTab() {
                       'flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center transition-all',
                       quest.is_completed
                         ? 'bg-emerald-500 text-white'
-                        : 'bg-slate-100 text-slate-400 hover:bg-yellow-100 hover:text-yellow-600'
+                        : 'bg-slate-100 text-slate-600 hover:bg-yellow-100 hover:text-yellow-600'
                     )}
                   >
                     {completingId === quest.id ? (
@@ -278,7 +278,7 @@ export default function QuestsTab() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
                       <span className="text-lg">{categoryIcons[quest.category]}</span>
-                      <span className="text-xs font-medium text-slate-500">
+                      <span className="text-xs font-medium text-slate-700">
                         {categoryLabels[quest.category]}
                       </span>
                       <span className={cn('text-xs px-2 py-0.5 rounded-full', energy.color)}>
@@ -289,7 +289,7 @@ export default function QuestsTab() {
                     <h4
                       className={cn(
                         'font-semibold text-slate-800 mt-1',
-                        quest.is_completed && 'line-through text-slate-400'
+                        quest.is_completed && 'line-through text-slate-600'
                       )}
                     >
                       {quest.title}
@@ -298,14 +298,14 @@ export default function QuestsTab() {
                     <p
                       className={cn(
                         'text-sm mt-1',
-                        quest.is_completed ? 'text-slate-400' : 'text-slate-600'
+                        quest.is_completed ? 'text-slate-600' : 'text-slate-600'
                       )}
                     >
                       {quest.description}
                     </p>
 
                     <div className="flex items-center gap-4 mt-3 text-sm">
-                      <span className="text-slate-500">⏱ {quest.estimated_minutes} {t('quests.min')}</span>
+                      <span className="text-slate-700">⏱ {quest.estimated_minutes} {t('quests.min')}</span>
                       <span className="text-yellow-600 font-medium">+{quest.points} {t('quests.points')}</span>
                     </div>
                   </div>

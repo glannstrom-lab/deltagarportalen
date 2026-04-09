@@ -94,7 +94,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
               <span className={`text-xs px-2 py-0.5 rounded-full ${getTypeColor(suggestion.type)}`}>
                 {getTypeLabel(suggestion.type)}
               </span>
-              <ArrowRight className="w-3 h-3 text-slate-400 group-hover:text-teal-500" />
+              <ArrowRight className="w-3 h-3 text-slate-600 group-hover:text-teal-500" />
             </button>
           ))}
         </div>
@@ -119,7 +119,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
                   <div>
                     <h4 className="font-medium text-slate-900">{job.headline}</h4>
                     <p className="text-sm text-slate-600">{job.employer.name}</p>
-                    <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                    <div className="flex items-center gap-3 mt-1 text-xs text-slate-700">
                       {job.workplace_address?.municipality && (
                         <span className="flex items-center gap-1">
                           <MapPin size={12} />
@@ -133,7 +133,7 @@ export default function JobRecommendations({ query, onSuggestionClick }: JobReco
                       )}
                     </div>
                   </div>
-                  <Briefcase className="w-5 h-5 text-slate-400" />
+                  <Briefcase className="w-5 h-5 text-slate-600" />
                 </div>
               </div>
             ))}

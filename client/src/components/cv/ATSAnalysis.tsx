@@ -298,7 +298,7 @@ export function ATSAnalysis() {
             </div>
             <h3 className="font-semibold text-slate-800">ATS-analys av ditt CV</h3>
           </div>
-          <p className="text-sm text-slate-500 mb-4">
+          <p className="text-sm text-slate-700 mb-4">
             Se hur väl ditt nuvarande CV klarar automatisk screening i rekryteringssystem
           </p>
           <ATSAnalyzer cvData={cvData} />
@@ -344,7 +344,7 @@ export function ATSAnalysis() {
               )}>
                 {percentage}%
               </span>
-              <span className="text-xs text-slate-500 mt-1">ATS-score</span>
+              <span className="text-xs text-slate-700 mt-1">ATS-score</span>
             </div>
           </div>
 
@@ -418,7 +418,7 @@ export function ATSAnalysis() {
                         check.status === 'pass' && 'bg-green-100 text-green-600',
                         check.status === 'warning' && 'bg-amber-100 text-amber-600',
                         check.status === 'fail' && 'bg-red-100 text-red-600',
-                        check.status === 'neutral' && 'bg-slate-100 text-slate-500'
+                        check.status === 'neutral' && 'bg-slate-100 text-slate-700'
                       )}>
                         {check.status === 'pass' && <Check className="w-5 h-5" />}
                         {check.status === 'warning' && <AlertCircle className="w-5 h-5" />}
@@ -431,7 +431,7 @@ export function ATSAnalysis() {
                         <div className="flex items-center justify-between gap-4">
                           <div>
                             <h5 className="font-medium text-slate-800">{check.title}</h5>
-                            <p className="text-sm text-slate-500">{check.description}</p>
+                            <p className="text-sm text-slate-700">{check.description}</p>
                           </div>
                           <span className={cn(
                             'px-3 py-1 rounded-full text-sm font-medium',

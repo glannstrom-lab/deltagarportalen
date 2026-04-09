@@ -35,7 +35,7 @@ export const colors = {
     100: 'bg-stone-100',    // Sekundär bakgrund
     200: 'bg-stone-200',    // Kanter
     300: 'bg-stone-300',
-    400: 'text-stone-400',  // Platshållare
+    400: 'text-stone-600',  // Platshållare
     500: 'text-stone-500',  // Sekundär text
     600: 'text-stone-600',  // Brödtext
     700: 'text-stone-700',  // Rubriker
@@ -51,7 +51,7 @@ export const colors = {
     100: 'bg-stone-100',
     200: 'bg-stone-200',
     300: 'bg-stone-300',
-    400: 'text-stone-400',
+    400: 'text-stone-600',
     500: 'text-stone-500',
     600: 'text-stone-600',
     700: 'text-stone-700',
@@ -299,7 +299,7 @@ export const inputBase = cn(
   colors.neutral.border,
   'border',
   radius.input,
-  'text-stone-800 placeholder:text-stone-400',
+  'text-stone-800 placeholder:text-stone-600',
   'transition-all duration-200',
   animations.focusRing,
   'disabled:opacity-50 disabled:cursor-not-allowed'

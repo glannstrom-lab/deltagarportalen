@@ -47,7 +47,7 @@ function ScoreRing({ score, size = 'lg' }: { score: number; size?: 'sm' | 'md' |
     if (s >= 80) return 'text-emerald-500'
     if (s >= 60) return 'text-blue-500'
     if (s >= 30) return 'text-amber-500'
-    return 'text-slate-400'
+    return 'text-slate-600'
   }
 
   return (
@@ -109,7 +109,7 @@ function SectionProgressBar({ section }: { section: ProgressSection }) {
           <Icon className={cn('w-4 h-4', `text-${section.color}-600`)} />
           <span className="text-sm font-medium text-slate-700">{section.nameSv}</span>
         </div>
-        <span className="text-sm text-slate-500">{section.percentage}%</span>
+        <span className="text-sm text-slate-700">{section.percentage}%</span>
       </div>
       <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
         <motion.div
@@ -143,7 +143,7 @@ function RecommendationCard({ recommendation }: { recommendation: Recommendation
           <h4 className="font-medium text-slate-800 text-sm">{recommendation.title}</h4>
           <p className="text-xs text-slate-600 mt-0.5">{recommendation.description}</p>
         </div>
-        <ChevronRight className="w-4 h-4 text-slate-400 flex-shrink-0 mt-0.5" />
+        <ChevronRight className="w-4 h-4 text-slate-600 flex-shrink-0 mt-0.5" />
       </div>
     </Link>
   )
@@ -186,7 +186,7 @@ export function CareerReadinessScore({
         <ScoreRing score={progress.careerReadinessScore} size="sm" />
         <div>
           <p className="text-sm font-medium text-slate-700">Karriärberedskap</p>
-          <p className="text-xs text-slate-500">{progress.careerReadinessLabel}</p>
+          <p className="text-xs text-slate-700">{progress.careerReadinessLabel}</p>
         </div>
       </div>
     )
@@ -200,7 +200,7 @@ export function CareerReadinessScore({
           <div className="flex-1">
             <h3 className="font-semibold text-slate-800">Karriärberedskap</h3>
             <p className="text-sm text-slate-600">{progress.careerReadinessLabel}</p>
-            <div className="flex items-center gap-4 mt-2 text-xs text-slate-500">
+            <div className="flex items-center gap-4 mt-2 text-xs text-slate-700">
               <span>{progress.completedMilestones}/{progress.totalMilestones} områden klara</span>
             </div>
           </div>
@@ -306,15 +306,15 @@ export function CareerReadinessWidget() {
           <ScoreRing score={progress.careerReadinessScore} size="sm" />
           <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-slate-800 truncate">Karriärberedskap</h3>
-            <p className="text-sm text-slate-500">{progress.careerReadinessLabel}</p>
+            <p className="text-sm text-slate-700">{progress.careerReadinessLabel}</p>
           </div>
-          <ChevronRight className="w-5 h-5 text-slate-400" />
+          <ChevronRight className="w-5 h-5 text-slate-600" />
         </div>
 
         {/* Top recommendation */}
         {progress.recommendations.length > 0 && (
           <div className="mt-3 pt-3 border-t border-slate-100">
-            <p className="text-xs text-slate-500 mb-1">Nästa steg:</p>
+            <p className="text-xs text-slate-700 mb-1">Nästa steg:</p>
             <p className="text-sm font-medium text-slate-700">
               {progress.recommendations[0].title}
             </p>

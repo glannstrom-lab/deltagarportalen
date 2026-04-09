@@ -99,7 +99,7 @@ export default function RealMarketInsights() {
                   <span className="font-medium text-slate-800">{occupation.term}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm text-slate-500">{occupation.count} jobb</span>
+                  <span className="text-sm text-slate-700">{occupation.count} jobb</span>
                   {occupation.trend === 'up' && (
                     <span className="text-green-500 text-xs font-medium">↑</span>
                   )}
@@ -135,7 +135,7 @@ export default function RealMarketInsights() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-slate-500">
+                <div className="flex items-center gap-2 text-sm text-slate-700">
                   <span>{skill.job_count} jobb</span>
                   <span>•</span>
                   <span>Efterfrågan: {skill.demand}%</span>
@@ -168,7 +168,7 @@ export default function RealMarketInsights() {
               >
                 <div className="flex items-center justify-between">
                   <span className="font-medium text-slate-800">{region.region}</span>
-                  <span className="text-sm text-slate-500">{region.job_count} jobb</span>
+                  <span className="text-sm text-slate-700">{region.job_count} jobb</span>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
                   <div className="flex-1 bg-slate-200 rounded-full h-2">
@@ -192,7 +192,7 @@ export default function RealMarketInsights() {
       )}
 
       {/* Datakälla */}
-      <p className="text-xs text-slate-500 text-center">
+      <p className="text-xs text-slate-700 text-center">
         Data från Arbetsförmedlingen • Uppdaterat: {marketStats?.last_updated 
           ? new Date(marketStats.last_updated).toLocaleDateString('sv-SE')
           : 'Nyligen'}
@@ -223,9 +223,9 @@ function StatCard({ icon: Icon, label, value, subtext, color }: StatCardProps) {
       <div className={`w-10 h-10 rounded-xl ${colorClasses[color]} flex items-center justify-center mb-3`}>
         <Icon size={20} />
       </div>
-      <p className="text-sm text-slate-500">{label}</p>
+      <p className="text-sm text-slate-700">{label}</p>
       <p className="text-2xl font-bold text-slate-800 mt-1">{value}</p>
-      <p className="text-xs text-slate-400 mt-1">{subtext}</p>
+      <p className="text-xs text-slate-600 mt-1">{subtext}</p>
     </div>
   );
 }

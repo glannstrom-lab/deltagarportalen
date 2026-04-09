@@ -90,7 +90,7 @@ export default function UnifiedProfilePage() {
                   />
                 ) : (
                   <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-                    <User size={40} className="text-slate-400" />
+                    <User size={40} className="text-slate-600" />
                   </div>
                 )}
               </div>
@@ -116,7 +116,7 @@ export default function UnifiedProfilePage() {
               <h1 className="text-2xl font-bold text-slate-900">
                 {core?.firstName} {core?.lastName}
               </h1>
-              <p className="text-slate-500 flex flex-wrap items-center gap-3 mt-1">
+              <p className="text-slate-700 flex flex-wrap items-center gap-3 mt-1">
                 {core?.location && (
                   <span className="flex items-center gap-1">
                     <MapPin size={14} />
@@ -149,7 +149,7 @@ export default function UnifiedProfilePage() {
                       setIsEditing(false)
                       setEditedCore(core || {})
                     }}
-                    className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg"
+                    className="p-2 text-slate-700 hover:bg-slate-100 rounded-lg"
                   >
                     <X size={18} />
                   </button>
@@ -190,7 +190,7 @@ export default function UnifiedProfilePage() {
                 style={{ width: `${completeness}%` }}
               />
             </div>
-            <p className="text-xs text-slate-500 mt-1.5">
+            <p className="text-xs text-slate-700 mt-1.5">
               {completeness < 100
                 ? t('unifiedProfile.completenessHint.incomplete')
                 : t('unifiedProfile.completenessHint.complete')
@@ -297,7 +297,7 @@ export default function UnifiedProfilePage() {
                   </span>
                 ))}
                 {(!professional?.skills || professional.skills.length === 0) && (
-                  <p className="text-slate-500 text-sm">
+                  <p className="text-slate-700 text-sm">
                     {t('unifiedProfile.noSkills')}{' '}
                     <Link to="/cv" className="text-violet-600 hover:underline">
                       {t('unifiedProfile.addInCVBuilder')}
@@ -314,11 +314,11 @@ export default function UnifiedProfilePage() {
                   {professional.workExperience.slice(0, 3).map((exp, idx) => (
                     <div key={idx} className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <Briefcase size={18} className="text-slate-500" />
+                        <Briefcase size={18} className="text-slate-700" />
                       </div>
                       <div>
                         <p className="font-medium text-slate-900">{exp.title}</p>
-                        <p className="text-sm text-slate-500">{exp.company}</p>
+                        <p className="text-sm text-slate-700">{exp.company}</p>
                       </div>
                     </div>
                   ))}
@@ -333,7 +333,7 @@ export default function UnifiedProfilePage() {
                   )}
                 </div>
               ) : (
-                <p className="text-slate-500 text-sm">
+                <p className="text-slate-700 text-sm">
                   {t('unifiedProfile.noExperience')}{' '}
                   <Link to="/cv" className="text-violet-600 hover:underline">
                     {t('unifiedProfile.addInCVBuilder')}
@@ -349,17 +349,17 @@ export default function UnifiedProfilePage() {
                   {professional.education.slice(0, 2).map((edu, idx) => (
                     <div key={idx} className="flex items-start gap-3">
                       <div className="w-10 h-10 bg-slate-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                        <GraduationCap size={18} className="text-slate-500" />
+                        <GraduationCap size={18} className="text-slate-700" />
                       </div>
                       <div>
                         <p className="font-medium text-slate-900">{edu.degree}</p>
-                        <p className="text-sm text-slate-500">{edu.school}</p>
+                        <p className="text-sm text-slate-700">{edu.school}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-500 text-sm">
+                <p className="text-slate-700 text-sm">
                   {t('unifiedProfile.noEducation')}{' '}
                   <Link to="/cv" className="text-violet-600 hover:underline">
                     {t('unifiedProfile.addInCVBuilder')}
@@ -408,7 +408,7 @@ export default function UnifiedProfilePage() {
                 </div>
               ) : (
                 <div className="text-center py-8 bg-slate-50 rounded-xl">
-                  <Sparkles size={32} className="mx-auto mb-3 text-slate-400" />
+                  <Sparkles size={32} className="mx-auto mb-3 text-slate-600" />
                   <p className="text-slate-600 mb-3">
                     {t('unifiedProfile.noInterestGuide')}
                   </p>
@@ -443,13 +443,13 @@ export default function UnifiedProfilePage() {
             <Section title={t('unifiedProfile.sections.careerGoals')} icon={TrendingUp}>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="bg-slate-50 rounded-xl p-4">
-                  <h4 className="text-sm font-medium text-slate-500 mb-1">{t('unifiedProfile.careerGoalsLabels.shortTerm')}</h4>
+                  <h4 className="text-sm font-medium text-slate-700 mb-1">{t('unifiedProfile.careerGoalsLabels.shortTerm')}</h4>
                   <p className="text-slate-900">
                     {career?.careerGoals?.shortTerm || t('unifiedProfile.careerGoalsLabels.notSpecified')}
                   </p>
                 </div>
                 <div className="bg-slate-50 rounded-xl p-4">
-                  <h4 className="text-sm font-medium text-slate-500 mb-1">{t('unifiedProfile.careerGoalsLabels.longTerm')}</h4>
+                  <h4 className="text-sm font-medium text-slate-700 mb-1">{t('unifiedProfile.careerGoalsLabels.longTerm')}</h4>
                   <p className="text-slate-900">
                     {career?.careerGoals?.longTerm || t('unifiedProfile.careerGoalsLabels.notSpecified')}
                   </p>
@@ -471,7 +471,7 @@ export default function UnifiedProfilePage() {
                   ))}
                 </div>
               ) : (
-                <p className="text-slate-500 text-sm">
+                <p className="text-slate-700 text-sm">
                   {t('unifiedProfile.noPreferredRoles')}
                 </p>
               )}
@@ -572,11 +572,11 @@ function Section({
 function InfoItem({ label, value, notSpecifiedText = 'Not specified' }: { label: string; value?: string; notSpecifiedText?: string }) {
   return (
     <div>
-      <label className="block text-sm font-medium text-slate-500 mb-0.5">
+      <label className="block text-sm font-medium text-slate-700 mb-0.5">
         {label}
       </label>
       <p className="text-slate-900">
-        {value || <span className="text-slate-400 italic">{notSpecifiedText}</span>}
+        {value || <span className="text-slate-600 italic">{notSpecifiedText}</span>}
       </p>
     </div>
   )
@@ -633,7 +633,7 @@ function StatCard({
       )}>
         {value}
       </p>
-      <p className="text-sm text-slate-500">{label}</p>
+      <p className="text-sm text-slate-700">{label}</p>
     </Link>
   )
 }

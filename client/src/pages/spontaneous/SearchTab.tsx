@@ -347,7 +347,7 @@ export default function SearchTab() {
           </Button>
         </div>
 
-        <p className="text-slate-600 dark:text-slate-400 mb-4">
+        <p className="text-slate-600 dark:text-slate-600 mb-4">
           {searchMode === 'ai' ? (
             <>Beskriv vilka företag du söker, t.ex. "IT-konsulter i Stockholm" eller "advokatbyråer som arbetar med arbetsrätt"</>
           ) : (
@@ -372,7 +372,7 @@ export default function SearchTab() {
             {searchMode === 'ai' ? (
               <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-400" />
             ) : (
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
             )}
             <Input
               type="text"
@@ -424,7 +424,7 @@ export default function SearchTab() {
                 )}
               </div>
 
-              <p className="text-sm text-slate-500 mb-4">
+              <p className="text-sm text-slate-700 mb-4">
                 Org.nr: {formatOrgNumber(searchResult.orgNumber)}
                 {searchResult.legalForm && ` • ${searchResult.legalForm}`}
               </p>
@@ -433,10 +433,10 @@ export default function SearchTab() {
                 {/* Address */}
                 {searchResult.address && (searchResult.address.street || searchResult.address.city) && (
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-slate-400 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-slate-600 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium">Adress</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-slate-600 dark:text-slate-600">
                         {searchResult.address.street && <span>{searchResult.address.street}<br /></span>}
                         {searchResult.address.postalCode} {searchResult.address.city}
                       </p>
@@ -447,18 +447,18 @@ export default function SearchTab() {
                 {/* Industry */}
                 {searchResult.sniCodes && searchResult.sniCodes.length > 0 && (
                   <div className="flex items-start gap-2">
-                    <Briefcase className="w-4 h-4 text-slate-400 mt-0.5" />
+                    <Briefcase className="w-4 h-4 text-slate-600 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium">Bransch (SNI)</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-slate-600 dark:text-slate-600">
                         {searchResult.sniCodes.slice(0, 3).map(sni => (
                           <span key={sni.code} className="block">
-                            <span className="text-xs text-slate-400">{sni.code}</span>{' '}
+                            <span className="text-xs text-slate-600">{sni.code}</span>{' '}
                             {sni.description || getSniDescription(sni.code)}
                           </span>
                         ))}
                         {searchResult.sniCodes.length > 3 && (
-                          <span className="text-xs text-slate-400">
+                          <span className="text-xs text-slate-600">
                             +{searchResult.sniCodes.length - 3} fler
                           </span>
                         )}
@@ -470,10 +470,10 @@ export default function SearchTab() {
                 {/* Registration Date */}
                 {searchResult.registrationDate && (
                   <div className="flex items-start gap-2">
-                    <Calendar className="w-4 h-4 text-slate-400 mt-0.5" />
+                    <Calendar className="w-4 h-4 text-slate-600 mt-0.5" />
                     <div>
                       <p className="text-sm font-medium">Registrerat</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-400">
+                      <p className="text-sm text-slate-600 dark:text-slate-600">
                         {new Date(searchResult.registrationDate).toLocaleDateString('sv-SE')}
                       </p>
                     </div>
@@ -485,7 +485,7 @@ export default function SearchTab() {
               {searchResult.businessDescription && (
                 <div className="mt-4">
                   <p className="text-sm font-medium mb-1">Verksamhet</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
+                  <p className="text-sm text-slate-600 dark:text-slate-600">
                     {searchResult.businessDescription}
                   </p>
                 </div>
@@ -496,11 +496,11 @@ export default function SearchTab() {
                 <div className="flex items-center gap-2 mb-3">
                   <FileText className="w-4 h-4 text-primary-500" />
                   <p className="text-sm font-medium">Årsredovisningar</p>
-                  {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-400" />}
+                  {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-600" />}
                 </div>
 
                 {!isLoadingDocs && documents.length === 0 && (
-                  <p className="text-sm text-slate-500">Inga årsredovisningar tillgängliga.</p>
+                  <p className="text-sm text-slate-700">Inga årsredovisningar tillgängliga.</p>
                 )}
 
                 {documents.length > 0 && (
@@ -523,7 +523,7 @@ export default function SearchTab() {
                       </Button>
                     ))}
                     {documents.length > 5 && (
-                      <span className="text-xs text-slate-400 self-center">
+                      <span className="text-xs text-slate-600 self-center">
                         +{documents.length - 5} fler
                       </span>
                     )}
@@ -561,7 +561,7 @@ export default function SearchTab() {
                 Sökresultat
               </h3>
               {aiSearchStats && (
-                <p className="text-sm text-slate-500">
+                <p className="text-sm text-slate-700">
                   {aiSearchStats.total} företag hittade, {aiSearchStats.verified} verifierade mot Bolagsverket
                 </p>
               )}
@@ -647,7 +647,7 @@ export default function SearchTab() {
                         )}
                       </div>
 
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-400">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-600">
                         {company.orgNumber && (
                           <span>Org.nr: {formatOrgNumber(company.orgNumber)}</span>
                         )}
@@ -666,13 +666,13 @@ export default function SearchTab() {
                       </div>
 
                       {company.description && (
-                        <p className="text-sm text-slate-500 mt-2 line-clamp-2">
+                        <p className="text-sm text-slate-700 mt-2 line-clamp-2">
                           {company.description}
                         </p>
                       )}
 
                       {company.verifiedData && (
-                        <p className="text-xs text-slate-400 mt-1">
+                        <p className="text-xs text-slate-600 mt-1">
                           {company.verifiedData.legalForm}
                           {company.verifiedData.address?.street && ` • ${company.verifiedData.address.street}`}
                         </p>
@@ -730,7 +730,7 @@ export default function SearchTab() {
       {/* Tips Section */}
       <Card className="p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
         <h3 className="font-medium mb-2">Tips för spontanansökningar</h3>
-        <ul className="text-sm text-slate-600 dark:text-slate-400 space-y-1.5">
+        <ul className="text-sm text-slate-600 dark:text-slate-600 space-y-1.5">
           {searchMode === 'ai' ? (
             <>
               <li>• Var specifik i din sökning: bransch, ort, storlek</li>

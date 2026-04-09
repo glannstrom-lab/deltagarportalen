@@ -54,15 +54,15 @@ export function VoiceAssistant() {
           >
             <div className="flex items-center justify-between mb-3">
               <span className="font-medium text-slate-800">Röststöd</span>
-              <button onClick={() => setIsListening(false)}><X size={16} className="text-slate-400" /></button>
+              <button onClick={() => setIsListening(false)}><X size={16} className="text-slate-600" /></button>
             </div>
             
             <div className="h-12 bg-slate-50 rounded-xl flex items-center justify-center mb-3">
-              {transcript ? <span className="text-slate-700">{transcript}</span> : <span className="text-slate-400 text-sm">Säg något...</span>}
+              {transcript ? <span className="text-slate-700">{transcript}</span> : <span className="text-slate-600 text-sm">Säg något...</span>}
             </div>
 
             <div className="space-y-1">
-              <p className="text-xs text-slate-500 mb-2">Prova:</p>
+              <p className="text-xs text-slate-700 mb-2">Prova:</p>
               {commands.map((cmd, i) => (
                 <button key={i} className="w-full text-left text-sm px-2 py-1.5 rounded hover:bg-slate-50 text-slate-600">
                   "{cmd.phrase}"

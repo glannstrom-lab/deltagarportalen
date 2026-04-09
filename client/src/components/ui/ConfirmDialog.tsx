@@ -137,7 +137,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
             {/* Close button */}
             <button
               onClick={handleCancel}
-              className="absolute top-4 right-4 p-1 text-slate-400 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
+              className="absolute top-4 right-4 p-1 text-slate-600 hover:text-slate-600 rounded-lg hover:bg-slate-100 transition-colors"
               aria-label="Stäng"
             >
               <X className="w-5 h-5" />

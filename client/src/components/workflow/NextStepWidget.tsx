@@ -65,7 +65,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
         className
       )}>
         <div className="text-center py-6">
-          <p className="text-slate-500">{error || 'Inget steg tillgängligt'}</p>
+          <p className="text-slate-700">{error || 'Inget steg tillgängligt'}</p>
           <button
             onClick={fetchNextStep}
             className="mt-3 flex items-center gap-2 mx-auto text-violet-600 hover:text-violet-700"
@@ -171,19 +171,19 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
                 <p className="text-2xl font-bold text-slate-900">
                   {progress.applicationsCount}
                 </p>
-                <p className="text-xs text-slate-500">Ansökningar</p>
+                <p className="text-xs text-slate-700">Ansökningar</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-slate-900">
                   {progress.savedJobsCount}
                 </p>
-                <p className="text-xs text-slate-500">Sparade jobb</p>
+                <p className="text-xs text-slate-700">Sparade jobb</p>
               </div>
               <div>
                 <p className="text-2xl font-bold text-slate-900">
                   {progress.coverLettersCount}
                 </p>
-                <p className="text-xs text-slate-500">Personliga brev</p>
+                <p className="text-xs text-slate-700">Personliga brev</p>
               </div>
             </div>
           </div>
@@ -191,7 +191,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
 
         {/* Quick actions row */}
         <div className="mt-4 flex items-center justify-center gap-2">
-          <span className="text-sm text-slate-500">Eller:</span>
+          <span className="text-sm text-slate-700">Eller:</span>
           <div className="flex items-center gap-1">
             <QuickLink to="/cv" icon={<FileText size={14} />}>
               CV

@@ -639,7 +639,7 @@ Varmt tack igen!`
                     <p className="text-sm text-slate-600 mb-3">{strategy.description}</p>
                     <ul className="space-y-1">
                       {strategy.actions.map((action, i) => (
-                        <li key={i} className="text-sm text-slate-500 flex items-start gap-2">
+                        <li key={i} className="text-sm text-slate-700 flex items-start gap-2">
                           <Check size={14} className="text-violet-500 mt-0.5 flex-shrink-0" />
                           {action}
                         </li>
@@ -685,7 +685,7 @@ Varmt tack igen!`
                     <span className="text-sm text-slate-700">"{starter}"</span>
                     <button
                       onClick={() => handleCopy(starter)}
-                      className="p-1.5 text-slate-400 hover:text-violet-500"
+                      className="p-1.5 text-slate-600 hover:text-violet-500"
                     >
                       <Copy size={14} />
                     </button>
@@ -723,7 +723,7 @@ Varmt tack igen!`
           <p className="text-sm text-slate-600">
             Be om 15 minuter för att lära dig mer om ett företag eller roll.
           </p>
-          <span className="inline-block text-xs text-slate-500 mt-3 bg-slate-100 px-2 py-1 rounded">
+          <span className="inline-block text-xs text-slate-700 mt-3 bg-slate-100 px-2 py-1 rounded">
             Mallar nedan
           </span>
         </div>
@@ -736,7 +736,7 @@ Varmt tack igen!`
           <p className="text-sm text-slate-600">
             Skicka alltid ett tack efter möten. Det gör skillnad!
           </p>
-          <span className="inline-block text-xs text-slate-500 mt-3 bg-slate-100 px-2 py-1 rounded">
+          <span className="inline-block text-xs text-slate-700 mt-3 bg-slate-100 px-2 py-1 rounded">
             Mallar nedan
           </span>
         </div>
@@ -783,7 +783,7 @@ Varmt tack igen!`
                   setGeneratedMessage('')
                   setSelectedContactForMessage(null)
                 }}
-                className="p-1.5 text-slate-400 hover:text-slate-600"
+                className="p-1.5 text-slate-600 hover:text-slate-600"
               >
                 <X size={18} />
               </button>
@@ -1052,9 +1052,9 @@ Varmt tack igen!`
 
         {/* Kontaktlista */}
         {loading ? (
-          <div className="text-center py-8 text-slate-500">Laddar kontakter...</div>
+          <div className="text-center py-8 text-slate-700">Laddar kontakter...</div>
         ) : filteredContacts.length === 0 ? (
-          <div className="text-center py-8 text-slate-500">
+          <div className="text-center py-8 text-slate-700">
             <Users size={48} className="mx-auto mb-4 text-slate-300" />
             <p>Inga kontakter ännu.</p>
             <p className="text-sm">Lägg till dina första nätverkskontakter ovan!</p>
@@ -1089,7 +1089,7 @@ Varmt tack igen!`
                     </div>
                   )}
                   {contact.last_contact_date && (
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-700">
                       Senast kontakt: {new Date(contact.last_contact_date).toLocaleDateString('sv-SE')}
                     </p>
                   )}
@@ -1193,12 +1193,12 @@ Varmt tack igen!`
               >
                 <div className="text-left">
                   <h4 className="font-medium text-slate-800">{template.title}</h4>
-                  <p className="text-sm text-slate-500">{template.description}</p>
+                  <p className="text-sm text-slate-700">{template.description}</p>
                 </div>
                 {expandedTemplate === template.id ? (
-                  <ChevronUp size={20} className="text-slate-400" />
+                  <ChevronUp size={20} className="text-slate-600" />
                 ) : (
-                  <ChevronDown size={20} className="text-slate-400" />
+                  <ChevronDown size={20} className="text-slate-600" />
                 )}
               </button>
 
@@ -1206,7 +1206,7 @@ Varmt tack igen!`
                 <div className="px-5 pb-5">
                   <div className="bg-slate-50 rounded-xl p-4 mb-4">
                     <div className="flex items-center justify-between mb-3">
-                      <span className="text-xs font-medium text-slate-500 uppercase tracking-wide">
+                      <span className="text-xs font-medium text-slate-700 uppercase tracking-wide">
                         Mall
                       </span>
                       <button

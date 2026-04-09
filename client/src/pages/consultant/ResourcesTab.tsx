@@ -108,7 +108,7 @@ function TemplateCard({
           >
             <Star className={cn(
               'w-4 h-4',
-              template.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-400'
+              template.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-600'
             )} />
           </button>
           {!isDefault && (
@@ -117,7 +117,7 @@ function TemplateCard({
                 onClick={() => setShowMenu(!showMenu)}
                 className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg"
               >
-                <MoreVertical className="w-4 h-4 text-stone-400" />
+                <MoreVertical className="w-4 h-4 text-stone-600" />
               </button>
               {showMenu && (
                 <div className="absolute right-0 top-full mt-1 bg-white dark:bg-stone-800 rounded-lg shadow-lg border border-stone-200 dark:border-stone-700 py-1 z-10 min-w-[120px]">
@@ -144,11 +144,11 @@ function TemplateCard({
       <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-2">
         {template.title}
       </h4>
-      <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2 mb-4">
+      <p className="text-sm text-stone-500 dark:text-stone-600 line-clamp-2 mb-4">
         {template.description}
       </p>
       <div className="flex items-center justify-between">
-        <span className="text-xs text-stone-400 flex items-center gap-1">
+        <span className="text-xs text-stone-600 flex items-center gap-1">
           <Users className="w-3 h-3" />
           Använd {template.usageCount} gånger
         </span>
@@ -178,16 +178,16 @@ function JobCollectionCard({
           <Folder className="w-5 h-5 text-violet-600 dark:text-violet-400" />
         </div>
         <button className="p-1 hover:bg-stone-100 dark:hover:bg-stone-800 rounded-lg">
-          <MoreVertical className="w-4 h-4 text-stone-400" />
+          <MoreVertical className="w-4 h-4 text-stone-600" />
         </button>
       </div>
       <h4 className="font-semibold text-stone-900 dark:text-stone-100 mb-1">
         {collection.name}
       </h4>
-      <p className="text-sm text-stone-500 dark:text-stone-400 mb-3">
+      <p className="text-sm text-stone-500 dark:text-stone-600 mb-3">
         {collection.description}
       </p>
-      <div className="flex items-center gap-3 text-xs text-stone-400 mb-4">
+      <div className="flex items-center gap-3 text-xs text-stone-600 mb-4">
         <span className="flex items-center gap-1">
           <Briefcase className="w-3 h-3" />
           {collection.jobCount} jobb
@@ -240,7 +240,7 @@ function BestPracticeCard({
           <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-1">
             {practice.title}
           </h4>
-          <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">
+          <p className="text-sm text-stone-500 dark:text-stone-600 line-clamp-2">
             {practice.description}
           </p>
           <span className="inline-flex items-center gap-1 mt-2 text-xs text-violet-600">
@@ -356,7 +356,7 @@ function TemplateFormDialog({
             <h4 className="font-medium text-stone-900 dark:text-stone-100 mb-3">SMART-mål</h4>
             <div className="space-y-3">
               <div>
-                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                <label className="block text-sm text-stone-600 dark:text-stone-600 mb-1">
                   <strong>S</strong>pecifikt
                 </label>
                 <input
@@ -368,7 +368,7 @@ function TemplateFormDialog({
                 />
               </div>
               <div>
-                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                <label className="block text-sm text-stone-600 dark:text-stone-600 mb-1">
                   <strong>M</strong>ätbart
                 </label>
                 <input
@@ -380,7 +380,7 @@ function TemplateFormDialog({
                 />
               </div>
               <div>
-                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                <label className="block text-sm text-stone-600 dark:text-stone-600 mb-1">
                   <strong>A</strong>chievable (Uppnåeligt)
                 </label>
                 <input
@@ -392,7 +392,7 @@ function TemplateFormDialog({
                 />
               </div>
               <div>
-                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                <label className="block text-sm text-stone-600 dark:text-stone-600 mb-1">
                   <strong>R</strong>elevant
                 </label>
                 <input
@@ -404,7 +404,7 @@ function TemplateFormDialog({
                 />
               </div>
               <div>
-                <label className="block text-sm text-stone-600 dark:text-stone-400 mb-1">
+                <label className="block text-sm text-stone-600 dark:text-stone-600 mb-1">
                   <strong>T</strong>idsbestämt
                 </label>
                 <input
@@ -461,33 +461,33 @@ function TemplateDetailDialog({
           </button>
         </div>
         <div className="p-4 space-y-4">
-          <p className="text-stone-600 dark:text-stone-400">{template.description}</p>
+          <p className="text-stone-600 dark:text-stone-600">{template.description}</p>
           <div className="bg-stone-50 dark:bg-stone-800 rounded-xl p-4 space-y-3">
             <h4 className="font-medium text-stone-900 dark:text-stone-100">SMART-mål</h4>
             <div className="space-y-2 text-sm">
               <div>
                 <span className="font-medium text-violet-600">S - Specifikt:</span>
-                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.specific}</span>
+                <span className="text-stone-600 dark:text-stone-600 ml-2">{template.specific}</span>
               </div>
               <div>
                 <span className="font-medium text-violet-600">M - Mätbart:</span>
-                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.measurable}</span>
+                <span className="text-stone-600 dark:text-stone-600 ml-2">{template.measurable}</span>
               </div>
               <div>
                 <span className="font-medium text-violet-600">A - Uppnåeligt:</span>
-                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.achievable}</span>
+                <span className="text-stone-600 dark:text-stone-600 ml-2">{template.achievable}</span>
               </div>
               <div>
                 <span className="font-medium text-violet-600">R - Relevant:</span>
-                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.relevant}</span>
+                <span className="text-stone-600 dark:text-stone-600 ml-2">{template.relevant}</span>
               </div>
               <div>
                 <span className="font-medium text-violet-600">T - Tidsbestämt:</span>
-                <span className="text-stone-600 dark:text-stone-400 ml-2">{template.timeBound}</span>
+                <span className="text-stone-600 dark:text-stone-600 ml-2">{template.timeBound}</span>
               </div>
             </div>
           </div>
-          <p className="text-xs text-stone-400">
+          <p className="text-xs text-stone-600">
             Använd {template.usageCount} gånger
           </p>
         </div>
@@ -532,7 +532,7 @@ function BestPracticeDetailDialog({
           </button>
         </div>
         <div className="p-4 space-y-4">
-          <p className="text-stone-600 dark:text-stone-400">{practice.description}</p>
+          <p className="text-stone-600 dark:text-stone-600">{practice.description}</p>
           <div className="space-y-3">
             <h4 className="font-medium text-stone-900 dark:text-stone-100">Steg</h4>
             <ol className="space-y-2">
@@ -541,7 +541,7 @@ function BestPracticeDetailDialog({
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400 flex items-center justify-center text-sm font-medium">
                     {index + 1}
                   </span>
-                  <span className="text-stone-600 dark:text-stone-400 pt-0.5">{step}</span>
+                  <span className="text-stone-600 dark:text-stone-600 pt-0.5">{step}</span>
                 </li>
               ))}
             </ol>
@@ -941,7 +941,7 @@ export function ResourcesTab() {
           {/* Search and Filters */}
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
               <input
                 type="text"
                 placeholder="Sök mallar..."
@@ -1002,7 +1002,7 @@ export function ResourcesTab() {
           {!loading && filteredTemplates.length === 0 && (
             <Card className="p-12 text-center">
               <Target className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
-              <p className="text-stone-500 dark:text-stone-400">
+              <p className="text-stone-500 dark:text-stone-600">
                 Inga mallar matchade din sökning
               </p>
             </Card>
@@ -1014,7 +1014,7 @@ export function ResourcesTab() {
       {activeSection === 'collections' && (
         <>
           <div className="flex items-center justify-between">
-            <p className="text-stone-500 dark:text-stone-400">
+            <p className="text-stone-500 dark:text-stone-600">
               Skapa och dela jobbsamlingar med dina deltagare
             </p>
             <Button onClick={() => alert('Funktion för att skapa jobbsamlingar kommer snart!')}>
@@ -1039,7 +1039,7 @@ export function ResourcesTab() {
       {/* Best Practices Section */}
       {activeSection === 'practices' && (
         <>
-          <p className="text-stone-500 dark:text-stone-400">
+          <p className="text-stone-500 dark:text-stone-600">
             Beprövade metoder och checklistor för effektivt konsulentarbete
           </p>
 

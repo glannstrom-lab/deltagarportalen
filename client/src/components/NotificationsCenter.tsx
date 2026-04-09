@@ -122,7 +122,7 @@ export default function NotificationsCenter() {
                   <h2 className="text-xl font-bold text-slate-900">
                     {showSettings ? 'Jobbbevakningar' : 'Notifikationer'}
                   </h2>
-                  <p className="text-sm text-slate-500">
+                  <p className="text-sm text-slate-700">
                     {showSettings 
                       ? `${alerts.length} bevakningar` 
                       : `${unreadCount} olästa`
@@ -173,7 +173,7 @@ export default function NotificationsCenter() {
                         Lägg till
                       </button>
                     </div>
-                    <p className="text-xs text-slate-500 mt-2">
+                    <p className="text-xs text-slate-700 mt-2">
                       Du får notifikationer när nya jobb matchar din sökning. Vi kontrollerar var 5:e minut.
                     </p>
                   </div>
@@ -182,7 +182,7 @@ export default function NotificationsCenter() {
                   <div className="space-y-3">
                     <h3 className="font-semibold text-slate-900">Dina bevakningar</h3>
                     {alerts.length === 0 ? (
-                      <p className="text-slate-500 text-center py-8">
+                      <p className="text-slate-700 text-center py-8">
                         Inga bevakningar än. Skapa en ovan för att börja få notifikationer!
                       </p>
                     ) : (
@@ -193,7 +193,7 @@ export default function NotificationsCenter() {
                         >
                           <div>
                             <h4 className="font-medium text-slate-900">{alert.name}</h4>
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-slate-700">
                               Senast kontrollerad: {new Date(alert.lastChecked).toLocaleString('sv-SE')}
                             </p>
                           </div>
@@ -222,8 +222,8 @@ export default function NotificationsCenter() {
                   {notifications.length === 0 ? (
                     <div className="text-center py-12">
                       <Bell className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                      <p className="text-slate-500">Inga notifikationer än</p>
-                      <p className="text-sm text-slate-400 mt-1">
+                      <p className="text-slate-700">Inga notifikationer än</p>
+                      <p className="text-sm text-slate-600 mt-1">
                         Skapa en jobbbevakning för att få notifikationer
                       </p>
                     </div>
@@ -255,14 +255,14 @@ export default function NotificationsCenter() {
                         >
                           <div className="flex items-start gap-3">
                             <div className={`p-2 rounded-lg ${!notification.read ? 'bg-teal-100' : 'bg-slate-100'}`}>
-                              <Briefcase className={`w-4 h-4 ${!notification.read ? 'text-teal-600' : 'text-slate-500'}`} />
+                              <Briefcase className={`w-4 h-4 ${!notification.read ? 'text-teal-600' : 'text-slate-700'}`} />
                             </div>
                             <div className="flex-1">
                               <h4 className={`font-medium ${!notification.read ? 'text-slate-900' : 'text-slate-700'}`}>
                                 {notification.title}
                               </h4>
                               <p className="text-sm text-slate-600">{notification.employer}</p>
-                              <div className="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                              <div className="flex items-center gap-3 mt-1 text-xs text-slate-700">
                                 {notification.municipality && (
                                   <span className="flex items-center gap-1">
                                     <MapPin size={12} />

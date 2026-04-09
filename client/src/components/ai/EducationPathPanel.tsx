@@ -93,7 +93,7 @@ export function EducationPathPanel({
               <h4 className="font-medium text-slate-800 dark:text-slate-200">
                 AI Utbildningsguide
               </h4>
-              <p className="text-sm text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-slate-600 dark:text-slate-600">
                 Hitta rätt kurser och certifieringar
               </p>
             </div>
@@ -207,14 +207,14 @@ export function EducationPathPanel({
                             <span className="text-xs font-medium text-violet-600 dark:text-violet-400">
                               Steg {step.step}
                             </span>
-                            <span className="text-xs text-slate-400">
+                            <span className="text-xs text-slate-600">
                               {step.timeframe}
                             </span>
                           </div>
                           <p className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1">
                             {step.action}
                           </p>
-                          <p className="text-xs text-slate-600 dark:text-slate-400">
+                          <p className="text-xs text-slate-600 dark:text-slate-600">
                             Resultat: {step.outcome}
                           </p>
                         </div>
@@ -248,11 +248,11 @@ export function EducationPathPanel({
                             <span className="px-2 py-0.5 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 rounded-full">
                               {course.provider}
                             </span>
-                            <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full flex items-center gap-1">
+                            <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-600 rounded-full flex items-center gap-1">
                               <Clock className="w-3 h-3" />
                               {course.duration}
                             </span>
-                            <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full">
+                            <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-600 rounded-full">
                               {course.level}
                             </span>
                           </div>
@@ -264,7 +264,7 @@ export function EducationPathPanel({
                             rel="noopener noreferrer"
                             className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
                           >
-                            <ExternalLink className="w-4 h-4 text-slate-500" />
+                            <ExternalLink className="w-4 h-4 text-slate-700" />
                           </a>
                         )}
                       </div>
@@ -296,15 +296,15 @@ export function EducationPathPanel({
                         </span>
                       </div>
                       <div className="flex flex-wrap gap-2 text-xs mb-2">
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full">
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-600 rounded-full">
                           {cert.provider}
                         </span>
-                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 rounded-full flex items-center gap-1">
+                        <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-600 rounded-full flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {cert.timeToComplete}
                         </span>
                       </div>
-                      <p className="text-xs text-slate-600 dark:text-slate-400">
+                      <p className="text-xs text-slate-600 dark:text-slate-600">
                         {cert.value}
                       </p>
                     </div>
@@ -334,7 +334,7 @@ export function EducationPathPanel({
                       <h5 className="text-sm font-medium text-slate-800 dark:text-slate-200 mb-1">
                         {edu.provider}
                       </h5>
-                      <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-400">
+                      <div className="flex items-center gap-3 text-xs text-slate-600 dark:text-slate-600">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
                           {edu.duration}

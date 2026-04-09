@@ -85,7 +85,7 @@ const statusConfig: Record<SpontaneousStatus, {
   archived: {
     label: 'Arkiverad',
     icon: Archive,
-    color: 'text-slate-400',
+    color: 'text-slate-600',
     bgColor: 'bg-slate-100 dark:bg-slate-800',
   },
 }
@@ -145,7 +145,7 @@ function CompanyCard({
             <h3 className="font-semibold truncate">{company.company_name}</h3>
           </div>
 
-          <p className="text-sm text-slate-500 mb-2">
+          <p className="text-sm text-slate-700 mb-2">
             {formatOrgNumber(company.org_number)}
             {company.company_data?.legalForm && ` • ${company.company_data.legalForm}`}
           </p>
@@ -159,7 +159,7 @@ function CompanyCard({
             )}
           </div>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-400">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-600">
             {address?.city && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
@@ -174,14 +174,14 @@ function CompanyCard({
           </div>
 
           {businessDescription && (
-            <p className="text-xs text-slate-500 mt-2 line-clamp-2" title={businessDescription}>
+            <p className="text-xs text-slate-700 mt-2 line-clamp-2" title={businessDescription}>
               <FileText className="w-3 h-3 inline mr-1" />
               {businessDescription}
             </p>
           )}
 
           {company.outreach_date && (
-            <p className="text-xs text-slate-500 mt-2 flex items-center gap-1">
+            <p className="text-xs text-slate-700 mt-2 flex items-center gap-1">
               <Calendar className="w-3 h-3" />
               Kontaktad: {new Date(company.outreach_date).toLocaleDateString('sv-SE')}
             </p>
@@ -214,12 +214,12 @@ function CompanyCard({
             ) : (
               <div
                 onClick={() => setIsEditingNotes(true)}
-                className="text-sm text-slate-600 dark:text-slate-400 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-1 rounded"
+                className="text-sm text-slate-600 dark:text-slate-600 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-1 rounded"
               >
                 {company.notes ? (
                   <p className="line-clamp-2">{company.notes}</p>
                 ) : (
-                  <p className="text-slate-400 italic flex items-center gap-1">
+                  <p className="text-slate-600 italic flex items-center gap-1">
                     <Edit2 className="w-3 h-3" />
                     Klicka för att lägga till anteckningar...
                   </p>
@@ -368,7 +368,7 @@ export default function MyCompaniesTab() {
       {/* Filter Bar */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 flex-1">
-          <Filter className="w-4 h-4 text-slate-400 flex-shrink-0" />
+          <Filter className="w-4 h-4 text-slate-600 flex-shrink-0" />
           {filterOptions.map((option) => (
             <Button
               key={option.value}
@@ -407,7 +407,7 @@ export default function MyCompaniesTab() {
           <h3 className="text-lg font-medium mb-2">
             {filter === 'all' ? 'Inga sparade företag' : `Inga företag med status "${filterOptions.find(o => o.value === filter)?.label}"`}
           </h3>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600 dark:text-slate-600">
             {filter === 'all'
               ? 'Sök efter företag och spara de du är intresserad av.'
               : 'Ändra filter för att se andra företag.'

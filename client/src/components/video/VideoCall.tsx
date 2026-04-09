@@ -38,7 +38,7 @@ export function VideoCall({ isOpen, onClose, participantName, isIncoming = false
       <div className="flex items-center justify-between p-4 bg-slate-800/50">
         <div>
           <h3 className="text-white font-semibold">{participantName}</h3>
-          {isConnected && <p className="text-slate-400 text-sm">{formatDuration(callDuration)}</p>}
+          {isConnected && <p className="text-slate-600 text-sm">{formatDuration(callDuration)}</p>}
         </div>
         <button onClick={onClose} className="text-white/60 hover:text-white"><X size={24} /></button>
       </div>
@@ -53,7 +53,7 @@ export function VideoCall({ isOpen, onClose, participantName, isIncoming = false
           </div>
         )}
         <div className="absolute bottom-4 right-4 w-48 h-36 bg-slate-800 rounded-xl overflow-hidden">
-          {isVideoOff ? <div className="w-full h-full flex items-center justify-center"><VideoOff size={32} className="text-slate-400" /></div> : <div className="w-full h-full bg-slate-700" />}
+          {isVideoOff ? <div className="w-full h-full flex items-center justify-center"><VideoOff size={32} className="text-slate-600" /></div> : <div className="w-full h-full bg-slate-700" />}
         </div>
       </div>
 

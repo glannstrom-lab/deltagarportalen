@@ -148,7 +148,7 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
             rows={10}
             className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none resize-y"
           />
-          <p className="text-xs text-slate-500 mt-2">
+          <p className="text-xs text-slate-700 mt-2">
             💡 {t('skillsGapAnalysis.currentProfile.tip')}
           </p>
         </Card>
@@ -167,7 +167,7 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
             rows={10}
             className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 outline-none resize-y"
           />
-          <p className="text-xs text-slate-500 mt-2">
+          <p className="text-xs text-slate-700 mt-2">
             💡 {t('skillsGapAnalysis.dreamJob.tip')}
           </p>
         </Card>
@@ -244,7 +244,7 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium text-slate-700">{skill.current}% → {skill.required}%</div>
-                      <div className="text-xs text-slate-500">Luckegap: {skill.required - skill.current}%</div>
+                      <div className="text-xs text-slate-700">Luckegap: {skill.required - skill.current}%</div>
                     </div>
                   </div>
 

@@ -171,7 +171,7 @@ export function AddApplicationModal({
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-full transition-colors"
           >
-            <X className="w-5 h-5 text-slate-500" />
+            <X className="w-5 h-5 text-slate-700" />
           </button>
         </div>
 
@@ -190,7 +190,7 @@ export function AddApplicationModal({
               Företag <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
               <input
                 type="text"
                 value={formData.companyName}
@@ -208,7 +208,7 @@ export function AddApplicationModal({
               Tjänst <span className="text-red-500">*</span>
             </label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
               <input
                 type="text"
                 value={formData.jobTitle}
@@ -224,7 +224,7 @@ export function AddApplicationModal({
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Plats</label>
             <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
               <input
                 type="text"
                 value={formData.location}
@@ -239,7 +239,7 @@ export function AddApplicationModal({
           <div>
             <label className="block text-sm font-medium text-slate-700 mb-1">Länk till annons</label>
             <div className="relative">
-              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Link2 className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
               <input
                 type="url"
                 value={formData.jobUrl}
@@ -267,7 +267,7 @@ export function AddApplicationModal({
             <div>
               <label className="block text-sm font-medium text-slate-700 mb-1">Ansökningsdatum</label>
               <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
                 <input
                   type="date"
                   value={formData.applicationDate}

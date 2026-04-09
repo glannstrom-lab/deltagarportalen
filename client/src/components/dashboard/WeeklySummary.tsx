@@ -159,19 +159,19 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
           </div>
           <div className="text-left">
             <h3 className="font-semibold text-slate-800">Din vecka</h3>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-slate-700">
               {formatTime(stats.totalTimeSpent)} aktiv tid
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className="text-sm text-slate-500">
+          <span className="text-sm text-slate-700">
             {isExpanded ? 'Dölj' : 'Visa'}
           </span>
           {isExpanded ? (
-            <ChevronUp size={18} className="text-slate-400" />
+            <ChevronUp size={18} className="text-slate-600" />
           ) : (
-            <ChevronDown size={18} className="text-slate-400" />
+            <ChevronDown size={18} className="text-slate-600" />
           )}
         </div>
       </button>
@@ -220,7 +220,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
                       </span>
                     )}
                   </div>
-                  <span className="text-xs text-slate-500">{item.label}</span>
+                  <span className="text-xs text-slate-700">{item.label}</span>
                 </div>
               </motion.div>
             ))}
@@ -231,7 +231,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
             <div className="p-3 bg-white rounded-xl border border-slate-200">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm font-medium text-slate-700">Veckans mål</span>
-                <span className="text-xs text-slate-500">2 av 3 klara</span>
+                <span className="text-xs text-slate-700">2 av 3 klara</span>
               </div>
               <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                 <motion.div

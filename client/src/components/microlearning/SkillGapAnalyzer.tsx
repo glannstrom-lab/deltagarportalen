@@ -159,7 +159,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
             </div>
             <div>
               <h2 className="text-lg font-semibold text-slate-800">Kompetensanalys</h2>
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-700">
                 {step === 'intro' && 'Upptäck vad du behöver lära dig'}
                 {step === 'select-role' && 'Välj ditt målyrke'}
                 {step === 'analyzing' && 'Analyserar ditt CV...'}
@@ -171,7 +171,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
             onClick={onClose}
             className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
           >
-            <X size={20} className="text-slate-400" />
+            <X size={20} className="text-slate-600" />
           </button>
         </div>
 
@@ -307,7 +307,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
               <h3 className="text-lg font-semibold text-slate-800 mb-2">
                 Analyserar ditt CV...
               </h3>
-              <p className="text-slate-500 text-center max-w-sm">
+              <p className="text-slate-700 text-center max-w-sm">
                 AI:n jämför dina kompetenser med vad som efterfrågas för {selectedRole}
               </p>
             </div>
@@ -347,7 +347,7 @@ export default function SkillGapAnalyzer({ onClose, onComplete }: SkillGapAnalyz
                         <p className="text-sm text-slate-600 mb-2">
                           {gap.rationale}
                         </p>
-                        <div className="flex items-center gap-4 text-xs text-slate-500">
+                        <div className="flex items-center gap-4 text-xs text-slate-700">
                           <span className="flex items-center gap-1">
                             <span className="w-2 h-2 rounded-full bg-emerald-500" />
                             Efterfrågan: {gap.demandLevel === 'very-high' ? 'Mycket hög' : gap.demandLevel === 'high' ? 'Hög' : gap.demandLevel}

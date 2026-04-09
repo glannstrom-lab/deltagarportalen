@@ -187,7 +187,7 @@ export default function EducationOverview() {
               onClick={() => setShowMobileFilters(false)}
               className="p-2 hover:bg-slate-100 rounded-full"
             >
-              <X size={24} className="text-slate-500" />
+              <X size={24} className="text-slate-700" />
             </button>
           </div>
           
@@ -369,7 +369,7 @@ export default function EducationOverview() {
         {/* Filter - Desktop */}
         {courses.length > 0 && (
           <div className="hidden lg:flex flex-wrap items-center gap-3 pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-2 text-sm text-slate-500">
+            <div className="flex items-center gap-2 text-sm text-slate-700">
               <Filter size={16} />
               Filtrera:
             </div>
@@ -488,7 +488,7 @@ export default function EducationOverview() {
                     </p>
                     
                     {/* Meta-info */}
-                    <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-slate-500">
+                    <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm text-slate-700">
                       {course.duration_months && (
                         <span className="flex items-center gap-1">
                           <Clock size={14} />
@@ -553,7 +553,7 @@ export default function EducationOverview() {
           <h3 className="text-base sm:text-lg font-medium text-slate-800 mb-2">
             Inga utbildningar matchar filtren
           </h3>
-          <p className="text-slate-500 text-sm mb-4">
+          <p className="text-slate-700 text-sm mb-4">
             Prova att ändra eller rensa filtren för att se fler resultat.
           </p>
           <button
@@ -572,7 +572,7 @@ export default function EducationOverview() {
           <h3 className="text-base sm:text-lg font-medium text-slate-800 mb-2">
             Inga utbildningar hittades
           </h3>
-          <p className="text-slate-500 text-sm">
+          <p className="text-slate-700 text-sm">
             Kunde inte hitta utbildningar för detta yrke. Prova med ett annat sökord.
           </p>
         </div>
@@ -585,7 +585,7 @@ export default function EducationOverview() {
           <h3 className="text-lg sm:text-xl font-medium text-slate-800 mb-2">
             Hitta din utbildning
           </h3>
-          <p className="text-slate-500 max-w-md mx-auto mb-6 text-sm sm:text-base">
+          <p className="text-slate-700 max-w-md mx-auto mb-6 text-sm sm:text-base">
             Sök efter utbildningar för ditt drömyrke. Vi söker bland Yrkeshögskolan, 
             universitet, Komvux och andra utbildningsanordnare.
           </p>

@@ -125,9 +125,9 @@ export function HelpButton({ content }: HelpButtonProps) {
                       >
                         <span className="font-medium text-slate-700 text-sm">{faq.question}</span>
                         {expandedIndex === index ? (
-                          <ChevronUp className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                          <ChevronUp className="w-5 h-5 text-slate-600 flex-shrink-0" />
                         ) : (
-                          <ChevronDown className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                          <ChevronDown className="w-5 h-5 text-slate-600 flex-shrink-0" />
                         )}
                       </button>
                       {expandedIndex === index && (
@@ -143,7 +143,7 @@ export function HelpButton({ content }: HelpButtonProps) {
 
             {/* Footer */}
             <div className="border-t border-slate-200 p-4 bg-slate-50">
-              <p className="text-center text-sm text-slate-500">
+              <p className="text-center text-sm text-slate-700">
                 Behöver du mer hjälp? Kontakta din handledare.
               </p>
             </div>

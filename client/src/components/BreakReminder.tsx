@@ -157,7 +157,7 @@ export default function BreakReminder({ workDuration = 15 }: BreakReminderProps)
         </div>
 
         {/* Gentle note */}
-        <p className="text-xs text-slate-400 text-center mt-4">
+        <p className="text-xs text-slate-600 text-center mt-4">
           Du kan alltid pausa när du vill. Din hälsa är viktigare än något jobb.
         </p>
       </div>

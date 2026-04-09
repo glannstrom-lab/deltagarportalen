@@ -50,10 +50,10 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">Förberedelseassistent</h3>
-            <p className="text-sm text-slate-500">AI-genererade tips och frågor</p>
+            <p className="text-sm text-slate-700">AI-genererade tips och frågor</p>
           </div>
         </div>
-        {expanded ? <ChevronUp size={20} className="text-slate-400" /> : <ChevronDown size={20} className="text-slate-400" />}
+        {expanded ? <ChevronUp size={20} className="text-slate-600" /> : <ChevronDown size={20} className="text-slate-600" />}
       </button>
 
       {expanded && (
@@ -64,7 +64,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
               <Lightbulb className="w-5 h-5 text-amber-500 mt-0.5" />
               <div className="flex-1">
                 <h4 className="font-medium text-slate-900">Skräddarsydda frågor</h4>
-                <p className="text-sm text-slate-500 mt-1">
+                <p className="text-sm text-slate-700 mt-1">
                   Generera intervjufrågor baserade på företaget och rollen
                 </p>
                 <button
@@ -98,7 +98,7 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
             <div className="space-y-2">
               {(prep?.commonQuestions || interviewQuestions.common.slice(0, 5)).map((q, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
-                  <span className="text-slate-400 mt-1">•</span>
+                  <span className="text-slate-600 mt-1">•</span>
                   <span className="text-slate-700">{q}</span>
                 </div>
               ))}

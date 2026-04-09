@@ -168,7 +168,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
               'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
               activeTab === tab.id
                 ? 'border-violet-600 text-violet-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700'
+                : 'border-transparent text-slate-700 hover:text-slate-700'
             )}
           >
             <tab.icon className="w-4 h-4" />
@@ -190,7 +190,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
             ].map((stat) => (
               <div key={stat.label} className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <stat.icon className="w-5 h-5 text-slate-400" />
+                  <stat.icon className="w-5 h-5 text-slate-600" />
                   <span className={cn(
                     'text-xs font-medium',
                     stat.positive ? 'text-emerald-600' : 'text-rose-600'
@@ -199,7 +199,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                   </span>
                 </div>
                 <p className="text-2xl font-bold text-slate-900">{stat.value}</p>
-                <p className="text-sm text-slate-500">{stat.label}</p>
+                <p className="text-sm text-slate-700">{stat.label}</p>
               </div>
             ))}
           </div>
@@ -352,8 +352,8 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                         style={{ width: `${skill.current}%` }}
                       />
                     </div>
-                    <span className="text-sm text-slate-500 w-16">{skill.current}%</span>
-                    <span className="text-xs text-slate-400">Mål: {skill.target}%</span>
+                    <span className="text-sm text-slate-700 w-16">{skill.current}%</span>
+                    <span className="text-xs text-slate-600">Mål: {skill.target}%</span>
                   </div>
                 ))}
             </div>
@@ -426,7 +426,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                             style={{ width: `${factor.strength * 100}%` }}
                           />
                         </div>
-                        <span className="text-xs text-slate-500">{Math.round(factor.strength * 100)}%</span>
+                        <span className="text-xs text-slate-700">{Math.round(factor.strength * 100)}%</span>
                       </div>
                     </div>
                   </div>

@@ -75,7 +75,7 @@ export function DarkModeToggle({
             'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
             theme === 'light'
               ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+              : 'text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-200'
           )}
           aria-pressed={theme === 'light'}
         >
@@ -89,7 +89,7 @@ export function DarkModeToggle({
             'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
             theme === 'dark'
               ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
-              : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+              : 'text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-200'
           )}
           aria-pressed={theme === 'dark'}
         >
@@ -104,7 +104,7 @@ export function DarkModeToggle({
               'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
               theme === 'system'
                 ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
-                : 'text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-200'
+                : 'text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-200'
             )}
             aria-pressed={theme === 'system'}
           >
@@ -148,7 +148,7 @@ export function DarkModeToggle({
       {showSystem && theme !== 'system' && (
         <button
           onClick={() => setTheme('system')}
-          className="text-xs text-stone-400 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 underline"
+          className="text-xs text-stone-600 hover:text-stone-600 dark:text-stone-500 dark:hover:text-stone-300 underline"
           aria-label="Återställ till systeminställning"
         >
           System

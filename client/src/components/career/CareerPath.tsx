@@ -55,7 +55,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
       <div className="bg-white rounded-2xl p-8 text-center">
         <Loader2 size={48} className="mx-auto text-teal-600 animate-spin mb-4" />
         <h3 className="text-lg font-semibold text-slate-800">Bygger din karriärväg...</h3>
-        <p className="text-slate-500">Vi söker utbildningar och jobb</p>
+        <p className="text-slate-700">Vi söker utbildningar och jobb</p>
       </div>
     )
   }
@@ -193,7 +193,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
               >
                 <h5 className="font-semibold text-slate-800 mb-1">{job.headline}</h5>
                 {job.employer?.name && (
-                  <p className="text-sm text-slate-500 mb-2">{job.employer.name}</p>
+                  <p className="text-sm text-slate-700 mb-2">{job.employer.name}</p>
                 )}
               </Link>
             ))}
@@ -239,12 +239,12 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
                   <step.icon size={24} />
                 </div>
                 <div className="flex-1 text-left">
-                  <span className="text-xs font-medium text-slate-500 uppercase">Steg {index + 1}</span>
+                  <span className="text-xs font-medium text-slate-700 uppercase">Steg {index + 1}</span>
                   <h4 className="font-semibold text-slate-800">{step.title}</h4>
                 </div>
                 <ArrowRight
                   size={20}
-                  className={`text-slate-400 transition-transform ${
+                  className={`text-slate-600 transition-transform ${
                     expandedStep === step.id ? 'rotate-90' : ''
                   }`}
                 />
@@ -271,7 +271,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
                 <p className="text-2xl font-bold text-slate-800">
                   {careerPath.salary_range.median.toLocaleString('sv-SE')} kr
                 </p>
-                <p className="text-xs text-slate-500">Uppskattad medianlön</p>
+                <p className="text-xs text-slate-700">Uppskattad medianlön</p>
               </div>
               <div className="bg-slate-50 rounded-lg p-4">
                 <TrendingUp size={16} className="text-slate-600 mb-1" />
@@ -284,7 +284,7 @@ export default function CareerPath({ occupationLabel, riasecProfile }: CareerPat
                    careerPath.demand_trend === 'stable' ? 'Stabil efterfrågan' :
                    'Sjunkande efterfrågan'}
                 </p>
-                <p className="text-xs text-slate-500">Marknadstrend</p>
+                <p className="text-xs text-slate-700">Marknadstrend</p>
               </div>
             </div>
           </div>

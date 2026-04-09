@@ -3,7 +3,7 @@
  * Sparar användarinställningar i molnet för synk mellan enheter
  */
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { persist, createJSONStorage, devtools } from 'zustand/middleware'
 import { supabase } from '@/lib/supabase'
 import i18n from '@/i18n/config'
 import { storageLogger } from '@/lib/logger'
@@ -64,8 +64,9 @@ interface ServerSettings {
 }
 
 export const useSettingsStore = create<SettingsState>()(
-  persist(
-    (set, get) => ({
+  devtools(
+    persist(
+      (set, get) => ({
       // Tillgänglighet - Standardvärden för långtidsarbetssökande
       calmMode: false,
       toggleCalmMode: () => {
@@ -219,23 +220,25 @@ export const useSettingsStore = create<SettingsState>()(
           set({ isLoading: false })
         }
       }
-    }),
-    {
-      name: 'deltagarportal-settings',
-      storage: createJSONStorage(() => localStorage),
-      partialize: (state) => ({
-        calmMode: state.calmMode,
-        emailNotifications: state.emailNotifications,
-        pushNotifications: state.pushNotifications,
-        weeklySummary: state.weeklySummary,
-        highContrast: state.highContrast,
-        largeText: state.largeText,
-        language: state.language,
-        energyLevel: state.energyLevel,
-        hasCompletedOnboarding: state.hasCompletedOnboarding,
-        lastSynced: state.lastSynced
-      })
-    }
+      }),
+      {
+        name: 'deltagarportal-settings',
+        storage: createJSONStorage(() => localStorage),
+        partialize: (state) => ({
+          calmMode: state.calmMode,
+          emailNotifications: state.emailNotifications,
+          pushNotifications: state.pushNotifications,
+          weeklySummary: state.weeklySummary,
+          highContrast: state.highContrast,
+          largeText: state.largeText,
+          language: state.language,
+          energyLevel: state.energyLevel,
+          hasCompletedOnboarding: state.hasCompletedOnboarding,
+          lastSynced: state.lastSynced
+        })
+      }
+    ),
+    { name: 'SettingsStore', enabled: process.env.NODE_ENV === 'development' }
   )
 )
 

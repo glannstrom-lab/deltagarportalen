@@ -104,7 +104,7 @@ export default function RoutinesTab() {
             <div>
               <p className="text-sm text-slate-600 mb-1">Idag</p>
               <h3 className="text-3xl font-bold text-indigo-600">{completedToday}/{routines.length}</h3>
-              <p className="text-xs text-slate-500 mt-1">rutiner slutförda</p>
+              <p className="text-xs text-slate-700 mt-1">rutiner slutförda</p>
             </div>
             <div className="text-right">
               <p className="text-sm text-slate-600 mb-1">Andel</p>
@@ -121,7 +121,7 @@ export default function RoutinesTab() {
             <div>
               <p className="text-sm text-slate-600 mb-1">Bästa serie</p>
               <h3 className="text-3xl font-bold text-orange-600">12</h3>
-              <p className="text-xs text-slate-500 mt-1">dagar i rad</p>
+              <p className="text-xs text-slate-700 mt-1">dagar i rad</p>
             </div>
           </div>
         </Card>
@@ -131,7 +131,7 @@ export default function RoutinesTab() {
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <span className="text-sm font-medium text-slate-600">Daglig framsteg</span>
-          <span className="text-sm text-slate-500">{completionPercentage}%</span>
+          <span className="text-sm text-slate-700">{completionPercentage}%</span>
         </div>
         <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
           <motion.div
@@ -201,7 +201,7 @@ export default function RoutinesTab() {
                       : 'bg-white border-slate-200 hover:border-indigo-300'
                   )}
                 >
-                  <GripVertical className="w-4 h-4 text-slate-400 flex-shrink-0" />
+                  <GripVertical className="w-4 h-4 text-slate-600 flex-shrink-0" />
 
                   <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -212,7 +212,7 @@ export default function RoutinesTab() {
                       routine.completed ? 'bg-green-500' : 'bg-slate-100 hover:bg-slate-200'
                     )}
                   >
-                    <CheckCircle2 className={cn('w-5 h-5', routine.completed ? 'text-white' : 'text-slate-400')} />
+                    <CheckCircle2 className={cn('w-5 h-5', routine.completed ? 'text-white' : 'text-slate-600')} />
                   </motion.button>
 
                   <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
@@ -223,7 +223,7 @@ export default function RoutinesTab() {
                     <h4 className={cn('font-medium', routine.completed ? 'text-green-700 line-through' : 'text-slate-800')}>
                       {routine.title}
                     </h4>
-                    <div className="flex items-center gap-2 text-sm text-slate-500 mt-1">
+                    <div className="flex items-center gap-2 text-sm text-slate-700 mt-1">
                       <Clock className="w-3 h-3" />
                       {routine.time}
                       {streak > 0 && (
@@ -255,7 +255,7 @@ export default function RoutinesTab() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => deleteRoutine(routine.id)}
-                    className="p-2 text-slate-400 hover:text-red-500 transition-colors flex-shrink-0"
+                    className="p-2 text-slate-600 hover:text-red-500 transition-colors flex-shrink-0"
                   >
                     <Trash2 className="w-4 h-4" />
                   </motion.button>
@@ -316,7 +316,7 @@ export default function RoutinesTab() {
                 <Icon className="w-5 h-5 text-amber-600 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-slate-800">{title}</p>
-                  <p className="text-xs text-slate-500">{suggestion.time} • {suggestion.desc}</p>
+                  <p className="text-xs text-slate-700">{suggestion.time} • {suggestion.desc}</p>
                 </div>
                 <Plus className="w-4 h-4 text-amber-600 flex-shrink-0" />
               </motion.button>

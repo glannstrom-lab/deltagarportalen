@@ -152,7 +152,7 @@ export function DataSharingSettings() {
         <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mb-2">
           {t('datasharing.title') || 'Datadelning'}
         </h2>
-        <p className="text-sm text-slate-600 dark:text-slate-400">
+        <p className="text-sm text-slate-600 dark:text-slate-600">
           {t('datasharing.description') || 'Styr vad din konsulent kan se'}
         </p>
       </div>
@@ -192,7 +192,7 @@ export function DataSharingSettings() {
                   {t('datasharing.health.title') || 'Dela hälsodata'}
                 </h3>
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">
                 {t('datasharing.health.description') || 'Tillåt din konsulent att se din ICF-data (kognitiv, motor, sensorisk, etc.)'}
               </p>
               {preferences.share_health_data_with_consultant && (
@@ -226,7 +226,7 @@ export function DataSharingSettings() {
                   {t('datasharing.wellness.title') || 'Dela väl mål data'}
                 </h3>
               </div>
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-3">
+              <p className="text-sm text-slate-600 dark:text-slate-600 mb-3">
                 {t('datasharing.wellness.description') || 'Tillåt din konsulent att se din dagbok, humör och väl mål information'}
               </p>
               {preferences.share_wellness_data_with_consultant && (
@@ -255,12 +255,12 @@ export function DataSharingSettings() {
       {/* Privacy Notice */}
       <div className="p-4 bg-slate-50 dark:bg-slate-900/20 border border-slate-200 dark:border-slate-700 rounded-xl space-y-2">
         <div className="flex gap-2 items-start">
-          <Lock className="w-5 h-5 text-slate-600 dark:text-slate-400 flex-shrink-0 mt-0.5" />
+          <Lock className="w-5 h-5 text-slate-600 dark:text-slate-600 flex-shrink-0 mt-0.5" />
           <div>
             <h4 className="font-medium text-slate-900 dark:text-slate-100 text-sm mb-1">
               {t('datasharing.privacy') || 'Dina data är säkra'}
             </h4>
-            <p className="text-xs text-slate-600 dark:text-slate-400">
+            <p className="text-xs text-slate-600 dark:text-slate-600">
               {t('datasharing.privacyDesc') || 'All datadelning är helt valfri och kan dras tillbaka när som helst. Din data krypteras och överförs säkert.'}
             </p>
           </div>
@@ -308,7 +308,7 @@ export function DataSharingSettings() {
       </div>
 
       {/* Privacy Policy Link */}
-      <p className="text-xs text-slate-600 dark:text-slate-400">
+      <p className="text-xs text-slate-600 dark:text-slate-600">
         {t('datasharing.privacyPolicy') || 'Läs vår'} {' '}
         <Link to="/privacy" className="text-indigo-600 dark:text-indigo-400 hover:underline">
           {t('datasharing.privacyPolicyLink') || 'integritetspolicy'}

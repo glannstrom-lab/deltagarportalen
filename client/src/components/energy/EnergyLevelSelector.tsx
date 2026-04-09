@@ -298,7 +298,7 @@ export function EnergyLevelSelector({
         <h2 className="text-2xl font-bold text-slate-800 mb-2">
           Hur är din energi idag?
         </h2>
-        <p className="text-slate-500">
+        <p className="text-slate-700">
           Vi anpassar din översikt efter hur du mår
         </p>
       </div>
@@ -343,14 +343,14 @@ export function EnergyLevelSelector({
               </div>
               <p className={cn(
                 "text-sm",
-                selectedLevel === option.level ? '' : 'text-slate-500'
+                selectedLevel === option.level ? '' : 'text-slate-700'
               )}>
                 {option.description}
               </p>
             </div>
             <div className={cn(
               "transition-colors",
-              selectedLevel === option.level ? '' : 'text-slate-400'
+              selectedLevel === option.level ? '' : 'text-slate-600'
             )}>
               {option.icon}
             </div>
@@ -382,7 +382,7 @@ export function EnergyLevelSelector({
         </Button>
       </div>
 
-      <p className="text-center text-xs text-slate-400 mt-4">
+      <p className="text-center text-xs text-slate-600 mt-4">
         Du kan alltid ändra detta senare i inställningarna
       </p>
     </div>

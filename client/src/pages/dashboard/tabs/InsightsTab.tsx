@@ -29,7 +29,7 @@ export default function InsightsTab() {
       >
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-500">Analyserar dina mönster...</p>
+          <p className="text-slate-700">Analyserar dina mönster...</p>
         </div>
       </div>
     )
@@ -44,7 +44,7 @@ export default function InsightsTab() {
         <h3 className="text-lg font-semibold text-slate-800 mb-2">
           Kunde inte ladda insikter
         </h3>
-        <p className="text-slate-500 mb-4">{error}</p>
+        <p className="text-slate-700 mb-4">{error}</p>
         <Button onClick={refresh} variant="outline">
           <RefreshCw className="w-4 h-4 mr-2" />
           Försök igen
@@ -62,7 +62,7 @@ export default function InsightsTab() {
             <Brain className="text-violet-500" size={28} />
             Mina insikter
           </h2>
-          <p className="text-slate-500">Analys baserad på din aktivitet</p>
+          <p className="text-slate-700">Analys baserad på din aktivitet</p>
         </div>
         <Button onClick={refresh} variant="secondary" size="sm">
           <RefreshCw className="w-4 h-4 mr-2" />
@@ -156,7 +156,7 @@ function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, 
   const trendColors = {
     up: 'text-emerald-600',
     down: 'text-red-500',
-    stable: 'text-slate-500'
+    stable: 'text-slate-700'
   }
 
   const TrendIcon = trend === 'up' ? TrendingUp : trend === 'down' ? TrendingDown : Minus
@@ -166,7 +166,7 @@ function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, 
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center mb-3", colorClasses[color])}>
         <Icon size={20} />
       </div>
-      <p className="text-sm text-slate-500">{label}</p>
+      <p className="text-sm text-slate-700">{label}</p>
       <div className="flex items-baseline gap-2 mt-1">
         <p className="text-2xl font-bold text-slate-800">{value}</p>
         {trend && changePercent !== undefined && (
@@ -176,7 +176,7 @@ function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, 
           </span>
         )}
       </div>
-      {subtext && <p className="text-xs text-slate-400 mt-1">{subtext}</p>}
+      {subtext && <p className="text-xs text-slate-600 mt-1">{subtext}</p>}
     </div>
   )
 }
@@ -218,7 +218,7 @@ function ActivityChart({ dailyActivity }: ActivityChartProps) {
               />
               <span className={cn(
                 "text-xs",
-                isToday ? "text-violet-600 font-medium" : "text-slate-400"
+                isToday ? "text-violet-600 font-medium" : "text-slate-600"
               )}>
                 {day.dayName}
               </span>
@@ -258,7 +258,7 @@ function ActivityBreakdown({ activities }: ActivityBreakdownProps) {
         Aktivitetsfördelning
       </h3>
       {activities.length === 0 ? (
-        <p className="text-slate-500 text-sm py-4 text-center">
+        <p className="text-slate-700 text-sm py-4 text-center">
           Ingen aktivitet registrerad ännu
         </p>
       ) : (
@@ -314,7 +314,7 @@ function WeeklyProgressChart({ progress }: WeeklyProgressChartProps) {
           <div key={week.week} className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-sm text-slate-600">Vecka {week.week}</span>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-slate-600">
                 {week.applications + week.exercises} aktiviteter
               </span>
             </div>
@@ -418,9 +418,9 @@ function RecommendationsSection({ recommendations, expandedId, onToggle }: Recom
                   </div>
                 </div>
                 {expandedId === rec.id ? (
-                  <ChevronUp size={20} className="text-slate-400" />
+                  <ChevronUp size={20} className="text-slate-600" />
                 ) : (
-                  <ChevronDown size={20} className="text-slate-400" />
+                  <ChevronDown size={20} className="text-slate-600" />
                 )}
               </div>
               {expandedId === rec.id && (

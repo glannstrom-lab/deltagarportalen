@@ -86,14 +86,14 @@ export default function TextToSpeech({ text }: TextToSpeechProps) {
       {isPlaying && (
         <button
           onClick={stop}
-          className="p-1.5 text-slate-500 hover:text-slate-700"
+          className="p-1.5 text-slate-700 hover:text-slate-700"
           title="Stoppa"
         >
           <VolumeX size={16} />
         </button>
       )}
       
-      <Volume2 size={16} className="text-slate-400 ml-1" />
+      <Volume2 size={16} className="text-slate-600 ml-1" />
     </div>
   )
 }

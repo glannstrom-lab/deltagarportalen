@@ -274,7 +274,7 @@ TIPS FÖR FÖRBÄTTRING:
         <div className="flex items-center justify-between mb-4">
           <div>
             <h1 className="text-xl font-bold text-slate-800">{t('interviewSimulator.interview')} {roll}</h1>
-            <p className="text-sm text-slate-500">{foretag || t('interviewSimulator.genericPractice')}</p>
+            <p className="text-sm text-slate-700">{foretag || t('interviewSimulator.genericPractice')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={avslutaIntervju}>
             Avsluta
@@ -423,7 +423,7 @@ TIPS FÖR FÖRBÄTTRING:
               rows={5}
               className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none resize-y"
             />
-            <div className="flex justify-between items-center text-xs text-slate-500">
+            <div className="flex justify-between items-center text-xs text-slate-700">
               <span>{anvandarSvar.length} tecken</span>
               <span>Rekommenderat: 100-300 tecken</span>
             </div>

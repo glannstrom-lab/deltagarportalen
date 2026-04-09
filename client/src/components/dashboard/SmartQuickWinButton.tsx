@@ -301,7 +301,7 @@ export function SmartQuickWinButton() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-lg font-bold text-slate-800">{getGreeting()}</h3>
-                    <p className="text-sm text-slate-500">
+                    <p className="text-sm text-slate-700">
                       Här är vad vi föreslår för dig just nu
                     </p>
                   </div>
@@ -309,7 +309,7 @@ export function SmartQuickWinButton() {
                     onClick={() => setIsOpen(false)}
                     className="w-8 h-8 rounded-full hover:bg-slate-100 flex items-center justify-center transition-colors"
                   >
-                    <X size={18} className="text-slate-400" />
+                    <X size={18} className="text-slate-600" />
                   </button>
                 </div>
 
@@ -395,7 +395,7 @@ export function SmartQuickWinButton() {
               <div className="p-5 border-t border-slate-100 text-center">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="text-sm text-slate-500 hover:text-slate-700 transition-colors"
+                  className="text-sm text-slate-700 hover:text-slate-700 transition-colors"
                 >
                   Kanske senare
                 </button>

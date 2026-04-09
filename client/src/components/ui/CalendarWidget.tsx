@@ -89,7 +89,7 @@ export function CalendarWidget({ activeDays = [] }: CalendarWidgetProps) {
       </div>
       <div className="grid grid-cols-7 gap-1 text-center">
         {days.map(day => (
-          <div key={day} className="text-xs text-slate-400 py-1">{day}</div>
+          <div key={day} className="text-xs text-slate-600 py-1">{day}</div>
         ))}
         {dates.flat().map((date, i) => (
           <div

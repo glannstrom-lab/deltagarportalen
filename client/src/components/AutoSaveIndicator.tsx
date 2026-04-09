@@ -41,7 +41,7 @@ export function AutoSaveIndicator({
               ? 'bg-green-50 text-green-700' 
               : status === 'saving'
               ? 'bg-amber-50 text-amber-700'
-              : 'bg-slate-50 text-slate-500'
+              : 'bg-slate-50 text-slate-700'
           }`}
           aria-live="polite"
         >
@@ -134,7 +134,7 @@ export function AutoSaveIndicator({
           {status === 'error' && 'Kunde inte spara'}
         </p>
         {lastSaved && status === 'saved' && (
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-700">
             Senast sparad: {formatLastSaved(lastSaved)}
           </p>
         )}

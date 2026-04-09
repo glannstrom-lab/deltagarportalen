@@ -107,6 +107,7 @@
     "profile": "My Profile",
     "help": "Help",
     "groups": {
+      "overview": "Overview",
       "jobSearch": "Job Search",
       "development": "My Development",
       "wellbeing": "Wellbeing",

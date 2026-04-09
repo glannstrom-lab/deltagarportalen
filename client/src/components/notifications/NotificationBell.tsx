@@ -129,10 +129,10 @@ function NotificationItem({
             <span className="flex-shrink-0 w-2 h-2 mt-1.5 bg-violet-500 rounded-full" aria-label="Oläst" />
           )}
         </div>
-        <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5 line-clamp-2">
+        <p className="text-xs text-stone-500 dark:text-stone-600 mt-0.5 line-clamp-2">
           {notification.message}
         </p>
-        <p className="text-[10px] text-stone-400 dark:text-stone-500 mt-1">
+        <p className="text-[10px] text-stone-600 dark:text-stone-500 mt-1">
           {timeAgo}
         </p>
       </div>
@@ -185,7 +185,7 @@ function CategoryTab({ category, label, count, active, onClick }: CategoryTabPro
         'px-3 py-1.5 text-xs font-medium rounded-lg transition-colors whitespace-nowrap',
         active
           ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300'
-          : 'text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700'
+          : 'text-stone-600 dark:text-stone-600 hover:bg-stone-100 dark:hover:bg-stone-700'
       )}
       aria-pressed={active}
     >
@@ -293,7 +293,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
           className={cn(
             isOpen
               ? 'text-violet-600 dark:text-violet-400'
-              : 'text-stone-500 dark:text-stone-400'
+              : 'text-stone-500 dark:text-stone-600'
           )}
           aria-hidden="true"
         />
@@ -351,7 +351,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
                   className="p-1 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors"
                   aria-label="Stäng"
                 >
-                  <X className="w-4 h-4 text-stone-400" />
+                  <X className="w-4 h-4 text-stone-600" />
                 </button>
               </div>
             </div>
@@ -404,7 +404,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
               ) : filteredNotifications.length === 0 ? (
                 <div className="text-center py-8 px-4">
                   <Bell className="w-10 h-10 mx-auto text-stone-300 dark:text-stone-600 mb-3" />
-                  <p className="text-stone-500 dark:text-stone-400 text-sm">
+                  <p className="text-stone-500 dark:text-stone-600 text-sm">
                     {activeFilter === 'all'
                       ? 'Inga notifikationer'
                       : `Inga ${notificationConfig[activeFilter as NotificationType]?.label?.toLowerCase() || 'notifikationer'}`}
@@ -429,7 +429,7 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
               <div className="px-4 py-2 border-t border-stone-100 dark:border-stone-700">
                 <Link
                   to="/settings"
-                  className="block text-center text-xs text-stone-500 dark:text-stone-400 hover:text-violet-600 dark:hover:text-violet-400"
+                  className="block text-center text-xs text-stone-500 dark:text-stone-600 hover:text-violet-600 dark:hover:text-violet-400"
                   onClick={handleClose}
                 >
                   Hantera notifikationsinställningar

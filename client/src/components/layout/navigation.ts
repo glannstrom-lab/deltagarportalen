@@ -55,17 +55,23 @@ export const NEWEST_FEATURE = '/spontanansökan' // Change this when launching n
 // Grouped navigation for reduced cognitive load
 export const navGroups: NavGroup[] = [
   {
+    id: 'overview',
+    labelKey: 'nav.groups.overview',
+    items: [
+      { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
+      { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
+      { path: '/journey', labelKey: 'nav.journey', icon: Map, isNew: true },
+    ],
+  },
+  {
     id: 'job-search',
     labelKey: 'nav.groups.jobSearch',
     items: [
-      { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
-      { path: '/journey', labelKey: 'nav.journey', icon: Map, isNew: true },
       { path: '/cv', labelKey: 'nav.cv', icon: FileUser },
       { path: '/cover-letter', labelKey: 'nav.coverLetter', icon: Mail },
       { path: '/job-search', labelKey: 'nav.jobSearch', icon: Search },
       { path: '/applications', labelKey: 'nav.applications', icon: ClipboardList },
       { path: '/spontanansökan', labelKey: 'nav.spontaneous', icon: Building2, isNew: true },
-      { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
     ],
   },
   {
@@ -74,20 +80,20 @@ export const navGroups: NavGroup[] = [
     items: [
       { path: '/career', labelKey: 'nav.career', icon: Target },
       { path: '/education', labelKey: 'nav.education', icon: GraduationCap, isNew: true },
+      { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
       { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star },
       { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },
       { path: '/skills-gap-analysis', labelKey: 'nav.skillsGap', icon: TrendingUp },
       { path: '/interview-simulator', labelKey: 'nav.interviewSimulator', icon: Mic },
       { path: '/salary', labelKey: 'nav.salary', icon: Wallet },
-      { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
     ],
   },
   {
     id: 'wellbeing',
     labelKey: 'nav.groups.wellbeing',
     items: [
-      { path: '/diary', labelKey: 'nav.diary', icon: NotebookPen }, // Unique icon
-      { path: '/wellness', labelKey: 'nav.wellness', icon: Smile }, // Unique icon
+      { path: '/diary', labelKey: 'nav.diary', icon: NotebookPen },
+      { path: '/wellness', labelKey: 'nav.wellness', icon: Smile },
       { path: '/exercises', labelKey: 'nav.exercises', icon: Dumbbell },
     ],
   },

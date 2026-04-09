@@ -79,7 +79,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
 
   return (
     <div className="text-center py-8">
-      <p className="text-sm text-slate-500 mb-6">Omgång {cycleCount + 1}</p>
+      <p className="text-sm text-slate-700 mb-6">Omgång {cycleCount + 1}</p>
       <motion.div
         animate={{
           scale: phase === 'breathe-in' ? [1, 1.4] : phase === 'breathe-out' ? [1.4, 1] : [1, 1],
@@ -302,7 +302,7 @@ export default function CrisisTab() {
                     <h4 className="font-semibold text-slate-800">{technique.title}</h4>
                     <p className="text-sm text-slate-600">{technique.description}</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
+                  <ChevronRight className="w-5 h-5 text-slate-600 flex-shrink-0" />
                 </motion.button>
               )
             })}
@@ -334,9 +334,9 @@ export default function CrisisTab() {
                 <h4 className="font-semibold text-slate-800">{contact.name}</h4>
                 <p className="text-lg font-bold text-indigo-600">{contact.number}</p>
                 <p className="text-sm text-slate-600">{contact.description}</p>
-                <p className="text-xs text-slate-500 mt-1">{contact.available}</p>
+                <p className="text-xs text-slate-700 mt-1">{contact.available}</p>
               </div>
-              <ExternalLink className="w-4 h-4 text-slate-400 flex-shrink-0" />
+              <ExternalLink className="w-4 h-4 text-slate-600 flex-shrink-0" />
             </motion.a>
           ))}
         </div>

@@ -29,10 +29,10 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
             </div>
             <div>
               <p className="font-medium text-slate-800">CV-poäng</p>
-              <p className="text-sm text-slate-500">{total}/{max} poäng</p>
+              <p className="text-sm text-slate-700">{total}/{max} poäng</p>
             </div>
           </div>
-          <ChevronDown className="w-5 h-5 text-slate-400" />
+          <ChevronDown className="w-5 h-5 text-slate-600" />
         </div>
       </div>
     )
@@ -52,10 +52,10 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
             </div>
             <div>
               <h3 className="font-semibold text-slate-800">CV-poäng</h3>
-              <p className="text-sm text-slate-500">{total}/{max} poäng</p>
+              <p className="text-sm text-slate-700">{total}/{max} poäng</p>
             </div>
           </div>
-          {isCollapsed && <ChevronUp className="w-5 h-5 text-slate-400" />}
+          {isCollapsed && <ChevronUp className="w-5 h-5 text-slate-600" />}
         </div>
         
         {/* Progress bar */}
@@ -80,7 +80,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
             <div className="flex items-center justify-between mb-1">
               <span className="text-sm font-medium text-slate-700">{section.name}</span>
               <span className={`text-sm font-semibold ${
-                section.score === section.max ? 'text-green-600' : 'text-slate-500'
+                section.score === section.max ? 'text-green-600' : 'text-slate-700'
               }`}>
                 {section.score}/{section.max}
               </span>
@@ -100,7 +100,7 @@ export function CVScoreWidget({ data, isCollapsed = false }: CVScoreWidgetProps)
             {section.tips.length > 0 && (
               <div className="space-y-1">
                 {section.tips.map((tip, i) => (
-                  <p key={i} className="text-xs text-slate-500 flex items-start gap-1.5">
+                  <p key={i} className="text-xs text-slate-700 flex items-start gap-1.5">
                     {section.score === section.max ? (
                       <CheckCircle className="w-3 h-3 mt-0.5 text-green-500 flex-shrink-0" />
                     ) : (

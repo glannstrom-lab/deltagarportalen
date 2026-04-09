@@ -58,7 +58,7 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-slate-900">Nästa steg</h3>
-        <span className="text-sm text-slate-500 bg-slate-100 px-3 py-1 rounded-full">
+        <span className="text-sm text-slate-700 bg-slate-100 px-3 py-1 rounded-full">
           {energyLabels[energyLevel]}
         </span>
       </div>
@@ -157,7 +157,7 @@ export function JourneyNextSteps({ steps, energyLevel = 'medium' }: JourneyNextS
 
       {/* Encouraging Footer */}
       <div className="mt-6 pt-4 border-t border-slate-100">
-        <div className="flex items-center gap-2 text-sm text-slate-500">
+        <div className="flex items-center gap-2 text-sm text-slate-700">
           <Clock className="w-4 h-4" />
           <span>Varje steg tar dig närmare målet. Du klarar detta!</span>
         </div>

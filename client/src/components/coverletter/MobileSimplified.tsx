@@ -146,14 +146,14 @@ export function MobileSimplified({
             <h3 className="font-semibold text-slate-800">Välj ett sparat jobb</h3>
             <button
               onClick={() => setShowSavedJobs(false)}
-              className="text-sm text-slate-500 hover:text-slate-700 px-3 py-1"
+              className="text-sm text-slate-700 hover:text-slate-700 px-3 py-1"
             >
               Stäng
             </button>
           </div>
           <div className="space-y-3 max-h-[70vh] overflow-y-auto">
             {savedJobs.length === 0 ? (
-              <p className="text-slate-500 text-center py-4 text-sm">Inga sparade jobb ännu</p>
+              <p className="text-slate-700 text-center py-4 text-sm">Inga sparade jobb ännu</p>
             ) : (
               savedJobs.map((job) => (
                 <div
@@ -166,7 +166,7 @@ export function MobileSimplified({
                     {job.employer?.name}
                   </p>
                   {job.workplace_address && (
-                    <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                    <p className="text-xs text-slate-700 flex items-center gap-1 mt-1">
                       <MapPin className="w-3 h-3" />
                       {job.workplace_address.municipality}
                     </p>
@@ -197,7 +197,7 @@ export function MobileSimplified({
                 w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium
                 transition-colors duration-300
                 ${step === s.id ? 'bg-teal-500 text-white' : 
-                  index < currentStepIndex ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-400'}
+                  index < currentStepIndex ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 text-slate-600'}
               `}
             >
               {index < currentStepIndex ? '✓' : index + 1}
@@ -238,7 +238,7 @@ export function MobileSimplified({
       {/* Current Step Title */}
       <div className="text-center pt-2">
         <h3 className="font-semibold text-slate-800">{steps[currentStepIndex].title}</h3>
-        <p className="text-sm text-slate-500">{steps[currentStepIndex].description}</p>
+        <p className="text-sm text-slate-700">{steps[currentStepIndex].description}</p>
       </div>
 
       {/* Step Content */}
@@ -255,7 +255,7 @@ export function MobileSimplified({
                 <Briefcase className="w-4 h-4" />
                 Välj bland {savedJobsCount} sparade jobb
               </button>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700">
                 Eller fyll i manuellt nedan:
               </p>
             </div>
@@ -271,7 +271,7 @@ export function MobileSimplified({
                 autoFocus
               />
             </div>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               Tips: Kolla företagets webbplats för rätt namn
             </p>
           </div>
@@ -291,7 +291,7 @@ export function MobileSimplified({
               />
             </div>
             <div className="space-y-2">
-              <p className="text-sm text-slate-500">Vanliga titlar:</p>
+              <p className="text-sm text-slate-700">Vanliga titlar:</p>
               <div className="flex flex-wrap gap-2">
                 {['Kundservicemedarbetare', 'Säljare', 'Lagerarbetare', 'Administratör', 'Projektledare'].map(title => (
                   <button
@@ -335,7 +335,7 @@ export function MobileSimplified({
                 rows={5}
                 className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none resize-none"
               />
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-700">
                 Ju mer information du ger, desto bättre blir brevet
               </p>
             </div>
@@ -343,7 +343,7 @@ export function MobileSimplified({
             {/* Extra Keywords */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-slate-700">
-                Extra nyckelord/intressen <span className="text-slate-400 font-normal">(valfritt)</span>
+                Extra nyckelord/intressen <span className="text-slate-600 font-normal">(valfritt)</span>
               </label>
               <textarea
                 value={extraKeywords}
@@ -406,7 +406,7 @@ export function MobileSimplified({
                       }`}
                     >
                       <p className="font-medium text-sm text-slate-800">{template.label}</p>
-                      <p className="text-xs text-slate-500 mt-1">{template.description}</p>
+                      <p className="text-xs text-slate-700 mt-1">{template.description}</p>
                     </button>
                   ))}
                 </div>
@@ -474,11 +474,11 @@ export function MobileSimplified({
             ) : (
               <div className="text-center py-8 space-y-4">
                 <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto">
-                  <Sparkles className="w-8 h-8 text-slate-400" />
+                  <Sparkles className="w-8 h-8 text-slate-600" />
                 </div>
                 <div>
                   <p className="text-slate-600">Inget brev skapat ännu</p>
-                  <p className="text-sm text-slate-500">Gå tillbaka till steg 3 och klicka på "Skapa med AI"</p>
+                  <p className="text-sm text-slate-700">Gå tillbaka till steg 3 och klicka på "Skapa med AI"</p>
                 </div>
               </div>
             )}
@@ -536,7 +536,7 @@ export function MobileSimplified({
 
       {/* Helper text */}
       {step === 'details' && (
-        <p className="text-xs text-center text-slate-500">
+        <p className="text-xs text-center text-slate-700">
           AI:n använder din jobbannons och CV för att skapa ett skräddarsytt brev
         </p>
       )}

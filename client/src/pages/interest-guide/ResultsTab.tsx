@@ -255,7 +255,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                 </div>
                 <div>
                   <h3 className="font-bold text-slate-900">Jämförelse med tidigare test</h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-700">
                     Från {new Date(previousResult.completed_at).toLocaleDateString('sv-SE')}
                   </p>
                 </div>
@@ -273,7 +273,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
 
                 return (
                   <div key={key} className="bg-white rounded-lg p-3 text-center">
-                    <p className="text-xs text-slate-500 mb-1">{RIASEC_NAMES[key]}</p>
+                    <p className="text-xs text-slate-700 mb-1">{RIASEC_NAMES[key]}</p>
                     <p className="text-lg font-bold text-slate-900">{value}</p>
                     <div className={`flex items-center justify-center gap-1 text-xs ${change.color}`}>
                       <ChangeIcon className="w-3 h-3" />
@@ -300,15 +300,15 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
               className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-slate-400" />
+                <Calendar className="w-5 h-5 text-slate-600" />
                 <span className="font-medium text-slate-700">
                   Tidigare resultat ({history.length} {history.length === 1 ? 'test' : 'tester'})
                 </span>
               </div>
               {showHistory ? (
-                <ChevronUp className="w-5 h-5 text-slate-400" />
+                <ChevronUp className="w-5 h-5 text-slate-600" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-slate-400" />
+                <ChevronDown className="w-5 h-5 text-slate-600" />
               )}
             </button>
 
@@ -343,7 +343,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                                 </span>
                               )}
                             </p>
-                            <p className="text-sm text-slate-500">
+                            <p className="text-sm text-slate-700">
                               RIASEC: {Object.entries(entry.riasec_profile)
                                 .sort(([, a], [, b]) => (b as number) - (a as number))
                                 .slice(0, 3)
@@ -371,14 +371,14 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
                             {Object.entries(entry.riasec_profile).map(([key, value]) => (
                               <div key={key} className="text-center p-2 bg-white rounded-lg">
-                                <p className="text-xs text-slate-500">{key}</p>
+                                <p className="text-xs text-slate-700">{key}</p>
                                 <p className="font-bold text-slate-900">{value as number}</p>
                               </div>
                             ))}
                           </div>
                           {entry.top_occupations && entry.top_occupations.length > 0 && (
                             <div className="space-y-1">
-                              <p className="text-xs font-medium text-slate-500 mb-2">Topp 5 yrkesmatchningar:</p>
+                              <p className="text-xs font-medium text-slate-700 mb-2">Topp 5 yrkesmatchningar:</p>
                               {entry.top_occupations.slice(0, 5).map((occ, i) => (
                                 <div key={i} className="flex justify-between text-sm">
                                   <span className="text-slate-700">{i + 1}. {occ.name}</span>
@@ -424,11 +424,11 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                 </div>
                 <div className="flex-1">
                   <p className="font-semibold text-slate-900">{match.occupation.name}</p>
-                  <p className="text-sm text-slate-500">{match.occupation.description.substring(0, 60)}...</p>
+                  <p className="text-sm text-slate-700">{match.occupation.description.substring(0, 60)}...</p>
                 </div>
                 <div className="flex-shrink-0 text-right">
                   <p className="text-lg font-bold text-indigo-600">{match.matchPercentage}%</p>
-                  <p className="text-xs text-slate-500">match</p>
+                  <p className="text-xs text-slate-700">match</p>
                 </div>
               </div>
             ))}
@@ -455,7 +455,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           <Card className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 relative">
             <button
               onClick={() => setShowComparisonHint(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+              className="absolute top-4 right-4 text-slate-600 hover:text-slate-600"
             >
               ✕
             </button>

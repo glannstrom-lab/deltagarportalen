@@ -20,7 +20,7 @@ export function SaveIndicator() {
   // Don't show anything if idle and no unsaved changes
   if (saveStatus === 'idle' && !hasUnsavedChanges && pendingCount === 0) {
     return (
-      <div className="flex items-center gap-2 text-sm text-slate-500">
+      <div className="flex items-center gap-2 text-sm text-slate-700">
         <Check className="w-4 h-4" />
         <span className="hidden sm:inline">Allt sparat</span>
       </div>

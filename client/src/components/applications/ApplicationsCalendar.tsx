@@ -55,11 +55,11 @@ function ReminderCard({
           <div className="flex items-start justify-between gap-2">
             <div>
               <h4 className="font-medium text-slate-900">{reminder.title}</h4>
-              <p className="text-sm text-slate-500">{config.label}</p>
+              <p className="text-sm text-slate-700">{config.label}</p>
             </div>
             <button
               onClick={() => onComplete(reminder.id)}
-              className="p-2 hover:bg-green-50 rounded-lg transition-colors text-slate-400 hover:text-green-600"
+              className="p-2 hover:bg-green-50 rounded-lg transition-colors text-slate-600 hover:text-green-600"
               title="Markera som klar"
             >
               <CheckCircle className="w-5 h-5" />
@@ -70,7 +70,7 @@ function ReminderCard({
             <p className="text-sm text-slate-600 mt-1">{reminder.description}</p>
           )}
 
-          <div className="flex items-center gap-2 mt-2 text-xs text-slate-500">
+          <div className="flex items-center gap-2 mt-2 text-xs text-slate-700">
             <Calendar className="w-3 h-3" />
             {showDate && (
               <span>
@@ -128,7 +128,7 @@ export function ApplicationsCalendar() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-lg font-semibold text-slate-900">Idag</h2>
-            <p className="text-sm text-slate-500">
+            <p className="text-sm text-slate-700">
               {todayReminders.length === 0
                 ? 'Inga påminnelser idag'
                 : `${todayReminders.length} påminnelse${todayReminders.length > 1 ? 'r' : ''}`}
@@ -161,7 +161,7 @@ export function ApplicationsCalendar() {
         {futureReminders.length === 0 ? (
           <Card className="p-8 text-center">
             <Calendar className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-            <p className="text-slate-500">Inga kommande påminnelser</p>
+            <p className="text-slate-700">Inga kommande påminnelser</p>
           </Card>
         ) : (
           <div className="space-y-3">

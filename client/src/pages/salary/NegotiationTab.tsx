@@ -304,13 +304,13 @@ export default function NegotiationTab() {
                   </div>
                   <div>
                     <p className="font-medium text-slate-900">{step.title}</p>
-                    <p className="text-sm text-slate-500">{step.description}</p>
+                    <p className="text-sm text-slate-700">{step.description}</p>
                   </div>
                 </div>
                 {expandedStep === step.id ? (
-                  <ChevronUp className="w-5 h-5 text-slate-400" />
+                  <ChevronUp className="w-5 h-5 text-slate-600" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-400" />
+                  <ChevronDown className="w-5 h-5 text-slate-600" />
                 )}
               </button>
 
@@ -439,7 +439,7 @@ export default function NegotiationTab() {
               <span className={cn(
                 'text-sm transition-all',
                 item.completed
-                  ? 'text-slate-500 line-through'
+                  ? 'text-slate-700 line-through'
                   : 'text-slate-700'
               )}>
                 {item.text}

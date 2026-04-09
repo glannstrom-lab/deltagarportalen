@@ -50,7 +50,7 @@ const StatCard = memo(function StatCard({ label, value, icon, color }: StatCardP
       </div>
       <div>
         <p className="text-lg font-semibold text-slate-800 leading-tight">{value}</p>
-        <p className="text-xs text-slate-500">{label}</p>
+        <p className="text-xs text-slate-700">{label}</p>
       </div>
     </div>
   )
@@ -123,7 +123,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
             </span>
           )}
         </div>
-        <p className="text-sm text-slate-500">{subtitle}</p>
+        <p className="text-sm text-slate-700">{subtitle}</p>
       </div>
 
       {progress !== undefined && (
@@ -135,7 +135,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
         </div>
       )}
 
-      <ChevronRight size={20} className="text-slate-300 group-hover:text-slate-500 transition-colors" />
+      <ChevronRight size={20} className="text-slate-300 group-hover:text-slate-700 transition-colors" />
     </Link>
   )
 })
@@ -303,7 +303,7 @@ export function CompactDashboard() {
           <h1 className="text-xl font-semibold text-slate-800">
             Hej{user?.firstName ? `, ${user.firstName}` : ''}! 👋
           </h1>
-          <p className="text-sm text-slate-500">Här är din översikt för idag.</p>
+          <p className="text-sm text-slate-700">Här är din översikt för idag.</p>
         </div>
       </div>
 
@@ -357,8 +357,8 @@ export function CompactDashboard() {
       {/* Empty state */}
       {visibleWidgetItems.length === 0 && (
         <div className="text-center py-10 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-          <p className="text-slate-500 mb-1">Inga moduler synliga</p>
-          <p className="text-sm text-slate-400">
+          <p className="text-slate-700 mb-1">Inga moduler synliga</p>
+          <p className="text-sm text-slate-600">
             Klicka på "Moduler" ovan för att välja vad du vill se
           </p>
         </div>

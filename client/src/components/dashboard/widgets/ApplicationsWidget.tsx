@@ -62,7 +62,7 @@ function ApplicationsWidgetSmall({ total, nextFollowUp, loading, error, onRetry 
           <Trophy size={14} className="text-orange-500" />
           <span className="text-lg font-bold text-slate-800">{total}</span>
         </div>
-        <span className="text-xs text-slate-500">
+        <span className="text-xs text-slate-700">
           {t('applicationsWidget.applicationsCount', { count: total })}
         </span>
       </div>
@@ -128,13 +128,13 @@ function ApplicationsWidgetMedium({ total, statusBreakdown = { applied: 0, inter
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-800">{total}</p>
-              <p className="text-xs text-slate-500">{t('applicationsWidget.total')}</p>
+              <p className="text-xs text-slate-700">{t('applicationsWidget.total')}</p>
             </div>
           </div>
           {responseRate > 0 && (
             <div className="text-right">
               <p className="text-lg font-semibold text-emerald-600">{responseRate}%</p>
-              <p className="text-xs text-slate-500">{t('applicationsWidget.responseRate')}</p>
+              <p className="text-xs text-slate-700">{t('applicationsWidget.responseRate')}</p>
             </div>
           )}
         </div>
@@ -252,7 +252,7 @@ function ApplicationsWidgetLarge({ total, statusBreakdown = { applied: 0, interv
             <p className="text-xs text-emerald-600">{t('applicationsWidget.pipeline.offers')}</p>
           </div>
           <div className="p-3 bg-slate-100 rounded-xl text-center">
-            <XCircle size={20} className="text-slate-500 mx-auto mb-1" />
+            <XCircle size={20} className="text-slate-700 mx-auto mb-1" />
             <p className="text-xl font-bold text-slate-700">{rejected}</p>
             <p className="text-xs text-slate-600">{t('applicationsWidget.pipeline.rejected')}</p>
           </div>

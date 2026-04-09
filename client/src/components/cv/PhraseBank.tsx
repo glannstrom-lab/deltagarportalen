@@ -68,7 +68,7 @@ export function PhraseBank({ onSelectPhrase }: PhraseBankProps) {
         </div>
         <div>
           <h3 className="font-semibold text-slate-800">Färdiga formuleringar</h3>
-          <p className="text-sm text-slate-500">Klicka för att kopiera</p>
+          <p className="text-sm text-slate-700">Klicka för att kopiera</p>
         </div>
       </div>
 
@@ -101,7 +101,7 @@ export function PhraseBank({ onSelectPhrase }: PhraseBankProps) {
             {copiedIndex === index ? (
               <Check size={16} className="text-green-500 flex-shrink-0" />
             ) : (
-              <Copy size={16} className="text-slate-400 group-hover:text-[#4f46e5] flex-shrink-0" />
+              <Copy size={16} className="text-slate-600 group-hover:text-[#4f46e5] flex-shrink-0" />
             )}
           </button>
         ))}

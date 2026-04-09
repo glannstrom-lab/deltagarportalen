@@ -264,25 +264,25 @@ export default function SalaryCalculatorTab() {
               {/* Salary range grid */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                 <div className="bg-white rounded-xl p-4 border border-emerald-100">
-                  <p className="text-sm text-slate-500 mb-1">Minimum</p>
+                  <p className="text-sm text-slate-700 mb-1">Minimum</p>
                   <p className="text-2xl font-bold text-slate-700">
                     {calculatedSalary.min.toLocaleString('sv-SE')} kr
                   </p>
-                  <p className="text-xs text-slate-400">per månad</p>
+                  <p className="text-xs text-slate-600">per månad</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 border-2 border-emerald-300 shadow-sm">
                   <p className="text-sm text-emerald-600 font-medium mb-1">Median (rekommenderat)</p>
                   <p className="text-3xl font-bold text-emerald-700">
                     {calculatedSalary.median.toLocaleString('sv-SE')} kr
                   </p>
-                  <p className="text-xs text-slate-400">per månad</p>
+                  <p className="text-xs text-slate-600">per månad</p>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-emerald-100">
-                  <p className="text-sm text-slate-500 mb-1">Maximum</p>
+                  <p className="text-sm text-slate-700 mb-1">Maximum</p>
                   <p className="text-2xl font-bold text-slate-700">
                     {calculatedSalary.max.toLocaleString('sv-SE')} kr
                   </p>
-                  <p className="text-xs text-slate-400">per månad</p>
+                  <p className="text-xs text-slate-600">per månad</p>
                 </div>
               </div>
 
@@ -293,12 +293,12 @@ export default function SalaryCalculatorTab() {
                   className="w-full flex items-center justify-between hover:bg-slate-50/50 transition-colors"
                 >
                   <div className="text-left">
-                    <p className="text-sm text-slate-500">Nettolön/månad</p>
+                    <p className="text-sm text-slate-700">Nettolön/månad</p>
                     <p className="text-xl font-bold text-slate-800">
                       {calculateNetSalary(calculatedSalary.median).toLocaleString('sv-SE')} kr
                     </p>
                   </div>
-                  <div className="text-right text-xs text-slate-500">
+                  <div className="text-right text-xs text-slate-700">
                     (efter skatt ~22%)
                   </div>
                 </button>
@@ -307,13 +307,13 @@ export default function SalaryCalculatorTab() {
               {/* Annual salary & growth */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div className="bg-white rounded-xl p-4 border border-emerald-100">
-                  <p className="text-sm text-slate-500 mb-1">Årslön (brutto)</p>
+                  <p className="text-sm text-slate-700 mb-1">Årslön (brutto)</p>
                   <p className="text-xl font-bold text-slate-800">
                     {(calculatedSalary.median * 12).toLocaleString('sv-SE')} kr
                   </p>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-emerald-100">
-                  <p className="text-sm text-slate-500 mb-1">Löneökning/år (snitt)</p>
+                  <p className="text-sm text-slate-700 mb-1">Löneökning/år (snitt)</p>
                   <p className="text-xl font-bold text-emerald-600">+{calculatedSalary.growth}%</p>
                 </div>
               </div>
@@ -426,7 +426,7 @@ export default function SalaryCalculatorTab() {
                   </div>
                   <button
                     onClick={() => handleRemoveComparison(comp.id)}
-                    className="text-slate-400 hover:text-slate-600 transition-colors"
+                    className="text-slate-600 hover:text-slate-600 transition-colors"
                   >
                     <X className="w-5 h-5" />
                   </button>
@@ -456,7 +456,7 @@ export default function SalaryCalculatorTab() {
                       </div>
                       <span className={cn(
                         'text-xs font-medium ml-2 whitespace-nowrap',
-                        comp.gross > calculatedSalary.median ? 'text-emerald-600' : 'text-slate-500'
+                        comp.gross > calculatedSalary.median ? 'text-emerald-600' : 'text-slate-700'
                       )}>
                         {comp.gross > calculatedSalary.median ? '+' : ''}{((comp.gross - calculatedSalary.median) / calculatedSalary.median * 100).toFixed(1)}%
                       </span>
@@ -487,7 +487,7 @@ export default function SalaryCalculatorTab() {
             </div>
             <div>
               <p className="font-medium text-slate-800">Bygg kompetens</p>
-              <p className="text-sm text-slate-500">Certifieringar och specialkunskaper höjer lönen</p>
+              <p className="text-sm text-slate-700">Certifieringar och specialkunskaper höjer lönen</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
@@ -496,7 +496,7 @@ export default function SalaryCalculatorTab() {
             </div>
             <div>
               <p className="font-medium text-slate-800">Dokumentera resultat</p>
-              <p className="text-sm text-slate-500">Konkreta exempel stärker din förhandlingsposition</p>
+              <p className="text-sm text-slate-700">Konkreta exempel stärker din förhandlingsposition</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
@@ -505,7 +505,7 @@ export default function SalaryCalculatorTab() {
             </div>
             <div>
               <p className="font-medium text-slate-800">Tajming är allt</p>
-              <p className="text-sm text-slate-500">Förhandla efter framgångar eller vid nya ansvar</p>
+              <p className="text-sm text-slate-700">Förhandla efter framgångar eller vid nya ansvar</p>
             </div>
           </div>
           <div className="flex items-start gap-3 p-3 bg-slate-50 rounded-lg">
@@ -514,7 +514,7 @@ export default function SalaryCalculatorTab() {
             </div>
             <div>
               <p className="font-medium text-slate-800">Känn din marknad</p>
-              <p className="text-sm text-slate-500">Ha koll på vad konkurrenter erbjuder</p>
+              <p className="text-sm text-slate-700">Ha koll på vad konkurrenter erbjuder</p>
             </div>
           </div>
         </div>

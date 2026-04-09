@@ -208,19 +208,19 @@ export function CRMTab() {
         <div className="grid grid-cols-4 gap-4">
           <Card className="text-center py-3">
             <div className="text-2xl font-bold text-slate-800">{stats.total}</div>
-            <p className="text-xs text-slate-500">Totalt</p>
+            <p className="text-xs text-slate-700">Totalt</p>
           </Card>
           <Card className="text-center py-3">
             <div className="text-2xl font-bold text-blue-600">{stats.active}</div>
-            <p className="text-xs text-slate-500">Aktiva</p>
+            <p className="text-xs text-slate-700">Aktiva</p>
           </Card>
           <Card className="text-center py-3">
             <div className="text-2xl font-bold text-violet-600">{stats.interviews}</div>
-            <p className="text-xs text-slate-500">Intervjuer</p>
+            <p className="text-xs text-slate-700">Intervjuer</p>
           </Card>
           <Card className="text-center py-3">
             <div className="text-2xl font-bold text-emerald-600">{stats.offers}</div>
-            <p className="text-xs text-slate-500">Erbjudanden</p>
+            <p className="text-xs text-slate-700">Erbjudanden</p>
           </Card>
         </div>
       )}
@@ -367,7 +367,7 @@ export function CRMTab() {
                     <div className="flex items-start justify-between">
                       <div>
                         <h4 className="font-medium text-slate-900">{app.position}</h4>
-                        <p className="text-sm text-slate-500 flex items-center gap-1">
+                        <p className="text-sm text-slate-700 flex items-center gap-1">
                           <Building2 className="w-3 h-3" />
                           {app.company}
                         </p>
@@ -377,7 +377,7 @@ export function CRMTab() {
                           onClick={() => startEdit(app)}
                           className="p-1.5 hover:bg-slate-100 rounded"
                         >
-                          <Edit2 className="w-4 h-4 text-slate-400" />
+                          <Edit2 className="w-4 h-4 text-slate-600" />
                         </button>
                         <button
                           onClick={() => deleteApplication(app.id)}
@@ -388,7 +388,7 @@ export function CRMTab() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3 mt-2 text-xs text-slate-400">
+                    <div className="flex items-center gap-3 mt-2 text-xs text-slate-600">
                       <span className="flex items-center gap-1">
                         <Calendar className="w-3 h-3" />
                         Ansökt: {app.appliedDate}
@@ -414,7 +414,7 @@ export function CRMTab() {
                     </div>
 
                     {app.notes && (
-                      <p className="text-sm text-slate-500 mt-2 line-clamp-1">{app.notes}</p>
+                      <p className="text-sm text-slate-700 mt-2 line-clamp-1">{app.notes}</p>
                     )}
 
                     {/* Status buttons */}
@@ -444,7 +444,7 @@ export function CRMTab() {
         <Card className="text-center py-12">
           <ClipboardList className="w-12 h-12 text-slate-300 mx-auto mb-4" />
           <h3 className="font-semibold text-slate-700 mb-2">Inga ansökningar än</h3>
-          <p className="text-sm text-slate-500 mb-4">
+          <p className="text-sm text-slate-700 mb-4">
             Börja spåra dina jobbansökningar för att hålla koll på status och uppföljningar.
           </p>
           <Button onClick={() => setIsAdding(true)}>

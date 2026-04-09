@@ -345,7 +345,7 @@ export function CoverLetterWrite() {
                     'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
                     isActive && 'bg-indigo-600 text-white',
                     isCompleted && 'bg-emerald-500 text-white',
-                    !isActive && !isCompleted && 'bg-slate-100 text-slate-400'
+                    !isActive && !isCompleted && 'bg-slate-100 text-slate-600'
                   )}>
                     {isCompleted ? (
                       <Check size={20} />
@@ -357,7 +357,7 @@ export function CoverLetterWrite() {
                     'text-xs mt-2 font-medium',
                     isActive && 'text-indigo-600',
                     isCompleted && 'text-emerald-600',
-                    !isActive && !isCompleted && 'text-slate-400'
+                    !isActive && !isCompleted && 'text-slate-600'
                   )}>
                     {step.title}
                   </span>
@@ -584,15 +584,15 @@ function Step1SelectJob({
                       'w-10 h-10 rounded-lg flex items-center justify-center',
                       formData.selectedJobId === job.job_id
                         ? 'bg-indigo-100 text-indigo-600'
-                        : 'bg-slate-100 text-slate-500'
+                        : 'bg-slate-100 text-slate-700'
                     )}>
                       <Briefcase size={20} />
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-slate-800">{title}</h4>
-                      <p className="text-sm text-slate-500">{company}</p>
+                      <p className="text-sm text-slate-700">{company}</p>
                       {location && (
-                        <p className="text-xs text-slate-400 flex items-center gap-1 mt-1">
+                        <p className="text-xs text-slate-600 flex items-center gap-1 mt-1">
                           <MapPin size={12} />
                           {location}
                         </p>
@@ -614,8 +614,8 @@ function Step1SelectJob({
 
       {loadingJobs && (
         <div className="text-center py-8">
-          <Loader2 className="w-8 h-8 animate-spin mx-auto text-slate-400" />
-          <p className="text-sm text-slate-500 mt-2">Laddar sparade jobb...</p>
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-slate-600" />
+          <p className="text-sm text-slate-700 mt-2">Laddar sparade jobb...</p>
         </div>
       )}
 
@@ -623,7 +623,7 @@ function Step1SelectJob({
         <div className="text-center py-6 bg-slate-50 rounded-xl">
           <Heart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
           <p className="text-slate-600">Du har inga sparade jobb än.</p>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-sm text-slate-700 mt-1">
             Spara jobb från jobbsökningen för att enkelt skriva brev till dem.
           </p>
         </div>
@@ -635,7 +635,7 @@ function Step1SelectJob({
           <div className="w-full border-t border-slate-200"></div>
         </div>
         <div className="relative flex justify-center">
-          <span className="px-4 bg-white text-sm text-slate-500">eller</span>
+          <span className="px-4 bg-white text-sm text-slate-700">eller</span>
         </div>
       </div>
 
@@ -654,13 +654,13 @@ function Step1SelectJob({
             'w-10 h-10 rounded-lg flex items-center justify-center',
             formData.useManualInput
               ? 'bg-indigo-100 text-indigo-600'
-              : 'bg-slate-100 text-slate-500'
+              : 'bg-slate-100 text-slate-700'
           )}>
             <Edit3 size={20} />
           </div>
           <div className="flex-1">
             <h4 className="font-medium text-slate-800">Fyll i manuellt</h4>
-            <p className="text-sm text-slate-500">Skriv företag och jobbinformation själv</p>
+            <p className="text-sm text-slate-700">Skriv företag och jobbinformation själv</p>
           </div>
         </div>
       </button>
@@ -673,7 +673,7 @@ function Step1SelectJob({
               Företag *
             </label>
             <div className="relative">
-              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Building2 className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
               <input
                 type="text"
                 value={formData.company}
@@ -689,7 +689,7 @@ function Step1SelectJob({
               Jobbtitel *
             </label>
             <div className="relative">
-              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+              <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
               <input
                 type="text"
                 value={formData.jobTitle}
@@ -772,13 +772,13 @@ function Step2Template({
                 'w-10 h-10 rounded-lg flex items-center justify-center',
                 formData.selectedTemplate === template.id
                   ? 'bg-indigo-100 text-indigo-600'
-                  : 'bg-slate-100 text-slate-500'
+                  : 'bg-slate-100 text-slate-700'
               )}>
                 <FileText size={20} />
               </div>
               <div className="flex-1">
                 <h3 className="font-medium text-slate-800">{template.name}</h3>
-                <p className="text-sm text-slate-500 mt-1">{template.description}</p>
+                <p className="text-sm text-slate-700 mt-1">{template.description}</p>
                 {formData.selectedTemplate === template.id && (
                   <div className="flex items-center gap-1 mt-2 text-indigo-600 text-sm">
                     <Check size={14} />
@@ -855,7 +855,7 @@ function Step3Customize({
               )}
             >
               <div className="font-medium text-slate-800 text-sm sm:text-base">{tone.label}</div>
-              <div className="text-xs text-slate-500 mt-0.5">{tone.desc}</div>
+              <div className="text-xs text-slate-700 mt-0.5">{tone.desc}</div>
             </button>
           ))}
         </div>
@@ -953,7 +953,7 @@ function Step4Review({
       <div className="border border-slate-200 rounded-xl overflow-hidden">
         <div className="bg-slate-50 px-4 py-2 border-b border-slate-200 flex items-center justify-between">
           <span className="text-sm font-medium text-slate-700">Ditt personliga brev</span>
-          <div className="flex items-center gap-2 text-sm text-slate-500">
+          <div className="flex items-center gap-2 text-sm text-slate-700">
             <span>{editedLetter.length} tecken</span>
             <span>•</span>
             <span>{editedLetter.split(/\s+/).filter(w => w.length > 0).length} ord</span>
@@ -1026,7 +1026,7 @@ function Step5Done({
         </Button>
       </div>
 
-      <p className="text-sm text-slate-500 mt-6">
+      <p className="text-sm text-slate-700 mt-6">
         💡 Tips: Spara brevet även om du inte skickar det direkt. 
         Du kan återanvända det för liknande jobb!
       </p>

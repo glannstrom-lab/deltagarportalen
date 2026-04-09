@@ -66,7 +66,7 @@ export function JobMatcher({ cvSkills, cvSummary }: JobMatcherProps) {
         </div>
         <div>
           <h3 className="font-semibold text-slate-800">Jobbmatchning</h3>
-          <p className="text-sm text-slate-500">Jämför ditt CV med en jobbannons</p>
+          <p className="text-sm text-slate-700">Jämför ditt CV med en jobbannons</p>
         </div>
       </div>
 

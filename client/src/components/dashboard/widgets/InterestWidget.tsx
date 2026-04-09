@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { Compass, Star, ChevronRight, Target, Play } from '@/components/ui/icons'
@@ -11,7 +12,7 @@ interface InterestWidgetProps {
   size?: 'mini' | 'medium' | 'large'
 }
 
-export function InterestWidget({
+export const InterestWidget = memo(function InterestWidget({
   hasResult = false,
   topRecommendations = [],
   answeredQuestions = 0,
@@ -42,7 +43,7 @@ export function InterestWidget({
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">{t('interestWidget.interests')}</p>
-          <p className={cn("text-xs", hasResult ? "text-emerald-600 dark:text-emerald-400" : "text-slate-500 dark:text-slate-400")}>
+          <p className={cn("text-xs", hasResult ? "text-emerald-600 dark:text-emerald-400" : "text-slate-700 dark:text-slate-600")}>
             {hasResult ? t('interestWidget.done') : isInProgress ? `${progress}%` : t('interestWidget.fiveMin')}
           </p>
         </div>
@@ -76,7 +77,7 @@ export function InterestWidget({
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{t('interestWidget.interestTest')}</h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-slate-700 dark:text-slate-600">
                 {hasResult ? t('interestWidget.resultReady') : isInProgress ? t('interestWidget.continueTest') : t('interestWidget.findCareer')}
               </p>
             </div>
@@ -97,7 +98,7 @@ export function InterestWidget({
         ) : hasResult ? (
           <div className="flex items-center gap-2">
             <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{topRecommendations.length}</span>
-            <span className="text-sm text-slate-500 dark:text-slate-400">{t('interestWidget.matches')}</span>
+            <span className="text-sm text-slate-700 dark:text-slate-600">{t('interestWidget.matches')}</span>
           </div>
         ) : (
           <div className="flex items-center gap-2 text-teal-600 dark:text-teal-400">
@@ -131,7 +132,7 @@ export function InterestWidget({
           </div>
           <div>
             <h3 className="font-bold text-slate-800 dark:text-slate-100">{t('interestWidget.interestTest')}</h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400">
+            <p className="text-sm text-slate-700 dark:text-slate-600">
               {hasResult ? t('interestWidget.yourResultsReady') : isInProgress ? t('interestWidget.continueTest') : t('interestWidget.findDreamJob')}
             </p>
           </div>
@@ -157,7 +158,7 @@ export function InterestWidget({
       ) : isInProgress ? (
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm text-slate-600 dark:text-slate-400">{t('interestWidget.yourProgress')}</span>
+            <span className="text-sm text-slate-600 dark:text-slate-600">{t('interestWidget.yourProgress')}</span>
             <span className="text-lg font-bold text-teal-600 dark:text-teal-400">{progress}%</span>
           </div>
           <div className="h-3 bg-slate-100 dark:bg-slate-700 rounded-full overflow-hidden">
@@ -188,14 +189,14 @@ export function InterestWidget({
               {hasResult ? topRecommendations.length : answeredQuestions}
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{hasResult ? t('interestWidget.matches') : t('interestWidget.answered')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{hasResult ? t('interestWidget.matches') : t('interestWidget.answered')}</p>
         </div>
         <div className="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
           <div className="flex items-center gap-2">
-            <Compass size={16} className="text-slate-500 dark:text-slate-400" />
+            <Compass size={16} className="text-slate-700 dark:text-slate-600" />
             <span className="text-lg font-bold text-slate-800 dark:text-slate-100">{totalQuestions}</span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400">{t('interestWidget.totalQuestions')}</p>
+          <p className="text-xs text-slate-700 dark:text-slate-600">{t('interestWidget.totalQuestions')}</p>
         </div>
       </div>
 
@@ -213,6 +214,6 @@ export function InterestWidget({
       </div>
     </Link>
   )
-}
+})
 
 export default InterestWidget

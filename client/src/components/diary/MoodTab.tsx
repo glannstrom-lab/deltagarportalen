@@ -62,7 +62,7 @@ function MoodSelector({
           {size === 'large' && (
             <span className={cn(
               "text-xs font-medium",
-              value === mood.value ? mood.textColor : "text-slate-500"
+              value === mood.value ? mood.textColor : "text-slate-700"
             )}>
               {mood.label}
             </span>
@@ -92,10 +92,10 @@ function LevelSlider({
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Icon className="w-4 h-4 text-slate-500" />
+          <Icon className="w-4 h-4 text-slate-700" />
           <span className="text-sm font-medium text-slate-700">{label}</span>
         </div>
-        <span className="text-sm text-slate-500">{value}/5</span>
+        <span className="text-sm text-slate-700">{value}/5</span>
       </div>
       <input
         type="range"
@@ -105,7 +105,7 @@ function LevelSlider({
         onChange={(e) => onChange(parseInt(e.target.value))}
         className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
       />
-      <div className="flex justify-between text-xs text-slate-400">
+      <div className="flex justify-between text-xs text-slate-600">
         <span>{lowLabel}</span>
         <span>{highLabel}</span>
       </div>
@@ -156,7 +156,7 @@ function TodayLogger() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-lg font-semibold text-slate-900">Hur mår du idag?</h3>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-700">
             {new Date().toLocaleDateString('sv-SE', {
               weekday: 'long',
               day: 'numeric',
@@ -291,7 +291,7 @@ function MoodCalendar() {
             onClick={() => navigate('prev')}
             className="p-1 hover:bg-slate-100 rounded"
           >
-            <ChevronLeft className="w-5 h-5 text-slate-500" />
+            <ChevronLeft className="w-5 h-5 text-slate-700" />
           </button>
           <span className="text-sm font-medium text-slate-700 min-w-[120px] text-center">
             {currentMonth.toLocaleDateString('sv-SE', { month: 'long', year: 'numeric' })}
@@ -300,14 +300,14 @@ function MoodCalendar() {
             onClick={() => navigate('next')}
             className="p-1 hover:bg-slate-100 rounded"
           >
-            <ChevronRight className="w-5 h-5 text-slate-500" />
+            <ChevronRight className="w-5 h-5 text-slate-700" />
           </button>
         </div>
       </div>
 
       <div className="grid grid-cols-7 gap-1">
         {days.map(day => (
-          <div key={day} className="text-center text-xs font-medium text-slate-400 py-2">
+          <div key={day} className="text-center text-xs font-medium text-slate-600 py-2">
             {day}
           </div>
         ))}
@@ -334,7 +334,7 @@ function MoodCalendar() {
               {moodConfig ? (
                 <span className="text-lg">{moodConfig.emoji}</span>
               ) : (
-                <span className="text-slate-400">{day}</span>
+                <span className="text-slate-600">{day}</span>
               )}
             </div>
           )
@@ -374,7 +374,7 @@ function MoodStats() {
   return (
     <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-4">
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-700 mb-1">
           <Smile className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">Humör</span>
         </div>
@@ -382,12 +382,12 @@ function MoodStats() {
           <span className="text-lg sm:text-2xl font-bold text-slate-900">
             {stats.averageMood.toFixed(1)}
           </span>
-          <span className="text-xs sm:text-sm text-slate-500">/5</span>
+          <span className="text-xs sm:text-sm text-slate-700">/5</span>
         </div>
       </Card>
 
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-700 mb-1">
           <Activity className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">Trend</span>
         </div>
@@ -406,7 +406,7 @@ function MoodStats() {
           )}
           {trend === 'same' && (
             <>
-              <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
+              <Minus className="w-4 h-4 sm:w-5 sm:h-5 text-slate-600" />
               <span className="text-sm text-slate-600 font-medium">Stabil</span>
             </>
           )}
@@ -414,7 +414,7 @@ function MoodStats() {
       </Card>
 
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-700 mb-1">
           <Battery className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">Energi</span>
         </div>
@@ -422,12 +422,12 @@ function MoodStats() {
           <span className="text-lg sm:text-2xl font-bold text-slate-900">
             {stats.averageEnergy.toFixed(1)}
           </span>
-          <span className="text-xs sm:text-sm text-slate-500">/5</span>
+          <span className="text-xs sm:text-sm text-slate-700">/5</span>
         </div>
       </Card>
 
       <Card className="p-3 sm:p-4">
-        <div className="flex items-center gap-1 sm:gap-2 text-slate-500 mb-1">
+        <div className="flex items-center gap-1 sm:gap-2 text-slate-700 mb-1">
           <Calendar className="w-3 h-3 sm:w-4 sm:h-4" />
           <span className="text-xs sm:text-sm font-medium">Dagar</span>
         </div>
@@ -438,7 +438,7 @@ function MoodStats() {
 
       {topActivities.length > 0 && (
         <Card className="p-4 md:col-span-2 lg:col-span-4">
-          <div className="flex items-center gap-2 text-slate-500 mb-3">
+          <div className="flex items-center gap-2 text-slate-700 mb-3">
             <Sun className="w-4 h-4" />
             <span className="text-sm font-medium">Vanligaste aktiviteterna</span>
           </div>
@@ -450,7 +450,7 @@ function MoodStats() {
                 <div key={id} className="flex items-center gap-2 px-3 py-2 bg-slate-50 rounded-lg">
                   <span className="text-lg">{activity.emoji}</span>
                   <span className="text-sm font-medium text-slate-700">{activity.label}</span>
-                  <span className="text-xs text-slate-400">({count}x)</span>
+                  <span className="text-xs text-slate-600">({count}x)</span>
                 </div>
               )
             })}

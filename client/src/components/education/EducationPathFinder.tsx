@@ -95,16 +95,16 @@ export default function EducationPathFinder() {
                   <p className="text-sm text-slate-600 mt-1">{education.description}</p>
                   
                   <div className="flex flex-wrap gap-3 mt-3">
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-500 bg-white px-2 py-1 rounded-lg">
+                    <span className="inline-flex items-center gap-1 text-xs text-slate-700 bg-white px-2 py-1 rounded-lg">
                       <Building2 size={12} />
                       {education.type}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-xs text-slate-500 bg-white px-2 py-1 rounded-lg">
+                    <span className="inline-flex items-center gap-1 text-xs text-slate-700 bg-white px-2 py-1 rounded-lg">
                       <Clock size={12} />
                       {education.duration}
                     </span>
                     {education.provider && (
-                      <span className="inline-flex items-center gap-1 text-xs text-slate-500 bg-white px-2 py-1 rounded-lg">
+                      <span className="inline-flex items-center gap-1 text-xs text-slate-700 bg-white px-2 py-1 rounded-lg">
                         <BookOpen size={12} />
                         {education.provider}
                       </span>
@@ -119,14 +119,14 @@ export default function EducationPathFinder() {
             </div>
           ))}
           
-          <p className="text-xs text-slate-500 mt-4">
+          <p className="text-xs text-slate-700 mt-4">
             Information fran Arbetsformedlingens JobEd Connect
           </p>
         </div>
       )}
 
       {!loading && selectedOccupation && educations.length === 0 && (
-        <div className="text-center py-8 text-slate-500">
+        <div className="text-center py-8 text-slate-700">
           <BookOpen size={48} className="mx-auto mb-3 opacity-50" />
           <p>Inga specifika utbildningar hittades for detta yrke.</p>
           <p className="text-sm mt-1">Prova att soka pa ett liknande yrke.</p>
@@ -134,7 +134,7 @@ export default function EducationPathFinder() {
       )}
 
       {!selectedOccupation && (
-        <div className="text-center py-8 text-slate-400">
+        <div className="text-center py-8 text-slate-600">
           <Search size={48} className="mx-auto mb-3 opacity-50" />
           <p>Borja skriva for att hitta utbildningar</p>
         </div>

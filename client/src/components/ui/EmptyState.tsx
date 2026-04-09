@@ -50,12 +50,12 @@ export function EmptyState({
             'w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mb-3',
             iconClassName
           )}>
-            <Icon className="w-6 h-6 text-slate-400" />
+            <Icon className="w-6 h-6 text-slate-600" />
           </div>
         )}
         <h3 className="text-sm font-medium text-slate-800">{title}</h3>
         {description && (
-          <p className="text-xs text-slate-500 mt-1 max-w-xs">{description}</p>
+          <p className="text-xs text-slate-700 mt-1 max-w-xs">{description}</p>
         )}
         {action && (
           <Button
@@ -82,12 +82,12 @@ export function EmptyState({
           'w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4',
           iconClassName
         )}>
-          <Icon className="w-8 h-8 text-slate-400" />
+          <Icon className="w-8 h-8 text-slate-600" />
         </div>
       )}
       <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
       {description && (
-        <p className="text-sm text-slate-500 mt-2 max-w-xs mx-auto">
+        <p className="text-sm text-slate-700 mt-2 max-w-xs mx-auto">
           {description}
         </p>
       )}
@@ -168,14 +168,14 @@ export function EmptySearch({
       className
     )}>
       <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
-        <svg className="w-8 h-8 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg className="w-8 h-8 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
         </svg>
       </div>
       <h3 className="text-lg font-semibold text-slate-800">
         Inga resultat för "{query}"
       </h3>
-      <p className="text-sm text-slate-500 mt-2 max-w-xs">
+      <p className="text-sm text-slate-700 mt-2 max-w-xs">
         Försök med andra sökord eller kontrollera stavningen.
       </p>
       <Button
@@ -242,7 +242,7 @@ export function EmptyWidget({
       className
     )}>
       <p className="text-sm font-medium text-slate-700">{title}</p>
-      <p className="text-xs text-slate-500 mt-1">{description}</p>
+      <p className="text-xs text-slate-700 mt-1">{description}</p>
       {action && (
         <button
           onClick={handleClick}
@@ -281,9 +281,9 @@ export function IllustratedEmptyState({
       <svg viewBox="0 0 120 120" className="w-32 h-32 text-slate-300" fill="currentColor">
         <rect x="20" y="20" width="40" height="50" rx="4" className="text-slate-200" />
         <rect x="35" y="35" width="70" height="50" rx="4" className="text-slate-300" />
-        <rect x="45" y="50" width="40" height="4" rx="2" className="text-slate-400" />
-        <rect x="45" y="60" width="30" height="4" rx="2" className="text-slate-400" />
-        <rect x="45" y="70" width="35" height="4" rx="2" className="text-slate-400" />
+        <rect x="45" y="50" width="40" height="4" rx="2" className="text-slate-600" />
+        <rect x="45" y="60" width="30" height="4" rx="2" className="text-slate-600" />
+        <rect x="45" y="70" width="35" height="4" rx="2" className="text-slate-600" />
       </svg>
     ),
     search: (
@@ -325,7 +325,7 @@ export function IllustratedEmptyState({
       </div>
       <h3 className="text-lg font-semibold text-slate-800">{title}</h3>
       {description && (
-        <p className="text-sm text-slate-500 mt-2 max-w-sm">
+        <p className="text-sm text-slate-700 mt-2 max-w-sm">
           {description}
         </p>
       )}

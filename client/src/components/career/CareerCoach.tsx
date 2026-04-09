@@ -367,10 +367,10 @@ export default function CareerCoach() {
                 <div className="flex items-center gap-4">
                   <div className="text-sm">
                     <span className="font-medium text-slate-800">{path.current_occupation}</span>
-                    <ArrowRight className="inline mx-2 text-slate-400" size={16} />
+                    <ArrowRight className="inline mx-2 text-slate-600" size={16} />
                     <span className="font-medium text-[#4f46e5]">{path.target_occupation}</span>
                   </div>
-                  <div className="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+                  <div className="hidden sm:flex items-center gap-2 text-xs text-slate-700">
                     <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full">
                       +{(path.salary_increase / 1000).toFixed(0)}k kr
                     </span>
@@ -380,12 +380,12 @@ export default function CareerCoach() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-slate-400">
+                  <span className="text-xs text-slate-600">
                     {new Date(path.created_at).toLocaleDateString('sv-SE')}
                   </span>
                   <button
                     onClick={(e) => deleteSavedPath(path.id, e)}
-                    className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
+                    className="p-2 text-slate-600 hover:text-red-500 hover:bg-red-50 rounded-lg opacity-0 group-hover:opacity-100 transition-all"
                   >
                     <Trash2 size={16} />
                   </button>
@@ -470,7 +470,7 @@ export default function CareerCoach() {
         <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
           <div className="animate-spin w-10 h-10 border-3 border-[#4f46e5] border-t-transparent rounded-full mx-auto mb-4" />
           <p className="text-slate-600">AI:n skapar din personliga karriärplan...</p>
-          <p className="text-sm text-slate-400 mt-2">Analyserar kompetensöverföring och skapar skräddarsydda steg</p>
+          <p className="text-sm text-slate-600 mt-2">Analyserar kompetensöverföring och skapar skräddarsydda steg</p>
         </div>
       )}
 
@@ -481,15 +481,15 @@ export default function CareerCoach() {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="text-center">
-                  <p className="text-sm text-slate-500">Nu</p>
+                  <p className="text-sm text-slate-700">Nu</p>
                   <p className="font-semibold text-slate-800">{careerPath.current.occupation}</p>
                   <p className="text-sm text-slate-600">{formatSalary(careerPath.current.salary)}/mån</p>
                 </div>
                 
-                <ArrowRight className="text-slate-400" size={24} />
+                <ArrowRight className="text-slate-600" size={24} />
                 
                 <div className="text-center">
-                  <p className="text-sm text-slate-500">Mål</p>
+                  <p className="text-sm text-slate-700">Mål</p>
                   <p className="font-semibold text-slate-800">{careerPath.target.occupation}</p>
                   <p className="text-sm text-slate-600">{formatSalary(careerPath.target.salary)}/mån</p>
                 </div>
@@ -497,19 +497,19 @@ export default function CareerCoach() {
               
               <div className="flex items-center gap-6">
                 <div className="text-center px-4 py-2 bg-green-50 rounded-xl">
-                  <p className="text-xs text-slate-500">Löneökning</p>
+                  <p className="text-xs text-slate-700">Löneökning</p>
                   <p className="text-lg font-bold text-green-600">+{formatSalary(careerPath.salaryIncrease)}</p>
                 </div>
                 <div className="text-center px-4 py-2 bg-blue-50 rounded-xl">
-                  <p className="text-xs text-slate-500">Tidslinje</p>
+                  <p className="text-xs text-slate-700">Tidslinje</p>
                   <p className="text-lg font-bold text-blue-600">{careerPath.timeline}</p>
                 </div>
                 <div className="text-center px-4 py-2 bg-purple-50 rounded-xl">
-                  <p className="text-xs text-slate-500">Efterfrågan</p>
+                  <p className="text-xs text-slate-700">Efterfrågan</p>
                   <p className="text-lg font-bold text-purple-600">
                     {careerPath.target.demand === 'high' ? 'Hög' : careerPath.target.demand === 'medium' ? 'Medel' : 'Låg'}
                   </p>
-                  <p className="text-xs text-slate-400">{careerPath.target.jobCount} lediga jobb</p>
+                  <p className="text-xs text-slate-600">{careerPath.target.jobCount} lediga jobb</p>
                 </div>
               </div>
             </div>
@@ -532,7 +532,7 @@ export default function CareerCoach() {
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
                       <h4 className="font-semibold text-slate-800">{step.title}</h4>
-                      <span className="text-xs text-slate-500 bg-slate-100 px-2 py-1 rounded-full">
+                      <span className="text-xs text-slate-700 bg-slate-100 px-2 py-1 rounded-full">
                         <Calendar size={12} className="inline mr-1" />
                         {step.timeframe}
                       </span>
@@ -572,7 +572,7 @@ export default function CareerCoach() {
               </div>
             )) : (
               <div className="bg-white rounded-2xl p-8 shadow-sm border border-slate-200 text-center">
-                <p className="text-slate-500">Inga steg kunde genereras. Försök igen.</p>
+                <p className="text-slate-700">Inga steg kunde genereras. Försök igen.</p>
               </div>
             )}
           </div>
@@ -671,7 +671,7 @@ export default function CareerCoach() {
                           {stage.estimatedSalary.toLocaleString()} kr
                         </span>
                       </div>
-                      <p className="text-xs text-slate-500 mt-1">{stage.notes}</p>
+                      <p className="text-xs text-slate-700 mt-1">{stage.notes}</p>
                     </div>
                   </div>
                 ))}
@@ -718,7 +718,7 @@ export default function CareerCoach() {
         <div className="bg-white rounded-2xl p-12 shadow-sm border border-slate-200 text-center">
           <Target size={48} className="text-slate-300 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-slate-800 mb-2">Planera din karriär med AI</h3>
-          <p className="text-slate-500 max-w-md mx-auto">
+          <p className="text-slate-700 max-w-md mx-auto">
             Fyll i ditt nuvarande yrke och vart du vill komma. Vår AI analyserar 
             kompetensöverföringen och skapar en skräddarsydd väg framåt.
           </p>

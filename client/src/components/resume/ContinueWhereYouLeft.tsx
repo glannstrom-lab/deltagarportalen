@@ -236,12 +236,12 @@ export function ContinueWhereYouLeft() {
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">Fortsätt där du slutade</h3>
-            <p className="text-sm text-slate-500">Du har påbörjat dessa aktiviteter</p>
+            <p className="text-sm text-slate-700">Du har påbörjat dessa aktiviteter</p>
           </div>
         </div>
         <button
           onClick={() => setIsVisible(false)}
-          className="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-white/50 rounded-lg transition-colors"
+          className="p-1.5 text-slate-600 hover:text-slate-600 hover:bg-white/50 rounded-lg transition-colors"
           aria-label="Dölj"
         >
           <X className="w-4 h-4" />
@@ -264,9 +264,9 @@ export function ContinueWhereYouLeft() {
               
               <div className="flex-1 min-w-0">
                 <h4 className="font-semibold text-slate-800">{activity.title}</h4>
-                <p className="text-sm text-slate-500">{activity.description}</p>
+                <p className="text-sm text-slate-700">{activity.description}</p>
                 <div className="flex items-center gap-3 mt-1.5">
-                  <span className="text-xs text-slate-400 flex items-center gap-1">
+                  <span className="text-xs text-slate-600 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {formatTimeSince(activity.lastActive)}
                   </span>
@@ -288,7 +288,7 @@ export function ContinueWhereYouLeft() {
         })}
       </div>
 
-      <p className="text-xs text-slate-400 text-center mt-4">
+      <p className="text-xs text-slate-600 text-center mt-4">
         💡 Vi sparar automatiskt ditt arbete så du inte förlorar något
       </p>
     </div>

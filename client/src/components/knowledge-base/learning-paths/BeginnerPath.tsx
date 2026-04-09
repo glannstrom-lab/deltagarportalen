@@ -133,7 +133,7 @@ export function BeginnerPath() {
                 <span className="font-medium text-emerald-600">{Math.round(progress)}%</span>
               </div>
               <Progress value={progress} className="h-2" />
-              <p className="text-sm text-slate-500 mt-2">
+              <p className="text-sm text-slate-700 mt-2">
                 {completedCount} av {steps.length} steg avklarade
               </p>
             </div>
@@ -164,13 +164,13 @@ export function BeginnerPath() {
                   {step.isCompleted ? (
                     <CheckCircle2 className="w-6 h-6 text-emerald-500" />
                   ) : step.isLocked ? (
-                    <Lock className="w-6 h-6 text-slate-400" />
+                    <Lock className="w-6 h-6 text-slate-600" />
                   ) : (
                     <div className={cn(
                       "w-6 h-6 rounded-full border-2 flex items-center justify-center text-sm font-medium",
                       isCurrent
                         ? "border-emerald-500 text-emerald-600 bg-emerald-50"
-                        : "border-slate-300 text-slate-500"
+                        : "border-slate-300 text-slate-700"
                     )}>
                       {index + 1}
                     </div>
@@ -183,14 +183,14 @@ export function BeginnerPath() {
                     <div>
                       <h3 className={cn(
                         "font-semibold",
-                        step.isCompleted && "text-slate-500 line-through"
+                        step.isCompleted && "text-slate-700 line-through"
                       )}>
                         {step.title}
                       </h3>
                       <p className="text-sm text-slate-600 mt-1">
                         {step.description}
                       </p>
-                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-500">
+                      <div className="flex items-center gap-3 mt-2 text-xs text-slate-700">
                         <span className="capitalize px-2 py-0.5 bg-slate-100 rounded">
                           {step.type === 'article' && '📖 Artikel'}
                           {step.type === 'video' && '🎥 Video'}

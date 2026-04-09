@@ -261,7 +261,7 @@ function MobileTopBar() {
             </div>
             <div>
               <p className="font-semibold text-slate-800">{user?.email || 'Användare'}</p>
-              <p className="text-sm text-slate-500">Deltagare</p>
+              <p className="text-sm text-slate-700">Deltagare</p>
             </div>
           </div>
           

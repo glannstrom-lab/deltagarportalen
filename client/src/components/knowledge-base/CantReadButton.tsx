@@ -60,12 +60,12 @@ export function CantReadButton({
           <p className="font-medium text-slate-800">
             Jag orkar inte läsa just nu
           </p>
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-700">
             Det är helt okej! Vi kan spara den till senare.
           </p>
         </div>
         <ChevronRight className={cn(
-          "w-5 h-5 text-slate-400 transition-transform",
+          "w-5 h-5 text-slate-600 transition-transform",
           isExpanded && "rotate-90"
         )} />
       </button>
@@ -80,7 +80,7 @@ export function CantReadButton({
             <Bookmark className="w-4 h-4 text-sky-500" />
             <div>
               <p className="font-medium text-slate-800 text-sm">Spara till senare</p>
-              <p className="text-xs text-slate-500">Vi påminner dig om ett tag</p>
+              <p className="text-xs text-slate-700">Vi påminner dig om ett tag</p>
             </div>
           </button>
           
@@ -92,12 +92,12 @@ export function CantReadButton({
               <Clock className="w-4 h-4 text-amber-500" />
               <div>
                 <p className="font-medium text-slate-800 text-sm">Visa kortare alternativ</p>
-                <p className="text-xs text-slate-500">Artiklar under 3 minuter</p>
+                <p className="text-xs text-slate-700">Artiklar under 3 minuter</p>
               </div>
             </button>
           )}
           
-          <p className="text-xs text-slate-400 pt-2 italic">
+          <p className="text-xs text-slate-600 pt-2 italic">
             "Det är normalt att inte orka ibland. Din hälsa kommer alltid först. 💙"
           </p>
         </div>
