@@ -104,9 +104,10 @@ export default defineConfig(({ mode }) => ({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        // TEMPORARILY ENABLED for debugging white screen issue
+        drop_console: false,
         drop_debugger: true,
-        pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
+        // pure_funcs: ['console.log', 'console.info', 'console.debug', 'console.trace'],
       },
       format: {
         comments: false,
