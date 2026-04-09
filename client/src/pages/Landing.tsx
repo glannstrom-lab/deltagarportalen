@@ -198,7 +198,7 @@ export default function Landing() {
         <div className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent z-10" />
           <OptimizedImage
-            src="/hero-landing.png"
+            src="/hero-landing.webp"
             alt=""
             className="w-full h-full object-cover object-right"
             loading="eager"
