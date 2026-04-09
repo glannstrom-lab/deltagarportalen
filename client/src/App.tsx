@@ -130,20 +130,25 @@ function PrivateRoute({
 
 // Public route - redirect if authenticated
 function PublicRoute({ children }: { children: React.ReactNode }) {
+  console.log('[DEBUG] 8. PublicRoute rendering')
   const { isAuthenticated, isLoading } = useAuthStore()
-  
+  console.log('[DEBUG] 8a. PublicRoute: isAuthenticated=', isAuthenticated, 'isLoading=', isLoading)
+
   if (isLoading) {
+    console.log('[DEBUG] 8b. PublicRoute: showing loader')
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-slate-800">
         <Loader2 className="animate-spin text-white" size={48} />
       </div>
     )
   }
-  
+
   if (isAuthenticated) {
+    console.log('[DEBUG] 8c. PublicRoute: redirecting authenticated user')
     return <Navigate to="/" replace />
   }
-  
+
+  console.log('[DEBUG] 8d. PublicRoute: rendering children (Landing)')
   return <>{children}</>
 }
 
