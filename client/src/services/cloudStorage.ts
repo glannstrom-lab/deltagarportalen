@@ -161,7 +161,7 @@ export const articleBookmarksApi = {
     const { data, error } = await supabase
       .from('article_bookmarks')
       .select('*')
-      .order('bookmarked_at', { ascending: false })
+      .order('created_at', { ascending: false })
 
     if (error) {
       handleStorageError(error, 'hämta bokmärken')

@@ -7,49 +7,44 @@ import { useState, useEffect, useMemo } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
-  Briefcase, 
-  BookOpen, 
-  FileText, 
-  Heart, 
+  Briefcase,
+  BookOpen,
+  FileText,
+  Heart,
   Bookmark,
   ChevronRight,
   Trash2,
   ExternalLink,
   Loader2,
   Sparkles,
-  Target,
   Building2,
   MapPin,
   Clock,
-  Download,
   Eye,
   X,
   FileDown,
   CheckCircle2,
-  FileEdit,
-  Upload,
   Folder,
   File,
-  Image as ImageIcon,
-  MoreVertical,
   Edit2,
   Plus,
   Search,
-  Filter,
   Grid3X3,
   List,
-  TrendingUp,
   Award,
   Briefcase as BriefcaseIcon,
   FileText as DocumentText,
-  Star
+  GraduationCap,
+  Wrench,
+  Languages,
+  Mail,
+  Phone,
+  MapPinned
 } from '@/components/ui/icons'
-import { Button } from '@/components/ui/Button'
 import { savedJobsApi, articleBookmarksApi } from '@/services/cloudStorage'
 import { cvApi, coverLetterApi, interestApi } from '@/services/supabaseApi'
 import { PageLayout } from '@/components/layout/index'
-import { resourcesTabs } from '@/data/pageTabs'
-// NOTE: jsPDF is dynamically imported in PDF generation functions to reduce bundle size
+// NOTE: jsPDF and docx are dynamically imported in export functions to reduce bundle size
 
 // Types
 interface SavedJob {
@@ -149,36 +144,31 @@ const statusLabels: Record<string, { label: string; color: string; bg: string; i
   'ACCEPTED': { label: 'Erbjudande', color: 'text-green-600', bg: 'bg-green-100', icon: Award },
 }
 
-// Quick Stats Card Component
+// Compact Stats Card Component
 function StatCard({
   label,
   value,
   icon: Icon,
   color,
-  link,
-  subtitle
+  link
 }: {
   label: string
   value: string | number
   icon: React.ComponentType<{ size?: number; className?: string }>
   color: string
   link?: string
-  subtitle?: string
 }) {
   const content = (
-    <div className={`bg-white rounded-2xl p-6 border border-slate-200 hover:shadow-lg transition-all group ${link ? 'cursor-pointer' : ''}`}>
-      <div className="flex items-start justify-between">
-        <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center`}>
-          <Icon className="w-6 h-6 text-white" />
+    <div className={`bg-white rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all group ${link ? 'cursor-pointer' : ''}`}>
+      <div className="flex items-center gap-3">
+        <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+          <Icon className="w-5 h-5 text-white" />
         </div>
-        {link && (
-          <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-slate-600 transition-colors" />
-        )}
-      </div>
-      <div className="mt-4">
-        <p className="text-3xl font-bold text-slate-800">{value}</p>
-        <p className="text-sm font-medium text-slate-600">{label}</p>
-        {subtitle && <p className="text-xs text-slate-600 mt-1">{subtitle}</p>}
+        <div className="flex-1 min-w-0">
+          <p className="text-2xl font-bold text-slate-800">{value}</p>
+          <p className="text-xs font-medium text-slate-500 truncate">{label}</p>
+        </div>
+        {link && <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />}
       </div>
     </div>
   )
@@ -189,7 +179,7 @@ function StatCard({
   return content
 }
 
-// Document Card Component
+// Compact Document Card Component
 function DocumentCard({
   title,
   subtitle,
@@ -208,27 +198,23 @@ function DocumentCard({
   color: string
 }) {
   return (
-    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-lg transition-all group">
-      <div className="p-5">
-        <div className="flex items-start gap-4">
-          <div className={`w-12 h-12 ${color} rounded-xl flex items-center justify-center flex-shrink-0`}>
-            <Icon className="w-6 h-6 text-white" />
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all group">
+      <div className="p-3">
+        <div className="flex items-center gap-3">
+          <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
+            <Icon className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-start justify-between gap-2">
-              <div>
-                <h3 className="font-semibold text-slate-800 truncate">{title}</h3>
-                {subtitle && <p className="text-sm text-slate-700">{subtitle}</p>}
-                <div className="flex items-center gap-3 mt-2">
-                  <span className="text-xs px-2 py-1 bg-slate-100 text-slate-600 rounded-full">{type}</span>
-                  <span className="text-xs text-slate-600">{date}</span>
-                </div>
-              </div>
+            <h3 className="font-medium text-slate-800 truncate text-sm">{title}</h3>
+            {subtitle && <p className="text-xs text-slate-500 truncate">{subtitle}</p>}
+            <div className="flex items-center gap-2 mt-1">
+              <span className="text-xs px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">{type}</span>
+              <span className="text-xs text-slate-400">{date}</span>
             </div>
           </div>
         </div>
       </div>
-      <div className="px-5 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+      <div className="px-3 py-2 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
         {actions}
       </div>
     </div>
@@ -237,7 +223,6 @@ function DocumentCard({
 
 // PDF Export Functions
 async function generateCVPDF(cvData: CVData) {
-  // Dynamic import to reduce initial bundle size
   const { default: jsPDF } = await import('jspdf')
   const doc = new jsPDF()
   const pageWidth = doc.internal.pageSize.getWidth()
@@ -262,7 +247,7 @@ async function generateCVPDF(cvData: CVData) {
   if (cvData.email) contactInfo.push(cvData.email)
   if (cvData.phone) contactInfo.push(cvData.phone)
   if (cvData.location) contactInfo.push(cvData.location)
-  
+
   if (contactInfo.length > 0) {
     doc.text(contactInfo.join(' | '), margin, y)
     y += 10
@@ -285,7 +270,6 @@ async function generateCVPDF(cvData: CVData) {
     doc.setTextColor(79, 70, 229)
     doc.text('Arbetslivserfarenhet', margin, y)
     y += 8
-
     cvData.work_experience.forEach((job) => {
       if (y > 250) { doc.addPage(); y = 20 }
       doc.setFontSize(11)
@@ -312,7 +296,6 @@ async function generateCVPDF(cvData: CVData) {
     doc.setTextColor(79, 70, 229)
     doc.text('Utbildning', margin, y)
     y += 8
-
     cvData.education.forEach((edu) => {
       if (y > 250) { doc.addPage(); y = 20 }
       doc.setFontSize(11)
@@ -337,13 +320,25 @@ async function generateCVPDF(cvData: CVData) {
     const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : (s as { name: string }).name).join(', ')
     const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 2 * margin)
     doc.text(splitSkills, margin, y)
+    y += splitSkills.length * 5 + 10
+  }
+
+  if (cvData.languages && cvData.languages.length > 0) {
+    if (y > 250) { doc.addPage(); y = 20 }
+    doc.setFontSize(12)
+    doc.setTextColor(79, 70, 229)
+    doc.text('Språk', margin, y)
+    y += 8
+    doc.setFontSize(10)
+    doc.setTextColor(60, 60, 60)
+    const langText = cvData.languages.map(l => `${l.language} (${l.level})`).join(', ')
+    doc.text(langText, margin, y)
   }
 
   doc.save(`CV-${cvData.first_name || 'Mitt'}-${cvData.last_name || ''}.pdf`)
 }
 
 async function generateCoverLetterPDF(letter: CoverLetter) {
-  // Dynamic import to reduce initial bundle size
   const { default: jsPDF } = await import('jspdf')
   const doc = new jsPDF()
   const margin = 25
@@ -377,6 +372,144 @@ async function generateCoverLetterPDF(letter: CoverLetter) {
   doc.text(splitContent, margin, y)
 
   doc.save(`Personligt-brev-${letter.company || 'Mitt'}.pdf`)
+}
+
+// Word (DOCX) Export Functions
+async function generateCVWord(cvData: CVData) {
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = await import('docx')
+  const { saveAs } = await import('file-saver')
+
+  const children: Paragraph[] = []
+
+  // Name
+  children.push(new Paragraph({
+    children: [new TextRun({ text: `${cvData.first_name || ''} ${cvData.last_name || ''}`, bold: true, size: 48, color: '4F46E5' })],
+    spacing: { after: 100 }
+  }))
+
+  // Title
+  if (cvData.title) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: cvData.title, size: 28, color: '666666' })],
+      spacing: { after: 200 }
+    }))
+  }
+
+  // Contact Info
+  const contactParts = []
+  if (cvData.email) contactParts.push(cvData.email)
+  if (cvData.phone) contactParts.push(cvData.phone)
+  if (cvData.location) contactParts.push(cvData.location)
+  if (contactParts.length > 0) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: contactParts.join(' • '), size: 22, color: '666666' })],
+      spacing: { after: 300 }
+    }))
+  }
+
+  // Summary
+  if (cvData.summary) {
+    children.push(new Paragraph({ text: 'Sammanfattning', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
+    children.push(new Paragraph({ children: [new TextRun({ text: cvData.summary, size: 22 })], spacing: { after: 200 } }))
+  }
+
+  // Work Experience
+  if (cvData.work_experience && cvData.work_experience.length > 0) {
+    children.push(new Paragraph({ text: 'Arbetslivserfarenhet', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
+    cvData.work_experience.forEach(job => {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: job.title, bold: true, size: 24 })],
+        spacing: { before: 150 }
+      }))
+      children.push(new Paragraph({
+        children: [new TextRun({ text: `${job.company} • ${job.startDate || ''} - ${job.current ? 'Nuvarande' : job.endDate || ''}`, size: 22, color: '666666' })]
+      }))
+      if (job.description) {
+        children.push(new Paragraph({
+          children: [new TextRun({ text: job.description, size: 22 })],
+          spacing: { after: 100 }
+        }))
+      }
+    })
+  }
+
+  // Education
+  if (cvData.education && cvData.education.length > 0) {
+    children.push(new Paragraph({ text: 'Utbildning', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
+    cvData.education.forEach(edu => {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: edu.degree, bold: true, size: 24 })],
+        spacing: { before: 150 }
+      }))
+      children.push(new Paragraph({
+        children: [new TextRun({ text: `${edu.school} • ${edu.startDate || ''} - ${edu.endDate || ''}`, size: 22, color: '666666' })],
+        spacing: { after: 100 }
+      }))
+    })
+  }
+
+  // Skills
+  if (cvData.skills && cvData.skills.length > 0) {
+    children.push(new Paragraph({ text: 'Kompetenser', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
+    const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : (s as { name: string }).name).join(', ')
+    children.push(new Paragraph({ children: [new TextRun({ text: skillsText, size: 22 })], spacing: { after: 100 } }))
+  }
+
+  // Languages
+  if (cvData.languages && cvData.languages.length > 0) {
+    children.push(new Paragraph({ text: 'Språk', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
+    const langText = cvData.languages.map(l => `${l.language} (${l.level})`).join(', ')
+    children.push(new Paragraph({ children: [new TextRun({ text: langText, size: 22 })], spacing: { after: 100 } }))
+  }
+
+  const doc = new Document({ sections: [{ children }] })
+  const blob = await Packer.toBlob(doc)
+  saveAs(blob, `CV-${cvData.first_name || 'Mitt'}-${cvData.last_name || ''}.docx`)
+}
+
+async function generateCoverLetterWord(letter: CoverLetter) {
+  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = await import('docx')
+  const { saveAs } = await import('file-saver')
+
+  const children: Paragraph[] = []
+
+  // Date
+  children.push(new Paragraph({
+    children: [new TextRun({ text: new Date().toLocaleDateString('sv-SE'), size: 22, color: '666666' })],
+    spacing: { after: 400 }
+  }))
+
+  // Title
+  children.push(new Paragraph({ text: 'Personligt brev', heading: HeadingLevel.HEADING_1, spacing: { after: 200 } }))
+
+  // Company & Position
+  if (letter.company) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: letter.company, bold: true, size: 26 })],
+      spacing: { after: 50 }
+    }))
+  }
+  if (letter.job_title) {
+    children.push(new Paragraph({
+      children: [new TextRun({ text: letter.job_title, size: 24, color: '666666' })],
+      spacing: { after: 300 }
+    }))
+  }
+
+  // Content - split by newlines to preserve paragraphs
+  const paragraphs = letter.content.split('\n\n')
+  paragraphs.forEach(p => {
+    if (p.trim()) {
+      children.push(new Paragraph({
+        children: [new TextRun({ text: p.trim(), size: 24 })],
+        spacing: { after: 200 }
+      }))
+    }
+  })
+
+  const doc = new Document({ sections: [{ children }] })
+  const blob = await Packer.toBlob(doc)
+  saveAs(blob, `Personligt-brev-${letter.company || 'Mitt'}.docx`)
 }
 
 // Main Component
@@ -443,12 +576,21 @@ export default function Resources() {
     setUploadedFiles(prev => prev.filter(f => f.id !== fileId))
   }
 
-  const handleDownloadCV = async () => {
-    if (cvData) await generateCVPDF(cvData)
+  const handleDownloadCV = async (format: 'pdf' | 'word' = 'pdf') => {
+    if (!cvData) return
+    if (format === 'word') {
+      await generateCVWord(cvData)
+    } else {
+      await generateCVPDF(cvData)
+    }
   }
 
-  const handleDownloadLetter = async (letter: CoverLetter) => {
-    await generateCoverLetterPDF(letter)
+  const handleDownloadLetter = async (letter: CoverLetter, format: 'pdf' | 'word' = 'pdf') => {
+    if (format === 'word') {
+      await generateCoverLetterWord(letter)
+    } else {
+      await generateCoverLetterPDF(letter)
+    }
   }
 
   // Filtered data
@@ -499,8 +641,8 @@ export default function Resources() {
       title={t('resources.title')}
       description={t('resources.description')}
     >
-      {/* Stats Overview */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {/* Compact Stats Overview */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <StatCard
           label={t('resources.stats.savedJobs')}
           value={savedJobs.length}
@@ -529,24 +671,24 @@ export default function Resources() {
         />
       </div>
 
-      {/* Tabs & Search */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 mb-6">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Tabs & Search - Compact */}
+      <div className="bg-white rounded-xl border border-slate-200 p-3 mb-4">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Tabs */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-1.5">
             {tabs.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setSearchParams({ tab: tab.id })}
-                className={`px-4 py-2 rounded-xl font-medium transition-all ${
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
-                    ? 'bg-violet-600 text-white shadow-md'
+                    ? 'bg-violet-600 text-white shadow-sm'
                     : 'text-slate-600 hover:bg-slate-100'
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
-                  <span className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
+                  <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
                     activeTab === tab.id ? 'bg-violet-500 text-white' : 'bg-slate-200 text-slate-600'
                   }`}>
                     {tab.count}
@@ -557,29 +699,29 @@ export default function Resources() {
           </div>
 
           {/* Search */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" size={18} />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
               <input
                 type="text"
                 placeholder={t('resources.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none w-full md:w-64"
+                className="pl-8 pr-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none w-full md:w-48"
               />
             </div>
-            <div className="flex bg-slate-100 rounded-xl p-1">
+            <div className="flex bg-slate-100 rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-700'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-500'}`}
               >
-                <Grid3X3 size={18} />
+                <Grid3X3 size={16} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-2 rounded-lg transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-700'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-500'}`}
               >
-                <List size={18} />
+                <List size={16} />
               </button>
             </div>
           </div>
@@ -587,68 +729,141 @@ export default function Resources() {
       </div>
 
       {/* Content */}
-      <div className="space-y-6">
-        {/* CV Section - Priority Display */}
+      <div className="space-y-4">
+        {/* CV Section - Compact with details */}
         {(activeTab === 'all' || activeTab === 'documents') && hasCV && cvData && (
-          <section className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border border-amber-200 overflow-hidden">
-            <div className="p-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center shadow-lg">
-                    <CheckCircle2 className="w-8 h-8 text-white" />
+          <section className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+            <div className="p-4 border-b border-slate-100 bg-gradient-to-r from-amber-50 to-orange-50">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center shadow-sm">
+                    <CheckCircle2 className="w-6 h-6 text-white" />
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-800">{t('resources.myCV')}</h2>
-                    <p className="text-slate-600">
-                      {cvData.first_name} {cvData.last_name}
-                      {cvData.title && ` • ${cvData.title}`}
-                    </p>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-slate-700">
-                      <span>{cvData.work_experience?.length || 0} {t('resources.experiences')}</span>
-                      <span>{cvData.education?.length || 0} {t('resources.educations')}</span>
-                      <span>{cvData.skills?.length || 0} {t('resources.skills')}</span>
-                    </div>
+                    <h2 className="text-lg font-bold text-slate-800">{cvData.first_name} {cvData.last_name}</h2>
+                    <p className="text-sm text-slate-600">{cvData.title || t('resources.myCV')}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
                   <Link
                     to="/cv"
-                    className="flex items-center gap-2 px-4 py-2.5 bg-white text-amber-700 rounded-xl font-medium hover:bg-amber-50 border border-amber-200 transition-colors shadow-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white text-amber-700 rounded-lg font-medium hover:bg-amber-50 border border-amber-200 transition-colors"
                   >
-                    <Edit2 className="w-4 h-4" />
+                    <Edit2 className="w-3.5 h-3.5" />
                     {t('resources.edit')}
                   </Link>
                   <button
                     onClick={() => setPreviewModal({type: 'cv', data: cvData})}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-white text-amber-700 rounded-xl font-medium hover:bg-amber-50 border border-amber-200 transition-colors shadow-sm"
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-white text-amber-700 rounded-lg font-medium hover:bg-amber-50 border border-amber-200 transition-colors"
                   >
-                    <Eye className="w-4 h-4" />
+                    <Eye className="w-3.5 h-3.5" />
                     {t('resources.view')}
                   </button>
                   <button
-                    onClick={handleDownloadCV}
-                    className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-amber-500 to-orange-500 text-white rounded-xl font-medium hover:from-amber-600 hover:to-orange-600 transition-colors shadow-md"
+                    onClick={() => handleDownloadCV('pdf')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors"
                   >
-                    <FileDown className="w-4 h-4" />
-                    {t('resources.downloadPDF')}
+                    <FileDown className="w-3.5 h-3.5" />
+                    PDF
+                  </button>
+                  <button
+                    onClick={() => handleDownloadCV('word')}
+                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                  >
+                    <FileDown className="w-3.5 h-3.5" />
+                    Word
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* CV Details Grid */}
+            <div className="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Contact Info */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5" /> Kontakt
+                </h3>
+                <div className="text-sm text-slate-700 space-y-1">
+                  {cvData.email && <p className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 text-slate-400" />{cvData.email}</p>}
+                  {cvData.phone && <p className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 text-slate-400" />{cvData.phone}</p>}
+                  {cvData.location && <p className="flex items-center gap-1.5"><MapPinned className="w-3.5 h-3.5 text-slate-400" />{cvData.location}</p>}
+                </div>
+              </div>
+
+              {/* Work Experience */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <Briefcase className="w-3.5 h-3.5" /> Erfarenhet ({cvData.work_experience?.length || 0})
+                </h3>
+                <div className="text-sm text-slate-700 space-y-1">
+                  {cvData.work_experience?.slice(0, 2).map((job, i) => (
+                    <p key={i} className="truncate">{job.title} @ {job.company}</p>
+                  ))}
+                  {(cvData.work_experience?.length || 0) > 2 && (
+                    <p className="text-slate-400 text-xs">+{cvData.work_experience!.length - 2} fler...</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Education */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5" /> Utbildning ({cvData.education?.length || 0})
+                </h3>
+                <div className="text-sm text-slate-700 space-y-1">
+                  {cvData.education?.slice(0, 2).map((edu, i) => (
+                    <p key={i} className="truncate">{edu.degree}</p>
+                  ))}
+                  {(cvData.education?.length || 0) > 2 && (
+                    <p className="text-slate-400 text-xs">+{cvData.education!.length - 2} fler...</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Skills & Languages */}
+              <div className="space-y-2">
+                <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wide flex items-center gap-1.5">
+                  <Wrench className="w-3.5 h-3.5" /> Kompetenser ({cvData.skills?.length || 0})
+                </h3>
+                <div className="flex flex-wrap gap-1">
+                  {cvData.skills?.slice(0, 4).map((skill, i) => (
+                    <span key={i} className="px-2 py-0.5 bg-slate-100 text-slate-600 text-xs rounded">
+                      {typeof skill === 'string' ? skill : (skill as { name: string }).name}
+                    </span>
+                  ))}
+                  {(cvData.skills?.length || 0) > 4 && (
+                    <span className="px-2 py-0.5 bg-slate-50 text-slate-400 text-xs rounded">
+                      +{cvData.skills!.length - 4}
+                    </span>
+                  )}
+                </div>
+                {cvData.languages && cvData.languages.length > 0 && (
+                  <div className="mt-2">
+                    <h4 className="text-xs text-slate-400 flex items-center gap-1">
+                      <Languages className="w-3 h-3" /> Språk
+                    </h4>
+                    <p className="text-xs text-slate-600">
+                      {cvData.languages.map(l => l.language).join(', ')}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           </section>
         )}
 
-        {/* Interest Guide Result */}
+        {/* Interest Guide Result - Compact */}
         {(activeTab === 'all' || activeTab === 'documents') && interestResult && (
-          <section className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-2xl border border-pink-200 p-6">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-purple-500 rounded-2xl flex items-center justify-center shadow-lg">
-                  <Heart className="w-8 h-8 text-white" />
+          <section className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200 p-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-lg flex items-center justify-center">
+                  <Heart className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold text-slate-800">{t('resources.interestGuide')}</h2>
-                  <p className="text-slate-600">
+                  <h2 className="font-semibold text-slate-800">{t('resources.interestGuide')}</h2>
+                  <p className="text-xs text-slate-600">
                     {t('resources.completed')} {new Date(interestResult.completed_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                     {interestResult.recommended_jobs && (
                       <span> • {interestResult.recommended_jobs.length} {t('resources.jobSuggestions')}</span>
@@ -659,13 +874,13 @@ export default function Resources() {
               <div className="flex items-center gap-2">
                 <Link
                   to="/interest-guide"
-                  className="px-4 py-2.5 bg-white text-pink-700 rounded-xl font-medium hover:bg-pink-50 border border-pink-200 transition-colors"
+                  className="px-3 py-1.5 text-sm bg-white text-pink-700 rounded-lg font-medium hover:bg-pink-50 border border-pink-200 transition-colors"
                 >
                   {t('resources.seeResults')}
                 </Link>
                 <Link
                   to="/career"
-                  className="px-4 py-2.5 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-xl font-medium hover:from-pink-600 hover:to-purple-600 transition-colors shadow-md"
+                  className="px-3 py-1.5 text-sm bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-600 transition-colors"
                 >
                   {t('resources.exploreJobs')}
                 </Link>
@@ -674,23 +889,23 @@ export default function Resources() {
           </section>
         )}
 
-        {/* Documents Grid */}
+        {/* Cover Letters - Compact Grid */}
         {(activeTab === 'all' || activeTab === 'documents') && coverLetters.length > 0 && (
           <section>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <FileText className="text-purple-600" size={24} />
-                {t('resources.coverLetters')}
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                <FileText className="text-purple-600" size={18} />
+                {t('resources.coverLetters')} ({coverLetters.length})
               </h3>
               <Link
                 to="/cover-letter"
-                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
               >
                 {t('resources.createNew')}
-                <Plus size={16} />
+                <Plus size={14} />
               </Link>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
               {coverLetters.map((letter) => (
                 <DocumentCard
                   key={letter.id}
@@ -701,22 +916,31 @@ export default function Resources() {
                   icon={FileText}
                   color="bg-gradient-to-br from-purple-500 to-indigo-500"
                   actions={
-                    <div className="flex items-center gap-2">
+                    <>
                       <button
                         onClick={() => setPreviewModal({type: 'letter', data: letter})}
-                        className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors"
                       >
-                        <Eye size={16} />
+                        <Eye size={14} />
                         {t('resources.read')}
                       </button>
-                      <button
-                        onClick={() => handleDownloadLetter(letter)}
-                        className="flex items-center gap-1 px-3 py-1.5 text-sm bg-violet-600 text-white rounded-lg hover:bg-violet-700 transition-colors"
-                      >
-                        <FileDown size={16} />
-                        PDF
-                      </button>
-                    </div>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleDownloadLetter(letter, 'pdf')}
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-violet-600 text-white rounded hover:bg-violet-700 transition-colors"
+                        >
+                          <FileDown size={14} />
+                          PDF
+                        </button>
+                        <button
+                          onClick={() => handleDownloadLetter(letter, 'word')}
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+                        >
+                          <FileDown size={14} />
+                          Word
+                        </button>
+                      </div>
+                    </>
                   }
                 />
               ))}
@@ -724,136 +948,138 @@ export default function Resources() {
           </section>
         )}
 
-        {/* Saved Jobs */}
+        {/* Saved Jobs - Compact */}
         {(activeTab === 'all' || activeTab === 'jobs') && savedJobs.length > 0 && (
           <section>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <BriefcaseIcon className="text-blue-600" size={24} />
-                {t('resources.savedJobs')}
-                <span className="text-sm font-normal text-slate-700">({filteredJobs.length})</span>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                <BriefcaseIcon className="text-blue-600" size={18} />
+                {t('resources.savedJobs')} ({filteredJobs.length})
               </h3>
               <Link
                 to="/applications"
-                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
               >
                 {t('resources.jobTracker')}
-                <ChevronRight size={16} />
+                <ChevronRight size={14} />
               </Link>
             </div>
-            <div className="space-y-3">
+            <div className="bg-white rounded-xl border border-slate-200 divide-y divide-slate-100">
               {filteredJobs.slice(0, activeTab === 'all' ? 5 : undefined).map((job) => {
                 const StatusIcon = statusLabelsTranslated[job.status]?.icon || Bookmark
                 return (
-                  <div 
-                    key={job.id} 
-                    className="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-lg transition-all group"
+                  <div
+                    key={job.id}
+                    className="p-3 hover:bg-slate-50 transition-colors"
                   >
-                    <div className="flex items-start gap-4">
-                      <div className={`w-12 h-12 ${statusLabelsTranslated[job.status]?.bg || 'bg-slate-100'} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                        <StatusIcon className={`w-6 h-6 ${statusLabelsTranslated[job.status]?.color || 'text-slate-600'}`} />
+                    <div className="flex items-center gap-3">
+                      <div className={`w-9 h-9 ${statusLabelsTranslated[job.status]?.bg || 'bg-slate-100'} rounded-lg flex items-center justify-center flex-shrink-0`}>
+                        <StatusIcon className={`w-4 h-4 ${statusLabelsTranslated[job.status]?.color || 'text-slate-600'}`} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-start justify-between gap-4">
-                          <div>
-                            <h4 className="font-semibold text-slate-800 text-lg">{job.job_data?.headline || t('resources.jobAd')}</h4>
-                            <div className="flex flex-wrap items-center gap-3 text-sm text-slate-700 mt-1">
-                              {job.job_data?.employer?.name && (
-                                <span className="flex items-center gap-1">
-                                  <Building2 size={14} />
-                                  {job.job_data.employer.name}
-                                </span>
-                              )}
-                              {job.job_data?.workplace_address?.municipality && (
-                                <span className="flex items-center gap-1">
-                                  <MapPin size={14} />
-                                  {job.job_data.workplace_address.municipality}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                          <span className={`px-3 py-1 text-xs font-medium rounded-full ${statusLabelsTranslated[job.status]?.bg} ${statusLabelsTranslated[job.status]?.color}`}>
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="font-medium text-slate-800 text-sm truncate">{job.job_data?.headline || t('resources.jobAd')}</h4>
+                          <span className={`px-2 py-0.5 text-xs font-medium rounded-full flex-shrink-0 ${statusLabelsTranslated[job.status]?.bg} ${statusLabelsTranslated[job.status]?.color}`}>
                             {statusLabelsTranslated[job.status]?.label}
                           </span>
                         </div>
-                        {job.notes && (
-                          <p className="text-sm text-slate-600 bg-slate-50 p-3 rounded-xl mt-3">
-                            <span className="font-medium">{t('resources.notes')}:</span> {job.notes}
-                          </p>
-                        )}
-                        <div className="flex items-center gap-2 mt-4">
-                          <button
-                            onClick={() => setPreviewModal({type: 'job', data: job})}
-                            className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                          >
-                            <Eye size={16} />
-                            {t('resources.viewDetails')}
-                          </button>
-                          {job.job_data?.webpage_url && (
-                            <a
-                              href={job.job_data.webpage_url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="flex items-center gap-1 px-3 py-1.5 text-sm text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
-                            >
-                              <ExternalLink size={16} />
-                              {t('resources.openAd')}
-                            </a>
+                        <div className="flex items-center gap-3 text-xs text-slate-500 mt-0.5">
+                          {job.job_data?.employer?.name && (
+                            <span className="flex items-center gap-1 truncate">
+                              <Building2 size={12} />
+                              {job.job_data.employer.name}
+                            </span>
                           )}
-                          <button
-                            onClick={() => handleDeleteJob(job.job_id)}
-                            className="ml-auto p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                          {job.job_data?.workplace_address?.municipality && (
+                            <span className="flex items-center gap-1">
+                              <MapPin size={12} />
+                              {job.job_data.workplace_address.municipality}
+                            </span>
+                          )}
                         </div>
+                      </div>
+                      <div className="flex items-center gap-1 flex-shrink-0">
+                        <button
+                          onClick={() => setPreviewModal({type: 'job', data: job})}
+                          className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                          title={t('resources.viewDetails')}
+                        >
+                          <Eye size={16} />
+                        </button>
+                        {job.job_data?.webpage_url && (
+                          <a
+                            href={job.job_data.webpage_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded transition-colors"
+                            title={t('resources.openAd')}
+                          >
+                            <ExternalLink size={16} />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => handleDeleteJob(job.job_id)}
+                          className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                          title="Ta bort"
+                        >
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     </div>
                   </div>
                 )
               })}
             </div>
+            {activeTab === 'all' && filteredJobs.length > 5 && (
+              <button
+                onClick={() => setSearchParams({ tab: 'jobs' })}
+                className="w-full mt-2 py-2 text-sm text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+              >
+                Visa alla {filteredJobs.length} jobb →
+              </button>
+            )}
           </section>
         )}
 
-        {/* Bookmarked Articles */}
+        {/* Bookmarked Articles - Compact */}
         {(activeTab === 'all' || activeTab === 'articles') && bookmarkedArticles.length > 0 && (
           <section>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                <BookOpen className="text-teal-600" size={24} />
-                {t('resources.bookmarkedArticles')}
-                <span className="text-sm font-normal text-slate-700">({bookmarkedArticles.length})</span>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
+                <BookOpen className="text-teal-600" size={18} />
+                {t('resources.bookmarkedArticles')} ({bookmarkedArticles.length})
               </h3>
               <Link
                 to="/knowledge-base"
-                className="text-sm text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
               >
                 {t('resources.explore')}
-                <ChevronRight size={16} />
+                <ChevronRight size={14} />
               </Link>
             </div>
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
               {bookmarkedArticles.map((article) => (
                 <Link
                   key={article.id}
                   to={`/knowledge-base/article/${article.id}`}
-                  className="bg-white rounded-2xl border border-slate-200 p-5 hover:shadow-lg transition-all group flex items-start gap-4"
+                  className="bg-white rounded-xl border border-slate-200 p-3 hover:shadow-md transition-all group flex items-center gap-3"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <BookOpen className="w-6 h-6 text-white" />
+                  <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-emerald-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <BookOpen className="w-4 h-4 text-white" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="inline-block px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded-full mb-2">
-                      {article.category}
-                    </span>
-                    <h4 className="font-semibold text-slate-800 group-hover:text-teal-600 transition-colors">{article.title}</h4>
-                    {article.readingTime && (
-                      <span className="text-xs text-slate-700 flex items-center gap-1 mt-1">
-                        <Clock size={12} />
-                        {article.readingTime} {t('resources.minReading')}
+                    <h4 className="font-medium text-slate-800 text-sm truncate group-hover:text-teal-600 transition-colors">{article.title}</h4>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <span className="px-1.5 py-0.5 bg-teal-100 text-teal-700 text-xs rounded">
+                        {article.category}
                       </span>
-                    )}
+                      {article.readingTime && (
+                        <span className="text-xs text-slate-400 flex items-center gap-1">
+                          <Clock size={10} />
+                          {article.readingTime} min
+                        </span>
+                      )}
+                    </div>
                   </div>
                   <button
                     onClick={(e) => {
@@ -861,9 +1087,9 @@ export default function Resources() {
                       e.stopPropagation()
                       handleRemoveBookmark(article.id)
                     }}
-                    className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
                   >
-                    <Trash2 size={18} />
+                    <Trash2 size={16} />
                   </button>
                 </Link>
               ))}
@@ -871,62 +1097,60 @@ export default function Resources() {
           </section>
         )}
 
-        {/* Uploaded Files */}
+        {/* Uploaded Files - Compact */}
         {(activeTab === 'all') && uploadedFiles.length > 0 && (
           <section>
-            <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-              <Folder className="text-amber-600" size={24} />
-              {t('resources.uploadedFiles')}
+            <h3 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
+              <Folder className="text-amber-600" size={18} />
+              {t('resources.uploadedFiles')} ({uploadedFiles.length})
             </h3>
-            <div className="grid md:grid-cols-3 gap-4">
+            <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-3">
               {uploadedFiles.map((file) => (
-                <div 
-                  key={file.id} 
-                  className="bg-white rounded-2xl border border-slate-200 p-4 hover:shadow-lg transition-all"
+                <div
+                  key={file.id}
+                  className="bg-white rounded-xl border border-slate-200 p-3 hover:shadow-md transition-all flex items-center gap-2"
                 >
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">
-                      <File className="w-5 h-5 text-amber-600" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-slate-800 truncate">{file.name}</p>
-                      <p className="text-xs text-slate-700">
-                        {file.type === 'CV' ? 'CV' : file.type === 'COVER_LETTER' ? t('resources.coverLetter') : t('resources.other')}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleDeleteFile(file.id)}
-                      className="p-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                    >
-                      <Trash2 size={16} />
-                    </button>
+                  <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <File className="w-4 h-4 text-amber-600" />
                   </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-slate-800 text-sm truncate">{file.name}</p>
+                    <p className="text-xs text-slate-500">
+                      {file.type === 'CV' ? 'CV' : file.type === 'COVER_LETTER' ? t('resources.coverLetter') : t('resources.other')}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => handleDeleteFile(file.id)}
+                    className="p-1.5 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded transition-colors"
+                  >
+                    <Trash2 size={14} />
+                  </button>
                 </div>
               ))}
             </div>
           </section>
         )}
 
-        {/* Empty State */}
+        {/* Empty State - Compact */}
         {totalItems === 0 && (
-          <div className="text-center py-16 bg-white rounded-2xl border border-slate-200 border-dashed">
-            <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Bookmark className="w-10 h-10 text-slate-600" />
+          <div className="text-center py-12 bg-white rounded-xl border border-slate-200 border-dashed">
+            <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Bookmark className="w-7 h-7 text-slate-400" />
             </div>
-            <h3 className="text-xl font-semibold text-slate-800 mb-2">{t('resources.noResourcesTitle')}</h3>
-            <p className="text-slate-600 max-w-md mx-auto mb-6">
+            <h3 className="text-lg font-semibold text-slate-800 mb-1">{t('resources.noResourcesTitle')}</h3>
+            <p className="text-sm text-slate-500 max-w-sm mx-auto mb-4">
               {t('resources.noResourcesDesc')}
             </p>
-            <div className="flex flex-wrap justify-center gap-3">
+            <div className="flex flex-wrap justify-center gap-2">
               <Link
                 to="/cv"
-                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-xl font-medium hover:from-indigo-700 hover:to-violet-700 transition-all shadow-md"
+                className="px-4 py-2 text-sm bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-violet-700 transition-all"
               >
                 {t('resources.createCV')}
               </Link>
               <Link
                 to="/job-search"
-                className="px-6 py-3 bg-white text-slate-700 border border-slate-200 rounded-xl font-medium hover:bg-slate-50 transition-all"
+                className="px-4 py-2 text-sm bg-white text-slate-700 border border-slate-200 rounded-lg font-medium hover:bg-slate-50 transition-all"
               >
                 {t('resources.searchJobs')}
               </Link>
@@ -935,50 +1159,181 @@ export default function Resources() {
         )}
       </div>
 
-      {/* Preview Modal */}
+      {/* Preview Modal - Full CV Details */}
       {previewModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[80vh] overflow-auto">
-            <div className="sticky top-0 bg-white border-b border-slate-200 p-4 flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-slate-800">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onClick={() => setPreviewModal(null)}>
+          <div className="bg-white rounded-xl max-w-3xl w-full max-h-[85vh] overflow-auto" onClick={e => e.stopPropagation()}>
+            <div className="sticky top-0 bg-white border-b border-slate-200 p-3 flex items-center justify-between z-10">
+              <h3 className="font-semibold text-slate-800">
                 {previewModal.type === 'cv' && `${t('resources.preview')} - CV`}
-                {previewModal.type === 'letter' && previewModal.data.title}
-                {previewModal.type === 'job' && previewModal.data.job_data?.headline}
+                {previewModal.type === 'letter' && (previewModal.data as CoverLetter).title}
+                {previewModal.type === 'job' && (previewModal.data as SavedJob).job_data?.headline}
               </h3>
               <button
                 onClick={() => setPreviewModal(null)}
-                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-            <div className="p-6">
-              {previewModal.type === 'cv' && (
-                <div className="space-y-6">
-                  <div>
-                    <h2 className="text-2xl font-bold text-slate-800">
-                      {previewModal.data.first_name} {previewModal.data.last_name}
-                    </h2>
-                    {previewModal.data.title && (
-                      <p className="text-lg text-slate-600">{previewModal.data.title}</p>
-                    )}
-                  </div>
-                  {previewModal.data.summary && (
-                    <div>
-                      <h3 className="font-semibold text-slate-700 mb-2">{t('resources.summary')}</h3>
-                      <p className="text-slate-600">{previewModal.data.summary}</p>
+            <div className="p-4">
+              {previewModal.type === 'cv' && (() => {
+                const cv = previewModal.data as CVData
+                return (
+                  <div className="space-y-5">
+                    {/* Header */}
+                    <div className="border-b border-slate-100 pb-4">
+                      <h2 className="text-xl font-bold text-slate-800">
+                        {cv.first_name} {cv.last_name}
+                      </h2>
+                      {cv.title && <p className="text-slate-600">{cv.title}</p>}
+                      <div className="flex flex-wrap gap-3 mt-2 text-sm text-slate-500">
+                        {cv.email && <span className="flex items-center gap-1"><Mail size={14} />{cv.email}</span>}
+                        {cv.phone && <span className="flex items-center gap-1"><Phone size={14} />{cv.phone}</span>}
+                        {cv.location && <span className="flex items-center gap-1"><MapPinned size={14} />{cv.location}</span>}
+                      </div>
                     </div>
-                  )}
-                </div>
-              )}
+
+                    {/* Summary */}
+                    {cv.summary && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-700 mb-1">Sammanfattning</h3>
+                        <p className="text-sm text-slate-600">{cv.summary}</p>
+                      </div>
+                    )}
+
+                    {/* Work Experience */}
+                    {cv.work_experience && cv.work_experience.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                          <Briefcase size={16} className="text-blue-500" />
+                          Arbetslivserfarenhet
+                        </h3>
+                        <div className="space-y-3">
+                          {cv.work_experience.map((job, i) => (
+                            <div key={i} className="pl-4 border-l-2 border-blue-200">
+                              <p className="font-medium text-slate-800">{job.title}</p>
+                              <p className="text-sm text-slate-600">{job.company}</p>
+                              <p className="text-xs text-slate-400">
+                                {job.startDate} - {job.current ? 'Nuvarande' : job.endDate}
+                              </p>
+                              {job.description && (
+                                <p className="text-sm text-slate-500 mt-1">{job.description}</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Education */}
+                    {cv.education && cv.education.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                          <GraduationCap size={16} className="text-purple-500" />
+                          Utbildning
+                        </h3>
+                        <div className="space-y-2">
+                          {cv.education.map((edu, i) => (
+                            <div key={i} className="pl-4 border-l-2 border-purple-200">
+                              <p className="font-medium text-slate-800">{edu.degree}</p>
+                              <p className="text-sm text-slate-600">{edu.school}</p>
+                              <p className="text-xs text-slate-400">{edu.startDate} - {edu.endDate}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Skills */}
+                    {cv.skills && cv.skills.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                          <Wrench size={16} className="text-amber-500" />
+                          Kompetenser
+                        </h3>
+                        <div className="flex flex-wrap gap-1.5">
+                          {cv.skills.map((skill, i) => (
+                            <span key={i} className="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded">
+                              {typeof skill === 'string' ? skill : (skill as { name: string }).name}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Languages */}
+                    {cv.languages && cv.languages.length > 0 && (
+                      <div>
+                        <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
+                          <Languages size={16} className="text-teal-500" />
+                          Språk
+                        </h3>
+                        <div className="flex flex-wrap gap-2">
+                          {cv.languages.map((lang, i) => (
+                            <span key={i} className="px-2 py-1 bg-teal-50 text-teal-700 text-xs rounded">
+                              {lang.language} ({lang.level})
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Download Buttons */}
+                    <div className="pt-3 border-t border-slate-100 flex gap-2">
+                      <button
+                        onClick={() => handleDownloadCV('pdf')}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors"
+                      >
+                        <FileDown size={14} />
+                        Ladda ner PDF
+                      </button>
+                      <button
+                        onClick={() => handleDownloadCV('word')}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                      >
+                        <FileDown size={14} />
+                        Ladda ner Word
+                      </button>
+                    </div>
+                  </div>
+                )
+              })()}
               {previewModal.type === 'letter' && (
-                <div className="prose max-w-none">
-                  <p className="text-slate-600 whitespace-pre-wrap">{previewModal.data.content}</p>
+                <div>
+                  <p className="text-sm text-slate-600 whitespace-pre-wrap">{(previewModal.data as CoverLetter).content}</p>
+                  <div className="pt-3 mt-4 border-t border-slate-100 flex gap-2">
+                    <button
+                      onClick={() => handleDownloadLetter(previewModal.data as CoverLetter, 'pdf')}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors"
+                    >
+                      <FileDown size={14} />
+                      Ladda ner PDF
+                    </button>
+                    <button
+                      onClick={() => handleDownloadLetter(previewModal.data as CoverLetter, 'word')}
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                    >
+                      <FileDown size={14} />
+                      Ladda ner Word
+                    </button>
+                  </div>
                 </div>
               )}
               {previewModal.type === 'job' && (
-                <div className="space-y-4">
-                  <p className="text-slate-600">{previewModal.data.job_data?.description?.text}</p>
+                <div className="space-y-3">
+                  <p className="text-sm text-slate-600">{(previewModal.data as SavedJob).job_data?.description?.text}</p>
+                  {(previewModal.data as SavedJob).job_data?.webpage_url && (
+                    <a
+                      href={(previewModal.data as SavedJob).job_data!.webpage_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
+                    >
+                      <ExternalLink size={14} />
+                      Öppna annons
+                    </a>
+                  )}
                 </div>
               )}
             </div>
