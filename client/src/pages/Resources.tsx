@@ -44,6 +44,7 @@ import {
 import { savedJobsApi, articleBookmarksApi } from '@/services/cloudStorage'
 import { cvApi, coverLetterApi, interestApi } from '@/services/supabaseApi'
 import { PageLayout } from '@/components/layout/index'
+import { PDFExportButton } from '@/components/pdf/PDFExportButton'
 // NOTE: jsPDF and docx are dynamically imported in export functions to reduce bundle size
 
 // Types
@@ -227,122 +228,6 @@ function DocumentCard({
 }
 
 // PDF Export Functions
-async function generateCVPDF(cvData: CVData) {
-  const { default: jsPDF } = await import('jspdf')
-  const doc = new jsPDF()
-  const pageWidth = doc.internal.pageSize.getWidth()
-  const margin = 20
-  let y = 20
-
-  doc.setFontSize(24)
-  doc.setTextColor(79, 70, 229)
-  doc.text(`${cvData.firstName || ''} ${cvData.lastName || ''}`, margin, y)
-  y += 10
-
-  if (cvData.title) {
-    doc.setFontSize(14)
-    doc.setTextColor(100, 100, 100)
-    doc.text(cvData.title, margin, y)
-    y += 15
-  }
-
-  doc.setFontSize(10)
-  doc.setTextColor(60, 60, 60)
-  const contactInfo = []
-  if (cvData.email) contactInfo.push(cvData.email)
-  if (cvData.phone) contactInfo.push(cvData.phone)
-  if (cvData.location) contactInfo.push(cvData.location)
-
-  if (contactInfo.length > 0) {
-    doc.text(contactInfo.join(' | '), margin, y)
-    y += 10
-  }
-
-  if (cvData.summary) {
-    doc.setFontSize(12)
-    doc.setTextColor(79, 70, 229)
-    doc.text('Sammanfattning', margin, y)
-    y += 8
-    doc.setFontSize(10)
-    doc.setTextColor(60, 60, 60)
-    const splitSummary = doc.splitTextToSize(cvData.summary, pageWidth - 2 * margin)
-    doc.text(splitSummary, margin, y)
-    y += splitSummary.length * 5 + 10
-  }
-
-  if (cvData.workExperience && cvData.workExperience.length > 0) {
-    doc.setFontSize(12)
-    doc.setTextColor(79, 70, 229)
-    doc.text('Arbetslivserfarenhet', margin, y)
-    y += 8
-    cvData.workExperience.forEach((job) => {
-      if (y > 250) { doc.addPage(); y = 20 }
-      doc.setFontSize(11)
-      doc.setTextColor(40, 40, 40)
-      doc.text(job.title, margin, y)
-      y += 6
-      doc.setFontSize(10)
-      doc.setTextColor(100, 100, 100)
-      doc.text(`${job.company} | ${job.startDate || ''} - ${job.current ? 'Nuvarande' : job.endDate || ''}`, margin, y)
-      y += 6
-      if (job.description) {
-        doc.setFontSize(9)
-        doc.setTextColor(80, 80, 80)
-        const splitDesc = doc.splitTextToSize(job.description, pageWidth - 2 * margin)
-        doc.text(splitDesc, margin, y)
-        y += splitDesc.length * 4 + 8
-      }
-    })
-  }
-
-  if (cvData.education && cvData.education.length > 0) {
-    if (y > 220) { doc.addPage(); y = 20 }
-    doc.setFontSize(12)
-    doc.setTextColor(79, 70, 229)
-    doc.text('Utbildning', margin, y)
-    y += 8
-    cvData.education.forEach((edu) => {
-      if (y > 250) { doc.addPage(); y = 20 }
-      doc.setFontSize(11)
-      doc.setTextColor(40, 40, 40)
-      doc.text(edu.degree, margin, y)
-      y += 6
-      doc.setFontSize(10)
-      doc.setTextColor(100, 100, 100)
-      doc.text(`${edu.school} | ${edu.startDate || ''} - ${edu.endDate || ''}`, margin, y)
-      y += 8
-    })
-  }
-
-  if (cvData.skills && cvData.skills.length > 0) {
-    if (y > 250) { doc.addPage(); y = 20 }
-    doc.setFontSize(12)
-    doc.setTextColor(79, 70, 229)
-    doc.text('Kompetenser', margin, y)
-    y += 8
-    doc.setFontSize(10)
-    doc.setTextColor(60, 60, 60)
-    const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : (s as { name: string }).name).join(', ')
-    const splitSkills = doc.splitTextToSize(skillsText, pageWidth - 2 * margin)
-    doc.text(splitSkills, margin, y)
-    y += splitSkills.length * 5 + 10
-  }
-
-  if (cvData.languages && cvData.languages.length > 0) {
-    if (y > 250) { doc.addPage(); y = 20 }
-    doc.setFontSize(12)
-    doc.setTextColor(79, 70, 229)
-    doc.text('Språk', margin, y)
-    y += 8
-    doc.setFontSize(10)
-    doc.setTextColor(60, 60, 60)
-    const langText = cvData.languages.map(l => `${l.language} (${l.level})`).join(', ')
-    doc.text(langText, margin, y)
-  }
-
-  doc.save(`CV-${cvData.firstName || 'Mitt'}-${cvData.lastName || ''}.pdf`)
-}
-
 async function generateCoverLetterPDF(letter: CoverLetter) {
   const { default: jsPDF } = await import('jspdf')
   const doc = new jsPDF()
@@ -380,98 +265,6 @@ async function generateCoverLetterPDF(letter: CoverLetter) {
 }
 
 // Word (DOCX) Export Functions
-async function generateCVWord(cvData: CVData) {
-  const { Document, Packer, Paragraph, TextRun, HeadingLevel } = await import('docx')
-  const { saveAs } = await import('file-saver')
-
-  const children: Paragraph[] = []
-
-  // Name
-  children.push(new Paragraph({
-    children: [new TextRun({ text: `${cvData.firstName || ''} ${cvData.lastName || ''}`, bold: true, size: 48, color: '4F46E5' })],
-    spacing: { after: 100 }
-  }))
-
-  // Title
-  if (cvData.title) {
-    children.push(new Paragraph({
-      children: [new TextRun({ text: cvData.title, size: 28, color: '666666' })],
-      spacing: { after: 200 }
-    }))
-  }
-
-  // Contact Info
-  const contactParts = []
-  if (cvData.email) contactParts.push(cvData.email)
-  if (cvData.phone) contactParts.push(cvData.phone)
-  if (cvData.location) contactParts.push(cvData.location)
-  if (contactParts.length > 0) {
-    children.push(new Paragraph({
-      children: [new TextRun({ text: contactParts.join(' • '), size: 22, color: '666666' })],
-      spacing: { after: 300 }
-    }))
-  }
-
-  // Summary
-  if (cvData.summary) {
-    children.push(new Paragraph({ text: 'Sammanfattning', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
-    children.push(new Paragraph({ children: [new TextRun({ text: cvData.summary, size: 22 })], spacing: { after: 200 } }))
-  }
-
-  // Work Experience
-  if (cvData.workExperience && cvData.workExperience.length > 0) {
-    children.push(new Paragraph({ text: 'Arbetslivserfarenhet', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
-    cvData.workExperience.forEach(job => {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: job.title, bold: true, size: 24 })],
-        spacing: { before: 150 }
-      }))
-      children.push(new Paragraph({
-        children: [new TextRun({ text: `${job.company} • ${job.startDate || ''} - ${job.current ? 'Nuvarande' : job.endDate || ''}`, size: 22, color: '666666' })]
-      }))
-      if (job.description) {
-        children.push(new Paragraph({
-          children: [new TextRun({ text: job.description, size: 22 })],
-          spacing: { after: 100 }
-        }))
-      }
-    })
-  }
-
-  // Education
-  if (cvData.education && cvData.education.length > 0) {
-    children.push(new Paragraph({ text: 'Utbildning', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
-    cvData.education.forEach(edu => {
-      children.push(new Paragraph({
-        children: [new TextRun({ text: edu.degree, bold: true, size: 24 })],
-        spacing: { before: 150 }
-      }))
-      children.push(new Paragraph({
-        children: [new TextRun({ text: `${edu.school} • ${edu.startDate || ''} - ${edu.endDate || ''}`, size: 22, color: '666666' })],
-        spacing: { after: 100 }
-      }))
-    })
-  }
-
-  // Skills
-  if (cvData.skills && cvData.skills.length > 0) {
-    children.push(new Paragraph({ text: 'Kompetenser', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
-    const skillsText = cvData.skills.map(s => typeof s === 'string' ? s : (s as { name: string }).name).join(', ')
-    children.push(new Paragraph({ children: [new TextRun({ text: skillsText, size: 22 })], spacing: { after: 100 } }))
-  }
-
-  // Languages
-  if (cvData.languages && cvData.languages.length > 0) {
-    children.push(new Paragraph({ text: 'Språk', heading: HeadingLevel.HEADING_2, spacing: { before: 300, after: 100 } }))
-    const langText = cvData.languages.map(l => `${l.language} (${l.level})`).join(', ')
-    children.push(new Paragraph({ children: [new TextRun({ text: langText, size: 22 })], spacing: { after: 100 } }))
-  }
-
-  const doc = new Document({ sections: [{ children }] })
-  const blob = await Packer.toBlob(doc)
-  saveAs(blob, `CV-${cvData.firstName || 'Mitt'}-${cvData.lastName || ''}.docx`)
-}
-
 async function generateCoverLetterWord(letter: CoverLetter) {
   const { Document, Packer, Paragraph, TextRun, HeadingLevel } = await import('docx')
   const { saveAs } = await import('file-saver')
@@ -579,15 +372,6 @@ export default function Resources() {
 
   const handleDeleteFile = async (fileId: string) => {
     setUploadedFiles(prev => prev.filter(f => f.id !== fileId))
-  }
-
-  const handleDownloadCV = async (format: 'pdf' | 'word' = 'pdf') => {
-    if (!cvData) return
-    if (format === 'word') {
-      await generateCVWord(cvData)
-    } else {
-      await generateCVPDF(cvData)
-    }
   }
 
   const handleDownloadLetter = async (letter: CoverLetter, format: 'pdf' | 'word' = 'pdf') => {
@@ -791,28 +575,14 @@ export default function Resources() {
                           <Eye size={14} />
                           Visa
                         </button>
-                        <button
-                          onClick={async () => {
-                            if (versionData) {
-                              await generateCVPDF(versionData as CVData)
-                            }
-                          }}
-                          className="flex items-center gap-1 px-2 py-1 text-xs bg-amber-500 text-white rounded hover:bg-amber-600 transition-colors"
-                        >
-                          <FileDown size={14} />
-                          PDF
-                        </button>
-                        <button
-                          onClick={async () => {
-                            if (versionData) {
-                              await generateCVWord(versionData as CVData)
-                            }
-                          }}
-                          className="flex items-center gap-1 px-2 py-1 text-xs bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-                        >
-                          <FileDown size={14} />
-                          Word
-                        </button>
+                        <PDFExportButton
+                          type="cv"
+                          data={versionData}
+                          filename={`CV_${versionData.firstName || ''}_${versionData.lastName || ''}.pdf`}
+                          variant="light"
+                          size="sm"
+                          showPreview={false}
+                        />
                       </div>
                     </div>
                   </div>
@@ -845,20 +615,14 @@ export default function Resources() {
                     <Edit2 className="w-3.5 h-3.5" />
                     {t('resources.edit')}
                   </Link>
-                  <button
-                    onClick={() => handleDownloadCV('pdf')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors"
-                  >
-                    <FileDown className="w-3.5 h-3.5" />
-                    PDF
-                  </button>
-                  <button
-                    onClick={() => handleDownloadCV('word')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
-                  >
-                    <FileDown className="w-3.5 h-3.5" />
-                    Word
-                  </button>
+                  <PDFExportButton
+                    type="cv"
+                    data={cvData}
+                    filename={`CV_${cvData.firstName || ''}_${cvData.lastName || ''}.pdf`}
+                    variant="primary"
+                    size="sm"
+                    showPreview={false}
+                  />
                 </div>
               </div>
             </div>
@@ -1293,20 +1057,14 @@ export default function Resources() {
 
                     {/* Download Buttons */}
                     <div className="pt-3 border-t border-slate-100 flex gap-2">
-                      <button
-                        onClick={() => handleDownloadCV('pdf')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-amber-500 text-white rounded-lg font-medium hover:bg-amber-600 transition-colors"
-                      >
-                        <FileDown size={14} />
-                        Ladda ner PDF
-                      </button>
-                      <button
-                        onClick={() => handleDownloadCV('word')}
-                        className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
-                      >
-                        <FileDown size={14} />
-                        Ladda ner Word
-                      </button>
+                      <PDFExportButton
+                        type="cv"
+                        data={cv}
+                        filename={`CV_${cv.firstName || ''}_${cv.lastName || ''}.pdf`}
+                        variant="primary"
+                        size="sm"
+                        showPreview={false}
+                      />
                     </div>
                   </div>
                 )
