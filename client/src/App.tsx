@@ -128,14 +128,11 @@ function PrivateRoute({
   return <>{children}</>
 }
 
-// Public route - redirect if authenticated
-function PublicRoute({ children }: { children: React.ReactNode }) {
-  console.log('[DEBUG] 8. PublicRoute rendering')
+// Public route - only show content for unauthenticated users
+function PublicRoute({ children, redirectTo = "/" }: { children: React.ReactNode, redirectTo?: string }) {
   const { isAuthenticated, isLoading } = useAuthStore()
-  console.log('[DEBUG] 8a. PublicRoute: isAuthenticated=', isAuthenticated, 'isLoading=', isLoading)
 
   if (isLoading) {
-    console.log('[DEBUG] 8b. PublicRoute: showing loader')
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-slate-800">
         <Loader2 className="animate-spin text-white" size={48} />
@@ -144,12 +141,30 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
   }
 
   if (isAuthenticated) {
-    console.log('[DEBUG] 8c. PublicRoute: redirecting authenticated user')
-    return <Navigate to="/" replace />
+    return <Navigate to={redirectTo} replace />
   }
 
-  console.log('[DEBUG] 8d. PublicRoute: rendering children (Landing)')
   return <>{children}</>
+}
+
+// Root route - shows Landing for guests, Layout with Dashboard for authenticated users
+function RootRoute() {
+  const { isAuthenticated, isLoading } = useAuthStore()
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-600 to-slate-800">
+        <Loader2 className="animate-spin text-white" size={48} />
+      </div>
+    )
+  }
+
+  if (!isAuthenticated) {
+    return <Landing />
+  }
+
+  // Authenticated users see the dashboard inside the layout
+  return <Layout />
 }
 
 function App() {
@@ -185,19 +200,14 @@ function App() {
   return (
     <>
       <Routes>
-        {/* Public routes - using simple fallback for Landing */}
-        <Route path="/" element={
-          <PublicRoute>
-            <SimpleLanding />
-          </PublicRoute>
-        } />
+        {/* Auth routes - redirect if already logged in */}
         <Route path="/login" element={
-          <PublicRoute>
+          <PublicRoute redirectTo="/">
             <Login />
           </PublicRoute>
         } />
         <Route path="/register" element={
-          <PublicRoute>
+          <PublicRoute redirectTo="/">
             <Register />
           </PublicRoute>
         } />
@@ -207,17 +217,14 @@ function App() {
           </LazyRoute>
         } />
 
-        {/* Legal pages */}
+        {/* Legal pages - always accessible */}
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/ai-policy" element={<AiPolicy />} />
 
-        {/* Protected routes with Layout */}
-        <Route path="/" element={
-          <PrivateRoute>
-            <Layout />
-          </PrivateRoute>
-        }>
+        {/* Root route - shows Landing or Layout based on auth */}
+        <Route path="/" element={<RootRoute />}>
+          {/* Nested routes for authenticated users */}
           <Route index element={
             <LazyRoute>
               <RouteErrorBoundary>
@@ -254,33 +261,15 @@ function App() {
           } />
         </Route>
 
-        {/* Redirects */}
+        {/* Legacy redirects */}
         <Route path="/dashboard" element={<Navigate to="/" replace />} />
         <Route path="/dashboard/*" element={<Navigate to="/" replace />} />
+
+        {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <CookieConsent />
     </>
-  )
-}
-
-// Simple landing page fallback while we fix the real one
-function SimpleLanding() {
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-violet-600 to-indigo-800 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-md w-full text-center">
-        <h1 className="text-3xl font-bold text-slate-800 mb-4">Välkommen till Jobin</h1>
-        <p className="text-slate-600 mb-8">Din AI-drivna karriärassistent för jobbsökande</p>
-        <div className="space-y-4">
-          <a href="#/login" className="block w-full py-3 px-6 bg-violet-600 text-white rounded-xl font-semibold hover:bg-violet-700 transition">
-            Logga in
-          </a>
-          <a href="#/register" className="block w-full py-3 px-6 border-2 border-violet-600 text-violet-600 rounded-xl font-semibold hover:bg-violet-50 transition">
-            Skapa konto
-          </a>
-        </div>
-      </div>
-    </div>
   )
 }
 

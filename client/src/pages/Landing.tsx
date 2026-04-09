@@ -1,8 +1,5 @@
-console.log('[DEBUG] 9. Landing.tsx module loaded')
-
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useAuthStore } from '@/stores/authStore'
 import {
   Check,
   Shield,
@@ -25,7 +22,6 @@ import {
   Search,
   BookOpen,
   Star,
-  User,
   MapPin,
   Building2,
   Users,
@@ -378,13 +374,10 @@ function TestimonialCard({ quote, name, role, gradient }: {
 }
 
 export default function Landing() {
-  console.log('[DEBUG] 10. Landing component rendering')
   const { t } = useTranslation()
-  console.log('[DEBUG] 10a. useTranslation called')
   const [openFAQ, setOpenFAQ] = useState<number | null>(null)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  console.log('[DEBUG] 10b. Landing state initialized')
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
