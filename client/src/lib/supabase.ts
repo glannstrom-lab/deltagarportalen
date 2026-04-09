@@ -22,9 +22,10 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
     storageKey: 'supabase.auth.token',
     // Disable Navigator LockManager to prevent timeout issues
     // This can cause issues with multiple tabs but prevents white screen crashes
-    lock: 'no-op',
-    // Increase lock timeout as fallback (default is 10000ms)
-    lockAcquireTimeout: 5000,
+    lock: async (name: string, acquireTimeout: number, fn: () => Promise<unknown>) => {
+      // No-op lock - just execute the function directly without locking
+      return await fn()
+    },
   },
   realtime: {
     params: {
