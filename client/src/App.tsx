@@ -250,13 +250,13 @@ function App() {
           <Route path="education/*" element={<LazyRoute><RouteErrorBoundary><Education /></RouteErrorBoundary></LazyRoute>} />
           <Route path="calendar" element={<LazyRoute><RouteErrorBoundary><Calendar /></RouteErrorBoundary></LazyRoute>} />
           <Route path="journey" element={<LazyRoute><RouteErrorBoundary><Journey /></RouteErrorBoundary></LazyRoute>} />
-          <Route path="spontanansökan" element={<LazyRoute><RouteErrorBoundary><Spontaneous /></RouteErrorBoundary></LazyRoute>} />
-          <Route path="personal-brand" element={<LazyRoute><RouteErrorBoundary><PersonalBrand /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="spontanansökan/*" element={<LazyRoute><RouteErrorBoundary><Spontaneous /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="personal-brand/*" element={<LazyRoute><RouteErrorBoundary><PersonalBrand /></RouteErrorBoundary></LazyRoute>} />
           <Route path="linkedin-optimizer" element={<LazyRoute><RouteErrorBoundary><LinkedInOptimizer /></RouteErrorBoundary></LazyRoute>} />
           <Route path="skills-gap-analysis" element={<LazyRoute><RouteErrorBoundary><SkillsGapAnalysis /></RouteErrorBoundary></LazyRoute>} />
           <Route path="interview-simulator" element={<LazyRoute><RouteErrorBoundary><InterviewSimulator /></RouteErrorBoundary></LazyRoute>} />
           <Route path="exercises" element={<LazyRoute><RouteErrorBoundary><Exercises /></RouteErrorBoundary></LazyRoute>} />
-          <Route path="international" element={<LazyRoute><RouteErrorBoundary><International /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="international/*" element={<LazyRoute><RouteErrorBoundary><International /></RouteErrorBoundary></LazyRoute>} />
           <Route path="consultant/*" element={
             <PrivateRoute allowedRoles={['CONSULTANT', 'ADMIN', 'SUPERADMIN']}>
               <LazyRoute><RouteErrorBoundary><Consultant /></RouteErrorBoundary></LazyRoute>
