@@ -14,7 +14,6 @@ export function Sidebar({ onClose }: SidebarProps) {
   const location = useLocation()
   const { t } = useTranslation()
   const { profile, signOut } = useAuthStore()
-  const [isExpanded, setIsExpanded] = useState(true)
   const [expandedGroups, setExpandedGroups] = useState<string[]>(['overview', 'job-search', 'development', 'wellbeing', 'resources'])
 
   useEffect(() => {
@@ -34,12 +33,6 @@ export function Sidebar({ onClose }: SidebarProps) {
         : [...prev, groupId]
     )
   }
-
-  const Tooltip = ({ children }: { children: React.ReactNode }) => (
-    <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
-      {children}
-    </div>
-  )
 
   const NavLinkComponent = ({
     to,
@@ -82,23 +75,18 @@ export function Sidebar({ onClose }: SidebarProps) {
             ? 'bg-violet-100 dark:bg-violet-900/30 text-violet-800 dark:text-violet-300 font-medium'
             : 'text-violet-700/70 dark:text-violet-500/70 hover:bg-violet-50 dark:hover:bg-stone-700 hover:text-violet-800 dark:hover:text-violet-400'),
           // Danger variant
-          variant === 'danger' && 'text-rose-600/70 dark:text-rose-400/70 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-700 dark:hover:text-rose-400',
-          !isExpanded && 'justify-center px-2'
+          variant === 'danger' && 'text-rose-600/70 dark:text-rose-400/70 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-700 dark:hover:text-rose-400'
         )}
       >
-        <Icon className={cn('w-5 h-5 flex-shrink-0 transition-colors', !isExpanded && 'w-5 h-5')} />
-        {isExpanded ? (
-          <span className="text-sm truncate flex items-center gap-2">
-            {label}
-            {showBadge && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-teal-500 text-white rounded-full">
-                Ny
-              </span>
-            )}
-          </span>
-        ) : (
-          <Tooltip>{label}</Tooltip>
-        )}
+        <Icon className="w-5 h-5 flex-shrink-0 transition-colors" />
+        <span className="text-sm truncate flex items-center gap-2">
+          {label}
+          {showBadge && (
+            <span className="px-1.5 py-0.5 text-[10px] font-bold bg-teal-500 text-white rounded-full">
+              Ny
+            </span>
+          )}
+        </span>
       </Link>
     )
   }
@@ -108,65 +96,35 @@ export function Sidebar({ onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'h-full flex flex-col transition-all duration-300',
+        'h-full flex flex-col transition-all duration-300 w-64',
         'bg-gradient-to-b from-teal-50 via-white to-stone-50',
         'dark:from-stone-900 dark:via-stone-900 dark:to-stone-950',
-        'border-r border-teal-100 dark:border-stone-700',
-        isExpanded ? 'w-64' : 'w-16'
+        'border-r border-teal-100 dark:border-stone-700'
       )}
     >
-      {/* Logo */}
-      <div className="p-4 flex items-center justify-between border-b border-teal-100/50 dark:border-stone-700">
-        <Link to="/" className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-teal-200 dark:shadow-none">
-            <span className="text-white font-bold text-lg">J</span>
-          </div>
-          {isExpanded && (
-            <span className="text-gray-800 dark:text-gray-100 font-semibold text-lg tracking-tight">Jobin</span>
-          )}
-        </Link>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="text-gray-400 dark:text-gray-500 hover:text-teal-600 dark:hover:text-teal-400 p-1.5 rounded-lg hover:bg-teal-50 dark:hover:bg-stone-700 transition-colors"
-          aria-label={isExpanded ? t('sidebar.minimize') : t('sidebar.expand')}
-          aria-expanded={isExpanded}
-        >
-          <svg
-            className={cn('w-4 h-4 transition-transform', !isExpanded && 'rotate-180')}
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
-          </svg>
-        </button>
-      </div>
-
       {/* Navigation with Groups */}
-      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
+      <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
         {navGroups.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
 
           return (
             <div key={group.id} className="space-y-0.5">
               {/* Group Header */}
-              {isExpanded && (
-                <button
-                  onClick={() => toggleGroup(group.id)}
-                  className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-teal-700/70 dark:text-teal-400/70 uppercase tracking-wider hover:text-teal-800 dark:hover:text-teal-300 transition-colors rounded-lg hover:bg-teal-50/50 dark:hover:bg-stone-700/50"
-                >
-                  <span>{t(group.labelKey)}</span>
-                  <ChevronDown
-                    className={cn(
-                      'w-3.5 h-3.5 transition-transform text-teal-500 dark:text-teal-400',
-                      !isGroupExpanded && '-rotate-90'
-                    )}
-                  />
-                </button>
-              )}
+              <button
+                onClick={() => toggleGroup(group.id)}
+                className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-teal-700/70 dark:text-teal-400/70 uppercase tracking-wider hover:text-teal-800 dark:hover:text-teal-300 transition-colors rounded-lg hover:bg-teal-50/50 dark:hover:bg-stone-700/50"
+              >
+                <span>{t(group.labelKey)}</span>
+                <ChevronDown
+                  className={cn(
+                    'w-3.5 h-3.5 transition-transform text-teal-500 dark:text-teal-400',
+                    !isGroupExpanded && '-rotate-90'
+                  )}
+                />
+              </button>
 
               {/* Group Items */}
-              {(isGroupExpanded || !isExpanded) && (
+              {isGroupExpanded && (
                 <div className="space-y-0.5">
                   {group.items.map((item) => {
                     const isActive = location.pathname === item.path || location.pathname.startsWith(`${item.path}/`)
@@ -189,12 +147,10 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {/* Consultant Section */}
         {isConsultant && !isUser && (
-          <div className={cn('mt-3 pt-3 border-t border-teal-100 dark:border-stone-700', isExpanded ? 'mx-0' : 'mx-0')}>
-            {isExpanded && (
-              <p className="text-[11px] font-semibold text-violet-600/70 dark:text-violet-400/70 uppercase tracking-wider mb-1.5 px-3">
-                {t('sidebar.consultantSection')}
-              </p>
-            )}
+          <div className="mt-3 pt-3 border-t border-teal-100 dark:border-stone-700">
+            <p className="text-[11px] font-semibold text-violet-600/70 dark:text-violet-400/70 uppercase tracking-wider mb-1.5 px-3">
+              {t('sidebar.consultantSection')}
+            </p>
             <div className="space-y-0.5">
               {consultantNavItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path)
@@ -215,12 +171,10 @@ export function Sidebar({ onClose }: SidebarProps) {
 
         {/* Admin Section */}
         {isAdmin && (
-          <div className={cn('mt-3 pt-3 border-t border-teal-100 dark:border-stone-700', isExpanded ? 'mx-0' : 'mx-0')}>
-            {isExpanded && (
-              <p className="text-[11px] font-semibold text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider mb-1.5 px-3">
-                {t('sidebar.adminSection')}
-              </p>
-            )}
+          <div className="mt-3 pt-3 border-t border-teal-100 dark:border-stone-700">
+            <p className="text-[11px] font-semibold text-amber-600/70 dark:text-amber-400/70 uppercase tracking-wider mb-1.5 px-3">
+              {t('sidebar.adminSection')}
+            </p>
             <div className="space-y-0.5">
               {adminNavItems.map((item) => {
                 const isActive = location.pathname.startsWith(item.path)
@@ -243,16 +197,14 @@ export function Sidebar({ onClose }: SidebarProps) {
       {/* User Profile & Logout */}
       <div className="p-3 border-t border-teal-100 dark:border-stone-700 bg-gradient-to-b from-transparent to-teal-50/50 dark:to-stone-800/50">
         {/* Show active role */}
-        {isExpanded && (
-          <div className="mb-2 px-3 py-2 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-100 dark:border-teal-800/30">
-            <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-medium">{t('roles.activeRole')}</p>
-            <p className="text-xs font-semibold text-teal-800 dark:text-teal-300">
-              {activeRole === 'SUPERADMIN' ? t('roles.superadmin') :
-               activeRole === 'ADMIN' ? t('roles.admin') :
-               activeRole === 'CONSULTANT' ? t('roles.consultant') : t('roles.participant')}
-            </p>
-          </div>
-        )}
+        <div className="mb-2 px-3 py-2 bg-teal-50 dark:bg-teal-900/20 rounded-lg border border-teal-100 dark:border-teal-800/30">
+          <p className="text-[10px] text-teal-600 dark:text-teal-400 uppercase tracking-wider font-medium">{t('roles.activeRole')}</p>
+          <p className="text-xs font-semibold text-teal-800 dark:text-teal-300">
+            {activeRole === 'SUPERADMIN' ? t('roles.superadmin') :
+             activeRole === 'ADMIN' ? t('roles.admin') :
+             activeRole === 'CONSULTANT' ? t('roles.consultant') : t('roles.participant')}
+          </p>
+        </div>
 
         <div className="flex items-center gap-3 mb-3 px-1">
           <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-teal-500 dark:from-teal-600 dark:to-teal-700 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-md shadow-teal-200 dark:shadow-none">
@@ -264,16 +216,14 @@ export function Sidebar({ onClose }: SidebarProps) {
               </span>
             )}
           </div>
-          {isExpanded && (
-            <div className="flex-1 min-w-0">
-              <p className="text-gray-800 dark:text-gray-100 text-sm font-medium truncate">
-                {user?.first_name || user?.email}
-              </p>
-              <p className="text-gray-500 dark:text-gray-400 text-xs truncate leading-tight">
-                {user?.email}
-              </p>
-            </div>
-          )}
+          <div className="flex-1 min-w-0">
+            <p className="text-gray-800 dark:text-gray-100 text-sm font-medium truncate">
+              {user?.first_name || user?.email}
+            </p>
+            <p className="text-gray-500 dark:text-gray-400 text-xs truncate leading-tight">
+              {user?.email}
+            </p>
+          </div>
         </div>
 
         <div className="space-y-0.5">
@@ -286,21 +236,11 @@ export function Sidebar({ onClose }: SidebarProps) {
 
           <button
             onClick={() => signOut()}
-            className={cn(
-              'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
-              'text-rose-600/70 dark:text-rose-400/70 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-700 dark:hover:text-rose-400 group relative',
-              !isExpanded && 'justify-center px-2'
-            )}
+            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-rose-600/70 dark:text-rose-400/70 hover:bg-rose-50 dark:hover:bg-rose-900/20 hover:text-rose-700 dark:hover:text-rose-400"
             aria-label={t('nav.logout')}
           >
-            <LogOut className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-5 h-5')} />
-            {isExpanded ? (
-              <span className="text-sm">{t('nav.logout')}</span>
-            ) : (
-              <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
-                {t('nav.logout')}
-              </div>
-            )}
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            <span className="text-sm">{t('nav.logout')}</span>
           </button>
         </div>
       </div>
