@@ -55,7 +55,7 @@ const InviteHandler = lazy(() => import('./components/auth/InviteHandler'))
 const Salary = lazy(() => import('./pages/Salary'))
 const International = lazy(() => import('./pages/International'))
 const PersonalBrand = lazy(() => import('./pages/PersonalBrand'))
-const Journey = lazy(() => import('./pages/Journey'))
+// const Journey = lazy(() => import('./pages/Journey')) // Disabled
 const LinkedInOptimizer = lazy(() => import('./pages/LinkedInOptimizer'))
 const SkillsGapAnalysis = lazy(() => import('./pages/SkillsGapAnalysis'))
 const InterviewSimulator = lazy(() => import('./pages/InterviewSimulator'))
@@ -249,7 +249,7 @@ function App() {
           <Route path="salary/*" element={<LazyRoute><RouteErrorBoundary><Salary /></RouteErrorBoundary></LazyRoute>} />
           <Route path="education/*" element={<LazyRoute><RouteErrorBoundary><Education /></RouteErrorBoundary></LazyRoute>} />
           <Route path="calendar" element={<LazyRoute><RouteErrorBoundary><Calendar /></RouteErrorBoundary></LazyRoute>} />
-          <Route path="journey" element={<LazyRoute><RouteErrorBoundary><Journey /></RouteErrorBoundary></LazyRoute>} />
+          {/* <Route path="journey" element={<LazyRoute><RouteErrorBoundary><Journey /></RouteErrorBoundary></LazyRoute>} /> */}
           <Route path="spontanansökan/*" element={<LazyRoute><RouteErrorBoundary><Spontaneous /></RouteErrorBoundary></LazyRoute>} />
           <Route path="personal-brand/*" element={<LazyRoute><RouteErrorBoundary><PersonalBrand /></RouteErrorBoundary></LazyRoute>} />
           <Route path="linkedin-optimizer" element={<LazyRoute><RouteErrorBoundary><LinkedInOptimizer /></RouteErrorBoundary></LazyRoute>} />
