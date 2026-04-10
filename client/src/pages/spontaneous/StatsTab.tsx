@@ -32,14 +32,14 @@ function StatCard({
   bgColor: string
 }) {
   return (
-    <Card className="p-4">
+    <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
       <div className="flex items-center gap-3">
         <div className={`p-2 rounded-lg ${bgColor}`}>
           <Icon className={`w-5 h-5 ${color}`} />
         </div>
         <div>
-          <p className="text-2xl font-bold">{value}</p>
-          <p className="text-sm text-slate-600 dark:text-slate-600">{label}</p>
+          <p className="text-2xl font-bold text-slate-800 dark:text-stone-100">{value}</p>
+          <p className="text-sm text-slate-600 dark:text-stone-400">{label}</p>
         </div>
       </div>
     </Card>
@@ -67,9 +67,9 @@ export default function StatsTab() {
     <div className="space-y-6">
       {/* Overview Stats */}
       <div>
-        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-primary-500" />
-          Översikt
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
+          <TrendingUp className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+          Oversikt
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <StatCard
@@ -105,53 +105,53 @@ export default function StatsTab() {
 
       {/* Response Rates */}
       <div className="grid md:grid-cols-2 gap-6">
-        <Card className="p-6">
-          <h3 className="font-semibold mb-4 flex items-center gap-2">
-            <Target className="w-5 h-5 text-primary-500" />
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <h3 className="font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
+            <Target className="w-5 h-5 text-teal-500 dark:text-teal-400" />
             Svarsfrekvens
           </h3>
 
           {totalContacted > 0 ? (
             <div className="space-y-4">
               <div>
-                <div className="flex justify-between text-sm mb-1">
-                  <span>Fått svar</span>
+                <div className="flex justify-between text-sm mb-1 text-slate-700 dark:text-stone-300">
+                  <span>Fatt svar</span>
                   <span className="font-medium">{responseRate}%</span>
                 </div>
-                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-3 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-blue-500 rounded-full transition-all"
+                    className="h-full bg-teal-500 rounded-full transition-all"
                     style={{ width: `${responseRate}%` }}
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex justify-between text-sm mb-1">
+                <div className="flex justify-between text-sm mb-1 text-slate-700 dark:text-stone-300">
                   <span>Positiva svar</span>
                   <span className="font-medium">{positiveRate}%</span>
                 </div>
-                <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-3 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
                   <div
-                    className="h-full bg-green-500 rounded-full transition-all"
+                    className="h-full bg-emerald-500 rounded-full transition-all"
                     style={{ width: `${positiveRate}%` }}
                   />
                 </div>
               </div>
             </div>
           ) : (
-            <p className="text-slate-700 text-sm">
-              Kontakta företag för att se statistik här.
+            <p className="text-slate-600 dark:text-stone-400 text-sm">
+              Kontakta foretag for att se statistik har.
             </p>
           )}
         </Card>
 
-        <Card className="p-6">
-          <h3 className="font-semibold mb-4">Status fördelning</h3>
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <h3 className="font-semibold mb-4 text-slate-800 dark:text-stone-100">Status fordelning</h3>
           <div className="space-y-2">
             <StatusRow label="Att kontakta" value={stats.to_contact} color="bg-blue-500" total={totalCompanies} />
-            <StatusRow label="Väntar svar" value={stats.waiting} color="bg-amber-500" total={totalCompanies} />
-            <StatusRow label="Positivt svar" value={stats.response_positive} color="bg-green-500" total={totalCompanies} />
+            <StatusRow label="Vantar svar" value={stats.waiting} color="bg-amber-500" total={totalCompanies} />
+            <StatusRow label="Positivt svar" value={stats.response_positive} color="bg-emerald-500" total={totalCompanies} />
             <StatusRow label="Avslag" value={stats.response_negative} color="bg-red-500" total={totalCompanies} />
             <StatusRow label="Inget svar" value={stats.no_response} color="bg-orange-500" total={totalCompanies} />
           </div>
@@ -159,10 +159,10 @@ export default function StatsTab() {
       </div>
 
       {/* Upcoming Follow-ups */}
-      <Card className="p-6">
-        <h3 className="font-semibold mb-4 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-primary-500" />
-          Kommande uppföljningar
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
+          <Calendar className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+          Kommande uppfoljningar
         </h3>
 
         {upcomingFollowups.length > 0 ? (
@@ -170,19 +170,19 @@ export default function StatsTab() {
             {upcomingFollowups.map((company) => (
               <div
                 key={company.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50"
+                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-stone-900/50"
               >
                 <div>
-                  <p className="font-medium">{company.company_name}</p>
-                  <p className="text-sm text-slate-700">
+                  <p className="font-medium text-slate-800 dark:text-stone-100">{company.company_name}</p>
+                  <p className="text-sm text-slate-600 dark:text-stone-400">
                     {formatOrgNumber(company.org_number)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-medium text-amber-600">
+                  <p className="text-sm font-medium text-amber-600 dark:text-amber-400">
                     {company.followup_date && new Date(company.followup_date).toLocaleDateString('sv-SE')}
                   </p>
-                  <p className="text-xs text-slate-700">
+                  <p className="text-xs text-slate-600 dark:text-stone-400">
                     {company.followup_date && getDaysUntil(new Date(company.followup_date))}
                   </p>
                 </div>
@@ -190,20 +190,20 @@ export default function StatsTab() {
             ))}
           </div>
         ) : (
-          <p className="text-slate-700 text-sm">
-            Inga kommande uppföljningar. Sätt påminnelser när du kontaktar företag.
+          <p className="text-slate-600 dark:text-stone-400 text-sm">
+            Inga kommande uppfoljningar. Satt paminnelser nar du kontaktar foretag.
           </p>
         )}
       </Card>
 
       {/* Tips */}
-      <Card className="p-6 bg-gradient-to-br from-primary-50 to-blue-50 dark:from-primary-900/20 dark:to-blue-900/20 border-primary-200 dark:border-primary-800">
-        <h3 className="font-semibold mb-2">Tips för bättre resultat</h3>
-        <ul className="text-sm text-slate-600 dark:text-slate-600 space-y-1.5">
-          <li>• Sikta på att kontakta 5-10 nya företag per vecka</li>
-          <li>• Följ alltid upp efter 1-2 veckor om du inte fått svar</li>
-          <li>• En svarsfrekvens på 10-20% är normalt för spontanansökningar</li>
-          <li>• Kvalitet går före kvantitet – anpassa varje ansökan</li>
+      <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
+        <h3 className="font-semibold mb-2 text-slate-800 dark:text-stone-100">Tips for battre resultat</h3>
+        <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1.5">
+          <li>Sikta pa att kontakta 5-10 nya foretag per vecka</li>
+          <li>Folj alltid upp efter 1-2 veckor om du inte fatt svar</li>
+          <li>En svarsfrekvens pa 10-20% ar normalt for spontanansokningar</li>
+          <li>Kvalitet gar fore kvantitet - anpassa varje ansokan</li>
         </ul>
       </Card>
     </div>
@@ -226,14 +226,14 @@ function StatusRow({
 
   return (
     <div className="flex items-center gap-3">
-      <span className="text-sm w-28 truncate">{label}</span>
-      <div className="flex-1 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden">
+      <span className="text-sm w-28 truncate text-slate-700 dark:text-stone-300">{label}</span>
+      <div className="flex-1 h-2 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
         <div
           className={`h-full ${color} rounded-full transition-all`}
           style={{ width: `${percentage}%` }}
         />
       </div>
-      <span className="text-sm font-medium w-8 text-right">{value}</span>
+      <span className="text-sm font-medium w-8 text-right text-slate-700 dark:text-stone-300">{value}</span>
     </div>
   )
 }

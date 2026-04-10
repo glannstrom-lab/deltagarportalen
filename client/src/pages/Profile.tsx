@@ -117,14 +117,14 @@ const TABS: { id: TabId; label: string; icon: React.ReactNode }[] = [
 function CompactInput({ label, ...props }: { label: string } & React.InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div>
-      <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
+      <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{label}</label>
       <input
         {...props}
         className={cn(
-          'w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm',
-          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400',
-          'placeholder:text-slate-400 transition-all',
-          props.disabled && 'bg-slate-50 text-slate-500',
+          'w-full px-3 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-600 rounded-lg text-sm text-slate-900 dark:text-slate-100',
+          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500',
+          'placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all',
+          props.disabled && 'bg-slate-50 dark:bg-stone-900 text-slate-500 dark:text-slate-400',
           props.className
         )}
       />
@@ -135,12 +135,12 @@ function CompactInput({ label, ...props }: { label: string } & React.InputHTMLAt
 function CompactSelect({ label, options, ...props }: { label: string; options: { value: string; label: string }[] } & React.SelectHTMLAttributes<HTMLSelectElement>) {
   return (
     <div>
-      <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
+      <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{label}</label>
       <select
         {...props}
         className={cn(
-          'w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm',
-          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400',
+          'w-full px-3 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-600 rounded-lg text-sm text-slate-900 dark:text-slate-100',
+          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500',
           'transition-all',
           props.className
         )}
@@ -157,13 +157,13 @@ function CompactSelect({ label, options, ...props }: { label: string; options: {
 function CompactTextarea({ label, ...props }: { label: string } & React.TextareaHTMLAttributes<HTMLTextAreaElement>) {
   return (
     <div>
-      <label className="block text-xs font-medium text-slate-600 mb-1">{label}</label>
+      <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">{label}</label>
       <textarea
         {...props}
         className={cn(
-          'w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm resize-none',
-          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400',
-          'placeholder:text-slate-400 transition-all',
+          'w-full px-3 py-2 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-600 rounded-lg text-sm text-slate-900 dark:text-slate-100 resize-none',
+          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500',
+          'placeholder:text-slate-400 dark:placeholder:text-slate-500 transition-all',
           props.className
         )}
       />
@@ -207,8 +207,8 @@ function ChipSelect({
             'rounded-full border font-medium transition-all',
             size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm',
             isSelected(opt.value)
-              ? 'bg-teal-100 border-teal-300 text-teal-700'
-              : 'bg-white border-slate-200 text-slate-600 hover:border-teal-200'
+              ? 'bg-teal-100 dark:bg-teal-900/40 border-teal-300 dark:border-teal-700 text-teal-700 dark:text-teal-300'
+              : 'bg-white dark:bg-stone-800 border-slate-200 dark:border-stone-600 text-slate-600 dark:text-slate-300 hover:border-teal-200 dark:hover:border-teal-700'
           )}
         >
           {opt.label}
@@ -252,9 +252,9 @@ function TagInput({
     <div>
       <div className="flex flex-wrap gap-1.5 mb-2">
         {tags.map((tag, i) => (
-          <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full text-xs font-medium">
+          <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-50 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded-full text-xs font-medium">
             {tag}
-            <button onClick={() => onRemove(i)} className="hover:bg-teal-200 rounded-full p-0.5">
+            <button onClick={() => onRemove(i)} className="hover:bg-teal-200 dark:hover:bg-teal-800 rounded-full p-0.5">
               <X className="w-3 h-3" />
             </button>
           </span>
@@ -271,25 +271,25 @@ function TagInput({
               onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd(input))}
               placeholder={placeholder}
-              className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
+              className="flex-1 px-3 py-1.5 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-600 rounded-lg text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-teal-500/20 dark:focus:ring-teal-400/30 focus:border-teal-400 dark:focus:border-teal-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
             />
             <button
               type="button"
               onClick={() => handleAdd(input)}
               disabled={!input.trim()}
-              className="px-2 py-1.5 bg-teal-500 text-white rounded-lg text-sm disabled:opacity-50 hover:bg-teal-600 transition-colors"
+              className="px-2 py-1.5 bg-teal-500 dark:bg-teal-600 text-white rounded-lg text-sm disabled:opacity-50 hover:bg-teal-600 dark:hover:bg-teal-500 transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>
           </div>
           {showSuggestions && filteredSuggestions.length > 0 && (
-            <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-lg z-10 py-1">
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-600 rounded-lg shadow-lg z-10 py-1">
               {filteredSuggestions.map(s => (
                 <button
                   key={s}
                   type="button"
                   onClick={() => handleAdd(s)}
-                  className="w-full px-3 py-1.5 text-left text-sm hover:bg-teal-50 text-slate-700"
+                  className="w-full px-3 py-1.5 text-left text-sm hover:bg-teal-50 dark:hover:bg-teal-900/40 text-slate-700 dark:text-slate-300"
                 >
                   {s}
                 </button>
@@ -304,10 +304,10 @@ function TagInput({
 
 function SectionCard({ title, icon, children, className }: { title: string; icon?: React.ReactNode; children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('bg-white rounded-xl border border-slate-200 p-4', className)}>
+    <div className={cn('bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700 p-4', className)}>
       <div className="flex items-center gap-2 mb-3">
-        {icon && <div className="text-slate-500">{icon}</div>}
-        <h3 className="font-semibold text-slate-800 text-sm">{title}</h3>
+        {icon && <div className="text-slate-500 dark:text-slate-400">{icon}</div>}
+        <h3 className="font-semibold text-slate-800 dark:text-slate-100 text-sm">{title}</h3>
       </div>
       {children}
     </div>
@@ -326,8 +326,8 @@ function ProgressSlider({
   return (
     <div>
       <div className="flex justify-between items-center mb-1">
-        <span className="text-xs font-medium text-slate-600">{label}</span>
-        <span className="text-xs font-bold text-teal-600">{value}%</span>
+        <span className="text-xs font-medium text-slate-600 dark:text-slate-400">{label}</span>
+        <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{value}%</span>
       </div>
       <input
         type="range"
@@ -336,7 +336,7 @@ function ProgressSlider({
         step="5"
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
+        className="w-full h-2 bg-slate-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
       />
     </div>
   )
@@ -574,19 +574,19 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-stone-900 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" />
-          <p className="text-slate-600">Laddar profil...</p>
+          <Loader2 className="w-8 h-8 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-3" />
+          <p className="text-slate-600 dark:text-slate-400">Laddar profil...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 pb-8">
+    <div className="min-h-screen bg-slate-50 dark:bg-stone-900 pb-8">
       {/* Compact Header - Soft Teal Gradient */}
-      <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white">
+      <div className="bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 text-white">
         <div className="max-w-5xl mx-auto px-4 py-6">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -617,7 +617,7 @@ export default function Profile() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border-b border-slate-200 sticky top-0 z-10">
+      <div className="bg-white dark:bg-stone-800 border-b border-slate-200 dark:border-stone-700 sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-4">
           <div className="flex gap-1 overflow-x-auto py-2 scrollbar-hide">
             {TABS.map(tab => (
@@ -627,8 +627,8 @@ export default function Profile() {
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all',
                   activeTab === tab.id
-                    ? 'bg-teal-100 text-teal-700'
-                    : 'text-slate-600 hover:bg-teal-50'
+                    ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-teal-50 dark:hover:bg-stone-700'
                 )}
               >
                 {tab.icon}
@@ -638,11 +638,11 @@ export default function Profile() {
             {/* Sync indicator */}
             <div className="ml-auto flex items-center gap-1.5 px-2 text-xs">
               {cloudSyncing ? (
-                <><Loader2 className="w-3 h-3 animate-spin text-teal-600" /><span className="text-teal-600">Sparar</span></>
+                <><Loader2 className="w-3 h-3 animate-spin text-teal-600 dark:text-teal-400" /><span className="text-teal-600 dark:text-teal-400">Sparar</span></>
               ) : cloudSynced ? (
-                <><Cloud className="w-3 h-3 text-emerald-600" /><span className="text-emerald-600">Sparat</span></>
+                <><Cloud className="w-3 h-3 text-emerald-600 dark:text-emerald-400" /><span className="text-emerald-600 dark:text-emerald-400">Sparat</span></>
               ) : (
-                <><CloudOff className="w-3 h-3 text-amber-600" /><span className="text-amber-600">Ej sparat</span></>
+                <><CloudOff className="w-3 h-3 text-amber-600 dark:text-amber-400" /><span className="text-amber-600 dark:text-amber-400">Ej sparat</span></>
               )}
             </div>
           </div>
@@ -671,13 +671,13 @@ export default function Profile() {
             {/* Önskade jobb */}
             <SectionCard title="Önskade jobb" icon={<Briefcase className="w-4 h-4" />}>
               <TagInput tags={desiredJobs} onAdd={addJob} onRemove={removeJob} suggestions={SUGGESTED_JOBS} placeholder="T.ex. Projektledare" maxTags={5} />
-              <p className="text-xs text-slate-500 mt-2">{desiredJobs.length}/5 valda</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{desiredJobs.length}/5 valda</p>
             </SectionCard>
 
             {/* Intressen */}
             <SectionCard title="Intressen" icon={<Heart className="w-4 h-4" />}>
               <TagInput tags={interests} onAdd={addInterest} onRemove={removeInterest} suggestions={SUGGESTED_INTERESTS} placeholder="T.ex. Teknik" maxTags={5} />
-              <p className="text-xs text-slate-500 mt-2">{interests.length}/5 valda</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-2">{interests.length}/5 valda</p>
             </SectionCard>
 
             {/* RIASEC */}
@@ -689,16 +689,16 @@ export default function Profile() {
                     return (
                       <div key={type.code} className="flex items-center gap-2">
                         <span className="text-lg">{['🥇', '🥈', '🥉'][i]}</span>
-                        <span className="text-sm font-medium flex-1">{rt.nameSv}</span>
-                        <div className="w-20 h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                          <div className="h-full bg-amber-500 rounded-full" style={{ width: `${type.score}%` }} />
+                        <span className="text-sm font-medium flex-1 text-slate-800 dark:text-slate-200">{rt.nameSv}</span>
+                        <div className="w-20 h-1.5 bg-slate-200 dark:bg-stone-700 rounded-full overflow-hidden">
+                          <div className="h-full bg-amber-500 dark:bg-amber-400 rounded-full" style={{ width: `${type.score}%` }} />
                         </div>
-                        <span className="text-xs text-slate-600 w-8">{type.score}%</span>
+                        <span className="text-xs text-slate-600 dark:text-slate-400 w-8">{type.score}%</span>
                       </div>
                     )
                   })}
                 </div>
-                <Link to="/interest-guide" className="inline-flex items-center gap-1 mt-3 text-xs text-teal-600 hover:underline">
+                <Link to="/interest-guide" className="inline-flex items-center gap-1 mt-3 text-xs text-teal-600 dark:text-teal-400 hover:underline">
                   Gör om guiden <ChevronRight className="w-3 h-3" />
                 </Link>
               </SectionCard>
@@ -725,15 +725,15 @@ export default function Profile() {
             <SectionCard title="Status & tillgänglighet" icon={<Clock className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Nuvarande status</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Nuvarande status</label>
                   <ChipSelect options={EMPLOYMENT_STATUSES} selected={availability?.status || ''} onChange={v => updateAvailability({ status: v as any })} />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Önskad anställningsform</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Önskad anställningsform</label>
                   <ChipSelect options={EMPLOYMENT_TYPES} selected={availability?.employmentTypes || []} onChange={v => updateAvailability({ employmentTypes: v as any })} multiple />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Distansarbete</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Distansarbete</label>
                   <ChipSelect
                     options={[{ value: 'yes', label: 'Ja' }, { value: 'hybrid', label: 'Hybrid' }, { value: 'no', label: 'På plats' }]}
                     selected={availability?.remoteWork || ''}
@@ -747,7 +747,7 @@ export default function Profile() {
             <SectionCard title="CV & aktivitetsnivå" icon={<FileText className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">CV-status</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">CV-status</label>
                   <ChipSelect
                     options={[{ value: 'complete', label: 'Komplett' }, { value: 'needs_update', label: 'Behöver uppdateras' }, { value: 'missing', label: 'Saknas' }]}
                     selected={consultantData?.cvStatus || ''}
@@ -778,7 +778,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Referenser</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Referenser</label>
                   <ChipSelect
                     options={[{ value: 'available', label: 'Finns' }, { value: 'missing', label: 'Saknas' }, { value: 'needs_contact', label: 'Behöver kontaktas' }]}
                     selected={consultantData?.references || ''}
@@ -796,18 +796,18 @@ export default function Profile() {
                     type="checkbox"
                     checked={laborMarketStatus?.registeredAtAF || false}
                     onChange={e => updateLaborMarketStatus({ registeredAtAF: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
                   />
-                  <span className="text-sm">Registrerad hos Arbetsförmedlingen</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Registrerad hos Arbetsförmedlingen</span>
                 </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={laborMarketStatus?.participatingInProgram || false}
                     onChange={e => updateLaborMarketStatus({ participatingInProgram: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
                   />
-                  <span className="text-sm">Deltar i program</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Deltar i program</span>
                 </label>
                 {laborMarketStatus?.participatingInProgram && (
                   <CompactSelect
@@ -822,9 +822,9 @@ export default function Profile() {
                     type="checkbox"
                     checked={laborMarketStatus?.hasActivitySupport || false}
                     onChange={e => updateLaborMarketStatus({ hasActivitySupport: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:bg-stone-700"
                   />
-                  <span className="text-sm">Har aktivitetsstöd/ersättning</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Har aktivitetsstöd/ersättning</span>
                 </label>
               </div>
             </SectionCard>
@@ -833,7 +833,7 @@ export default function Profile() {
             <SectionCard title="Mobilitet & körkort" icon={<Car className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Körkort</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Körkort</label>
                   <ChipSelect
                     options={DRIVERS_LICENSES.map(l => ({ value: l, label: l }))}
                     selected={mobility?.driversLicense || []}
@@ -847,28 +847,28 @@ export default function Profile() {
                       type="checkbox"
                       checked={mobility?.hasCar || false}
                       onChange={e => updateMobility({ hasCar: e.target.checked })}
-                      className="w-4 h-4 rounded border-slate-300 text-teal-600"
+                      className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
                     />
-                    <span className="text-sm">Har bil</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">Har bil</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={mobility?.willingToRelocate || false}
                       onChange={e => updateMobility({ willingToRelocate: e.target.checked })}
-                      className="w-4 h-4 rounded border-slate-300 text-teal-600"
+                      className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
                     />
-                    <span className="text-sm">Kan flytta</span>
+                    <span className="text-sm text-slate-700 dark:text-slate-300">Kan flytta</span>
                   </label>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">Max pendling: {mobility?.maxCommuteMinutes || 45} min</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">Max pendling: {mobility?.maxCommuteMinutes || 45} min</label>
                   <input
                     type="range"
                     min="15" max="120" step="15"
                     value={mobility?.maxCommuteMinutes || 45}
                     onChange={e => updateMobility({ maxCommuteMinutes: parseInt(e.target.value) })}
-                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
+                    className="w-full h-1.5 bg-slate-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
               </div>
@@ -878,7 +878,7 @@ export default function Profile() {
             <SectionCard title="Hinder för arbete" icon={<AlertCircle className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Eventuella hinder</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Eventuella hinder</label>
                   <ChipSelect
                     options={WORK_BARRIERS}
                     selected={consultantData?.workBarriers || []}
@@ -918,7 +918,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Viktiga förmåner</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Viktiga förmåner</label>
                   <ChipSelect
                     options={BENEFITS.map(b => ({ value: b, label: b }))}
                     selected={salary?.importantBenefits || []}
@@ -933,7 +933,7 @@ export default function Profile() {
             <SectionCard title="Arbetspreferenser" icon={<Building2 className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Sektor</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Sektor</label>
                   <ChipSelect
                     options={SECTORS}
                     selected={workPreferences?.sectors || []}
@@ -942,7 +942,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Geografiskt område</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Geografiskt område</label>
                   <ChipSelect
                     options={SWEDISH_REGIONS.slice(0, 8).map(r => ({ value: r, label: r }))}
                     selected={consultantData?.geographicScope || []}
@@ -951,7 +951,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Branscher</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Branscher</label>
                   <ChipSelect
                     options={INDUSTRIES.map(i => ({ value: i, label: i }))}
                     selected={consultantData?.targetIndustries || []}
@@ -971,7 +971,7 @@ export default function Profile() {
             <SectionCard title="Energi & ork" icon={<Zap className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
                     Hållbar arbetstid: {therapistData?.energyLevel?.sustainableHoursPerDay || 8} tim/dag
                   </label>
                   <input
@@ -979,11 +979,11 @@ export default function Profile() {
                     min="1" max="10" step="1"
                     value={therapistData?.energyLevel?.sustainableHoursPerDay || 8}
                     onChange={e => updateTherapistData({ energyLevel: { ...therapistData?.energyLevel, sustainableHoursPerDay: parseInt(e.target.value) }})}
-                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
+                    className="w-full h-1.5 bg-slate-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1">
                     Hållbara dagar: {therapistData?.energyLevel?.sustainableDaysPerWeek || 5} dagar/vecka
                   </label>
                   <input
@@ -991,11 +991,11 @@ export default function Profile() {
                     min="1" max="7" step="1"
                     value={therapistData?.energyLevel?.sustainableDaysPerWeek || 5}
                     onChange={e => updateTherapistData({ energyLevel: { ...therapistData?.energyLevel, sustainableDaysPerWeek: parseInt(e.target.value) }})}
-                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
+                    className="w-full h-1.5 bg-slate-200 dark:bg-stone-700 rounded-full appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Bästa tid på dagen</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Bästa tid på dagen</label>
                   <ChipSelect
                     options={[{ value: 'morning', label: 'Förmiddag' }, { value: 'afternoon', label: 'Eftermiddag' }, { value: 'varies', label: 'Varierar' }]}
                     selected={therapistData?.energyLevel?.bestTimeOfDay || ''}
@@ -1009,7 +1009,7 @@ export default function Profile() {
             <SectionCard title="Funktionsnivå" icon={<Activity className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Fysisk</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Fysisk</label>
                   <ChipSelect
                     options={[{ value: 'full', label: 'Full' }, { value: 'limited', label: 'Begränsad' }, { value: 'significantly_limited', label: 'Betydligt begränsad' }]}
                     selected={therapistData?.functionalLevel?.physical || ''}
@@ -1017,7 +1017,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Kognitiv</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Kognitiv</label>
                   <ChipSelect
                     options={[{ value: 'full', label: 'Full' }, { value: 'limited', label: 'Begränsad' }, { value: 'significantly_limited', label: 'Betydligt begränsad' }]}
                     selected={therapistData?.functionalLevel?.cognitive || ''}
@@ -1025,7 +1025,7 @@ export default function Profile() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Social</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Social</label>
                   <ChipSelect
                     options={[{ value: 'full', label: 'Full' }, { value: 'limited', label: 'Begränsad' }, { value: 'significantly_limited', label: 'Betydligt begränsad' }]}
                     selected={therapistData?.functionalLevel?.social || ''}
@@ -1043,14 +1043,14 @@ export default function Profile() {
                     type="checkbox"
                     checked={physicalRequirements?.hasAdaptationNeeds || false}
                     onChange={e => updatePhysicalRequirements({ hasAdaptationNeeds: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-teal-600"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
                   />
-                  <span className="text-sm">Jag har anpassningsbehov</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Jag har anpassningsbehov</span>
                 </label>
                 {physicalRequirements?.hasAdaptationNeeds && (
                   <>
                     <div>
-                      <label className="block text-xs font-medium text-slate-600 mb-1.5">Typ av anpassning</label>
+                      <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Typ av anpassning</label>
                       <ChipSelect
                         options={ADAPTATION_NEEDS}
                         selected={therapistData?.adaptationNeeds || []}
@@ -1074,7 +1074,7 @@ export default function Profile() {
             <SectionCard title="Rehabilitering" icon={<TrendingUp className="w-4 h-4" />}>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1.5">Rehabiliteringsfas</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-slate-400 mb-1.5">Rehabiliteringsfas</label>
                   <ChipSelect
                     options={[
                       { value: 'early', label: 'Tidig' },
@@ -1214,9 +1214,9 @@ export default function Profile() {
                     type="checkbox"
                     checked={consultantData?.internship?.active || false}
                     onChange={e => updateConsultantData({ internship: { ...consultantData?.internship, active: e.target.checked }})}
-                    className="w-4 h-4 rounded border-slate-300 text-teal-600"
+                    className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
                   />
-                  <span className="text-sm">Pågående praktik/arbetsträning</span>
+                  <span className="text-sm text-slate-700 dark:text-slate-300">Pågående praktik/arbetsträning</span>
                 </label>
                 {consultantData?.internship?.active && (
                   <>
@@ -1257,7 +1257,7 @@ export default function Profile() {
             <SectionCard title="Nästa steg" icon={<Calendar className="w-4 h-4" />}>
               <div className="space-y-2">
                 {(consultantData?.nextSteps || []).map((step, i) => (
-                  <div key={i} className="flex items-center gap-2 p-2 bg-slate-50 rounded-lg">
+                  <div key={i} className="flex items-center gap-2 p-2 bg-slate-50 dark:bg-stone-700/50 rounded-lg">
                     <input
                       type="checkbox"
                       checked={step.completed}
@@ -1266,18 +1266,18 @@ export default function Profile() {
                         steps[i] = { ...steps[i], completed: e.target.checked }
                         updateConsultantData({ nextSteps: steps })
                       }}
-                      className="w-4 h-4 rounded border-slate-300 text-teal-600"
+                      className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 dark:bg-stone-700"
                     />
-                    <span className={cn('flex-1 text-sm', step.completed && 'line-through text-slate-400')}>{step.activity}</span>
-                    <span className="text-xs text-slate-500">{step.date}</span>
+                    <span className={cn('flex-1 text-sm text-slate-700 dark:text-slate-300', step.completed && 'line-through text-slate-400 dark:text-slate-500')}>{step.activity}</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">{step.date}</span>
                     <button
                       onClick={() => {
                         const steps = (consultantData?.nextSteps || []).filter((_, idx) => idx !== i)
                         updateConsultantData({ nextSteps: steps })
                       }}
-                      className="p-1 hover:bg-slate-200 rounded"
+                      className="p-1 hover:bg-slate-200 dark:hover:bg-stone-600 rounded"
                     >
-                      <X className="w-3 h-3 text-slate-400" />
+                      <X className="w-3 h-3 text-slate-400 dark:text-slate-500" />
                     </button>
                   </div>
                 ))}
@@ -1285,7 +1285,7 @@ export default function Profile() {
                   <input
                     type="text"
                     placeholder="Ny aktivitet..."
-                    className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm"
+                    className="flex-1 px-3 py-1.5 bg-white dark:bg-stone-800 border border-slate-200 dark:border-stone-600 rounded-lg text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     onKeyDown={e => {
                       if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                         const steps = [...(consultantData?.nextSteps || []), {

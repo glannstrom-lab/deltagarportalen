@@ -70,32 +70,32 @@ export default function SkillsTab() {
 
   const getGapColor = (gap: string) => {
     switch (gap) {
-      case 'none': return 'text-green-600 bg-green-100'
-      case 'small': return 'text-yellow-600 bg-yellow-100'
-      case 'medium': return 'text-orange-600 bg-orange-100'
-      case 'large': return 'text-red-600 bg-red-100'
-      default: return 'text-slate-600 bg-slate-100'
+      case 'none': return 'text-green-600 dark:text-green-400 bg-green-100 dark:bg-green-900/30'
+      case 'small': return 'text-yellow-600 dark:text-yellow-400 bg-yellow-100 dark:bg-yellow-900/30'
+      case 'medium': return 'text-orange-600 dark:text-orange-400 bg-orange-100 dark:bg-orange-900/30'
+      case 'large': return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30'
+      default: return 'text-gray-600 dark:text-gray-400 bg-stone-100 dark:bg-stone-700'
     }
   }
 
   if (!showResults) {
     return (
       <div className="space-y-6">
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-purple-600" />
+            <div className="w-16 h-16 bg-violet-100 dark:bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-violet-600 dark:text-violet-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-800">{t('career.skills.skillsGapAnalysis')}</h3>
-            <p className="text-slate-600 mt-2">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('career.skills.skillsGapAnalysis')}</h3>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">
               {t('career.skills.compareSkills')}
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <CheckCircle className="w-4 h-4 text-slate-600" />
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <CheckCircle className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                 {t('career.skills.yourProfile')}
               </label>
               <textarea
@@ -103,13 +103,13 @@ export default function SkillsTab() {
                 onChange={(e) => setCvText(e.target.value)}
                 placeholder={t('career.skills.profilePlaceholder')}
                 rows={8}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-y"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 resize-y text-gray-800 dark:text-gray-100"
               />
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <Search className="w-4 h-4 text-purple-500" />
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Search className="w-4 h-4 text-teal-500 dark:text-teal-400" />
                 {t('career.skills.dreamJob')}
               </label>
               <textarea
@@ -117,7 +117,7 @@ export default function SkillsTab() {
                 onChange={(e) => setDreamJob(e.target.value)}
                 placeholder={t('career.skills.dreamJobPlaceholder')}
                 rows={8}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-200 resize-y"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 resize-y text-gray-800 dark:text-gray-100"
               />
             </div>
           </div>
@@ -138,50 +138,50 @@ export default function SkillsTab() {
   return (
     <div className="space-y-6">
       {/* Results Header */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-lg font-bold text-slate-800">{t('career.skills.analysisResults')}</h3>
-            <p className="text-slate-600">{t('career.skills.matching')}: 65%</p>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('career.skills.analysisResults')}</h3>
+            <p className="text-gray-600 dark:text-gray-300">{t('career.skills.matching')}: 65%</p>
           </div>
-          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-full bg-gradient-to-br from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 flex items-center justify-center">
             <span className="text-2xl font-bold text-white">65%</span>
           </div>
         </div>
 
-        <div className="h-3 bg-slate-100 rounded-full overflow-hidden mb-4">
-          <div className="h-full bg-gradient-to-r from-purple-500 to-pink-500" style={{ width: '65%' }} />
+        <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mb-4">
+          <div className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500" style={{ width: '65%' }} />
         </div>
 
-        <div className="flex items-center gap-4 p-4 bg-amber-50 rounded-lg">
-          <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0" />
-          <p className="text-sm text-amber-800">
+        <div className="flex items-center gap-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-700">
+          <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0" />
+          <p className="text-sm text-amber-800 dark:text-amber-200">
             {t('career.skills.goodFoundation')}
           </p>
         </div>
       </Card>
 
       {/* Skills Gap */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('career.skills.skillsComparison')}</h3>
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.skills.skillsComparison')}</h3>
         <div className="space-y-4">
           {skills.map((skill) => (
-            <div key={skill.name} className="p-4 rounded-xl bg-slate-50">
+            <div key={skill.name} className="p-4 rounded-xl bg-stone-50 dark:bg-stone-700">
               <div className="flex items-center justify-between mb-2">
-                <span className="font-medium text-slate-800">{skill.name}</span>
+                <span className="font-medium text-gray-800 dark:text-gray-100">{skill.name}</span>
                 <span className={`text-xs px-2 py-1 rounded-full ${getGapColor(skill.gap)}`}>
                   {t('career.skills.gap')}: {skill.target - skill.current} {t('career.skills.levels')}
                 </span>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center justify-between text-sm text-slate-700 mb-1">
+                  <div className="flex items-center justify-between text-sm text-gray-700 dark:text-gray-300 mb-1">
                     <span>{t('career.skills.current')}: {skill.current}/5</span>
                     <span>{t('career.skills.target')}: {skill.target}/5</span>
                   </div>
-                  <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-purple-500 rounded-full"
+                      className="h-full bg-teal-500 dark:bg-teal-400 rounded-full"
                       style={{ width: `${(skill.current / 5) * 100}%` }}
                     />
                   </div>
@@ -193,26 +193,26 @@ export default function SkillsTab() {
       </Card>
 
       {/* Course Recommendations */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-purple-600" />
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           {t('career.skills.recommendedCourses')}
         </h3>
         <div className="space-y-3">
           {courses.map((course, index) => (
-            <div key={index} className="flex items-center justify-between p-4 rounded-xl border border-slate-200 hover:border-purple-300 transition-colors">
+            <div key={index} className="flex items-center justify-between p-4 rounded-xl border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 transition-colors bg-white dark:bg-stone-700">
               <div>
-                <h4 className="font-semibold text-slate-800">{course.title}</h4>
-                <div className="flex items-center gap-3 text-sm text-slate-700 mt-1">
+                <h4 className="font-semibold text-gray-800 dark:text-gray-100">{course.title}</h4>
+                <div className="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300 mt-1">
                   <span>{course.provider}</span>
-                  <span>•</span>
+                  <span>-</span>
                   <span>{course.duration}</span>
-                  <span>•</span>
+                  <span>-</span>
                   <span className="capitalize">{course.type}</span>
                 </div>
               </div>
               <div className="text-right">
-                <span className="text-sm font-medium text-green-600">{course.cost}</span>
+                <span className="text-sm font-medium text-green-600 dark:text-green-400">{course.cost}</span>
                 <Button size="sm" variant="outline" className="mt-1 block">
                   {t('common.learnMore')}
                 </Button>
@@ -223,47 +223,47 @@ export default function SkillsTab() {
       </Card>
 
       {/* Action Plan */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-purple-600" />
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           {t('career.skills.yourActionPlan')}
         </h3>
         <div className="space-y-3">
-          <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
-            <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-bold text-purple-600">1</span>
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700">
+            <div className="w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-bold text-teal-600 dark:text-teal-400">1</span>
             </div>
             <div>
-              <p className="font-medium text-slate-800">
+              <p className="font-medium text-gray-800 dark:text-gray-100">
                 {i18n.language === 'en' ? 'Prioritize project management' : 'Prioritera projektledning'}
               </p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {i18n.language === 'en' ? 'Start certification within 2 weeks' : 'Påbörja certifiering inom 2 veckor'}
               </p>
             </div>
           </div>
-          <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
-            <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-bold text-purple-600">2</span>
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700">
+            <div className="w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-bold text-teal-600 dark:text-teal-400">2</span>
             </div>
             <div>
-              <p className="font-medium text-slate-800">
+              <p className="font-medium text-gray-800 dark:text-gray-100">
                 {i18n.language === 'en' ? 'Learn agile methods' : 'Lär dig agila metoder'}
               </p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {i18n.language === 'en' ? 'Online course, 20 hours' : 'Online-kurs, 20 timmar'}
               </p>
             </div>
           </div>
-          <div className="flex items-start gap-3 p-3 rounded-lg bg-slate-50">
-            <div className="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-xs font-bold text-purple-600">3</span>
+          <div className="flex items-start gap-3 p-3 rounded-lg bg-stone-50 dark:bg-stone-700">
+            <div className="w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+              <span className="text-xs font-bold text-teal-600 dark:text-teal-400">3</span>
             </div>
             <div>
-              <p className="font-medium text-slate-800">
+              <p className="font-medium text-gray-800 dark:text-gray-100">
                 {i18n.language === 'en' ? 'Build portfolio' : 'Bygg portfolio'}
               </p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
                 {i18n.language === 'en' ? 'Showcase your new skills' : 'Visa upp dina nya kompetenser'}
               </p>
             </div>

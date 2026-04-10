@@ -118,11 +118,11 @@ function QuickStat({
 
   return (
     <div className="text-center p-4 bg-stone-50 dark:bg-stone-800 rounded-xl">
-      <Icon className="w-6 h-6 text-stone-600 mx-auto mb-2" />
+      <Icon className="w-6 h-6 text-stone-500 dark:text-stone-400 mx-auto mb-2" />
       <p className={cn('text-2xl font-bold', statusColors[status || 'undefined'])}>
         {value}
       </p>
-      <p className="text-xs text-stone-500 dark:text-stone-600 mt-1">{label}</p>
+      <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">{label}</p>
     </div>
   )
 }
@@ -167,7 +167,7 @@ function GoalCard({
               <AlertTriangle className="w-4 h-4 text-rose-600" />
             )}
           </div>
-          <p className="text-sm text-stone-500 dark:text-stone-600 line-clamp-2">
+          <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-2">
             {goal.description}
           </p>
         </div>
@@ -198,7 +198,7 @@ function GoalCard({
           <div
             className={cn(
               'h-full rounded-full transition-all',
-              goal.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-violet-600'
+              goal.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-amber-500 dark:bg-amber-400'
             )}
             style={{ width: `${goal.progress}%` }}
           />
@@ -416,7 +416,7 @@ export function ParticipantDetailPage() {
       {/* Back Button */}
       <Link
         to="/consultant/participants"
-        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
+        className="inline-flex items-center gap-2 text-stone-600 dark:text-stone-400 hover:text-stone-900 dark:hover:text-stone-100 transition-colors"
       >
         <ArrowLeft className="w-4 h-4" />
         Tillbaka till deltagare
@@ -426,7 +426,7 @@ export function ParticipantDetailPage() {
       <Card className="p-6">
         <div className="flex flex-col sm:flex-row sm:items-start gap-6">
           {/* Avatar */}
-          <div className="w-20 h-20 rounded-2xl bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-2xl font-bold text-violet-600 dark:text-violet-400 flex-shrink-0">
+          <div className="w-20 h-20 rounded-2xl bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-2xl font-bold text-amber-600 dark:text-amber-400 flex-shrink-0">
             {getInitials()}
           </div>
 
@@ -437,7 +437,7 @@ export function ParticipantDetailPage() {
                 <h1 className="text-2xl font-bold text-stone-900 dark:text-stone-100">
                   {participant.first_name} {participant.last_name}
                 </h1>
-                <div className="flex items-center gap-4 mt-2 text-stone-500 dark:text-stone-600">
+                <div className="flex items-center gap-4 mt-2 text-stone-500 dark:text-stone-400">
                   <span className="flex items-center gap-1">
                     <Mail className="w-4 h-4" />
                     {participant.email}
@@ -510,7 +510,7 @@ export function ParticipantDetailPage() {
             className={cn(
               'flex items-center gap-2 px-4 py-3 font-medium transition-colors whitespace-nowrap',
               activeTab === tab.id
-                ? 'text-violet-600 border-b-2 border-violet-600'
+                ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-600 dark:border-amber-400'
                 : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
             )}
           >
@@ -558,7 +558,7 @@ export function ParticipantDetailPage() {
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent focus:border-violet-500',
+                'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
                 'text-stone-900 dark:text-stone-100',
                 'resize-none'
               )}
@@ -606,7 +606,7 @@ export function ParticipantDetailPage() {
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent focus:border-violet-500',
+                'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
                 'text-stone-900 dark:text-stone-100',
                 'resize-none'
               )}
@@ -663,8 +663,8 @@ export function ParticipantDetailPage() {
               return (
                 <div key={event.id} className="flex gap-4">
                   <div className="relative">
-                    <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center">
-                      <Icon className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+                    <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+                      <Icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                     </div>
                     {index < timeline.length - 1 && (
                       <div className="absolute top-10 left-1/2 -translate-x-1/2 w-0.5 h-6 bg-stone-200 dark:bg-stone-700" />
@@ -674,7 +674,7 @@ export function ParticipantDetailPage() {
                     <p className="font-medium text-stone-900 dark:text-stone-100">
                       {event.description}
                     </p>
-                    <p className="text-sm text-stone-500 dark:text-stone-600">
+                    <p className="text-sm text-stone-500 dark:text-stone-400">
                       {new Date(event.timestamp).toLocaleDateString('sv-SE', {
                         month: 'long',
                         day: 'numeric',

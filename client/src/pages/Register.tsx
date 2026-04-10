@@ -92,7 +92,7 @@ export default function Register() {
   const isPasswordValid = passwordStrength.isValid && !errors.password
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-800 to-teal-600 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -100,23 +100,23 @@ export default function Register() {
             src="/logo-jobin.png"
             alt="Jobin"
             loading="eager"
-            className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white"
+            className="w-16 h-16 rounded-2xl mx-auto mb-4 shadow-lg object-contain bg-white dark:bg-stone-800"
           />
-          <h1 className="text-2xl font-bold text-white">Jobin</h1>
-          <p className="text-teal-200 mt-1">{t('auth.pathStartsHere')}</p>
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Jobin</h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-1">{t('auth.pathStartsHere')}</p>
         </div>
 
         {/* Register Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-2 text-center">{t('auth.createAccount')}</h2>
-          <p className="text-slate-700 text-center mb-6">{t('auth.firstStep')}</p>
+        <div className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-2xl shadow-xl p-8">
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2 text-center">{t('auth.createAccount')}</h2>
+          <p className="text-gray-600 dark:text-gray-300 text-center mb-6">{t('auth.firstStep')}</p>
 
           {/* Error Message */}
           {submitError && (
-            <div 
-              role="alert" 
+            <div
+              role="alert"
               aria-live="polite"
-              className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm"
+              className="mb-4 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 text-sm"
             >
               {submitError}
             </div>
@@ -124,9 +124,9 @@ export default function Register() {
 
           {/* Validation Summary */}
           {(Object.keys(errors).length > 0 && Object.keys(touched).length > 0) && (
-            <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
-              <p className="text-amber-800 text-sm font-medium mb-1">{t('auth.pleaseCorrect')}:</p>
-              <ul className="text-amber-700 text-sm list-disc list-inside">
+            <div className="mb-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+              <p className="text-amber-800 dark:text-amber-300 text-sm font-medium mb-1">{t('auth.pleaseCorrect')}:</p>
+              <ul className="text-amber-700 dark:text-amber-400 text-sm list-disc list-inside">
                 {Object.entries(errors).map(([field, error]) => (
                   touched[field as keyof typeof touched] && <li key={field}>{error}</li>
                 ))}
@@ -140,14 +140,14 @@ export default function Register() {
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-medium text-slate-700 mb-1"
+                  className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
                 >
                   {t('auth.firstName')}
                 </label>
                 <div className="relative">
-                  <User 
-                    className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" 
-                    size={20} 
+                  <User
+                    className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                    size={20}
                     aria-hidden="true"
                   />
                   <input
@@ -157,23 +157,23 @@ export default function Register() {
                     value={values.firstName}
                     onChange={handleChange}
                     onBlur={handleBlur}
-                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                    className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                       touched.firstName && errors.firstName
-                        ? 'border-red-300 focus:border-red-500'
-                        : 'border-slate-300'
+                        ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                        : 'border-stone-300 dark:border-stone-600'
                     }`}
                     placeholder="Anna"
                     autoComplete="given-name"
                   />
                 </div>
                 {touched.firstName && errors.firstName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.firstName}</p>
                 )}
               </div>
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-medium text-slate-700 mb-1"
+                  className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
                 >
                   {t('auth.lastName')}
                 </label>
@@ -184,16 +184,16 @@ export default function Register() {
                   value={values.lastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.lastName && errors.lastName
-                      ? 'border-red-300 focus:border-red-500'
-                      : 'border-slate-300'
+                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                      : 'border-stone-300 dark:border-stone-600'
                   }`}
                   placeholder="Andersson"
                   autoComplete="family-name"
                 />
                 {touched.lastName && errors.lastName && (
-                  <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+                  <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.lastName}</p>
                 )}
               </div>
             </div>
@@ -202,14 +202,14 @@ export default function Register() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-slate-700 mb-1"
+                className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
               >
                 {t('auth.email')}
               </label>
               <div className="relative">
-                <Mail 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" 
-                  size={20} 
+                <Mail
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                  size={20}
                   aria-hidden="true"
                 />
                 <input
@@ -219,17 +219,17 @@ export default function Register() {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.email && errors.email
-                      ? 'border-red-300 focus:border-red-500'
-                      : 'border-slate-300'
+                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                      : 'border-stone-300 dark:border-stone-600'
                   }`}
                   placeholder="namn@exempel.se"
                   autoComplete="email"
                 />
               </div>
               {touched.email && errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email}</p>
               )}
             </div>
 
@@ -237,14 +237,14 @@ export default function Register() {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-slate-700 mb-1"
+                className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
               >
                 {t('auth.password')}
               </label>
               <div className="relative">
-                <Lock 
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600" 
-                  size={20} 
+                <Lock
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
+                  size={20}
                   aria-hidden="true"
                 />
                 <input
@@ -254,10 +254,10 @@ export default function Register() {
                   value={values.password}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                  className={`w-full pl-10 pr-12 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.password && errors.password
-                      ? 'border-red-300 focus:border-red-500'
-                      : 'border-slate-300'
+                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                      : 'border-stone-300 dark:border-stone-600'
                   }`}
                   placeholder={t('auth.newPasswordPlaceholder')}
                   autoComplete="new-password"
@@ -265,37 +265,37 @@ export default function Register() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
                   aria-label={showPassword ? t('auth.hidePassword') : t('auth.showPassword')}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
               {touched.password && errors.password && (
-                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.password}</p>
               )}
 
               {/* Password Strength Indicator */}
-              <div className="mt-3 p-3 bg-slate-50 rounded-lg space-y-2">
-                <p className="text-sm font-medium text-slate-700">{t('auth.passwordNeeds')}:</p>
+              <div className="mt-3 p-3 bg-stone-50 dark:bg-stone-700/50 border border-stone-200 dark:border-stone-600 rounded-lg space-y-2">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100">{t('auth.passwordNeeds')}:</p>
                 <ul className="space-y-1">
                   {passwordRules.map((rule) => {
                     const isPassed = rule.test(values.password)
                     return (
-                      <li 
+                      <li
                         key={rule.id}
                         className={`flex items-center gap-2 text-sm ${
-                          values.password === '' 
-                            ? 'text-slate-700' 
-                            : isPassed 
-                              ? 'text-green-600' 
-                              : 'text-slate-600'
+                          values.password === ''
+                            ? 'text-gray-600 dark:text-gray-300'
+                            : isPassed
+                              ? 'text-green-600 dark:text-green-400'
+                              : 'text-gray-600 dark:text-gray-400'
                         }`}
                       >
                         {isPassed ? (
-                          <Check size={16} className="text-green-500" />
+                          <Check size={16} className="text-green-500 dark:text-green-400" />
                         ) : (
-                          <X size={16} className="text-slate-300" />
+                          <X size={16} className="text-stone-300 dark:text-stone-500" />
                         )}
                         <span>{rule.label}</span>
                       </li>
@@ -303,8 +303,8 @@ export default function Register() {
                   })}
                 </ul>
                 {isPasswordValid && (
-                  <p className="text-sm text-green-600 font-medium mt-2">
-                    ✨ {t('auth.passwordSecure')}
+                  <p className="text-sm text-green-600 dark:text-green-400 font-medium mt-2">
+                    {t('auth.passwordSecure')}
                   </p>
                 )}
               </div>
@@ -314,13 +314,13 @@ export default function Register() {
             <div>
               <label
                 htmlFor="confirmPassword"
-                className="block text-sm font-medium text-slate-700 mb-1"
+                className="block text-sm font-medium text-gray-800 dark:text-gray-100 mb-1"
               >
                 {t('auth.confirmPassword')}
               </label>
               <div className="relative">
                 <Lock
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600"
+                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 dark:text-gray-300"
                   size={20}
                   aria-hidden="true"
                 />
@@ -331,20 +331,20 @@ export default function Register() {
                   value={values.confirmPassword}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white text-slate-900 ${
+                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700 text-gray-900 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500 ${
                     touched.confirmPassword && errors.confirmPassword
-                      ? 'border-red-300 focus:border-red-500'
-                      : 'border-slate-300'
+                      ? 'border-red-300 dark:border-red-700 focus:border-red-500'
+                      : 'border-stone-300 dark:border-stone-600'
                   }`}
                   placeholder={t('auth.confirmPasswordPlaceholder')}
                   autoComplete="new-password"
                 />
               </div>
               {touched.confirmPassword && errors.confirmPassword && (
-                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+                <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.confirmPassword}</p>
               )}
               {values.confirmPassword && values.password === values.confirmPassword && !errors.confirmPassword && (
-                <p className="mt-2 text-sm text-green-600 flex items-center gap-1">
+                <p className="mt-2 text-sm text-green-600 dark:text-green-400 flex items-center gap-1">
                   <Check size={16} />
                   {t('auth.passwordsMatch')}
                 </p>
@@ -352,8 +352,8 @@ export default function Register() {
             </div>
 
             {/* Consent Section */}
-            <div className="space-y-3 p-4 bg-slate-50 rounded-lg border border-slate-200">
-              <p className="text-sm font-medium text-slate-700 mb-3">{t('auth.consent.title')}</p>
+            <div className="space-y-3 p-4 bg-stone-50 dark:bg-stone-700/50 rounded-lg border border-stone-200 dark:border-stone-600">
+              <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-3">{t('auth.consent.title')}</p>
 
               {/* Terms Checkbox */}
               <div className="flex items-start gap-3">
@@ -364,18 +364,18 @@ export default function Register() {
                   checked={values.acceptTerms}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700"
                 />
-                <label htmlFor="acceptTerms" className="text-sm text-slate-600">
+                <label htmlFor="acceptTerms" className="text-sm text-gray-600 dark:text-gray-300">
                   {t('auth.consent.acceptTerms')}{' '}
-                  <Link to="/terms" target="_blank" className="text-teal-600 hover:underline">
+                  <Link to="/terms" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline">
                     {t('auth.consent.termsLink')}
                   </Link>
-                  {' '}<span className="text-red-500">*</span>
+                  {' '}<span className="text-red-500 dark:text-red-400">*</span>
                 </label>
               </div>
               {touched.acceptTerms && errors.acceptTerms && (
-                <p className="ml-7 text-sm text-red-600">{errors.acceptTerms}</p>
+                <p className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptTerms}</p>
               )}
 
               {/* Privacy Checkbox */}
@@ -387,35 +387,35 @@ export default function Register() {
                   checked={values.acceptPrivacy}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700"
                 />
-                <label htmlFor="acceptPrivacy" className="text-sm text-slate-600">
+                <label htmlFor="acceptPrivacy" className="text-sm text-gray-600 dark:text-gray-300">
                   {t('auth.consent.acceptPrivacy')}{' '}
-                  <Link to="/privacy" target="_blank" className="text-teal-600 hover:underline">
+                  <Link to="/privacy" target="_blank" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline">
                     {t('auth.consent.privacyLink')}
                   </Link>
-                  {' '}<span className="text-red-500">*</span>
+                  {' '}<span className="text-red-500 dark:text-red-400">*</span>
                 </label>
               </div>
               {touched.acceptPrivacy && errors.acceptPrivacy && (
-                <p className="ml-7 text-sm text-red-600">{errors.acceptPrivacy}</p>
+                <p className="ml-7 text-sm text-red-600 dark:text-red-400">{errors.acceptPrivacy}</p>
               )}
 
               {/* AI Processing Checkbox (optional) */}
-              <div className="flex items-start gap-3 pt-2 border-t border-slate-200 mt-3">
+              <div className="flex items-start gap-3 pt-2 border-t border-stone-200 dark:border-stone-600 mt-3">
                 <input
                   type="checkbox"
                   id="acceptAiProcessing"
                   name="acceptAiProcessing"
                   checked={values.acceptAiProcessing}
                   onChange={handleChange}
-                  className="mt-1 h-4 w-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
+                  className="mt-1 h-4 w-4 rounded border-stone-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500 dark:focus:ring-teal-400 bg-white dark:bg-stone-700"
                 />
                 <div>
-                  <label htmlFor="acceptAiProcessing" className="text-sm text-slate-600">
+                  <label htmlFor="acceptAiProcessing" className="text-sm text-gray-600 dark:text-gray-300">
                     {t('auth.consent.acceptAi')}
                   </label>
-                  <p className="text-xs text-slate-700 mt-1">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                     {t('auth.consent.aiDescription')}
                   </p>
                 </div>
@@ -426,7 +426,7 @@ export default function Register() {
             <button
               type="submit"
               disabled={isSubmitting || !isPasswordValid || !values.acceptTerms || !values.acceptPrivacy}
-              className="w-full bg-teal-600 text-white py-3 rounded-lg font-semibold hover:bg-teal-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500 text-white py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-stone-800"
             >
               {isSubmitting ? (
                 <>
@@ -444,11 +444,11 @@ export default function Register() {
 
           {/* Login Link */}
           <div className="mt-6 text-center">
-            <p className="text-slate-600">
+            <p className="text-gray-600 dark:text-gray-300">
               {t('auth.hasAccount')}{' '}
               <Link
                 to="/login"
-                className="text-teal-600 hover:text-teal-700 font-semibold"
+                className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-semibold"
               >
                 {t('auth.loginHere')}
               </Link>
@@ -460,7 +460,7 @@ export default function Register() {
         <div className="mt-6 text-center">
           <Link
             to="/"
-            className="text-teal-200 hover:text-white text-sm"
+            className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 text-sm"
           >
             ← {t('auth.backToHome')}
           </Link>

@@ -124,7 +124,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   }
 
   const handleShareResults = () => {
-    const text = `Jag har genomfört intressetestet i deltagarportalen och hittat yrken som passar mig! 🎯`
+    const text = `Jag har genomfört intressetestet i deltagarportalen och hittat yrken som passar mig!`
     if (navigator.share) {
       navigator.share({
         title: 'Intresseguide Resultat',
@@ -142,14 +142,14 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   // Calculate change between current and previous
   const getChangeIndicator = (current: number, previous: number) => {
     const diff = current - previous
-    if (Math.abs(diff) < 3) return { icon: Minus, color: 'text-gray-400', text: 'Oförändrad' }
-    if (diff > 0) return { icon: TrendingUp, color: 'text-green-500', text: `+${diff}` }
-    return { icon: TrendingDown, color: 'text-red-500', text: `${diff}` }
+    if (Math.abs(diff) < 3) return { icon: Minus, color: 'text-gray-400 dark:text-gray-500', text: 'Oförändrad' }
+    if (diff > 0) return { icon: TrendingUp, color: 'text-green-500 dark:text-green-400', text: `+${diff}` }
+    return { icon: TrendingDown, color: 'text-red-500 dark:text-red-400', text: `${diff}` }
   }
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
         <LoadingState title={t('common.loading') || 'Laddar resultat...'} size="lg" />
       </div>
     )
@@ -157,24 +157,24 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
 
   if (!profile) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12">
+      <div className="max-w-lg mx-auto text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
           transition={{ type: 'spring', stiffness: 200 }}
-          className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6"
+          className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6"
         >
-          <ClipboardList className="w-8 h-8 text-indigo-600" />
+          <ClipboardList className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </motion.div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">
           {t('interestGuide.noResultsYet') || 'Inga resultat än'}
         </h2>
-        <p className="text-gray-600 mb-6">
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
           {t('interestGuide.completeTestToSeeResults') || 'Du behöver genomföra intressetestet för att se dina resultat.'}
         </p>
         <Button
           onClick={() => navigate('/interest-guide')}
-          className="gap-2 bg-gradient-to-r from-indigo-600 to-purple-600"
+          className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600"
         >
           <Sparkles className="w-4 h-4" />
           {t('interestGuide.startTest') || 'Starta testet'}
@@ -188,7 +188,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
   const goodMatches = jobMatches.filter(m => m.matchPercentage >= 70).length
 
   return (
-    <div className="max-w-5xl mx-auto space-y-8">
+    <div className="max-w-5xl mx-auto space-y-8 min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}
@@ -201,11 +201,11 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-1 md:grid-cols-3 gap-4"
       >
-        <Card className="p-6 bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
+        <Card className="p-6 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-indigo-600 font-medium mb-2">Din RIASEC-typ</p>
-              <p className="text-2xl font-bold text-indigo-900">
+              <p className="text-sm text-amber-600 dark:text-amber-400 font-medium mb-2">Din RIASEC-typ</p>
+              <p className="text-2xl font-bold text-amber-900 dark:text-amber-100">
                 {Object.entries(profile.riasec)
                   .sort(([, a], [, b]) => b - a)
                   .slice(0, 3)
@@ -213,29 +213,29 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                   .join('')}
               </p>
             </div>
-            <BarChart3 className="w-6 h-6 text-indigo-600 opacity-50" />
+            <BarChart3 className="w-6 h-6 text-amber-600 dark:text-amber-400 opacity-50" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
+        <Card className="p-6 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-green-600 font-medium mb-2">Bra matchningar</p>
-              <p className="text-2xl font-bold text-green-900">{goodMatches}</p>
-              <p className="text-xs text-green-700 mt-1">yrken (70%+)</p>
+              <p className="text-sm text-green-600 dark:text-green-400 font-medium mb-2">Bra matchningar</p>
+              <p className="text-2xl font-bold text-green-900 dark:text-green-100">{goodMatches}</p>
+              <p className="text-xs text-green-700 dark:text-green-300 mt-1">yrken (70%+)</p>
             </div>
-            <Trophy className="w-6 h-6 text-green-600 opacity-50" />
+            <Trophy className="w-6 h-6 text-green-600 dark:text-green-400 opacity-50" />
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 border-purple-200">
+        <Card className="p-6 bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border-purple-200 dark:border-purple-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-purple-600 font-medium mb-2">Totalt yrken</p>
-              <p className="text-2xl font-bold text-purple-900">{jobMatches.length}</p>
-              <p className="text-xs text-purple-700 mt-1">att utforska</p>
+              <p className="text-sm text-purple-600 dark:text-purple-400 font-medium mb-2">Totalt yrken</p>
+              <p className="text-2xl font-bold text-purple-900 dark:text-purple-100">{jobMatches.length}</p>
+              <p className="text-xs text-purple-700 dark:text-purple-300 mt-1">att utforska</p>
             </div>
-            <CheckCircle className="w-6 h-6 text-purple-600 opacity-50" />
+            <CheckCircle className="w-6 h-6 text-purple-600 dark:text-purple-400 opacity-50" />
           </div>
         </Card>
       </motion.div>
@@ -247,20 +247,20 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
         >
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
+          <Card className="p-6 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 border-blue-200 dark:border-blue-800">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                  <History className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-800/50 rounded-xl flex items-center justify-center">
+                  <History className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="font-bold text-slate-900">Jämförelse med tidigare test</h3>
-                  <p className="text-xs text-slate-700">
+                  <h3 className="font-bold text-gray-900 dark:text-gray-100">Jämförelse med tidigare test</h3>
+                  <p className="text-xs text-gray-700 dark:text-gray-300">
                     Från {new Date(previousResult.completed_at).toLocaleDateString('sv-SE')}
                   </p>
                 </div>
               </div>
-              <span className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+              <span className="text-xs bg-blue-100 dark:bg-blue-800/50 text-blue-700 dark:text-blue-300 px-2 py-1 rounded-full">
                 {history.length} tester totalt
               </span>
             </div>
@@ -272,9 +272,9 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                 const ChangeIcon = change.icon
 
                 return (
-                  <div key={key} className="bg-white rounded-lg p-3 text-center">
-                    <p className="text-xs text-slate-700 mb-1">{RIASEC_NAMES[key]}</p>
-                    <p className="text-lg font-bold text-slate-900">{value}</p>
+                  <div key={key} className="bg-white dark:bg-stone-800 rounded-lg p-3 text-center">
+                    <p className="text-xs text-gray-700 dark:text-gray-300 mb-1">{RIASEC_NAMES[key]}</p>
+                    <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{value}</p>
                     <div className={`flex items-center justify-center gap-1 text-xs ${change.color}`}>
                       <ChangeIcon className="w-3 h-3" />
                       <span>{change.text}</span>
@@ -294,56 +294,56 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <Card className="overflow-hidden">
+          <Card className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <button
               onClick={() => setShowHistory(!showHistory)}
-              className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors"
+              className="w-full p-4 flex items-center justify-between hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <Calendar className="w-5 h-5 text-slate-600" />
-                <span className="font-medium text-slate-700">
+                <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+                <span className="font-medium text-gray-700 dark:text-gray-300">
                   Tidigare resultat ({history.length} {history.length === 1 ? 'test' : 'tester'})
                 </span>
               </div>
               {showHistory ? (
-                <ChevronUp className="w-5 h-5 text-slate-600" />
+                <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               ) : (
-                <ChevronDown className="w-5 h-5 text-slate-600" />
+                <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               )}
             </button>
 
             {showHistory && (
-              <div className="border-t border-slate-100">
+              <div className="border-t border-stone-100 dark:border-stone-700">
                 <div className="max-h-96 overflow-y-auto">
                   {history.map((entry, index) => (
                     <div
                       key={entry.id}
-                      className={`p-4 border-b border-slate-100 last:border-0 ${
-                        index === 0 ? 'bg-indigo-50' : 'hover:bg-slate-50'
+                      className={`p-4 border-b border-stone-100 dark:border-stone-700 last:border-0 ${
+                        index === 0 ? 'bg-amber-50 dark:bg-amber-900/20' : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
                       } transition-colors cursor-pointer`}
                       onClick={() => setSelectedHistoryId(selectedHistoryId === entry.id ? null : entry.id)}
                     >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${
-                            index === 0 ? 'bg-indigo-600 text-white' : 'bg-slate-200 text-slate-600'
+                            index === 0 ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
                           }`}>
-                            {index === 0 ? '★' : index + 1}
+                            {index === 0 ? '*' : index + 1}
                           </div>
                           <div>
-                            <p className="font-medium text-slate-900">
+                            <p className="font-medium text-gray-900 dark:text-gray-100">
                               {new Date(entry.completed_at).toLocaleDateString('sv-SE', {
                                 year: 'numeric',
                                 month: 'long',
                                 day: 'numeric'
                               })}
                               {index === 0 && (
-                                <span className="ml-2 text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full">
+                                <span className="ml-2 text-xs bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full">
                                   Aktuellt
                                 </span>
                               )}
                             </p>
-                            <p className="text-sm text-slate-700">
+                            <p className="text-sm text-gray-700 dark:text-gray-300">
                               RIASEC: {Object.entries(entry.riasec_profile)
                                 .sort(([, a], [, b]) => (b as number) - (a as number))
                                 .slice(0, 3)
@@ -354,7 +354,7 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                         </div>
                         <div className="text-right">
                           {entry.top_occupations && entry.top_occupations.length > 0 && (
-                            <p className="text-sm text-slate-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                               Topp: {entry.top_occupations[0].name}
                             </p>
                           )}
@@ -366,23 +366,23 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
-                          className="mt-4 pt-4 border-t border-slate-200"
+                          className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700"
                         >
                           <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
                             {Object.entries(entry.riasec_profile).map(([key, value]) => (
-                              <div key={key} className="text-center p-2 bg-white rounded-lg">
-                                <p className="text-xs text-slate-700">{key}</p>
-                                <p className="font-bold text-slate-900">{value as number}</p>
+                              <div key={key} className="text-center p-2 bg-white dark:bg-stone-900/50 rounded-lg">
+                                <p className="text-xs text-gray-700 dark:text-gray-300">{key}</p>
+                                <p className="font-bold text-gray-900 dark:text-gray-100">{value as number}</p>
                               </div>
                             ))}
                           </div>
                           {entry.top_occupations && entry.top_occupations.length > 0 && (
                             <div className="space-y-1">
-                              <p className="text-xs font-medium text-slate-700 mb-2">Topp 5 yrkesmatchningar:</p>
+                              <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Topp 5 yrkesmatchningar:</p>
                               {entry.top_occupations.slice(0, 5).map((occ, i) => (
                                 <div key={i} className="flex justify-between text-sm">
-                                  <span className="text-slate-700">{i + 1}. {occ.name}</span>
-                                  <span className="font-medium text-indigo-600">{occ.matchPercentage}%</span>
+                                  <span className="text-gray-700 dark:text-gray-300">{i + 1}. {occ.name}</span>
+                                  <span className="font-medium text-amber-600 dark:text-amber-400">{occ.matchPercentage}%</span>
                                 </div>
                               ))}
                             </div>
@@ -404,13 +404,13 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
       >
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-bold text-slate-900">Dina topp 3 yrkesmatchningar</h3>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">Dina topp 3 yrkesmatchningar</h3>
             <Button
               variant="ghost"
               onClick={() => navigate('/interest-guide/occupations')}
-              className="gap-2 text-indigo-600"
+              className="gap-2 text-amber-600 dark:text-amber-400"
             >
               Se alla
               <ArrowRight className="w-4 h-4" />
@@ -418,17 +418,17 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           </div>
           <div className="space-y-3">
             {topMatches.map((match, index) => (
-              <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors cursor-pointer">
-                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+              <div key={match.occupation.id} className="flex items-center gap-4 p-3 bg-stone-50 dark:bg-stone-900/50 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-700/50 transition-colors cursor-pointer">
+                <div className="flex-shrink-0 w-8 h-8 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
                   {index + 1}
                 </div>
                 <div className="flex-1">
-                  <p className="font-semibold text-slate-900">{match.occupation.name}</p>
-                  <p className="text-sm text-slate-700">{match.occupation.description.substring(0, 60)}...</p>
+                  <p className="font-semibold text-gray-900 dark:text-gray-100">{match.occupation.name}</p>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">{match.occupation.description.substring(0, 60)}...</p>
                 </div>
                 <div className="flex-shrink-0 text-right">
-                  <p className="text-lg font-bold text-indigo-600">{match.matchPercentage}%</p>
-                  <p className="text-xs text-slate-700">match</p>
+                  <p className="text-lg font-bold text-amber-600 dark:text-amber-400">{match.matchPercentage}%</p>
+                  <p className="text-xs text-gray-700 dark:text-gray-300">match</p>
                 </div>
               </div>
             ))}
@@ -452,15 +452,15 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
         >
-          <Card className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200 relative">
+          <Card className="p-6 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800 relative">
             <button
               onClick={() => setShowComparisonHint(false)}
-              className="absolute top-4 right-4 text-slate-600 hover:text-slate-600"
+              className="absolute top-4 right-4 text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200"
             >
-              ✕
+              x
             </button>
-            <p className="text-sm text-slate-700">
-              <span className="font-semibold">💡 Tips:</span> Gör om testet senare om dina intressen ändras. Du kan då jämföra resultaten över tid för att se hur du utvecklas.
+            <p className="text-sm text-gray-700 dark:text-gray-300">
+              <span className="font-semibold">Tips:</span> Gör om testet senare om dina intressen ändras. Du kan då jämföra resultaten över tid för att se hur du utvecklas.
             </p>
           </Card>
         </motion.div>
@@ -474,19 +474,19 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
       >
         <Link
           to="/cv"
-          className="block bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] group"
+          className="block bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-2xl p-6 text-white shadow-lg hover:shadow-xl transition-all hover:scale-[1.01] group"
         >
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center flex-shrink-0">
               <FileText className="w-7 h-7" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2 text-indigo-200 text-sm font-medium mb-1">
+              <div className="flex items-center gap-2 text-amber-100 text-sm font-medium mb-1">
                 <Sparkles className="w-4 h-4" />
                 Nästa steg
               </div>
               <h2 className="text-xl font-bold">Skapa ditt CV</h2>
-              <p className="text-indigo-200 text-sm mt-1">
+              <p className="text-amber-100 text-sm mt-1">
                 Använd dina insikter från intresseguiden för att bygga ett professionellt CV
               </p>
             </div>

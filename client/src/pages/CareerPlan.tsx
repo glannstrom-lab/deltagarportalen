@@ -151,22 +151,22 @@ Framgångsmått: ${milestone.metrics}
     <div className="max-w-4xl mx-auto space-y-6 pb-20">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-emerald-100 to-teal-100 mb-2">
-          <MapPin className="w-7 h-7 text-emerald-600" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-teal-100 to-teal-200 dark:from-teal-900 dark:to-teal-800 mb-2">
+          <MapPin className="w-7 h-7 text-teal-600 dark:text-teal-400" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800">{t('careerPlan.title')}</h1>
-        <p className="text-slate-600 max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{t('careerPlan.title')}</h1>
+        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           {t('careerPlan.description')}
         </p>
       </div>
 
       {/* Input Form */}
       {!plan && (
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="space-y-6">
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <MapPin className="w-4 h-4 text-slate-600" />
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                 {t('careerPlan.whereAreYou')}
               </label>
               <textarea
@@ -174,13 +174,13 @@ Framgångsmått: ${milestone.metrics}
                 onChange={(e) => setNuvarande(e.target.value)}
                 placeholder={t('careerPlan.whereAreYouPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none resize-y"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none resize-y text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <Flag className="w-4 h-4 text-emerald-500" />
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Flag className="w-4 h-4 text-teal-500 dark:text-teal-400" />
                 {t('careerPlan.whereToGo')}
               </label>
               <textarea
@@ -188,20 +188,20 @@ Framgångsmått: ${milestone.metrics}
                 onChange={(e) => setMal(e.target.value)}
                 placeholder={t('careerPlan.whereToGoPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none resize-y"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none resize-y text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
 
             <div className="grid md:grid-cols-2 gap-4">
               <div>
-                <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                  <Calendar className="w-4 h-4 text-slate-600" />
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   {t('careerPlan.timeline')}
                 </label>
                 <select
                   value={tidsram}
                   onChange={(e) => setTidsram(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none text-gray-800 dark:text-gray-100"
                 >
                   <option value="3 månader">{t('careerPlan.timeframes.3months')}</option>
                   <option value="6 månader">{t('careerPlan.timeframes.6months')}</option>
@@ -210,8 +210,8 @@ Framgångsmått: ${milestone.metrics}
               </div>
 
               <div>
-                <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                  <Target className="w-4 h-4 text-slate-600" />
+                <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                  <Target className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   {t('careerPlan.obstacles')}
                 </label>
                 <input
@@ -219,7 +219,7 @@ Framgångsmått: ${milestone.metrics}
                   value={hinder}
                   onChange={(e) => setHinder(e.target.value)}
                   placeholder={t('careerPlan.obstaclesPlaceholder')}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 outline-none text-gray-800 dark:text-gray-100 placeholder-gray-400 dark:placeholder-gray-500"
                 />
               </div>
             </div>
@@ -227,7 +227,7 @@ Framgångsmått: ${milestone.metrics}
             <Button
               onClick={skapaPlan}
               disabled={!nuvarande.trim() || !mal.trim() || isLoading}
-              className="w-full bg-gradient-to-r from-emerald-600 to-teal-600"
+              className="w-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700"
             >
               {isLoading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -246,10 +246,10 @@ Framgångsmått: ${milestone.metrics}
       {plan && (
         <>
           {/* Plan Header */}
-          <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200">
+          <Card className="p-6 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/30 dark:to-teal-800/30 border-teal-200 dark:border-teal-700">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <TrendingUp className="w-6 h-6 text-emerald-600" />
+              <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                <TrendingUp className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                 {t('careerPlan.result.title')}
               </h2>
               <Button variant="outline" size="sm" onClick={downloadPlan}>
@@ -258,14 +258,14 @@ Framgångsmått: ${milestone.metrics}
             </div>
 
             {/* Progress Overview */}
-            <div className="bg-white p-4 rounded-lg border border-emerald-100 mb-4">
+            <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-teal-100 dark:border-teal-800 mb-4">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-slate-700">Framsteg genom planen</span>
-                <span className="text-sm font-bold text-emerald-600">{Math.round(progressPercent)}%</span>
+                <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Framsteg genom planen</span>
+                <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{Math.round(progressPercent)}%</span>
               </div>
-              <div className="w-full h-3 bg-slate-200 rounded-full overflow-hidden">
+              <div className="w-full h-3 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all"
+                  className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
@@ -275,17 +275,17 @@ Framgångsmått: ${milestone.metrics}
           {/* Milestones Timeline */}
           <div className="space-y-4">
             {plan.map((milestone, idx) => (
-              <Card key={milestone.id} className="p-6 border-l-4 border-l-emerald-500">
+              <Card key={milestone.id} className="p-6 border-l-4 border-l-teal-500 dark:border-l-teal-400 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h3 className="text-lg font-bold text-slate-800">{milestone.title}</h3>
-                    <p className="text-sm text-slate-600 flex items-center gap-1 mt-1">
+                    <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{milestone.title}</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-1 mt-1">
                       <Clock className="w-4 h-4" />
                       Månad {milestone.month}
                     </p>
                   </div>
-                  <span className="text-sm px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-medium">
-                    {milestone.status === 'planerad' ? '📋 Planerad' : milestone.status === 'pågår' ? '⏳ Pågår' : '✓ Slutförd'}
+                  <span className="text-sm px-3 py-1 rounded-full bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 font-medium">
+                    {milestone.status === 'planerad' ? 'Planerad' : milestone.status === 'pågår' ? 'Pågår' : 'Slutförd'}
                   </span>
                 </div>
 
@@ -294,27 +294,27 @@ Framgångsmått: ${milestone.metrics}
                   {milestone.tasks.map((task) => (
                     <label
                       key={task.id}
-                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-slate-50 cursor-pointer transition"
+                      className="flex items-start gap-3 p-3 rounded-lg hover:bg-stone-50 dark:hover:bg-stone-700 cursor-pointer transition"
                     >
                       <input
                         type="checkbox"
                         checked={completedTasks.has(task.id)}
                         onChange={() => toggleTask(task.id)}
-                        className="mt-1 w-5 h-5 rounded border-slate-300 text-emerald-600 cursor-pointer"
+                        className="mt-1 w-5 h-5 rounded border-stone-300 dark:border-stone-600 text-teal-600 dark:text-teal-400 cursor-pointer"
                       />
                       <div className="flex-1">
-                        <p className={`text-sm ${completedTasks.has(task.id) ? 'line-through text-slate-600' : 'text-slate-700'}`}>
+                        <p className={`text-sm ${completedTasks.has(task.id) ? 'line-through text-gray-500 dark:text-gray-500' : 'text-gray-700 dark:text-gray-300'}`}>
                           {task.description}
                         </p>
-                        <p className="text-xs text-slate-700 mt-1">{task.dueDate}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{task.dueDate}</p>
                       </div>
                     </label>
                   ))}
                 </div>
 
                 {/* Metrics */}
-                <div className="bg-emerald-50 p-3 rounded-lg border border-emerald-100">
-                  <p className="text-sm text-emerald-800 flex items-center gap-2">
+                <div className="bg-teal-50 dark:bg-teal-900/30 p-3 rounded-lg border border-teal-100 dark:border-teal-800">
+                  <p className="text-sm text-teal-800 dark:text-teal-200 flex items-center gap-2">
                     <Zap className="w-4 h-4" />
                     <strong>Framgångsmått:</strong> {milestone.metrics}
                   </p>
@@ -324,25 +324,25 @@ Framgångsmått: ${milestone.metrics}
           </div>
 
           {/* Check-in Prompts */}
-          <Card className="p-6 bg-blue-50 border-blue-200">
-            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-blue-600" />
+          <Card className="p-6 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800">
+            <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-violet-600 dark:text-violet-400" />
               Regelbundna checkup-tillfällen
             </h3>
 
             <div className="space-y-3">
-              <div className="bg-white p-4 rounded-lg border border-blue-100">
-                <p className="text-sm font-medium text-slate-800 mb-2">📅 Veckovis checkup</p>
-                <ul className="text-sm text-slate-600 space-y-1 ml-4 list-disc">
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-violet-100 dark:border-violet-800">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Veckovis checkup</p>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-4 list-disc">
                   <li>Hur många ansökningar skickade du denna vecka?</li>
                   <li>Vilka nätverkskontakter gjorde du?</li>
                   <li>Vilka hinder stötte du på?</li>
                 </ul>
               </div>
 
-              <div className="bg-white p-4 rounded-lg border border-blue-100">
-                <p className="text-sm font-medium text-slate-800 mb-2">📊 Månatlig review</p>
-                <ul className="text-sm text-slate-600 space-y-1 ml-4 list-disc">
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-violet-100 dark:border-violet-800">
+                <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Månatlig review</p>
+                <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-4 list-disc">
                   <li>Granskar du dina milstolpar?</li>
                   <li>Behöver du justera din strategi?</li>
                   <li>Vilka nya färdigheter utvecklade du?</li>
@@ -352,12 +352,12 @@ Framgångsmått: ${milestone.metrics}
           </Card>
 
           {/* SMART Goals */}
-          <Card className="p-6 bg-purple-50 border-purple-200">
-            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <BookMarked className="w-5 h-5 text-purple-600" />
+          <Card className="p-6 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800">
+            <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+              <BookMarked className="w-5 h-5 text-violet-600 dark:text-violet-400" />
               SMART-mål för din plan
             </h3>
-            <div className="space-y-2 text-sm text-slate-700">
+            <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">
               <p><strong>S</strong>pecifik: Exakta jobbroller och företag identifierade</p>
               <p><strong>M</strong>easurable: 50+ ansökningar, 10+ nätverksmöten</p>
               <p><strong>A</strong>ttainable: Realistisk tidsplan över {tidsram}</p>
@@ -371,7 +371,7 @@ Framgångsmått: ${milestone.metrics}
             <Button onClick={() => setPlan(null)} variant="outline" className="flex-1">
               Skapa ny plan
             </Button>
-            <Button className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600">
+            <Button className="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
               <Send className="w-4 h-4 mr-2" />
               Dela plan via e-post
             </Button>

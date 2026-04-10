@@ -32,7 +32,7 @@ export default function PersonalBrandPage() {
       customTabs={brandTabs}
       tabVariant="glass"
       showTabs={true}
-      className="space-y-6"
+      className="space-y-6 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen"
     >
       <Routes>
         <Route path="/" element={<BrandAuditTab />} />

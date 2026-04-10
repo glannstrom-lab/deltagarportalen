@@ -238,14 +238,14 @@ export default function PitchTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-rose-50 to-pink-50 border-rose-100">
+      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/30 dark:to-purple-900/30 border-violet-100 dark:border-violet-800">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center shrink-0">
-            <Mic className="w-6 h-6 text-rose-600" />
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 dark:from-violet-600 dark:to-purple-600 rounded-xl flex items-center justify-center shrink-0">
+            <Mic className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">Din Personliga Pitch</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Din Personliga Pitch</h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">
               Skapa och öva på din hiss-pitch. En bra pitch tar 30-60 sekunder och
               lämnar ett starkt intryck.
             </p>
@@ -260,12 +260,12 @@ export default function PitchTab() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Pitch List */}
         <div className="lg:col-span-1 space-y-4">
-          <h3 className="font-semibold text-slate-900">Dina pitchar</h3>
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100">Dina pitchar</h3>
 
           {pitches.length === 0 && !isLoading ? (
-            <Card className="text-center py-8">
-              <MessageSquare className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-slate-700 text-sm">Inga pitchar ännu</p>
+            <Card className="text-center py-8 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+              <MessageSquare className="w-10 h-10 text-slate-300 dark:text-stone-500 mx-auto mb-3" />
+              <p className="text-gray-600 dark:text-gray-300 text-sm">Inga pitchar ännu</p>
               <Button
                 size="sm"
                 variant="outline"
@@ -286,24 +286,24 @@ export default function PitchTab() {
                     className={cn(
                       "w-full p-3 rounded-xl border text-left transition-all",
                       selectedPitch?.id === pitch.id
-                        ? "border-rose-300 bg-rose-50"
-                        : "border-slate-200 bg-white hover:border-slate-300"
+                        ? "border-violet-300 dark:border-violet-600 bg-violet-50 dark:bg-violet-900/30"
+                        : "border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-800 hover:border-stone-300 dark:hover:border-stone-500"
                     )}
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <h4 className="font-medium text-slate-900">{pitch.title}</h4>
+                        <h4 className="font-medium text-gray-800 dark:text-gray-100">{pitch.title}</h4>
                         <div className="flex items-center gap-2 mt-1">
                           <span className={cn(
                             "px-2 py-0.5 rounded-full text-xs font-medium",
-                            typeInfo.color === 'violet' && "bg-violet-100 text-violet-700",
-                            typeInfo.color === 'blue' && "bg-blue-100 text-blue-700",
-                            typeInfo.color === 'emerald' && "bg-emerald-100 text-emerald-700",
-                            typeInfo.color === 'amber' && "bg-amber-100 text-amber-700"
+                            typeInfo.color === 'violet' && "bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300",
+                            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
+                            typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
+                            typeInfo.color === 'amber' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300"
                           )}>
                             {typeInfo.label}
                           </span>
-                          <span className="text-xs text-slate-600 flex items-center gap-1">
+                          <span className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1">
                             <Clock className="w-3 h-3" />
                             {pitch.duration_seconds}s
                           </span>
@@ -314,7 +314,7 @@ export default function PitchTab() {
                       )}
                     </div>
                     {pitch.practice_count && pitch.practice_count > 0 && (
-                      <p className="text-xs text-slate-600 mt-2">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-2">
                         Övat {pitch.practice_count} gånger
                       </p>
                     )}
@@ -336,16 +336,16 @@ export default function PitchTab() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <Card className="border-rose-200">
+                <Card className="border-violet-200 dark:border-violet-700 bg-white dark:bg-stone-800">
                   <div className="text-center py-8">
                     {/* Timer */}
                     <div className={cn(
                       "text-6xl font-bold mb-4 transition-colors",
-                      isOverTime ? "text-rose-600" : isNearTarget ? "text-emerald-600" : "text-slate-800"
+                      isOverTime ? "text-rose-600 dark:text-rose-400" : isNearTarget ? "text-emerald-600 dark:text-emerald-400" : "text-gray-800 dark:text-gray-100"
                     )}>
                       {formatTime(practiceTime)}
                     </div>
-                    <p className="text-slate-700 mb-6">
+                    <p className="text-gray-600 dark:text-gray-300 mb-6">
                       Mål: {formatTime(getTargetTime())}
                       {isNearTarget && " - Perfekt timing!"}
                       {isOverTime && " - Försök korta ner"}
@@ -371,15 +371,15 @@ export default function PitchTab() {
                     </div>
 
                     {/* Pitch content */}
-                    <div className="bg-slate-50 rounded-xl p-6 text-left max-h-60 overflow-y-auto">
-                      <p className="text-slate-700 whitespace-pre-wrap">{selectedPitch.content}</p>
+                    <div className="bg-slate-50 dark:bg-stone-700 rounded-xl p-6 text-left max-h-60 overflow-y-auto">
+                      <p className="text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{selectedPitch.content}</p>
                     </div>
 
                     {/* Key points */}
                     {selectedPitch.key_points.length > 0 && (
                       <div className="mt-4 flex flex-wrap justify-center gap-2">
                         {selectedPitch.key_points.map((point, idx) => (
-                          <span key={idx} className="px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-sm">
+                          <span key={idx} className="px-3 py-1 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 rounded-full text-sm">
                             {point}
                           </span>
                         ))}
@@ -406,15 +406,15 @@ export default function PitchTab() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <Card>
-                  <h3 className="font-semibold text-slate-900 mb-4">
+                <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+                  <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">
                     {selectedPitch ? 'Redigera pitch' : 'Skapa ny pitch'}
                   </h3>
 
                   {/* Templates */}
                   {!selectedPitch && (
                     <div className="mb-6">
-                      <label className="block text-sm font-medium text-slate-700 mb-2">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">
                         Välj en mall att utgå från
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -422,10 +422,10 @@ export default function PitchTab() {
                           <button
                             key={template.id}
                             onClick={() => useTemplate(template)}
-                            className="p-3 rounded-lg border border-slate-200 hover:border-rose-300 hover:bg-rose-50 transition-all text-left"
+                            className="p-3 rounded-lg border border-stone-200 dark:border-stone-600 hover:border-violet-300 dark:hover:border-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/30 transition-all text-left"
                           >
-                            <h4 className="font-medium text-slate-800 text-sm">{template.name}</h4>
-                            <p className="text-xs text-slate-700 mt-1">
+                            <h4 className="font-medium text-gray-800 dark:text-gray-100 text-sm">{template.name}</h4>
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                               {template.structure.length} delar
                             </p>
                           </button>
@@ -436,23 +436,23 @@ export default function PitchTab() {
 
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Titel</label>
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Titel</label>
                       <input
                         type="text"
                         value={formData.title}
                         onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                        className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                         placeholder="T.ex. Min generella pitch"
                       />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Typ</label>
+                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Typ</label>
                         <select
                           value={formData.pitch_type}
                           onChange={(e) => setFormData(prev => ({ ...prev, pitch_type: e.target.value as ElevatorPitch['pitch_type'] }))}
-                          className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                         >
                           {Object.entries(PITCH_TYPES).map(([key, type]) => (
                             <option key={key} value={key}>{type.label}</option>
@@ -460,11 +460,11 @@ export default function PitchTab() {
                         </select>
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-slate-700 mb-1">Mållängd (sek)</label>
+                        <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Mållängd (sek)</label>
                         <select
                           value={formData.duration_seconds}
                           onChange={(e) => setFormData(prev => ({ ...prev, duration_seconds: parseInt(e.target.value) }))}
-                          className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                          className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                         >
                           <option value={30}>30 sekunder</option>
                           <option value={45}>45 sekunder</option>
@@ -475,34 +475,34 @@ export default function PitchTab() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         Målgrupp (valfritt)
                       </label>
                       <input
                         type="text"
                         value={formData.target_audience || ''}
                         onChange={(e) => setFormData(prev => ({ ...prev, target_audience: e.target.value }))}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                        className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                         placeholder="T.ex. Rekryterare inom tech"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">Din pitch</label>
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Din pitch</label>
                       <textarea
                         value={formData.content}
                         onChange={(e) => setFormData(prev => ({ ...prev, content: e.target.value }))}
-                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500 min-h-[150px]"
+                        className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 min-h-[150px] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                         placeholder="Skriv din pitch här..."
                       />
-                      <p className="text-xs text-slate-600 mt-1">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                         Ca {Math.round((formData.content?.length || 0) / 15)} sekunder att läsa ({formData.content?.length || 0} tecken)
                       </p>
                     </div>
 
                     {/* Key points */}
                     <div>
-                      <label className="block text-sm font-medium text-slate-700 mb-1">
+                      <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                         Nyckelpoänger att komma ihåg
                       </label>
                       <div className="flex gap-2 mb-2">
@@ -511,7 +511,7 @@ export default function PitchTab() {
                           value={newKeyPoint}
                           onChange={(e) => setNewKeyPoint(e.target.value)}
                           onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), addKeyPoint())}
-                          className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-rose-500"
+                          className="flex-1 px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                           placeholder="Lägg till en nyckelpoäng"
                         />
                         <Button variant="outline" onClick={addKeyPoint}>
@@ -520,9 +520,9 @@ export default function PitchTab() {
                       </div>
                       <div className="flex flex-wrap gap-2">
                         {formData.key_points?.map((point, idx) => (
-                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 text-slate-700 rounded-full text-sm">
+                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 rounded-full text-sm">
                             {point}
-                            <button onClick={() => removeKeyPoint(idx)} className="hover:text-rose-600">
+                            <button onClick={() => removeKeyPoint(idx)} className="hover:text-rose-600 dark:hover:text-rose-400">
                               <X className="w-3 h-3" />
                             </button>
                           </span>
@@ -552,21 +552,21 @@ export default function PitchTab() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
               >
-                <Card>
+                <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
                   <div className="flex items-start justify-between mb-4">
                     <div>
-                      <h3 className="text-xl font-bold text-slate-900">{selectedPitch.title}</h3>
+                      <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{selectedPitch.title}</h3>
                       <div className="flex items-center gap-3 mt-1">
                         <span className={cn(
                           "px-2 py-0.5 rounded-full text-xs font-medium",
-                          PITCH_TYPES[selectedPitch.pitch_type].color === 'violet' && "bg-violet-100 text-violet-700",
-                          PITCH_TYPES[selectedPitch.pitch_type].color === 'blue' && "bg-blue-100 text-blue-700",
-                          PITCH_TYPES[selectedPitch.pitch_type].color === 'emerald' && "bg-emerald-100 text-emerald-700",
-                          PITCH_TYPES[selectedPitch.pitch_type].color === 'amber' && "bg-amber-100 text-amber-700"
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'violet' && "bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300",
+                          PITCH_TYPES[selectedPitch.pitch_type].color === 'amber' && "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300"
                         )}>
                           {PITCH_TYPES[selectedPitch.pitch_type].label}
                         </span>
-                        <span className="text-sm text-slate-700 flex items-center gap-1">
+                        <span className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-1">
                           <Clock className="w-4 h-4" />
                           {selectedPitch.duration_seconds} sek
                         </span>
@@ -575,40 +575,40 @@ export default function PitchTab() {
                     <div className="flex gap-1">
                       <button
                         onClick={() => handleEdit(selectedPitch)}
-                        className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
                       >
-                        <Edit2 className="w-4 h-4 text-slate-700" />
+                        <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                       </button>
                       <button
                         onClick={() => selectedPitch.id && handleDelete(selectedPitch.id)}
-                        className="p-2 hover:bg-rose-100 rounded-lg transition-colors"
+                        className="p-2 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-lg transition-colors"
                       >
-                        <Trash2 className="w-4 h-4 text-rose-500" />
+                        <Trash2 className="w-4 h-4 text-rose-500 dark:text-rose-400" />
                       </button>
                     </div>
                   </div>
 
                   {selectedPitch.target_audience && (
-                    <div className="mb-4 p-3 bg-slate-50 rounded-lg">
-                      <p className="text-sm text-slate-600">
+                    <div className="mb-4 p-3 bg-slate-50 dark:bg-stone-700 rounded-lg">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
                         <Target className="w-4 h-4 inline mr-1" />
                         Målgrupp: {selectedPitch.target_audience}
                       </p>
                     </div>
                   )}
 
-                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-xl p-6 mb-4">
-                    <p className="text-slate-800 whitespace-pre-wrap leading-relaxed">
+                  <div className="bg-gradient-to-br from-slate-50 to-slate-100 dark:from-stone-700 dark:to-stone-600 rounded-xl p-6 mb-4">
+                    <p className="text-gray-800 dark:text-gray-100 whitespace-pre-wrap leading-relaxed">
                       {selectedPitch.content}
                     </p>
                   </div>
 
                   {selectedPitch.key_points.length > 0 && (
                     <div className="mb-6">
-                      <h4 className="text-sm font-medium text-slate-700 mb-2">Kom ihåg:</h4>
+                      <h4 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2">Kom ihåg:</h4>
                       <div className="flex flex-wrap gap-2">
                         {selectedPitch.key_points.map((point, idx) => (
-                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-rose-100 text-rose-700 rounded-full text-sm">
+                          <span key={idx} className="inline-flex items-center gap-1 px-3 py-1 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 rounded-full text-sm">
                             <CheckCircle className="w-3 h-3" />
                             {point}
                           </span>
@@ -618,7 +618,7 @@ export default function PitchTab() {
                   )}
 
                   <div className="flex flex-wrap gap-3">
-                    <Button onClick={startPractice} className="bg-rose-600 hover:bg-rose-700">
+                    <Button onClick={startPractice} className="bg-violet-600 hover:bg-violet-700 dark:bg-violet-600 dark:hover:bg-violet-700">
                       <Play className="w-4 h-4 mr-1" />
                       Öva nu
                     </Button>
@@ -629,7 +629,7 @@ export default function PitchTab() {
                   </div>
 
                   {selectedPitch.practice_count && selectedPitch.practice_count > 0 && (
-                    <p className="text-sm text-slate-600 mt-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-4">
                       Du har övat på denna pitch {selectedPitch.practice_count} gånger
                       {selectedPitch.last_practiced_at && (
                         <span>, senast {new Date(selectedPitch.last_practiced_at).toLocaleDateString('sv-SE')}</span>
@@ -647,10 +647,10 @@ export default function PitchTab() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                <Card className="text-center py-12">
-                  <Mic className="w-16 h-16 text-slate-200 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-slate-700 mb-2">Skapa din första pitch</h3>
-                  <p className="text-slate-700 mb-6 max-w-md mx-auto">
+                <Card className="text-center py-12 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+                  <Mic className="w-16 h-16 text-slate-200 dark:text-stone-600 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold text-gray-600 dark:text-gray-300 mb-2">Skapa din första pitch</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-6 max-w-md mx-auto">
                     En bra elevator pitch är nyckeln till att göra ett starkt första intryck.
                     Börja med att skapa en generell pitch som du kan anpassa efter situation.
                   </p>
@@ -666,33 +666,33 @@ export default function PitchTab() {
       </div>
 
       {/* Tips */}
-      <Card className="bg-amber-50 border-amber-100">
-        <h3 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-amber-600" />
+      <Card className="bg-violet-50 dark:bg-violet-900/30 border-violet-100 dark:border-violet-800">
+        <h3 className="font-semibold text-violet-900 dark:text-violet-100 mb-3 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-violet-600 dark:text-violet-400" />
           Tips för en kraftfull pitch
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="text-sm">
-            <p className="font-medium text-amber-800">Var specifik</p>
-            <p className="text-amber-700 text-xs mt-1">
+            <p className="font-medium text-violet-800 dark:text-violet-200">Var specifik</p>
+            <p className="text-violet-700 dark:text-violet-300 text-xs mt-1">
               Undvik vaga uttalanden. "Jag sparade företaget 2 miljoner" är bättre än "jag är bra på att spara pengar".
             </p>
           </div>
           <div className="text-sm">
-            <p className="font-medium text-amber-800">Anpassa efter lyssnaren</p>
-            <p className="text-amber-700 text-xs mt-1">
+            <p className="font-medium text-violet-800 dark:text-violet-200">Anpassa efter lyssnaren</p>
+            <p className="text-violet-700 dark:text-violet-300 text-xs mt-1">
               Ha olika versioner för olika målgrupper och situationer.
             </p>
           </div>
           <div className="text-sm">
-            <p className="font-medium text-amber-800">Öva högt</p>
-            <p className="text-amber-700 text-xs mt-1">
+            <p className="font-medium text-violet-800 dark:text-violet-200">Öva högt</p>
+            <p className="text-violet-700 dark:text-violet-300 text-xs mt-1">
               En pitch ska kännas naturlig. Öva tills den sitter utan att den låter inövad.
             </p>
           </div>
           <div className="text-sm">
-            <p className="font-medium text-amber-800">Avsluta med en fråga</p>
-            <p className="text-amber-700 text-xs mt-1">
+            <p className="font-medium text-violet-800 dark:text-violet-200">Avsluta med en fråga</p>
+            <p className="text-violet-700 dark:text-violet-300 text-xs mt-1">
               Bjud in till dialog istället för att bara prata om dig själv.
             </p>
           </div>

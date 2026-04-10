@@ -840,7 +840,7 @@ export default function CoverLetterGenerator() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 pb-20">
+    <div className="max-w-5xl mx-auto space-y-6 pb-20 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen p-4">
       {/* Back button & Source Job Info */}
       {(sourceJob || queryJobId || company || jobTitle) && (
         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -868,11 +868,11 @@ export default function CoverLetterGenerator() {
       
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-teal-100 to-emerald-100 mb-2">
-          <FileText className="w-7 h-7 text-teal-600" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-teal-100 to-emerald-100 dark:from-teal-900/30 dark:to-emerald-900/30 mb-2">
+          <FileText className="w-7 h-7 text-teal-600 dark:text-teal-400" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800">{t('coverLetterGenerator.pageTitle')}</h1>
-        <p className="text-slate-600 max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.pageTitle')}</h1>
+        <p className="text-slate-600 dark:text-stone-400 max-w-2xl mx-auto">
           {t('coverLetterGenerator.pageDescription')}
         </p>
         
@@ -894,21 +894,21 @@ export default function CoverLetterGenerator() {
       />
 
       {/* Template Selection */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <button
           onClick={() => toggleSection('template')}
-          className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors"
+          className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 dark:hover:bg-stone-700 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <Target className="w-5 h-5 text-indigo-600" />
+            <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             <div>
-              <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.templates.title')}</h2>
-              <p className="text-sm text-slate-700">
+              <h2 className="font-semibold text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.templates.title')}</h2>
+              <p className="text-sm text-slate-600 dark:text-stone-400">
                 {coverLetterTemplates.find(t => t.id === selectedTemplate)?.label}
               </p>
             </div>
           </div>
-          {expandedSections.template ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          {expandedSections.template ? <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" /> : <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />}
         </button>
         
         {expandedSections.template && (
@@ -916,19 +916,19 @@ export default function CoverLetterGenerator() {
             {/* Group templates by industry */}
             {Object.entries(
               coverLetterTemplates.reduce((acc, template) => {
-                const group = template.industry === 'general' ? 'Allmänt' :
+                const group = template.industry === 'general' ? 'Allmant' :
                              template.industry === 'public' ? 'Offentlig sektor' :
                              template.industry === 'creative' ? 'Kreativa yrken' :
                              template.industry === 'tech' ? 'Tech & IT' :
-                             template.industry === 'care' ? 'Vård & Omsorg' :
-                             'Ny på arbetsmarknaden'
+                             template.industry === 'care' ? 'Vard & Omsorg' :
+                             'Ny pa arbetsmarknaden'
                 if (!acc[group]) acc[group] = []
                 acc[group].push(template)
                 return acc
               }, {} as Record<string, typeof coverLetterTemplates>)
             ).map(([group, groupTemplates]) => (
               <div key={group}>
-                <h3 className="text-sm font-medium text-slate-600 uppercase tracking-wider mb-3">{group}</h3>
+                <h3 className="text-sm font-medium text-slate-600 dark:text-stone-400 uppercase tracking-wider mb-3">{group}</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                   {groupTemplates.map((template) => (
                     <button
@@ -936,22 +936,22 @@ export default function CoverLetterGenerator() {
                       onClick={() => setSelectedTemplate(template.id)}
                       className={`flex items-start gap-3 p-4 rounded-xl border-2 text-left transition-all ${
                         selectedTemplate === template.id
-                          ? 'border-teal-500 bg-teal-50'
-                          : 'border-slate-200 hover:border-teal-200 bg-white'
+                          ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
+                          : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 bg-white dark:bg-stone-800'
                       }`}
                     >
-                      <div className={`p-2 rounded-lg ${selectedTemplate === template.id ? 'bg-teal-100 text-teal-600' : 'bg-slate-100 text-slate-700'}`}>
+                      <div className={`p-2 rounded-lg ${selectedTemplate === template.id ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' : 'bg-slate-100 dark:bg-stone-700 text-slate-700 dark:text-stone-300'}`}>
                         {template.icon}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <span className="font-medium text-slate-800 block">{template.label}</span>
-                        <p className="text-sm text-slate-700 mt-1 line-clamp-2">{template.description}</p>
+                        <span className="font-medium text-slate-800 dark:text-stone-100 block">{template.label}</span>
+                        <p className="text-sm text-slate-600 dark:text-stone-400 mt-1 line-clamp-2">{template.description}</p>
                         {selectedTemplate === template.id && template.tips && (
-                          <div className="mt-2 pt-2 border-t border-teal-200">
-                            <ul className="text-xs text-teal-700 space-y-1">
+                          <div className="mt-2 pt-2 border-t border-teal-200 dark:border-teal-800">
+                            <ul className="text-xs text-teal-700 dark:text-teal-400 space-y-1">
                               {template.tips.slice(0, 2).map((tip, idx) => (
                                 <li key={idx} className="flex items-start gap-1">
-                                  <span className="text-teal-500">•</span>
+                                  <span className="text-teal-500 dark:text-teal-400">-</span>
                                   {tip}
                                 </li>
                               ))}
@@ -970,48 +970,48 @@ export default function CoverLetterGenerator() {
 
       {/* Saved Letters & Jobs Toggle */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="p-4">
+        <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <button
             onClick={() => setShowSaved(!showSaved)}
             className="w-full flex items-center justify-between text-left"
           >
             <div className="flex items-center gap-3">
-              <History className="w-5 h-5 text-slate-700" />
+              <History className="w-5 h-5 text-slate-600 dark:text-stone-400" />
               <div>
-                <h3 className="font-medium text-slate-800">{t('coverLetterGenerator.savedLetters.title')}</h3>
-                <p className="text-sm text-slate-700">{t('coverLetterGenerator.savedLetters.count', { count: savedLetters.length })}</p>
+                <h3 className="font-medium text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.savedLetters.title')}</h3>
+                <p className="text-sm text-slate-600 dark:text-stone-400">{t('coverLetterGenerator.savedLetters.count', { count: savedLetters.length })}</p>
               </div>
             </div>
-            {showSaved ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            {showSaved ? <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" /> : <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />}
           </button>
           
           {showSaved && (
-            <div className="mt-4 space-y-3 border-t pt-4 max-h-64 overflow-y-auto">
+            <div className="mt-4 space-y-3 border-t border-stone-200 dark:border-stone-700 pt-4 max-h-64 overflow-y-auto">
               {savedLetters.length === 0 ? (
-                <p className="text-slate-700 text-center py-4 text-sm">{t('coverLetterGenerator.savedLetters.noLetters')}</p>
+                <p className="text-slate-600 dark:text-stone-400 text-center py-4 text-sm">{t('coverLetterGenerator.savedLetters.noLetters')}</p>
               ) : (
                 savedLetters.map((letter) => (
                   <div
                     key={letter.id}
-                    className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                    className="flex items-center justify-between p-3 bg-slate-50 dark:bg-stone-900/50 rounded-lg hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-slate-900 truncate">{letter.title}</p>
-                      <p className="text-sm text-slate-700">
+                      <p className="font-medium text-slate-900 dark:text-stone-100 truncate">{letter.title}</p>
+                      <p className="text-sm text-slate-600 dark:text-stone-400">
                         {new Date(letter.createdAt).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
-                        {letter.company && ` • ${letter.company}`}
+                        {letter.company && ` - ${letter.company}`}
                       </p>
                     </div>
                     <div className="flex items-center gap-2 ml-4">
                       <button
                         onClick={() => handleLoad(letter)}
-                        className="px-3 py-1 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
+                        className="px-3 py-1 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-colors"
                       >
                         {t('coverLetterGenerator.savedLetters.open')}
                       </button>
                       <button
                         onClick={() => handleDelete(letter.id)}
-                        className="p-1 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                        className="p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -1023,27 +1023,27 @@ export default function CoverLetterGenerator() {
           )}
         </Card>
 
-        <Card className="p-4">
+        <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <button
             onClick={() => setShowSavedJobs(!showSavedJobs)}
             className="w-full flex items-center justify-between text-left"
           >
             <div className="flex items-center gap-3">
-              <Building2 className="w-5 h-5 text-slate-700" />
+              <Building2 className="w-5 h-5 text-slate-600 dark:text-stone-400" />
               <div>
-                <h3 className="font-medium text-slate-800">{t('coverLetterGenerator.savedJobs.title')}</h3>
-                <p className="text-sm text-slate-700">{t('coverLetterGenerator.savedJobs.count', { count: savedJobs.length })}</p>
+                <h3 className="font-medium text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.savedJobs.title')}</h3>
+                <p className="text-sm text-slate-600 dark:text-stone-400">{t('coverLetterGenerator.savedJobs.count', { count: savedJobs.length })}</p>
               </div>
             </div>
-            {showSavedJobs ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+            {showSavedJobs ? <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" /> : <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />}
           </button>
-          
+
           {showSavedJobs && (
-            <div className="mt-4 space-y-3 border-t pt-4 max-h-64 overflow-y-auto">
+            <div className="mt-4 space-y-3 border-t border-stone-200 dark:border-stone-700 pt-4 max-h-64 overflow-y-auto">
               {savedJobs.length === 0 ? (
                 <div className="text-center py-4">
-                  <p className="text-slate-700 text-sm mb-2">{t('coverLetterGenerator.savedJobs.noJobs')}</p>
-                  <a href="/job-search" className="text-sm text-teal-600 hover:underline">
+                  <p className="text-slate-600 dark:text-stone-400 text-sm mb-2">{t('coverLetterGenerator.savedJobs.noJobs')}</p>
+                  <a href="/job-search" className="text-sm text-teal-600 dark:text-teal-400 hover:underline">
                     {t('coverLetterGenerator.savedJobs.searchJobs')}
                   </a>
                 </div>
@@ -1051,18 +1051,18 @@ export default function CoverLetterGenerator() {
                 savedJobs.map((job) => (
                   <div
                     key={job.id}
-                    className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
+                    className="flex items-center justify-between p-3 bg-slate-50 dark:bg-stone-900/50 rounded-lg hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors"
                   >
                     <div className="min-w-0 flex-1">
-                      <p className="font-medium text-slate-900 truncate">{job.headline}</p>
-                      <p className="text-sm text-slate-700">
+                      <p className="font-medium text-slate-900 dark:text-stone-100 truncate">{job.headline}</p>
+                      <p className="text-sm text-slate-600 dark:text-stone-400">
                         {job.employer?.name}
-                        {job.workplace_address?.municipality && ` • ${job.workplace_address.municipality}`}
+                        {job.workplace_address?.municipality && ` - ${job.workplace_address.municipality}`}
                       </p>
                     </div>
                     <button
                       onClick={() => handleLoadJob(job)}
-                      className="px-3 py-1 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors ml-2"
+                      className="px-3 py-1 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-50 dark:hover:bg-teal-900/20 rounded-lg transition-colors ml-2"
                     >
                       {t('coverLetterGenerator.savedJobs.use')}
                     </button>
@@ -1167,16 +1167,16 @@ export default function CoverLetterGenerator() {
       </div>
 
       {/* Input Section */}
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <button
           onClick={() => toggleSection('input')}
-          className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 transition-colors"
+          className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50 dark:hover:bg-stone-700 transition-colors"
         >
           <div className="flex items-center gap-3">
-            <Briefcase className="w-5 h-5 text-teal-600" />
-            <h2 className="font-semibold text-slate-800">{t('coverLetterGenerator.jobInfo.title')}</h2>
+            <Briefcase className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <h2 className="font-semibold text-slate-800 dark:text-stone-100">{t('coverLetterGenerator.jobInfo.title')}</h2>
           </div>
-          {expandedSections.input ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+          {expandedSections.input ? <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" /> : <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />}
         </button>
         
         {expandedSections.input && (
@@ -1184,7 +1184,7 @@ export default function CoverLetterGenerator() {
             {/* Company & Job Title */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">
                   {t('coverLetterGenerator.jobInfo.company')}
                 </label>
                 <input
@@ -1192,11 +1192,11 @@ export default function CoverLetterGenerator() {
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
                   placeholder={t('coverLetterGenerator.jobInfo.companyPlaceholder')}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                  className="w-full px-4 py-2 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none transition-all bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-slate-700 mb-1">
+                <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">
                   {t('coverLetterGenerator.jobInfo.jobTitle')}
                 </label>
                 <input
@@ -1204,31 +1204,31 @@ export default function CoverLetterGenerator() {
                   value={jobTitle}
                   onChange={(e) => setJobTitle(e.target.value)}
                   placeholder={t('coverLetterGenerator.jobInfo.jobTitlePlaceholder')}
-                  className="w-full px-4 py-2 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all"
+                  className="w-full px-4 py-2 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none transition-all bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
               </div>
             </div>
 
             {/* Job Ad */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                {t('coverLetterGenerator.jobInfo.jobAd')} <span className="text-slate-600 font-normal">{t('coverLetterGenerator.jobInfo.jobAdOptional')}</span>
+              <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">
+                {t('coverLetterGenerator.jobInfo.jobAd')} <span className="text-slate-500 dark:text-stone-500 font-normal">{t('coverLetterGenerator.jobInfo.jobAdOptional')}</span>
               </label>
               <textarea
                 value={jobbAnnons}
                 onChange={(e) => setJobbAnnons(e.target.value)}
                 placeholder={t('coverLetterGenerator.jobInfo.jobAdPlaceholder')}
                 rows={6}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
+                className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none transition-all resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
               />
               <div className="flex justify-between mt-1">
-                <p className="text-xs text-slate-700">
+                <p className="text-xs text-slate-600 dark:text-stone-400">
                   {t('coverLetterGenerator.jobInfo.characters', { count: jobbAnnons.length })}
                 </p>
                 {cvMatchScore !== null && jobbAnnons.length > 50 && (
                   <p className={`text-xs font-medium ${
-                    cvMatchScore >= 70 ? 'text-green-600' :
-                    cvMatchScore >= 40 ? 'text-amber-600' : 'text-slate-700'
+                    cvMatchScore >= 70 ? 'text-emerald-600 dark:text-emerald-400' :
+                    cvMatchScore >= 40 ? 'text-amber-600 dark:text-amber-400' : 'text-slate-600 dark:text-stone-400'
                   }`}>
                     {t('coverLetterGenerator.jobInfo.cvMatch', { score: cvMatchScore })}
                   </p>
@@ -1238,38 +1238,38 @@ export default function CoverLetterGenerator() {
 
             {/* Why this job */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                {t('coverLetterGenerator.jobInfo.whyThisJob')} <span className="text-slate-600 font-normal">{t('coverLetterGenerator.jobInfo.whyThisJobOptional')}</span>
+              <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">
+                {t('coverLetterGenerator.jobInfo.whyThisJob')} <span className="text-slate-500 dark:text-stone-500 font-normal">{t('coverLetterGenerator.jobInfo.whyThisJobOptional')}</span>
               </label>
               <textarea
                 value={motivering}
                 onChange={(e) => setMotivering(e.target.value)}
                 placeholder={t('coverLetterGenerator.jobInfo.whyThisJobPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
+                className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none transition-all resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
               />
             </div>
 
             {/* Extra keywords/interests */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1">
-                {t('coverLetterGenerator.jobInfo.extraKeywords')} <span className="text-slate-600 font-normal">{t('coverLetterGenerator.jobInfo.whyThisJobOptional')}</span>
+              <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">
+                {t('coverLetterGenerator.jobInfo.extraKeywords')} <span className="text-slate-500 dark:text-stone-500 font-normal">{t('coverLetterGenerator.jobInfo.whyThisJobOptional')}</span>
               </label>
               <textarea
                 value={extraKeywords}
                 onChange={(e) => setExtraKeywords(e.target.value)}
                 placeholder={t('coverLetterGenerator.jobInfo.extraKeywordsPlaceholder')}
                 rows={2}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-200 outline-none transition-all resize-y"
+                className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none transition-all resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
               />
-              <p className="text-xs text-slate-700 mt-1">
+              <p className="text-xs text-slate-600 dark:text-stone-400 mt-1">
                 {t('coverLetterGenerator.jobInfo.extraKeywordsHint')}
               </p>
             </div>
 
             {/* Tone Selection */}
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-2">
                 {t('coverLetterGenerator.tone.title')}
               </label>
               <div className="flex flex-wrap gap-3">
@@ -1279,8 +1279,8 @@ export default function CoverLetterGenerator() {
                     onClick={() => setTon(toneOption)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                       ton === toneOption
-                        ? 'bg-teal-600 text-white'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        ? 'bg-teal-600 dark:bg-teal-500 text-white'
+                        : 'bg-slate-100 dark:bg-stone-700 text-slate-700 dark:text-stone-300 hover:bg-slate-200 dark:hover:bg-stone-600'
                     }`}
                   >
                     {toneOption === 'professionell' && t('coverLetterGenerator.tone.professional')}

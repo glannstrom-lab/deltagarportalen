@@ -181,15 +181,15 @@ export default function ExploreTab() {
       <IndustryRadarSection />
 
       {/* Search */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
           <Input
             type="text"
             placeholder={t('career.explore.searchPlaceholder') || 'Sök efter yrken...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 py-6 text-lg"
+            className="pl-12 py-6 text-lg bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
           />
         </div>
       </Card>
@@ -203,8 +203,8 @@ export default function ExploreTab() {
             className={cn(
               'px-4 py-2 rounded-full font-medium transition-all',
               selectedCategory === category.key
-                ? 'bg-indigo-600 text-white shadow-md'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                ? 'bg-teal-500 dark:bg-teal-600 text-white shadow-md'
+                : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
             )}
           >
             {category.label}
@@ -216,7 +216,7 @@ export default function ExploreTab() {
       <div className="flex gap-2 items-center flex-wrap">
         <button
           onClick={() => setShowFilters(!showFilters)}
-          className="flex items-center gap-1 px-3 py-2 rounded-lg bg-slate-100 text-slate-700 hover:bg-slate-200 transition-colors text-sm font-medium"
+          className="flex items-center gap-1 px-3 py-2 rounded-lg bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors text-sm font-medium"
         >
           <Filter className="w-4 h-4" />
           Filtrera
@@ -224,7 +224,7 @@ export default function ExploreTab() {
         {comparison.size > 0 && (
           <button
             onClick={() => setShowComparison(!showComparison)}
-            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition-colors text-sm font-medium"
+            className="flex items-center gap-1 px-3 py-2 rounded-lg bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/50 transition-colors text-sm font-medium"
           >
             <Eye className="w-4 h-4" />
             Jämför ({comparison.size}/3)
@@ -234,8 +234,8 @@ export default function ExploreTab() {
 
       {/* Salary Filter */}
       {showFilters && (
-        <Card className="p-4 bg-slate-50">
-          <h4 className="font-semibold text-slate-800 mb-3 text-sm">Löneintervall</h4>
+        <Card className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 text-sm">Löneintervall</h4>
           <div className="flex flex-wrap gap-2">
             {salaryRanges.map((range) => (
               <button
@@ -244,8 +244,8 @@ export default function ExploreTab() {
                 className={cn(
                   'px-3 py-1 rounded-full text-sm transition-all',
                   selectedSalaryRange === range.key
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-white text-slate-700 border border-slate-200 hover:border-indigo-300'
+                    ? 'bg-teal-500 dark:bg-teal-600 text-white'
+                    : 'bg-white dark:bg-stone-700 text-gray-700 dark:text-gray-300 border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600'
                 )}
               >
                 {range.label}
@@ -257,18 +257,18 @@ export default function ExploreTab() {
 
       {/* Comparison View */}
       {showComparison && comparedOccupations.length > 0 && (
-        <Card className="p-4 bg-indigo-50 border-2 border-indigo-200">
+        <Card className="p-4 bg-teal-50 dark:bg-teal-900/20 border-2 border-teal-200 dark:border-teal-700">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-indigo-900">Jämförelse ({comparedOccupations.length})</h3>
-            <button onClick={() => setShowComparison(false)} className="text-indigo-600 hover:text-indigo-700">
+            <h3 className="font-semibold text-teal-900 dark:text-teal-100">Jämförelse ({comparedOccupations.length})</h3>
+            <button onClick={() => setShowComparison(false)} className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300">
               <X className="w-4 h-4" />
             </button>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {comparedOccupations.map((occ) => (
-              <div key={occ.id} className="bg-white rounded-lg p-3 border border-indigo-200">
-                <h4 className="font-semibold text-slate-800 text-sm">{occ.title}</h4>
-                <div className="mt-2 space-y-1 text-xs text-slate-600">
+              <div key={occ.id} className="bg-white dark:bg-stone-800 rounded-lg p-3 border border-teal-200 dark:border-teal-700">
+                <h4 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">{occ.title}</h4>
+                <div className="mt-2 space-y-1 text-xs text-gray-600 dark:text-gray-400">
                   <p><strong>Match:</strong> {occ.match}%</p>
                   <p><strong>Lön:</strong> {occ.salary}</p>
                   <p><strong>Efterfrågan:</strong> {occ.demand}</p>
@@ -282,11 +282,11 @@ export default function ExploreTab() {
       {/* Occupations */}
       <div className="space-y-4">
         {filteredOccupations.map((occupation) => (
-          <Card key={occupation.id} className="p-6 hover:shadow-lg transition-shadow">
+          <Card key={occupation.id} className="p-6 hover:shadow-lg transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <div className="flex items-start gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3 flex-wrap">
-                  <h3 className="text-xl font-bold text-slate-800">{occupation.title}</h3>
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{occupation.title}</h3>
                   <span className={cn('px-3 py-1 rounded-full text-sm font-medium', getMatchColor(occupation.match))}>
                     {occupation.match}% match
                   </span>
@@ -294,52 +294,52 @@ export default function ExploreTab() {
 
                 {/* Match Score Bar */}
                 <div className="mb-3 w-full max-w-xs">
-                  <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                  <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
                     <div
                       className={cn(
                         'h-full transition-all',
                         occupation.match >= 90 ? 'bg-emerald-500' :
-                        occupation.match >= 80 ? 'bg-blue-500' :
-                        occupation.match >= 70 ? 'bg-amber-500' : 'bg-slate-400'
+                        occupation.match >= 80 ? 'bg-teal-500' :
+                        occupation.match >= 70 ? 'bg-amber-500' : 'bg-stone-400'
                       )}
                       style={{ width: `${occupation.match}%` }}
                     />
                   </div>
                 </div>
 
-                <p className="text-slate-600 mb-4">{occupation.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 mb-4">{occupation.description}</p>
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
-                  <div className="bg-slate-50 p-3 rounded-lg">
-                    <div className="flex items-center gap-1 text-slate-600 font-medium mb-1">
+                  <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <DollarSign className="w-4 h-4" />
                       Lön
                     </div>
-                    <div className="text-slate-800 font-semibold">{occupation.salary}</div>
+                    <div className="text-gray-800 dark:text-gray-100 font-semibold">{occupation.salary}</div>
                   </div>
 
-                  <div className="bg-slate-50 p-3 rounded-lg">
-                    <div className="flex items-center gap-1 text-slate-600 font-medium mb-1">
+                  <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <TrendingUp className="w-4 h-4" />
                       Efterfrågan
                     </div>
-                    <div className="text-slate-800 font-semibold">{getDemandIcon(occupation.demand)} {occupation.demand}</div>
+                    <div className="text-gray-800 dark:text-gray-100 font-semibold">{getDemandIcon(occupation.demand)} {occupation.demand}</div>
                   </div>
 
-                  <div className="bg-slate-50 p-3 rounded-lg">
-                    <div className="flex items-center gap-1 text-slate-600 font-medium mb-1">
+                  <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <GraduationCap className="w-4 h-4" />
                       Utbildning
                     </div>
-                    <div className="text-slate-800 font-semibold text-xs">{occupation.education}</div>
+                    <div className="text-gray-800 dark:text-gray-100 font-semibold text-xs">{occupation.education}</div>
                   </div>
 
-                  <div className="bg-slate-50 p-3 rounded-lg">
-                    <div className="flex items-center gap-1 text-slate-600 font-medium mb-1">
+                  <div className="bg-stone-50 dark:bg-stone-700 p-3 rounded-lg">
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400 font-medium mb-1">
                       <Briefcase className="w-4 h-4" />
                       Kategori
                     </div>
-                    <div className="text-slate-800 font-semibold text-xs">{occupation.categoryLabel}</div>
+                    <div className="text-gray-800 dark:text-gray-100 font-semibold text-xs">{occupation.categoryLabel}</div>
                   </div>
                 </div>
               </div>
@@ -351,7 +351,7 @@ export default function ExploreTab() {
                   onClick={() => toggleFavorite(occupation.id)}
                   className={cn(
                     'flex items-center gap-1',
-                    favorites.has(occupation.id) && 'bg-red-50 text-red-600 border-red-200'
+                    favorites.has(occupation.id) && 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800'
                   )}
                 >
                   <Heart className={cn('w-4 h-4', favorites.has(occupation.id) && 'fill-current')} />
@@ -364,10 +364,10 @@ export default function ExploreTab() {
                   disabled={!comparison.has(occupation.id) && comparison.size >= 3}
                   className={cn(
                     'flex items-center gap-1',
-                    comparison.has(occupation.id) && 'bg-indigo-50 text-indigo-600 border-indigo-200'
+                    comparison.has(occupation.id) && 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800'
                   )}
                 >
-                  <Share2 className={cn('w-4 h-4', comparison.has(occupation.id) && 'text-indigo-600')} />
+                  <Share2 className={cn('w-4 h-4', comparison.has(occupation.id) && 'text-teal-600 dark:text-teal-400')} />
                 </Button>
 
                 <Button
@@ -385,9 +385,9 @@ export default function ExploreTab() {
 
       {filteredOccupations.length === 0 && (
         <div className="text-center py-12">
-          <Compass className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-700">{t('career.explore.noOccupationsFound') || 'Inga yrken hittades'}</h3>
-          <p className="text-slate-700">{t('career.explore.tryDifferentSearch') || 'Försök med en annan sökning'}</p>
+          <Compass className="w-16 h-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">{t('career.explore.noOccupationsFound') || 'Inga yrken hittades'}</h3>
+          <p className="text-gray-600 dark:text-gray-400">{t('career.explore.tryDifferentSearch') || 'Försök med en annan sökning'}</p>
         </div>
       )}
 

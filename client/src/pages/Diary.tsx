@@ -40,7 +40,7 @@ function TabNavigation({
   return (
     <div className="flex items-center justify-between gap-4">
       <div className={cn(
-        "flex gap-1 p-1 bg-slate-100 rounded-xl overflow-x-auto scrollbar-hide flex-1",
+        "flex gap-1 p-1 bg-emerald-100 dark:bg-emerald-900/30 rounded-xl overflow-x-auto scrollbar-hide flex-1",
       )}>
         {TABS.map((tab) => {
           const Icon = tab.icon
@@ -55,16 +55,16 @@ function TabNavigation({
                 "font-medium text-xs sm:text-sm transition-all whitespace-nowrap",
                 "min-h-[44px]",
                 isActive
-                  ? "bg-white text-slate-900 shadow-sm"
-                  : "text-slate-700 hover:text-slate-700 hover:bg-white/50"
+                  ? "bg-white dark:bg-stone-800 text-gray-800 dark:text-gray-100 shadow-sm"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-white/50 dark:hover:bg-stone-700/50"
               )}
             >
               <Icon className={cn(
                 "w-4 h-4 flex-shrink-0",
-                isActive && tab.color === 'violet' && "text-violet-600",
-                isActive && tab.color === 'amber' && "text-amber-600",
-                isActive && tab.color === 'blue' && "text-blue-600",
-                isActive && tab.color === 'rose' && "text-rose-600"
+                isActive && tab.color === 'violet' && "text-violet-600 dark:text-violet-400",
+                isActive && tab.color === 'amber' && "text-amber-600 dark:text-amber-400",
+                isActive && tab.color === 'blue' && "text-blue-600 dark:text-blue-400",
+                isActive && tab.color === 'rose' && "text-rose-600 dark:text-rose-400"
               )} />
               <span className="hidden xs:inline sm:inline">{tab.label}</span>
             </button>
@@ -74,10 +74,10 @@ function TabNavigation({
 
       {/* Compact streak indicator */}
       {streak > 0 && (
-        <div className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-orange-50 to-amber-50 rounded-xl border border-orange-100">
-          <Flame className="w-4 h-4 text-orange-500" />
-          <span className="font-bold text-orange-600">{streak}</span>
-          <span className="text-xs text-orange-500 hidden sm:inline">dagar</span>
+        <div className="flex items-center gap-1.5 px-3 py-2 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 rounded-xl border border-orange-100 dark:border-orange-800">
+          <Flame className="w-4 h-4 text-orange-500 dark:text-orange-400" />
+          <span className="font-bold text-orange-600 dark:text-orange-400">{streak}</span>
+          <span className="text-xs text-orange-500 dark:text-orange-400 hidden sm:inline">dagar</span>
         </div>
       )}
     </div>
@@ -95,28 +95,28 @@ function AchievementBanner() {
       emoji: '🔥',
       title: 'En veckas streak!',
       description: `Du har skrivit ${currentStreak} dagar i rad!`,
-      color: 'from-orange-50 to-amber-50 border-orange-200'
+      color: 'from-orange-50 to-amber-50 dark:from-orange-900/30 dark:to-amber-900/30 border-orange-200 dark:border-orange-800'
     }
   } else if (totalEntries >= 10 && totalEntries < 11) {
     achievement = {
       emoji: '📚',
       title: '10 inlägg!',
       description: 'Du har skrivit 10 dagboksinlägg!',
-      color: 'from-blue-50 to-indigo-50 border-blue-200'
+      color: 'from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border-blue-200 dark:border-blue-800'
     }
   } else if (totalWords >= 1000 && totalWords < 1100) {
     achievement = {
       emoji: '✍️',
       title: '1000 ord!',
       description: 'Du har skrivit över 1000 ord totalt!',
-      color: 'from-purple-50 to-violet-50 border-purple-200'
+      color: 'from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 border-purple-200 dark:border-purple-800'
     }
   } else if (longestStreak >= 14) {
     achievement = {
       emoji: '🏆',
       title: 'Två veckors rekord!',
       description: `Ditt längsta streak: ${longestStreak} dagar!`,
-      color: 'from-yellow-50 to-amber-50 border-yellow-200'
+      color: 'from-yellow-50 to-amber-50 dark:from-yellow-900/30 dark:to-amber-900/30 border-yellow-200 dark:border-yellow-800'
     }
   }
 
@@ -125,15 +125,15 @@ function AchievementBanner() {
   return (
     <Card className={cn("p-4 bg-gradient-to-r border", achievement.color)}>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-xl shadow-sm flex-shrink-0">
+        <div className="w-10 h-10 bg-white dark:bg-stone-700 rounded-lg flex items-center justify-center text-xl shadow-sm flex-shrink-0">
           {achievement.emoji}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2">
-            <Award className="w-4 h-4 text-amber-500 flex-shrink-0" />
-            <h3 className="font-semibold text-slate-900 text-sm">{achievement.title}</h3>
+            <Award className="w-4 h-4 text-amber-500 dark:text-amber-400 flex-shrink-0" />
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 text-sm">{achievement.title}</h3>
           </div>
-          <p className="text-xs text-slate-600 truncate">{achievement.description}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-300 truncate">{achievement.description}</p>
         </div>
       </div>
     </Card>

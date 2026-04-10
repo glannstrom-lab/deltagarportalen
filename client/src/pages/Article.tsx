@@ -151,8 +151,8 @@ export default function Article() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700"></div>
+      <div className="flex items-center justify-center h-64 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-600 dark:border-teal-400"></div>
       </div>
     )
   }
@@ -160,15 +160,15 @@ export default function Article() {
   // Handle invalid ID (e.g., literal ":id" in URL)
   if (!id || id === ':id' || !id.match(/^[a-z0-9-]+$/)) {
     return (
-      <div className="text-center py-12">
-        <p className="text-slate-700 mb-2">{t('article.invalidLink')}</p>
-        <p className="text-slate-600 text-sm mb-4">
+      <div className="text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 rounded-xl">
+        <p className="text-gray-800 dark:text-gray-100 mb-2">{t('article.invalidLink')}</p>
+        <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">
           {!id || id === ':id'
             ? t('article.idMissingOrInvalid')
             : t('article.invalidIdFormat', { id })
           }
         </p>
-        <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
+        <Link to="/knowledge-base" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline mt-2 inline-block">
           {t('article.backToKnowledgeBase')}
         </Link>
       </div>
@@ -177,12 +177,12 @@ export default function Article() {
 
   if (!article) {
     return (
-      <div className="text-center py-12">
-        <p className="text-slate-700">{t('article.notFound')}</p>
-        <p className="text-slate-600 text-sm mt-1 mb-4">
+      <div className="text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 rounded-xl">
+        <p className="text-gray-800 dark:text-gray-100">{t('article.notFound')}</p>
+        <p className="text-gray-600 dark:text-gray-300 text-sm mt-1 mb-4">
           ID: {id}
         </p>
-        <Link to="/knowledge-base" className="text-teal-600 hover:underline mt-2 inline-block">
+        <Link to="/knowledge-base" className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline mt-2 inline-block">
           {t('article.backToKnowledgeBase')}
         </Link>
       </div>
@@ -206,28 +206,28 @@ export default function Article() {
       {/* Back button */}
       <button
         onClick={() => navigate('/knowledge-base')}
-        className="flex items-center gap-2 text-slate-600 hover:text-teal-700 mb-6 transition-colors"
+        className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 mb-6 transition-colors"
       >
         <ArrowLeft size={20} />
         {t('article.backToKnowledgeBase')}
       </button>
 
       {/* Article header */}
-      <article className="card mb-8">
+      <article className="bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-6 mb-8">
         {/* Category & Meta */}
         <div className="flex flex-wrap items-center gap-2 mb-4">
-          <span className="inline-block px-3 py-1 bg-teal-100 text-teal-700 text-sm font-medium rounded-full">
+          <span className="inline-block px-3 py-1 bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 text-sm font-medium rounded-full">
             {article.category}
           </span>
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-6">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100 mb-6">
           {article.title}
         </h1>
 
         {/* Author & Date */}
-        <div className="flex flex-wrap items-center gap-4 text-sm text-slate-700 mb-6">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300 mb-6">
           {article.author && (
             <span className="flex items-center gap-1.5">
               <User size={16} />
@@ -246,15 +246,15 @@ export default function Article() {
 
         {/* Summary */}
         {article.summary && (
-          <div className="p-4 bg-gradient-to-r from-teal-50 to-blue-50 rounded-lg mb-6">
-            <p className="text-slate-700 font-medium italic">
+          <div className="p-4 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-lg mb-6 border border-teal-100 dark:border-teal-800">
+            <p className="text-gray-700 dark:text-gray-200 font-medium italic">
               {article.summary}
             </p>
           </div>
         )}
 
         {/* Action bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-t border-b border-slate-100 mb-6">
+        <div className="flex flex-wrap items-center justify-between gap-4 py-4 border-t border-b border-stone-100 dark:border-stone-700 mb-6">
           <div className="flex items-center gap-2">
             {/* Text to speech */}
             <TextToSpeech text={article.content} />
@@ -262,11 +262,11 @@ export default function Article() {
 
           <div className="flex items-center gap-2">
             {/* Font size */}
-            <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1">
               <button
                 onClick={() => changeFontSize('normal')}
                 className={`px-2 py-1 rounded text-sm font-medium transition-colors ${
-                  fontSize === 'normal' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-700'
+                  fontSize === 'normal' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-600 dark:text-gray-300'
                 }`}
                 title={t('article.fontSizeNormal')}
               >
@@ -275,7 +275,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('large')}
                 className={`px-2 py-1 rounded text-base font-medium transition-colors ${
-                  fontSize === 'large' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-700'
+                  fontSize === 'large' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-600 dark:text-gray-300'
                 }`}
                 title={t('article.fontSizeLarge')}
               >
@@ -284,7 +284,7 @@ export default function Article() {
               <button
                 onClick={() => changeFontSize('xlarge')}
                 className={`px-2 py-1 rounded text-lg font-medium transition-colors ${
-                  fontSize === 'xlarge' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-700'
+                  fontSize === 'xlarge' ? 'bg-white dark:bg-stone-600 text-gray-800 dark:text-gray-100 shadow-sm' : 'text-gray-600 dark:text-gray-300'
                 }`}
                 title={t('article.fontSizeXLarge')}
               >
@@ -297,8 +297,8 @@ export default function Article() {
               onClick={toggleBookmark}
               className={`p-2 rounded-lg transition-colors ${
                 isBookmarked
-                  ? 'bg-teal-100 text-teal-700'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400'
+                  : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
               }`}
               title={isBookmarked ? t('article.removeBookmark') : t('article.saveBookmark')}
             >
@@ -308,12 +308,12 @@ export default function Article() {
             {/* Share */}
             <button
               onClick={shareArticle}
-              className="p-2 bg-slate-100 text-slate-600 rounded-lg hover:bg-slate-200 transition-colors relative"
+              className="p-2 bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 rounded-lg hover:bg-stone-200 dark:hover:bg-stone-600 transition-colors relative"
               title={t('article.shareArticle')}
             >
               <Share2 size={20} />
               {showCopied && (
-                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
+                <span className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-800 dark:bg-gray-700 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
                   {t('article.copied')}
                 </span>
               )}
@@ -322,14 +322,14 @@ export default function Article() {
         </div>
 
         {/* Article content */}
-        <div className={`prose prose-slate max-w-none ${getFontSizeClass()}`}>
+        <div className={`prose prose-slate dark:prose-invert max-w-none ${getFontSizeClass()}`}>
           {contentParagraphs.map((paragraph: string, index: number) => {
             // Check if it's a heading (starts with ##)
             if (paragraph.startsWith('## ')) {
               return (
-                <h2 
-                  key={index} 
-                  className={`text-xl font-bold text-slate-800 mt-8 mb-4 ${
+                <h2
+                  key={index}
+                  className={`text-xl font-bold text-gray-800 dark:text-gray-100 mt-8 mb-4 ${
                     fontSize === 'large' ? 'text-2xl' : fontSize === 'xlarge' ? 'text-3xl' : ''
                   }`}
                 >
@@ -340,9 +340,9 @@ export default function Article() {
             // Check if it's a subheading (starts with ###)
             if (paragraph.startsWith('### ')) {
               return (
-                <h3 
-                  key={index} 
-                  className={`text-lg font-semibold text-slate-800 mt-6 mb-3 ${
+                <h3
+                  key={index}
+                  className={`text-lg font-semibold text-gray-800 dark:text-gray-100 mt-6 mb-3 ${
                     fontSize === 'large' ? 'text-xl' : fontSize === 'xlarge' ? 'text-2xl' : ''
                   }`}
                 >
@@ -356,7 +356,7 @@ export default function Article() {
               return (
                 <ul key={index} className="list-disc pl-6 space-y-2 my-4">
                   {items.map((item: string, i: number) => (
-                    <li key={i} className="text-slate-700">
+                    <li key={i} className="text-gray-700 dark:text-gray-200">
                       {item.replace('- ', '').replace('- [ ] ', '').replace('- [x] ', '')}
                     </li>
                   ))}
@@ -366,9 +366,9 @@ export default function Article() {
             // Check if it's a blockquote
             if (paragraph.startsWith('> ')) {
               return (
-                <blockquote 
-                  key={index} 
-                  className="border-l-4 border-teal-500 pl-4 italic text-slate-600 my-6"
+                <blockquote
+                  key={index}
+                  className="border-l-4 border-teal-500 dark:border-teal-400 pl-4 italic text-gray-600 dark:text-gray-300 my-6"
                 >
                   {paragraph.replace('> ', '')}
                 </blockquote>
@@ -376,7 +376,7 @@ export default function Article() {
             }
             // Regular paragraph
             return (
-              <p key={index} className="mb-4 text-slate-700">
+              <p key={index} className="mb-4 text-gray-700 dark:text-gray-200">
                 {paragraph}
               </p>
             )
@@ -390,8 +390,8 @@ export default function Article() {
 
         {/* Actions */}
         {actions.length > 0 && (
-          <div className="mt-8 p-4 bg-slate-50 rounded-xl">
-            <h4 className="font-semibold text-slate-800 mb-3 flex items-center gap-2">
+          <div className="mt-8 p-4 bg-stone-50 dark:bg-stone-900/50 rounded-xl border border-stone-100 dark:border-stone-700">
+            <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center gap-2">
               <Lightbulb size={18} className="text-amber-500" />
               {t('article.nextSteps')}
             </h4>
@@ -402,8 +402,8 @@ export default function Article() {
                   to={action.href}
                   className={`inline-flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
                     action.type === 'primary'
-                      ? 'bg-teal-600 text-white hover:bg-teal-700'
-                      : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-teal-600 dark:bg-teal-700 text-white hover:bg-teal-700 dark:hover:bg-teal-600'
+                      : 'bg-white dark:bg-stone-700 border border-stone-200 dark:border-stone-600 text-gray-700 dark:text-gray-200 hover:bg-stone-50 dark:hover:bg-stone-600'
                   }`}
                 >
                   {action.label}
@@ -416,13 +416,13 @@ export default function Article() {
 
         {/* Tags */}
         {article.tags && (
-          <footer className="mt-8 pt-6 border-t border-slate-200">
+          <footer className="mt-8 pt-6 border-t border-stone-200 dark:border-stone-700">
             <div className="flex items-center gap-2 flex-wrap">
-              <Tag size={16} className="text-slate-600" />
+              <Tag size={16} className="text-gray-600 dark:text-gray-400" />
               {(Array.isArray(article.tags) ? article.tags : article.tags.split(',')).map((tag) => (
                 <span
                   key={tag}
-                  className="px-2 py-1 bg-slate-100 text-slate-600 text-sm rounded"
+                  className="px-2 py-1 bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 text-sm rounded"
                 >
                   {typeof tag === 'string' ? tag.trim() : tag}
                 </span>
@@ -432,7 +432,7 @@ export default function Article() {
         )}
 
         {/* Meta info */}
-        <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-700">
+        <div className="mt-6 flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-300">
           {article.helpfulnessRating && (
             <span className="flex items-center gap-1">
               <span className="text-amber-500">★</span>
@@ -454,8 +454,8 @@ export default function Article() {
       {/* Related exercises */}
       {relatedExercises.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-4 flex items-center gap-2">
-            <Dumbbell className="text-indigo-600" size={24} />
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <Dumbbell className="text-teal-600 dark:text-teal-400" size={24} />
             {t('article.relatedExercises')}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -465,21 +465,21 @@ export default function Article() {
                 <Link
                   key={exercise.id}
                   to={`/exercises`}
-                  className="group block card hover:shadow-md transition-all border-l-4 border-l-indigo-500"
+                  className="group block bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-xl p-4 hover:shadow-md transition-all border-l-4 border-l-teal-500 dark:border-l-teal-400"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                      <Icon className="w-6 h-6 text-indigo-600" />
+                    <div className="w-12 h-12 rounded-xl bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+                      <Icon className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                     </div>
                     <div className="flex-1">
-                      <h3 className="font-semibold text-slate-800 group-hover:text-indigo-700 transition-colors mb-1">
+                      <h3 className="font-semibold text-gray-800 dark:text-gray-100 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors mb-1">
                         {exercise.title}
                       </h3>
-                      <p className="text-sm text-slate-600 line-clamp-2 mb-2">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 line-clamp-2 mb-2">
                         {exercise.description}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-slate-700">
-                        <span className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-full">
+                      <div className="flex items-center gap-2 text-xs text-gray-600 dark:text-gray-400">
+                        <span className="px-2 py-0.5 bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400 rounded-full">
                           {exercise.category}
                         </span>
                         <span>•</span>
@@ -499,11 +499,11 @@ export default function Article() {
       {/* Related articles */}
       {relatedArticles.length > 0 && (
         <section className="mb-8">
-          <h2 className="text-xl font-bold text-slate-800 mb-4">{t('article.relatedArticles')}</h2>
+          <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">{t('article.relatedArticles')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {relatedArticles.map((relatedArticle) => (
-              <EnhancedArticleCard 
-                key={relatedArticle.id} 
+              <EnhancedArticleCard
+                key={relatedArticle.id}
                 article={relatedArticle}
               />
             ))}
@@ -512,19 +512,19 @@ export default function Article() {
       )}
 
       {/* Help section */}
-      <section className="card bg-gradient-to-br from-teal-50 to-blue-50 border-teal-100">
+      <section className="bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border border-teal-100 dark:border-teal-800 rounded-xl p-6">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-teal-600 rounded-xl flex items-center justify-center flex-shrink-0">
+          <div className="w-12 h-12 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 rounded-xl flex items-center justify-center flex-shrink-0">
             <Lightbulb size={24} className="text-white" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 mb-1">{t('article.needMoreHelp')}</h3>
-            <p className="text-slate-600 text-sm mb-3">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-1">{t('article.needMoreHelp')}</h3>
+            <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">
               {t('article.helpDescription')}
             </p>
             <Link
               to="/diary"
-              className="inline-flex items-center gap-2 text-teal-700 font-medium hover:underline"
+              className="inline-flex items-center gap-2 text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium hover:underline"
             >
               {t('article.bookMeeting')}
               <ExternalLink size={16} />

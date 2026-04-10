@@ -138,14 +138,14 @@ export default function LinkedInOptimizer() {
   const auditGrade = profileCompleteness >= 80 ? 'A' : profileCompleteness >= 70 ? 'B' : profileCompleteness >= 60 ? 'C' : 'D'
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 pb-20">
+    <div className="max-w-4xl mx-auto space-y-6 pb-20 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen p-4">
       {/* Header */}
       <div className="text-center space-y-3">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-blue-100 to-blue-200 mb-2">
-          <Linkedin className="w-7 h-7 text-blue-700" />
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-sky-100 to-sky-200 dark:from-sky-900/30 dark:to-sky-800/30 mb-2">
+          <Linkedin className="w-7 h-7 text-sky-700 dark:text-sky-400" />
         </div>
-        <h1 className="text-2xl font-bold text-slate-800">{t('linkedInOptimizer.title')}</h1>
-        <p className="text-slate-600 max-w-2xl mx-auto">
+        <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.title')}</h1>
+        <p className="text-slate-600 dark:text-stone-400 max-w-2xl mx-auto">
           {t('linkedInOptimizer.description')}
         </p>
       </div>
@@ -158,12 +158,12 @@ export default function LinkedInOptimizer() {
             onClick={() => { setAktivTab(tab.id as any); setResultat(''); }}
             className={`p-3 rounded-xl border-2 text-left transition-all text-sm ${
               aktivTab === tab.id
-                ? 'border-blue-500 bg-blue-50'
-                : 'border-slate-200 hover:border-blue-200 bg-white'
+                ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
+                : 'border-stone-200 dark:border-stone-700 hover:border-teal-200 dark:hover:border-teal-700 bg-white dark:bg-stone-800'
             }`}
           >
-            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-blue-600' : 'text-slate-600'}`} />
-            <div className="font-medium text-slate-800 text-xs">{tab.label}</div>
+            <tab.icon className={`w-5 h-5 mb-1 ${aktivTab === tab.id ? 'text-teal-600 dark:text-teal-400' : 'text-slate-600 dark:text-stone-400'}`} />
+            <div className="font-medium text-slate-800 dark:text-stone-200 text-xs">{tab.label}</div>
           </button>
         ))}
       </div>
@@ -171,74 +171,74 @@ export default function LinkedInOptimizer() {
       {/* Form or Audit */}
       {aktivTab !== 'audit' ? (
         <>
-          <Card className="p-6">
+          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             {aktivTab === 'headline' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.headline.title')}</h2>
-                <p className="text-sm text-slate-600">{t('linkedInOptimizer.headline.description')}</p>
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.headline.title')}</h2>
+                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.headline.description')}</p>
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.headline.jobTitlePlaceholder')}
                   value={formData.headline.yrke}
                   onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, yrke: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.headline.specializationPlaceholder')}
                   value={formData.headline.erfarenhet}
                   onChange={(e) => setFormData({ ...formData, headline: { ...formData.headline, erfarenhet: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <p className="text-sm text-blue-800"><strong>Tips:</strong> Använd nyckelord som arbetsgivare söker på. Exempelvis: Full-Stack Developer, Cloud Architecture, Team Leadership</p>
+                <div className="bg-sky-50 dark:bg-sky-900/20 p-4 rounded-lg border border-sky-200 dark:border-sky-800">
+                  <p className="text-sm text-sky-800 dark:text-sky-300"><strong>Tips:</strong> Använd nyckelord som arbetsgivare söker på. Exempelvis: Full-Stack Developer, Cloud Architecture, Team Leadership</p>
                 </div>
               </div>
             )}
 
             {aktivTab === 'about' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.about.title')}</h2>
-                <p className="text-sm text-slate-600">{t('linkedInOptimizer.about.description')}</p>
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.about.title')}</h2>
+                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.about.description')}</p>
                 <textarea
                   placeholder={t('linkedInOptimizer.about.backgroundPlaceholder')}
                   value={formData.about.bakgrund}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, bakgrund: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none resize-y"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <textarea
                   placeholder={t('linkedInOptimizer.about.strengthsPlaceholder')}
                   value={formData.about.styrkor}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, styrkor: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none resize-y"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.about.goalsPlaceholder')}
                   value={formData.about.mal}
                   onChange={(e) => setFormData({ ...formData, about: { ...formData.about, mal: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
               </div>
             )}
 
             {aktivTab === 'post' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.post.title')}</h2>
-                <p className="text-sm text-slate-600">{t('linkedInOptimizer.post.description')}</p>
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.post.title')}</h2>
+                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.post.description')}</p>
                 <textarea
                   placeholder={t('linkedInOptimizer.post.topicPlaceholder')}
                   value={formData.post.amne}
                   onChange={(e) => setFormData({ ...formData, post: { ...formData.post, amne: e.target.value } })}
                   rows={4}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none resize-y"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <select
                   value={formData.post.ton}
                   onChange={(e) => setFormData({ ...formData, post: { ...formData.post, ton: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 >
                   <option value="professionell">{t('linkedInOptimizer.post.tones.professional')}</option>
                   <option value="personlig">{t('linkedInOptimizer.post.tones.personal')}</option>
@@ -250,28 +250,28 @@ export default function LinkedInOptimizer() {
 
             {aktivTab === 'connection' && (
               <div className="space-y-4">
-                <h2 className="text-lg font-semibold text-slate-800">{t('linkedInOptimizer.connection.title')}</h2>
-                <p className="text-sm text-slate-600">{t('linkedInOptimizer.connection.description')}</p>
+                <h2 className="text-lg font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.connection.title')}</h2>
+                <p className="text-sm text-slate-600 dark:text-stone-400">{t('linkedInOptimizer.connection.description')}</p>
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.connection.namePlaceholder')}
                   value={formData.connection.namn}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, namn: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <input
                   type="text"
                   placeholder={t('linkedInOptimizer.connection.rolePlaceholder')}
                   value={formData.connection.roll}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, roll: e.target.value } })}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
                 <textarea
                   placeholder={t('linkedInOptimizer.connection.purposePlaceholder')}
                   value={formData.connection.syfte}
                   onChange={(e) => setFormData({ ...formData, connection: { ...formData.connection, syfte: e.target.value } })}
                   rows={3}
-                  className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none resize-y"
+                  className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
                 />
               </div>
             )}
@@ -279,7 +279,7 @@ export default function LinkedInOptimizer() {
             <Button
               onClick={generera}
               disabled={isLoading}
-              className="w-full mt-6 bg-gradient-to-r from-blue-600 to-blue-700"
+              className="w-full mt-6 bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
             >
               {isLoading ? (
                 <RefreshCw className="w-5 h-5 animate-spin" />
@@ -294,22 +294,22 @@ export default function LinkedInOptimizer() {
 
           {/* Resultat */}
           {resultat && (
-            <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+            <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-slate-800">{t('linkedInOptimizer.result.title')}</h3>
+                <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('linkedInOptimizer.result.title')}</h3>
                 <button
                   onClick={kopiera}
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"
+                  className="flex items-center gap-2 px-3 py-1.5 text-sm text-teal-600 dark:text-teal-400 hover:bg-teal-100 dark:hover:bg-teal-900/30 rounded-lg transition-colors"
                 >
                   {copied ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
                   {copied ? t('linkedInOptimizer.result.copied') : t('linkedInOptimizer.result.copy')}
                 </button>
               </div>
-              <div className="bg-white p-4 rounded-lg border border-blue-100">
-                <p className="text-slate-700 whitespace-pre-wrap">{resultat}</p>
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-sky-100 dark:border-sky-800">
+                <p className="text-slate-700 dark:text-stone-300 whitespace-pre-wrap">{resultat}</p>
               </div>
-              <p className="text-xs text-slate-700 mt-3">
-                💡 {t('linkedInOptimizer.result.tip')}
+              <p className="text-xs text-slate-600 dark:text-stone-400 mt-3">
+                {t('linkedInOptimizer.result.tip')}
               </p>
             </Card>
           )}
@@ -318,66 +318,66 @@ export default function LinkedInOptimizer() {
         /* Audit View */
         <div className="space-y-6">
           {/* Completeness Overview */}
-          <Card className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+          <Card className="p-6 bg-gradient-to-br from-sky-50 to-teal-50 dark:from-sky-900/20 dark:to-teal-900/20 border-sky-200 dark:border-sky-800">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                <Shield className="w-6 h-6 text-blue-600" />
+              <h2 className="text-xl font-bold text-slate-800 dark:text-stone-100 flex items-center gap-2">
+                <Shield className="w-6 h-6 text-teal-600 dark:text-teal-400" />
                 Profilhälsa
               </h2>
               <div className="text-right">
-                <p className="text-4xl font-bold text-blue-600">{auditGrade}</p>
-                <p className="text-xs text-slate-600">Betyg</p>
+                <p className="text-4xl font-bold text-teal-600 dark:text-teal-400">{auditGrade}</p>
+                <p className="text-xs text-slate-600 dark:text-stone-400">Betyg</p>
               </div>
             </div>
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-slate-700">Profil slutförd</span>
-                <span className="text-sm font-bold text-blue-600">{profileCompleteness}%</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-stone-300">Profil slutförd</span>
+                <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{profileCompleteness}%</span>
               </div>
               <Progress value={profileCompleteness} className="h-4" />
-              <p className="text-xs text-slate-600 mt-2">Rekommendation: Slutför din profil för att öka synligheten bland rekryterare</p>
+              <p className="text-xs text-slate-600 dark:text-stone-400 mt-2">Rekommendation: Slutför din profil för att öka synligheten bland rekryterare</p>
             </div>
           </Card>
 
           {/* Audit Sections */}
           <div className="space-y-4">
             {auditSections.map((section) => (
-              <Card key={section.name} className="overflow-hidden">
+              <Card key={section.name} className="overflow-hidden bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
                 <button
                   onClick={() => setExpandedSection(expandedSection === section.name ? null : section.name)}
-                  className="w-full p-6 flex items-center justify-between hover:bg-slate-50 transition text-left"
+                  className="w-full p-6 flex items-center justify-between hover:bg-slate-50 dark:hover:bg-stone-700 transition text-left"
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-3">
-                      <h3 className="font-semibold text-slate-800">{section.name}</h3>
+                      <h3 className="font-semibold text-slate-800 dark:text-stone-100">{section.name}</h3>
                       <span className={`text-xs font-bold px-2 py-1 rounded-full ${
-                        section.score >= 80 ? 'bg-green-100 text-green-800' :
-                        section.score >= 70 ? 'bg-amber-100 text-amber-800' :
-                        'bg-red-100 text-red-800'
+                        section.score >= 80 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400' :
+                        section.score >= 70 ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400' :
+                        'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400'
                       }`}>
                         {section.score}%
                       </span>
                     </div>
                   </div>
                   {expandedSection === section.name ? (
-                    <ChevronUp className="w-5 h-5 text-slate-600" />
+                    <ChevronUp className="w-5 h-5 text-slate-600 dark:text-stone-400" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-slate-600" />
+                    <ChevronDown className="w-5 h-5 text-slate-600 dark:text-stone-400" />
                   )}
                 </button>
 
                 {expandedSection === section.name && (
-                  <div className="border-t border-slate-200 p-6 bg-slate-50 space-y-4">
+                  <div className="border-t border-slate-200 dark:border-stone-700 p-6 bg-slate-50 dark:bg-stone-900/50 space-y-4">
                     {/* Checklist */}
                     <div>
-                      <h4 className="font-medium text-slate-800 mb-2 flex items-center gap-2">
+                      <h4 className="font-medium text-slate-800 dark:text-stone-100 mb-2 flex items-center gap-2">
                         <ListCheckIcon className="w-4 h-4" />
                         Checklistor
                       </h4>
                       <div className="space-y-2">
                         {section.checklist.map((item, idx) => (
-                          <label key={idx} className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-white transition">
+                          <label key={idx} className="flex items-center gap-2 cursor-pointer p-2 rounded hover:bg-white dark:hover:bg-stone-800 transition">
                             <input
                               type="checkbox"
                               checked={item.completed}
@@ -386,9 +386,9 @@ export default function LinkedInOptimizer() {
                                 updated[auditSections.indexOf(section)].checklist[idx].completed = !item.completed
                                 setAuditSections(updated)
                               }}
-                              className="w-4 h-4 rounded border-slate-300 text-blue-600 cursor-pointer"
+                              className="w-4 h-4 rounded border-slate-300 dark:border-stone-600 text-teal-600 cursor-pointer"
                             />
-                            <span className={item.completed ? 'line-through text-slate-600' : 'text-slate-700'}>{item.item}</span>
+                            <span className={item.completed ? 'line-through text-slate-500 dark:text-stone-500' : 'text-slate-700 dark:text-stone-300'}>{item.item}</span>
                           </label>
                         ))}
                       </div>
@@ -396,15 +396,15 @@ export default function LinkedInOptimizer() {
 
                     {/* Before/After Examples */}
                     <div>
-                      <h4 className="font-medium text-slate-800 mb-2">Före/Efter exempel</h4>
+                      <h4 className="font-medium text-slate-800 dark:text-stone-100 mb-2">Fore/Efter exempel</h4>
                       <div className="grid md:grid-cols-2 gap-3">
-                        <div className="bg-red-50 p-3 rounded border border-red-200">
-                          <p className="text-xs text-red-700 font-medium mb-1">❌ Innan</p>
-                          <p className="text-sm text-slate-700">{section.examples.before}</p>
+                        <div className="bg-red-50 dark:bg-red-900/20 p-3 rounded border border-red-200 dark:border-red-800">
+                          <p className="text-xs text-red-700 dark:text-red-400 font-medium mb-1">Innan</p>
+                          <p className="text-sm text-slate-700 dark:text-stone-300">{section.examples.before}</p>
                         </div>
-                        <div className="bg-green-50 p-3 rounded border border-green-200">
-                          <p className="text-xs text-green-700 font-medium mb-1">✓ Efter</p>
-                          <p className="text-sm text-slate-700">{section.examples.after}</p>
+                        <div className="bg-emerald-50 dark:bg-emerald-900/20 p-3 rounded border border-emerald-200 dark:border-emerald-800">
+                          <p className="text-xs text-emerald-700 dark:text-emerald-400 font-medium mb-1">Efter</p>
+                          <p className="text-sm text-slate-700 dark:text-stone-300">{section.examples.after}</p>
                         </div>
                       </div>
                     </div>
@@ -413,15 +413,15 @@ export default function LinkedInOptimizer() {
                     <div>
                       <button
                         onClick={() => setShowKeywords(!showKeywords)}
-                        className="flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700"
+                        className="flex items-center gap-2 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300"
                       >
                         {showKeywords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                        {showKeywords ? 'Dölj' : 'Visa'} nyckelord för denna sektion
+                        {showKeywords ? 'Dolj' : 'Visa'} nyckelord for denna sektion
                       </button>
                       {showKeywords && (
                         <div className="flex flex-wrap gap-2 mt-2">
                           {section.keywords.map((kw, idx) => (
-                            <span key={idx} className="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">
+                            <span key={idx} className="text-xs bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 px-2 py-1 rounded-full">
                               {kw}
                             </span>
                           ))}
@@ -435,23 +435,23 @@ export default function LinkedInOptimizer() {
           </div>
 
           {/* Action Items */}
-          <Card className="p-6 bg-amber-50 border-amber-200">
-            <h3 className="font-bold text-slate-800 mb-4 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-amber-600" />
-              Prioriterade åtgärdsobjekt
+          <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+            <h3 className="font-bold text-slate-800 dark:text-stone-100 mb-4 flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+              Prioriterade atgardsobjekt
             </h3>
             <ol className="space-y-2">
-              <li className="text-sm text-slate-700">
-                <strong>Högt:</strong> Lägg till rekommendationer från tidigare kollegor och chefer
+              <li className="text-sm text-slate-700 dark:text-stone-300">
+                <strong className="text-amber-700 dark:text-amber-400">Hogt:</strong> Lagg till rekommendationer fran tidigare kollegor och chefer
               </li>
-              <li className="text-sm text-slate-700">
-                <strong>Högt:</strong> Förbättra "Om mig" sektionen med mer specifika nyckelord
+              <li className="text-sm text-slate-700 dark:text-stone-300">
+                <strong className="text-amber-700 dark:text-amber-400">Hogt:</strong> Forbattra "Om mig" sektionen med mer specifika nyckelord
               </li>
-              <li className="text-sm text-slate-700">
-                <strong>Medel:</strong> Lägg till mätbara resultat till din arbetshistoria
+              <li className="text-sm text-slate-700 dark:text-stone-300">
+                <strong className="text-slate-600 dark:text-stone-400">Medel:</strong> Lagg till matbara resultat till din arbetshistoria
               </li>
-              <li className="text-sm text-slate-700">
-                <strong>Medel:</strong> Länka relevanta projekt och publikationer
+              <li className="text-sm text-slate-700 dark:text-stone-300">
+                <strong className="text-slate-600 dark:text-stone-400">Medel:</strong> Lanka relevanta projekt och publikationer
               </li>
             </ol>
           </Card>
@@ -461,7 +461,7 @@ export default function LinkedInOptimizer() {
       {/* Bottom Action Button */}
       {aktivTab === 'headline' && !resultat && (
         <div className="flex gap-2">
-          <Button onClick={startAudit} variant="outline" className="flex-1">
+          <Button onClick={startAudit} variant="outline" className="flex-1 border-stone-200 dark:border-stone-700 hover:bg-stone-100 dark:hover:bg-stone-800">
             <Shield className="w-4 h-4 mr-2" />
             Starta profil-granskning
           </Button>

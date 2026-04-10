@@ -29,24 +29,24 @@ import { PageLayout } from '@/components/layout/index'
 // Extended category colors for all 38 categories
 const categoryColors: { [key: string]: string } = {
   // Original categories
-  'Självkännedom': 'bg-purple-100 text-purple-700',
-  'Jobbsökning': 'bg-blue-100 text-blue-700',
-  'Nätverkande': 'bg-indigo-100 text-indigo-700',
-  'Digital närvaro': 'bg-cyan-100 text-cyan-700',
-  'Arbetsrätt': 'bg-orange-100 text-orange-700',
-  'Karriärutveckling': 'bg-pink-100 text-pink-700',
-  'Välmående': 'bg-rose-100 text-rose-700',
+  'Självkännedom': 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400',
+  'Jobbsökning': 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400',
+  'Nätverkande': 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-400',
+  'Digital närvaro': 'bg-cyan-100 dark:bg-cyan-900/30 text-cyan-700 dark:text-cyan-400',
+  'Arbetsrätt': 'bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400',
+  'Karriärutveckling': 'bg-pink-100 dark:bg-pink-900/30 text-pink-700 dark:text-pink-400',
+  'Välmående': 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400',
   // New categories from the 38 list
-  'Arbetslivskunskap': 'bg-amber-100 text-amber-700',
-  'Arbetssökande': 'bg-sky-100 text-sky-700',
-  'Rehabilitering': 'bg-teal-100 text-teal-700',
+  'Arbetslivskunskap': 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400',
+  'Arbetssökande': 'bg-sky-100 dark:bg-sky-900/30 text-sky-700 dark:text-sky-400',
+  'Rehabilitering': 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400',
 }
 
 // Difficulty badge colors
 const difficultyColors = {
-  'Lätt': 'bg-green-100 text-green-700 border-green-200',
-  'Medel': 'bg-amber-100 text-amber-700 border-amber-200',
-  'Utmanande': 'bg-red-100 text-red-700 border-red-200'
+  'Lätt': 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800',
+  'Medel': 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800',
+  'Utmanande': 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800'
 }
 
 interface ExerciseProgress {
@@ -322,8 +322,8 @@ export default function Exercises() {
         showTabs={false}
       >
         <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-          <p className="ml-3 text-gray-600">{t('exercises.loadingAnswers')}</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 dark:border-emerald-400"></div>
+          <p className="ml-3 text-gray-600 dark:text-gray-300">{t('exercises.loadingAnswers')}</p>
         </div>
       </PageLayout>
     )
@@ -343,34 +343,34 @@ export default function Exercises() {
       <div className="space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-indigo-100 mb-2">
-            <BookOpen className="w-7 h-7 text-indigo-600" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-2">
+            <BookOpen className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">{t('exercises.title')}</h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            Arbeta dig igenom praktiska övningar för att utveckla dina jobbsökar-skills. 
+          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{t('exercises.title')}</h1>
+          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+            Arbeta dig igenom praktiska övningar för att utveckla dina jobbsökar-skills.
             Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.
           </p>
-          
+
           {/* Cloud sync indicator */}
           <div className="flex items-center justify-center gap-2 text-sm">
-            <Cloud className={`w-4 h-4 ${saving ? 'text-amber-500 animate-pulse' : 'text-green-500'}`} />
-            <span className={saving ? 'text-amber-600' : 'text-green-600'}>
+            <Cloud className={`w-4 h-4 ${saving ? 'text-amber-500 dark:text-amber-400 animate-pulse' : 'text-emerald-500 dark:text-emerald-400'}`} />
+            <span className={saving ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}>
               {saving ? t('exercises.saving') : t('exercises.cloudSynced')}
             </span>
           </div>
 
           {error && (
-            <div className="flex items-center justify-center gap-2 text-red-600 text-sm">
+            <div className="flex items-center justify-center gap-2 text-red-600 dark:text-red-400 text-sm">
               <AlertCircle className="w-4 h-4" />
               <span>{error}</span>
             </div>
           )}
 
           {!user && (
-            <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mt-4">
-              <p className="text-amber-800 text-sm">
-                <strong>Obs!</strong> Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren. 
+            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
+              <p className="text-amber-800 dark:text-amber-300 text-sm">
+                <strong>Obs!</strong> Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren.
                 <a href="/login" className="underline ml-1">Logga in</a> för att spara permanent i molnet.
               </p>
             </div>
@@ -379,29 +379,29 @@ export default function Exercises() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="p-4 text-center bg-indigo-50 border-indigo-100">
-            <p className="text-2xl font-bold text-indigo-700">{exercises.length}</p>
-            <p className="text-sm text-indigo-600">{t('exercises.stats.totalExercises')}</p>
+          <Card className="p-4 text-center bg-emerald-50 dark:bg-emerald-900/20 border-emerald-100 dark:border-emerald-800">
+            <p className="text-2xl font-bold text-emerald-700 dark:text-emerald-400">{exercises.length}</p>
+            <p className="text-sm text-emerald-600 dark:text-emerald-400">{t('exercises.stats.totalExercises')}</p>
           </Card>
-          <Card className="p-4 text-center bg-green-50 border-green-100">
-            <p className="text-2xl font-bold text-green-700">
+          <Card className="p-4 text-center bg-green-50 dark:bg-green-900/20 border-green-100 dark:border-green-800">
+            <p className="text-2xl font-bold text-green-700 dark:text-green-400">
               {Object.keys(answers).length}
             </p>
-            <p className="text-sm text-green-600">{t('exercises.stats.started')}</p>
+            <p className="text-sm text-green-600 dark:text-green-400">{t('exercises.stats.started')}</p>
           </Card>
-          <Card className="p-4 text-center bg-amber-50 border-amber-100">
-            <p className="text-2xl font-bold text-amber-700">
+          <Card className="p-4 text-center bg-amber-50 dark:bg-amber-900/20 border-amber-100 dark:border-amber-800">
+            <p className="text-2xl font-bold text-amber-700 dark:text-amber-400">
               {Object.entries(answers).filter(([_, ans]) =>
                 Object.values(ans).filter(v => v && v.trim()).length > 0
               ).length}
             </p>
-            <p className="text-sm text-amber-600">{t('exercises.stats.active')}</p>
+            <p className="text-sm text-amber-600 dark:text-amber-400">{t('exercises.stats.active')}</p>
           </Card>
-          <Card className="p-4 text-center bg-purple-50 border-purple-100">
-            <p className="text-2xl font-bold text-purple-700">
+          <Card className="p-4 text-center bg-teal-50 dark:bg-teal-900/20 border-teal-100 dark:border-teal-800">
+            <p className="text-2xl font-bold text-teal-700 dark:text-teal-400">
               {exercises.length - Object.keys(answers).length}
             </p>
-            <p className="text-sm text-purple-600">{t('exercises.stats.notStarted')}</p>
+            <p className="text-sm text-teal-600 dark:text-teal-400">{t('exercises.stats.notStarted')}</p>
           </Card>
         </div>
 
@@ -411,8 +411,8 @@ export default function Exercises() {
             onClick={() => setFilter('alla')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === 'alla'
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
             }`}
           >
             {t('exercises.filters.all')}
@@ -421,8 +421,8 @@ export default function Exercises() {
             onClick={() => setFilter('påbörjade')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === 'påbörjade'
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
             }`}
           >
             {t('exercises.filters.started')}
@@ -431,8 +431,8 @@ export default function Exercises() {
             onClick={() => setFilter('ej-påbörjade')}
             className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
               filter === 'ej-påbörjade'
-                ? 'bg-indigo-600 text-white'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
             }`}
           >
             {t('exercises.filters.notStarted')}
@@ -442,9 +442,9 @@ export default function Exercises() {
               key={cat}
               onClick={() => setFilter(cat)}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                filter === cat 
-                  ? 'bg-indigo-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                filter === cat
+                  ? 'bg-emerald-600 dark:bg-emerald-500 text-white'
+                  : 'bg-gray-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-stone-600'
               }`}
             >
               {cat}
@@ -458,22 +458,22 @@ export default function Exercises() {
             const Icon = exercise.icon
             const progress = getProgressForExercise(exercise.id)
             const isStarted = progress > 0
-            
+
             return (
-              <Card 
+              <Card
                 key={exercise.id}
-                className={`p-6 cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 ${
-                  isStarted ? 'border-l-4 border-l-indigo-500' : ''
+                className={`p-6 cursor-pointer transition-all hover:shadow-lg hover:-translate-y-1 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 ${
+                  isStarted ? 'border-l-4 border-l-emerald-500 dark:border-l-emerald-400' : ''
                 }`}
                 onClick={() => handleSelectExercise(exercise)}
               >
                 {/* Header */}
                 <div className="flex items-start justify-between mb-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${categoryColors[exercise.category] || 'bg-gray-100'}`}>
+                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${categoryColors[exercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
                     <Icon className="w-6 h-6" />
                   </div>
                   {isStarted && (
-                    <div className="flex items-center gap-1 text-indigo-600">
+                    <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
                       <Sparkles className="w-4 h-4" />
                       <span className="text-xs font-medium">{progress}%</span>
                     </div>
@@ -481,10 +481,10 @@ export default function Exercises() {
                 </div>
 
                 {/* Content */}
-                <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 line-clamp-2">
                   {exercise.title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
                   {exercise.description}
                 </p>
 
@@ -493,7 +493,7 @@ export default function Exercises() {
                   <span className={`text-xs px-2 py-1 rounded-full border ${difficultyColors[exercise.difficulty]}`}>
                     {exercise.difficulty}
                   </span>
-                  <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 flex items-center gap-1">
+                  <span className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 flex items-center gap-1">
                     <Clock className="w-3 h-3" />
                     {exercise.duration}
                   </span>
@@ -501,18 +501,18 @@ export default function Exercises() {
 
                 {/* Category & Progress */}
                 <div className="flex items-center justify-between">
-                  <span className={`text-xs px-2 py-1 rounded-full ${categoryColors[exercise.category] || 'bg-gray-100'}`}>
+                  <span className={`text-xs px-2 py-1 rounded-full ${categoryColors[exercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
                     {exercise.category}
                   </span>
                   {isStarted ? (
-                    <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-indigo-500 rounded-full"
+                    <div className="w-16 h-2 bg-gray-200 dark:bg-stone-600 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-emerald-500 dark:bg-emerald-400 rounded-full"
                         style={{ width: `${progress}%` }}
                       />
                     </div>
                   ) : (
-                    <Lock className="w-4 h-4 text-gray-300" />
+                    <Lock className="w-4 h-4 text-gray-300 dark:text-gray-500" />
                   )}
                 </div>
               </Card>
@@ -522,7 +522,7 @@ export default function Exercises() {
 
         {filtered.length === 0 && (
           <div className="text-center py-12">
-            <p className="text-gray-500">{t('exercises.noMatch')}</p>
+            <p className="text-gray-500 dark:text-gray-400">{t('exercises.noMatch')}</p>
           </div>
         )}
       </div>
@@ -543,40 +543,40 @@ export default function Exercises() {
       >
       <div className="max-w-3xl mx-auto space-y-6">
         {/* Back button */}
-        <button 
+        <button
           onClick={handleBackToList}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
           Tillbaka till övningar
         </button>
 
         <div className="text-center space-y-4">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100">
-            <Trophy className="w-10 h-10 text-green-600" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-100 dark:bg-emerald-900/30">
+            <Trophy className="w-10 h-10 text-emerald-600 dark:text-emerald-400" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Bra jobbat!</h1>
-          <p className="text-lg text-gray-600">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100">Bra jobbat!</h1>
+          <p className="text-lg text-gray-600 dark:text-gray-300">
             Du har genomfört övningen "{selectedExercise.title}"
           </p>
-          
+
           {/* Cloud saved indicator */}
-          <div className="flex items-center justify-center gap-2 text-green-600">
+          <div className="flex items-center justify-center gap-2 text-emerald-600 dark:text-emerald-400">
             <Cloud className="w-5 h-5" />
             <span>Dina svar är sparade i molnet</span>
           </div>
         </div>
 
-        <Card className="p-6 space-y-6">
-          <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-amber-500" />
+        <Card className="p-6 space-y-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-amber-500 dark:text-amber-400" />
             Dina svar
           </h2>
-          
+
           {selectedExercise.steps.map((step) => (
             <div key={step.id} className="space-y-4">
-              <h3 className="font-medium text-gray-900 flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 text-sm flex items-center justify-center">
+              <h3 className="font-medium text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 text-sm flex items-center justify-center">
                   {step.id}
                 </span>
                 {step.title}
@@ -585,10 +585,10 @@ export default function Exercises() {
                 {step.questions.map((question) => {
                   const answer = currentAnswers[question.id]
                   return (
-                    <div key={question.id} className="bg-gray-50 rounded-lg p-4">
-                      <p className="text-sm text-gray-600 mb-2">{question.text}</p>
-                      <p className="text-gray-900 whitespace-pre-wrap">
-                        {answer || <span className="text-gray-400 italic">Ej besvarat</span>}
+                    <div key={question.id} className="bg-gray-50 dark:bg-stone-700 rounded-lg p-4">
+                      <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{question.text}</p>
+                      <p className="text-gray-800 dark:text-gray-100 whitespace-pre-wrap">
+                        {answer || <span className="text-gray-400 dark:text-gray-500 italic">Ej besvarat</span>}
                       </p>
                     </div>
                   )
@@ -624,9 +624,9 @@ export default function Exercises() {
     >
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Back button */}
-      <button 
+      <button
         onClick={handleBackToList}
-        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+        className="flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
       >
         <ChevronLeft className="w-5 h-5" />
         Tillbaka till övningar
@@ -635,13 +635,13 @@ export default function Exercises() {
       {/* Header */}
       <div className="space-y-2">
         <div className="flex items-center gap-3">
-          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${categoryColors[selectedExercise.category] || 'bg-gray-100'}`}>
+          <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${categoryColors[selectedExercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
             <selectedExercise.icon className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gray-900">{selectedExercise.title}</h1>
-            <div className="flex items-center gap-2 text-sm text-gray-500">
-              <span className={`px-2 py-0.5 rounded-full text-xs ${categoryColors[selectedExercise.category] || 'bg-gray-100'}`}>
+            <h1 className="text-xl font-bold text-gray-800 dark:text-gray-100">{selectedExercise.title}</h1>
+            <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+              <span className={`px-2 py-0.5 rounded-full text-xs ${categoryColors[selectedExercise.category] || 'bg-gray-100 dark:bg-stone-700'}`}>
                 {selectedExercise.category}
               </span>
               <span>•</span>
@@ -661,17 +661,17 @@ export default function Exercises() {
       {/* Progress */}
       <div className="space-y-2">
         <div className="flex items-center justify-between text-sm">
-          <span className="text-gray-500">Steg {currentStep + 1} av {selectedExercise.steps.length}</span>
+          <span className="text-gray-500 dark:text-gray-400">Steg {currentStep + 1} av {selectedExercise.steps.length}</span>
           <div className="flex items-center gap-2">
             {saving && (
-              <span className="text-amber-600 flex items-center gap-1">
+              <span className="text-amber-600 dark:text-amber-400 flex items-center gap-1">
                 <Cloud className="w-4 h-4 animate-pulse" />
                 Sparar...
               </span>
             )}
-            <button 
+            <button
               onClick={handleClearProgress}
-              className="text-red-500 hover:text-red-700 text-sm"
+              className="text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 text-sm"
             >
               Rensa progress
             </button>
@@ -682,7 +682,7 @@ export default function Exercises() {
             <div
               key={step.id}
               className={`flex-1 h-2 rounded-full transition-colors ${
-                index <= currentStep ? 'bg-indigo-600' : 'bg-gray-200'
+                index <= currentStep ? 'bg-emerald-600 dark:bg-emerald-500' : 'bg-gray-200 dark:bg-stone-600'
               }`}
             />
           ))}
@@ -690,16 +690,16 @@ export default function Exercises() {
       </div>
 
       {/* Exercise Card */}
-      <Card className="p-6 space-y-6">
+      <Card className="p-6 space-y-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
             {currentStepData.title}
           </h2>
-          <p className="text-gray-600">{currentStepData.description}</p>
+          <p className="text-gray-600 dark:text-gray-300">{currentStepData.description}</p>
 
-          <div className="bg-amber-50 border border-amber-200 rounded-lg p-4">
-            <p className="text-sm text-amber-800">
-              <strong>Tips:</strong> Ta dig tid att verkligen tänka igenom dina svar. 
+          <div className="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 rounded-lg p-4">
+            <p className="text-sm text-emerald-800 dark:text-emerald-300">
+              <strong>Tips:</strong> Ta dig tid att verkligen tänka igenom dina svar.
               Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.
             </p>
           </div>
@@ -709,7 +709,7 @@ export default function Exercises() {
         <div className="space-y-6">
           {currentStepData.questions.map((question) => (
             <div key={question.id} className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">
                 {question.text}
               </label>
               <textarea
@@ -717,7 +717,7 @@ export default function Exercises() {
                 onChange={(e) => handleAnswerChange(question.id, e.target.value)}
                 placeholder={question.placeholder}
                 rows={4}
-                className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition-colors resize-y"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 transition-colors resize-y text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
               {/* AI Help Button */}
               <div className="flex justify-end">
@@ -738,7 +738,7 @@ export default function Exercises() {
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between pt-4 border-t">
+        <div className="flex justify-between pt-4 border-t border-stone-200 dark:border-stone-700">
           <Button
             variant="outline"
             onClick={handlePrevious}
@@ -764,12 +764,12 @@ export default function Exercises() {
       </Card>
 
       {/* AI Coach Card */}
-      <Card className="p-4 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-200">
+      <Card className="p-4 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200 dark:border-emerald-800">
         <div className="flex items-start gap-3">
-          <Lightbulb className="w-5 h-5 text-indigo-600 mt-0.5" />
+          <Lightbulb className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
           <div className="flex-1">
-            <h3 className="font-medium text-indigo-900">AI Coach</h3>
-            <p className="text-sm text-indigo-700 mt-1 mb-3">
+            <h3 className="font-medium text-emerald-900 dark:text-emerald-100">AI Coach</h3>
+            <p className="text-sm text-emerald-700 dark:text-emerald-300 mt-1 mb-3">
               Behöver du hjälp med denna övning? AI:n kan ge vägledning, exempel och följdfrågor.
             </p>
             <AIAssistant
@@ -788,12 +788,12 @@ export default function Exercises() {
       </Card>
 
       {/* Info Card */}
-      <Card className="p-4 bg-gray-50 border-gray-200">
+      <Card className="p-4 bg-gray-50 dark:bg-stone-800 border-gray-200 dark:border-stone-700">
         <div className="flex items-start gap-3">
-          <Signal className="w-5 h-5 text-gray-600 mt-0.5" />
+          <Signal className="w-5 h-5 text-gray-600 dark:text-gray-400 mt-0.5" />
           <div>
-            <h3 className="font-medium text-gray-900">Om denna övning</h3>
-            <p className="text-sm text-gray-600 mt-1">
+            <h3 className="font-medium text-gray-800 dark:text-gray-100">Om denna övning</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
               {selectedExercise.description}
             </p>
           </div>
@@ -802,12 +802,12 @@ export default function Exercises() {
 
       {/* Related Articles */}
       {relatedArticles.length > 0 && (
-        <Card className="p-4 bg-gradient-to-br from-teal-50 to-blue-50 border-teal-200">
+        <Card className="p-4 bg-gradient-to-br from-teal-50 to-emerald-50 dark:from-teal-900/20 dark:to-emerald-900/20 border-teal-200 dark:border-teal-800">
           <div className="flex items-start gap-3">
-            <BookOpen className="w-5 h-5 text-teal-600 mt-0.5" />
+            <BookOpen className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5" />
             <div className="flex-1">
-              <h3 className="font-medium text-teal-900">Relaterade artiklar</h3>
-              <p className="text-sm text-teal-700 mt-1 mb-3">
+              <h3 className="font-medium text-teal-900 dark:text-teal-100">Relaterade artiklar</h3>
+              <p className="text-sm text-teal-700 dark:text-teal-300 mt-1 mb-3">
                 Läs mer om {selectedExercise.category.toLowerCase()} i kunskapsbanken.
               </p>
               <div className="space-y-2">
@@ -815,16 +815,16 @@ export default function Exercises() {
                   <Link
                     key={article.id}
                     to={`/knowledge-base/article/${article.id}`}
-                    className="block p-3 bg-white rounded-lg hover:shadow-sm transition-shadow border border-teal-100"
+                    className="block p-3 bg-white dark:bg-stone-700 rounded-lg hover:shadow-sm transition-shadow border border-teal-100 dark:border-teal-800"
                   >
-                    <h4 className="font-medium text-slate-800 text-sm">{article.title}</h4>
-                    <p className="text-xs text-slate-600 mt-1 line-clamp-2">{article.summary}</p>
+                    <h4 className="font-medium text-gray-800 dark:text-gray-100 text-sm">{article.title}</h4>
+                    <p className="text-xs text-gray-600 dark:text-gray-300 mt-1 line-clamp-2">{article.summary}</p>
                   </Link>
                 ))}
               </div>
               <Link
                 to="/knowledge-base"
-                className="inline-flex items-center gap-1 text-sm text-teal-700 hover:text-teal-800 mt-3 font-medium"
+                className="inline-flex items-center gap-1 text-sm text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 mt-3 font-medium"
               >
                 Se alla artiklar
                 <ArrowRight className="w-4 h-4" />

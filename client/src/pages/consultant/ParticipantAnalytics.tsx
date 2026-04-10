@@ -106,11 +106,11 @@ export default function ParticipantAnalytics() {
         <StatCard icon={<Users size={20} />} label="Totalt" value={stats.total} color="blue" />
         <StatCard icon={<AlertTriangle size={20} />} label="Behöver stöd" value={stats.atRisk} color="red" />
         <StatCard icon={<Activity size={20} />} label="Aktiva idag" value={stats.activeToday} color="emerald" />
-        <StatCard icon={<TrendingUp size={20} />} label="CV-snitt" value={`${stats.avgProgress}%`} color="violet" />
+        <StatCard icon={<TrendingUp size={20} />} label="CV-snitt" value={`${stats.avgProgress}%`} color="amber" />
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-xl border border-slate-200 p-4">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4">
         <Input
           placeholder="Sök deltagare..."
           value={searchTerm}
@@ -120,15 +120,15 @@ export default function ParticipantAnalytics() {
       </div>
 
       {/* List */}
-      <div className="bg-white rounded-xl border border-slate-200">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
         {filteredParticipants.map((p) => (
           <div
             key={p.id}
-            className="p-4 border-b border-slate-100 hover:bg-slate-50 cursor-pointer"
+            className="p-4 border-b border-stone-100 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-700/50 cursor-pointer"
             onClick={() => setSelectedParticipant(p)}
           >
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-indigo-500 flex items-center justify-center text-white font-semibold">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 flex items-center justify-center text-white font-semibold">
                 {p.name.split(' ').map(n => n[0]).join('')}
               </div>
               <div className="flex-1">
@@ -140,9 +140,9 @@ export default function ParticipantAnalytics() {
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-slate-700">{p.email} • {p.lastActive}</p>
+                <p className="text-sm text-stone-600 dark:text-stone-400">{p.email} • {p.lastActive}</p>
               </div>
-              <ChevronRight size={20} className="text-slate-300" />
+              <ChevronRight size={20} className="text-stone-400 dark:text-stone-500" />
             </div>
           </div>
         ))}
@@ -163,18 +163,18 @@ function StatCard({ icon, label, value, color }: {
   color: string
 }) {
   const colors: Record<string, string> = {
-    blue: 'bg-blue-100 text-blue-700',
-    red: 'bg-red-100 text-red-700',
-    emerald: 'bg-emerald-100 text-emerald-700',
-    violet: 'bg-violet-100 text-violet-700'
+    blue: 'bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300',
+    red: 'bg-red-100 dark:bg-red-900/40 text-red-700 dark:text-red-300',
+    emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300',
+    amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300'
   }
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-4">
+    <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4">
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center mb-2", colors[color])}>
         {icon}
       </div>
       <p className="text-2xl font-bold">{value}</p>
-      <p className="text-sm text-slate-700">{label}</p>
+      <p className="text-sm text-stone-600 dark:text-stone-400">{label}</p>
     </div>
   )
 }
@@ -190,36 +190,36 @@ function DetailModal({ participant, onClose }: { participant: Participant, onClo
       <motion.div
         initial={{ scale: 0.9 }}
         animate={{ scale: 1 }}
-        className="bg-white rounded-2xl p-6 max-w-lg w-full"
+        className="bg-white dark:bg-stone-800 rounded-2xl p-6 max-w-lg w-full"
         onClick={e => e.stopPropagation()}
       >
-        <h2 className="text-xl font-bold mb-4">{participant.name}</h2>
+        <h2 className="text-xl font-bold mb-4 text-stone-900 dark:text-stone-100">{participant.name}</h2>
         
         {participant.riskFlags.length > 0 ? (
-          <div className="p-4 bg-red-50 rounded-xl mb-4">
-            <p className="font-semibold text-red-800">⚠️ Riskindikatorer</p>
+          <div className="p-4 bg-red-50 dark:bg-red-900/20 rounded-xl mb-4">
+            <p className="font-semibold text-red-800 dark:text-red-300">Riskindikatorer</p>
             {participant.riskFlags.map((flag, i) => (
-              <span key={i} className="text-sm text-red-600 block">{flag}</span>
+              <span key={i} className="text-sm text-red-600 dark:text-red-400 block">{flag}</span>
             ))}
           </div>
         ) : (
-          <div className="p-4 bg-emerald-50 rounded-xl mb-4">
-            <p className="text-emerald-800">✅ Allt ser bra ut!</p>
+          <div className="p-4 bg-emerald-50 dark:bg-emerald-900/20 rounded-xl mb-4">
+            <p className="text-emerald-800 dark:text-emerald-300">Allt ser bra ut!</p>
           </div>
         )}
 
         <div className="space-y-3">
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <span className="flex items-center gap-2"><FileText size={16} /> CV Progress</span>
-            <span className="font-semibold">{participant.cvProgress}%</span>
+          <div className="flex items-center justify-between p-3 bg-stone-100 dark:bg-stone-700 rounded-lg">
+            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><FileText size={16} /> CV Progress</span>
+            <span className="font-semibold text-stone-900 dark:text-stone-100">{participant.cvProgress}%</span>
           </div>
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <span className="flex items-center gap-2"><Briefcase size={16} /> Ansökningar</span>
-            <span className="font-semibold">{participant.applicationsSent}</span>
+          <div className="flex items-center justify-between p-3 bg-stone-100 dark:bg-stone-700 rounded-lg">
+            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><Briefcase size={16} /> Ansökningar</span>
+            <span className="font-semibold text-stone-900 dark:text-stone-100">{participant.applicationsSent}</span>
           </div>
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-            <span className="flex items-center gap-2"><Heart size={16} /> Välmående</span>
-            <span className="font-semibold">{participant.wellnessStreak} dagar</span>
+          <div className="flex items-center justify-between p-3 bg-stone-100 dark:bg-stone-700 rounded-lg">
+            <span className="flex items-center gap-2 text-stone-700 dark:text-stone-300"><Heart size={16} /> Välmående</span>
+            <span className="font-semibold text-stone-900 dark:text-stone-100">{participant.wellnessStreak} dagar</span>
           </div>
         </div>
 

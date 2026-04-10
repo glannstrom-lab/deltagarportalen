@@ -49,9 +49,9 @@ import {
 // ============== CONSTANTS ==============
 
 const TYPE_COLORS: Record<string, string> = {
-  yrkeshogskola: 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-300',
-  hogskola: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300',
-  universitet: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300',
+  yrkeshogskola: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
+  hogskola: 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-300',
+  universitet: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
   komvux: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
   folkhogskola: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
 };
@@ -69,10 +69,10 @@ const TYPE_ICONS: Record<string, React.ComponentType<{ className?: string }>> = 
 function EducationCard({ education }: { education: Education }) {
   const { t } = useTranslation();
   const TypeIcon = TYPE_ICONS[education.type] || GraduationCap;
-  const typeColorClass = TYPE_COLORS[education.type] || 'bg-stone-100 text-stone-800';
+  const typeColorClass = TYPE_COLORS[education.type] || 'bg-stone-100 text-stone-800 dark:bg-stone-800 dark:text-stone-300';
 
   return (
-    <Card className="group hover:shadow-lg transition-all duration-300 hover:border-violet-300 dark:hover:border-violet-700">
+    <Card className="group hover:shadow-lg transition-all duration-300 hover:border-teal-300 dark:hover:border-teal-600 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
       <div className="p-4 sm:p-5">
         {/* Header */}
         <div className="flex items-start gap-3 mb-3">
@@ -83,10 +83,10 @@ function EducationCard({ education }: { education: Education }) {
             <TypeIcon className="w-5 h-5 text-current" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-stone-900 dark:text-stone-100 line-clamp-2 group-hover:text-violet-700 dark:group-hover:text-violet-400 transition-colors">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 line-clamp-2 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
               {education.title}
             </h3>
-            <p className="text-sm text-stone-600 dark:text-stone-600 mt-0.5">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mt-0.5">
               {education.provider}
             </p>
           </div>
@@ -110,13 +110,13 @@ function EducationCard({ education }: { education: Education }) {
 
         {/* Description */}
         {education.description && (
-          <p className="text-sm text-stone-600 dark:text-stone-600 line-clamp-2 mb-3">
+          <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mb-3">
             {education.description}
           </p>
         )}
 
         {/* Meta info */}
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-stone-500 dark:text-stone-600">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400">
           {education.location && (
             <span className="inline-flex items-center gap-1">
               <MapPin className="w-4 h-4" />
@@ -130,21 +130,21 @@ function EducationCard({ education }: { education: Education }) {
             </span>
           )}
           {education.pace && (
-            <span className="text-stone-600 dark:text-stone-500">
+            <span className="text-gray-600 dark:text-gray-400">
               {education.pace}
             </span>
           )}
           {education.credits && (
-            <span className="text-stone-600 dark:text-stone-500">
+            <span className="text-gray-600 dark:text-gray-400">
               {education.credits} hp
             </span>
           )}
         </div>
 
         {/* Actions */}
-        <div className="flex items-center justify-between mt-4 pt-4 border-t border-stone-100 dark:border-stone-800">
+        <div className="flex items-center justify-between mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
           {education.applicationDeadline && (
-            <span className="text-xs text-stone-500 dark:text-stone-600">
+            <span className="text-xs text-gray-500 dark:text-gray-400">
               {t('education.deadline')}: {new Date(education.applicationDeadline).toLocaleDateString('sv-SE')}
             </span>
           )}
@@ -153,7 +153,7 @@ function EducationCard({ education }: { education: Education }) {
               href={education.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-700 dark:hover:text-violet-300 transition-colors ml-auto"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition-colors ml-auto"
             >
               {t('education.readMore')}
               <ExternalLink className="w-4 h-4" />
@@ -207,18 +207,18 @@ function QuickSearchCard({
         'flex items-start gap-3 p-4 rounded-xl text-left w-full',
         'bg-gradient-to-br from-white to-stone-50 dark:from-stone-800 dark:to-stone-900',
         'border-2 border-stone-200 dark:border-stone-700',
-        'hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-md',
+        'hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md',
         'transition-all duration-200'
       )}
     >
-      <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900/30">
-        <Icon className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+      <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+        <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
       </div>
       <div>
-        <h4 className="font-medium text-stone-900 dark:text-stone-100">{title}</h4>
-        <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">{description}</p>
+        <h4 className="font-medium text-gray-800 dark:text-gray-100">{title}</h4>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{description}</p>
       </div>
-      <ChevronRight className="w-5 h-5 text-stone-600 ml-auto self-center" />
+      <ChevronRight className="w-5 h-5 text-gray-500 dark:text-gray-400 ml-auto self-center" />
     </button>
   );
 }
@@ -339,25 +339,25 @@ export default function Education() {
           {/* Search Bar */}
           <div className="flex gap-2">
             <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
               <Input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('education.searchPlaceholder')}
-                className="pl-10"
+                className="pl-10 bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
               />
             </div>
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
-              className={cn(showFilters && 'bg-violet-50 border-violet-300')}
+              className={cn(showFilters && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-600')}
             >
               <Filter className="w-4 h-4 mr-2" />
               {t('education.filters')}
             </Button>
-            <Button type="submit" disabled={isLoading}>
+            <Button type="submit" disabled={isLoading} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
               {isLoading ? (
                 <RefreshCw className="w-4 h-4 animate-spin" />
               ) : (
@@ -368,14 +368,15 @@ export default function Education() {
 
           {/* Filters */}
           {showFilters && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                   {t('education.educationType')}
                 </label>
                 <Select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value as EducationType)}
+                  className="bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
                 >
                   {educationTypes.map((type) => (
                     <option key={type.id} value={type.id}>
@@ -385,12 +386,13 @@ export default function Education() {
                 </Select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                   {t('education.region')}
                 </label>
                 <Select
                   value={selectedRegion}
                   onChange={(e) => setSelectedRegion(e.target.value)}
+                  className="bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
                 >
                   {regions.map((region) => (
                     <option key={region.id} value={region.id}>
@@ -405,19 +407,19 @@ export default function Education() {
           {/* Active Filters */}
           {hasActiveFilters && (
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-sm text-stone-500">{t('education.activeFilters')}:</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">{t('education.activeFilters')}:</span>
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
                   "{searchQuery}"
-                  <button onClick={() => setSearchQuery('')} className="hover:text-violet-900">
+                  <button onClick={() => setSearchQuery('')} className="hover:text-teal-900 dark:hover:text-teal-200">
                     <X className="w-3 h-3" />
                   </button>
                 </span>
               )}
               {selectedType !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">
                   {educationTypes.find(t => t.id === selectedType)?.label}
-                  <button onClick={() => setSelectedType('all')} className="hover:text-blue-900">
+                  <button onClick={() => setSelectedType('all')} className="hover:text-violet-900 dark:hover:text-violet-200">
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -425,14 +427,14 @@ export default function Education() {
               {selectedRegion && (
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                   {regions.find(r => r.id === selectedRegion)?.label}
-                  <button onClick={() => setSelectedRegion('')} className="hover:text-emerald-900">
+                  <button onClick={() => setSelectedRegion('')} className="hover:text-emerald-900 dark:hover:text-emerald-200">
                     <X className="w-3 h-3" />
                   </button>
                 </span>
               )}
               <button
                 onClick={clearFilters}
-                className="text-xs text-stone-500 hover:text-stone-700 underline"
+                className="text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 underline"
               >
                 {t('education.clearAll')}
               </button>
@@ -445,16 +447,16 @@ export default function Education() {
       {!hasSearched && (
         <div className="mt-6 space-y-6">
           {/* Info Banner */}
-          <Card className="bg-gradient-to-r from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20 border-violet-200 dark:border-violet-800">
+          <Card className="bg-gradient-to-r from-teal-50 to-violet-50 dark:from-teal-900/20 dark:to-violet-900/20 border-teal-200 dark:border-teal-800">
             <div className="p-4 sm:p-5 flex items-start gap-4">
-              <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900/30">
-                <Info className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+              <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
+                <Info className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               </div>
               <div>
-                <h3 className="font-semibold text-stone-900 dark:text-stone-100">
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100">
                   {t('education.infoBanner.title')}
                 </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-600 mt-1">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                   {t('education.infoBanner.description')}
                 </p>
               </div>
@@ -463,7 +465,7 @@ export default function Education() {
 
           {/* Quick Search Options */}
           <div>
-            <h3 className="text-lg font-semibold text-stone-900 dark:text-stone-100 mb-4">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">
               {t('education.quickSearch.title')}
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -510,37 +512,37 @@ export default function Education() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <Link
               to="/interest-guide"
-              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 hover:border-violet-300 dark:hover:border-violet-600 transition-colors"
+              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
             >
               <div className="p-2 rounded-lg bg-amber-100 dark:bg-amber-900/30">
                 <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                <h4 className="font-medium text-gray-800 dark:text-gray-100">
                   {t('education.links.interestGuide.title')}
                 </h4>
-                <p className="text-sm text-stone-500 dark:text-stone-600">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {t('education.links.interestGuide.description')}
                 </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-stone-600" />
+              <ChevronRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </Link>
             <Link
               to="/skills-gap-analysis"
-              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-900 border-2 border-stone-200 dark:border-stone-700 hover:border-violet-300 dark:hover:border-violet-600 transition-colors"
+              className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-stone-800 border-2 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
             >
               <div className="p-2 rounded-lg bg-emerald-100 dark:bg-emerald-900/30">
                 <Target className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
               </div>
               <div className="flex-1">
-                <h4 className="font-medium text-stone-900 dark:text-stone-100">
+                <h4 className="font-medium text-gray-800 dark:text-gray-100">
                   {t('education.links.skillsGap.title')}
                 </h4>
-                <p className="text-sm text-stone-500 dark:text-stone-600">
+                <p className="text-sm text-gray-500 dark:text-gray-400">
                   {t('education.links.skillsGap.description')}
                 </p>
               </div>
-              <ChevronRight className="w-5 h-5 text-stone-600" />
+              <ChevronRight className="w-5 h-5 text-gray-500 dark:text-gray-400" />
             </Link>
           </div>
         </div>
@@ -559,7 +561,7 @@ export default function Education() {
             <>
               {/* Results header */}
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-stone-600 dark:text-stone-600">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
                   {t('education.resultsCount', { count: searchResult.total })}
                   {searchResult.source === 'fallback-mock' && (
                     <span className="ml-2 text-amber-600 dark:text-amber-400">

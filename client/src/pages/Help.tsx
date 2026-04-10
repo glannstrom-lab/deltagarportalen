@@ -92,11 +92,11 @@ export default function Help() {
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center mb-10">
-        <div className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-          <HelpCircle className="w-8 h-8 text-violet-600" />
+        <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <HelpCircle className="w-8 h-8 text-teal-600 dark:text-teal-400" />
         </div>
-        <h1 className="text-3xl font-bold text-slate-800 mb-2">{t('help.title')}</h1>
-        <p className="text-slate-600 max-w-lg mx-auto">
+        <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-2">{t('help.title')}</h1>
+        <p className="text-gray-600 dark:text-gray-300 max-w-lg mx-auto">
           {t('helpPage.intro')}
         </p>
       </div>
@@ -109,13 +109,13 @@ export default function Help() {
             <Link
               key={item.titleKey}
               to={item.link}
-              className="bg-white rounded-xl border border-slate-200 p-4 hover:shadow-md hover:border-violet-200 transition-all text-center"
+              className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:shadow-md hover:border-teal-200 dark:hover:border-teal-700 transition-all text-center"
             >
-              <div className="w-10 h-10 bg-violet-50 rounded-lg flex items-center justify-center mx-auto mb-2">
-                <Icon className="w-5 h-5 text-violet-600" />
+              <div className="w-10 h-10 bg-teal-50 dark:bg-teal-900/30 rounded-lg flex items-center justify-center mx-auto mb-2">
+                <Icon className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               </div>
-              <h3 className="font-medium text-slate-800 text-sm">{t(item.titleKey)}</h3>
-              <p className="text-xs text-slate-700 mt-0.5">{t(item.descKey)}</p>
+              <h3 className="font-medium text-gray-800 dark:text-gray-100 text-sm">{t(item.titleKey)}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-0.5">{t(item.descKey)}</p>
             </Link>
           )
         })}
@@ -126,20 +126,20 @@ export default function Help() {
         {faqCategoryDefs.map((category) => {
           const Icon = category.icon
           return (
-            <section key={category.titleKey} className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-              <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center gap-3">
-                <Icon className="w-5 h-5 text-violet-600" />
-                <h2 className="font-semibold text-slate-800">{t(category.titleKey)}</h2>
+            <section key={category.titleKey} className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+              <div className="px-6 py-4 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 flex items-center gap-3">
+                <Icon className="w-5 h-5 text-white" />
+                <h2 className="font-semibold text-white">{t(category.titleKey)}</h2>
               </div>
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-stone-100 dark:divide-stone-700">
                 {category.items.map((item, index) => (
                   <div key={index} className="p-6">
-                    <h3 className="font-medium text-slate-800 mb-2">{t(item.qKey)}</h3>
-                    <p className="text-slate-600 text-sm mb-3">{t(item.aKey)}</p>
+                    <h3 className="font-medium text-gray-800 dark:text-gray-100 mb-2">{t(item.qKey)}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-3">{t(item.aKey)}</p>
                     {item.link && (
                       <Link
                         to={item.link}
-                        className="inline-flex items-center gap-1 text-sm text-violet-600 hover:text-violet-700 font-medium"
+                        className="inline-flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
                       >
                         {t('helpPage.goTo', { section: t(category.titleKey).toLowerCase() })}
                         <ChevronRight className="w-4 h-4" />
@@ -154,40 +154,40 @@ export default function Help() {
       </div>
 
       {/* Contact Section */}
-      <section className="mt-10 bg-gradient-to-br from-violet-50 to-purple-50 rounded-xl border border-violet-100 p-6">
+      <section className="mt-10 bg-gradient-to-br from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 rounded-xl border border-teal-100 dark:border-teal-800 p-6">
         <div className="flex flex-col md:flex-row items-center gap-6">
           <div className="flex-1 text-center md:text-left">
-            <h2 className="text-xl font-semibold text-slate-800 mb-2">
+            <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
               {t('helpPage.noAnswer')}
             </h2>
-            <p className="text-slate-600 mb-4">
+            <p className="text-gray-600 dark:text-gray-300 mb-4">
               {t('helpPage.contactConsultant')}
             </p>
             <div className="flex flex-wrap gap-3 justify-center md:justify-start">
               <Link
                 to="/diary"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 dark:bg-teal-700 text-white rounded-lg font-medium hover:bg-teal-700 dark:hover:bg-teal-600 transition-colors"
               >
                 <MessageCircle className="w-4 h-4" />
                 {t('helpPage.bookMeeting')}
               </Link>
               <a
                 href="mailto:support@jobin.se"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-white text-slate-700 border border-slate-200 rounded-lg font-medium hover:bg-slate-50 transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-stone-700 text-gray-700 dark:text-gray-200 border border-stone-200 dark:border-stone-600 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-600 transition-colors"
               >
                 <Mail className="w-4 h-4" />
                 {t('helpPage.emailSupport')}
               </a>
             </div>
           </div>
-          <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-sm">
-            <MessageCircle className="w-8 h-8 text-violet-600" />
+          <div className="w-16 h-16 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-sm">
+            <MessageCircle className="w-8 h-8 text-teal-600 dark:text-teal-400" />
           </div>
         </div>
       </section>
 
       {/* Version Info */}
-      <div className="mt-10 text-center text-sm text-slate-600">
+      <div className="mt-10 text-center text-sm text-gray-600 dark:text-gray-300">
         <p>{t('helpPage.version')}</p>
       </div>
     </div>

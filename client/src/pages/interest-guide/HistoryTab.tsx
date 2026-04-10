@@ -89,7 +89,7 @@ export default function HistoryTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
         <LoadingState title="Laddar historik..." size="lg" />
       </div>
     )
@@ -97,18 +97,18 @@ export default function HistoryTab() {
 
   if (history.length === 0) {
     return (
-      <div className="max-w-lg mx-auto text-center py-12">
-        <div className="w-16 h-16 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <History className="w-8 h-8 text-indigo-600" />
+      <div className="max-w-lg mx-auto text-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen">
+        <div className="w-16 h-16 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-2xl flex items-center justify-center mx-auto mb-6">
+          <History className="w-8 h-8 text-amber-600 dark:text-amber-400" />
         </div>
-        <h2 className="text-2xl font-bold text-gray-900 mb-3">Ingen historik än</h2>
-        <p className="text-gray-600 mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3">Ingen historik än</h2>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
           När du genomfört testet kommer dina resultat att sparas här.
           Du kan göra om testet när som helst och jämföra resultaten.
         </p>
         <Button
           onClick={() => navigate('/interest-guide')}
-          className="gap-2 bg-gradient-to-r from-indigo-600 to-purple-600"
+          className="gap-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600"
         >
           <Sparkles className="w-4 h-4" />
           Starta testet
@@ -118,7 +118,7 @@ export default function HistoryTab() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="max-w-4xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}
@@ -127,12 +127,12 @@ export default function HistoryTab() {
 
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-full text-sm font-medium mb-4">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
           <History className="w-4 h-4" />
           Din historik
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">Testresultat över tid</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">Testresultat över tid</h1>
+        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Här kan du se och jämföra dina tidigare testresultat.
           Dina intressen och personlighet kan utvecklas över tid.
         </p>
@@ -140,14 +140,14 @@ export default function HistoryTab() {
 
       {/* Current Profile Summary */}
       {currentProfile && (
-        <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100 mb-8">
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl p-6 border border-amber-200 dark:border-amber-800 mb-8">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center flex-shrink-0">
               <Target className="w-6 h-6 text-white" />
             </div>
             <div className="flex-1">
-              <h3 className="font-semibold text-indigo-900 mb-1">Din nuvarande profil</h3>
-              <p className="text-indigo-800 text-sm mb-3">
+              <h3 className="font-semibold text-amber-900 dark:text-amber-100 mb-1">Din nuvarande profil</h3>
+              <p className="text-amber-800 dark:text-amber-200 text-sm mb-3">
                 Topp intressen: {getTopRiasec(currentProfile).join(', ')}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -177,49 +177,49 @@ export default function HistoryTab() {
 
       {/* History List */}
       <div className="space-y-4">
-        <h2 className="font-semibold text-gray-900 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-gray-400" />
+        <h2 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+          <Clock className="w-5 h-5 text-gray-400 dark:text-gray-500" />
           Tidigare resultat
         </h2>
 
         {history.map((entry) => (
           <div
             key={entry.id}
-            className="bg-white rounded-xl border border-gray-200 overflow-hidden"
+            className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden"
           >
             <button
               onClick={() => setExpandedEntry(
                 expandedEntry === entry.id ? null : entry.id
               )}
-              className="w-full p-4 flex items-center justify-between text-left hover:bg-gray-50 transition-colors"
+              className="w-full p-4 flex items-center justify-between text-left hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
             >
               <div className="flex items-center gap-4">
-                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-gray-600" />
+                <div className="w-10 h-10 bg-stone-100 dark:bg-stone-700 rounded-lg flex items-center justify-center">
+                  <Calendar className="w-5 h-5 text-gray-600 dark:text-gray-300" />
                 </div>
                 <div>
-                  <h3 className="font-medium text-gray-900">{formatDate(entry.date)}</h3>
-                  <p className="text-sm text-gray-500">
+                  <h3 className="font-medium text-gray-900 dark:text-gray-100">{formatDate(entry.date)}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
                     Topp: {getTopRiasec(entry.profile).join(', ')}
                   </p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 {entry.id === 'current' && (
-                  <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded text-xs font-medium">
+                  <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded text-xs font-medium">
                     Aktuell
                   </span>
                 )}
                 {expandedEntry === entry.id ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                  <ChevronUp className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                  <ChevronDown className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 )}
               </div>
             </button>
 
             {expandedEntry === entry.id && (
-              <div className="px-4 pb-4 border-t border-gray-100">
+              <div className="px-4 pb-4 border-t border-stone-100 dark:border-stone-700">
                 <div className="py-4">
                   {/* RIASEC Chart */}
                   <div className="flex justify-center mb-6">
@@ -233,28 +233,28 @@ export default function HistoryTab() {
                       .map(([key, value]) => (
                         <div
                           key={key}
-                          className="bg-gray-50 rounded-lg p-3 text-center"
+                          className="bg-stone-50 dark:bg-stone-900/50 rounded-lg p-3 text-center"
                         >
-                          <p className="text-xs text-gray-500 mb-1">{riasecNames[key]}</p>
-                          <p className="text-lg font-bold text-gray-900">{value}/5</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{riasecNames[key]}</p>
+                          <p className="text-lg font-bold text-gray-900 dark:text-gray-100">{value}/5</p>
                         </div>
                       ))}
                   </div>
 
                   {/* Big Five Summary */}
-                  <div className="mt-4 pt-4 border-t border-gray-100">
-                    <h4 className="text-sm font-medium text-gray-700 mb-3">Personlighetsdrag</h4>
+                  <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
+                    <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Personlighetsdrag</h4>
                     <div className="space-y-2">
                       {Object.entries(entry.profile.bigFive).map(([key, value]) => (
                         <div key={key} className="flex items-center gap-3">
-                          <span className="text-sm text-gray-500 w-32">{bigFiveNames[key]?.name ?? key}</span>
-                          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+                          <span className="text-sm text-gray-500 dark:text-gray-400 w-32">{bigFiveNames[key]?.name ?? key}</span>
+                          <div className="flex-1 h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                             <div
-                              className="h-full bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full"
+                              className="h-full bg-gradient-to-r from-amber-400 to-orange-500 dark:from-amber-500 dark:to-orange-600 rounded-full"
                               style={{ width: `${value}%` }}
                             />
                           </div>
-                          <span className="text-sm font-medium text-gray-700 w-12 text-right">
+                          <span className="text-sm font-medium text-gray-700 dark:text-gray-300 w-12 text-right">
                             {value}%
                           </span>
                         </div>
@@ -269,14 +269,14 @@ export default function HistoryTab() {
       </div>
 
       {/* Info Card */}
-      <div className="mt-8 bg-gray-50 rounded-xl p-6 border border-gray-200">
-        <h3 className="font-medium text-gray-900 mb-2">Om din historik</h3>
-        <p className="text-sm text-gray-600 mb-4">
+      <div className="mt-8 bg-stone-50 dark:bg-stone-800 rounded-xl p-6 border border-stone-200 dark:border-stone-700">
+        <h3 className="font-medium text-gray-900 dark:text-gray-100 mb-2">Om din historik</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
           Dina intressen och personlighetsdrag kan förändras över tid baserat på
           nya erfarenheter, utbildning och livssituationer. Vi rekommenderar att
           göra om testet med jämna mellanrum för att se hur du utvecklas.
         </p>
-        <p className="text-sm text-gray-500">
+        <p className="text-sm text-gray-500 dark:text-gray-400">
           Tips: Gör testet var 6:e månad eller efter större förändringar i ditt liv.
         </p>
       </div>

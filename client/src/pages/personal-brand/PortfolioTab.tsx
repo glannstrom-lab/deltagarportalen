@@ -172,14 +172,14 @@ export default function PortfolioTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-100">
+      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/30 dark:to-purple-900/30 border-violet-100 dark:border-violet-800">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
-            <FolderOpen className="w-6 h-6 text-amber-600" />
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 dark:from-violet-600 dark:to-purple-600 rounded-xl flex items-center justify-center shrink-0">
+            <FolderOpen className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">Din Portfolio</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Din Portfolio</h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">
               Samla och visa upp dina projekt, arbeten och certifikat.
               Perfekt att länka till i ansökningar.
             </p>
@@ -206,25 +206,25 @@ export default function PortfolioTab() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
           >
-            <Card className="border-amber-200">
-              <h3 className="font-semibold text-slate-900 mb-4">
+            <Card className="border-violet-200 dark:border-violet-700 bg-white dark:bg-stone-800">
+              <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">
                 {editingItem ? 'Redigera objekt' : 'Nytt portfolioobjekt'}
               </h3>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Titel *</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Titel *</label>
                   <input
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="T.ex. E-handelsplattform"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Typ</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Typ</label>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {Object.entries(ITEM_TYPES).map(([key, type]) => {
                       const Icon = type.icon
@@ -235,16 +235,16 @@ export default function PortfolioTab() {
                           className={cn(
                             "p-3 rounded-lg border text-left transition-all",
                             formData.item_type === key
-                              ? "border-amber-500 bg-amber-50"
-                              : "border-slate-200 hover:border-slate-300"
+                              ? "border-violet-500 dark:border-violet-400 bg-violet-50 dark:bg-violet-900/30"
+                              : "border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500"
                           )}
                         >
                           <Icon className={cn(
                             "w-5 h-5 mb-1",
-                            formData.item_type === key ? "text-amber-600" : "text-slate-600"
+                            formData.item_type === key ? "text-violet-600 dark:text-violet-400" : "text-gray-600 dark:text-gray-400"
                           )} />
-                          <p className="font-medium text-sm">{type.label}</p>
-                          <p className="text-xs text-slate-700 hidden sm:block">{type.description}</p>
+                          <p className="font-medium text-sm text-gray-800 dark:text-gray-100">{type.label}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">{type.description}</p>
                         </button>
                       )
                     })}
@@ -252,42 +252,42 @@ export default function PortfolioTab() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">Beskrivning</label>
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">Beskrivning</label>
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500 min-h-[100px]"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 min-h-[100px] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="Beskriv projektet eller arbetet. Inkludera din roll, tekniker och resultat."
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                       Startdatum (valfritt)
                     </label>
                     <input
                       type="month"
                       value={formData.start_date}
                       onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                       Slutdatum (valfritt)
                     </label>
                     <input
                       type="month"
                       value={formData.end_date}
                       onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                     <LinkIcon className="w-4 h-4 inline mr-1" />
                     Länk (valfritt)
                   </label>
@@ -295,20 +295,20 @@ export default function PortfolioTab() {
                     type="url"
                     value={formData.url}
                     onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="https://..."
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-600 dark:text-gray-300 mb-1">
                     Taggar (kommaseparerade)
                   </label>
                   <input
                     type="text"
                     value={formData.tags}
                     onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                    className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-amber-500"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="React, TypeScript, Design"
                   />
                 </div>
@@ -319,9 +319,9 @@ export default function PortfolioTab() {
                     id="is_featured"
                     checked={formData.is_featured}
                     onChange={(e) => setFormData(prev => ({ ...prev, is_featured: e.target.checked }))}
-                    className="w-4 h-4 text-amber-600 border-slate-300 rounded focus:ring-amber-500"
+                    className="w-4 h-4 text-violet-600 border-stone-300 dark:border-stone-600 rounded focus:ring-violet-500"
                   />
-                  <label htmlFor="is_featured" className="text-sm text-slate-700">
+                  <label htmlFor="is_featured" className="text-sm text-gray-600 dark:text-gray-300">
                     Markera som utvalt (visas överst)
                   </label>
                 </div>
@@ -345,8 +345,8 @@ export default function PortfolioTab() {
       {/* Featured items */}
       {featuredItems.length > 0 && (
         <div>
-          <h3 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-            <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <Star className="w-5 h-5 text-violet-500 dark:text-violet-400 fill-violet-500 dark:fill-violet-400" />
             Utvalda
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -383,10 +383,10 @@ export default function PortfolioTab() {
           ))}
         </div>
       ) : items.length === 0 && !isEditing && (
-        <Card className="text-center py-12">
-          <FolderOpen className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="font-semibold text-slate-700 mb-2">Ingen portfolio ännu</h3>
-          <p className="text-sm text-slate-700 mb-4 max-w-md mx-auto">
+        <Card className="text-center py-12 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <FolderOpen className="w-12 h-12 text-slate-300 dark:text-stone-600 mx-auto mb-4" />
+          <h3 className="font-semibold text-gray-600 dark:text-gray-300 mb-2">Ingen portfolio ännu</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 max-w-md mx-auto">
             Lägg till dina projekt, arbeten och certifikat för att visa din kompetens.
             En stark portfolio kan göra skillnaden i jobbsökandet.
           </p>
@@ -398,34 +398,34 @@ export default function PortfolioTab() {
       )}
 
       {/* Tips */}
-      <Card className="bg-slate-50 border-slate-200">
-        <h3 className="font-semibold text-slate-800 mb-3">Tips för en stark portfolio</h3>
+      <Card className="bg-violet-50 dark:bg-violet-900/30 border-violet-200 dark:border-violet-800">
+        <h3 className="font-semibold text-violet-900 dark:text-violet-100 mb-3">Tips för en stark portfolio</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center shrink-0">
-              <Star className="w-4 h-4 text-amber-600" />
+            <div className="w-8 h-8 bg-violet-100 dark:bg-violet-800/50 rounded-lg flex items-center justify-center shrink-0">
+              <Star className="w-4 h-4 text-violet-600 dark:text-violet-400" />
             </div>
             <div>
-              <p className="font-medium text-slate-700 text-sm">Kvalitet över kvantitet</p>
-              <p className="text-xs text-slate-700">Visa dina bästa 5-10 projekt</p>
+              <p className="font-medium text-violet-800 dark:text-violet-200 text-sm">Kvalitet över kvantitet</p>
+              <p className="text-xs text-violet-700 dark:text-violet-300">Visa dina bästa 5-10 projekt</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center shrink-0">
-              <Briefcase className="w-4 h-4 text-blue-600" />
+            <div className="w-8 h-8 bg-purple-100 dark:bg-purple-800/50 rounded-lg flex items-center justify-center shrink-0">
+              <Briefcase className="w-4 h-4 text-purple-600 dark:text-purple-400" />
             </div>
             <div>
-              <p className="font-medium text-slate-700 text-sm">Beskriv din roll</p>
-              <p className="text-xs text-slate-700">Vad bidrog du med specifikt?</p>
+              <p className="font-medium text-violet-800 dark:text-violet-200 text-sm">Beskriv din roll</p>
+              <p className="text-xs text-violet-700 dark:text-violet-300">Vad bidrog du med specifikt?</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center shrink-0">
-              <Award className="w-4 h-4 text-emerald-600" />
+            <div className="w-8 h-8 bg-fuchsia-100 dark:bg-fuchsia-800/50 rounded-lg flex items-center justify-center shrink-0">
+              <Award className="w-4 h-4 text-fuchsia-600 dark:text-fuchsia-400" />
             </div>
             <div>
-              <p className="font-medium text-slate-700 text-sm">Visa resultat</p>
-              <p className="text-xs text-slate-700">Siffror och konkreta outcomes</p>
+              <p className="font-medium text-violet-800 dark:text-violet-200 text-sm">Visa resultat</p>
+              <p className="text-xs text-violet-700 dark:text-violet-300">Siffror och konkreta outcomes</p>
             </div>
           </div>
         </div>
@@ -455,29 +455,29 @@ function PortfolioCard({
 
   if (compact) {
     return (
-      <Card className="p-3 hover:shadow-sm transition-shadow group">
+      <Card className="p-3 hover:shadow-sm transition-shadow group bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-3">
           <div className={cn(
             "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-            typeInfo.color === 'violet' && "bg-violet-100 text-violet-600",
-            typeInfo.color === 'blue' && "bg-blue-100 text-blue-600",
-            typeInfo.color === 'emerald' && "bg-emerald-100 text-emerald-600",
-            typeInfo.color === 'slate' && "bg-slate-100 text-slate-600"
+            typeInfo.color === 'violet' && "bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400",
+            typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
+            typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
+            typeInfo.color === 'slate' && "bg-slate-100 dark:bg-stone-700 text-slate-600 dark:text-slate-400"
           )}>
             <TypeIcon className="w-4 h-4" />
           </div>
           <div className="flex-1 min-w-0">
-            <h4 className="font-medium text-slate-900 truncate">{item.title}</h4>
-            <p className="text-xs text-slate-700">{typeInfo.label}</p>
+            <h4 className="font-medium text-gray-800 dark:text-gray-100 truncate">{item.title}</h4>
+            <p className="text-xs text-gray-600 dark:text-gray-400">{typeInfo.label}</p>
           </div>
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <button onClick={() => onToggleFeatured(item)} className="p-1 hover:bg-slate-100 rounded">
-              <Star className={cn("w-4 h-4", item.is_featured ? "text-amber-500 fill-amber-500" : "text-slate-300")} />
+            <button onClick={() => onToggleFeatured(item)} className="p-1 hover:bg-slate-100 dark:hover:bg-stone-700 rounded">
+              <Star className={cn("w-4 h-4", item.is_featured ? "text-violet-500 dark:text-violet-400 fill-violet-500 dark:fill-violet-400" : "text-slate-300 dark:text-stone-500")} />
             </button>
-            <button onClick={() => onEdit(item)} className="p-1 hover:bg-slate-100 rounded">
-              <Edit2 className="w-4 h-4 text-slate-600" />
+            <button onClick={() => onEdit(item)} className="p-1 hover:bg-slate-100 dark:hover:bg-stone-700 rounded">
+              <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
             </button>
-            <button onClick={() => item.id && onDelete(item.id)} className="p-1 hover:bg-rose-100 rounded">
+            <button onClick={() => item.id && onDelete(item.id)} className="p-1 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded">
               <Trash2 className="w-4 h-4 text-rose-400" />
             </button>
           </div>
@@ -488,28 +488,28 @@ function PortfolioCard({
 
   return (
     <Card className={cn(
-      "group hover:shadow-md transition-all",
-      featured && "ring-2 ring-amber-200 bg-amber-50/30"
+      "group hover:shadow-md transition-all bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700",
+      featured && "ring-2 ring-violet-200 dark:ring-violet-700 bg-violet-50/30 dark:bg-violet-900/20"
     )}>
       <div className="flex items-start gap-3">
         <div className={cn(
           "w-12 h-12 rounded-xl flex items-center justify-center shrink-0",
-          typeInfo.color === 'violet' && "bg-violet-100 text-violet-600",
-          typeInfo.color === 'blue' && "bg-blue-100 text-blue-600",
-          typeInfo.color === 'emerald' && "bg-emerald-100 text-emerald-600",
-          typeInfo.color === 'slate' && "bg-slate-100 text-slate-600"
+          typeInfo.color === 'violet' && "bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400",
+          typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
+          typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
+          typeInfo.color === 'slate' && "bg-slate-100 dark:bg-stone-700 text-slate-600 dark:text-slate-400"
         )}>
           <TypeIcon className="w-6 h-6" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between">
             <div>
-              <h4 className="font-semibold text-slate-900">{item.title}</h4>
-              <p className="text-xs text-slate-700 flex items-center gap-1 mt-0.5">
+              <h4 className="font-semibold text-gray-800 dark:text-gray-100">{item.title}</h4>
+              <p className="text-xs text-gray-600 dark:text-gray-400 flex items-center gap-1 mt-0.5">
                 {typeInfo.label}
                 {item.start_date && (
                   <>
-                    <span className="mx-1">•</span>
+                    <span className="mx-1">-</span>
                     <Calendar className="w-3 h-3" />
                     {item.start_date}{item.end_date && ` - ${item.end_date}`}
                   </>
@@ -519,22 +519,22 @@ function PortfolioCard({
             <div className="flex gap-1">
               <button
                 onClick={() => onToggleFeatured(item)}
-                className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors"
               >
                 <Star className={cn(
                   "w-4 h-4",
-                  item.is_featured ? "text-amber-500 fill-amber-500" : "text-slate-300"
+                  item.is_featured ? "text-violet-500 dark:text-violet-400 fill-violet-500 dark:fill-violet-400" : "text-slate-300 dark:text-stone-500"
                 )} />
               </button>
               <button
                 onClick={() => onEdit(item)}
-                className="p-1.5 hover:bg-slate-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                className="p-1.5 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
               >
-                <Edit2 className="w-4 h-4 text-slate-600" />
+                <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
               </button>
               <button
                 onClick={() => item.id && onDelete(item.id)}
-                className="p-1.5 hover:bg-rose-100 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                className="p-1.5 hover:bg-rose-100 dark:hover:bg-rose-900/30 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
               >
                 <Trash2 className="w-4 h-4 text-rose-400" />
               </button>
@@ -542,13 +542,13 @@ function PortfolioCard({
           </div>
 
           {item.description && (
-            <p className="text-sm text-slate-600 mt-2 line-clamp-2">{item.description}</p>
+            <p className="text-sm text-gray-600 dark:text-gray-300 mt-2 line-clamp-2">{item.description}</p>
           )}
 
           {item.tags.length > 0 && (
             <div className="flex gap-1 flex-wrap mt-3">
               {item.tags.map((tag, idx) => (
-                <span key={idx} className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded text-xs">
+                <span key={idx} className="px-2 py-0.5 bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 rounded text-xs">
                   {tag}
                 </span>
               ))}
@@ -560,7 +560,7 @@ function PortfolioCard({
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 mt-3"
+              className="inline-flex items-center gap-1 text-sm text-violet-600 dark:text-violet-400 hover:text-violet-800 dark:hover:text-violet-300 mt-3"
             >
               <ExternalLink className="w-4 h-4" />
               Visa projekt

@@ -79,7 +79,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
 
   return (
     <div className="text-center py-8">
-      <p className="text-sm text-slate-700 mb-6">Omgång {cycleCount + 1}</p>
+      <p className="text-sm text-gray-600 dark:text-gray-300 mb-6">Omgång {cycleCount + 1}</p>
       <motion.div
         animate={{
           scale: phase === 'breathe-in' ? [1, 1.4] : phase === 'breathe-out' ? [1.4, 1] : [1, 1],
@@ -89,13 +89,13 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
           duration: phase === 'breathe-in' ? 4 : phase === 'hold' ? 4 : phase === 'breathe-out' ? 6 : 2,
           ease: 'easeInOut'
         }}
-        className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center shadow-lg"
+        className="w-40 h-40 mx-auto mb-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 dark:from-emerald-500 dark:to-teal-600 flex items-center justify-center shadow-lg"
       >
         <Wind className="w-16 h-16 text-white" />
       </motion.div>
 
-      <h3 className="text-2xl font-bold text-slate-800 mb-3">{phaseText[phase]}</h3>
-      <p className="text-slate-600 mb-8">
+      <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-3">{phaseText[phase]}</h3>
+      <p className="text-gray-600 dark:text-gray-300 mb-8">
         Du mår bra. Du är säker. Du är här. Nu.
       </p>
 
@@ -104,7 +104,7 @@ function BreathingExercise({ onStop }: { onStop: () => void }) {
         className="w-full"
         onClick={onStop}
       >
-        {t('wellness.crisis.stopBreathing')}
+        Stoppa övning
       </Button>
     </div>
   )
@@ -123,8 +123,8 @@ function GroundingGuide({ technique, onClose }: { technique: any; onClose: () =>
   return (
     <div className="space-y-6">
       <div>
-        <h4 className="text-xl font-bold text-slate-800 mb-2">{technique.title}</h4>
-        <p className="text-slate-600">{technique.description}</p>
+        <h4 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-2">{technique.title}</h4>
+        <p className="text-gray-600 dark:text-gray-300">{technique.description}</p>
       </div>
 
       <div className="space-y-4">
@@ -136,19 +136,19 @@ function GroundingGuide({ technique, onClose }: { technique: any; onClose: () =>
             className={cn(
               'p-4 rounded-xl border-2 transition-all cursor-pointer',
               idx <= currentStep
-                ? 'bg-indigo-50 border-indigo-300'
-                : 'bg-slate-50 border-slate-200'
+                ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700'
+                : 'bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600'
             )}
             onClick={() => setCurrentStep(idx)}
           >
             <div className="flex items-start gap-3">
               <div className={cn(
                 'w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0',
-                idx <= currentStep ? 'bg-indigo-500 text-white' : 'bg-slate-300 text-slate-700'
+                idx <= currentStep ? 'bg-emerald-500 dark:bg-emerald-600 text-white' : 'bg-stone-300 dark:bg-stone-600 text-gray-700 dark:text-gray-300'
               )}>
                 {idx + 1}
               </div>
-              <p className={idx <= currentStep ? 'text-slate-800 font-medium' : 'text-slate-600'}>{step}</p>
+              <p className={idx <= currentStep ? 'text-gray-800 dark:text-gray-100 font-medium' : 'text-gray-600 dark:text-gray-300'}>{step}</p>
             </div>
           </motion.div>
         ))}
@@ -251,9 +251,9 @@ export default function CrisisTab() {
       </div>
 
       {/* Breathing Exercise */}
-      <Card className="p-6 border-2 border-indigo-200 bg-gradient-to-br from-indigo-50 to-blue-50">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <Wind className="w-5 h-5 text-indigo-600" />
+      <Card className="p-6 border-2 border-emerald-200 dark:border-emerald-800 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Wind className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           {t('wellness.crisis.breathingExercise')}
         </h3>
 
@@ -261,7 +261,7 @@ export default function CrisisTab() {
           <BreathingExercise onStop={() => setActiveExercise(null)} />
         ) : (
           <div>
-            <p className="text-slate-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
               En enkel andningsövning kan lugna din nervösa system. Det tar bara några minuter.
             </p>
             <Button onClick={() => setActiveExercise('breathing')} className="w-full" size="lg">
@@ -273,9 +273,9 @@ export default function CrisisTab() {
       </Card>
 
       {/* Grounding Techniques - Interactive Guide */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <Eye className="w-5 h-5 text-indigo-600" />
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Eye className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           {t('wellness.crisis.groundingTechniques')}
         </h3>
 
@@ -293,16 +293,16 @@ export default function CrisisTab() {
                   key={index}
                   whileHover={{ scale: 1.02 }}
                   onClick={() => setSelectedGroundingTechnique(index)}
-                  className="w-full flex items-start gap-4 p-4 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-transparent hover:border-indigo-200 transition-all text-left"
+                  className="w-full flex items-start gap-4 p-4 rounded-xl bg-stone-50 dark:bg-stone-700 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 border border-transparent hover:border-emerald-200 dark:hover:border-emerald-700 transition-all text-left"
                 >
-                  <div className="w-10 h-10 rounded-lg bg-white flex items-center justify-center shadow-sm flex-shrink-0">
-                    <Icon className="w-5 h-5 text-indigo-600" />
+                  <div className="w-10 h-10 rounded-lg bg-white dark:bg-stone-600 flex items-center justify-center shadow-sm flex-shrink-0">
+                    <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-slate-800">{technique.title}</h4>
-                    <p className="text-sm text-slate-600">{technique.description}</p>
+                    <h4 className="font-semibold text-gray-800 dark:text-gray-100">{technique.title}</h4>
+                    <p className="text-sm text-gray-600 dark:text-gray-300">{technique.description}</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-slate-600 flex-shrink-0" />
+                  <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-300 flex-shrink-0" />
                 </motion.button>
               )
             })}
@@ -311,9 +311,9 @@ export default function CrisisTab() {
       </Card>
 
       {/* Emergency Contacts - Full Details */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <Phone className="w-5 h-5 text-indigo-600" />
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Phone className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           {t('wellness.crisis.emergencyContacts')}
         </h3>
         <div className="space-y-3">
@@ -322,7 +322,7 @@ export default function CrisisTab() {
               key={index}
               whileHover={{ x: 4 }}
               href={`tel:${contact.number.replace(/\s/g, '')}`}
-              className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-indigo-300 hover:shadow-md transition-all"
+              className="flex items-center gap-4 p-4 rounded-xl bg-white dark:bg-stone-700 border-2 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700 hover:shadow-md transition-all"
             >
               <div className={cn(
                 'w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold flex-shrink-0',
@@ -331,44 +331,44 @@ export default function CrisisTab() {
                 <Phone className="w-5 h-5" />
               </div>
               <div className="flex-1 min-w-0">
-                <h4 className="font-semibold text-slate-800">{contact.name}</h4>
-                <p className="text-lg font-bold text-indigo-600">{contact.number}</p>
-                <p className="text-sm text-slate-600">{contact.description}</p>
-                <p className="text-xs text-slate-700 mt-1">{contact.available}</p>
+                <h4 className="font-semibold text-gray-800 dark:text-gray-100">{contact.name}</h4>
+                <p className="text-lg font-bold text-emerald-600 dark:text-emerald-400">{contact.number}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-300">{contact.description}</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">{contact.available}</p>
               </div>
-              <ExternalLink className="w-4 h-4 text-slate-600 flex-shrink-0" />
+              <ExternalLink className="w-4 h-4 text-gray-600 dark:text-gray-300 flex-shrink-0" />
             </motion.a>
           ))}
         </div>
       </Card>
 
       {/* Chat Support */}
-      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 border-2 border-emerald-200">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <MessageCircle className="w-5 h-5 text-emerald-600" />
+      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-2 border-emerald-200 dark:border-emerald-800">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <MessageCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
           Chatt-stöd
         </h3>
-        <p className="text-slate-700 mb-6">
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
           Behöver du prata med någon? Våra tränade volontärer finns här dygnet runt för att lyssna.
           Du kan chatta helt anonymt.
         </p>
-        <Button onClick={() => setShowChat(true)} className="w-full bg-emerald-600 hover:bg-emerald-700" size="lg">
+        <Button onClick={() => setShowChat(true)} className="w-full bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600" size="lg">
           <MessageCircle className="w-5 h-5 mr-2" />
           Starta chatt nu
         </Button>
       </Card>
 
       {/* Share with consultant */}
-      <Card className="p-6 bg-amber-50 border-2 border-amber-200">
+      <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-800">
         <div className="flex items-start gap-4">
-          <AlertTriangle className="w-6 h-6 text-amber-600 flex-shrink-0 mt-1" />
+          <AlertTriangle className="w-6 h-6 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-1" />
           <div className="flex-1">
-            <h4 className="font-semibold text-amber-900 mb-2">Dela med din arbetskonsulent</h4>
-            <p className="text-amber-800 mb-4">
+            <h4 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">Dela med din arbetskonsulent</h4>
+            <p className="text-amber-800 dark:text-amber-300 mb-4">
               Om du mår dåligt kan det vara värdefullt att berätta för din arbetskonsulent.
               De kan anpassa ditt program eller ge extra stöd under denna tid.
             </p>
-            <Button variant="outline" className="border-amber-300 text-amber-800 hover:bg-amber-100">
+            <Button variant="outline" className="border-amber-300 dark:border-amber-700 text-amber-800 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30">
               Skicka meddelande till konsulent
               <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
@@ -380,15 +380,15 @@ export default function CrisisTab() {
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="text-center p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border-2 border-indigo-200"
+        className="text-center p-6 bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 rounded-xl border-2 border-emerald-200 dark:border-emerald-800"
       >
         <motion.div
           animate={{ scale: [1, 1.1, 1] }}
           transition={{ duration: 2, repeat: Infinity }}
         >
-          <Heart className="w-8 h-8 text-indigo-500 mx-auto mb-3" />
+          <Heart className="w-8 h-8 text-emerald-500 dark:text-emerald-400 mx-auto mb-3" />
         </motion.div>
-        <p className="text-indigo-900 font-medium">
+        <p className="text-emerald-900 dark:text-emerald-100 font-medium">
           Kom ihåg: Det är helt okej att inte må bra. Du är inte ensam i det här. Hjälpen finns här när du behöver den.
         </p>
       </motion.div>

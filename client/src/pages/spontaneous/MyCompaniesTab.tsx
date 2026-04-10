@@ -137,29 +137,29 @@ function CompanyCard({
   }
 
   return (
-    <Card className="p-4 hover:shadow-md transition-shadow">
+    <Card className="p-4 hover:shadow-md transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
       <div className="flex justify-between items-start gap-4">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            <Building2 className="w-4 h-4 text-primary-500 flex-shrink-0" />
-            <h3 className="font-semibold truncate">{company.company_name}</h3>
+            <Building2 className="w-4 h-4 text-teal-500 dark:text-teal-400 flex-shrink-0" />
+            <h3 className="font-semibold truncate text-slate-800 dark:text-stone-100">{company.company_name}</h3>
           </div>
 
-          <p className="text-sm text-slate-700 mb-2">
+          <p className="text-sm text-slate-600 dark:text-stone-400 mb-2">
             {formatOrgNumber(company.org_number)}
-            {company.company_data?.legalForm && ` • ${company.company_data.legalForm}`}
+            {company.company_data?.legalForm && ` - ${company.company_data.legalForm}`}
           </p>
 
           <div className="flex flex-wrap gap-2 mb-3">
             <StatusBadge status={company.status} />
             {company.priority === 'high' && (
-              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600 dark:bg-red-900/30">
-                Hög prioritet
+              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400">
+                Hog prioritet
               </span>
             )}
           </div>
 
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-600">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-stone-400">
             {address?.city && (
               <span className="flex items-center gap-1">
                 <MapPin className="w-3.5 h-3.5" />
@@ -174,54 +174,54 @@ function CompanyCard({
           </div>
 
           {businessDescription && (
-            <p className="text-xs text-slate-700 mt-2 line-clamp-2" title={businessDescription}>
+            <p className="text-xs text-slate-600 dark:text-stone-400 mt-2 line-clamp-2" title={businessDescription}>
               <FileText className="w-3 h-3 inline mr-1" />
               {businessDescription}
             </p>
           )}
 
           {company.outreach_date && (
-            <p className="text-xs text-slate-700 mt-2 flex items-center gap-1">
+            <p className="text-xs text-slate-600 dark:text-stone-400 mt-2 flex items-center gap-1">
               <Calendar className="w-3 h-3" />
               Kontaktad: {new Date(company.outreach_date).toLocaleDateString('sv-SE')}
             </p>
           )}
 
           {company.followup_date && (
-            <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+            <p className="text-xs text-amber-600 dark:text-amber-400 mt-1 flex items-center gap-1">
               <Clock className="w-3 h-3" />
-              Uppföljning: {new Date(company.followup_date).toLocaleDateString('sv-SE')}
+              Uppfoljning: {new Date(company.followup_date).toLocaleDateString('sv-SE')}
             </p>
           )}
 
           {/* Notes Section */}
-          <div className="mt-3 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="mt-3 pt-2 border-t border-stone-100 dark:border-stone-700">
             {isEditingNotes ? (
               <div className="space-y-2">
                 <textarea
                   value={notesValue}
                   onChange={(e) => setNotesValue(e.target.value)}
-                  className="w-full text-sm p-2 border rounded-md dark:bg-slate-800 dark:border-slate-700"
+                  className="w-full text-sm p-2 border rounded-md bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-slate-900 dark:text-stone-100"
                   rows={3}
-                  placeholder="Lägg till anteckningar..."
+                  placeholder="Lagg till anteckningar..."
                   autoFocus
                 />
                 <div className="flex gap-2">
-                  <Button size="sm" onClick={handleSaveNotes}>Spara</Button>
-                  <Button size="sm" variant="outline" onClick={() => setIsEditingNotes(false)}>Avbryt</Button>
+                  <Button size="sm" onClick={handleSaveNotes} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500">Spara</Button>
+                  <Button size="sm" variant="outline" onClick={() => setIsEditingNotes(false)} className="border-stone-200 dark:border-stone-700">Avbryt</Button>
                 </div>
               </div>
             ) : (
               <div
                 onClick={() => setIsEditingNotes(true)}
-                className="text-sm text-slate-600 dark:text-slate-600 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800 p-1 rounded"
+                className="text-sm text-slate-600 dark:text-stone-400 cursor-pointer hover:bg-slate-50 dark:hover:bg-stone-700 p-1 rounded"
               >
                 {company.notes ? (
                   <p className="line-clamp-2">{company.notes}</p>
                 ) : (
-                  <p className="text-slate-600 italic flex items-center gap-1">
+                  <p className="text-slate-500 dark:text-stone-500 italic flex items-center gap-1">
                     <Edit2 className="w-3 h-3" />
-                    Klicka för att lägga till anteckningar...
+                    Klicka for att lagga till anteckningar...
                   </p>
                 )}
               </div>
@@ -368,14 +368,14 @@ export default function MyCompaniesTab() {
       {/* Filter Bar */}
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 flex-1">
-          <Filter className="w-4 h-4 text-slate-600 flex-shrink-0" />
+          <Filter className="w-4 h-4 text-slate-600 dark:text-stone-400 flex-shrink-0" />
           {filterOptions.map((option) => (
             <Button
               key={option.value}
               variant={filter === option.value ? 'default' : 'outline'}
               size="sm"
               onClick={() => setFilter(option.value)}
-              className="flex-shrink-0"
+              className={`flex-shrink-0 ${filter === option.value ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
             >
               {option.label}
               {option.value !== 'all' && (
@@ -392,7 +392,7 @@ export default function MyCompaniesTab() {
             variant="outline"
             size="sm"
             onClick={() => exportToCSV(filteredCompanies)}
-            className="flex-shrink-0"
+            className="flex-shrink-0 border-stone-200 dark:border-stone-700"
           >
             <Download className="w-4 h-4 mr-1.5" />
             Exportera
@@ -402,15 +402,15 @@ export default function MyCompaniesTab() {
 
       {/* Companies List */}
       {filteredCompanies.length === 0 ? (
-        <Card className="p-8 text-center">
-          <Building2 className="w-12 h-12 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-medium mb-2">
-            {filter === 'all' ? 'Inga sparade företag' : `Inga företag med status "${filterOptions.find(o => o.value === filter)?.label}"`}
+        <Card className="p-8 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <Building2 className="w-12 h-12 text-slate-300 dark:text-stone-600 mx-auto mb-4" />
+          <h3 className="text-lg font-medium mb-2 text-slate-800 dark:text-stone-100">
+            {filter === 'all' ? 'Inga sparade foretag' : `Inga foretag med status "${filterOptions.find(o => o.value === filter)?.label}"`}
           </h3>
-          <p className="text-slate-600 dark:text-slate-600">
+          <p className="text-slate-600 dark:text-stone-400">
             {filter === 'all'
-              ? 'Sök efter företag och spara de du är intresserad av.'
-              : 'Ändra filter för att se andra företag.'
+              ? 'Sok efter foretag och spara de du ar intresserad av.'
+              : 'Andra filter for att se andra foretag.'
             }
           </p>
         </Card>

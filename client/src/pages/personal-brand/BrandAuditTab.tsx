@@ -261,20 +261,20 @@ export default function BrandAuditTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-100">
+      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/30 dark:to-purple-900/30 border-violet-100 dark:border-violet-800">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center shrink-0">
-            <ClipboardCheck className="w-6 h-6 text-violet-600" />
+          <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 dark:from-violet-600 dark:to-purple-600 rounded-xl flex items-center justify-center shrink-0">
+            <ClipboardCheck className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">Varumärkesaudit</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Varumärkesaudit</h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">
               Gå igenom frågorna för att analysera styrkan i ditt personliga varumärke.
               Dina svar sparas automatiskt i molnet.
             </p>
           </div>
           {isSaving && (
-            <span className="text-xs text-slate-600 flex items-center gap-1">
+            <span className="text-xs text-gray-600 dark:text-gray-300 flex items-center gap-1">
               <RefreshCw className="w-3 h-3 animate-spin" />
               Sparar...
             </span>
@@ -290,10 +290,10 @@ export default function BrandAuditTab() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
           >
-            <Card className="border-violet-200">
+            <Card className="border-violet-200 dark:border-violet-700 bg-white dark:bg-stone-800">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-                  <BarChart3 className="w-5 h-5 text-violet-600" />
+                <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+                  <BarChart3 className="w-5 h-5 text-violet-600 dark:text-violet-400" />
                   Din poäng
                 </h3>
                 <Button
@@ -315,7 +315,7 @@ export default function BrandAuditTab() {
                       stroke="currentColor"
                       strokeWidth="8"
                       fill="none"
-                      className="text-slate-200"
+                      className="text-slate-200 dark:text-stone-700"
                     />
                     <circle
                       cx="48"
@@ -345,7 +345,7 @@ export default function BrandAuditTab() {
                   <p className={cn("text-lg font-semibold", getScoreColor(totalScore))}>
                     {getScoreEmoji(totalScore)} {getScoreLabel(totalScore)}
                   </p>
-                  <p className="text-sm text-slate-700">
+                  <p className="text-sm text-gray-600 dark:text-gray-300">
                     {Object.values(answers).filter(Boolean).length} av {AUDIT_QUESTIONS.length} punkter uppfyllda
                   </p>
                 </div>
@@ -356,27 +356,27 @@ export default function BrandAuditTab() {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="mt-4 pt-4 border-t border-slate-100"
+                  className="mt-4 pt-4 border-t border-slate-100 dark:border-stone-700"
                 >
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {Object.entries(CATEGORIES).map(([key, cat]) => {
                       const score = getCategoryScore(key)
                       const Icon = cat.icon
                       return (
-                        <div key={key} className="text-center p-3 rounded-xl bg-slate-50">
+                        <div key={key} className="text-center p-3 rounded-xl bg-slate-50 dark:bg-stone-700">
                           <Icon className={cn(
                             "w-5 h-5 mx-auto mb-2",
-                            score >= 70 ? "text-emerald-600" :
-                            score >= 40 ? "text-amber-600" : "text-rose-600"
+                            score >= 70 ? "text-emerald-600 dark:text-emerald-400" :
+                            score >= 40 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400"
                           )} />
                           <div className={cn(
                             "text-2xl font-bold",
-                            score >= 70 ? "text-emerald-600" :
-                            score >= 40 ? "text-amber-600" : "text-rose-600"
+                            score >= 70 ? "text-emerald-600 dark:text-emerald-400" :
+                            score >= 40 ? "text-amber-600 dark:text-amber-400" : "text-rose-600 dark:text-rose-400"
                           )}>
                             {score}%
                           </div>
-                          <p className="text-xs text-slate-700">{cat.label}</p>
+                          <p className="text-xs text-gray-600 dark:text-gray-300">{cat.label}</p>
                         </div>
                       )
                     })}
@@ -390,9 +390,9 @@ export default function BrandAuditTab() {
 
       {/* Recommended Actions */}
       {recommendedActions.length > 0 && totalScore < 80 && (
-        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100">
-          <h3 className="font-semibold text-blue-900 mb-3 flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-blue-600" />
+        <Card className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/30 dark:to-purple-900/30 border-violet-100 dark:border-violet-800">
+          <h3 className="font-semibold text-violet-900 dark:text-violet-100 mb-3 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-violet-600 dark:text-violet-400" />
             Rekommenderade nästa steg
           </h3>
           <div className="space-y-2">
@@ -400,13 +400,13 @@ export default function BrandAuditTab() {
               <Link
                 key={action.id}
                 to={action.actionLink!}
-                className="flex items-center justify-between p-3 bg-white rounded-xl border border-blue-100 hover:border-blue-300 hover:shadow-sm transition-all group"
+                className="flex items-center justify-between p-3 bg-white dark:bg-stone-800 rounded-xl border border-violet-100 dark:border-violet-700 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-sm transition-all group"
               >
                 <div>
-                  <p className="font-medium text-slate-800">{action.actionLabel}</p>
-                  <p className="text-sm text-slate-700">{action.question}</p>
+                  <p className="font-medium text-gray-800 dark:text-gray-100">{action.actionLabel}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">{action.question}</p>
                 </div>
-                <ChevronRight className="w-5 h-5 text-slate-600 group-hover:text-blue-600 transition-colors" />
+                <ChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors" />
               </Link>
             ))}
           </div>
@@ -419,23 +419,23 @@ export default function BrandAuditTab() {
         const score = getCategoryScore(categoryKey)
 
         return (
-          <Card key={categoryKey}>
-            <h3 className="font-semibold text-slate-900 mb-4 flex items-center justify-between">
+          <Card key={categoryKey} className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center justify-between">
               <span className="flex items-center gap-2">
                 <Icon className={cn(
                   "w-5 h-5",
-                  category.color === 'blue' && "text-blue-600",
-                  category.color === 'violet' && "text-violet-600",
-                  category.color === 'emerald' && "text-emerald-600",
-                  category.color === 'amber' && "text-amber-600"
+                  category.color === 'blue' && "text-blue-600 dark:text-blue-400",
+                  category.color === 'violet' && "text-violet-600 dark:text-violet-400",
+                  category.color === 'emerald' && "text-emerald-600 dark:text-emerald-400",
+                  category.color === 'amber' && "text-amber-600 dark:text-amber-400"
                 )} />
                 {category.label}
               </span>
               <span className={cn(
                 "text-sm font-medium px-3 py-1 rounded-full",
-                score >= 70 ? "bg-emerald-100 text-emerald-700" :
-                score >= 40 ? "bg-amber-100 text-amber-700" :
-                "bg-rose-100 text-rose-700"
+                score >= 70 ? "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300" :
+                score >= 40 ? "bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300" :
+                "bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300"
               )}>
                 {score}%
               </span>
@@ -449,18 +449,18 @@ export default function BrandAuditTab() {
                     className={cn(
                       "w-full flex items-center gap-3 p-3 rounded-xl border transition-all text-left",
                       answers[question.id]
-                        ? "bg-emerald-50 border-emerald-200"
-                        : "bg-slate-50 border-slate-100 hover:border-slate-200"
+                        ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
+                        : "bg-slate-50 dark:bg-stone-700 border-slate-100 dark:border-stone-600 hover:border-slate-200 dark:hover:border-stone-500"
                     )}
                   >
                     {answers[question.id] ? (
-                      <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+                      <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                     ) : (
-                      <Circle className="w-5 h-5 text-slate-300 shrink-0" />
+                      <Circle className="w-5 h-5 text-slate-300 dark:text-stone-500 shrink-0" />
                     )}
                     <span className={cn(
                       "flex-1 text-sm",
-                      answers[question.id] ? "text-emerald-800" : "text-slate-700"
+                      answers[question.id] ? "text-emerald-800 dark:text-emerald-200" : "text-gray-600 dark:text-gray-300"
                     )}>
                       {question.question}
                     </span>
@@ -468,7 +468,7 @@ export default function BrandAuditTab() {
                       <Link
                         to={question.actionLink}
                         onClick={(e) => e.stopPropagation()}
-                        className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded-full hover:bg-violet-200 transition-colors"
+                        className="text-xs px-2 py-1 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 rounded-full hover:bg-violet-200 dark:hover:bg-violet-800/50 transition-colors"
                       >
                         {question.actionLabel}
                       </Link>
@@ -483,14 +483,14 @@ export default function BrandAuditTab() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="ml-8 mt-2 p-3 bg-blue-50 rounded-lg border border-blue-100"
+                          className="ml-8 mt-2 p-3 bg-violet-50 dark:bg-violet-900/30 rounded-lg border border-violet-100 dark:border-violet-700"
                         >
-                          <p className="text-sm text-blue-800">
-                            💡 {question.tip}
+                          <p className="text-sm text-violet-800 dark:text-violet-200">
+                            {question.tip}
                           </p>
                           <button
                             onClick={() => setExpandedTip(null)}
-                            className="text-xs text-blue-600 mt-2 hover:underline"
+                            className="text-xs text-violet-600 dark:text-violet-400 mt-2 hover:underline"
                           >
                             Dölj tips
                           </button>
@@ -498,7 +498,7 @@ export default function BrandAuditTab() {
                       ) : (
                         <button
                           onClick={() => setExpandedTip(question.id)}
-                          className="ml-8 mt-1 text-xs text-slate-600 hover:text-slate-600"
+                          className="ml-8 mt-1 text-xs text-gray-600 dark:text-gray-400 hover:text-violet-600 dark:hover:text-violet-400"
                         >
                           Visa tips
                         </button>

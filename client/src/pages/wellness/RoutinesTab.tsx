@@ -99,29 +99,29 @@ export default function RoutinesTab() {
         animate={{ opacity: 1, y: 0 }}
         className="grid grid-cols-2 gap-4"
       >
-        <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50">
+        <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
           <div className="flex items-start justify-between">
             <div>
-              <p className="text-sm text-slate-600 mb-1">Idag</p>
-              <h3 className="text-3xl font-bold text-indigo-600">{completedToday}/{routines.length}</h3>
-              <p className="text-xs text-slate-700 mt-1">rutiner slutförda</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Idag</p>
+              <h3 className="text-3xl font-bold text-emerald-600 dark:text-emerald-400">{completedToday}/{routines.length}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">rutiner slutförda</p>
             </div>
             <div className="text-right">
-              <p className="text-sm text-slate-600 mb-1">Andel</p>
-              <p className="text-2xl font-bold text-indigo-600">{completionPercentage}%</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Andel</p>
+              <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{completionPercentage}%</p>
             </div>
           </div>
         </Card>
 
-        <Card className="p-6 bg-gradient-to-br from-orange-50 to-amber-50">
+        <Card className="p-6 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/20 dark:to-amber-900/20 border-orange-100 dark:border-orange-800">
           <div className="flex items-start gap-3">
             <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }}>
-              <Flame className="w-8 h-8 text-orange-600" />
+              <Flame className="w-8 h-8 text-orange-600 dark:text-orange-400" />
             </motion.div>
             <div>
-              <p className="text-sm text-slate-600 mb-1">Bästa serie</p>
-              <h3 className="text-3xl font-bold text-orange-600">12</h3>
-              <p className="text-xs text-slate-700 mt-1">dagar i rad</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Bästa serie</p>
+              <h3 className="text-3xl font-bold text-orange-600 dark:text-orange-400">12</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">dagar i rad</p>
             </div>
           </div>
         </Card>
@@ -130,34 +130,34 @@ export default function RoutinesTab() {
       {/* Progress bar */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium text-slate-600">Daglig framsteg</span>
-          <span className="text-sm text-slate-700">{completionPercentage}%</span>
+          <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Daglig framsteg</span>
+          <span className="text-sm text-gray-600 dark:text-gray-300">{completionPercentage}%</span>
         </div>
-        <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
+        <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${completionPercentage}%` }}
             transition={{ duration: 0.5 }}
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500"
+            className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 dark:from-emerald-400 dark:to-teal-400"
           />
         </div>
       </div>
 
       {/* Weekly Calendar */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('wellness.routines.weekOverview')}</h3>
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.weekOverview')}</h3>
         <div className="grid grid-cols-7 gap-2">
           {daysOfWeek.map((day, index) => (
             <div key={day} className="text-center">
               <div className={`p-3 rounded-xl border-2 ${
-                index < 5 
-                  ? 'border-indigo-200 bg-indigo-50' 
-                  : 'border-slate-200 bg-slate-50'
+                index < 5
+                  ? 'border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20'
+                  : 'border-stone-200 dark:border-stone-600 bg-stone-50 dark:bg-stone-700'
               }`}>
-                <span className="text-sm font-medium text-slate-600">{day}</span>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">{day}</span>
                 <div className="mt-2 flex justify-center gap-0.5">
                   {routines.filter(r => r.days.includes(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'][index])).map(() => (
-                    <div className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 dark:bg-emerald-500" />
                   ))}
                 </div>
               </div>
@@ -167,9 +167,9 @@ export default function RoutinesTab() {
       </Card>
 
       {/* Routines List with Reordering and Streaks */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-semibold text-slate-800">{t('wellness.routines.yourRoutines')}</h3>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('wellness.routines.yourRoutines')}</h3>
           <Button variant="outline" size="sm" onClick={() => setIsAdding(true)}>
             <Plus className="w-4 h-4 mr-1" />
             {t('wellness.routines.add')}
@@ -197,11 +197,11 @@ export default function RoutinesTab() {
                   className={cn(
                     'flex items-center gap-3 p-4 rounded-xl border-2 transition-all cursor-grab active:cursor-grabbing',
                     routine.completed
-                      ? 'bg-green-50 border-green-200'
-                      : 'bg-white border-slate-200 hover:border-indigo-300'
+                      ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800'
+                      : 'bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 hover:border-emerald-300 dark:hover:border-emerald-700'
                   )}
                 >
-                  <GripVertical className="w-4 h-4 text-slate-600 flex-shrink-0" />
+                  <GripVertical className="w-4 h-4 text-gray-500 dark:text-gray-400 flex-shrink-0" />
 
                   <motion.button
                     whileHover={{ scale: 1.1 }}
@@ -209,29 +209,29 @@ export default function RoutinesTab() {
                     onClick={() => toggleRoutine(routine.id)}
                     className={cn(
                       'w-8 h-8 rounded-xl flex items-center justify-center transition-colors flex-shrink-0',
-                      routine.completed ? 'bg-green-500' : 'bg-slate-100 hover:bg-slate-200'
+                      routine.completed ? 'bg-emerald-500 dark:bg-emerald-600' : 'bg-stone-100 dark:bg-stone-600 hover:bg-stone-200 dark:hover:bg-stone-500'
                     )}
                   >
-                    <CheckCircle2 className={cn('w-5 h-5', routine.completed ? 'text-white' : 'text-slate-600')} />
+                    <CheckCircle2 className={cn('w-5 h-5', routine.completed ? 'text-white' : 'text-gray-600 dark:text-gray-300')} />
                   </motion.button>
 
-                  <div className="w-8 h-8 rounded-lg bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
 
                   <div className="flex-1 min-w-0">
-                    <h4 className={cn('font-medium', routine.completed ? 'text-green-700 line-through' : 'text-slate-800')}>
+                    <h4 className={cn('font-medium', routine.completed ? 'text-emerald-700 dark:text-emerald-400 line-through' : 'text-gray-800 dark:text-gray-100')}>
                       {routine.title}
                     </h4>
-                    <div className="flex items-center gap-2 text-sm text-slate-700 mt-1">
+                    <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-300 mt-1">
                       <Clock className="w-3 h-3" />
                       {routine.time}
                       {streak > 0 && (
                         <>
-                          <span className="text-slate-300">•</span>
+                          <span className="text-gray-300 dark:text-gray-500">•</span>
                           <div className="flex items-center gap-1">
-                            <Flame className="w-3 h-3 text-orange-500" />
-                            <span className="text-orange-600 font-medium">{streak}</span>
+                            <Flame className="w-3 h-3 text-orange-500 dark:text-orange-400" />
+                            <span className="text-orange-600 dark:text-orange-400 font-medium">{streak}</span>
                           </div>
                         </>
                       )}
@@ -245,7 +245,7 @@ export default function RoutinesTab() {
                     onClick={() => startTimer(routine.id)}
                     className={cn(
                       'p-2 rounded-lg transition-colors flex-shrink-0',
-                      isTimerActive ? 'bg-red-100 text-red-600' : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
+                      isTimerActive ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-stone-100 dark:bg-stone-600 hover:bg-stone-200 dark:hover:bg-stone-500 text-gray-600 dark:text-gray-300'
                     )}
                   >
                     {isTimerActive ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
@@ -255,7 +255,7 @@ export default function RoutinesTab() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={() => deleteRoutine(routine.id)}
-                    className="p-2 text-slate-600 hover:text-red-500 transition-colors flex-shrink-0"
+                    className="p-2 text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400 transition-colors flex-shrink-0"
                   >
                     <Trash2 className="w-4 h-4" />
                   </motion.button>
@@ -267,20 +267,20 @@ export default function RoutinesTab() {
 
         {/* Add new routine form */}
         {isAdding && (
-          <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-200">
+          <div className="mt-4 p-4 bg-stone-50 dark:bg-stone-700 rounded-xl border border-stone-200 dark:border-stone-600">
             <div className="flex gap-3">
               <input
                 type="text"
                 value={newRoutine.title}
                 onChange={(e) => setNewRoutine(prev => ({ ...prev, title: e.target.value }))}
                 placeholder={t('wellness.routines.routineNamePlaceholder')}
-                className="flex-1 px-3 py-2 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200"
+                className="flex-1 px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-200 dark:border-stone-500 focus:border-emerald-500 dark:focus:border-emerald-400 focus:ring-2 focus:ring-emerald-200 dark:focus:ring-emerald-800 text-gray-800 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
               />
               <input
                 type="time"
                 value={newRoutine.time}
                 onChange={(e) => setNewRoutine(prev => ({ ...prev, time: e.target.value }))}
-                className="px-3 py-2 rounded-lg border border-slate-200"
+                className="px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-200 dark:border-stone-500 text-gray-800 dark:text-gray-100"
               />
             </div>
             <div className="flex gap-2 mt-3">
@@ -292,9 +292,9 @@ export default function RoutinesTab() {
       </Card>
 
       {/* Suggested Routines - Templates */}
-      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
-        <p className="text-sm text-slate-600 mb-4">Förslagade rutiner som kan hjälpa dig få en strukturerad dag:</p>
+      <Card className="p-6 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-100 dark:border-emerald-800">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('wellness.routines.suggestedRoutines')}</h3>
+        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">Förslagade rutiner som kan hjälpa dig få en strukturerad dag:</p>
         <div className="space-y-2">
           {[
             { titleKey: 'wellness.routines.suggestions.morningStretch', time: '07:30', icon: Sun, desc: 'Starta dagen med energi' },
@@ -311,14 +311,14 @@ export default function RoutinesTab() {
                   setNewRoutine({ title, time: suggestion.time.includes(':') ? suggestion.time : '09:00' })
                   setIsAdding(true)
                 }}
-                className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-amber-300 hover:border-amber-400 hover:bg-white transition-all text-left"
+                className="w-full flex items-center gap-3 p-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-700 hover:border-emerald-400 dark:hover:border-emerald-600 hover:bg-white dark:hover:bg-stone-800 transition-all text-left"
               >
-                <Icon className="w-5 h-5 text-amber-600 flex-shrink-0" />
+                <Icon className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-slate-800">{title}</p>
-                  <p className="text-xs text-slate-700">{suggestion.time} • {suggestion.desc}</p>
+                  <p className="font-medium text-gray-800 dark:text-gray-100">{title}</p>
+                  <p className="text-xs text-gray-600 dark:text-gray-300">{suggestion.time} • {suggestion.desc}</p>
                 </div>
-                <Plus className="w-4 h-4 text-amber-600 flex-shrink-0" />
+                <Plus className="w-4 h-4 text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
               </motion.button>
             )
           })}
@@ -326,27 +326,27 @@ export default function RoutinesTab() {
       </Card>
 
       {/* Morning & Evening Routine Templates */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">Rutinmallar</h3>
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">Rutinmallar</h3>
         <div className="grid grid-cols-2 gap-3">
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 border-2 border-orange-200 cursor-pointer hover:shadow-md transition-all"
+            className="p-4 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 border-2 border-orange-200 dark:border-orange-800 cursor-pointer hover:shadow-md transition-all"
           >
-            <Sun className="w-6 h-6 text-orange-600 mb-2" />
-            <h4 className="font-semibold text-orange-900">Morgon-rutin</h4>
-            <p className="text-xs text-orange-800 mt-1">5 aktiviteter för bra start</p>
-            <p className="text-xs text-orange-700 mt-2">07:00 - 09:00</p>
+            <Sun className="w-6 h-6 text-orange-600 dark:text-orange-400 mb-2" />
+            <h4 className="font-semibold text-orange-900 dark:text-orange-200">Morgon-rutin</h4>
+            <p className="text-xs text-orange-800 dark:text-orange-300 mt-1">5 aktiviteter för bra start</p>
+            <p className="text-xs text-orange-700 dark:text-orange-400 mt-2">07:00 - 09:00</p>
           </motion.div>
 
           <motion.div
             whileHover={{ scale: 1.02 }}
-            className="p-4 rounded-xl bg-gradient-to-br from-indigo-100 to-purple-100 border-2 border-purple-200 cursor-pointer hover:shadow-md transition-all"
+            className="p-4 rounded-xl bg-gradient-to-br from-emerald-100 to-teal-100 dark:from-emerald-900/30 dark:to-teal-900/30 border-2 border-teal-200 dark:border-teal-800 cursor-pointer hover:shadow-md transition-all"
           >
-            <Moon className="w-6 h-6 text-purple-600 mb-2" />
-            <h4 className="font-semibold text-purple-900">Kväll-rutin</h4>
-            <p className="text-xs text-purple-800 mt-1">4 aktiviteter för bättre sömn</p>
-            <p className="text-xs text-purple-700 mt-2">20:00 - 21:30</p>
+            <Moon className="w-6 h-6 text-teal-600 dark:text-teal-400 mb-2" />
+            <h4 className="font-semibold text-teal-900 dark:text-teal-200">Kväll-rutin</h4>
+            <p className="text-xs text-teal-800 dark:text-teal-300 mt-1">4 aktiviteter för bättre sömn</p>
+            <p className="text-xs text-teal-700 dark:text-teal-400 mt-2">20:00 - 21:30</p>
           </motion.div>
         </div>
       </Card>

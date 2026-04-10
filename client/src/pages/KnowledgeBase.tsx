@@ -34,7 +34,7 @@ type TabId = typeof tabDefs[number]['id']
 
 function TabLoader({ message }: { message?: string }) {
   return (
-    <div className="min-h-[400px] flex items-center justify-center">
+    <div className="min-h-[400px] flex items-center justify-center bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 rounded-xl">
       <LoadingState title={message || 'Loading...'} />
     </div>
   )
@@ -109,11 +109,11 @@ export default function KnowledgeBase() {
 
     if (!articles) {
       return (
-        <Card className="p-6 text-center">
-          <p className="text-slate-700">{t('knowledgeBase.couldNotLoad')}</p>
+        <Card className="p-6 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <p className="text-gray-600 dark:text-gray-300">{t('knowledgeBase.couldNotLoad')}</p>
           <button
             onClick={() => window.location.reload()}
-            className="text-violet-600 hover:underline mt-2"
+            className="text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 hover:underline mt-2"
           >
             {t('knowledgeBase.tryAgain')}
           </button>
@@ -165,9 +165,9 @@ export default function KnowledgeBase() {
         )
       default:
         return (
-          <Card className="p-6">
-            <h2 className="text-xl font-bold mb-4">{t('knowledgeBase.welcome')}</h2>
-            <p className="text-slate-600">{t('knowledgeBase.selectTab')}</p>
+          <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4">{t('knowledgeBase.welcome')}</h2>
+            <p className="text-gray-600 dark:text-gray-300">{t('knowledgeBase.selectTab')}</p>
           </Card>
         )
     }
@@ -181,7 +181,7 @@ export default function KnowledgeBase() {
     >
       {/* Header */}
       <div className="mb-6 sm:mb-8">
-        <p className="text-sm sm:text-base text-slate-600 max-w-2xl">
+        <p className="text-sm sm:text-base text-gray-600 dark:text-gray-300 max-w-2xl">
           {t('knowledgeBase.intro')}
         </p>
       </div>

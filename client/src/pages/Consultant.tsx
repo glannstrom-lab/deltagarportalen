@@ -22,7 +22,7 @@ export default function Consultant() {
   const { t } = useTranslation()
 
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
       <PageLayout
         title={t('consultant.title', 'Konsultportal')}
         subtitle={t('consultant.subtitle', 'Hantera och följ upp dina deltagare')}
@@ -42,6 +42,6 @@ export default function Consultant() {
 
       {/* AI Coach Assistant - Floating on all consultant pages */}
       <AICoachAssistant context="overview" />
-    </>
+    </div>
   )
 }

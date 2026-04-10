@@ -185,11 +185,11 @@ export default function Calendar() {
     }
 
     return (
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-7 border-b border-slate-200">
+        <div className="grid grid-cols-7 border-b border-stone-200 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
           {days.map((day) => (
-            <div key={day} className="py-2 text-center text-sm font-medium text-slate-700">
+            <div key={day} className="py-2 text-center text-sm font-medium text-white">
               {day}
             </div>
           ))}
@@ -198,7 +198,7 @@ export default function Calendar() {
         {/* Grid */}
         <div className="grid grid-cols-7">
           {Array.from({ length: startingDay }).map((_, index) => (
-            <div key={`empty-${index}`} className="h-28 border-b border-r border-slate-100 bg-slate-50/50" />
+            <div key={`empty-${index}`} className="h-28 border-b border-r border-stone-100 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-900/30" />
           ))}
           {Array.from({ length: daysInMonth }).map((_, index) => {
             const day = index + 1
@@ -210,11 +210,11 @@ export default function Calendar() {
               <button
                 key={day}
                 onClick={() => handleDateClick(new Date(dateStr))}
-                className="h-28 border-b border-r border-slate-100 p-2 text-left transition-colors relative overflow-hidden hover:bg-slate-50"
+                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-stone-50 dark:hover:bg-stone-700/50"
               >
                 <span className={`
                   inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
-                  ${isToday ? 'bg-teal-600 text-white' : 'text-slate-700'}
+                  ${isToday ? 'bg-teal-600 dark:bg-teal-500 text-white' : 'text-gray-700 dark:text-gray-200'}
                 `}>
                   {day}
                 </span>
@@ -232,7 +232,7 @@ export default function Calendar() {
                       )
                     })}
                     {dayEvents.length > 3 && (
-                      <div className="text-xs text-slate-700 px-1.5">
+                      <div className="text-xs text-gray-600 dark:text-gray-400 px-1.5">
                         {t('calendar.moreEvents', { count: dayEvents.length - 3 })}
                       </div>
                     )}
@@ -248,26 +248,26 @@ export default function Calendar() {
 
   // Agenda view
   const renderAgendaView = () => {
-    const sortedEvents = [...events].sort((a, b) => 
+    const sortedEvents = [...events].sort((a, b) =>
       a.date.localeCompare(b.date) || a.time.localeCompare(b.time)
     )
 
     return (
-      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
-        <div className="p-4 border-b border-slate-200">
-          <h3 className="font-semibold text-slate-900">{t('calendar.upcomingEvents')}</h3>
+      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+        <div className="p-4 border-b border-stone-200 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
+          <h3 className="font-semibold text-white">{t('calendar.upcomingEvents')}</h3>
         </div>
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-stone-100 dark:divide-stone-700">
           {sortedEvents.map((event) => {
             const config = eventTypeConfig[event.type]
             const date = new Date(event.date)
             const isPast = date < new Date() && date.toDateString() !== new Date().toDateString()
-            
+
             return (
               <button
                 key={event.id}
                 onClick={() => handleEventClick(event)}
-                className={`w-full p-4 text-left hover:bg-slate-50 transition-colors flex items-start gap-4 ${
+                className={`w-full p-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors flex items-start gap-4 ${
                   isPast ? 'opacity-50' : ''
                 }`}
               >
@@ -276,25 +276,25 @@ export default function Calendar() {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <h4 className="font-medium text-slate-900">{event.title}</h4>
+                    <h4 className="font-medium text-gray-800 dark:text-gray-100">{event.title}</h4>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${config.bgColor} ${config.color}`}>
                       {config.label}
                     </span>
                   </div>
-                  <p className="text-sm text-slate-700 mt-1">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                     {date.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
                     {' · '}
                     {event.time}
                   </p>
                   {event.location && (
-                    <p className="text-sm text-slate-600 mt-1">{event.location}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{event.location}</p>
                   )}
                 </div>
               </button>
             )
           })}
           {sortedEvents.length === 0 && (
-            <div className="p-8 text-center text-slate-600">
+            <div className="p-8 text-center text-gray-600 dark:text-gray-400">
               {t('calendar.noEventsPlanned')}
             </div>
           )}
@@ -312,8 +312,8 @@ export default function Calendar() {
     <div className="space-y-6">
       {loading && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
-          <span className="ml-3 text-slate-600">{t('common.loading')}</span>
+          <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
+          <span className="ml-3 text-gray-600 dark:text-gray-300">{t('common.loading')}</span>
         </div>
       )}
 
@@ -354,7 +354,7 @@ export default function Calendar() {
               setSelectedEvent(null)
               setIsModalOpen(true)
             }}
-            className="w-full py-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium flex items-center justify-center gap-2"
+            className="w-full py-3 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 text-white rounded-xl hover:from-teal-600 hover:to-teal-700 dark:hover:from-teal-500 dark:hover:to-teal-600 transition-colors font-medium flex items-center justify-center gap-2"
           >
             <Plus size={20} />
             {t('calendar.newEvent')}

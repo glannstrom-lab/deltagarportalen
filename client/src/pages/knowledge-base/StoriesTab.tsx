@@ -146,20 +146,20 @@ export default function StoriesTab() {
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <Card className="p-6 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 border border-indigo-200">
+        <Card className="p-6 bg-gradient-to-br from-teal-50 via-cyan-50 to-sky-50 dark:from-teal-900/20 dark:via-cyan-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
           <div className="flex items-start gap-4">
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
               transition={{ type: 'spring', delay: 0.1 }}
-              className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md"
+              className="w-14 h-14 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-md"
             >
-              <Quote className="w-7 h-7 text-indigo-600" />
+              <Quote className="w-7 h-7 text-teal-600 dark:text-teal-400" />
             </motion.div>
             <div>
-              <h3 className="text-2xl font-bold text-slate-900">Framgångsberättelser</h3>
-              <p className="text-slate-700 mt-2 max-w-lg">
-                Läs inspirerande berättelser från andra som varit i din situation och hittat vägen till sitt nästa jobb. Du är inte ensam - och det finns alltid hopp! 🌟
+              <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-100">Framgångsberättelser</h3>
+              <p className="text-gray-600 dark:text-gray-300 mt-2 max-w-lg">
+                Läs inspirerande berättelser från andra som varit i din situation och hittat vägen till sitt nästa jobb. Du är inte ensam - och det finns alltid hopp!
               </p>
             </div>
           </div>
@@ -173,21 +173,21 @@ export default function StoriesTab() {
         transition={{ delay: 0.1 }}
         className="grid grid-cols-1 md:grid-cols-4 gap-4"
       >
-        <Card className="p-4 bg-gradient-to-br from-indigo-50 to-indigo-100 border-indigo-200">
-          <p className="text-3xl font-bold text-indigo-600">127</p>
-          <p className="text-xs text-indigo-700 mt-1">Berättelser</p>
+        <Card className="p-4 bg-gradient-to-br from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-800">
+          <p className="text-3xl font-bold text-teal-600 dark:text-teal-400">127</p>
+          <p className="text-xs text-teal-700 dark:text-teal-300 mt-1">Berättelser</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 border-green-200">
-          <p className="text-3xl font-bold text-green-600">89%</p>
-          <p className="text-xs text-green-700 mt-1">Hittade jobb</p>
+        <Card className="p-4 bg-gradient-to-br from-green-50 to-green-100 dark:from-green-900/20 dark:to-green-800/20 border-green-200 dark:border-green-800">
+          <p className="text-3xl font-bold text-green-600 dark:text-green-400">89%</p>
+          <p className="text-xs text-green-700 dark:text-green-300 mt-1">Hittade jobb</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200">
-          <p className="text-3xl font-bold text-amber-600">6.2</p>
-          <p className="text-xs text-amber-700 mt-1">Månad i snitt</p>
+        <Card className="p-4 bg-gradient-to-br from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/20 border-amber-200 dark:border-amber-800">
+          <p className="text-3xl font-bold text-amber-600 dark:text-amber-400">6.2</p>
+          <p className="text-xs text-amber-700 dark:text-amber-300 mt-1">Månad i snitt</p>
         </Card>
-        <Card className="p-4 bg-gradient-to-br from-rose-50 to-rose-100 border-rose-200">
-          <p className="text-3xl font-bold text-rose-600">{bookmarkedStories.length}</p>
-          <p className="text-xs text-rose-700 mt-1">Sparade</p>
+        <Card className="p-4 bg-gradient-to-br from-rose-50 to-rose-100 dark:from-rose-900/20 dark:to-rose-800/20 border-rose-200 dark:border-rose-800">
+          <p className="text-3xl font-bold text-rose-600 dark:text-rose-400">{bookmarkedStories.length}</p>
+          <p className="text-xs text-rose-700 dark:text-rose-300 mt-1">Sparade</p>
         </Card>
       </motion.div>
 
@@ -200,7 +200,7 @@ export default function StoriesTab() {
       >
         <div className="flex flex-col lg:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-600" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500 dark:text-gray-400" />
             <Input
               type="text"
               placeholder={t('common.search') || 'Sök berättelser...'}
@@ -212,7 +212,7 @@ export default function StoriesTab() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as any)}
-            className="px-4 py-2 border border-slate-200 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+            className="px-4 py-2 border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 cursor-pointer"
           >
             <option value="recent">Senaste först</option>
             <option value="popular">Mest sedda</option>
@@ -229,8 +229,8 @@ export default function StoriesTab() {
               className={cn(
                 'px-4 py-2 rounded-full text-sm font-medium transition-all',
                 selectedCategory === cat
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                  ? 'bg-teal-600 dark:bg-teal-700 text-white shadow-md'
+                  : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-200 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
               {cat}
@@ -240,8 +240,8 @@ export default function StoriesTab() {
 
         {/* Results count */}
         {searchQuery || selectedCategory !== 'Alla' ? (
-          <p className="text-sm text-slate-600">
-            Visar <span className="font-semibold text-indigo-600">{filteredStories.length}</span> av{' '}
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            Visar <span className="font-semibold text-teal-600 dark:text-teal-400">{filteredStories.length}</span> av{' '}
             <span className="font-semibold">{stories.length}</span> berättelser
           </p>
         ) : null}
@@ -253,21 +253,21 @@ export default function StoriesTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <Card className="p-6 bg-gradient-to-r from-indigo-50 to-blue-50 border-indigo-200">
+        <Card className="p-6 bg-gradient-to-r from-teal-50 to-cyan-50 dark:from-teal-900/20 dark:to-cyan-900/20 border-teal-200 dark:border-teal-800">
           <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <motion.div
                 whileHover={{ scale: 1.1 }}
-                className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm"
+                className="w-12 h-12 bg-white dark:bg-stone-700 rounded-xl flex items-center justify-center shadow-sm"
               >
-                <Users className="w-6 h-6 text-indigo-600" />
+                <Users className="w-6 h-6 text-teal-600 dark:text-teal-400" />
               </motion.div>
               <div>
-                <h4 className="font-semibold text-slate-900">Hitta en mentor</h4>
-                <p className="text-sm text-slate-600">Matchas med någon som har liknande bakgrund</p>
+                <h4 className="font-semibold text-gray-800 dark:text-gray-100">Hitta en mentor</h4>
+                <p className="text-sm text-gray-600 dark:text-gray-300">Matchas med någon som har liknande bakgrund</p>
               </div>
             </div>
-            <Button className="gap-2 bg-indigo-600 hover:bg-indigo-700">
+            <Button className="gap-2 bg-teal-600 dark:bg-teal-700 hover:bg-teal-700 dark:hover:bg-teal-600">
               Hitta matchning
               <ChevronRight className="w-4 h-4" />
             </Button>
@@ -283,10 +283,10 @@ export default function StoriesTab() {
         className="space-y-4"
       >
         {filteredStories.length === 0 ? (
-          <Card className="p-12 text-center">
-            <Search className="w-12 h-12 mx-auto mb-4 text-slate-300" />
-            <p className="text-slate-700 font-medium">Inga berättelser hittades</p>
-            <p className="text-slate-600 text-sm mt-2">Försök med en annan sökning eller kategori</p>
+          <Card className="p-12 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+            <Search className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+            <p className="text-gray-700 dark:text-gray-200 font-medium">Inga berättelser hittades</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Försök med en annan sökning eller kategori</p>
           </Card>
         ) : (
           <AnimatePresence>
@@ -299,7 +299,7 @@ export default function StoriesTab() {
                 transition={{ delay: index * 0.05 }}
               >
                 <Card
-                  className="p-6 hover:shadow-lg transition-all cursor-pointer"
+                  className="p-6 hover:shadow-lg transition-all cursor-pointer bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700"
                   onClick={() => setExpandedStory(expandedStory === story.id ? null : story.id)}
                 >
                   <div className="flex items-start gap-4">
@@ -318,9 +318,9 @@ export default function StoriesTab() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-2">
                         <div>
-                          <h4 className="text-lg font-bold text-slate-900">{story.name}</h4>
-                          <p className="text-indigo-600 font-semibold">{story.occupation}</p>
-                          <p className="text-sm text-slate-700 mt-0.5">{story.background}</p>
+                          <h4 className="text-lg font-bold text-gray-800 dark:text-gray-100">{story.name}</h4>
+                          <p className="text-teal-600 dark:text-teal-400 font-semibold">{story.occupation}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-0.5">{story.background}</p>
                         </div>
                         <div className="flex gap-2 flex-wrap justify-end">
                           {story.hasVideo && (
@@ -338,24 +338,24 @@ export default function StoriesTab() {
                       </div>
 
                       {/* Summary/Quote */}
-                      <blockquote className="mt-3 text-slate-700 italic border-l-4 border-indigo-300 pl-4 py-2 bg-slate-50 rounded-r-lg">
+                      <blockquote className="mt-3 text-gray-700 dark:text-gray-200 italic border-l-4 border-teal-300 dark:border-teal-600 pl-4 py-2 bg-stone-50 dark:bg-stone-900/50 rounded-r-lg">
                         "{story.summary}"
                       </blockquote>
 
                       {/* Bottom Info Row */}
                       <div className="flex items-center gap-3 mt-4 flex-wrap">
-                        <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
-                          ✓ {story.duration}
+                        <span className="px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold">
+                          {story.duration}
                         </span>
                         {story.readingTime && (
-                          <span className="flex items-center gap-1 text-xs text-slate-700">
+                          <span className="flex items-center gap-1 text-xs text-gray-600 dark:text-gray-400">
                             <Clock className="w-3 h-3" />
                             {story.readingTime} min läsning
                           </span>
                         )}
                         {story.views && (
-                          <span className="text-xs text-slate-700">
-                            👁️ {story.views} visningar
+                          <span className="text-xs text-gray-600 dark:text-gray-400">
+                            {story.views} visningar
                           </span>
                         )}
                       </div>
@@ -363,14 +363,14 @@ export default function StoriesTab() {
                       {/* Tags */}
                       <div className="flex flex-wrap gap-2 mt-3">
                         {story.tags.map((tag, idx) => (
-                          <span key={idx} className="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full">
+                          <span key={idx} className="text-xs bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 px-2.5 py-1 rounded-full">
                             #{tag}
                           </span>
                         ))}
                       </div>
 
                       {/* Actions */}
-                      <div className="flex items-center gap-4 mt-4 pt-4 border-t border-slate-100">
+                      <div className="flex items-center gap-4 mt-4 pt-4 border-t border-stone-100 dark:border-stone-700">
                         <button
                           onClick={(e) => {
                             e.stopPropagation()
@@ -379,8 +379,8 @@ export default function StoriesTab() {
                           className={cn(
                             'flex items-center gap-1.5 text-sm transition-colors font-medium',
                             likedStories.includes(story.id)
-                              ? 'text-red-500'
-                              : 'text-slate-700 hover:text-red-500'
+                              ? 'text-red-500 dark:text-red-400'
+                              : 'text-gray-600 dark:text-gray-300 hover:text-red-500 dark:hover:text-red-400'
                           )}
                         >
                           <Heart
@@ -397,8 +397,8 @@ export default function StoriesTab() {
                           className={cn(
                             'flex items-center gap-1.5 text-sm transition-colors font-medium',
                             bookmarkedStories.includes(story.id)
-                              ? 'text-amber-500'
-                              : 'text-slate-700 hover:text-amber-500'
+                              ? 'text-amber-500 dark:text-amber-400'
+                              : 'text-gray-600 dark:text-gray-300 hover:text-amber-500 dark:hover:text-amber-400'
                           )}
                         >
                           <Bookmark
@@ -407,11 +407,11 @@ export default function StoriesTab() {
                           />
                           Spara
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-slate-700 hover:text-indigo-600 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium">
                           <MessageCircle className="w-4 h-4" />
                           Kommentera
                         </button>
-                        <button className="flex items-center gap-1.5 text-sm text-slate-700 hover:text-indigo-600 transition-colors font-medium">
+                        <button className="flex items-center gap-1.5 text-sm text-gray-600 dark:text-gray-300 hover:text-teal-600 dark:hover:text-teal-400 transition-colors font-medium">
                           <Share2 className="w-4 h-4" />
                           Dela
                         </button>
@@ -426,16 +426,16 @@ export default function StoriesTab() {
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: 'auto' }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="mt-4 pt-4 border-t border-slate-200 bg-slate-50 rounded-lg p-4"
+                        className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700 bg-stone-50 dark:bg-stone-900/50 rounded-lg p-4"
                       >
-                        <h5 className="font-semibold text-slate-900 mb-3 flex items-center gap-2">
-                          <Award className="w-4 h-4 text-amber-600" />
+                        <h5 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center gap-2">
+                          <Award className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                           Tips från {story.name.split(',')[0]}
                         </h5>
-                        <ul className="space-y-2 text-sm text-slate-700">
-                          <li>✅ Personlig tipning baserad på denna berättelse</li>
-                          <li>✅ "Det viktigaste var att tro på mig själv och ta ett steg i taget"</li>
-                          <li>✅ "Nätverkande och att be om hjälp var nyckeln till min framgång"</li>
+                        <ul className="space-y-2 text-sm text-gray-700 dark:text-gray-200">
+                          <li>Personlig tipning baserad på denna berättelse</li>
+                          <li>"Det viktigaste var att tro på mig själv och ta ett steg i taget"</li>
+                          <li>"Nätverkande och att be om hjälp var nyckeln till min framgång"</li>
                         </ul>
                       </motion.div>
                     )}
@@ -453,12 +453,12 @@ export default function StoriesTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
       >
-        <Card className="p-6 bg-slate-50 border-slate-200">
-          <h4 className="font-semibold text-slate-900 mb-2 flex items-center gap-2">
-            <MessageCircle className="w-5 h-5 text-indigo-600" />
+        <Card className="p-6 bg-stone-50 dark:bg-stone-900/50 border-stone-200 dark:border-stone-700">
+          <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2 flex items-center gap-2">
+            <MessageCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             Ställ dina frågor anonymt
           </h4>
-          <p className="text-slate-600 mb-4 text-sm">
+          <p className="text-gray-600 dark:text-gray-300 mb-4 text-sm">
             Har du frågor till de som delat sina berättelser? Ställ dem anonymt och få svar från vår community.
           </p>
           <div className="flex gap-3">
@@ -466,7 +466,7 @@ export default function StoriesTab() {
               placeholder="Vad undrar du över?"
               className="flex-1"
             />
-            <Button className="bg-indigo-600 hover:bg-indigo-700 whitespace-nowrap">
+            <Button className="bg-teal-600 dark:bg-teal-700 hover:bg-teal-700 dark:hover:bg-teal-600 whitespace-nowrap">
               Skicka fråga
             </Button>
           </div>
@@ -479,7 +479,7 @@ export default function StoriesTab() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
       >
-        <Card className="p-6 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 border-amber-200 relative overflow-hidden">
+        <Card className="p-6 bg-gradient-to-br from-amber-50 via-orange-50 to-rose-50 dark:from-amber-900/20 dark:via-orange-900/20 dark:to-rose-900/20 border-amber-200 dark:border-amber-800 relative overflow-hidden">
           <div className="absolute inset-0 opacity-5">
             <Star className="w-32 h-32 absolute top-2 right-4 text-amber-600" />
           </div>
@@ -487,19 +487,19 @@ export default function StoriesTab() {
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.6 }}
-              className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md flex-shrink-0"
+              className="w-14 h-14 bg-white dark:bg-stone-700 rounded-2xl flex items-center justify-center shadow-md flex-shrink-0"
             >
-              <Zap className="w-7 h-7 text-amber-600" />
+              <Zap className="w-7 h-7 text-amber-600 dark:text-amber-400" />
             </motion.div>
             <div className="flex-1">
-              <h4 className="font-semibold text-slate-900">Dela din berättelse</h4>
-              <p className="text-slate-700 text-sm mt-1">
+              <h4 className="font-semibold text-gray-800 dark:text-gray-100">Dela din berättelse</h4>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mt-1">
                 Har du hittat jobb? Dela din resa och inspirera andra som är på samma väg. Din berättelse kan ge hopp till många!
               </p>
             </div>
             <Button
               variant="outline"
-              className="border-amber-300 bg-white text-amber-800 hover:bg-amber-50 whitespace-nowrap flex-shrink-0"
+              className="border-amber-300 dark:border-amber-700 bg-white dark:bg-stone-700 text-amber-800 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-stone-600 whitespace-nowrap flex-shrink-0"
             >
               Dela min story
             </Button>
@@ -514,14 +514,14 @@ export default function StoriesTab() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7 }}
         >
-          <Card className="p-4 bg-indigo-50 border-indigo-200">
+          <Card className="p-4 bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
             <div className="flex items-start gap-3">
-              <TrendingUp className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
+              <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
               <div>
-                <p className="text-sm font-semibold text-slate-900">
-                  💡 Förslag: Läs berättelser från kategori "<span className="text-indigo-600">{selectedCategory}</span>"
+                <p className="text-sm font-semibold text-gray-800 dark:text-gray-100">
+                  Förslag: Läs berättelser från kategori "<span className="text-teal-600 dark:text-teal-400">{selectedCategory}</span>"
                 </p>
-                <p className="text-xs text-slate-600 mt-1">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                   Vi har valt ut de mest inspirerande berättelserna för din situation.
                 </p>
               </div>

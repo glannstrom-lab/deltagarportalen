@@ -20,7 +20,7 @@ const HistoryTab = lazy(() => import('./interest-guide/HistoryTab'))
 function TabLoading() {
   const { t } = useTranslation()
   return (
-    <div className="flex items-center justify-center py-12">
+    <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
       <LoadingState title={t('common.loading')} size="lg" />
     </div>
   )

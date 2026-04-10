@@ -203,7 +203,7 @@ export default function TestTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-12 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950">
         <LoadingState title={t('interestGuide.test.loading')} size="lg" />
       </div>
     )
@@ -212,17 +212,17 @@ export default function TestTab() {
   // Completed screen - test is done, show options
   if (screen === 'completed') {
     return (
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
         <div className="text-center">
           {/* Success icon */}
-          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30">
+          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-emerald-500 dark:from-green-500 dark:to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/30 dark:shadow-green-600/20">
             <CheckCircle2 className="w-10 h-10 text-white" />
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">
             {t('interestGuide.test.testComplete')}
           </h1>
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
+          <p className="text-gray-600 dark:text-gray-300 mb-8 max-w-md mx-auto">
             {t('interestGuide.test.alreadyCompleted')}
           </p>
 
@@ -230,30 +230,30 @@ export default function TestTab() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
             <Link
               to="/interest-guide/results"
-              className="group p-6 bg-gradient-to-br from-indigo-50 to-purple-50 rounded-2xl border-2 border-indigo-100 hover:border-indigo-300 transition-all hover:shadow-lg"
+              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:shadow-lg"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <BarChart3 className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">{t('interestGuide.test.seeResults')}</h3>
-              <p className="text-sm text-gray-500">{t('interestGuide.test.exploreProfile')}</p>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{t('interestGuide.test.seeResults')}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('interestGuide.test.exploreProfile')}</p>
             </Link>
 
             <Link
               to="/interest-guide/occupations"
-              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-100 hover:border-amber-300 transition-all hover:shadow-lg"
+              className="group p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border-2 border-amber-200 dark:border-amber-800 hover:border-amber-400 dark:hover:border-amber-600 transition-all hover:shadow-lg"
             >
-              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Briefcase className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-semibold text-gray-900 mb-1">{t('interestGuide.test.exploreOccupations')}</h3>
-              <p className="text-sm text-gray-500">{t('interestGuide.test.seeOccupationSuggestions')}</p>
+              <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-1">{t('interestGuide.test.exploreOccupations')}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400">{t('interestGuide.test.seeOccupationSuggestions')}</p>
             </Link>
           </div>
 
           {/* Redo test option */}
-          <div className="pt-6 border-t border-gray-200">
-            <p className="text-sm text-gray-500 mb-4">
+          <div className="pt-6 border-t border-stone-200 dark:border-stone-700">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
               {t('interestGuide.test.wantToUpdate')}
             </p>
             <Button
@@ -274,7 +274,7 @@ export default function TestTab() {
   // Intro screen
   if (screen === 'intro') {
     return (
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-4xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
         {error && (
           <InfoCard variant="error" className="mb-6">
             {error}
@@ -291,7 +291,7 @@ export default function TestTab() {
             <button
               onClick={handleClearProgress}
               disabled={isSaving}
-              className="text-sm text-red-500 hover:text-red-700 flex items-center gap-1 mx-auto disabled:opacity-50 transition-colors"
+              className="text-sm text-red-500 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center gap-1 mx-auto disabled:opacity-50 transition-colors"
             >
               <Trash2 className="w-4 h-4" />
               {t('interestGuide.test.clearAndRestart')}
@@ -328,7 +328,7 @@ export default function TestTab() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div className="max-w-2xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
       {error && (
         <InfoCard variant="error" className="mb-6">
           {error}
@@ -338,24 +338,24 @@ export default function TestTab() {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-500 rounded-xl flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 rounded-xl flex items-center justify-center">
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-gray-900">{t('interestGuide.test.interestTest')}</h1>
-            <p className="text-xs text-gray-500">{t('interestGuide.test.questionOf', { current: currentQuestionIndex + 1, total: allQuestions.length })}</p>
+            <h1 className="font-bold text-gray-900 dark:text-gray-100">{t('interestGuide.test.interestTest')}</h1>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t('interestGuide.test.questionOf', { current: currentQuestionIndex + 1, total: allQuestions.length })}</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
           {showSaveIndicator && (
-            <span className="flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-full">
+            <span className="flex items-center gap-1 text-xs text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">
               <CheckCircle2 className="w-3 h-3" />
               {t('interestGuide.test.saved')}
             </span>
           )}
           {isSaving && (
-            <span className="flex items-center gap-1 text-xs text-gray-500">
+            <span className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
               <Loader2 className="w-3 h-3 animate-spin" />
               {t('interestGuide.test.saving')}
             </span>
@@ -365,13 +365,13 @@ export default function TestTab() {
 
       {/* Progress bar */}
       <div className="mb-6">
-        <div className="flex justify-between text-xs text-gray-500 mb-2">
+        <div className="flex justify-between text-xs text-gray-500 dark:text-gray-400 mb-2">
           <span>{t('interestGuide.test.yourProgress')}</span>
-          <span className="font-medium text-indigo-600">{progress}%</span>
+          <span className="font-medium text-amber-600 dark:text-amber-400">{progress}%</span>
         </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 ease-out"
+            className="h-full bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-400 dark:to-orange-400 transition-all duration-500 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -388,11 +388,11 @@ export default function TestTab() {
 
       {/* Section header */}
       <div className="text-center mb-6">
-        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium mb-2">
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-xs font-medium mb-2">
           {currentSection?.name}
         </span>
-        <h2 className="text-xl font-bold text-gray-900 mb-1">{getSectionTitle()}</h2>
-        <p className="text-sm text-gray-500">{getSectionDescription()}</p>
+        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">{getSectionTitle()}</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400">{getSectionDescription()}</p>
       </div>
 
       {/* Question */}
@@ -421,7 +421,7 @@ export default function TestTab() {
         <Button
           onClick={handleNext}
           disabled={!canProceed || isSaving}
-          className="gap-2 px-8 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700"
+          className="gap-2 px-8 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 hover:from-amber-600 hover:to-orange-600 dark:hover:from-amber-700 dark:hover:to-orange-700"
           size="lg"
         >
           {isSaving ? (
@@ -440,9 +440,9 @@ export default function TestTab() {
 
       {/* Section progress */}
       <div className="mt-8 text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white rounded-full border border-gray-200 text-xs text-gray-500">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-stone-800 rounded-full border border-stone-200 dark:border-stone-700 text-xs text-gray-500 dark:text-gray-400">
           <span>{t('interestGuide.test.questionInSection', { current: questionInSectionIndex + 1, total: currentSectionQuestions.length })}</span>
-          <span className="text-gray-300">|</span>
+          <span className="text-stone-300 dark:text-stone-600">|</span>
           <span>{currentSection?.name}</span>
         </div>
       </div>
@@ -452,7 +452,7 @@ export default function TestTab() {
         <button
           onClick={handleClearProgress}
           disabled={isSaving}
-          className="text-xs text-gray-400 hover:text-red-500 transition-colors"
+          className="text-xs text-gray-400 dark:text-gray-500 hover:text-red-500 dark:hover:text-red-400 transition-colors"
         >
           {t('interestGuide.test.cancelAndRestart')}
         </button>

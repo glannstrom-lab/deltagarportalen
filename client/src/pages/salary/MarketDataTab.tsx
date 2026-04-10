@@ -115,14 +115,14 @@ export default function MarketDataTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-100">
+      <Card className="bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-700">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
-            <BarChart3 className="w-6 h-6 text-blue-600" />
+          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+            <BarChart3 className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Marknadsdata</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Marknadsdata</h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">
               Lönestatistik per bransch och region i Sverige. Data uppdateras kvartalsvis.
             </p>
           </div>
@@ -137,8 +137,8 @@ export default function MarketDataTab() {
             className={cn(
               "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
               selectedView === 'industry'
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-teal-600 dark:bg-teal-500 text-white"
+                : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
             )}
           >
             <Building2 className="w-4 h-4" />
@@ -149,8 +149,8 @@ export default function MarketDataTab() {
             className={cn(
               "px-4 py-2 rounded-lg font-medium text-sm transition-all flex items-center gap-2",
               selectedView === 'region'
-                ? "bg-blue-600 text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-teal-600 dark:bg-teal-500 text-white"
+                : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600"
             )}
           >
             <MapPin className="w-4 h-4" />
@@ -160,26 +160,26 @@ export default function MarketDataTab() {
 
         {/* Search bar */}
         <div className="relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-600" />
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-600 dark:text-gray-400" />
           <input
             type="text"
             placeholder={selectedView === 'industry' ? 'Sök bransch...' : 'Sök region...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+            className="w-full pl-10 pr-4 py-2 border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 dark:focus:ring-teal-400 focus:border-teal-500 dark:focus:border-teal-400 text-gray-800 dark:text-gray-100"
           />
         </div>
       </div>
 
       {/* Industry view */}
       {selectedView === 'industry' && (
-        <Card>
+        <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-              <Building2 className="w-5 h-5 text-blue-600" />
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <Building2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               Medianlön per bransch
             </h3>
-            <span className="text-xs text-slate-700">{filteredAndSortedIndustries.length} resultat</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredAndSortedIndustries.length} resultat</span>
           </div>
 
           {/* Sort controls */}
@@ -189,8 +189,8 @@ export default function MarketDataTab() {
               className={cn(
                 'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
                 sortKey === 'median'
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                  : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
               Lön {sortKey === 'median' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -200,8 +200,8 @@ export default function MarketDataTab() {
               className={cn(
                 'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
                 sortKey === 'change'
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                  : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
               Ökning {sortKey === 'change' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -211,8 +211,8 @@ export default function MarketDataTab() {
               className={cn(
                 'px-3 py-1 rounded-lg text-xs font-medium transition-all flex items-center gap-1',
                 sortKey === 'name'
-                  ? 'bg-blue-100 text-blue-700'
-                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                  ? 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300'
+                  : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
               )}
             >
               Namn {sortKey === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
@@ -234,7 +234,7 @@ export default function MarketDataTab() {
                     >
                       <button
                         onClick={() => toggleExpandRow(industry.name)}
-                        className="w-full text-left hover:bg-blue-50/30 p-3 rounded-xl transition-colors"
+                        className="w-full text-left hover:bg-teal-50/30 dark:hover:bg-teal-900/10 p-3 rounded-xl transition-colors"
                       >
                         <div className="flex items-center justify-between mb-2">
                           <div className="flex items-center gap-2 flex-1">
@@ -242,26 +242,26 @@ export default function MarketDataTab() {
                               'transition-transform',
                               isExpanded && 'rotate-180'
                             )}>
-                              <ChevronDown className="w-4 h-4 text-slate-600" />
+                              <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                             </span>
-                            <span className="text-sm font-medium text-slate-700">{industry.name}</span>
+                            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">{industry.name}</span>
                           </div>
                           <div className="flex items-center gap-3">
                             <span className={cn(
                               "text-xs flex items-center gap-0.5 font-medium",
-                              industry.change >= 3 ? "text-emerald-600" : "text-slate-700"
+                              industry.change >= 3 ? "text-teal-600 dark:text-teal-400" : "text-gray-700 dark:text-gray-400"
                             )}>
                               {industry.change >= 3 ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3 opacity-30" />}
                               {industry.change}%/år
                             </span>
-                            <span className="text-sm font-bold text-slate-900 min-w-fit">
+                            <span className="text-sm font-bold text-gray-900 dark:text-gray-100 min-w-fit">
                               {industry.median.toLocaleString('sv-SE')} kr
                             </span>
                           </div>
                         </div>
-                        <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                        <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-gradient-to-r from-blue-500 to-blue-600 rounded-full transition-all group-hover:from-blue-600 group-hover:to-blue-700"
+                            className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 rounded-full transition-all group-hover:from-teal-600 group-hover:to-teal-700"
                             style={{ width: `${(industry.median / maxMedian) * 100}%` }}
                           />
                         </div>
@@ -276,25 +276,25 @@ export default function MarketDataTab() {
                             exit={{ opacity: 0, height: 0 }}
                             className="overflow-hidden"
                           >
-                            <div className="px-3 pb-3 pt-1 bg-blue-50/30 rounded-b-xl border-t border-blue-100/50">
+                            <div className="px-3 pb-3 pt-1 bg-teal-50/30 dark:bg-teal-900/10 rounded-b-xl border-t border-teal-100/50 dark:border-teal-800/50">
                               <div className="grid grid-cols-2 gap-4">
                                 <div className="text-sm">
-                                  <p className="text-slate-600 text-xs mb-1">Anställda i Sverige</p>
-                                  <p className="font-semibold text-slate-900">~{industry.employees}</p>
+                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">Anställda i Sverige</p>
+                                  <p className="font-semibold text-gray-900 dark:text-gray-100">~{industry.employees}</p>
                                 </div>
                                 <div className="text-sm">
-                                  <p className="text-slate-600 text-xs mb-1">Årlig tillväxt</p>
+                                  <p className="text-gray-600 dark:text-gray-400 text-xs mb-1">Årlig tillväxt</p>
                                   <p className={cn(
                                     'font-semibold',
-                                    industry.change >= 3 ? 'text-emerald-600' : 'text-slate-700'
+                                    industry.change >= 3 ? 'text-teal-600 dark:text-teal-400' : 'text-gray-700 dark:text-gray-300'
                                   )}>
                                     +{industry.change}%
                                   </p>
                                 </div>
                               </div>
-                              <div className="mt-3 p-2 bg-white rounded-lg border border-blue-100">
-                                <p className="text-xs text-slate-600 mb-2">Lönespektrum (uppskattning):</p>
-                                <div className="flex justify-between text-xs text-slate-700">
+                              <div className="mt-3 p-2 bg-white dark:bg-stone-700 rounded-lg border border-teal-100 dark:border-teal-800">
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Lönespektrum (uppskattning):</p>
+                                <div className="flex justify-between text-xs text-gray-700 dark:text-gray-300">
                                   <span>Min: ~{Math.round(industry.median * 0.8).toLocaleString('sv-SE')} kr</span>
                                   <span>Max: ~{Math.round(industry.median * 1.3).toLocaleString('sv-SE')} kr</span>
                                 </div>
@@ -308,7 +308,7 @@ export default function MarketDataTab() {
                 })}
               </div>
             ) : (
-              <div className="text-center py-8 text-slate-700">
+              <div className="text-center py-8 text-gray-700 dark:text-gray-300">
                 <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>Ingen bransch hittad för "{searchTerm}"</p>
               </div>
@@ -319,13 +319,13 @@ export default function MarketDataTab() {
 
       {/* Region view */}
       {selectedView === 'region' && (
-        <Card>
+        <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-              <MapPin className="w-5 h-5 text-blue-600" />
+            <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+              <MapPin className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               Lönenivå per region
             </h3>
-            <span className="text-xs text-slate-700">{filteredRegions.length} resultat</span>
+            <span className="text-xs text-gray-700 dark:text-gray-300">{filteredRegions.length} resultat</span>
           </div>
 
           <div className="space-y-3">
@@ -339,15 +339,15 @@ export default function MarketDataTab() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="border border-slate-200 rounded-xl overflow-hidden hover:border-blue-300 transition-colors"
+                    className="border border-stone-200 dark:border-stone-600 rounded-xl overflow-hidden hover:border-teal-300 dark:hover:border-teal-600 transition-colors"
                   >
                     <button
                       onClick={() => toggleExpandRow(region.region)}
-                      className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-slate-50/50 transition-colors"
+                      className="w-full px-4 py-3 text-left flex items-center justify-between hover:bg-stone-50/50 dark:hover:bg-stone-700/50 transition-colors"
                     >
                       <div className="flex-1">
-                        <p className="font-medium text-slate-900">{region.region}</p>
-                        <p className="text-sm text-slate-600 mt-1">
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{region.region}</p>
+                        <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                           {region.avgSalary.toLocaleString('sv-SE')} kr/månad
                         </p>
                       </div>
@@ -355,10 +355,10 @@ export default function MarketDataTab() {
                         <span className={cn(
                           "px-3 py-1 rounded-full text-sm font-medium whitespace-nowrap",
                           premiumNum > 0
-                            ? "bg-emerald-100 text-emerald-700"
+                            ? "bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300"
                             : premiumNum < 0
-                            ? "bg-rose-100 text-rose-700"
-                            : "bg-slate-100 text-slate-600"
+                            ? "bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300"
+                            : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400"
                         )}>
                           {region.premium}
                         </span>
@@ -366,7 +366,7 @@ export default function MarketDataTab() {
                           'transition-transform',
                           isExpanded && 'rotate-180'
                         )}>
-                          <ChevronDown className="w-4 h-4 text-slate-600" />
+                          <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                         </span>
                       </div>
                     </button>
@@ -377,40 +377,40 @@ export default function MarketDataTab() {
                           initial={{ opacity: 0, height: 0 }}
                           animate={{ opacity: 1, height: 'auto' }}
                           exit={{ opacity: 0, height: 0 }}
-                          className="border-t border-slate-200 overflow-hidden"
+                          className="border-t border-stone-200 dark:border-stone-600 overflow-hidden"
                         >
-                          <div className="px-4 py-3 bg-slate-50/30 space-y-4">
+                          <div className="px-4 py-3 bg-stone-50/30 dark:bg-stone-700/30 space-y-4">
                             {/* Cost of living */}
                             <div className="grid grid-cols-2 gap-4">
                               <div>
-                                <p className="text-xs text-slate-600 mb-1">Levnadskostnad</p>
-                                <p className="font-semibold text-slate-900">{region.costOfLiving}</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Levnadskostnad</p>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">{region.costOfLiving}</p>
                               </div>
                               <div>
-                                <p className="text-xs text-slate-600 mb-1">Snittlön</p>
-                                <p className="font-semibold text-slate-900">{region.avgSalary.toLocaleString('sv-SE')} kr</p>
+                                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Snittlön</p>
+                                <p className="font-semibold text-gray-900 dark:text-gray-100">{region.avgSalary.toLocaleString('sv-SE')} kr</p>
                               </div>
                             </div>
 
                             {/* Premium visualization */}
                             <div>
-                              <p className="text-xs text-slate-600 mb-2">Lönepremie relativt genomsnitt</p>
+                              <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Lönepremie relativt genomsnitt</p>
                               <div className="flex items-center gap-2">
-                                <div className="flex-1 h-2 bg-slate-200 rounded-full overflow-hidden">
+                                <div className="flex-1 h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
                                   <div
                                     className={cn(
                                       'h-full transition-all',
-                                      premiumNum > 0 ? 'bg-emerald-500' : 'bg-rose-500'
+                                      premiumNum > 0 ? 'bg-teal-500 dark:bg-teal-400' : 'bg-rose-500 dark:bg-rose-400'
                                     )}
                                     style={{ width: `${50 + (premiumNum * 2)}%` }}
                                   />
                                 </div>
-                                <span className="text-xs font-medium text-slate-700 min-w-fit">{region.premium}</span>
+                                <span className="text-xs font-medium text-gray-700 dark:text-gray-300 min-w-fit">{region.premium}</span>
                               </div>
                             </div>
 
                             {/* Info */}
-                            <div className="p-3 bg-white rounded-lg border border-slate-200 text-xs text-slate-600">
+                            <div className="p-3 bg-white dark:bg-stone-700 rounded-lg border border-stone-200 dark:border-stone-600 text-xs text-gray-600 dark:text-gray-400">
                               <p>
                                 {premiumNum > 0
                                   ? `Högre löner än genomsnitt. Viktigt att väga detta mot levnadskostnaderna.`
@@ -428,7 +428,7 @@ export default function MarketDataTab() {
                 )
               })
             ) : (
-              <div className="text-center py-8 text-slate-700">
+              <div className="text-center py-8 text-gray-700 dark:text-gray-300">
                 <Search className="w-8 h-8 mx-auto mb-2 opacity-50" />
                 <p>Ingen region hittad för "{searchTerm}"</p>
               </div>
@@ -438,9 +438,9 @@ export default function MarketDataTab() {
       )}
 
       {/* Hot skills */}
-      <Card>
-        <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-amber-600" />
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <TrendingUp className="w-5 h-5 text-amber-600 dark:text-amber-400" />
           Kompetenser med hög lönepremie
         </h3>
 
@@ -448,19 +448,19 @@ export default function MarketDataTab() {
           {HOT_SKILLS.map((item) => (
             <div
               key={item.skill}
-              className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl border border-amber-100"
+              className="p-4 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-100 dark:border-amber-800"
             >
-              <p className="font-medium text-slate-800">{item.skill}</p>
-              <p className="text-lg font-bold text-amber-700 mt-1">{item.premium}</p>
-              <p className="text-xs text-slate-700 mt-1">Efterfrågan: {item.demand}</p>
+              <p className="font-medium text-gray-800 dark:text-gray-100">{item.skill}</p>
+              <p className="text-lg font-bold text-amber-700 dark:text-amber-400 mt-1">{item.premium}</p>
+              <p className="text-xs text-gray-700 dark:text-gray-400 mt-1">Efterfrågan: {item.demand}</p>
             </div>
           ))}
         </div>
       </Card>
 
       {/* Disclaimer */}
-      <Card className="bg-slate-50 border-slate-200">
-        <p className="text-sm text-slate-700">
+      <Card className="bg-stone-50 dark:bg-stone-700 border-stone-200 dark:border-stone-600">
+        <p className="text-sm text-gray-700 dark:text-gray-300">
           <strong>Om statistiken:</strong> Data baseras på branschrapporter, SCB-statistik och löneundersökningar.
           Siffror är uppskattningar och kan variera beroende på specifik roll, företagsstorlek och individuella faktorer.
           Senast uppdaterad: Q1 2026.

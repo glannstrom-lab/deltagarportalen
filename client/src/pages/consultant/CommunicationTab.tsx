@@ -88,11 +88,11 @@ function MessageItem({
       className={cn(
         'w-full text-left p-4 border-b border-stone-100 dark:border-stone-800',
         'hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors',
-        !message.isRead && 'bg-violet-50/50 dark:bg-violet-900/10'
+        !message.isRead && 'bg-amber-50/50 dark:bg-amber-900/10'
       )}
     >
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-600 dark:text-violet-400 font-medium flex-shrink-0">
+        <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium flex-shrink-0">
           {message.participantName.split(' ').map(n => n[0]).join('').toUpperCase()}
         </div>
         <div className="flex-1 min-w-0">
@@ -105,7 +105,7 @@ function MessageItem({
             )}>
               {message.participantName}
             </p>
-            <span className="text-xs text-stone-500 dark:text-stone-600 flex-shrink-0">
+            <span className="text-xs text-stone-500 dark:text-stone-400 flex-shrink-0">
               {new Date(message.createdAt).toLocaleDateString('sv-SE', {
                 month: 'short',
                 day: 'numeric',
@@ -128,7 +128,7 @@ function MessageItem({
         >
           <Star className={cn(
             'w-4 h-4',
-            message.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-600'
+            message.isStarred ? 'fill-amber-400 text-amber-400' : 'text-stone-400 dark:text-stone-500'
           )} />
         </button>
       </div>
@@ -159,7 +159,7 @@ function MeetingCard({
   return (
     <Card className={cn(
       'p-4',
-      isToday && 'ring-2 ring-violet-500'
+      isToday && 'ring-2 ring-amber-500 dark:ring-amber-400'
     )}>
       <div className="flex items-start justify-between">
         <div className="flex items-start gap-3">
@@ -176,22 +176,22 @@ function MeetingCard({
               {meeting.participantName}
             </p>
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-sm text-stone-500 dark:text-stone-600">
+              <span className="text-sm text-stone-500 dark:text-stone-400">
                 {new Date(meeting.scheduledAt).toLocaleDateString('sv-SE', {
                   weekday: 'short',
                   month: 'short',
                   day: 'numeric',
                 })}
               </span>
-              <span className="text-stone-300 dark:text-stone-600">|</span>
-              <span className="text-sm text-stone-500 dark:text-stone-600">
+              <span className="text-stone-300 dark:text-stone-500">|</span>
+              <span className="text-sm text-stone-500 dark:text-stone-400">
                 {new Date(meeting.scheduledAt).toLocaleTimeString('sv-SE', {
                   hour: '2-digit',
                   minute: '2-digit',
                 })}
               </span>
-              <span className="text-stone-300 dark:text-stone-600">|</span>
-              <span className="text-sm text-stone-500 dark:text-stone-600">
+              <span className="text-stone-300 dark:text-stone-500">|</span>
+              <span className="text-sm text-stone-500 dark:text-stone-400">
                 {meeting.duration} min
               </span>
             </div>
@@ -225,7 +225,7 @@ function MeetingCard({
           href={meeting.meetingLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700 transition-colors"
+          className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white rounded-lg text-sm font-medium hover:from-amber-600 hover:to-orange-600 transition-colors"
         >
           <Video className="w-4 h-4" />
           Anslut till möte
@@ -297,7 +297,7 @@ function NewMessageDialog({
                 className={cn(
                   'w-full pl-10 pr-4 py-2.5 rounded-xl',
                   'bg-stone-100 dark:bg-stone-800',
-                  'border-2 border-transparent focus:border-violet-500',
+                  'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
                   'text-stone-900 dark:text-stone-100'
                 )}
               />
@@ -310,7 +310,7 @@ function NewMessageDialog({
                   return (
                     <span
                       key={id}
-                      className="inline-flex items-center gap-1 px-3 py-1 bg-violet-100 dark:bg-violet-900/40 text-violet-700 dark:text-violet-300 rounded-full text-sm"
+                      className="inline-flex items-center gap-1 px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full text-sm"
                     >
                       {p.first_name} {p.last_name}
                       <button
@@ -337,13 +337,13 @@ function NewMessageDialog({
                   }}
                   className={cn(
                     'w-full flex items-center gap-3 p-3 hover:bg-stone-50 dark:hover:bg-stone-800 transition-colors',
-                    selectedParticipants.includes(p.participant_id) && 'bg-violet-50 dark:bg-violet-900/20'
+                    selectedParticipants.includes(p.participant_id) && 'bg-amber-50 dark:bg-amber-900/20'
                   )}
                 >
                   <div className={cn(
                     'w-5 h-5 rounded border-2 flex items-center justify-center',
                     selectedParticipants.includes(p.participant_id)
-                      ? 'bg-violet-600 border-violet-600 text-white'
+                      ? 'bg-amber-500 border-amber-500 text-white'
                       : 'border-stone-300 dark:border-stone-600'
                   )}>
                     {selectedParticipants.includes(p.participant_id) && (
@@ -372,7 +372,7 @@ function NewMessageDialog({
               className={cn(
                 'w-full px-4 py-3 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
-                'border-2 border-transparent focus:border-violet-500',
+                'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
                 'text-stone-900 dark:text-stone-100',
                 'resize-none'
               )}
@@ -668,14 +668,14 @@ export function CommunicationTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-3 font-medium transition-colors',
             activeTab === 'messages'
-              ? 'text-violet-600 border-b-2 border-violet-600'
+              ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-600 dark:border-amber-400'
               : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
           )}
         >
           <MessageSquare className="w-5 h-5" />
           Meddelanden
           {messages.filter(m => !m.isRead).length > 0 && (
-            <span className="px-2 py-0.5 bg-violet-600 text-white text-xs rounded-full">
+            <span className="px-2 py-0.5 bg-amber-500 dark:bg-amber-600 text-white text-xs rounded-full">
               {messages.filter(m => !m.isRead).length}
             </span>
           )}
@@ -685,7 +685,7 @@ export function CommunicationTab() {
           className={cn(
             'flex items-center gap-2 px-4 py-3 font-medium transition-colors',
             activeTab === 'meetings'
-              ? 'text-violet-600 border-b-2 border-violet-600'
+              ? 'text-amber-600 dark:text-amber-400 border-b-2 border-amber-600 dark:border-amber-400'
               : 'text-stone-500 hover:text-stone-700 dark:hover:text-stone-300'
           )}
         >
@@ -743,8 +743,8 @@ export function CommunicationTab() {
                 ))
               ) : (
                 <div className="p-8 text-center">
-                  <Inbox className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
-                  <p className="text-stone-500 dark:text-stone-600">
+                  <Inbox className="w-12 h-12 text-stone-300 dark:text-stone-500 mx-auto mb-3" />
+                  <p className="text-stone-500 dark:text-stone-400">
                     Inga meddelanden
                   </p>
                 </div>
@@ -820,7 +820,7 @@ export function CommunicationTab() {
             new Date(m.scheduledAt).toDateString() === new Date().toDateString()
           ) && (
             <div>
-              <h4 className="text-sm font-medium text-stone-500 dark:text-stone-600 mb-3">
+              <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
                 Idag
               </h4>
               <div className="space-y-3">
@@ -840,7 +840,7 @@ export function CommunicationTab() {
 
           {/* This Week */}
           <div>
-            <h4 className="text-sm font-medium text-stone-500 dark:text-stone-600 mb-3">
+            <h4 className="text-sm font-medium text-stone-500 dark:text-stone-400 mb-3">
               Denna vecka
             </h4>
             <div className="space-y-3">
@@ -859,7 +859,7 @@ export function CommunicationTab() {
 
           {upcomingMeetings.length === 0 && (
             <Card className="p-12 text-center">
-              <Calendar className="w-16 h-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+              <Calendar className="w-16 h-16 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
               <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
                 Inga kommande möten
               </h3>
@@ -901,7 +901,7 @@ export function CommunicationTab() {
           <div className="bg-white dark:bg-stone-900 rounded-2xl shadow-xl w-full max-w-lg">
             <div className="flex items-center justify-between p-4 border-b border-stone-200 dark:border-stone-700">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-600 dark:text-violet-400 font-medium">
+                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium">
                   {selectedMessage.participantName.split(' ').map(n => n[0]).join('').toUpperCase()}
                 </div>
                 <div>
@@ -944,7 +944,7 @@ export function CommunicationTab() {
                   className={cn(
                     'w-full px-4 py-3 rounded-xl',
                     'bg-stone-100 dark:bg-stone-800',
-                    'border-2 border-transparent focus:border-violet-500',
+                    'border-2 border-transparent focus:border-amber-500 dark:focus:border-amber-400',
                     'text-stone-900 dark:text-stone-100',
                     'resize-none'
                   )}

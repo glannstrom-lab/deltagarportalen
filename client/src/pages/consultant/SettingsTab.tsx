@@ -58,7 +58,7 @@ function Toggle({
       onClick={() => onChange(!enabled)}
       className={cn(
         'relative w-12 h-7 rounded-full transition-colors',
-        enabled ? 'bg-violet-600' : 'bg-stone-300 dark:bg-stone-600'
+        enabled ? 'bg-amber-500 dark:bg-amber-600' : 'bg-stone-300 dark:bg-stone-600'
       )}
     >
       <span
@@ -87,12 +87,12 @@ function SettingRow({
     <div className="flex items-start justify-between gap-4 py-4 border-b border-stone-100 dark:border-stone-800 last:border-0">
       <div className="flex items-start gap-3">
         <div className="p-2 bg-stone-100 dark:bg-stone-800 rounded-lg mt-0.5">
-          <Icon className="w-5 h-5 text-stone-600 dark:text-stone-600" />
+          <Icon className="w-5 h-5 text-stone-500 dark:text-stone-400" />
         </div>
         <div>
           <p className="font-medium text-stone-900 dark:text-stone-100">{label}</p>
           {description && (
-            <p className="text-sm text-stone-500 dark:text-stone-600 mt-0.5">
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-0.5">
               {description}
             </p>
           )}
@@ -304,7 +304,7 @@ export function SettingsTab() {
           'p-4 sticky top-4 z-10',
           saved
             ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800'
-            : 'bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800'
+            : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
         )}>
           <div className="flex items-center justify-between">
             {saved ? (
@@ -314,7 +314,7 @@ export function SettingsTab() {
               </div>
             ) : (
               <>
-                <p className="font-medium text-violet-900 dark:text-violet-100">
+                <p className="font-medium text-amber-900 dark:text-amber-100">
                   Du har osparade ändringar
                 </p>
                 <div className="flex items-center gap-2">
@@ -344,14 +344,14 @@ export function SettingsTab() {
       {/* Notification Settings */}
       <Card className="p-5">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-violet-100 dark:bg-violet-900/40 rounded-xl">
-            <Bell className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+          <div className="p-2 bg-amber-100 dark:bg-amber-900/40 rounded-xl">
+            <Bell className="w-6 h-6 text-amber-600 dark:text-amber-400" />
           </div>
           <div>
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
               Notifikationer
             </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-600">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               Hantera hur och när du vill bli notifierad
             </p>
           </div>
@@ -367,7 +367,7 @@ export function SettingsTab() {
                 <p className="font-medium text-stone-900 dark:text-stone-100">
                   {notification.label}
                 </p>
-                <p className="text-sm text-stone-500 dark:text-stone-600">
+                <p className="text-sm text-stone-500 dark:text-stone-400">
                   {notification.description}
                 </p>
               </div>
@@ -408,7 +408,7 @@ export function SettingsTab() {
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
               Inställningar
             </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-600">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               Anpassa din konsultvy
             </p>
           </div>
@@ -530,7 +530,7 @@ export function SettingsTab() {
               <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                 Team
               </h3>
-              <p className="text-sm text-stone-500 dark:text-stone-600">
+              <p className="text-sm text-stone-500 dark:text-stone-400">
                 Kollegor och administratörer
               </p>
             </div>
@@ -544,14 +544,14 @@ export function SettingsTab() {
               className="flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl"
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-600 dark:text-violet-400 font-medium">
+                <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium">
                   {member.name.split(' ').map(n => n[0]).join('')}
                 </div>
                 <div>
                   <p className="font-medium text-stone-900 dark:text-stone-100">
                     {member.name}
                   </p>
-                  <p className="text-sm text-stone-500 dark:text-stone-600">
+                  <p className="text-sm text-stone-500 dark:text-stone-400">
                     {member.email}
                   </p>
                 </div>
@@ -586,7 +586,7 @@ export function SettingsTab() {
             <h3 className="font-semibold text-stone-900 dark:text-stone-100">
               Data & Integritet
             </h3>
-            <p className="text-sm text-stone-500 dark:text-stone-600">
+            <p className="text-sm text-stone-500 dark:text-stone-400">
               Hantera data och GDPR-relaterade inställningar
             </p>
           </div>
@@ -597,19 +597,19 @@ export function SettingsTab() {
             <span className="font-medium text-stone-900 dark:text-stone-100">
               Exportera all data
             </span>
-            <ChevronRight className="w-5 h-5 text-stone-600" />
+            <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
           </button>
           <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
             <span className="font-medium text-stone-900 dark:text-stone-100">
               Se åtkomstlogg
             </span>
-            <ChevronRight className="w-5 h-5 text-stone-600" />
+            <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
           </button>
           <button className="w-full flex items-center justify-between p-4 bg-stone-50 dark:bg-stone-800 rounded-xl hover:bg-stone-100 dark:hover:bg-stone-700 transition-colors">
             <span className="font-medium text-stone-900 dark:text-stone-100">
               Integritetspolicy
             </span>
-            <ChevronRight className="w-5 h-5 text-stone-600" />
+            <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
           </button>
         </div>
       </Card>

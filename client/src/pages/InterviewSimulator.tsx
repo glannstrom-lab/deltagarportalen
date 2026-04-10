@@ -187,49 +187,49 @@ TIPS FÖR FÖRBÄTTRING:
 
   if (!harStartat) {
     return (
-      <div className="max-w-2xl mx-auto space-y-6 pb-20">
+      <div className="max-w-2xl mx-auto space-y-6 pb-20 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen p-4">
         <div className="text-center space-y-3">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 mb-2">
-            <MessageCircle className="w-7 h-7 text-amber-600" />
+          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 mb-2">
+            <MessageCircle className="w-7 h-7 text-amber-600 dark:text-amber-400" />
           </div>
-          <h1 className="text-2xl font-bold text-slate-800">{t('interviewSimulator.title')}</h1>
-          <p className="text-slate-600">
+          <h1 className="text-2xl font-bold text-slate-800 dark:text-stone-100">{t('interviewSimulator.title')}</h1>
+          <p className="text-slate-600 dark:text-stone-400">
             {t('interviewSimulator.description')}
           </p>
         </div>
 
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">{t('interviewSimulator.roleLabel')}</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-2">{t('interviewSimulator.roleLabel')}</label>
               <input
                 type="text"
                 value={roll}
                 onChange={(e) => setRoll(e.target.value)}
                 placeholder={t('interviewSimulator.rolePlaceholder')}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none"
+                className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2">{t('interviewSimulator.companyLabel')}</label>
+              <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-2">{t('interviewSimulator.companyLabel')}</label>
               <input
                 type="text"
                 value={foretag}
                 onChange={(e) => setForetag(e.target.value)}
                 placeholder={t('interviewSimulator.companyPlaceholder')}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none"
+                className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-slate-700 mb-2 flex items-center gap-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-stone-300 mb-2 flex items-center gap-2">
                 <ListTodo className="w-4 h-4" />
                 Välj frågekategori (valfritt)
               </label>
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none"
+                className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
               >
                 <option value="">Slumpmässiga frågor</option>
                 {questionCategories.map((cat) => (
@@ -241,7 +241,7 @@ TIPS FÖR FÖRBÄTTRING:
             <Button
               onClick={startaIntervju}
               disabled={!roll.trim() || isLoading}
-              className="w-full bg-gradient-to-r from-amber-600 to-orange-600"
+              className="w-full bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
             >
               {isLoading ? <RefreshCw className="w-5 h-5 animate-spin" /> : t('interviewSimulator.startInterview')}
             </Button>
@@ -249,12 +249,12 @@ TIPS FÖR FÖRBÄTTRING:
         </Card>
 
         {/* Tips Section */}
-        <Card className="p-6 bg-amber-50 border-amber-200">
-          <h3 className="font-bold text-slate-800 mb-3 flex items-center gap-2">
-            <Lightbulb className="w-5 h-5 text-amber-600" />
+        <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
+          <h3 className="font-bold text-slate-800 dark:text-stone-100 mb-3 flex items-center gap-2">
+            <Lightbulb className="w-5 h-5 text-amber-600 dark:text-amber-400" />
             STAR-metoden för bättre svar
           </h3>
-          <ul className="space-y-2 text-sm text-slate-700">
+          <ul className="space-y-2 text-sm text-slate-700 dark:text-stone-300">
             <li><strong>S</strong>ituation - Beskriv sammanhanget</li>
             <li><strong>T</strong>ask - Förklara vad som behövde göras</li>
             <li><strong>A</strong>ction - Vad gjorde du specifikt?</li>
@@ -268,13 +268,13 @@ TIPS FÖR FÖRBÄTTRING:
   const avgRating = historik.length > 0 ? (historik.reduce((sum, h) => sum + (h.rating || 0), 0) / historik.length).toFixed(1) : 0
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 pb-20">
+    <div className="max-w-3xl mx-auto space-y-6 pb-20 bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 min-h-screen p-4">
       {/* Header med progress */}
-      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h1 className="text-xl font-bold text-slate-800">{t('interviewSimulator.interview')} {roll}</h1>
-            <p className="text-sm text-slate-700">{foretag || t('interviewSimulator.genericPractice')}</p>
+            <h1 className="text-xl font-bold text-slate-800 dark:text-stone-100">{t('interviewSimulator.interview')} {roll}</h1>
+            <p className="text-sm text-slate-700 dark:text-stone-400">{foretag || t('interviewSimulator.genericPractice')}</p>
           </div>
           <Button variant="outline" size="sm" onClick={avslutaIntervju}>
             Avsluta
@@ -283,17 +283,17 @@ TIPS FÖR FÖRBÄTTRING:
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3">
-          <div className="bg-white p-3 rounded-lg border border-amber-100">
-            <p className="text-xs text-slate-600">Frågor besvarade</p>
-            <p className="text-2xl font-bold text-amber-600">{antalFragor}</p>
+          <div className="bg-white dark:bg-stone-800 p-3 rounded-lg border border-amber-100 dark:border-amber-800/50">
+            <p className="text-xs text-slate-600 dark:text-stone-400">Frågor besvarade</p>
+            <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{antalFragor}</p>
           </div>
-          <div className="bg-white p-3 rounded-lg border border-amber-100">
-            <p className="text-xs text-slate-600">Genomsnittligt betyg</p>
-            <p className="text-2xl font-bold text-amber-600">{avgRating}/5</p>
+          <div className="bg-white dark:bg-stone-800 p-3 rounded-lg border border-amber-100 dark:border-amber-800/50">
+            <p className="text-xs text-slate-600 dark:text-stone-400">Genomsnittligt betyg</p>
+            <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{avgRating}/5</p>
           </div>
-          <div className="bg-white p-3 rounded-lg border border-amber-100">
-            <p className="text-xs text-slate-600">Tid för svar</p>
-            <p className="text-2xl font-bold text-amber-600">{timerSeconds}s</p>
+          <div className="bg-white dark:bg-stone-800 p-3 rounded-lg border border-amber-100 dark:border-amber-800/50">
+            <p className="text-xs text-slate-600 dark:text-stone-400">Tid för svar</p>
+            <p className="text-2xl font-bold text-amber-600 dark:text-amber-400">{timerSeconds}s</p>
           </div>
         </div>
       </Card>
@@ -301,45 +301,45 @@ TIPS FÖR FÖRBÄTTRING:
       {/* Historik med expanderbar feedback */}
       {historik.length > 0 && (
         <div className="space-y-3">
-          <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+          <h3 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
             <TrendingUp className="w-5 h-5" />
             Tidigare svar
           </h3>
           {historik.map((fs, index) => (
-            <Card key={index} className="p-4 bg-slate-50">
+            <Card key={index} className="p-4 bg-stone-50 dark:bg-stone-800 border-stone-200 dark:border-stone-700">
               <div className="space-y-3">
                 {/* Fråga */}
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0">
-                    <User className="w-4 h-4 text-amber-600" />
+                  <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center flex-shrink-0">
+                    <User className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 mb-1">Fråga</p>
-                    <p className="text-slate-800">{fs.fraga}</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-stone-400 mb-1">Fråga</p>
+                    <p className="text-slate-800 dark:text-stone-200">{fs.fraga}</p>
                   </div>
                 </div>
 
                 {/* Svar */}
                 <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center flex-shrink-0">
-                    <Bot className="w-4 h-4 text-emerald-600" />
+                  <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center flex-shrink-0">
+                    <Bot className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-slate-600 mb-1">Ditt svar</p>
-                    <p className="text-slate-800">{fs.svar}</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-stone-400 mb-1">Ditt svar</p>
+                    <p className="text-slate-800 dark:text-stone-200">{fs.svar}</p>
                   </div>
                 </div>
 
                 {/* Rating och feedback */}
-                <div className="bg-white p-3 rounded border border-slate-200">
+                <div className="bg-white dark:bg-stone-700 p-3 rounded border border-stone-200 dark:border-stone-600">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium text-slate-700">Betygsätt detta svar:</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-stone-300">Betygsätt detta svar:</p>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           onClick={() => setRating(index, star)}
-                          className={`text-lg ${star <= (fs.rating || 0) ? 'text-yellow-400' : 'text-slate-300'} cursor-pointer`}
+                          className={`text-lg ${star <= (fs.rating || 0) ? 'text-yellow-400' : 'text-slate-300 dark:text-stone-500'} cursor-pointer`}
                         >
                           ★
                         </button>
@@ -350,7 +350,7 @@ TIPS FÖR FÖRBÄTTRING:
                   {/* Expanderbar feedback */}
                   <button
                     onClick={() => setExpandedFeedback(expandedFeedback === index ? null : index)}
-                    className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 transition"
+                    className="flex items-center gap-2 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 transition"
                   >
                     {expandedFeedback === index ? (
                       <>
@@ -366,14 +366,14 @@ TIPS FÖR FÖRBÄTTRING:
                   </button>
 
                   {expandedFeedback === index && (
-                    <div className="mt-3 pt-3 border-t border-slate-200 space-y-2">
-                      <div className="bg-blue-50 p-2 rounded text-sm text-blue-800">
+                    <div className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-600 space-y-2">
+                      <div className="bg-sky-50 dark:bg-sky-900/20 p-2 rounded text-sm text-sky-800 dark:text-sky-300">
                         <strong>Tips:</strong> Försök strukturera dina svar med STAR-metoden. Berätta Situation, Task, Action och Result.
                       </div>
-                      <div className="bg-green-50 p-2 rounded text-sm text-green-800">
+                      <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2 rounded text-sm text-emerald-800 dark:text-emerald-300">
                         <strong>Styrka:</strong> Du var specifik och konkret i ditt svar.
                       </div>
-                      <div className="bg-amber-50 p-2 rounded text-sm text-amber-800">
+                      <div className="bg-amber-50 dark:bg-amber-900/20 p-2 rounded text-sm text-amber-800 dark:text-amber-300">
                         <strong>Förbättring:</strong> Lägg till mer detalj om resultatet och lärdomarna.
                       </div>
                     </div>
@@ -386,44 +386,44 @@ TIPS FÖR FÖRBÄTTRING:
       )}
 
       {/* Nuvarande fråga */}
-      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200">
+      <Card className="p-6 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-800">
         <div className="flex gap-3">
-          <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-teal-500 dark:bg-teal-600 flex items-center justify-center flex-shrink-0">
             <User className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1">
-            <p className="text-sm font-medium text-amber-700 mb-2 flex items-center gap-2">
+            <p className="text-sm font-medium text-amber-700 dark:text-amber-400 mb-2 flex items-center gap-2">
               <Clock className="w-4 h-4" />
               Fråga {antalFragor + 1}
             </p>
-            <p className="text-lg text-slate-800">{nuvarandeFraga}</p>
+            <p className="text-lg text-slate-800 dark:text-stone-100">{nuvarandeFraga}</p>
           </div>
         </div>
       </Card>
 
       {/* Timer & Answer Input */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="space-y-4">
           {/* Timer */}
-          <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+          <div className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-700 rounded-lg border border-stone-200 dark:border-stone-600">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-slate-600" />
-              <span className="text-sm font-medium text-slate-700">Tid för svar:</span>
+              <Clock className="w-4 h-4 text-slate-600 dark:text-stone-400" />
+              <span className="text-sm font-medium text-slate-700 dark:text-stone-300">Tid för svar:</span>
             </div>
-            <span className="text-2xl font-bold text-amber-600">{timerSeconds}s</span>
+            <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">{timerSeconds}s</span>
           </div>
 
           {/* Answer Textarea */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700">Ditt svar</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-stone-300">Ditt svar</label>
             <textarea
               value={anvandarSvar}
               onChange={(e) => setAnvandarSvar(e.target.value)}
               placeholder="Skriv ditt svar här..."
               rows={5}
-              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none resize-y"
+              className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
             />
-            <div className="flex justify-between items-center text-xs text-slate-700">
+            <div className="flex justify-between items-center text-xs text-slate-700 dark:text-stone-400">
               <span>{anvandarSvar.length} tecken</span>
               <span>Rekommenderat: 100-300 tecken</span>
             </div>
@@ -434,7 +434,7 @@ TIPS FÖR FÖRBÄTTRING:
             <Button
               onClick={svara}
               disabled={!anvandarSvar.trim() || isLoading}
-              className="flex-1 bg-gradient-to-r from-amber-600 to-orange-600"
+              className="flex-1 bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
             >
               {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" /> : <><Send className="w-4 h-4 mr-2" /> Nästa fråga</>}
             </Button>
@@ -447,12 +447,12 @@ TIPS FÖR FÖRBÄTTRING:
 
       {/* Example Answer */}
       {exampleAnswers[nuvarandeFraga] && (
-        <Card className="p-4 bg-green-50 border-green-200">
+        <Card className="p-4 bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800">
           <div className="flex items-start gap-3">
-            <Zap className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+            <Zap className="w-5 h-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-green-900 mb-2">Exempel på bra svar:</p>
-              <p className="text-sm text-green-800 italic">"{exampleAnswers[nuvarandeFraga]}"</p>
+              <p className="text-sm font-medium text-emerald-900 dark:text-emerald-300 mb-2">Exempel på bra svar:</p>
+              <p className="text-sm text-emerald-800 dark:text-emerald-300 italic">"{exampleAnswers[nuvarandeFraga]}"</p>
             </div>
           </div>
         </Card>

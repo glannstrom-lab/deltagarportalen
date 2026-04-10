@@ -165,16 +165,16 @@ function StatCard({
   link?: string
 }) {
   const content = (
-    <div className={`bg-white rounded-xl p-4 border border-slate-200 hover:shadow-md transition-all group ${link ? 'cursor-pointer' : ''}`}>
+    <div className={`bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700 hover:shadow-md transition-all group ${link ? 'cursor-pointer' : ''}`}>
       <div className="flex items-center gap-3">
         <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
           <Icon className="w-5 h-5 text-white" />
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-2xl font-bold text-slate-800">{value}</p>
-          <p className="text-xs font-medium text-slate-500 truncate">{label}</p>
+          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{value}</p>
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 truncate">{label}</p>
         </div>
-        {link && <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-600" />}
+        {link && <ChevronRight className="w-4 h-4 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300" />}
       </div>
     </div>
   )
@@ -204,23 +204,23 @@ function DocumentCard({
   color: string
 }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:shadow-md transition-all group">
+    <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:shadow-md transition-all group">
       <div className="p-3">
         <div className="flex items-center gap-3">
           <div className={`w-10 h-10 ${color} rounded-lg flex items-center justify-center flex-shrink-0`}>
             <Icon className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-medium text-slate-800 truncate text-sm">{title}</h3>
-            {subtitle && <p className="text-xs text-slate-500 truncate">{subtitle}</p>}
+            <h3 className="font-medium text-gray-800 dark:text-gray-100 truncate text-sm">{title}</h3>
+            {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{subtitle}</p>}
             <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs px-1.5 py-0.5 bg-slate-100 text-slate-500 rounded">{type}</span>
-              <span className="text-xs text-slate-400">{date}</span>
+              <span className="text-xs px-1.5 py-0.5 bg-stone-100 dark:bg-stone-700 text-gray-500 dark:text-gray-400 rounded">{type}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500">{date}</span>
             </div>
           </div>
         </div>
       </div>
-      <div className="px-3 py-2 bg-slate-50 border-t border-slate-100 flex items-center gap-2">
+      <div className="px-3 py-2 bg-stone-50 dark:bg-stone-900/50 border-t border-stone-100 dark:border-stone-700 flex items-center gap-2">
         {actions}
       </div>
     </div>
@@ -575,7 +575,7 @@ export default function Resources() {
       showTabs={false}
     >
       {/* Hero Stats Overview */}
-      <div className="bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-violet-500/20">
+      <div className="bg-gradient-to-br from-teal-500 via-teal-600 to-cyan-700 dark:from-teal-600 dark:via-teal-700 dark:to-cyan-800 rounded-2xl p-6 mb-6 text-white shadow-xl shadow-teal-500/20 dark:shadow-teal-900/30">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-xl font-bold">Mina Resurser</h2>
@@ -638,7 +638,7 @@ export default function Resources() {
       </div>
 
       {/* Tabs & Search - Modern */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-4 mb-6 shadow-sm">
+      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-stone-200 dark:border-stone-700 p-4 mb-6 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
           {/* Tabs */}
           <div className="flex flex-wrap gap-1.5">
@@ -648,14 +648,14 @@ export default function Resources() {
                 onClick={() => setSearchParams({ tab: tab.id })}
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
                   activeTab === tab.id
-                    ? 'bg-violet-600 text-white shadow-sm'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-teal-600 dark:bg-teal-700 text-white shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:bg-stone-100 dark:hover:bg-stone-700'
                 }`}
               >
                 {tab.label}
                 {tab.count > 0 && (
                   <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full ${
-                    activeTab === tab.id ? 'bg-violet-500 text-white' : 'bg-slate-200 text-slate-600'
+                    activeTab === tab.id ? 'bg-teal-500 dark:bg-teal-600 text-white' : 'bg-stone-200 dark:bg-stone-700 text-gray-600 dark:text-gray-300'
                   }`}>
                     {tab.count}
                   </span>
@@ -667,25 +667,25 @@ export default function Resources() {
           {/* Search */}
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" size={16} />
               <input
                 type="text"
                 placeholder={t('resources.search')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-8 pr-3 py-1.5 text-sm border border-slate-200 rounded-lg focus:ring-2 focus:ring-violet-500 focus:border-transparent outline-none w-full md:w-48"
+                className="pl-8 pr-3 py-1.5 text-sm border border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none w-full md:w-48"
               />
             </div>
-            <div className="flex bg-slate-100 rounded-lg p-0.5">
+            <div className="flex bg-stone-100 dark:bg-stone-700 rounded-lg p-0.5">
               <button
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-500'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'grid' ? 'bg-white dark:bg-stone-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
                 <Grid3X3 size={16} />
               </button>
               <button
                 onClick={() => setViewMode('list')}
-                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white shadow-sm text-violet-600' : 'text-slate-500'}`}
+                className={`p-1.5 rounded transition-colors ${viewMode === 'list' ? 'bg-white dark:bg-stone-600 shadow-sm text-teal-600 dark:text-teal-400' : 'text-gray-500 dark:text-gray-400'}`}
               >
                 <List size={16} />
               </button>
@@ -1115,24 +1115,24 @@ export default function Resources() {
 
         {/* Empty State - Compact */}
         {totalItems === 0 && (
-          <div className="text-center py-12 bg-white rounded-xl border border-slate-200 border-dashed">
-            <div className="w-14 h-14 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-              <Bookmark className="w-7 h-7 text-slate-400" />
+          <div className="text-center py-12 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 border-dashed">
+            <div className="w-14 h-14 bg-stone-100 dark:bg-stone-700 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Bookmark className="w-7 h-7 text-gray-400 dark:text-gray-500" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-800 mb-1">{t('resources.noResourcesTitle')}</h3>
-            <p className="text-sm text-slate-500 max-w-sm mx-auto mb-4">
+            <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-1">{t('resources.noResourcesTitle')}</h3>
+            <p className="text-sm text-gray-500 dark:text-gray-400 max-w-sm mx-auto mb-4">
               {t('resources.noResourcesDesc')}
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               <Link
                 to="/cv"
-                className="px-4 py-2 text-sm bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-lg font-medium hover:from-indigo-700 hover:to-violet-700 transition-all"
+                className="px-4 py-2 text-sm bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 text-white rounded-lg font-medium hover:from-teal-600 hover:to-teal-700 transition-all"
               >
                 {t('resources.createCV')}
               </Link>
               <Link
                 to="/job-search"
-                className="px-4 py-2 text-sm bg-white text-slate-700 border border-slate-200 rounded-lg font-medium hover:bg-slate-50 transition-all"
+                className="px-4 py-2 text-sm bg-white dark:bg-stone-700 text-gray-700 dark:text-gray-200 border border-stone-200 dark:border-stone-600 rounded-lg font-medium hover:bg-stone-50 dark:hover:bg-stone-600 transition-all"
               >
                 {t('resources.searchJobs')}
               </Link>

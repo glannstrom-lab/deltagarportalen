@@ -319,10 +319,10 @@ export default function SearchTab() {
   return (
     <div className="space-y-6">
       {/* Search Section */}
-      <Card className="p-6">
-        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <Search className="w-5 h-5 text-primary-500" />
-          Sök företag
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h2 className="text-lg font-semibold mb-4 flex items-center gap-2 text-slate-800 dark:text-stone-100">
+          <Search className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+          Sok foretag
         </h2>
 
         {/* Search Mode Toggle */}
@@ -331,23 +331,23 @@ export default function SearchTab() {
             variant={searchMode === 'ai' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('ai')}
-            className="flex items-center gap-2"
+            className={`flex items-center gap-2 ${searchMode === 'ai' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Sparkles className="w-4 h-4" />
-            AI-sökning
+            AI-sokning
           </Button>
           <Button
             variant={searchMode === 'orgnr' ? 'default' : 'outline'}
             size="sm"
             onClick={() => setSearchMode('orgnr')}
-            className="flex items-center gap-2"
+            className={`flex items-center gap-2 ${searchMode === 'orgnr' ? 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500' : 'border-stone-200 dark:border-stone-700'}`}
           >
             <Hash className="w-4 h-4" />
             Org.nummer
           </Button>
         </div>
 
-        <p className="text-slate-600 dark:text-slate-600 mb-4">
+        <p className="text-slate-600 dark:text-stone-400 mb-4">
           {searchMode === 'ai' ? (
             <>Beskriv vilka företag du söker, t.ex. "IT-konsulter i Stockholm" eller "advokatbyråer som arbetar med arbetsrätt"</>
           ) : (
@@ -358,7 +358,7 @@ export default function SearchTab() {
                 href="https://allabolag.se"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary-500 hover:underline inline-flex items-center gap-1"
+                className="text-teal-500 dark:text-teal-400 hover:underline inline-flex items-center gap-1"
               >
                 allabolag.se
                 <ExternalLink className="w-3 h-3" />
@@ -370,37 +370,37 @@ export default function SearchTab() {
         <div className="flex gap-3">
           <div className="flex-1 relative">
             {searchMode === 'ai' ? (
-              <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-primary-400" />
+              <Sparkles className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-teal-400 dark:text-teal-500" />
             ) : (
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600 dark:text-stone-400" />
             )}
             <Input
               type="text"
               placeholder={searchMode === 'ai'
-                ? "T.ex. 'Reklambyråer i Göteborg med 10-50 anställda'"
+                ? "T.ex. 'Reklambyraer i Goteborg med 10-50 anstallda'"
                 : "Organisationsnummer (t.ex. 556074-7551)"
               }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
-              className="pl-10"
+              className="pl-10 bg-white dark:bg-stone-700 border-stone-200 dark:border-stone-600 text-slate-900 dark:text-stone-100"
               disabled={isSearching}
             />
           </div>
           <Button
             onClick={handleSearch}
             disabled={isSearching || !searchQuery.trim()}
-            className="min-w-[100px]"
+            className="min-w-[100px] bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
           >
             {isSearching ? (
               <Loader2 className="w-4 h-4 animate-spin" />
             ) : searchMode === 'ai' ? (
               <>
                 <Sparkles className="w-4 h-4 mr-1" />
-                Sök
+                Sok
               </>
             ) : (
-              'Sök'
+              'Sok'
             )}
           </Button>
         </div>
@@ -412,31 +412,31 @@ export default function SearchTab() {
 
       {/* Search Result */}
       {searchResult && (
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex justify-between items-start gap-4">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-2">
-                <Building2 className="w-5 h-5 text-primary-500" />
-                <h3 className="text-xl font-semibold">{searchResult.name}</h3>
+                <Building2 className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+                <h3 className="text-xl font-semibold text-slate-800 dark:text-stone-100">{searchResult.name}</h3>
                 {/* Company Status Indicator */}
                 {searchResult._raw && (
                   <CompanyStatusBadge rawData={searchResult._raw} />
                 )}
               </div>
 
-              <p className="text-sm text-slate-700 mb-4">
+              <p className="text-sm text-slate-600 dark:text-stone-400 mb-4">
                 Org.nr: {formatOrgNumber(searchResult.orgNumber)}
-                {searchResult.legalForm && ` • ${searchResult.legalForm}`}
+                {searchResult.legalForm && ` - ${searchResult.legalForm}`}
               </p>
 
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {/* Address */}
                 {searchResult.address && (searchResult.address.street || searchResult.address.city) && (
                   <div className="flex items-start gap-2">
-                    <MapPin className="w-4 h-4 text-slate-600 mt-0.5" />
+                    <MapPin className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">Adress</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-600">
+                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Adress</p>
+                      <p className="text-sm text-slate-600 dark:text-stone-400">
                         {searchResult.address.street && <span>{searchResult.address.street}<br /></span>}
                         {searchResult.address.postalCode} {searchResult.address.city}
                       </p>
@@ -447,18 +447,18 @@ export default function SearchTab() {
                 {/* Industry */}
                 {searchResult.sniCodes && searchResult.sniCodes.length > 0 && (
                   <div className="flex items-start gap-2">
-                    <Briefcase className="w-4 h-4 text-slate-600 mt-0.5" />
+                    <Briefcase className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">Bransch (SNI)</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-600">
+                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Bransch (SNI)</p>
+                      <p className="text-sm text-slate-600 dark:text-stone-400">
                         {searchResult.sniCodes.slice(0, 3).map(sni => (
                           <span key={sni.code} className="block">
-                            <span className="text-xs text-slate-600">{sni.code}</span>{' '}
+                            <span className="text-xs text-slate-500 dark:text-stone-500">{sni.code}</span>{' '}
                             {sni.description || getSniDescription(sni.code)}
                           </span>
                         ))}
                         {searchResult.sniCodes.length > 3 && (
-                          <span className="text-xs text-slate-600">
+                          <span className="text-xs text-slate-500 dark:text-stone-500">
                             +{searchResult.sniCodes.length - 3} fler
                           </span>
                         )}
@@ -470,10 +470,10 @@ export default function SearchTab() {
                 {/* Registration Date */}
                 {searchResult.registrationDate && (
                   <div className="flex items-start gap-2">
-                    <Calendar className="w-4 h-4 text-slate-600 mt-0.5" />
+                    <Calendar className="w-4 h-4 text-slate-600 dark:text-stone-400 mt-0.5" />
                     <div>
-                      <p className="text-sm font-medium">Registrerat</p>
-                      <p className="text-sm text-slate-600 dark:text-slate-600">
+                      <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Registrerat</p>
+                      <p className="text-sm text-slate-600 dark:text-stone-400">
                         {new Date(searchResult.registrationDate).toLocaleDateString('sv-SE')}
                       </p>
                     </div>
@@ -484,23 +484,23 @@ export default function SearchTab() {
               {/* Business Description */}
               {searchResult.businessDescription && (
                 <div className="mt-4">
-                  <p className="text-sm font-medium mb-1">Verksamhet</p>
-                  <p className="text-sm text-slate-600 dark:text-slate-600">
+                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200 mb-1">Verksamhet</p>
+                  <p className="text-sm text-slate-600 dark:text-stone-400">
                     {searchResult.businessDescription}
                   </p>
                 </div>
               )}
 
               {/* Annual Reports Section */}
-              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700">
+              <div className="mt-6 pt-4 border-t border-stone-200 dark:border-stone-700">
                 <div className="flex items-center gap-2 mb-3">
-                  <FileText className="w-4 h-4 text-primary-500" />
-                  <p className="text-sm font-medium">Årsredovisningar</p>
-                  {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-600" />}
+                  <FileText className="w-4 h-4 text-teal-500 dark:text-teal-400" />
+                  <p className="text-sm font-medium text-slate-800 dark:text-stone-200">Arsredovisningar</p>
+                  {isLoadingDocs && <Loader2 className="w-4 h-4 animate-spin text-slate-600 dark:text-stone-400" />}
                 </div>
 
                 {!isLoadingDocs && documents.length === 0 && (
-                  <p className="text-sm text-slate-700">Inga årsredovisningar tillgängliga.</p>
+                  <p className="text-sm text-slate-600 dark:text-stone-400">Inga arsredovisningar tillgangliga.</p>
                 )}
 
                 {documents.length > 0 && (
@@ -512,7 +512,7 @@ export default function SearchTab() {
                         size="sm"
                         onClick={() => handleDownloadDocument(doc)}
                         disabled={downloadingDocId === doc.id}
-                        className="text-xs"
+                        className="text-xs border-stone-200 dark:border-stone-700"
                       >
                         {downloadingDocId === doc.id ? (
                           <Loader2 className="w-3 h-3 animate-spin mr-1" />
@@ -523,7 +523,7 @@ export default function SearchTab() {
                       </Button>
                     ))}
                     {documents.length > 5 && (
-                      <span className="text-xs text-slate-600 self-center">
+                      <span className="text-xs text-slate-600 dark:text-stone-400 self-center">
                         +{documents.length - 5} fler
                       </span>
                     )}
@@ -538,13 +538,14 @@ export default function SearchTab() {
                 onClick={handleSave}
                 disabled={isSaving || alreadySaved}
                 variant={alreadySaved ? 'outline' : 'default'}
+                className={alreadySaved ? 'border-stone-200 dark:border-stone-700' : 'bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500'}
               >
                 {isSaving ? (
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
                 ) : (
                   <Plus className="w-4 h-4 mr-2" />
                 )}
-                {alreadySaved ? 'Redan sparad' : 'Spara företag'}
+                {alreadySaved ? 'Redan sparad' : 'Spara foretag'}
               </Button>
             </div>
           </div>
@@ -553,16 +554,16 @@ export default function SearchTab() {
 
       {/* AI Search Results */}
       {aiResults.length > 0 && (
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="text-lg font-semibold flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-primary-500" />
-                Sökresultat
+              <h3 className="text-lg font-semibold flex items-center gap-2 text-slate-800 dark:text-stone-100">
+                <Sparkles className="w-5 h-5 text-teal-500 dark:text-teal-400" />
+                Sokresultat
               </h3>
               {aiSearchStats && (
-                <p className="text-sm text-slate-700">
-                  {aiSearchStats.total} företag hittade, {aiSearchStats.verified} verifierade mot Bolagsverket
+                <p className="text-sm text-slate-600 dark:text-stone-400">
+                  {aiSearchStats.total} foretag hittade, {aiSearchStats.verified} verifierade mot Bolagsverket
                 </p>
               )}
             </div>
@@ -572,15 +573,17 @@ export default function SearchTab() {
                 size="sm"
                 onClick={selectAllVerified}
                 disabled={aiResults.filter(c => c.verified && c.orgNumber && !isCompanySaved(c.orgNumber)).length === 0}
+                className="border-stone-200 dark:border-stone-700"
               >
                 <CheckCheck className="w-4 h-4 mr-1" />
-                Välj alla verifierade
+                Valj alla verifierade
               </Button>
               {selectedForSave.size > 0 && (
                 <Button
                   size="sm"
                   onClick={handleSaveSelected}
                   disabled={isSearching}
+                  className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-500"
                 >
                   <Save className="w-4 h-4 mr-1" />
                   Spara valda ({selectedForSave.size})
@@ -619,8 +622,8 @@ export default function SearchTab() {
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-1">
-                        <Building2 className="w-4 h-4 text-primary-500 flex-shrink-0" />
-                        <h4 className="font-semibold truncate">{company.name}</h4>
+                        <Building2 className="w-4 h-4 text-teal-500 dark:text-teal-400 flex-shrink-0" />
+                        <h4 className="font-semibold truncate text-slate-800 dark:text-stone-100">{company.name}</h4>
 
                         {/* Verification badge */}
                         {company.verified ? (
@@ -647,7 +650,7 @@ export default function SearchTab() {
                         )}
                       </div>
 
-                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-slate-600">
+                      <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-slate-600 dark:text-stone-400">
                         {company.orgNumber && (
                           <span>Org.nr: {formatOrgNumber(company.orgNumber)}</span>
                         )}
@@ -666,15 +669,15 @@ export default function SearchTab() {
                       </div>
 
                       {company.description && (
-                        <p className="text-sm text-slate-700 mt-2 line-clamp-2">
+                        <p className="text-sm text-slate-600 dark:text-stone-400 mt-2 line-clamp-2">
                           {company.description}
                         </p>
                       )}
 
                       {company.verifiedData && (
-                        <p className="text-xs text-slate-600 mt-1">
+                        <p className="text-xs text-slate-500 dark:text-stone-500 mt-1">
                           {company.verifiedData.legalForm}
-                          {company.verifiedData.address?.street && ` • ${company.verifiedData.address.street}`}
+                          {company.verifiedData.address?.street && ` - ${company.verifiedData.address.street}`}
                         </p>
                       )}
                     </div>
@@ -686,7 +689,7 @@ export default function SearchTab() {
                         variant="outline"
                         size="sm"
                         onClick={() => setExpandedAnalysis(expandedAnalysis === company.orgNumber ? null : (company.orgNumber || `idx-${index}`))}
-                        className="text-violet-600 border-violet-200 hover:bg-violet-50"
+                        className="text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800 hover:bg-teal-50 dark:hover:bg-teal-900/20"
                       >
                         <Sparkles className="w-4 h-4" />
                       </Button>
@@ -698,6 +701,7 @@ export default function SearchTab() {
                           size="sm"
                           onClick={() => handleSaveAICompany(company)}
                           disabled={isSaving}
+                          className="border-stone-200 dark:border-stone-700"
                         >
                           {isSaving ? (
                             <Loader2 className="w-4 h-4 animate-spin" />
@@ -711,7 +715,7 @@ export default function SearchTab() {
 
                   {/* Company Analysis Panel - Expandable */}
                   {expandedAnalysis === (company.orgNumber || `idx-${index}`) && (
-                    <div className="mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
+                    <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-700">
                       <CompanyAnalysisPanel
                         companyName={company.name}
                         orgNumber={company.orgNumber || undefined}
@@ -728,22 +732,22 @@ export default function SearchTab() {
       )}
 
       {/* Tips Section */}
-      <Card className="p-6 bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800">
-        <h3 className="font-medium mb-2">Tips för spontanansökningar</h3>
-        <ul className="text-sm text-slate-600 dark:text-slate-600 space-y-1.5">
+      <Card className="p-6 bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800">
+        <h3 className="font-medium mb-2 text-slate-800 dark:text-stone-100">Tips for spontanansokningar</h3>
+        <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1.5">
           {searchMode === 'ai' ? (
             <>
-              <li>• Var specifik i din sökning: bransch, ort, storlek</li>
-              <li>• Exempel: "Arkitektkontor i Malmö", "Startup inom fintech"</li>
-              <li>• Verifierade företag har bekräftade uppgifter från Bolagsverket</li>
-              <li>• Spara flera företag samtidigt med kryssrutorna</li>
+              <li>Var specifik i din sokning: bransch, ort, storlek</li>
+              <li>Exempel: "Arkitektkontor i Malmo", "Startup inom fintech"</li>
+              <li>Verifierade foretag har bekraftade uppgifter fran Bolagsverket</li>
+              <li>Spara flera foretag samtidigt med kryssrutorna</li>
             </>
           ) : (
             <>
-              <li>• Hitta org.nr på <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-primary-500 hover:underline">allabolag.se</a></li>
-              <li>• Välj företag som matchar din kompetens</li>
-              <li>• Researcha företaget innan du kontaktar dem</li>
-              <li>• Följ upp om du inte hört något inom 1-2 veckor</li>
+              <li>Hitta org.nr pa <a href="https://allabolag.se" target="_blank" rel="noopener noreferrer" className="text-teal-500 dark:text-teal-400 hover:underline">allabolag.se</a></li>
+              <li>Valj foretag som matchar din kompetens</li>
+              <li>Researcha foretaget innan du kontaktar dem</li>
+              <li>Folj upp om du inte hort nagot inom 1-2 veckor</li>
             </>
           )}
         </ul>

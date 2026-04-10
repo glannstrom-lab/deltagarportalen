@@ -132,38 +132,38 @@ export default function CompaniesTab() {
   return (
     <div className="space-y-6">
       {/* Search and Filters */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="relative mb-4">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
           <Input
             type="text"
             placeholder={t('career.companies.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-12 py-6 text-lg"
+            className="pl-12 py-6 text-lg bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
           />
         </div>
 
         <div className="flex flex-wrap gap-4">
           <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-slate-600" />
-            <span className="text-sm text-slate-600">{t('career.companies.industry')}:</span>
+            <Filter className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <span className="text-sm text-gray-600 dark:text-gray-400">{t('career.companies.industry')}:</span>
             <select
               value={selectedIndustry}
               onChange={(e) => setSelectedIndustry(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+              className="px-3 py-2 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 text-sm text-gray-800 dark:text-gray-100"
             >
               {industries.map(i => <option key={i.key} value={i.key}>{i.label}</option>)}
             </select>
           </div>
 
           <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-slate-600" />
-            <span className="text-sm text-slate-600">{t('career.companies.location')}:</span>
+            <MapPin className="w-4 h-4 text-gray-500 dark:text-gray-400" />
+            <span className="text-sm text-gray-600 dark:text-gray-400">{t('career.companies.location')}:</span>
             <select
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)}
-              className="px-3 py-2 rounded-lg border border-slate-200 text-sm"
+              className="px-3 py-2 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 text-sm text-gray-800 dark:text-gray-100"
             >
               {locations.map(l => <option key={l.key} value={l.key}>{l.label}</option>)}
             </select>
@@ -173,13 +173,13 @@ export default function CompaniesTab() {
 
       {/* Following Summary */}
       {following.length > 0 && (
-        <Card className="p-6 bg-indigo-50 border-indigo-200">
+        <Card className="p-6 bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="font-semibold text-indigo-900">{t('career.companies.youFollow', { count: following.length })}</h3>
-              <p className="text-sm text-indigo-700">{t('career.companies.getNotifications')}</p>
+              <h3 className="font-semibold text-teal-900 dark:text-teal-100">{t('career.companies.youFollow', { count: following.length })}</h3>
+              <p className="text-sm text-teal-700 dark:text-teal-300">{t('career.companies.getNotifications')}</p>
             </div>
-            <Button variant="outline" className="border-indigo-300">
+            <Button variant="outline" className="border-teal-300 dark:border-teal-600">
               <Heart className="w-4 h-4 mr-1" />
               {t('career.companies.seeFollowed')}
             </Button>
@@ -190,17 +190,17 @@ export default function CompaniesTab() {
       {/* Companies List */}
       <div className="space-y-4">
         {filteredCompanies.map((company) => (
-          <Card key={company.id} className="p-6 hover:shadow-lg transition-shadow">
+          <Card key={company.id} className="p-6 hover:shadow-lg transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-xl bg-slate-100 flex items-center justify-center flex-shrink-0">
-                <Building2 className="w-8 h-8 text-slate-600" />
+              <div className="w-16 h-16 rounded-xl bg-stone-100 dark:bg-stone-700 flex items-center justify-center flex-shrink-0">
+                <Building2 className="w-8 h-8 text-gray-500 dark:text-gray-400" />
               </div>
 
               <div className="flex-1">
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="text-xl font-bold text-slate-800">{company.name}</h3>
-                    <div className="flex flex-wrap gap-3 mt-1 text-sm text-slate-600">
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{company.name}</h3>
+                    <div className="flex flex-wrap gap-3 mt-1 text-sm text-gray-600 dark:text-gray-400">
                       <span className="flex items-center gap-1">
                         <Briefcase className="w-4 h-4" />
                         {company.industry}
@@ -221,8 +221,8 @@ export default function CompaniesTab() {
                       onClick={() => toggleFollow(company.id)}
                       className={`p-2 rounded-lg transition-colors ${
                         following.includes(company.id)
-                          ? 'bg-red-100 text-red-600'
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          ? 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400'
+                          : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400 hover:bg-stone-200 dark:hover:bg-stone-600'
                       }`}
                     >
                       <Heart className={`w-5 h-5 ${following.includes(company.id) ? 'fill-current' : ''}`} />
@@ -230,16 +230,16 @@ export default function CompaniesTab() {
                   </div>
                 </div>
 
-                <p className="text-slate-600 mt-3">{company.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 mt-3">{company.description}</p>
 
                 {/* Rating and Stats */}
                 <div className="flex items-center gap-4 mt-4">
                   <div className="flex items-center gap-1">
                     <Star className="w-5 h-5 text-yellow-400 fill-current" />
-                    <span className="font-semibold text-slate-800">{company.rating}</span>
-                    <span className="text-sm text-slate-700">({company.reviews} {t('career.companies.reviews')})</span>
+                    <span className="font-semibold text-gray-800 dark:text-gray-100">{company.rating}</span>
+                    <span className="text-sm text-gray-600 dark:text-gray-400">({company.reviews} {t('career.companies.reviews')})</span>
                   </div>
-                  <div className="flex items-center gap-1 text-green-600">
+                  <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
                     <TrendingUp className="w-4 h-4" />
                     <span className="font-medium">{company.openPositions} {t('career.companies.openPositions')}</span>
                   </div>
@@ -250,7 +250,7 @@ export default function CompaniesTab() {
                   {company.benefits.map((benefit, index) => (
                     <span
                       key={index}
-                      className="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-sm"
+                      className="px-3 py-1 bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 rounded-full text-sm"
                     >
                       {benefit}
                     </span>
@@ -276,20 +276,20 @@ export default function CompaniesTab() {
 
       {filteredCompanies.length === 0 && (
         <div className="text-center py-12">
-          <Building2 className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-slate-700">{t('career.companies.noCompaniesFound')}</h3>
-          <p className="text-slate-700">{t('career.companies.tryDifferentFilters')}</p>
+          <Building2 className="w-16 h-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">{t('career.companies.noCompaniesFound')}</h3>
+          <p className="text-gray-600 dark:text-gray-400">{t('career.companies.tryDifferentFilters')}</p>
         </div>
       )}
 
       {/* Tips */}
-      <Card className="p-6">
-        <h3 className="font-semibold text-slate-800 mb-2">{t('career.companies.tips.title')}</h3>
-        <ul className="space-y-2 text-sm text-slate-600">
-          <li>• {t('career.companies.tips.tip1')}</li>
-          <li>• {t('career.companies.tips.tip2')}</li>
-          <li>• {t('career.companies.tips.tip3')}</li>
-          <li>• {t('career.companies.tips.tip4')}</li>
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">{t('career.companies.tips.title')}</h3>
+        <ul className="space-y-2 text-sm text-gray-600 dark:text-gray-300">
+          <li>- {t('career.companies.tips.tip1')}</li>
+          <li>- {t('career.companies.tips.tip2')}</li>
+          <li>- {t('career.companies.tips.tip3')}</li>
+          <li>- {t('career.companies.tips.tip4')}</li>
         </ul>
       </Card>
     </div>

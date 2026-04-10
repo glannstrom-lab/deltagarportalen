@@ -237,7 +237,7 @@ export function ParticipantsTab() {
                 'w-full pl-10 pr-4 py-2.5 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
                 'border-2 border-transparent',
-                'focus:border-violet-500 focus:bg-white dark:focus:bg-stone-900',
+                'focus:border-amber-500 dark:focus:border-amber-400 focus:bg-white dark:focus:bg-stone-900',
                 'text-stone-900 dark:text-stone-100',
                 'placeholder:text-stone-600',
                 'transition-all duration-200'
@@ -257,7 +257,7 @@ export function ParticipantsTab() {
                 'px-4 py-2.5 rounded-xl',
                 'bg-stone-100 dark:bg-stone-800',
                 'border-2 border-transparent',
-                'focus:border-violet-500',
+                'focus:border-amber-500 dark:focus:border-amber-400',
                 'text-stone-900 dark:text-stone-100'
               )}
             >
@@ -293,9 +293,9 @@ export function ParticipantsTab() {
                 className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
               >
                 {sortOrder === 'asc' ? (
-                  <SortAsc className="w-5 h-5 text-stone-600 dark:text-stone-600" />
+                  <SortAsc className="w-5 h-5 text-stone-500 dark:text-stone-400" />
                 ) : (
-                  <SortDesc className="w-5 h-5 text-stone-600 dark:text-stone-600" />
+                  <SortDesc className="w-5 h-5 text-stone-500 dark:text-stone-400" />
                 )}
               </button>
             </div>
@@ -307,8 +307,8 @@ export function ParticipantsTab() {
                 className={cn(
                   'p-2.5 rounded-xl transition-colors',
                   view === 'grid'
-                    ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-600'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 hover:text-stone-600'
+                    ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
                 )}
               >
                 <Grid3X3 className="w-5 h-5" />
@@ -318,8 +318,8 @@ export function ParticipantsTab() {
                 className={cn(
                   'p-2.5 rounded-xl transition-colors',
                   view === 'list'
-                    ? 'bg-violet-100 dark:bg-violet-900/40 text-violet-600'
-                    : 'bg-stone-100 dark:bg-stone-800 text-stone-600 hover:text-stone-600'
+                    ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400'
+                    : 'bg-stone-100 dark:bg-stone-800 text-stone-500 dark:text-stone-400 hover:text-stone-600 dark:hover:text-stone-300'
                 )}
               >
                 <List className="w-5 h-5" />
@@ -337,16 +337,16 @@ export function ParticipantsTab() {
 
       {/* Bulk Actions Bar */}
       {showBulkActions && (
-        <Card className="p-3 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800">
+        <Card className="p-3 bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setSelectedParticipants([])}
-                className="p-1.5 hover:bg-violet-100 dark:hover:bg-violet-900/40 rounded-lg transition-colors"
+                className="p-1.5 hover:bg-amber-100 dark:hover:bg-amber-900/40 rounded-lg transition-colors"
               >
-                <X className="w-5 h-5 text-violet-600" />
+                <X className="w-5 h-5 text-amber-600 dark:text-amber-400" />
               </button>
-              <span className="font-medium text-violet-900 dark:text-violet-100">
+              <span className="font-medium text-amber-900 dark:text-amber-100">
                 {selectedParticipants.length} valda
               </span>
             </div>
@@ -390,13 +390,13 @@ export function ParticipantsTab() {
 
       {/* Results Count */}
       <div className="flex items-center justify-between px-1">
-        <p className="text-sm text-stone-500 dark:text-stone-600">
+        <p className="text-sm text-stone-500 dark:text-stone-400">
           Visar {filteredParticipants.length} av {participants.length} deltagare
         </p>
         {filteredParticipants.length > 0 && (
           <button
             onClick={toggleSelectAll}
-            className="text-sm text-violet-600 hover:text-violet-700 font-medium"
+            className="text-sm text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 font-medium"
           >
             {selectedParticipants.length === filteredParticipants.length
               ? 'Avmarkera alla'
@@ -408,7 +408,7 @@ export function ParticipantsTab() {
       {/* Participant List */}
       {filteredParticipants.length === 0 ? (
         <Card className="p-12 text-center">
-          <Users className="w-16 h-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
+          <Users className="w-16 h-16 text-stone-300 dark:text-stone-500 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-stone-900 dark:text-stone-100 mb-2">
             Inga deltagare hittades
           </h3>
@@ -442,7 +442,7 @@ export function ParticipantsTab() {
                 key={p.participant_id}
                 className={cn(
                   'relative overflow-hidden transition-all duration-200',
-                  isSelected && 'ring-2 ring-violet-500'
+                  isSelected && 'ring-2 ring-amber-500 dark:ring-amber-400'
                 )}
               >
                 {/* Selection Checkbox */}
@@ -451,8 +451,8 @@ export function ParticipantsTab() {
                   className={cn(
                     'absolute top-4 left-4 w-6 h-6 rounded-lg border-2 flex items-center justify-center transition-all',
                     isSelected
-                      ? 'bg-violet-600 border-violet-600 text-white'
-                      : 'border-stone-300 dark:border-stone-600 hover:border-violet-400'
+                      ? 'bg-amber-500 border-amber-500 text-white'
+                      : 'border-stone-300 dark:border-stone-600 hover:border-amber-400 dark:hover:border-amber-500'
                   )}
                 >
                   {isSelected && <Check className="w-4 h-4" />}
@@ -464,14 +464,14 @@ export function ParticipantsTab() {
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3 pl-8">
-                      <div className="w-12 h-12 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-600 dark:text-violet-400 font-semibold">
+                      <div className="w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-semibold">
                         {getInitials(p)}
                       </div>
                       <div>
                         <h3 className="font-semibold text-stone-900 dark:text-stone-100">
                           {p.first_name} {p.last_name}
                         </h3>
-                        <p className="text-sm text-stone-500 dark:text-stone-600">
+                        <p className="text-sm text-stone-500 dark:text-stone-400">
                           {p.email}
                         </p>
                       </div>
@@ -493,21 +493,21 @@ export function ParticipantsTab() {
                   {/* Stats Grid */}
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <FileText className="w-5 h-5 text-stone-600 mx-auto mb-1" />
+                      <FileText className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.has_cv ? (p.ats_score ? `${p.ats_score}%` : 'Ja') : '—'}
                       </p>
                       <p className="text-xs text-stone-500">CV</p>
                     </div>
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <Briefcase className="w-5 h-5 text-stone-600 mx-auto mb-1" />
+                      <Briefcase className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.saved_jobs_count}
                       </p>
                       <p className="text-xs text-stone-500">Jobb</p>
                     </div>
                     <div className="text-center p-3 bg-stone-50 dark:bg-stone-800 rounded-xl">
-                      <MessageSquare className="w-5 h-5 text-stone-600 mx-auto mb-1" />
+                      <MessageSquare className="w-5 h-5 text-stone-500 dark:text-stone-400 mx-auto mb-1" />
                       <p className="text-sm font-medium text-stone-900 dark:text-stone-100">
                         {p.notes_count}
                       </p>
@@ -524,7 +524,7 @@ export function ParticipantsTab() {
                       <Clock className="w-4 h-4" />
                       {getLastContactText(p.last_contact_at)}
                     </span>
-                    <ChevronRight className="w-5 h-5 text-stone-600" />
+                    <ChevronRight className="w-5 h-5 text-stone-400 dark:text-stone-500" />
                   </div>
                 </Link>
               </Card>
@@ -536,14 +536,14 @@ export function ParticipantsTab() {
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="bg-stone-50 dark:bg-stone-800 border-b border-stone-200 dark:border-stone-700">
+                <tr className="bg-stone-50 dark:bg-stone-700 border-b border-stone-200 dark:border-stone-600">
                   <th className="px-4 py-3 text-left">
                     <button
                       onClick={toggleSelectAll}
                       className={cn(
                         'w-5 h-5 rounded border-2 flex items-center justify-center transition-all',
                         selectedParticipants.length === filteredParticipants.length
-                          ? 'bg-violet-600 border-violet-600 text-white'
+                          ? 'bg-amber-500 border-amber-500 text-white'
                           : 'border-stone-300 dark:border-stone-600'
                       )}
                     >
@@ -552,22 +552,22 @@ export function ParticipantsTab() {
                       )}
                     </button>
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
                     Namn
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
                     CV
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
                     Sparade jobb
                   </th>
-                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
                     Senast kontakt
                   </th>
-                  <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase tracking-wider">
+                  <th className="px-4 py-3 text-right text-xs font-semibold text-stone-600 dark:text-stone-300 uppercase tracking-wider">
                     Åtgärder
                   </th>
                 </tr>
@@ -583,7 +583,7 @@ export function ParticipantsTab() {
                       key={p.participant_id}
                       className={cn(
                         'hover:bg-stone-50 dark:hover:bg-stone-800/50 transition-colors',
-                        isSelected && 'bg-violet-50 dark:bg-violet-900/10'
+                        isSelected && 'bg-amber-50 dark:bg-amber-900/10'
                       )}
                     >
                       <td className="px-4 py-4">
@@ -604,14 +604,14 @@ export function ParticipantsTab() {
                           to={`/consultant/participants/${p.participant_id}`}
                           className="flex items-center gap-3"
                         >
-                          <div className="w-10 h-10 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-violet-600 dark:text-violet-400 font-medium">
+                          <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-amber-600 dark:text-amber-400 font-medium">
                             {getInitials(p)}
                           </div>
                           <div>
                             <p className="font-medium text-stone-900 dark:text-stone-100">
                               {p.first_name} {p.last_name}
                             </p>
-                            <p className="text-sm text-stone-500 dark:text-stone-600">
+                            <p className="text-sm text-stone-500 dark:text-stone-400">
                               {p.email}
                             </p>
                           </div>
@@ -629,7 +629,7 @@ export function ParticipantsTab() {
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-600">
+                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-400">
                         {p.has_cv ? (
                           <span className={cn(
                             'font-medium',
@@ -640,7 +640,7 @@ export function ParticipantsTab() {
                           </span>
                         ) : '—'}
                       </td>
-                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-600">
+                      <td className="px-4 py-4 text-sm text-stone-600 dark:text-stone-400">
                         {p.saved_jobs_count}
                       </td>
                       <td className="px-4 py-4">
@@ -654,7 +654,7 @@ export function ParticipantsTab() {
                       <td className="px-4 py-4 text-right">
                         <Link
                           to={`/consultant/participants/${p.participant_id}`}
-                          className="text-violet-600 hover:text-violet-700 text-sm font-medium"
+                          className="text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 text-sm font-medium"
                         >
                           Visa
                         </Link>

@@ -95,11 +95,11 @@ export default function ExploreTab() {
   const getPrognosisIcon = (prognosis: string) => {
     switch (prognosis) {
       case 'growing':
-        return <TrendingUp className="w-4 h-4 text-green-600" />
+        return <TrendingUp className="w-4 h-4 text-green-600 dark:text-green-400" />
       case 'declining':
-        return <TrendingDown className="w-4 h-4 text-red-600" />
+        return <TrendingDown className="w-4 h-4 text-red-600 dark:text-red-400" />
       default:
-        return <Minus className="w-4 h-4 text-gray-400" />
+        return <Minus className="w-4 h-4 text-gray-400 dark:text-gray-500" />
     }
   }
 
@@ -115,31 +115,31 @@ export default function ExploreTab() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto">
+    <div className="max-w-5xl mx-auto min-h-screen bg-gradient-to-b from-stone-50 to-white dark:from-stone-900 dark:to-stone-950 p-4">
       {/* Header */}
       <div className="text-center mb-8">
-        <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-100 text-purple-700 rounded-full text-sm font-medium mb-4">
+        <div className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full text-sm font-medium mb-4">
           <Compass className="w-4 h-4" />
           Utforska yrken
         </div>
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">Alla yrken</h1>
-        <p className="text-gray-600 max-w-2xl mx-auto">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-3">Alla yrken</h1>
+        <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
           Bläddra bland alla yrken i vår databas. Filtrera efter bransch,
           utbildningsnivå eller framtidsutsikter.
         </p>
       </div>
 
       {/* Search */}
-      <div className="bg-white rounded-xl p-4 border border-gray-200 mb-6">
+      <div className="bg-white dark:bg-stone-800 rounded-xl p-4 border border-stone-200 dark:border-stone-700 mb-6">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500" />
             <input
               type="text"
               placeholder="Sök bland alla yrken..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 bg-white dark:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-amber-500 dark:focus:ring-amber-400 focus:border-transparent text-gray-900 dark:text-gray-100 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             />
           </div>
           <Button
@@ -155,17 +155,17 @@ export default function ExploreTab() {
 
         {/* Expanded Filters */}
         {showFilters && (
-          <div className="mt-4 pt-4 border-t border-gray-100 space-y-4">
+          <div className="mt-4 pt-4 border-t border-stone-100 dark:border-stone-700 space-y-4">
             {/* Field Filter */}
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Bransch</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bransch</p>
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={() => setSelectedField(null)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                     selectedField === null
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   Alla
@@ -176,8 +176,8 @@ export default function ExploreTab() {
                     onClick={() => setSelectedField(field.id)}
                     className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                       selectedField === field.id
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                        : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                     }`}
                   >
                     {field.name}
@@ -188,14 +188,14 @@ export default function ExploreTab() {
 
             {/* Education Filter */}
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Utbildningsnivå</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Utbildningsnivå</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setFilterUni(null)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                     filterUni === null
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   Alla
@@ -204,8 +204,8 @@ export default function ExploreTab() {
                   onClick={() => setFilterUni(true)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterUni === true
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   <GraduationCap className="w-4 h-4" />
@@ -215,8 +215,8 @@ export default function ExploreTab() {
                   onClick={() => setFilterUni(false)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterUni === false
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   <Briefcase className="w-4 h-4" />
@@ -227,14 +227,14 @@ export default function ExploreTab() {
 
             {/* Prognosis Filter */}
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">Framtidsutsikter</p>
+              <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Framtidsutsikter</p>
               <div className="flex gap-2">
                 <button
                   onClick={() => setFilterPrognosis(null)}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors ${
                     filterPrognosis === null
-                      ? 'bg-purple-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 dark:from-amber-600 dark:to-orange-600 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   Alla
@@ -243,8 +243,8 @@ export default function ExploreTab() {
                   onClick={() => setFilterPrognosis('growing')}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterPrognosis === 'growing'
-                      ? 'bg-green-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-green-600 dark:bg-green-700 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   <TrendingUp className="w-4 h-4" />
@@ -254,8 +254,8 @@ export default function ExploreTab() {
                   onClick={() => setFilterPrognosis('stable')}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterPrognosis === 'stable'
-                      ? 'bg-gray-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-gray-600 dark:bg-gray-700 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   <Minus className="w-4 h-4" />
@@ -265,8 +265,8 @@ export default function ExploreTab() {
                   onClick={() => setFilterPrognosis('declining')}
                   className={`px-3 py-1.5 text-sm rounded-lg transition-colors flex items-center gap-1 ${
                     filterPrognosis === 'declining'
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      ? 'bg-red-600 dark:bg-red-700 text-white'
+                      : 'bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                   }`}
                 >
                   <TrendingDown className="w-4 h-4" />
@@ -280,14 +280,14 @@ export default function ExploreTab() {
 
       {/* Results count */}
       <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-gray-500">
-          Visar <span className="font-medium text-gray-900">{filteredOccupations.length}</span> av {occupations.length} yrken
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Visar <span className="font-medium text-gray-900 dark:text-gray-100">{filteredOccupations.length}</span> av {occupations.length} yrken
         </p>
       </div>
 
       {/* Occupation List */}
       {filteredOccupations.length === 0 ? (
-        <div className="text-center py-12 text-gray-500">
+        <div className="text-center py-12 text-gray-500 dark:text-gray-400">
           <Search className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>Inga yrken hittades med dina filter.</p>
           <Button
@@ -308,7 +308,7 @@ export default function ExploreTab() {
           {filteredOccupations.map(occupation => (
             <div
               key={occupation.id}
-              className="bg-white rounded-xl border border-gray-200 overflow-hidden hover:border-purple-200 transition-colors"
+              className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
             >
               <button
                 onClick={() => setExpandedOccupation(
@@ -317,12 +317,12 @@ export default function ExploreTab() {
                 className="w-full p-4 flex items-center justify-between text-left"
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-indigo-100 rounded-lg flex items-center justify-center">
-                    <Briefcase className="w-5 h-5 text-purple-600" />
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-100 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-lg flex items-center justify-center">
+                    <Briefcase className="w-5 h-5 text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
-                    <h3 className="font-medium text-gray-900">{occupation.name}</h3>
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
+                    <h3 className="font-medium text-gray-900 dark:text-gray-100">{occupation.name}</h3>
+                    <div className="flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400">
                       <span className="flex items-center gap-1">
                         {occupation.requiresUniversity ? (
                           <><GraduationCap className="w-3 h-3" /> Högskola</>
@@ -338,34 +338,34 @@ export default function ExploreTab() {
                   </div>
                 </div>
                 {expandedOccupation === occupation.id ? (
-                  <ChevronUp className="w-5 h-5 text-gray-400" />
+                  <ChevronUp className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                  <ChevronDown className="w-5 h-5 text-gray-400 dark:text-gray-500" />
                 )}
               </button>
 
               {expandedOccupation === occupation.id && (
                 <div className="px-4 pb-4 pt-0">
-                  <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-                    <p className="text-sm text-gray-700">{occupation.description}</p>
+                  <div className="bg-stone-50 dark:bg-stone-900/50 rounded-lg p-4 space-y-3">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">{occupation.description}</p>
 
                     <div className="grid grid-cols-2 gap-4 text-sm">
                       <div>
-                        <p className="text-gray-500 mb-1">Lön</p>
-                        <p className="font-medium text-gray-900">{occupation.salary}</p>
+                        <p className="text-gray-500 dark:text-gray-400 mb-1">Lön</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.salary}</p>
                       </div>
                       <div>
-                        <p className="text-gray-500 mb-1">Utbildning</p>
-                        <p className="font-medium text-gray-900">{occupation.education.length} alternativ</p>
+                        <p className="text-gray-500 dark:text-gray-400 mb-1">Utbildning</p>
+                        <p className="font-medium text-gray-900 dark:text-gray-100">{occupation.education.length} alternativ</p>
                       </div>
                     </div>
 
                     {occupation.education && (
                       <div>
-                        <p className="text-gray-500 text-sm mb-2">Utbildningsvägar</p>
+                        <p className="text-gray-500 dark:text-gray-400 text-sm mb-2">Utbildningsvägar</p>
                         <div className="flex flex-wrap gap-2">
                           <span
-                            className="px-2 py-1 bg-white border border-gray-200 rounded text-xs text-gray-600"
+                            className="px-2 py-1 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded text-xs text-gray-600 dark:text-gray-300"
                           >
                             {occupation.education.name} ({occupation.education.length})
                           </span>

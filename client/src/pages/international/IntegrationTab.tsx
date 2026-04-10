@@ -178,14 +178,14 @@ export default function IntegrationTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-teal-50 to-emerald-50 border-teal-100">
+      <Card className="bg-gradient-to-r from-sky-50 to-blue-50 dark:from-sky-900/30 dark:to-blue-900/30 border-sky-100 dark:border-sky-800">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
-            <Users className="w-6 h-6 text-teal-600" />
+          <div className="w-12 h-12 bg-gradient-to-br from-sky-500 to-blue-500 dark:from-sky-600 dark:to-blue-600 rounded-xl flex items-center justify-center shrink-0">
+            <Users className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-900">Integrationschecklista</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-gray-800 dark:text-gray-100">Integrationschecklista</h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">
               Steg-för-steg guide för att etablera dig i Sverige.
               Markera punkter som klara för att spara din progress.
             </p>
@@ -193,14 +193,14 @@ export default function IntegrationTab() {
         </div>
 
         {/* Progress bar */}
-        <div className="mt-4 pt-4 border-t border-teal-100">
+        <div className="mt-4 pt-4 border-t border-sky-100 dark:border-sky-800">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-teal-800">Din framsteg</span>
-            <span className="text-sm font-bold text-teal-700">{completedItems}/{totalItems} ({progress}%)</span>
+            <span className="text-sm font-medium text-sky-800 dark:text-sky-200">Din framsteg</span>
+            <span className="text-sm font-bold text-sky-700 dark:text-sky-300">{completedItems}/{totalItems} ({progress}%)</span>
           </div>
-          <div className="h-3 bg-teal-100 rounded-full overflow-hidden">
+          <div className="h-3 bg-sky-100 dark:bg-sky-900/50 rounded-full overflow-hidden">
             <div
-              className="h-full bg-teal-500 rounded-full transition-all duration-300"
+              className="h-full bg-sky-500 dark:bg-sky-600 rounded-full transition-all duration-300"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -209,9 +209,9 @@ export default function IntegrationTab() {
 
       {/* Checklist categories */}
       {CHECKLIST_CATEGORIES.map((category) => (
-        <Card key={category.id}>
-          <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-slate-600" />
+        <Card key={category.id} className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-sky-600 dark:text-sky-400" />
             {category.title}
           </h3>
 
@@ -222,43 +222,43 @@ export default function IntegrationTab() {
                 className={cn(
                   "p-4 rounded-xl border transition-all cursor-pointer hover:shadow-sm",
                   completed[item.id]
-                    ? "bg-emerald-50 border-emerald-200"
+                    ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
                     : item.priority === 'critical'
-                    ? "bg-rose-50/50 border-rose-100"
-                    : "bg-slate-50 border-slate-100"
+                    ? "bg-rose-50/50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800"
+                    : "bg-slate-50 dark:bg-stone-700 border-slate-100 dark:border-stone-600"
                 )}
                 onClick={() => toggleItem(item.id)}
               >
                 <div className="flex items-start gap-3">
                   <div className="mt-0.5">
                     {completed[item.id] ? (
-                      <CheckCircle className="w-5 h-5 text-emerald-600" />
+                      <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
                     ) : (
-                      <Circle className="w-5 h-5 text-slate-300" />
+                      <Circle className="w-5 h-5 text-slate-300 dark:text-stone-500" />
                     )}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <h4 className={cn(
                         "font-medium",
-                        completed[item.id] ? "text-emerald-800 line-through" : "text-slate-800"
+                        completed[item.id] ? "text-emerald-800 dark:text-emerald-200 line-through" : "text-gray-800 dark:text-gray-100"
                       )}>
                         {item.title}
                       </h4>
                       {item.priority === 'critical' && !completed[item.id] && (
-                        <span className="px-2 py-0.5 bg-rose-100 text-rose-700 text-xs rounded-full font-medium">
+                        <span className="px-2 py-0.5 bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-xs rounded-full font-medium">
                           Kritiskt
                         </span>
                       )}
                     </div>
                     <p className={cn(
                       "text-sm mt-1",
-                      completed[item.id] ? "text-emerald-600" : "text-slate-700"
+                      completed[item.id] ? "text-emerald-600 dark:text-emerald-300" : "text-gray-600 dark:text-gray-300"
                     )}>
                       {item.description}
                     </p>
                     <div className="flex items-center gap-4 mt-2">
-                      <span className="text-xs text-slate-600">
+                      <span className="text-xs text-gray-600 dark:text-gray-400">
                         <Clock className="w-3 h-3 inline mr-1" />
                         {item.timeframe}
                       </span>
@@ -271,7 +271,7 @@ export default function IntegrationTab() {
                               target="_blank"
                               rel="noopener noreferrer"
                               onClick={(e) => e.stopPropagation()}
-                              className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-1"
+                              className="text-xs text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 flex items-center gap-1"
                             >
                               {link.label}
                               <ExternalLink className="w-3 h-3" />
@@ -289,16 +289,16 @@ export default function IntegrationTab() {
       ))}
 
       {/* Tips */}
-      <Card className="bg-amber-50 border-amber-100">
+      <Card className="bg-sky-50 dark:bg-sky-900/30 border-sky-100 dark:border-sky-800">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-sky-600 dark:text-sky-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-amber-900">Bra att veta</p>
-            <ul className="text-sm text-amber-700 mt-2 space-y-1">
-              <li>• Personnummer kan ta 2-8 veckor att få</li>
-              <li>• BankID kräver svenskt personnummer och bankkonto</li>
-              <li>• Många tjänster fungerar inte utan BankID</li>
-              <li>• Spara alla kvitton och dokument digitalt</li>
+            <p className="font-medium text-sky-900 dark:text-sky-100">Bra att veta</p>
+            <ul className="text-sm text-sky-700 dark:text-sky-300 mt-2 space-y-1">
+              <li>- Personnummer kan ta 2-8 veckor att få</li>
+              <li>- BankID kräver svenskt personnummer och bankkonto</li>
+              <li>- Många tjänster fungerar inte utan BankID</li>
+              <li>- Spara alla kvitton och dokument digitalt</li>
             </ul>
           </div>
         </div>

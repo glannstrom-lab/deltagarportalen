@@ -176,16 +176,16 @@ export default function NetworkTab() {
       {(needsFollowUp > 0 || overdueFollowUps > 0) && (
         <Card className={cn(
           'p-4 flex items-start gap-3',
-          overdueFollowUps > 0 ? 'bg-red-50 border-red-200' : 'bg-amber-50 border-amber-200'
+          overdueFollowUps > 0 ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
         )}>
           <AlertCircle className={cn(
             'w-5 h-5 flex-shrink-0 mt-0.5',
-            overdueFollowUps > 0 ? 'text-red-600' : 'text-amber-600'
+            overdueFollowUps > 0 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'
           )} />
           <div className="flex-1">
             <h4 className={cn(
               'font-semibold mb-1',
-              overdueFollowUps > 0 ? 'text-red-900' : 'text-amber-900'
+              overdueFollowUps > 0 ? 'text-red-900 dark:text-red-100' : 'text-amber-900 dark:text-amber-100'
             )}>
               {overdueFollowUps > 0
                 ? `${overdueFollowUps} överdue follow-ups`
@@ -193,7 +193,7 @@ export default function NetworkTab() {
             </h4>
             <p className={cn(
               'text-sm',
-              overdueFollowUps > 0 ? 'text-red-700' : 'text-amber-700'
+              overdueFollowUps > 0 ? 'text-red-700 dark:text-red-300' : 'text-amber-700 dark:text-amber-300'
             )}>
               {overdueFollowUps > 0
                 ? 'Slå in och ta kontakt!'
@@ -208,63 +208,66 @@ export default function NetworkTab() {
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <Card className="p-4 text-center">
-          <Users className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-slate-800">{contacts.length}</p>
-          <p className="text-xs text-slate-700">Kontakter</p>
+        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <Users className="w-6 h-6 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{contacts.length}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Kontakter</p>
         </Card>
-        <Card className="p-4 text-center">
-          <MessageCircle className="w-6 h-6 text-green-600 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-slate-800">
+        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <MessageCircle className="w-6 h-6 text-green-600 dark:text-green-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {contacts.filter(c => c.lastContact && getDaysSinceContact(c.lastContact)! < 30).length}
           </p>
-          <p className="text-xs text-slate-700">Aktiv denna månad</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Aktiv denna månad</p>
         </Card>
-        <Card className="p-4 text-center">
+        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <Star className="w-6 h-6 text-yellow-500 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-slate-800">
+          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">
             {contacts.filter(c => c.priority === 'high').length}
           </p>
-          <p className="text-xs text-slate-700">Högt prioriterad</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Högt prioriterad</p>
         </Card>
-        <Card className="p-4 text-center">
-          <Calendar className="w-6 h-6 text-indigo-600 mx-auto mb-2" />
-          <p className="text-2xl font-bold text-slate-800">{needsFollowUp}</p>
-          <p className="text-xs text-slate-700">Uppföljning denna veckan</p>
+        <Card className="p-4 text-center bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <Calendar className="w-6 h-6 text-teal-600 dark:text-teal-400 mx-auto mb-2" />
+          <p className="text-2xl font-bold text-gray-800 dark:text-gray-100">{needsFollowUp}</p>
+          <p className="text-xs text-gray-600 dark:text-gray-400">Uppföljning denna veckan</p>
         </Card>
       </div>
 
       {/* Add Contact */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-semibold text-slate-800">{t('career.network.myNetwork')}</h3>
-          <Button size="sm" onClick={() => setIsAdding(true)}>
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">{t('career.network.myNetwork')}</h3>
+          <Button size="sm" onClick={() => setIsAdding(true)} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
             <Plus className="w-4 h-4 mr-1" />
             {t('career.network.addContact')}
           </Button>
         </div>
 
         {isAdding && (
-          <div className="mb-4 p-4 bg-slate-50 rounded-xl">
+          <div className="mb-4 p-4 bg-stone-50 dark:bg-stone-700 rounded-xl">
             <div className="grid gap-3">
               <Input
                 placeholder={t('career.network.name')}
                 value={newContact.name}
                 onChange={(e) => setNewContact(prev => ({ ...prev, name: e.target.value }))}
+                className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
               />
               <Input
                 placeholder={t('career.network.relationPlaceholder')}
                 value={newContact.relationship}
                 onChange={(e) => setNewContact(prev => ({ ...prev, relationship: e.target.value }))}
+                className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
               />
               <Input
                 placeholder={t('career.network.companyOptional')}
                 value={newContact.company}
                 onChange={(e) => setNewContact(prev => ({ ...prev, company: e.target.value }))}
+                className="bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500"
               />
             </div>
             <div className="flex gap-2 mt-3">
-              <Button size="sm" onClick={addContact}>{t('career.network.save')}</Button>
+              <Button size="sm" onClick={addContact} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">{t('career.network.save')}</Button>
               <Button size="sm" variant="ghost" onClick={() => setIsAdding(false)}>{t('career.network.cancel')}</Button>
             </div>
           </div>
@@ -284,15 +287,15 @@ export default function NetworkTab() {
                 className={cn(
                   'p-4 rounded-xl border-2 transition-all',
                   isReminderOverdue
-                    ? 'bg-red-50 border-red-200'
+                    ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
                     : isReminderSoon
-                    ? 'bg-amber-50 border-amber-200'
-                    : 'bg-white border-slate-200 hover:border-indigo-300'
+                    ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
+                    : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
                 )}
               >
                 <div className="flex items-start gap-3 mb-2">
-                  <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center flex-shrink-0">
-                    <span className="text-sm font-bold text-indigo-600">
+                  <div className="w-10 h-10 rounded-full bg-teal-100 dark:bg-teal-900/30 flex items-center justify-center flex-shrink-0">
+                    <span className="text-sm font-bold text-teal-600 dark:text-teal-400">
                       {contact.name.charAt(0)}
                     </span>
                   </div>
@@ -300,22 +303,22 @@ export default function NetworkTab() {
                   <div className="flex-1">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h4 className="font-semibold text-slate-800 flex items-center gap-2">
+                        <h4 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
                           {contact.name}
                           {contact.priority === 'high' && (
                             <Star className="w-3 h-3 text-yellow-500 fill-yellow-500" />
                           )}
                         </h4>
-                        <p className="text-xs text-slate-600">{contact.relationship}</p>
+                        <p className="text-xs text-gray-600 dark:text-gray-400">{contact.relationship}</p>
                         {contact.company && (
-                          <p className="text-xs text-slate-700">{contact.company}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{contact.company}</p>
                         )}
                       </div>
 
                       <div className="text-right">
                         <p className={cn(
                           'text-xs font-medium',
-                          daysSince && daysSince > 60 ? 'text-red-600' : 'text-slate-600'
+                          daysSince && daysSince > 60 ? 'text-red-600 dark:text-red-400' : 'text-gray-600 dark:text-gray-400'
                         )}>
                           {daysSince === 0
                             ? 'Idag'
@@ -327,12 +330,11 @@ export default function NetworkTab() {
                           <p className={cn(
                             'text-xs mt-1',
                             isReminderOverdue
-                              ? 'text-red-600 font-semibold'
+                              ? 'text-red-600 dark:text-red-400 font-semibold'
                               : isReminderSoon
-                              ? 'text-amber-600 font-semibold'
-                              : 'text-slate-700'
+                              ? 'text-amber-600 dark:text-amber-400 font-semibold'
+                              : 'text-gray-500 dark:text-gray-400'
                           )}>
-                            {isReminderOverdue && '⚠️ '}
                             {daysUntilReminder === 0
                               ? 'Idag'
                               : daysUntilReminder === 1
@@ -346,7 +348,7 @@ export default function NetworkTab() {
                     </div>
 
                     {contact.notes && (
-                      <p className="text-xs text-slate-600 mt-2 p-2 bg-slate-50 rounded italic">
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-2 p-2 bg-stone-50 dark:bg-stone-700 rounded italic">
                         "{contact.notes}"
                       </p>
                     )}
@@ -368,24 +370,24 @@ export default function NetworkTab() {
       </Card>
 
       {/* Networking Events */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <Zap className="w-5 h-5 text-indigo-600" />
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Zap className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           Nätvärksarrangemang
         </h3>
         <div className="space-y-3">
           {networkingEvents.map((event, idx) => (
             <div
               key={idx}
-              className="p-4 rounded-xl bg-slate-50 border border-slate-200 hover:border-indigo-300 hover:bg-indigo-50 transition-all cursor-pointer"
+              className="p-4 rounded-xl bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600 hover:border-teal-300 dark:hover:border-teal-600 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all cursor-pointer"
             >
               <div className="flex items-start justify-between mb-2">
-                <h4 className="font-semibold text-slate-800">{event.title}</h4>
-                <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
+                <h4 className="font-semibold text-gray-800 dark:text-gray-100">{event.title}</h4>
+                <span className="text-xs bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300 px-2 py-1 rounded-full">
                   {event.attendees} deltagare
                 </span>
               </div>
-              <div className="flex items-center gap-1 text-sm text-slate-600">
+              <div className="flex items-center gap-1 text-sm text-gray-600 dark:text-gray-400">
                 <Calendar className="w-3 h-3" />
                 {new Date(event.date).toLocaleDateString('sv-SE')}
               </div>
@@ -395,8 +397,8 @@ export default function NetworkTab() {
       </Card>
 
       {/* Message Templates */}
-      <Card className="p-6">
-        <h3 className="text-lg font-semibold text-slate-800 mb-4">{t('career.network.messageTemplates')}</h3>
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.network.messageTemplates')}</h3>
         <div className="space-y-3">
           {messageTemplates.map((template) => (
             <div
@@ -404,20 +406,21 @@ export default function NetworkTab() {
               className={cn(
                 'p-4 rounded-xl border-2 cursor-pointer transition-all',
                 selectedTemplate === template.id
-                  ? 'border-indigo-500 bg-indigo-50'
-                  : 'border-slate-200 hover:border-indigo-300'
+                  ? 'border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/20'
+                  : 'border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
               )}
               onClick={() => setSelectedTemplate(template.id)}
             >
-              <h4 className="font-semibold text-slate-800 mb-2">{template.title}</h4>
+              <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">{template.title}</h4>
               {selectedTemplate === template.id && (
                 <div className="mt-3 space-y-3">
-                  <p className="text-sm text-slate-600 bg-white p-3 rounded-lg">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 bg-white dark:bg-stone-700 p-3 rounded-lg">
                     {template.text}
                   </p>
                   <Button
                     size="sm"
                     onClick={() => copyToClipboard(template.text)}
+                    className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700"
                   >
                     <Copy className="w-4 h-4 mr-1" />
                     {copiedScript === template.text ? 'Kopierad!' : 'Kopiera'}
@@ -430,24 +433,24 @@ export default function NetworkTab() {
       </Card>
 
       {/* LinkedIn Tips */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowLinkedInTips(!showLikedInTips)}>
-          <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-            <Linkedin className="w-5 h-5 text-blue-600" />
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <Linkedin className="w-5 h-5 text-blue-600 dark:text-blue-400" />
             LinkedIn Tips
           </h3>
-          <ChevronRight className={cn('w-5 h-5 transition-transform', showLikedInTips && 'rotate-90')} />
+          <ChevronRight className={cn('w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform', showLikedInTips && 'rotate-90')} />
         </div>
 
         {showLikedInTips && (
           <div className="space-y-3">
             {linkedinTips.map((tip, idx) => (
-              <div key={idx} className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-                <h4 className="font-semibold text-blue-900 flex items-center gap-2 mb-1">
+              <div key={idx} className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <h4 className="font-semibold text-blue-900 dark:text-blue-100 flex items-center gap-2 mb-1">
                   <span className="text-lg">{tip.icon}</span>
                   {tip.title}
                 </h4>
-                <p className="text-sm text-blue-800">{tip.description}</p>
+                <p className="text-sm text-blue-800 dark:text-blue-200">{tip.description}</p>
               </div>
             ))}
           </div>
@@ -455,21 +458,21 @@ export default function NetworkTab() {
       </Card>
 
       {/* Networking Scripts */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowNetworkingScripts(!showNetworkingScripts)}>
-          <h3 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-purple-600" />
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
+            <BookOpen className="w-5 h-5 text-violet-600 dark:text-violet-400" />
             Nätvärksscript
           </h3>
-          <ChevronRight className={cn('w-5 h-5 transition-transform', showNetworkingScripts && 'rotate-90')} />
+          <ChevronRight className={cn('w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform', showNetworkingScripts && 'rotate-90')} />
         </div>
 
         {showNetworkingScripts && (
           <div className="space-y-3">
             {networkingScripts.map((script, idx) => (
-              <div key={idx} className="p-3 bg-purple-50 rounded-lg border border-purple-200">
-                <h4 className="font-semibold text-purple-900 mb-2">{script.title}</h4>
-                <p className="text-sm text-purple-800 italic mb-2">
+              <div key={idx} className="p-3 bg-violet-50 dark:bg-violet-900/20 rounded-lg border border-violet-200 dark:border-violet-800">
+                <h4 className="font-semibold text-violet-900 dark:text-violet-100 mb-2">{script.title}</h4>
+                <p className="text-sm text-violet-800 dark:text-violet-200 italic mb-2">
                   "{script.script}"
                 </p>
                 <Button
@@ -488,14 +491,14 @@ export default function NetworkTab() {
       </Card>
 
       {/* LinkedIn Integration */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center">
-            <Linkedin className="w-6 h-6 text-blue-600" />
+          <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+            <Linkedin className="w-6 h-6 text-blue-600 dark:text-blue-400" />
           </div>
           <div className="flex-1">
-            <h3 className="font-semibold text-slate-800">{t('career.network.syncWithLinkedIn')}</h3>
-            <p className="text-sm text-slate-600">{t('career.network.importContacts')}</p>
+            <h3 className="font-semibold text-gray-800 dark:text-gray-100">{t('career.network.syncWithLinkedIn')}</h3>
+            <p className="text-sm text-gray-600 dark:text-gray-400">{t('career.network.importContacts')}</p>
           </div>
           <Button variant="outline">{t('career.network.connect')}</Button>
         </div>

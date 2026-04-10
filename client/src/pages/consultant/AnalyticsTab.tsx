@@ -63,7 +63,7 @@ function MetricCard({
   color?: 'violet' | 'emerald' | 'amber' | 'rose' | 'blue'
 }) {
   const colorClasses = {
-    violet: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',
+    violet: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
     emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
     amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
     rose: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',
@@ -74,10 +74,10 @@ function MetricCard({
     <Card className="p-5">
       <div className="flex items-start justify-between">
         <div>
-          <p className="text-sm font-medium text-stone-500 dark:text-stone-600">{title}</p>
+          <p className="text-sm font-medium text-stone-500 dark:text-stone-400">{title}</p>
           <p className="text-3xl font-bold text-stone-900 dark:text-stone-100 mt-1">{value}</p>
           {subtitle && (
-            <p className="text-sm text-stone-500 dark:text-stone-600 mt-1">{subtitle}</p>
+            <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">{subtitle}</p>
           )}
           {trend && (
             <div className={cn(
@@ -90,7 +90,7 @@ function MetricCard({
                 <TrendingDown className="w-4 h-4" />
               )}
               <span>{trend.isPositive ? '+' : ''}{trend.value}%</span>
-              <span className="text-stone-600 font-normal ml-1">vs förra månaden</span>
+              <span className="text-stone-500 dark:text-stone-400 font-normal ml-1">vs förra månaden</span>
             </div>
           )}
         </div>
@@ -143,7 +143,7 @@ function ProgressRing({
             strokeLinecap="round"
             strokeDasharray={circumference}
             strokeDashoffset={offset}
-            className="text-violet-600 dark:text-violet-400 transition-all duration-500"
+            className="text-amber-500 dark:text-amber-400 transition-all duration-500"
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
@@ -154,7 +154,7 @@ function ProgressRing({
       </div>
       <p className="mt-3 font-medium text-stone-900 dark:text-stone-100">{label}</p>
       {sublabel && (
-        <p className="text-sm text-stone-500 dark:text-stone-600">{sublabel}</p>
+        <p className="text-sm text-stone-500 dark:text-stone-400">{sublabel}</p>
       )}
     </div>
   )
@@ -451,7 +451,7 @@ export function AnalyticsTab() {
             onClick={() => fetchAnalytics()}
             className="p-2.5 rounded-xl bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 dark:hover:bg-stone-700 transition-colors"
           >
-            <RefreshCw className="w-5 h-5 text-stone-600 dark:text-stone-600" />
+            <RefreshCw className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </button>
         </div>
         <div className="flex items-center gap-2">
@@ -513,7 +513,7 @@ export function AnalyticsTab() {
                 Genomsnittlig CV-poäng per månad
               </p>
             </div>
-            <Activity className="w-5 h-5 text-stone-600" />
+            <Activity className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </div>
           <BarChart
             data={analytics.monthlyProgress.map(m => ({
@@ -535,7 +535,7 @@ export function AnalyticsTab() {
                 Översikt av viktiga mätvärden
               </p>
             </div>
-            <PieChart className="w-5 h-5 text-stone-600" />
+            <PieChart className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </div>
           <div className="grid grid-cols-3 gap-4">
             <ProgressRing
@@ -573,7 +573,7 @@ export function AnalyticsTab() {
                 Fördelning av deltagare per status
               </p>
             </div>
-            <Users className="w-5 h-5 text-stone-600" />
+            <Users className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </div>
           <div className="space-y-4">
             {analytics.statusDistribution.map((status, index) => (
@@ -582,7 +582,7 @@ export function AnalyticsTab() {
                   <span className="text-sm font-medium text-stone-700 dark:text-stone-300">
                     {status.label}
                   </span>
-                  <span className="text-sm text-stone-500 dark:text-stone-600">
+                  <span className="text-sm text-stone-500 dark:text-stone-400">
                     {status.value} ({Math.round((status.value / Math.max(analytics.totalParticipants, 1)) * 100)}%)
                   </span>
                 </div>
@@ -608,7 +608,7 @@ export function AnalyticsTab() {
                 Mest frekventa måltyper bland deltagare
               </p>
             </div>
-            <Target className="w-5 h-5 text-stone-600" />
+            <Target className="w-5 h-5 text-stone-500 dark:text-stone-400" />
           </div>
           <div className="space-y-3">
             {analytics.topGoalCategories.map((goal, index) => (
@@ -617,14 +617,14 @@ export function AnalyticsTab() {
                 className="flex items-center justify-between p-3 bg-stone-50 dark:bg-stone-800 rounded-xl"
               >
                 <div className="flex items-center gap-3">
-                  <span className="w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/40 flex items-center justify-center text-xs font-bold text-violet-600 dark:text-violet-400">
+                  <span className="w-6 h-6 rounded-full bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center text-xs font-bold text-amber-600 dark:text-amber-400">
                     {index + 1}
                   </span>
                   <span className="font-medium text-stone-900 dark:text-stone-100">
                     {goal.category}
                   </span>
                 </div>
-                <span className="text-sm text-stone-500 dark:text-stone-600">
+                <span className="text-sm text-stone-500 dark:text-stone-400">
                   {goal.count} mål
                 </span>
               </div>
@@ -644,25 +644,25 @@ export function AnalyticsTab() {
               Jämförelse mellan deltagargrupper baserat på startdatum
             </p>
           </div>
-          <BarChart3 className="w-5 h-5 text-stone-600" />
+          <BarChart3 className="w-5 h-5 text-stone-500 dark:text-stone-400" />
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
               <tr className="border-b border-stone-200 dark:border-stone-700">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase">
+                <th className="px-4 py-3 text-left text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
                   Kohort
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase">
+                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
                   Deltagare
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase">
+                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
                   CV-komplett
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase">
+                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
                   Placerade
                 </th>
-                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-600 uppercase">
+                <th className="px-4 py-3 text-center text-xs font-semibold text-stone-600 dark:text-stone-400 uppercase">
                   Snitt tid (dagar)
                 </th>
               </tr>
@@ -672,40 +672,40 @@ export function AnalyticsTab() {
                 <td className="px-4 py-4 font-medium text-stone-900 dark:text-stone-100">
                   Q1 2024
                 </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-600">12</td>
+                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">12</td>
                 <td className="px-4 py-4 text-center">
                   <span className="text-emerald-600 font-medium">92%</span>
                 </td>
                 <td className="px-4 py-4 text-center">
                   <span className="text-blue-600 font-medium">75%</span>
                 </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-600">38</td>
+                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">38</td>
               </tr>
               <tr className="hover:bg-stone-50 dark:hover:bg-stone-800/50">
                 <td className="px-4 py-4 font-medium text-stone-900 dark:text-stone-100">
                   Q4 2023
                 </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-600">15</td>
+                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">15</td>
                 <td className="px-4 py-4 text-center">
                   <span className="text-emerald-600 font-medium">87%</span>
                 </td>
                 <td className="px-4 py-4 text-center">
                   <span className="text-blue-600 font-medium">80%</span>
                 </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-600">42</td>
+                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">42</td>
               </tr>
               <tr className="hover:bg-stone-50 dark:hover:bg-stone-800/50">
                 <td className="px-4 py-4 font-medium text-stone-900 dark:text-stone-100">
                   Q3 2023
                 </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-600">18</td>
+                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">18</td>
                 <td className="px-4 py-4 text-center">
                   <span className="text-emerald-600 font-medium">94%</span>
                 </td>
                 <td className="px-4 py-4 text-center">
                   <span className="text-blue-600 font-medium">83%</span>
                 </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-600">45</td>
+                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">45</td>
               </tr>
             </tbody>
           </table>

@@ -91,21 +91,21 @@ export default function PlanTab() {
   if (!hasPlan) {
     return (
       <div className="space-y-6">
-        <Card className="p-6">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-indigo-600" />
+            <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-teal-600 dark:text-teal-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-800">{t('career.plan.createCareerPlan')}</h3>
-            <p className="text-slate-600 mt-2">
+            <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('career.plan.createCareerPlan')}</h3>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">
               {t('career.plan.describeWhere')}
             </p>
           </div>
 
           <div className="space-y-4">
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <MapPin className="w-4 h-4 text-slate-600" />
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                 {t('career.plan.whereAreYou')}
               </label>
               <textarea
@@ -113,13 +113,13 @@ export default function PlanTab() {
                 onChange={(e) => setCurrentSituation(e.target.value)}
                 placeholder={t('career.plan.currentPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 resize-y"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 resize-y text-gray-800 dark:text-gray-100"
               />
             </div>
 
             <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-slate-700 mb-2">
-                <Flag className="w-4 h-4 text-emerald-500" />
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Flag className="w-4 h-4 text-teal-500 dark:text-teal-400" />
                 {t('career.plan.whereWantToGo')}
               </label>
               <textarea
@@ -127,7 +127,7 @@ export default function PlanTab() {
                 onChange={(e) => setGoal(e.target.value)}
                 placeholder={t('career.plan.goalPlaceholder')}
                 rows={3}
-                className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 resize-y"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 resize-y text-gray-800 dark:text-gray-100"
               />
             </div>
 
@@ -152,15 +152,15 @@ export default function PlanTab() {
         </Card>
 
         {showSMARTHelper && (
-          <Card className="p-6 bg-amber-50 border-2 border-amber-200">
+          <Card className="p-6 bg-amber-50 dark:bg-amber-900/20 border-2 border-amber-200 dark:border-amber-700">
             <div className="flex items-start gap-3 mb-4">
-              <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
               <div>
-                <h4 className="font-semibold text-amber-900 mb-2">SMART-mål hjälpare</h4>
-                <p className="text-sm text-amber-800 mb-3">
+                <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">SMART-mål hjälpare</h4>
+                <p className="text-sm text-amber-800 dark:text-amber-200 mb-3">
                   Se till att ditt mål är Specifikt, Mätbart, Uppnåeligt, Relevant och Tidsbundet:
                 </p>
-                <ul className="space-y-2 text-sm text-amber-700">
+                <ul className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
                   <li><strong>S</strong> - Specifikt: Vad exakt vill du uppnå?</li>
                   <li><strong>M</strong> - Mätbart: Hur vet du när du har nått målet?</li>
                   <li><strong>A</strong> - Uppnåeligt: Är det realistiskt under din timeframe?</li>
@@ -172,19 +172,19 @@ export default function PlanTab() {
           </Card>
         )}
 
-        <Card className="p-6">
-          <h4 className="font-semibold text-slate-800 mb-4">{t('career.plan.whyCareerPlan')}</h4>
-          <ul className="space-y-3 text-sm text-slate-600">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.plan.whyCareerPlan')}</h4>
+          <ul className="space-y-3 text-sm text-gray-600 dark:text-gray-300">
             <li className="flex items-start gap-2">
-              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+              <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 mt-0.5" />
               {t('career.plan.reason1')}
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+              <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 mt-0.5" />
               {t('career.plan.reason2')}
             </li>
             <li className="flex items-start gap-2">
-              <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
+              <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 mt-0.5" />
               {t('career.plan.reason3')}
             </li>
           </ul>
@@ -196,42 +196,42 @@ export default function PlanTab() {
   return (
     <div className="space-y-6">
       {/* Plan Overview */}
-      <Card className="p-6">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-start gap-4 mb-6">
-          <div className="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center">
-            <Target className="w-6 h-6 text-emerald-600" />
+          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
+            <Target className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-800">{t('career.plan.yourCareerPlan')}</h3>
-            <p className="text-slate-600"><strong>Från:</strong> {currentSituation}</p>
-            <p className="text-slate-600"><strong>Till:</strong> {goal}</p>
+            <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('career.plan.yourCareerPlan')}</h3>
+            <p className="text-gray-600 dark:text-gray-300"><strong>Från:</strong> {currentSituation}</p>
+            <p className="text-gray-600 dark:text-gray-300"><strong>Till:</strong> {goal}</p>
           </div>
         </div>
 
         {/* Overall Progress */}
-        <div className="mb-6 p-4 bg-gradient-to-r from-emerald-50 to-teal-50 rounded-xl border border-emerald-200">
+        <div className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl border border-teal-200 dark:border-teal-700">
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-emerald-600" />
-              <span className="font-semibold text-slate-800">Övergripande framsteg</span>
+              <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <span className="font-semibold text-gray-800 dark:text-gray-100">Övergripande framsteg</span>
             </div>
-            <span className="text-2xl font-bold text-emerald-600">{totalProgress}%</span>
+            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">{totalProgress}%</span>
           </div>
-          <div className="h-3 bg-white rounded-full overflow-hidden border border-emerald-200">
+          <div className="h-3 bg-white dark:bg-stone-700 rounded-full overflow-hidden border border-teal-200 dark:border-teal-600">
             <div
-              className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all duration-500"
               style={{ width: `${totalProgress}%` }}
             />
           </div>
-          <p className="text-xs text-emerald-700 mt-2">
+          <p className="text-xs text-teal-700 dark:text-teal-300 mt-2">
             {completedCount} av {milestones.length} milstolpar slutförda
           </p>
         </div>
 
         {/* Timeline */}
         <div className="mb-6">
-          <h4 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-indigo-600" />
+          <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             Tidslinje för karriärplan
           </h4>
 
@@ -239,26 +239,25 @@ export default function PlanTab() {
             {milestones.map((milestone, index) => (
               <div key={milestone.id} className="mb-6 relative">
                 {/* Timeline dot */}
-                <div className="absolute -left-8 top-1 w-6 h-6 rounded-full flex items-center justify-center border-2 bg-white"
+                <div className="absolute -left-8 top-1 w-6 h-6 rounded-full flex items-center justify-center border-2 bg-white dark:bg-stone-800"
                   style={{
-                    borderColor: milestone.completed ? '#10b981' : '#e2e8f0',
-                    backgroundColor: milestone.completed ? '#d1fae5' : '#f8fafc'
+                    borderColor: milestone.completed ? '#14b8a6' : '#d1d5db',
                   }}
                 >
                   {milestone.completed ? (
-                    <CheckCircle className="w-4 h-4 text-emerald-600" />
+                    <CheckCircle className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                   ) : (
-                    <div className="w-2 h-2 rounded-full bg-slate-400" />
+                    <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500" />
                   )}
                 </div>
 
                 {/* Connector line */}
                 {index < milestones.length - 1 && (
                   <div
-                    className="absolute -left-7 top-7 w-0.5 h-20 transition-colors"
-                    style={{
-                      backgroundColor: milestone.completed ? '#d1fae5' : '#e2e8f0'
-                    }}
+                    className={cn(
+                      "absolute -left-7 top-7 w-0.5 h-20 transition-colors",
+                      milestone.completed ? "bg-teal-200 dark:bg-teal-700" : "bg-stone-200 dark:bg-stone-600"
+                    )}
                   />
                 )}
 
@@ -267,25 +266,25 @@ export default function PlanTab() {
                   className={cn(
                     'p-4 rounded-xl border-2 transition-all',
                     milestone.completed
-                      ? 'bg-green-50 border-emerald-300'
-                      : 'bg-white border-slate-200 hover:border-indigo-300'
+                      ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-600'
+                      : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
                   )}
                 >
                   <div className="flex items-start justify-between gap-2 mb-2">
                     <div className="flex-1">
                       <h4 className={cn(
                         'font-semibold',
-                        milestone.completed ? 'text-emerald-700 line-through' : 'text-slate-800'
+                        milestone.completed ? 'text-teal-700 dark:text-teal-300 line-through' : 'text-gray-800 dark:text-gray-100'
                       )}>
                         {milestone.title}
                       </h4>
                       <div className="flex flex-wrap gap-2 mt-1 text-xs">
-                        <span className="inline-flex items-center gap-1 text-slate-600">
+                        <span className="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400">
                           <Clock className="w-3 h-3" />
                           {milestone.timeframe}
                         </span>
                         {milestone.targetDate && (
-                          <span className="inline-flex items-center gap-1 text-slate-600">
+                          <span className="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400">
                             <Calendar className="w-3 h-3" />
                             {new Date(milestone.targetDate).toLocaleDateString('sv-SE')}
                           </span>
@@ -297,8 +296,8 @@ export default function PlanTab() {
                       className={cn(
                         'px-2 py-1 rounded text-xs font-medium transition-colors flex-shrink-0',
                         milestone.completed
-                          ? 'bg-emerald-200 text-emerald-700'
-                          : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                          ? 'bg-teal-200 dark:bg-teal-800 text-teal-700 dark:text-teal-200'
+                          : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                       )}
                     >
                       {milestone.completed ? '✓ Klar' : 'Gågång'}
@@ -309,8 +308,8 @@ export default function PlanTab() {
                   {!milestone.completed && (
                     <div className="mb-3">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-slate-600">Framsteg</span>
-                        <span className="text-xs font-semibold text-indigo-600">{milestone.progress || 0}%</span>
+                        <span className="text-xs text-gray-600 dark:text-gray-400">Framsteg</span>
+                        <span className="text-xs font-semibold text-teal-600 dark:text-teal-400">{milestone.progress || 0}%</span>
                       </div>
                       <input
                         type="range"
@@ -318,7 +317,7 @@ export default function PlanTab() {
                         max="100"
                         value={milestone.progress || 0}
                         onChange={(e) => updateMilestoneProgress(milestone.id, parseInt(e.target.value))}
-                        className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-indigo-500"
+                        className="w-full h-2 bg-stone-200 dark:bg-stone-600 rounded-full appearance-none cursor-pointer accent-teal-500"
                       />
                     </div>
                   )}
@@ -326,10 +325,10 @@ export default function PlanTab() {
                   {/* Steps */}
                   <ul className="space-y-2">
                     {milestone.steps.map((step, stepIndex) => (
-                      <li key={stepIndex} className="text-sm text-slate-600 flex items-center gap-2">
+                      <li key={stepIndex} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
                         <div className={cn(
                           'w-1.5 h-1.5 rounded-full flex-shrink-0',
-                          milestone.completed ? 'bg-emerald-400' : 'bg-slate-400'
+                          milestone.completed ? 'bg-teal-400 dark:bg-teal-500' : 'bg-gray-400 dark:bg-gray-500'
                         )} />
                         {step}
                       </li>

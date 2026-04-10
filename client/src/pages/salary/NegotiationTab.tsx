@@ -243,14 +243,14 @@ export default function NegotiationTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-100">
+      <Card className="bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 border-teal-200 dark:border-teal-700">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-violet-100 rounded-xl flex items-center justify-center shrink-0">
-            <TrendingUp className="w-6 h-6 text-violet-600" />
+          <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center shrink-0">
+            <TrendingUp className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-900">Löneförhandlingsguide</h2>
-            <p className="text-slate-600 mt-1">
+            <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Löneförhandlingsguide</h2>
+            <p className="text-gray-600 dark:text-gray-300 mt-1">
               Steg-för-steg guide för att förhandla lön i svensk arbetskultur.
               Förberedd förhandling ger bättre resultat.
             </p>
@@ -259,12 +259,12 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Swedish context note */}
-      <Card className="bg-blue-50 border-blue-100">
+      <Card className="bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-700">
         <div className="flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+          <AlertCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-medium text-blue-900">Svensk arbetsmarknad</p>
-            <p className="text-sm text-blue-700 mt-1">
+            <p className="font-medium text-teal-900 dark:text-teal-100">Svensk arbetsmarknad</p>
+            <p className="text-sm text-teal-700 dark:text-teal-300 mt-1">
               I Sverige är löneförhandling ofta mer strukturerad än i andra länder.
               Många branscher har kollektivavtal som sätter ramarna.
               Individuella förhandlingar sker ofta vid årliga lönesamtal.
@@ -274,9 +274,9 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Step-by-step guide */}
-      <Card>
-        <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Target className="w-5 h-5 text-violet-600" />
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Target className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           Förhandlingens 5 steg
         </h3>
 
@@ -286,31 +286,31 @@ export default function NegotiationTab() {
               key={step.id}
               className={cn(
                 "border rounded-xl overflow-hidden transition-all",
-                expandedStep === step.id ? "border-violet-200 bg-violet-50/30" : "border-slate-200"
+                expandedStep === step.id ? "border-teal-200 dark:border-teal-600 bg-teal-50/30 dark:bg-teal-900/10" : "border-stone-200 dark:border-stone-600"
               )}
             >
               <button
                 onClick={() => setExpandedStep(expandedStep === step.id ? null : step.id)}
-                className="w-full flex items-center justify-between p-4 text-left hover:bg-slate-50/50"
+                className="w-full flex items-center justify-between p-4 text-left hover:bg-stone-50/50 dark:hover:bg-stone-700/50"
               >
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm",
                     expandedStep === step.id
-                      ? "bg-violet-600 text-white"
-                      : "bg-slate-100 text-slate-600"
+                      ? "bg-teal-600 dark:bg-teal-500 text-white"
+                      : "bg-stone-100 dark:bg-stone-700 text-gray-600 dark:text-gray-400"
                   )}>
                     {step.id}
                   </div>
                   <div>
-                    <p className="font-medium text-slate-900">{step.title}</p>
-                    <p className="text-sm text-slate-700">{step.description}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100">{step.title}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-400">{step.description}</p>
                   </div>
                 </div>
                 {expandedStep === step.id ? (
-                  <ChevronUp className="w-5 h-5 text-slate-600" />
+                  <ChevronUp className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-600" />
+                  <ChevronDown className="w-5 h-5 text-gray-600 dark:text-gray-400" />
                 )}
               </button>
 
@@ -318,11 +318,11 @@ export default function NegotiationTab() {
                 <div className="px-4 pb-4 space-y-4">
                   {/* Tips */}
                   <div>
-                    <p className="text-sm font-medium text-slate-700 mb-2">Tips:</p>
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Tips:</p>
                     <ul className="space-y-2">
                       {step.tips.map((tip, idx) => (
-                        <li key={idx} className="flex items-start gap-2 text-sm text-slate-600">
-                          <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                        <li key={idx} className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">
+                          <CheckCircle className="w-4 h-4 text-teal-500 dark:text-teal-400 shrink-0 mt-0.5" />
                           {tip}
                         </li>
                       ))}
@@ -331,13 +331,13 @@ export default function NegotiationTab() {
 
                   {/* Phrases */}
                   <div>
-                    <p className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-1">
+                    <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center gap-1">
                       <MessageSquare className="w-4 h-4" />
                       Exempelfraser:
                     </p>
                     <div className="space-y-2">
                       {step.phrases.map((phrase, idx) => (
-                        <div key={idx} className="p-3 bg-white rounded-lg border border-violet-100 text-sm text-slate-700 italic">
+                        <div key={idx} className="p-3 bg-white dark:bg-stone-700 rounded-lg border border-teal-100 dark:border-teal-800 text-sm text-gray-700 dark:text-gray-300 italic">
                           {phrase}
                         </div>
                       ))}
@@ -352,16 +352,16 @@ export default function NegotiationTab() {
 
       {/* Do and Don't */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Card className="border-emerald-200">
-          <h3 className="font-semibold text-emerald-800 mb-4 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-emerald-600" />
+        <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
+          <h3 className="font-semibold text-teal-800 dark:text-teal-200 mb-4 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             Gör detta
           </h3>
           <ul className="space-y-3">
             {DO_AND_DONT.do.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm text-slate-700">
-                <div className="w-5 h-5 bg-emerald-100 rounded-full flex items-center justify-center shrink-0">
-                  <CheckCircle className="w-3 h-3 text-emerald-600" />
+              <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <div className="w-5 h-5 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center shrink-0">
+                  <CheckCircle className="w-3 h-3 text-teal-600 dark:text-teal-400" />
                 </div>
                 {item}
               </li>
@@ -369,16 +369,16 @@ export default function NegotiationTab() {
           </ul>
         </Card>
 
-        <Card className="border-rose-200">
-          <h3 className="font-semibold text-rose-800 mb-4 flex items-center gap-2">
-            <AlertCircle className="w-5 h-5 text-rose-600" />
+        <Card className="border-rose-200 dark:border-rose-800 bg-white dark:bg-stone-800">
+          <h3 className="font-semibold text-rose-800 dark:text-rose-200 mb-4 flex items-center gap-2">
+            <AlertCircle className="w-5 h-5 text-rose-600 dark:text-rose-400" />
             Undvik detta
           </h3>
           <ul className="space-y-3">
             {DO_AND_DONT.dont.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-sm text-slate-700">
-                <div className="w-5 h-5 bg-rose-100 rounded-full flex items-center justify-center shrink-0">
-                  <AlertCircle className="w-3 h-3 text-rose-600" />
+              <li key={idx} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                <div className="w-5 h-5 bg-rose-100 dark:bg-rose-900/30 rounded-full flex items-center justify-center shrink-0">
+                  <AlertCircle className="w-3 h-3 text-rose-600 dark:text-rose-400" />
                 </div>
                 {item}
               </li>
@@ -388,17 +388,17 @@ export default function NegotiationTab() {
       </div>
 
       {/* Preparation Checklist */}
-      <Card className="border-emerald-200">
+      <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="font-semibold text-slate-900 flex items-center gap-2">
-            <CheckCircle className="w-5 h-5 text-emerald-600" />
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             Förberedelschecklista
           </h3>
           <Button
             onClick={resetChecklist}
             size="sm"
             variant="ghost"
-            className="text-slate-600 hover:text-slate-900"
+            className="text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100"
           >
             <RotateCcw className="w-4 h-4" />
           </Button>
@@ -407,12 +407,12 @@ export default function NegotiationTab() {
         {/* Progress bar */}
         <div className="mb-4">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-slate-700">Färdiggrad</span>
-            <span className="text-sm font-bold text-emerald-600">{completedCount}/{checklist.length}</span>
+            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Färdiggrad</span>
+            <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{completedCount}/{checklist.length}</span>
           </div>
-          <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+          <div className="h-2 bg-stone-200 dark:bg-stone-600 rounded-full overflow-hidden">
             <motion.div
-              className="h-full bg-emerald-500"
+              className="h-full bg-teal-500 dark:bg-teal-400"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
               transition={{ duration: 0.3 }}
@@ -426,21 +426,21 @@ export default function NegotiationTab() {
             <button
               key={item.id}
               onClick={() => toggleChecklistItem(item.id)}
-              className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-emerald-50/50 transition-colors text-left group"
+              className="w-full flex items-start gap-3 p-3 rounded-lg hover:bg-teal-50/50 dark:hover:bg-teal-900/20 transition-colors text-left group"
             >
               <div className={cn(
                 'w-5 h-5 rounded-md border-2 flex-shrink-0 flex items-center justify-center transition-all mt-0.5',
                 item.completed
-                  ? 'bg-emerald-500 border-emerald-500'
-                  : 'border-slate-300 group-hover:border-emerald-500'
+                  ? 'bg-teal-500 dark:bg-teal-400 border-teal-500 dark:border-teal-400'
+                  : 'border-stone-300 dark:border-stone-500 group-hover:border-teal-500 dark:group-hover:border-teal-400'
               )}>
                 {item.completed && <CheckCircle className="w-4 h-4 text-white" />}
               </div>
               <span className={cn(
                 'text-sm transition-all',
                 item.completed
-                  ? 'text-slate-700 line-through'
-                  : 'text-slate-700'
+                  ? 'text-gray-700 dark:text-gray-400 line-through'
+                  : 'text-gray-700 dark:text-gray-300'
               )}>
                 {item.text}
               </span>
@@ -450,9 +450,9 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Scenario Simulator */}
-      <Card className="border-purple-200 bg-purple-50/30">
-        <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Play className="w-5 h-5 text-purple-600" />
+      <Card className="border-violet-200 dark:border-violet-800 bg-violet-50/30 dark:bg-violet-900/10">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Play className="w-5 h-5 text-violet-600 dark:text-violet-400" />
           Scenariosimulatör
         </h3>
 
@@ -465,10 +465,10 @@ export default function NegotiationTab() {
                   setSelectedScenario(scenario)
                   setShowScenario(true)
                 }}
-                className="p-4 bg-white rounded-xl border border-purple-200 hover:border-purple-400 hover:shadow-md transition-all text-left group"
+                className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-violet-200 dark:border-violet-700 hover:border-violet-400 dark:hover:border-violet-500 hover:shadow-md transition-all text-left group"
               >
-                <p className="font-medium text-slate-900 group-hover:text-purple-600 transition-colors">{scenario.title}</p>
-                <p className="text-sm text-slate-600 mt-1">{scenario.description}</p>
+                <p className="font-medium text-gray-900 dark:text-gray-100 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">{scenario.title}</p>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{scenario.description}</p>
               </button>
             ))}
           </div>
@@ -480,54 +480,54 @@ export default function NegotiationTab() {
           >
             <button
               onClick={() => setShowScenario(false)}
-              className="text-sm text-slate-600 hover:text-slate-900 mb-4"
+              className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 mb-4"
             >
               ← Tillbaka till scenarion
             </button>
 
-            <div className="bg-white rounded-xl p-4 border border-purple-200">
-              <h4 className="font-semibold text-slate-900 mb-2">{selectedScenario.title}</h4>
-              <p className="text-sm text-slate-600 mb-4">{selectedScenario.description}</p>
+            <div className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-violet-200 dark:border-violet-700">
+              <h4 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">{selectedScenario.title}</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">{selectedScenario.description}</p>
 
               {/* Salary comparison */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
                 {selectedScenario.currentSalary > 0 && (
-                  <div className="bg-blue-50 rounded-lg p-3">
-                    <p className="text-xs text-slate-600 mb-1">Nuvarande</p>
-                    <p className="font-bold text-slate-900">{selectedScenario.currentSalary.toLocaleString('sv-SE')} kr</p>
+                  <div className="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-3">
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Nuvarande</p>
+                    <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.currentSalary.toLocaleString('sv-SE')} kr</p>
                   </div>
                 )}
-                <div className="bg-amber-50 rounded-lg p-3">
-                  <p className="text-xs text-slate-600 mb-1">Marknad</p>
-                  <p className="font-bold text-slate-900">{selectedScenario.marketRate.toLocaleString('sv-SE')} kr</p>
+                <div className="bg-amber-50 dark:bg-amber-900/30 rounded-lg p-3">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Marknad</p>
+                  <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.marketRate.toLocaleString('sv-SE')} kr</p>
                 </div>
-                <div className="bg-emerald-50 rounded-lg p-3">
-                  <p className="text-xs text-slate-600 mb-1">Målön</p>
-                  <p className="font-bold text-slate-900">{selectedScenario.targetSalary.toLocaleString('sv-SE')} kr</p>
+                <div className="bg-teal-50 dark:bg-teal-900/30 rounded-lg p-3">
+                  <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Målön</p>
+                  <p className="font-bold text-gray-900 dark:text-gray-100">{selectedScenario.targetSalary.toLocaleString('sv-SE')} kr</p>
                 </div>
               </div>
 
               {/* Analysis */}
-              <div className="p-3 bg-gradient-to-r from-purple-50 to-violet-50 rounded-lg border border-purple-200 mb-4">
-                <p className="text-sm font-medium text-slate-900 mb-2">Rekommendation</p>
-                <p className="text-sm text-slate-700">{selectedScenario.recommendation}</p>
+              <div className="p-3 bg-gradient-to-r from-violet-50 to-violet-100 dark:from-violet-900/20 dark:to-violet-800/20 rounded-lg border border-violet-200 dark:border-violet-700 mb-4">
+                <p className="text-sm font-medium text-gray-900 dark:text-gray-100 mb-2">Rekommendation</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">{selectedScenario.recommendation}</p>
               </div>
 
               {/* Salary gap visualization */}
               <div className="space-y-2">
-                <p className="text-sm font-medium text-slate-700">Löneintervall</p>
+                <p className="text-sm font-medium text-gray-700 dark:text-gray-300">Löneintervall</p>
                 {selectedScenario.currentSalary > 0 && (
                   <div>
                     <div className="flex justify-between text-xs mb-1">
-                      <span className="text-slate-600">Från nuvarande</span>
-                      <span className="font-medium text-slate-900">
+                      <span className="text-gray-600 dark:text-gray-400">Från nuvarande</span>
+                      <span className="font-medium text-gray-900 dark:text-gray-100">
                         +{selectedScenario.targetSalary - selectedScenario.currentSalary} kr
                         ({(((selectedScenario.targetSalary - selectedScenario.currentSalary) / selectedScenario.currentSalary) * 100).toFixed(1)}%)
                       </span>
                     </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-emerald-500"
+                        className="h-full bg-teal-500 dark:bg-teal-400"
                         style={{
                           width: `${Math.min(100, ((selectedScenario.targetSalary - selectedScenario.currentSalary) / selectedScenario.currentSalary) * 100)}%`
                         }}
@@ -537,14 +537,14 @@ export default function NegotiationTab() {
                 )}
                 <div>
                   <div className="flex justify-between text-xs mb-1">
-                    <span className="text-slate-600">Jämfört med marknad</span>
+                    <span className="text-gray-600 dark:text-gray-400">Jämfört med marknad</span>
                     <span className={cn(
                       'font-medium',
                       selectedScenario.targetSalary > selectedScenario.marketRate
-                        ? 'text-emerald-600'
+                        ? 'text-teal-600 dark:text-teal-400'
                         : selectedScenario.targetSalary < selectedScenario.marketRate
-                        ? 'text-amber-600'
-                        : 'text-slate-600'
+                        ? 'text-amber-600 dark:text-amber-400'
+                        : 'text-gray-600 dark:text-gray-400'
                     )}>
                       {selectedScenario.targetSalary > selectedScenario.marketRate
                         ? `+${selectedScenario.targetSalary - selectedScenario.marketRate} kr över marknad`
@@ -554,9 +554,9 @@ export default function NegotiationTab() {
                       }
                     </span>
                   </div>
-                  <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                  <div className="h-2 bg-stone-100 dark:bg-stone-600 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-purple-500"
+                      className="h-full bg-violet-500 dark:bg-violet-400"
                       style={{
                         width: `${(selectedScenario.targetSalary / selectedScenario.marketRate) * 100}%`,
                         maxWidth: '100%'
@@ -571,9 +571,9 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Tips Carousel */}
-      <Card className="bg-gradient-to-r from-amber-50 to-orange-50 border-amber-200">
-        <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Sparkles className="w-5 h-5 text-amber-600" />
+      <Card className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border-amber-200 dark:border-amber-700">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400" />
           Tips för dagen
         </h3>
 
@@ -584,25 +584,25 @@ export default function NegotiationTab() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
-              className="p-4 bg-white rounded-xl border border-amber-200 text-center min-h-24 flex items-center justify-center"
+              className="p-4 bg-white dark:bg-stone-700 rounded-xl border border-amber-200 dark:border-amber-700 text-center min-h-24 flex items-center justify-center"
             >
-              <p className="text-slate-800 font-medium">{TIPS_CAROUSEL[currentTipIndex]}</p>
+              <p className="text-gray-800 dark:text-gray-100 font-medium">{TIPS_CAROUSEL[currentTipIndex]}</p>
             </motion.div>
           </AnimatePresence>
 
           <div className="flex items-center justify-between mt-4">
             <button
               onClick={prevTip}
-              className="px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 rounded-lg transition-colors"
+              className="px-3 py-1 text-sm text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
             >
               ← Tidigare
             </button>
-            <span className="text-xs text-slate-600">
+            <span className="text-xs text-gray-600 dark:text-gray-400">
               {currentTipIndex + 1} / {TIPS_CAROUSEL.length}
             </span>
             <button
               onClick={nextTip}
-              className="px-3 py-1 text-sm text-amber-700 hover:bg-amber-100 rounded-lg transition-colors"
+              className="px-3 py-1 text-sm text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30 rounded-lg transition-colors"
             >
               Nästa →
             </button>
@@ -611,27 +611,27 @@ export default function NegotiationTab() {
       </Card>
 
       {/* Timing advice */}
-      <Card>
-        <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-amber-600" />
+      <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4 flex items-center gap-2">
+          <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
           När ska du förhandla?
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-            <p className="font-medium text-amber-900">Vid jobbstart</p>
-            <p className="text-sm text-amber-700 mt-1">Bästa tillfället att sätta rätt nivå</p>
+          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
+            <p className="font-medium text-amber-900 dark:text-amber-100">Vid jobbstart</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Bästa tillfället att sätta rätt nivå</p>
           </div>
-          <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-            <p className="font-medium text-amber-900">Årligt lönesamtal</p>
-            <p className="text-sm text-amber-700 mt-1">Planerat tillfälle - var förberedd</p>
+          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
+            <p className="font-medium text-amber-900 dark:text-amber-100">Årligt lönesamtal</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Planerat tillfälle - var förberedd</p>
           </div>
-          <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-            <p className="font-medium text-amber-900">Efter stora framgångar</p>
-            <p className="text-sm text-amber-700 mt-1">Dokumentera och kapitalisera</p>
+          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
+            <p className="font-medium text-amber-900 dark:text-amber-100">Efter stora framgångar</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Dokumentera och kapitalisera</p>
           </div>
-          <div className="p-4 bg-amber-50 rounded-xl border border-amber-100">
-            <p className="font-medium text-amber-900">Vid nya ansvar</p>
-            <p className="text-sm text-amber-700 mt-1">Mer ansvar = mer kompensation</p>
+          <div className="p-4 bg-amber-50 dark:bg-amber-900/20 rounded-xl border border-amber-100 dark:border-amber-800">
+            <p className="font-medium text-amber-900 dark:text-amber-100">Vid nya ansvar</p>
+            <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">Mer ansvar = mer kompensation</p>
           </div>
         </div>
       </Card>
