@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { navGroups, adminNavItems, consultantNavItems, markFeatureVisited, shouldShowBadge, type NavItem } from './navigation'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { ChevronDown } from '@/components/ui/icons'
+import { ChevronDown, LogOut, Settings } from '@/components/ui/icons'
 
 interface SidebarProps {
   onClose?: () => void
@@ -15,14 +15,12 @@ export function Sidebar({ onClose }: SidebarProps) {
   const { t } = useTranslation()
   const { profile, signOut } = useAuthStore()
   const [isExpanded, setIsExpanded] = useState(true)
-  const [expandedGroups, setExpandedGroups] = useState<string[]>(['job-search', 'development', 'wellbeing', 'resources'])
+  const [expandedGroups, setExpandedGroups] = useState<string[]>(['overview', 'job-search', 'development', 'wellbeing', 'resources'])
 
-  // Mark feature as visited when navigating
   useEffect(() => {
     markFeatureVisited(location.pathname)
   }, [location.pathname])
 
-  // Använd activeRole för att avgöra vilken vy som visas
   const activeRole = profile?.activeRole || profile?.role || 'USER'
   const isSuperAdmin = activeRole === 'SUPERADMIN'
   const isAdmin = activeRole === 'ADMIN' || isSuperAdmin
@@ -38,7 +36,7 @@ export function Sidebar({ onClose }: SidebarProps) {
   }
 
   const Tooltip = ({ children }: { children: React.ReactNode }) => (
-    <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity">
+    <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
       {children}
     </div>
   )
@@ -62,21 +60,6 @@ export function Sidebar({ onClose }: SidebarProps) {
   }) => {
     const showBadge = item && shouldShowBadge(item)
 
-    const colors = {
-      default: isActive
-        ? 'bg-white/15 text-white'
-        : 'text-white/60 hover:text-white hover:bg-white/10',
-      admin: isActive
-        ? 'bg-amber-500/20 text-amber-200'
-        : 'text-amber-200/50 hover:text-amber-200 hover:bg-amber-500/10',
-      consultant: isActive
-        ? 'bg-teal-500/20 text-teal-200'
-        : 'text-teal-200/50 hover:text-teal-200 hover:bg-teal-500/10',
-      danger: isActive
-        ? 'bg-red-500/20 text-red-200'
-        : 'text-red-200/50 hover:text-red-200 hover:bg-red-500/10',
-    }
-
     return (
       <Link
         to={to}
@@ -86,17 +69,30 @@ export function Sidebar({ onClose }: SidebarProps) {
         }}
         className={cn(
           'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
-          colors[variant],
+          // Default variant - pastel teal
+          variant === 'default' && (isActive
+            ? 'bg-teal-100 text-teal-800 font-medium shadow-sm'
+            : 'text-gray-600 hover:bg-teal-50 hover:text-teal-700'),
+          // Admin variant - warm amber
+          variant === 'admin' && (isActive
+            ? 'bg-amber-100 text-amber-800 font-medium'
+            : 'text-amber-700/70 hover:bg-amber-50 hover:text-amber-800'),
+          // Consultant variant - soft violet
+          variant === 'consultant' && (isActive
+            ? 'bg-violet-100 text-violet-800 font-medium'
+            : 'text-violet-700/70 hover:bg-violet-50 hover:text-violet-800'),
+          // Danger variant
+          variant === 'danger' && 'text-rose-600/70 hover:bg-rose-50 hover:text-rose-700',
           !isExpanded && 'justify-center px-2'
         )}
       >
-        <Icon className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-6 h-6')} />
+        <Icon className={cn('w-5 h-5 flex-shrink-0 transition-colors', !isExpanded && 'w-5 h-5')} />
         {isExpanded ? (
-          <span className="text-sm font-medium truncate flex items-center gap-2">
+          <span className="text-sm truncate flex items-center gap-2">
             {label}
             {showBadge && (
-              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-amber-400 text-amber-900 rounded-full">
-                Ny!
+              <span className="px-1.5 py-0.5 text-[10px] font-bold bg-teal-500 text-white rounded-full">
+                Ny
               </span>
             )}
           </span>
@@ -112,32 +108,33 @@ export function Sidebar({ onClose }: SidebarProps) {
   return (
     <aside
       className={cn(
-        'h-full bg-[#4c37d2] flex flex-col transition-all duration-300',
+        'h-full flex flex-col transition-all duration-300',
+        'bg-gradient-to-b from-teal-50 via-white to-stone-50',
+        'border-r border-teal-100',
         isExpanded ? 'w-64' : 'w-16'
       )}
     >
       {/* Logo */}
-      <div className="p-4 flex items-center justify-between">
+      <div className="p-4 flex items-center justify-between border-b border-teal-100/50">
         <Link to="/" className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center flex-shrink-0">
-            <span className="text-[#4c37d2] font-bold text-lg">J</span>
+          <div className="w-9 h-9 bg-gradient-to-br from-teal-500 to-teal-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md shadow-teal-200">
+            <span className="text-white font-bold text-lg">J</span>
           </div>
           {isExpanded && (
-            <span className="text-white font-semibold text-lg">Jobin</span>
+            <span className="text-gray-800 font-semibold text-lg tracking-tight">Jobin</span>
           )}
         </Link>
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="text-white/60 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
+          className="text-gray-400 hover:text-teal-600 p-1.5 rounded-lg hover:bg-teal-50 transition-colors"
           aria-label={isExpanded ? t('sidebar.minimize') : t('sidebar.expand')}
           aria-expanded={isExpanded}
         >
           <svg
-            className={cn('w-5 h-5 transition-transform', !isExpanded && 'rotate-180')}
+            className={cn('w-4 h-4 transition-transform', !isExpanded && 'rotate-180')}
             fill="none"
             viewBox="0 0 24 24"
             stroke="currentColor"
-            aria-hidden="true"
           >
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
           </svg>
@@ -145,7 +142,7 @@ export function Sidebar({ onClose }: SidebarProps) {
       </div>
 
       {/* Navigation with Groups */}
-      <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-2">
+      <nav className="flex-1 overflow-y-auto px-3 py-3 space-y-1">
         {navGroups.map((group) => {
           const isGroupExpanded = expandedGroups.includes(group.id)
 
@@ -155,12 +152,12 @@ export function Sidebar({ onClose }: SidebarProps) {
               {isExpanded && (
                 <button
                   onClick={() => toggleGroup(group.id)}
-                  className="w-full flex items-center justify-between px-3 py-1.5 text-xs font-semibold text-white/40 uppercase tracking-wider hover:text-white/60 transition-colors"
+                  className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-semibold text-teal-700/70 uppercase tracking-wider hover:text-teal-800 transition-colors rounded-lg hover:bg-teal-50/50"
                 >
                   <span>{t(group.labelKey)}</span>
                   <ChevronDown
                     className={cn(
-                      'w-4 h-4 transition-transform',
+                      'w-3.5 h-3.5 transition-transform text-teal-500',
                       !isGroupExpanded && '-rotate-90'
                     )}
                   />
@@ -189,11 +186,11 @@ export function Sidebar({ onClose }: SidebarProps) {
           )
         })}
 
-        {/* Consultant Section - visas om aktiv roll är CONSULTANT, ADMIN eller SUPERADMIN */}
+        {/* Consultant Section */}
         {isConsultant && !isUser && (
-          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-0' : 'mx-0')}>
+          <div className={cn('mt-3 pt-3 border-t border-teal-100', isExpanded ? 'mx-0' : 'mx-0')}>
             {isExpanded && (
-              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-3">
+              <p className="text-[11px] font-semibold text-violet-600/70 uppercase tracking-wider mb-1.5 px-3">
                 {t('sidebar.consultantSection')}
               </p>
             )}
@@ -215,11 +212,11 @@ export function Sidebar({ onClose }: SidebarProps) {
           </div>
         )}
 
-        {/* Admin Section - visas om aktiv roll är ADMIN eller SUPERADMIN */}
+        {/* Admin Section */}
         {isAdmin && (
-          <div className={cn('mt-2 pt-2 border-t border-white/10', isExpanded ? 'mx-0' : 'mx-0')}>
+          <div className={cn('mt-3 pt-3 border-t border-teal-100', isExpanded ? 'mx-0' : 'mx-0')}>
             {isExpanded && (
-              <p className="text-xs font-semibold text-white/30 uppercase tracking-wider mb-1 px-3">
+              <p className="text-[11px] font-semibold text-amber-600/70 uppercase tracking-wider mb-1.5 px-3">
                 {t('sidebar.adminSection')}
               </p>
             )}
@@ -243,12 +240,12 @@ export function Sidebar({ onClose }: SidebarProps) {
       </nav>
 
       {/* User Profile & Logout */}
-      <div className="p-3 border-t border-white/10">
-        {/* Visa aktiv roll */}
+      <div className="p-3 border-t border-teal-100 bg-gradient-to-b from-transparent to-teal-50/50">
+        {/* Show active role */}
         {isExpanded && (
-          <div className="mb-2 px-3 py-1.5 bg-white/5 rounded-lg">
-            <p className="text-xs text-white/40 uppercase tracking-wider">{t('roles.activeRole')}</p>
-            <p className="text-xs font-medium text-white">
+          <div className="mb-2 px-3 py-2 bg-teal-50 rounded-lg border border-teal-100">
+            <p className="text-[10px] text-teal-600 uppercase tracking-wider font-medium">{t('roles.activeRole')}</p>
+            <p className="text-xs font-semibold text-teal-800">
               {activeRole === 'SUPERADMIN' ? t('roles.superadmin') :
                activeRole === 'ADMIN' ? t('roles.admin') :
                activeRole === 'CONSULTANT' ? t('roles.consultant') : t('roles.participant')}
@@ -256,59 +253,55 @@ export function Sidebar({ onClose }: SidebarProps) {
           </div>
         )}
 
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center flex-shrink-0 overflow-hidden">
+        <div className="flex items-center gap-3 mb-3 px-1">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-teal-500 flex items-center justify-center flex-shrink-0 overflow-hidden shadow-md shadow-teal-200">
             {user?.avatar_url ? (
               <img src={user.avatar_url} alt="" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-white text-sm font-medium">
+              <span className="text-white text-sm font-semibold">
                 {user?.first_name?.[0] || user?.email?.[0] || '?'}
               </span>
             )}
           </div>
           {isExpanded && (
             <div className="flex-1 min-w-0">
-              <p className="text-white text-sm font-medium truncate">
+              <p className="text-gray-800 text-sm font-medium truncate">
                 {user?.first_name || user?.email}
               </p>
-              <p className="text-white/40 text-xs truncate leading-tight">
+              <p className="text-gray-500 text-xs truncate leading-tight">
                 {user?.email}
               </p>
             </div>
           )}
         </div>
 
-        <NavLinkComponent
-          to="/settings"
-          icon={() => (
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          )}
-          label={t('nav.settings')}
-          isActive={location.pathname === '/settings'}
-        />
+        <div className="space-y-0.5">
+          <NavLinkComponent
+            to="/settings"
+            icon={Settings}
+            label={t('nav.settings')}
+            isActive={location.pathname === '/settings'}
+          />
 
-        <button
-          onClick={() => signOut()}
-          className={cn(
-            'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 text-red-200/50 hover:text-red-200 hover:bg-red-500/10 group relative',
-            !isExpanded && 'justify-center px-2'
-          )}
-          aria-label={t('nav.logout')}
-        >
-          <svg className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-6 h-6')} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-          </svg>
-          {isExpanded ? (
-            <span className="text-sm font-medium">{t('nav.logout')}</span>
-          ) : (
-            <div className="absolute left-full ml-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity" role="tooltip">
-              {t('nav.logout')}
-            </div>
-          )}
-        </button>
+          <button
+            onClick={() => signOut()}
+            className={cn(
+              'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200',
+              'text-rose-600/70 hover:bg-rose-50 hover:text-rose-700 group relative',
+              !isExpanded && 'justify-center px-2'
+            )}
+            aria-label={t('nav.logout')}
+          >
+            <LogOut className={cn('w-5 h-5 flex-shrink-0', !isExpanded && 'w-5 h-5')} />
+            {isExpanded ? (
+              <span className="text-sm">{t('nav.logout')}</span>
+            ) : (
+              <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-gray-800 text-white text-xs rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-50 transition-opacity shadow-lg">
+                {t('nav.logout')}
+              </div>
+            )}
+          </button>
+        </div>
       </div>
     </aside>
   )

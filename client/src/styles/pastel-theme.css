@@ -1,0 +1,268 @@
+/**
+ * Pastel Theme - "Gentle Journey"
+ * A warm, supportive color palette for job seekers
+ * Designed to feel calming and encouraging, not overwhelming
+ */
+
+:root {
+  /* ========================================
+     PASTEL COLOR PALETTE
+     ======================================== */
+
+  /* Primary - Soft Teal (Sidebar & Primary Actions) */
+  --pastel-teal-50: #f0fdfa;
+  --pastel-teal-100: #ccfbf1;
+  --pastel-teal-200: #99f6e4;
+  --pastel-teal-300: #5eead4;
+  --pastel-teal-400: #2dd4bf;
+  --pastel-teal-500: #14b8a6;
+  --pastel-teal-600: #0d9488;
+  --pastel-teal-700: #0f766e;
+
+  /* Warm Cream - Page backgrounds */
+  --pastel-cream-50: #fefdfb;
+  --pastel-cream-100: #fdf9f3;
+  --pastel-cream-200: #faf3e8;
+
+  /* Soft Sage - Success states */
+  --pastel-sage-50: #f0fdf4;
+  --pastel-sage-100: #dcfce7;
+  --pastel-sage-200: #bbf7d0;
+  --pastel-sage-500: #22c55e;
+  --pastel-sage-600: #16a34a;
+
+  /* Warm Peach - Highlights & Attention */
+  --pastel-peach-50: #fff7ed;
+  --pastel-peach-100: #ffedd5;
+  --pastel-peach-200: #fed7aa;
+  --pastel-peach-500: #f97316;
+
+  /* Soft Lavender - Subtle accents */
+  --pastel-lavender-50: #faf5ff;
+  --pastel-lavender-100: #f3e8ff;
+  --pastel-lavender-200: #e9d5ff;
+  --pastel-lavender-500: #a855f7;
+
+  /* Soft Rose - Gentle warnings */
+  --pastel-rose-50: #fff1f2;
+  --pastel-rose-100: #ffe4e6;
+  --pastel-rose-200: #fecdd3;
+  --pastel-rose-500: #f43f5e;
+
+  /* Soft Sky - Information */
+  --pastel-sky-50: #f0f9ff;
+  --pastel-sky-100: #e0f2fe;
+  --pastel-sky-200: #bae6fd;
+  --pastel-sky-500: #0ea5e9;
+
+  /* Warm Gray - Text & Borders */
+  --pastel-gray-50: #fafaf9;
+  --pastel-gray-100: #f5f5f4;
+  --pastel-gray-200: #e7e5e4;
+  --pastel-gray-300: #d6d3d1;
+  --pastel-gray-400: #a8a29e;
+  --pastel-gray-500: #78716c;
+  --pastel-gray-600: #57534e;
+  --pastel-gray-700: #44403c;
+  --pastel-gray-800: #292524;
+  --pastel-gray-900: #1c1917;
+
+  /* ========================================
+     SEMANTIC MAPPINGS
+     ======================================== */
+
+  /* Sidebar */
+  --sidebar-bg: var(--pastel-teal-50);
+  --sidebar-bg-hover: var(--pastel-teal-100);
+  --sidebar-text: var(--pastel-teal-700);
+  --sidebar-text-muted: var(--pastel-teal-600);
+  --sidebar-active-bg: var(--pastel-teal-100);
+  --sidebar-active-text: var(--pastel-teal-700);
+  --sidebar-border: var(--pastel-teal-200);
+
+  /* Module Cards */
+  --module-cv-bg: var(--pastel-sky-50);
+  --module-cv-border: var(--pastel-sky-200);
+  --module-cv-accent: var(--pastel-sky-500);
+
+  --module-career-bg: var(--pastel-lavender-50);
+  --module-career-border: var(--pastel-lavender-200);
+  --module-career-accent: var(--pastel-lavender-500);
+
+  --module-wellness-bg: var(--pastel-sage-50);
+  --module-wellness-border: var(--pastel-sage-200);
+  --module-wellness-accent: var(--pastel-sage-500);
+
+  --module-jobs-bg: var(--pastel-peach-50);
+  --module-jobs-border: var(--pastel-peach-200);
+  --module-jobs-accent: var(--pastel-peach-500);
+}
+
+/* ========================================
+   SIDEBAR PASTEL THEME
+   ======================================== */
+
+.sidebar-pastel {
+  background: linear-gradient(180deg, var(--pastel-teal-50) 0%, var(--pastel-cream-50) 100%);
+  border-right: 1px solid var(--pastel-teal-100);
+}
+
+.sidebar-pastel .nav-link {
+  color: var(--pastel-gray-600);
+  transition: all 0.2s ease;
+}
+
+.sidebar-pastel .nav-link:hover {
+  background-color: var(--pastel-teal-100);
+  color: var(--pastel-teal-700);
+}
+
+.sidebar-pastel .nav-link.active {
+  background-color: var(--pastel-teal-100);
+  color: var(--pastel-teal-700);
+  font-weight: 600;
+}
+
+.sidebar-pastel .nav-group-label {
+  color: var(--pastel-teal-600);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+}
+
+/* ========================================
+   MODULE CARDS
+   ======================================== */
+
+.module-card {
+  background: white;
+  border-radius: 1rem;
+  border: 1px solid var(--pastel-gray-200);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.module-card:hover {
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.module-card-header {
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.module-card-header:hover {
+  background-color: var(--pastel-gray-50);
+}
+
+.module-card-content {
+  padding: 0 1.25rem 1.25rem;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Module variants */
+.module-card.cv { border-left: 4px solid var(--module-cv-accent); }
+.module-card.cv .module-card-header { background: var(--module-cv-bg); }
+
+.module-card.career { border-left: 4px solid var(--module-career-accent); }
+.module-card.career .module-card-header { background: var(--module-career-bg); }
+
+.module-card.wellness { border-left: 4px solid var(--module-wellness-accent); }
+.module-card.wellness .module-card-header { background: var(--module-wellness-bg); }
+
+.module-card.jobs { border-left: 4px solid var(--module-jobs-accent); }
+.module-card.jobs .module-card-header { background: var(--module-jobs-bg); }
+
+/* ========================================
+   PASTEL UTILITIES
+   ======================================== */
+
+.bg-pastel-teal { background-color: var(--pastel-teal-50); }
+.bg-pastel-cream { background-color: var(--pastel-cream-50); }
+.bg-pastel-sage { background-color: var(--pastel-sage-50); }
+.bg-pastel-peach { background-color: var(--pastel-peach-50); }
+.bg-pastel-lavender { background-color: var(--pastel-lavender-50); }
+.bg-pastel-sky { background-color: var(--pastel-sky-50); }
+.bg-pastel-rose { background-color: var(--pastel-rose-50); }
+
+.text-pastel-teal { color: var(--pastel-teal-600); }
+.text-pastel-sage { color: var(--pastel-sage-600); }
+.text-pastel-peach { color: var(--pastel-peach-500); }
+.text-pastel-lavender { color: var(--pastel-lavender-500); }
+.text-pastel-sky { color: var(--pastel-sky-500); }
+
+.border-pastel-teal { border-color: var(--pastel-teal-200); }
+.border-pastel-sage { border-color: var(--pastel-sage-200); }
+.border-pastel-peach { border-color: var(--pastel-peach-200); }
+.border-pastel-lavender { border-color: var(--pastel-lavender-200); }
+
+/* ========================================
+   GENTLE GRADIENTS
+   ======================================== */
+
+.gradient-gentle-teal {
+  background: linear-gradient(135deg, var(--pastel-teal-50) 0%, var(--pastel-teal-100) 100%);
+}
+
+.gradient-gentle-warm {
+  background: linear-gradient(135deg, var(--pastel-cream-50) 0%, var(--pastel-peach-50) 100%);
+}
+
+.gradient-gentle-cool {
+  background: linear-gradient(135deg, var(--pastel-sky-50) 0%, var(--pastel-lavender-50) 100%);
+}
+
+.gradient-gentle-nature {
+  background: linear-gradient(135deg, var(--pastel-sage-50) 0%, var(--pastel-teal-50) 100%);
+}
+
+/* ========================================
+   PROGRESS & STATUS INDICATORS
+   ======================================== */
+
+.progress-pastel {
+  background-color: var(--pastel-gray-100);
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.progress-pastel-bar {
+  background: linear-gradient(90deg, var(--pastel-teal-400) 0%, var(--pastel-teal-500) 100%);
+  border-radius: 9999px;
+  transition: width 0.5s ease;
+}
+
+.status-badge-success {
+  background-color: var(--pastel-sage-100);
+  color: var(--pastel-sage-600);
+  border: 1px solid var(--pastel-sage-200);
+}
+
+.status-badge-warning {
+  background-color: var(--pastel-peach-100);
+  color: var(--pastel-peach-500);
+  border: 1px solid var(--pastel-peach-200);
+}
+
+.status-badge-info {
+  background-color: var(--pastel-sky-100);
+  color: var(--pastel-sky-500);
+  border: 1px solid var(--pastel-sky-200);
+}

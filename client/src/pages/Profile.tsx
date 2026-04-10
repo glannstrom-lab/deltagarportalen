@@ -122,7 +122,7 @@ function CompactInput({ label, ...props }: { label: string } & React.InputHTMLAt
         {...props}
         className={cn(
           'w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm',
-          'focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400',
+          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400',
           'placeholder:text-slate-400 transition-all',
           props.disabled && 'bg-slate-50 text-slate-500',
           props.className
@@ -140,7 +140,7 @@ function CompactSelect({ label, options, ...props }: { label: string; options: {
         {...props}
         className={cn(
           'w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm',
-          'focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400',
+          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400',
           'transition-all',
           props.className
         )}
@@ -162,7 +162,7 @@ function CompactTextarea({ label, ...props }: { label: string } & React.Textarea
         {...props}
         className={cn(
           'w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm resize-none',
-          'focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400',
+          'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400',
           'placeholder:text-slate-400 transition-all',
           props.className
         )}
@@ -207,8 +207,8 @@ function ChipSelect({
             'rounded-full border font-medium transition-all',
             size === 'sm' ? 'px-2.5 py-1 text-xs' : 'px-3 py-1.5 text-sm',
             isSelected(opt.value)
-              ? 'bg-indigo-100 border-indigo-300 text-indigo-700'
-              : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+              ? 'bg-teal-100 border-teal-300 text-teal-700'
+              : 'bg-white border-slate-200 text-slate-600 hover:border-teal-200'
           )}
         >
           {opt.label}
@@ -252,9 +252,9 @@ function TagInput({
     <div>
       <div className="flex flex-wrap gap-1.5 mb-2">
         {tags.map((tag, i) => (
-          <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded-full text-xs font-medium">
+          <span key={i} className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full text-xs font-medium">
             {tag}
-            <button onClick={() => onRemove(i)} className="hover:bg-indigo-200 rounded-full p-0.5">
+            <button onClick={() => onRemove(i)} className="hover:bg-teal-200 rounded-full p-0.5">
               <X className="w-3 h-3" />
             </button>
           </span>
@@ -271,13 +271,13 @@ function TagInput({
               onBlur={() => setTimeout(() => setShowSuggestions(false), 150)}
               onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAdd(input))}
               placeholder={placeholder}
-              className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400"
+              className="flex-1 px-3 py-1.5 bg-white border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-400"
             />
             <button
               type="button"
               onClick={() => handleAdd(input)}
               disabled={!input.trim()}
-              className="px-2 py-1.5 bg-indigo-600 text-white rounded-lg text-sm disabled:opacity-50"
+              className="px-2 py-1.5 bg-teal-500 text-white rounded-lg text-sm disabled:opacity-50 hover:bg-teal-600 transition-colors"
             >
               <Plus className="w-4 h-4" />
             </button>
@@ -289,7 +289,7 @@ function TagInput({
                   key={s}
                   type="button"
                   onClick={() => handleAdd(s)}
-                  className="w-full px-3 py-1.5 text-left text-sm hover:bg-indigo-50 text-slate-700"
+                  className="w-full px-3 py-1.5 text-left text-sm hover:bg-teal-50 text-slate-700"
                 >
                   {s}
                 </button>
@@ -327,7 +327,7 @@ function ProgressSlider({
     <div>
       <div className="flex justify-between items-center mb-1">
         <span className="text-xs font-medium text-slate-600">{label}</span>
-        <span className="text-xs font-bold text-indigo-600">{value}%</span>
+        <span className="text-xs font-bold text-teal-600">{value}%</span>
       </div>
       <input
         type="range"
@@ -336,7 +336,7 @@ function ProgressSlider({
         step="5"
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-indigo-600"
+        className="w-full h-2 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
       />
     </div>
   )
@@ -576,7 +576,7 @@ export default function Profile() {
     return (
       <div className="min-h-screen bg-slate-50 flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" />
+          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" />
           <p className="text-slate-600">Laddar profil...</p>
         </div>
       </div>
@@ -585,16 +585,16 @@ export default function Profile() {
 
   return (
     <div className="min-h-screen bg-slate-50 pb-8">
-      {/* Compact Header */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      {/* Compact Header - Soft Teal Gradient */}
+      <div className="bg-gradient-to-r from-teal-500 to-teal-600 text-white">
         <div className="max-w-5xl mx-auto px-4 py-6">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
+              <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center shadow-lg">
                 <User className="w-8 h-8" />
               </div>
               <button
-                className="absolute -bottom-1 -right-1 w-6 h-6 bg-white text-indigo-600 rounded-lg flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
+                className="absolute -bottom-1 -right-1 w-6 h-6 bg-white text-teal-600 rounded-lg flex items-center justify-center shadow-lg hover:scale-110 transition-transform"
                 onClick={() => alert('Bilduppladdning kommer snart!')}
               >
                 <Camera className="w-3 h-3" />
@@ -604,11 +604,11 @@ export default function Profile() {
               <h1 className="text-xl font-bold truncate">
                 {formData.first_name || 'Välkommen!'} {formData.last_name}
               </h1>
-              <p className="text-indigo-200 text-sm truncate">{profile?.email}</p>
+              <p className="text-teal-100 text-sm truncate">{profile?.email}</p>
             </div>
-            <div className="hidden sm:flex items-center gap-2 bg-white/10 rounded-full px-3 py-1.5">
+            <div className="hidden sm:flex items-center gap-2 bg-white/15 rounded-full px-3 py-1.5">
               <div className="w-16 h-1.5 bg-white/30 rounded-full overflow-hidden">
-                <div className="h-full bg-white rounded-full" style={{ width: `${completion.percent}%` }} />
+                <div className="h-full bg-white rounded-full transition-all" style={{ width: `${completion.percent}%` }} />
               </div>
               <span className="text-xs font-medium">{completion.percent}%</span>
             </div>
@@ -627,8 +627,8 @@ export default function Profile() {
                 className={cn(
                   'flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all',
                   activeTab === tab.id
-                    ? 'bg-indigo-100 text-indigo-700'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    ? 'bg-teal-100 text-teal-700'
+                    : 'text-slate-600 hover:bg-teal-50'
                 )}
               >
                 {tab.icon}
@@ -638,7 +638,7 @@ export default function Profile() {
             {/* Sync indicator */}
             <div className="ml-auto flex items-center gap-1.5 px-2 text-xs">
               {cloudSyncing ? (
-                <><Loader2 className="w-3 h-3 animate-spin text-indigo-600" /><span className="text-indigo-600">Sparar</span></>
+                <><Loader2 className="w-3 h-3 animate-spin text-teal-600" /><span className="text-teal-600">Sparar</span></>
               ) : cloudSynced ? (
                 <><Cloud className="w-3 h-3 text-emerald-600" /><span className="text-emerald-600">Sparat</span></>
               ) : (
@@ -698,7 +698,7 @@ export default function Profile() {
                     )
                   })}
                 </div>
-                <Link to="/interest-guide" className="inline-flex items-center gap-1 mt-3 text-xs text-indigo-600 hover:underline">
+                <Link to="/interest-guide" className="inline-flex items-center gap-1 mt-3 text-xs text-teal-600 hover:underline">
                   Gör om guiden <ChevronRight className="w-3 h-3" />
                 </Link>
               </SectionCard>
@@ -796,7 +796,7 @@ export default function Profile() {
                     type="checkbox"
                     checked={laborMarketStatus?.registeredAtAF || false}
                     onChange={e => updateLaborMarketStatus({ registeredAtAF: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
                   />
                   <span className="text-sm">Registrerad hos Arbetsförmedlingen</span>
                 </label>
@@ -805,7 +805,7 @@ export default function Profile() {
                     type="checkbox"
                     checked={laborMarketStatus?.participatingInProgram || false}
                     onChange={e => updateLaborMarketStatus({ participatingInProgram: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
                   />
                   <span className="text-sm">Deltar i program</span>
                 </label>
@@ -822,7 +822,7 @@ export default function Profile() {
                     type="checkbox"
                     checked={laborMarketStatus?.hasActivitySupport || false}
                     onChange={e => updateLaborMarketStatus({ hasActivitySupport: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                    className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500"
                   />
                   <span className="text-sm">Har aktivitetsstöd/ersättning</span>
                 </label>
@@ -847,7 +847,7 @@ export default function Profile() {
                       type="checkbox"
                       checked={mobility?.hasCar || false}
                       onChange={e => updateMobility({ hasCar: e.target.checked })}
-                      className="w-4 h-4 rounded border-slate-300 text-indigo-600"
+                      className="w-4 h-4 rounded border-slate-300 text-teal-600"
                     />
                     <span className="text-sm">Har bil</span>
                   </label>
@@ -856,7 +856,7 @@ export default function Profile() {
                       type="checkbox"
                       checked={mobility?.willingToRelocate || false}
                       onChange={e => updateMobility({ willingToRelocate: e.target.checked })}
-                      className="w-4 h-4 rounded border-slate-300 text-indigo-600"
+                      className="w-4 h-4 rounded border-slate-300 text-teal-600"
                     />
                     <span className="text-sm">Kan flytta</span>
                   </label>
@@ -868,7 +868,7 @@ export default function Profile() {
                     min="15" max="120" step="15"
                     value={mobility?.maxCommuteMinutes || 45}
                     onChange={e => updateMobility({ maxCommuteMinutes: parseInt(e.target.value) })}
-                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
               </div>
@@ -979,7 +979,7 @@ export default function Profile() {
                     min="1" max="10" step="1"
                     value={therapistData?.energyLevel?.sustainableHoursPerDay || 8}
                     onChange={e => updateTherapistData({ energyLevel: { ...therapistData?.energyLevel, sustainableHoursPerDay: parseInt(e.target.value) }})}
-                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
                 <div>
@@ -991,7 +991,7 @@ export default function Profile() {
                     min="1" max="7" step="1"
                     value={therapistData?.energyLevel?.sustainableDaysPerWeek || 5}
                     onChange={e => updateTherapistData({ energyLevel: { ...therapistData?.energyLevel, sustainableDaysPerWeek: parseInt(e.target.value) }})}
-                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-indigo-600"
+                    className="w-full h-1.5 bg-slate-200 rounded-full appearance-none cursor-pointer accent-teal-500"
                   />
                 </div>
                 <div>
@@ -1043,7 +1043,7 @@ export default function Profile() {
                     type="checkbox"
                     checked={physicalRequirements?.hasAdaptationNeeds || false}
                     onChange={e => updatePhysicalRequirements({ hasAdaptationNeeds: e.target.checked })}
-                    className="w-4 h-4 rounded border-slate-300 text-indigo-600"
+                    className="w-4 h-4 rounded border-slate-300 text-teal-600"
                   />
                   <span className="text-sm">Jag har anpassningsbehov</span>
                 </label>
@@ -1214,7 +1214,7 @@ export default function Profile() {
                     type="checkbox"
                     checked={consultantData?.internship?.active || false}
                     onChange={e => updateConsultantData({ internship: { ...consultantData?.internship, active: e.target.checked }})}
-                    className="w-4 h-4 rounded border-slate-300 text-indigo-600"
+                    className="w-4 h-4 rounded border-slate-300 text-teal-600"
                   />
                   <span className="text-sm">Pågående praktik/arbetsträning</span>
                 </label>
@@ -1266,7 +1266,7 @@ export default function Profile() {
                         steps[i] = { ...steps[i], completed: e.target.checked }
                         updateConsultantData({ nextSteps: steps })
                       }}
-                      className="w-4 h-4 rounded border-slate-300 text-indigo-600"
+                      className="w-4 h-4 rounded border-slate-300 text-teal-600"
                     />
                     <span className={cn('flex-1 text-sm', step.completed && 'line-through text-slate-400')}>{step.activity}</span>
                     <span className="text-xs text-slate-500">{step.date}</span>
