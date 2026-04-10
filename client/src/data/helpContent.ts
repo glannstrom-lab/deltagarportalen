@@ -9,28 +9,36 @@ import { HelpContent } from '@/components/HelpButton'
 export const helpContent: Record<string, HelpContent> = {
   dashboard: {
     title: 'Hjälp - Översikt',
-    description: 'Din startpunkt för jobbsökandet',
+    description: 'Din startpunkt med alla verktyg samlade',
     tips: [
-      'Följ de 6 stegen i ordning för bästa resultat',
-      'Grön bock visar att ett steg är klart',
-      'Klicka på ett steg för att gå direkt dit'
+      'Klicka på en kategori-rubrik för att expandera eller fälla ihop den',
+      'Grön bock visar att ett steg i "Kom igång" är klart',
+      'Alla tre kategorier är expanderade som standard'
     ],
     faqs: [
       {
-        question: 'Vad är de 6 onboarding-stegen?',
-        answer: '1. Profil - fyll i dina uppgifter. 2. Intresseguide - upptäck vilka yrken som passar dig. 3. CV - skapa ett professionellt CV. 4. Karriär - utforska karriärvägar. 5. Jobbsök - hitta lediga jobb. 6. Personligt brev - skriv ansökningar.'
+        question: 'Vilka kategorier finns på översiktssidan?',
+        answer: 'Det finns tre kategorier: 1. Kom igång - dina första steg med profil, CV, jobbsök mm. 2. Kompetensutveckling - karriär, utbildning, LinkedIn mm. 3. Planera och dokumentera - kalender, dagbok, hälsa mm.'
       },
       {
-        question: 'Hur markeras ett steg som klart?',
-        answer: 'Stegen markeras automatiskt när du har genomfört dem. T.ex. markeras CV-steget när du har fyllt i grundläggande CV-information, och Intresseguide när du har slutfört testet.'
+        question: 'Vad innehåller "Kom igång"?',
+        answer: 'Min profil, Intresseguiden, Mitt CV, Sök jobb, Personligt brev, Spontanansökningar och Mina ansökningar. Dessa är grunderna för att komma igång med jobbsökningen.'
       },
       {
-        question: 'Måste jag göra stegen i ordning?',
-        answer: 'Nej, du kan hoppa mellan stegen som du vill. Men vi rekommenderar att börja med Profil och Intresseguiden för att få bättre matchningar senare.'
+        question: 'Vad innehåller "Kompetensutveckling"?',
+        answer: 'Karriär, Utbildning, Personligt varumärke, Kompetensanalys, LinkedIn, Kunskapsbank och Övningar. Här utvecklar du dina färdigheter och planerar din karriär.'
       },
       {
-        question: 'Vad händer när alla steg är klara?',
-        answer: 'När alla 6 steg är klara får du tillgång till "Min Jobbresa" där du kan följa hela din jobbsökningsprocess.'
+        question: 'Vad innehåller "Planera och dokumentera"?',
+        answer: 'Kalender, Dagbok, Hälsa, Internationell guide och Mina resurser. Här planerar du dina aktiviteter och håller koll på ditt mående.'
+      },
+      {
+        question: 'Hur fungerar progress-indikatorn?',
+        answer: 'I kategorin "Kom igång" visas hur många av 5 steg du har klarat. Grön bock på en ruta betyder att steget är klart. Progress sparas automatiskt till molnet.'
+      },
+      {
+        question: 'Kan jag fälla ihop kategorier?',
+        answer: 'Ja! Klicka på rubrik-raden för att expandera eller fälla ihop en kategori. Pilen visar om kategorin är öppen eller stängd.'
       }
     ]
   },
@@ -428,14 +436,14 @@ export const helpContent: Record<string, HelpContent> = {
     title: 'Hjälp',
     description: 'Vägledning och support',
     tips: [
-      'Följ onboarding-stegen på översiktssidan',
+      'Börja med "Kom igång" på översiktssidan',
       'Dina framsteg sparas automatiskt till molnet',
       'Kontakta din handledare om du har frågor'
     ],
     faqs: [
       {
         question: 'Hur kommer jag igång?',
-        answer: 'Börja på Översiktssidan och följ de 6 onboarding-stegen: Profil → Intresseguide → CV → Karriär → Jobbsök → Personligt brev.'
+        answer: 'Börja på Översiktssidan med kategorin "Kom igång". Där hittar du Profil, Intresseguiden, CV, Jobbsök, Personligt brev, Spontanansökningar och Mina ansökningar.'
       },
       {
         question: 'Sparas min information automatiskt?',
