@@ -1,6 +1,5 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
-  Search,
   Moon,
   Sun,
   User,
@@ -8,7 +7,6 @@ import {
   Settings,
   HelpCircle,
   ChevronDown,
-  Flame,
 } from '@/components/ui/icons'
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -29,36 +27,15 @@ interface UserProfile {
 
 export function TopBar() {
   const { isDark, toggleDarkMode } = useTheme()
-  const { t, i18n } = useTranslation()
-  const [currentDate, setCurrentDate] = useState('')
-  const [searchQuery, setSearchQuery] = useState('')
+  const { t } = useTranslation()
   const [showUserMenu, setShowUserMenu] = useState(false)
   const [profile, setProfile] = useState<UserProfile | null>(null)
-  const [streak, setStreak] = useState(0)
-  const location = useLocation()
   const navigate = useNavigate()
   const { signOut, user } = useAuthStore()
 
   useEffect(() => {
-    // Formatera datum baserat på aktuellt språk
-    const updateDate = () => {
-      const date = new Date()
-      const options: Intl.DateTimeFormatOptions = {
-        weekday: 'short',
-        day: 'numeric',
-        month: 'short',
-      }
-      const locale = i18n.language === 'sv' ? 'sv-SE' : 'en-GB'
-      setCurrentDate(date.toLocaleDateString(locale, options))
-    }
-    updateDate()
-
-    // Ladda profil
     loadProfile()
-
-    // Ladda streak
-    loadStreak()
-  }, [i18n.language])
+  }, [user])
 
   const loadProfile = async () => {
     if (!user) return
@@ -70,89 +47,27 @@ export function TopBar() {
     if (data) setProfile(data)
   }
 
-  const loadStreak = async () => {
-    // Hämta från localStorage för nu (kan flyttas till databas senare)
-    const savedStreak = localStorage.getItem('user_streak')
-    const lastVisit = localStorage.getItem('last_visit_date')
-    const today = new Date().toDateString()
-    
-    if (lastVisit === today) {
-      setStreak(parseInt(savedStreak || '0'))
-    } else if (lastVisit === new Date(Date.now() - 86400000).toDateString()) {
-      // Besökte igår - fortsätt streak
-      const newStreak = parseInt(savedStreak || '0') + 1
-      setStreak(newStreak)
-      localStorage.setItem('user_streak', newStreak.toString())
-      localStorage.setItem('last_visit_date', today)
-    } else {
-      // Bröt streak
-      setStreak(1)
-      localStorage.setItem('user_streak', '1')
-      localStorage.setItem('last_visit_date', today)
-    }
-  }
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      navigate(`/job-search?q=${encodeURIComponent(searchQuery)}`)
-    }
-  }
-
   const handleLogout = async () => {
     await signOut()
     navigate('/login')
   }
 
-  // Bestäm vilken sökplaceholder som ska visas baserat på sida
-  const getSearchPlaceholder = () => {
-    const path = location.pathname
-    if (path.includes('knowledge')) return t('topbar.searchArticles')
-    if (path.includes('job')) return t('topbar.searchJobs')
-    return t('topbar.searchPlaceholder')
-  }
-
   return (
-    <header className="bg-white/80 dark:bg-stone-900/80 backdrop-blur-md border-b border-stone-200/80 dark:border-stone-700/80 px-4 sm:px-6 py-3 sticky top-0 z-40 transition-theme">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        
-        {/* Vänster - Logo/Datum + Streak */}
-        <div className="flex items-center gap-3">
-          <Link to="/" className="lg:hidden flex items-center gap-2">
-            <OptimizedImage
-              src="/logo-icon.png"
-              alt="Jobin"
-              loading="eager"
-              className="w-8 h-8 rounded-xl object-contain bg-white shadow-md"
-            />
-          </Link>
-          
-          <div className="hidden sm:flex items-center gap-2 text-stone-600 dark:text-stone-600">
-            <span className="text-sm font-medium capitalize">{currentDate}</span>
-            {streak > 1 && (
-              <div className="flex items-center gap-1 px-2 py-0.5 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full text-xs font-medium">
-                <Flame size={12} />
-                <span>{streak} {t('common.days')}</span>
-              </div>
-            )}
-          </div>
-        </div>
-        
-        {/* Mitten - Global sök */}
-        <form onSubmit={handleSearch} className="flex-1 max-w-md">
-          <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-teal-500 transition-colors" size={18} />
-            <input
-              type="text"
-              placeholder={getSearchPlaceholder()}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-stone-100/80 dark:bg-stone-800/80 rounded-2xl border border-transparent
-                         focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:bg-white dark:focus:bg-stone-800 focus:border-teal-200 dark:focus:border-teal-700
-                         text-sm transition-all placeholder:text-stone-600 dark:text-stone-100"
-            />
-          </div>
-        </form>
+    <header className="bg-gradient-to-r from-teal-50 via-white to-stone-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-950 border-b border-teal-100 dark:border-stone-700 px-4 sm:px-6 py-3 sticky top-0 z-40">
+      <div className="flex items-center justify-between gap-4">
+
+        {/* Vänster - Logo och jobin.se */}
+        <Link to="/" className="flex items-center gap-3">
+          <OptimizedImage
+            src="/logo-jobin-new.png"
+            alt="Jobin"
+            loading="eager"
+            className="h-9 w-auto object-contain"
+          />
+          <span className="text-lg font-semibold text-teal-700 dark:text-teal-400 hidden sm:block">
+            jobin.se
+          </span>
+        </Link>
 
         {/* Höger - Actions */}
         <div className="flex items-center gap-1">
@@ -162,7 +77,7 @@ export function TopBar() {
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-teal-100 dark:hover:bg-stone-800 transition-colors"
             title={isDark ? t('topbar.lightMode') : t('topbar.darkMode')}
           >
             {isDark ? (
@@ -175,7 +90,7 @@ export function TopBar() {
           {/* Help */}
           <Link
             to="/help"
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors"
+            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg hover:bg-teal-100 dark:hover:bg-stone-800 transition-colors"
             title={t('topbar.help')}
           >
             <HelpCircle size={18} className="text-stone-500 dark:text-stone-600" />
@@ -190,7 +105,7 @@ export function TopBar() {
           <NotificationBell />
 
           {/* Divider */}
-          <div className="hidden sm:block w-px h-6 bg-stone-200 dark:bg-stone-700 mx-1" />
+          <div className="hidden sm:block w-px h-6 bg-teal-200 dark:bg-stone-700 mx-1" />
 
           {/* User Menu */}
           <div className="relative">
@@ -198,7 +113,7 @@ export function TopBar() {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className={cn(
                 "flex items-center gap-1.5 p-1 pr-2 rounded-lg transition-colors",
-                showUserMenu ? "bg-teal-100 dark:bg-teal-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
+                showUserMenu ? "bg-teal-100 dark:bg-teal-900/30" : "hover:bg-teal-100 dark:hover:bg-stone-800"
               )}
             >
               <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-lg flex items-center justify-center text-white font-medium text-sm">
@@ -210,7 +125,7 @@ export function TopBar() {
             {/* User dropdown */}
             {showUserMenu && (
               <>
-                <div 
+                <div
                   className="fixed inset-0 z-40"
                   onClick={() => setShowUserMenu(false)}
                 />
@@ -221,7 +136,7 @@ export function TopBar() {
                     </p>
                     <p className="text-xs text-stone-500 dark:text-stone-600">{user?.email}</p>
                   </div>
-                  
+
                   <Link
                     to="/profile"
                     onClick={() => setShowUserMenu(false)}

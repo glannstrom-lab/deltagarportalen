@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import { useMobileOptimizer } from './MobileOptimizer'
 import { useAuthStore } from '@/stores/authStore'
 import { NotificationBell } from './notifications/NotificationBell'
+import { OptimizedImage } from './ui/OptimizedImage'
 
 // Mobila navigeringsitems - synkade med Sidebar navigation.ts
 const mobileNavItems = [
@@ -33,10 +34,10 @@ const mobileNavItems = [
 export default function Layout() {
   const { isMobile } = useMobileOptimizer()
   const location = useLocation()
-  
+
   // Visa TopBar och BottomBar på alla sidor förutom login/register
   const showBars = !['/login', '/register'].includes(location.pathname)
-  
+
   // Bestäm om vi ska visa tillbaka-knapp (alla sidor utom startsidan)
   const showBackButton = isMobile && location.pathname !== '/'
 
@@ -45,50 +46,51 @@ export default function Layout() {
       <SkipLinks />
       <div
         className={cn(
-          'min-h-screen flex bg-gradient-to-b from-stone-50 via-white to-stone-50/50',
+          'min-h-screen flex flex-col bg-gradient-to-b from-stone-50 via-white to-stone-50/50',
           isMobile ? 'pb-safe' : ''
         )}
       >
-      {/* Desktop Sidebar */}
-      <div className="hidden lg:block">
-        <Sidebar />
-      </div>
-      
-      {/* Huvudinnehåll */}
-      <div className="flex-1 flex flex-col min-h-screen">
-        {/* TopBar - desktop */}
+        {/* TopBar - full width at top (desktop only) */}
         {showBars && !isMobile && <TopBar />}
-        
+
         {/* Mobil TopBar med meny och profil */}
         {showBars && isMobile && <MobileTopBar />}
-        
-        {/* Main content */}
-        <main 
-          id="main-content"
-          className={cn(
-            'flex-1 overflow-auto',
-            isMobile ? 'p-4' : 'p-6'
-          )}
-          tabIndex={-1}
-        >
-          <div className={cn(
-            'mx-auto',
-            isMobile ? 'max-w-full' : 'max-w-7xl'
-          )}>
-            <Outlet />
-          </div>
-        </main>
-        
 
+        {/* Main area with sidebar and content */}
+        <div className="flex-1 flex">
+          {/* Desktop Sidebar */}
+          <div className="hidden lg:block">
+            <Sidebar />
+          </div>
+
+          {/* Huvudinnehåll */}
+          <div className="flex-1 flex flex-col min-h-0">
+            {/* Main content */}
+            <main
+              id="main-content"
+              className={cn(
+                'flex-1 overflow-auto',
+                isMobile ? 'p-4' : 'p-6'
+              )}
+              tabIndex={-1}
+            >
+              <div className={cn(
+                'mx-auto',
+                isMobile ? 'max-w-full' : 'max-w-7xl'
+              )}>
+                <Outlet />
+              </div>
+            </main>
+          </div>
+        </div>
+
+        {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
+        {showBackButton && <MobileBackButton />}
+
+        {/* Övriga komponenter */}
+        <BreakReminder workDuration={15} />
+        <ToastContainer />
       </div>
-      
-      {/* Tillbaka-knapp på mobil (alla sidor utom dashboard) */}
-      {showBackButton && <MobileBackButton />}
-      
-      {/* Övriga komponenter */}
-      <BreakReminder workDuration={15} />
-      <ToastContainer />
-    </div>
     </>
   )
 }
@@ -100,70 +102,61 @@ function MobileTopBar() {
   const { user, signOut } = useAuthStore()
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
-  
-  // Hämta sidtitel baserat på path - synkad med navItems
-  const getPageTitle = () => {
-    const path = location.pathname
-    const navItem = mobileNavItems.find(item => 
-      path === item.to || path.startsWith(item.to + '/')
-    )
-    return navItem?.label || ''
-  }
-  
-  const title = getPageTitle()
-  
+
   const handleLogout = async () => {
     await signOut()
     navigate('/login')
   }
-  
+
   return (
     <>
       {/* Header */}
-      <header className="sticky top-0 z-30 bg-white border-b border-slate-200 px-4 py-3 safe-top">
+      <header className="sticky top-0 z-30 bg-gradient-to-r from-teal-50 via-white to-stone-50 border-b border-teal-100 px-4 py-3 safe-top">
         <div className="flex items-center justify-between">
-          {/* Vänster: Profil-knapp */}
-          <button
-            onClick={() => setIsProfileOpen(true)}
-            className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
-            aria-label="Profil"
-          >
-            <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
-              <User className="w-4 h-4 text-white" />
-            </div>
-          </button>
-          
-          {/* Mitten: Titel */}
-          <div className="flex-1 text-center">
-            {title && (
-              <h1 className="font-semibold text-slate-800 text-lg">{title}</h1>
-            )}
-          </div>
+          {/* Vänster: Logo */}
+          <Link to="/" className="flex items-center gap-2">
+            <OptimizedImage
+              src="/logo-jobin-new.png"
+              alt="Jobin"
+              loading="eager"
+              className="h-8 w-auto object-contain"
+            />
+            <span className="text-base font-semibold text-teal-700">jobin.se</span>
+          </Link>
 
-          {/* Höger: Notifikationer + Meny */}
+          {/* Höger: Notifikationer + Profil + Meny */}
           <div className="flex items-center gap-1">
             <NotificationBell variant="compact" />
             <button
+              onClick={() => setIsProfileOpen(true)}
+              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 transition-colors"
+              aria-label="Profil"
+            >
+              <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
+                <User className="w-3.5 h-3.5 text-white" />
+              </div>
+            </button>
+            <button
               onClick={() => setIsMenuOpen(true)}
-              className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
+              className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-teal-100 transition-colors"
               aria-label="Meny"
             >
-              <Menu className="w-6 h-6 text-slate-700" />
+              <Menu className="w-5 h-5 text-slate-700" />
             </button>
           </div>
         </div>
       </header>
-      
+
       {/* Meny overlay */}
       {isMenuOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40"
           onClick={() => setIsMenuOpen(false)}
         />
       )}
-      
+
       {/* Sidomeny (höger) - Huvudnavigation synkad med Desktop Sidebar */}
-      <div 
+      <div
         className={cn(
           'fixed top-0 right-0 bottom-0 bg-white z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
@@ -181,7 +174,7 @@ function MobileTopBar() {
             <X className="w-5 h-5 text-slate-600" />
           </button>
         </div>
-        
+
         {/* Meny-länkar - synkade med Desktop Sidebar */}
         <nav className="p-2 space-y-1">
           {mobileNavItems.map((item) => {
@@ -205,7 +198,7 @@ function MobileTopBar() {
             )
           })}
         </nav>
-        
+
         {/* Footer i meny - Inställningar synkad med Sidebar */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom space-y-1">
           <Link
@@ -223,17 +216,17 @@ function MobileTopBar() {
           </Link>
         </div>
       </div>
-      
+
       {/* Profil overlay */}
       {isProfileOpen && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/50 z-40"
           onClick={() => setIsProfileOpen(false)}
         />
       )}
-      
+
       {/* Profil-meny (vänster) */}
-      <div 
+      <div
         className={cn(
           'fixed top-0 left-0 bottom-0 bg-white z-50 shadow-xl',
           'transform transition-transform duration-300 ease-out',
@@ -251,7 +244,7 @@ function MobileTopBar() {
             <X className="w-5 h-5 text-slate-600" />
           </button>
         </div>
-        
+
         {/* Profil-info */}
         <div className="p-4">
           <div className="flex items-center gap-3 mb-6">
@@ -263,7 +256,7 @@ function MobileTopBar() {
               <p className="text-sm text-slate-700">Deltagare</p>
             </div>
           </div>
-          
+
           <nav className="space-y-1">
             <Link
               to="/profile"
@@ -281,7 +274,7 @@ function MobileTopBar() {
             </Link>
           </nav>
         </div>
-        
+
         {/* Logga ut - synkad med Sidebar */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-slate-200 safe-bottom">
           <button
