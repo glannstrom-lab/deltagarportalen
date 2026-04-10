@@ -53,18 +53,18 @@ export function TopBar() {
   }
 
   return (
-    <header className="bg-gradient-to-r from-teal-50 via-white to-stone-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-950 border-b border-teal-100 dark:border-stone-700 px-4 sm:px-6 py-3 sticky top-0 z-40">
-      <div className="flex items-center justify-between gap-4">
+    <header className="bg-gradient-to-r from-teal-50 via-white to-stone-50 dark:from-stone-900 dark:via-stone-900 dark:to-stone-950 border-b border-teal-100 dark:border-stone-700 px-4 sm:px-6 py-1.5 sticky top-0 z-40">
+      <div className="flex items-center justify-between gap-3">
 
         {/* Vänster - Logo och jobin.se */}
-        <Link to="/" className="flex items-center gap-3">
+        <Link to="/" className="flex items-center gap-2">
           <OptimizedImage
             src="/logo-jobin-new.png"
             alt="Jobin"
             loading="eager"
-            className="h-9 w-auto object-contain"
+            className="h-7 w-auto object-contain"
           />
-          <span className="text-lg font-semibold text-teal-700 dark:text-teal-400 hidden sm:block">
+          <span className="text-base font-semibold text-teal-700 dark:text-teal-400 hidden sm:block">
             jobin.se
           </span>
         </Link>
@@ -77,23 +77,23 @@ export function TopBar() {
           {/* Dark Mode Toggle */}
           <button
             onClick={toggleDarkMode}
-            className="w-9 h-9 flex items-center justify-center rounded-lg hover:bg-teal-100 dark:hover:bg-stone-800 transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-teal-100 dark:hover:bg-stone-800 transition-colors"
             title={isDark ? t('topbar.lightMode') : t('topbar.darkMode')}
           >
             {isDark ? (
-              <Sun size={18} className="text-amber-500" />
+              <Sun size={16} className="text-amber-500" />
             ) : (
-              <Moon size={18} className="text-stone-500 dark:text-stone-600" />
+              <Moon size={16} className="text-stone-500 dark:text-stone-600" />
             )}
           </button>
 
           {/* Help */}
           <Link
             to="/help"
-            className="hidden sm:flex w-9 h-9 items-center justify-center rounded-lg hover:bg-teal-100 dark:hover:bg-stone-800 transition-colors"
+            className="hidden sm:flex w-8 h-8 items-center justify-center rounded-lg hover:bg-teal-100 dark:hover:bg-stone-800 transition-colors"
             title={t('topbar.help')}
           >
-            <HelpCircle size={18} className="text-stone-500 dark:text-stone-600" />
+            <HelpCircle size={16} className="text-stone-500 dark:text-stone-600" />
           </Link>
 
           {/* Crisis Support / Hjärtat */}
@@ -105,21 +105,21 @@ export function TopBar() {
           <NotificationBell />
 
           {/* Divider */}
-          <div className="hidden sm:block w-px h-6 bg-teal-200 dark:bg-stone-700 mx-1" />
+          <div className="hidden sm:block w-px h-5 bg-teal-200 dark:bg-stone-700 mx-1" />
 
           {/* User Menu */}
           <div className="relative">
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
               className={cn(
-                "flex items-center gap-1.5 p-1 pr-2 rounded-lg transition-colors",
+                "flex items-center gap-1 p-0.5 pr-1.5 rounded-lg transition-colors",
                 showUserMenu ? "bg-teal-100 dark:bg-teal-900/30" : "hover:bg-teal-100 dark:hover:bg-stone-800"
               )}
             >
-              <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-lg flex items-center justify-center text-white font-medium text-sm">
+              <div className="w-6 h-6 bg-gradient-to-br from-teal-500 to-sky-500 rounded-md flex items-center justify-center text-white font-medium text-xs">
                 {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
               </div>
-              <ChevronDown size={14} className="hidden sm:block text-stone-600 dark:text-stone-500" />
+              <ChevronDown size={12} className="hidden sm:block text-stone-600 dark:text-stone-500" />
             </button>
 
             {/* User dropdown */}
