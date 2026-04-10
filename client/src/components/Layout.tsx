@@ -43,12 +43,11 @@ export default function Layout() {
   return (
     <>
       <SkipLinks />
-      <div 
+      <div
         className={cn(
-          'min-h-screen flex',
+          'min-h-screen flex bg-gradient-to-b from-stone-50 via-white to-stone-50/50',
           isMobile ? 'pb-safe' : ''
         )}
-        style={{ backgroundColor: '#eef2ff' }}
       >
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">

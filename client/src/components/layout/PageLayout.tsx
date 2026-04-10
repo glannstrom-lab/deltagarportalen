@@ -48,7 +48,7 @@ export function PageLayout({
 
   return (
     <div className={cn(
-      'min-h-screen bg-[var(--bg-page)]',
+      'min-h-screen bg-gradient-to-b from-stone-50 via-white to-stone-50/50',
       'space-y-4 sm:space-y-5 md:space-y-6',
       'page-transition',
       className
