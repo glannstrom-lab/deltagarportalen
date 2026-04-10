@@ -461,7 +461,7 @@ export default function NetworkTab() {
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4 cursor-pointer" onClick={() => setShowNetworkingScripts(!showNetworkingScripts)}>
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+            <BookOpen className="w-5 h-5 text-sky-600 dark:text-sky-400" />
             Nätvärksscript
           </h3>
           <ChevronRight className={cn('w-5 h-5 text-gray-500 dark:text-gray-400 transition-transform', showNetworkingScripts && 'rotate-90')} />
@@ -470,9 +470,9 @@ export default function NetworkTab() {
         {showNetworkingScripts && (
           <div className="space-y-3">
             {networkingScripts.map((script, idx) => (
-              <div key={idx} className="p-3 bg-violet-50 dark:bg-violet-900/20 rounded-lg border border-violet-200 dark:border-violet-800">
-                <h4 className="font-semibold text-violet-900 dark:text-violet-100 mb-2">{script.title}</h4>
-                <p className="text-sm text-violet-800 dark:text-violet-200 italic mb-2">
+              <div key={idx} className="p-3 bg-sky-50 dark:bg-sky-900/20 rounded-lg border border-sky-200 dark:border-sky-800">
+                <h4 className="font-semibold text-sky-900 dark:text-sky-100 mb-2">{script.title}</h4>
+                <p className="text-sm text-sky-800 dark:text-sky-200 italic mb-2">
                   "{script.script}"
                 </p>
                 <Button

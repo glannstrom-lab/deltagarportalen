@@ -15,7 +15,7 @@ import { Card, Button } from '@/components/ui'
 const CATEGORIES = [
   { id: 'career', label: 'Karriär', emoji: '💼', color: 'bg-blue-100 text-blue-700 border-blue-200' },
   { id: 'health', label: 'Hälsa', emoji: '🏃', color: 'bg-green-100 text-green-700 border-green-200' },
-  { id: 'personal', label: 'Personligt', emoji: '🌟', color: 'bg-purple-100 text-purple-700 border-purple-200' },
+  { id: 'personal', label: 'Personligt', emoji: '🌟', color: 'bg-sky-100 text-sky-700 border-sky-200' },
   { id: 'learning', label: 'Lärande', emoji: '📚', color: 'bg-amber-100 text-amber-700 border-amber-200' },
   { id: 'general', label: 'Övrigt', emoji: '✨', color: 'bg-slate-100 text-slate-700 border-slate-200' },
 ]
@@ -65,7 +65,7 @@ function AddGoalForm({
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="T.ex. Söka 5 jobb, Träna 3 gånger..."
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
             autoFocus
           />
         </div>
@@ -175,7 +175,7 @@ function GoalCard({
             "mt-0.5 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all flex-shrink-0",
             goal.is_completed
               ? "bg-green-500 border-green-500 text-white"
-              : "border-slate-300 hover:border-violet-400"
+              : "border-slate-300 hover:border-teal-400"
           )}
         >
           {goal.is_completed && <Check className="w-4 h-4" />}
@@ -205,8 +205,8 @@ function GoalCard({
           </p>
 
           {goal.reflection && !showReflection && (
-            <div className="mt-2 p-3 bg-violet-50 rounded-lg">
-              <p className="text-sm text-violet-700">
+            <div className="mt-2 p-3 bg-teal-50 rounded-lg">
+              <p className="text-sm text-teal-700">
                 <MessageSquare className="w-3 h-3 inline mr-1" />
                 {goal.reflection}
               </p>
@@ -220,7 +220,7 @@ function GoalCard({
                 onChange={(e) => setReflection(e.target.value)}
                 placeholder="Hur gick det? Vad lärde du dig?"
                 rows={3}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
               />
               <div className="flex gap-2">
                 <Button size="sm" variant="outline" onClick={() => setShowReflection(false)}>
@@ -244,7 +244,7 @@ function GoalCard({
           {goal.is_completed && !goal.reflection && !showReflection && (
             <button
               onClick={() => setShowReflection(true)}
-              className="p-1.5 hover:bg-violet-50 rounded text-violet-500"
+              className="p-1.5 hover:bg-teal-50 rounded text-teal-500"
               title="Lägg till reflektion"
             >
               <MessageSquare className="w-4 h-4" />
@@ -276,28 +276,28 @@ function WeekProgress({
   const progress = total > 0 ? Math.round((completed / total) * 100) : 0
 
   return (
-    <Card className="p-5 bg-gradient-to-br from-violet-50 to-purple-50 border-violet-100">
+    <Card className="p-5 bg-gradient-to-br from-teal-50 to-sky-50 border-teal-100">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="font-semibold text-violet-900">Veckans framsteg</h3>
-          <p className="text-sm text-violet-600">
+          <h3 className="font-semibold text-teal-900">Veckans framsteg</h3>
+          <p className="text-sm text-teal-600">
             {completed} av {total} mål avklarade
           </p>
         </div>
-        <div className="w-16 h-16 rounded-full bg-white border-4 border-violet-200 flex items-center justify-center">
-          <span className="text-xl font-bold text-violet-600">{progress}%</span>
+        <div className="w-16 h-16 rounded-full bg-white border-4 border-teal-200 flex items-center justify-center">
+          <span className="text-xl font-bold text-teal-600">{progress}%</span>
         </div>
       </div>
 
-      <div className="w-full bg-violet-200 rounded-full h-3">
+      <div className="w-full bg-teal-200 rounded-full h-3">
         <div
-          className="bg-violet-600 h-3 rounded-full transition-all duration-500"
+          className="bg-teal-600 h-3 rounded-full transition-all duration-500"
           style={{ width: `${progress}%` }}
         />
       </div>
 
       {progress === 100 && total > 0 && (
-        <div className="mt-4 flex items-center gap-2 text-violet-700">
+        <div className="mt-4 flex items-center gap-2 text-teal-700">
           <Award className="w-5 h-5" />
           <span className="font-medium">Fantastiskt! Alla mål avklarade!</span>
         </div>
@@ -322,7 +322,7 @@ export function GoalsTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
       </div>
     )
   }
@@ -341,7 +341,7 @@ export function GoalsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Target className="w-6 h-6 text-violet-600" />
+            <Target className="w-6 h-6 text-teal-600" />
             Veckans mål
           </h2>
           <p className="text-sm text-slate-700 flex items-center gap-1">

@@ -57,7 +57,7 @@ export function ActionPlan() {
             <span className="font-medium">Vecka {activeWeek} av 12</span>
           </div>
           <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-            <motion.div initial={{ width: 0 }} animate={{ width: `${(activeWeek / 12) * 100}%` }} className="h-full bg-violet-500 rounded-full" />
+            <motion.div initial={{ width: 0 }} animate={{ width: `${(activeWeek / 12) * 100}%` }} className="h-full bg-teal-500 rounded-full" />
           </div>
         </div>
 
@@ -85,20 +85,20 @@ export function ActionPlan() {
   return (
     <div className="p-6 bg-white rounded-2xl border border-slate-200">
       <h2 className="text-xl font-bold mb-2 flex items-center gap-2">
-        <Target className="text-violet-500" size={24} />
+        <Target className="text-teal-500" size={24} />
         Välj din väg
       </h2>
       <p className="text-slate-700 mb-6">Strukturerade planer för att nå ditt mål</p>
 
       <div className="space-y-4">
         {plans.map(plan => (
-          <div key={plan.id} onClick={() => setSelectedPlan(plan)} className="p-4 border border-slate-200 rounded-xl hover:border-violet-300 cursor-pointer transition-colors">
+          <div key={plan.id} onClick={() => setSelectedPlan(plan)} className="p-4 border border-slate-200 rounded-xl hover:border-teal-300 cursor-pointer transition-colors">
             <div className="flex items-center justify-between mb-2">
               <h3 className="font-semibold">{plan.name}</h3>
               <span className="text-xs px-2 py-1 bg-slate-100 rounded-full">{plan.duration}</span>
             </div>
             <p className="text-sm text-slate-700">{plan.description}</p>
-            <div className="flex items-center gap-1 text-violet-600 text-sm mt-3">
+            <div className="flex items-center gap-1 text-teal-600 text-sm mt-3">
               <span>Välj denna väg</span>
               <ChevronRight size={16} />
             </div>

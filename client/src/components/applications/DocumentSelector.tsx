@@ -54,19 +54,19 @@ export function DocumentSelector({
         </label>
 
         {selectedCV ? (
-          <div className="flex items-center justify-between p-3 bg-violet-50 border border-violet-200 rounded-lg">
+          <div className="flex items-center justify-between p-3 bg-teal-50 border border-teal-200 rounded-lg">
             <div className="flex items-center gap-2">
-              <FileText className="w-4 h-4 text-violet-600" />
-              <span className="font-medium text-violet-900">{selectedCV.name}</span>
-              <span className="text-xs text-violet-600">
+              <FileText className="w-4 h-4 text-teal-600" />
+              <span className="font-medium text-teal-900">{selectedCV.name}</span>
+              <span className="text-xs text-teal-600">
                 {new Date(selectedCV.created_at).toLocaleDateString('sv-SE')}
               </span>
             </div>
             <button
               onClick={() => onSelectCV(null)}
-              className="p-1 hover:bg-violet-100 rounded"
+              className="p-1 hover:bg-teal-100 rounded"
             >
-              <X className="w-4 h-4 text-violet-600" />
+              <X className="w-4 h-4 text-teal-600" />
             </button>
           </div>
         ) : (
@@ -88,7 +88,7 @@ export function DocumentSelector({
                       <p className="text-sm text-slate-700 mb-2">Inga CV-versioner sparade</p>
                       <Link
                         to="/cv"
-                        className="text-sm text-violet-600 hover:text-violet-700 font-medium"
+                        className="text-sm text-teal-600 hover:text-teal-700 font-medium"
                       >
                         Skapa CV →
                       </Link>
@@ -122,7 +122,7 @@ export function DocumentSelector({
         {cvVersions.length > 0 && !selectedCV && (
           <Link
             to="/cv"
-            className="mt-2 inline-flex items-center gap-1 text-xs text-violet-600 hover:text-violet-700"
+            className="mt-2 inline-flex items-center gap-1 text-xs text-teal-600 hover:text-teal-700"
           >
             <Plus className="w-3 h-3" />
             Skapa ny CV-version

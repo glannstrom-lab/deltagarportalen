@@ -283,9 +283,9 @@ export function CommutePlannerPanel({
 
             {/* Recommendation */}
             {result.recommendation && (
-              <div className="p-4 rounded-xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20 border border-violet-200 dark:border-violet-800">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
                 <div className="flex items-start gap-3">
-                  <Lightbulb className="w-5 h-5 text-violet-600 dark:text-violet-400 flex-shrink-0 mt-0.5" />
+                  <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 flex-shrink-0 mt-0.5" />
                   <div>
                     <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
                       Rekommendation

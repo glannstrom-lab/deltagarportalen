@@ -34,8 +34,8 @@ const appTools: AppTool[] = [
     descriptionKey: 'knowledgeBase.tools.cvBuilder.description',
     icon: FileText,
     link: '/cv',
-    color: 'bg-violet-50 border-violet-100',
-    iconColor: 'bg-violet-100 text-violet-600',
+    color: 'bg-teal-50 border-teal-100',
+    iconColor: 'bg-teal-100 text-teal-600',
   },
   {
     id: 'cover-letter',

@@ -177,8 +177,8 @@ export function CreateApplicationModal({
         {/* Job Info Card */}
         <div className="p-4 bg-slate-50 border-b border-slate-100">
           <div className="flex items-start gap-3">
-            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
-              <Briefcase size={20} className="text-violet-600" />
+            <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+              <Briefcase size={20} className="text-teal-600" />
             </div>
             <div className="min-w-0">
               <h3 className="font-medium text-slate-900 line-clamp-1">{job.headline}</h3>
@@ -302,7 +302,7 @@ export function CreateApplicationModal({
               
               <button
                 onClick={goToCV}
-                className="flex items-center gap-2 text-sm text-violet-600 hover:text-violet-700 font-medium"
+                className="flex items-center gap-2 text-sm text-teal-600 hover:text-teal-700 font-medium"
               >
                 <Sparkles size={16} />
                 {cvAnalysis && cvAnalysis.matchScore < 60 
@@ -329,7 +329,7 @@ export function CreateApplicationModal({
               <div className="flex gap-2">
                 <button
                   onClick={handleGenerateCoverLetter}
-                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-violet-500 text-white rounded-lg font-medium hover:bg-violet-600 transition-colors"
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-teal-500 text-white rounded-lg font-medium hover:bg-teal-600 transition-colors"
                 >
                   <Sparkles size={18} />
                   Skriv med AI-hjälp
@@ -368,7 +368,7 @@ export function CreateApplicationModal({
                     ...prev,
                     step3_tracker: { ...prev.step3_tracker, status: e.target.value as any }
                   }))}
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
                 >
                   <option value="SAVED">💾 Sparat (skickar senare)</option>
                   <option value="APPLIED">📨 Ansökt (idag)</option>
@@ -387,7 +387,7 @@ export function CreateApplicationModal({
                     step3_tracker: { ...prev.step3_tracker, notes: e.target.value }
                   }))}
                   placeholder="t.ex. Skickade via mejl, väntar på svar..."
-                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm resize-none"
+                  className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm resize-none"
                   rows={2}
                 />
               </div>
@@ -414,7 +414,7 @@ export function CreateApplicationModal({
                   // Spara automatiskt när användaren klickar på ansök-länk
                   handleSave()
                 }}
-                className="hidden sm:flex items-center gap-2 px-4 py-2 text-violet-600 hover:text-violet-700 font-medium"
+                className="hidden sm:flex items-center gap-2 px-4 py-2 text-teal-600 hover:text-teal-700 font-medium"
               >
                 <ExternalLink size={16} />
                 Ansök direkt
@@ -423,7 +423,7 @@ export function CreateApplicationModal({
             <button
               onClick={handleSave}
               disabled={loading}
-              className="flex items-center gap-2 px-5 py-2.5 bg-violet-500 text-white rounded-lg font-medium hover:bg-violet-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              className="flex items-center gap-2 px-5 py-2.5 bg-teal-500 text-white rounded-lg font-medium hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               {loading ? (
                 <>
@@ -460,17 +460,17 @@ function StepCard({ number, title, isActive, isCompleted, children }: StepCardPr
   return (
     <div className={cn(
       "border rounded-xl p-4 transition-all",
-      isActive 
-        ? "border-violet-300 bg-violet-50/50" 
+      isActive
+        ? "border-teal-300 bg-teal-50/50"
         : "border-slate-200 bg-white"
     )}>
       <div className="flex items-center gap-3 mb-3">
         <div className={cn(
           "w-7 h-7 rounded-full flex items-center justify-center text-sm font-semibold",
-          isCompleted 
-            ? "bg-green-500 text-white" 
+          isCompleted
+            ? "bg-green-500 text-white"
             : isActive
-              ? "bg-violet-500 text-white"
+              ? "bg-teal-500 text-white"
               : "bg-slate-200 text-slate-600"
         )}>
           {isCompleted ? (

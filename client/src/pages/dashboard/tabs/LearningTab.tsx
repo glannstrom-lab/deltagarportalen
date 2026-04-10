@@ -83,7 +83,7 @@ export default function LearningTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-slate-700">Laddar lärande...</p>
         </div>
       </div>
@@ -149,7 +149,7 @@ export default function LearningTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <BookOpen className="text-violet-500" size={28} />
+            <BookOpen className="text-teal-500" size={28} />
             Lärande
           </h2>
           <p className="text-slate-700">Utveckla dina färdigheter för jobbsökningen</p>
@@ -197,7 +197,7 @@ export default function LearningTab() {
       {/* Recommended articles */}
       <Section
         title={hasInterestProfile ? "Anpassat för dig" : "Rekommenderat för dig"}
-        icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-violet-500" />}
+        icon={hasInterestProfile ? <Compass className="text-amber-500" /> : <Star className="text-teal-500" />}
       >
         {hasInterestProfile && (
           <p className="text-sm text-slate-700 -mt-2 mb-4 flex items-center gap-1">
@@ -289,7 +289,7 @@ function ProgressSummary({ progress }: ProgressSummaryProps) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       <StatCard
-        icon={<FileText className="text-violet-500" />}
+        icon={<FileText className="text-teal-500" />}
         value={progress.articlesRead}
         label="Artiklar lästa"
         color="violet"
@@ -325,7 +325,7 @@ interface StatCardProps {
 
 function StatCard({ icon, value, label, color }: StatCardProps) {
   const bgColors = {
-    violet: 'bg-violet-50',
+    violet: 'bg-teal-50',
     emerald: 'bg-emerald-50',
     amber: 'bg-amber-50',
     orange: 'bg-orange-50'
@@ -352,10 +352,10 @@ interface DailyTipCardProps {
 
 function DailyTipCard({ tip }: DailyTipCardProps) {
   return (
-    <div className="bg-gradient-to-r from-violet-50 to-indigo-50 rounded-xl border border-violet-100 p-4">
+    <div className="bg-gradient-to-r from-teal-50 to-sky-50 rounded-xl border border-teal-100 p-4">
       <div className="flex items-start gap-3">
-        <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center flex-shrink-0">
-          <Lightbulb className="text-violet-600" size={20} />
+        <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center flex-shrink-0">
+          <Lightbulb className="text-teal-600" size={20} />
         </div>
         <div>
           <h4 className="font-semibold text-slate-800">{tip.title}</h4>
@@ -423,20 +423,20 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
           ? "border-emerald-200 bg-emerald-50/30"
           : hasHighRelevance
             ? "border-amber-200 hover:border-amber-300 hover:shadow-md"
-            : "border-slate-200 hover:border-violet-300 hover:shadow-md"
+            : "border-slate-200 hover:border-teal-300 hover:shadow-md"
       )}
     >
       <div className="flex items-start gap-3">
         <div className={cn(
           "w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0",
-          article.isCompleted ? "bg-emerald-100" : hasHighRelevance ? "bg-amber-100" : "bg-violet-100"
+          article.isCompleted ? "bg-emerald-100" : hasHighRelevance ? "bg-amber-100" : "bg-teal-100"
         )}>
           {article.isCompleted ? (
             <CheckCircle2 className="text-emerald-600" size={20} />
           ) : hasHighRelevance ? (
             <Compass className="text-amber-600" size={20} />
           ) : (
-            <FileText className="text-violet-600" size={20} />
+            <FileText className="text-teal-600" size={20} />
           )}
         </div>
         <div className="flex-1 min-w-0">
@@ -468,7 +468,7 @@ function ArticleCard({ article, onClick, showProgress, showRelevance }: ArticleC
             <div className="mt-2">
               <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-violet-500 rounded-full"
+                  className="h-full bg-teal-500 rounded-full"
                   style={{ width: `${article.progress}%` }}
                 />
               </div>
@@ -628,7 +628,7 @@ function CategoryView({ category, articles, isLoading, onBack, onSelectArticle }
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 text-violet-500 animate-spin" />
+        <Loader2 className="w-8 h-8 text-teal-500 animate-spin" />
       </div>
     )
   }
@@ -705,7 +705,7 @@ function ArticleView({ article, onBack, onComplete }: ArticleViewProps) {
         {/* Header */}
         <div className="p-6 border-b border-slate-100">
           <div className="flex items-center gap-2 mb-3">
-            <span className="text-xs px-2 py-1 bg-violet-100 text-violet-700 rounded-full">
+            <span className="text-xs px-2 py-1 bg-teal-100 text-teal-700 rounded-full">
               {article.category}
             </span>
             <span className="text-xs text-slate-700 flex items-center gap-1">

@@ -172,9 +172,9 @@ export function ImageUpload({
         className={cn(
           'relative cursor-pointer transition-all duration-200 rounded-xl overflow-hidden',
           'border-2 border-dashed',
-          isDragging && 'border-violet-500 bg-violet-50 scale-[1.02]',
-          !isDragging && !previewUrl && 'border-slate-300 hover:border-violet-400 hover:bg-slate-50',
-          previewUrl && 'border-solid border-violet-200'
+          isDragging && 'border-teal-500 bg-teal-50 scale-[1.02]',
+          !isDragging && !previewUrl && 'border-slate-300 hover:border-teal-400 hover:bg-slate-50',
+          previewUrl && 'border-solid border-teal-200'
         )}
       >
         <input
@@ -237,7 +237,7 @@ export function ImageUpload({
           <div className="p-8 flex flex-col items-center justify-center text-center min-h-[200px]">
             <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4">
               {isUploading ? (
-                <Loader2 className="w-8 h-8 text-violet-600 animate-spin" />
+                <Loader2 className="w-8 h-8 text-teal-600 animate-spin" />
               ) : (
                 <User className="w-8 h-8 text-slate-600" />
               )}
@@ -386,7 +386,7 @@ export function CompactImageUpload({
       <div className="relative">
         <div className={cn(
           'w-20 h-20 rounded-full overflow-hidden bg-slate-100 flex items-center justify-center',
-          (value || localPreview) ? 'ring-2 ring-violet-500 ring-offset-2' : 'border-2 border-dashed border-slate-300'
+          (value || localPreview) ? 'ring-2 ring-teal-500 ring-offset-2' : 'border-2 border-dashed border-slate-300'
         )}>
           {value || localPreview ? (
             <img

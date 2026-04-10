@@ -52,7 +52,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
         className
       )}>
         <div className="flex items-center justify-center py-8">
-          <Loader2 size={24} className="animate-spin text-violet-500" />
+          <Loader2 size={24} className="animate-spin text-teal-500" />
         </div>
       </div>
     )
@@ -68,7 +68,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
           <p className="text-slate-700">{error || 'Inget steg tillgängligt'}</p>
           <button
             onClick={fetchNextStep}
-            className="mt-3 flex items-center gap-2 mx-auto text-violet-600 hover:text-violet-700"
+            className="mt-3 flex items-center gap-2 mx-auto text-teal-600 hover:text-teal-700"
           >
             <RefreshCw size={16} />
             Försök igen
@@ -81,7 +81,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
   const getIcon = () => {
     switch (nextStep.type) {
       case 'CREATE_CV':
-        return <FileText size={24} className="text-violet-600" />
+        return <FileText size={24} className="text-teal-600" />
       case 'SEARCH_JOBS':
         return <Search size={24} className="text-blue-600" />
       case 'CREATE_APPLICATION':
@@ -91,14 +91,14 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
       case 'COMPLETE_PROFILE':
         return <Sparkles size={24} className="text-amber-600" />
       default:
-        return <ArrowRight size={24} className="text-violet-600" />
+        return <ArrowRight size={24} className="text-teal-600" />
     }
   }
 
   const getBackgroundColor = () => {
     switch (nextStep.type) {
       case 'CREATE_CV':
-        return 'from-violet-500 to-purple-600'
+        return 'from-teal-500 to-sky-600'
       case 'SEARCH_JOBS':
         return 'from-blue-500 to-cyan-600'
       case 'CREATE_APPLICATION':
@@ -108,7 +108,7 @@ export function NextStepWidget({ className }: NextStepWidgetProps) {
       case 'COMPLETE_PROFILE':
         return 'from-amber-500 to-orange-600'
       default:
-        return 'from-violet-500 to-purple-600'
+        return 'from-teal-500 to-sky-600'
     }
   }
 
@@ -222,7 +222,7 @@ function QuickLink({
   return (
     <Link
       to={to}
-      className="flex items-center gap-1 px-2.5 py-1 text-sm text-slate-600 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+      className="flex items-center gap-1 px-2.5 py-1 text-sm text-slate-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
     >
       {icon}
       {children}

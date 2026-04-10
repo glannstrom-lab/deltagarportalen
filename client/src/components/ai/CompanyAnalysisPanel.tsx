@@ -102,10 +102,10 @@ export function CompanyAnalysisPanel({
   if (!hasStarted) {
     return (
       <AiConsentGate compact featureName="Företagsanalys">
-        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20', className)}>
+        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900/50">
-              <Building2 className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+            <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/50">
+              <Building2 className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             </div>
             <div className="flex-1">
               <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">
@@ -253,7 +253,7 @@ export function CompanyAnalysisPanel({
                     {result.recruitmentNeeds.roles.map((role, i) => (
                       <span
                         key={i}
-                        className="px-2 py-0.5 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 text-xs rounded-full"
+                        className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs rounded-full"
                       >
                         {role}
                       </span>
@@ -332,8 +332,8 @@ export function CompanyAnalysisPanel({
               defaultOpen
             >
               <div className="space-y-3">
-                <div className="p-3 rounded-lg bg-violet-50 dark:bg-violet-900/20 border border-violet-200 dark:border-violet-800">
-                  <p className="text-xs font-medium text-violet-600 dark:text-violet-400 mb-1">
+                <div className="p-3 rounded-lg bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800">
+                  <p className="text-xs font-medium text-teal-600 dark:text-teal-400 mb-1">
                     Bästa approach
                   </p>
                   <p className="text-sm text-slate-700 dark:text-slate-300">

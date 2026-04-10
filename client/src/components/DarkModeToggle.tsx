@@ -42,7 +42,7 @@ export function DarkModeToggle({
         onClick={() => setTheme(isDark ? 'light' : 'dark')}
         className={cn(
           'flex items-center justify-center rounded-lg transition-all duration-200',
-          'hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2',
+          'hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2',
           sizeClasses[size],
           isDark 
             ? 'bg-stone-800 text-stone-200 hover:bg-stone-700' 
@@ -74,7 +74,7 @@ export function DarkModeToggle({
           className={cn(
             'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
             theme === 'light'
-              ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
+              ? 'bg-white dark:bg-stone-700 text-teal-600 shadow-sm'
               : 'text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-200'
           )}
           aria-pressed={theme === 'light'}
@@ -88,7 +88,7 @@ export function DarkModeToggle({
           className={cn(
             'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
             theme === 'dark'
-              ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
+              ? 'bg-white dark:bg-stone-700 text-teal-600 shadow-sm'
               : 'text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-200'
           )}
           aria-pressed={theme === 'dark'}
@@ -103,7 +103,7 @@ export function DarkModeToggle({
             className={cn(
               'flex items-center gap-1.5 px-3 py-1.5 rounded-md transition-all',
               theme === 'system'
-                ? 'bg-white dark:bg-stone-700 text-violet-600 shadow-sm'
+                ? 'bg-white dark:bg-stone-700 text-teal-600 shadow-sm'
                 : 'text-stone-600 dark:text-stone-600 hover:text-stone-900 dark:hover:text-stone-200'
             )}
             aria-pressed={theme === 'system'}
@@ -123,7 +123,7 @@ export function DarkModeToggle({
         onClick={() => setTheme(isDark ? 'light' : 'dark')}
         className={cn(
           'flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200',
-          'hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-violet-500',
+          'hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-teal-500',
           sizeClasses[size],
           isDark 
             ? 'bg-stone-800 text-stone-200' 
@@ -168,7 +168,7 @@ export function DarkModeToggleCompact({ className }: { className?: string }) {
       className={cn(
         'p-2 rounded-lg transition-all duration-200',
         'hover:bg-stone-100 dark:hover:bg-stone-800',
-        'focus:outline-none focus:ring-2 focus:ring-violet-500',
+        'focus:outline-none focus:ring-2 focus:ring-teal-500',
         className
       )}
       aria-label={isDark ? 'Byt till ljust läge' : 'Byt till mörkt läge'}

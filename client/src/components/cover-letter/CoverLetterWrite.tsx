@@ -314,7 +314,7 @@ export function CoverLetterWrite() {
                 key={step.id}
                 className={cn(
                   'w-2.5 h-2.5 rounded-full transition-colors',
-                  isActive && 'bg-indigo-600 w-8',
+                  isActive && 'bg-teal-600 w-8',
                   isCompleted && 'bg-emerald-500',
                   !isActive && !isCompleted && 'bg-slate-200'
                 )}
@@ -323,7 +323,7 @@ export function CoverLetterWrite() {
           })}
         </div>
         <div className="sm:hidden text-center">
-          <span className="text-sm font-medium text-indigo-600">
+          <span className="text-sm font-medium text-teal-600">
             Steg {currentStep}: {steps[currentStep - 1].title}
           </span>
         </div>
@@ -343,7 +343,7 @@ export function CoverLetterWrite() {
                 )}>
                   <div className={cn(
                     'w-10 h-10 rounded-full flex items-center justify-center transition-colors',
-                    isActive && 'bg-indigo-600 text-white',
+                    isActive && 'bg-teal-600 text-white',
                     isCompleted && 'bg-emerald-500 text-white',
                     !isActive && !isCompleted && 'bg-slate-100 text-slate-600'
                   )}>
@@ -355,7 +355,7 @@ export function CoverLetterWrite() {
                   </div>
                   <span className={cn(
                     'text-xs mt-2 font-medium',
-                    isActive && 'text-indigo-600',
+                    isActive && 'text-teal-600',
                     isCompleted && 'text-emerald-600',
                     !isActive && !isCompleted && 'text-slate-600'
                   )}>
@@ -575,15 +575,15 @@ function Step1SelectJob({
                   className={cn(
                     'p-4 rounded-xl border-2 cursor-pointer transition-all',
                     formData.selectedJobId === job.job_id
-                      ? 'border-indigo-500 bg-indigo-50'
-                      : 'border-slate-200 hover:border-indigo-200 hover:bg-slate-50'
+                      ? 'border-teal-500 bg-teal-50'
+                      : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
                   )}
                 >
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       'w-10 h-10 rounded-lg flex items-center justify-center',
                       formData.selectedJobId === job.job_id
-                        ? 'bg-indigo-100 text-indigo-600'
+                        ? 'bg-teal-100 text-teal-600'
                         : 'bg-slate-100 text-slate-700'
                     )}>
                       <Briefcase size={20} />
@@ -599,7 +599,7 @@ function Step1SelectJob({
                       )}
                     </div>
                     {formData.selectedJobId === job.job_id && (
-                      <div className="flex items-center gap-1 text-indigo-600 text-sm">
+                      <div className="flex items-center gap-1 text-teal-600 text-sm">
                         <Check size={16} />
                         <span>Vald</span>
                       </div>
@@ -645,15 +645,15 @@ function Step1SelectJob({
         className={cn(
           'w-full p-4 rounded-xl border-2 transition-all text-left',
           formData.useManualInput
-            ? 'border-indigo-500 bg-indigo-50'
-            : 'border-slate-200 hover:border-indigo-200 hover:bg-slate-50'
+            ? 'border-teal-500 bg-teal-50'
+            : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
         )}
       >
         <div className="flex items-center gap-3">
           <div className={cn(
             'w-10 h-10 rounded-lg flex items-center justify-center',
             formData.useManualInput
-              ? 'bg-indigo-100 text-indigo-600'
+              ? 'bg-teal-100 text-teal-600'
               : 'bg-slate-100 text-slate-700'
           )}>
             <Edit3 size={20} />
@@ -679,7 +679,7 @@ function Step1SelectJob({
                 value={formData.company}
                 onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                 placeholder="t.ex. Acme AB"
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
               />
             </div>
           </div>
@@ -695,7 +695,7 @@ function Step1SelectJob({
                 value={formData.jobTitle}
                 onChange={(e) => setFormData({ ...formData, jobTitle: e.target.value })}
                 placeholder="t.ex. Projektledare"
-                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all"
+                className="w-full pl-10 pr-4 py-2.5 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all"
               />
             </div>
           </div>
@@ -709,7 +709,7 @@ function Step1SelectJob({
               onChange={(e) => setFormData({ ...formData, jobAd: e.target.value })}
               placeholder="Klistra in texten från jobbannonsen här..."
               rows={4}
-              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all resize-none"
+              className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all resize-none"
             />
           </div>
         </div>
@@ -763,15 +763,15 @@ function Step2Template({
             className={cn(
               'p-4 rounded-xl border-2 cursor-pointer transition-all',
               formData.selectedTemplate === template.id
-                ? 'border-indigo-500 bg-indigo-50'
-                : 'border-slate-200 hover:border-indigo-200 hover:bg-slate-50'
+                ? 'border-teal-500 bg-teal-50'
+                : 'border-slate-200 hover:border-teal-200 hover:bg-slate-50'
             )}
           >
             <div className="flex items-start gap-3">
               <div className={cn(
                 'w-10 h-10 rounded-lg flex items-center justify-center',
                 formData.selectedTemplate === template.id
-                  ? 'bg-indigo-100 text-indigo-600'
+                  ? 'bg-teal-100 text-teal-600'
                   : 'bg-slate-100 text-slate-700'
               )}>
                 <FileText size={20} />
@@ -780,7 +780,7 @@ function Step2Template({
                 <h3 className="font-medium text-slate-800">{template.name}</h3>
                 <p className="text-sm text-slate-700 mt-1">{template.description}</p>
                 {formData.selectedTemplate === template.id && (
-                  <div className="flex items-center gap-1 mt-2 text-indigo-600 text-sm">
+                  <div className="flex items-center gap-1 mt-2 text-teal-600 text-sm">
                     <Check size={14} />
                     <span>Vald</span>
                   </div>
@@ -850,8 +850,8 @@ function Step3Customize({
               className={cn(
                 'p-3 rounded-lg border-2 text-left transition-all',
                 formData.tone === tone.id
-                  ? 'border-indigo-500 bg-indigo-50'
-                  : 'border-slate-200 hover:border-indigo-200'
+                  ? 'border-teal-500 bg-teal-50'
+                  : 'border-slate-200 hover:border-teal-200'
               )}
             >
               <div className="font-medium text-slate-800 text-sm sm:text-base">{tone.label}</div>
@@ -871,7 +871,7 @@ function Step3Customize({
           onChange={(e) => setFormData({ ...formData, motivation: e.target.value })}
           placeholder="t.ex. Jag vill jobba med hållbarhet och erfarenhet av att..."
           rows={3}
-          className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all resize-none"
+          className="w-full px-4 py-3 rounded-lg border border-slate-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 outline-none transition-all resize-none"
         />
       </div>
     </div>
@@ -897,8 +897,8 @@ function Step4Review({
   if (isGenerating) {
     return (
       <div className="text-center py-12">
-        <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Sparkles className="w-8 h-8 text-indigo-600 animate-pulse" />
+        <div className="w-16 h-16 bg-teal-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <Sparkles className="w-8 h-8 text-teal-600 animate-pulse" />
         </div>
         <h3 className="text-lg font-semibold text-slate-800 mb-2">
           AI skapar ditt personliga brev...
@@ -908,9 +908,9 @@ function Step4Review({
           Detta tar bara några sekunder.
         </p>
         <div className="mt-6 flex justify-center gap-2">
-          <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-2 h-2 bg-teal-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       </div>
     )

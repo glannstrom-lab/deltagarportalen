@@ -32,10 +32,10 @@ const getIcon = (iconName: string): React.ElementType => {
 // Color mapping for Tailwind
 const colorClasses: Record<string, { bg: string; text: string; border: string; progress: string }> = {
   violet: {
-    bg: 'bg-violet-100 dark:bg-violet-900/40',
-    text: 'text-violet-600 dark:text-violet-400',
-    border: 'border-violet-200 dark:border-violet-700',
-    progress: 'bg-violet-500'
+    bg: 'bg-teal-100 dark:bg-teal-900/40',
+    text: 'text-teal-600 dark:text-teal-400',
+    border: 'border-teal-200 dark:border-teal-700',
+    progress: 'bg-teal-500'
   },
   blue: {
     bg: 'bg-blue-100 dark:bg-blue-900/40',
@@ -50,10 +50,10 @@ const colorClasses: Record<string, { bg: string; text: string; border: string; p
     progress: 'bg-amber-500'
   },
   indigo: {
-    bg: 'bg-indigo-100 dark:bg-indigo-900/40',
-    text: 'text-indigo-600 dark:text-indigo-400',
-    border: 'border-indigo-200 dark:border-indigo-700',
-    progress: 'bg-indigo-500'
+    bg: 'bg-sky-100 dark:bg-sky-900/40',
+    text: 'text-sky-600 dark:text-sky-400',
+    border: 'border-sky-200 dark:border-sky-700',
+    progress: 'bg-sky-500'
   },
   sky: {
     bg: 'bg-sky-100 dark:bg-sky-900/40',
@@ -180,7 +180,7 @@ export default function ActivityTab() {
       {inProgressMilestones.length > 0 && (
         <section>
           <h2 className="text-lg font-bold text-stone-800 dark:text-stone-100 mb-4 flex items-center gap-2">
-            <TrendingUp size={20} className="text-violet-500" />
+            <TrendingUp size={20} className="text-teal-500" />
             Aktiva Milstolpar
           </h2>
           <div className="grid gap-4 md:grid-cols-2">
@@ -291,7 +291,7 @@ function LevelProgress({ level, title, currentPoints, nextLevelPoints }: {
     : 100
 
   return (
-    <div className="bg-gradient-to-r from-violet-500 to-purple-600 rounded-2xl p-6 text-white">
+    <div className="bg-gradient-to-r from-teal-500 to-sky-600 rounded-2xl p-6 text-white">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center">
@@ -361,7 +361,7 @@ function MilestoneCard({ milestone }: { milestone: Milestone }) {
             <p className="text-sm text-stone-500 dark:text-stone-600">{m.description}</p>
           </div>
         </div>
-        <ChevronRight size={20} className="text-stone-300 dark:text-stone-600 group-hover:text-violet-500 transition-colors" />
+        <ChevronRight size={20} className="text-stone-300 dark:text-stone-600 group-hover:text-teal-500 transition-colors" />
       </div>
 
       <div className="space-y-2">
@@ -400,7 +400,7 @@ function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
   return (
     <Link
       to={route}
-      className="group flex items-center gap-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-violet-300 dark:hover:border-violet-600 hover:shadow-md transition-all"
+      className="group flex items-center gap-3 bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 p-4 hover:border-teal-300 dark:hover:border-teal-600 hover:shadow-md transition-all"
     >
       <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0", colors.bg)}>
         <Icon size={20} className={colors.text} />
@@ -412,7 +412,7 @@ function MilestoneCardCompact({ milestone }: { milestone: Milestone }) {
           +{m.reward_points} XP
         </p>
       </div>
-      <ChevronRight size={16} className="text-stone-300 group-hover:text-violet-500 transition-colors" />
+      <ChevronRight size={16} className="text-stone-300 group-hover:text-teal-500 transition-colors" />
     </Link>
   )
 }
@@ -487,7 +487,7 @@ function ActivityItem({ activity }: { activity: ActivityLog }) {
       </div>
       <div className="text-right flex-shrink-0">
         {activity.points_earned > 0 && (
-          <p className="text-sm font-medium text-violet-600 dark:text-violet-400">+{activity.points_earned} XP</p>
+          <p className="text-sm font-medium text-teal-600 dark:text-teal-400">+{activity.points_earned} XP</p>
         )}
         <p className="text-xs text-stone-600">{formatActivityTime(activity.created_at)}</p>
       </div>

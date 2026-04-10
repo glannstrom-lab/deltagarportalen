@@ -136,7 +136,7 @@ const CONTENT_IDEAS = [
 ]
 
 const CATEGORIES = {
-  content: { label: 'Innehåll', color: 'violet' },
+  content: { label: 'Innehåll', color: 'teal' },
   engagement: { label: 'Engagemang', color: 'blue' },
   networking: { label: 'Nätverkande', color: 'emerald' },
   platform: { label: 'Plattform', color: 'amber' }
@@ -254,9 +254,9 @@ export default function VisibilityTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/30 dark:to-purple-900/30 border-violet-100 dark:border-violet-800">
+      <Card className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-teal-100 dark:border-teal-800">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 dark:from-violet-600 dark:to-purple-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-sky-500 dark:from-teal-600 dark:to-sky-600 rounded-xl flex items-center justify-center shrink-0">
             <Eye className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -266,31 +266,31 @@ export default function VisibilityTab() {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-2xl font-bold text-violet-600 dark:text-violet-400">{completedCount}/{VISIBILITY_STRATEGIES.length}</p>
+            <p className="text-2xl font-bold text-teal-600 dark:text-teal-400">{completedCount}/{VISIBILITY_STRATEGIES.length}</p>
             <p className="text-xs text-gray-600 dark:text-gray-400">strategier klara</p>
           </div>
         </div>
       </Card>
 
       {/* Content idea generator */}
-      <Card className="border-violet-200 dark:border-violet-700 bg-gradient-to-br from-violet-50/50 to-purple-50/50 dark:from-violet-900/30 dark:to-purple-900/30">
+      <Card className="border-teal-200 dark:border-teal-700 bg-gradient-to-br from-teal-50/50 to-sky-50/50 dark:from-teal-900/30 dark:to-sky-900/30">
         <div className="flex items-start gap-3">
-          <Lightbulb className="w-5 h-5 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
+          <Lightbulb className="w-5 h-5 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
           <div className="flex-1">
-            <p className="font-medium text-violet-900 dark:text-violet-100">Idé för nästa inlägg</p>
-            <p className="text-violet-700 dark:text-violet-300 mt-1 text-lg">{contentIdea}</p>
+            <p className="font-medium text-teal-900 dark:text-teal-100">Idé för nästa inlägg</p>
+            <p className="text-teal-700 dark:text-teal-300 mt-1 text-lg">{contentIdea}</p>
             <div className="flex gap-2 mt-3">
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-violet-600 dark:text-violet-400"
+                className="text-teal-600 dark:text-teal-400"
                 onClick={refreshIdea}
               >
                 <RefreshCw className="w-4 h-4 mr-1" />
                 Ny idé
               </Button>
               <Link to="/linkedin-optimizer">
-                <Button variant="ghost" size="sm" className="text-violet-600 dark:text-violet-400">
+                <Button variant="ghost" size="sm" className="text-teal-600 dark:text-teal-400">
                   <Edit2 className="w-4 h-4 mr-1" />
                   Skapa inlägg
                 </Button>
@@ -304,7 +304,7 @@ export default function VisibilityTab() {
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold text-gray-800 dark:text-gray-100 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+            <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             Innehållskalender
           </h3>
           <Button size="sm" variant="outline" onClick={() => setShowCalendarForm(true)}>
@@ -326,12 +326,12 @@ export default function VisibilityTab() {
                 key={day.toISOString()}
                 className={cn(
                   "p-2 rounded-lg border min-h-[80px]",
-                  isCurrentDay ? "border-violet-300 dark:border-violet-600 bg-violet-50 dark:bg-violet-900/30" : "border-stone-200 dark:border-stone-600"
+                  isCurrentDay ? "border-teal-300 dark:border-teal-600 bg-teal-50 dark:bg-teal-900/30" : "border-stone-200 dark:border-stone-600"
                 )}
               >
                 <p className={cn(
                   "text-xs font-medium mb-1",
-                  isCurrentDay ? "text-violet-700 dark:text-violet-300" : "text-gray-600 dark:text-gray-400"
+                  isCurrentDay ? "text-teal-700 dark:text-teal-300" : "text-gray-600 dark:text-gray-400"
                 )}>
                   {format(day, 'EEE d', { locale: sv })}
                 </p>
@@ -342,7 +342,7 @@ export default function VisibilityTab() {
                       "text-xs p-1 rounded mb-1 truncate",
                       item.platform === 'linkedin' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
                       item.platform === 'twitter' && "bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300",
-                      item.platform === 'blog' && "bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300",
+                      item.platform === 'blog' && "bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300",
                       item.platform === 'other' && "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300"
                     )}
                     title={item.title}
@@ -411,7 +411,7 @@ export default function VisibilityTab() {
           onClick={() => setSelectedCategory(null)}
           className={cn(
             "px-4 py-2 rounded-lg text-sm font-medium transition-all",
-            !selectedCategory ? "bg-violet-600 dark:bg-violet-700 text-white" : "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-stone-600"
+            !selectedCategory ? "bg-teal-600 dark:bg-teal-700 text-white" : "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-stone-600"
           )}
         >
           Alla ({VISIBILITY_STRATEGIES.length})
@@ -426,7 +426,7 @@ export default function VisibilityTab() {
                 "px-4 py-2 rounded-lg text-sm font-medium transition-all",
                 selectedCategory === key
                   ? cn(
-                    cat.color === 'violet' && "bg-violet-600 dark:bg-violet-700 text-white",
+                    cat.color === 'teal' && "bg-teal-600 dark:bg-teal-700 text-white",
                     cat.color === 'blue' && "bg-blue-600 dark:bg-blue-700 text-white",
                     cat.color === 'emerald' && "bg-emerald-600 dark:bg-emerald-700 text-white",
                     cat.color === 'amber' && "bg-amber-600 dark:bg-amber-700 text-white"
@@ -443,7 +443,7 @@ export default function VisibilityTab() {
       {/* Strategies list */}
       <Card className="bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+          <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           Strategier för synlighet
         </h3>
 
@@ -488,7 +488,7 @@ export default function VisibilityTab() {
                         "px-2 py-1 rounded-full text-xs font-medium",
                         strategy.impact === 'low' && "bg-slate-100 dark:bg-stone-700 text-gray-600 dark:text-gray-300",
                         strategy.impact === 'medium' && "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300",
-                        strategy.impact === 'high' && "bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300"
+                        strategy.impact === 'high' && "bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300"
                       )}>
                         {strategy.impact === 'low' ? 'Låg' : strategy.impact === 'medium' ? 'Medel' : 'Hög'} påverkan
                       </span>
@@ -576,11 +576,11 @@ export default function VisibilityTab() {
             { title: 'Be om rekommendationer', desc: 'Från chefer och kollegor' },
             { title: 'Aktivera Creator Mode', desc: 'Om du planerar dela innehåll regelbundet' }
           ].map((tip, idx) => (
-            <div key={idx} className="flex items-start gap-2 p-3 bg-violet-50 dark:bg-violet-900/30 rounded-lg">
-              <CheckCircle className="w-4 h-4 text-violet-600 dark:text-violet-400 shrink-0 mt-0.5" />
+            <div key={idx} className="flex items-start gap-2 p-3 bg-teal-50 dark:bg-teal-900/30 rounded-lg">
+              <CheckCircle className="w-4 h-4 text-teal-600 dark:text-teal-400 shrink-0 mt-0.5" />
               <div>
-                <p className="font-medium text-violet-900 dark:text-violet-100 text-sm">{tip.title}</p>
-                <p className="text-xs text-violet-700 dark:text-violet-300">{tip.desc}</p>
+                <p className="font-medium text-teal-900 dark:text-teal-100 text-sm">{tip.title}</p>
+                <p className="text-xs text-teal-700 dark:text-teal-300">{tip.desc}</p>
               </div>
             </div>
           ))}
@@ -588,7 +588,7 @@ export default function VisibilityTab() {
         <div className="mt-4 pt-4 border-t border-slate-100 dark:border-stone-700">
           <Link
             to="/linkedin-optimizer"
-            className="inline-flex items-center gap-1 text-sm font-medium text-violet-600 dark:text-violet-400 hover:text-violet-800 dark:hover:text-violet-300"
+            className="inline-flex items-center gap-1 text-sm font-medium text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300"
           >
             Öppna LinkedIn-optimeraren
             <ChevronRight className="w-4 h-4" />
@@ -597,9 +597,9 @@ export default function VisibilityTab() {
       </Card>
 
       {/* Weekly plan */}
-      <Card className="bg-violet-50 dark:bg-violet-900/30 border-violet-100 dark:border-violet-800">
-        <h3 className="font-semibold text-violet-900 dark:text-violet-100 mb-3 flex items-center gap-2">
-          <Calendar className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+      <Card className="bg-teal-50 dark:bg-teal-900/30 border-teal-100 dark:border-teal-800">
+        <h3 className="font-semibold text-teal-900 dark:text-teal-100 mb-3 flex items-center gap-2">
+          <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400" />
           Veckoprogramförslag (30 min/dag)
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
@@ -610,9 +610,9 @@ export default function VisibilityTab() {
             { day: 'Torsdag', task: 'Skriv eget inlägg' },
             { day: 'Fredag', task: 'Skicka 3 kontaktförfrågningar' }
           ].map(({ day, task }) => (
-            <div key={day} className="p-3 bg-white dark:bg-stone-800 rounded-lg border border-violet-100 dark:border-violet-700">
-              <p className="font-medium text-violet-800 dark:text-violet-200 text-sm">{day}</p>
-              <p className="text-xs text-violet-600 dark:text-violet-300 mt-1">{task}</p>
+            <div key={day} className="p-3 bg-white dark:bg-stone-800 rounded-lg border border-teal-100 dark:border-teal-700">
+              <p className="font-medium text-teal-800 dark:text-teal-200 text-sm">{day}</p>
+              <p className="text-xs text-teal-600 dark:text-teal-300 mt-1">{task}</p>
             </div>
           ))}
         </div>

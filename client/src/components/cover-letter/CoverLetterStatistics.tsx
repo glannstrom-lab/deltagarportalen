@@ -66,8 +66,8 @@ export function CoverLetterStatistics() {
           Här samlas en översikt över dina ansökningar – hur många du skickat, 
           vilka som fått svar och var du är i processen.
         </p>
-        <div className="bg-indigo-50 rounded-xl p-4 max-w-md mx-auto">
-          <p className="text-sm text-indigo-700">
+        <div className="bg-teal-50 rounded-xl p-4 max-w-md mx-auto">
+          <p className="text-sm text-teal-700">
             💡 <strong>Det börjar här:</strong> När du skickat ditt första personliga 
             brev börjar statistiken växa. Tänk på att varje ansökan är ett steg framåt, 
             oavsett utfallet.
@@ -93,7 +93,7 @@ export function CoverLetterStatistics() {
           value={mockStats.totalSent}
           label="Skickade"
           subtext={`${mockStats.thisMonth.sent} denna månaden`}
-          color="indigo"
+          color="sky"
         />
         <StatCard
           icon={MessageCircle}
@@ -154,7 +154,7 @@ export function CoverLetterStatistics() {
                     <div className="w-full flex gap-1 items-end h-32">
                       {/* Skickade */}
                       <div 
-                        className="flex-1 bg-indigo-500 rounded-t transition-all hover:bg-indigo-600 relative group"
+                        className="flex-1 bg-sky-500 rounded-t transition-all hover:bg-sky-600 relative group"
                         style={{ height: `${heightPercent}%` }}
                       >
                         <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -178,7 +178,7 @@ export function CoverLetterStatistics() {
             {/* Legend */}
             <div className="flex items-center gap-6 mt-4 pt-4 border-t border-slate-100">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-indigo-500 rounded" />
+                <div className="w-3 h-3 bg-sky-500 rounded" />
                 <span className="text-sm text-slate-600">Skickade brev</span>
               </div>
               <div className="flex items-center gap-2">
@@ -194,7 +194,7 @@ export function CoverLetterStatistics() {
             <div className="space-y-4">
               {mockStats.topIndustries.map((industry, index) => (
                 <div key={industry.name} className="flex items-center gap-4">
-                  <div className="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold text-sm">
+                  <div className="w-8 h-8 rounded-lg bg-sky-100 text-sky-600 flex items-center justify-center font-semibold text-sm">
                     {index + 1}
                   </div>
                   <div className="flex-1">
@@ -223,9 +223,9 @@ export function CoverLetterStatistics() {
         {/* Höger kolumn - Insights och tips */}
         <div className="space-y-6">
           {/* Insights */}
-          <Card className="p-6 bg-gradient-to-br from-indigo-50 to-purple-50 border-indigo-100">
+          <Card className="p-6 bg-gradient-to-br from-teal-50 to-sky-50 border-teal-100">
             <div className="flex items-center gap-2 mb-4">
-              <Lightbulb className="w-5 h-5 text-indigo-600" />
+              <Lightbulb className="w-5 h-5 text-sky-600" />
               <h3 className="font-semibold text-slate-800">Dina styrkor</h3>
             </div>
             <div className="space-y-3">
@@ -266,7 +266,7 @@ export function CoverLetterStatistics() {
               <p className="text-sm text-slate-700 mb-4">brev skickade</p>
               <div className="bg-slate-100 rounded-full h-3 overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all"
+                  className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full transition-all"
                   style={{ width: `${Math.min(100, (mockStats.thisMonth.sent / 5) * 100)}%` }}
                 />
               </div>
@@ -330,12 +330,12 @@ function StatCard({
   value: string | number
   label: string
   subtext: string
-  color: 'blue' | 'indigo' | 'emerald' | 'amber'
+  color: 'blue' | 'sky' | 'emerald' | 'amber'
   trend?: 'up' | 'down'
 }) {
   const colors = {
     blue: { bg: 'bg-blue-50', text: 'text-blue-600', icon: 'text-blue-500' },
-    indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600', icon: 'text-indigo-500' },
+    sky: { bg: 'bg-sky-50', text: 'text-sky-600', icon: 'text-sky-500' },
     emerald: { bg: 'bg-emerald-50', text: 'text-emerald-600', icon: 'text-emerald-500' },
     amber: { bg: 'bg-amber-50', text: 'text-amber-600', icon: 'text-amber-500' },
   }

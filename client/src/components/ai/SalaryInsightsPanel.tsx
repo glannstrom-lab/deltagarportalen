@@ -193,7 +193,7 @@ export function SalaryInsightsPanel({
             >
               <div className="flex items-end justify-between gap-4 py-4">
                 <div className="text-center">
-                  <div className="h-16 w-12 bg-gradient-to-t from-violet-500 to-violet-400 rounded-t-lg flex items-end justify-center">
+                  <div className="h-16 w-12 bg-gradient-to-t from-teal-500 to-teal-400 rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">1 år</span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-600 mt-2">
@@ -202,7 +202,7 @@ export function SalaryInsightsPanel({
                 </div>
                 <ChevronRight className="w-4 h-4 text-slate-600 mb-8" />
                 <div className="text-center">
-                  <div className="h-24 w-12 bg-gradient-to-t from-indigo-500 to-indigo-400 rounded-t-lg flex items-end justify-center">
+                  <div className="h-24 w-12 bg-gradient-to-t from-sky-500 to-sky-400 rounded-t-lg flex items-end justify-center">
                     <span className="text-white text-xs font-medium pb-1">3 år</span>
                   </div>
                   <p className="text-xs text-slate-600 dark:text-slate-600 mt-2">

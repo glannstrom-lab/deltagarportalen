@@ -194,17 +194,17 @@ export function EducationPathPanel({
               >
                 <div className="relative pl-4">
                   {/* Timeline line */}
-                  <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-gradient-to-b from-violet-500 to-indigo-500" />
+                  <div className="absolute left-1.5 top-2 bottom-2 w-0.5 bg-gradient-to-b from-teal-500 to-sky-500" />
 
                   <div className="space-y-4">
                     {result.learningPath.map((step) => (
                       <div key={step.step} className="relative flex items-start gap-4">
                         {/* Timeline dot */}
-                        <div className="absolute -left-4 w-3 h-3 rounded-full bg-violet-500 ring-4 ring-white dark:ring-slate-900" />
+                        <div className="absolute -left-4 w-3 h-3 rounded-full bg-teal-500 ring-4 ring-white dark:ring-slate-900" />
 
                         <div className="flex-1 p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="text-xs font-medium text-violet-600 dark:text-violet-400">
+                            <span className="text-xs font-medium text-teal-600 dark:text-teal-400">
                               Steg {step.step}
                             </span>
                             <span className="text-xs text-slate-600">
@@ -237,7 +237,7 @@ export function EducationPathPanel({
                   {result.freeCourses.map((course, i) => (
                     <div
                       key={i}
-                      className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-300 dark:hover:border-violet-700 transition-colors"
+                      className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-700 transition-colors"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex-1">
@@ -245,7 +245,7 @@ export function EducationPathPanel({
                             {course.title}
                           </h5>
                           <div className="flex flex-wrap gap-2 text-xs">
-                            <span className="px-2 py-0.5 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 rounded-full">
+                            <span className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 rounded-full">
                               {course.provider}
                             </span>
                             <span className="px-2 py-0.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-600 rounded-full flex items-center gap-1">

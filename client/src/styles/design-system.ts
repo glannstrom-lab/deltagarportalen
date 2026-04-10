@@ -1,9 +1,10 @@
 /**
  * Central Design System för Deltagarportalen
  * "Calm & Capable" Palett - UPPDATERAD
- * 
+ *
  * Ändringar:
- * - Indigo → Violet (mer mänsklig & inspirerande)
+ * - Primärfärg: Teal (lugnande & professionell)
+ * - Sekundär: Sky (öppen & möjligheter)
  * - Slate → Warm Stone (mer inbjudande)
  * - Justerade semantiska färger för bättre kontrast
  */
@@ -14,19 +15,19 @@ import { cn } from '@/lib/utils'
 // FÄRGSYSTEM - NYA "Calm & Capable" Färger
 // ============================================
 export const colors = {
-  // NY: Primärfärg - Violet
+  // NY: Primärfärg - Teal
   primary: {
-    50: 'bg-violet-50',
-    100: 'bg-violet-100',
-    200: 'bg-violet-200',
-    300: 'bg-violet-300',
-    500: 'bg-violet-500',
-    600: 'bg-violet-600',   // Huvudfärg
-    700: 'bg-violet-700',   // Hover
-    text: 'text-violet-600',
-    textLight: 'text-violet-700',
-    border: 'border-violet-200',
-    ring: 'ring-violet-500',
+    50: 'bg-teal-50',
+    100: 'bg-teal-100',
+    200: 'bg-teal-200',
+    300: 'bg-teal-300',
+    500: 'bg-teal-500',
+    600: 'bg-teal-600',   // Huvudfärg
+    700: 'bg-teal-700',   // Hover
+    text: 'text-teal-600',
+    textLight: 'text-teal-700',
+    border: 'border-teal-200',
+    ring: 'ring-teal-500',
   },
   
   // NY: Neutrala färger - Warm Stone (istället för Slate)
@@ -161,9 +162,9 @@ export const animations = {
   press: 'active:scale-[0.98] transition-transform duration-150',
   lift: 'hover:-translate-y-0.5 transition-transform duration-200',
   liftLarge: 'hover:-translate-y-1 transition-transform duration-200',
-  // Focus states - UPPDATERAD med violet
-  focusRing: 'focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500',
-  focusVisible: 'focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2',
+  // Focus states - UPPDATERAD med teal
+  focusRing: 'focus:outline-none focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500',
+  focusVisible: 'focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2',
   // Loading
   pulse: 'animate-pulse',
   spin: 'animate-spin',
@@ -199,14 +200,14 @@ export const typography = {
 // Button varianter - UPPDATERADE med nya färger och förbättrad tillgänglighet
 export const buttonVariants = {
   primary: cn(
-    'bg-violet-600 text-white hover:bg-violet-700',
+    'bg-teal-600 text-white hover:bg-teal-700',
     shadows.button,
     'hover:shadow',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
   ),
   secondary: cn(
     'bg-white border border-stone-200 text-stone-700',
@@ -215,16 +216,16 @@ export const buttonVariants = {
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
   ),
   outline: cn(
-    'bg-transparent border-2 border-violet-600 text-violet-600',
-    'hover:bg-violet-50',
+    'bg-transparent border-2 border-teal-600 text-teal-600',
+    'hover:bg-teal-50',
     animations.press,
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
   ),
   ghost: cn(
     'bg-transparent text-stone-600',
@@ -233,7 +234,7 @@ export const buttonVariants = {
     radius.button,
     'font-medium transition-all duration-200',
     'inline-flex items-center justify-center gap-2',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
   ),
   danger: cn(
     'bg-red-50 text-red-600 border border-red-200',
@@ -250,7 +251,7 @@ export const buttonVariants = {
     'text-stone-600 hover:bg-stone-100',
     animations.press,
     'transition-colors duration-200',
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2'
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2'
   ),
 }
 
@@ -292,7 +293,7 @@ export const cardVariants = {
   ),
 }
 
-// Input styling - UPPDATERAD med stone och violet
+// Input styling - UPPDATERAD med stone och teal
 export const inputBase = cn(
   'w-full',
   spacing.input,
@@ -314,7 +315,7 @@ export const labelBase = cn(
 // Badge styling - UPPDATERAD
 export const badgeVariants = {
   default: 'bg-stone-100 text-stone-700 px-2 py-0.5 text-xs font-medium rounded-full',
-  primary: 'bg-violet-100 text-violet-700 px-2 py-0.5 text-xs font-medium rounded-full',
+  primary: 'bg-teal-100 text-teal-700 px-2 py-0.5 text-xs font-medium rounded-full',
   success: 'bg-emerald-100 text-emerald-700 px-2 py-0.5 text-xs font-medium rounded-full',
   warning: 'bg-amber-100 text-amber-700 px-2 py-0.5 text-xs font-medium rounded-full',
   error: 'bg-red-100 text-red-700 px-2 py-0.5 text-xs font-medium rounded-full',
@@ -497,8 +498,8 @@ export const states = {
 // NY: Gradients för "Calm & Capable"
 // ============================================
 export const gradients = {
-  primary: 'bg-gradient-to-r from-violet-600 to-violet-700',
-  hero: 'bg-gradient-to-br from-violet-50 to-stone-50',
+  primary: 'bg-gradient-to-r from-teal-600 to-teal-700',
+  hero: 'bg-gradient-to-br from-teal-50 to-stone-50',
   success: 'bg-gradient-to-r from-emerald-500 to-teal-600',
   card: 'bg-gradient-to-b from-white to-stone-50',
 }
@@ -507,7 +508,7 @@ export const gradients = {
 // NY: Focus states specifika
 // ============================================
 export const focusStates = {
-  primary: 'focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-500',
+  primary: 'focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500',
   neutral: 'focus:outline-none focus:ring-2 focus:ring-stone-400/30 focus:border-stone-400',
 }
 

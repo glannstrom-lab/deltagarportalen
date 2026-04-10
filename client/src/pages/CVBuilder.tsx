@@ -65,7 +65,7 @@ const TEMPLATES = [
     id: 'centered', 
     name: 'Centrerad', 
     desc: 'Hero-design med stort foto och gradient',
-    preview: 'bg-gradient-to-br from-violet-500 to-fuchsia-500',
+    preview: 'bg-gradient-to-br from-teal-500 to-sky-500',
     features: ['Gradient header', 'Centrerat foto', 'Timeline']
   },
   { 
@@ -128,7 +128,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
             ~{remainingMinutes} min kvar
           </span>
         </div>
-        <span className="text-sm font-medium text-indigo-600">
+        <span className="text-sm font-medium text-sky-600">
           {Math.round(progress)}% klart
         </span>
       </div>
@@ -136,7 +136,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
       {/* Visual progress bar */}
       <div className="h-2 bg-slate-100 rounded-full overflow-hidden mb-4">
         <div
-          className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 transition-all duration-500 rounded-full"
+          className="h-full bg-gradient-to-r from-teal-500 to-sky-500 transition-all duration-500 rounded-full"
           style={{ width: `${progress}%` }}
         />
       </div>
@@ -155,7 +155,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 onClick={() => onStepClick(stepNum)}
                 className={cn(
                   "flex flex-col items-center gap-1 group min-w-[44px] min-h-[44px] py-1",
-                  "focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 rounded-lg"
+                  "focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 rounded-lg"
                 )}
                 aria-label={`Gå till steg ${stepNum}: ${step.title}`}
                 aria-current={isActive ? 'step' : undefined}
@@ -163,7 +163,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 <div className={cn(
                   "w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all",
                   isActive
-                    ? "bg-indigo-600 text-white shadow-lg ring-4 ring-indigo-100"
+                    ? "bg-sky-600 text-white shadow-lg ring-4 ring-sky-100"
                     : isCompleted
                       ? "bg-emerald-500 text-white"
                       : "bg-slate-100 text-slate-600 group-hover:bg-slate-200"
@@ -172,7 +172,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
                 </div>
                 <span className={cn(
                   "text-xs font-medium hidden sm:block",
-                  isActive ? "text-indigo-600" : isCompleted ? "text-emerald-600" : "text-slate-600"
+                  isActive ? "text-sky-600" : isCompleted ? "text-emerald-600" : "text-slate-600"
                 )}>
                   {step.title}
                 </span>
@@ -198,7 +198,7 @@ function StepIndicator({ currentStep, totalSteps, onStepClick, completedSteps }:
       <div className="mt-3 pt-3 border-t border-slate-100">
         <div className="sm:text-center">
           <p className="text-sm sm:text-sm text-slate-600">
-            <span className="font-semibold text-indigo-700 sm:font-medium sm:text-slate-800">
+            <span className="font-semibold text-sky-700 sm:font-medium sm:text-slate-800">
               Steg {currentStep}: {STEPS[currentStep - 1]?.title}
             </span>
             <span className="hidden sm:inline"> – </span>
@@ -459,14 +459,14 @@ export default function CVBuilder() {
               className={cn(
                 "group relative overflow-hidden rounded-2xl border-2 text-left transition-all",
                 selected
-                  ? "border-indigo-500 ring-2 ring-indigo-500 ring-offset-2 shadow-xl"
-                  : "border-slate-200 hover:border-indigo-300 hover:shadow-lg"
+                  ? "border-sky-500 ring-2 ring-sky-500 ring-offset-2 shadow-xl"
+                  : "border-slate-200 hover:border-sky-300 hover:shadow-lg"
               )}
             >
               {/* Preview thumbnail */}
               <div className={cn("h-36 w-full relative", tpl.preview)}>
                 {selected && (
-                  <div className="absolute top-3 right-3 bg-indigo-500 text-white rounded-full p-1.5 shadow-lg">
+                  <div className="absolute top-3 right-3 bg-sky-500 text-white rounded-full p-1.5 shadow-lg">
                     <Check className="w-5 h-5" />
                   </div>
                 )}
@@ -484,7 +484,7 @@ export default function CVBuilder() {
                   )}
                   {tpl.id === 'centered' && (
                     <div className="flex flex-col items-center w-full h-20 bg-white/90 rounded-lg p-2 shadow-sm">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-400 to-fuchsia-400 mb-2" />
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-sky-400 mb-2" />
                       <div className="h-3 bg-slate-200 rounded w-1/2" />
                     </div>
                   )}
@@ -526,7 +526,7 @@ export default function CVBuilder() {
               <div className="p-5">
                 <div className="flex items-center gap-2 mb-2">
                   <h4 className="font-bold text-lg text-slate-800">{tpl.name}</h4>
-                  {selected && <span className="text-xs bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
+                  {selected && <span className="text-xs bg-sky-100 text-sky-700 px-2 py-0.5 rounded-full font-medium">{t('cvBuilder.templates.selected')}</span>}
                 </div>
                 <p className="text-sm text-slate-700 mb-3">{tpl.desc}</p>
 
@@ -548,16 +548,16 @@ export default function CVBuilder() {
       </div>
 
       {data.template && (
-        <div className="p-5 bg-indigo-50 rounded-2xl border border-indigo-100">
+        <div className="p-5 bg-sky-50 rounded-2xl border border-sky-100">
           <div className="flex items-start gap-3">
-            <div className="bg-indigo-500 text-white rounded-full p-1 mt-0.5">
+            <div className="bg-sky-500 text-white rounded-full p-1 mt-0.5">
               <Check className="w-4 h-4" />
             </div>
             <div>
-              <p className="font-medium text-indigo-900">
+              <p className="font-medium text-sky-900">
                 {TEMPLATES.find(tpl => tpl.id === data.template)?.name} {t('cvBuilder.templates.isSelected')}
               </p>
-              <p className="text-sm text-indigo-700 mt-1">
+              <p className="text-sm text-sky-700 mt-1">
                 {t('cvBuilder.templates.selectedInfo')}
               </p>
             </div>
@@ -575,7 +575,7 @@ export default function CVBuilder() {
         {isImageUploading && (
           <div className="absolute inset-0 bg-white/80 rounded-2xl flex items-center justify-center z-10">
             <div className="flex items-center gap-3">
-              <Loader2 className="w-5 h-5 animate-spin text-indigo-600" />
+              <Loader2 className="w-5 h-5 animate-spin text-sky-600" />
               <span className="text-sm font-medium text-slate-700">{t('cvBuilder.profileImage.uploading')}</span>
             </div>
           </div>
@@ -655,7 +655,7 @@ export default function CVBuilder() {
 
       <div>
         <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <Briefcase className="w-5 h-5 text-purple-500" />
+          <Briefcase className="w-5 h-5 text-sky-500" />
           {t('cvBuilder.sections.workExperience')}
         </h3>
         <ExperienceEditor
@@ -666,7 +666,7 @@ export default function CVBuilder() {
 
       <div>
         <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <GraduationCap className="w-5 h-5 text-purple-500" />
+          <GraduationCap className="w-5 h-5 text-sky-500" />
           {t('cvBuilder.sections.education')}
         </h3>
         <EducationEditor
@@ -684,7 +684,7 @@ export default function CVBuilder() {
 
       <div>
         <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-          <Award className="w-5 h-5 text-purple-500" />
+          <Award className="w-5 h-5 text-sky-500" />
           {t('cvBuilder.sections.skills')}
         </h3>
         <SkillsEditor
@@ -796,7 +796,7 @@ export default function CVBuilder() {
           </div>
         </div>
         <div className="flex items-center gap-2 flex-wrap">
-          <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-indigo-600 hover:bg-indigo-50 border border-indigo-200 rounded-lg transition-colors">
+          <button onClick={loadDemoData} className="flex items-center gap-2 px-3 py-2 text-sm text-sky-600 hover:bg-sky-50 border border-indigo-200 rounded-lg transition-colors">
             <Sparkles className="w-4 h-4" />
             <span className="hidden sm:inline">{t('cvBuilder.actions.exampleData')}</span>
           </button>
@@ -884,7 +884,7 @@ export default function CVBuilder() {
             </p>
             <button
               onClick={() => setShowOnboarding(true)}
-              className="w-full px-4 py-2 text-sm font-medium text-purple-600 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors"
+              className="w-full px-4 py-2 text-sm font-medium text-sky-600 bg-sky-50 rounded-lg hover:bg-sky-100 transition-colors"
             >
               {t('cvBuilder.help.showGuide')}
             </button>
@@ -892,14 +892,14 @@ export default function CVBuilder() {
 
           {/* AI Tools */}
           {step === 3 && (
-            <div className="bg-gradient-to-br from-violet-50 to-indigo-50 rounded-2xl shadow-sm border border-violet-200 p-5">
+            <div className="bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl shadow-sm border border-teal-200 p-5">
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-8 h-8 bg-violet-500 rounded-lg flex items-center justify-center">
+                <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
                   <Lightbulb className="w-4 h-4 text-white" />
                 </div>
-                <h3 className="font-semibold text-violet-900">{t('cvBuilder.help.aiWriting')}</h3>
+                <h3 className="font-semibold text-teal-900">{t('cvBuilder.help.aiWriting')}</h3>
               </div>
-              <p className="text-sm text-violet-700 mb-3">
+              <p className="text-sm text-teal-700 mb-3">
                 {t('cvBuilder.help.aiWritingDesc')}
               </p>
               <AIWritingAssistant content={data.summary} onChange={(v) => setData({ ...data, summary: v })} type="summary" />
@@ -977,7 +977,7 @@ export default function CVBuilder() {
         </button>
         <button
           onClick={() => setShowPreview(true)}
-          className="flex items-center justify-center w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl"
+          className="flex items-center justify-center w-12 h-12 bg-sky-100 text-sky-600 rounded-xl"
         >
           <Eye className="w-5 h-5" />
         </button>

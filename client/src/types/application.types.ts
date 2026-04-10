@@ -126,9 +126,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   interview: {
     label: 'Intervju',
     labelEn: 'Interview',
-    color: 'text-violet-700',
-    bgColor: 'bg-violet-100',
-    borderColor: 'border-violet-300',
+    color: 'text-teal-700',
+    bgColor: 'bg-teal-100',
+    borderColor: 'border-teal-300',
     icon: 'Users',
     order: 5,
     isTerminal: false
@@ -136,9 +136,9 @@ export const APPLICATION_STATUS_CONFIG: Record<ApplicationStatus, {
   assessment: {
     label: 'Arbetsprov',
     labelEn: 'Assessment',
-    color: 'text-indigo-700',
-    bgColor: 'bg-indigo-100',
-    borderColor: 'border-indigo-300',
+    color: 'text-sky-700',
+    bgColor: 'bg-sky-100',
+    borderColor: 'border-sky-300',
     icon: 'FileCheck',
     order: 6,
     isTerminal: false

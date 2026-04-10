@@ -145,7 +145,7 @@ interface UploadedFile {
 const statusLabels: Record<string, { label: string; color: string; bg: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
   'SAVED': { label: 'Sparad', color: 'text-slate-600', bg: 'bg-slate-100', icon: Bookmark },
   'APPLIED': { label: 'Ansökt', color: 'text-blue-600', bg: 'bg-blue-100', icon: CheckCircle2 },
-  'INTERVIEW': { label: 'Intervju', color: 'text-purple-600', bg: 'bg-purple-100', icon: Sparkles },
+  'INTERVIEW': { label: 'Intervju', color: 'text-sky-600', bg: 'bg-sky-100', icon: Sparkles },
   'REJECTED': { label: 'Avslag', color: 'text-red-600', bg: 'bg-red-100', icon: X },
   'ACCEPTED': { label: 'Erbjudande', color: 'text-green-600', bg: 'bg-green-100', icon: Award },
 }
@@ -547,7 +547,7 @@ export default function Resources() {
   const statusLabelsTranslated: Record<string, { label: string; color: string; bg: string; icon: React.ComponentType<{ size?: number; className?: string }> }> = {
     'SAVED': { label: t('resources.status.saved'), color: 'text-slate-600', bg: 'bg-slate-100', icon: Bookmark },
     'APPLIED': { label: t('resources.status.applied'), color: 'text-blue-600', bg: 'bg-blue-100', icon: CheckCircle2 },
-    'INTERVIEW': { label: t('resources.status.interview'), color: 'text-purple-600', bg: 'bg-purple-100', icon: Sparkles },
+    'INTERVIEW': { label: t('resources.status.interview'), color: 'text-sky-600', bg: 'bg-sky-100', icon: Sparkles },
     'REJECTED': { label: t('resources.status.rejected'), color: 'text-red-600', bg: 'bg-red-100', icon: X },
     'ACCEPTED': { label: t('resources.status.accepted'), color: 'text-green-600', bg: 'bg-green-100', icon: Award },
   }
@@ -561,7 +561,7 @@ export default function Resources() {
           aria-live="polite"
           aria-busy="true"
         >
-          <Loader2 className="animate-spin text-violet-600" size={48} aria-hidden="true" />
+          <Loader2 className="animate-spin text-teal-600" size={48} aria-hidden="true" />
           <span className="sr-only">{t('common.loading')}</span>
         </div>
       </PageLayout>
@@ -579,7 +579,7 @@ export default function Resources() {
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
           <div>
             <h2 className="text-xl font-bold">Mina Resurser</h2>
-            <p className="text-violet-200 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
+            <p className="text-teal-200 text-sm">Alla dina dokument, jobb och artiklar på ett ställe</p>
           </div>
           <Link
             to="/cv"
@@ -597,18 +597,18 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{savedJobs.length}</p>
-                <p className="text-xs text-violet-200">{t('resources.stats.savedJobs')}</p>
+                <p className="text-xs text-teal-200">{t('resources.stats.savedJobs')}</p>
               </div>
             </div>
           </Link>
           <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4 border border-white/10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-purple-400/20 rounded-lg flex items-center justify-center">
-                <DocumentText className="w-5 h-5 text-purple-200" />
+              <div className="w-10 h-10 bg-sky-400/20 rounded-lg flex items-center justify-center">
+                <DocumentText className="w-5 h-5 text-sky-200" />
               </div>
               <div>
                 <p className="text-2xl font-bold">{cvVersions.length + coverLetters.length}</p>
-                <p className="text-xs text-violet-200">{t('resources.stats.documents')}</p>
+                <p className="text-xs text-teal-200">{t('resources.stats.documents')}</p>
               </div>
             </div>
           </div>
@@ -619,7 +619,7 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{bookmarkedArticles.length}</p>
-                <p className="text-xs text-violet-200">{t('resources.stats.bookmarks')}</p>
+                <p className="text-xs text-teal-200">{t('resources.stats.bookmarks')}</p>
               </div>
             </div>
           </Link>
@@ -630,7 +630,7 @@ export default function Resources() {
               </div>
               <div>
                 <p className="text-2xl font-bold">{uploadedFiles.length}</p>
-                <p className="text-xs text-violet-200">{t('resources.stats.files')}</p>
+                <p className="text-xs text-teal-200">{t('resources.stats.files')}</p>
               </div>
             </div>
           </div>
@@ -732,7 +732,7 @@ export default function Resources() {
                         </div>
                         <button
                           onClick={() => setPreviewModal({type: 'cv', data: versionData as CVData})}
-                          className="p-1.5 text-slate-400 hover:text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+                          className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                           title="Förhandsgranska"
                         >
                           <Eye size={16} />
@@ -756,7 +756,7 @@ export default function Resources() {
                           {versionData.workExperience?.length || 0}
                         </span>
                         <span className="flex items-center gap-1">
-                          <GraduationCap size={12} className="text-purple-500" />
+                          <GraduationCap size={12} className="text-sky-500" />
                           {versionData.education?.length || 0}
                         </span>
                         <span className="flex items-center gap-1">
@@ -837,10 +837,10 @@ export default function Resources() {
 
         {/* Interest Guide Result - Compact */}
         {(activeTab === 'all' || activeTab === 'documents') && interestResult && (
-          <section className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-200 p-4">
+          <section className="bg-gradient-to-r from-pink-50 to-sky-50 rounded-xl border border-pink-200 p-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-purple-500 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-gradient-to-br from-pink-500 to-sky-500 rounded-lg flex items-center justify-center">
                   <Heart className="w-5 h-5 text-white" />
                 </div>
                 <div>
@@ -862,7 +862,7 @@ export default function Resources() {
                 </Link>
                 <Link
                   to="/career"
-                  className="px-3 py-1.5 text-sm bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-medium hover:from-pink-600 hover:to-purple-600 transition-colors"
+                  className="px-3 py-1.5 text-sm bg-gradient-to-r from-pink-500 to-sky-500 text-white rounded-lg font-medium hover:from-pink-600 hover:to-sky-600 transition-colors"
                 >
                   {t('resources.exploreJobs')}
                 </Link>
@@ -876,12 +876,12 @@ export default function Resources() {
           <section>
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-sm font-semibold text-slate-800 flex items-center gap-2">
-                <FileText className="text-purple-600" size={18} />
+                <FileText className="text-sky-600" size={18} />
                 {t('resources.coverLetters')} ({coverLetters.length})
               </h3>
               <Link
                 to="/cover-letter"
-                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="text-xs text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1"
               >
                 {t('resources.createNew')}
                 <Plus size={14} />
@@ -896,12 +896,12 @@ export default function Resources() {
                   type={letter.ai_generated ? t('resources.aiGenerated') : t('resources.manual')}
                   date={new Date(letter.created_at).toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE')}
                   icon={FileText}
-                  color="bg-gradient-to-br from-purple-500 to-indigo-500"
+                  color="bg-gradient-to-br from-sky-500 to-teal-500"
                   actions={
                     <>
                       <button
                         onClick={() => setPreviewModal({type: 'letter', data: letter})}
-                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 hover:text-violet-600 hover:bg-violet-50 rounded transition-colors"
+                        className="flex items-center gap-1 px-2 py-1 text-xs text-slate-500 hover:text-teal-600 hover:bg-teal-50 rounded transition-colors"
                       >
                         <Eye size={14} />
                         {t('resources.read')}
@@ -909,7 +909,7 @@ export default function Resources() {
                       <div className="flex items-center gap-1">
                         <button
                           onClick={() => handleDownloadLetter(letter, 'pdf')}
-                          className="flex items-center gap-1 px-2 py-1 text-xs bg-violet-600 text-white rounded hover:bg-violet-700 transition-colors"
+                          className="flex items-center gap-1 px-2 py-1 text-xs bg-teal-600 text-white rounded hover:bg-teal-700 transition-colors"
                         >
                           <FileDown size={14} />
                           PDF
@@ -940,7 +940,7 @@ export default function Resources() {
               </h3>
               <Link
                 to="/applications"
-                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="text-xs text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1"
               >
                 {t('resources.jobTracker')}
                 <ChevronRight size={14} />
@@ -1015,7 +1015,7 @@ export default function Resources() {
             {activeTab === 'all' && filteredJobs.length > 5 && (
               <button
                 onClick={() => setSearchParams({ tab: 'jobs' })}
-                className="w-full mt-2 py-2 text-sm text-violet-600 hover:bg-violet-50 rounded-lg transition-colors"
+                className="w-full mt-2 py-2 text-sm text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
               >
                 Visa alla {filteredJobs.length} jobb →
               </button>
@@ -1033,7 +1033,7 @@ export default function Resources() {
               </h3>
               <Link
                 to="/knowledge-base"
-                className="text-xs text-violet-600 hover:text-violet-700 font-medium flex items-center gap-1"
+                className="text-xs text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1"
               >
                 {t('resources.explore')}
                 <ChevronRight size={14} />
@@ -1212,7 +1212,7 @@ export default function Resources() {
                     {cv.education && cv.education.length > 0 && (
                       <div>
                         <h3 className="text-sm font-semibold text-slate-700 mb-2 flex items-center gap-2">
-                          <GraduationCap size={16} className="text-purple-500" />
+                          <GraduationCap size={16} className="text-sky-500" />
                           Utbildning
                         </h3>
                         <div className="space-y-2">
@@ -1288,7 +1288,7 @@ export default function Resources() {
                   <div className="pt-3 mt-4 border-t border-slate-100 flex gap-2">
                     <button
                       onClick={() => handleDownloadLetter(previewModal.data as CoverLetter, 'pdf')}
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-violet-600 text-white rounded-lg font-medium hover:bg-violet-700 transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 text-sm bg-teal-600 text-white rounded-lg font-medium hover:bg-teal-700 transition-colors"
                     >
                       <FileDown size={14} />
                       Ladda ner PDF

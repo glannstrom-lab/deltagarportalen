@@ -40,9 +40,9 @@ export function PageHeader({
             to="/career"
             className={cn(
               "inline-flex items-center justify-center gap-2 px-5 py-2.5",
-              "bg-violet-100 text-violet-700 rounded-xl",
+              "bg-teal-100 text-teal-700 rounded-xl",
               "text-sm font-semibold",
-              "hover:bg-violet-200 hover:shadow-lg hover:-translate-y-0.5",
+              "hover:bg-teal-200 hover:shadow-lg hover:-translate-y-0.5",
               "transition-all duration-200"
             )}
           >

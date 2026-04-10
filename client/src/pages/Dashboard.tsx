@@ -120,10 +120,10 @@ const COLOR_CLASSES = {
     hover: 'hover:bg-sky-100/50 dark:hover:bg-sky-900/30'
   },
   lavender: {
-    bg: 'bg-violet-50 dark:bg-violet-900/20',
-    border: 'border-violet-200 dark:border-violet-800',
-    accent: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',
-    hover: 'hover:bg-violet-100/50 dark:hover:bg-violet-900/30'
+    bg: 'bg-teal-50 dark:bg-teal-900/20',
+    border: 'border-teal-200 dark:border-teal-800',
+    accent: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+    hover: 'hover:bg-teal-100/50 dark:hover:bg-teal-900/30'
   },
   sage: {
     bg: 'bg-emerald-50 dark:bg-emerald-900/20',
@@ -351,7 +351,7 @@ function ModulesView({ profile }: { profile: any }) {
         {[
           { label: 'Min profil', icon: User, path: '/profile', color: 'bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400' },
           { label: 'Sök jobb', icon: Search, path: '/job-search', color: 'bg-orange-50 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400' },
-          { label: 'Mitt CV', icon: FileText, path: '/cv', color: 'bg-violet-50 dark:bg-violet-900/30 text-violet-600 dark:text-violet-400' },
+          { label: 'Mitt CV', icon: FileText, path: '/cv', color: 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' },
           { label: 'Kalender', icon: Calendar, path: '/calendar', color: 'bg-teal-50 dark:bg-teal-900/30 text-teal-600 dark:text-teal-400' }
         ].map((item) => {
           const Icon = item.icon

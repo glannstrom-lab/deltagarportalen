@@ -103,7 +103,7 @@ function LevelSlider({
         max={5}
         value={value}
         onChange={(e) => onChange(parseInt(e.target.value))}
-        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-violet-600"
+        className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
       />
       <div className="flex justify-between text-xs text-slate-600">
         <span>{lowLabel}</span>
@@ -222,7 +222,7 @@ function TodayLogger() {
                 className={cn(
                   "px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5",
                   activities.includes(activity.id)
-                    ? "bg-violet-100 text-violet-700 ring-2 ring-violet-300"
+                    ? "bg-teal-100 text-teal-700 ring-2 ring-teal-300"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 )}
               >
@@ -243,7 +243,7 @@ function TodayLogger() {
             onChange={(e) => setNote(e.target.value)}
             placeholder="Något speciellt som påverkade din dag?"
             rows={3}
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none"
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
           />
         </div>
 
@@ -326,7 +326,7 @@ function MoodCalendar() {
               key={day}
               className={cn(
                 "aspect-square flex items-center justify-center rounded-lg text-sm",
-                isToday && "ring-2 ring-violet-400 ring-offset-1",
+                isToday && "ring-2 ring-teal-400 ring-offset-1",
                 moodConfig ? moodConfig.bgColor : "bg-slate-50"
               )}
               title={moodLog ? `Humör: ${moodLog.mood_level}/5` : ''}
@@ -467,7 +467,7 @@ export function MoodTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
       </div>
     )
   }

@@ -83,8 +83,8 @@ export default function SkillsTab() {
       <div className="space-y-6">
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
           <div className="text-center mb-6">
-            <div className="w-16 h-16 bg-violet-100 dark:bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Target className="w-8 h-8 text-violet-600 dark:text-violet-400" />
+            <div className="w-16 h-16 bg-teal-100 dark:bg-teal-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Target className="w-8 h-8 text-teal-600 dark:text-teal-400" />
             </div>
             <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100">{t('career.skills.skillsGapAnalysis')}</h3>
             <p className="text-gray-600 dark:text-gray-300 mt-2">

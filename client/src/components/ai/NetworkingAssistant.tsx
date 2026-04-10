@@ -109,7 +109,7 @@ export function NetworkingAssistant({
   if (!result && !isLoading && !error) {
     return (
       <AiConsentGate compact featureName="Nätverkshjälpen">
-        <div className={cn('p-5 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800', className)}>
+        <div className={cn('p-5 rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 border border-blue-200 dark:border-blue-800', className)}>
           <div className="flex items-start gap-3 mb-4">
             <div className="p-2 rounded-lg bg-blue-100 dark:bg-blue-900/50">
               <Users className="w-5 h-5 text-blue-600 dark:text-blue-400" />
@@ -227,7 +227,7 @@ export function NetworkingAssistant({
                   )}
                 </button>
               </div>
-              <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 border border-blue-200 dark:border-blue-800">
+              <div className="p-4 rounded-xl bg-gradient-to-br from-blue-50 to-sky-50 dark:from-blue-900/20 dark:to-sky-900/20 border border-blue-200 dark:border-blue-800">
                 <div className="flex items-center gap-2 mb-3">
                   {platformIcons[platform]}
                   <span className="text-sm font-medium text-slate-700 dark:text-slate-300">
@@ -273,7 +273,7 @@ export function NetworkingAssistant({
                 <ol className="space-y-2">
                   {result.followUpStrategy.map((step, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-violet-100 dark:bg-violet-900/50 flex items-center justify-center text-xs font-medium text-violet-600 dark:text-violet-400">
+                      <span className="flex-shrink-0 w-6 h-6 rounded-full bg-teal-100 dark:bg-teal-900/50 flex items-center justify-center text-xs font-medium text-teal-600 dark:text-teal-400">
                         {i + 1}
                       </span>
                       <span className="text-sm text-slate-700 dark:text-slate-300 pt-0.5">

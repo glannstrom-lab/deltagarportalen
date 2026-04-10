@@ -74,7 +74,7 @@ export function ApplicationCard({
       <div
         className={cn(
           "bg-white rounded-lg border p-3 cursor-pointer hover:shadow-md transition-all",
-          isDragging && "shadow-lg ring-2 ring-violet-400 rotate-2",
+          isDragging && "shadow-lg ring-2 ring-teal-400 rotate-2",
           isStale && "border-amber-300"
         )}
         onClick={() => onViewDetails?.(application)}
@@ -108,7 +108,7 @@ export function ApplicationCard({
     <Card
       className={cn(
         "p-4 hover:shadow-md transition-all cursor-pointer group",
-        isDragging && "shadow-lg ring-2 ring-violet-400",
+        isDragging && "shadow-lg ring-2 ring-teal-400",
         isStale && "border-amber-200 bg-amber-50/30"
       )}
       onClick={() => onViewDetails?.(application)}
@@ -290,7 +290,7 @@ export function ApplicationCard({
 
             {/* Has CV */}
             {application.cvVersionId && (
-              <span className="px-2 py-0.5 rounded text-xs bg-violet-100 text-violet-700 flex items-center gap-1">
+              <span className="px-2 py-0.5 rounded text-xs bg-teal-100 text-teal-700 flex items-center gap-1">
                 <FileText className="w-3 h-3" />
                 CV
               </span>
@@ -322,7 +322,7 @@ export function ApplicationCard({
             target="_blank"
             rel="noopener noreferrer"
             onClick={(e) => e.stopPropagation()}
-            className="flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700 font-medium"
+            className="flex items-center gap-1 text-xs text-sky-600 hover:text-sky-700 font-medium"
           >
             <ExternalLink className="w-3 h-3" />
             Visa annons

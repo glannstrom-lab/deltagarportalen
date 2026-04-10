@@ -20,7 +20,7 @@ import { WellnessConsentGate } from '@/components/consent/WellnessConsentGate'
 
 // Tab configuration
 const TABS = [
-  { id: 'journal', label: 'Dagbok', icon: BookHeart, color: 'violet' },
+  { id: 'journal', label: 'Dagbok', icon: BookHeart, color: 'teal' },
   { id: 'mood', label: 'Humör', icon: Smile, color: 'amber' },
   { id: 'goals', label: 'Mål', icon: Target, color: 'blue' },
   { id: 'gratitude', label: 'Tacksamhet', icon: Heart, color: 'rose' },
@@ -61,7 +61,7 @@ function TabNavigation({
             >
               <Icon className={cn(
                 "w-4 h-4 flex-shrink-0",
-                isActive && tab.color === 'violet' && "text-violet-600 dark:text-violet-400",
+                isActive && tab.color === 'teal' && "text-teal-600 dark:text-teal-400",
                 isActive && tab.color === 'amber' && "text-amber-600 dark:text-amber-400",
                 isActive && tab.color === 'blue' && "text-blue-600 dark:text-blue-400",
                 isActive && tab.color === 'rose' && "text-rose-600 dark:text-rose-400"
@@ -102,14 +102,14 @@ function AchievementBanner() {
       emoji: '📚',
       title: '10 inlägg!',
       description: 'Du har skrivit 10 dagboksinlägg!',
-      color: 'from-blue-50 to-indigo-50 dark:from-blue-900/30 dark:to-indigo-900/30 border-blue-200 dark:border-blue-800'
+      color: 'from-sky-50 to-sky-100 dark:from-sky-900/30 dark:to-sky-800/30 border-sky-200 dark:border-sky-800'
     }
   } else if (totalWords >= 1000 && totalWords < 1100) {
     achievement = {
       emoji: '✍️',
       title: '1000 ord!',
       description: 'Du har skrivit över 1000 ord totalt!',
-      color: 'from-purple-50 to-violet-50 dark:from-purple-900/30 dark:to-violet-900/30 border-purple-200 dark:border-purple-800'
+      color: 'from-sky-50 to-teal-50 dark:from-sky-900/30 dark:to-teal-900/30 border-sky-200 dark:border-sky-800'
     }
   } else if (longestStreak >= 14) {
     achievement = {

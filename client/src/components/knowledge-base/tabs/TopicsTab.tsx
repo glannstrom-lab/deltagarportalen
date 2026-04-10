@@ -100,7 +100,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
               onClick={() => setSelectedCategory('')}
               className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                 !selectedCategory
-                  ? 'bg-violet-100 text-violet-800 font-medium'
+                  ? 'bg-teal-100 text-teal-800 font-medium'
                   : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
@@ -115,7 +115,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
                   onClick={() => setSelectedCategory(category)}
                   className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
                     selectedCategory === category
-                      ? 'bg-violet-100 text-violet-800 font-medium'
+                      ? 'bg-teal-100 text-teal-800 font-medium'
                       : 'text-slate-600 hover:bg-slate-100'
                   }`}
                 >
@@ -132,7 +132,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
                 setSearchQuery('')
                 setSelectedCategory('')
               }}
-              className="w-full mt-4 text-sm text-violet-600 hover:underline"
+              className="w-full mt-4 text-sm text-teal-600 hover:underline"
             >
               {t('knowledgeBase.topics.clearFilters')}
             </button>
@@ -184,7 +184,7 @@ export default function TopicsTab({ articles }: TopicsTabProps) {
                 setSearchQuery('')
                 setSelectedCategory('')
               }}
-              className="text-violet-600 hover:underline mt-2"
+              className="text-teal-600 hover:underline mt-2"
             >
               {t('knowledgeBase.topics.clearFilters')}
             </button>

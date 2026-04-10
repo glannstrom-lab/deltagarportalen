@@ -31,7 +31,7 @@ const quickActions: QuickAction[] = [
     label: '15 minuter',
     description: 'Fokuserad stund',
     icon: <Zap size={20} />,
-    color: 'violet',
+    color: 'teal',
     suggestions: [
       { label: 'Skriv en ansökan', link: '/job-search' },
       { label: 'Uppdatera CV-sektion', link: '/cv' },
@@ -68,12 +68,12 @@ const colorClasses: Record<string, {
     border: 'border-emerald-200',
     shadow: 'hover:shadow-emerald-100'
   },
-  violet: {
-    bg: 'bg-violet-50',
-    hover: 'hover:bg-violet-100',
-    text: 'text-violet-700',
-    border: 'border-violet-200',
-    shadow: 'hover:shadow-violet-100'
+  teal: {
+    bg: 'bg-teal-50',
+    hover: 'hover:bg-teal-100',
+    text: 'text-teal-700',
+    border: 'border-teal-200',
+    shadow: 'hover:shadow-teal-100'
   },
   blue: {
     bg: 'bg-blue-50',
@@ -181,8 +181,8 @@ export function QuickActions() {
                   onClick={() => handleSuggestionClick(suggestion.link)}
                   className={cn(
                     "text-left px-4 py-3 rounded-xl text-sm",
-                    "bg-slate-50 hover:bg-violet-50 hover:text-violet-700",
-                    "border border-slate-200 hover:border-violet-200",
+                    "bg-slate-50 hover:bg-teal-50 hover:text-teal-700",
+                    "border border-slate-200 hover:border-teal-200",
                     "transition-all duration-200",
                     "hover:-translate-y-0.5 hover:shadow-md"
                   )}

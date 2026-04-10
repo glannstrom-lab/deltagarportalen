@@ -263,7 +263,7 @@ export function ApplicationDetailModal({
                 className={cn(
                   "py-3 px-1 text-sm font-medium border-b-2 transition-colors",
                   activeTab === tab.id
-                    ? "border-violet-600 text-violet-600"
+                    ? "border-teal-600 text-teal-600"
                     : "border-transparent text-slate-700 hover:text-slate-700"
                 )}
               >
@@ -301,14 +301,14 @@ export function ApplicationDetailModal({
                   <h4 className="text-sm font-medium text-slate-700">Dokument</h4>
                   <button
                     onClick={() => setActiveTab('documents')}
-                    className="text-xs text-violet-600 hover:text-violet-700 font-medium"
+                    className="text-xs text-teal-600 hover:text-teal-700 font-medium"
                   >
                     Hantera →
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {selectedCVId ? (
-                    <span className="flex items-center gap-1.5 px-2 py-1 bg-violet-100 text-violet-700 rounded text-xs">
+                    <span className="flex items-center gap-1.5 px-2 py-1 bg-teal-100 text-teal-700 rounded text-xs">
                       <FileText className="w-3 h-3" />
                       CV kopplat
                     </span>
@@ -388,7 +388,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
                 </div>
               ) : history.length === 0 ? (
                 <div className="text-center py-8 text-slate-700">
@@ -424,7 +424,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
                 </div>
               ) : contacts.length === 0 ? (
                 <div className="text-center py-8 text-slate-700">
@@ -448,7 +448,7 @@ export function ApplicationDetailModal({
                           <p className="text-sm text-slate-700">{contact.title}</p>
                         )}
                         {contact.email && (
-                          <a href={`mailto:${contact.email}`} className="text-sm text-indigo-600 hover:underline">
+                          <a href={`mailto:${contact.email}`} className="text-sm text-sky-600 hover:underline">
                             {contact.email}
                           </a>
                         )}
@@ -464,7 +464,7 @@ export function ApplicationDetailModal({
             <div className="space-y-3">
               {isDetailLoading ? (
                 <div className="flex items-center justify-center py-8">
-                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-violet-600" />
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-teal-600" />
                 </div>
               ) : reminders.filter(r => !r.isCompleted).length === 0 ? (
                 <div className="text-center py-8 text-slate-700">

@@ -78,10 +78,10 @@ export function InterviewPrepPanel({
   if (!result && !isLoading && !error) {
     return (
       <AiConsentGate compact featureName="Intervjuförberedelse">
-        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20', className)}>
+        <div className={cn('p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20', className)}>
           <div className="flex items-start gap-3">
-            <div className="p-2 rounded-lg bg-violet-100 dark:bg-violet-900/50">
-              <MessageSquare className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+            <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/50">
+              <MessageSquare className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             </div>
             <div className="flex-1">
               <h4 className="font-medium text-slate-800 dark:text-slate-200 mb-1">

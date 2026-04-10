@@ -222,7 +222,7 @@ export function BadgeShowcase({ userBadges }: { userBadges: Badge[] }) {
             className={cn(
               "px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors",
               filter === cat
-                ? 'bg-violet-100 text-violet-700'
+                ? 'bg-teal-100 text-teal-700'
                 : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             )}
           >
@@ -334,14 +334,14 @@ function ProgressBadge({ unlocked, total }: { unlocked: number; total: number })
             cy="24"
             r="20"
             fill="none"
-            stroke="#8b5cf6"
+            stroke="#14b8a6"
             strokeWidth="4"
             strokeDasharray={`${(percentage / 100) * 125.6} 125.6`}
             strokeLinecap="round"
           />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <Trophy size={16} className="text-violet-600" />
+          <Trophy size={16} className="text-teal-600" />
         </div>
       </div>
     </div>
@@ -382,7 +382,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
             badge.tier === 'bronze' ? 'bg-amber-500' :
             badge.tier === 'silver' ? 'bg-slate-400' :
             badge.tier === 'gold' ? 'bg-yellow-400' :
-            'bg-violet-500'
+            'bg-teal-500'
           )} />
         )}
 
@@ -420,7 +420,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
           badge.tier === 'bronze' ? 'text-amber-600' :
           badge.tier === 'silver' ? 'text-slate-700' :
           badge.tier === 'gold' ? 'text-yellow-600' :
-          'text-violet-600'
+          'text-teal-600'
         )}>
           {tierNames[badge.tier]}-nivå
         </p>
@@ -444,7 +444,7 @@ function BadgeDetailModal({ badge, onClose }: { badge: Badge; onClose: () => voi
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${(badge.progress / (badge.total || 1)) * 100}%` }}
-                    className="h-full bg-violet-500 rounded-full"
+                    className="h-full bg-teal-500 rounded-full"
                   />
                 </div>
                 <p className="text-xs text-slate-700">
@@ -480,7 +480,7 @@ function getTierStyles(tier: BadgeTier): string {
     case 'gold':
       return 'bg-yellow-50 border-yellow-300 text-yellow-700'
     case 'platinum':
-      return 'bg-violet-50 border-violet-300 text-violet-700'
+      return 'bg-teal-50 border-teal-300 text-teal-700'
     default:
       return 'bg-slate-50 border-slate-200 text-slate-700'
   }

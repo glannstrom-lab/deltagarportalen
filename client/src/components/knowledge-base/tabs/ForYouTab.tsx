@@ -77,11 +77,11 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
   return (
     <div className="space-y-6 sm:space-y-8">
       {/* Welcome header */}
-      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 border-violet-100">
+      <Card className="bg-gradient-to-r from-teal-50 to-sky-50 border-teal-100">
         <div className="flex flex-col sm:flex-row sm:items-start gap-3 sm:gap-4">
           <div className="flex items-center gap-3 sm:block">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-violet-100 rounded-xl flex items-center justify-center shrink-0">
-              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-violet-600" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-teal-100 rounded-xl flex items-center justify-center shrink-0">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-teal-600" />
             </div>
             <h2 className="text-lg sm:text-xl font-bold text-slate-900 sm:hidden">
               {t('knowledgeBase.forYou.greeting', { name: userName })}
@@ -173,7 +173,7 @@ export default function ForYouTab({ articles, userName }: ForYouTabProps) {
       {recentArticles.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
-            <BookOpen className="w-5 h-5 text-indigo-600" />
+            <BookOpen className="w-5 h-5 text-sky-600" />
             <h3 className="text-lg font-semibold text-slate-900">
               {t('knowledgeBase.forYou.recentArticles')}
             </h3>

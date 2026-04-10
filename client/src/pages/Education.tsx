@@ -50,7 +50,7 @@ import {
 
 const TYPE_COLORS: Record<string, string> = {
   yrkeshogskola: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
-  hogskola: 'bg-violet-100 text-violet-800 dark:bg-violet-900/30 dark:text-violet-300',
+  hogskola: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
   universitet: 'bg-teal-100 text-teal-800 dark:bg-teal-900/30 dark:text-teal-300',
   komvux: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
   folkhogskola: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
@@ -417,9 +417,9 @@ export default function Education() {
                 </span>
               )}
               {selectedType !== 'all' && (
-                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-violet-100 text-violet-700 dark:bg-violet-900/30 dark:text-violet-300">
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
                   {educationTypes.find(t => t.id === selectedType)?.label}
-                  <button onClick={() => setSelectedType('all')} className="hover:text-violet-900 dark:hover:text-violet-200">
+                  <button onClick={() => setSelectedType('all')} className="hover:text-teal-900 dark:hover:text-teal-200">
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -447,7 +447,7 @@ export default function Education() {
       {!hasSearched && (
         <div className="mt-6 space-y-6">
           {/* Info Banner */}
-          <Card className="bg-gradient-to-r from-teal-50 to-violet-50 dark:from-teal-900/20 dark:to-violet-900/20 border-teal-200 dark:border-teal-800">
+          <Card className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border-teal-200 dark:border-teal-800">
             <div className="p-4 sm:p-5 flex items-start gap-4">
               <div className="p-2 rounded-lg bg-teal-100 dark:bg-teal-900/30">
                 <Info className="w-5 h-5 text-teal-600 dark:text-teal-400" />

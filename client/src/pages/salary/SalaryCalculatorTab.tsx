@@ -410,15 +410,15 @@ export default function SalaryCalculatorTab() {
 
       {/* Comparison mode */}
       {comparisons.length > 0 && (
-        <Card className="border-violet-200 dark:border-violet-800 bg-violet-50/30 dark:bg-violet-900/10">
+        <Card className="border-sky-200 dark:border-sky-800 bg-sky-50/30 dark:bg-sky-900/10">
           <div className="flex items-center gap-2 mb-4">
-            <BarChart3 className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+            <BarChart3 className="w-5 h-5 text-sky-600 dark:text-sky-400" />
             <h3 className="font-semibold text-gray-900 dark:text-gray-100">Lönejämförelser ({comparisons.length})</h3>
           </div>
 
           <div className="space-y-3">
             {comparisons.map((comp, idx) => (
-              <div key={comp.id} className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-violet-100 dark:border-violet-800">
+              <div key={comp.id} className="bg-white dark:bg-stone-700 rounded-xl p-4 border border-sky-100 dark:border-sky-800">
                 <div className="flex items-start justify-between mb-3">
                   <div>
                     <p className="font-medium text-gray-900 dark:text-gray-100">{comp.occupation}</p>
@@ -433,11 +433,11 @@ export default function SalaryCalculatorTab() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-violet-50 dark:bg-violet-900/30 rounded-lg p-3">
+                  <div className="bg-sky-50 dark:bg-sky-900/30 rounded-lg p-3">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Brutto</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{comp.gross.toLocaleString('sv-SE')} kr</p>
                   </div>
-                  <div className="bg-violet-50 dark:bg-violet-900/30 rounded-lg p-3">
+                  <div className="bg-sky-50 dark:bg-sky-900/30 rounded-lg p-3">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Netto</p>
                     <p className="font-bold text-gray-900 dark:text-gray-100">{comp.net.toLocaleString('sv-SE')} kr</p>
                   </div>
@@ -445,7 +445,7 @@ export default function SalaryCalculatorTab() {
 
                 {/* Comparison bar with current */}
                 {calculatedSalary && (
-                  <div className="mt-3 pt-3 border-t border-violet-100 dark:border-violet-800">
+                  <div className="mt-3 pt-3 border-t border-sky-100 dark:border-sky-800">
                     <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Jämfört med nuvarande beräkning</p>
                     <div className="flex items-center gap-2">
                       <div className="flex-1 bg-stone-100 dark:bg-stone-600 rounded-full h-2 overflow-hidden">

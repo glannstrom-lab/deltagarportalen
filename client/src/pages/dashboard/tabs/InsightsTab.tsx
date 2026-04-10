@@ -28,7 +28,7 @@ export default function InsightsTab() {
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-violet-500 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <Loader2 className="w-8 h-8 text-teal-500 animate-spin mx-auto mb-3" aria-hidden="true" />
           <p className="text-slate-700">Analyserar dina mönster...</p>
         </div>
       </div>
@@ -59,7 +59,7 @@ export default function InsightsTab() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-            <Brain className="text-violet-500" size={28} />
+            <Brain className="text-teal-500" size={28} />
             Mina insikter
           </h2>
           <p className="text-slate-700">Analys baserad på din aktivitet</p>
@@ -147,7 +147,7 @@ interface SummaryCardProps {
 
 function SummaryCard({ icon: Icon, label, value, trend, changePercent, subtext, color }: SummaryCardProps) {
   const colorClasses = {
-    violet: 'bg-violet-100 text-violet-600',
+    violet: 'bg-teal-100 text-teal-600',
     orange: 'bg-orange-100 text-orange-600',
     blue: 'bg-blue-100 text-blue-600',
     emerald: 'bg-emerald-100 text-emerald-600'
@@ -195,7 +195,7 @@ function ActivityChart({ dailyActivity }: ActivityChartProps) {
   return (
     <div className="bg-white rounded-xl border border-slate-200 p-6">
       <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-        <BarChart3 size={20} className="text-violet-500" />
+        <BarChart3 size={20} className="text-teal-500" />
         Aktivitet senaste 14 dagarna
       </h3>
       <div className="flex items-end justify-between gap-1 h-32">
@@ -211,14 +211,14 @@ function ActivityChart({ dailyActivity }: ActivityChartProps) {
                 transition={{ delay: index * 0.03 }}
                 className={cn(
                   "w-full max-w-8 rounded-t-sm",
-                  isToday ? "bg-violet-500" : "bg-violet-200",
+                  isToday ? "bg-teal-500" : "bg-teal-200",
                   day.count === 0 && "bg-slate-100"
                 )}
                 title={`${day.date}: ${day.count} aktiviteter`}
               />
               <span className={cn(
                 "text-xs",
-                isToday ? "text-violet-600 font-medium" : "text-slate-600"
+                isToday ? "text-teal-600 font-medium" : "text-slate-600"
               )}>
                 {day.dayName}
               </span>
@@ -381,7 +381,7 @@ function RecommendationsSection({ recommendations, expandedId, onToggle }: Recom
   return (
     <div>
       <h3 className="font-semibold text-slate-800 mb-4 flex items-center gap-2">
-        <Target size={20} className="text-violet-500" />
+        <Target size={20} className="text-teal-500" />
         Personliga rekommendationer
       </h3>
       <div className="space-y-3">
@@ -405,11 +405,11 @@ function RecommendationsSection({ recommendations, expandedId, onToggle }: Recom
                   <div className={cn(
                     "w-10 h-10 rounded-lg flex items-center justify-center",
                     rec.priority === 'high' ? "bg-red-100" :
-                    rec.priority === 'medium' ? "bg-amber-100" : "bg-violet-100"
+                    rec.priority === 'medium' ? "bg-amber-100" : "bg-teal-100"
                   )}>
                     <Icon size={18} className={cn(
                       rec.priority === 'high' ? "text-red-600" :
-                      rec.priority === 'medium' ? "text-amber-600" : "text-violet-600"
+                      rec.priority === 'medium' ? "text-amber-600" : "text-teal-600"
                     )} />
                   </div>
                   <div>
@@ -485,7 +485,7 @@ function PatternsSection({ mostActiveDay, mostActiveHour, conversionRate, activi
         {patterns.map((pattern, index) => (
           <div key={index} className="flex items-start gap-3 p-4 bg-slate-50 rounded-xl">
             <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-              <pattern.icon size={14} className="text-violet-500" />
+              <pattern.icon size={14} className="text-teal-500" />
             </div>
             <p className="text-slate-700">{pattern.text}</p>
           </div>

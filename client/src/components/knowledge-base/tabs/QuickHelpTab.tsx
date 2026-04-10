@@ -25,7 +25,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
       descriptionKey: 'knowledgeBase.quickHelp.actions.cv.description',
       icon: FileText,
       link: '/cv',
-      color: 'bg-violet-50 text-violet-700 border-violet-200',
+      color: 'bg-teal-50 text-teal-700 border-teal-200',
     },
     {
       id: 'cover-letter',
@@ -171,7 +171,7 @@ export default function QuickHelpTab({ articles }: QuickHelpTabProps) {
                 className="block"
               >
                 <Card className="hover:shadow-md transition-shadow h-full">
-                  <h4 className="font-medium text-slate-900 hover:text-violet-600">
+                  <h4 className="font-medium text-slate-900 hover:text-teal-600">
                     {article.title}
                   </h4>
                   <p className="text-sm text-slate-600 mt-1 line-clamp-2">

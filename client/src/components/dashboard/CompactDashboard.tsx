@@ -37,7 +37,7 @@ interface StatCardProps {
 
 const StatCard = memo(function StatCard({ label, value, icon, color }: StatCardProps) {
   const colorClasses: Record<string, string> = {
-    violet: 'bg-violet-50 text-violet-600',
+    teal: 'bg-teal-50 text-teal-600',
     amber: 'bg-amber-50 text-amber-600',
     blue: 'bg-blue-50 text-blue-600',
     emerald: 'bg-emerald-50 text-emerald-600',
@@ -81,21 +81,19 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
   trend,
 }: CompactWidgetRowProps) {
   const bgColors: Record<string, string> = {
-    violet: 'bg-violet-50 border-violet-100',
+    teal: 'bg-teal-50 border-teal-100',
     rose: 'bg-rose-50 border-rose-100',
     blue: 'bg-blue-50 border-blue-100',
-    indigo: 'bg-indigo-50 border-indigo-100',
-    teal: 'bg-teal-50 border-teal-100',
+    sky: 'bg-sky-50 border-sky-100',
     emerald: 'bg-emerald-50 border-emerald-100',
     amber: 'bg-amber-50 border-amber-100',
   }
 
   const iconColors: Record<string, string> = {
-    violet: 'text-violet-600',
+    teal: 'text-teal-600',
     rose: 'text-rose-600',
     blue: 'text-blue-600',
-    indigo: 'text-indigo-600',
-    teal: 'text-teal-600',
+    sky: 'text-sky-600',
     emerald: 'text-emerald-600',
     amber: 'text-amber-600',
   }
@@ -114,7 +112,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
       
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <h3 className="font-semibold text-slate-800 group-hover:text-violet-600 transition-colors">
+          <h3 className="font-semibold text-slate-800 group-hover:text-teal-600 transition-colors">
             {title}
           </h3>
           {badge && (
@@ -223,7 +221,7 @@ export function CompactDashboard() {
           ? 'Profilen är redo för jobbsökning!'
           : `${data.cv.progress}% klart - fortsätt bygga din profil`
         : 'Skapa din profil för att komma igång',
-      color: 'violet',
+      color: 'teal',
       progress: data?.cv.progress,
       trend: data?.cv.progress ? `+${data.cv.progress}%` : undefined,
       badge: data?.cv.atsScore ? `ATS ${data.cv.atsScore}` : undefined,
@@ -255,7 +253,7 @@ export function CompactDashboard() {
       icon: <Target size={22} />,
       title: 'Karriärvägar',
       subtitle: 'Utforska olika karriärmöjligheter',
-      color: 'indigo',
+      color: 'sky',
     },
     {
       id: 'interests' as WidgetType,
@@ -314,7 +312,7 @@ export function CompactDashboard() {
             label="CV-profil"
             value={`${data.cv.progress}%`}
             icon={<TrendingUp size={18} />}
-            color="violet"
+            color="teal"
           />
           {data.cv.atsScore > 0 && (
             <StatCard

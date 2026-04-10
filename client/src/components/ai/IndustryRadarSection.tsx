@@ -106,7 +106,7 @@ export function IndustryRadarSection({
         {/* Collapsible Header */}
         <button
           onClick={() => setIsExpanded(!isExpanded)}
-          className="w-full p-4 flex items-center justify-between bg-gradient-to-r from-indigo-600 to-violet-600 text-white"
+          className="w-full p-4 flex items-center justify-between bg-gradient-to-r from-sky-600 to-teal-600 text-white"
         >
           <div className="flex items-center gap-3">
             <div className="p-2 rounded-lg bg-white/20 backdrop-blur-sm">
@@ -114,7 +114,7 @@ export function IndustryRadarSection({
             </div>
             <div className="text-left">
               <h3 className="font-semibold text-sm sm:text-base">Branschradar</h3>
-              <p className="text-indigo-100 text-xs sm:text-sm">
+              <p className="text-sky-100 text-xs sm:text-sm">
                 {result ? 'Personaliserade trender baserat på din profil' : 'AI-drivna marknadsinsikter'}
               </p>
             </div>
@@ -168,7 +168,7 @@ export function IndustryRadarSection({
                       {result.trendingIndustries.map((industry, i) => (
                         <div
                           key={i}
-                          className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-violet-300 dark:hover:border-violet-700 transition-colors"
+                          className="p-3 rounded-lg border border-slate-200 dark:border-slate-700 hover:border-teal-300 dark:hover:border-teal-700 transition-colors"
                         >
                           <div className="flex items-center justify-between mb-2">
                             <span className="font-medium text-sm text-slate-800 dark:text-slate-200">
@@ -264,7 +264,7 @@ export function IndustryRadarSection({
                           <p className="text-xs text-slate-600 dark:text-slate-600 mb-2">
                             {insight.summary}
                           </p>
-                          <p className="text-xs text-violet-600 dark:text-violet-400">
+                          <p className="text-xs text-teal-600 dark:text-teal-400">
                             Påverkan: {insight.impact}
                           </p>
                         </div>
@@ -275,14 +275,14 @@ export function IndustryRadarSection({
 
                 {/* Personalized Recommendations */}
                 {result.personalizedRecommendations.length > 0 && (
-                  <div className="p-4 rounded-xl bg-gradient-to-br from-violet-50 to-indigo-50 dark:from-violet-900/20 dark:to-indigo-900/20 border border-violet-200 dark:border-violet-800">
-                    <h4 className="text-sm font-semibold text-violet-800 dark:text-violet-200 mb-3">
+                  <div className="p-4 rounded-xl bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800">
+                    <h4 className="text-sm font-semibold text-teal-800 dark:text-teal-200 mb-3">
                       Rekommendationer för dig
                     </h4>
                     <ul className="space-y-2">
                       {result.personalizedRecommendations.map((rec, i) => (
                         <li key={i} className="flex items-start gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-violet-400 mt-2 flex-shrink-0" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-2 flex-shrink-0" />
                           <span className="text-sm text-slate-700 dark:text-slate-300">
                             {rec}
                           </span>

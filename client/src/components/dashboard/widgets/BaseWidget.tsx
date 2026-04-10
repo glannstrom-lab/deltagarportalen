@@ -18,7 +18,7 @@ export interface BaseWidgetProps {
   title: string
   to: string
   icon: LucideIcon
-  color: 'violet' | 'blue' | 'rose' | 'amber' | 'emerald' | 'teal' | 'purple' | 'indigo' | 'orange' | 'cyan'
+  color: 'teal' | 'blue' | 'rose' | 'amber' | 'emerald' | 'sky' | 'orange' | 'cyan'
 
   // Optional
   size?: 'small' | 'medium'
@@ -43,14 +43,14 @@ export interface BaseWidgetProps {
 }
 
 const colorClasses = {
-  violet: {
-    icon: 'bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400',
+  teal: {
+    icon: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
     iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    hover: 'hover:border-violet-300 dark:hover:border-violet-600',
-    progress: 'bg-violet-500',
+    hover: 'hover:border-teal-300 dark:hover:border-teal-600',
+    progress: 'bg-teal-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-violet-600 dark:text-violet-400',
-    light: 'bg-violet-50 dark:bg-violet-900/20',
+    accent: 'text-teal-600 dark:text-teal-400',
+    light: 'bg-teal-50 dark:bg-teal-900/20',
   },
   blue: {
     icon: 'bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400',
@@ -88,32 +88,14 @@ const colorClasses = {
     accent: 'text-emerald-600 dark:text-emerald-400',
     light: 'bg-emerald-50 dark:bg-emerald-900/20',
   },
-  teal: {
-    icon: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
+  sky: {
+    icon: 'bg-sky-100 dark:bg-sky-900/40 text-sky-600 dark:text-sky-400',
     iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    hover: 'hover:border-teal-300 dark:hover:border-teal-600',
-    progress: 'bg-teal-500',
+    hover: 'hover:border-sky-300 dark:hover:border-sky-600',
+    progress: 'bg-sky-500',
     progressComplete: 'bg-emerald-500',
-    accent: 'text-teal-600 dark:text-teal-400',
-    light: 'bg-teal-50 dark:bg-teal-900/20',
-  },
-  purple: {
-    icon: 'bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400',
-    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    hover: 'hover:border-purple-300 dark:hover:border-purple-600',
-    progress: 'bg-purple-500',
-    progressComplete: 'bg-emerald-500',
-    accent: 'text-purple-600 dark:text-purple-400',
-    light: 'bg-purple-50 dark:bg-purple-900/20',
-  },
-  indigo: {
-    icon: 'bg-indigo-100 dark:bg-indigo-900/40 text-indigo-600 dark:text-indigo-400',
-    iconComplete: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
-    hover: 'hover:border-indigo-300 dark:hover:border-indigo-600',
-    progress: 'bg-indigo-500',
-    progressComplete: 'bg-emerald-500',
-    accent: 'text-indigo-600 dark:text-indigo-400',
-    light: 'bg-indigo-50 dark:bg-indigo-900/20',
+    accent: 'text-sky-600 dark:text-sky-400',
+    light: 'bg-sky-50 dark:bg-sky-900/20',
   },
   orange: {
     icon: 'bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400',

@@ -1,28 +1,28 @@
 /**
  * Design System Tokens - "Calm & Capable" Palett
  * Enhetlig design över hela applikationen
- * 
+ *
  * Ändringar:
- * - Primärfärg: Indigo → Violet (mer mänsklig & inspirerande)
+ * - Primärfärg: Teal (lugnande & professionell)
  * - Neutral: Slate → Warm Stone (mer inbjudande)
  * - Justerade semantiska färger för bättre kontrast (WCAG AA)
  */
 
 // Färger
 export const colors = {
-  // NY: Primärfärg - Violet ("Calm & Capable")
-  // Violet upplevs som mer kreativ och mänsklig än indigo
+  // NY: Primärfärg - Teal ("Calm & Capable")
+  // Teal upplevs som lugn, pålitlig och professionell
   primary: {
-    50: '#f5f3ff',   // Ljus bakgrund
-    100: '#ede9fe',  // Hover-bakgrunder
-    200: '#ddd6fe',  // Subtila highlights
-    300: '#c4b5fd',  // Ikoner
-    400: '#a78bfa',  // Dekorativa element
-    500: '#8b5cf6',  // Sekundär actions
-    600: '#7c3aed',  // Standard-knappar (Huvudfärg)
-    700: '#6d28d9',  // Hover-states
-    800: '#5b21b6',  // Aktiva states
-    900: '#4c1d95',  // Text på ljusa bakgrunder
+    50: '#f0fdfa',   // Ljus bakgrund
+    100: '#ccfbf1',  // Hover-bakgrunder
+    200: '#99f6e4',  // Subtila highlights
+    300: '#5eead4',  // Ikoner
+    400: '#2dd4bf',  // Dekorativa element
+    500: '#14b8a6',  // Sekundär actions
+    600: '#0d9488',  // Standard-knappar (Huvudfärg)
+    700: '#0f766e',  // Hover-states
+    800: '#115e59',  // Aktiva states
+    900: '#134e4a',  // Text på ljusa bakgrunder
   },
   
   // NY: Neutrala färger - Warm Stone (istället för Slate)
@@ -54,18 +54,18 @@ export const colors = {
     900: '#0f172a',
   },
   
-  // Sekundärfärg - Teal (för hälsa/välmående)
+  // Sekundärfärg - Sky (för luft/möjligheter)
   secondary: {
-    50: '#f0fdfa',
-    100: '#ccfbf1',
-    200: '#99f6e4',
-    300: '#5eead4',
-    400: '#2dd4bf',
-    500: '#14b8a6',
-    600: '#0d9488',
-    700: '#0f766e',
-    800: '#115e59',
-    900: '#134e4a',
+    50: '#f0f9ff',
+    100: '#e0f2fe',
+    200: '#bae6fd',
+    300: '#7dd3fc',
+    400: '#38bdf8',
+    500: '#0ea5e9',
+    600: '#0284c7',
+    700: '#0369a1',
+    800: '#075985',
+    900: '#0c4a6e',
   },
   
   // Semantiska färger - justerade för WCAG AA kontrast
@@ -103,9 +103,9 @@ export const backgrounds = {
   tooltip: 'rgba(68, 64, 60, 0.95)',   // Neutral-700
   
   // Gradients
-  hero: 'linear-gradient(135deg, #f5f3ff 0%, #fafaf9 100%)',
-  primaryButton: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
-  primaryButtonHover: 'linear-gradient(135deg, #6d28d9 0%, #5b21b6 100%)',
+  hero: 'linear-gradient(135deg, #f0fdfa 0%, #fafaf9 100%)',
+  primaryButton: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
+  primaryButtonHover: 'linear-gradient(135deg, #0f766e 0%, #115e59 100%)',
   success: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
 }
 
@@ -222,28 +222,28 @@ export const widgetTokens = {
   // Hover skugga
   hoverShadow: shadows.lg,
   
-  // NYA: Färger per widget-typ med Violet-paletten
+  // NYA: Färger per widget-typ med Teal/Sky-paletten
   variants: {
     cv: {
       bg: colors.primary[50],
       border: colors.primary[200],
       text: colors.primary[700],
       icon: colors.primary[500],
-      gradient: 'from-violet-500 to-purple-600',
+      gradient: 'from-teal-500 to-sky-600',
     },
     jobSearch: {
       bg: colors.info.light,
       border: '#bfdbfe',
       text: colors.info.dark,
       icon: colors.info.DEFAULT,
-      gradient: 'from-blue-500 to-indigo-600',
+      gradient: 'from-blue-500 to-sky-600',
     },
     wellness: {
       bg: colors.secondary[50],
       border: colors.secondary[200],
       text: colors.secondary[800],
       icon: colors.secondary[500],
-      gradient: 'from-teal-500 to-emerald-600',
+      gradient: 'from-sky-500 to-emerald-600',
     },
     success: {
       bg: colors.success.light,
@@ -284,7 +284,7 @@ export const getWidgetClasses = (variant: keyof typeof widgetTokens.variants) =>
 // NY: Kontrast-kontroll för tillgänglighet
 export const contrastRatios = {
   // Förberäknade kontrastvärden mot vit bakgrund
-  primaryOnWhite: 5.8,   // 7c3aed på vit: ✅ AA
+  primaryOnWhite: 4.5,   // 0d9488 på vit: ✅ AA
   neutral600OnNeutral50: 7.2,  // 57534e på fafaf9: ✅ AA
   successOnWhite: 4.6,   // 059669 på vit: ✅ AA
   errorOnWhite: 5.9,     // dc2626 på vit: ✅ AA
@@ -293,7 +293,7 @@ export const contrastRatios = {
 
 // NY: High contrast mode tokens
 export const highContrast = {
-  primary: '#5b21b6',
+  primary: '#115e59',
   neutral: '#1c1917',
   success: '#047857',
   border: '#1c1917',

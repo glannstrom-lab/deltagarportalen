@@ -80,7 +80,7 @@ function StatusDistribution({ applicationsByStatus }: { applicationsByStatus: Re
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <PieChart className="w-5 h-5 text-violet-600" />
+        <PieChart className="w-5 h-5 text-teal-600" />
         <h3 className="font-semibold text-slate-900">Statusfördelning</h3>
       </div>
 
@@ -144,7 +144,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
   return (
     <Card className="p-4">
       <div className="flex items-center gap-2 mb-4">
-        <BarChart3 className="w-5 h-5 text-indigo-600" />
+        <BarChart3 className="w-5 h-5 text-sky-600" />
         <h3 className="font-semibold text-slate-900">Ansökningstratt</h3>
       </div>
 
@@ -160,7 +160,7 @@ function ConversionFunnel({ applicationsByStatus }: { applicationsByStatus: Reco
               </div>
               <div className="flex-1 h-6 bg-slate-100 rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full flex items-center justify-end px-2"
+                  className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full flex items-center justify-end px-2"
                   style={{ width: `${width}%` }}
                 >
                   <span className="text-xs font-medium text-white">{stage.count}</span>
@@ -264,7 +264,7 @@ export function ApplicationsAnalytics() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" />
       </div>
     )
   }
@@ -278,16 +278,16 @@ export function ApplicationsAnalytics() {
           value={stats.total}
           subtitle={`${metrics.recentCount} senaste 30 dagarna`}
           icon={Briefcase}
-          color="text-violet-600"
-          bgColor="bg-violet-100"
+          color="text-teal-600"
+          bgColor="bg-teal-100"
         />
         <StatCard
           title="Aktiva"
           value={stats.active}
           subtitle="Pågående ansökningar"
           icon={Send}
-          color="text-indigo-600"
-          bgColor="bg-indigo-100"
+          color="text-sky-600"
+          bgColor="bg-sky-100"
         />
         <StatCard
           title="Intervjufrekvens"

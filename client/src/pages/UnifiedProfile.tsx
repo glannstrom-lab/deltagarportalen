@@ -61,7 +61,7 @@ export default function UnifiedProfilePage() {
     return (
       <div className="max-w-4xl mx-auto p-6">
         <div className="flex items-center justify-center h-64">
-          <Loader2 size={32} className="animate-spin text-violet-500" />
+          <Loader2 size={32} className="animate-spin text-teal-500" />
         </div>
       </div>
     )
@@ -74,7 +74,7 @@ export default function UnifiedProfilePage() {
       {/* Header */}
       <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
         {/* Cover / Banner */}
-        <div className="h-32 bg-gradient-to-r from-violet-500 via-purple-500 to-pink-500" />
+        <div className="h-32 bg-gradient-to-r from-teal-500 via-sky-500 to-cyan-500" />
         
         {/* Profile Info */}
         <div className="px-6 pb-6">
@@ -94,7 +94,7 @@ export default function UnifiedProfilePage() {
                   </div>
                 )}
               </div>
-              <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-violet-500 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md hover:bg-violet-600 transition-colors">
+              <label className="absolute -bottom-1 -right-1 w-8 h-8 bg-teal-500 text-white rounded-full flex items-center justify-center cursor-pointer shadow-md hover:bg-teal-600 transition-colors">
                 <Camera size={14} />
                 <input
                   type="file"
@@ -156,7 +156,7 @@ export default function UnifiedProfilePage() {
                   <button
                     onClick={handleSaveCore}
                     disabled={saving}
-                    className="flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600 disabled:opacity-50 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600 disabled:opacity-50 transition-colors"
                   >
                     {saving ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}
                     {t('unifiedProfile.save')}
@@ -213,7 +213,7 @@ export default function UnifiedProfilePage() {
             className={cn(
               "flex items-center gap-2 px-4 py-3 font-medium transition-colors border-b-2 -mb-px",
               activeTab === tab.id
-                ? "text-violet-600 border-violet-600"
+                ? "text-teal-600 border-teal-600"
                 : "text-slate-600 border-transparent hover:text-slate-900"
             )}
           >
@@ -267,7 +267,7 @@ export default function UnifiedProfilePage() {
                       onChange={(e) => setEditedCore(prev => ({ ...prev, summary: e.target.value }))}
                       placeholder={t('unifiedProfile.fields.summaryPlaceholder')}
                       rows={3}
-                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                     />
                   </div>
                 </div>
@@ -291,7 +291,7 @@ export default function UnifiedProfilePage() {
                 {professional?.skills?.map((skill, idx) => (
                   <span
                     key={idx}
-                    className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-sm"
+                    className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm"
                   >
                     {skill}
                   </span>
@@ -299,7 +299,7 @@ export default function UnifiedProfilePage() {
                 {(!professional?.skills || professional.skills.length === 0) && (
                   <p className="text-slate-700 text-sm">
                     {t('unifiedProfile.noSkills')}{' '}
-                    <Link to="/cv" className="text-violet-600 hover:underline">
+                    <Link to="/cv" className="text-teal-600 hover:underline">
                       {t('unifiedProfile.addInCVBuilder')}
                     </Link>
                   </p>
@@ -325,7 +325,7 @@ export default function UnifiedProfilePage() {
                   {professional.workExperience.length > 3 && (
                     <Link
                       to="/cv"
-                      className="text-sm text-violet-600 hover:underline flex items-center gap-1"
+                      className="text-sm text-teal-600 hover:underline flex items-center gap-1"
                     >
                       {t('unifiedProfile.seeAllExperiences', { count: professional.workExperience.length })}
                       <ChevronRight size={14} />
@@ -335,7 +335,7 @@ export default function UnifiedProfilePage() {
               ) : (
                 <p className="text-slate-700 text-sm">
                   {t('unifiedProfile.noExperience')}{' '}
-                  <Link to="/cv" className="text-violet-600 hover:underline">
+                  <Link to="/cv" className="text-teal-600 hover:underline">
                     {t('unifiedProfile.addInCVBuilder')}
                   </Link>
                 </p>
@@ -361,7 +361,7 @@ export default function UnifiedProfilePage() {
               ) : (
                 <p className="text-slate-700 text-sm">
                   {t('unifiedProfile.noEducation')}{' '}
-                  <Link to="/cv" className="text-violet-600 hover:underline">
+                  <Link to="/cv" className="text-teal-600 hover:underline">
                     {t('unifiedProfile.addInCVBuilder')}
                   </Link>
                 </p>
@@ -386,13 +386,13 @@ export default function UnifiedProfilePage() {
                           <span className="text-sm font-medium capitalize text-slate-700">
                             {t(`unifiedProfile.riasec.${type}`)}
                           </span>
-                          <span className="text-sm font-bold text-violet-600">
+                          <span className="text-sm font-bold text-teal-600">
                             {Math.round(score * 100)}%
                           </span>
                         </div>
                         <div className="h-1.5 bg-slate-200 rounded-full overflow-hidden">
                           <div
-                            className="h-full bg-violet-500 rounded-full"
+                            className="h-full bg-teal-500 rounded-full"
                             style={{ width: `${score * 100}%` }}
                           />
                         </div>
@@ -401,7 +401,7 @@ export default function UnifiedProfilePage() {
                   </div>
                   <Link
                     to="/interest-guide"
-                    className="text-sm text-violet-600 hover:underline"
+                    className="text-sm text-teal-600 hover:underline"
                   >
                     {t('unifiedProfile.retakeInterestGuide')}
                   </Link>
@@ -414,7 +414,7 @@ export default function UnifiedProfilePage() {
                   </p>
                   <Link
                     to="/interest-guide"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-violet-500 text-white rounded-lg hover:bg-violet-600"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-teal-500 text-white rounded-lg hover:bg-teal-600"
                   >
                     {t('unifiedProfile.takeInterestGuide')}
                   </Link>
@@ -430,7 +430,7 @@ export default function UnifiedProfilePage() {
                     <Link
                       key={idx}
                       to={`/job-search?query=${encodeURIComponent(occupation)}`}
-                      className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-700 hover:border-violet-300 hover:bg-violet-50 transition-colors"
+                      className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-700 hover:border-teal-300 hover:bg-teal-50 transition-colors"
                     >
                       {occupation}
                     </Link>
@@ -561,7 +561,7 @@ function Section({
   return (
     <div className="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
       <h3 className="flex items-center gap-2 font-semibold text-slate-900 mb-4">
-        <Icon size={20} className="text-violet-500" />
+        <Icon size={20} className="text-teal-500" />
         {title}
       </h3>
       {children}
@@ -605,7 +605,7 @@ function Input({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
       />
     </div>
   )

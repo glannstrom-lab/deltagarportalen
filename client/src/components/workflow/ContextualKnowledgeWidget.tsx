@@ -406,7 +406,7 @@ export function ContextualKnowledgeWidget({
               <article.icon size={20} className="text-slate-600 group-hover:text-amber-600" />
             </div>
             <div className="flex-1 min-w-0">
-              <h4 className="font-medium text-slate-900 group-hover:text-violet-600 transition-colors">
+              <h4 className="font-medium text-slate-900 group-hover:text-teal-600 transition-colors">
                 {article.title}
               </h4>
               <p className="text-sm text-slate-700 mt-1 line-clamp-2">
@@ -424,7 +424,7 @@ export function ContextualKnowledgeWidget({
                 </span>
               </div>
             </div>
-            <ChevronRight size={20} className="text-slate-300 group-hover:text-violet-400 flex-shrink-0 mt-1" />
+            <ChevronRight size={20} className="text-slate-300 group-hover:text-teal-400 flex-shrink-0 mt-1" />
           </Link>
         ))}
       </div>
@@ -477,9 +477,9 @@ export function SmartContextWidget({ jobStatus, className }: SmartContextWidgetP
 
   return (
     <div className={cn("space-y-3", className)}>
-      <div className="bg-violet-50 rounded-xl p-4 border border-violet-100">
-        <h4 className="font-semibold text-violet-900">{message.title}</h4>
-        <p className="text-sm text-violet-700">{message.subtitle}</p>
+      <div className="bg-teal-50 rounded-xl p-4 border border-teal-100">
+        <h4 className="font-semibold text-teal-900">{message.title}</h4>
+        <p className="text-sm text-teal-700">{message.subtitle}</p>
       </div>
       <ContextualKnowledgeWidget 
         context={getContextFromStatus()} 

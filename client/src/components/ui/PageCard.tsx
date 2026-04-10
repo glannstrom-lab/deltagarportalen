@@ -36,7 +36,7 @@ export function PageCardLink({ children, to, className }: PageCardLinkProps) {
       to={to}
       className={cn(
         "block bg-white rounded-2xl border-2 border-slate-200 p-5 sm:p-6",
-        "hover:border-violet-300 hover:shadow-xl hover:-translate-y-1",
+        "hover:border-teal-300 hover:shadow-xl hover:-translate-y-1",
         "transition-all duration-300",
         className
       )}

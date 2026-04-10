@@ -8,13 +8,12 @@ import type { DashboardWidgetProps, WidgetStat, WidgetStatus, WidgetColor } from
 const SIDEBAR_COLOR = '#4f46e5'
 
 const categoryColors: Record<WidgetColor, { bg: string; text: string }> = {
-  violet: { bg: 'bg-violet-50', text: 'text-violet-600' },
+  teal: { bg: 'bg-teal-50', text: 'text-teal-600' },
   blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
   green: { bg: 'bg-emerald-50', text: 'text-emerald-600' },
   rose: { bg: 'bg-rose-50', text: 'text-rose-600' },
   amber: { bg: 'bg-amber-50', text: 'text-amber-600' },
-  indigo: { bg: 'bg-indigo-50', text: 'text-indigo-600' },
-  teal: { bg: 'bg-teal-50', text: 'text-teal-600' },
+  sky: { bg: 'bg-sky-50', text: 'text-sky-600' },
   orange: { bg: 'bg-orange-50', text: 'text-orange-600' },
 }
 
@@ -56,7 +55,7 @@ export function DashboardWidget({
         <AlertCircle className="w-4 h-4 text-rose-500 mx-auto mb-1" />
         <p className="text-xs text-slate-600">{error}</p>
         {onRetry && (
-          <button onClick={onRetry} className="text-xs text-indigo-600 mt-1">Försök igen</button>
+          <button onClick={onRetry} className="text-xs text-sky-600 mt-1">Försök igen</button>
         )}
       </Card>
     )
@@ -70,7 +69,7 @@ export function DashboardWidget({
           <div className={cn('w-6 h-6 rounded flex items-center justify-center shrink-0', colors.bg, colors.text)}>
             {icon}
           </div>
-          <h3 className="font-medium text-slate-800 text-xs truncate group-hover:text-indigo-600">
+          <h3 className="font-medium text-slate-800 text-xs truncate group-hover:text-sky-600">
             {title}
           </h3>
         </Link>

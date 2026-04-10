@@ -28,7 +28,7 @@ const categoryColors: Record<string, { bg: string; text: string; icon: string }>
   standard: { bg: 'bg-blue-100', text: 'text-blue-700', icon: 'text-blue-600' },
   short: { bg: 'bg-green-100', text: 'text-green-700', icon: 'text-green-600' },
   formal: { bg: 'bg-slate-100', text: 'text-slate-700', icon: 'text-slate-600' },
-  creative: { bg: 'bg-purple-100', text: 'text-purple-700', icon: 'text-purple-600' },
+  creative: { bg: 'bg-sky-100', text: 'text-sky-700', icon: 'text-sky-600' },
   'career-change': { bg: 'bg-amber-100', text: 'text-amber-700', icon: 'text-amber-600' },
   graduate: { bg: 'bg-rose-100', text: 'text-rose-700', icon: 'text-rose-600' },
 }
@@ -56,10 +56,10 @@ export function CoverLetterTemplates() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
+      <div className="bg-gradient-to-r from-teal-50 to-sky-50 rounded-2xl p-6 border border-teal-100">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center shadow-sm">
-            <FileText className="w-6 h-6 text-indigo-600" />
+            <FileText className="w-6 h-6 text-teal-600" />
           </div>
           <div>
             <h2 className="text-lg font-semibold text-slate-800">
@@ -82,7 +82,7 @@ export function CoverLetterTemplates() {
           return (
             <Card
               key={template.id}
-              className="p-5 hover:shadow-lg transition-all cursor-pointer group border-2 border-transparent hover:border-indigo-200"
+              className="p-5 hover:shadow-lg transition-all cursor-pointer group border-2 border-transparent hover:border-teal-200"
               onClick={() => setSelectedTemplate(template)}
             >
               {/* Header */}
@@ -91,7 +91,7 @@ export function CoverLetterTemplates() {
                   <Icon className={cn('w-5 h-5', colors.icon)} />
                 </div>
                 <div className="flex-1">
-                  <h3 className="font-semibold text-slate-800 group-hover:text-indigo-600 transition-colors">
+                  <h3 className="font-semibold text-slate-800 group-hover:text-teal-600 transition-colors">
                     {template.name}
                   </h3>
                   <p className="text-xs text-slate-700 mt-0.5">
@@ -114,7 +114,7 @@ export function CoverLetterTemplates() {
               <div className="space-y-1.5 mb-4">
                 {Object.entries(template.structure).slice(0, 2).map(([key, value]) => (
                   <div key={key} className="flex items-start gap-2 text-xs">
-                    <CheckCircle2 size={12} className="text-indigo-500 mt-0.5 shrink-0" />
+                    <CheckCircle2 size={12} className="text-teal-500 mt-0.5 shrink-0" />
                     <span className="text-slate-700 line-clamp-1">{value}</span>
                   </div>
                 ))}
@@ -131,7 +131,7 @@ export function CoverLetterTemplates() {
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  className="gap-1.5 text-indigo-600 group-hover:bg-indigo-50"
+                  className="gap-1.5 text-teal-600 group-hover:bg-teal-50"
                   onClick={(e) => {
                     e.stopPropagation()
                     handleUseTemplate(template.id)
@@ -208,7 +208,7 @@ function TemplateModal({
                 className={cn(
                   'px-6 py-3 text-sm font-medium border-b-2 transition-colors',
                   activeTab === tab.id
-                    ? 'border-indigo-500 text-indigo-600'
+                    ? 'border-teal-500 text-teal-600'
                     : 'border-transparent text-slate-700 hover:text-slate-700'
                 )}
               >
@@ -227,7 +227,7 @@ function TemplateModal({
               </p>
               {Object.entries(template.structure).map(([key, value], index) => (
                 <div key={key} className="flex gap-4">
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold text-sm shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center font-semibold text-sm shrink-0">
                     {index + 1}
                   </div>
                   <div>

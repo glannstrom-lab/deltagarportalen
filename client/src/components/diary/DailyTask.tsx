@@ -64,7 +64,7 @@ const dailyTasks: Task[] = [
 ]
 
 const typeConfig = {
-  diary: { color: 'bg-violet-100 text-violet-700 border-violet-200', icon: Sparkles },
+  diary: { color: 'bg-teal-100 text-teal-700 border-teal-200', icon: Sparkles },
   exercise: { color: 'bg-teal-100 text-teal-700 border-teal-200', icon: CheckCircle2 },
   cv: { color: 'bg-blue-100 text-blue-700 border-blue-200', icon: CheckCircle2 },
   jobsearch: { color: 'bg-emerald-100 text-emerald-700 border-emerald-200', icon: CheckCircle2 },

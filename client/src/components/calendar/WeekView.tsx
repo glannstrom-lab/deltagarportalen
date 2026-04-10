@@ -76,7 +76,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
               return (
                 <div
                   key={dayIndex}
-                  className="p-1 border-r border-slate-100 last:border-r-0 relative hover:bg-violet-50/50 hover:border-violet-200 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-inset"
+                  className="p-1 border-r border-slate-100 last:border-r-0 relative hover:bg-teal-50/50 hover:border-teal-200 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
                 >
                   {dayEvents.map((event) => {
                     const config = eventTypeConfig[event.type]

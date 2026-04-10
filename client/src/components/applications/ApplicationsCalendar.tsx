@@ -21,9 +21,9 @@ const REMINDER_TYPE_CONFIG: Record<ReminderType, {
   label: string
 }> = {
   follow_up: { icon: Bell, color: 'text-amber-600', bgColor: 'bg-amber-100', label: 'Uppföljning' },
-  interview: { icon: Users, color: 'text-violet-600', bgColor: 'bg-violet-100', label: 'Intervju' },
+  interview: { icon: Users, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Intervju' },
   phone_screen: { icon: Phone, color: 'text-teal-600', bgColor: 'bg-teal-100', label: 'Telefonintervju' },
-  assessment: { icon: FileCheck, color: 'text-indigo-600', bgColor: 'bg-indigo-100', label: 'Arbetsprov' },
+  assessment: { icon: FileCheck, color: 'text-sky-600', bgColor: 'bg-sky-100', label: 'Arbetsprov' },
   deadline: { icon: AlertCircle, color: 'text-red-600', bgColor: 'bg-red-100', label: 'Deadline' },
   custom: { icon: Bell, color: 'text-slate-600', bgColor: 'bg-slate-100', label: 'Påminnelse' }
 }
@@ -112,7 +112,7 @@ export function ApplicationsCalendar() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" />
       </div>
     )
   }

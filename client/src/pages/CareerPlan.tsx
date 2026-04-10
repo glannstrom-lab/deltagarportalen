@@ -324,14 +324,14 @@ Framgångsmått: ${milestone.metrics}
           </div>
 
           {/* Check-in Prompts */}
-          <Card className="p-6 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800">
+          <Card className="p-6 bg-teal-50 dark:bg-teal-900/20 border-teal-200 dark:border-teal-800">
             <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+              <AlertCircle className="w-5 h-5 text-teal-600 dark:text-teal-400" />
               Regelbundna checkup-tillfällen
             </h3>
 
             <div className="space-y-3">
-              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-violet-100 dark:border-violet-800">
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-teal-100 dark:border-teal-800">
                 <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Veckovis checkup</p>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-4 list-disc">
                   <li>Hur många ansökningar skickade du denna vecka?</li>
@@ -340,7 +340,7 @@ Framgångsmått: ${milestone.metrics}
                 </ul>
               </div>
 
-              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-violet-100 dark:border-violet-800">
+              <div className="bg-white dark:bg-stone-800 p-4 rounded-lg border border-teal-100 dark:border-teal-800">
                 <p className="text-sm font-medium text-gray-800 dark:text-gray-100 mb-2">Månatlig review</p>
                 <ul className="text-sm text-gray-600 dark:text-gray-300 space-y-1 ml-4 list-disc">
                   <li>Granskar du dina milstolpar?</li>
@@ -352,9 +352,9 @@ Framgångsmått: ${milestone.metrics}
           </Card>
 
           {/* SMART Goals */}
-          <Card className="p-6 bg-violet-50 dark:bg-violet-900/20 border-violet-200 dark:border-violet-800">
+          <Card className="p-6 bg-sky-50 dark:bg-sky-900/20 border-sky-200 dark:border-sky-800">
             <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-              <BookMarked className="w-5 h-5 text-violet-600 dark:text-violet-400" />
+              <BookMarked className="w-5 h-5 text-sky-600 dark:text-sky-400" />
               SMART-mål för din plan
             </h3>
             <div className="space-y-2 text-sm text-gray-700 dark:text-gray-300">

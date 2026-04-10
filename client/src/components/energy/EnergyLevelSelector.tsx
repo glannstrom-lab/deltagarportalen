@@ -373,8 +373,8 @@ export function EnergyLevelSelector({
           disabled={!selectedLevel}
           className={cn(
             "flex-1 transition-all",
-            selectedLevel 
-              ? 'bg-gradient-to-r from-violet-500 to-indigo-600 hover:from-violet-600 hover:to-indigo-700' 
+            selectedLevel
+              ? 'bg-gradient-to-r from-teal-500 to-sky-600 hover:from-teal-600 hover:to-sky-700'
               : ''
           )}
         >

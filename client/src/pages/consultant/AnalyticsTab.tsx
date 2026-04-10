@@ -53,17 +53,17 @@ function MetricCard({
   subtitle,
   icon: Icon,
   trend,
-  color = 'violet',
+  color = 'teal',
 }: {
   title: string
   value: string | number
   subtitle?: string
   icon: React.ElementType
   trend?: { value: number; isPositive: boolean }
-  color?: 'violet' | 'emerald' | 'amber' | 'rose' | 'blue'
+  color?: 'teal' | 'emerald' | 'amber' | 'rose' | 'blue'
 }) {
   const colorClasses = {
-    violet: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
+    teal: 'bg-teal-100 dark:bg-teal-900/40 text-teal-600 dark:text-teal-400',
     emerald: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400',
     amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400',
     rose: 'bg-rose-100 dark:bg-rose-900/40 text-rose-600 dark:text-rose-400',
@@ -438,7 +438,7 @@ export function AnalyticsTab() {
               'px-4 py-2.5 rounded-xl',
               'bg-stone-100 dark:bg-stone-800',
               'border-2 border-transparent',
-              'focus:border-violet-500',
+              'focus:border-teal-500',
               'text-stone-900 dark:text-stone-100'
             )}
           >
@@ -473,7 +473,7 @@ export function AnalyticsTab() {
           value={analytics.totalParticipants}
           subtitle={`${analytics.activeParticipants} aktiva`}
           icon={Users}
-          color="violet"
+          color="teal"
         />
         <MetricCard
           title="CV-komplettering"
@@ -519,7 +519,7 @@ export function AnalyticsTab() {
             data={analytics.monthlyProgress.map(m => ({
               label: m.month,
               value: m.value,
-              color: 'bg-violet-600',
+              color: 'bg-teal-600',
             }))}
           />
         </Card>

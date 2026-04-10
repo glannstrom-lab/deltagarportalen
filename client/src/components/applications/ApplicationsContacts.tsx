@@ -45,7 +45,7 @@ function ContactCard({
               <h3 className="font-semibold text-slate-900 flex items-center gap-2">
                 {contact.name}
                 {contact.isPrimary && (
-                  <span className="px-2 py-0.5 bg-violet-100 text-violet-700 rounded text-xs font-medium">
+                  <span className="px-2 py-0.5 bg-teal-100 text-teal-700 rounded text-xs font-medium">
                     Primär
                   </span>
                 )}
@@ -99,7 +99,7 @@ function ContactCard({
             {contact.email && (
               <a
                 href={`mailto:${contact.email}`}
-                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-indigo-600"
+                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600"
               >
                 <Mail className="w-4 h-4" />
                 {contact.email}
@@ -108,7 +108,7 @@ function ContactCard({
             {contact.phone && (
               <a
                 href={`tel:${contact.phone}`}
-                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-indigo-600"
+                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600"
               >
                 <Phone className="w-4 h-4" />
                 {contact.phone}
@@ -119,7 +119,7 @@ function ContactCard({
                 href={contact.linkedinUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-indigo-600"
+                className="flex items-center gap-1.5 text-sm text-slate-600 hover:text-sky-600"
               >
                 <Linkedin className="w-4 h-4" />
                 LinkedIn
@@ -187,7 +187,7 @@ export function ApplicationsContacts() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-600" />
       </div>
     )
   }

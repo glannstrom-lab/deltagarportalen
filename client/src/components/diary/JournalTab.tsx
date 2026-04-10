@@ -106,8 +106,8 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
       <div className="relative bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
         <div className="sticky top-0 bg-white border-b border-slate-100 p-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-              <BookHeart className="w-5 h-5 text-violet-600" />
+            <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
+              <BookHeart className="w-5 h-5 text-teal-600" />
             </div>
             <div>
               <h2 className="text-lg font-bold text-slate-900">Ny dagboksanteckning</h2>
@@ -126,7 +126,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Titel (valfritt)"
-            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 text-lg font-medium"
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-lg font-medium"
           />
 
           {/* Mood selector */}
@@ -143,8 +143,8 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
                   className={cn(
                     "flex-1 py-3 rounded-xl border-2 transition-all flex flex-col items-center gap-1",
                     mood === m
-                      ? "border-violet-500 bg-violet-50"
-                      : "border-slate-200 hover:border-violet-300"
+                      ? "border-teal-500 bg-teal-50"
+                      : "border-slate-200 hover:border-teal-300"
                   )}
                 >
                   <span className="text-2xl">{getMoodEmoji(m)}</span>
@@ -161,7 +161,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
               onChange={(e) => setContent(e.target.value)}
               placeholder="Skriv dina tankar..."
               rows={10}
-              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500 resize-none leading-relaxed"
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none leading-relaxed"
             />
           </div>
 
@@ -174,7 +174,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-sm"
+                  className="inline-flex items-center gap-1 px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm"
                 >
                   #{tag}
                   <button onClick={() => handleRemoveTag(tag)} className="hover:text-violet-900">
@@ -190,7 +190,7 @@ function WriteModal({ isOpen, onClose, onSave, initialPrompt }: WriteModalProps)
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddTag())}
                 placeholder="Lägg till tagg..."
-                className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500 text-sm"
+                className="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
               />
               <Button variant="outline" size="sm" onClick={handleAddTag}>
                 <Plus className="w-4 h-4" />
@@ -275,7 +275,7 @@ export function JournalTab() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-violet-600" />
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600" />
       </div>
     )
   }
@@ -319,7 +319,7 @@ export function JournalTab() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Sök i dagboken..."
-              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
             />
           </div>
           <button
@@ -327,7 +327,7 @@ export function JournalTab() {
             className={cn(
               "p-2 rounded-lg border transition-colors",
               showFilters || filterTag
-                ? "border-violet-300 bg-violet-50 text-violet-600"
+                ? "border-teal-300 bg-teal-50 text-teal-600"
                 : "border-slate-200 text-slate-700 hover:bg-slate-50"
             )}
           >
@@ -349,7 +349,7 @@ export function JournalTab() {
             className={cn(
               "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
               !filterTag
-                ? "bg-violet-600 text-white"
+                ? "bg-teal-600 text-white"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             )}
           >
@@ -362,7 +362,7 @@ export function JournalTab() {
               className={cn(
                 "px-3 py-1.5 rounded-full text-sm font-medium transition-colors",
                 filterTag === tag
-                  ? "bg-violet-600 text-white"
+                  ? "bg-teal-600 text-white"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               )}
             >
@@ -433,7 +433,7 @@ export function JournalTab() {
                     {entry.tags.length > 0 && (
                       <div className="flex gap-1">
                         {entry.tags.slice(0, 3).map(tag => (
-                          <span key={tag} className="text-violet-500">#{tag}</span>
+                          <span key={tag} className="text-teal-500">#{tag}</span>
                         ))}
                         {entry.tags.length > 3 && (
                           <span>+{entry.tags.length - 3}</span>
@@ -527,7 +527,7 @@ export function JournalTab() {
                 <div className="mt-6 pt-4 border-t border-slate-100">
                   <div className="flex flex-wrap gap-2">
                     {selectedEntry.tags.map((tag: string) => (
-                      <span key={tag} className="px-3 py-1 bg-violet-100 text-violet-700 rounded-full text-sm">
+                      <span key={tag} className="px-3 py-1 bg-teal-100 text-teal-700 rounded-full text-sm">
                         #{tag}
                       </span>
                     ))}

@@ -32,7 +32,7 @@ import { personalBrandApi, type PortfolioItem } from '@/services/cloudStorage'
 import { motion, AnimatePresence, Reorder } from 'framer-motion'
 
 const ITEM_TYPES = {
-  project: { label: 'Projekt', icon: Github, color: 'violet', description: 'Personliga eller arbetsrelaterade projekt' },
+  project: { label: 'Projekt', icon: Github, color: 'teal', description: 'Personliga eller arbetsrelaterade projekt' },
   work: { label: 'Arbete', icon: Briefcase, color: 'blue', description: 'Tidigare anställningar eller uppdrag' },
   certificate: { label: 'Certifikat', icon: Award, color: 'emerald', description: 'Certifieringar och utbildningar' },
   other: { label: 'Annat', icon: FolderOpen, color: 'slate', description: 'Övriga meriter och prestationer' },
@@ -172,9 +172,9 @@ export default function PortfolioTab() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/30 dark:to-purple-900/30 border-violet-100 dark:border-violet-800">
+      <Card className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/30 dark:to-sky-900/30 border-teal-100 dark:border-teal-800">
         <div className="flex items-start gap-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-violet-500 to-purple-500 dark:from-violet-600 dark:to-purple-600 rounded-xl flex items-center justify-center shrink-0">
+          <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-sky-500 dark:from-teal-600 dark:to-sky-600 rounded-xl flex items-center justify-center shrink-0">
             <FolderOpen className="w-6 h-6 text-white" />
           </div>
           <div className="flex-1">
@@ -206,7 +206,7 @@ export default function PortfolioTab() {
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
           >
-            <Card className="border-violet-200 dark:border-violet-700 bg-white dark:bg-stone-800">
+            <Card className="border-teal-200 dark:border-teal-700 bg-white dark:bg-stone-800">
               <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-4">
                 {editingItem ? 'Redigera objekt' : 'Nytt portfolioobjekt'}
               </h3>
@@ -218,7 +218,7 @@ export default function PortfolioTab() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData(prev => ({ ...prev, title: e.target.value }))}
-                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="T.ex. E-handelsplattform"
                   />
                 </div>
@@ -235,13 +235,13 @@ export default function PortfolioTab() {
                           className={cn(
                             "p-3 rounded-lg border text-left transition-all",
                             formData.item_type === key
-                              ? "border-violet-500 dark:border-violet-400 bg-violet-50 dark:bg-violet-900/30"
+                              ? "border-teal-500 dark:border-teal-400 bg-teal-50 dark:bg-teal-900/30"
                               : "border-stone-200 dark:border-stone-600 hover:border-stone-300 dark:hover:border-stone-500"
                           )}
                         >
                           <Icon className={cn(
                             "w-5 h-5 mb-1",
-                            formData.item_type === key ? "text-violet-600 dark:text-violet-400" : "text-gray-600 dark:text-gray-400"
+                            formData.item_type === key ? "text-teal-600 dark:text-teal-400" : "text-gray-600 dark:text-gray-400"
                           )} />
                           <p className="font-medium text-sm text-gray-800 dark:text-gray-100">{type.label}</p>
                           <p className="text-xs text-gray-600 dark:text-gray-400 hidden sm:block">{type.description}</p>
@@ -256,7 +256,7 @@ export default function PortfolioTab() {
                   <textarea
                     value={formData.description}
                     onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 min-h-[100px] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 min-h-[100px] bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="Beskriv projektet eller arbetet. Inkludera din roll, tekniker och resultat."
                   />
                 </div>
@@ -270,7 +270,7 @@ export default function PortfolioTab() {
                       type="month"
                       value={formData.start_date}
                       onChange={(e) => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     />
                   </div>
                   <div>
@@ -281,7 +281,7 @@ export default function PortfolioTab() {
                       type="month"
                       value={formData.end_date}
                       onChange={(e) => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
-                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
+                      className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     />
                   </div>
                 </div>
@@ -295,7 +295,7 @@ export default function PortfolioTab() {
                     type="url"
                     value={formData.url}
                     onChange={(e) => setFormData(prev => ({ ...prev, url: e.target.value }))}
-                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="https://..."
                   />
                 </div>
@@ -308,7 +308,7 @@ export default function PortfolioTab() {
                     type="text"
                     value={formData.tags}
                     onChange={(e) => setFormData(prev => ({ ...prev, tags: e.target.value }))}
-                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-violet-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
+                    className="w-full px-3 py-2 border border-stone-300 dark:border-stone-600 rounded-lg focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-700 text-gray-800 dark:text-gray-100"
                     placeholder="React, TypeScript, Design"
                   />
                 </div>
@@ -319,7 +319,7 @@ export default function PortfolioTab() {
                     id="is_featured"
                     checked={formData.is_featured}
                     onChange={(e) => setFormData(prev => ({ ...prev, is_featured: e.target.checked }))}
-                    className="w-4 h-4 text-violet-600 border-stone-300 dark:border-stone-600 rounded focus:ring-violet-500"
+                    className="w-4 h-4 text-teal-600 border-stone-300 dark:border-stone-600 rounded focus:ring-teal-500"
                   />
                   <label htmlFor="is_featured" className="text-sm text-gray-600 dark:text-gray-300">
                     Markera som utvalt (visas överst)
@@ -346,7 +346,7 @@ export default function PortfolioTab() {
       {featuredItems.length > 0 && (
         <div>
           <h3 className="font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center gap-2">
-            <Star className="w-5 h-5 text-violet-500 dark:text-violet-400 fill-violet-500 dark:fill-violet-400" />
+            <Star className="w-5 h-5 text-teal-500 dark:text-teal-400 fill-teal-500 dark:fill-teal-400" />
             Utvalda
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -398,34 +398,34 @@ export default function PortfolioTab() {
       )}
 
       {/* Tips */}
-      <Card className="bg-violet-50 dark:bg-violet-900/30 border-violet-200 dark:border-violet-800">
-        <h3 className="font-semibold text-violet-900 dark:text-violet-100 mb-3">Tips för en stark portfolio</h3>
+      <Card className="bg-teal-50 dark:bg-teal-900/30 border-teal-200 dark:border-teal-800">
+        <h3 className="font-semibold text-teal-900 dark:text-teal-100 mb-3">Tips för en stark portfolio</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-violet-100 dark:bg-violet-800/50 rounded-lg flex items-center justify-center shrink-0">
-              <Star className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+            <div className="w-8 h-8 bg-teal-100 dark:bg-teal-800/50 rounded-lg flex items-center justify-center shrink-0">
+              <Star className="w-4 h-4 text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <p className="font-medium text-violet-800 dark:text-violet-200 text-sm">Kvalitet över kvantitet</p>
-              <p className="text-xs text-violet-700 dark:text-violet-300">Visa dina bästa 5-10 projekt</p>
+              <p className="font-medium text-teal-800 dark:text-teal-200 text-sm">Kvalitet över kvantitet</p>
+              <p className="text-xs text-teal-700 dark:text-teal-300">Visa dina bästa 5-10 projekt</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-purple-100 dark:bg-purple-800/50 rounded-lg flex items-center justify-center shrink-0">
-              <Briefcase className="w-4 h-4 text-purple-600 dark:text-purple-400" />
+            <div className="w-8 h-8 bg-sky-100 dark:bg-sky-800/50 rounded-lg flex items-center justify-center shrink-0">
+              <Briefcase className="w-4 h-4 text-sky-600 dark:text-sky-400" />
             </div>
             <div>
-              <p className="font-medium text-violet-800 dark:text-violet-200 text-sm">Beskriv din roll</p>
-              <p className="text-xs text-violet-700 dark:text-violet-300">Vad bidrog du med specifikt?</p>
+              <p className="font-medium text-teal-800 dark:text-teal-200 text-sm">Beskriv din roll</p>
+              <p className="text-xs text-teal-700 dark:text-teal-300">Vad bidrog du med specifikt?</p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-8 h-8 bg-fuchsia-100 dark:bg-fuchsia-800/50 rounded-lg flex items-center justify-center shrink-0">
-              <Award className="w-4 h-4 text-fuchsia-600 dark:text-fuchsia-400" />
+            <div className="w-8 h-8 bg-cyan-100 dark:bg-cyan-800/50 rounded-lg flex items-center justify-center shrink-0">
+              <Award className="w-4 h-4 text-cyan-600 dark:text-cyan-400" />
             </div>
             <div>
-              <p className="font-medium text-violet-800 dark:text-violet-200 text-sm">Visa resultat</p>
-              <p className="text-xs text-violet-700 dark:text-violet-300">Siffror och konkreta outcomes</p>
+              <p className="font-medium text-teal-800 dark:text-teal-200 text-sm">Visa resultat</p>
+              <p className="text-xs text-teal-700 dark:text-teal-300">Siffror och konkreta outcomes</p>
             </div>
           </div>
         </div>
@@ -459,7 +459,7 @@ function PortfolioCard({
         <div className="flex items-center gap-3">
           <div className={cn(
             "w-8 h-8 rounded-lg flex items-center justify-center shrink-0",
-            typeInfo.color === 'violet' && "bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400",
+            typeInfo.color === 'teal' && "bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400",
             typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
             typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
             typeInfo.color === 'slate' && "bg-slate-100 dark:bg-stone-700 text-slate-600 dark:text-slate-400"
@@ -472,7 +472,7 @@ function PortfolioCard({
           </div>
           <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
             <button onClick={() => onToggleFeatured(item)} className="p-1 hover:bg-slate-100 dark:hover:bg-stone-700 rounded">
-              <Star className={cn("w-4 h-4", item.is_featured ? "text-violet-500 dark:text-violet-400 fill-violet-500 dark:fill-violet-400" : "text-slate-300 dark:text-stone-500")} />
+              <Star className={cn("w-4 h-4", item.is_featured ? "text-teal-500 dark:text-teal-400 fill-teal-500 dark:fill-teal-400" : "text-slate-300 dark:text-stone-500")} />
             </button>
             <button onClick={() => onEdit(item)} className="p-1 hover:bg-slate-100 dark:hover:bg-stone-700 rounded">
               <Edit2 className="w-4 h-4 text-gray-600 dark:text-gray-400" />
@@ -489,12 +489,12 @@ function PortfolioCard({
   return (
     <Card className={cn(
       "group hover:shadow-md transition-all bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700",
-      featured && "ring-2 ring-violet-200 dark:ring-violet-700 bg-violet-50/30 dark:bg-violet-900/20"
+      featured && "ring-2 ring-teal-200 dark:ring-teal-700 bg-teal-50/30 dark:bg-teal-900/20"
     )}>
       <div className="flex items-start gap-3">
         <div className={cn(
           "w-12 h-12 rounded-xl flex items-center justify-center shrink-0",
-          typeInfo.color === 'violet' && "bg-violet-100 dark:bg-violet-900/50 text-violet-600 dark:text-violet-400",
+          typeInfo.color === 'teal' && "bg-teal-100 dark:bg-teal-900/50 text-teal-600 dark:text-teal-400",
           typeInfo.color === 'blue' && "bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400",
           typeInfo.color === 'emerald' && "bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400",
           typeInfo.color === 'slate' && "bg-slate-100 dark:bg-stone-700 text-slate-600 dark:text-slate-400"
@@ -523,7 +523,7 @@ function PortfolioCard({
               >
                 <Star className={cn(
                   "w-4 h-4",
-                  item.is_featured ? "text-violet-500 dark:text-violet-400 fill-violet-500 dark:fill-violet-400" : "text-slate-300 dark:text-stone-500"
+                  item.is_featured ? "text-teal-500 dark:text-teal-400 fill-teal-500 dark:fill-teal-400" : "text-slate-300 dark:text-stone-500"
                 )} />
               </button>
               <button
@@ -560,7 +560,7 @@ function PortfolioCard({
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-sm text-violet-600 dark:text-violet-400 hover:text-violet-800 dark:hover:text-violet-300 mt-3"
+              className="inline-flex items-center gap-1 text-sm text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 mt-3"
             >
               <ExternalLink className="w-4 h-4" />
               Visa projekt

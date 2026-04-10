@@ -23,7 +23,7 @@ interface EmptyStateProps {
 const emptyStateConfig = {
   cv: {
     icon: FileText,
-    color: 'violet',
+    color: 'teal',
     defaultTitle: 'Inget CV än',
     defaultDescription: 'Skapa ditt CV för att komma igång med jobbsökandet',
     defaultAction: 'Skapa CV',
@@ -72,11 +72,11 @@ const emptyStateConfig = {
 }
 
 const colorClasses: Record<string, { bg: string; text: string; border: string; button: string }> = {
-  violet: {
-    bg: 'bg-violet-50',
-    text: 'text-violet-700',
-    border: 'border-violet-200',
-    button: 'bg-violet-600 hover:bg-violet-700'
+  teal: {
+    bg: 'bg-teal-50',
+    text: 'text-teal-700',
+    border: 'border-teal-200',
+    button: 'bg-teal-600 hover:bg-teal-700'
   },
   blue: {
     bg: 'bg-blue-50',

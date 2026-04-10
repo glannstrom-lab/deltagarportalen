@@ -34,21 +34,19 @@ interface MobileWidgetCardProps {
 
 function MobileWidgetCard({ to, icon, title, subtitle, color, badge, badgeColor, progress }: MobileWidgetCardProps) {
   const bgColorClass = {
-    violet: 'bg-violet-50 border-violet-100',
+    teal: 'bg-teal-50 border-teal-100',
     rose: 'bg-rose-50 border-rose-100',
     blue: 'bg-blue-50 border-blue-100',
-    indigo: 'bg-indigo-50 border-indigo-100',
-    teal: 'bg-teal-50 border-teal-100',
+    sky: 'bg-sky-50 border-sky-100',
     emerald: 'bg-emerald-50 border-emerald-100',
     amber: 'bg-amber-50 border-amber-100',
   }[color] || 'bg-slate-50 border-slate-200'
 
   const iconColorClass = {
-    violet: 'text-violet-600',
+    teal: 'text-teal-600',
     rose: 'text-rose-600',
     blue: 'text-blue-600',
-    indigo: 'text-indigo-600',
-    teal: 'text-teal-600',
+    sky: 'text-sky-600',
     emerald: 'text-emerald-600',
     amber: 'text-amber-600',
   }[color] || 'text-slate-600'
@@ -170,7 +168,7 @@ export function MobileDashboard() {
           ? 'Profilen är redo!'
           : `${data.cv.progress}% klart - fortsätt bygga`
         : 'Skapa din profil',
-      color: 'violet',
+      color: 'teal',
       progress: data?.cv.progress,
       badge: data?.cv.atsScore ? `ATS ${data.cv.atsScore}` : undefined,
       badgeColor: 'bg-amber-100 text-amber-700',
@@ -201,7 +199,7 @@ export function MobileDashboard() {
       icon: <Target size={20} />,
       title: 'Karriär',
       subtitle: 'Utforska karriärvägar',
-      color: 'indigo',
+      color: 'sky',
     },
     {
       id: 'interests' as WidgetType,
@@ -286,17 +284,17 @@ export function MobileDashboard() {
 
       {/* Quick stats summary */}
       {data && (
-        <div className="mt-4 p-3 bg-indigo-50 rounded-xl border border-indigo-100">
-          <h3 className="text-xs font-medium text-indigo-700 mb-2 uppercase tracking-wide">
-            Din översikt
+        <div className="mt-4 p-3 bg-sky-50 rounded-xl border border-sky-100">
+          <h3 className="text-xs font-medium text-sky-700 mb-2 uppercase tracking-wide">
+            Din oversikt
           </h3>
           <div className="flex items-center justify-around">
             <div className="text-center">
-              <div className="flex items-center justify-center gap-1 text-indigo-700">
+              <div className="flex items-center justify-center gap-1 text-sky-700">
                 <TrendingUp size={14} />
                 <span className="font-semibold">{data.cv.progress}%</span>
               </div>
-              <span className="text-xs text-indigo-600">CV</span>
+              <span className="text-xs text-sky-600">CV</span>
             </div>
             {data.cv.atsScore > 0 && (
               <div className="text-center">
@@ -308,12 +306,12 @@ export function MobileDashboard() {
               </div>
             )}
             <div className="text-center">
-              <span className="font-semibold text-indigo-700">{data.applications.total}</span>
-              <span className="text-xs text-indigo-600 block">Ansökningar</span>
+              <span className="font-semibold text-sky-700">{data.applications.total}</span>
+              <span className="text-xs text-sky-600 block">Ansokningar</span>
             </div>
             <div className="text-center">
-              <span className="font-semibold text-indigo-700">{data.jobs.savedCount}</span>
-              <span className="text-xs text-indigo-600 block">Sparade</span>
+              <span className="font-semibold text-sky-700">{data.jobs.savedCount}</span>
+              <span className="text-xs text-sky-600 block">Sparade</span>
             </div>
           </div>
         </div>

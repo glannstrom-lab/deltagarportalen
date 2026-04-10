@@ -65,7 +65,7 @@ export function UpdateNotification() {
     <div
       role="alert"
       aria-live="polite"
-      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-violet-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-4 animate-in slide-in-from-bottom-4"
+      className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 bg-teal-600 text-white px-4 py-3 rounded-lg shadow-lg flex items-center gap-4 animate-in slide-in-from-bottom-4"
     >
       <div className="flex items-center gap-2">
         <RefreshCw className="w-5 h-5" aria-hidden="true" />
@@ -78,13 +78,13 @@ export function UpdateNotification() {
         <Button
           onClick={handleUpdate}
           size="sm"
-          className="bg-white text-violet-600 hover:bg-violet-50 h-8"
+          className="bg-white text-teal-600 hover:bg-teal-50 h-8"
         >
           Uppdatera
         </Button>
         <button
           onClick={handleDismiss}
-          className="p-1 hover:bg-violet-700 rounded"
+          className="p-1 hover:bg-teal-700 rounded"
           aria-label="Stäng"
         >
           <X className="w-4 h-4" />

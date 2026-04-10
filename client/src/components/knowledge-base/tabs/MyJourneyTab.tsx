@@ -97,10 +97,10 @@ export default function MyJourneyTab() {
         </Card>
 
         {/* CV Status */}
-        <Card className="bg-violet-50 border-violet-100">
+        <Card className="bg-teal-50 border-teal-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-violet-100 rounded-lg flex items-center justify-center">
-              <FileText className="w-5 h-5 text-violet-600" />
+            <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+              <FileText className="w-5 h-5 text-teal-600" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900">{cvData?.completeness || 0}%</p>
@@ -202,7 +202,7 @@ export default function MyJourneyTab() {
             <Card className="hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <FileText className="w-5 h-5 text-violet-600" />
+                  <FileText className="w-5 h-5 text-teal-600" />
                   <div>
                     <h4 className="font-medium text-slate-900">{t('knowledgeBase.myJourney.createCV')}</h4>
                     <p className="text-sm text-slate-700">{t('knowledgeBase.myJourney.createCVDescription')}</p>
@@ -210,7 +210,7 @@ export default function MyJourneyTab() {
                 </div>
                 <Link
                   to="/cv"
-                  className="px-3 py-1.5 bg-violet-600 text-white rounded-lg text-sm font-medium hover:bg-violet-700"
+                  className="px-3 py-1.5 bg-teal-600 text-white rounded-lg text-sm font-medium hover:bg-teal-700"
                 >
                   {t('knowledgeBase.myJourney.start')}
                 </Link>
