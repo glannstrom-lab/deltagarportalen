@@ -1,7 +1,6 @@
 /**
- * Overview Tab - Simplified onboarding-focused view
- * Shows the user's journey through 6 steps
- * Progress is synced to cloud
+ * Overview Tab - Dashboard with expandable category boxes
+ * Three main sections: Onboarding, Skills Development, Planning & Documentation
  */
 
 import { useState, useEffect } from 'react'
@@ -11,74 +10,337 @@ import {
   User,
   Compass,
   FileText,
-  Target,
   Search,
   Mail,
+  Building2,
+  ClipboardList,
   Check,
-  ChevronRight,
-  Sparkles,
-  Cloud,
-  Loader2
+  ChevronDown,
+  Loader2,
+  Target,
+  GraduationCap,
+  Star,
+  TrendingUp,
+  Linkedin,
+  BookOpen,
+  Dumbbell,
+  Calendar,
+  NotebookPen,
+  Smile,
+  Globe,
+  Bookmark
 } from '@/components/ui/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { userApi, cvApi, coverLetterApi, type OnboardingProgress } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
 
-// Step configuration
-interface Step {
-  id: keyof OnboardingProgress
+// Category item configuration
+interface CategoryItem {
+  id: string
   title: string
   description: string
   icon: React.ElementType
   path: string
+  trackProgress?: keyof OnboardingProgress
 }
 
-// Static step definitions
-const STEPS: Step[] = [
+// Onboarding items with progress tracking
+const ONBOARDING_ITEMS: CategoryItem[] = [
   {
     id: 'profile',
-    title: 'Fyll i din profil',
-    description: 'Lägg till dina kontaktuppgifter',
+    title: 'Min profil',
+    description: 'Dina kontaktuppgifter',
     icon: User,
-    path: '/profile'
+    path: '/profile',
+    trackProgress: 'profile'
   },
   {
     id: 'interest',
-    title: 'Gör intresseguiden',
-    description: 'Upptäck vilka yrken som passar dig',
+    title: 'Intresseguiden',
+    description: 'Upptäck passande yrken',
     icon: Compass,
-    path: '/interest-guide'
+    path: '/interest-guide',
+    trackProgress: 'interest'
   },
   {
     id: 'cv',
-    title: 'Skapa ditt CV',
-    description: 'Bygg ett professionellt CV',
+    title: 'Mitt CV',
+    description: 'Skapa ditt CV',
     icon: FileText,
-    path: '/cv'
-  },
-  {
-    id: 'career',
-    title: 'Utforska karriärvägar',
-    description: 'Se möjligheter och utvecklingsvägar',
-    icon: Target,
-    path: '/career'
+    path: '/cv',
+    trackProgress: 'cv'
   },
   {
     id: 'jobSearch',
     title: 'Sök jobb',
-    description: 'Hitta och spara intressanta jobb',
+    description: 'Hitta lediga tjänster',
     icon: Search,
-    path: '/job-search'
+    path: '/job-search',
+    trackProgress: 'jobSearch'
   },
   {
     id: 'coverLetter',
-    title: 'Skriv personligt brev',
-    description: 'Skapa ett övertygande brev',
+    title: 'Personligt brev',
+    description: 'Skriv övertygande brev',
     icon: Mail,
-    path: '/cover-letter'
+    path: '/cover-letter',
+    trackProgress: 'coverLetter'
+  },
+  {
+    id: 'spontaneous',
+    title: 'Spontanansökningar',
+    description: 'Kontakta arbetsgivare direkt',
+    icon: Building2,
+    path: '/spontanansökan'
+  },
+  {
+    id: 'applications',
+    title: 'Mina ansökningar',
+    description: 'Följ dina ansökningar',
+    icon: ClipboardList,
+    path: '/applications'
   }
 ]
+
+// Skills development items
+const SKILLS_ITEMS: CategoryItem[] = [
+  {
+    id: 'career',
+    title: 'Karriär',
+    description: 'Utforska karriärvägar',
+    icon: Target,
+    path: '/career'
+  },
+  {
+    id: 'education',
+    title: 'Utbildning',
+    description: 'Hitta kurser och utbildningar',
+    icon: GraduationCap,
+    path: '/education'
+  },
+  {
+    id: 'personalBrand',
+    title: 'Personligt varumärke',
+    description: 'Bygg din profil',
+    icon: Star,
+    path: '/personal-brand'
+  },
+  {
+    id: 'skillsGap',
+    title: 'Kompetensanalys',
+    description: 'Identifiera utvecklingsområden',
+    icon: TrendingUp,
+    path: '/skills-gap-analysis'
+  },
+  {
+    id: 'linkedin',
+    title: 'LinkedIn',
+    description: 'Optimera din profil',
+    icon: Linkedin,
+    path: '/linkedin-optimizer'
+  },
+  {
+    id: 'knowledgeBase',
+    title: 'Kunskapsbank',
+    description: 'Artiklar och guider',
+    icon: BookOpen,
+    path: '/knowledge-base'
+  },
+  {
+    id: 'exercises',
+    title: 'Övningar',
+    description: 'Träna och utvecklas',
+    icon: Dumbbell,
+    path: '/exercises'
+  }
+]
+
+// Planning & documentation items
+const PLANNING_ITEMS: CategoryItem[] = [
+  {
+    id: 'calendar',
+    title: 'Kalender',
+    description: 'Planera dina aktiviteter',
+    icon: Calendar,
+    path: '/calendar'
+  },
+  {
+    id: 'diary',
+    title: 'Dagbok',
+    description: 'Reflektera och dokumentera',
+    icon: NotebookPen,
+    path: '/diary'
+  },
+  {
+    id: 'wellness',
+    title: 'Hälsa',
+    description: 'Följ ditt mående',
+    icon: Smile,
+    path: '/wellness'
+  },
+  {
+    id: 'international',
+    title: 'Internationell guide',
+    description: 'Jobba utomlands',
+    icon: Globe,
+    path: '/international'
+  },
+  {
+    id: 'resources',
+    title: 'Mina resurser',
+    description: 'Sparade länkar och dokument',
+    icon: Bookmark,
+    path: '/resources'
+  }
+]
+
+// Expandable category component
+function ExpandableCategory({
+  title,
+  items,
+  defaultExpanded = true,
+  progress,
+  colorScheme = 'teal'
+}: {
+  title: string
+  items: CategoryItem[]
+  defaultExpanded?: boolean
+  progress?: OnboardingProgress
+  colorScheme?: 'teal' | 'sky' | 'amber'
+}) {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+
+  const colors = {
+    teal: {
+      header: 'from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20',
+      headerText: 'text-teal-800 dark:text-teal-300',
+      headerIcon: 'text-teal-600 dark:text-teal-400',
+      border: 'border-teal-200 dark:border-teal-800/50',
+      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-teal-50 dark:hover:bg-teal-900/20',
+      itemBorder: 'border-teal-100 dark:border-teal-800/30',
+      iconBg: 'bg-teal-100 dark:bg-teal-900/40',
+      iconColor: 'text-teal-600 dark:text-teal-400',
+      completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
+      completeIcon: 'text-emerald-600 dark:text-emerald-400'
+    },
+    sky: {
+      header: 'from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20',
+      headerText: 'text-sky-800 dark:text-sky-300',
+      headerIcon: 'text-sky-600 dark:text-sky-400',
+      border: 'border-sky-200 dark:border-sky-800/50',
+      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-sky-50 dark:hover:bg-sky-900/20',
+      itemBorder: 'border-sky-100 dark:border-sky-800/30',
+      iconBg: 'bg-sky-100 dark:bg-sky-900/40',
+      iconColor: 'text-sky-600 dark:text-sky-400',
+      completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
+      completeIcon: 'text-emerald-600 dark:text-emerald-400'
+    },
+    amber: {
+      header: 'from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20',
+      headerText: 'text-amber-800 dark:text-amber-300',
+      headerIcon: 'text-amber-600 dark:text-amber-400',
+      border: 'border-amber-200 dark:border-amber-800/50',
+      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-amber-50 dark:hover:bg-amber-900/20',
+      itemBorder: 'border-amber-100 dark:border-amber-800/30',
+      iconBg: 'bg-amber-100 dark:bg-amber-900/40',
+      iconColor: 'text-amber-600 dark:text-amber-400',
+      completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
+      completeIcon: 'text-emerald-600 dark:text-emerald-400'
+    }
+  }
+
+  const c = colors[colorScheme]
+
+  // Calculate progress for onboarding
+  const completedCount = progress
+    ? items.filter(item => item.trackProgress && progress[item.trackProgress]).length
+    : 0
+  const trackableItems = items.filter(item => item.trackProgress).length
+  const showProgress = trackableItems > 0 && progress
+
+  return (
+    <div className={cn('rounded-2xl border overflow-hidden', c.border)}>
+      {/* Header */}
+      <button
+        onClick={() => setIsExpanded(!isExpanded)}
+        className={cn(
+          'w-full flex items-center justify-between px-5 py-4 bg-gradient-to-r transition-colors',
+          c.header
+        )}
+      >
+        <div className="flex items-center gap-3">
+          <h2 className={cn('text-lg font-semibold', c.headerText)}>{title}</h2>
+          {showProgress && (
+            <span className={cn(
+              'px-2 py-0.5 text-xs font-medium rounded-full',
+              completedCount === trackableItems
+                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
+                : 'bg-white/60 dark:bg-stone-700/60 text-stone-600 dark:text-stone-300'
+            )}>
+              {completedCount}/{trackableItems} klart
+            </span>
+          )}
+        </div>
+        <ChevronDown
+          className={cn(
+            'w-5 h-5 transition-transform',
+            c.headerIcon,
+            !isExpanded && '-rotate-90'
+          )}
+        />
+      </button>
+
+      {/* Content */}
+      {isExpanded && (
+        <div className="p-4 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900 dark:to-stone-950/50">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {items.map((item) => {
+              const Icon = item.icon
+              const isComplete = item.trackProgress && progress?.[item.trackProgress]
+
+              return (
+                <Link
+                  key={item.id}
+                  to={item.path}
+                  className={cn(
+                    'flex flex-col items-center text-center p-4 rounded-xl border transition-all group',
+                    c.itemBg,
+                    c.itemBorder,
+                    'hover:shadow-md hover:scale-[1.02]'
+                  )}
+                >
+                  {/* Icon */}
+                  <div className={cn(
+                    'w-12 h-12 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110 relative',
+                    isComplete ? c.completeBg : c.iconBg
+                  )}>
+                    <Icon className={cn('w-6 h-6', isComplete ? c.completeIcon : c.iconColor)} />
+                    {isComplete && (
+                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                        <Check className="w-3 h-3 text-white" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="text-sm font-medium text-stone-800 dark:text-stone-200 mb-0.5">
+                    {item.title}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-xs text-stone-500 dark:text-stone-400 line-clamp-2">
+                    {item.description}
+                  </p>
+                </Link>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
 export default function OverviewTab() {
   const { profile } = useAuthStore()
@@ -86,7 +348,6 @@ export default function OverviewTab() {
 
   const [onboardingProgress, setOnboardingProgress] = useState<OnboardingProgress>({})
   const [loading, setLoading] = useState(true)
-  const [synced, setSynced] = useState(true)
 
   // Load onboarding progress from cloud
   useEffect(() => {
@@ -157,7 +418,6 @@ export default function OverviewTab() {
       }
 
       setOnboardingProgress(mergedProgress)
-      setSynced(true)
     } catch (err) {
       console.error('Error loading onboarding progress:', err)
       // Use localStorage only on error
@@ -167,157 +427,48 @@ export default function OverviewTab() {
     }
   }
 
-  // Check if step is complete
-  const isStepComplete = (stepId: keyof OnboardingProgress): boolean => {
-    return !!onboardingProgress[stepId]
-  }
-
-  const completedCount = STEPS.filter(step => isStepComplete(step.id)).length
-  const totalSteps = STEPS.length
-  const progress = Math.round((completedCount / totalSteps) * 100)
-
-  // Find the first incomplete step (next step to do)
-  const nextStepIndex = STEPS.findIndex(step => !isStepComplete(step.id))
-  const allComplete = nextStepIndex === -1
-
   if (loading) {
     return (
       <div
-        className="max-w-2xl mx-auto flex items-center justify-center py-12"
+        className="flex items-center justify-center py-12"
         role="status"
         aria-live="polite"
         aria-busy="true"
       >
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mx-auto mb-3" aria-hidden="true" />
-          <p className="text-slate-600">Laddar din framsteg...</p>
+          <Loader2 className="w-8 h-8 text-teal-600 animate-spin mx-auto mb-3" aria-hidden="true" />
+          <p className="text-stone-600 dark:text-stone-400">Laddar...</p>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 mb-4">
-          <Sparkles className="w-8 h-8 text-white" />
-        </div>
-        <h1 className="text-2xl font-bold text-slate-800 mb-2">
-          {allComplete
-            ? 'Fantastiskt jobbat!'
-            : `Hej${profile?.first_name ? `, ${profile.first_name}` : ''}!`
-          }
-        </h1>
-        <p className="text-slate-600">
-          {allComplete
-            ? 'Du har slutfört alla steg. Fortsätt utforska appen!'
-            : 'Följ stegen nedan för att komma igång med din jobbsökarresa.'
-          }
-        </p>
-        {/* Cloud sync indicator */}
-        <div className="flex items-center justify-center gap-1.5 mt-2 text-xs text-slate-600">
-          <Cloud className="w-3.5 h-3.5" />
-          <span>Synkas automatiskt</span>
-        </div>
-      </div>
+    <div className="space-y-4 max-w-5xl mx-auto">
+      {/* Onboarding Section */}
+      <ExpandableCategory
+        title="Kom igång"
+        items={ONBOARDING_ITEMS}
+        progress={onboardingProgress}
+        colorScheme="teal"
+        defaultExpanded={true}
+      />
 
-      {/* Progress */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 mb-6">
-        <div className="flex items-center justify-between mb-3">
-          <span className="text-sm font-medium text-slate-700">Din framsteg</span>
-          <span className="text-sm font-bold text-indigo-600">{completedCount} av {totalSteps} klart</span>
-        </div>
-        <div className="h-3 bg-slate-100 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
-            style={{ width: `${progress}%` }}
-          />
-        </div>
-      </div>
+      {/* Skills Development Section */}
+      <ExpandableCategory
+        title="Kompetensutveckling"
+        items={SKILLS_ITEMS}
+        colorScheme="sky"
+        defaultExpanded={true}
+      />
 
-      {/* Steps */}
-      <div className="space-y-3">
-        {STEPS.map((step, index) => {
-          const isComplete = isStepComplete(step.id)
-          const isNext = index === nextStepIndex
-          const Icon = step.icon
-
-          return (
-            <Link
-              key={step.id}
-              to={step.path}
-              className={cn(
-                'flex items-center gap-4 p-4 rounded-xl border-2 transition-all group',
-                isComplete
-                  ? 'bg-emerald-50 border-emerald-200 hover:border-emerald-300'
-                  : isNext
-                    ? 'bg-indigo-50 border-indigo-300 hover:border-indigo-400 shadow-sm'
-                    : 'bg-white border-slate-200 hover:border-slate-300'
-              )}
-            >
-              {/* Step number / check */}
-              <div className={cn(
-                'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform group-hover:scale-105',
-                isComplete
-                  ? 'bg-emerald-500 text-white'
-                  : isNext
-                    ? 'bg-indigo-600 text-white'
-                    : 'bg-slate-100 text-slate-600'
-              )}>
-                {isComplete ? (
-                  <Check className="w-6 h-6" />
-                ) : (
-                  <Icon className="w-6 h-6" />
-                )}
-              </div>
-
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3 className={cn(
-                    'font-semibold',
-                    isComplete ? 'text-emerald-800' : isNext ? 'text-indigo-900' : 'text-slate-700'
-                  )}>
-                    {step.title}
-                  </h3>
-                  {isNext && (
-                    <span className="px-2 py-0.5 text-xs font-bold bg-indigo-600 text-white rounded-full">
-                      NÄSTA
-                    </span>
-                  )}
-                  {isComplete && (
-                    <span className="px-2 py-0.5 text-xs font-medium bg-emerald-100 text-emerald-700 rounded-full">
-                      Klar
-                    </span>
-                  )}
-                </div>
-                <p className={cn(
-                  'text-sm mt-0.5',
-                  isComplete ? 'text-emerald-600' : isNext ? 'text-indigo-600' : 'text-slate-700'
-                )}>
-                  {step.description}
-                </p>
-              </div>
-
-              {/* Arrow */}
-              <ChevronRight className={cn(
-                'w-5 h-5 flex-shrink-0 transition-transform group-hover:translate-x-1',
-                isComplete ? 'text-emerald-400' : isNext ? 'text-indigo-400' : 'text-slate-300'
-              )} />
-            </Link>
-          )
-        })}
-      </div>
-
-      {/* All complete celebration */}
-      {allComplete && (
-        <div className="mt-8 text-center">
-          <p className="text-slate-700 text-sm">
-            💡 Tips: Besök <Link to="/journey" className="text-indigo-600 hover:underline font-medium">Min Jobbresa</Link> för att följa din utveckling
-          </p>
-        </div>
-      )}
+      {/* Planning & Documentation Section */}
+      <ExpandableCategory
+        title="Planera och dokumentera"
+        items={PLANNING_ITEMS}
+        colorScheme="amber"
+        defaultExpanded={true}
+      />
     </div>
   )
 }
