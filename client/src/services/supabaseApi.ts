@@ -1026,6 +1026,78 @@ export interface ProfilePreferences {
     adaptationDescription?: string
     ergonomicNeeds?: string[]
   }
+  // Arbetskonsulent data
+  consultant_data?: {
+    cvStatus?: 'complete' | 'needs_update' | 'missing'
+    activityLevel?: {
+      applicationsSent?: number
+      interviews?: number
+      employerContacts?: number
+      lastActivityDate?: string
+    }
+    references?: 'available' | 'missing' | 'needs_contact'
+    internship?: {
+      active?: boolean
+      company?: string
+      supervisor?: string
+      startDate?: string
+      endDate?: string
+      evaluation?: string
+    }
+    workBarriers?: string[]
+    barrierDetails?: string
+    nextSteps?: Array<{
+      activity: string
+      date: string
+      completed: boolean
+    }>
+    geographicScope?: string[]
+    targetIndustries?: string[]
+  }
+  // Arbetsterapeut data
+  therapist_data?: {
+    workCapacityAssessment?: {
+      date?: string
+      result?: string
+      recommendations?: string
+    }
+    functionalLevel?: {
+      physical?: 'full' | 'limited' | 'significantly_limited'
+      cognitive?: 'full' | 'limited' | 'significantly_limited'
+      social?: 'full' | 'limited' | 'significantly_limited'
+      details?: string
+    }
+    adaptationNeeds?: string[]
+    adaptationDetails?: string
+    energyLevel?: {
+      sustainableHoursPerDay?: number
+      sustainableDaysPerWeek?: number
+      bestTimeOfDay?: 'morning' | 'afternoon' | 'varies'
+      notes?: string
+    }
+    rehabilitationPhase?: 'early' | 'ongoing' | 'late' | 'completed'
+    assistiveTools?: {
+      granted?: string[]
+      applied?: string[]
+      recommended?: string[]
+    }
+    followUpDate?: string
+    followUpNotes?: string
+  }
+  // Mål och uppföljning
+  support_goals?: {
+    shortTerm?: {
+      goal?: string
+      deadline?: string
+      progress?: number
+    }
+    longTerm?: {
+      goal?: string
+      deadline?: string
+      progress?: number
+    }
+    notes?: string
+  }
 }
 
 export const userApi = {
@@ -1065,7 +1137,7 @@ export const userApi = {
 
     const { data, error } = await supabase
       .from('profiles')
-      .select('desired_jobs, interests, onboarding_progress, availability, mobility, salary, labor_market_status, work_preferences, physical_requirements')
+      .select('desired_jobs, interests, onboarding_progress, availability, mobility, salary, labor_market_status, work_preferences, physical_requirements, consultant_data, therapist_data, support_goals')
       .eq('id', user.id)
       .single()
 
@@ -1086,7 +1158,10 @@ export const userApi = {
       salary: data?.salary || {},
       labor_market_status: data?.labor_market_status || {},
       work_preferences: data?.work_preferences || {},
-      physical_requirements: data?.physical_requirements || {}
+      physical_requirements: data?.physical_requirements || {},
+      consultant_data: data?.consultant_data || {},
+      therapist_data: data?.therapist_data || {},
+      support_goals: data?.support_goals || {}
     }
   },
 
@@ -1105,12 +1180,15 @@ export const userApi = {
     if (prefs.labor_market_status !== undefined) updates.labor_market_status = prefs.labor_market_status
     if (prefs.work_preferences !== undefined) updates.work_preferences = prefs.work_preferences
     if (prefs.physical_requirements !== undefined) updates.physical_requirements = prefs.physical_requirements
+    if (prefs.consultant_data !== undefined) updates.consultant_data = prefs.consultant_data
+    if (prefs.therapist_data !== undefined) updates.therapist_data = prefs.therapist_data
+    if (prefs.support_goals !== undefined) updates.support_goals = prefs.support_goals
 
     const { data, error } = await supabase
       .from('profiles')
       .update(updates)
       .eq('id', user.id)
-      .select('desired_jobs, interests, onboarding_progress, availability, mobility, salary, labor_market_status, work_preferences, physical_requirements')
+      .select('desired_jobs, interests, onboarding_progress, availability, mobility, salary, labor_market_status, work_preferences, physical_requirements, consultant_data, therapist_data, support_goals')
       .single()
 
     if (error) handleError(error)
