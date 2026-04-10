@@ -78,6 +78,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "profile": "My Profile",
     "journey": "My Job Journey",
     "cv": "CV",
     "coverLetter": "Cover Letter",

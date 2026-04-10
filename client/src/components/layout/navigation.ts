@@ -59,6 +59,7 @@ export const navGroups: NavGroup[] = [
     labelKey: 'nav.groups.overview',
     items: [
       { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
+      { path: '/profile', labelKey: 'nav.profile', icon: Users },
       { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
       { path: '/journey', labelKey: 'nav.journey', icon: Map, isNew: true },
     ],

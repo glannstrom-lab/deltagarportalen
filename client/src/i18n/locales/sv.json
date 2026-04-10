@@ -78,6 +78,7 @@
   },
   "nav": {
     "dashboard": "Översikt",
+    "profile": "Min profil",
     "journey": "Min Jobbresa",
     "cv": "CV",
     "coverLetter": "Personligt brev",
