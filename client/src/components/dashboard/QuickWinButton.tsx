@@ -81,7 +81,7 @@ export function QuickWinButton() {
       energyLevel: 'medium',
       icon: <FileText size={18} />,
       link: '/cv',
-      color: 'bg-violet-100 text-violet-700 border-violet-200 hover:bg-violet-200',
+      color: 'bg-teal-100 text-teal-700 border-teal-200 hover:bg-teal-200',
       condition: (d) => d?.cv?.progress < 100
     },
     {
@@ -141,8 +141,8 @@ export function QuickWinButton() {
         whileTap={{ scale: 0.95 }}
         className={cn(
           "fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-violet-500 to-indigo-600 text-white font-medium",
-          "hover:shadow-xl hover:shadow-violet-500/25 transition-shadow"
+          "bg-gradient-to-r from-teal-500 to-sky-600 text-white font-medium",
+          "hover:shadow-xl hover:shadow-teal-500/25 transition-shadow"
         )}
       >
         <Sparkles size={18} />
@@ -170,8 +170,8 @@ export function QuickWinButton() {
               <div className="p-6 border-b border-slate-100">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center">
-                      <Sparkles className="w-5 h-5 text-violet-600" />
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-100 to-sky-100 flex items-center justify-center">
+                      <Sparkles className="w-5 h-5 text-teal-600" />
                     </div>
                     <div>
                       <h3 className="font-bold text-slate-800">Gör något litet</h3>
@@ -285,8 +285,8 @@ export function QuickWinBadge() {
         onClick={() => setIsOpen(true)}
         className={cn(
           "flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium",
-          "bg-gradient-to-r from-violet-100 to-indigo-100 text-violet-700",
-          "border border-violet-200 hover:shadow-sm transition-all"
+          "bg-gradient-to-r from-teal-100 to-sky-100 text-teal-700",
+          "border border-teal-200 hover:shadow-sm transition-all"
         )}
       >
         <Sparkles size={12} />

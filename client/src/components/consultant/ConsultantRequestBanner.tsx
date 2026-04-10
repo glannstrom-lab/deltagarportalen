@@ -112,11 +112,11 @@ export const ConsultantRequestBanner: React.FC = () => {
         return (
           <div
             key={request.id}
-            className="bg-gradient-to-r from-violet-50 to-purple-50 dark:from-violet-900/20 dark:to-purple-900/20 border border-violet-200 dark:border-violet-800 rounded-xl p-4 shadow-sm"
+            className="bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 border border-teal-200 dark:border-teal-800 rounded-xl p-4 shadow-sm"
           >
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-violet-100 dark:bg-violet-800 rounded-full flex items-center justify-center">
-                <UserPlus className="w-6 h-6 text-violet-600 dark:text-violet-300" />
+              <div className="flex-shrink-0 w-12 h-12 bg-teal-100 dark:bg-teal-800 rounded-full flex items-center justify-center">
+                <UserPlus className="w-6 h-6 text-teal-600 dark:text-teal-300" />
               </div>
 
               <div className="flex-1 min-w-0">
@@ -142,7 +142,7 @@ export const ConsultantRequestBanner: React.FC = () => {
                   <button
                     onClick={() => handleAccept(request.id)}
                     disabled={responding === request.id}
-                    className="flex items-center gap-2 px-4 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-700 disabled:opacity-50 transition-colors text-sm font-medium"
+                    className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 transition-colors text-sm font-medium"
                   >
                     {responding === request.id ? (
                       <Loader2 className="w-4 h-4 animate-spin" />

@@ -53,7 +53,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
         className
       )}>
         <div className="flex items-center justify-center py-8">
-          <Loader2 size={24} className="animate-spin text-violet-500" />
+          <Loader2 size={24} className="animate-spin text-teal-500" />
         </div>
       </div>
     )
@@ -65,12 +65,12 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
   if (!hasMatches && !hasSimilarRoles) {
     return (
       <div className={cn(
-        "bg-gradient-to-br from-violet-50 to-purple-50 rounded-2xl border border-violet-200 p-6",
+        "bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl border border-teal-200 p-6",
         className
       )}>
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-            <Sparkles size={20} className="text-violet-600" />
+          <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
+            <Sparkles size={20} className="text-teal-600" />
           </div>
           <div>
             <h3 className="font-semibold text-slate-900">Smart matchning</h3>
@@ -82,7 +82,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
         </p>
         <Link
           to="/cv"
-          className="inline-flex items-center gap-2 mt-3 text-sm text-violet-600 hover:text-violet-700 font-medium"
+          className="inline-flex items-center gap-2 mt-3 text-sm text-teal-600 hover:text-teal-700 font-medium"
         >
           Komplettera CV:t
           <ChevronRight size={16} />
@@ -97,7 +97,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
       className
     )}>
       {/* Header */}
-      <div className="bg-gradient-to-r from-violet-500 to-purple-600 px-6 py-4">
+      <div className="bg-gradient-to-r from-teal-500 to-sky-600 px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
             <Sparkles size={20} className="text-white" />
@@ -122,7 +122,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             className={cn(
               "flex-1 px-4 py-3 text-sm font-medium transition-colors",
               activeTab === 'matches'
-                ? "text-violet-600 border-b-2 border-violet-600"
+                ? "text-teal-600 border-b-2 border-teal-600"
                 : "text-slate-600 hover:text-slate-900"
             )}
           >
@@ -133,7 +133,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             className={cn(
               "flex-1 px-4 py-3 text-sm font-medium transition-colors",
               activeTab === 'roles'
-                ? "text-violet-600 border-b-2 border-violet-600"
+                ? "text-teal-600 border-b-2 border-teal-600"
                 : "text-slate-600 hover:text-slate-900"
             )}
           >
@@ -152,7 +152,7 @@ export function SmartJobMatches({ cv, jobs, className }: SmartJobMatchesProps) {
             
             <Link
               to="/job-search"
-              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-violet-600 hover:text-violet-700 font-medium hover:bg-violet-50 rounded-lg transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm text-teal-600 hover:text-teal-700 font-medium hover:bg-teal-50 rounded-lg transition-colors"
             >
               Se alla matchade jobb
               <ChevronRight size={16} />
@@ -228,7 +228,7 @@ const JobMatchCard = memo(function JobMatchCard({ match }: { match: SemanticMatc
         
         <Link
           to={`/job-search?highlight=${job.id}`}
-          className="flex-shrink-0 p-2 text-violet-600 hover:bg-violet-100 rounded-lg transition-colors"
+          className="flex-shrink-0 p-2 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors"
         >
           <ChevronRight size={20} />
         </Link>
@@ -304,7 +304,7 @@ const SimilarRoleCard = memo(function SimilarRoleCard({ role }: { role: SimilarR
         
         <Link
           to={`/job-search?query=${encodeURIComponent(role.role)}`}
-          className="flex-shrink-0 p-2 text-violet-600 hover:bg-violet-100 rounded-lg transition-colors"
+          className="flex-shrink-0 p-2 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors"
         >
           <ChevronRight size={20} />
         </Link>
@@ -348,7 +348,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
         className
       )}>
         <div className="flex items-center justify-center py-8">
-          <Loader2 size={24} className="animate-spin text-violet-500" />
+          <Loader2 size={24} className="animate-spin text-teal-500" />
         </div>
       </div>
     )
@@ -444,7 +444,7 @@ export function SkillGapAnalysis({ cv, jobs, className }: SkillGapAnalysisProps)
                 )}
               </div>
               
-              <button className="flex-shrink-0 p-2 text-violet-600 hover:bg-violet-100 rounded-lg transition-colors">
+              <button className="flex-shrink-0 p-2 text-teal-600 hover:bg-teal-100 rounded-lg transition-colors">
                 <Lightbulb size={18} />
               </button>
             </div>

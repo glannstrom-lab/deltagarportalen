@@ -23,11 +23,11 @@ interface NextStepCardProps {
 // Enhanced color system
 const colorSchemes = {
   violet: {
-    gradient: 'from-violet-500 to-purple-600',
-    bg: 'bg-violet-50',
-    bgLight: 'bg-violet-100',
-    text: 'text-violet-700',
-    ring: 'focus:ring-violet-500'
+    gradient: 'from-teal-500 to-sky-600',
+    bg: 'bg-teal-50',
+    bgLight: 'bg-teal-100',
+    text: 'text-teal-700',
+    ring: 'focus:ring-teal-500'
   },
   teal: {
     gradient: 'from-teal-500 to-emerald-600',
@@ -37,7 +37,7 @@ const colorSchemes = {
     ring: 'focus:ring-emerald-500'
   },
   blue: {
-    gradient: 'from-blue-500 to-indigo-600',
+    gradient: 'from-blue-500 to-sky-600',
     bg: 'bg-blue-50',
     bgLight: 'bg-blue-100',
     text: 'text-blue-700',

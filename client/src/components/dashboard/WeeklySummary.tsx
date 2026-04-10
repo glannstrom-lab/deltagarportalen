@@ -63,7 +63,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
       value: `${stats.cvProgress}%`,
       change: stats.cvProgressChange > 0 ? `+${stats.cvProgressChange}%` : null,
       changeType: 'positive' as const,
-      color: 'text-violet-600 bg-violet-100'
+      color: 'text-teal-600 bg-teal-100'
     },
     {
       icon: <Briefcase size={18} />,
@@ -154,8 +154,8 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
         className="w-full p-4 flex items-center justify-between hover:bg-slate-100/50 transition-colors"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-100 to-violet-100 flex items-center justify-center">
-            <Calendar size={20} className="text-indigo-600" />
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-100 to-teal-100 flex items-center justify-center">
+            <Calendar size={20} className="text-sky-600" />
           </div>
           <div className="text-left">
             <h3 className="font-semibold text-slate-800">Din vecka</h3>
@@ -185,10 +185,10 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
           className="border-t border-slate-200"
         >
           {/* Motivational Message */}
-          <div className="p-4 bg-gradient-to-r from-violet-50 to-indigo-50 border-b border-slate-200">
+          <div className="p-4 bg-gradient-to-r from-teal-50 to-sky-50 border-b border-slate-200">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm">
-                <Award size={16} className="text-violet-600" />
+                <Award size={16} className="text-teal-600" />
               </div>
               <div>
                 <h4 className="font-semibold text-slate-800 text-sm">{motivation.title}</h4>
@@ -238,7 +238,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
                   initial={{ width: 0 }}
                   animate={{ width: '66%' }}
                   transition={{ duration: 0.5, delay: 0.3 }}
-                  className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full"
+                  className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full"
                 />
               </div>
               <div className="mt-3 space-y-2">
@@ -277,7 +277,7 @@ export function WeeklySummaryBadge() {
   const weeklyProgress = 66
   
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-violet-100 to-indigo-100 text-violet-700 text-xs font-medium">
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-teal-100 to-sky-100 text-teal-700 text-xs font-medium">
       <TrendingUp size={14} />
       <span>Veckan: {weeklyProgress}%</span>
     </div>

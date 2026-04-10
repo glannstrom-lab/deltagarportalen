@@ -185,8 +185,8 @@ export function CVTips() {
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {quickTips.map((tip, i) => (
           <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
-            <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center mb-3">
-              <tip.icon className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-3">
+              <tip.icon className="w-5 h-5 text-teal-600" />
             </div>
             <h3 className="font-semibold text-slate-800 mb-1">{tip.title}</h3>
             <p className="text-sm text-slate-600">{tip.content}</p>
@@ -210,8 +210,8 @@ export function CVTips() {
                 className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
               >
                 <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
-                    <Icon className="w-6 h-6 text-indigo-600" />
+                  <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
+                    <Icon className="w-6 h-6 text-teal-600" />
                   </div>
                   <div className="text-left">
                     <h3 className="font-semibold text-slate-800">{section.title}</h3>
@@ -291,14 +291,14 @@ export function CVTips() {
       </div>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 rounded-2xl">
         <div>
           <h3 className="font-semibold text-slate-800">Redo att skapa ditt CV?</h3>
           <p className="text-slate-600 text-sm">Använd vår CV-byggare med inbyggda tips</p>
         </div>
         <a
           href="/cv"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
         >
           <FileText className="w-5 h-5" />
           Skapa CV nu
@@ -309,20 +309,20 @@ export function CVTips() {
       <div className="grid sm:grid-cols-2 gap-4">
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <div className="flex items-center gap-3 mb-3">
-            <Video className="w-5 h-5 text-indigo-600" />
+            <Video className="w-5 h-5 text-teal-600" />
             <h4 className="font-semibold text-slate-800">Video-guider</h4>
           </div>
           <p className="text-sm text-slate-600 mb-3">
             Se våra video-tutorials om hur du skriver ett vinnande CV
           </p>
-          <button className="text-indigo-600 text-sm font-medium hover:underline">
+          <button className="text-teal-600 text-sm font-medium hover:underline">
             Kommer snart →
           </button>
         </div>
         
         <div className="bg-white rounded-xl border border-slate-200 p-5">
           <div className="flex items-center gap-3 mb-3">
-            <Target className="w-5 h-5 text-indigo-600" />
+            <Target className="w-5 h-5 text-teal-600" />
             <h4 className="font-semibold text-slate-800">ATS-optimering</h4>
           </div>
           <p className="text-sm text-slate-600 mb-3">
@@ -330,7 +330,7 @@ export function CVTips() {
           </p>
           <a 
             href="/cv/ats"
-            className="text-indigo-600 text-sm font-medium hover:underline"
+            className="text-teal-600 text-sm font-medium hover:underline"
           >
             Gå till ATS-analys →
           </a>

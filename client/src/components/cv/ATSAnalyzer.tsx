@@ -419,8 +419,8 @@ export function ATSAnalyzer({
   return (
     <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
       <div className="flex items-center gap-3 mb-4">
-        <div className="p-2 bg-[#4f46e5]/10 rounded-lg">
-          <FileSearch size={24} style={{ color: '#4f46e5' }} />
+        <div className="p-2 bg-[#0d9488]/10 rounded-lg">
+          <FileSearch size={24} style={{ color: '#0d9488' }} />
         </div>
         <div>
           <h3 className="font-semibold text-slate-800">ATS-analys</h3>
@@ -440,20 +440,20 @@ export function ATSAnalyzer({
       </div>
 
       {/* Rekryterarens ögonblicks-test */}
-      <div className="mb-6 p-4 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl border border-indigo-100">
+      <div className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-sky-50 rounded-xl border border-teal-100">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Eye size={18} className="text-indigo-600" />
-            <h4 className="font-medium text-indigo-900">Rekryterarens ögonblicks-test</h4>
+            <Eye size={18} className="text-teal-600" />
+            <h4 className="font-medium text-teal-900">Rekryterarens ögonblicks-test</h4>
           </div>
           <button
             onClick={() => setShowRecruiterView(!showRecruiterView)}
-            className="text-xs text-[#4f46e5] hover:underline"
+            className="text-xs text-[#0d9488] hover:underline"
           >
             {showRecruiterView ? 'Dölj' : 'Visa detaljer'}
           </button>
         </div>
-        <p className="text-xs text-indigo-700 mb-3">
+        <p className="text-xs text-teal-700 mb-3">
           En rekryterare skannar ditt CV på 6 sekunder. Så här ser det ut:
         </p>
         <div className="grid grid-cols-2 gap-2 text-sm">
@@ -471,16 +471,16 @@ export function ATSAnalyzer({
           </div>
         </div>
         {recruiterSnapshot.latestRole && (
-          <p className="text-xs text-indigo-600 mt-2">
+          <p className="text-xs text-teal-600 mt-2">
             Senaste roll: <strong>{recruiterSnapshot.latestRole}</strong> {recruiterSnapshot.latestCompany && `på ${recruiterSnapshot.latestCompany}`}
           </p>
         )}
 
         {/* Skannbarhetspoäng */}
         {showRecruiterView && (
-          <div className="mt-4 pt-4 border-t border-indigo-200">
+          <div className="mt-4 pt-4 border-t border-teal-200">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-indigo-900">Skannbarhetspoäng</span>
+              <span className="text-sm font-medium text-teal-900">Skannbarhetspoäng</span>
               <span className={`text-lg font-bold ${getScoreColor(scanabilityScore)}`}>
                 {scanabilityScore}/100
               </span>
@@ -494,7 +494,7 @@ export function ATSAnalyzer({
                 style={{ width: `${scanabilityScore}%` }}
               />
             </div>
-            <p className="text-xs text-indigo-700 mt-2">
+            <p className="text-xs text-teal-700 mt-2">
               {scanabilityScore >= 80 ? 'Mycket lättskannat CV - rekryterare ser snabbt dina styrkor!' :
                scanabilityScore >= 60 ? 'Acceptabel skannbarhet - några justeringar kan hjälpa' :
                'Svårskannat CV - viktig information kan missas av rekryterare'}
@@ -541,7 +541,7 @@ export function ATSAnalyzer({
               onClick={() => setSelectedIndustry(selectedIndustry === industry.id ? null : industry.id)}
               className={`p-2 rounded-lg border text-center transition-all ${
                 selectedIndustry === industry.id
-                  ? 'border-[#4f46e5] bg-[#eef2ff]'
+                  ? 'border-[#0d9488] bg-[#ccfbf1]'
                   : 'border-slate-200 hover:border-slate-300'
               }`}
             >
@@ -605,7 +605,7 @@ export function ATSAnalyzer({
               {totalKeywordsFound}/{totalKeywords}
             </span>
           </div>
-          <span className="text-sm text-[#4f46e5]">{showKeywords ? 'Dölj' : 'Visa'}</span>
+          <span className="text-sm text-[#0d9488]">{showKeywords ? 'Dölj' : 'Visa'}</span>
         </button>
 
         {showKeywords && (
@@ -660,7 +660,7 @@ export function ATSAnalyzer({
               {technicalChecks.filter(c => c.passed).length}/{technicalChecks.length}
             </span>
           </div>
-          <span className="text-sm text-[#4f46e5]">{showATSChecks ? 'Dölj' : 'Visa'}</span>
+          <span className="text-sm text-[#0d9488]">{showATSChecks ? 'Dölj' : 'Visa'}</span>
         </button>
 
         {showATSChecks && (
@@ -735,7 +735,7 @@ export function ATSAnalyzer({
 
       <button
         onClick={() => setShowDetails(!showDetails)}
-        className="text-sm text-[#4f46e5] hover:underline mb-4"
+        className="text-sm text-[#0d9488] hover:underline mb-4"
       >
         {showDetails ? 'Visa färre' : 'Visa alla kontroller'}
       </button>
@@ -744,7 +744,7 @@ export function ATSAnalyzer({
       <div className="mb-6">
         <button
           onClick={() => setShowExportCheck(!showExportCheck)}
-          className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg hover:from-blue-100 hover:to-indigo-100 transition-colors border border-blue-100"
+          className="w-full flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-sky-50 rounded-lg hover:from-blue-100 hover:to-sky-100 transition-colors border border-blue-100"
         >
           <div className="flex items-center gap-2">
             <Download size={18} className="text-blue-600" />
@@ -809,7 +809,7 @@ export function ATSAnalyzer({
       {nextSteps.length > 0 && (
         <div className="border-t border-slate-200 pt-4">
           <p className="text-sm font-medium text-slate-700 mb-2 flex items-center gap-1">
-            <Info size={16} className="text-[#4f46e5]" />
+            <Info size={16} className="text-[#0d9488]" />
             Nästa steg för att stärka ditt CV:
           </p>
           <ul className="space-y-2">
@@ -824,7 +824,7 @@ export function ATSAnalyzer({
       )}
 
       {/* Best Practices */}
-      <div className="mt-4 p-3 bg-[#eef2ff] rounded-lg">
+      <div className="mt-4 p-3 bg-[#ccfbf1] rounded-lg">
         <p className="text-xs text-slate-600">
           <strong>Tips:</strong> ATS-system (Applicant Tracking Systems) används av 
           de flesta större företag för att filtrera CV:n. Använd nyckelord från 

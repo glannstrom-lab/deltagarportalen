@@ -181,7 +181,7 @@ export function AIAssistant() {
         whileTap={{ scale: 0.95 }}
         className={cn(
           "fixed bottom-24 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-medium",
+          "bg-gradient-to-r from-teal-500 to-sky-500 text-white font-medium",
           "hover:shadow-xl transition-shadow"
         )}
       >
@@ -208,7 +208,7 @@ export function AIAssistant() {
               className="bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden"
             >
               {/* Header */}
-              <div className="bg-gradient-to-r from-violet-600 to-indigo-600 p-6 text-white">
+              <div className="bg-gradient-to-r from-teal-500 to-sky-500 p-6 text-white">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-3">
                     <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center">
@@ -240,7 +240,7 @@ export function AIAssistant() {
                       className={cn(
                         "px-4 py-2 rounded-full text-sm font-medium transition-colors",
                         activeTab === tab
-                          ? 'bg-white text-violet-600'
+                          ? 'bg-white text-teal-600'
                           : 'bg-white/20 text-white hover:bg-white/30'
                       )}
                     >
@@ -276,10 +276,10 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
   return (
     <div className="space-y-6">
       {/* Prediction Card */}
-      <div className="p-5 bg-gradient-to-br from-violet-50 to-indigo-50 rounded-2xl border border-violet-200">
+      <div className="p-5 bg-gradient-to-br from-teal-50 to-sky-50 rounded-2xl border border-teal-200">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-violet-100 flex items-center justify-center">
-            <Target size={20} className="text-violet-600" />
+          <div className="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center">
+            <Target size={20} className="text-teal-600" />
           </div>
           <div>
             <h3 className="font-semibold text-slate-800">Din prognos</h3>
@@ -288,7 +288,7 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
         </div>
         
         <div className="flex items-end gap-2 mb-2">
-          <span className="text-4xl font-bold text-violet-600">
+          <span className="text-4xl font-bold text-teal-600">
             {analysis.predictedInterviewChance}%
           </span>
           <span className="text-slate-600 mb-1">chans till intervju</span>
@@ -300,12 +300,12 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
           </p>
         )}
         
-        <div className="mt-4 h-2 bg-violet-200 rounded-full overflow-hidden">
+        <div className="mt-4 h-2 bg-teal-200 rounded-full overflow-hidden">
           <motion.div
             initial={{ width: 0 }}
             animate={{ width: `${analysis.predictedInterviewChance}%` }}
             transition={{ duration: 1 }}
-            className="h-full bg-gradient-to-r from-violet-500 to-indigo-500 rounded-full"
+            className="h-full bg-gradient-to-r from-teal-500 to-sky-500 rounded-full"
           />
         </div>
       </div>
@@ -371,7 +371,7 @@ function InsightsTab({ analysis }: { analysis: BehaviorAnalysis }) {
           className="p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-3"
         >
           <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center flex-shrink-0">
-            <Zap size={16} className="text-violet-500" />
+            <Zap size={16} className="text-teal-500" />
           </div>
           <p className="text-slate-700">{insight}</p>
         </motion.div>
@@ -384,7 +384,7 @@ function ActionsTab({ analysis, onClose }: { analysis: BehaviorAnalysis; onClose
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-slate-800 flex items-center gap-2">
-        <Target size={18} className="text-violet-500" />
+        <Target size={18} className="text-teal-500" />
         Rekommenderade åtgärder
       </h3>
       
@@ -397,16 +397,16 @@ function ActionsTab({ analysis, onClose }: { analysis: BehaviorAnalysis; onClose
           className={cn(
             "p-4 rounded-xl border transition-all",
             action.priority === 'high' 
-              ? 'bg-violet-50 border-violet-200' 
+              ? 'bg-teal-50 border-teal-200'
               : 'bg-slate-50 border-slate-200'
           )}
         >
           <div className="flex items-start gap-3">
             <div className={cn(
               "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0",
-              action.priority === 'high' ? 'bg-violet-100' : 'bg-white'
+              action.priority === 'high' ? 'bg-teal-100' : 'bg-white'
             )}>
-              <Sparkles size={18} className="text-violet-600" />
+              <Sparkles size={18} className="text-teal-600" />
             </div>
             <div className="flex-1">
               <h4 className="font-semibold text-slate-800">{action.action}</h4>

@@ -130,13 +130,13 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
   // Compact version for sidebar or small spaces
   if (compact) {
     return (
-      <div className="bg-gradient-to-br from-violet-50 to-indigo-50 rounded-xl border border-violet-100 p-4">
+      <div className="bg-gradient-to-br from-teal-50 to-sky-50 rounded-xl border border-teal-100 p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <Trophy size={18} className="text-violet-600" />
+            <Trophy size={18} className="text-teal-600" />
             <span className="font-semibold text-slate-800">Kom igång</span>
           </div>
-          <span className="text-xs text-violet-600 font-medium">
+          <span className="text-xs text-teal-600 font-medium">
             {completedCount}/{items.length}
           </span>
         </div>
@@ -148,7 +148,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               to={item.isLocked ? '#' : item.link}
               className={cn(
                 "flex items-center gap-2 text-sm",
-                item.isLocked ? 'text-slate-600 cursor-not-allowed' : 'text-slate-700 hover:text-violet-600'
+                item.isLocked ? 'text-slate-600 cursor-not-allowed' : 'text-slate-700 hover:text-teal-600'
               )}
             >
               {item.isCompleted ? (
@@ -156,7 +156,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               ) : item.isLocked ? (
                 <Lock size={16} className="text-slate-300" />
               ) : (
-                <Circle size={16} className="text-violet-400" />
+                <Circle size={16} className="text-teal-400" />
               )}
               <span className={item.isCompleted ? 'line-through opacity-50' : ''}>
                 {item.title}
@@ -166,7 +166,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
           {items.length > 2 && (
             <button 
               onClick={handleReopen}
-              className="text-xs text-violet-600 hover:text-violet-700 font-medium"
+              className="text-xs text-teal-600 hover:text-teal-700 font-medium"
             >
               Se alla {items.length} steg →
             </button>
@@ -224,7 +224,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
       className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden"
     >
       {/* Header */}
-      <div className="bg-gradient-to-r from-violet-500 to-indigo-600 p-6 text-white">
+      <div className="bg-gradient-to-r from-teal-500 to-sky-500 p-6 text-white">
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
@@ -312,14 +312,14 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               ) : (
                 <Link
                   to={item.link}
-                  className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-violet-300 hover:shadow-md transition-all group"
+                  className="flex items-center gap-4 p-4 rounded-xl bg-white border-2 border-slate-200 hover:border-teal-300 hover:shadow-md transition-all group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-100 to-indigo-100 flex items-center justify-center text-violet-600 group-hover:from-violet-200 group-hover:to-indigo-200 transition-colors">
+                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-100 to-sky-100 flex items-center justify-center text-teal-600 group-hover:from-teal-200 group-hover:to-sky-200 transition-colors">
                     {item.icon}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
-                      <h3 className="font-semibold text-slate-800 group-hover:text-violet-700 transition-colors">
+                      <h3 className="font-semibold text-slate-800 group-hover:text-teal-700 transition-colors">
                         {item.title}
                       </h3>
                       <span className="text-xs text-slate-600">
@@ -330,7 +330,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
                       {item.description}
                     </p>
                   </div>
-                  <ChevronRight size={20} className="text-slate-300 group-hover:text-violet-500 transition-colors" />
+                  <ChevronRight size={20} className="text-slate-300 group-hover:text-teal-500 transition-colors" />
                 </Link>
               )}
             </motion.div>
@@ -356,7 +356,7 @@ export function ReopenChecklistButton({ onClick }: { onClick: () => void }) {
       onClick={onClick}
       className={cn(
         "flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium",
-        "bg-violet-100 text-violet-700 hover:bg-violet-200 transition-colors"
+        "bg-teal-100 text-teal-700 hover:bg-teal-200 transition-colors"
       )}
     >
       <Trophy size={16} />

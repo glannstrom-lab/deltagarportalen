@@ -199,7 +199,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
               <button
                 ref={closeButtonRef}
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
                 aria-label={t('common.close')}
               >
                 <X size={20} aria-hidden="true" />
@@ -267,7 +267,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                       <a
                         key={resource.nameKey}
                         href={`tel:${resource.phone.replace(/\s/g, '')}`}
-                        className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-violet-500"
+                        className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 hover:border-slate-300 transition-all focus:outline-none focus:ring-2 focus:ring-teal-500"
                       >
                         <div className="p-2 rounded-lg bg-white text-slate-600">
                           <Phone size={18} aria-hidden="true" />
@@ -305,7 +305,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                       href={resource.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-violet-300 hover:bg-violet-50 transition-all focus:outline-none focus:ring-2 focus:ring-violet-500"
+                      className="flex items-center gap-3 p-3 rounded-xl border border-slate-200 hover:border-teal-300 hover:bg-teal-50 transition-all focus:outline-none focus:ring-2 focus:ring-teal-500"
                     >
                       <ExternalLink size={18} className="text-slate-600" aria-hidden="true" />
                       <div className="flex-1">
@@ -333,7 +333,7 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
             <div className="sticky bottom-0 bg-slate-50 border-t border-slate-100 px-6 py-4 rounded-b-2xl">
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full bg-white border border-slate-300 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-violet-500"
+                className="w-full bg-white border border-slate-300 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 {t('common.close')}
               </button>

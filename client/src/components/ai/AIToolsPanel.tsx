@@ -55,7 +55,7 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
   const activeToolConfig = tools.find(t => t.id === activeTool)
 
   return (
-    <Card className="p-4 border-indigo-100 bg-gradient-to-br from-indigo-50/50 to-purple-50/30">
+    <Card className="p-4 border-teal-100 bg-gradient-to-br from-teal-50/50 to-sky-50/30">
       <div className="space-y-4">
         {/* Header */}
         <div 
@@ -63,8 +63,8 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-indigo-600" />
+            <div className="w-10 h-10 rounded-full bg-teal-100 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-teal-600" />
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">AI-verktyg</h3>
@@ -87,10 +87,10 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
                 <button
                   key={tool.id}
                   onClick={() => setActiveTool(tool.id)}
-                  className="flex items-start gap-3 p-3 rounded-xl bg-white border border-gray-200 hover:border-indigo-300 hover:shadow-sm transition-all text-left"
+                  className="flex items-start gap-3 p-3 rounded-xl bg-white border border-gray-200 hover:border-teal-300 hover:shadow-sm transition-all text-left"
                 >
-                  <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center flex-shrink-0">
-                    <Icon className="w-4 h-4 text-indigo-600" />
+                  <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center flex-shrink-0">
+                    <Icon className="w-4 h-4 text-teal-600" />
                   </div>
                   <div>
                     <p className="font-medium text-gray-900 text-sm">{tool.title}</p>

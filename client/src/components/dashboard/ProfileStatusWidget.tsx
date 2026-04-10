@@ -128,11 +128,11 @@ export function ProfileStatusWidget() {
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
       {/* Header */}
-      <div className="px-4 py-3 bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-slate-200">
+      <div className="px-4 py-3 bg-gradient-to-r from-teal-50 to-sky-50 border-b border-slate-200">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center">
-              <User className="w-4 h-4 text-indigo-600" />
+            <div className="w-8 h-8 bg-teal-100 rounded-lg flex items-center justify-center">
+              <User className="w-4 h-4 text-teal-600" />
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 text-sm">
@@ -142,7 +142,7 @@ export function ProfileStatusWidget() {
           </div>
           <Link
             to="/profile"
-            className="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-0.5"
+            className="text-xs text-teal-600 hover:text-teal-800 font-medium flex items-center gap-0.5"
           >
             Visa <ChevronRight className="w-3 h-3" />
           </Link>
@@ -178,7 +178,7 @@ export function ProfileStatusWidget() {
                 .slice(0, 2)
                 .map((step, i) => (
                   <div key={i} className="flex items-center gap-2 text-xs text-slate-600">
-                    <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full" />
+                    <div className="w-1.5 h-1.5 bg-teal-500 rounded-full" />
                     <span className="truncate">{step.activity}</span>
                     <span className="text-slate-400 ml-auto">{step.date}</span>
                   </div>
@@ -208,9 +208,9 @@ export function ProfileStatusCompact() {
   return (
     <Link
       to="/profile"
-      className="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 hover:border-indigo-300 transition-colors"
+      className="flex items-center gap-3 p-3 bg-white rounded-lg border border-slate-200 hover:border-teal-300 transition-colors"
     >
-      <div className="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center">
+      <div className="w-10 h-10 bg-gradient-to-br from-teal-500 to-sky-600 rounded-xl flex items-center justify-center">
         <User className="w-5 h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">

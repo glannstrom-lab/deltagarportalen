@@ -74,7 +74,7 @@ function PageLoader() {
       aria-busy="true"
     >
       <div className="text-center">
-        <Loader2 className="animate-spin text-violet-600 mx-auto mb-3" size={32} aria-hidden="true" />
+        <Loader2 className="animate-spin text-teal-500 mx-auto mb-3" size={32} aria-hidden="true" />
         <p className="text-sm text-slate-700">Laddar sida...</p>
       </div>
     </div>
@@ -187,7 +187,7 @@ function App() {
   // Show loading screen while auth initializes
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-violet-600 to-indigo-800">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-500 to-sky-600">
         <div className="text-center">
           <Loader2 className="animate-spin text-white mx-auto mb-4" size={48} />
           <p className="text-white/80">Laddar...</p>

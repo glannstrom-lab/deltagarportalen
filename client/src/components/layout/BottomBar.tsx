@@ -458,15 +458,15 @@ export function BottomBar() {
 
               {/* Dagliga uppgifter */}
               <div className="hidden md:flex items-center gap-2 px-3 py-2">
-                <div className="w-10 h-10 bg-violet-100 rounded-xl flex items-center justify-center">
-                  <CheckCircle2 size={18} className="text-violet-600" />
+                <div className="w-10 h-10 bg-teal-100 rounded-xl flex items-center justify-center">
+                  <CheckCircle2 size={18} className="text-teal-600" />
                 </div>
                 <div>
                   <p className="text-xs text-slate-700">Dagens mål</p>
                   <div className="flex items-center gap-2">
                     <div className="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                       <div 
-                        className="h-full bg-violet-500 rounded-full transition-all"
+                        className="h-full bg-teal-500 rounded-full transition-all"
                         style={{ width: `${taskProgress}%` }}
                       />
                     </div>
@@ -507,9 +507,9 @@ export function BottomBar() {
                 <Link
                   to={primaryAction.path}
                   className={cn(
-                    "flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium transition-all hover:shadow-lg hover:shadow-violet-500/25",
-                    primaryAction.priority === 'high' 
-                      ? "bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500" 
+                    "flex items-center gap-2 px-5 py-2.5 rounded-xl text-white font-medium transition-all hover:shadow-lg hover:shadow-teal-500/25",
+                    primaryAction.priority === 'high'
+                      ? "bg-gradient-to-r from-teal-500 to-sky-500 hover:from-teal-400 hover:to-sky-400"
                       : "bg-slate-700 hover:bg-slate-600"
                   )}
                 >
@@ -535,7 +535,7 @@ export function BottomBar() {
                     className={cn(
                       "flex items-center gap-2 px-4 py-2 rounded-xl border transition-all hover:shadow-sm",
                       step.priority === 'high'
-                        ? "bg-violet-50 border-violet-100 text-violet-700 hover:bg-violet-100"
+                        ? "bg-teal-50 border-teal-100 text-teal-700 hover:bg-teal-100"
                         : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
                     )}
                   >

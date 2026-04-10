@@ -67,7 +67,7 @@ const skillsData = [
 ]
 
 const timeDistribution = [
-  { name: 'CV & Ansökningar', value: 35, color: '#8b5cf6' },
+  { name: 'CV & Ansökningar', value: 35, color: '#14b8a6' },
   { name: 'Jobbsökning', value: 25, color: '#06b6d4' },
   { name: 'Lärande', value: 20, color: '#10b981' },
   { name: 'Nätverkande', value: 10, color: '#f59e0b' },
@@ -144,7 +144,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
           <select
             value={timeRange}
             onChange={(e) => setTimeRange(e.target.value as any)}
-            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-violet-500"
+            className="px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="week">Senaste veckan</option>
             <option value="month">Senaste månaden</option>
@@ -167,7 +167,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
             className={cn(
               'flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors',
               activeTab === tab.id
-                ? 'border-violet-600 text-violet-600'
+                ? 'border-teal-600 text-teal-600'
                 : 'border-transparent text-slate-700 hover:text-slate-700'
             )}
           >
@@ -212,8 +212,8 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                 <AreaChart data={activityData}>
                   <defs>
                     <linearGradient id="colorApps" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#14b8a6" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#14b8a6" stopOpacity={0}/>
                     </linearGradient>
                     <linearGradient id="colorInt" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#06b6d4" stopOpacity={0.3}/>
@@ -226,7 +226,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                   <Tooltip 
                     contentStyle={{ backgroundColor: '#fff', borderRadius: '8px', border: '1px solid #e2e8f0' }}
                   />
-                  <Area type="monotone" dataKey="applications" stroke="#8b5cf6" fillOpacity={1} fill="url(#colorApps)" name="Ansökningar" />
+                  <Area type="monotone" dataKey="applications" stroke="#14b8a6" fillOpacity={1} fill="url(#colorApps)" name="Ansökningar" />
                   <Area type="monotone" dataKey="interviews" stroke="#06b6d4" fillOpacity={1} fill="url(#colorInt)" name="Intervjuer" />
                 </AreaChart>
               </ResponsiveContainer>
@@ -264,33 +264,33 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
           </div>
 
           {/* AI Insights */}
-          <div className="bg-gradient-to-br from-violet-50 to-purple-50 p-6 rounded-xl border border-violet-100">
+          <div className="bg-gradient-to-br from-teal-50 to-sky-50 p-6 rounded-xl border border-teal-100">
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-violet-600" />
+              <Zap className="w-5 h-5 text-teal-600" />
               <h3 className="text-lg font-semibold text-slate-900">AI-genererade insikter</h3>
             </div>
             
             <div className="grid md:grid-cols-3 gap-4">
               {insights.map((insight) => (
-                <div key={insight.id} className="bg-white p-4 rounded-lg border border-violet-100">
+                <div key={insight.id} className="bg-white p-4 rounded-lg border border-teal-100">
                   <div className="flex items-start gap-3">
                     <div className={cn(
                       'w-10 h-10 rounded-lg flex items-center justify-center shrink-0',
                       insight.type === 'positive' && 'bg-emerald-100',
                       insight.type === 'warning' && 'bg-amber-100',
-                      insight.type === 'insight' && 'bg-violet-100'
+                      insight.type === 'insight' && 'bg-teal-100'
                     )}>
                       <insight.icon className={cn(
                         'w-5 h-5',
                         insight.type === 'positive' && 'text-emerald-600',
                         insight.type === 'warning' && 'text-amber-600',
-                        insight.type === 'insight' && 'text-violet-600'
+                        insight.type === 'insight' && 'text-teal-600'
                       )} />
                     </div>
                     <div>
                       <h4 className="font-medium text-slate-900 text-sm">{insight.title}</h4>
                       <p className="text-xs text-slate-600 mt-1">{insight.description}</p>
-                      <p className="text-xs font-medium text-violet-600 mt-2">{insight.action}</p>
+                      <p className="text-xs font-medium text-teal-600 mt-2">{insight.action}</p>
                     </div>
                   </div>
                 </div>
@@ -311,7 +311,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                   <PolarGrid />
                   <PolarAngleAxis dataKey="skill" tick={{ fontSize: 11 }} />
                   <PolarRadiusAxis angle={30} domain={[0, 100]} />
-                  <Radar name="Nuvarande" dataKey="current" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.3} />
+                  <Radar name="Nuvarande" dataKey="current" stroke="#14b8a6" fill="#14b8a6" fillOpacity={0.3} />
                   <Radar name="Mål" dataKey="target" stroke="#06b6d4" fill="#06b6d4" fillOpacity={0.1} />
                   <Tooltip />
                 </RadarChart>
@@ -329,7 +329,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                   <XAxis dataKey="energy" stroke="#94a3b8" fontSize={12} />
                   <YAxis stroke="#94a3b8" fontSize={12} />
                   <Tooltip />
-                  <Bar dataKey="applications" fill="#8b5cf6" name="Ansökningar" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="applications" fill="#14b8a6" name="Ansökningar" radius={[4, 4, 0, 0]} />
                   <Bar dataKey="success" fill="#10b981" name="Positiva resultat" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -348,7 +348,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
                     <span className="w-32 text-sm font-medium text-slate-700">{skill.skill}</span>
                     <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-violet-500 rounded-full"
+                        className="h-full bg-teal-500 rounded-full"
                         style={{ width: `${skill.current}%` }}
                       />
                     </div>
@@ -365,7 +365,7 @@ export function AnalyticsDashboard({ className }: AnalyticsDashboardProps) {
       {activeTab === 'predictions' && (
         <div className="space-y-6">
           {/* Main Prediction */}
-          <div className="bg-gradient-to-br from-violet-600 to-purple-700 p-8 rounded-2xl text-white">
+          <div className="bg-gradient-to-br from-teal-600 to-sky-700 p-8 rounded-2xl text-white">
             <div className="flex items-center gap-3 mb-6">
               <Brain className="w-8 h-8" />
               <h3 className="text-2xl font-bold">AI Jobbprediktion</h3>

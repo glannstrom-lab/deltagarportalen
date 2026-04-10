@@ -128,7 +128,7 @@ function MobileTopBar() {
             className="w-10 h-10 flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
             aria-label="Profil"
           >
-            <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
               <User className="w-4 h-4 text-white" />
             </div>
           </button>
@@ -195,7 +195,7 @@ function MobileTopBar() {
                 className={cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
                   isActive
-                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    ? 'bg-teal-100 text-teal-700 font-medium'
                     : 'text-slate-700 hover:bg-slate-100'
                 )}
               >
@@ -214,7 +214,7 @@ function MobileTopBar() {
             className={cn(
               'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors',
               location.pathname === '/settings'
-                ? 'bg-violet-100 text-violet-700 font-medium'
+                ? 'bg-teal-100 text-teal-700 font-medium'
                 : 'text-slate-700 hover:bg-slate-100'
             )}
           >
@@ -255,7 +255,7 @@ function MobileTopBar() {
         {/* Profil-info */}
         <div className="p-4">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-14 h-14 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+            <div className="w-14 h-14 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
               <User className="w-7 h-7 text-white" />
             </div>
             <div>

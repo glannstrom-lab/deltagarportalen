@@ -67,7 +67,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-violet-100 text-violet-700' : 'bg-slate-200 text-slate-600'
+                isActive ? 'bg-teal-100 text-teal-700' : 'bg-slate-200 text-slate-600'
               )}>
                 {tab.badge}
               </span>
@@ -92,7 +92,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               isActive
-                ? 'bg-violet-600 text-white shadow-lg shadow-violet-500/25'
+                ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/25'
                 : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 hover:border-slate-300'
             )}
           >
@@ -101,7 +101,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-white/20 text-white' : 'bg-violet-100 text-violet-700'
+                isActive ? 'bg-white/20 text-white' : 'bg-teal-100 text-teal-700'
               )}>
                 {tab.badge}
               </span>
@@ -135,7 +135,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-white/20 text-white' : 'bg-violet-100 text-violet-700'
+                isActive ? 'bg-white/20 text-white' : 'bg-teal-100 text-teal-700'
               )}>
                 {tab.badge}
               </span>
@@ -159,20 +159,20 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             to={tab.path}
             className={cn(
               'group relative flex items-center gap-2 px-1 py-3 text-sm font-medium transition-colors',
-              isActive ? 'text-violet-600' : 'text-slate-700 hover:text-slate-900'
+              isActive ? 'text-teal-600' : 'text-slate-700 hover:text-slate-900'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-violet-500' : 'text-slate-600 group-hover:text-slate-600')} />}
+            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-teal-500' : 'text-slate-600 group-hover:text-slate-600')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
-              <span className="px-1.5 py-0.5 text-xs rounded-full font-bold bg-violet-100 text-violet-700">
+              <span className="px-1.5 py-0.5 text-xs rounded-full font-bold bg-teal-100 text-teal-700">
                 {tab.badge}
               </span>
             )}
             {/* Underline indicator */}
             <span className={cn(
               'absolute bottom-0 left-0 right-0 h-0.5 rounded-full transition-all duration-200',
-              isActive ? 'bg-violet-600' : 'bg-transparent group-hover:bg-slate-200'
+              isActive ? 'bg-teal-500' : 'bg-transparent group-hover:bg-slate-200'
             )} />
           </Link>
         )
@@ -201,7 +201,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
               'text-sm font-medium transition-all duration-200 ease-out whitespace-nowrap',
               'min-h-[44px]',
               isActive
-                ? 'bg-gradient-to-r from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
+                ? 'bg-gradient-to-r from-teal-500 to-sky-500 text-white shadow-lg shadow-teal-500/30'
                 : 'text-slate-600 hover:bg-white/90 hover:text-slate-900 hover:scale-[1.02]'
             )}
           >
@@ -210,7 +210,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-white/25 text-white' : 'bg-violet-100 text-violet-700'
+                isActive ? 'bg-white/25 text-white' : 'bg-teal-100 text-teal-700'
               )}>
                 {tab.badge}
               </span>
@@ -248,7 +248,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
         )}
       >
         <div className="flex items-center gap-3">
-          {activeTab?.icon && <activeTab.icon className="w-5 h-5 text-violet-600" />}
+          {activeTab?.icon && <activeTab.icon className="w-5 h-5 text-teal-600" />}
           <span className="font-semibold">{activeTab?.label || 'Välj sida'}</span>
         </div>
         <ChevronDown className={cn(
@@ -272,7 +272,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                   'flex items-center justify-between px-4 py-3.5 transition-colors',
                   'min-h-[52px]', // Touch-friendly minimum height
                   isActive
-                    ? 'bg-violet-50 text-violet-700'
+                    ? 'bg-teal-50 text-teal-700'
                     : 'text-slate-700 hover:bg-slate-50',
                   index !== tabs.length - 1 && 'border-b border-slate-100'
                 )}
@@ -281,15 +281,15 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                   {Icon && (
                     <div className={cn(
                       'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
-                      isActive ? 'bg-violet-100' : 'bg-slate-100'
+                      isActive ? 'bg-teal-100' : 'bg-slate-100'
                     )}>
-                      <Icon className={cn('w-4 h-4', isActive ? 'text-violet-600' : 'text-slate-700')} />
+                      <Icon className={cn('w-4 h-4', isActive ? 'text-teal-600' : 'text-slate-700')} />
                     </div>
                   )}
                   <span className="font-medium">{tab.label}</span>
                 </div>
                 {tab.badge !== undefined && tab.badge > 0 && (
-                  <span className="px-2 py-0.5 text-xs rounded-full font-bold bg-violet-100 text-violet-700">
+                  <span className="px-2 py-0.5 text-xs rounded-full font-bold bg-teal-100 text-teal-700">
                     {tab.badge}
                   </span>
                 )}

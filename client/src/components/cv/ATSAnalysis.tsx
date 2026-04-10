@@ -286,7 +286,7 @@ export function ATSAnalysis() {
       {loadingCV ? (
         <div className="bg-white rounded-2xl border border-slate-200 p-6">
           <div className="flex items-center justify-center gap-3 py-8">
-            <Loader2 className="w-6 h-6 animate-spin text-indigo-600" />
+            <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
             <span className="text-slate-600">Laddar CV-data...</span>
           </div>
         </div>
@@ -362,7 +362,7 @@ export function ATSAnalysis() {
               <button
                 onClick={runAnalysis}
                 disabled={isAnalyzing}
-                className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors disabled:opacity-50"
               >
                 <RefreshCw className={cn('w-4 h-4', isAnalyzing && 'animate-spin')} />
                 {isAnalyzing ? 'Analyserar...' : 'Kör ny analys'}
@@ -445,17 +445,17 @@ export function ATSAnalysis() {
                         <div className="mt-3">
                           <button
                             onClick={() => setShowDetails(showDetails === check.id ? null : check.id)}
-                            className="text-sm text-indigo-600 hover:text-indigo-700 font-medium flex items-center gap-1"
+                            className="text-sm text-teal-600 hover:text-teal-700 font-medium flex items-center gap-1"
                           >
                             {showDetails === check.id ? 'Dölj tips' : 'Visa tips'}
                             <ArrowRight className={cn('w-4 h-4 transition-transform', showDetails === check.id && 'rotate-90')} />
                           </button>
                           
                           {showDetails === check.id && (
-                            <div className="mt-3 p-4 bg-indigo-50 rounded-xl">
+                            <div className="mt-3 p-4 bg-teal-50 rounded-xl">
                               <ul className="space-y-2">
                                 {check.tips.map((tip, i) => (
-                                  <li key={i} className="flex items-start gap-2 text-sm text-indigo-800">
+                                  <li key={i} className="flex items-start gap-2 text-sm text-teal-800">
                                     <Sparkles className="w-4 h-4 mt-0.5 flex-shrink-0" />
                                     {tip}
                                   </li>
@@ -497,14 +497,14 @@ export function ATSAnalysis() {
       </div>
 
       {/* CTA */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 rounded-2xl">
         <div>
           <h3 className="font-semibold text-slate-800">Vill du förbättra ditt CV?</h3>
           <p className="text-slate-600 text-sm">Gå tillbaka till CV-byggaren och gör justeringar</p>
         </div>
         <a
           href="/cv"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
+          className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
         >
           <Award className="w-5 h-5" />
           Förbättra mitt CV

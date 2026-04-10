@@ -109,7 +109,7 @@ export function SmartQuickWinButton() {
         energyLevel: 'low',
         icon: <Moon size={18} />,
         link: '/diary',
-        color: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+        color: 'bg-sky-100 text-sky-700 border-sky-200',
         context: '🌙 Kvällsreflektion',
         priority: 95,
         whyItMatters: 'Att fira små segrar bygger självförtroende',
@@ -164,7 +164,7 @@ export function SmartQuickWinButton() {
         energyLevel: 'medium',
         icon: <Target size={18} />,
         link: '/cv',
-        color: 'bg-violet-100 text-violet-700 border-violet-200',
+        color: 'bg-teal-100 text-teal-700 border-teal-200',
         context: `📈 ${data.cv.progress}% klart`,
         priority: 90,
         whyItMatters: 'Att slutföra påbörjade uppgifter ger en skön känsla',
@@ -269,8 +269,8 @@ export function SmartQuickWinButton() {
         whileTap={{ scale: 0.95 }}
         className={cn(
           "fixed bottom-6 right-6 z-40 flex items-center gap-2 px-4 py-3 rounded-full shadow-lg",
-          "bg-gradient-to-r from-violet-500 to-indigo-600 text-white font-medium",
-          "hover:shadow-xl hover:shadow-violet-500/25 transition-shadow"
+          "bg-gradient-to-r from-teal-500 to-sky-600 text-white font-medium",
+          "hover:shadow-xl hover:shadow-teal-500/25 transition-shadow"
         )}
       >
         <Sparkles size={18} />

@@ -80,9 +80,9 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
   const variantStyles = {
     default: {
       icon: Info,
-      iconBg: 'bg-indigo-100',
-      iconColor: 'text-indigo-600',
-      confirmBtn: 'bg-indigo-600 hover:bg-indigo-700 text-white',
+      iconBg: 'bg-sky-100',
+      iconColor: 'text-sky-600',
+      confirmBtn: 'bg-sky-600 hover:bg-sky-600 text-white',
     },
     danger: {
       icon: AlertTriangle,

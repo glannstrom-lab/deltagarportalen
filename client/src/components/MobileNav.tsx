@@ -42,7 +42,7 @@ export function MobileProfileButton({ onClick }: { onClick: () => void }) {
       className="w-11 h-11 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-slate-100 transition-colors"
       aria-label="Öppna profil"
     >
-      <div className="w-8 h-8 bg-gradient-to-br from-violet-500 to-purple-600 rounded-full flex items-center justify-center">
+      <div className="w-8 h-8 bg-gradient-to-br from-teal-500 to-sky-500 rounded-full flex items-center justify-center">
         <User className="w-4 h-4 text-white" />
       </div>
     </button>
@@ -135,7 +135,7 @@ export function SideMenu({
                       className={({ isActive }) => cn(
                         'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                         isActive
-                          ? 'bg-violet-100 text-violet-700 font-medium'
+                          ? 'bg-teal-100 text-teal-700 font-medium'
                           : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
                       )}
                     >
@@ -225,7 +225,7 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    ? 'bg-teal-100 text-teal-700 font-medium'
                     : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
                 )}
               >
@@ -239,7 +239,7 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    ? 'bg-teal-100 text-teal-700 font-medium'
                     : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
                 )}
               >
@@ -253,7 +253,7 @@ export function SideMenu({
                 className={({ isActive }) => cn(
                   'flex items-center gap-3 px-4 py-3 rounded-xl transition-colors min-h-[44px]',
                   isActive
-                    ? 'bg-violet-100 text-violet-700 font-medium'
+                    ? 'bg-teal-100 text-teal-700 font-medium'
                     : 'text-slate-700 hover:bg-slate-100 active:bg-slate-200'
                 )}
               >

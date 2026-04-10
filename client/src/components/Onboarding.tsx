@@ -56,7 +56,7 @@ const STEPS: StepInfo[] = [
     title: 'Du är redo!',
     description: 'Bra start! Här är ditt första steg.',
     estimatedMinutes: 1,
-    icon: <Award className="w-10 h-10 text-purple-600" />
+    icon: <Award className="w-10 h-10 text-sky-600" />
   }
 ]
 
@@ -385,12 +385,12 @@ export default function Onboarding() {
                   onClick={() => setSelectedPath('interest')}
                   className={`w-full p-4 rounded-xl border-2 transition-all text-left flex items-center gap-4 ${
                     selectedPath === 'interest'
-                      ? 'border-purple-500 bg-purple-50 shadow-md'
-                      : 'border-slate-200 hover:border-purple-300 hover:bg-slate-50'
+                      ? 'border-sky-500 bg-sky-50 shadow-md'
+                      : 'border-slate-200 hover:border-sky-300 hover:bg-slate-50'
                   }`}
                 >
                   <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    selectedPath === 'interest' ? 'bg-purple-500 text-white' : 'bg-purple-100 text-purple-600'
+                    selectedPath === 'interest' ? 'bg-sky-500 text-white' : 'bg-sky-100 text-sky-600'
                   }`}>
                     <Compass className="w-6 h-6" />
                   </div>
@@ -398,7 +398,7 @@ export default function Onboarding() {
                     <div className="font-semibold text-slate-800">Jag vet inte vad jag vill jobba med</div>
                     <div className="text-sm text-slate-700">Gör intresseguiden för att upptäcka yrken som passar dig</div>
                   </div>
-                  {selectedPath === 'interest' && <CheckCircle className="w-5 h-5 text-purple-500" />}
+                  {selectedPath === 'interest' && <CheckCircle className="w-5 h-5 text-sky-500" />}
                 </button>
 
                 {/* Path 2: CV Builder */}

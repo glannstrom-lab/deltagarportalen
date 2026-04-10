@@ -73,8 +73,8 @@ export function CardHeader({
     )}>
       <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
         {icon && (
-          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-violet-50 flex items-center justify-center">
-            <span className="text-violet-600 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">{icon}</span>
+          <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-teal-50 flex items-center justify-center">
+            <span className="text-teal-600 [&>svg]:w-4 [&>svg]:h-4 sm:[&>svg]:w-5 sm:[&>svg]:h-5">{icon}</span>
           </div>
         )}
         <div className="flex-1 min-w-0">
@@ -186,11 +186,11 @@ export function StatCard({
 }: StatCardProps) {
   const colorClasses = {
     default: 'bg-stone-50 text-stone-600',
-    violet: 'bg-violet-50 text-violet-600',
+    violet: 'bg-teal-50 text-teal-600',
     green: 'bg-emerald-50 text-emerald-600',
     amber: 'bg-amber-50 text-amber-600',
     blue: 'bg-blue-50 text-blue-600',
-    purple: 'bg-purple-50 text-purple-600',
+    purple: 'bg-sky-50 text-sky-600',
   }
 
   return (
@@ -320,8 +320,8 @@ export function ActionCard({
         animations.press,
         animations.lift,
         isSelected
-          ? 'border-violet-500 ring-2 ring-violet-500 ring-offset-2'
-          : 'border-stone-200 hover:border-violet-300 hover:shadow-md',
+          ? 'border-teal-500 ring-2 ring-teal-500 ring-offset-2'
+          : 'border-stone-200 hover:border-teal-300 hover:shadow-md',
         className
       )}
       {...props}
@@ -331,7 +331,7 @@ export function ActionCard({
           <div className={cn(
             'w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0',
             '[&>svg]:w-5 [&>svg]:h-5 sm:[&>svg]:w-6 sm:[&>svg]:h-6',
-            isSelected ? 'bg-violet-100 text-violet-600' : 'bg-stone-100 text-stone-600'
+            isSelected ? 'bg-teal-100 text-teal-600' : 'bg-stone-100 text-stone-600'
           )}>
             {icon}
           </div>
@@ -340,7 +340,7 @@ export function ActionCard({
           <div className="flex items-center gap-2 flex-wrap">
             <h3 className="text-sm sm:text-base font-semibold text-stone-800">{title}</h3>
             {badge && (
-              <span className="px-1.5 sm:px-2 py-0.5 bg-violet-100 text-violet-700 text-[10px] sm:text-xs font-medium rounded-full">
+              <span className="px-1.5 sm:px-2 py-0.5 bg-teal-100 text-teal-700 text-[10px] sm:text-xs font-medium rounded-full">
                 {badge}
               </span>
             )}

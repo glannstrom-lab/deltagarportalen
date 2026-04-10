@@ -37,22 +37,22 @@ export function AILoadingIndicator({
     <div className="flex flex-col items-center justify-center py-8 px-4">
       <div className="flex items-center gap-1.5 mb-3">
         <motion.div
-          className="w-2.5 h-2.5 rounded-full bg-violet-500"
+          className="w-2.5 h-2.5 rounded-full bg-teal-500"
           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0 }}
         />
         <motion.div
-          className="w-2.5 h-2.5 rounded-full bg-violet-500"
+          className="w-2.5 h-2.5 rounded-full bg-teal-500"
           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.2 }}
         />
         <motion.div
-          className="w-2.5 h-2.5 rounded-full bg-violet-500"
+          className="w-2.5 h-2.5 rounded-full bg-teal-500"
           animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
           transition={{ duration: 1.2, repeat: Infinity, delay: 0.4 }}
         />
       </div>
-      <p className="text-sm font-medium text-violet-700 dark:text-violet-300">{text}</p>
+      <p className="text-sm font-medium text-teal-700 dark:text-teal-300">{text}</p>
       {subtext && (
         <p className="text-xs text-slate-700 dark:text-slate-600 mt-1">{subtext}</p>
       )}
@@ -93,12 +93,12 @@ export function CollapsibleSection({
         )}
       >
         <div className="flex items-center gap-2">
-          {icon && <span className="text-violet-500">{icon}</span>}
+          {icon && <span className="text-teal-500">{icon}</span>}
           <span className="font-medium text-slate-800 dark:text-slate-200 text-sm sm:text-base">
             {title}
           </span>
           {badge !== undefined && (
-            <span className="px-2 py-0.5 bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 text-xs rounded-full">
+            <span className="px-2 py-0.5 bg-teal-100 dark:bg-teal-900/50 text-teal-700 dark:text-teal-300 text-xs rounded-full">
               {badge}
             </span>
           )}
@@ -278,7 +278,7 @@ export function AIResultCard({
       {/* Gradient Header */}
       <div
         className={cn(
-          'bg-gradient-to-r from-violet-600 to-indigo-600',
+          'bg-gradient-to-r from-teal-600 to-sky-600',
           'px-4 sm:px-6',
           variant === 'compact' ? 'py-3' : 'py-4'
         )}
@@ -291,7 +291,7 @@ export function AIResultCard({
             <div>
               <h3 className="font-semibold text-white text-sm sm:text-base">{title}</h3>
               {subtitle && (
-                <p className="text-violet-100 text-xs sm:text-sm">{subtitle}</p>
+                <p className="text-teal-100 text-xs sm:text-sm">{subtitle}</p>
               )}
             </div>
           </div>
@@ -330,7 +330,7 @@ export function AIListItem({ children, icon, className }: AIListItemProps) {
   return (
     <li className={cn('flex items-start gap-2', className)}>
       {icon || (
-        <span className="w-1.5 h-1.5 rounded-full bg-violet-400 mt-2 flex-shrink-0" />
+        <span className="w-1.5 h-1.5 rounded-full bg-teal-400 mt-2 flex-shrink-0" />
       )}
       <span className="text-sm text-slate-700 dark:text-slate-300">{children}</span>
     </li>

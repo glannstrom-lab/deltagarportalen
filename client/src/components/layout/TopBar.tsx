@@ -141,14 +141,14 @@ export function TopBar() {
         {/* Mitten - Global sök */}
         <form onSubmit={handleSearch} className="flex-1 max-w-md">
           <div className="relative group">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-violet-500 transition-colors" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-stone-600 group-focus-within:text-teal-500 transition-colors" size={18} />
             <input
               type="text"
               placeholder={getSearchPlaceholder()}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 bg-stone-100/80 dark:bg-stone-800/80 rounded-2xl border border-transparent
-                         focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:bg-white dark:focus:bg-stone-800 focus:border-violet-200 dark:focus:border-violet-700
+                         focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:bg-white dark:focus:bg-stone-800 focus:border-teal-200 dark:focus:border-teal-700
                          text-sm transition-all placeholder:text-stone-600 dark:text-stone-100"
             />
           </div>
@@ -198,10 +198,10 @@ export function TopBar() {
               onClick={() => setShowUserMenu(!showUserMenu)}
               className={cn(
                 "flex items-center gap-1.5 p-1 pr-2 rounded-lg transition-colors",
-                showUserMenu ? "bg-violet-100 dark:bg-violet-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
+                showUserMenu ? "bg-teal-100 dark:bg-teal-900/30" : "hover:bg-stone-100 dark:hover:bg-stone-800"
               )}
             >
-              <div className="w-7 h-7 bg-gradient-to-br from-violet-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-medium text-sm">
+              <div className="w-7 h-7 bg-gradient-to-br from-teal-500 to-sky-500 rounded-lg flex items-center justify-center text-white font-medium text-sm">
                 {profile?.first_name?.[0] || user?.email?.[0]?.toUpperCase() || '?'}
               </div>
               <ChevronDown size={14} className="hidden sm:block text-stone-600 dark:text-stone-500" />

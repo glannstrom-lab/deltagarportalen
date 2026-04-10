@@ -317,8 +317,8 @@ export const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
           />
           <div className={cn(
             'w-5 h-5 rounded border-2 border-slate-300',
-            'peer-checked:bg-indigo-600 peer-checked:border-indigo-600',
-            'peer-focus:ring-2 peer-focus:ring-indigo-500/20',
+            'peer-checked:bg-sky-600 peer-checked:border-sky-600',
+            'peer-focus:ring-2 peer-focus:ring-sky-500/20',
             'transition-all duration-200',
             'flex items-center justify-center'
           )}>
@@ -381,8 +381,8 @@ export const Toggle = forwardRef<HTMLInputElement, ToggleProps>(
           />
           <div className={cn(
             'w-11 h-6 bg-slate-200 rounded-full',
-            'peer-checked:bg-indigo-600',
-            'peer-focus:ring-2 peer-focus:ring-indigo-500/20',
+            'peer-checked:bg-sky-600',
+            'peer-focus:ring-2 peer-focus:ring-sky-500/20',
             'transition-colors duration-200',
             'after:content-[""] after:absolute after:top-0.5 after:left-0.5',
             'after:bg-white after:rounded-full after:w-5 after:h-5',
