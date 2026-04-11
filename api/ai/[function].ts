@@ -315,7 +315,7 @@ async function callOpenRouter(messages: any[], options: any = {}): Promise<OpenR
     headers: {
       'Authorization': `Bearer ${openRouterKey}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': process.env.SITE_URL || 'https://deltagarportalen.se',
+      'HTTP-Referer': process.env.SITE_URL || 'https://jobin.se',
       'X-Title': 'Deltagarportalen'
     },
     body: JSON.stringify({
@@ -610,6 +610,8 @@ Håll svaren korta (max 3-4 meningar) om inte användaren ber om mer detaljer.`,
 
 // Allowed origins for CORS
 const ALLOWED_ORIGINS = [
+  'https://jobin.se',
+  'https://www.jobin.se',
   'https://deltagarportalen.se',
   'https://www.deltagarportalen.se',
   'https://deltagarportal.vercel.app',

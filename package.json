@@ -28,6 +28,8 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
-    "zod": "^4.3.6"
+    "@supabase/supabase-js": "^2.38.4",
+    "@vercel/node": "^3.0.0",
+    "zod": "^3.22.4"
   }
 }
