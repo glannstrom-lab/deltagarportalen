@@ -205,10 +205,9 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    // Extract function name from URL path: /api/ai/personligt-brev -> personligt-brev
-    const urlPath = req.url || '';
-    const pathMatch = urlPath.match(/\/api\/ai\/([^?/]+)/);
-    const fn = pathMatch ? pathMatch[1] : (req.query.function || req.body.function);
+    // Extract function name from Vercel catch-all route: req.query.path = ['personligt-brev']
+    const pathSegments = req.query.path;
+    const fn = Array.isArray(pathSegments) ? pathSegments[0] : (req.query.function || req.body.function);
     const data = req.body.data || req.body;
 
     if (!fn) {
