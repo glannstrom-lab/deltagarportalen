@@ -24,10 +24,13 @@ const functionSchemas: Record<string, z.ZodSchema> = {
     jobTitle: z.string().max(200).optional(),
     jobDescription: z.string().max(50000).optional(),
     tone: z.enum(['professionell', 'entusiastisk', 'formell', 'professional', 'enthusiastic', 'formal']).optional(),
+    ton: z.enum(['professionell', 'entusiastisk', 'formell']).optional(),
     extraContext: z.string().max(2000).optional(),
     jobbAnnons: z.string().max(50000).optional(),
     extraKeywords: z.string().max(1000).optional(),
-    motivering: z.string().max(2000).optional()
+    motivering: z.string().max(2000).optional(),
+    erfarenhet: z.string().max(5000).optional(),
+    namn: z.string().max(200).optional()
   }),
   'intervju-forberedelser': z.object({
     jobbTitel: z.string().max(200).optional(),
@@ -389,11 +392,14 @@ Texten ska:
       };
 
     case 'personligt-brev':
-      const ton = data?.ton || 'professionell';
+      const ton = data?.ton || data?.tone || 'professionell';
       const tonInstructions: Record<string, string> = {
         professionell: ' professionell och balanserad',
+        professional: ' professionell och balanserad',
         entusiastisk: ' entusiastisk och energisk',
-        formell: ' formell och traditionell'
+        enthusiastic: ' entusiastisk och energisk',
+        formell: ' formell och traditionell',
+        formal: ' formell och traditionell'
       };
       
       // Build CV context if available - strip PII for privacy
@@ -438,6 +444,7 @@ ${annonsLength > 0 ? `JOBBANNONS (${annonsLength} tecken - LÄS HELA!):
 ${jobbAnnonsText.substring(0, 3000)}` : 'OBS: Ingen jobbannons tillgänglig - be om mer information'}
 
 MIN CV-INFORMATION:${cvContext || '\n(Ingen CV-data tillgänglig)'}
+${data?.erfarenhet ? `\nTIDIGARE ERFARENHET/SAMMANFATTNING:\n${stripPII(data.erfarenhet)}\n` : ''}
 ${data?.extraKeywords ? `\nEXTRA NYCKELORD/INTRESSEN:\n${data.extraKeywords}\n` : ''}
 ${data?.motivering ? `\nMIN MOTIVERING:\n${data.motivering}\n` : ''}
 
