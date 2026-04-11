@@ -102,7 +102,7 @@ function buildPrompt(fn, data) {
     case 'kompetensgap':
       return {
         systemPrompt: 'Du är karriärcoach specialiserad på kompetensanalys. Analysera gap mellan nuvarande och önskade kompetenser på svenska.',
-        userPrompt: `Analysera kompetensgap:\n\nNuvarande CV:\n${stripPII(data?.cvText || '')}\n\nDrömjobb: ${data?.dromjobb}\n\nGe:\n1. MATCHANDE KOMPETENSER - vad passar redan?\n2. KOMPETENSGAP - vad saknas?\n3. UTBILDNINGSFÖRSLAG - rekommenderade kurser/utbildningar\n4. PRAKTISKA STEG - hur kan gapet stängas?`,
+        userPrompt: `Analysera kompetensgap:\n\nNuvarande CV:\n${stripPII(data?.cvText || '')}\n\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}\n\nGe:\n1. MATCHANDE KOMPETENSER - vad passar redan?\n2. KOMPETENSGAP - vad saknas?\n3. UTBILDNINGSFÖRSLAG - rekommenderade kurser/utbildningar\n4. PRAKTISKA STEG - hur kan gapet stängas?`,
         maxTokens: 1500
       };
 
