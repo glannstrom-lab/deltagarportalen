@@ -60,10 +60,13 @@ const PROMPTS = {
     parseJson: true
   }),
   'kompetensgap': (data) => ({
-    system: 'Du är karriärcoach. Analysera kompetenser på svenska.',
-    user: `Kompetensgap:\nCV:\n${data?.cvText || ''}\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}\n\nGe: 1. MATCHANDE 2. GAP 3. UTBILDNING 4. STEG`,
+    system: `Du är karriärcoach. Svara ENDAST med JSON i detta format:
+{"matchingScore":75,"skills":[{"name":"Kompetens","current":60,"required":80,"category":"teknisk","level":"intermediate","resources":["Resurs 1"]}],"gapSkills":["Saknad kompetens 1"],"recommendations":["Rekommendation 1"],"totalGaps":3,"timelineWeeks":8}
+Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, expert.`,
+    user: `Analysera kompetensgap:\n\nCV:\n${data?.cvText || ''}\n\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}\n\nSvara ENDAST med JSON.`,
     maxTokens: 1500,
-    responseKey: 'analys'
+    responseKey: 'analys',
+    parseJson: true
   }),
   'linkedin-optimering': (data) => {
     const typ = data?.typ || 'headline';

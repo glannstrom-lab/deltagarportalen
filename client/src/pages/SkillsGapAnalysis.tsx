@@ -143,13 +143,24 @@ export default function SkillsGapAnalysis() {
     setIsLoading(true)
     try {
       console.log('[Kompetensanalys] Anropar AI med:', { cvText: profileSummary.substring(0, 100), dromjobb })
-      const data = await callAI<{ analys: string }>('kompetensgap', { cvText: profileSummary, dromjobb })
+      const data = await callAI<{ analys: AnalysisResult }>('kompetensgap', { cvText: profileSummary, dromjobb })
       console.log('[Kompetensanalys] Svar från AI:', data)
-      const analys = (data as { analys?: string }).analys || ''
-      console.log('[Kompetensanalys] Extraherad analys:', analys.substring(0, 200))
-      const parsedResult = parseAnalysis(analys)
-      setAnalys(parsedResult)
-      sparaAnalys(parsedResult)
+      const analys = (data as { analys?: AnalysisResult }).analys
+      if (analys && typeof analys === 'object') {
+        // AI returnerade JSON direkt
+        const result: AnalysisResult = {
+          matchingScore: analys.matchingScore || 65,
+          totalGaps: analys.totalGaps || analys.gapSkills?.length || 3,
+          timelineWeeks: analys.timelineWeeks || 8,
+          skills: analys.skills || [],
+          gapSkills: analys.gapSkills || [],
+          recommendations: analys.recommendations || []
+        }
+        setAnalys(result)
+        sparaAnalys(result)
+      } else {
+        throw new Error('AI returnerade inte rätt format')
+      }
     } catch (error) {
       console.error('[Kompetensanalys] Fel:', error)
       const fallbackResult: AnalysisResult = {
