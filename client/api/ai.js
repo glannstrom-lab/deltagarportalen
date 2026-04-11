@@ -63,7 +63,7 @@ const PROMPTS = {
     system: 'Du är karriärcoach. Analysera kompetenser på svenska.',
     user: `Kompetensgap:\nCV:\n${data?.cvText || ''}\nDrömjobb: ${data?.dromjobb || data?.drömjobb || 'Ej angivet'}\n\nGe: 1. MATCHANDE 2. GAP 3. UTBILDNING 4. STEG`,
     maxTokens: 1500,
-    responseKey: 'result'
+    responseKey: 'analys'
   }),
   'linkedin-optimering': (data) => {
     const typ = data?.typ || 'headline';
