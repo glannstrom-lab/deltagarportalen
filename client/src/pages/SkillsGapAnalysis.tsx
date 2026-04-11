@@ -142,9 +142,7 @@ export default function SkillsGapAnalysis() {
 
     setIsLoading(true)
     try {
-      console.log('[Kompetensanalys] Anropar AI med:', { cvText: profileSummary.substring(0, 100), dromjobb })
       const data = await callAI<{ analys: AnalysisResult }>('kompetensgap', { cvText: profileSummary, dromjobb })
-      console.log('[Kompetensanalys] Svar från AI:', data)
       const analys = (data as { analys?: AnalysisResult }).analys
       if (analys && typeof analys === 'object') {
         // AI returnerade JSON direkt
@@ -162,7 +160,6 @@ export default function SkillsGapAnalysis() {
         throw new Error('AI returnerade inte rätt format')
       }
     } catch (error) {
-      console.error('[Kompetensanalys] Fel:', error)
       const fallbackResult: AnalysisResult = {
         matchingScore: 65,
         totalGaps: 4,

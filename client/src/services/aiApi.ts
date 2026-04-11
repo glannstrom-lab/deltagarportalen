@@ -47,20 +47,16 @@ export async function callAI<T = unknown>(
   })
 
   if (!response.ok) {
-    const errorText = await response.text()
-    console.error('[aiApi] API-fel:', response.status, errorText)
     if (response.status === 401) {
       throw new Error('Din session har gått ut. Vänligen logga in igen.')
     }
     if (response.status === 429) {
       throw new Error('För många förfrågningar. Försök igen om en stund.')
     }
-    throw new Error(`AI-fel (${response.status}): ${errorText}`)
+    throw new Error('Ett fel uppstod vid kommunikation med AI-tjänsten.')
   }
 
-  const result = await response.json()
-  console.log('[aiApi] Svar:', functionName, result)
-  return result
+  return response.json()
 }
 
 /**
