@@ -1,4 +1,9 @@
 {
   "version": 2,
-  "rootDirectory": "client"
+  "rootDirectory": "client",
+  "rewrites": [
+    { "source": "/api/ai/:function", "destination": "/api/ai/[function]" },
+    { "source": "/api/:path*", "destination": "/api/:path*" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
