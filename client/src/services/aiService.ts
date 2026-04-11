@@ -8,6 +8,7 @@
  */
 
 import { withRetry } from './retryService';
+import { supabase } from '@/lib/supabase';
 
 const API_BASE = '/api';
 
@@ -122,11 +123,20 @@ async function callAI(functionName: string, data: Record<string, unknown>): Prom
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 30000); // 30s timeout för AI
 
+      // Get auth token for API call
+      const { data: { session } } = await supabase.auth.getSession();
+      const accessToken = session?.access_token;
+
+      if (!accessToken) {
+        throw new Error('Inte inloggad. Logga in för att använda AI-funktioner.');
+      }
+
       try {
         const response = await fetch(`${API_BASE}/ai/${functionName}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${accessToken}`,
           },
           body: JSON.stringify({ function: functionName, data }),
           signal: controller.signal,
