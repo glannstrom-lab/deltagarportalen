@@ -205,7 +205,10 @@ module.exports = async function handler(req, res) {
   }
 
   try {
-    const fn = req.query.function || req.body.function;
+    // Extract function name from URL path: /api/ai/personligt-brev -> personligt-brev
+    const urlPath = req.url || '';
+    const pathMatch = urlPath.match(/\/api\/ai\/([^?/]+)/);
+    const fn = pathMatch ? pathMatch[1] : (req.query.function || req.body.function);
     const data = req.body.data || req.body;
 
     if (!fn) {

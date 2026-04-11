@@ -2,8 +2,7 @@
   "version": 2,
   "rootDirectory": "client",
   "rewrites": [
-    { "source": "/api/ai/:function", "destination": "/api/ai/[function]" },
-    { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/api/ai/:path*", "destination": "/api/ai" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
