@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp } from '@/components/ui/icons'
+import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'
@@ -71,7 +71,16 @@ export default function InterviewSimulator() {
   const [timerSeconds, setTimerSeconds] = useState(0)
   const [isTimerRunning, setIsTimerRunning] = useState(false)
   const [expandedFeedback, setExpandedFeedback] = useState<number | null>(null)
+  const [isRecording, setIsRecording] = useState(false)
+  const [speechSupported, setSpeechSupported] = useState(false)
   const { trackInterviewCompleted } = useAchievementTracker()
+
+  // Check for speech recognition support
+  useEffect(() => {
+    const SpeechRecognition = (window as Window & { SpeechRecognition?: unknown; webkitSpeechRecognition?: unknown }).SpeechRecognition ||
+                              (window as Window & { webkitSpeechRecognition?: unknown }).webkitSpeechRecognition
+    setSpeechSupported(!!SpeechRecognition)
+  }, [])
 
   // Timer effect
   useEffect(() => {
@@ -85,6 +94,56 @@ export default function InterviewSimulator() {
       if (interval) clearInterval(interval)
     }
   }, [isTimerRunning])
+
+  // Speech recognition
+  const toggleRecording = () => {
+    const SpeechRecognition = (window as Window & { SpeechRecognition?: new () => SpeechRecognition; webkitSpeechRecognition?: new () => SpeechRecognition }).SpeechRecognition ||
+                              (window as Window & { webkitSpeechRecognition?: new () => SpeechRecognition }).webkitSpeechRecognition
+
+    if (!SpeechRecognition) return
+
+    if (isRecording) {
+      setIsRecording(false)
+      return
+    }
+
+    const recognition = new SpeechRecognition()
+    recognition.lang = 'sv-SE'
+    recognition.continuous = true
+    recognition.interimResults = true
+
+    recognition.onresult = (event: SpeechRecognitionEvent) => {
+      let transcript = ''
+      for (let i = 0; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript
+      }
+      setAnvandarSvar(transcript)
+    }
+
+    recognition.onerror = () => {
+      setIsRecording(false)
+    }
+
+    recognition.onend = () => {
+      setIsRecording(false)
+    }
+
+    recognition.start()
+    setIsRecording(true)
+
+    // Store recognition instance to stop it later
+    ;(window as Window & { currentRecognition?: SpeechRecognition }).currentRecognition = recognition
+  }
+
+  // Stop recording when toggled off
+  useEffect(() => {
+    if (!isRecording) {
+      const recognition = (window as Window & { currentRecognition?: SpeechRecognition }).currentRecognition
+      if (recognition) {
+        recognition.stop()
+      }
+    }
+  }, [isRecording])
 
   const startaIntervju = async () => {
     if (!roll.trim()) return
@@ -443,13 +502,39 @@ TIPS FÖR FÖRBÄTTRING:
 
           {/* Answer Textarea */}
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-700 dark:text-stone-300">Ditt svar</label>
+            <div className="flex items-center justify-between">
+              <label className="text-sm font-medium text-slate-700 dark:text-stone-300">Ditt svar</label>
+              {speechSupported && (
+                <button
+                  onClick={toggleRecording}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+                    isRecording
+                      ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 animate-pulse'
+                      : 'bg-stone-100 text-stone-700 dark:bg-stone-700 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-600'
+                  }`}
+                >
+                  {isRecording ? (
+                    <>
+                      <MicOff className="w-4 h-4" />
+                      Stoppa inspelning
+                    </>
+                  ) : (
+                    <>
+                      <Mic className="w-4 h-4" />
+                      Spela in svar
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
             <textarea
               value={anvandarSvar}
               onChange={(e) => setAnvandarSvar(e.target.value)}
-              placeholder="Skriv ditt svar här..."
+              placeholder={isRecording ? "Tala nu... ditt svar visas här" : "Skriv ditt svar här eller använd mikrofonen..."}
               rows={5}
-              className="w-full px-4 py-3 rounded-lg border border-stone-200 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100"
+              className={`w-full px-4 py-3 rounded-lg border focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-900 outline-none resize-y bg-white dark:bg-stone-700 text-slate-900 dark:text-stone-100 ${
+                isRecording ? 'border-red-300 dark:border-red-700' : 'border-stone-200 dark:border-stone-600'
+              }`}
             />
             <div className="flex justify-between items-center text-xs text-slate-700 dark:text-stone-400">
               <span>{anvandarSvar.length} tecken</span>
