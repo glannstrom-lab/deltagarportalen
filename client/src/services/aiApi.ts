@@ -37,13 +37,13 @@ export async function callAI<T = unknown>(
     throw new Error('Du måste vara inloggad för att använda AI-funktioner.')
   }
 
-  const response = await fetch(`/api/ai/${functionName}`, {
+  const response = await fetch('/api/ai', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({ data })
+    body: JSON.stringify({ function: functionName, data })
   })
 
   if (!response.ok) {
