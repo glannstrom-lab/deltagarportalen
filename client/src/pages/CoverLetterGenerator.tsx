@@ -34,7 +34,7 @@ import {
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { aiLogger } from '@/lib/logger'
-import { generateCoverLetterWithAI } from '@/lib/supabase'
+import { aiService } from '@/services/aiService'
 import { cvApi, coverLetterApi, jobsApi, userApi } from '@/services/api'
 import { searchPlatsbanken, type PlatsbankenJob } from '@/services/arbetsformedlingenApi'
 import { useAutoSave } from '@/hooks/useAutoSave'
@@ -475,29 +475,29 @@ export default function CoverLetterGenerator() {
       aiLogger.debug('Full payload:', JSON.stringify(payload, null, 2).substring(0, 800));
       aiLogger.debug('=======================');
 
-      // Map ton to English tone for Supabase Edge Function
-      const toneMap: Record<string, 'formal' | 'friendly' | 'enthusiastic'> = {
-        'professionell': 'formal',
-        'entusiastisk': 'enthusiastic',
-        'formell': 'formal'
-      }
-
-      const response = await generateCoverLetterWithAI({
-        cvData: aiCvData || {},
-        jobDescription: jobbAnnons,
-        companyName: company || '',
-        jobTitle: jobTitle || '',
-        tone: toneMap[ton] || 'friendly'
+      const response = await aiService.generateCoverLetter({
+        jobbAnnons,
+        companyName: company,
+        jobTitle: jobTitle,
+        erfarenhet: erfarenhet || cvData?.summary || tidigareBrev,
+        motivering: motivering || undefined,
+        namn: cvData?.firstName && cvData?.lastName
+          ? `${cvData.firstName} ${cvData.lastName}`
+          : undefined,
+        ton,
+        extraContext: template?.promptAddition,
+        extraKeywords,
+        cvData: aiCvData
       })
 
       clearInterval(progressInterval)
       setGenerationProgress(100)
 
-      if (!response || !response.letter) {
+      if (!response || !response.brev) {
         throw new Error(t('coverLetterGenerator.generate.noLetterGenerated'))
       }
 
-      setGeneratedBrev(response.letter)
+      setGeneratedBrev(response.brev)
       setExpandedSections(prev => ({ ...prev, result: true }))
       
       if (!saveTitle && company && jobTitle) {
