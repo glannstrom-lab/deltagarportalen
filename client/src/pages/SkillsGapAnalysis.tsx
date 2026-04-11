@@ -142,11 +142,16 @@ export default function SkillsGapAnalysis() {
 
     setIsLoading(true)
     try {
+      console.log('[Kompetensanalys] Anropar AI med:', { cvText: profileSummary.substring(0, 100), dromjobb })
       const data = await callAI<{ analys: string }>('kompetensgap', { cvText: profileSummary, dromjobb })
-      const parsedResult = parseAnalysis((data as { analys?: string }).analys || '')
+      console.log('[Kompetensanalys] Svar från AI:', data)
+      const analys = (data as { analys?: string }).analys || ''
+      console.log('[Kompetensanalys] Extraherad analys:', analys.substring(0, 200))
+      const parsedResult = parseAnalysis(analys)
       setAnalys(parsedResult)
       sparaAnalys(parsedResult)
     } catch (error) {
+      console.error('[Kompetensanalys] Fel:', error)
       const fallbackResult: AnalysisResult = {
         matchingScore: 65,
         totalGaps: 4,

@@ -80,9 +80,12 @@ export default function InterviewSimulator() {
     setTimerSeconds(0)
 
     try {
+      console.log('[Intervjusimulator] Anropar AI med:', { roll, foretag })
       const data = await callAI<{ resultat: string }>('intervju-simulator', { roll, foretag, tidigareFragor: [] })
+      console.log('[Intervjusimulator] Svar från AI:', data)
       setNuvarandeFraga((data as { resultat?: string }).resultat || 'Berätta om dig själv')
     } catch (error) {
+      console.error('[Intervjusimulator] Fel:', error)
       const defaultQuestions = questionCategories[0]?.questions || []
       setNuvarandeFraga(defaultQuestions[0] || 'Berätta om dig själv')
     } finally {
