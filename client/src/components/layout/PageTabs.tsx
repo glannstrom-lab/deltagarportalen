@@ -323,29 +323,37 @@ interface PageHeaderProps {
 }
 
 export function PageHeader({ title, description, tabs, tabVariant = 'minimal', actions, className }: PageHeaderProps) {
+  const hasTabs = tabs && tabs.length > 0
+
   return (
-    <div className={cn('space-y-4', className)}>
-      {/* Header with soft pastel gradient */}
-      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 px-5 py-5">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-teal-800 dark:text-teal-300 tracking-tight">{title}</h1>
+    <div className={cn(
+      'bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20',
+      'rounded-2xl border border-teal-200 dark:border-teal-800/50',
+      className
+    )}>
+      {/* Header content */}
+      <div className="px-5 py-4">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="min-w-0">
+            <h1 className="text-xl sm:text-2xl font-bold text-teal-800 dark:text-teal-300 tracking-tight truncate">{title}</h1>
             {description && (
               <p className="text-sm text-teal-600 dark:text-teal-400 mt-1">{description}</p>
             )}
           </div>
           {actions && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0 flex-wrap">
               {actions}
             </div>
           )}
         </div>
       </div>
 
-      {/* Tabs with pastel styling */}
-      {tabs && tabs.length > 0 && (
-        <div className="bg-gradient-to-r from-teal-50/50 via-white to-sky-50/50 dark:from-stone-800/50 dark:via-stone-800 dark:to-stone-800/50 rounded-xl border border-teal-100 dark:border-stone-700 px-4 py-2.5">
-          <PageTabs tabs={tabs} variant={tabVariant} />
+      {/* Tabs integrated in header */}
+      {hasTabs && (
+        <div className="px-4 pb-3 pt-0">
+          <div className="bg-white/60 dark:bg-stone-800/40 rounded-xl px-2 py-1.5 border border-teal-100/50 dark:border-stone-700/50">
+            <PageTabs tabs={tabs} variant={tabVariant} />
+          </div>
         </div>
       )}
     </div>

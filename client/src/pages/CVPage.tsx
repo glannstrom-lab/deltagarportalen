@@ -13,6 +13,7 @@ import { ATSAnalysis } from '@/components/cv/ATSAnalysis'
 import { CVTips } from '@/components/cv/CVTips'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
+import { SaveIndicator } from '@/components/cv/SaveIndicator'
 
 export default function CVPage() {
   const location = useLocation()
@@ -24,20 +25,17 @@ export default function CVPage() {
     label: t(tab.labelKey),
   }))
 
-  // Get current tab label for title
-  const currentTab = cvTabs.find(
-    (tab) => location.pathname === tab.path || location.pathname.startsWith(tab.path + '/')
-  )
-  const pageTitle = currentTab?.label || t('cv.title')
+  // Check if we're on the CV builder page (show save indicator)
+  const isBuilderPage = location.pathname === '/cv' || location.pathname === '/cv/'
 
   return (
     <>
       <PageLayout
-        title={pageTitle}
-        description={t('cv.description')}
+        title={t('cv.title')}
         customTabs={cvTabs}
         tabVariant="glass"
         showTabs={true}
+        actions={isBuilderPage ? <SaveIndicator /> : undefined}
         className="space-y-6"
       >
         <Routes>
