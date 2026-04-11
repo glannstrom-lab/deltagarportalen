@@ -284,21 +284,21 @@ export function ATSAnalysis() {
     <div className="space-y-6">
       {/* ATS Analyzer Widget - Hämtar och analyserar användarens CV */}
       {loadingCV ? (
-        <div className="bg-white rounded-2xl border border-slate-200 p-6">
+        <div className="bg-white rounded-2xl border border-stone-200 p-6">
           <div className="flex items-center justify-center gap-3 py-8">
             <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
-            <span className="text-slate-600">Laddar CV-data...</span>
+            <span className="text-stone-600">Laddar CV-data...</span>
           </div>
         </div>
       ) : cvData ? (
-        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+        <div className="bg-white rounded-2xl shadow-sm border border-stone-200 p-5">
           <div className="flex items-center gap-2 mb-4">
             <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
               <Target className="w-4 h-4 text-white" />
             </div>
-            <h3 className="font-semibold text-slate-800">ATS-analys av ditt CV</h3>
+            <h3 className="font-semibold text-stone-800">ATS-analys av ditt CV</h3>
           </div>
-          <p className="text-sm text-slate-700 mb-4">
+          <p className="text-sm text-stone-700 mb-4">
             Se hur väl ditt nuvarande CV klarar automatisk screening i rekryteringssystem
           </p>
           <ATSAnalyzer cvData={cvData} />
@@ -326,7 +326,7 @@ export function ATSAnalysis() {
       )}
 
       {/* Score Card */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6">
+      <div className="bg-white rounded-2xl border border-stone-200 p-6">
         <div className="flex flex-col md:flex-row md:items-center gap-6">
           {/* Score Circle */}
           <div className="flex items-center justify-center">
@@ -344,16 +344,16 @@ export function ATSAnalysis() {
               )}>
                 {percentage}%
               </span>
-              <span className="text-xs text-slate-700 mt-1">ATS-score</span>
+              <span className="text-xs text-stone-700 mt-1">ATS-score</span>
             </div>
           </div>
 
           {/* Score Info */}
           <div className="flex-1">
-            <h2 className="text-xl font-bold text-slate-800 mb-2">
+            <h2 className="text-xl font-bold text-stone-800 mb-2">
               {getScoreText(percentage)}
             </h2>
-            <p className="text-slate-600 mb-4">
+            <p className="text-stone-600 mb-4">
               Ditt CV kommer att klara sig {percentage >= 60 ? 'bra' : 'svårt'} i de flesta 
               rekryteringssystem (ATS). {percentage < 80 && 'Det finns dock utrymme för förbättring.'}
             </p>
@@ -397,15 +397,15 @@ export function ATSAnalysis() {
 
       {/* Detailed Checks */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-slate-800">Detaljerad analys</h3>
+        <h3 className="font-semibold text-stone-800">Detaljerad analys</h3>
         
         {Object.entries(categoryLabels).map(([category, label]) => {
           const categoryChecks = checks.filter(c => c.category === category)
           
           return (
-            <div key={category} className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-              <div className="px-6 py-4 bg-slate-50 border-b border-slate-100">
-                <h4 className="font-semibold text-slate-800">{label}</h4>
+            <div key={category} className="bg-white rounded-2xl border border-stone-200 overflow-hidden">
+              <div className="px-6 py-4 bg-stone-50 border-b border-stone-100">
+                <h4 className="font-semibold text-stone-800">{label}</h4>
               </div>
               
               <div className="divide-y divide-slate-100">
@@ -418,7 +418,7 @@ export function ATSAnalysis() {
                         check.status === 'pass' && 'bg-green-100 text-green-600',
                         check.status === 'warning' && 'bg-amber-100 text-amber-600',
                         check.status === 'fail' && 'bg-red-100 text-red-600',
-                        check.status === 'neutral' && 'bg-slate-100 text-slate-700'
+                        check.status === 'neutral' && 'bg-stone-100 text-stone-700'
                       )}>
                         {check.status === 'pass' && <Check className="w-5 h-5" />}
                         {check.status === 'warning' && <AlertCircle className="w-5 h-5" />}
@@ -430,8 +430,8 @@ export function ATSAnalysis() {
                       <div className="flex-1">
                         <div className="flex items-center justify-between gap-4">
                           <div>
-                            <h5 className="font-medium text-slate-800">{check.title}</h5>
-                            <p className="text-sm text-slate-700">{check.description}</p>
+                            <h5 className="font-medium text-stone-800">{check.title}</h5>
+                            <p className="text-sm text-stone-700">{check.description}</p>
                           </div>
                           <span className={cn(
                             'px-3 py-1 rounded-full text-sm font-medium',
@@ -499,8 +499,8 @@ export function ATSAnalysis() {
       {/* CTA */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 rounded-2xl">
         <div>
-          <h3 className="font-semibold text-slate-800">Vill du förbättra ditt CV?</h3>
-          <p className="text-slate-600 text-sm">Gå tillbaka till CV-byggaren och gör justeringar</p>
+          <h3 className="font-semibold text-stone-800">Vill du förbättra ditt CV?</h3>
+          <p className="text-stone-600 text-sm">Gå tillbaka till CV-byggaren och gör justeringar</p>
         </div>
         <a
           href="/cv"

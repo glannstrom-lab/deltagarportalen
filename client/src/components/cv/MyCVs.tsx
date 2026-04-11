@@ -50,7 +50,7 @@ interface CVVersion {
 
 // Filter by CV template design instead of non-existent categories
 const templateFilters = [
-  { id: 'all', label: 'Alla mallar', color: 'bg-slate-100 text-slate-700' },
+  { id: 'all', label: 'Alla mallar', color: 'bg-stone-100 text-stone-700' },
   { id: 'sidebar', label: 'Sidokolumn', color: 'bg-blue-100 text-blue-700' },
   { id: 'centered', label: 'Centrerad', color: 'bg-purple-100 text-purple-700' },
   { id: 'minimal', label: 'Minimal', color: 'bg-gray-100 text-gray-700' },
@@ -248,8 +248,8 @@ export function MyCVs() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-96">
-        <Loader2 className="w-12 h-12 animate-spin text-indigo-600 mb-4" />
-        <p className="text-slate-600">Laddar dina CV:n...</p>
+        <Loader2 className="w-12 h-12 animate-spin text-teal-600 mb-4" />
+        <p className="text-stone-600">Laddar dina CV:n...</p>
       </div>
     )
   }
@@ -257,41 +257,41 @@ export function MyCVs() {
   return (
     <div className="space-y-6">
       {/* Header med stats */}
-      <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-6 text-white">
+      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold mb-1">Mina sparade CV</h2>
-            <p className="text-indigo-100">
+            <h2 className="text-2xl font-bold text-teal-800 dark:text-teal-300 mb-1">Mina sparade CV</h2>
+            <p className="text-teal-600 dark:text-teal-400">
               Du har {cvs.length} {cvs.length === 1 ? 'CV' : 'CV:n'} sparade
             </p>
           </div>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 transition-colors shadow-lg"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 dark:bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-700 dark:hover:bg-teal-600 transition-colors shadow-lg"
           >
             <Plus className="w-5 h-5" />
             Skapa nytt CV
           </Link>
         </div>
-        
+
         {/* Quick stats */}
         {cvs.length > 0 && (
-          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-indigo-500/30">
+          <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-teal-200 dark:border-teal-800/50">
             <div className="text-center">
-              <div className="text-2xl font-bold">{cvs.length}</div>
-              <div className="text-xs text-indigo-200">Totalt sparade</div>
+              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">{cvs.length}</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">Totalt sparade</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
                 {cvs.filter(c => (c.atsScore || 0) >= 70).length}
               </div>
-              <div className="text-xs text-indigo-200">Godkänd ATS</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">Godkänd ATS</div>
             </div>
             <div className="text-center">
-              <div className="text-2xl font-bold">
+              <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
                 {formatDate(cvs[0]?.created_at || new Date().toISOString())}
               </div>
-              <div className="text-xs text-indigo-200">Senast sparat</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">Senast sparat</div>
             </div>
           </div>
         )}
@@ -301,13 +301,13 @@ export function MyCVs() {
       <div className="flex flex-col sm:flex-row gap-4">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-600" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600" />
           <input
             type="text"
             placeholder="Sök bland dina CV..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+            className="w-full pl-10 pr-4 py-2.5 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white"
           />
         </div>
 
@@ -315,7 +315,7 @@ export function MyCVs() {
         <select
           value={selectedTemplate}
           onChange={(e) => setSelectedTemplate(e.target.value)}
-          className="px-4 py-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white"
+          className="px-4 py-2.5 border border-stone-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white"
           aria-label="Filtrera efter mall"
         >
           {templateFilters.map(tpl => (
@@ -326,21 +326,21 @@ export function MyCVs() {
 
       {/* CV List */}
       {filteredCVs.length === 0 ? (
-        <div className="text-center py-16 bg-slate-50 rounded-2xl border border-dashed border-slate-300">
-          <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
-            <Folder className="w-10 h-10 text-slate-600" />
+        <div className="text-center py-16 bg-stone-50 rounded-2xl border border-dashed border-stone-300">
+          <div className="w-20 h-20 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Folder className="w-10 h-10 text-stone-600" />
           </div>
-          <h3 className="text-lg font-semibold text-slate-800 mb-2">
+          <h3 className="text-lg font-semibold text-stone-800 mb-2">
             {searchQuery ? 'Inga CV matchade sökningen' : 'Inga CV hittades'}
           </h3>
-          <p className="text-slate-600 mb-6 max-w-md mx-auto">
+          <p className="text-stone-600 mb-6 max-w-md mx-auto">
             {searchQuery 
               ? 'Prova att söka efter något annat eller ändra kategori'
               : 'Skapa ditt första CV för att komma igång. Du kan spara flera versioner för olika typer av jobb.'}
           </p>
           <Link
             to="/cv"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 transition-colors"
+            className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
           >
             <Plus className="w-5 h-5" />
             Skapa ditt första CV
@@ -353,7 +353,7 @@ export function MyCVs() {
               key={cv.id}
               className={cn(
                 'bg-white rounded-2xl border-2 p-5 transition-all hover:shadow-lg',
-                cv.isDefault ? 'border-indigo-300 bg-indigo-50/30' : 'border-slate-200'
+                cv.isDefault ? 'border-teal-300 bg-teal-50/30' : 'border-stone-200'
               )}
             >
               <div className="flex flex-col lg:flex-row lg:items-start gap-4">
@@ -361,16 +361,16 @@ export function MyCVs() {
                 <div className="flex items-start gap-4 flex-1">
                   <div className={cn(
                     'w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0',
-                    cv.isDefault ? 'bg-indigo-100 text-indigo-600' : 'bg-slate-100 text-slate-600'
+                    cv.isDefault ? 'bg-teal-100 text-teal-600' : 'bg-stone-100 text-stone-600'
                   )}>
                     <FileText className="w-7 h-7" />
                   </div>
 
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="font-semibold text-slate-800 text-lg">{cv.name}</h3>
+                      <h3 className="font-semibold text-stone-800 text-lg">{cv.name}</h3>
                       {cv.isDefault && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 text-xs font-medium rounded-full">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded-full">
                           <Star className="w-3 h-3 fill-current" />
                           Standard
                         </span>
@@ -378,32 +378,32 @@ export function MyCVs() {
                     </div>
                     
                     {cv.data?.title && (
-                      <p className="text-slate-600">{cv.data.title}</p>
+                      <p className="text-stone-600">{cv.data.title}</p>
                     )}
                     
                     {/* Stats row */}
                     <div className="flex flex-wrap items-center gap-3 mt-2 text-sm">
-                      <span className="flex items-center gap-1 text-slate-700">
+                      <span className="flex items-center gap-1 text-stone-700">
                         <Calendar className="w-4 h-4" />
                         {formatDate(cv.created_at)}
                       </span>
                       
                       {cv.data?.workExperience && cv.data.workExperience.length > 0 && (
-                        <span className="flex items-center gap-1 text-slate-700">
+                        <span className="flex items-center gap-1 text-stone-700">
                           <Briefcase className="w-4 h-4" />
                           {cv.data.workExperience.length} erfarenheter
                         </span>
                       )}
                       
                       {cv.data?.education && cv.data.education.length > 0 && (
-                        <span className="flex items-center gap-1 text-slate-700">
+                        <span className="flex items-center gap-1 text-stone-700">
                           <GraduationCap className="w-4 h-4" />
                           {cv.data.education.length} utbildningar
                         </span>
                       )}
                       
                       {cv.data?.skills && cv.data.skills.length > 0 && (
-                        <span className="flex items-center gap-1 text-slate-700">
+                        <span className="flex items-center gap-1 text-stone-700">
                           <Award className="w-4 h-4" />
                           {cv.data.skills.length} kompetenser
                         </span>
@@ -430,7 +430,7 @@ export function MyCVs() {
                   {/* Preview */}
                   <button
                     onClick={() => setPreviewCV(cv)}
-                    className="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                     title="Förhandsgranska"
                   >
                     <Eye className="w-5 h-5" />
@@ -439,7 +439,7 @@ export function MyCVs() {
                   {/* Edit */}
                   <button
                     onClick={() => handleEdit(cv)}
-                    className="p-2 text-slate-600 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                     title="Redigera"
                   >
                     <Edit2 className="w-5 h-5" />
@@ -462,7 +462,7 @@ export function MyCVs() {
                     <button
                       onClick={() => setActionMenuOpen(actionMenuOpen === cv.id ? null : cv.id)}
                       disabled={duplicatingId === cv.id || deletingId === cv.id}
-                      className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors disabled:opacity-50"
+                      className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg transition-colors disabled:opacity-50"
                     >
                       {duplicatingId === cv.id || deletingId === cv.id ? (
                         <Loader2 className="w-5 h-5 animate-spin" />
@@ -477,10 +477,10 @@ export function MyCVs() {
                           className="fixed inset-0 z-10"
                           onClick={() => setActionMenuOpen(null)}
                         />
-                        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-lg border border-slate-200 py-1 z-20">
+                        <div className="absolute right-0 top-full mt-1 w-48 bg-white rounded-xl shadow-lg border border-stone-200 py-1 z-20">
                           <button
                             onClick={() => handleDuplicate(cv)}
-                            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                            className="w-full flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50"
                           >
                             <Copy className="w-4 h-4" />
                             Duplicera
@@ -488,13 +488,13 @@ export function MyCVs() {
                           {!cv.isDefault && (
                             <button
                               onClick={() => handleSetDefault(cv.id)}
-                              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50"
+                              className="w-full flex items-center gap-2 px-4 py-2 text-sm text-stone-700 hover:bg-stone-50"
                             >
                               <Star className="w-4 h-4" />
                               Sätt som standard
                             </button>
                           )}
-                          <div className="border-t border-slate-100 my-1" />
+                          <div className="border-t border-stone-100 my-1" />
                           <button
                             onClick={() => handleDelete(cv.id)}
                             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
@@ -534,13 +534,13 @@ export function MyCVs() {
 
       {/* Preview Modal */}
       {previewCV && (
-        <div className="fixed inset-0 z-50 bg-slate-900/50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-stone-900/50 flex items-center justify-center p-4">
           <div className="bg-white rounded-2xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-hidden flex flex-col">
             {/* Header */}
             <div className="flex items-center justify-between p-4 border-b">
               <div>
-                <h3 className="font-semibold text-slate-800">{previewCV.name}</h3>
-                <p className="text-sm text-slate-700">Förhandsgranskning</p>
+                <h3 className="font-semibold text-stone-800">{previewCV.name}</h3>
+                <p className="text-sm text-stone-700">Förhandsgranskning</p>
               </div>
               <div className="flex items-center gap-2">
                 <PDFExportButton
@@ -553,7 +553,7 @@ export function MyCVs() {
                 />
                 <button
                   onClick={() => setPreviewCV(null)}
-                  className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg"
+                  className="p-2 text-stone-600 hover:text-stone-600 hover:bg-stone-100 rounded-lg"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -561,7 +561,7 @@ export function MyCVs() {
             </div>
             
             {/* Preview Content */}
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-100">
+            <div className="flex-1 overflow-y-auto p-6 bg-stone-100">
               <div className="max-w-[210mm] mx-auto bg-white shadow-lg">
                 <CVPreview data={previewCV.data} />
               </div>

@@ -174,8 +174,8 @@ export function CVTips() {
     <div className="space-y-6">
       {/* Intro */}
       <div className="text-center max-w-2xl mx-auto">
-        <h2 className="text-2xl font-bold text-slate-800 mb-2">CV-tips & Guide</h2>
-        <p className="text-slate-600">
+        <h2 className="text-2xl font-bold text-stone-800 mb-2">CV-tips & Guide</h2>
+        <p className="text-stone-600">
           Lär dig skriva ett CV som faktiskt ger resultat. Följ våra tips för att öka dina chanser 
           att bli kallad till intervju.
         </p>
@@ -184,12 +184,12 @@ export function CVTips() {
       {/* Quick Tips Cards */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {quickTips.map((tip, i) => (
-          <div key={i} className="bg-white rounded-xl border border-slate-200 p-5 hover:shadow-md transition-shadow">
+          <div key={i} className="bg-white rounded-xl border border-stone-200 p-5 hover:shadow-md transition-shadow">
             <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center mb-3">
               <tip.icon className="w-5 h-5 text-teal-600" />
             </div>
-            <h3 className="font-semibold text-slate-800 mb-1">{tip.title}</h3>
-            <p className="text-sm text-slate-600">{tip.content}</p>
+            <h3 className="font-semibold text-stone-800 mb-1">{tip.title}</h3>
+            <p className="text-sm text-stone-600">{tip.content}</p>
           </div>
         ))}
       </div>
@@ -203,30 +203,30 @@ export function CVTips() {
           return (
             <div 
               key={section.id}
-              className="bg-white rounded-2xl border border-slate-200 overflow-hidden"
+              className="bg-white rounded-2xl border border-stone-200 overflow-hidden"
             >
               <button
                 onClick={() => setExpandedSection(isExpanded ? null : section.id)}
-                className="w-full px-6 py-5 flex items-center justify-between hover:bg-slate-50 transition-colors"
+                className="w-full px-6 py-5 flex items-center justify-between hover:bg-stone-50 transition-colors"
               >
                 <div className="flex items-center gap-4">
                   <div className="w-12 h-12 bg-teal-100 rounded-xl flex items-center justify-center">
                     <Icon className="w-6 h-6 text-teal-600" />
                   </div>
                   <div className="text-left">
-                    <h3 className="font-semibold text-slate-800">{section.title}</h3>
-                    <p className="text-sm text-slate-700">{section.description}</p>
+                    <h3 className="font-semibold text-stone-800">{section.title}</h3>
+                    <p className="text-sm text-stone-700">{section.description}</p>
                   </div>
                 </div>
                 {isExpanded ? (
-                  <ChevronUp className="w-5 h-5 text-slate-600" />
+                  <ChevronUp className="w-5 h-5 text-stone-600" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-600" />
+                  <ChevronDown className="w-5 h-5 text-stone-600" />
                 )}
               </button>
               
               {isExpanded && (
-                <div className="px-6 pb-6 border-t border-slate-100">
+                <div className="px-6 pb-6 border-t border-stone-100">
                   <div className="grid md:grid-cols-2 gap-6 pt-6">
                     {/* Do's */}
                     <div>
@@ -236,7 +236,7 @@ export function CVTips() {
                       </h4>
                       <ul className="space-y-3">
                         {section.tips.do.map((tip, i) => (
-                          <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                          <li key={i} className="flex items-start gap-3 text-sm text-stone-700">
                             <span className="w-5 h-5 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0 text-xs font-bold">
                               ✓
                             </span>
@@ -254,7 +254,7 @@ export function CVTips() {
                       </h4>
                       <ul className="space-y-3">
                         {section.tips.dont.map((tip, i) => (
-                          <li key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                          <li key={i} className="flex items-start gap-3 text-sm text-stone-700">
                             <span className="w-5 h-5 rounded-full bg-red-100 text-red-600 flex items-center justify-center flex-shrink-0 text-xs font-bold">
                               ✕
                             </span>
@@ -293,8 +293,8 @@ export function CVTips() {
       {/* CTA */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 rounded-2xl">
         <div>
-          <h3 className="font-semibold text-slate-800">Redo att skapa ditt CV?</h3>
-          <p className="text-slate-600 text-sm">Använd vår CV-byggare med inbyggda tips</p>
+          <h3 className="font-semibold text-stone-800">Redo att skapa ditt CV?</h3>
+          <p className="text-stone-600 text-sm">Använd vår CV-byggare med inbyggda tips</p>
         </div>
         <a
           href="/cv"
@@ -307,12 +307,12 @@ export function CVTips() {
 
       {/* Additional Resources */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-white rounded-xl border border-stone-200 p-5">
           <div className="flex items-center gap-3 mb-3">
             <Video className="w-5 h-5 text-teal-600" />
-            <h4 className="font-semibold text-slate-800">Video-guider</h4>
+            <h4 className="font-semibold text-stone-800">Video-guider</h4>
           </div>
-          <p className="text-sm text-slate-600 mb-3">
+          <p className="text-sm text-stone-600 mb-3">
             Se våra video-tutorials om hur du skriver ett vinnande CV
           </p>
           <button className="text-teal-600 text-sm font-medium hover:underline">
@@ -320,12 +320,12 @@ export function CVTips() {
           </button>
         </div>
         
-        <div className="bg-white rounded-xl border border-slate-200 p-5">
+        <div className="bg-white rounded-xl border border-stone-200 p-5">
           <div className="flex items-center gap-3 mb-3">
             <Target className="w-5 h-5 text-teal-600" />
-            <h4 className="font-semibold text-slate-800">ATS-optimering</h4>
+            <h4 className="font-semibold text-stone-800">ATS-optimering</h4>
           </div>
-          <p className="text-sm text-slate-600 mb-3">
+          <p className="text-sm text-stone-600 mb-3">
             Testa hur väl ditt CV klarar rekryteringssystem
           </p>
           <a 
