@@ -44,7 +44,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
   // Variant: Minimal - Clean with subtle backgrounds
   const MinimalTabs = () => (
     <div className={cn(
-      'hidden md:flex items-center gap-1 p-1 bg-slate-100/80 rounded-xl',
+      'hidden md:flex items-center gap-1 p-1 bg-stone-100/80 rounded-xl',
       className
     )}>
       {tabs.map((tab) => {
@@ -58,8 +58,8 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             className={cn(
               'flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200',
               isActive
-                ? 'bg-white text-slate-900 shadow-sm'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-white/50'
+                ? 'bg-white text-stone-900 shadow-sm'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-white/50'
             )}
           >
             {Icon && <Icon className="w-4 h-4" />}
@@ -67,7 +67,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-teal-100 text-teal-700' : 'bg-slate-200 text-slate-600'
+                isActive ? 'bg-teal-100 text-teal-700' : 'bg-stone-200 text-stone-600'
               )}>
                 {tab.badge}
               </span>
@@ -93,7 +93,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
               'flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200',
               isActive
                 ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/25'
-                : 'bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 hover:border-slate-300'
+                : 'bg-white text-stone-600 hover:bg-stone-50 border border-stone-200 hover:border-stone-300'
             )}
           >
             {Icon && <Icon className={cn('w-4 h-4', isActive && 'text-white/90')} />}
@@ -126,11 +126,11 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             className={cn(
               'group flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all duration-200',
               isActive
-                ? 'bg-slate-900 text-white'
-                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+                ? 'bg-stone-900 text-white'
+                : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-white/80' : 'text-slate-600 group-hover:text-slate-600')} />}
+            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-white/80' : 'text-stone-600 group-hover:text-stone-600')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
@@ -148,7 +148,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
 
   // Variant: Underline - Clean with animated underline
   const UnderlineTabs = () => (
-    <div className={cn('hidden md:flex items-center gap-6 border-b border-slate-200', className)}>
+    <div className={cn('hidden md:flex items-center gap-6 border-b border-stone-200', className)}>
       {tabs.map((tab) => {
         const Icon = tab.icon
         const isActive = isTabActive(tab.path)
@@ -159,10 +159,10 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             to={tab.path}
             className={cn(
               'group relative flex items-center gap-2 px-1 py-3 text-sm font-medium transition-colors',
-              isActive ? 'text-teal-600' : 'text-slate-700 hover:text-slate-900'
+              isActive ? 'text-teal-600' : 'text-stone-700 hover:text-stone-900'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-teal-500' : 'text-slate-600 group-hover:text-slate-600')} />}
+            {Icon && <Icon className={cn('w-4 h-4', isActive ? 'text-teal-500' : 'text-stone-600 group-hover:text-stone-600')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className="px-1.5 py-0.5 text-xs rounded-full font-bold bg-teal-100 text-teal-700">
@@ -172,7 +172,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             {/* Underline indicator */}
             <span className={cn(
               'absolute bottom-0 left-0 right-0 h-0.5 rounded-full transition-all duration-200',
-              isActive ? 'bg-teal-500' : 'bg-transparent group-hover:bg-slate-200'
+              isActive ? 'bg-teal-500' : 'bg-transparent group-hover:bg-stone-200'
             )} />
           </Link>
         )
@@ -180,12 +180,10 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
     </div>
   )
 
-  // Variant: Glass - Glassmorphism effect (desktop only, mobile uses dropdown)
+  // Variant: Glass - Soft pastel style matching Dashboard/Profile
   const GlassTabs = () => (
     <div className={cn(
-      'hidden md:flex items-center gap-1 p-1.5 overflow-x-auto scrollbar-hide',
-      'bg-white/60 backdrop-blur-xl rounded-2xl',
-      'border border-white/40 shadow-lg shadow-slate-200/50',
+      'hidden md:flex items-center gap-1 overflow-x-auto scrollbar-hide',
       className
     )}>
       {tabs.map((tab) => {
@@ -197,20 +195,20 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
             key={tab.id}
             to={tab.path}
             className={cn(
-              'flex items-center gap-2 px-4 py-2.5 rounded-xl',
+              'flex items-center gap-2 px-4 py-2 rounded-xl',
               'text-sm font-medium transition-all duration-200 ease-out whitespace-nowrap',
               'min-h-[44px]',
               isActive
-                ? 'bg-gradient-to-r from-teal-500 to-sky-500 text-white shadow-lg shadow-teal-500/30'
-                : 'text-slate-600 hover:bg-white/90 hover:text-slate-900 hover:scale-[1.02]'
+                ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 shadow-sm'
+                : 'text-stone-600 dark:text-stone-400 hover:bg-teal-50 dark:hover:bg-stone-700'
             )}
           >
-            {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive && 'text-white/90')} />}
+            {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-teal-600 dark:text-teal-400' : '')} />}
             <span>{tab.label}</span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
-                isActive ? 'bg-white/25 text-white' : 'bg-teal-100 text-teal-700'
+                isActive ? 'bg-teal-200 dark:bg-teal-800 text-teal-800 dark:text-teal-200' : 'bg-teal-100 text-teal-700'
               )}>
                 {tab.badge}
               </span>
@@ -240,8 +238,8 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
         className={cn(
           'w-full flex items-center justify-between',
           'px-4 py-3 rounded-xl',
-          'bg-white border border-slate-200',
-          'text-slate-800 shadow-sm',
+          'bg-white border border-stone-200',
+          'text-stone-800 shadow-sm',
           'transition-all duration-200',
           'active:scale-[0.99]',
           'min-h-[48px]' // Touch-friendly minimum height
@@ -252,13 +250,13 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
           <span className="font-semibold">{activeTab?.label || 'Välj sida'}</span>
         </div>
         <ChevronDown className={cn(
-          'w-5 h-5 text-slate-600 transition-transform duration-300',
+          'w-5 h-5 text-stone-600 transition-transform duration-300',
           isExpanded && 'rotate-180'
         )} />
       </button>
 
       {isExpanded && (
-        <div className="mt-2 bg-white rounded-xl border border-slate-200 shadow-xl overflow-hidden">
+        <div className="mt-2 bg-white rounded-xl border border-stone-200 shadow-xl overflow-hidden">
           {tabs.map((tab, index) => {
             const Icon = tab.icon
             const isActive = isTabActive(tab.path)
@@ -273,17 +271,17 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
                   'min-h-[52px]', // Touch-friendly minimum height
                   isActive
                     ? 'bg-teal-50 text-teal-700'
-                    : 'text-slate-700 hover:bg-slate-50',
-                  index !== tabs.length - 1 && 'border-b border-slate-100'
+                    : 'text-stone-700 hover:bg-stone-50',
+                  index !== tabs.length - 1 && 'border-b border-stone-100'
                 )}
               >
                 <div className="flex items-center gap-3">
                   {Icon && (
                     <div className={cn(
                       'w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0',
-                      isActive ? 'bg-teal-100' : 'bg-slate-100'
+                      isActive ? 'bg-teal-100' : 'bg-stone-100'
                     )}>
-                      <Icon className={cn('w-4 h-4', isActive ? 'text-teal-600' : 'text-slate-700')} />
+                      <Icon className={cn('w-4 h-4', isActive ? 'text-teal-600' : 'text-stone-700')} />
                     </div>
                   )}
                   <span className="font-medium">{tab.label}</span>
@@ -313,7 +311,7 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
 }
 
 /**
- * Page Header with Tabs
+ * Page Header with Tabs - Soft Pastel Style
  */
 interface PageHeaderProps {
   title: string
@@ -326,23 +324,29 @@ interface PageHeaderProps {
 
 export function PageHeader({ title, description, tabs, tabVariant = 'minimal', actions, className }: PageHeaderProps) {
   return (
-    <div className={cn('space-y-5', className)}>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight">{title}</h1>
-          {description && (
-            <p className="text-base text-slate-700 mt-1">{description}</p>
+    <div className={cn('space-y-4', className)}>
+      {/* Header with soft pastel gradient */}
+      <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 px-5 py-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-teal-800 dark:text-teal-300 tracking-tight">{title}</h1>
+            {description && (
+              <p className="text-sm text-teal-600 dark:text-teal-400 mt-1">{description}</p>
+            )}
+          </div>
+          {actions && (
+            <div className="flex items-center gap-2">
+              {actions}
+            </div>
           )}
         </div>
-        {actions && (
-          <div className="flex items-center gap-2">
-            {actions}
-          </div>
-        )}
       </div>
 
+      {/* Tabs with pastel styling */}
       {tabs && tabs.length > 0 && (
-        <PageTabs tabs={tabs} variant={tabVariant} />
+        <div className="bg-gradient-to-r from-teal-50/50 via-white to-sky-50/50 dark:from-stone-800/50 dark:via-stone-800 dark:to-stone-800/50 rounded-xl border border-teal-100 dark:border-stone-700 px-4 py-2.5">
+          <PageTabs tabs={tabs} variant={tabVariant} />
+        </div>
       )}
     </div>
   )
