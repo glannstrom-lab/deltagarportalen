@@ -78,12 +78,26 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
     };
     return { system: 'Du är LinkedIn-expert. Skriv på svenska.', user: prompts[typ] || prompts.headline, maxTokens: 800, responseKey: 'text' };
   },
-  'intervju-simulator': (data) => ({
-    system: 'Du är rekryterare. Ställ frågor och ge feedback på svenska.',
-    user: `Intervju för ${data?.roll}${data?.foretag ? ' på ' + data.foretag : ''}.\n${data?.anvandarSvar ? 'Svar: ' + data.anvandarSvar + '\n\nGe feedback och nästa fråga.' : 'Börja med öppningsfråga.'}`,
-    maxTokens: 1000,
-    responseKey: 'resultat'
-  }),
+  'intervju-simulator': (data) => {
+    if (data?.anvandarSvar) {
+      // Användaren har svarat - ge feedback och nästa fråga
+      return {
+        system: `Du är rekryterare. Svara ENDAST med JSON: {"rating":1-5,"feedback":"kort feedback","nastaFraga":"nästa intervjufråga"}`,
+        user: `Intervju för ${data?.roll}${data?.foretag ? ' på ' + data.foretag : ''}.\n\nFråga: ${data?.tidigareFragor?.[data.tidigareFragor.length-1]?.fraga || 'Berätta om dig själv'}\nKandidatens svar: ${data.anvandarSvar}\n\nBedöm svaret 1-5, ge kort feedback, och ställ nästa relevanta intervjufråga. Svara ENDAST med JSON.`,
+        maxTokens: 500,
+        responseKey: 'resultat',
+        parseJson: true
+      }
+    } else {
+      // Starta intervju - bara ställ första frågan
+      return {
+        system: 'Du är rekryterare som intervjuar kandidater på svenska.',
+        user: `Starta en intervju för rollen ${data?.roll}${data?.foretag ? ' på ' + data.foretag : ''}. Ställ en bra öppningsfråga. Svara ENDAST med frågan, inget annat.`,
+        maxTokens: 200,
+        responseKey: 'resultat'
+      }
+    }
+  },
   'mentalt-stod': (data) => ({
     system: 'Du är en empatisk coach. Ge stöd på svenska.',
     user: `Situation: ${data?.situation || 'Jobbsökning'}\nKänsla: ${data?.kansla || 'Osäker'}\n\nGe emotionellt stöd och tips.`,

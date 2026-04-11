@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
@@ -73,6 +73,19 @@ export default function InterviewSimulator() {
   const [expandedFeedback, setExpandedFeedback] = useState<number | null>(null)
   const { trackInterviewCompleted } = useAchievementTracker()
 
+  // Timer effect
+  useEffect(() => {
+    let interval: NodeJS.Timeout | null = null
+    if (isTimerRunning) {
+      interval = setInterval(() => {
+        setTimerSeconds(prev => prev + 1)
+      }, 1000)
+    }
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [isTimerRunning])
+
   const startaIntervju = async () => {
     if (!roll.trim()) return
     setHarStartat(true)
@@ -103,18 +116,32 @@ export default function InterviewSimulator() {
     }
 
     try {
-      const data = await callAI<{ resultat: string }>('intervju-simulator', {
+      const data = await callAI<{ resultat: { rating: number; feedback: string; nastaFraga: string } | string }>('intervju-simulator', {
         roll,
         foretag,
         anvandarSvar,
         tidigareFragor: [...historik, nyFragaSvar]
       })
 
-      setHistorik([...historik, {
-        ...nyFragaSvar,
-        feedback: 'Bra svar! Nästa fråga:'
-      }])
-      setNuvarandeFraga((data as { resultat?: string }).resultat || 'Vad är dina framtidsplaner?')
+      const resultat = (data as { resultat?: { rating: number; feedback: string; nastaFraga: string } | string }).resultat
+
+      if (resultat && typeof resultat === 'object') {
+        // AI returnerade JSON med betyg och feedback
+        setHistorik([...historik, {
+          ...nyFragaSvar,
+          rating: resultat.rating || 3,
+          feedback: resultat.feedback || 'Bra svar!'
+        }])
+        setNuvarandeFraga(resultat.nastaFraga || 'Vad är dina framtidsplaner?')
+      } else {
+        // Fallback om AI bara returnerade en sträng
+        setHistorik([...historik, {
+          ...nyFragaSvar,
+          feedback: 'Bra svar!'
+        }])
+        setNuvarandeFraga(String(resultat) || 'Vad är dina framtidsplaner?')
+      }
+
       setAnvandarSvar('')
       setAntalFragor(prev => prev + 1)
       setTimerSeconds(0)
@@ -333,13 +360,15 @@ TIPS FÖR FÖRBÄTTRING:
                 {/* Rating och feedback */}
                 <div className="bg-white dark:bg-stone-700 p-3 rounded border border-stone-200 dark:border-stone-600">
                   <div className="flex items-center justify-between mb-2">
-                    <p className="text-sm font-medium text-slate-700 dark:text-stone-300">Betygsätt detta svar:</p>
+                    <p className="text-sm font-medium text-slate-700 dark:text-stone-300">
+                      {fs.rating ? 'AI-betyg (klicka för att justera):' : 'Betygsätt detta svar:'}
+                    </p>
                     <div className="flex gap-1">
                       {[1, 2, 3, 4, 5].map((star) => (
                         <button
                           key={star}
                           onClick={() => setRating(index, star)}
-                          className={`text-lg ${star <= (fs.rating || 0) ? 'text-yellow-400' : 'text-slate-300 dark:text-stone-500'} cursor-pointer`}
+                          className={`text-lg ${star <= (fs.rating || 0) ? 'text-yellow-400' : 'text-slate-300 dark:text-stone-500'} cursor-pointer hover:scale-110 transition-transform`}
                         >
                           ★
                         </button>
@@ -367,14 +396,13 @@ TIPS FÖR FÖRBÄTTRING:
 
                   {expandedFeedback === index && (
                     <div className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-600 space-y-2">
+                      {fs.feedback && (
+                        <div className="bg-teal-50 dark:bg-teal-900/20 p-3 rounded text-sm text-teal-800 dark:text-teal-300">
+                          <strong>AI-feedback:</strong> {fs.feedback}
+                        </div>
+                      )}
                       <div className="bg-sky-50 dark:bg-sky-900/20 p-2 rounded text-sm text-sky-800 dark:text-sky-300">
-                        <strong>Tips:</strong> Försök strukturera dina svar med STAR-metoden. Berätta Situation, Task, Action och Result.
-                      </div>
-                      <div className="bg-emerald-50 dark:bg-emerald-900/20 p-2 rounded text-sm text-emerald-800 dark:text-emerald-300">
-                        <strong>Styrka:</strong> Du var specifik och konkret i ditt svar.
-                      </div>
-                      <div className="bg-amber-50 dark:bg-amber-900/20 p-2 rounded text-sm text-amber-800 dark:text-amber-300">
-                        <strong>Förbättring:</strong> Lägg till mer detalj om resultatet och lärdomarna.
+                        <strong>Tips:</strong> Försök strukturera dina svar med STAR-metoden (Situation, Task, Action, Result).
                       </div>
                     </div>
                   )}
