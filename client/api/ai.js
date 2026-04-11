@@ -73,13 +73,13 @@ const PROMPTS = {
       post: `Skriv LinkedIn-inlägg om: ${JSON.stringify(data?.data)}`,
       connection: `Skriv kontaktförfrågan för: ${JSON.stringify(data?.data)}`
     };
-    return { system: 'Du är LinkedIn-expert. Skriv på svenska.', user: prompts[typ] || prompts.headline, maxTokens: 800, responseKey: 'result' };
+    return { system: 'Du är LinkedIn-expert. Skriv på svenska.', user: prompts[typ] || prompts.headline, maxTokens: 800, responseKey: 'text' };
   },
   'intervju-simulator': (data) => ({
     system: 'Du är rekryterare. Ställ frågor och ge feedback på svenska.',
     user: `Intervju för ${data?.roll}${data?.foretag ? ' på ' + data.foretag : ''}.\n${data?.anvandarSvar ? 'Svar: ' + data.anvandarSvar + '\n\nGe feedback och nästa fråga.' : 'Börja med öppningsfråga.'}`,
     maxTokens: 1000,
-    responseKey: 'result'
+    responseKey: 'resultat'
   }),
   'mentalt-stod': (data) => ({
     system: 'Du är en empatisk coach. Ge stöd på svenska.',
@@ -96,6 +96,12 @@ const PROMPTS = {
     system: 'Du är ansökningscoach. Ge feedback på svenska.',
     user: `${data?.typ === 'feedback' ? 'Feedback på' : data?.typ === 'forbattra' ? 'Förbättra' : 'Kontrollera'}:\n${data?.text}\n\nJobbannons: ${data?.jobbannons || 'Ej angiven'}`,
     maxTokens: 1000,
+    responseKey: 'result'
+  }),
+  'ovningshjalp': (data) => ({
+    system: 'Du är en stödjande coach som hjälper användare med självreflektion och övningar på svenska.',
+    user: `Hjälp användaren med denna övning:\nÖvning: ${data?.ovningId || 'Självreflektion'}\nSteg: ${data?.steg || '1'}\nFråga: ${data?.fraga || ''}\n${data?.anvandarSvar ? 'Användarens svar: ' + data.anvandarSvar + '\n\nGe feedback och vägledning.' : 'Ge vägledning för att besvara frågan.'}`,
+    maxTokens: 800,
     responseKey: 'result'
   }),
   'chatbot': (data) => {

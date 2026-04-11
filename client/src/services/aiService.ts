@@ -132,7 +132,7 @@ async function callAI(functionName: string, data: Record<string, unknown>): Prom
       }
 
       try {
-        const response = await fetch(`${API_BASE}/ai/${functionName}`, {
+        const response = await fetch(`${API_BASE}/ai`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -323,7 +323,7 @@ export const aiService = {
    */
   linkedinOptimering: async (data: LinkedInOptimeringData) => {
     const response = await callAI('linkedin-optimering', data as Record<string, unknown>);
-    return response.result;
+    return response.text || response.result;
   },
 
   /**
@@ -336,7 +336,7 @@ export const aiService = {
     hinder?: string;
   }) => {
     const response = await callAI('karriarplan', data);
-    return response.result;
+    return response.plan || response.result;
   },
 
   /**
@@ -347,7 +347,7 @@ export const aiService = {
     drömjobb: string;
   }) => {
     const response = await callAI('kompetensgap', data);
-    return response.result;
+    return response.analys || response.result;
   },
 
   /**
@@ -372,7 +372,7 @@ export const aiService = {
     tidigareFragor?: Array<{ frag: string; svar: string }>;
   }) => {
     const response = await callAI('intervju-simulator', data);
-    return response.result;
+    return response.resultat || response.result;
   },
 
   /**
