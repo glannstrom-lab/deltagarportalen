@@ -5,6 +5,8 @@ import { Target, Search, TrendingUp, CheckCircle, BookOpen, Sparkles, RefreshCw,
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { Progress } from '@/components/ui/Progress'
+import { HelpButton } from '@/components/HelpButton'
+import { helpContent } from '@/data/helpContent'
 import { cn } from '@/lib/utils'
 import { callAI } from '@/services/aiApi'
 import { cvApi, type CVData } from '@/services/supabaseApi'
@@ -454,6 +456,8 @@ ${analys.recommendations.map(r => `- ${r}`).join('\n')}`
           )}
         </>
       )}
+
+      <HelpButton content={helpContent.skillsGapAnalysis} />
     </div>
   )
 }

@@ -288,6 +288,42 @@ export const helpContent: Record<string, HelpContent> = {
     ]
   },
 
+  skillsGapAnalysis: {
+    title: 'Hjälp - Kompetensanalys',
+    description: 'Jämför dina kompetenser med ditt drömjobb',
+    tips: [
+      'Din profil hämtas automatiskt från CV och Profil-sidan',
+      'Fyll i ditt drömjobb eller klistra in en jobbannons',
+      'Uppdatera ditt CV för att få bättre analysresultat'
+    ],
+    faqs: [
+      {
+        question: 'Hur fungerar kompetensanalysen?',
+        answer: 'Analysen jämför dina nuvarande kompetenser (från ditt CV och profil) med vad som krävs för ditt drömjobb. Du får en matchningsgrad och rekommendationer för utveckling.'
+      },
+      {
+        question: 'Varifrån hämtas min profilinformation?',
+        answer: 'Din profil hämtas automatiskt från ditt CV och din Profil-sida. Detta inkluderar arbetslivserfarenhet, utbildning, kompetenser, språk och certifikat.'
+      },
+      {
+        question: 'Vad behöver jag fylla i själv?',
+        answer: 'Det enda du behöver fylla i är ditt drömjobb. Beskriv vilket jobb du vill ha eller klistra in en jobbannons för att få en mer detaljerad analys.'
+      },
+      {
+        question: 'Varför visas en varning om otillräcklig data?',
+        answer: 'Om du inte har fyllt i tillräckligt med information i ditt CV visas en varning. Gå till CV-sidan och lägg till arbetslivserfarenhet, utbildning och kompetenser för att kunna göra en analys.'
+      },
+      {
+        question: 'Vad betyder matchningsgraden?',
+        answer: 'Matchningsgraden visar hur väl dina nuvarande kompetenser matchar kraven för drömjobbet. En högre procent betyder att du redan har många av de färdigheter som krävs.'
+      },
+      {
+        question: 'Hur använder jag rekommendationerna?',
+        answer: 'Rekommendationerna visar konkreta steg för att fylla kompetensgapen. Det kan vara kurser, certifieringar, projekt eller andra aktiviteter som hjälper dig nå ditt mål.'
+      }
+    ]
+  },
+
   coverLetter: {
     title: 'Hjälp - Personligt brev',
     description: 'Skriv övertygande ansökningar',
