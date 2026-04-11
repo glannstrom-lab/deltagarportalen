@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Plus, Loader2 } from '@/components/ui/icons'
+import { Plus, Loader2, CalendarDays } from '@/components/ui/icons'
 import { PageLayout } from '@/components/layout/index'
 import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
@@ -8,15 +8,8 @@ import { CalendarHeader } from '@/components/calendar/CalendarHeader'
 import { WeekView } from '@/components/calendar/WeekView'
 import { DayView } from '@/components/calendar/DayView'
 import { EventModal } from '@/components/calendar/EventModal'
-import { CalendarStats } from '@/components/calendar/CalendarStats'
-import { MoodTracker } from '@/components/calendar/MoodTracker'
 import { calendarApi } from '@/services/cloudStorage'
-import type {
-  CalendarEvent,
-  CalendarView,
-  CalendarGoal,
-  MoodEntry
-} from '@/services/calendarData'
+import type { CalendarEvent, CalendarView } from '@/services/calendarData'
 import { eventTypeConfig } from '@/services/calendarData'
 
 export default function Calendar() {
@@ -24,32 +17,22 @@ export default function Calendar() {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [view, setView] = useState<CalendarView>('month')
   const [events, setEvents] = useState<CalendarEvent[]>([])
-  const [goals, setGoals] = useState<CalendarGoal[]>([])
-  const [moodEntries, setMoodEntries] = useState<MoodEntry[]>([])
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [loading, setLoading] = useState(true)
 
-  // Load data from cloud
+  // Load events from cloud
   useEffect(() => {
-    loadData()
+    loadEvents()
   }, [])
 
-  const loadData = async () => {
+  const loadEvents = async () => {
     setLoading(true)
     try {
-      const [eventsData, goalsData, moodData] = await Promise.all([
-        calendarApi.getEvents(),
-        calendarApi.getGoals(),
-        calendarApi.getMoodEntries()
-      ])
-
-      // API already transforms to camelCase format
+      const eventsData = await calendarApi.getEvents()
       setEvents(eventsData as unknown as CalendarEvent[])
-      setGoals(goalsData as unknown as CalendarGoal[])
-      setMoodEntries(moodData as unknown as MoodEntry[])
     } catch (error) {
-      console.error('Error loading calendar data:', error)
+      console.error('Error loading calendar events:', error)
     } finally {
       setLoading(false)
     }
@@ -123,6 +106,9 @@ export default function Calendar() {
           setEvents([...events, newEvent])
         }
       }
+
+      setSelectedEvent(null)
+      setIsModalOpen(false)
     } catch (error) {
       console.error('Error saving event:', error)
     }
@@ -139,26 +125,9 @@ export default function Calendar() {
     }
   }
 
-  const handleAddMood = async (entry: MoodEntry) => {
-    try {
-      // Transform to API format
-      const apiEntry = {
-        date: entry.date,
-        level: entry.level,
-        note: entry.note,
-        energy_level: entry.energyLevel,
-        stress_level: entry.stressLevel
-      }
-
-      const saved = await calendarApi.saveMoodEntry(apiEntry)
-      if (saved) {
-        // Ta bort befintlig entry för samma dag om den finns
-        const filtered = moodEntries.filter(e => e.date !== entry.date)
-        setMoodEntries([...filtered, entry])
-      }
-    } catch (error) {
-      console.error('Error saving mood entry:', error)
-    }
+  const handleCreateEvent = () => {
+    setSelectedEvent(null)
+    setIsModalOpen(true)
   }
 
   // Month view render
@@ -185,11 +154,11 @@ export default function Calendar() {
     }
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
         {/* Header */}
-        <div className="grid grid-cols-7 border-b border-stone-200 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
+        <div className="grid grid-cols-7 border-b border-teal-100 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
           {days.map((day) => (
-            <div key={day} className="py-2 text-center text-sm font-medium text-white">
+            <div key={day} className="py-3 text-center text-sm font-medium text-white">
               {day}
             </div>
           ))}
@@ -210,11 +179,11 @@ export default function Calendar() {
               <button
                 key={day}
                 onClick={() => handleDateClick(new Date(dateStr))}
-                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-stone-50 dark:hover:bg-stone-700/50"
+                className="h-28 border-b border-r border-stone-100 dark:border-stone-700 p-2 text-left transition-colors relative overflow-hidden hover:bg-teal-50 dark:hover:bg-stone-700/50"
               >
                 <span className={`
                   inline-flex items-center justify-center w-7 h-7 text-sm rounded-full
-                  ${isToday ? 'bg-teal-600 dark:bg-teal-500 text-white' : 'text-gray-700 dark:text-gray-200'}
+                  ${isToday ? 'bg-teal-600 dark:bg-teal-500 text-white font-semibold' : 'text-stone-700 dark:text-stone-200'}
                 `}>
                   {day}
                 </span>
@@ -232,7 +201,7 @@ export default function Calendar() {
                       )
                     })}
                     {dayEvents.length > 3 && (
-                      <div className="text-xs text-gray-600 dark:text-gray-400 px-1.5">
+                      <div className="text-xs text-stone-500 dark:text-stone-400 px-1.5">
                         {t('calendar.moreEvents', { count: dayEvents.length - 3 })}
                       </div>
                     )}
@@ -253,8 +222,8 @@ export default function Calendar() {
     )
 
     return (
-      <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
-        <div className="p-4 border-b border-stone-200 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
+      <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-teal-100 dark:border-stone-700 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700">
           <h3 className="font-semibold text-white">{t('calendar.upcomingEvents')}</h3>
         </div>
         <div className="divide-y divide-stone-100 dark:divide-stone-700">
@@ -267,35 +236,44 @@ export default function Calendar() {
               <button
                 key={event.id}
                 onClick={() => handleEventClick(event)}
-                className={`w-full p-4 text-left hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors flex items-start gap-4 ${
+                className={`w-full p-4 text-left hover:bg-teal-50 dark:hover:bg-stone-700/50 transition-colors flex items-start gap-4 ${
                   isPast ? 'opacity-50' : ''
                 }`}
               >
                 <div className={`p-2 rounded-lg ${config.bgColor}`}>
-                  <div className={`w-5 h-5 ${config.color}`} />
+                  <CalendarDays className={`w-5 h-5 ${config.color}`} />
                 </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <h4 className="font-medium text-gray-800 dark:text-gray-100">{event.title}</h4>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h4 className="font-medium text-stone-800 dark:text-stone-100">{event.title}</h4>
                     <span className={`text-xs px-2 py-0.5 rounded-full ${config.bgColor} ${config.color}`}>
                       {config.label}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
+                  <p className="text-sm text-stone-600 dark:text-stone-300 mt-1">
                     {date.toLocaleDateString(i18n.language === 'en' ? 'en-US' : 'sv-SE', { weekday: 'short', day: 'numeric', month: 'short' })}
                     {' · '}
                     {event.time}
                   </p>
                   {event.location && (
-                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{event.location}</p>
+                    <p className="text-sm text-stone-500 dark:text-stone-400 mt-1 truncate">{event.location}</p>
                   )}
                 </div>
               </button>
             )
           })}
           {sortedEvents.length === 0 && (
-            <div className="p-8 text-center text-gray-600 dark:text-gray-400">
-              {t('calendar.noEventsPlanned')}
+            <div className="p-8 text-center">
+              <CalendarDays className="w-12 h-12 text-stone-300 dark:text-stone-600 mx-auto mb-3" />
+              <p className="text-stone-500 dark:text-stone-400">
+                {t('calendar.noEventsPlanned')}
+              </p>
+              <button
+                onClick={handleCreateEvent}
+                className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors text-sm font-medium"
+              >
+                {t('calendar.newEvent')}
+              </button>
             </div>
           )}
         </div>
@@ -306,84 +284,67 @@ export default function Calendar() {
   return (
     <PageLayout
       title={t('calendar.title')}
-      description={t('calendar.description')}
       showTabs={false}
+      actions={
+        <button
+          onClick={handleCreateEvent}
+          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm"
+        >
+          <Plus className="w-4 h-4" />
+          <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
+        </button>
+      }
     >
-    <div className="space-y-6">
-      {loading && (
-        <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
-          <span className="ml-3 text-gray-600 dark:text-gray-300">{t('common.loading')}</span>
-        </div>
-      )}
+      <div className="space-y-4">
+        {loading && (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
+            <span className="ml-3 text-stone-600 dark:text-stone-300">{t('common.loading')}</span>
+          </div>
+        )}
 
-      <CalendarHeader
-        currentDate={currentDate}
-        view={view}
-        onViewChange={setView}
-        onNavigate={navigate}
-      />
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main calendar area */}
-        <div className="lg:col-span-2 space-y-4">
-          {view === 'month' && renderMonthView()}
-          {view === 'week' && (
-            <WeekView
+        {!loading && (
+          <>
+            <CalendarHeader
               currentDate={currentDate}
-              events={events}
-              onEventClick={handleEventClick}
-              onDateClick={handleDateClick}
+              view={view}
+              onViewChange={setView}
+              onNavigate={navigate}
             />
-          )}
-          {view === 'day' && (
-            <DayView
-              date={currentDate}
-              events={events}
-              onEventClick={handleEventClick}
-            />
-          )}
-          {view === 'agenda' && renderAgendaView()}
-        </div>
 
-        {/* Sidebar */}
-        <div className="space-y-4">
-          {/* Add event button */}
-          <button
-            onClick={() => {
-              setSelectedEvent(null)
-              setIsModalOpen(true)
-            }}
-            className="w-full py-3 bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700 text-white rounded-xl hover:from-teal-600 hover:to-teal-700 dark:hover:from-teal-500 dark:hover:to-teal-600 transition-colors font-medium flex items-center justify-center gap-2"
-          >
-            <Plus size={20} />
-            {t('calendar.newEvent')}
-          </button>
-
-          {/* Mood Tracker */}
-          <MoodTracker
-            entries={moodEntries}
-            onAddEntry={handleAddMood}
-          />
-
-          {/* Stats */}
-          <CalendarStats
-            events={events}
-            goals={goals}
-            moodEntries={moodEntries}
-          />
-        </div>
+            {view === 'month' && renderMonthView()}
+            {view === 'week' && (
+              <WeekView
+                currentDate={currentDate}
+                events={events}
+                onEventClick={handleEventClick}
+                onDateClick={handleDateClick}
+              />
+            )}
+            {view === 'day' && (
+              <DayView
+                date={currentDate}
+                events={events}
+                onEventClick={handleEventClick}
+              />
+            )}
+            {view === 'agenda' && renderAgendaView()}
+          </>
+        )}
       </div>
 
       {/* Event Modal */}
       <EventModal
         event={selectedEvent}
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false)
+          setSelectedEvent(null)
+        }}
         onSave={handleSaveEvent}
         onDelete={handleDeleteEvent}
       />
-    </div>
+
       <HelpButton content={helpContent.calendar} />
     </PageLayout>
   )

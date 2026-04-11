@@ -49,11 +49,11 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
             <Brain className="w-5 h-5 text-indigo-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Förberedelseassistent</h3>
-            <p className="text-sm text-slate-700">AI-genererade tips och frågor</p>
+            <h3 className="font-semibold text-stone-900">Förberedelseassistent</h3>
+            <p className="text-sm text-stone-700">AI-genererade tips och frågor</p>
           </div>
         </div>
-        {expanded ? <ChevronUp size={20} className="text-slate-600" /> : <ChevronDown size={20} className="text-slate-600" />}
+        {expanded ? <ChevronUp size={20} className="text-stone-600" /> : <ChevronDown size={20} className="text-stone-600" />}
       </button>
 
       {expanded && (
@@ -63,8 +63,8 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
             <div className="flex items-start gap-3">
               <Lightbulb className="w-5 h-5 text-amber-500 mt-0.5" />
               <div className="flex-1">
-                <h4 className="font-medium text-slate-900">Skräddarsydda frågor</h4>
-                <p className="text-sm text-slate-700 mt-1">
+                <h4 className="font-medium text-stone-900">Skräddarsydda frågor</h4>
+                <p className="text-sm text-stone-700 mt-1">
                   Generera intervjufrågor baserade på företaget och rollen
                 </p>
                 <button
@@ -83,8 +83,8 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
             <div className="flex items-start gap-3">
               <Shirt className="w-5 h-5 text-teal-500 mt-0.5" />
               <div>
-                <h4 className="font-medium text-slate-900">Klädrekommendation</h4>
-                <p className="text-sm text-slate-700 mt-1">{getDressCode()}</p>
+                <h4 className="font-medium text-stone-900">Klädrekommendation</h4>
+                <p className="text-sm text-stone-700 mt-1">{getDressCode()}</p>
               </div>
             </div>
           </div>
@@ -93,13 +93,13 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
           <div className="bg-white rounded-lg p-4 border border-indigo-100">
             <div className="flex items-center gap-2 mb-3">
               <HelpCircle className="w-5 h-5 text-blue-500" />
-              <h4 className="font-medium text-slate-900">Vanliga intervjufrågor</h4>
+              <h4 className="font-medium text-stone-900">Vanliga intervjufrågor</h4>
             </div>
             <div className="space-y-2">
               {(prep?.commonQuestions || interviewQuestions.common.slice(0, 5)).map((q, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
-                  <span className="text-slate-600 mt-1">•</span>
-                  <span className="text-slate-700">{q}</span>
+                  <span className="text-stone-600 mt-1">•</span>
+                  <span className="text-stone-700">{q}</span>
                 </div>
               ))}
             </div>
@@ -109,13 +109,13 @@ export function InterviewPrepPanel({ event, prep, onPrepChange }: InterviewPrepP
           <div className="bg-white rounded-lg p-4 border border-indigo-100">
             <div className="flex items-center gap-2 mb-3">
               <FileText className="w-5 h-5 text-green-500" />
-              <h4 className="font-medium text-slate-900">Frågor att ställa till dem</h4>
+              <h4 className="font-medium text-stone-900">Frågor att ställa till dem</h4>
             </div>
             <div className="space-y-2">
               {interviewQuestions.questionsToAsk.map((q, i) => (
                 <div key={i} className="flex items-start gap-2 text-sm">
                   <CheckCircle className="w-4 h-4 text-green-500 mt-0.5" />
-                  <span className="text-slate-700">{q}</span>
+                  <span className="text-stone-700">{q}</span>
                 </div>
               ))}
             </div>

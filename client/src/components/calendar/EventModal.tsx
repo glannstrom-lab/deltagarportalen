@@ -19,7 +19,7 @@ const eventTypes = [
   { value: 'interview', label: 'Intervju', color: 'bg-amber-100 text-amber-700' },
   { value: 'meeting', label: 'Möte', color: 'bg-blue-100 text-blue-700' },
   { value: 'deadline', label: 'Deadline', color: 'bg-red-100 text-red-700' },
-  { value: 'reminder', label: 'Påminnelse', color: 'bg-slate-100 text-slate-700' },
+  { value: 'reminder', label: 'Påminnelse', color: 'bg-stone-100 text-stone-700' },
   { value: 'task', label: 'Uppgift', color: 'bg-purple-100 text-purple-700' },
   { value: 'followup', label: 'Uppföljning', color: 'bg-green-100 text-green-700' },
   { value: 'preparation', label: 'Förberedelse', color: 'bg-teal-100 text-teal-700' },
@@ -101,21 +101,21 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
     >
       <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-slate-200">
-          <h2 id={titleId} className="text-xl font-semibold text-slate-900">
+        <div className="flex items-center justify-between p-4 border-b border-stone-200">
+          <h2 id={titleId} className="text-xl font-semibold text-stone-900">
             {event ? 'Redigera händelse' : 'Ny händelse'}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-lg"
+            className="p-2 hover:bg-stone-100 rounded-lg"
             aria-label="Stäng dialog"
           >
-            <X size={20} className="text-slate-700" aria-hidden="true" />
+            <X size={20} className="text-stone-700" aria-hidden="true" />
           </button>
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-slate-200">
+        <div className="flex border-b border-stone-200">
           {tabs.map((tab) => (
             <button
               key={tab.id}
@@ -123,12 +123,12 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               className={`px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
                 activeTab === tab.id
                   ? 'border-teal-600 text-teal-600'
-                  : 'border-transparent text-slate-700 hover:text-slate-700'
+                  : 'border-transparent text-stone-700 hover:text-stone-700'
               }`}
             >
               {tab.label}
               {tab.count !== undefined && tab.count > 0 && (
-                <span className="ml-1.5 px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs">
+                <span className="ml-1.5 px-1.5 py-0.5 bg-stone-100 text-stone-600 rounded-full text-xs">
                   {tab.count}
                 </span>
               )}
@@ -142,19 +142,19 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
             <>
               {/* Title */}
               <div>
-                <label className="text-sm font-medium text-slate-700">Titel</label>
+                <label className="text-sm font-medium text-stone-700">Titel</label>
                 <input
                   type="text"
                   value={formData.title || ''}
                   onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                   placeholder="T.ex. Jobbintervju på Spotify"
-                  className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               {/* Type */}
               <div>
-                <label className="text-sm font-medium text-slate-700">Typ</label>
+                <label className="text-sm font-medium text-stone-700">Typ</label>
                 <div className="grid grid-cols-3 gap-2 mt-1">
                   {eventTypes.map((type) => (
                     <button
@@ -163,7 +163,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                       className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                         formData.type === type.value
                           ? type.color
-                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                          : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
                       }`}
                     >
                       {type.label}
@@ -175,28 +175,28 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
               {/* Date & Time */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm font-medium text-slate-700">Datum</label>
+                  <label className="text-sm font-medium text-stone-700">Datum</label>
                   <input
                     type="date"
                     value={formData.date || ''}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-slate-700">Tid</label>
+                  <label className="text-sm font-medium text-stone-700">Tid</label>
                   <input
                     type="time"
                     value={formData.time || ''}
                     onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                    className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                    className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                   />
                 </div>
               </div>
 
               {/* Location */}
               <div>
-                <label className="text-sm font-medium text-slate-700 flex items-center gap-1">
+                <label className="text-sm font-medium text-stone-700 flex items-center gap-1">
                   <MapPin size={14} />
                   Plats (valfritt)
                 </label>
@@ -205,7 +205,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                   value={formData.location || ''}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                   placeholder="Adress eller plats"
-                  className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
@@ -218,7 +218,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     onChange={(e) => setFormData({ ...formData, isVideo: e.target.checked })}
                     className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
-                  <span className="text-sm text-slate-700 flex items-center gap-1">
+                  <span className="text-sm text-stone-700 flex items-center gap-1">
                     <Video size={14} /> Videosamtal
                   </span>
                 </label>
@@ -229,7 +229,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
                     onChange={(e) => setFormData({ ...formData, isPhone: e.target.checked })}
                     className="w-4 h-4 text-teal-600 rounded focus:ring-teal-500"
                   />
-                  <span className="text-sm text-slate-700 flex items-center gap-1">
+                  <span className="text-sm text-stone-700 flex items-center gap-1">
                     <Phone size={14} /> Telefon
                   </span>
                 </label>
@@ -237,25 +237,25 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
 
               {/* With */}
               <div>
-                <label className="text-sm font-medium text-slate-700">Med (valfritt)</label>
+                <label className="text-sm font-medium text-stone-700">Med (valfritt)</label>
                 <input
                   type="text"
                   value={formData.with || ''}
                   onChange={(e) => setFormData({ ...formData, with: e.target.value })}
                   placeholder="T.ex. Anna Svensson, rekryterare"
-                  className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               {/* Description */}
               <div>
-                <label className="text-sm font-medium text-slate-700">Beskrivning</label>
+                <label className="text-sm font-medium text-stone-700">Beskrivning</label>
                 <textarea
                   value={formData.description || ''}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Anteckningar om händelsen..."
                   rows={3}
-                  className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
+                  className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 resize-none"
                 />
               </div>
 
@@ -297,7 +297,7 @@ export function EventModal({ event, isOpen, onClose, onSave, onDelete, linkedJob
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between p-4 border-t border-slate-200">
+        <div className="flex items-center justify-between p-4 border-t border-stone-200">
           {event ? (
             <button
               onClick={() => {

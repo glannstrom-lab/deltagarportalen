@@ -55,56 +55,53 @@ export function CalendarHeader({
   }
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900">Kalender</h1>
-        <p className="text-slate-700 mt-1">Planera ditt jobbsökande</p>
-      </div>
-
-      <div className="flex items-center gap-2 flex-wrap">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white dark:bg-stone-800 rounded-xl border border-teal-100 dark:border-stone-700 p-4">
+      <div className="flex items-center gap-3 flex-wrap">
         {/* Navigation */}
-        <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
+        <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1">
           <button
             onClick={() => onNavigate('prev')}
-            className="p-1.5 hover:bg-slate-100 rounded-md transition-colors"
+            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors"
+            aria-label="Föregående"
           >
-            <ChevronLeft size={18} className="text-slate-600" />
+            <ChevronLeft size={18} className="text-stone-600 dark:text-stone-300" />
           </button>
           <button
             onClick={() => onNavigate('today')}
-            className="px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100 rounded-md transition-colors"
+            className="px-3 py-2 text-sm font-medium text-stone-700 dark:text-stone-200 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors"
           >
             Idag
           </button>
           <button
             onClick={() => onNavigate('next')}
-            className="p-1.5 hover:bg-slate-100 rounded-md transition-colors"
+            className="p-2 hover:bg-white dark:hover:bg-stone-600 rounded-md transition-colors"
+            aria-label="Nästa"
           >
-            <ChevronRight size={18} className="text-slate-600" />
+            <ChevronRight size={18} className="text-stone-600 dark:text-stone-300" />
           </button>
         </div>
 
         {/* Title */}
-        <h2 className="text-lg font-semibold text-slate-900 px-2 min-w-[180px] text-center">
+        <h2 className="text-lg font-semibold text-stone-900 dark:text-stone-100 capitalize">
           {getTitle()}
         </h2>
+      </div>
 
-        {/* View switcher */}
-        <div className="flex items-center gap-1 bg-white rounded-lg border border-slate-200 p-1">
-          {(Object.keys(viewLabels) as CalendarView[]).map((v) => (
-            <button
-              key={v}
-              onClick={() => onViewChange(v)}
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                view === v
-                  ? 'bg-teal-600 text-white'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              {viewLabels[v]}
-            </button>
-          ))}
-        </div>
+      {/* View switcher */}
+      <div className="flex items-center gap-1 bg-stone-100 dark:bg-stone-700 rounded-lg p-1">
+        {(Object.keys(viewLabels) as CalendarView[]).map((v) => (
+          <button
+            key={v}
+            onClick={() => onViewChange(v)}
+            className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+              view === v
+                ? 'bg-teal-600 text-white shadow-sm'
+                : 'text-stone-600 dark:text-stone-300 hover:bg-white dark:hover:bg-stone-600'
+            }`}
+          >
+            {viewLabels[v]}
+          </button>
+        ))}
       </div>
     </div>
   )

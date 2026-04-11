@@ -39,48 +39,48 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
   if (isEditing) {
     return (
       <div className="bg-blue-50 rounded-xl border border-blue-100 p-4">
-        <h3 className="font-semibold text-slate-900 mb-4 flex items-center gap-2">
+        <h3 className="font-semibold text-stone-900 mb-4 flex items-center gap-2">
           <Navigation className="w-5 h-5 text-blue-600" />
           Reseplanering
         </h3>
         
         <div className="space-y-3">
           <div>
-            <label className="text-sm font-medium text-slate-700">Destination</label>
+            <label className="text-sm font-medium text-stone-700">Destination</label>
             <input
               type="text"
               value={travel?.destination || ''}
               onChange={(e) => onTravelChange({ ...travel, destination: e.target.value })}
               placeholder="Ange adress..."
-              className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-sm font-medium text-slate-700">Restid (min)</label>
+              <label className="text-sm font-medium text-stone-700">Restid (min)</label>
               <input
                 type="number"
                 value={travel?.duration || ''}
                 onChange={(e) => onTravelChange({ ...travel, duration: parseInt(e.target.value) || 0 })}
                 placeholder="30"
-                className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div>
-              <label className="text-sm font-medium text-slate-700">Kostnad (kr)</label>
+              <label className="text-sm font-medium text-stone-700">Kostnad (kr)</label>
               <input
                 type="number"
                 value={travel?.cost || ''}
                 onChange={(e) => onTravelChange({ ...travel, cost: parseInt(e.target.value) || 0 })}
                 placeholder="0"
-                className="mt-1 w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 w-full px-3 py-2 border border-stone-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
 
           <div>
-            <label className="text-sm font-medium text-slate-700">Färdsätt</label>
+            <label className="text-sm font-medium text-stone-700">Färdsätt</label>
             <div className="grid grid-cols-4 gap-2 mt-1">
               {transportOptions.map(({ mode, label, icon: Icon }) => (
                 <button
@@ -89,7 +89,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
                   className={`p-2 rounded-lg border text-center transition-colors ${
                     travel?.transportMode === mode
                       ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'
+                      : 'bg-white text-stone-600 border-stone-200 hover:border-blue-300'
                   }`}
                 >
                   <Icon size={20} className="mx-auto mb-1" />
@@ -120,16 +120,16 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
             <Icon className="w-5 h-5 text-blue-600" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-900">Reseplan</h3>
-            <p className="text-sm text-slate-600 mt-1">{travel?.destination}</p>
+            <h3 className="font-semibold text-stone-900">Reseplan</h3>
+            <p className="text-sm text-stone-600 mt-1">{travel?.destination}</p>
             
             <div className="flex items-center gap-4 mt-2 text-sm">
-              <span className="flex items-center gap-1 text-slate-600">
+              <span className="flex items-center gap-1 text-stone-600">
                 <Clock size={14} />
                 {travel?.duration} min
               </span>
               {travel?.cost !== undefined && travel.cost > 0 && (
-                <span className="flex items-center gap-1 text-slate-600">
+                <span className="flex items-center gap-1 text-stone-600">
                   <Wallet size={14} />
                   {travel.cost} kr
                 </span>
@@ -137,7 +137,7 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
             </div>
 
             <div className="mt-3 p-2 bg-white rounded-lg border border-blue-100">
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-stone-600">
                 <span className="font-medium">Avresa senast:</span> {calculateArrivalTime()}
               </p>
             </div>
@@ -152,9 +152,9 @@ export function TravelPlanner({ travel, onTravelChange, eventTime }: TravelPlann
             {travel?.reimbursed ? (
               <CheckCircle className="w-5 h-5 text-green-600" />
             ) : (
-              <Circle className="w-5 h-5 text-slate-600" />
+              <Circle className="w-5 h-5 text-stone-600" />
             )}
-            <span className={travel?.reimbursed ? 'text-green-600' : 'text-slate-700'}>
+            <span className={travel?.reimbursed ? 'text-green-600' : 'text-stone-700'}>
               Ersätts
             </span>
           </button>

@@ -39,21 +39,21 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
   }
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden">
+    <div className="bg-white dark:bg-stone-800 rounded-2xl border border-teal-100 dark:border-stone-700 overflow-hidden shadow-sm">
       {/* Header row */}
-      <div className="grid grid-cols-8 border-b border-slate-200">
-        <div className="p-3 border-r border-slate-100 bg-slate-50" />
+      <div className="grid grid-cols-8 border-b border-stone-200">
+        <div className="p-3 border-r border-stone-100 bg-stone-50" />
         {weekDates.map((date, i) => (
           <button
             key={i}
             onClick={() => onDateClick(date)}
-            className={`p-3 text-center border-r border-slate-100 last:border-r-0 transition-colors ${
-              isToday(date) ? 'bg-teal-50' : 'hover:bg-slate-50'
+            className={`p-3 text-center border-r border-stone-100 last:border-r-0 transition-colors ${
+              isToday(date) ? 'bg-teal-50' : 'hover:bg-stone-50'
             }`}
           >
-            <p className="text-xs font-medium text-slate-700 uppercase">{days[i]}</p>
+            <p className="text-xs font-medium text-stone-700 uppercase">{days[i]}</p>
             <p className={`text-lg font-semibold mt-1 ${
-              isToday(date) ? 'text-teal-700' : 'text-slate-900'
+              isToday(date) ? 'text-teal-700' : 'text-stone-900'
             }`}>
               {date.getDate()}
             </p>
@@ -64,9 +64,9 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
       {/* Time grid */}
       <div className="overflow-y-auto max-h-[600px]">
         {hours.map((hour) => (
-          <div key={hour} className="grid grid-cols-8 border-b border-slate-100 min-h-[80px]">
+          <div key={hour} className="grid grid-cols-8 border-b border-stone-100 min-h-[80px]">
             {/* Time label */}
-            <div className="p-2 border-r border-slate-100 bg-slate-50 text-xs text-slate-700 text-right sticky left-0">
+            <div className="p-2 border-r border-stone-100 bg-stone-50 text-xs text-stone-700 text-right sticky left-0">
               {String(hour).padStart(2, '0')}:00
             </div>
             
@@ -76,7 +76,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
               return (
                 <div
                   key={dayIndex}
-                  className="p-1 border-r border-slate-100 last:border-r-0 relative hover:bg-teal-50/50 hover:border-teal-200 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
+                  className="p-1 border-r border-stone-100 last:border-r-0 relative hover:bg-teal-50/50 hover:border-teal-200 transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-inset"
                 >
                   {dayEvents.map((event) => {
                     const config = eventTypeConfig[event.type]
@@ -93,7 +93,7 @@ export function WeekView({ currentDate, events, onEventClick, onDateClick }: Wee
                             {event.time}
                           </span>
                         </div>
-                        <p className="text-xs text-slate-700 mt-0.5 truncate font-medium">
+                        <p className="text-xs text-stone-700 mt-0.5 truncate font-medium">
                           {event.title}
                         </p>
                       </button>
