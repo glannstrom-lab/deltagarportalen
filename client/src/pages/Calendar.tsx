@@ -282,58 +282,62 @@ export default function Calendar() {
   }
 
   return (
-    <PageLayout
-      title={t('calendar.title')}
-      showTabs={false}
-      actions={
-        <button
-          onClick={handleCreateEvent}
-          className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm"
-        >
-          <Plus className="w-4 h-4" />
-          <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
-        </button>
-      }
-    >
-      <div className="space-y-4">
-        {loading && (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
-            <span className="ml-3 text-stone-600 dark:text-stone-300">{t('common.loading')}</span>
-          </div>
-        )}
+    <>
+      <PageLayout
+        title={t('calendar.title')}
+        showTabs={false}
+        actions={
+          <button
+            onClick={handleCreateEvent}
+            className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl hover:bg-teal-700 transition-colors font-medium text-sm"
+          >
+            <Plus className="w-4 h-4" />
+            <span className="hidden sm:inline">{t('calendar.newEvent')}</span>
+          </button>
+        }
+      >
+        <div className="space-y-4">
+          {loading && (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="w-8 h-8 text-teal-600 dark:text-teal-400 animate-spin" />
+              <span className="ml-3 text-stone-600 dark:text-stone-300">{t('common.loading')}</span>
+            </div>
+          )}
 
-        {!loading && (
-          <>
-            <CalendarHeader
-              currentDate={currentDate}
-              view={view}
-              onViewChange={setView}
-              onNavigate={navigate}
-            />
-
-            {view === 'month' && renderMonthView()}
-            {view === 'week' && (
-              <WeekView
+          {!loading && (
+            <>
+              <CalendarHeader
                 currentDate={currentDate}
-                events={events}
-                onEventClick={handleEventClick}
-                onDateClick={handleDateClick}
+                view={view}
+                onViewChange={setView}
+                onNavigate={navigate}
               />
-            )}
-            {view === 'day' && (
-              <DayView
-                date={currentDate}
-                events={events}
-                onEventClick={handleEventClick}
-              />
-            )}
-            {view === 'agenda' && renderAgendaView()}
-          </>
-        )}
-      </div>
 
-      {/* Event Modal */}
+              {view === 'month' && renderMonthView()}
+              {view === 'week' && (
+                <WeekView
+                  currentDate={currentDate}
+                  events={events}
+                  onEventClick={handleEventClick}
+                  onDateClick={handleDateClick}
+                />
+              )}
+              {view === 'day' && (
+                <DayView
+                  date={currentDate}
+                  events={events}
+                  onEventClick={handleEventClick}
+                />
+              )}
+              {view === 'agenda' && renderAgendaView()}
+            </>
+          )}
+        </div>
+
+        <HelpButton content={helpContent.calendar} />
+      </PageLayout>
+
+      {/* Event Modal - outside PageLayout for proper z-index */}
       <EventModal
         event={selectedEvent}
         isOpen={isModalOpen}
@@ -344,8 +348,6 @@ export default function Calendar() {
         onSave={handleSaveEvent}
         onDelete={handleDeleteEvent}
       />
-
-      <HelpButton content={helpContent.calendar} />
-    </PageLayout>
+    </>
   )
 }
