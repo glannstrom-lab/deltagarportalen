@@ -1,7 +1,4 @@
 {
   "version": 2,
-  "rootDirectory": "client",
-  "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
-  ]
+  "rootDirectory": "client"
 }
