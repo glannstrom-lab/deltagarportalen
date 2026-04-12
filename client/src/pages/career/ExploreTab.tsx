@@ -1,16 +1,17 @@
 /**
- * Explore Tab - Explore occupations with enhanced interactivity
+ * Explore Tab - Explore occupations with cloud storage for favorites
  */
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Search, Compass, Briefcase, GraduationCap, DollarSign,
   TrendingUp, MapPin, Clock, Star, Filter, ChevronRight,
-  Heart, Share2, X, Eye
+  Heart, Share2, X, Eye, Loader2
 } from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
 import { IndustryRadarSection, EducationPathPanel } from '@/components/ai'
 import { cn } from '@/lib/utils'
+import { favoriteOccupationsApi, type FavoriteOccupation } from '@/services/careerApi'
 
 // Occupation definitions with i18n - these would typically come from an API
 const occupationDefs = [
@@ -72,8 +73,28 @@ export default function ExploreTab() {
   const [selectedSalaryRange, setSelectedSalaryRange] = useState('all')
   const [showFilters, setShowFilters] = useState(false)
   const [favorites, setFavorites] = useState<Set<string>>(new Set())
+  const [cloudFavorites, setCloudFavorites] = useState<FavoriteOccupation[]>([])
   const [comparison, setComparison] = useState<Set<string>>(new Set())
   const [showComparison, setShowComparison] = useState(false)
+  const [isLoadingFavorites, setIsLoadingFavorites] = useState(true)
+  const [savingFavorite, setSavingFavorite] = useState<string | null>(null)
+
+  // Load favorites from cloud on mount
+  useEffect(() => {
+    loadFavorites()
+  }, [])
+
+  const loadFavorites = async () => {
+    try {
+      const data = await favoriteOccupationsApi.getAll()
+      setCloudFavorites(data)
+      setFavorites(new Set(data.map(f => f.occupation_id)))
+    } catch (err) {
+      console.error('Failed to load favorites:', err)
+    } finally {
+      setIsLoadingFavorites(false)
+    }
+  }
 
   // Build translated categories
   const categories = useMemo(() => categoryKeys.map(key => ({
@@ -133,14 +154,34 @@ export default function ExploreTab() {
     return matchesSearch && matchesCategory && matchesSalary
   })
 
-  const toggleFavorite = (id: string) => {
-    const newFavorites = new Set(favorites)
-    if (newFavorites.has(id)) {
-      newFavorites.delete(id)
-    } else {
-      newFavorites.add(id)
+  const toggleFavorite = async (id: string) => {
+    const occupation = occupations.find(o => o.id === id)
+    if (!occupation) return
+
+    setSavingFavorite(id)
+    try {
+      const isFav = await favoriteOccupationsApi.toggle({
+        occupation_id: id,
+        occupation_title: occupation.title,
+        occupation_category: occupation.category,
+        salary_range: occupation.salary,
+        demand_level: occupation.demand,
+        education_required: occupation.education,
+        match_percentage: occupation.match
+      })
+
+      const newFavorites = new Set(favorites)
+      if (isFav) {
+        newFavorites.add(id)
+      } else {
+        newFavorites.delete(id)
+      }
+      setFavorites(newFavorites)
+    } catch (err) {
+      console.error('Failed to toggle favorite:', err)
+    } finally {
+      setSavingFavorite(null)
     }
-    setFavorites(newFavorites)
   }
 
   const toggleComparison = (id: string) => {
@@ -349,12 +390,17 @@ export default function ExploreTab() {
                   variant="outline"
                   size="sm"
                   onClick={() => toggleFavorite(occupation.id)}
+                  disabled={savingFavorite === occupation.id}
                   className={cn(
                     'flex items-center gap-1',
                     favorites.has(occupation.id) && 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800'
                   )}
                 >
-                  <Heart className={cn('w-4 h-4', favorites.has(occupation.id) && 'fill-current')} />
+                  {savingFavorite === occupation.id ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Heart className={cn('w-4 h-4', favorites.has(occupation.id) && 'fill-current')} />
+                  )}
                 </Button>
 
                 <Button

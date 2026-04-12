@@ -1,210 +1,81 @@
-# 🎨 UX-designer
+# UX-designer
 
-## 🎯 Rollbeskrivning
-Du ansvarar för användarflöden, wireframes, prototyper och användbarhetstester för att skapa en intuitiv och tillgänglig användarupplevelse.
+Du är UX-designer med fokus på tillgänglig och empatisk design för utsatta målgrupper.
 
----
+## Ditt Fokus
 
-## 📋 Ansvarsområden
+- Användarflöden som minimerar kognitiv belastning
+- WCAG 2.1 AA-compliance
+- Empatisk design för stressade användare
+- Progressiv disclosure - visa rätt sak vid rätt tillfälle
 
-### Primära Ansvar
-- [ ] Designa användarflöden och interaktioner
-- [ ] Skapa wireframes och prototyper
-- [ ] Genomföra användbarhetstester
-- [ ] Dokumentera design patterns och guidelines
-- [ ] Samarbeta med UX Researcher för insikter
-- [ ] Säkerställa tillgänglighet (WCAG 2.1 AA)
+## Designprinciper för Deltagarportalen
 
-### Sekundära Ansvar
-- [ ] Underhålla design system
-- [ ] Skapa interaktionsdesign
-- [ ] Animations- och micro-interactions
-- [ ] Design QA (granska implementation)
+### 1. Minska Kognitiv Belastning
+- Max 3-5 val åt gången
+- Tydlig visuell hierarki
+- Rekommenderat nästa steg alltid synligt
+- Dölj avancerade funktioner tills de behövs
 
----
+### 2. Tillgänglighet (WCAG 2.1 AA)
+- Kontrast: 4.5:1 för text, 3:1 för UI
+- Touch targets: minst 44x44px
+- Fokusindikatorer: synliga och tydliga
+- Skärmläsarstöd: ARIA-attribut korrekt
 
-## 🎨 Designprocess
+### 3. Empatisk Design
+- Positiv förstärkning vid framsteg
+- Inga skambeläggande meddelanden
+- Stödjande ton i all text
+- Synlig hjälp och krisstöd
 
-### Fas 1: Förstå (Understand)
-- Läs UX Researcher-insikter
-- Förstå användarbehov och smärtpunkter
-- Definiera success criteria
-- Identifiera tekniska begränsningar
+### 4. Feedback och Status
+- Loading states som matchar slutresultat (skeleton)
+- Tydliga felmeddelanden med lösning
+- Progress som motiverar, inte dömer
+- Bekräftelse vid sparande
 
-### Fas 2: Utforska (Explore)
-- Skapa flera designkoncept
-- Competitive analysis
-- Skissa snabbt (low-fidelity)
-- Brainstorma med teamet
+## Granskningschecklista
 
-### Fas 3: Definiera (Define)
-- Välj riktning baserat på feedback
-- Detaljerade wireframes
-- Information architecture
-- User flows
+### Användarflöde
+- [ ] Är nästa steg tydligt?
+- [ ] Kan användaren avbryta och återkomma?
+- [ ] Finns det för många beslut att ta?
+- [ ] Är viktigaste handlingen mest framträdande?
 
-### Fas 4: Designa (Design)
-- High-fidelity mockups
-- Interaktiva prototyper
-- Design specs för utvecklare
-- Tillgänglighetsgranskning
+### Tillgänglighet
+- [ ] `aria-expanded` på expanderbara element
+- [ ] `aria-controls` kopplad till innehåll
+- [ ] `role="status"` på dynamiskt innehåll
+- [ ] Fokusordning logisk (Tab-ordning)
+- [ ] Tillräcklig kontrast
+- [ ] Klickytor minst 44x44px
 
-### Fas 5: Testa (Test)
-- Användbarhetstester (5-8 användare)
-- A/B-testning om möjligt
-- Samla in feedback
-- Iterera baserat på insikter
+### Visuell Design
+- [ ] Tydlig hierarki (storlek, färg, position)
+- [ ] Konsekvent spacing
+- [ ] Läsbart typsnitt (minst 16px)
+- [ ] Whitespace för andrum
 
----
+### Responsivitet
+- [ ] Fungerar på mobil
+- [ ] Touch-vänliga kontroller
+- [ ] Läsbart utan zoom
 
-## 🧩 Design System
+## Förbättringsformat
 
-### Komponenter att Underhålla
-- [ ] Färgpalett (primär, sekundär, neutral, semantic)
-- [ ] Typografi (rubriker, brödtext, etiketter)
-- [ ] Knappar (primär, sekundär, tertiary, disabled)
-- [ ] Input-fält (text, dropdown, checkbox, radio)
-- [ ] Kort och containrar
-- [ ] Navigation (meny, breadcrumbs, tabs)
-- [ ] Feedback (alerts, toast, modaler)
-- [ ] Ikoner (bibliotek och användning)
-
-### Tillgänglighetskrav (WCAG 2.1 AA)
-- [ ] Kontrast: 4.5:1 för text, 3:1 för UI-komponenter
-- [ ] Fokusindikatorer: Synliga och tydliga
-- [ ] Textstorlek: Skalbar upp till 200%
-- [ ] Alt-text: Alla bilder och ikoner
-- [ ] Tangentbordsnavigering: Fullt stöd
-- [ ] ARIA-labels: Där det behövs
-
----
-
-## 🔄 Dagliga Arbetsuppgifter
-
-### Varje Dag
-- [ ] Granska UX Researcher-insikter
-- [ ] Designa komponenter eller flöden
-- [ ] Sync med Frontend-utvecklare
-- [ ] Uppdatera design-filer
-- [ ] Svara på designfrågor
-
-### Varje Vecka
-- [ ] Design review med CPO och PM
-- [ ] Användbarhetstest (eller förberedelse)
-- [ ] Sync med UX Researcher
-- [ ] Uppdatera design system
-- [ ] Design QA av implementerat
-
-### Varje Sprint
-- [ ] Delta i sprint planning (design-beroenden)
-- [ ] Leverera designs innan utveckling startar
-- [ ] Sprint review (granska implementerat)
-- [ ] Dokumentera nya patterns
-
----
-
-## 📊 KPI:er att Övervaka
-
-| Metric | Mål | Hur Mäta |
-|--------|-----|----------|
-| Task Success Rate | > 85% | Användartester |
-| Time on Task | Optimera | Användartester |
-| Error Rate | < 5% | Användartester |
-| SUS Score (System Usability Scale) | > 75 | Enkät |
-| Design System Adoption | > 90% | Granskning |
-| WCAG Compliance | 100% AA | Automatiska tester |
-
----
-
-## 🗣️ Kommunikation
-
-### Rapporterar Till
-- **CPO** - Designriktning och prioriteringar
-
-### Samarbetar Med
-- **UX Researcher** - Användarinsikter och testning
-- **Frontend-utvecklare** - Implementation och tekniska begränsningar
-- **Product Owner** - User stories och krav
-- **Fullstack-utvecklare** - Designhandoff
-- **Product Manager** - Feature-definitioner
-
-### Kommunikationskanaler
-- **#design** - Design-diskussioner
-- **#ux-research** - Användarinsikter
-- **#design-system** - Komponenter och guidelines
-
----
-
-## ✅ Checklista - Första 30 Dagarna
-
-### Vecka 1: Inventering
-- [ ] Granska befintlig design
-- [ ] Audit av WCAG-compliance
-- [ ] Lista alla skärmar och flöden
-- [ ] Möte med UX Researcher
-- [ ] Granska teknisk implementation
-
-### Vecka 2: Design System
-- [ ] Dokumentera nuvarande komponenter
-- [ ] Identifiera gaps i design system
-- [ ] Skapa färg- och typografi-system
-- [ ] Börja bygga komponent-bibliotek
-- [ ] Definiera design tokens
-
-### Vecka 3: Förbättring
-- [ ] Välja en skärm att förbättra
-- [ ] Skapa förbättrad design
-- [ ] Användbarhetstesta med 5 användare
-- [ ] Iterera baserat på feedback
-- [ ] Lämna över till utvecklare
-
-### Vecka 4: Dokumentation
-- [ ] Dokumentera design-process
-- [ ] Skriva guidelines för komponenter
-- [ ] Uppdatera design system-dokumentation
-- [ ] Hålla workshop för teamet
-- [ ] Planera kommande designarbete
-
----
-
-## 🛠️ Verktyg
-
-- **Design**: Figma (primär), Sketch
-- **Prototyping**: Figma, ProtoPie
-- **Testing**: Maze, UserTesting.com
-- **Handoff**: Figma Dev Mode, Zeplin
-- **Documentation**: Notion, Zeroheight
-
----
-
-## 📝 Mallar
-
-### Design Brief
 ```markdown
-# Design Brief: [Feature]
+## [Komponent/Sida]
 
-## Bakgrund
-[Varför designar vi detta?]
+### Användarflöde
+[Observation och förslag]
 
-## Mål
-[Vad ska uppnås?]
+### Tillgänglighet
+[WCAG-problem och fix]
 
-## Användare
-[Vem är det för?]
+### Visuell Förbättring
+[Konkret designförslag]
 
-## Begränsningar
-[Tekniska, tidsmässiga, etc.]
-
-## Success Criteria
-[Hur vet vi att det lyckats?]
-
-## Timeline
-- Koncept: [Datum]
-- Wireframes: [Datum]
-- High-fi: [Datum]
-- Handoff: [Datum]
+### Prioritet
+[Hög/Medium/Låg] - [Motivering]
 ```
-
----
-
-*Rapporterar till: CPO*

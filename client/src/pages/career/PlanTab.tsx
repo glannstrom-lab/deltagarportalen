@@ -1,94 +1,197 @@
 /**
- * Plan Tab - Career plan with SMART goals and visual timeline
+ * Plan Tab - Career plan with SMART goals and visual timeline (cloud storage)
  */
-import { useState, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Target, MapPin, Flag, Calendar, CheckCircle, Clock,
   Sparkles, ChevronRight, Plus, Award, TrendingUp, AlertCircle,
-  Zap, X
+  Zap, X, Trash2, Loader2
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
-
-interface Milestone {
-  id: string
-  title: string
-  timeframe: string
-  targetDate?: string
-  completed: boolean
-  steps: string[]
-  progress?: number
-}
+import { careerPlanApi, milestonesApi, type CareerPlan, type CareerMilestone } from '@/services/careerApi'
 
 export default function PlanTab() {
   const { t, i18n } = useTranslation()
   const [currentSituation, setCurrentSituation] = useState('')
   const [goal, setGoal] = useState('')
-  const [hasPlan, setHasPlan] = useState(false)
+  const [timeframe, setTimeframe] = useState('')
+  const [plan, setPlan] = useState<CareerPlan | null>(null)
+  const [milestones, setMilestones] = useState<CareerMilestone[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
   const [showSMARTHelper, setShowSMARTHelper] = useState(false)
-  const [completedMilestones, setCompletedMilestones] = useState<Set<string>>(new Set())
+  const [isAddingMilestone, setIsAddingMilestone] = useState(false)
+  const [newMilestone, setNewMilestone] = useState({
+    title: '',
+    timeframe: '',
+    target_date: '',
+    steps: ''
+  })
 
-  // Translated mock milestones with dates and progress
-  const initialMilestones = useMemo(() => [
-    {
-      id: '1',
-      title: i18n.language === 'en' ? 'Update CV and LinkedIn' : 'Uppdatera CV och LinkedIn',
-      timeframe: i18n.language === 'en' ? 'Month 1-2' : 'Månad 1-2',
-      targetDate: '2026-05-01',
-      completed: true,
-      progress: 100,
-      steps: i18n.language === 'en'
-        ? ['Add recent experiences', 'Optimize keywords', 'Update profile picture']
-        : ['Lägg till senaste erfarenheter', 'Optimera nyckelord', 'Uppdatera profilbild']
-    },
-    {
-      id: '2',
-      title: i18n.language === 'en' ? 'Identify target companies' : 'Identifiera målföretag',
-      timeframe: i18n.language === 'en' ? 'Month 2-3' : 'Månad 2-3',
-      targetDate: '2026-06-15',
-      completed: false,
-      progress: 60,
-      steps: i18n.language === 'en'
-        ? ['List 10 dream employers', 'Follow them on LinkedIn', 'Contact people within the companies']
-        : ['Lista 10 drömarbetsgivare', 'Följ dem på LinkedIn', 'Kontakta personer inom företagen']
-    },
-    {
-      id: '3',
-      title: i18n.language === 'en' ? 'Send applications' : 'Skicka ansökningar',
-      timeframe: i18n.language === 'en' ? 'Month 3-6' : 'Månad 3-6',
-      targetDate: '2026-09-01',
-      completed: false,
-      progress: 0,
-      steps: i18n.language === 'en'
-        ? ['Tailor CV for each role', 'Write cover letters', 'Follow up applications']
-        : ['Skräddarsy CV för varje roll', 'Skriv personliga brev', 'Följa upp ansökningar']
-    },
-  ], [i18n.language])
+  // Load existing plan from cloud
+  useEffect(() => {
+    loadPlan()
+  }, [])
 
-  const [milestones, setMilestones] = useState<Milestone[]>(initialMilestones)
+  const loadPlan = async () => {
+    setIsLoading(true)
+    try {
+      const activePlan = await careerPlanApi.getActive()
+      if (activePlan) {
+        setPlan(activePlan)
+        setMilestones(activePlan.milestones || [])
+        setCurrentSituation(activePlan.current_situation)
+        setGoal(activePlan.goal)
+        setTimeframe(activePlan.timeframe || '')
+      }
+    } catch (err) {
+      console.error('Failed to load career plan:', err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
-  const generatePlan = () => {
+  const generatePlan = async () => {
     if (!currentSituation.trim() || !goal.trim()) return
-    setHasPlan(true)
+    setIsSaving(true)
+    try {
+      const newPlan = await careerPlanApi.create({
+        current_situation: currentSituation,
+        goal,
+        timeframe: timeframe || undefined
+      })
+      setPlan(newPlan)
+      setMilestones([])
+
+      // Create default milestones
+      const defaultMilestones = [
+        {
+          plan_id: newPlan.id,
+          title: i18n.language === 'en' ? 'Update CV and LinkedIn' : 'Uppdatera CV och LinkedIn',
+          timeframe: i18n.language === 'en' ? 'Month 1-2' : 'Månad 1-2',
+          steps: i18n.language === 'en'
+            ? ['Add recent experiences', 'Optimize keywords', 'Update profile picture']
+            : ['Lägg till senaste erfarenheter', 'Optimera nyckelord', 'Uppdatera profilbild'],
+          sort_order: 0
+        },
+        {
+          plan_id: newPlan.id,
+          title: i18n.language === 'en' ? 'Identify target companies' : 'Identifiera målföretag',
+          timeframe: i18n.language === 'en' ? 'Month 2-3' : 'Månad 2-3',
+          steps: i18n.language === 'en'
+            ? ['List 10 dream employers', 'Follow them on LinkedIn', 'Contact people within the companies']
+            : ['Lista 10 drömarbetsgivare', 'Följ dem på LinkedIn', 'Kontakta personer inom företagen'],
+          sort_order: 1
+        },
+        {
+          plan_id: newPlan.id,
+          title: i18n.language === 'en' ? 'Send applications' : 'Skicka ansökningar',
+          timeframe: i18n.language === 'en' ? 'Month 3-6' : 'Månad 3-6',
+          steps: i18n.language === 'en'
+            ? ['Tailor CV for each role', 'Write cover letters', 'Follow up applications']
+            : ['Skräddarsy CV för varje roll', 'Skriv personliga brev', 'Följa upp ansökningar'],
+          sort_order: 2
+        }
+      ]
+
+      const createdMilestones = await Promise.all(
+        defaultMilestones.map(m => milestonesApi.create(m))
+      )
+      setMilestones(createdMilestones)
+    } catch (err) {
+      console.error('Failed to create career plan:', err)
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  const toggleMilestone = (id: string) => {
-    setMilestones(prev => prev.map(m =>
-      m.id === id ? { ...m, completed: !m.completed, progress: !m.completed ? 100 : 0 } : m
-    ))
+  const toggleMilestone = async (id: string) => {
+    try {
+      const updated = await milestonesApi.toggleComplete(id)
+      setMilestones(prev => prev.map(m => m.id === id ? updated : m))
+      // Refresh plan to get updated progress
+      const refreshedPlan = await careerPlanApi.getActive()
+      if (refreshedPlan) setPlan(refreshedPlan)
+    } catch (err) {
+      console.error('Failed to toggle milestone:', err)
+    }
   }
 
-  const updateMilestoneProgress = (id: string, progress: number) => {
-    setMilestones(prev => prev.map(m =>
-      m.id === id ? { ...m, progress: Math.min(100, Math.max(0, progress)) } : m
-    ))
+  const updateMilestoneProgress = async (id: string, progress: number) => {
+    try {
+      const updated = await milestonesApi.updateProgress(id, progress)
+      setMilestones(prev => prev.map(m => m.id === id ? updated : m))
+      // Refresh plan to get updated progress
+      const refreshedPlan = await careerPlanApi.getActive()
+      if (refreshedPlan) setPlan(refreshedPlan)
+    } catch (err) {
+      console.error('Failed to update progress:', err)
+    }
   }
 
-  const completedCount = milestones.filter(m => m.completed).length
-  const totalProgress = Math.round(milestones.reduce((sum, m) => sum + (m.progress || 0), 0) / milestones.length)
+  const addMilestone = async () => {
+    if (!plan || !newMilestone.title.trim()) return
+    setIsSaving(true)
+    try {
+      const created = await milestonesApi.create({
+        plan_id: plan.id,
+        title: newMilestone.title,
+        timeframe: newMilestone.timeframe || undefined,
+        target_date: newMilestone.target_date || undefined,
+        steps: newMilestone.steps ? newMilestone.steps.split('\n').filter(s => s.trim()) : [],
+        sort_order: milestones.length
+      })
+      setMilestones(prev => [...prev, created])
+      setNewMilestone({ title: '', timeframe: '', target_date: '', steps: '' })
+      setIsAddingMilestone(false)
+    } catch (err) {
+      console.error('Failed to add milestone:', err)
+    } finally {
+      setIsSaving(false)
+    }
+  }
 
-  if (!hasPlan) {
+  const deleteMilestone = async (id: string) => {
+    if (!confirm('Är du säker på att du vill ta bort denna milstolpe?')) return
+    try {
+      await milestonesApi.delete(id)
+      setMilestones(prev => prev.filter(m => m.id !== id))
+    } catch (err) {
+      console.error('Failed to delete milestone:', err)
+    }
+  }
+
+  const deletePlan = async () => {
+    if (!plan) return
+    if (!confirm('Är du säker på att du vill ta bort hela karriärplanen?')) return
+    try {
+      await careerPlanApi.delete(plan.id)
+      setPlan(null)
+      setMilestones([])
+      setCurrentSituation('')
+      setGoal('')
+      setTimeframe('')
+    } catch (err) {
+      console.error('Failed to delete plan:', err)
+    }
+  }
+
+  const completedCount = milestones.filter(m => m.is_completed).length
+  const totalProgress = plan?.total_progress ||
+    (milestones.length > 0 ? Math.round(milestones.reduce((sum, m) => sum + (m.progress || 0), 0) / milestones.length) : 0)
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <span className="ml-3 text-gray-600 dark:text-gray-400">Laddar karriärplan...</span>
+      </div>
+    )
+  }
+
+  if (!plan) {
     return (
       <div className="space-y-6">
         <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
@@ -131,13 +234,27 @@ export default function PlanTab() {
               />
             </div>
 
+            <div>
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                <Clock className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                Tidsram (valfritt)
+              </label>
+              <input
+                type="text"
+                value={timeframe}
+                onChange={(e) => setTimeframe(e.target.value)}
+                placeholder="T.ex. 6 månader, 1 år"
+                className="w-full px-4 py-3 rounded-lg border bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600 focus:border-teal-500 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-200 dark:focus:ring-teal-800 text-gray-800 dark:text-gray-100"
+              />
+            </div>
+
             <div className="flex gap-2">
               <Button
                 onClick={generatePlan}
-                disabled={!currentSituation.trim() || !goal.trim()}
+                disabled={!currentSituation.trim() || !goal.trim() || isSaving}
                 className="w-full flex-1"
               >
-                <Sparkles className="w-4 h-4 mr-2" />
+                {isSaving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Sparkles className="w-4 h-4 mr-2" />}
                 {t('career.plan.generatePlan')}
               </Button>
               <Button
@@ -163,7 +280,7 @@ export default function PlanTab() {
                 <ul className="space-y-2 text-sm text-amber-700 dark:text-amber-300">
                   <li><strong>S</strong> - Specifikt: Vad exakt vill du uppnå?</li>
                   <li><strong>M</strong> - Mätbart: Hur vet du när du har nått målet?</li>
-                  <li><strong>A</strong> - Uppnåeligt: Är det realistiskt under din timeframe?</li>
+                  <li><strong>A</strong> - Uppnåeligt: Är det realistiskt under din tidsram?</li>
                   <li><strong>R</strong> - Relevant: Matchar det dina värden och ambitioner?</li>
                   <li><strong>T</strong> - Tidsbundet: Har du en tidsram i åtanke?</li>
                 </ul>
@@ -201,11 +318,17 @@ export default function PlanTab() {
           <div className="w-12 h-12 bg-teal-100 dark:bg-teal-900/30 rounded-xl flex items-center justify-center">
             <Target className="w-6 h-6 text-teal-600 dark:text-teal-400" />
           </div>
-          <div>
+          <div className="flex-1">
             <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100">{t('career.plan.yourCareerPlan')}</h3>
-            <p className="text-gray-600 dark:text-gray-300"><strong>Från:</strong> {currentSituation}</p>
-            <p className="text-gray-600 dark:text-gray-300"><strong>Till:</strong> {goal}</p>
+            <p className="text-gray-600 dark:text-gray-300"><strong>Från:</strong> {plan.current_situation}</p>
+            <p className="text-gray-600 dark:text-gray-300"><strong>Till:</strong> {plan.goal}</p>
+            {plan.timeframe && (
+              <p className="text-gray-500 dark:text-gray-400 text-sm"><strong>Tidsram:</strong> {plan.timeframe}</p>
+            )}
           </div>
+          <Button variant="ghost" size="sm" className="text-red-600" onClick={deletePlan}>
+            <Trash2 className="w-4 h-4" />
+          </Button>
         </div>
 
         {/* Overall Progress */}
@@ -228,6 +351,62 @@ export default function PlanTab() {
           </p>
         </div>
 
+        {/* Add Milestone Button */}
+        <div className="mb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setIsAddingMilestone(true)}
+            className="w-full"
+          >
+            <Plus className="w-4 h-4 mr-1" />
+            Lägg till milstolpe
+          </Button>
+        </div>
+
+        {/* Add Milestone Form */}
+        {isAddingMilestone && (
+          <div className="mb-6 p-4 bg-stone-50 dark:bg-stone-700 rounded-xl">
+            <div className="grid gap-3">
+              <input
+                type="text"
+                placeholder="Milstolpens titel"
+                value={newMilestone.title}
+                onChange={(e) => setNewMilestone(prev => ({ ...prev, title: e.target.value }))}
+                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <input
+                  type="text"
+                  placeholder="Tidsram (t.ex. Månad 1-2)"
+                  value={newMilestone.timeframe}
+                  onChange={(e) => setNewMilestone(prev => ({ ...prev, timeframe: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
+                />
+                <input
+                  type="date"
+                  value={newMilestone.target_date}
+                  onChange={(e) => setNewMilestone(prev => ({ ...prev, target_date: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
+                />
+              </div>
+              <textarea
+                placeholder="Steg (ett per rad)"
+                value={newMilestone.steps}
+                onChange={(e) => setNewMilestone(prev => ({ ...prev, steps: e.target.value }))}
+                rows={3}
+                className="w-full px-3 py-2 rounded-lg border bg-white dark:bg-stone-600 border-stone-300 dark:border-stone-500 text-gray-800 dark:text-gray-100"
+              />
+            </div>
+            <div className="flex gap-2 mt-3">
+              <Button size="sm" onClick={addMilestone} disabled={isSaving} className="bg-teal-500 hover:bg-teal-600">
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Spara'}
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setIsAddingMilestone(false)}>Avbryt</Button>
+            </div>
+          </div>
+        )}
+
         {/* Timeline */}
         <div className="mb-6">
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
@@ -236,15 +415,21 @@ export default function PlanTab() {
           </h4>
 
           <div className="relative pl-6">
-            {milestones.map((milestone, index) => (
+            {milestones.length === 0 ? (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <Award className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <p>Inga milstolpar ännu.</p>
+                <p className="text-sm">Klicka på "Lägg till milstolpe" för att komma igång.</p>
+              </div>
+            ) : milestones.map((milestone, index) => (
               <div key={milestone.id} className="mb-6 relative">
                 {/* Timeline dot */}
                 <div className="absolute -left-8 top-1 w-6 h-6 rounded-full flex items-center justify-center border-2 bg-white dark:bg-stone-800"
                   style={{
-                    borderColor: milestone.completed ? '#14b8a6' : '#d1d5db',
+                    borderColor: milestone.is_completed ? '#14b8a6' : '#d1d5db',
                   }}
                 >
-                  {milestone.completed ? (
+                  {milestone.is_completed ? (
                     <CheckCircle className="w-4 h-4 text-teal-600 dark:text-teal-400" />
                   ) : (
                     <div className="w-2 h-2 rounded-full bg-gray-400 dark:bg-gray-500" />
@@ -256,7 +441,7 @@ export default function PlanTab() {
                   <div
                     className={cn(
                       "absolute -left-7 top-7 w-0.5 h-20 transition-colors",
-                      milestone.completed ? "bg-teal-200 dark:bg-teal-700" : "bg-stone-200 dark:bg-stone-600"
+                      milestone.is_completed ? "bg-teal-200 dark:bg-teal-700" : "bg-stone-200 dark:bg-stone-600"
                     )}
                   />
                 )}
@@ -265,7 +450,7 @@ export default function PlanTab() {
                 <div
                   className={cn(
                     'p-4 rounded-xl border-2 transition-all',
-                    milestone.completed
+                    milestone.is_completed
                       ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-600'
                       : 'bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-600'
                   )}
@@ -274,38 +459,48 @@ export default function PlanTab() {
                     <div className="flex-1">
                       <h4 className={cn(
                         'font-semibold',
-                        milestone.completed ? 'text-teal-700 dark:text-teal-300 line-through' : 'text-gray-800 dark:text-gray-100'
+                        milestone.is_completed ? 'text-teal-700 dark:text-teal-300 line-through' : 'text-gray-800 dark:text-gray-100'
                       )}>
                         {milestone.title}
                       </h4>
                       <div className="flex flex-wrap gap-2 mt-1 text-xs">
-                        <span className="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400">
-                          <Clock className="w-3 h-3" />
-                          {milestone.timeframe}
-                        </span>
-                        {milestone.targetDate && (
+                        {milestone.timeframe && (
+                          <span className="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400">
+                            <Clock className="w-3 h-3" />
+                            {milestone.timeframe}
+                          </span>
+                        )}
+                        {milestone.target_date && (
                           <span className="inline-flex items-center gap-1 text-gray-600 dark:text-gray-400">
                             <Calendar className="w-3 h-3" />
-                            {new Date(milestone.targetDate).toLocaleDateString('sv-SE')}
+                            {new Date(milestone.target_date).toLocaleDateString('sv-SE')}
                           </span>
                         )}
                       </div>
                     </div>
-                    <button
-                      onClick={() => toggleMilestone(milestone.id)}
-                      className={cn(
-                        'px-2 py-1 rounded text-xs font-medium transition-colors flex-shrink-0',
-                        milestone.completed
-                          ? 'bg-teal-200 dark:bg-teal-800 text-teal-700 dark:text-teal-200'
-                          : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
-                      )}
-                    >
-                      {milestone.completed ? '✓ Klar' : 'Gågång'}
-                    </button>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => toggleMilestone(milestone.id)}
+                        className={cn(
+                          'px-2 py-1 rounded text-xs font-medium transition-colors flex-shrink-0',
+                          milestone.is_completed
+                            ? 'bg-teal-200 dark:bg-teal-800 text-teal-700 dark:text-teal-200'
+                            : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
+                        )}
+                      >
+                        {milestone.is_completed ? '✓ Klar' : 'Markera klar'}
+                      </button>
+                      <button
+                        onClick={() => deleteMilestone(milestone.id)}
+                        className="p-1 rounded text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
 
                   {/* Progress bar */}
-                  {!milestone.completed && (
+                  {!milestone.is_completed && (
                     <div className="mb-3">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-xs text-gray-600 dark:text-gray-400">Framsteg</span>
@@ -323,17 +518,19 @@ export default function PlanTab() {
                   )}
 
                   {/* Steps */}
-                  <ul className="space-y-2">
-                    {milestone.steps.map((step, stepIndex) => (
-                      <li key={stepIndex} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
-                        <div className={cn(
-                          'w-1.5 h-1.5 rounded-full flex-shrink-0',
-                          milestone.completed ? 'bg-teal-400 dark:bg-teal-500' : 'bg-gray-400 dark:bg-gray-500'
-                        )} />
-                        {step}
-                      </li>
-                    ))}
-                  </ul>
+                  {milestone.steps && milestone.steps.length > 0 && (
+                    <ul className="space-y-2">
+                      {milestone.steps.map((step, stepIndex) => (
+                        <li key={stepIndex} className="text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                          <div className={cn(
+                            'w-1.5 h-1.5 rounded-full flex-shrink-0',
+                            milestone.is_completed ? 'bg-teal-400 dark:bg-teal-500' : 'bg-gray-400 dark:bg-gray-500'
+                          )} />
+                          {step}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
             ))}
@@ -343,7 +540,7 @@ export default function PlanTab() {
         <Button
           variant="outline"
           className="w-full"
-          onClick={() => setHasPlan(false)}
+          onClick={deletePlan}
         >
           <Plus className="w-4 h-4 mr-1" />
           {t('career.plan.updatePlan')}

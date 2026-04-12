@@ -1,26 +1,79 @@
-# Claude Code Guidelines för Deltagarportalen
+# Deltagarportalen - Claude Code Guidelines
 
-## Felsökning - Lärdomar
+## Projektöversikt
 
-### 2026-04-09: White Screen på Landing Page
+**Deltagarportalen** är en jobbsökarportal som hjälper arbetssökande att hitta jobb genom AI-drivna verktyg. Portalen används av deltagare (arbetssökande) och arbetskonsulenter (handledare).
 
-**Problem:** Startsidan (jobin.se) visade bara vit skärm för utloggade användare.
+### Målgrupp
+- Arbetssökande, inklusive långtidsarbetslösa med fysiska/psykologiska utmaningar
+- Arbetskonsulenter som coachar deltagare
+- Kräver hög tillgänglighet (WCAG 2.1 AA) och empatisk design
 
-**Rotorsak:** I `client/src/pages/Landing.tsx` låg `console.log()` FÖRE `import`-satserna:
+### Huvudfunktioner
+| Funktion | Beskrivning | AI-driven |
+|----------|-------------|-----------|
+| CV-byggare | Skapa och exportera CV | ✅ |
+| Personligt brev | Generera anpassade brev | ✅ |
+| Intervjusimulator | Öva intervjuer med tal-till-text | ✅ |
+| Kompetensanalys | Identifiera gap mot drömjobb | ✅ |
+| Intresseguide | Upptäck passande yrken | ✅ |
+| LinkedIn-optimerare | Förbättra LinkedIn-profil | ✅ |
+| Jobbsökning | Hitta och spara jobb | - |
+| Dagbok | Reflektera och dokumentera | - |
+| Hälsa/Wellness | Följ mående och energi | - |
+| Konsultvy | Hantera deltagare | - |
 
-```typescript
-// FEL - Ogiltig ES-modulsyntax
-console.log('[DEBUG] 9. Landing.tsx module loaded')
+---
 
-import { Link } from 'react-router-dom'  // Imports måste komma först!
+## Teknikstack
+
+```
+Frontend:     React 19, TypeScript 5.9, Vite 7
+Styling:      Tailwind CSS 4, Framer Motion
+State:        Zustand, React Query (TanStack)
+Auth/DB:      Supabase
+i18n:         i18next (svenska/engelska)
+Test:         Vitest, Testing Library
+Deploy:       Vercel (serverless functions)
+Monitoring:   Sentry
 ```
 
-**Varför det missades:** Istället för att läsa koden direkt lades mer debug-kod till, olika teorier testades, och omvägar gjordes. Felet hade upptäckts på sekunder om koden lästs ordentligt från början.
+### Projektstruktur
+```
+deltagarportal/
+├── client/           # React frontend
+│   ├── src/
+│   │   ├── components/   # Återanvändbara komponenter
+│   │   ├── pages/        # Sidor (~85 st)
+│   │   ├── stores/       # Zustand stores
+│   │   ├── services/     # API-anrop
+│   │   └── lib/          # Utilities
+├── server/           # Express backend (legacy)
+├── api/              # Vercel serverless functions
+│   └── ai.js         # Konsoliderad AI-endpoint (14 funktioner)
+├── supabase/         # Databasmigrationer
+└── .claude/agents/   # AI-agenter för granskning
+```
 
-**Lösning:** Flytta all kod efter imports. Ta bort oanvända imports.
+---
 
-**Lärdom:**
-> **LÄS ALLTID KODEN FÖRST.** Vid felsökning, börja med att noggrant läsa de relevanta filerna innan du lägger till debug-kod eller testar teorier. Grundläggande syntaxfel upptäcks snabbt genom att faktiskt titta på koden.
+## Utvecklingskommandon
+
+```bash
+# Starta utvecklingsserver
+cd client && npm run dev
+
+# Bygg för produktion
+npm run build
+
+# Kör tester
+npm run test           # Watch mode
+npm run test:run       # Single run
+npm run test:coverage  # Med coverage
+
+# TypeScript-kompilering (för felsökning)
+npx tsc --noEmit
+```
 
 ---
 
@@ -29,48 +82,97 @@ import { Link } from 'react-router-dom'  // Imports måste komma först!
 När något inte fungerar, följ denna ordning:
 
 1. **Läs koden** - Öppna och läs de relevanta filerna noggrant
-2. **Kontrollera syntax** - Imports, exports, parenteser, semikolon
-3. **Kör TypeScript-kompilering** - `npm run build` visar typfel
-4. **Kolla webbläsarkonsolen** - Faktiska runtime-fel
-5. **Lägg till debug-kod** - Endast om ovanstående inte hittar problemet
+2. **Kontrollera syntax** - Imports, exports, parenteser
+3. **Kör TypeScript** - `npx tsc --noEmit` visar typfel
+4. **Kolla webbläsarkonsolen** - Runtime-fel
+5. **Lägg till debug-kod** - Endast som sista utväg
+
+> **LÄS ALLTID KODEN FÖRST.** Grundläggande syntaxfel upptäcks snabbt genom att faktiskt titta på koden.
 
 ---
 
-### 2026-04-09: Sidor laddade Dashboard istället
+## Kodstandard
 
-**Problem:** Flera sidor (Journey, Spontanansökan, PersonalBrand, etc.) visade Dashboard istället för rätt innehåll.
-
-**Rotorsak:** Sidorna var importerade i `App.tsx` men saknade routes. Catch-all routen (`path="*"`) fångade upp dem och visade Dashboard.
-
-**Vad som saknades:**
+### React-komponenter
 ```typescript
-// Dessa imports fanns...
-const Journey = lazy(() => import('./pages/Journey'))
-const Spontaneous = lazy(() => import('./pages/Spontaneous'))
+// Extrahera komponenter över 150 rader till egna filer
+// Använd custom hooks för komplex logik
+// Lägg konstanter utanför komponenter för prestanda
+const CONFIG = { ... } as const  // Utanför komponenten
 
-// ...men routes saknades i <Routes>:
-<Route path="journey" element={...} />
-<Route path="spontanansökan" element={...} />
+export function MyComponent() {
+  // Hooks först
+  const [state, setState] = useState()
+
+  // Effekter
+  useEffect(() => { ... }, [])
+
+  // Render
+  return <div>...</div>
+}
 ```
 
-**Kontroll att göra vid nya sidor:**
-1. Jämför `navigation.ts` paths med `App.tsx` routes
-2. Sök efter alla `to="/..."` länkar och verifiera att routes finns
-3. Kör: `grep -oh 'path: .*/.*' navigation.ts | sort` och jämför med routes
+### Tillgänglighet (WCAG 2.1 AA)
+```typescript
+// Expanderbara sektioner
+<button
+  aria-expanded={isExpanded}
+  aria-controls="section-id"
+>
+
+// Progress-indikatorer
+<span role="status" aria-live="polite">
+  3 av 5 klart
+</span>
+
+// Ikoner utan text
+<Icon aria-hidden="true" />
+<span className="sr-only">Beskrivning</span>
+```
+
+### AI-funktioner
+AI-endpoints finns i `/api/ai.js` och anropas via:
+```typescript
+const response = await fetch('/api/ai', {
+  method: 'POST',
+  body: JSON.stringify({
+    function: 'funktionsnamn',  // cv, personligt-brev, intervju, etc.
+    ...params
+  })
+})
+```
 
 ---
 
-## Projektstruktur
+## Lärdomar från Felsökning
 
-- `client/` - React frontend (Vite, TypeScript, Tailwind)
-- `server/` - Express backend
-- `supabase/` - Databasmigrationer
+### 2026-04-09: White Screen på Landing Page
+**Problem:** Startsidan visade vit skärm.
+**Orsak:** `console.log()` låg FÖRE `import`-satser - ogiltig ES-modulsyntax.
+**Lösning:** Imports måste alltid komma först i filen.
 
-## Teknikstack
+### 2026-04-09: Sidor visade Dashboard istället
+**Problem:** Nya sidor fångades av catch-all route.
+**Orsak:** Routes saknades i `App.tsx` trots att imports fanns.
+**Kontroll:** Jämför `navigation.ts` paths med `App.tsx` routes.
 
-- React 18 med TypeScript
-- Vite som bundler
-- Supabase för auth och databas
-- Tailwind CSS för styling
-- i18next för översättningar
-- Zustand för state management
+---
+
+## Agenter
+
+Projektets 10 specialiserade agenter finns i `.claude/agents/`:
+
+| Agent | Fokus |
+|-------|-------|
+| arbetskonsulent | Arbetsmarknad, deltagarnytta, konsultverktyg |
+| langtidsarbetssokande | Användarperspektiv, energianpassning, tillgänglighet |
+| ux-designer | Användarflöden, WCAG, interaktionsdesign |
+| fullstack-utvecklare | React/TypeScript/Supabase-integration |
+| accessibility-specialist | WCAG 2.1 AA, skärmläsare, kognitiv tillgänglighet |
+| qa-testare | Testning, edge cases, kvalitetssäkring |
+| product-owner | User stories, prioritering, värdeskapande |
+| ai-engineer | AI-funktioner, personalisering, ML-optimering |
+| performance-engineer | Core Web Vitals, laddningstider, optimering |
+| security-specialist | Dataskydd, autentisering, GDPR |
+
+Använd agenter för granskning: "Låt [agent] granska [funktion/kod]"

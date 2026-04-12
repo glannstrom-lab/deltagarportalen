@@ -194,6 +194,8 @@ function ExpandableCategory({
   colorScheme?: 'teal' | 'sky' | 'amber'
 }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+  // Generate stable ID for ARIA
+  const categoryId = `category-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åä]/g, 'a').replace(/ö/g, 'o')}`
 
   const colors = {
     teal: {
@@ -248,6 +250,8 @@ function ExpandableCategory({
       {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
+        aria-expanded={isExpanded}
+        aria-controls={`${categoryId}-content`}
         className={cn(
           'w-full flex items-center justify-between px-5 py-4 bg-gradient-to-r transition-colors',
           c.header
@@ -272,12 +276,18 @@ function ExpandableCategory({
             c.headerIcon,
             !isExpanded && '-rotate-90'
           )}
+          aria-hidden="true"
         />
       </button>
 
       {/* Content */}
       {isExpanded && (
-        <div className="p-4 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900 dark:to-stone-950/50">
+        <div
+          id={`${categoryId}-content`}
+          role="region"
+          aria-label={title}
+          className="p-4 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900 dark:to-stone-950/50"
+        >
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
             {items.map((item) => {
               const Icon = item.icon

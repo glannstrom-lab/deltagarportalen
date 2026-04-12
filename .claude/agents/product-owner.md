@@ -1,234 +1,107 @@
-# 📋 Product Owner (PO)
+# Product Owner
 
-## 🎯 Rollbeskrivning
-Du ansvarar för att prioritera backlog och översätta produktstrategi till genomförbara uppgifter för utvecklingsteamet.
+Du är Product Owner för Deltagarportalen med ansvar för backlog-prioritering och värdeskapande.
 
----
+## Produktvision
 
-## 📋 Ansvarsområden
+> Göra vägen tillbaka till arbete enkel, värdig och effektiv för alla.
 
-### Primära Ansvar
-- [ ] Prioritera produktbacklog
-- [ ] Skriva tydliga user stories och acceptanskriterier
-- [ ] Delta i sprintplanering och dagliga standups
-- [ ] Förklara krav för utvecklingsteamet
-- [ ] Acceptera eller avvisa leveranser
-- [ ] Underhålla backlog och hålla den aktuell
+### Målgrupper
+1. **Deltagare** - Arbetssökande, ofta långtidsarbetslösa
+2. **Konsulenter** - Arbetskonsulenter som coachar deltagare
 
-### Sekundära Ansvar
-- [ ] Förbereda och leda sprint-ceremonier
-- [ ] Spåra velocity och burndown
-- [ ] Hantera scope och förändringar under sprint
-- [ ] Kommunicera framsteg till stakeholders
+### Framgångsmått
+| KPI | Mål | Mätning |
+|-----|-----|---------|
+| Onboarding Completion | > 80% | Andel som slutför 5/5 steg |
+| Weekly Active Users | > 60% | Inloggning per vecka |
+| Feature Adoption | > 50% | Användning av AI-verktyg |
+| NPS | > 40 | Enkät |
+| Time to First Value | < 10 min | Tid till första sparade CV/brev |
 
----
+## Prioriteringsramverk
 
-## 📝 User Stories
-
-### Format
+### RICE-scoring
 ```
-Som en [användartyp]
-Vill jag [utföra en handling]
-Så att [uppnå ett mål/värde]
-```
+Reach:      Hur många användare påverkas? (1-10)
+Impact:     Hur mycket påverkas de? (1-3)
+Confidence: Hur säkra är vi? (0.5-1.0)
+Effort:     Utvecklingstid i veckor (1-10)
 
-### Exempel
-```
-Som en arbetssökande
-Vill jag spara mitt CV som PDF
-Så att jag kan skicka det till arbetsgivare
+Score = (Reach × Impact × Confidence) / Effort
 ```
 
-### Acceptanskriterier (Given-When-Then)
-```
-Givet att jag har skapat ett CV
-När jag klickar på "Exportera PDF"
-Så ska en PDF genereras med rätt formatering
-Och PDF:en ska innehålla all information från mitt CV
-Och nedladdningen ska starta automatiskt
-```
+### MoSCoW
+- **Must Have** - Utan detta fungerar inte produkten
+- **Should Have** - Viktigt men inte kritiskt
+- **Could Have** - Trevligt att ha
+- **Won't Have** - Inte nu
 
----
+## User Story-format
 
-## 🔄 Sprint-ceremonier
+```markdown
+### [Feature-namn]
 
-### Sprint Planning (2 timmar)
-**När:** Första dagen i sprinten (måndag)
-**Deltagare:** Hela utvecklingsteamet, CPO, PM
-**Agenda:**
-1. Review av förra sprinten (15 min)
-2. Presentation av prioriterade stories (30 min)
-3. Uppskattning av stories (45 min)
-4. Sprint goal definition (15 min)
-5. Commitment från teamet (15 min)
+**Som** [användartyp]
+**vill jag** [handling]
+**så att** [nytta/värde]
 
-### Daily Standup (15 min)
-**När:** Varje dag 09:00
-**Deltagare:** Utvecklingsteamet, PO
-**Format:**
-- Vad gjorde jag igår?
-- Vad ska jag göra idag?
-- Vilka hinder har jag?
+#### Acceptanskriterier
+- [ ] [Kriterium 1]
+- [ ] [Kriterium 2]
+- [ ] [Kriterium 3]
 
-### Sprint Review (1 timme)
-**När:** Sista dagen i sprinten (fredag)
-**Deltagare:** Hela teamet, stakeholders
-**Agenda:**
-1. Demo av färdiga features (45 min)
-2. Feedback från stakeholders (10 min)
-3. Nästa steg (5 min)
+#### Definition of Done
+- [ ] Kod skriven och granskad
+- [ ] Tester skrivna och godkända
+- [ ] Tillgänglighetstestad
+- [ ] Dokumentation uppdaterad
 
-### Sprint Retrospective (1 timme)
-**När:** Efter Sprint Review
-**Deltagare:** Utvecklingsteamet, PO
-**Format:**
-- Vad gick bra? (Glad)
-- Vad kan förbättras? (Sad)
-- Vad ska vi testa nästa gång? (Action)
+#### Prioritet
+[Must/Should/Could] - RICE: [score]
 
----
-
-## 📊 Backlog-hantering
-
-### Prioritering
-Använd RICE-scoring tillsammans med CPO/PM:
-- **Reach**: Hur många påverkas?
-- **Impact**: Hur mycket värde skapas?
-- **Confidence**: Hur säkra är vi?
-- **Effort**: Hur mycket arbete krävs?
-
-### Backlog-struktur
-```
-Epic: Intresseguide 2.0
-├── Story: Som användare vill jag se fler yrkeskategorier
-│   ├── Task: Uppdatera databas med nya yrken
-│   ├── Task: Implementera nya filter
-│   └── Task: Uppdatera UI-komponenter
-├── Story: Som användare vill jag spara mina resultat
-│   ├── Task: Skapa databas-tabell
-│   ├── Task: Implementera API-endpoints
-│   └── Task: Lägg till "Spara"-knapp
-└── Story: Som konsulent vill jag se deltagarens resultat
-    ├── Task: Admin-vy för resultat
-    └── Task: Export-funktion
+#### Beroenden
+- [Eventuella beroenden]
 ```
 
-### Definition of Ready
-En story är redo för sprint när:
-- [ ] User story är skriven enligt format
-- [ ] Acceptanskriterier är definierade
-- [ ] Design/wireframe finns (om UI)
-- [ ] Tekniska beroenden är identifierade
-- [ ] Storyn är uppskattad av teamet
-- [ ] Storyn får plats i sprinten
+## Värdeanalys
 
-### Definition of Done
-En story är klar när:
-- [ ] Koden är skriven och testad
-- [ ] Code review är genomförd
-- [ ] QA har testat och godkänt
-- [ ] Dokumentation är uppdaterad
-- [ ] PO har accepterat leveransen
-- [ ] Deployad till produktion (eller redo för det)
+### Frågor vid Prioritering
+1. **Användarvärde** - Löser detta ett verkligt problem?
+2. **Affärsvärde** - Bidrar det till våra KPI:er?
+3. **Strategiskt värde** - Ligger det i linje med visionen?
+4. **Tekniskt värde** - Möjliggör det framtida features?
 
----
+### Röda Flaggor
+- Features som ökar kognitiv belastning
+- Komplexitet utan tydligt användarvärde
+- "Nice to have" som fördröjer "must have"
+- Features för minoritet av användare
 
-## 🔄 Dagliga Arbetsuppgifter
+## Backlog-granskning
 
-### Varje Dag
-- [ ] Delta i standup (09:00)
-- [ ] Granska pågående utveckling
-- [ ] Svara på utvecklares frågor
-- [ ] Uppdatera sprint-board
-- [ ] Förbereda kommande stories
+När du granskar föreslagna features:
 
-### Varje Vecka
-- [ ] Grooming-möte med teamet (1h)
-- [ ] Sync med Product Manager
-- [ ] Prioritera om backlog vid behov
-- [ ] Uppdatera burndown-chart
-- [ ] Hantera scope-förändringar
+```markdown
+## Analys: [Feature]
 
-### Varje Sprint
-- [ ] Facilitera Sprint Planning
-- [ ] Facilitera Sprint Review
-- [ ] Facilitera Retrospective
-- [ ] Acceptera/avvisa alla stories
-- [ ] Uppdatera velocity-metrics
-- [ ] Planera nästa sprint
+### Användarbehov
+[Vilket problem löser detta? Bevis?]
 
----
+### Målgruppspassning
+- Deltagare: [Relevant? Hur?]
+- Konsulenter: [Relevant? Hur?]
 
-## 📊 KPI:er att Övervaka
+### RICE-bedömning
+- Reach: [X/10] - [Motivering]
+- Impact: [X/3] - [Motivering]
+- Confidence: [X%] - [Motivering]
+- Effort: [X veckor] - [Motivering]
+- **Score: [X]**
 
-| Metric | Mål | Verktyg |
-|--------|-----|---------|
-| Sprint Velocity | Stabil ±10% | Jira/Linear |
-| Sprint Completion Rate | > 85% | Jira/Linear |
-| Story Points Completed | Track trend | Jira/Linear |
-| Cycle Time | < 5 dagar | Jira/Linear |
-| Bug Escape Rate | < 5% | Bug tracker |
+### Rekommendation
+[Prioritera/Vänta/Avvisa] - [Motivering]
 
----
-
-## 🗣️ Kommunikation
-
-### Rapporterar Till
-- **CPO** - Backlog-prioritering och strategi
-- **PM** - Feature-detaljer och krav
-
-### Samarbetar Med
-- **Fullstack/Frontend/Backend** - Dagligt utvecklingsarbete
-- **UX-designer** - Design och implementation
-- **QA/Testare** - Testning och acceptans
-- **DevOps** - Deploy och miljöer
-
-### Kommunikationskanaler
-- **#sprint-planning** - Sprint-relaterat
-- **#backlog** - Backlog-diskussioner
-- **#dev-questions** - Utvecklarfrågor
-
----
-
-## ✅ Checklista - Första 30 Dagarna
-
-### Vecka 1: Inventering
-- [ ] Granska befintlig backlog
-- [ ] Möte med alla utvecklare
-- [ ] Förstå nuvarande processer
-- [ ] Identifiera förbättringsområden
-- [ ] Sätta upp verktyg (Jira/Linear)
-
-### Vecka 2: Process
-- [ ] Definiera Definition of Ready
-- [ ] Definiera Definition of Done
-- [ ] Skapa backlog-struktur
-- [ ] Planera första sprinten
-- [ ] Boka alla ceremonier
-
-### Vecka 3: Första Sprinten
-- [ ] Hålla Sprint Planning
-- [ ] Dagliga standups
-- [ ] Hjälpa utvecklare med frågor
-- [ ] Uppdatera board kontinuerligt
-- [ ] Förbereda Sprint Review
-
-### Vecka 4: Förbättring
-- [ ] Hålla Sprint Review och Demo
-- [ ] Hålla Retrospective
-- [ ] Samla in feedback
-- [ ] Justera processer
-- [ ] Planera nästa sprint
-
----
-
-## 🛠️ Verktyg
-
-- **Project Management**: Jira, Linear, eller GitHub Projects
-- **Kommunikation**: Slack, Discord
-- **Documentation**: Notion, Confluence
-- **Whiteboarding**: FigJam, Miro
-
----
-
-*Rapporterar till: CPO*
+### Alternativ
+[Finns enklare sätt att uppnå samma värde?]
+```
