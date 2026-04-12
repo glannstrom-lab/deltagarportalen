@@ -184,8 +184,8 @@ export default function PlanTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+      <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" aria-hidden="true" />
         <span className="ml-3 text-gray-600 dark:text-gray-400">Laddar karriärplan...</span>
       </div>
     )
@@ -332,21 +332,32 @@ export default function PlanTab() {
         </div>
 
         {/* Overall Progress */}
-        <div className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl border border-teal-200 dark:border-teal-700">
+        <div
+          className="mb-6 p-4 bg-gradient-to-r from-teal-50 to-teal-100 dark:from-teal-900/20 dark:to-teal-800/20 rounded-xl border border-teal-200 dark:border-teal-700"
+          role="region"
+          aria-label="Övergripande framsteg för karriärplan"
+        >
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+              <TrendingUp className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
               <span className="font-semibold text-gray-800 dark:text-gray-100">Övergripande framsteg</span>
             </div>
-            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400">{totalProgress}%</span>
+            <span className="text-2xl font-bold text-teal-600 dark:text-teal-400" aria-live="polite">{totalProgress}%</span>
           </div>
-          <div className="h-3 bg-white dark:bg-stone-700 rounded-full overflow-hidden border border-teal-200 dark:border-teal-600">
+          <div
+            className="h-3 bg-white dark:bg-stone-700 rounded-full overflow-hidden border border-teal-200 dark:border-teal-600"
+            role="progressbar"
+            aria-valuenow={totalProgress}
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-label={`Karriärplan framsteg: ${totalProgress}%`}
+          >
             <div
               className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all duration-500"
               style={{ width: `${totalProgress}%` }}
             />
           </div>
-          <p className="text-xs text-teal-700 dark:text-teal-300 mt-2">
+          <p className="text-xs text-teal-700 dark:text-teal-300 mt-2" role="status">
             {completedCount} av {milestones.length} milstolpar slutförda
           </p>
         </div>
@@ -408,13 +419,13 @@ export default function PlanTab() {
         )}
 
         {/* Timeline */}
-        <div className="mb-6">
+        <div className="mb-6" role="region" aria-label="Tidslinje för karriärplan">
           <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+            <Calendar className="w-5 h-5 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             Tidslinje för karriärplan
           </h4>
 
-          <div className="relative pl-6">
+          <div className="relative pl-6" role="list" aria-label="Milstolpar">
             {milestones.length === 0 ? (
               <div className="text-center py-8 text-gray-500 dark:text-gray-400">
                 <Award className="w-12 h-12 mx-auto mb-3 opacity-50" />
@@ -487,14 +498,17 @@ export default function PlanTab() {
                             ? 'bg-teal-200 dark:bg-teal-800 text-teal-700 dark:text-teal-200'
                             : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
                         )}
+                        aria-pressed={milestone.is_completed}
+                        aria-label={milestone.is_completed ? `Markera ${milestone.title} som ej klar` : `Markera ${milestone.title} som klar`}
                       >
                         {milestone.is_completed ? '✓ Klar' : 'Markera klar'}
                       </button>
                       <button
                         onClick={() => deleteMilestone(milestone.id)}
                         className="p-1 rounded text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
+                        aria-label={`Ta bort milstolpe: ${milestone.title}`}
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4" aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -503,16 +517,19 @@ export default function PlanTab() {
                   {!milestone.is_completed && (
                     <div className="mb-3">
                       <div className="flex items-center justify-between mb-1">
-                        <span className="text-xs text-gray-600 dark:text-gray-400">Framsteg</span>
-                        <span className="text-xs font-semibold text-teal-600 dark:text-teal-400">{milestone.progress || 0}%</span>
+                        <label htmlFor={`progress-${milestone.id}`} className="text-xs text-gray-600 dark:text-gray-400">Framsteg</label>
+                        <span className="text-xs font-semibold text-teal-600 dark:text-teal-400" aria-live="polite">{milestone.progress || 0}%</span>
                       </div>
                       <input
+                        id={`progress-${milestone.id}`}
                         type="range"
                         min="0"
                         max="100"
                         value={milestone.progress || 0}
                         onChange={(e) => updateMilestoneProgress(milestone.id, parseInt(e.target.value))}
                         className="w-full h-2 bg-stone-200 dark:bg-stone-600 rounded-full appearance-none cursor-pointer accent-teal-500"
+                        aria-label={`Framsteg för ${milestone.title}`}
+                        aria-valuetext={`${milestone.progress || 0} procent`}
                       />
                     </div>
                   )}

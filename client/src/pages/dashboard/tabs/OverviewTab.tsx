@@ -34,6 +34,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { userApi, cvApi, coverLetterApi, type OnboardingProgress } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
+import { careerPlanApi, skillsAnalysisApi, networkApi } from '@/services/careerApi'
 
 // Category item configuration
 interface CategoryItem {
@@ -359,6 +360,16 @@ export default function OverviewTab() {
   const [onboardingProgress, setOnboardingProgress] = useState<OnboardingProgress>({})
   const [loading, setLoading] = useState(true)
 
+  // Progress dashboard data
+  const [progressData, setProgressData] = useState({
+    careerPlanProgress: 0,
+    careerPlanMilestones: 0,
+    careerPlanCompleted: 0,
+    skillsMatchPercentage: 0,
+    networkContacts: 0,
+    networkActiveThisMonth: 0
+  })
+
   // Load onboarding progress from cloud
   useEffect(() => {
     loadProgress()
@@ -376,13 +387,34 @@ export default function OverviewTab() {
     }
 
     try {
-      // Fetch onboarding progress, interest guide status, CV data, and cover letters in parallel
-      const [cloudProgress, interestGuideData, cvData, coverLetters] = await Promise.all([
+      // Fetch onboarding progress, interest guide status, CV data, cover letters, and progress data in parallel
+      const [cloudProgress, interestGuideData, cvData, coverLetters, careerPlan, skillsAnalysis, contacts] = await Promise.all([
         userApi.getOnboardingProgress(),
         interestGuideApi.getProgress().catch(() => null),
         cvApi.getCV().catch(() => null),
-        coverLetterApi.getAll().catch(() => [])
+        coverLetterApi.getAll().catch(() => []),
+        careerPlanApi.getActive().catch(() => null),
+        skillsAnalysisApi.getLatest().catch(() => null),
+        networkApi.getAll().catch(() => [])
       ])
+
+      // Calculate progress data
+      const milestones = careerPlan?.milestones || []
+      const completedMilestones = milestones.filter(m => m.is_completed).length
+      const activeContacts = contacts.filter(c => {
+        if (!c.last_contact_date) return false
+        const daysSince = Math.floor((new Date().getTime() - new Date(c.last_contact_date).getTime()) / (1000 * 60 * 60 * 24))
+        return daysSince < 30
+      }).length
+
+      setProgressData({
+        careerPlanProgress: careerPlan?.total_progress || 0,
+        careerPlanMilestones: milestones.length,
+        careerPlanCompleted: completedMilestones,
+        skillsMatchPercentage: skillsAnalysis?.match_percentage || 0,
+        networkContacts: contacts.length,
+        networkActiveThisMonth: activeContacts
+      })
 
       // Check if interest guide is completed from the actual progress data
       const interestCompleted = cloudProgress.interest ||
@@ -453,8 +485,95 @@ export default function OverviewTab() {
     )
   }
 
+  // Calculate total onboarding progress
+  const onboardingComplete = Object.values(onboardingProgress).filter(Boolean).length
+  const onboardingTotal = 5 // profile, interest, cv, jobSearch, coverLetter
+
   return (
     <div className="space-y-4 max-w-5xl mx-auto">
+      {/* Progress Dashboard */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3" role="region" aria-label="Din framgång">
+        {/* Onboarding Progress */}
+        <div className="bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-xl p-4 border border-teal-200 dark:border-teal-800/50">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
+              <Check className="w-4 h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+            </div>
+            <span className="text-sm font-medium text-teal-800 dark:text-teal-300">Kom igång</span>
+          </div>
+          <div className="text-2xl font-bold text-teal-900 dark:text-teal-100" aria-live="polite">
+            {onboardingComplete}/{onboardingTotal}
+          </div>
+          <div className="h-1.5 bg-teal-200 dark:bg-teal-900/50 rounded-full mt-2 overflow-hidden">
+            <div
+              className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all"
+              style={{ width: `${(onboardingComplete / onboardingTotal) * 100}%` }}
+              role="progressbar"
+              aria-valuenow={(onboardingComplete / onboardingTotal) * 100}
+              aria-valuemin={0}
+              aria-valuemax={100}
+            />
+          </div>
+        </div>
+
+        {/* Career Plan Progress */}
+        <Link
+          to="/career?tab=plan"
+          className="bg-gradient-to-br from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20 rounded-xl p-4 border border-sky-200 dark:border-sky-800/50 hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center">
+              <Target className="w-4 h-4 text-sky-600 dark:text-sky-400" aria-hidden="true" />
+            </div>
+            <span className="text-sm font-medium text-sky-800 dark:text-sky-300">Karriärplan</span>
+          </div>
+          <div className="text-2xl font-bold text-sky-900 dark:text-sky-100">
+            {progressData.careerPlanProgress}%
+          </div>
+          <p className="text-xs text-sky-700 dark:text-sky-400 mt-1">
+            {progressData.careerPlanCompleted}/{progressData.careerPlanMilestones} milstolpar
+          </p>
+        </Link>
+
+        {/* Skills Match */}
+        <Link
+          to="/career?tab=skills"
+          className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/30 dark:to-emerald-800/20 rounded-xl p-4 border border-emerald-200 dark:border-emerald-800/50 hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
+              <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+            </div>
+            <span className="text-sm font-medium text-emerald-800 dark:text-emerald-300">Kompetensmatch</span>
+          </div>
+          <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
+            {progressData.skillsMatchPercentage > 0 ? `${progressData.skillsMatchPercentage}%` : '–'}
+          </div>
+          <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1">
+            {progressData.skillsMatchPercentage > 0 ? 'mot ditt drömjobb' : 'Kör en analys'}
+          </p>
+        </Link>
+
+        {/* Network */}
+        <Link
+          to="/career?tab=network"
+          className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800/50 hover:shadow-md transition-shadow"
+        >
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+              <User className="w-4 h-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+            </div>
+            <span className="text-sm font-medium text-amber-800 dark:text-amber-300">Nätverk</span>
+          </div>
+          <div className="text-2xl font-bold text-amber-900 dark:text-amber-100">
+            {progressData.networkContacts}
+          </div>
+          <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+            {progressData.networkActiveThisMonth} aktiva denna månad
+          </p>
+        </Link>
+      </div>
+
       {/* Onboarding Section */}
       <ExpandableCategory
         title="Kom igång"

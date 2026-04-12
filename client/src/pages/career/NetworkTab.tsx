@@ -258,33 +258,113 @@ export default function NetworkTab() {
 
   return (
     <div className="space-y-6">
-      {/* Alerts */}
+      {/* Follow-up Reminders Section */}
       {(needsFollowUp > 0 || overdueFollowUps > 0) && (
-        <Card className={cn(
-          'p-4 flex items-start gap-3',
-          overdueFollowUps > 0 ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800' : 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
-        )}>
-          <AlertCircle className={cn(
-            'w-5 h-5 flex-shrink-0 mt-0.5',
-            overdueFollowUps > 0 ? 'text-red-600 dark:text-red-400' : 'text-amber-600 dark:text-amber-400'
-          )} />
-          <div className="flex-1">
-            <h4 className={cn(
-              'font-semibold mb-1',
-              overdueFollowUps > 0 ? 'text-red-900 dark:text-red-100' : 'text-amber-900 dark:text-amber-100'
-            )}>
-              {overdueFollowUps > 0
-                ? `${overdueFollowUps} försenade uppföljningar`
-                : `${needsFollowUp} uppföljningar denna vecka`}
-            </h4>
-            <p className={cn(
-              'text-sm',
-              overdueFollowUps > 0 ? 'text-red-700 dark:text-red-300' : 'text-amber-700 dark:text-amber-300'
-            )}>
-              {overdueFollowUps > 0
-                ? 'Ta kontakt för att hålla nätverket aktivt!'
-                : 'Planera dina uppföljningar för att hålla nätverket aktivt.'}
-            </p>
+        <Card className="p-4 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label="Uppföljningspåminnelser">
+          <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-3 flex items-center gap-2">
+            <Clock className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+            Uppföljningspåminnelser
+            <span className="ml-auto text-sm font-normal px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300">
+              {overdueFollowUps + needsFollowUp} att hantera
+            </span>
+          </h3>
+
+          <div className="space-y-2" role="list" aria-label="Kontakter att följa upp">
+            {/* Overdue contacts first */}
+            {contacts.filter(c => {
+              if (!c.next_contact_date) return false
+              const daysUntil = Math.floor((new Date(c.next_contact_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+              return daysUntil < 0
+            }).map(contact => {
+              const daysOverdue = Math.abs(Math.floor((new Date(contact.next_contact_date!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
+              return (
+                <div
+                  key={contact.id}
+                  className="flex items-center gap-3 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800"
+                  role="listitem"
+                >
+                  <div className="w-8 h-8 rounded-full bg-red-100 dark:bg-red-800 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-red-600 dark:text-red-300">{contact.name.charAt(0)}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-red-900 dark:text-red-100 truncate">{contact.name}</p>
+                    <p className="text-xs text-red-700 dark:text-red-300">
+                      {daysOverdue} {daysOverdue === 1 ? 'dag' : 'dagar'} försenad
+                    </p>
+                  </div>
+                  <div className="flex gap-1 flex-shrink-0">
+                    {contact.email && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-xs border-red-300 text-red-700 hover:bg-red-100"
+                        onClick={() => window.location.href = `mailto:${contact.email}`}
+                        aria-label={`Skicka e-post till ${contact.name}`}
+                      >
+                        <Mail className="w-3 h-3" />
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      className="text-xs bg-red-600 hover:bg-red-700 text-white"
+                      onClick={() => markContacted(contact.id)}
+                      aria-label={`Markera ${contact.name} som kontaktad`}
+                    >
+                      <CheckCircle2 className="w-3 h-3 mr-1" />
+                      Klar
+                    </Button>
+                  </div>
+                </div>
+              )
+            })}
+
+            {/* Upcoming follow-ups */}
+            {contacts.filter(c => {
+              if (!c.next_contact_date) return false
+              const daysUntil = Math.floor((new Date(c.next_contact_date).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+              return daysUntil >= 0 && daysUntil <= 7
+            }).map(contact => {
+              const daysUntil = Math.floor((new Date(contact.next_contact_date!).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+              return (
+                <div
+                  key={contact.id}
+                  className="flex items-center gap-3 p-3 rounded-lg bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800"
+                  role="listitem"
+                >
+                  <div className="w-8 h-8 rounded-full bg-amber-100 dark:bg-amber-800 flex items-center justify-center flex-shrink-0">
+                    <span className="text-xs font-bold text-amber-600 dark:text-amber-300">{contact.name.charAt(0)}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-amber-900 dark:text-amber-100 truncate">{contact.name}</p>
+                    <p className="text-xs text-amber-700 dark:text-amber-300">
+                      {daysUntil === 0 ? 'Idag' : daysUntil === 1 ? 'Imorgon' : `Om ${daysUntil} dagar`}
+                    </p>
+                  </div>
+                  <div className="flex gap-1 flex-shrink-0">
+                    {contact.email && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-xs border-amber-300 text-amber-700 hover:bg-amber-100"
+                        onClick={() => window.location.href = `mailto:${contact.email}`}
+                        aria-label={`Skicka e-post till ${contact.name}`}
+                      >
+                        <Mail className="w-3 h-3" />
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      className="text-xs bg-amber-600 hover:bg-amber-700 text-white"
+                      onClick={() => markContacted(contact.id)}
+                      aria-label={`Markera ${contact.name} som kontaktad`}
+                    >
+                      <CheckCircle2 className="w-3 h-3 mr-1" />
+                      Klar
+                    </Button>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </Card>
       )}

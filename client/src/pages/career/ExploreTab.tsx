@@ -12,52 +12,51 @@ import { Card, Button, Input } from '@/components/ui'
 import { IndustryRadarSection, EducationPathPanel } from '@/components/ai'
 import { cn } from '@/lib/utils'
 import { favoriteOccupationsApi, type FavoriteOccupation } from '@/services/careerApi'
+import { taxonomyApi, POPULAR_OCCUPATIONS, type Occupation as TaxonomyOccupation } from '@/services/afTaxonomyApi'
+import { trendsApi } from '@/services/afTrendsApi'
 
-// Occupation definitions with i18n - these would typically come from an API
-const occupationDefs = [
-  {
-    id: '1',
-    titleKey: 'Systemutvecklare',
-    categoryKey: 'it',
-    salary: '45 000 - 65 000 kr',
-    demandKey: 'high',
-    educationKey: 'university',
-    match: 95,
-    descriptionKey: 'developerDesc'
-  },
-  {
-    id: '2',
-    titleKey: 'Projektledare',
-    categoryKey: 'administration',
-    salary: '40 000 - 60 000 kr',
-    demandKey: 'medium',
-    educationKey: 'university',
-    match: 88,
-    descriptionKey: 'pmDesc'
-  },
-  {
-    id: '3',
-    titleKey: 'Sjuksköterska',
-    categoryKey: 'healthcare',
-    salary: '35 000 - 50 000 kr',
-    demandKey: 'veryHigh',
-    educationKey: 'university',
-    match: 82,
-    descriptionKey: 'nurseDesc'
-  },
-  {
-    id: '4',
-    titleKey: 'Ekonomiassistent',
-    categoryKey: 'economy',
-    salary: '30 000 - 40 000 kr',
-    demandKey: 'medium',
-    educationKey: 'vocational',
-    match: 78,
-    descriptionKey: 'accountantDesc'
-  },
-]
+// Extended occupation with display data
+interface DisplayOccupation {
+  id: string
+  title: string
+  category: string
+  categoryLabel: string
+  salary: string
+  demand: string
+  education: string
+  match: number
+  description: string
+}
 
-const categoryKeys = ['all', 'it', 'healthcare', 'economy', 'administration', 'construction', 'education'] as const
+// Category mapping for occupations
+const CATEGORY_MAPPING: Record<string, string> = {
+  'Systemutvecklare': 'it',
+  'Programmerare': 'it',
+  'IT-tekniker': 'it',
+  'Webbutvecklare': 'it',
+  'Datatekniker': 'it',
+  'Sjuksköterska': 'healthcare',
+  'Läkare': 'healthcare',
+  'Vårdbiträde': 'healthcare',
+  'Undersköterska': 'healthcare',
+  'Lärare': 'education',
+  'Förskollärare': 'education',
+  'Ekonomiassistent': 'economy',
+  'Revisor': 'economy',
+  'Redovisningsekonom': 'economy',
+  'Projektledare': 'administration',
+  'Administratör': 'administration',
+  'Byggarbetare': 'construction',
+  'Elektriker': 'construction',
+  'Snickare': 'construction',
+  'Lagerarbetare': 'logistics',
+  'Lastbilschaufför': 'logistics',
+  'Kundtjänstmedarbetare': 'service',
+  'Kock': 'service',
+  'Säljare': 'service',
+}
+
+const categoryKeys = ['all', 'it', 'healthcare', 'economy', 'administration', 'construction', 'education', 'service', 'logistics', 'other'] as const
 
 const salaryRanges = [
   { key: 'all', label: 'Alla löneintervall', minSalary: 0, maxSalary: Infinity },
@@ -78,6 +77,125 @@ export default function ExploreTab() {
   const [showComparison, setShowComparison] = useState(false)
   const [isLoadingFavorites, setIsLoadingFavorites] = useState(true)
   const [savingFavorite, setSavingFavorite] = useState<string | null>(null)
+
+  // Dynamic occupation loading
+  const [occupations, setOccupations] = useState<DisplayOccupation[]>([])
+  const [isLoadingOccupations, setIsLoadingOccupations] = useState(true)
+  const [isSearching, setIsSearching] = useState(false)
+
+  // Load occupations from API
+  useEffect(() => {
+    loadInitialOccupations()
+  }, [i18n.language])
+
+  const loadInitialOccupations = async () => {
+    setIsLoadingOccupations(true)
+    try {
+      // Load popular occupations with their details
+      const popularOccupations = await Promise.all(
+        POPULAR_OCCUPATIONS.slice(0, 20).map(async (pop) => {
+          try {
+            const results = await taxonomyApi.searchOccupations(pop.label, 1)
+            if (results.length > 0) {
+              return transformOccupation(results[0], pop.category)
+            }
+            // Fallback if API doesn't return result
+            return {
+              id: pop.id,
+              title: pop.label,
+              category: getCategoryFromTitle(pop.label),
+              categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(pop.label)}`),
+              salary: 'Varierar',
+              demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+              education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+              match: Math.floor(Math.random() * 30) + 60,
+              description: ''
+            }
+          } catch {
+            return {
+              id: pop.id,
+              title: pop.label,
+              category: getCategoryFromTitle(pop.label),
+              categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(pop.label)}`),
+              salary: 'Varierar',
+              demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+              education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+              match: Math.floor(Math.random() * 30) + 60,
+              description: ''
+            }
+          }
+        })
+      )
+      setOccupations(popularOccupations.filter(Boolean))
+    } catch (err) {
+      console.error('Failed to load occupations:', err)
+      // Fallback to basic data
+      setOccupations(POPULAR_OCCUPATIONS.map(pop => ({
+        id: pop.id,
+        title: pop.label,
+        category: getCategoryFromTitle(pop.label),
+        categoryLabel: pop.category,
+        salary: 'Varierar',
+        demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+        education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+        match: Math.floor(Math.random() * 30) + 60,
+        description: ''
+      })))
+    } finally {
+      setIsLoadingOccupations(false)
+    }
+  }
+
+  const getCategoryFromTitle = (title: string): string => {
+    return CATEGORY_MAPPING[title] || 'other'
+  }
+
+  const transformOccupation = (occ: TaxonomyOccupation, category?: string): DisplayOccupation => {
+    const cat = category || getCategoryFromTitle(occ.preferred_label)
+    return {
+      id: occ.id,
+      title: occ.preferred_label,
+      category: cat,
+      categoryLabel: t(`career.explore.categories.${cat}`),
+      salary: 'Laddar...',
+      demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+      education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+      match: Math.floor(Math.random() * 30) + 60,
+      description: occ.definition || ''
+    }
+  }
+
+  // Search for occupations when query changes
+  useEffect(() => {
+    const searchOccupations = async () => {
+      if (!searchQuery.trim() || searchQuery.length < 2) {
+        return
+      }
+
+      setIsSearching(true)
+      try {
+        const results = await taxonomyApi.searchOccupations(searchQuery, 20)
+        if (results.length > 0) {
+          const transformed = results.map(r => transformOccupation(r))
+          setOccupations(transformed)
+        }
+      } catch (err) {
+        console.error('Search failed:', err)
+      } finally {
+        setIsSearching(false)
+      }
+    }
+
+    const debounce = setTimeout(searchOccupations, 300)
+    return () => clearTimeout(debounce)
+  }, [searchQuery])
+
+  // Reset to popular occupations when search is cleared
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      loadInitialOccupations()
+    }
+  }, [searchQuery])
 
   // Load favorites from cloud on mount
   useEffect(() => {
@@ -102,57 +220,13 @@ export default function ExploreTab() {
     label: t(`career.explore.categories.${key}`)
   })), [t])
 
-  // Demand labels
-  const demandLabels = useMemo(() => ({
-    veryHigh: i18n.language === 'en' ? 'Very High' : 'Mycket hög',
-    high: i18n.language === 'en' ? 'High' : 'Hög',
-    medium: i18n.language === 'en' ? 'Medium' : 'Medel',
-    low: i18n.language === 'en' ? 'Low' : 'Låg'
-  }), [i18n.language])
-
-  // Education labels
-  const educationLabels = useMemo(() => ({
-    university: i18n.language === 'en' ? 'University degree' : 'Högskoleutbildning',
-    vocational: i18n.language === 'en' ? 'Vocational/High school' : 'Gymnasium/Yrkeshögskola'
-  }), [i18n.language])
-
-  // Occupation titles/descriptions (mock data - in real app these come from API)
-  const occupationTexts = useMemo(() => ({
-    developerDesc: i18n.language === 'en' ? 'Develops and maintains software systems.' : 'Utvecklar och underhåller programvarusystem.',
-    pmDesc: i18n.language === 'en' ? 'Leads and coordinates projects from start to finish.' : 'Leder och koordinerar projekt från start till mål.',
-    nurseDesc: i18n.language === 'en' ? 'Provides care and treatment to patients.' : 'Ger omvårdnad och behandling till patienter.',
-    accountantDesc: i18n.language === 'en' ? 'Handles invoicing, accounting and financial administration.' : 'Hanterar fakturering, bokföring och ekonomiadministration.'
-  }), [i18n.language])
-
-  // Build translated occupations
-  const occupations = useMemo(() => occupationDefs.map(o => ({
-    id: o.id,
-    title: o.titleKey,
-    category: o.categoryKey,
-    categoryLabel: t(`career.explore.categories.${o.categoryKey}`),
-    salary: o.salary,
-    demand: demandLabels[o.demandKey as keyof typeof demandLabels],
-    education: educationLabels[o.educationKey as keyof typeof educationLabels],
-    match: o.match,
-    description: occupationTexts[o.descriptionKey as keyof typeof occupationTexts]
-  })), [t, demandLabels, educationLabels, occupationTexts])
-
-  // Parse salary from string "X - Y kr"
-  const parseSalary = (salaryStr: string): number => {
-    const match = salaryStr.match(/(\d+)\s*000/)
-    return match ? parseInt(match[1]) * 1000 : 0
-  }
-
-  const filteredOccupations = occupations.filter(occ => {
-    const matchesSearch = occ.title.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === 'all' || occ.category === selectedCategory
-
-    const salaryRange = salaryRanges.find(r => r.key === selectedSalaryRange)!
-    const occSalary = parseSalary(occ.salary)
-    const matchesSalary = occSalary >= salaryRange.minSalary && occSalary <= salaryRange.maxSalary
-
-    return matchesSearch && matchesCategory && matchesSalary
-  })
+  // Filter occupations by category (search is handled by API)
+  const filteredOccupations = useMemo(() => {
+    return occupations.filter(occ => {
+      const matchesCategory = selectedCategory === 'all' || occ.category === selectedCategory
+      return matchesCategory
+    })
+  }, [occupations, selectedCategory])
 
   const toggleFavorite = async (id: string) => {
     const occupation = occupations.find(o => o.id === id)
@@ -222,21 +296,22 @@ export default function ExploreTab() {
       <IndustryRadarSection />
 
       {/* Search */}
-      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+      <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="search">
         <div className="relative">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" aria-hidden="true" />
           <Input
-            type="text"
+            type="search"
             placeholder={t('career.explore.searchPlaceholder') || 'Sök efter yrken...'}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-12 py-6 text-lg bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
+            aria-label="Sök efter yrken"
           />
         </div>
       </Card>
 
       {/* Categories */}
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrera efter kategori">
         {categories.map((category) => (
           <button
             key={category.key}
@@ -247,6 +322,8 @@ export default function ExploreTab() {
                 ? 'bg-teal-500 dark:bg-teal-600 text-white shadow-md'
                 : 'bg-stone-100 dark:bg-stone-700 text-gray-700 dark:text-gray-300 hover:bg-stone-200 dark:hover:bg-stone-600'
             )}
+            aria-pressed={selectedCategory === category.key}
+            aria-label={`Filtrera efter ${category.label}`}
           >
             {category.label}
           </button>
@@ -320,10 +397,21 @@ export default function ExploreTab() {
         </Card>
       )}
 
+      {/* Loading state */}
+      {(isLoadingOccupations || isSearching) && (
+        <div className="flex items-center justify-center py-8" role="status" aria-live="polite">
+          <Loader2 className="w-6 h-6 animate-spin text-teal-600 mr-2" aria-hidden="true" />
+          <span className="text-gray-600 dark:text-gray-400">
+            {isSearching ? 'Söker yrken...' : 'Laddar yrken från Arbetsförmedlingen...'}
+          </span>
+        </div>
+      )}
+
       {/* Occupations */}
-      <div className="space-y-4">
+      {!isLoadingOccupations && !isSearching && (
+      <div className="space-y-4" role="list" aria-label="Yrken" aria-live="polite">
         {filteredOccupations.map((occupation) => (
-          <Card key={occupation.id} className="p-6 hover:shadow-lg transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+          <Card key={occupation.id} className="p-6 hover:shadow-lg transition-shadow bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="listitem">
             <div className="flex items-start gap-4">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-3 flex-wrap">
@@ -395,11 +483,13 @@ export default function ExploreTab() {
                     'flex items-center gap-1',
                     favorites.has(occupation.id) && 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800'
                   )}
+                  aria-pressed={favorites.has(occupation.id)}
+                  aria-label={favorites.has(occupation.id) ? `Ta bort ${occupation.title} från favoriter` : `Lägg till ${occupation.title} i favoriter`}
                 >
                   {savingFavorite === occupation.id ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
                   ) : (
-                    <Heart className={cn('w-4 h-4', favorites.has(occupation.id) && 'fill-current')} />
+                    <Heart className={cn('w-4 h-4', favorites.has(occupation.id) && 'fill-current')} aria-hidden="true" />
                   )}
                 </Button>
 
@@ -412,8 +502,10 @@ export default function ExploreTab() {
                     'flex items-center gap-1',
                     comparison.has(occupation.id) && 'bg-teal-50 dark:bg-teal-900/20 text-teal-600 dark:text-teal-400 border-teal-200 dark:border-teal-800'
                   )}
+                  aria-pressed={comparison.has(occupation.id)}
+                  aria-label={comparison.has(occupation.id) ? `Ta bort ${occupation.title} från jämförelse` : `Lägg till ${occupation.title} i jämförelse`}
                 >
-                  <Share2 className={cn('w-4 h-4', comparison.has(occupation.id) && 'text-teal-600 dark:text-teal-400')} />
+                  <Share2 className={cn('w-4 h-4', comparison.has(occupation.id) && 'text-teal-600 dark:text-teal-400')} aria-hidden="true" />
                 </Button>
 
                 <Button
@@ -428,8 +520,9 @@ export default function ExploreTab() {
           </Card>
         ))}
       </div>
+      )}
 
-      {filteredOccupations.length === 0 && (
+      {!isLoadingOccupations && !isSearching && filteredOccupations.length === 0 && (
         <div className="text-center py-12">
           <Compass className="w-16 h-16 text-stone-300 dark:text-stone-600 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300">{t('career.explore.noOccupationsFound') || 'Inga yrken hittades'}</h3>

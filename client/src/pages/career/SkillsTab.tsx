@@ -8,7 +8,7 @@ import {
   Sparkles, TrendingUp, Award, Loader2, Trash2, History
 } from '@/components/ui/icons'
 import { Card, Button } from '@/components/ui'
-import { skillsAnalysisApi, type SkillsAnalysis, type SkillComparison, type CourseRecommendation, type ActionPlanItem } from '@/services/careerApi'
+import { skillsAnalysisApi, careerPlanApi, milestonesApi, type SkillsAnalysis, type SkillComparison, type CourseRecommendation, type ActionPlanItem } from '@/services/careerApi'
 import { useAIStream } from '@/hooks/useAIStream'
 import { cn } from '@/lib/utils'
 
@@ -20,6 +20,8 @@ export default function SkillsTab() {
   const [previousAnalyses, setPreviousAnalyses] = useState<SkillsAnalysis[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [showHistory, setShowHistory] = useState(false)
+  const [isAddingToPlan, setIsAddingToPlan] = useState(false)
+  const [addedToPlan, setAddedToPlan] = useState(false)
 
   const { streamedText, isStreaming, startStream, reset } = useAIStream({
     onComplete: async (fullText) => {
@@ -192,6 +194,76 @@ export default function SkillsTab() {
   const selectAnalysis = (analysis: SkillsAnalysis) => {
     setCurrentAnalysis(analysis)
     setShowHistory(false)
+    setAddedToPlan(false)
+  }
+
+  const addToCareerPlan = async () => {
+    if (!currentAnalysis) return
+    setIsAddingToPlan(true)
+    try {
+      // Check if there's an active career plan
+      let plan = await careerPlanApi.getActive()
+
+      if (!plan) {
+        // Create a new career plan with dream job as goal
+        plan = await careerPlanApi.create({
+          current_situation: currentAnalysis.cv_text?.substring(0, 200) || 'Nuvarande situation baserat på kompetensanalys',
+          goal: currentAnalysis.dream_job,
+          timeframe: '12 månader'
+        })
+      }
+
+      // Add action plan items as milestones
+      const actionPlan = currentAnalysis.action_plan || []
+      const existingMilestones = plan.milestones || []
+
+      for (const item of actionPlan) {
+        // Check if similar milestone already exists
+        const exists = existingMilestones.some(m =>
+          m.title.toLowerCase() === item.title.toLowerCase()
+        )
+
+        if (!exists) {
+          await milestonesApi.create({
+            plan_id: plan.id,
+            title: item.title,
+            description: item.description,
+            steps: [item.description],
+            sort_order: existingMilestones.length + item.order
+          })
+        }
+      }
+
+      // Add skills gap courses as milestones
+      const courses = currentAnalysis.recommended_courses || []
+      for (let i = 0; i < Math.min(courses.length, 2); i++) {
+        const course = courses[i]
+        const courseTitle = `${i18n.language === 'en' ? 'Complete course' : 'Slutför kurs'}: ${course.title}`
+        const exists = existingMilestones.some(m =>
+          m.title.toLowerCase().includes(course.title.toLowerCase())
+        )
+
+        if (!exists) {
+          await milestonesApi.create({
+            plan_id: plan.id,
+            title: courseTitle,
+            description: `${course.provider} - ${course.duration}`,
+            steps: [
+              i18n.language === 'en' ? 'Sign up for the course' : 'Anmäl dig till kursen',
+              i18n.language === 'en' ? 'Complete course material' : 'Slutför kursmaterialet',
+              i18n.language === 'en' ? 'Apply knowledge in practice' : 'Tillämpa kunskapen i praktiken'
+            ],
+            sort_order: existingMilestones.length + actionPlan.length + i
+          })
+        }
+      }
+
+      setAddedToPlan(true)
+    } catch (err) {
+      console.error('Failed to add to career plan:', err)
+    } finally {
+      setIsAddingToPlan(false)
+    }
   }
 
   const startNewAnalysis = () => {
@@ -213,8 +285,8 @@ export default function SkillsTab() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+      <div className="flex items-center justify-center py-12" role="status" aria-live="polite">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600" aria-hidden="true" />
         <span className="ml-3 text-gray-600 dark:text-gray-400">Laddar kompetensanalyser...</span>
       </div>
     )
@@ -310,13 +382,13 @@ export default function SkillsTab() {
   if (isStreaming) {
     return (
       <div className="space-y-6">
-        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="status" aria-live="polite" aria-busy="true">
           <div className="flex items-center gap-3 mb-4">
-            <Loader2 className="w-6 h-6 animate-spin text-teal-600" />
+            <Loader2 className="w-6 h-6 animate-spin text-teal-600" aria-hidden="true" />
             <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">Analyserar dina kompetenser...</h3>
           </div>
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 bg-stone-50 dark:bg-stone-700 p-4 rounded-lg">
+            <pre className="whitespace-pre-wrap text-sm text-gray-700 dark:text-gray-300 bg-stone-50 dark:bg-stone-700 p-4 rounded-lg" aria-label="AI-analys pågår">
               {streamedText || 'Startar analys...'}
             </pre>
           </div>
@@ -356,7 +428,14 @@ export default function SkillsTab() {
           </div>
         </div>
 
-        <div className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mb-4">
+        <div
+          className="h-3 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden mb-4"
+          role="progressbar"
+          aria-valuenow={analysis.match_percentage}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={`Matchning mot drömjobb: ${analysis.match_percentage}%`}
+        >
           <div
             className="h-full bg-gradient-to-r from-teal-500 to-teal-600 dark:from-teal-400 dark:to-teal-500 transition-all duration-500"
             style={{ width: `${analysis.match_percentage}%` }}
@@ -377,9 +456,9 @@ export default function SkillsTab() {
 
       {/* Skills Gap */}
       {skills.length > 0 && (
-        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
+        <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700" role="region" aria-label="Kompetensanalys">
           <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-4">{t('career.skills.skillsComparison')}</h3>
-          <div className="space-y-4">
+          <div className="space-y-4" role="list" aria-label="Lista över kompetenser">
             {skills.map((skill, idx) => (
               <div key={idx} className="p-4 rounded-xl bg-stone-50 dark:bg-stone-700">
                 <div className="flex items-center justify-between mb-2">
@@ -463,9 +542,45 @@ export default function SkillsTab() {
             ))}
           </div>
 
+          {/* Add to Career Plan Button */}
+          <div className="mt-4 pt-4 border-t border-stone-200 dark:border-stone-600">
+            {addedToPlan ? (
+              <div className="flex items-center gap-2 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-700">
+                <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                <span className="text-sm text-green-800 dark:text-green-200">
+                  {i18n.language === 'en' ? 'Added to your career plan!' : 'Tillagt i din karriärplan!'}
+                </span>
+                <a
+                  href="/career?tab=plan"
+                  className="ml-auto text-sm font-medium text-green-700 dark:text-green-300 hover:underline"
+                >
+                  {i18n.language === 'en' ? 'View plan' : 'Visa plan'} →
+                </a>
+              </div>
+            ) : (
+              <Button
+                onClick={addToCareerPlan}
+                disabled={isAddingToPlan}
+                className="w-full bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700"
+              >
+                {isAddingToPlan ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    {i18n.language === 'en' ? 'Adding to plan...' : 'Lägger till i plan...'}
+                  </>
+                ) : (
+                  <>
+                    <Target className="w-4 h-4 mr-2" />
+                    {i18n.language === 'en' ? 'Add to Career Plan' : 'Lägg till i karriärplan'}
+                  </>
+                )}
+              </Button>
+            )}
+          </div>
+
           <Button
             variant="outline"
-            className="w-full mt-4"
+            className="w-full mt-3"
             onClick={startNewAnalysis}
           >
             {t('career.skills.newAnalysis')}

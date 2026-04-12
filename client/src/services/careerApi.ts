@@ -1,4 +1,5 @@
 import { supabase } from '@/lib/supabase';
+import { careerOfflineCache, offlineStorage } from './offlineStorage';
 
 // ===== API Error Class =====
 
@@ -398,14 +399,33 @@ export const networkApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
-    const { data, error } = await supabase
-      .from('network_contacts')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('last_contact_date', { ascending: false, nullsFirst: false });
+    // Check if offline
+    if (!offlineStorage.isOnline()) {
+      const cached = await careerOfflineCache.getCachedNetworkContacts();
+      if (cached.length > 0) return cached;
+    }
 
-    if (error) handleError(error, 'Failed to fetch network contacts');
-    return data || [];
+    try {
+      const { data, error } = await supabase
+        .from('network_contacts')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('last_contact_date', { ascending: false, nullsFirst: false });
+
+      if (error) handleError(error, 'Failed to fetch network contacts');
+
+      // Cache for offline use
+      if (data && data.length > 0) {
+        await careerOfflineCache.cacheNetworkContacts(data);
+      }
+
+      return data || [];
+    } catch (error) {
+      // If network error, try offline cache
+      const cached = await careerOfflineCache.getCachedNetworkContacts();
+      if (cached.length > 0) return cached;
+      throw error;
+    }
   },
 
   async getByStatus(status: NetworkContact['status']): Promise<NetworkContact[]> {
@@ -516,18 +536,40 @@ export const careerPlanApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
-    const { data, error } = await supabase
-      .from('career_plans')
-      .select(`
-        *,
-        milestones:career_milestones(*)
-      `)
-      .eq('user_id', user.id)
-      .eq('is_active', true)
-      .maybeSingle();
+    // Check if offline
+    if (!offlineStorage.isOnline()) {
+      const cached = await careerOfflineCache.getCachedCareerPlan();
+      if (cached) return cached;
+    }
 
-    if (error) handleError(error, 'Failed to fetch active career plan');
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('career_plans')
+        .select(`
+          *,
+          milestones:career_milestones(*)
+        `)
+        .eq('user_id', user.id)
+        .eq('is_active', true)
+        .maybeSingle();
+
+      if (error) handleError(error, 'Failed to fetch active career plan');
+
+      // Cache the data for offline use
+      if (data) {
+        await careerOfflineCache.cacheCareerPlan(data);
+        if (data.milestones) {
+          await careerOfflineCache.cacheMilestones(data.milestones);
+        }
+      }
+
+      return data;
+    } catch (error) {
+      // If network error, try offline cache
+      const cached = await careerOfflineCache.getCachedCareerPlan();
+      if (cached) return cached;
+      throw error;
+    }
   },
 
   async getAll(): Promise<CareerPlan[]> {
@@ -913,16 +955,35 @@ export const skillsAnalysisApi = {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
 
-    const { data, error } = await supabase
-      .from('skills_analyses')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    // Check if offline
+    if (!offlineStorage.isOnline()) {
+      const cached = await careerOfflineCache.getCachedSkillsAnalysis();
+      if (cached) return cached;
+    }
 
-    if (error) handleError(error, 'Failed to fetch latest analysis');
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from('skills_analyses')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) handleError(error, 'Failed to fetch latest analysis');
+
+      // Cache for offline use
+      if (data) {
+        await careerOfflineCache.cacheSkillsAnalysis(data);
+      }
+
+      return data;
+    } catch (error) {
+      // If network error, try offline cache
+      const cached = await careerOfflineCache.getCachedSkillsAnalysis();
+      if (cached) return cached;
+      throw error;
+    }
   },
 
   async create(analysis: Omit<SkillsAnalysis, 'id' | 'user_id' | 'created_at' | 'updated_at'>): Promise<SkillsAnalysis> {
