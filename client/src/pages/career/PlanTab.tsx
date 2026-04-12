@@ -11,6 +11,7 @@ import {
 import { Card, Button } from '@/components/ui'
 import { cn } from '@/lib/utils'
 import { careerPlanApi, milestonesApi, type CareerPlan, type CareerMilestone } from '@/services/careerApi'
+import { CalendarSync } from '@/components/calendar/CalendarSync'
 
 export default function PlanTab() {
   const { t, i18n } = useTranslation()
@@ -363,16 +364,17 @@ export default function PlanTab() {
         </div>
 
         {/* Add Milestone Button */}
-        <div className="mb-4">
+        <div className="mb-4 flex flex-col sm:flex-row gap-2">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setIsAddingMilestone(true)}
-            className="w-full"
+            className="flex-1"
           >
             <Plus className="w-4 h-4 mr-1" />
             Lägg till milstolpe
           </Button>
+          <CalendarSync compact showSync={true} showUpcoming={false} />
         </div>
 
         {/* Add Milestone Form */}

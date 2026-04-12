@@ -29,6 +29,7 @@ import { BarChart } from '@/components/ui/BarChart'
 import { LoadingState } from '@/components/ui/LoadingState'
 import { cn } from '@/lib/utils'
 import { ReportGeneratorDialog } from '@/components/consultant/ReportGeneratorDialog'
+import { InsightsPanel } from '@/components/consultant/InsightsPanel'
 import type { ReportData } from '@/services/pdfReportGenerator'
 
 interface AnalyticsData {
@@ -499,6 +500,9 @@ export function AnalyticsTab() {
           color="emerald"
         />
       </div>
+
+      {/* AI Insights Panel */}
+      <InsightsPanel maxInsights={5} showTrends={true} showRisks={true} />
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

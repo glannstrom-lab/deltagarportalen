@@ -35,6 +35,7 @@ import { cn } from '@/lib/utils'
 import { userApi, cvApi, coverLetterApi, type OnboardingProgress } from '@/services/supabaseApi'
 import { interestGuideApi } from '@/services/cloudStorage'
 import { careerPlanApi, skillsAnalysisApi, networkApi } from '@/services/careerApi'
+import { RecommendationsPanel } from '@/components/recommendations'
 
 // Category item configuration
 interface CategoryItem {
@@ -573,6 +574,9 @@ export default function OverviewTab() {
           </p>
         </Link>
       </div>
+
+      {/* AI Recommendations */}
+      <RecommendationsPanel maxRecommendations={3} showTitle={true} />
 
       {/* Onboarding Section */}
       <ExpandableCategory
