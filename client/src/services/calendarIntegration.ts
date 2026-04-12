@@ -6,7 +6,6 @@
 import { careerPlanApi, networkApi, type Milestone, type NetworkContact } from './careerApi'
 import { calendarApi } from './cloudStorage'
 import type { CalendarEvent, SmartReminder } from './calendarData'
-import { v4 as uuidv4 } from 'uuid'
 
 // Types
 export interface CalendarIntegrationOptions {
@@ -26,13 +25,12 @@ export interface AggregatedReminder {
   type: string
 }
 
-// Generate unique ID if uuid not available
+// Generate unique ID using crypto.randomUUID or fallback
 const generateId = (): string => {
-  try {
-    return uuidv4()
-  } catch {
-    return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+    return crypto.randomUUID()
   }
+  return `${Date.now()}-${Math.random().toString(36).substring(2, 11)}`
 }
 
 /**
