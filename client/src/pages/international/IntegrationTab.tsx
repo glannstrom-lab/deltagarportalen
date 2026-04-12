@@ -1,10 +1,28 @@
 /**
  * Integration Tab - Checklist for establishing yourself in Sweden
+ * With cloud sync, notes, and target dates
  */
-import { useState, useEffect } from 'react'
-import { Users, CheckCircle, Circle, Clock, AlertCircle, ExternalLink, ChevronRight } from '@/components/ui/icons'
-import { Card, Button } from '@/components/ui'
+import { useState, useEffect, useCallback } from 'react'
+import {
+  Users,
+  CheckCircle,
+  Circle,
+  Clock,
+  AlertCircle,
+  ExternalLink,
+  ChevronRight,
+  ChevronDown,
+  ChevronUp,
+  MessageSquare,
+  Calendar,
+  Download,
+  Trash2,
+  Save,
+} from '@/components/ui/icons'
+import { Card, Button, Input } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { integrationChecklistApi } from '@/services/cloudStorage'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface ChecklistItem {
   id: string
@@ -13,6 +31,14 @@ interface ChecklistItem {
   timeframe: string
   links?: { label: string; url: string }[]
   priority: 'critical' | 'important' | 'recommended'
+}
+
+interface ItemProgress {
+  id: string
+  completed: boolean
+  completedAt?: string
+  notes?: string
+  targetDate?: string
 }
 
 const CHECKLIST_CATEGORIES = [
@@ -152,27 +178,110 @@ const CHECKLIST_CATEGORIES = [
 ]
 
 export default function IntegrationTab() {
-  const [completed, setCompleted] = useState<Record<string, boolean>>({})
+  const [itemProgress, setItemProgress] = useState<Record<string, ItemProgress>>({})
+  const [expandedItem, setExpandedItem] = useState<string | null>(null)
+  const [editingNotes, setEditingNotes] = useState<string | null>(null)
+  const [tempNotes, setTempNotes] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Load from localStorage
+  // Load from cloud storage
   useEffect(() => {
-    const saved = localStorage.getItem('integration-checklist')
-    if (saved) {
-      setCompleted(JSON.parse(saved))
+    async function loadProgress() {
+      setIsLoading(true)
+      try {
+        const data = await integrationChecklistApi.getProgress()
+        if (data?.items) {
+          setItemProgress(data.items)
+        }
+      } catch (error) {
+        console.error('[IntegrationTab] Failed to load progress:', error)
+        // Fallback to localStorage
+        const saved = localStorage.getItem('integration-checklist')
+        if (saved) {
+          const parsed = JSON.parse(saved)
+          // Convert old format to new format
+          const converted: Record<string, ItemProgress> = {}
+          Object.entries(parsed).forEach(([id, completed]) => {
+            converted[id] = { id, completed: !!completed }
+          })
+          setItemProgress(converted)
+        }
+      } finally {
+        setIsLoading(false)
+      }
     }
+    loadProgress()
   }, [])
 
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem('integration-checklist', JSON.stringify(completed))
-  }, [completed])
+  const toggleItem = useCallback(async (id: string) => {
+    const currentState = itemProgress[id]?.completed || false
+    const newCompleted = !currentState
 
-  const toggleItem = (id: string) => {
-    setCompleted(prev => ({ ...prev, [id]: !prev[id] }))
-  }
+    // Optimistic update
+    setItemProgress(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        id,
+        completed: newCompleted,
+        completedAt: newCompleted ? new Date().toISOString() : undefined,
+      }
+    }))
+
+    // Sync to cloud
+    await integrationChecklistApi.toggleItem(id, newCompleted)
+  }, [itemProgress])
+
+  const saveNotes = useCallback(async (id: string) => {
+    if (!tempNotes.trim()) return
+    setIsSaving(true)
+
+    setItemProgress(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        id,
+        completed: prev[id]?.completed || false,
+        notes: tempNotes,
+      }
+    }))
+
+    await integrationChecklistApi.updateItemNotes(id, tempNotes)
+    setEditingNotes(null)
+    setTempNotes('')
+    setIsSaving(false)
+  }, [tempNotes])
+
+  const setTargetDate = useCallback(async (id: string, date: string) => {
+    setItemProgress(prev => ({
+      ...prev,
+      [id]: {
+        ...prev[id],
+        id,
+        completed: prev[id]?.completed || false,
+        targetDate: date,
+      }
+    }))
+
+    await integrationChecklistApi.setTargetDate(id, date)
+  }, [])
+
+  const exportChecklist = useCallback(async () => {
+    const data = await integrationChecklistApi.exportProgress()
+    const blob = new Blob([data], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `integrations-checklista-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }, [])
 
   const totalItems = CHECKLIST_CATEGORIES.flatMap(c => c.items).length
-  const completedItems = Object.values(completed).filter(Boolean).length
+  const completedItems = Object.values(itemProgress).filter(p => p.completed).length
   const progress = Math.round((completedItems / totalItems) * 100)
 
   return (
@@ -199,11 +308,26 @@ export default function IntegrationTab() {
             <span className="text-sm font-bold text-sky-700 dark:text-sky-300">{completedItems}/{totalItems} ({progress}%)</span>
           </div>
           <div className="h-3 bg-sky-100 dark:bg-sky-900/50 rounded-full overflow-hidden">
-            <div
-              className="h-full bg-sky-500 dark:bg-sky-600 rounded-full transition-all duration-300"
-              style={{ width: `${progress}%` }}
+            <motion.div
+              className="h-full bg-sky-500 dark:bg-sky-600 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
             />
           </div>
+        </div>
+
+        {/* Export button */}
+        <div className="mt-4 flex justify-end">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={exportChecklist}
+            className="gap-2 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700"
+          >
+            <Download className="w-4 h-4" />
+            Exportera checklista
+          </Button>
         </div>
       </Card>
 
@@ -216,74 +340,216 @@ export default function IntegrationTab() {
           </h3>
 
           <div className="space-y-3">
-            {category.items.map((item) => (
-              <div
-                key={item.id}
-                className={cn(
-                  "p-4 rounded-xl border transition-all cursor-pointer hover:shadow-sm",
-                  completed[item.id]
-                    ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
-                    : item.priority === 'critical'
-                    ? "bg-rose-50/50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800"
-                    : "bg-slate-50 dark:bg-stone-700 border-slate-100 dark:border-stone-600"
-                )}
-                onClick={() => toggleItem(item.id)}
-              >
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5">
-                    {completed[item.id] ? (
-                      <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-                    ) : (
-                      <Circle className="w-5 h-5 text-slate-300 dark:text-stone-500" />
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h4 className={cn(
-                        "font-medium",
-                        completed[item.id] ? "text-emerald-800 dark:text-emerald-200 line-through" : "text-gray-800 dark:text-gray-100"
-                      )}>
-                        {item.title}
-                      </h4>
-                      {item.priority === 'critical' && !completed[item.id] && (
-                        <span className="px-2 py-0.5 bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-xs rounded-full font-medium">
-                          Kritiskt
-                        </span>
-                      )}
-                    </div>
-                    <p className={cn(
-                      "text-sm mt-1",
-                      completed[item.id] ? "text-emerald-600 dark:text-emerald-300" : "text-gray-600 dark:text-gray-300"
-                    )}>
-                      {item.description}
-                    </p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <span className="text-xs text-gray-600 dark:text-gray-400">
-                        <Clock className="w-3 h-3 inline mr-1" />
-                        {item.timeframe}
-                      </span>
-                      {item.links && (
-                        <div className="flex gap-2">
-                          {item.links.map((link) => (
-                            <a
-                              key={link.url}
-                              href={link.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              onClick={(e) => e.stopPropagation()}
-                              className="text-xs text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 flex items-center gap-1"
-                            >
-                              {link.label}
-                              <ExternalLink className="w-3 h-3" />
-                            </a>
-                          ))}
+            {category.items.map((item) => {
+              const itemState = itemProgress[item.id]
+              const isCompleted = itemState?.completed || false
+              const isExpanded = expandedItem === item.id
+
+              return (
+                <div
+                  key={item.id}
+                  className={cn(
+                    "rounded-xl border transition-all overflow-hidden",
+                    isCompleted
+                      ? "bg-emerald-50 dark:bg-emerald-900/30 border-emerald-200 dark:border-emerald-700"
+                      : item.priority === 'critical'
+                      ? "bg-rose-50/50 dark:bg-rose-900/20 border-rose-100 dark:border-rose-800"
+                      : "bg-slate-50 dark:bg-stone-700 border-slate-100 dark:border-stone-600"
+                  )}
+                >
+                  {/* Main item row */}
+                  <div
+                    className="p-4 cursor-pointer hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                    onClick={() => toggleItem(item.id)}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5">
+                        {isCompleted ? (
+                          <CheckCircle className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+                        ) : (
+                          <Circle className="w-5 h-5 text-slate-300 dark:text-stone-500" />
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className={cn(
+                            "font-medium",
+                            isCompleted ? "text-emerald-800 dark:text-emerald-200 line-through" : "text-gray-800 dark:text-gray-100"
+                          )}>
+                            {item.title}
+                          </h4>
+                          {item.priority === 'critical' && !isCompleted && (
+                            <span className="px-2 py-0.5 bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 text-xs rounded-full font-medium">
+                              Kritiskt
+                            </span>
+                          )}
+                          {itemState?.notes && (
+                            <span className="px-2 py-0.5 bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 text-xs rounded-full">
+                              <MessageSquare className="w-3 h-3 inline mr-1" />
+                              Anteckning
+                            </span>
+                          )}
+                          {itemState?.targetDate && (
+                            <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 text-xs rounded-full">
+                              <Calendar className="w-3 h-3 inline mr-1" />
+                              {new Date(itemState.targetDate).toLocaleDateString('sv-SE')}
+                            </span>
+                          )}
                         </div>
-                      )}
+                        <p className={cn(
+                          "text-sm mt-1",
+                          isCompleted ? "text-emerald-600 dark:text-emerald-300" : "text-gray-600 dark:text-gray-300"
+                        )}>
+                          {item.description}
+                        </p>
+                        <div className="flex items-center gap-4 mt-2">
+                          <span className="text-xs text-gray-600 dark:text-gray-400">
+                            <Clock className="w-3 h-3 inline mr-1" />
+                            {item.timeframe}
+                          </span>
+                          {item.links && (
+                            <div className="flex gap-2 flex-wrap">
+                              {item.links.map((link) => (
+                                <a
+                                  key={link.url}
+                                  href={link.url}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  onClick={(e) => e.stopPropagation()}
+                                  className="text-xs text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300 flex items-center gap-1"
+                                >
+                                  {link.label}
+                                  <ExternalLink className="w-3 h-3" />
+                                </a>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setExpandedItem(isExpanded ? null : item.id)
+                        }}
+                        className="p-1.5 rounded-lg hover:bg-black/10 dark:hover:bg-white/10 transition-colors"
+                        aria-expanded={isExpanded}
+                        aria-label="Visa mer"
+                      >
+                        {isExpanded ? (
+                          <ChevronUp className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-gray-600 dark:text-gray-400" />
+                        )}
+                      </button>
                     </div>
                   </div>
+
+                  {/* Expanded details */}
+                  <AnimatePresence>
+                    {isExpanded && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="border-t border-inherit"
+                      >
+                        <div className="p-4 space-y-4 bg-white/50 dark:bg-black/20">
+                          {/* Target date */}
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                              <Calendar className="w-3 h-3 inline mr-1" />
+                              Måldatum
+                            </label>
+                            <Input
+                              type="date"
+                              value={itemState?.targetDate?.split('T')[0] || ''}
+                              onChange={(e) => setTargetDate(item.id, e.target.value)}
+                              className="max-w-[200px] text-sm"
+                            />
+                          </div>
+
+                          {/* Notes */}
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                              <MessageSquare className="w-3 h-3 inline mr-1" />
+                              Anteckningar
+                            </label>
+                            {editingNotes === item.id ? (
+                              <div className="space-y-2">
+                                <textarea
+                                  value={tempNotes}
+                                  onChange={(e) => setTempNotes(e.target.value)}
+                                  placeholder="Lägg till anteckningar..."
+                                  className="w-full p-2 text-sm border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-stone-800 text-gray-900 dark:text-gray-100 focus:ring-2 focus:ring-sky-500"
+                                  rows={3}
+                                />
+                                <div className="flex gap-2">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => saveNotes(item.id)}
+                                    disabled={isSaving}
+                                    className="gap-1"
+                                  >
+                                    <Save className="w-3 h-3" />
+                                    {isSaving ? 'Sparar...' : 'Spara'}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => {
+                                      setEditingNotes(null)
+                                      setTempNotes('')
+                                    }}
+                                  >
+                                    Avbryt
+                                  </Button>
+                                </div>
+                              </div>
+                            ) : (
+                              <div>
+                                {itemState?.notes ? (
+                                  <div
+                                    className="p-2 bg-white dark:bg-stone-800 rounded-lg text-sm text-gray-700 dark:text-gray-300 cursor-pointer hover:bg-gray-50 dark:hover:bg-stone-700"
+                                    onClick={() => {
+                                      setEditingNotes(item.id)
+                                      setTempNotes(itemState.notes || '')
+                                    }}
+                                  >
+                                    {itemState.notes}
+                                  </div>
+                                ) : (
+                                  <button
+                                    onClick={() => {
+                                      setEditingNotes(item.id)
+                                      setTempNotes('')
+                                    }}
+                                    className="text-sm text-sky-600 dark:text-sky-400 hover:text-sky-800 dark:hover:text-sky-300"
+                                  >
+                                    + Lägg till anteckning
+                                  </button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Completed timestamp */}
+                          {isCompleted && itemState?.completedAt && (
+                            <p className="text-xs text-emerald-600 dark:text-emerald-400">
+                              <CheckCircle className="w-3 h-3 inline mr-1" />
+                              Avklarat {new Date(itemState.completedAt).toLocaleDateString('sv-SE', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                              })}
+                            </p>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </Card>
       ))}

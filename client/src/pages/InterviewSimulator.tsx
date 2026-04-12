@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback, useMemo, useRef, memo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle } from '@/components/ui/icons'
+import { MessageCircle, Send, User, Bot, RefreshCw, Lightbulb, Star, Clock, ChevronDown, ChevronUp, Zap, Download, ListTodo, TrendingUp, Mic, MicOff, Pause, Play, HelpCircle, Circle, Save } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { useAchievementTracker } from '@/hooks/useAchievementTracker'
 import { callAI } from '@/services/aiApi'
+import { useAudioRecorder } from '@/hooks/useAudioRecorder'
 
 interface FragaSvar {
   fraga: string
@@ -129,6 +130,20 @@ export default function InterviewSimulator() {
   const [supportPhrase, setSupportPhrase] = useState<string | null>(null)
   const [isLoadingSupportPhrase, setIsLoadingSupportPhrase] = useState(false)
   const { trackInterviewCompleted } = useAchievementTracker()
+
+  // Audio recording for full session capture
+  const {
+    isRecording: isAudioRecording,
+    isPaused: isAudioPaused,
+    recordingTime: audioRecordingTime,
+    audioSupported,
+    startRecording: startAudioRecording,
+    stopRecording: stopAudioRecording,
+    pauseRecording: pauseAudioRecording,
+    resumeRecording: resumeAudioRecording,
+    downloadRecording: downloadAudioRecording,
+    clearRecording: clearAudioRecording
+  } = useAudioRecorder()
 
   // Ref for speech recognition cleanup
   const recognitionRef = useRef<SpeechRecognition | null>(null)
@@ -778,6 +793,47 @@ TIPS FÖR FÖRBÄTTRING:
             >
               {isLoading ? <RefreshCw className="w-4 h-4 animate-spin" aria-label="Laddar" /> : <><Send className="w-4 h-4 mr-2" aria-hidden="true" /> Nästa fråga</>}
             </Button>
+
+            {/* Audio Recording Controls */}
+            {audioSupported && (
+              <Button
+                variant="outline"
+                onClick={isAudioRecording ? (isAudioPaused ? resumeAudioRecording : pauseAudioRecording) : () => startAudioRecording()}
+                size="sm"
+                className={`px-4 rounded-xl ${isAudioRecording ? 'bg-red-50 dark:bg-red-900/20 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400' : ''}`}
+                aria-label={isAudioRecording ? (isAudioPaused ? 'Fortsätt spela in' : 'Pausa inspelning') : 'Spela in hela sessionen'}
+                title={isAudioRecording ? `${Math.floor(audioRecordingTime / 60)}:${(audioRecordingTime % 60).toString().padStart(2, '0')} inspelad` : 'Spela in hela sessionen'}
+              >
+                {isAudioRecording ? (
+                  isAudioPaused ? (
+                    <Play className="w-4 h-4" aria-hidden="true" />
+                  ) : (
+                    <>
+                      <Circle className="w-3 h-3 fill-red-500 text-red-500 animate-pulse" aria-hidden="true" />
+                    </>
+                  )
+                ) : (
+                  <Circle className="w-4 h-4" aria-hidden="true" />
+                )}
+              </Button>
+            )}
+
+            {/* Stop and save recording */}
+            {isAudioRecording && (
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await stopAudioRecording()
+                  downloadAudioRecording(`intervju-${roll.replace(/\s+/g, '-').toLowerCase()}-${new Date().toISOString().split('T')[0]}.webm`)
+                }}
+                size="sm"
+                className="px-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border-emerald-300 dark:border-emerald-700 text-emerald-600 dark:text-emerald-400"
+                aria-label="Spara inspelning"
+              >
+                <Save className="w-4 h-4" aria-hidden="true" />
+              </Button>
+            )}
+
             <Button
               variant="outline"
               onClick={downloadSessionSummary}

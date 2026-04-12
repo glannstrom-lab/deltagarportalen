@@ -3,7 +3,7 @@
  * Integrerar med Susa-navet (Skolverket) och JobEd Connect (Arbetsförmedlingen)
  */
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams, Link } from 'react-router-dom';
 import {
@@ -23,6 +23,7 @@ import {
   RefreshCw,
   Info,
   Lightbulb,
+  Globe,
 } from '@/components/ui/icons';
 import { cn } from '@/lib/utils';
 import {
@@ -30,7 +31,6 @@ import {
   Button,
   Input,
   Select,
-  LoadingState,
   EmptyState,
   Skeleton,
 } from '@/components/ui';
@@ -45,6 +45,7 @@ import {
   type EducationTypeOption,
   type RegionOption,
 } from '@/services/educationApi';
+import { useEducationSearch } from '@/hooks/useEducationSearch';
 
 // ============== CONSTANTS ==============
 
@@ -228,18 +229,34 @@ function QuickSearchCard({
 export default function Education() {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // State
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
-  const [selectedType, setSelectedType] = useState<EducationType>(
-    (searchParams.get('type') as EducationType) || 'all'
-  );
-  const [selectedRegion, setSelectedRegion] = useState(searchParams.get('region') || '');
   const [showFilters, setShowFilters] = useState(false);
 
-  const [searchResult, setSearchResult] = useState<SearchResult | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [hasSearched, setHasSearched] = useState(false);
+  // Real-time search hook
+  const {
+    query: searchQuery,
+    setQuery: setSearchQuery,
+    educationType: selectedType,
+    setEducationType: setSelectedType,
+    region: selectedRegion,
+    setRegion: setSelectedRegion,
+    distanceOnly,
+    setDistanceOnly,
+    results,
+    total,
+    hasMore,
+    source,
+    isLoading,
+    isSearching,
+    hasSearched,
+    error,
+    loadMore,
+    clearFilters: clearAllFilters,
+  } = useEducationSearch({
+    debounceDelay: 300,
+    autoSearch: true,
+    minQueryLength: 0,
+    initialLimit: 20,
+  });
 
   const [educationTypes, setEducationTypes] = useState<EducationTypeOption[]>([]);
   const [regions, setRegions] = useState<RegionOption[]>([]);
@@ -257,75 +274,45 @@ export default function Education() {
     loadOptions();
   }, []);
 
-  // Search function
-  const performSearch = useCallback(async (
-    query: string,
-    type: EducationType,
-    region: string
-  ) => {
-    setIsLoading(true);
-    setHasSearched(true);
+  // Sync URL params with search state
+  useEffect(() => {
+    if (!hasSearched) return;
 
-    try {
-      const result = await educationApi.search({
-        query: query || undefined,
-        type,
-        region: region || undefined,
-        limit: 20,
-      });
-      setSearchResult(result);
-    } catch (error) {
-      console.error('Search error:', error);
-      setSearchResult({ educations: [], total: 0, hasMore: false, source: 'error' });
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  // Handle search submit
-  const handleSearch = useCallback((e?: React.FormEvent) => {
-    e?.preventDefault();
-
-    // Update URL params
     const params = new URLSearchParams();
     if (searchQuery) params.set('q', searchQuery);
     if (selectedType !== 'all') params.set('type', selectedType);
     if (selectedRegion) params.set('region', selectedRegion);
+    if (distanceOnly) params.set('distance', 'true');
     setSearchParams(params, { replace: true });
+  }, [searchQuery, selectedType, selectedRegion, distanceOnly, hasSearched, setSearchParams]);
 
-    performSearch(searchQuery, selectedType, selectedRegion);
-  }, [searchQuery, selectedType, selectedRegion, setSearchParams, performSearch]);
+  // Initialize from URL params on mount
+  useEffect(() => {
+    const q = searchParams.get('q');
+    const type = searchParams.get('type') as EducationType;
+    const region = searchParams.get('region');
+    const distance = searchParams.get('distance') === 'true';
+
+    if (q) setSearchQuery(q);
+    if (type) setSelectedType(type);
+    if (region) setSelectedRegion(region);
+    if (distance) setDistanceOnly(true);
+  }, []); // Only run on mount
 
   // Quick search handlers
   const handleQuickSearch = useCallback((query: string, type?: EducationType) => {
     setSearchQuery(query);
     if (type) setSelectedType(type);
-    performSearch(query, type || 'all', selectedRegion);
-  }, [selectedRegion, performSearch]);
+  }, [setSearchQuery, setSelectedType]);
 
   // Clear filters
   const clearFilters = useCallback(() => {
-    setSearchQuery('');
-    setSelectedType('all');
-    setSelectedRegion('');
+    clearAllFilters();
     setSearchParams({}, { replace: true });
-    setSearchResult(null);
-    setHasSearched(false);
-  }, [setSearchParams]);
+  }, [clearAllFilters, setSearchParams]);
 
   // Check if any filters are active
-  const hasActiveFilters = searchQuery || selectedType !== 'all' || selectedRegion;
-
-  // Initial search from URL params
-  useEffect(() => {
-    const q = searchParams.get('q');
-    const type = searchParams.get('type') as EducationType;
-    const region = searchParams.get('region');
-
-    if (q || type || region) {
-      performSearch(q || '', type || 'all', region || '');
-    }
-  }, []); // Only run on mount
+  const hasActiveFilters = searchQuery || selectedType !== 'all' || selectedRegion || distanceOnly;
 
   return (
     <PageLayout
@@ -335,8 +322,8 @@ export default function Education() {
     >
       {/* Search Section */}
       <PageSection>
-        <form onSubmit={handleSearch} className="space-y-4">
-          {/* Search Bar */}
+        <div className="space-y-4">
+          {/* Search Bar - Real-time filtering (no submit required) */}
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
@@ -346,29 +333,31 @@ export default function Education() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={t('education.searchPlaceholder')}
                 className="pl-10 bg-white dark:bg-stone-700 border-stone-300 dark:border-stone-600"
+                aria-label={t('education.searchPlaceholder')}
               />
+              {isSearching && (
+                <RefreshCw className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-teal-500 animate-spin" />
+              )}
             </div>
             <Button
               type="button"
               variant="outline"
               onClick={() => setShowFilters(!showFilters)}
               className={cn(showFilters && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-600')}
+              aria-expanded={showFilters}
+              aria-controls="education-filters"
             >
               <Filter className="w-4 h-4 mr-2" />
               {t('education.filters')}
             </Button>
-            <Button type="submit" disabled={isLoading} className="bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700">
-              {isLoading ? (
-                <RefreshCw className="w-4 h-4 animate-spin" />
-              ) : (
-                t('education.search')
-              )}
-            </Button>
           </div>
 
-          {/* Filters */}
+          {/* Filters - Changes trigger instant search */}
           {showFilters && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700">
+            <div
+              id="education-filters"
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 p-4 bg-stone-50 dark:bg-stone-800/50 rounded-xl border border-stone-200 dark:border-stone-700"
+            >
               <div>
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                   {t('education.educationType')}
@@ -401,6 +390,32 @@ export default function Education() {
                   ))}
                 </Select>
               </div>
+              <div className="sm:col-span-2 lg:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
+                  {t('education.studyFormat', 'Studieform')}
+                </label>
+                <div className="flex items-center gap-4 h-10">
+                  <button
+                    type="button"
+                    onClick={() => setDistanceOnly(!distanceOnly)}
+                    className={cn(
+                      'inline-flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                      distanceOnly
+                        ? 'bg-sky-100 text-sky-700 border-2 border-sky-300 dark:bg-sky-900/40 dark:text-sky-300 dark:border-sky-600'
+                        : 'bg-white text-gray-600 border border-gray-300 hover:border-sky-300 dark:bg-stone-700 dark:text-gray-300 dark:border-stone-600'
+                    )}
+                    aria-pressed={distanceOnly}
+                  >
+                    <Globe className="w-4 h-4" />
+                    {t('education.distanceOnly', 'Endast distans')}
+                  </button>
+                  {distanceOnly && (
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {t('education.distanceHint', 'Visar utbildningar på distans')}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           )}
 
@@ -411,7 +426,7 @@ export default function Education() {
               {searchQuery && (
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
                   "{searchQuery}"
-                  <button onClick={() => setSearchQuery('')} className="hover:text-teal-900 dark:hover:text-teal-200">
+                  <button onClick={() => setSearchQuery('')} className="hover:text-teal-900 dark:hover:text-teal-200" aria-label={t('education.removeFilter')}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -419,7 +434,7 @@ export default function Education() {
               {selectedType !== 'all' && (
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-300">
                   {educationTypes.find(t => t.id === selectedType)?.label}
-                  <button onClick={() => setSelectedType('all')} className="hover:text-teal-900 dark:hover:text-teal-200">
+                  <button onClick={() => setSelectedType('all')} className="hover:text-teal-900 dark:hover:text-teal-200" aria-label={t('education.removeFilter')}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -427,7 +442,16 @@ export default function Education() {
               {selectedRegion && (
                 <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">
                   {regions.find(r => r.id === selectedRegion)?.label}
-                  <button onClick={() => setSelectedRegion('')} className="hover:text-emerald-900 dark:hover:text-emerald-200">
+                  <button onClick={() => setSelectedRegion('')} className="hover:text-emerald-900 dark:hover:text-emerald-200" aria-label={t('education.removeFilter')}>
+                    <X className="w-3 h-3" />
+                  </button>
+                </span>
+              )}
+              {distanceOnly && (
+                <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs bg-sky-100 text-sky-700 dark:bg-sky-900/30 dark:text-sky-300">
+                  <Globe className="w-3 h-3" />
+                  {t('education.distanceOnly', 'Distans')}
+                  <button onClick={() => setDistanceOnly(false)} className="hover:text-sky-900 dark:hover:text-sky-200" aria-label={t('education.removeFilter')}>
                     <X className="w-3 h-3" />
                   </button>
                 </span>
@@ -440,7 +464,7 @@ export default function Education() {
               </button>
             </div>
           )}
-        </form>
+        </div>
       </PageSection>
 
       {/* Quick Actions (shown when no search) */}
@@ -551,19 +575,26 @@ export default function Education() {
       {/* Search Results */}
       {hasSearched && (
         <div className="mt-6">
-          {isLoading ? (
+          {/* Error state */}
+          {error && (
+            <div className="p-4 mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-700 dark:text-red-300">
+              {error}
+            </div>
+          )}
+
+          {isSearching ? (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {[...Array(6)].map((_, i) => (
                 <EducationSkeleton key={i} />
               ))}
             </div>
-          ) : searchResult && searchResult.educations.length > 0 ? (
+          ) : results.length > 0 ? (
             <>
               {/* Results header */}
               <div className="flex items-center justify-between mb-4">
-                <p className="text-sm text-gray-600 dark:text-gray-400">
-                  {t('education.resultsCount', { count: searchResult.total })}
-                  {searchResult.source === 'fallback-mock' && (
+                <p className="text-sm text-gray-600 dark:text-gray-400" role="status" aria-live="polite">
+                  {t('education.resultsCount', { count: total })}
+                  {source === 'fallback-mock' && (
                     <span className="ml-2 text-amber-600 dark:text-amber-400">
                       ({t('education.demoData')})
                     </span>
@@ -573,17 +604,23 @@ export default function Education() {
 
               {/* Results grid */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                {searchResult.educations.map((education) => (
+                {results.map((education) => (
                   <EducationCard key={education.id} education={education} />
                 ))}
               </div>
 
               {/* Load more */}
-              {searchResult.hasMore && (
+              {hasMore && (
                 <div className="mt-6 text-center">
-                  <Button variant="outline" onClick={() => {
-                    // Load more logic
-                  }}>
+                  <Button
+                    variant="outline"
+                    onClick={loadMore}
+                    disabled={isLoading}
+                    className="min-w-[150px]"
+                  >
+                    {isLoading ? (
+                      <RefreshCw className="w-4 h-4 animate-spin mr-2" />
+                    ) : null}
                     {t('education.loadMore')}
                   </Button>
                 </div>

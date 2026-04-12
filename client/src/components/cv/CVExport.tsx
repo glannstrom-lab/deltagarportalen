@@ -1,7 +1,13 @@
-import { useState, useRef } from 'react'
-import { Download, FileText, Check, FileType, Loader2 } from '@/components/ui/icons'
+import { useState, useRef, lazy, Suspense } from 'react'
+import { Download, FileText, Check, FileType, Loader2, Zap } from '@/components/ui/icons'
 import { loadPDFLibraries, preloadPDFLibraries } from '@/services/pdfLazyLoad'
 import type { CVData } from '@/services/supabaseApi'
+
+// Lazy load react-pdf for vector PDF export
+const BlobProvider = lazy(() =>
+  import('@react-pdf/renderer').then(mod => ({ default: mod.BlobProvider }))
+)
+const CVPDFDocument = lazy(() => import('./CVPDF'))
 
 interface CVExportProps {
   cvData?: CVData
@@ -37,7 +43,9 @@ const getLanguageLevelPercent = (level: string): number => {
 export function CVExport({ cvData }: CVExportProps) {
   const [isExportingPDF, setIsExportingPDF] = useState(false)
   const [isExportingWord, setIsExportingWord] = useState(false)
-  const [exportSuccess, setExportSuccess] = useState<'pdf' | 'word' | null>(null)
+  const [isExportingVectorPDF, setIsExportingVectorPDF] = useState(false)
+  const [exportSuccess, setExportSuccess] = useState<'pdf' | 'word' | 'vector' | null>(null)
+  const [showVectorExport, setShowVectorExport] = useState(false)
   const pdfRef = useRef<HTMLDivElement>(null)
 
   if (!cvData) {
@@ -753,26 +761,72 @@ export function CVExport({ cvData }: CVExportProps) {
         </div>
 
         <div className="space-y-3">
+          {/* Vector PDF - Best quality with selectable text */}
+          <Suspense fallback={
+            <button
+              disabled
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium opacity-50"
+            >
+              <Loader2 className="w-5 h-5 animate-spin" /> Laddar...
+            </button>
+          }>
+            <BlobProvider document={<CVPDFDocument data={cvData} />}>
+              {({ blob, loading, error }) => (
+                <button
+                  onClick={() => {
+                    if (blob) {
+                      setIsExportingVectorPDF(true)
+                      const link = document.createElement('a')
+                      link.href = URL.createObjectURL(blob)
+                      link.download = `${cvData.firstName || 'ditt'}-${cvData.lastName || 'namn'}-cv.pdf`.toLowerCase()
+                      document.body.appendChild(link)
+                      link.click()
+                      document.body.removeChild(link)
+                      URL.revokeObjectURL(link.href)
+                      setExportSuccess('vector')
+                      setTimeout(() => setExportSuccess(null), 3000)
+                      setIsExportingVectorPDF(false)
+                    }
+                  }}
+                  disabled={loading || !!error || isExportingVectorPDF}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium hover:bg-indigo-700 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors"
+                >
+                  {exportSuccess === 'vector' ? (
+                    <><Check className="w-5 h-5" /> PDF Sparad!</>
+                  ) : loading ? (
+                    <><Loader2 className="w-5 h-5 animate-spin" /> Förbereder PDF...</>
+                  ) : error ? (
+                    <><span className="text-red-200">Fel vid export</span></>
+                  ) : (
+                    <><Zap className="w-5 h-5" /> Ladda ner PDF (Rekommenderad)</>
+                  )}
+                </button>
+              )}
+            </BlobProvider>
+          </Suspense>
+
+          {/* Alternative: Screenshot-based PDF */}
           <button
             onClick={handleExportPDF}
             onMouseEnter={preloadPDFLibraries}
             onFocus={preloadPDFLibraries}
             disabled={isExportingPDF || isExportingWord}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 disabled:bg-slate-200 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-indigo-200 text-indigo-600 rounded-xl font-medium hover:bg-indigo-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'pdf' ? (
               <><Check className="w-5 h-5" /> PDF Sparad!</>
             ) : isExportingPDF ? (
               <><Loader2 className="w-5 h-5 animate-spin" /> Skapar PDF...</>
             ) : (
-              <><Download className="w-5 h-5" /> Ladda ner PDF</>
+              <><Download className="w-5 h-5" /> PDF (Exakt som på skärmen)</>
             )}
           </button>
 
+          {/* Word export */}
           <button
             onClick={handleExportWord}
             disabled={isExportingPDF || isExportingWord}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-600 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 border-2 border-blue-200 text-blue-600 rounded-xl font-medium hover:bg-blue-50 disabled:bg-slate-100 disabled:border-slate-300 disabled:text-slate-600 disabled:cursor-not-allowed transition-colors"
           >
             {exportSuccess === 'word' ? (
               <><Check className="w-5 h-5" /> Word Sparad!</>
@@ -788,10 +842,15 @@ export function CVExport({ cvData }: CVExportProps) {
           Filnamn: {cvData.firstName?.toLowerCase() || 'ditt'}-{cvData.lastName?.toLowerCase() || 'namn'}-cv.pdf / .doc
         </p>
 
-        <div className="mt-4 p-3 bg-slate-50 rounded-lg">
+        <div className="mt-4 p-3 bg-slate-50 rounded-lg space-y-2">
           <p className="text-xs text-slate-700">
-            <strong>Tips:</strong> PDF är bäst för att skicka till arbetsgivare.
-            Word kan du redigera vidare om du behöver anpassa CV:t för specifika ansökningar.
+            <strong>Rekommenderad PDF:</strong> Ger sökbar text och mindre filstorlek. Bäst för ATS-system.
+          </p>
+          <p className="text-xs text-slate-700">
+            <strong>PDF (exakt som på skärmen):</strong> Fångar exakt utseende men text ej sökbar.
+          </p>
+          <p className="text-xs text-slate-700">
+            <strong>Word:</strong> Redigerbart format om du behöver anpassa för specifika ansökningar.
           </p>
         </div>
       </div>

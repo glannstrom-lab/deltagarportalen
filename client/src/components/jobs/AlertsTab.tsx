@@ -3,17 +3,22 @@
  * Save search criteria to get notified about new jobs
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Bell, Plus, Search, Trash2, ToggleLeft, ToggleRight,
   MapPin, Briefcase, Clock, ExternalLink, AlertCircle,
-  CheckCircle, RefreshCw, X
+  CheckCircle, RefreshCw, X, Mail, Settings
 } from '@/components/ui/icons'
 import { Link, useNavigate } from 'react-router-dom'
 import { useJobAlerts } from '@/hooks/useJobAlerts'
 import { cn } from '@/lib/utils'
 import { Card, Button } from '@/components/ui'
+import {
+  getNotificationPreferences,
+  updateNotificationPreferences,
+  getUnreadCount
+} from '@/services/jobAlertEmailService'
 
 // Region mapping for display
 const REGION_NAMES: Record<string, string> = {
@@ -180,6 +185,119 @@ interface JobAlert {
   last_checked_at?: string
 }
 
+// Email notification settings panel
+function EmailSettingsPanel({ onClose }: { onClose: () => void }) {
+  const [emailEnabled, setEmailEnabled] = useState(true)
+  const [frequency, setFrequency] = useState<'instant' | 'daily' | 'weekly' | 'none'>('daily')
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    getNotificationPreferences().then(prefs => {
+      setEmailEnabled(prefs.emailEnabled)
+      setFrequency(prefs.frequency)
+      setIsLoading(false)
+    })
+  }, [])
+
+  const handleSave = async () => {
+    setIsSaving(true)
+    await updateNotificationPreferences({ emailEnabled, frequency })
+    setIsSaving(false)
+    onClose()
+  }
+
+  if (isLoading) {
+    return (
+      <div className="bg-slate-50 rounded-xl p-6 mb-6">
+        <div className="animate-pulse flex items-center gap-3">
+          <div className="w-10 h-10 bg-slate-200 rounded-lg" />
+          <div className="h-4 bg-slate-200 rounded w-32" />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-xl p-6 mb-6 border border-indigo-100">
+      <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-indigo-100 rounded-lg flex items-center justify-center">
+            <Mail className="w-5 h-5 text-indigo-600" />
+          </div>
+          <div>
+            <h3 className="font-semibold text-slate-900">E-postaviseringar</h3>
+            <p className="text-sm text-slate-600">Välj hur du vill bli notifierad om nya jobb</p>
+          </div>
+        </div>
+        <button
+          onClick={onClose}
+          className="p-1 hover:bg-white/50 rounded-lg transition-colors"
+        >
+          <X className="w-5 h-5 text-slate-500" />
+        </button>
+      </div>
+
+      <div className="mt-4 space-y-4">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={emailEnabled}
+            onChange={(e) => setEmailEnabled(e.target.checked)}
+            className="w-5 h-5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+          />
+          <span className="text-sm text-slate-700">Aktivera e-postaviseringar för jobbvarningar</span>
+        </label>
+
+        {emailEnabled && (
+          <div className="ml-8">
+            <label className="block text-sm font-medium text-slate-700 mb-2">
+              Frekvens
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: 'instant', label: 'Direkt' },
+                { value: 'daily', label: 'Daglig sammanfattning' },
+                { value: 'weekly', label: 'Veckosammanfattning' },
+                { value: 'none', label: 'Endast i appen' }
+              ].map(option => (
+                <label
+                  key={option.value}
+                  className={cn(
+                    "flex items-center gap-2 p-3 rounded-lg border cursor-pointer transition-colors",
+                    frequency === option.value
+                      ? "bg-indigo-50 border-indigo-300"
+                      : "bg-white border-slate-200 hover:border-indigo-200"
+                  )}
+                >
+                  <input
+                    type="radio"
+                    name="frequency"
+                    value={option.value}
+                    checked={frequency === option.value}
+                    onChange={(e) => setFrequency(e.target.value as typeof frequency)}
+                    className="text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <span className="text-sm text-slate-700">{option.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-end gap-3 pt-2">
+          <Button variant="outline" size="sm" onClick={onClose}>
+            Avbryt
+          </Button>
+          <Button size="sm" onClick={handleSave} disabled={isSaving}>
+            {isSaving ? 'Sparar...' : 'Spara inställningar'}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function AlertCard({
   alert,
   onToggle,
@@ -308,6 +426,13 @@ export function AlertsTab() {
   const navigate = useNavigate()
   const { alerts, isLoading, createAlert, deleteAlert, toggleAlert, runAlertSearch, checkForNewJobs } = useJobAlerts()
   const [showCreateModal, setShowCreateModal] = useState(false)
+  const [showEmailSettings, setShowEmailSettings] = useState(false)
+  const [unreadCount, setUnreadCount] = useState(0)
+
+  // Fetch unread notification count
+  useEffect(() => {
+    getUnreadCount().then(setUnreadCount)
+  }, [])
 
   const handleCreateAlert = async (alertData: {
     name: string
@@ -343,18 +468,42 @@ export function AlertsTab() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-slate-900">Dina bevakningar</h2>
+          <div className="flex items-center gap-2">
+            <h2 className="text-lg font-semibold text-slate-900">Dina bevakningar</h2>
+            {unreadCount > 0 && (
+              <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded-full">
+                {unreadCount} nya
+              </span>
+            )}
+          </div>
           <p className="text-sm text-slate-700">
             {alerts.length === 0
               ? 'Skapa bevakningar för att få notiser om nya jobb'
               : `${alerts.filter(a => a.is_active).length} aktiva av ${alerts.length} bevakningar`}
           </p>
         </div>
-        <Button onClick={() => setShowCreateModal(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Ny bevakning
-        </Button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowEmailSettings(!showEmailSettings)}
+            className={cn(
+              "p-2 rounded-lg transition-colors",
+              showEmailSettings ? "bg-indigo-100 text-indigo-600" : "hover:bg-slate-100 text-slate-600"
+            )}
+            title="E-postinställningar"
+          >
+            <Settings className="w-5 h-5" />
+          </button>
+          <Button onClick={() => setShowCreateModal(true)}>
+            <Plus className="w-4 h-4 mr-2" />
+            Ny bevakning
+          </Button>
+        </div>
       </div>
+
+      {/* Email Settings */}
+      {showEmailSettings && (
+        <EmailSettingsPanel onClose={() => setShowEmailSettings(false)} />
+      )}
 
       {/* Alerts list */}
       {alerts.length === 0 ? (

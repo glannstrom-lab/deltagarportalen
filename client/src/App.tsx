@@ -63,6 +63,8 @@ const Calendar = lazy(() => import('./pages/Calendar'))
 const Education = lazy(() => import('./pages/Education'))
 const Applications = lazy(() => import('./pages/Applications'))
 const Spontaneous = lazy(() => import('./pages/Spontaneous'))
+const LinkedInCallback = lazy(() => import('./pages/LinkedInCallback'))
+const GoogleCalendarCallback = lazy(() => import('./pages/GoogleCalendarCallback'))
 
 // Loading fallback
 function PageLoader() {
@@ -221,6 +223,8 @@ function App() {
         <Route path="/privacy" element={<Privacy />} />
         <Route path="/terms" element={<Terms />} />
         <Route path="/ai-policy" element={<AiPolicy />} />
+        <Route path="/linkedin/callback" element={<LazyRoute><LinkedInCallback /></LazyRoute>} />
+        <Route path="/calendar/google-callback" element={<LazyRoute><GoogleCalendarCallback /></LazyRoute>} />
 
         {/* Root route - shows Landing or Layout based on auth */}
         <Route path="/" element={<RootRoute />}>

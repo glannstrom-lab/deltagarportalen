@@ -208,12 +208,56 @@ export async function handleLinkedInCallback(
   // Rensa state
   sessionStorage.removeItem('linkedin_oauth_state');
 
-  // I en verklig implementation: Byta code mot access token
-  // och sedan hämta profildata
-  
-  // För demo: Returnera mock-profil
-  logger.debug('LinkedIn auth successful (mock)');
-  return getMockLinkedInProfile();
+  const redirectUri = `${window.location.origin}/linkedin/callback`;
+
+  try {
+    // Byt authorization code mot access token via vår backend
+    const tokenResponse = await fetch('/api/linkedin-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'exchange',
+        code,
+        redirectUri,
+      }),
+    });
+
+    if (!tokenResponse.ok) {
+      const error = await tokenResponse.json();
+      logger.error('LinkedIn token exchange failed:', error);
+      throw new Error(error.error || 'Token exchange failed');
+    }
+
+    const { access_token } = await tokenResponse.json();
+
+    // Hämta profil med access token
+    const profileResponse = await fetch('/api/linkedin-auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'profile',
+        code: access_token,
+      }),
+    });
+
+    if (!profileResponse.ok) {
+      const error = await profileResponse.json();
+      logger.error('LinkedIn profile fetch failed:', error);
+      throw new Error(error.error || 'Profile fetch failed');
+    }
+
+    const { profile } = await profileResponse.json();
+    logger.debug('LinkedIn auth successful');
+    return profile;
+  } catch (error) {
+    logger.error('LinkedIn callback error:', error);
+    // Fallback till mock-profil i demo-läge
+    if (!isLinkedInIntegrationAvailable()) {
+      logger.debug('Falling back to mock profile');
+      return getMockLinkedInProfile();
+    }
+    throw error;
+  }
 }
 
 /**

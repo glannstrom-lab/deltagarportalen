@@ -45,6 +45,7 @@ interface AuthState {
   // Actions
   initialize: () => Promise<void>
   signIn: (email: string, password: string) => Promise<{ error: string | null }>
+  signInWithGoogle: () => Promise<{ error: string | null }>
   signUp: (data: {
     email: string
     password: string
@@ -205,6 +206,38 @@ export const useAuthStore = create<AuthState>()(
           return { error: null }
         } catch (error: unknown) {
           const message = error instanceof Error ? error.message : 'Inloggning misslyckades'
+          set({
+            isLoading: false,
+            error: message,
+          })
+          return { error: message }
+        }
+      },
+
+      // Sign in with Google OAuth
+      signInWithGoogle: async () => {
+        try {
+          set({ isLoading: true, error: null, isSigningOut: false })
+
+          const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+              redirectTo: `${window.location.origin}/`,
+              queryParams: {
+                access_type: 'offline',
+                prompt: 'consent',
+              },
+            },
+          })
+
+          if (error) {
+            throw error
+          }
+
+          // OAuth redirects, so we won't reach here normally
+          return { error: null }
+        } catch (error: unknown) {
+          const message = error instanceof Error ? error.message : 'Google-inloggning misslyckades'
           set({
             isLoading: false,
             error: message,

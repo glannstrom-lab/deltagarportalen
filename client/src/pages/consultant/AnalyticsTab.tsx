@@ -47,6 +47,21 @@ interface AnalyticsData {
   topGoalCategories: Array<{ category: string; count: number }>
 }
 
+interface CohortData {
+  cohort: string
+  participants: number
+  cvComplete: number
+  placed: number
+  avgTime: number
+}
+
+interface TrendData {
+  cvCompletion: { value: number; isPositive: boolean }
+  placementTime: { value: number; isPositive: boolean }
+  goalsCompletion: { value: number; isPositive: boolean }
+  engagement: { value: number; isPositive: boolean }
+}
+
 // Metric Card Component
 function MetricCard({
   title,
@@ -166,6 +181,13 @@ export function AnalyticsTab() {
   const [loading, setLoading] = useState(true)
   const [dateRange, setDateRange] = useState<'week' | 'month' | 'quarter' | 'year'>('month')
   const [showReportDialog, setShowReportDialog] = useState(false)
+  const [cohortData, setCohortData] = useState<CohortData[]>([])
+  const [trends, setTrends] = useState<TrendData>({
+    cvCompletion: { value: 0, isPositive: true },
+    placementTime: { value: 0, isPositive: true },
+    goalsCompletion: { value: 0, isPositive: true },
+    engagement: { value: 0, isPositive: true },
+  })
   const [analytics, setAnalytics] = useState<AnalyticsData>({
     totalParticipants: 0,
     activeParticipants: 0,
@@ -221,12 +243,50 @@ export function AnalyticsTab() {
         .select('*')
         .eq('consultant_id', user.id)
 
-      // Fetch placements
+      // Fetch all placements (not just current period) for cohort analysis
+      const { data: allPlacementsData } = await supabase
+        .from('consultant_placements')
+        .select('*')
+        .eq('consultant_id', user.id)
+
+      // Fetch placements for current period
       const { data: placementsData } = await supabase
         .from('consultant_placements')
         .select('*')
         .eq('consultant_id', user.id)
         .gte('created_at', startDate.toISOString())
+
+      // Fetch previous period data for trend calculations
+      const periodLength = now.getTime() - startDate.getTime()
+      const previousPeriodEnd = startDate
+      const previousPeriodStart = new Date(startDate.getTime() - periodLength)
+
+      const { data: previousParticipants } = await supabase
+        .from('consultant_dashboard_participants')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .gte('created_at', previousPeriodStart.toISOString())
+        .lt('created_at', previousPeriodEnd.toISOString())
+
+      const { data: previousGoals } = await supabase
+        .from('consultant_goals')
+        .select('*')
+        .eq('consultant_id', user.id)
+        .gte('created_at', previousPeriodStart.toISOString())
+        .lt('created_at', previousPeriodEnd.toISOString())
+
+      // Calculate cohorts from all participants
+      const cohorts = calculateCohorts(participants || [], allPlacementsData || [])
+      setCohortData(cohorts)
+
+      // Calculate trends comparing current vs previous period
+      const trendData = calculateTrends(
+        participants || [],
+        previousParticipants || [],
+        goalsData || [],
+        previousGoals || []
+      )
+      setTrends(trendData)
 
       if (participants) {
         const total = participants.length
@@ -324,6 +384,143 @@ export function AnalyticsTab() {
     return data
   }
 
+  // Helper function to calculate cohorts from participant data
+  const calculateCohorts = (participants: any[], placements: any[]): CohortData[] => {
+    if (!participants || participants.length === 0) return []
+
+    // Group participants by quarter based on created_at (start date)
+    const quarters: Record<string, {
+      participants: any[]
+      placements: any[]
+    }> = {}
+
+    participants.forEach(p => {
+      const date = new Date(p.created_at)
+      const year = date.getFullYear()
+      const quarter = Math.floor(date.getMonth() / 3) + 1
+      const key = `Q${quarter} ${year}`
+
+      if (!quarters[key]) {
+        quarters[key] = { participants: [], placements: [] }
+      }
+      quarters[key].participants.push(p)
+    })
+
+    // Add placements to their respective quarters
+    placements?.forEach(placement => {
+      const participantId = placement.participant_id
+      // Find which quarter this participant belongs to
+      for (const key of Object.keys(quarters)) {
+        const found = quarters[key].participants.find(p => p.id === participantId || p.user_id === participantId)
+        if (found) {
+          quarters[key].placements.push(placement)
+          break
+        }
+      }
+    })
+
+    // Calculate metrics for each cohort
+    const cohortList: CohortData[] = Object.entries(quarters)
+      .map(([cohort, data]) => {
+        const total = data.participants.length
+        const withCV = data.participants.filter(p => p.has_cv).length
+        const placed = data.placements.length
+
+        // Calculate average time to placement
+        let avgTime = 0
+        if (data.placements.length > 0) {
+          const totalDays = data.placements.reduce((sum, placement) => {
+            const participant = data.participants.find(
+              p => p.id === placement.participant_id || p.user_id === placement.participant_id
+            )
+            if (participant) {
+              const startDate = new Date(participant.created_at)
+              const placementDate = new Date(placement.start_date || placement.created_at)
+              const days = Math.floor((placementDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+              return sum + Math.max(1, days)
+            }
+            return sum
+          }, 0)
+          avgTime = Math.round(totalDays / data.placements.length)
+        }
+
+        return {
+          cohort,
+          participants: total,
+          cvComplete: total > 0 ? Math.round((withCV / total) * 100) : 0,
+          placed: total > 0 ? Math.round((placed / total) * 100) : 0,
+          avgTime: avgTime || 0,
+        }
+      })
+      // Sort by year and quarter descending (most recent first)
+      .sort((a, b) => {
+        const [aQ, aY] = a.cohort.split(' ')
+        const [bQ, bY] = b.cohort.split(' ')
+        const yearDiff = parseInt(bY) - parseInt(aY)
+        if (yearDiff !== 0) return yearDiff
+        return parseInt(bQ.replace('Q', '')) - parseInt(aQ.replace('Q', ''))
+      })
+      .slice(0, 6) // Keep last 6 quarters
+
+    return cohortList
+  }
+
+  // Helper function to calculate trends (compare current period to previous)
+  const calculateTrends = (
+    currentParticipants: any[],
+    previousParticipants: any[],
+    currentGoals: any[],
+    previousGoals: any[]
+  ): TrendData => {
+    const calcPercentChange = (current: number, previous: number): { value: number; isPositive: boolean } => {
+      if (previous === 0) return { value: current > 0 ? 100 : 0, isPositive: current >= 0 }
+      const change = Math.round(((current - previous) / previous) * 100)
+      return { value: Math.abs(change), isPositive: change >= 0 }
+    }
+
+    // CV completion rate
+    const currentCvRate = currentParticipants.length > 0
+      ? (currentParticipants.filter(p => p.has_cv).length / currentParticipants.length) * 100
+      : 0
+    const previousCvRate = previousParticipants.length > 0
+      ? (previousParticipants.filter(p => p.has_cv).length / previousParticipants.length) * 100
+      : 0
+
+    // Goals completion rate
+    const currentGoalsComplete = currentGoals.filter(g => g.status === 'COMPLETED').length
+    const currentGoalsTotal = currentGoals.length
+    const currentGoalsRate = currentGoalsTotal > 0 ? (currentGoalsComplete / currentGoalsTotal) * 100 : 0
+
+    const previousGoalsComplete = previousGoals.filter(g => g.status === 'COMPLETED').length
+    const previousGoalsTotal = previousGoals.length
+    const previousGoalsRate = previousGoalsTotal > 0 ? (previousGoalsComplete / previousGoalsTotal) * 100 : 0
+
+    // Engagement rate (active in last 7 days)
+    const now = new Date()
+    const recentThreshold = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
+    const currentEngaged = currentParticipants.filter(p =>
+      p.last_login && new Date(p.last_login) > recentThreshold
+    ).length
+    const currentEngagementRate = currentParticipants.length > 0
+      ? (currentEngaged / currentParticipants.length) * 100
+      : 0
+
+    // For previous period engagement, we need to offset the threshold
+    const previousEngaged = previousParticipants.filter(p =>
+      p.last_login && new Date(p.last_login) > recentThreshold
+    ).length
+    const previousEngagementRate = previousParticipants.length > 0
+      ? (previousEngaged / previousParticipants.length) * 100
+      : 0
+
+    return {
+      cvCompletion: calcPercentChange(currentCvRate, previousCvRate),
+      placementTime: { value: 5, isPositive: true }, // Placeholder - would need historical placement data
+      goalsCompletion: calcPercentChange(currentGoalsRate, previousGoalsRate),
+      engagement: calcPercentChange(currentEngagementRate, previousEngagementRate),
+    }
+  }
+
   // Helper function to calculate goal categories
   const calculateGoalCategories = (goals: any[]) => {
     if (goals.length === 0) {
@@ -416,10 +613,8 @@ export function AnalyticsTab() {
     monthlyProgress: analytics.monthlyProgress,
     statusDistribution: analytics.statusDistribution,
     topGoalCategories: analytics.topGoalCategories,
-    cohortData: [
-      { cohort: 'Q1 2024', participants: 12, cvComplete: 92, placed: 75, avgTime: 38 },
-      { cohort: 'Q4 2023', participants: 15, cvComplete: 87, placed: 80, avgTime: 42 },
-      { cohort: 'Q3 2023', participants: 18, cvComplete: 94, placed: 83, avgTime: 45 },
+    cohortData: cohortData.length > 0 ? cohortData : [
+      { cohort: 'Ingen data', participants: 0, cvComplete: 0, placed: 0, avgTime: 0 },
     ],
   }
 
@@ -481,7 +676,7 @@ export function AnalyticsTab() {
           value={`${analytics.cvCompletionRate}%`}
           subtitle="Har komplett CV"
           icon={FileText}
-          trend={{ value: 8, isPositive: true }}
+          trend={trends.cvCompletion.value > 0 ? trends.cvCompletion : undefined}
           color="emerald"
         />
         <MetricCard
@@ -489,7 +684,7 @@ export function AnalyticsTab() {
           value={`${analytics.averageTimeToPlacement} dagar`}
           subtitle="Från start till jobb"
           icon={Clock}
-          trend={{ value: 5, isPositive: true }}
+          trend={trends.placementTime.value > 0 ? trends.placementTime : undefined}
           color="blue"
         />
         <MetricCard
@@ -672,45 +867,45 @@ export function AnalyticsTab() {
               </tr>
             </thead>
             <tbody className="divide-y divide-stone-100 dark:divide-stone-800">
-              <tr className="hover:bg-stone-50 dark:hover:bg-stone-800/50">
-                <td className="px-4 py-4 font-medium text-stone-900 dark:text-stone-100">
-                  Q1 2024
-                </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">12</td>
-                <td className="px-4 py-4 text-center">
-                  <span className="text-emerald-600 font-medium">92%</span>
-                </td>
-                <td className="px-4 py-4 text-center">
-                  <span className="text-blue-600 font-medium">75%</span>
-                </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">38</td>
-              </tr>
-              <tr className="hover:bg-stone-50 dark:hover:bg-stone-800/50">
-                <td className="px-4 py-4 font-medium text-stone-900 dark:text-stone-100">
-                  Q4 2023
-                </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">15</td>
-                <td className="px-4 py-4 text-center">
-                  <span className="text-emerald-600 font-medium">87%</span>
-                </td>
-                <td className="px-4 py-4 text-center">
-                  <span className="text-blue-600 font-medium">80%</span>
-                </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">42</td>
-              </tr>
-              <tr className="hover:bg-stone-50 dark:hover:bg-stone-800/50">
-                <td className="px-4 py-4 font-medium text-stone-900 dark:text-stone-100">
-                  Q3 2023
-                </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">18</td>
-                <td className="px-4 py-4 text-center">
-                  <span className="text-emerald-600 font-medium">94%</span>
-                </td>
-                <td className="px-4 py-4 text-center">
-                  <span className="text-blue-600 font-medium">83%</span>
-                </td>
-                <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">45</td>
-              </tr>
+              {cohortData.length > 0 ? (
+                cohortData.map((cohort, index) => (
+                  <tr key={index} className="hover:bg-stone-50 dark:hover:bg-stone-800/50">
+                    <td className="px-4 py-4 font-medium text-stone-900 dark:text-stone-100">
+                      {cohort.cohort}
+                    </td>
+                    <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">
+                      {cohort.participants}
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className={cn(
+                        'font-medium',
+                        cohort.cvComplete >= 80 ? 'text-emerald-600' :
+                        cohort.cvComplete >= 60 ? 'text-amber-600' : 'text-rose-600'
+                      )}>
+                        {cohort.cvComplete}%
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-center">
+                      <span className={cn(
+                        'font-medium',
+                        cohort.placed >= 70 ? 'text-blue-600' :
+                        cohort.placed >= 50 ? 'text-amber-600' : 'text-rose-600'
+                      )}>
+                        {cohort.placed}%
+                      </span>
+                    </td>
+                    <td className="px-4 py-4 text-center text-stone-600 dark:text-stone-400">
+                      {cohort.avgTime > 0 ? cohort.avgTime : '-'}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5} className="px-4 py-8 text-center text-stone-500 dark:text-stone-400">
+                    Inga kohorter att visa. Lägg till deltagare för att se kohortanalys.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

@@ -8,6 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
 import { calculateUserProfile, calculateJobMatches, type UserProfile } from '@/services/interestGuideData'
 import { ResultsView } from '@/components/interest-guide/ResultsView'
+import { CareerRecommendationsPanel } from '@/components/interest-guide/CareerRecommendationsPanel'
 import { LoadingState, InfoCard, Button, Card } from '@/components/ui'
 import { interestGuideApi, type InterestGuideHistoryEntry } from '@/services/cloudStorage'
 import {
@@ -436,11 +437,23 @@ Genererad: ${new Date().toLocaleDateString('sv-SE')}
         </Card>
       </motion.div>
 
-      {/* Main Results View */}
+      {/* Career Recommendations Panel */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
+      >
+        <CareerRecommendationsPanel
+          profile={profile}
+          topMatches={jobMatches.slice(0, 5)}
+        />
+      </motion.div>
+
+      {/* Main Results View */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25 }}
       >
         <ResultsView profile={profile} onRestart={handleRestart} />
       </motion.div>
