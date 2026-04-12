@@ -2,6 +2,69 @@
 -- FIX: Trigger för att koppla deltagare till konsulent vid inbjudningsacceptans
 -- ============================================
 
+-- Skapa consultant_participants tabellen om den inte finns
+CREATE TABLE IF NOT EXISTS consultant_participants (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    consultant_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    participant_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+    assigned_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    assigned_by UUID REFERENCES profiles(id),
+    notes TEXT,
+    priority INTEGER DEFAULT 0,
+    last_contact_at TIMESTAMP WITH TIME ZONE,
+    next_meeting_scheduled TIMESTAMP WITH TIME ZONE,
+    UNIQUE(consultant_id, participant_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_consultant_participants_consultant ON consultant_participants(consultant_id);
+CREATE INDEX IF NOT EXISTS idx_consultant_participants_participant ON consultant_participants(participant_id);
+
+ALTER TABLE consultant_participants ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Konsulenter ser sina deltagare" ON consultant_participants;
+CREATE POLICY "Konsulenter ser sina deltagare"
+    ON consultant_participants FOR SELECT
+    USING (consultant_id = auth.uid() OR
+           EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('SUPERADMIN', 'ADMIN')));
+
+DROP POLICY IF EXISTS "Konsulenter kan hantera kopplingar" ON consultant_participants;
+CREATE POLICY "Konsulenter kan hantera kopplingar"
+    ON consultant_participants FOR ALL
+    USING (consultant_id = auth.uid() OR
+           EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role IN ('SUPERADMIN', 'ADMIN')));
+
+-- Skapa/uppdatera vyn för konsultens deltagare
+CREATE OR REPLACE VIEW consultant_dashboard_participants AS
+SELECT
+    cp.consultant_id,
+    p.id as participant_id,
+    p.id as user_id,
+    p.email,
+    p.first_name,
+    p.last_name,
+    p.phone,
+    p.avatar_url,
+    p.status,
+    p.created_at as registered_at,
+    cp.assigned_at,
+    cp.priority,
+    cp.last_contact_at,
+    cp.next_meeting_scheduled,
+    cp.notes as consultant_notes,
+    CASE WHEN c.id IS NOT NULL THEN true ELSE false END as has_cv,
+    c.ats_score,
+    c.updated_at as cv_updated_at,
+    CASE WHEN ir.id IS NOT NULL THEN true ELSE false END as completed_interest_test,
+    ir.holland_code,
+    COALESCE((SELECT COUNT(*) FROM saved_jobs WHERE user_id = p.id), 0) as saved_jobs_count,
+    COALESCE((SELECT COUNT(*) FROM consultant_notes WHERE participant_id = p.id), 0) as notes_count,
+    (SELECT MAX(created_at) FROM consultant_notes WHERE participant_id = p.id) as last_note_date,
+    p.updated_at as last_login
+FROM consultant_participants cp
+JOIN profiles p ON cp.participant_id = p.id
+LEFT JOIN cvs c ON c.user_id = p.id
+LEFT JOIN interest_results ir ON ir.user_id = p.id;
+
 -- Funktion som körs när en ny profil skapas
 -- Kollar om det finns en väntande inbjudan och skapar kopplingen
 CREATE OR REPLACE FUNCTION handle_invitation_acceptance()
@@ -9,21 +72,20 @@ RETURNS TRIGGER AS $$
 DECLARE
     invite_record RECORD;
 BEGIN
-    -- Hitta en väntande inbjudan för denna e-postadress
+    -- Hitta en väntande inbjudan för denna e-postadress (used_at IS NULL = ej använd)
     SELECT * INTO invite_record
     FROM invitations
     WHERE email = NEW.email
-      AND status = 'PENDING'
+      AND used_at IS NULL
       AND expires_at > NOW()
     ORDER BY created_at DESC
     LIMIT 1;
 
     -- Om inbjudan finns, skapa kopplingen
     IF invite_record.id IS NOT NULL THEN
-        -- Uppdatera inbjudans status
+        -- Markera inbjudan som använd
         UPDATE invitations
-        SET status = 'ACCEPTED',
-            used_at = NOW(),
+        SET used_at = NOW(),
             used_by = NEW.id,
             updated_at = NOW()
         WHERE id = invite_record.id;
@@ -85,20 +147,6 @@ CREATE TRIGGER on_profile_created_handle_invitation
     EXECUTE FUNCTION handle_invitation_acceptance();
 
 -- ============================================
--- Lägg till status-kolumn om den saknas
--- ============================================
-DO $$
-BEGIN
-    IF NOT EXISTS (
-        SELECT 1 FROM information_schema.columns
-        WHERE table_name = 'invitations' AND column_name = 'status'
-    ) THEN
-        ALTER TABLE invitations ADD COLUMN status TEXT DEFAULT 'PENDING'
-            CHECK (status IN ('PENDING', 'ACCEPTED', 'EXPIRED', 'REVOKED'));
-    END IF;
-END $$;
-
--- ============================================
 -- Policy för att användare kan läsa inbjudningar via token (för validering)
 -- ============================================
 DROP POLICY IF EXISTS "Anyone can read invitations by token" ON invitations;
@@ -114,19 +162,17 @@ CREATE POLICY "Anyone can read invitations by token" ON invitations
 DO $$
 DECLARE
     inv RECORD;
-    user_id UUID;
 BEGIN
     FOR inv IN
         SELECT i.*, p.id as profile_id
         FROM invitations i
         JOIN profiles p ON p.email = i.email
-        WHERE i.status = 'PENDING'
+        WHERE i.used_at IS NULL
           AND i.consultant_id IS NOT NULL
     LOOP
-        -- Uppdatera inbjudan
+        -- Markera inbjudan som använd
         UPDATE invitations
-        SET status = 'ACCEPTED',
-            used_at = NOW(),
+        SET used_at = NOW(),
             used_by = inv.profile_id
         WHERE id = inv.id;
 
