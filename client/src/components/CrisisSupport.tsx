@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { useTranslation } from 'react-i18next'
 import { Heart, X, Phone, ExternalLink, MessageCircle, Shield } from '@/components/ui/icons'
 
@@ -162,10 +163,10 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
         )}
       </button>
 
-      {/* Modal */}
-      {isOpen && (
-        <div 
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+      {/* Modal - rendered via Portal to escape parent overflow/z-index issues */}
+      {isOpen && createPortal(
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           role="dialog"
           aria-modal="true"
           aria-labelledby="crisis-modal-title"
@@ -176,12 +177,12 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
             }
           }}
         >
-          <div 
+          <div
             ref={modalRef}
-            className="bg-white rounded-2xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto"
+            className="bg-white dark:bg-stone-800 rounded-2xl shadow-2xl max-w-lg w-full max-h-[85vh] overflow-y-auto"
           >
             {/* Header */}
-            <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+            <div className="sticky top-0 bg-white dark:bg-stone-800 border-b border-slate-100 dark:border-stone-700 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-rose-100 rounded-xl">
                   <Shield className="text-rose-600" size={24} aria-hidden="true" />
@@ -189,17 +190,17 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
                 <div>
                   <h2
                     id="crisis-modal-title"
-                    className="text-lg font-semibold text-slate-900"
+                    className="text-lg font-semibold text-slate-900 dark:text-stone-100"
                   >
                     {t('crisis.notAlone')}
                   </h2>
-                  <p className="text-sm text-slate-700">{t('crisis.helpAvailable')}</p>
+                  <p className="text-sm text-slate-700 dark:text-stone-300">{t('crisis.helpAvailable')}</p>
                 </div>
               </div>
               <button
                 ref={closeButtonRef}
                 onClick={() => setIsOpen(false)}
-                className="p-2 text-slate-600 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="p-2 text-slate-600 dark:text-stone-400 hover:bg-slate-100 dark:hover:bg-stone-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
                 aria-label={t('common.close')}
               >
                 <X size={20} aria-hidden="true" />
@@ -330,16 +331,17 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
             </div>
 
             {/* Footer */}
-            <div className="sticky bottom-0 bg-slate-50 border-t border-slate-100 px-6 py-4 rounded-b-2xl">
+            <div className="sticky bottom-0 bg-slate-50 dark:bg-stone-700 border-t border-slate-100 dark:border-stone-600 px-6 py-4 rounded-b-2xl">
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-full bg-white border border-slate-300 text-slate-700 py-3 rounded-lg font-medium hover:bg-slate-50 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="w-full bg-white dark:bg-stone-600 border border-slate-300 dark:border-stone-500 text-slate-700 dark:text-stone-200 py-3 rounded-lg font-medium hover:bg-slate-50 dark:hover:bg-stone-500 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 {t('common.close')}
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   )
