@@ -510,13 +510,13 @@ async function fetchArticleProgress(userId?: string): Promise<ArticleProgressDat
       return defaultProgress
     }
 
-    // Get saved articles
+    // Get bookmarked articles
     const { count: savedCount, error: savedError } = await supabase
-      .from('saved_articles')
+      .from('article_bookmarks')
       .select('*', { count: 'exact', head: true })
       .eq('user_id', userId)
 
-    // saved_articles might not exist, that's okay
+    // article_bookmarks might be empty, that's okay
     const saved = savedError ? 0 : (savedCount || 0)
 
     return {
