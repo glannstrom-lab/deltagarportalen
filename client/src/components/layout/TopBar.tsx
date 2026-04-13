@@ -45,11 +45,10 @@ interface IconButtonProps {
   title: string
   children: React.ReactNode
   variant?: 'teal' | 'amber' | 'violet' | 'rose' | 'sky' | 'emerald' | 'stone'
-  isActive?: boolean
   className?: string
 }
 
-function IconButton({ onClick, href, title, children, variant = 'stone', isActive, className }: IconButtonProps) {
+function IconButton({ onClick, href, title, children, variant = 'stone', className }: IconButtonProps) {
   const variants = {
     teal: 'bg-teal-100/80 hover:bg-teal-200/90 text-teal-600 dark:bg-teal-900/40 dark:hover:bg-teal-800/50 dark:text-teal-400',
     amber: 'bg-amber-100/80 hover:bg-amber-200/90 text-amber-600 dark:bg-amber-900/40 dark:hover:bg-amber-800/50 dark:text-amber-400',
@@ -62,12 +61,8 @@ function IconButton({ onClick, href, title, children, variant = 'stone', isActiv
 
   const baseClass = cn(
     'w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200',
-    'shadow-sm hover:shadow-md',
+    'shadow-sm hover:shadow-md focus:outline-none',
     variants[variant],
-    isActive && 'ring-2 ring-offset-1 ring-offset-white dark:ring-offset-stone-900',
-    isActive && variant === 'teal' && 'ring-teal-400',
-    isActive && variant === 'amber' && 'ring-amber-400',
-    isActive && variant === 'violet' && 'ring-violet-400',
     className
   )
 
@@ -122,7 +117,6 @@ function AccessibilityMenu() {
         onClick={() => setIsOpen(!isOpen)}
         title={t('topbar.accessibility', 'Tillgänglighet')}
         variant="violet"
-        isActive={isOpen}
       >
         <Accessibility size={20} />
       </IconButton>
@@ -252,17 +246,16 @@ function StyledNotificationBell() {
     <div className="relative">
       <div className={cn(
         'w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 shadow-sm hover:shadow-md',
-        'bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50',
-        unreadCount > 0 && 'ring-2 ring-emerald-400/50 ring-offset-1 ring-offset-white dark:ring-offset-stone-900'
+        'bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50'
       )}>
         <NotificationBell variant="compact" />
       </div>
       {/* Pulsing indicator for unread */}
       {unreadCount > 0 && (
-        <span className="absolute -top-1 -right-1 flex h-4 w-4">
+        <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-500 items-center justify-center text-[9px] font-bold text-white">
-            {unreadCount > 9 ? '!' : unreadCount}
+          <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 items-center justify-center text-[10px] font-bold text-white shadow-sm">
+            {unreadCount > 9 ? '9+' : unreadCount}
           </span>
         </span>
       )}
