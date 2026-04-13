@@ -277,11 +277,10 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
         className={cn(
-          'relative flex items-center justify-center rounded-lg transition-colors',
-          variant === 'compact' ? 'w-8 h-8' : 'w-9 h-9',
-          isOpen
-            ? 'bg-teal-100 dark:bg-teal-900/30'
-            : 'hover:bg-stone-100 dark:hover:bg-stone-800'
+          'relative flex items-center justify-center transition-all duration-200 focus:outline-none',
+          variant === 'compact'
+            ? 'w-10 h-10 rounded-xl bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50 shadow-sm hover:shadow-md'
+            : 'w-9 h-9 rounded-lg hover:bg-stone-100 dark:hover:bg-stone-800'
         )}
         aria-label={`Notifikationer${unreadCount > 0 ? ` (${unreadCount} olästa)` : ''}`}
         aria-expanded={isOpen}
@@ -289,28 +288,26 @@ export function NotificationBell({ className, variant = 'default' }: Notificatio
         aria-controls={isOpen ? labelId : undefined}
       >
         <Bell
-          size={variant === 'compact' ? 16 : 18}
+          size={20}
           className={cn(
-            isOpen
-              ? 'text-teal-600 dark:text-teal-400'
-              : 'text-stone-500 dark:text-stone-600'
+            variant === 'compact'
+              ? 'text-emerald-600 dark:text-emerald-400'
+              : isOpen
+                ? 'text-teal-600 dark:text-teal-400'
+                : 'text-stone-500 dark:text-stone-600'
           )}
           aria-hidden="true"
         />
-        {unreadCount > 0 && (
-          <span
-            className={cn(
-              'absolute bg-red-500 text-white font-bold rounded-full flex items-center justify-center',
-              variant === 'compact'
-                ? 'top-0.5 right-0.5 w-3.5 h-3.5 text-[8px]'
-                : 'top-1 right-1 w-4 h-4 text-[10px]'
-            )}
-            aria-hidden="true"
-          >
+      </button>
+      {/* Unread indicator - outside button for better positioning */}
+      {unreadCount > 0 && (
+        <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5 pointer-events-none">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 items-center justify-center text-[10px] font-bold text-white shadow-sm">
             {unreadCount > 9 ? '9+' : unreadCount}
           </span>
-        )}
-      </button>
+        </span>
+      )}
 
       {/* Dropdown */}
       {isOpen && (

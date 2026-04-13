@@ -143,10 +143,10 @@ export default function CrisisSupport({ variant = 'fixed' }: CrisisSupportProps)
         ref={openButtonRef}
         onClick={() => setIsOpen(true)}
         className={`
-          flex items-center justify-center transition-all
+          flex items-center justify-center transition-all focus:outline-none
           ${variant === 'fixed'
-            ? 'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 gap-2 text-sm'
-            : 'w-full h-full rounded-xl hover:scale-105 focus:outline-none'
+            ? 'fixed bottom-20 sm:bottom-6 right-4 sm:right-6 z-40 px-4 py-3 bg-white text-slate-700 border-2 border-rose-200 rounded-full shadow-lg hover:shadow-xl hover:border-rose-300 hover:bg-rose-50 focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 gap-2 text-sm'
+            : 'w-10 h-10 rounded-xl bg-rose-100/80 hover:bg-rose-200/90 dark:bg-rose-900/40 dark:hover:bg-rose-800/50 shadow-sm hover:shadow-md'
           }
         `}
         aria-label={t('crisis.ariaLabel')}

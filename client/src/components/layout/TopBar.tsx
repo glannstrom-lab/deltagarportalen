@@ -22,7 +22,6 @@ import { supabase } from '@/lib/supabase'
 import CrisisSupport from '@/components/CrisisSupport'
 import { OptimizedImage } from '@/components/ui/OptimizedImage'
 import { NotificationBell } from '@/components/notifications/NotificationBell'
-import { useNotifications } from '@/hooks/useNotifications'
 
 interface UserProfile {
   first_name: string
@@ -236,34 +235,6 @@ function AccessibilityMenu() {
 }
 
 // ============================================
-// STYLED NOTIFICATION BELL
-// ============================================
-
-function StyledNotificationBell() {
-  const { unreadCount } = useNotifications()
-
-  return (
-    <div className="relative">
-      <div className={cn(
-        'w-10 h-10 flex items-center justify-center rounded-xl transition-all duration-200 shadow-sm hover:shadow-md',
-        'bg-emerald-100/80 hover:bg-emerald-200/90 dark:bg-emerald-900/40 dark:hover:bg-emerald-800/50'
-      )}>
-        <NotificationBell variant="compact" />
-      </div>
-      {/* Pulsing indicator for unread */}
-      {unreadCount > 0 && (
-        <span className="absolute -top-0.5 -right-0.5 flex h-5 w-5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex rounded-full h-5 w-5 bg-emerald-500 items-center justify-center text-[10px] font-bold text-white shadow-sm">
-            {unreadCount > 9 ? '9+' : unreadCount}
-          </span>
-        </span>
-      )}
-    </div>
-  )
-}
-
-// ============================================
 // MAIN TOPBAR COMPONENT
 // ============================================
 
@@ -332,16 +303,14 @@ export function TopBar() {
         <div className="flex items-center gap-2">
           {/* Crisis Support / Hjärtat - Pastel Rose */}
           <div className="hidden lg:block">
-            <div className="w-10 h-10 flex items-center justify-center rounded-xl bg-rose-100/80 hover:bg-rose-200/90 dark:bg-rose-900/40 dark:hover:bg-rose-800/50 shadow-sm hover:shadow-md transition-all duration-200">
-              <CrisisSupport variant="inline" />
-            </div>
+            <CrisisSupport variant="inline" />
           </div>
 
           {/* Accessibility Menu (Language + Dark Mode) */}
           <AccessibilityMenu />
 
           {/* Notifications - Pastel Emerald */}
-          <StyledNotificationBell />
+          <NotificationBell variant="compact" />
 
           {/* User Menu */}
           <div className="relative" ref={menuRef}>
