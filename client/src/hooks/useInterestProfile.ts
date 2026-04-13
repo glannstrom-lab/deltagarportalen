@@ -223,6 +223,10 @@ export function useInterestProfile() {
         const history = await interestGuideApi.getHistory(1)
         const latestResult = history?.[0]
 
+        console.log('[useInterestProfile] Progress:', progress)
+        console.log('[useInterestProfile] History:', history)
+        console.log('[useInterestProfile] Latest result:', latestResult)
+
         if (!latestResult) {
           // Completed but no history - check if progress has answers we can use
           return {
@@ -239,6 +243,8 @@ export function useInterestProfile() {
 
         // Check riasec_profile object format
         // Database stores with short keys: R, I, A, S, E, C
+        console.log('[useInterestProfile] riasec_profile:', latestResult.riasec_profile)
+
         if (latestResult.riasec_profile) {
           const rp = latestResult.riasec_profile as Record<string, number>
 
@@ -251,6 +257,7 @@ export function useInterestProfile() {
             enterprising: rp.E ?? rp.enterprising ?? 0,
             conventional: rp.C ?? rp.conventional ?? 0
           }
+          console.log('[useInterestProfile] Mapped riasecScores:', riasecScores)
         }
 
         const dominantTypes = riasecScores ? getDominantTypes(riasecScores) : []
