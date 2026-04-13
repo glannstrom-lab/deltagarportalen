@@ -1,8 +1,8 @@
 /**
- * Dashboard Page - Visual overview with real data
- * Features: Hero, KPIs, RIASEC chart, compact onboarding, quick actions
+ * Dashboard Page - Clean Visual Design
+ * Focus on clarity, visual hierarchy, and breathing room
  */
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ConsultantRequestBanner } from '@/components/consultant/ConsultantRequestBanner'
@@ -14,181 +14,233 @@ import { useDashboardData } from '@/hooks/useDashboardData'
 import { useInterestProfile, RIASEC_TYPES, type RiasecScores } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, Building2, ClipboardList,
-  Check, ChevronDown, ChevronRight, Loader2, Target, GraduationCap, Star,
+  Check, ChevronRight, Loader2, Target, GraduationCap,
   TrendingUp, Linkedin, BookOpen, Dumbbell, Calendar, NotebookPen,
-  Smile, Globe, Bookmark, Briefcase, Heart, Sparkles, FileUser,
-  UserCheck, Award, Flame, Zap, Clock, ArrowRight
+  Smile, Briefcase, Sparkles, FileUser, UserCheck, Flame, ArrowRight, Mic
 } from '@/components/ui/icons'
 
 // ============================================
-// RIASEC RADAR CHART COMPONENT (inline for dashboard)
+// RIASEC VISUAL CHART
 // ============================================
-function DashboardRiasecChart({ scores, size = 200 }: { scores: RiasecScores; size?: number }) {
-  const center = size / 2
-  const radius = (size / 2) - 30
+function RiasecVisual({ scores }: { scores: RiasecScores }) {
   const keys: (keyof RiasecScores)[] = ['realistic', 'investigative', 'artistic', 'social', 'enterprising', 'conventional']
-  const shortKeys = ['R', 'I', 'A', 'S', 'E', 'C']
+  const labels = ['R', 'I', 'A', 'S', 'E', 'C']
+  const names = ['Realistisk', 'Undersökande', 'Konstnärlig', 'Social', 'Företagsam', 'Konventionell']
+  const colors = ['#f59e0b', '#3b82f6', '#8b5cf6', '#10b981', '#ef4444', '#6366f1']
 
-  // Find max score to normalize
   const maxScore = Math.max(...keys.map(k => scores[k]), 1)
-
-  const getPoint = (index: number, value: number) => {
-    const angle = (Math.PI * 2 * index) / 6 - Math.PI / 2
-    const r = (value / maxScore) * radius
-    return {
-      x: center + r * Math.cos(angle),
-      y: center + r * Math.sin(angle),
-    }
-  }
-
-  const polygonPoints = keys.map((key, i) => {
-    const point = getPoint(i, scores[key])
-    return `${point.x},${point.y}`
-  }).join(' ')
-
-  const levelCircles = [0.25, 0.5, 0.75, 1].map((level, i) => (
-    <circle
-      key={i}
-      cx={center}
-      cy={center}
-      r={level * radius}
-      fill="none"
-      className="stroke-stone-200 dark:stroke-stone-700"
-      strokeWidth="1"
-      strokeDasharray="3 3"
-    />
-  ))
-
-  const axes = keys.map((_, i) => {
-    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
-    const endX = center + radius * Math.cos(angle)
-    const endY = center + radius * Math.sin(angle)
-    return (
-      <line
-        key={i}
-        x1={center}
-        y1={center}
-        x2={endX}
-        y2={endY}
-        className="stroke-stone-200 dark:stroke-stone-700"
-        strokeWidth="1"
-      />
-    )
-  })
-
-  const colors: Record<keyof RiasecScores, string> = {
-    realistic: '#f59e0b',
-    investigative: '#3b82f6',
-    artistic: '#8b5cf6',
-    social: '#10b981',
-    enterprising: '#ef4444',
-    conventional: '#6366f1'
-  }
-
-  const labels = keys.map((key, i) => {
-    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
-    const labelRadius = radius + 18
-    const x = center + labelRadius * Math.cos(angle)
-    const y = center + labelRadius * Math.sin(angle)
-
-    return (
-      <g key={key}>
-        <circle
-          cx={x}
-          cy={y}
-          r="12"
-          fill={colors[key]}
-        />
-        <text
-          x={x}
-          y={y}
-          textAnchor="middle"
-          dominantBaseline="central"
-          className="fill-white text-[10px] font-bold"
-        >
-          {shortKeys[i]}
-        </text>
-      </g>
-    )
-  })
+  const sorted = keys.map((k, i) => ({ key: k, score: scores[k], label: labels[i], name: names[i], color: colors[i] }))
+    .sort((a, b) => b.score - a.score)
 
   return (
-    <svg width={size} height={size} className="mx-auto">
-      <defs>
-        <linearGradient id="riasecGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.4" />
-        </linearGradient>
-      </defs>
-      {levelCircles}
-      {axes}
-      <polygon
-        points={polygonPoints}
-        fill="url(#riasecGrad)"
-        stroke="#14b8a6"
-        strokeWidth="2"
-      />
-      {keys.map((key, i) => {
-        const point = getPoint(i, scores[key])
-        return (
-          <circle
-            key={key}
-            cx={point.x}
-            cy={point.y}
-            r="4"
-            fill="white"
-            stroke={colors[key]}
-            strokeWidth="2"
-          />
-        )
-      })}
-      {labels}
-    </svg>
+    <div className="space-y-3">
+      {sorted.slice(0, 3).map((item, i) => (
+        <div key={item.key} className="flex items-center gap-3">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md"
+            style={{ backgroundColor: item.color }}
+          >
+            {item.label}
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{item.name}</span>
+              <span className="text-xs text-stone-500 dark:text-stone-400">{Math.round(item.score)}%</span>
+            </div>
+            <div className="h-2 bg-stone-100 dark:bg-stone-700 rounded-full overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-500"
+                style={{ width: `${(item.score / maxScore) * 100}%`, backgroundColor: item.color }}
+              />
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
 
 // ============================================
-// KPI CARD COMPONENT
+// PROGRESS RING
 // ============================================
-function KpiCard({
+function ProgressRing({ percent, size = 120 }: { percent: number; size?: number }) {
+  const strokeWidth = 8
+  const radius = (size - strokeWidth) / 2
+  const circumference = radius * 2 * Math.PI
+  const offset = circumference - (percent / 100) * circumference
+
+  return (
+    <div className="relative" style={{ width: size, height: size }}>
+      <svg width={size} height={size} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          className="stroke-stone-100 dark:stroke-stone-700"
+          strokeWidth={strokeWidth}
+          fill="none"
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          className="stroke-teal-500 dark:stroke-teal-400"
+          strokeWidth={strokeWidth}
+          fill="none"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center">
+        <span className="text-3xl font-bold text-teal-600 dark:text-teal-400">{percent}%</span>
+        <span className="text-xs text-stone-500 dark:text-stone-400">klart</span>
+      </div>
+    </div>
+  )
+}
+
+// ============================================
+// STEP INDICATOR
+// ============================================
+function StepIndicator({
+  steps,
+  currentStep,
+  completedSteps
+}: {
+  steps: { id: string; label: string; path: string; icon: React.ElementType }[]
+  currentStep: number
+  completedSteps: Set<string>
+}) {
+  return (
+    <div className="flex items-center justify-between">
+      {steps.map((step, i) => {
+        const isComplete = completedSteps.has(step.id)
+        const isCurrent = i === currentStep
+        const Icon = step.icon
+
+        return (
+          <Link
+            key={step.id}
+            to={step.path}
+            className="flex flex-col items-center group"
+          >
+            <div className={cn(
+              'w-12 h-12 rounded-full flex items-center justify-center transition-all',
+              isComplete
+                ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/30'
+                : isCurrent
+                ? 'bg-teal-500 text-white shadow-lg shadow-teal-500/30 ring-4 ring-teal-500/20'
+                : 'bg-stone-100 dark:bg-stone-700 text-stone-400 dark:text-stone-500 group-hover:bg-stone-200 dark:group-hover:bg-stone-600'
+            )}>
+              {isComplete ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
+            </div>
+            <span className={cn(
+              'text-xs mt-2 font-medium text-center',
+              isComplete
+                ? 'text-emerald-600 dark:text-emerald-400'
+                : isCurrent
+                ? 'text-teal-600 dark:text-teal-400'
+                : 'text-stone-400 dark:text-stone-500'
+            )}>
+              {step.label}
+            </span>
+            {i < steps.length - 1 && (
+              <div className={cn(
+                'absolute h-0.5 w-[calc(100%/7-1rem)] top-6 left-[calc(50%+1.5rem)]',
+                isComplete ? 'bg-emerald-300 dark:bg-emerald-700' : 'bg-stone-200 dark:bg-stone-700'
+              )} style={{ display: 'none' }} />
+            )}
+          </Link>
+        )
+      })}
+    </div>
+  )
+}
+
+// ============================================
+// FEATURE CARD
+// ============================================
+function FeatureCard({
   icon: Icon,
-  label,
+  title,
+  description,
+  to,
+  color = 'teal',
+  badge
+}: {
+  icon: React.ElementType
+  title: string
+  description: string
+  to: string
+  color?: 'teal' | 'sky' | 'amber' | 'rose' | 'violet'
+  badge?: string
+}) {
+  const colorClasses = {
+    teal: 'from-teal-500 to-teal-600 shadow-teal-500/20',
+    sky: 'from-sky-500 to-sky-600 shadow-sky-500/20',
+    amber: 'from-amber-500 to-amber-600 shadow-amber-500/20',
+    rose: 'from-rose-500 to-rose-600 shadow-rose-500/20',
+    violet: 'from-violet-500 to-violet-600 shadow-violet-500/20',
+  }
+
+  return (
+    <Link
+      to={to}
+      className="group relative bg-white dark:bg-stone-800 rounded-2xl p-5 border border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600 hover:shadow-xl transition-all duration-300"
+    >
+      {badge && (
+        <span className="absolute top-3 right-3 px-2 py-0.5 bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 text-[10px] font-bold rounded-full uppercase">
+          {badge}
+        </span>
+      )}
+      <div className={cn(
+        'w-12 h-12 rounded-xl bg-gradient-to-br flex items-center justify-center mb-4 shadow-lg',
+        colorClasses[color]
+      )}>
+        <Icon className="w-6 h-6 text-white" />
+      </div>
+      <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+        {title}
+      </h3>
+      <p className="text-sm text-stone-500 dark:text-stone-400">{description}</p>
+      <ArrowRight className="absolute bottom-5 right-5 w-5 h-5 text-stone-300 dark:text-stone-600 group-hover:text-teal-500 dark:group-hover:text-teal-400 group-hover:translate-x-1 transition-all" />
+    </Link>
+  )
+}
+
+// ============================================
+// STAT CARD
+// ============================================
+function StatCard({
+  icon: Icon,
   value,
-  subtext,
+  label,
   color = 'teal',
   to
 }: {
   icon: React.ElementType
-  label: string
   value: string | number
-  subtext?: string
-  color?: 'teal' | 'sky' | 'amber' | 'emerald' | 'rose'
+  label: string
+  color?: 'teal' | 'sky' | 'amber' | 'emerald'
   to?: string
 }) {
   const colorClasses = {
-    teal: 'from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700',
-    sky: 'from-sky-500 to-sky-600 dark:from-sky-600 dark:to-sky-700',
-    amber: 'from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-700',
-    emerald: 'from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700',
-    rose: 'from-rose-500 to-rose-600 dark:from-rose-600 dark:to-rose-700',
+    teal: 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/30',
+    sky: 'text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-900/30',
+    amber: 'text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/30',
+    emerald: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/30',
   }
 
   const content = (
     <div className={cn(
-      'relative overflow-hidden rounded-xl p-4 bg-gradient-to-br text-white shadow-lg',
+      'rounded-2xl p-5 text-center transition-all',
       colorClasses[color],
-      to && 'hover:scale-[1.02] transition-transform cursor-pointer'
+      to && 'hover:scale-105 cursor-pointer'
     )}>
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-white/80 text-xs font-medium mb-1">{label}</p>
-          <p className="text-2xl font-bold">{value}</p>
-          {subtext && <p className="text-white/70 text-xs mt-1">{subtext}</p>}
-        </div>
-        <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-          <Icon className="w-5 h-5 text-white" />
-        </div>
-      </div>
+      <Icon className="w-8 h-8 mx-auto mb-2 opacity-80" />
+      <p className="text-3xl font-bold mb-1">{value}</p>
+      <p className="text-sm opacity-70">{label}</p>
     </div>
   )
 
@@ -196,200 +248,20 @@ function KpiCard({
 }
 
 // ============================================
-// ONBOARDING STEP COMPONENT (compact)
+// ONBOARDING STEPS
 // ============================================
-function OnboardingStep({
-  step,
-  title,
-  description,
-  icon: Icon,
-  isComplete,
-  isCurrent,
-  to
-}: {
-  step: number
-  title: string
-  description: string
-  icon: React.ElementType
-  isComplete: boolean
-  isCurrent: boolean
-  to: string
-}) {
-  return (
-    <Link
-      to={to}
-      className={cn(
-        'flex items-center gap-3 p-3 rounded-xl border transition-all group',
-        isComplete
-          ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50'
-          : isCurrent
-          ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-700 ring-2 ring-teal-400/30'
-          : 'bg-white dark:bg-stone-800/50 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700'
-      )}
-    >
-      <div className={cn(
-        'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
-        isComplete
-          ? 'bg-emerald-500 text-white'
-          : isCurrent
-          ? 'bg-teal-500 text-white'
-          : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400'
-      )}>
-        {isComplete ? (
-          <Check className="w-4 h-4" />
-        ) : (
-          <Icon className="w-4 h-4" />
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-stone-400 dark:text-stone-500">Steg {step}</span>
-          {isCurrent && !isComplete && (
-            <span className="text-[10px] px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded-full font-medium">
-              Nu
-            </span>
-          )}
-        </div>
-        <p className={cn(
-          'text-sm font-medium truncate',
-          isComplete ? 'text-emerald-700 dark:text-emerald-400' : 'text-stone-800 dark:text-stone-200'
-        )}>
-          {title}
-        </p>
-      </div>
-      <ChevronRight className={cn(
-        'w-4 h-4 shrink-0 transition-transform',
-        isComplete ? 'text-emerald-400 dark:text-emerald-500' : 'text-stone-300 dark:text-stone-600 group-hover:translate-x-1'
-      )} />
-    </Link>
-  )
-}
-
-// ============================================
-// QUICK ACTION BUTTON
-// ============================================
-function QuickAction({
-  icon: Icon,
-  label,
-  to,
-  color = 'teal'
-}: {
-  icon: React.ElementType
-  label: string
-  to: string
-  color?: 'teal' | 'sky' | 'amber'
-}) {
-  const colorClasses = {
-    teal: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/60',
-    sky: 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 hover:bg-sky-200 dark:hover:bg-sky-900/60',
-    amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60',
-  }
-
-  return (
-    <Link
-      to={to}
-      className={cn(
-        'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors',
-        colorClasses[color]
-      )}
-    >
-      <Icon className="w-4 h-4" />
-      {label}
-    </Link>
-  )
-}
-
-// ============================================
-// COLLAPSIBLE SECTION
-// ============================================
-function CollapsibleSection({
-  title,
-  icon: Icon,
-  children,
-  defaultExpanded = true,
-  badge,
-  colorScheme = 'teal'
-}: {
-  title: string
-  icon: React.ElementType
-  children: React.ReactNode
-  defaultExpanded?: boolean
-  badge?: string
-  colorScheme?: 'teal' | 'sky' | 'amber'
-}) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-  const sectionId = `section-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åäö]/g, 'a')}`
-
-  const colors = {
-    teal: {
-      header: 'bg-teal-50 dark:bg-teal-900/20',
-      headerText: 'text-teal-800 dark:text-teal-300',
-      headerIcon: 'text-teal-600 dark:text-teal-400',
-      border: 'border-teal-200 dark:border-teal-800/50',
-    },
-    sky: {
-      header: 'bg-sky-50 dark:bg-sky-900/20',
-      headerText: 'text-sky-800 dark:text-sky-300',
-      headerIcon: 'text-sky-600 dark:text-sky-400',
-      border: 'border-sky-200 dark:border-sky-800/50',
-    },
-    amber: {
-      header: 'bg-amber-50 dark:bg-amber-900/20',
-      headerText: 'text-amber-800 dark:text-amber-300',
-      headerIcon: 'text-amber-600 dark:text-amber-400',
-      border: 'border-amber-200 dark:border-amber-800/50',
-    }
-  }
-
-  const c = colors[colorScheme]
-
-  return (
-    <div className={cn('rounded-2xl border overflow-hidden', c.border)}>
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        aria-expanded={isExpanded}
-        aria-controls={`${sectionId}-content`}
-        className={cn('w-full flex items-center justify-between px-4 py-3', c.header)}
-      >
-        <div className="flex items-center gap-2">
-          <Icon className={cn('w-5 h-5', c.headerIcon)} />
-          <span className={cn('font-semibold', c.headerText)}>{title}</span>
-          {badge && (
-            <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-white/60 dark:bg-stone-800/60 text-stone-600 dark:text-stone-300">
-              {badge}
-            </span>
-          )}
-        </div>
-        <ChevronDown
-          className={cn('w-5 h-5 transition-transform', c.headerIcon, !isExpanded && '-rotate-90')}
-          aria-hidden="true"
-        />
-      </button>
-      {isExpanded && (
-        <div id={`${sectionId}-content`} className="p-4 bg-white dark:bg-stone-900/50">
-          {children}
-        </div>
-      )}
-    </div>
-  )
-}
-
-// ============================================
-// ONBOARDING STEPS DATA
-// ============================================
-const ONBOARDING_STEPS = [
-  { step: 1, id: 'profile', title: 'Fyll i din profil', description: 'Lägg till kontaktuppgifter', icon: User, path: '/profile', trackKey: 'profile' },
-  { step: 2, id: 'interest', title: 'Gör intresseguiden', description: 'Upptäck passande yrken', icon: Compass, path: '/interest-guide', trackKey: 'interest' },
-  { step: 3, id: 'cv', title: 'Skapa ditt CV', description: 'Bygg ett proffsigt CV', icon: FileUser, path: '/cv', trackKey: 'cv' },
-  { step: 4, id: 'career', title: 'Utforska karriärvägar', description: 'Hitta din riktning', icon: Target, path: '/career', trackKey: 'career' },
-  { step: 5, id: 'jobSearch', title: 'Sök efter jobb', description: 'Hitta lediga tjänster', icon: Search, path: '/job-search', trackKey: 'jobSearch' },
-  { step: 6, id: 'coverLetter', title: 'Skriv personligt brev', description: 'Skapa övertygande brev', icon: Mail, path: '/cover-letter', trackKey: 'coverLetter' },
-  { step: 7, id: 'applications', title: 'Följ dina ansökningar', description: 'Håll koll på status', icon: ClipboardList, path: '/applications', trackKey: 'applications' },
-  { step: 8, id: 'interview', title: 'Öva på intervjuer', description: 'Träna med AI-simulatorn', icon: Briefcase, path: '/interview-simulator', trackKey: 'interview' },
+const JOURNEY_STEPS = [
+  { id: 'profile', label: 'Profil', path: '/profile', icon: User },
+  { id: 'interest', label: 'Intressen', path: '/interest-guide', icon: Compass },
+  { id: 'cv', label: 'CV', path: '/cv', icon: FileUser },
+  { id: 'jobSearch', label: 'Jobb', path: '/job-search', icon: Search },
+  { id: 'coverLetter', label: 'Brev', path: '/cover-letter', icon: Mail },
+  { id: 'applications', label: 'Ansökningar', path: '/applications', icon: ClipboardList },
+  { id: 'interview', label: 'Intervju', path: '/interview-simulator', icon: Mic },
 ]
 
 // ============================================
-// MAIN DASHBOARD COMPONENT
+// MAIN DASHBOARD
 // ============================================
 export default function DashboardPage() {
   const { t } = useTranslation()
@@ -397,371 +269,285 @@ export default function DashboardPage() {
   const { data: dashboardData, loading: dashboardLoading } = useDashboardData()
   const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
 
-  // Calculate onboarding progress
-  const getOnboardingProgress = () => {
-    if (!dashboardData) return { completed: 0, total: ONBOARDING_STEPS.length, currentStep: 1 }
+  // Calculate progress
+  const completedSteps = new Set<string>()
+  if (authProfile?.first_name) completedSteps.add('profile')
+  if (interestProfile?.hasResult) completedSteps.add('interest')
+  if (dashboardData?.cv?.hasCV) completedSteps.add('cv')
+  if (dashboardData?.jobs?.savedCount > 0) completedSteps.add('jobSearch')
+  if (dashboardData?.coverLetters?.count > 0) completedSteps.add('coverLetter')
+  if (dashboardData?.applications?.total > 0) completedSteps.add('applications')
 
-    let completed = 0
-    let currentStep = 1
-
-    // Check each step
-    const progress: Record<string, boolean> = {
-      profile: authProfile?.first_name ? true : false,
-      interest: interestProfile?.hasResult || false,
-      cv: dashboardData.cv?.hasCV || false,
-      career: false, // Would need career data
-      jobSearch: dashboardData.jobs?.savedCount > 0,
-      coverLetter: dashboardData.coverLetters?.count > 0,
-      applications: dashboardData.applications?.total > 0,
-      interview: false, // Would need interview data
-    }
-
-    ONBOARDING_STEPS.forEach((step, i) => {
-      if (progress[step.trackKey]) {
-        completed++
-      } else if (currentStep === 1 || (i > 0 && progress[ONBOARDING_STEPS[i-1].trackKey])) {
-        currentStep = step.step
-      }
-    })
-
-    return { completed, total: ONBOARDING_STEPS.length, currentStep, progress }
-  }
-
-  const onboardingProgress = getOnboardingProgress()
-  const progressPercent = Math.round((onboardingProgress.completed / onboardingProgress.total) * 100)
-
-  // Find first incomplete step for current step indicator
-  const currentStepIndex = ONBOARDING_STEPS.findIndex(
-    step => !onboardingProgress.progress?.[step.trackKey]
-  )
+  const currentStepIndex = JOURNEY_STEPS.findIndex(s => !completedSteps.has(s.id))
+  const progressPercent = Math.round((completedSteps.size / JOURNEY_STEPS.length) * 100)
 
   if (dashboardLoading || interestLoading) {
     return (
-      <div className="flex items-center justify-center py-12">
+      <div className="flex items-center justify-center py-24">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-3" />
-          <p className="text-stone-600 dark:text-stone-400">Laddar översikt...</p>
+          <Loader2 className="w-10 h-10 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-4" />
+          <p className="text-stone-500 dark:text-stone-400">Laddar din översikt...</p>
         </div>
       </div>
     )
   }
 
-  const firstName = authProfile?.first_name || 'Välkommen'
+  const firstName = authProfile?.first_name || 'du'
   const greeting = getGreeting()
 
   return (
-    <div className="page-transition pb-8">
-      <div className="max-w-5xl mx-auto">
+    <div className="page-transition pb-12">
+      <div className="max-w-6xl mx-auto">
         <ConsultantRequestBanner />
 
-        {/* Hero Section */}
-        <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6 overflow-hidden">
-          <div className="px-5 py-5">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <User className="w-7 h-7 text-white" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-teal-600 dark:text-teal-400 font-medium">{greeting}</p>
-                <h1 className="text-xl font-bold text-teal-800 dark:text-teal-300 truncate">
-                  {firstName}!
-                </h1>
-              </div>
-              {/* Progress ring */}
-              <div className="hidden sm:flex items-center gap-3">
-                <div className="relative w-12 h-12">
-                  <svg className="w-12 h-12 -rotate-90">
-                    <circle
-                      cx="24"
-                      cy="24"
-                      r="20"
-                      className="stroke-teal-100 dark:stroke-teal-900/50"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <circle
-                      cx="24"
-                      cy="24"
-                      r="20"
-                      className="stroke-teal-500 dark:stroke-teal-400"
-                      strokeWidth="4"
-                      fill="none"
-                      strokeDasharray={`${progressPercent * 1.26} 126`}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-teal-700 dark:text-teal-300">
-                    {progressPercent}%
-                  </span>
-                </div>
-                <div className="text-right">
-                  <p className="text-xs text-stone-500 dark:text-stone-400">Redo för jobb</p>
-                  <p className="text-sm font-semibold text-teal-700 dark:text-teal-300">
-                    {onboardingProgress.completed}/{onboardingProgress.total} klart
-                  </p>
-                </div>
-              </div>
+        {/* HERO SECTION */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-teal-500 via-teal-600 to-sky-600 dark:from-teal-600 dark:via-teal-700 dark:to-sky-700 p-8 md:p-10 mb-8 text-white">
+          {/* Background decoration */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/4" />
+
+          <div className="relative flex flex-col md:flex-row items-center gap-8">
+            <div className="flex-1 text-center md:text-left">
+              <p className="text-teal-100 dark:text-teal-200 text-sm font-medium mb-2">{greeting}</p>
+              <h1 className="text-3xl md:text-4xl font-bold mb-3">
+                Välkommen, {firstName}!
+              </h1>
+              <p className="text-teal-100 dark:text-teal-200 text-lg mb-6 max-w-md">
+                {progressPercent < 100
+                  ? `Du har kommit ${progressPercent}% på vägen mot ditt nästa jobb. Fortsätt så!`
+                  : 'Fantastiskt! Du har slutfört alla steg. Nu är det dags att söka jobb!'}
+              </p>
+              <Link
+                to={JOURNEY_STEPS[currentStepIndex]?.path || '/job-search'}
+                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-teal-600 font-semibold rounded-xl hover:bg-teal-50 transition-colors shadow-lg shadow-black/10"
+              >
+                {progressPercent < 100 ? 'Fortsätt din resa' : 'Sök jobb nu'}
+                <ArrowRight className="w-5 h-5" />
+              </Link>
+            </div>
+            <div className="shrink-0">
+              <ProgressRing percent={progressPercent} size={140} />
             </div>
           </div>
         </div>
 
-        {/* KPI Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
-          <KpiCard
+        {/* JOURNEY STEPS */}
+        <div className="bg-white dark:bg-stone-800 rounded-3xl p-6 md:p-8 mb-8 border border-stone-200 dark:border-stone-700 shadow-sm">
+          <h2 className="text-lg font-semibold text-stone-800 dark:text-stone-200 mb-6 text-center">Din resa mot nytt jobb</h2>
+          <div className="overflow-x-auto pb-2">
+            <div className="min-w-[600px]">
+              <StepIndicator
+                steps={JOURNEY_STEPS}
+                currentStep={currentStepIndex >= 0 ? currentStepIndex : JOURNEY_STEPS.length - 1}
+                completedSteps={completedSteps}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* STATS ROW */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <StatCard
             icon={FileText}
-            label="CV-progress"
             value={`${dashboardData?.cv?.progress || 0}%`}
-            subtext={dashboardData?.cv?.hasCV ? 'Uppdaterat' : 'Inte påbörjat'}
+            label="CV-progress"
             color="teal"
             to="/cv"
           />
-          <KpiCard
-            icon={Bookmark}
-            label="Sparade jobb"
+          <StatCard
+            icon={Briefcase}
             value={dashboardData?.jobs?.savedCount || 0}
-            subtext={dashboardData?.jobs?.newMatches ? `${dashboardData.jobs.newMatches} nya` : undefined}
+            label="Sparade jobb"
             color="sky"
             to="/job-search"
           />
-          <KpiCard
+          <StatCard
             icon={ClipboardList}
-            label="Ansökningar"
             value={dashboardData?.applications?.total || 0}
-            subtext={dashboardData?.applications?.statusBreakdown?.interview ? `${dashboardData.applications.statusBreakdown.interview} intervjuer` : undefined}
+            label="Ansökningar"
             color="amber"
             to="/applications"
           />
-          <KpiCard
+          <StatCard
             icon={Flame}
-            label="Aktivitet"
             value={`${dashboardData?.activity?.streakDays || 0}d`}
-            subtext="Daglig streak"
+            label="Aktivitets-streak"
             color="emerald"
           />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Main content - 2/3 width */}
-          <div className="lg:col-span-2 space-y-4">
-            {/* Onboarding Section */}
-            <CollapsibleSection
-              title="Kom igång"
-              icon={Zap}
-              badge={`${onboardingProgress.completed}/${onboardingProgress.total}`}
-              colorScheme="teal"
-              defaultExpanded={progressPercent < 100}
-            >
-              <div className="grid sm:grid-cols-2 gap-2">
-                {ONBOARDING_STEPS.map((step, i) => (
-                  <OnboardingStep
-                    key={step.id}
-                    step={step.step}
-                    title={step.title}
-                    description={step.description}
-                    icon={step.icon}
-                    isComplete={onboardingProgress.progress?.[step.trackKey] || false}
-                    isCurrent={currentStepIndex === i}
-                    to={step.path}
-                  />
-                ))}
-              </div>
-            </CollapsibleSection>
-
-            {/* Quick Actions */}
-            <CollapsibleSection
-              title="Snabbåtgärder"
-              icon={Sparkles}
-              colorScheme="sky"
-              defaultExpanded={true}
-            >
-              <div className="flex flex-wrap gap-2">
-                <QuickAction icon={Search} label="Sök jobb" to="/job-search" color="teal" />
-                <QuickAction icon={FileUser} label="Redigera CV" to="/cv" color="teal" />
-                <QuickAction icon={Mail} label="Nytt brev" to="/cover-letter" color="sky" />
-                <QuickAction icon={Building2} label="Spontanansökan" to="/spontanansökan" color="sky" />
-                <QuickAction icon={NotebookPen} label="Dagbok" to="/diary" color="amber" />
-                <QuickAction icon={Smile} label="Logga mående" to="/wellness" color="amber" />
-              </div>
-            </CollapsibleSection>
-
-            {/* Skills & Development */}
-            <CollapsibleSection
-              title="Utveckling"
-              icon={TrendingUp}
-              colorScheme="amber"
-              defaultExpanded={false}
-            >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {[
-                  { icon: Target, label: 'Karriär', path: '/career' },
-                  { icon: GraduationCap, label: 'Utbildning', path: '/education' },
-                  { icon: Star, label: 'Varumärke', path: '/personal-brand' },
-                  { icon: Linkedin, label: 'LinkedIn', path: '/linkedin-optimizer' },
-                  { icon: TrendingUp, label: 'Kompetensanalys', path: '/skills-gap-analysis' },
-                  { icon: BookOpen, label: 'Kunskapsbank', path: '/knowledge-base' },
-                ].map(item => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="flex items-center gap-2 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
-                  >
-                    <item.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                    <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </CollapsibleSection>
-
-            {/* Wellness & Planning */}
-            <CollapsibleSection
-              title="Välmående & Planering"
-              icon={Heart}
-              colorScheme="sky"
-              defaultExpanded={false}
-            >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {[
-                  { icon: Calendar, label: 'Kalender', path: '/calendar' },
-                  { icon: NotebookPen, label: 'Dagbok', path: '/diary' },
-                  { icon: Smile, label: 'Hälsa', path: '/wellness' },
-                  { icon: Dumbbell, label: 'Övningar', path: '/exercises' },
-                  { icon: Globe, label: 'Internationellt', path: '/international' },
-                  { icon: Bookmark, label: 'Resurser', path: '/resources' },
-                ].map(item => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="flex items-center gap-2 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-700 transition-colors"
-                  >
-                    <item.icon className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-                    <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
-                  </Link>
-                ))}
-              </div>
-            </CollapsibleSection>
-          </div>
-
-          {/* Sidebar - 1/3 width */}
-          <div className="space-y-4">
-            {/* RIASEC Profile */}
-            {interestProfile?.hasResult && interestProfile.riasecScores && (
-              <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Compass className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                  <h3 className="font-semibold text-teal-800 dark:text-teal-300">Din intresseprofil</h3>
+        {/* MAIN CONTENT GRID */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {/* Interest Profile Card */}
+          {interestProfile?.hasResult && interestProfile.riasecScores ? (
+            <div className="bg-white dark:bg-stone-800 rounded-3xl p-6 border border-stone-200 dark:border-stone-700 shadow-sm">
+              <div className="flex items-center gap-3 mb-5">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                  <Compass className="w-5 h-5 text-white" />
                 </div>
-                <DashboardRiasecChart scores={interestProfile.riasecScores} size={180} />
-                <div className="mt-3 space-y-1.5">
-                  {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
-                    const rt = RIASEC_TYPES[type.code]
-                    return (
-                      <div key={type.code} className="flex items-center gap-2">
-                        <span className="text-sm">{['🥇', '🥈', '🥉'][i]}</span>
-                        <span className="flex-1 text-sm text-stone-700 dark:text-stone-300">{rt.nameSv}</span>
-                        <span className="text-xs text-stone-500 dark:text-stone-400">{type.score}%</span>
-                      </div>
-                    )
-                  })}
+                <div>
+                  <h3 className="font-semibold text-stone-800 dark:text-stone-200">Din intresseprofil</h3>
+                  <p className="text-xs text-stone-500 dark:text-stone-400">Baserat på RIASEC-modellen</p>
                 </div>
-                <Link
-                  to="/interest-guide"
-                  className="flex items-center justify-center gap-1 mt-3 text-sm text-teal-600 dark:text-teal-400 hover:underline"
-                >
-                  Se mer <ChevronRight className="w-4 h-4" />
-                </Link>
               </div>
-            )}
-
-            {/* Interest guide CTA if no result */}
-            {!interestProfile?.hasResult && (
+              <RiasecVisual scores={interestProfile.riasecScores} />
               <Link
                 to="/interest-guide"
-                className="block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200 dark:border-amber-800/50 p-4 hover:shadow-lg transition-shadow group"
+                className="flex items-center justify-center gap-1 mt-5 text-sm text-violet-600 dark:text-violet-400 hover:underline font-medium"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 rounded-xl flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-amber-800 dark:text-amber-300">Upptäck dina styrkor</h3>
-                    <p className="text-sm text-amber-600 dark:text-amber-400">Gör intresseguiden</p>
-                  </div>
-                </div>
-                <p className="text-sm text-amber-700 dark:text-amber-300/80">
-                  Svara på frågor och få personliga jobbförslag baserat på dina intressen.
-                </p>
-                <div className="flex items-center gap-1 mt-3 text-sm font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
-                  Starta nu <ArrowRight className="w-4 h-4" />
-                </div>
+                Se fullständig profil <ChevronRight className="w-4 h-4" />
               </Link>
-            )}
-
-            {/* My Consultant (if has consultant) */}
-            {authProfile?.consultant_id && (
-              <Link
-                to="/my-consultant"
-                className="block bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50 p-4 hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-indigo-400 dark:from-sky-500 dark:to-indigo-500 rounded-xl flex items-center justify-center">
-                    <UserCheck className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-sky-800 dark:text-sky-300">Min konsulent</h3>
-                    <p className="text-sm text-sky-600 dark:text-sky-400">Kommunicera och följ upp</p>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-sky-400 dark:text-sky-500 ml-auto" />
-                </div>
-              </Link>
-            )}
-
-            {/* Recent saved jobs */}
-            {dashboardData?.jobs?.recentSavedJobs && dashboardData.jobs.recentSavedJobs.length > 0 && (
-              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-stone-800 dark:text-stone-200">Sparade jobb</h3>
-                  <Link to="/job-search" className="text-xs text-teal-600 dark:text-teal-400 hover:underline">
-                    Visa alla
-                  </Link>
-                </div>
-                <div className="space-y-2">
-                  {dashboardData.jobs.recentSavedJobs.slice(0, 3).map(job => (
-                    <div key={job.id} className="p-2 rounded-lg bg-stone-50 dark:bg-stone-900/50">
-                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">{job.title}</p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400 truncate">{job.company}</p>
-                    </div>
-                  ))}
-                </div>
+            </div>
+          ) : (
+            <Link
+              to="/interest-guide"
+              className="group bg-gradient-to-br from-amber-50 to-orange-100 dark:from-amber-900/30 dark:to-orange-900/30 rounded-3xl p-6 border border-amber-200 dark:border-amber-800/50 hover:shadow-xl transition-all"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center mb-4 shadow-lg shadow-orange-500/20 group-hover:scale-110 transition-transform">
+                <Sparkles className="w-7 h-7 text-white" />
               </div>
-            )}
+              <h3 className="text-xl font-bold text-amber-800 dark:text-amber-300 mb-2">Upptäck dina styrkor</h3>
+              <p className="text-amber-700 dark:text-amber-400/80 mb-4">
+                Gör vår intresseguide och få personliga jobbförslag baserat på dina intressen och talanger.
+              </p>
+              <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 font-semibold group-hover:gap-2 transition-all">
+                Starta guiden <ArrowRight className="w-5 h-5" />
+              </span>
+            </Link>
+          )}
 
-            {/* Wellness quick card */}
-            {dashboardData?.wellness && (
-              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Heart className="w-5 h-5 text-rose-500 dark:text-rose-400" />
-                  <h3 className="font-semibold text-stone-800 dark:text-stone-200">Välmående</h3>
+          {/* Quick Actions */}
+          <div className="bg-white dark:bg-stone-800 rounded-3xl p-6 border border-stone-200 dark:border-stone-700 shadow-sm">
+            <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-5">Snabbåtgärder</h3>
+            <div className="space-y-3">
+              {[
+                { icon: Search, label: 'Sök efter jobb', path: '/job-search', color: 'bg-teal-500' },
+                { icon: FileUser, label: 'Redigera ditt CV', path: '/cv', color: 'bg-sky-500' },
+                { icon: Mail, label: 'Skriv personligt brev', path: '/cover-letter', color: 'bg-violet-500' },
+                { icon: Building2, label: 'Spontanansökan', path: '/spontanansökan', color: 'bg-amber-500' },
+              ].map(action => (
+                <Link
+                  key={action.path}
+                  to={action.path}
+                  className="flex items-center gap-3 p-3 rounded-xl hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors group"
+                >
+                  <div className={cn('w-10 h-10 rounded-lg flex items-center justify-center text-white', action.color)}>
+                    <action.icon className="w-5 h-5" />
+                  </div>
+                  <span className="flex-1 font-medium text-stone-700 dark:text-stone-300">{action.label}</span>
+                  <ChevronRight className="w-5 h-5 text-stone-300 dark:text-stone-600 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Consultant Card */}
+          {authProfile?.consultant_id ? (
+            <Link
+              to="/my-consultant"
+              className="group bg-gradient-to-br from-sky-50 to-indigo-100 dark:from-sky-900/30 dark:to-indigo-900/30 rounded-3xl p-6 border border-sky-200 dark:border-sky-800/50 hover:shadow-xl transition-all"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center mb-4 shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
+                <UserCheck className="w-7 h-7 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-sky-800 dark:text-sky-300 mb-2">Min konsulent</h3>
+              <p className="text-sky-700 dark:text-sky-400/80 mb-4">
+                Kommunicera med din konsulent och följ upp dina mål tillsammans.
+              </p>
+              <span className="inline-flex items-center gap-1 text-sky-700 dark:text-sky-400 font-semibold group-hover:gap-2 transition-all">
+                Öppna <ArrowRight className="w-5 h-5" />
+              </span>
+            </Link>
+          ) : (
+            <div className="bg-white dark:bg-stone-800 rounded-3xl p-6 border border-stone-200 dark:border-stone-700 shadow-sm">
+              <h3 className="font-semibold text-stone-800 dark:text-stone-200 mb-5">Välmående</h3>
+              <div className="text-center py-4">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-rose-400 to-pink-500 flex items-center justify-center mx-auto mb-4 shadow-lg shadow-rose-500/20">
+                  <Smile className="w-8 h-8 text-white" />
                 </div>
-                {dashboardData.wellness.moodToday ? (
-                  <p className="text-sm text-stone-600 dark:text-stone-400">
-                    Dagens mående: <span className="font-medium">{getMoodEmoji(dashboardData.wellness.moodToday)}</span>
+                {dashboardData?.wellness?.moodToday ? (
+                  <p className="text-stone-600 dark:text-stone-400">
+                    Dagens mående: <span className="text-2xl">{getMoodEmoji(dashboardData.wellness.moodToday)}</span>
                   </p>
                 ) : (
-                  <Link
-                    to="/wellness"
-                    className="text-sm text-teal-600 dark:text-teal-400 hover:underline"
-                  >
-                    Logga ditt mående idag →
-                  </Link>
+                  <p className="text-stone-500 dark:text-stone-400 mb-3">Hur mår du idag?</p>
                 )}
-                {dashboardData.wellness.streakDays > 0 && (
-                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                <Link
+                  to="/wellness"
+                  className="inline-flex items-center gap-1 text-sm text-rose-600 dark:text-rose-400 font-medium hover:underline"
+                >
+                  {dashboardData?.wellness?.moodToday ? 'Se historik' : 'Logga ditt mående'} <ChevronRight className="w-4 h-4" />
+                </Link>
+                {dashboardData?.wellness?.streakDays > 0 && (
+                  <p className="text-xs text-stone-400 dark:text-stone-500 mt-2">
                     🔥 {dashboardData.wellness.streakDays} dagars streak
                   </p>
                 )}
               </div>
-            )}
-          </div>
+            </div>
+          )}
+        </div>
+
+        {/* FEATURE CARDS */}
+        <h2 className="text-xl font-bold text-stone-800 dark:text-stone-200 mb-5">Utforska fler verktyg</h2>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <FeatureCard
+            icon={Target}
+            title="Karriärplanering"
+            description="Utforska olika karriärvägar"
+            to="/career"
+            color="teal"
+          />
+          <FeatureCard
+            icon={GraduationCap}
+            title="Utbildning"
+            description="Hitta kurser och utbildningar"
+            to="/education"
+            color="sky"
+            badge="Ny"
+          />
+          <FeatureCard
+            icon={Linkedin}
+            title="LinkedIn"
+            description="Optimera din profil"
+            to="/linkedin-optimizer"
+            color="violet"
+          />
+          <FeatureCard
+            icon={TrendingUp}
+            title="Kompetensanalys"
+            description="Identifiera dina styrkor"
+            to="/skills-gap-analysis"
+            color="amber"
+          />
+          <FeatureCard
+            icon={Mic}
+            title="Intervjuträning"
+            description="Öva med AI-simulatorn"
+            to="/interview-simulator"
+            color="rose"
+          />
+          <FeatureCard
+            icon={BookOpen}
+            title="Kunskapsbank"
+            description="Artiklar och guider"
+            to="/knowledge-base"
+            color="teal"
+          />
+          <FeatureCard
+            icon={Calendar}
+            title="Kalender"
+            description="Planera dina aktiviteter"
+            to="/calendar"
+            color="sky"
+          />
+          <FeatureCard
+            icon={NotebookPen}
+            title="Dagbok"
+            description="Reflektera och dokumentera"
+            to="/diary"
+            color="amber"
+          />
         </div>
       </div>
       <HelpButton content={helpContent.dashboard} />
@@ -783,16 +569,8 @@ function getGreeting() {
 
 function getMoodEmoji(mood: number | string) {
   const moodMap: Record<string, string> = {
-    '1': '😢',
-    '2': '😕',
-    '3': '😐',
-    '4': '🙂',
-    '5': '😊',
-    'terrible': '😢',
-    'bad': '😕',
-    'okay': '😐',
-    'good': '🙂',
-    'great': '😊',
+    '1': '😢', '2': '😕', '3': '😐', '4': '🙂', '5': '😊',
+    'terrible': '😢', 'bad': '😕', 'okay': '😐', 'good': '🙂', 'great': '😊',
   }
   return moodMap[String(mood)] || '😐'
 }
