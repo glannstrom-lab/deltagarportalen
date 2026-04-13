@@ -468,6 +468,286 @@ export const helpContent: Record<string, HelpContent> = {
     ]
   },
 
+  spontaneous: {
+    title: 'Hjälp - Spontanansökningar',
+    description: 'Hitta och kontakta företag för spontanansökningar',
+    tips: [
+      'Sök företag med organisationsnummer för att få kontaktuppgifter',
+      'Spara företag du är intresserad av i din lista',
+      'Uppdatera status när du kontaktar eller ansöker'
+    ],
+    faqs: [
+      {
+        question: 'Hur söker jag efter ett företag?',
+        answer: 'Ange organisationsnumret (10 siffror) i sökfältet. Systemet hämtar information från Bolagsverket och visar företagets namn, adress och kontaktuppgifter.'
+      },
+      {
+        question: 'Kan jag spara företag jag är intresserad av?',
+        answer: 'Ja, klicka på "Spara företag" för att lägga till det i din lista "Mina företag". Du kan sedan hålla koll på din kontakt och uppdatera status.'
+      },
+      {
+        question: 'Vad innebär de olika statusarna?',
+        answer: 'Du kan uppdatera status från "Sparad" till "Kontaktad", "Ansökt", "Intervju" eller "Avslag". Detta hjälper dig hålla koll på processen.'
+      },
+      {
+        question: 'Var hittar jag organisationsnumret?',
+        answer: 'Du hittar det på företagets webbsida, i deras e-postsignatur eller genom att söka på bolagsverket.se. Det är ofta på formen XXXXXX-XXXX.'
+      }
+    ]
+  },
+
+  linkedinOptimizer: {
+    title: 'Hjälp - LinkedIn-optimerare',
+    description: 'Optimera din LinkedIn-profil med AI',
+    tips: [
+      'En bra rubrik ökar din synlighet med upp till 300%',
+      'Använd nyckelord som rekryterare söker efter',
+      'Håll "Om mig" kort men engagerande'
+    ],
+    faqs: [
+      {
+        question: 'Varför är en bra LinkedIn-rubrik viktig?',
+        answer: 'Rubriken är det första rekryterare ser. Den bör innehålla din jobbroll, nyckelkompetenser och relevanta sökord. En bra rubrik kan öka din synlighet bland potentiella arbetsgivare.'
+      },
+      {
+        question: 'Hur lång bör min "Om mig"-sektion vara?',
+        answer: '2-3 stycken är idealt. Börja med en hook som fångar intresse, visa dina unika värden, och avsluta med en call-to-action. AI:n hjälper dig strukturera detta.'
+      },
+      {
+        question: 'Vad är profilhälsa och hur förbättrar jag den?',
+        answer: 'Profilhälsa visar hur komplett och optimerad din profil är. Förbättra genom att lägga till profilbild, fylla alla sektioner, och få rekommendationer från kollegor.'
+      },
+      {
+        question: 'Kan jag generera LinkedIn-inlägg automatiskt?',
+        answer: 'Ja, ange ett ämne och välj ton (professionell, personlig, entusiastisk eller formell). AI:n genererar ett inlägg du kan kopiera direkt till LinkedIn.'
+      }
+    ]
+  },
+
+  interviewSimulator: {
+    title: 'Hjälp - Intervjusimulator',
+    description: 'Öva på intervjuer med AI-feedback',
+    tips: [
+      'Använd STAR-metoden (Situation, Task, Action, Result)',
+      'Spela in dig själv för att se hur du framstår',
+      'Öva på minst 5 frågor innan en riktig intervju'
+    ],
+    faqs: [
+      {
+        question: 'Hur fungerar inspelningen av intervjun?',
+        answer: 'Du kan spela in hela sessionen. Klicka på inspelningsikonen så registreras både dina svar och tiden. Du kan ladda ner inspelningen som en fil efteråt.'
+      },
+      {
+        question: 'Vad är STAR-metoden och varför är den viktig?',
+        answer: 'STAR står för Situation, Task, Action, Result. Det är ett strukturerat sätt att besvara intervjufrågor som visar konkreta exempel. AI:n ger feedback baserat på detta.'
+      },
+      {
+        question: 'Fungerar inte mikrofonen?',
+        answer: 'Tal-till-text fungerar i moderna webbläsare. Om det inte fungerar kan du skriva ditt svar istället. Systemet stöder både tal och text.'
+      },
+      {
+        question: 'Hur många frågor bör jag öva på?',
+        answer: 'Vi rekommenderar minst 5 frågor för god övning. Du kan välja slumpmässiga frågor eller fokusera på en specifik kategori baserat på jobbrollen.'
+      }
+    ]
+  },
+
+  personalBrand: {
+    title: 'Hjälp - Personligt varumärke',
+    description: 'Bygg och stärk ditt personliga varumärke',
+    tips: [
+      'Var konsekvent över alla plattformar',
+      'Fokusera på dina unika styrkor',
+      'Skapa en kort och slagkraftig elevator pitch'
+    ],
+    faqs: [
+      {
+        question: 'Vad är en elevator pitch och hur lång bör den vara?',
+        answer: 'En elevator pitch är en kort presentation av dig själv som tar 30-60 sekunder. Den bör innehålla vem du är, vad du gör bäst, och vad du söker.'
+      },
+      {
+        question: 'Hur visar jag upp mitt arbete i portfolion?',
+        answer: 'Använd konkreta exempel från tidigare projekt. Visa resultat, problem du löste, och ditt bidrag. Bilder, länkar och korta beskrivningar gör det lättare att förstå.'
+      },
+      {
+        question: 'Var är det viktigt att synas digitalt?',
+        answer: 'LinkedIn, GitHub (för tekniker), en personlig blogg och eventuellt Twitter är de viktigaste plattformarna. Var konsekvent med samma namn och profilbild.'
+      },
+      {
+        question: 'Vad gör ett bra personligt varumärke?',
+        answer: 'Ett starkt varumärke är autentiskt, konsekvent och visar dina unika styrkor. Det bygger förtroende och gör dig minnesvärd för rekryterare.'
+      }
+    ]
+  },
+
+  international: {
+    title: 'Hjälp - Internationell guide',
+    description: 'Vägledning för att arbeta i Sverige',
+    tips: [
+      'Skaffa personnummer så snart som möjligt',
+      'Börja lära dig svenska tidigt - det öppnar fler möjligheter',
+      'Kontakta Arbetsförmedlingen för stöd'
+    ],
+    faqs: [
+      {
+        question: 'Vilka är de viktigaste kraven för arbetstillstånd?',
+        answer: 'Du behöver ett jobbkontrakt från en svensk arbetsgivare. Processen tar normalt 2-4 veckor. EU-medborgare kan arbeta utan speciellt tillstånd.'
+      },
+      {
+        question: 'Vad bör jag prioritera när jag är ny i Sverige?',
+        answer: 'Öppna bankkonto, skaffa personnummer hos Skatteverket, registrera adress och hitta bostad. Integrationsguiden ger en steg-för-steg checklista.'
+      },
+      {
+        question: 'Är det nödvändigt att kunna svenska?',
+        answer: 'Det beror på jobbet. Svenska hjälper mycket i arbetslivet och öppnar fler jobbmöjligheter. Vi rekommenderar att börja tidigt med språkstudier.'
+      },
+      {
+        question: 'Vilken support finns för nyanlända?',
+        answer: 'Många kommuner erbjuder gratis Svenska för invandrare (SFI), introduktionsprogram och jobbcoachning. Kontakta din lokala arbetsförmedling för mer info.'
+      }
+    ]
+  },
+
+  myConsultant: {
+    title: 'Hjälp - Min konsulent',
+    description: 'Kontakt med din arbetskonsulentt',
+    tips: [
+      'Ha regelbundna möten för bäst resultat',
+      'Använd meddelanden för snabba frågor',
+      'Sätt upp gemensamma mål och följ upp dem'
+    ],
+    faqs: [
+      {
+        question: 'Vad kan min konsulent se?',
+        answer: 'Din konsulent kan se din aktivitet, sparade jobb, ansökningar, CV-status och ditt aktuella välmående (energi och humör). Du kontrollerar vad som delas.'
+      },
+      {
+        question: 'Hur ofta bör jag ha möten med min konsulent?',
+        answer: 'Det beror på ditt behov och er överenskommelse. Normalt är regelbundna möten varje 1-2 veckor bäst för att hålla momenten uppe.'
+      },
+      {
+        question: 'Kan jag skicka meddelanden mellan mötena?',
+        answer: 'Ja, använd meddelandefunktionen för dagliga frågor och uppdateringar. Längre diskussioner är bäst att ha under möten.'
+      },
+      {
+        question: 'Hur följer jag mina framsteg?',
+        answer: 'Ni sätter överenskomna mål tillsammans som visas här. Uppdateringarna sparas och konsulenten kan följa din utveckling.'
+      }
+    ]
+  },
+
+  salary: {
+    title: 'Hjälp - Lön & Förhandling',
+    description: 'Beräkna marknadslön och lär dig förhandla',
+    tips: [
+      'Undersök marknaden innan lönesamtal',
+      'Förhandla alltid - det är förväntat',
+      'Tänk på hela paketet, inte bara lönen'
+    ],
+    faqs: [
+      {
+        question: 'Hur beräknas en rättvis lön?',
+        answer: 'Kalkylatorn tar hänsyn till erfarenhet, utbildning, arbetsort och bransch. Den använder aktuell marknadsdata för att ge ett realistiskt löneintervall.'
+      },
+      {
+        question: 'Bör jag acceptera första löneoffertet?',
+        answer: 'Nej, det är normalt att förhandla. Undersök marknaden innan och presentera en motiverad motproposition baserad på dina kvalifikationer.'
+      },
+      {
+        question: 'Vad är en rimlig löneökning vid jobbbyte?',
+        answer: 'Typiskt 10-20% högre lön vid byte (du tar större risk). Vid befordran inom samma företag är 5-10% rimligt.'
+      },
+      {
+        question: 'Vilka förmåner kan jag förhandla om?',
+        answer: 'Flexibel arbetstid, hemarbete, extra semester, fortbildning, försäkringar och pensionsavsättningar är vanliga förhandlingspunkter.'
+      }
+    ]
+  },
+
+  exercises: {
+    title: 'Hjälp - Övningar',
+    description: 'Praktiska övningar för jobbsökning',
+    tips: [
+      'Börja med 3-5 övningar inom relevanta områden',
+      'Dina svar sparas automatiskt i molnet',
+      'Använd AI Coach om du kör fast'
+    ],
+    faqs: [
+      {
+        question: 'Sparas mina svar automatiskt?',
+        answer: 'Ja, dina svar sparas automatiskt i molnet när du skriver. Du kan fortsätta från vilken enhet som helst.'
+      },
+      {
+        question: 'Hur många övningar bör jag göra?',
+        answer: 'Det beror på dina behov. Vi rekommenderar 3-5 övningar inom kategorier som passar din jobbsökning och karriärmål.'
+      },
+      {
+        question: 'Kan jag få hjälp med en övning?',
+        answer: 'Ja, varje övning har en AI Coach-knapp. Du kan få vägledning, exempel och följdfrågor för att utveckla bättre svar.'
+      },
+      {
+        question: 'Vad händer när jag slutför en övning?',
+        answer: 'Systemet markerar övningen som slutförd och visar en sammanfattning. Du kan skriva ut eller ladda ner resultatet.'
+      }
+    ]
+  },
+
+  resources: {
+    title: 'Hjälp - Mina resurser',
+    description: 'Samlade dokument och sparade resurser',
+    tips: [
+      'Exportera CV till PDF eller Word',
+      'Håll koll på sparade jobb med statusmarkeringar',
+      'Bokmärk artiklar för snabb åtkomst'
+    ],
+    faqs: [
+      {
+        question: 'Hur spårar jag mina jobbansökningar?',
+        answer: 'Använd statusfälten (Sparad, Ansökt, Intervju, Avslag, Erbjudande) för att hålla koll på din sökprocess. Du ser alla jobb i en översikt.'
+      },
+      {
+        question: 'Kan jag exportera mitt CV?',
+        answer: 'Ja, både till PDF och Word-format. Klicka på ladda ner-knappen och välj format. Word-filer kan redigeras vidare.'
+      },
+      {
+        question: 'Varför ska jag bokmärka artiklar?',
+        answer: 'Du kan snabbt komma åt innehåll senare utan att söka igen. Alla bokmärken sparas i molnet och synkas på alla enheter.'
+      },
+      {
+        question: 'Hur många CV-versioner kan jag spara?',
+        answer: 'Obegränsat! Ha olika versioner för olika branscher eller jobbroller. Varje version visar datum och kan enkelt hämtas.'
+      }
+    ]
+  },
+
+  knowledgeBase: {
+    title: 'Hjälp - Kunskapsbank',
+    description: 'Artiklar och guider för jobbsökning',
+    tips: [
+      'Använd sökfunktionen för att hitta specifika ämnen',
+      'Bokmärk artiklar du vill läsa igen',
+      'Följ lärandevägarna för strukturerad inlärning'
+    ],
+    faqs: [
+      {
+        question: 'Hur hittar jag rätt artiklar?',
+        answer: 'Använd sökfältet eller bläddra i kategorier. Du kan också filtrera på ämnen som CV, intervju, nätverk med mera.'
+      },
+      {
+        question: 'Vad är lärandevägar?',
+        answer: 'Strukturerade samlingar av artiklar för att lära dig ett område steg för steg, t.ex. "Kom igång med jobbsökning" eller "Förbered dig för intervju".'
+      },
+      {
+        question: 'Kan jag spara artiklar?',
+        answer: 'Ja, klicka på bokmärkes-ikonen för att spara. Alla bokmärkta artiklar hittar du under "Mina resurser".'
+      },
+      {
+        question: 'Uppdateras innehållet?',
+        answer: 'Ja, vi lägger regelbundet till nya artiklar och uppdaterar befintliga med aktuell information om arbetsmarknaden.'
+      }
+    ]
+  },
+
   default: {
     title: 'Hjälp',
     description: 'Vägledning och support',
