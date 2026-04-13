@@ -27,6 +27,7 @@ import {
   TrendingUp,
   Mic,
   Building2,
+  UserCheck,
 } from '@/components/ui/icons'
 
 // ============================================
@@ -60,6 +61,7 @@ export const navGroups: NavGroup[] = [
     items: [
       { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
       { path: '/profile', labelKey: 'nav.profile', icon: Users },
+      { path: '/my-consultant', labelKey: 'nav.myConsultant', icon: UserCheck },
       { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
       // { path: '/journey', labelKey: 'nav.journey', icon: Map, isNew: true }, // Disabled
     ],

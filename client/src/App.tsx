@@ -65,6 +65,7 @@ const Applications = lazy(() => import('./pages/Applications'))
 const Spontaneous = lazy(() => import('./pages/Spontaneous'))
 const LinkedInCallback = lazy(() => import('./pages/LinkedInCallback'))
 const GoogleCalendarCallback = lazy(() => import('./pages/GoogleCalendarCallback'))
+const MyConsultant = lazy(() => import('./pages/MyConsultant'))
 
 // Loading fallback
 function PageLoader() {
@@ -242,6 +243,7 @@ function App() {
           <Route path="knowledge-base/*" element={<LazyRoute><RouteErrorBoundary><KnowledgeBase /></RouteErrorBoundary></LazyRoute>} />
           <Route path="knowledge-base/article/:id" element={<LazyRoute><RouteErrorBoundary><Article /></RouteErrorBoundary></LazyRoute>} />
           <Route path="profile" element={<LazyRoute><RouteErrorBoundary><Profile /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="my-consultant" element={<LazyRoute><RouteErrorBoundary><MyConsultant /></RouteErrorBoundary></LazyRoute>} />
           <Route path="job-search/*" element={<LazyRoute><RouteErrorBoundary><JobSearch /></RouteErrorBoundary></LazyRoute>} />
           <Route path="applications/*" element={<LazyRoute><RouteErrorBoundary><Applications /></RouteErrorBoundary></LazyRoute>} />
           <Route path="career/*" element={<LazyRoute><RouteErrorBoundary><Career /></RouteErrorBoundary></LazyRoute>} />
