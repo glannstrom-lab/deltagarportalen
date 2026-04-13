@@ -238,15 +238,18 @@ export function useInterestProfile() {
         let riasecScores: RiasecScores | null = null
 
         // Check riasec_profile object format
+        // Database stores with short keys: R, I, A, S, E, C
         if (latestResult.riasec_profile) {
           const rp = latestResult.riasec_profile as Record<string, number>
+
+          // Map short keys (R, I, A, S, E, C) to long keys (realistic, investigative, etc.)
           riasecScores = {
-            realistic: rp.realistic || rp.R || 0,
-            investigative: rp.investigative || rp.I || 0,
-            artistic: rp.artistic || rp.A || 0,
-            social: rp.social || rp.S || 0,
-            enterprising: rp.enterprising || rp.E || 0,
-            conventional: rp.conventional || rp.C || 0
+            realistic: rp.R ?? rp.realistic ?? 0,
+            investigative: rp.I ?? rp.investigative ?? 0,
+            artistic: rp.A ?? rp.artistic ?? 0,
+            social: rp.S ?? rp.social ?? 0,
+            enterprising: rp.E ?? rp.enterprising ?? 0,
+            conventional: rp.C ?? rp.conventional ?? 0
           }
         }
 
