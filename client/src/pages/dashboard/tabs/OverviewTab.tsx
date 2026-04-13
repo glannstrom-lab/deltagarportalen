@@ -271,15 +271,15 @@ function ExpandableCategory({
         aria-expanded={isExpanded}
         aria-controls={`${categoryId}-content`}
         className={cn(
-          'w-full flex items-center justify-between px-5 py-4 bg-gradient-to-r transition-colors',
+          'w-full flex items-center justify-between px-4 sm:px-5 py-3 sm:py-4 bg-gradient-to-r transition-colors',
           c.header
         )}
       >
-        <div className="flex items-center gap-3">
-          <h2 className={cn('text-lg font-semibold', c.headerText)}>{title}</h2>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <h2 className={cn('text-base sm:text-lg font-semibold', c.headerText)}>{title}</h2>
           {showProgress && (
             <span className={cn(
-              'px-2 py-0.5 text-xs font-medium rounded-full',
+              'px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full',
               completedCount === trackableItems
                 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
                 : 'bg-white/60 dark:bg-stone-700/60 text-stone-600 dark:text-stone-300'
@@ -290,7 +290,7 @@ function ExpandableCategory({
         </div>
         <ChevronDown
           className={cn(
-            'w-5 h-5 transition-transform',
+            'w-4 h-4 sm:w-5 sm:h-5 transition-transform',
             c.headerIcon,
             !isExpanded && '-rotate-90'
           )}
@@ -304,9 +304,9 @@ function ExpandableCategory({
           id={`${categoryId}-content`}
           role="region"
           aria-label={title}
-          className="p-4 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900 dark:to-stone-950/50"
+          className="p-3 sm:p-4 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900 dark:to-stone-950/50"
         >
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-3">
             {items.map((item) => {
               const Icon = item.icon
               const isComplete = item.trackProgress && progress?.[item.trackProgress]
@@ -316,7 +316,7 @@ function ExpandableCategory({
                   key={item.id}
                   to={item.path}
                   className={cn(
-                    'flex flex-col items-center text-center p-4 rounded-xl border transition-all group',
+                    'flex flex-col items-center text-center p-3 sm:p-4 rounded-xl border transition-all group',
                     c.itemBg,
                     c.itemBorder,
                     'hover:shadow-md hover:scale-[1.02]'
@@ -324,24 +324,24 @@ function ExpandableCategory({
                 >
                   {/* Icon */}
                   <div className={cn(
-                    'w-12 h-12 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110 relative',
+                    'w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center mb-1.5 sm:mb-2 transition-transform group-hover:scale-110 relative',
                     isComplete ? c.completeBg : c.iconBg
                   )}>
-                    <Icon className={cn('w-6 h-6', isComplete ? c.completeIcon : c.iconColor)} />
+                    <Icon className={cn('w-5 h-5 sm:w-6 sm:h-6', isComplete ? c.completeIcon : c.iconColor)} />
                     {isComplete && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
-                        <Check className="w-3 h-3 text-white" />
+                      <div className="absolute -top-0.5 -right-0.5 sm:-top-1 sm:-right-1 w-4 h-4 sm:w-5 sm:h-5 bg-emerald-500 rounded-full flex items-center justify-center">
+                        <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
                       </div>
                     )}
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-sm font-medium text-stone-800 dark:text-stone-200 mb-0.5">
+                  <h3 className="text-xs sm:text-sm font-medium text-stone-800 dark:text-stone-200 mb-0.5 line-clamp-1">
                     {item.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xs text-stone-500 dark:text-stone-400 line-clamp-2">
+                  <p className="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 line-clamp-1 sm:line-clamp-2">
                     {item.description}
                   </p>
                 </Link>
@@ -491,21 +491,21 @@ export default function OverviewTab() {
   const onboardingTotal = 5 // profile, interest, cv, jobSearch, coverLetter
 
   return (
-    <div className="space-y-4 max-w-5xl mx-auto">
+    <div className="space-y-3 sm:space-y-4 max-w-5xl mx-auto">
       {/* Progress Dashboard */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3" role="region" aria-label="Din framgång">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3" role="region" aria-label="Din framgång">
         {/* Onboarding Progress */}
-        <div className="bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-xl p-4 border border-teal-200 dark:border-teal-800/50">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center">
-              <Check className="w-4 h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
+        <div className="bg-gradient-to-br from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20 rounded-xl p-3 sm:p-4 border border-teal-200 dark:border-teal-800/50">
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-teal-100 dark:bg-teal-900/40 flex items-center justify-center shrink-0">
+              <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
             </div>
-            <span className="text-sm font-medium text-teal-800 dark:text-teal-300">Kom igång</span>
+            <span className="text-xs sm:text-sm font-medium text-teal-800 dark:text-teal-300 truncate">Kom igång</span>
           </div>
-          <div className="text-2xl font-bold text-teal-900 dark:text-teal-100" aria-live="polite">
+          <div className="text-xl sm:text-2xl font-bold text-teal-900 dark:text-teal-100" aria-live="polite">
             {onboardingComplete}/{onboardingTotal}
           </div>
-          <div className="h-1.5 bg-teal-200 dark:bg-teal-900/50 rounded-full mt-2 overflow-hidden">
+          <div className="h-1 sm:h-1.5 bg-teal-200 dark:bg-teal-900/50 rounded-full mt-1.5 sm:mt-2 overflow-hidden">
             <div
               className="h-full bg-teal-500 dark:bg-teal-400 rounded-full transition-all"
               style={{ width: `${(onboardingComplete / onboardingTotal) * 100}%` }}
@@ -520,18 +520,18 @@ export default function OverviewTab() {
         {/* Career Plan Progress */}
         <Link
           to="/career?tab=plan"
-          className="bg-gradient-to-br from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20 rounded-xl p-4 border border-sky-200 dark:border-sky-800/50 hover:shadow-md transition-shadow"
+          className="bg-gradient-to-br from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20 rounded-xl p-3 sm:p-4 border border-sky-200 dark:border-sky-800/50 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center">
-              <Target className="w-4 h-4 text-sky-600 dark:text-sky-400" aria-hidden="true" />
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-sky-100 dark:bg-sky-900/40 flex items-center justify-center shrink-0">
+              <Target className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-sky-600 dark:text-sky-400" aria-hidden="true" />
             </div>
-            <span className="text-sm font-medium text-sky-800 dark:text-sky-300">Karriärplan</span>
+            <span className="text-xs sm:text-sm font-medium text-sky-800 dark:text-sky-300 truncate">Karriärplan</span>
           </div>
-          <div className="text-2xl font-bold text-sky-900 dark:text-sky-100">
+          <div className="text-xl sm:text-2xl font-bold text-sky-900 dark:text-sky-100">
             {progressData.careerPlanProgress}%
           </div>
-          <p className="text-xs text-sky-700 dark:text-sky-400 mt-1">
+          <p className="text-[10px] sm:text-xs text-sky-700 dark:text-sky-400 mt-0.5 sm:mt-1 truncate">
             {progressData.careerPlanCompleted}/{progressData.careerPlanMilestones} milstolpar
           </p>
         </Link>
@@ -539,37 +539,37 @@ export default function OverviewTab() {
         {/* Skills Match */}
         <Link
           to="/career?tab=skills"
-          className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/30 dark:to-emerald-800/20 rounded-xl p-4 border border-emerald-200 dark:border-emerald-800/50 hover:shadow-md transition-shadow"
+          className="bg-gradient-to-br from-emerald-50 to-emerald-100/50 dark:from-emerald-900/30 dark:to-emerald-800/20 rounded-xl p-3 sm:p-4 border border-emerald-200 dark:border-emerald-800/50 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center shrink-0">
+              <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
             </div>
-            <span className="text-sm font-medium text-emerald-800 dark:text-emerald-300">Kompetensmatch</span>
+            <span className="text-xs sm:text-sm font-medium text-emerald-800 dark:text-emerald-300 truncate">Kompetensmatch</span>
           </div>
-          <div className="text-2xl font-bold text-emerald-900 dark:text-emerald-100">
+          <div className="text-xl sm:text-2xl font-bold text-emerald-900 dark:text-emerald-100">
             {progressData.skillsMatchPercentage > 0 ? `${progressData.skillsMatchPercentage}%` : '–'}
           </div>
-          <p className="text-xs text-emerald-700 dark:text-emerald-400 mt-1">
-            {progressData.skillsMatchPercentage > 0 ? 'mot ditt drömjobb' : 'Kör en analys'}
+          <p className="text-[10px] sm:text-xs text-emerald-700 dark:text-emerald-400 mt-0.5 sm:mt-1 truncate">
+            {progressData.skillsMatchPercentage > 0 ? 'mot drömjobbet' : 'Kör en analys'}
           </p>
         </Link>
 
         {/* Network */}
         <Link
           to="/career?tab=network"
-          className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20 rounded-xl p-4 border border-amber-200 dark:border-amber-800/50 hover:shadow-md transition-shadow"
+          className="bg-gradient-to-br from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20 rounded-xl p-3 sm:p-4 border border-amber-200 dark:border-amber-800/50 hover:shadow-md transition-shadow"
         >
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
-              <User className="w-4 h-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+          <div className="flex items-center gap-1.5 sm:gap-2 mb-1.5 sm:mb-2">
+            <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center shrink-0">
+              <User className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-600 dark:text-amber-400" aria-hidden="true" />
             </div>
-            <span className="text-sm font-medium text-amber-800 dark:text-amber-300">Nätverk</span>
+            <span className="text-xs sm:text-sm font-medium text-amber-800 dark:text-amber-300 truncate">Nätverk</span>
           </div>
-          <div className="text-2xl font-bold text-amber-900 dark:text-amber-100">
+          <div className="text-xl sm:text-2xl font-bold text-amber-900 dark:text-amber-100">
             {progressData.networkContacts}
           </div>
-          <p className="text-xs text-amber-700 dark:text-amber-400 mt-1">
+          <p className="text-[10px] sm:text-xs text-amber-700 dark:text-amber-400 mt-0.5 sm:mt-1 truncate">
             {progressData.networkActiveThisMonth} aktiva denna månad
           </p>
         </Link>

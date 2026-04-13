@@ -175,18 +175,18 @@ function KpiCard({
 
   const content = (
     <div className={cn(
-      'relative overflow-hidden rounded-xl p-4 bg-gradient-to-br text-white shadow-lg',
+      'relative overflow-hidden rounded-xl p-3 sm:p-4 bg-gradient-to-br text-white shadow-lg',
       colorClasses[color],
       to && 'hover:scale-[1.02] transition-transform cursor-pointer'
     )}>
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-white/80 text-xs font-medium mb-1">{label}</p>
-          <p className="text-2xl font-bold">{value}</p>
-          {subtext && <p className="text-white/70 text-xs mt-1">{subtext}</p>}
+      <div className="flex items-start justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <p className="text-white/80 text-[10px] sm:text-xs font-medium mb-0.5 sm:mb-1 truncate">{label}</p>
+          <p className="text-xl sm:text-2xl font-bold">{value}</p>
+          {subtext && <p className="text-white/70 text-[10px] sm:text-xs mt-0.5 sm:mt-1 truncate">{subtext}</p>}
         </div>
-        <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
-          <Icon className="w-5 h-5 text-white" />
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
+          <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
         </div>
       </div>
     </div>
@@ -219,7 +219,7 @@ function OnboardingStep({
     <Link
       to={to}
       className={cn(
-        'flex items-center gap-3 p-3 rounded-xl border transition-all group',
+        'flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border transition-all group',
         isComplete
           ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50'
           : isCurrent
@@ -228,7 +228,7 @@ function OnboardingStep({
       )}
     >
       <div className={cn(
-        'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
+        'w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0',
         isComplete
           ? 'bg-emerald-500 text-white'
           : isCurrent
@@ -236,22 +236,22 @@ function OnboardingStep({
           : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400'
       )}>
         {isComplete ? (
-          <Check className="w-4 h-4" />
+          <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         ) : (
-          <Icon className="w-4 h-4" />
+          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
         )}
       </div>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-stone-400 dark:text-stone-500">Steg {step}</span>
+        <div className="flex items-center gap-1.5 sm:gap-2">
+          <span className="text-[10px] sm:text-xs text-stone-400 dark:text-stone-500">Steg {step}</span>
           {isCurrent && !isComplete && (
-            <span className="text-[10px] px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded-full font-medium">
+            <span className="text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded-full font-medium">
               Nu
             </span>
           )}
         </div>
         <p className={cn(
-          'text-sm font-medium truncate',
+          'text-xs sm:text-sm font-medium truncate',
           isComplete ? 'text-emerald-700 dark:text-emerald-400' : 'text-stone-800 dark:text-stone-200'
         )}>
           {title}
@@ -289,11 +289,11 @@ function QuickAction({
     <Link
       to={to}
       className={cn(
-        'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors',
+        'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors',
         colorClasses[color]
       )}
     >
-      <Icon className="w-4 h-4" />
+      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
       {label}
     </Link>
   )
@@ -349,24 +349,24 @@ function CollapsibleSection({
         onClick={() => setIsExpanded(!isExpanded)}
         aria-expanded={isExpanded}
         aria-controls={`${sectionId}-content`}
-        className={cn('w-full flex items-center justify-between px-4 py-3', c.header)}
+        className={cn('w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3', c.header)}
       >
         <div className="flex items-center gap-2">
-          <Icon className={cn('w-5 h-5', c.headerIcon)} />
-          <span className={cn('font-semibold', c.headerText)}>{title}</span>
+          <Icon className={cn('w-4 h-4 sm:w-5 sm:h-5', c.headerIcon)} />
+          <span className={cn('text-sm sm:text-base font-semibold', c.headerText)}>{title}</span>
           {badge && (
-            <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-white/60 dark:bg-stone-800/60 text-stone-600 dark:text-stone-300">
+            <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full bg-white/60 dark:bg-stone-800/60 text-stone-600 dark:text-stone-300">
               {badge}
             </span>
           )}
         </div>
         <ChevronDown
-          className={cn('w-5 h-5 transition-transform', c.headerIcon, !isExpanded && '-rotate-90')}
+          className={cn('w-4 h-4 sm:w-5 sm:h-5 transition-transform', c.headerIcon, !isExpanded && '-rotate-90')}
           aria-hidden="true"
         />
       </button>
       {isExpanded && (
-        <div id={`${sectionId}-content`} className="p-4 bg-white dark:bg-stone-900/50">
+        <div id={`${sectionId}-content`} className="p-3 sm:p-4 bg-white dark:bg-stone-900/50">
           {children}
         </div>
       )}
@@ -455,34 +455,34 @@ export default function DashboardPage() {
         <ConsultantRequestBanner />
 
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6 overflow-hidden">
-          <div className="px-5 py-5">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 rounded-2xl flex items-center justify-center shadow-lg">
-                <User className="w-7 h-7 text-white" />
+        <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-4 sm:mb-6 overflow-hidden">
+          <div className="px-4 py-4 sm:px-5 sm:py-5">
+            <div className="flex items-center gap-3 sm:gap-4">
+              <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-lg shrink-0">
+                <User className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-teal-600 dark:text-teal-400 font-medium">{greeting}</p>
-                <h1 className="text-xl font-bold text-teal-800 dark:text-teal-300 truncate">
+                <p className="text-xs sm:text-sm text-teal-600 dark:text-teal-400 font-medium">{greeting}</p>
+                <h1 className="text-lg sm:text-xl font-bold text-teal-800 dark:text-teal-300 truncate">
                   {firstName}!
                 </h1>
               </div>
-              {/* Progress ring */}
-              <div className="hidden sm:flex items-center gap-3">
-                <div className="relative w-12 h-12">
-                  <svg className="w-12 h-12 -rotate-90">
+              {/* Progress ring - visible on all screens */}
+              <div className="flex items-center gap-2 sm:gap-3">
+                <div className="relative w-10 h-10 sm:w-12 sm:h-12">
+                  <svg className="w-10 h-10 sm:w-12 sm:h-12 -rotate-90">
                     <circle
-                      cx="24"
-                      cy="24"
-                      r="20"
+                      cx="50%"
+                      cy="50%"
+                      r="35%"
                       className="stroke-teal-100 dark:stroke-teal-900/50"
                       strokeWidth="4"
                       fill="none"
                     />
                     <circle
-                      cx="24"
-                      cy="24"
-                      r="20"
+                      cx="50%"
+                      cy="50%"
+                      r="35%"
                       className="stroke-teal-500 dark:stroke-teal-400"
                       strokeWidth="4"
                       fill="none"
@@ -490,11 +490,11 @@ export default function DashboardPage() {
                       strokeLinecap="round"
                     />
                   </svg>
-                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-teal-700 dark:text-teal-300">
+                  <span className="absolute inset-0 flex items-center justify-center text-[10px] sm:text-xs font-bold text-teal-700 dark:text-teal-300">
                     {progressPercent}%
                   </span>
                 </div>
-                <div className="text-right">
+                <div className="hidden sm:block text-right">
                   <p className="text-xs text-stone-500 dark:text-stone-400">Redo för jobb</p>
                   <p className="text-sm font-semibold text-teal-700 dark:text-teal-300">
                     {onboardingProgress.completed}/{onboardingProgress.total} klart
@@ -506,7 +506,7 @@ export default function DashboardPage() {
         </div>
 
         {/* KPI Cards */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 mb-4 sm:mb-6">
           <KpiCard
             icon={FileText}
             label="CV-progress"
@@ -540,9 +540,9 @@ export default function DashboardPage() {
           />
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Main content - 2/3 width */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 space-y-3 sm:space-y-4">
             {/* Onboarding Section */}
             <CollapsibleSection
               title="Kom igång"
@@ -591,7 +591,7 @@ export default function DashboardPage() {
               colorScheme="amber"
               defaultExpanded={false}
             >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
                 {[
                   { icon: Target, label: 'Karriär', path: '/career' },
                   { icon: GraduationCap, label: 'Utbildning', path: '/education' },
@@ -603,10 +603,10 @@ export default function DashboardPage() {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="flex items-center gap-2 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
                   >
-                    <item.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
-                    <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
+                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 truncate">{item.label}</span>
                   </Link>
                 ))}
               </div>
@@ -619,7 +619,7 @@ export default function DashboardPage() {
               colorScheme="sky"
               defaultExpanded={false}
             >
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 sm:gap-2">
                 {[
                   { icon: Calendar, label: 'Kalender', path: '/calendar' },
                   { icon: NotebookPen, label: 'Dagbok', path: '/diary' },
@@ -631,10 +631,10 @@ export default function DashboardPage() {
                   <Link
                     key={item.path}
                     to={item.path}
-                    className="flex items-center gap-2 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-700 transition-colors"
+                    className="flex items-center gap-1.5 sm:gap-2 p-2.5 sm:p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-700 transition-colors"
                   >
-                    <item.icon className="w-5 h-5 text-sky-600 dark:text-sky-400" />
-                    <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
+                    <item.icon className="w-4 h-4 sm:w-5 sm:h-5 text-sky-600 dark:text-sky-400 shrink-0" />
+                    <span className="text-xs sm:text-sm font-medium text-stone-700 dark:text-stone-300 truncate">{item.label}</span>
                   </Link>
                 ))}
               </div>
@@ -642,36 +642,38 @@ export default function DashboardPage() {
           </div>
 
           {/* Sidebar - 1/3 width */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             {/* RIASEC Profile */}
             {interestProfile?.hasResult && interestProfile.riasecScores && (
-              <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Compass className="w-5 h-5 text-teal-600 dark:text-teal-400" />
-                  <h3 className="font-semibold text-teal-800 dark:text-teal-300">Din intresseprofil</h3>
+              <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-3 sm:p-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                  <Compass className="w-4 h-4 sm:w-5 sm:h-5 text-teal-600 dark:text-teal-400" />
+                  <h3 className="text-sm sm:text-base font-semibold text-teal-800 dark:text-teal-300">Din intresseprofil</h3>
                 </div>
-                <DashboardRiasecChart scores={interestProfile.riasecScores} size={180} />
-                <div className="mt-3 space-y-1.5">
+                <div className="flex justify-center">
+                  <DashboardRiasecChart scores={interestProfile.riasecScores} size={160} />
+                </div>
+                <div className="mt-2 sm:mt-3 space-y-1 sm:space-y-1.5">
                   {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
                     const rt = RIASEC_TYPES[type.code]
                     return (
-                      <div key={type.code} className="flex items-center gap-2">
-                        <span className="text-sm">{['🥇', '🥈', '🥉'][i]}</span>
-                        <span className="flex-1 text-sm text-stone-700 dark:text-stone-300">{rt.nameSv}</span>
-                        <span className="text-xs text-stone-500 dark:text-stone-400">{type.score}%</span>
+                      <div key={type.code} className="flex items-center gap-1.5 sm:gap-2">
+                        <span className="text-xs sm:text-sm">{['🥇', '🥈', '🥉'][i]}</span>
+                        <span className="flex-1 text-xs sm:text-sm text-stone-700 dark:text-stone-300">{rt.nameSv}</span>
+                        <span className="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400">{type.score}%</span>
                       </div>
                     )
                   })}
                 </div>
                 {/* Recommended occupations */}
                 {interestProfile.recommendedOccupations?.length > 0 && (
-                  <div className="mt-3 pt-3 border-t border-teal-200 dark:border-teal-800/50">
-                    <p className="text-xs font-medium text-teal-700 dark:text-teal-400 mb-2">Passande yrken:</p>
-                    <div className="space-y-1">
+                  <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-teal-200 dark:border-teal-800/50">
+                    <p className="text-[10px] sm:text-xs font-medium text-teal-700 dark:text-teal-400 mb-1.5 sm:mb-2">Passande yrken:</p>
+                    <div className="space-y-0.5 sm:space-y-1">
                       {interestProfile.recommendedOccupations.slice(0, 3).map((occ, i) => (
-                        <div key={i} className="flex items-center justify-between text-xs">
+                        <div key={i} className="flex items-center justify-between text-[10px] sm:text-xs">
                           <span className="text-stone-600 dark:text-stone-400 truncate">{occ.name}</span>
-                          <span className="text-teal-600 dark:text-teal-400 font-medium">{occ.matchPercentage}%</span>
+                          <span className="text-teal-600 dark:text-teal-400 font-medium ml-2">{occ.matchPercentage}%</span>
                         </div>
                       ))}
                     </div>
@@ -679,9 +681,9 @@ export default function DashboardPage() {
                 )}
                 <Link
                   to="/interest-guide"
-                  className="flex items-center justify-center gap-1 mt-3 text-sm text-teal-600 dark:text-teal-400 hover:underline"
+                  className="flex items-center justify-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm text-teal-600 dark:text-teal-400 hover:underline"
                 >
-                  Se mer <ChevronRight className="w-4 h-4" />
+                  Se mer <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </Link>
               </div>
             )}
@@ -690,22 +692,22 @@ export default function DashboardPage() {
             {!interestProfile?.hasResult && (
               <Link
                 to="/interest-guide"
-                className="block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200 dark:border-amber-800/50 p-4 hover:shadow-lg transition-shadow group"
+                className="block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200 dark:border-amber-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow group"
               >
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 rounded-xl flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-white" />
+                <div className="flex items-center gap-2.5 sm:gap-3 mb-2 sm:mb-3">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 rounded-xl flex items-center justify-center shrink-0">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-amber-800 dark:text-amber-300">Upptäck dina styrkor</h3>
-                    <p className="text-sm text-amber-600 dark:text-amber-400">Gör intresseguiden</p>
+                  <div className="min-w-0">
+                    <h3 className="text-sm sm:text-base font-semibold text-amber-800 dark:text-amber-300 truncate">Upptäck dina styrkor</h3>
+                    <p className="text-xs sm:text-sm text-amber-600 dark:text-amber-400">Gör intresseguiden</p>
                   </div>
                 </div>
-                <p className="text-sm text-amber-700 dark:text-amber-300/80">
+                <p className="text-xs sm:text-sm text-amber-700 dark:text-amber-300/80">
                   Svara på frågor och få personliga jobbförslag baserat på dina intressen.
                 </p>
-                <div className="flex items-center gap-1 mt-3 text-sm font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
-                  Starta nu <ArrowRight className="w-4 h-4" />
+                <div className="flex items-center gap-1 mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+                  Starta nu <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </div>
               </Link>
             )}
@@ -714,35 +716,35 @@ export default function DashboardPage() {
             {authProfile?.consultant_id && (
               <Link
                 to="/my-consultant"
-                className="block bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50 p-4 hover:shadow-lg transition-shadow"
+                className="block bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50 p-3 sm:p-4 hover:shadow-lg transition-shadow"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-indigo-400 dark:from-sky-500 dark:to-indigo-500 rounded-xl flex items-center justify-center">
-                    <UserCheck className="w-5 h-5 text-white" />
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-sky-400 to-indigo-400 dark:from-sky-500 dark:to-indigo-500 rounded-xl flex items-center justify-center shrink-0">
+                    <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-sky-800 dark:text-sky-300">Min konsulent</h3>
-                    <p className="text-sm text-sky-600 dark:text-sky-400">Kommunicera och följ upp</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm sm:text-base font-semibold text-sky-800 dark:text-sky-300">Min konsulent</h3>
+                    <p className="text-xs sm:text-sm text-sky-600 dark:text-sky-400">Kommunicera och följ upp</p>
                   </div>
-                  <ChevronRight className="w-5 h-5 text-sky-400 dark:text-sky-500 ml-auto" />
+                  <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-sky-400 dark:text-sky-500 shrink-0" />
                 </div>
               </Link>
             )}
 
             {/* Recent saved jobs */}
             {dashboardData?.jobs?.recentSavedJobs && dashboardData.jobs.recentSavedJobs.length > 0 && (
-              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-stone-800 dark:text-stone-200">Sparade jobb</h3>
-                  <Link to="/job-search" className="text-xs text-teal-600 dark:text-teal-400 hover:underline">
+              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
+                <div className="flex items-center justify-between mb-2 sm:mb-3">
+                  <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-200">Sparade jobb</h3>
+                  <Link to="/job-search" className="text-[10px] sm:text-xs text-teal-600 dark:text-teal-400 hover:underline">
                     Visa alla
                   </Link>
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-1.5 sm:space-y-2">
                   {dashboardData.jobs.recentSavedJobs.slice(0, 3).map(job => (
-                    <div key={job.id} className="p-2 rounded-lg bg-stone-50 dark:bg-stone-900/50">
-                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">{job.title}</p>
-                      <p className="text-xs text-stone-500 dark:text-stone-400 truncate">{job.company}</p>
+                    <div key={job.id} className="p-1.5 sm:p-2 rounded-lg bg-stone-50 dark:bg-stone-900/50">
+                      <p className="text-xs sm:text-sm font-medium text-stone-800 dark:text-stone-200 truncate">{job.title}</p>
+                      <p className="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 truncate">{job.company}</p>
                     </div>
                   ))}
                 </div>
@@ -751,25 +753,25 @@ export default function DashboardPage() {
 
             {/* Wellness quick card */}
             {dashboardData?.wellness && (
-              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-4">
-                <div className="flex items-center gap-2 mb-3">
-                  <Heart className="w-5 h-5 text-rose-500 dark:text-rose-400" />
-                  <h3 className="font-semibold text-stone-800 dark:text-stone-200">Välmående</h3>
+              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-3 sm:p-4">
+                <div className="flex items-center gap-2 mb-2 sm:mb-3">
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-rose-500 dark:text-rose-400" />
+                  <h3 className="text-sm sm:text-base font-semibold text-stone-800 dark:text-stone-200">Välmående</h3>
                 </div>
                 {dashboardData.wellness.moodToday ? (
-                  <p className="text-sm text-stone-600 dark:text-stone-400">
+                  <p className="text-xs sm:text-sm text-stone-600 dark:text-stone-400">
                     Dagens mående: <span className="font-medium">{getMoodEmoji(dashboardData.wellness.moodToday)}</span>
                   </p>
                 ) : (
                   <Link
                     to="/wellness"
-                    className="text-sm text-teal-600 dark:text-teal-400 hover:underline"
+                    className="text-xs sm:text-sm text-teal-600 dark:text-teal-400 hover:underline"
                   >
                     Logga ditt mående idag →
                   </Link>
                 )}
                 {dashboardData.wellness.streakDays > 0 && (
-                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                  <p className="text-[10px] sm:text-xs text-stone-500 dark:text-stone-400 mt-1">
                     🔥 {dashboardData.wellness.streakDays} dagars streak
                   </p>
                 )}
