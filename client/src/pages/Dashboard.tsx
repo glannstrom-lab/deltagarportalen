@@ -1,6 +1,6 @@
 /**
- * Dashboard Page - Three expandable category sections
- * Onboarding, Skills Development, Planning & Documentation
+ * Dashboard Page - Visual overview with real data
+ * Features: Hero, KPIs, RIASEC chart, compact onboarding, quick actions
  */
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
@@ -10,414 +10,789 @@ import { HelpButton } from '@/components/HelpButton'
 import { helpContent } from '@/data/helpContent'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
-import { userApi, cvApi, coverLetterApi, type OnboardingProgress } from '@/services/supabaseApi'
-import { interestGuideApi } from '@/services/cloudStorage'
+import { useDashboardData } from '@/hooks/useDashboardData'
+import { useInterestProfile, RIASEC_TYPES, type RiasecScores } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, Building2, ClipboardList,
-  Check, ChevronDown, Loader2, Target, GraduationCap, Star,
+  Check, ChevronDown, ChevronRight, Loader2, Target, GraduationCap, Star,
   TrendingUp, Linkedin, BookOpen, Dumbbell, Calendar, NotebookPen,
-  Smile, Globe, Bookmark
+  Smile, Globe, Bookmark, Briefcase, Heart, Sparkles, FileUser,
+  UserCheck, Award, Flame, Zap, Clock, ArrowRight
 } from '@/components/ui/icons'
 
-// Category item configuration
-interface CategoryItem {
-  id: string
+// ============================================
+// RIASEC RADAR CHART COMPONENT (inline for dashboard)
+// ============================================
+function DashboardRiasecChart({ scores, size = 200 }: { scores: RiasecScores; size?: number }) {
+  const center = size / 2
+  const radius = (size / 2) - 30
+  const keys: (keyof RiasecScores)[] = ['realistic', 'investigative', 'artistic', 'social', 'enterprising', 'conventional']
+  const shortKeys = ['R', 'I', 'A', 'S', 'E', 'C']
+
+  // Find max score to normalize
+  const maxScore = Math.max(...keys.map(k => scores[k]), 1)
+
+  const getPoint = (index: number, value: number) => {
+    const angle = (Math.PI * 2 * index) / 6 - Math.PI / 2
+    const r = (value / maxScore) * radius
+    return {
+      x: center + r * Math.cos(angle),
+      y: center + r * Math.sin(angle),
+    }
+  }
+
+  const polygonPoints = keys.map((key, i) => {
+    const point = getPoint(i, scores[key])
+    return `${point.x},${point.y}`
+  }).join(' ')
+
+  const levelCircles = [0.25, 0.5, 0.75, 1].map((level, i) => (
+    <circle
+      key={i}
+      cx={center}
+      cy={center}
+      r={level * radius}
+      fill="none"
+      className="stroke-stone-200 dark:stroke-stone-700"
+      strokeWidth="1"
+      strokeDasharray="3 3"
+    />
+  ))
+
+  const axes = keys.map((_, i) => {
+    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
+    const endX = center + radius * Math.cos(angle)
+    const endY = center + radius * Math.sin(angle)
+    return (
+      <line
+        key={i}
+        x1={center}
+        y1={center}
+        x2={endX}
+        y2={endY}
+        className="stroke-stone-200 dark:stroke-stone-700"
+        strokeWidth="1"
+      />
+    )
+  })
+
+  const colors: Record<keyof RiasecScores, string> = {
+    realistic: '#f59e0b',
+    investigative: '#3b82f6',
+    artistic: '#8b5cf6',
+    social: '#10b981',
+    enterprising: '#ef4444',
+    conventional: '#6366f1'
+  }
+
+  const labels = keys.map((key, i) => {
+    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
+    const labelRadius = radius + 18
+    const x = center + labelRadius * Math.cos(angle)
+    const y = center + labelRadius * Math.sin(angle)
+
+    return (
+      <g key={key}>
+        <circle
+          cx={x}
+          cy={y}
+          r="12"
+          fill={colors[key]}
+        />
+        <text
+          x={x}
+          y={y}
+          textAnchor="middle"
+          dominantBaseline="central"
+          className="fill-white text-[10px] font-bold"
+        >
+          {shortKeys[i]}
+        </text>
+      </g>
+    )
+  })
+
+  return (
+    <svg width={size} height={size} className="mx-auto">
+      <defs>
+        <linearGradient id="riasecGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.4" />
+          <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.4" />
+        </linearGradient>
+      </defs>
+      {levelCircles}
+      {axes}
+      <polygon
+        points={polygonPoints}
+        fill="url(#riasecGrad)"
+        stroke="#14b8a6"
+        strokeWidth="2"
+      />
+      {keys.map((key, i) => {
+        const point = getPoint(i, scores[key])
+        return (
+          <circle
+            key={key}
+            cx={point.x}
+            cy={point.y}
+            r="4"
+            fill="white"
+            stroke={colors[key]}
+            strokeWidth="2"
+          />
+        )
+      })}
+      {labels}
+    </svg>
+  )
+}
+
+// ============================================
+// KPI CARD COMPONENT
+// ============================================
+function KpiCard({
+  icon: Icon,
+  label,
+  value,
+  subtext,
+  color = 'teal',
+  to
+}: {
+  icon: React.ElementType
+  label: string
+  value: string | number
+  subtext?: string
+  color?: 'teal' | 'sky' | 'amber' | 'emerald' | 'rose'
+  to?: string
+}) {
+  const colorClasses = {
+    teal: 'from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700',
+    sky: 'from-sky-500 to-sky-600 dark:from-sky-600 dark:to-sky-700',
+    amber: 'from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-700',
+    emerald: 'from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700',
+    rose: 'from-rose-500 to-rose-600 dark:from-rose-600 dark:to-rose-700',
+  }
+
+  const content = (
+    <div className={cn(
+      'relative overflow-hidden rounded-xl p-4 bg-gradient-to-br text-white shadow-lg',
+      colorClasses[color],
+      to && 'hover:scale-[1.02] transition-transform cursor-pointer'
+    )}>
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-white/80 text-xs font-medium mb-1">{label}</p>
+          <p className="text-2xl font-bold">{value}</p>
+          {subtext && <p className="text-white/70 text-xs mt-1">{subtext}</p>}
+        </div>
+        <div className="w-10 h-10 rounded-lg bg-white/20 flex items-center justify-center">
+          <Icon className="w-5 h-5 text-white" />
+        </div>
+      </div>
+    </div>
+  )
+
+  return to ? <Link to={to}>{content}</Link> : content
+}
+
+// ============================================
+// ONBOARDING STEP COMPONENT (compact)
+// ============================================
+function OnboardingStep({
+  step,
+  title,
+  description,
+  icon: Icon,
+  isComplete,
+  isCurrent,
+  to
+}: {
+  step: number
   title: string
   description: string
   icon: React.ElementType
-  path: string
-  trackProgress?: keyof OnboardingProgress
+  isComplete: boolean
+  isCurrent: boolean
+  to: string
+}) {
+  return (
+    <Link
+      to={to}
+      className={cn(
+        'flex items-center gap-3 p-3 rounded-xl border transition-all group',
+        isComplete
+          ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50'
+          : isCurrent
+          ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-700 ring-2 ring-teal-400/30'
+          : 'bg-white dark:bg-stone-800/50 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700'
+      )}
+    >
+      <div className={cn(
+        'w-8 h-8 rounded-lg flex items-center justify-center shrink-0',
+        isComplete
+          ? 'bg-emerald-500 text-white'
+          : isCurrent
+          ? 'bg-teal-500 text-white'
+          : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400'
+      )}>
+        {isComplete ? (
+          <Check className="w-4 h-4" />
+        ) : (
+          <Icon className="w-4 h-4" />
+        )}
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-stone-400 dark:text-stone-500">Steg {step}</span>
+          {isCurrent && !isComplete && (
+            <span className="text-[10px] px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded-full font-medium">
+              Nu
+            </span>
+          )}
+        </div>
+        <p className={cn(
+          'text-sm font-medium truncate',
+          isComplete ? 'text-emerald-700 dark:text-emerald-400' : 'text-stone-800 dark:text-stone-200'
+        )}>
+          {title}
+        </p>
+      </div>
+      <ChevronRight className={cn(
+        'w-4 h-4 shrink-0 transition-transform',
+        isComplete ? 'text-emerald-400 dark:text-emerald-500' : 'text-stone-300 dark:text-stone-600 group-hover:translate-x-1'
+      )} />
+    </Link>
+  )
 }
 
-// Onboarding items with progress tracking
-const ONBOARDING_ITEMS: CategoryItem[] = [
-  {
-    id: 'profile',
-    title: 'Min profil',
-    description: 'Dina kontaktuppgifter',
-    icon: User,
-    path: '/profile',
-    trackProgress: 'profile'
-  },
-  {
-    id: 'interest',
-    title: 'Intresseguiden',
-    description: 'Upptäck passande yrken',
-    icon: Compass,
-    path: '/interest-guide',
-    trackProgress: 'interest'
-  },
-  {
-    id: 'cv',
-    title: 'Mitt CV',
-    description: 'Skapa ditt CV',
-    icon: FileText,
-    path: '/cv',
-    trackProgress: 'cv'
-  },
-  {
-    id: 'jobSearch',
-    title: 'Sök jobb',
-    description: 'Hitta lediga tjänster',
-    icon: Search,
-    path: '/job-search',
-    trackProgress: 'jobSearch'
-  },
-  {
-    id: 'coverLetter',
-    title: 'Personligt brev',
-    description: 'Skriv övertygande brev',
-    icon: Mail,
-    path: '/cover-letter',
-    trackProgress: 'coverLetter'
-  },
-  {
-    id: 'spontaneous',
-    title: 'Spontanansökningar',
-    description: 'Kontakta arbetsgivare direkt',
-    icon: Building2,
-    path: '/spontanansökan'
-  },
-  {
-    id: 'applications',
-    title: 'Mina ansökningar',
-    description: 'Följ dina ansökningar',
-    icon: ClipboardList,
-    path: '/applications'
+// ============================================
+// QUICK ACTION BUTTON
+// ============================================
+function QuickAction({
+  icon: Icon,
+  label,
+  to,
+  color = 'teal'
+}: {
+  icon: React.ElementType
+  label: string
+  to: string
+  color?: 'teal' | 'sky' | 'amber'
+}) {
+  const colorClasses = {
+    teal: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/60',
+    sky: 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 hover:bg-sky-200 dark:hover:bg-sky-900/60',
+    amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60',
   }
-]
 
-// Skills development items
-const SKILLS_ITEMS: CategoryItem[] = [
-  {
-    id: 'career',
-    title: 'Karriär',
-    description: 'Utforska karriärvägar',
-    icon: Target,
-    path: '/career'
-  },
-  {
-    id: 'education',
-    title: 'Utbildning',
-    description: 'Hitta kurser och utbildningar',
-    icon: GraduationCap,
-    path: '/education'
-  },
-  {
-    id: 'personalBrand',
-    title: 'Personligt varumärke',
-    description: 'Bygg din profil',
-    icon: Star,
-    path: '/personal-brand'
-  },
-  {
-    id: 'skillsGap',
-    title: 'Kompetensanalys',
-    description: 'Identifiera utvecklingsområden',
-    icon: TrendingUp,
-    path: '/skills-gap-analysis'
-  },
-  {
-    id: 'linkedin',
-    title: 'LinkedIn',
-    description: 'Optimera din profil',
-    icon: Linkedin,
-    path: '/linkedin-optimizer'
-  },
-  {
-    id: 'knowledgeBase',
-    title: 'Kunskapsbank',
-    description: 'Artiklar och guider',
-    icon: BookOpen,
-    path: '/knowledge-base'
-  },
-  {
-    id: 'exercises',
-    title: 'Övningar',
-    description: 'Träna och utvecklas',
-    icon: Dumbbell,
-    path: '/exercises'
-  }
-]
+  return (
+    <Link
+      to={to}
+      className={cn(
+        'flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors',
+        colorClasses[color]
+      )}
+    >
+      <Icon className="w-4 h-4" />
+      {label}
+    </Link>
+  )
+}
 
-// Planning & documentation items
-const PLANNING_ITEMS: CategoryItem[] = [
-  {
-    id: 'calendar',
-    title: 'Kalender',
-    description: 'Planera dina aktiviteter',
-    icon: Calendar,
-    path: '/calendar'
-  },
-  {
-    id: 'diary',
-    title: 'Dagbok',
-    description: 'Reflektera och dokumentera',
-    icon: NotebookPen,
-    path: '/diary'
-  },
-  {
-    id: 'wellness',
-    title: 'Hälsa',
-    description: 'Följ ditt mående',
-    icon: Smile,
-    path: '/wellness'
-  },
-  {
-    id: 'international',
-    title: 'Internationell guide',
-    description: 'Jobba utomlands',
-    icon: Globe,
-    path: '/international'
-  },
-  {
-    id: 'resources',
-    title: 'Mina resurser',
-    description: 'Sparade länkar och dokument',
-    icon: Bookmark,
-    path: '/resources'
-  }
-]
-
-// Expandable category component
-function ExpandableCategory({
+// ============================================
+// COLLAPSIBLE SECTION
+// ============================================
+function CollapsibleSection({
   title,
-  items,
+  icon: Icon,
+  children,
   defaultExpanded = true,
-  progress,
+  badge,
   colorScheme = 'teal'
 }: {
   title: string
-  items: CategoryItem[]
+  icon: React.ElementType
+  children: React.ReactNode
   defaultExpanded?: boolean
-  progress?: OnboardingProgress
+  badge?: string
   colorScheme?: 'teal' | 'sky' | 'amber'
 }) {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-  // Generate stable ID for ARIA
-  const categoryId = `category-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åä]/g, 'a').replace(/ö/g, 'o')}`
+  const sectionId = `section-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åäö]/g, 'a')}`
 
   const colors = {
     teal: {
-      header: 'from-teal-50 to-teal-100/50 dark:from-teal-900/30 dark:to-teal-800/20',
+      header: 'bg-teal-50 dark:bg-teal-900/20',
       headerText: 'text-teal-800 dark:text-teal-300',
       headerIcon: 'text-teal-600 dark:text-teal-400',
       border: 'border-teal-200 dark:border-teal-800/50',
-      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-teal-50 dark:hover:bg-teal-900/20',
-      itemBorder: 'border-teal-100 dark:border-teal-800/30',
-      iconBg: 'bg-teal-100 dark:bg-teal-900/40',
-      iconColor: 'text-teal-600 dark:text-teal-400',
-      completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-      completeIcon: 'text-emerald-600 dark:text-emerald-400'
     },
     sky: {
-      header: 'from-sky-50 to-sky-100/50 dark:from-sky-900/30 dark:to-sky-800/20',
+      header: 'bg-sky-50 dark:bg-sky-900/20',
       headerText: 'text-sky-800 dark:text-sky-300',
       headerIcon: 'text-sky-600 dark:text-sky-400',
       border: 'border-sky-200 dark:border-sky-800/50',
-      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-sky-50 dark:hover:bg-sky-900/20',
-      itemBorder: 'border-sky-100 dark:border-sky-800/30',
-      iconBg: 'bg-sky-100 dark:bg-sky-900/40',
-      iconColor: 'text-sky-600 dark:text-sky-400',
-      completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-      completeIcon: 'text-emerald-600 dark:text-emerald-400'
     },
     amber: {
-      header: 'from-amber-50 to-amber-100/50 dark:from-amber-900/30 dark:to-amber-800/20',
+      header: 'bg-amber-50 dark:bg-amber-900/20',
       headerText: 'text-amber-800 dark:text-amber-300',
       headerIcon: 'text-amber-600 dark:text-amber-400',
       border: 'border-amber-200 dark:border-amber-800/50',
-      itemBg: 'bg-white dark:bg-stone-800/50 hover:bg-amber-50 dark:hover:bg-amber-900/20',
-      itemBorder: 'border-amber-100 dark:border-amber-800/30',
-      iconBg: 'bg-amber-100 dark:bg-amber-900/40',
-      iconColor: 'text-amber-600 dark:text-amber-400',
-      completeBg: 'bg-emerald-100 dark:bg-emerald-900/40',
-      completeIcon: 'text-emerald-600 dark:text-emerald-400'
     }
   }
 
   const c = colors[colorScheme]
 
-  // Calculate progress for onboarding
-  const completedCount = progress
-    ? items.filter(item => item.trackProgress && progress[item.trackProgress]).length
-    : 0
-  const trackableItems = items.filter(item => item.trackProgress).length
-  const showProgress = trackableItems > 0 && progress
-
   return (
     <div className={cn('rounded-2xl border overflow-hidden', c.border)}>
-      {/* Header */}
       <button
         onClick={() => setIsExpanded(!isExpanded)}
         aria-expanded={isExpanded}
-        aria-controls={`${categoryId}-content`}
-        className={cn(
-          'w-full flex items-center justify-between px-5 py-4 bg-gradient-to-r transition-colors',
-          c.header
-        )}
+        aria-controls={`${sectionId}-content`}
+        className={cn('w-full flex items-center justify-between px-4 py-3', c.header)}
       >
-        <div className="flex items-center gap-3">
-          <h2 className={cn('text-lg font-semibold', c.headerText)}>{title}</h2>
-          {showProgress && (
-            <span className={cn(
-              'px-2 py-0.5 text-xs font-medium rounded-full',
-              completedCount === trackableItems
-                ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-400'
-                : 'bg-white/60 dark:bg-stone-700/60 text-stone-600 dark:text-stone-300'
-            )}>
-              {completedCount}/{trackableItems} klart
+        <div className="flex items-center gap-2">
+          <Icon className={cn('w-5 h-5', c.headerIcon)} />
+          <span className={cn('font-semibold', c.headerText)}>{title}</span>
+          {badge && (
+            <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-white/60 dark:bg-stone-800/60 text-stone-600 dark:text-stone-300">
+              {badge}
             </span>
           )}
         </div>
         <ChevronDown
-          className={cn(
-            'w-5 h-5 transition-transform',
-            c.headerIcon,
-            !isExpanded && '-rotate-90'
-          )}
+          className={cn('w-5 h-5 transition-transform', c.headerIcon, !isExpanded && '-rotate-90')}
           aria-hidden="true"
         />
       </button>
-
-      {/* Content */}
       {isExpanded && (
-        <div
-          id={`${categoryId}-content`}
-          role="region"
-          aria-label={title}
-          className="p-4 bg-gradient-to-b from-white to-stone-50/50 dark:from-stone-900 dark:to-stone-950/50"
-        >
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-            {items.map((item) => {
-              const Icon = item.icon
-              const isComplete = item.trackProgress && progress?.[item.trackProgress]
-
-              return (
-                <Link
-                  key={item.id}
-                  to={item.path}
-                  className={cn(
-                    'flex flex-col items-center text-center p-4 rounded-xl border transition-all group',
-                    c.itemBg,
-                    c.itemBorder,
-                    'hover:shadow-md hover:scale-[1.02]'
-                  )}
-                >
-                  {/* Icon */}
-                  <div className={cn(
-                    'w-12 h-12 rounded-xl flex items-center justify-center mb-2 transition-transform group-hover:scale-110 relative',
-                    isComplete ? c.completeBg : c.iconBg
-                  )}>
-                    <Icon className={cn('w-6 h-6', isComplete ? c.completeIcon : c.iconColor)} />
-                    {isComplete && (
-                      <div className="absolute -top-1 -right-1 w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center">
-                        <Check className="w-3 h-3 text-white" />
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-sm font-medium text-stone-800 dark:text-stone-200 mb-0.5">
-                    {item.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p className="text-xs text-stone-500 dark:text-stone-400 line-clamp-2">
-                    {item.description}
-                  </p>
-                </Link>
-              )
-            })}
-          </div>
+        <div id={`${sectionId}-content`} className="p-4 bg-white dark:bg-stone-900/50">
+          {children}
         </div>
       )}
     </div>
   )
 }
 
+// ============================================
+// ONBOARDING STEPS DATA
+// ============================================
+const ONBOARDING_STEPS = [
+  { step: 1, id: 'profile', title: 'Fyll i din profil', description: 'Lägg till kontaktuppgifter', icon: User, path: '/profile', trackKey: 'profile' },
+  { step: 2, id: 'interest', title: 'Gör intresseguiden', description: 'Upptäck passande yrken', icon: Compass, path: '/interest-guide', trackKey: 'interest' },
+  { step: 3, id: 'cv', title: 'Skapa ditt CV', description: 'Bygg ett proffsigt CV', icon: FileUser, path: '/cv', trackKey: 'cv' },
+  { step: 4, id: 'career', title: 'Utforska karriärvägar', description: 'Hitta din riktning', icon: Target, path: '/career', trackKey: 'career' },
+  { step: 5, id: 'jobSearch', title: 'Sök efter jobb', description: 'Hitta lediga tjänster', icon: Search, path: '/job-search', trackKey: 'jobSearch' },
+  { step: 6, id: 'coverLetter', title: 'Skriv personligt brev', description: 'Skapa övertygande brev', icon: Mail, path: '/cover-letter', trackKey: 'coverLetter' },
+  { step: 7, id: 'applications', title: 'Följ dina ansökningar', description: 'Håll koll på status', icon: ClipboardList, path: '/applications', trackKey: 'applications' },
+  { step: 8, id: 'interview', title: 'Öva på intervjuer', description: 'Träna med AI-simulatorn', icon: Briefcase, path: '/interview-simulator', trackKey: 'interview' },
+]
+
+// ============================================
+// MAIN DASHBOARD COMPONENT
+// ============================================
 export default function DashboardPage() {
   const { t } = useTranslation()
-  const { profile } = useAuthStore()
-  const [onboardingProgress, setOnboardingProgress] = useState<OnboardingProgress>({})
-  const [loading, setLoading] = useState(true)
+  const { profile: authProfile } = useAuthStore()
+  const { data: dashboardData, loading: dashboardLoading } = useDashboardData()
+  const { profile: interestProfile, isLoading: interestLoading } = useInterestProfile()
 
-  useEffect(() => {
-    loadProgress()
-  }, [])
+  // Calculate onboarding progress
+  const getOnboardingProgress = () => {
+    if (!dashboardData) return { completed: 0, total: ONBOARDING_STEPS.length, currentStep: 1 }
 
-  const loadProgress = async () => {
-    try {
-      const [cloudProgress, interestGuideData, cvData, coverLetters] = await Promise.all([
-        userApi.getOnboardingProgress(),
-        interestGuideApi.getProgress().catch(() => null),
-        cvApi.getCV().catch(() => null),
-        coverLetterApi.getAll().catch(() => [])
-      ])
+    let completed = 0
+    let currentStep = 1
 
-      const interestCompleted = cloudProgress.interest || interestGuideData?.is_completed === true
-      const cvCompleted = cloudProgress.cv || (cvData && (cvData.firstName || cvData.workExperience?.length > 0))
-      const coverLetterCompleted = cloudProgress.coverLetter || (coverLetters && coverLetters.length > 0)
-
-      setOnboardingProgress({
-        profile: cloudProgress.profile,
-        interest: interestCompleted,
-        cv: cvCompleted,
-        career: cloudProgress.career,
-        jobSearch: cloudProgress.jobSearch,
-        coverLetter: coverLetterCompleted
-      })
-    } catch (err) {
-      console.error('Error loading progress:', err)
-    } finally {
-      setLoading(false)
+    // Check each step
+    const progress: Record<string, boolean> = {
+      profile: authProfile?.first_name ? true : false,
+      interest: interestProfile?.hasResult || false,
+      cv: dashboardData.cv?.hasCV || false,
+      career: false, // Would need career data
+      jobSearch: dashboardData.jobs?.savedCount > 0,
+      coverLetter: dashboardData.coverLetters?.count > 0,
+      applications: dashboardData.applications?.total > 0,
+      interview: false, // Would need interview data
     }
+
+    ONBOARDING_STEPS.forEach((step, i) => {
+      if (progress[step.trackKey]) {
+        completed++
+      } else if (currentStep === 1 || (i > 0 && progress[ONBOARDING_STEPS[i-1].trackKey])) {
+        currentStep = step.step
+      }
+    })
+
+    return { completed, total: ONBOARDING_STEPS.length, currentStep, progress }
   }
 
-  if (loading) {
+  const onboardingProgress = getOnboardingProgress()
+  const progressPercent = Math.round((onboardingProgress.completed / onboardingProgress.total) * 100)
+
+  // Find first incomplete step for current step indicator
+  const currentStepIndex = ONBOARDING_STEPS.findIndex(
+    step => !onboardingProgress.progress?.[step.trackKey]
+  )
+
+  if (dashboardLoading || interestLoading) {
     return (
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <Loader2 className="w-8 h-8 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-3" />
-          <p className="text-stone-600 dark:text-stone-400">Laddar...</p>
+          <p className="text-stone-600 dark:text-stone-400">Laddar översikt...</p>
         </div>
       </div>
     )
   }
 
+  const firstName = authProfile?.first_name || 'Välkommen'
+  const greeting = getGreeting()
+
   return (
-    <div className="page-transition">
+    <div className="page-transition pb-8">
       <div className="max-w-5xl mx-auto">
         <ConsultantRequestBanner />
 
-        <div className="space-y-4">
-          {/* Onboarding Section */}
-          <ExpandableCategory
-            title="Kom igång"
-            items={ONBOARDING_ITEMS}
-            progress={onboardingProgress}
-            colorScheme="teal"
-            defaultExpanded={true}
-          />
+        {/* Hero Section */}
+        <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-900 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 mb-6 overflow-hidden">
+          <div className="px-5 py-5">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 bg-gradient-to-br from-teal-400 to-sky-400 dark:from-teal-500 dark:to-sky-500 rounded-2xl flex items-center justify-center shadow-lg">
+                <User className="w-7 h-7 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm text-teal-600 dark:text-teal-400 font-medium">{greeting}</p>
+                <h1 className="text-xl font-bold text-teal-800 dark:text-teal-300 truncate">
+                  {firstName}!
+                </h1>
+              </div>
+              {/* Progress ring */}
+              <div className="hidden sm:flex items-center gap-3">
+                <div className="relative w-12 h-12">
+                  <svg className="w-12 h-12 -rotate-90">
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="20"
+                      className="stroke-teal-100 dark:stroke-teal-900/50"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <circle
+                      cx="24"
+                      cy="24"
+                      r="20"
+                      className="stroke-teal-500 dark:stroke-teal-400"
+                      strokeWidth="4"
+                      fill="none"
+                      strokeDasharray={`${progressPercent * 1.26} 126`}
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <span className="absolute inset-0 flex items-center justify-center text-xs font-bold text-teal-700 dark:text-teal-300">
+                    {progressPercent}%
+                  </span>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-stone-500 dark:text-stone-400">Redo för jobb</p>
+                  <p className="text-sm font-semibold text-teal-700 dark:text-teal-300">
+                    {onboardingProgress.completed}/{onboardingProgress.total} klart
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-          {/* Skills Development Section */}
-          <ExpandableCategory
-            title="Kompetensutveckling"
-            items={SKILLS_ITEMS}
-            colorScheme="sky"
-            defaultExpanded={true}
+        {/* KPI Cards */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <KpiCard
+            icon={FileText}
+            label="CV-progress"
+            value={`${dashboardData?.cv?.progress || 0}%`}
+            subtext={dashboardData?.cv?.hasCV ? 'Uppdaterat' : 'Inte påbörjat'}
+            color="teal"
+            to="/cv"
           />
+          <KpiCard
+            icon={Bookmark}
+            label="Sparade jobb"
+            value={dashboardData?.jobs?.savedCount || 0}
+            subtext={dashboardData?.jobs?.newMatches ? `${dashboardData.jobs.newMatches} nya` : undefined}
+            color="sky"
+            to="/job-search"
+          />
+          <KpiCard
+            icon={ClipboardList}
+            label="Ansökningar"
+            value={dashboardData?.applications?.total || 0}
+            subtext={dashboardData?.applications?.statusBreakdown?.interview ? `${dashboardData.applications.statusBreakdown.interview} intervjuer` : undefined}
+            color="amber"
+            to="/applications"
+          />
+          <KpiCard
+            icon={Flame}
+            label="Aktivitet"
+            value={`${dashboardData?.activity?.streakDays || 0}d`}
+            subtext="Daglig streak"
+            color="emerald"
+          />
+        </div>
 
-          {/* Planning & Documentation Section */}
-          <ExpandableCategory
-            title="Planera och dokumentera"
-            items={PLANNING_ITEMS}
-            colorScheme="amber"
-            defaultExpanded={true}
-          />
+        <div className="grid lg:grid-cols-3 gap-6">
+          {/* Main content - 2/3 width */}
+          <div className="lg:col-span-2 space-y-4">
+            {/* Onboarding Section */}
+            <CollapsibleSection
+              title="Kom igång"
+              icon={Zap}
+              badge={`${onboardingProgress.completed}/${onboardingProgress.total}`}
+              colorScheme="teal"
+              defaultExpanded={progressPercent < 100}
+            >
+              <div className="grid sm:grid-cols-2 gap-2">
+                {ONBOARDING_STEPS.map((step, i) => (
+                  <OnboardingStep
+                    key={step.id}
+                    step={step.step}
+                    title={step.title}
+                    description={step.description}
+                    icon={step.icon}
+                    isComplete={onboardingProgress.progress?.[step.trackKey] || false}
+                    isCurrent={currentStepIndex === i}
+                    to={step.path}
+                  />
+                ))}
+              </div>
+            </CollapsibleSection>
+
+            {/* Quick Actions */}
+            <CollapsibleSection
+              title="Snabbåtgärder"
+              icon={Sparkles}
+              colorScheme="sky"
+              defaultExpanded={true}
+            >
+              <div className="flex flex-wrap gap-2">
+                <QuickAction icon={Search} label="Sök jobb" to="/job-search" color="teal" />
+                <QuickAction icon={FileUser} label="Redigera CV" to="/cv" color="teal" />
+                <QuickAction icon={Mail} label="Nytt brev" to="/cover-letter" color="sky" />
+                <QuickAction icon={Building2} label="Spontanansökan" to="/spontanansökan" color="sky" />
+                <QuickAction icon={NotebookPen} label="Dagbok" to="/diary" color="amber" />
+                <QuickAction icon={Smile} label="Logga mående" to="/wellness" color="amber" />
+              </div>
+            </CollapsibleSection>
+
+            {/* Skills & Development */}
+            <CollapsibleSection
+              title="Utveckling"
+              icon={TrendingUp}
+              colorScheme="amber"
+              defaultExpanded={false}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {[
+                  { icon: Target, label: 'Karriär', path: '/career' },
+                  { icon: GraduationCap, label: 'Utbildning', path: '/education' },
+                  { icon: Star, label: 'Varumärke', path: '/personal-brand' },
+                  { icon: Linkedin, label: 'LinkedIn', path: '/linkedin-optimizer' },
+                  { icon: TrendingUp, label: 'Kompetensanalys', path: '/skills-gap-analysis' },
+                  { icon: BookOpen, label: 'Kunskapsbank', path: '/knowledge-base' },
+                ].map(item => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="flex items-center gap-2 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-amber-300 dark:hover:border-amber-700 transition-colors"
+                  >
+                    <item.icon className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                    <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </CollapsibleSection>
+
+            {/* Wellness & Planning */}
+            <CollapsibleSection
+              title="Välmående & Planering"
+              icon={Heart}
+              colorScheme="sky"
+              defaultExpanded={false}
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {[
+                  { icon: Calendar, label: 'Kalender', path: '/calendar' },
+                  { icon: NotebookPen, label: 'Dagbok', path: '/diary' },
+                  { icon: Smile, label: 'Hälsa', path: '/wellness' },
+                  { icon: Dumbbell, label: 'Övningar', path: '/exercises' },
+                  { icon: Globe, label: 'Internationellt', path: '/international' },
+                  { icon: Bookmark, label: 'Resurser', path: '/resources' },
+                ].map(item => (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    className="flex items-center gap-2 p-3 rounded-xl bg-stone-50 dark:bg-stone-800/50 border border-stone-200 dark:border-stone-700 hover:border-sky-300 dark:hover:border-sky-700 transition-colors"
+                  >
+                    <item.icon className="w-5 h-5 text-sky-600 dark:text-sky-400" />
+                    <span className="text-sm font-medium text-stone-700 dark:text-stone-300">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+            </CollapsibleSection>
+          </div>
+
+          {/* Sidebar - 1/3 width */}
+          <div className="space-y-4">
+            {/* RIASEC Profile */}
+            {interestProfile?.hasResult && interestProfile.riasecScores && (
+              <div className="bg-gradient-to-br from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Compass className="w-5 h-5 text-teal-600 dark:text-teal-400" />
+                  <h3 className="font-semibold text-teal-800 dark:text-teal-300">Din intresseprofil</h3>
+                </div>
+                <DashboardRiasecChart scores={interestProfile.riasecScores} size={180} />
+                <div className="mt-3 space-y-1.5">
+                  {interestProfile.dominantTypes.slice(0, 3).map((type, i) => {
+                    const rt = RIASEC_TYPES[type.code]
+                    return (
+                      <div key={type.code} className="flex items-center gap-2">
+                        <span className="text-sm">{['🥇', '🥈', '🥉'][i]}</span>
+                        <span className="flex-1 text-sm text-stone-700 dark:text-stone-300">{rt.nameSv}</span>
+                        <span className="text-xs text-stone-500 dark:text-stone-400">{type.score}%</span>
+                      </div>
+                    )
+                  })}
+                </div>
+                <Link
+                  to="/interest-guide"
+                  className="flex items-center justify-center gap-1 mt-3 text-sm text-teal-600 dark:text-teal-400 hover:underline"
+                >
+                  Se mer <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
+
+            {/* Interest guide CTA if no result */}
+            {!interestProfile?.hasResult && (
+              <Link
+                to="/interest-guide"
+                className="block bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-2xl border border-amber-200 dark:border-amber-800/50 p-4 hover:shadow-lg transition-shadow group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-amber-400 to-orange-400 dark:from-amber-500 dark:to-orange-500 rounded-xl flex items-center justify-center">
+                    <Sparkles className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-amber-800 dark:text-amber-300">Upptäck dina styrkor</h3>
+                    <p className="text-sm text-amber-600 dark:text-amber-400">Gör intresseguiden</p>
+                  </div>
+                </div>
+                <p className="text-sm text-amber-700 dark:text-amber-300/80">
+                  Svara på frågor och få personliga jobbförslag baserat på dina intressen.
+                </p>
+                <div className="flex items-center gap-1 mt-3 text-sm font-medium text-amber-700 dark:text-amber-400 group-hover:translate-x-1 transition-transform">
+                  Starta nu <ArrowRight className="w-4 h-4" />
+                </div>
+              </Link>
+            )}
+
+            {/* My Consultant (if has consultant) */}
+            {authProfile?.consultant_id && (
+              <Link
+                to="/my-consultant"
+                className="block bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-900/20 dark:to-indigo-900/20 rounded-2xl border border-sky-200 dark:border-sky-800/50 p-4 hover:shadow-lg transition-shadow"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-sky-400 to-indigo-400 dark:from-sky-500 dark:to-indigo-500 rounded-xl flex items-center justify-center">
+                    <UserCheck className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-sky-800 dark:text-sky-300">Min konsulent</h3>
+                    <p className="text-sm text-sky-600 dark:text-sky-400">Kommunicera och följ upp</p>
+                  </div>
+                  <ChevronRight className="w-5 h-5 text-sky-400 dark:text-sky-500 ml-auto" />
+                </div>
+              </Link>
+            )}
+
+            {/* Recent saved jobs */}
+            {dashboardData?.jobs?.recentSavedJobs && dashboardData.jobs.recentSavedJobs.length > 0 && (
+              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-semibold text-stone-800 dark:text-stone-200">Sparade jobb</h3>
+                  <Link to="/job-search" className="text-xs text-teal-600 dark:text-teal-400 hover:underline">
+                    Visa alla
+                  </Link>
+                </div>
+                <div className="space-y-2">
+                  {dashboardData.jobs.recentSavedJobs.slice(0, 3).map(job => (
+                    <div key={job.id} className="p-2 rounded-lg bg-stone-50 dark:bg-stone-900/50">
+                      <p className="text-sm font-medium text-stone-800 dark:text-stone-200 truncate">{job.title}</p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400 truncate">{job.company}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Wellness quick card */}
+            {dashboardData?.wellness && (
+              <div className="bg-white dark:bg-stone-800/50 rounded-2xl border border-stone-200 dark:border-stone-700 p-4">
+                <div className="flex items-center gap-2 mb-3">
+                  <Heart className="w-5 h-5 text-rose-500 dark:text-rose-400" />
+                  <h3 className="font-semibold text-stone-800 dark:text-stone-200">Välmående</h3>
+                </div>
+                {dashboardData.wellness.moodToday ? (
+                  <p className="text-sm text-stone-600 dark:text-stone-400">
+                    Dagens mående: <span className="font-medium">{getMoodEmoji(dashboardData.wellness.moodToday)}</span>
+                  </p>
+                ) : (
+                  <Link
+                    to="/wellness"
+                    className="text-sm text-teal-600 dark:text-teal-400 hover:underline"
+                  >
+                    Logga ditt mående idag →
+                  </Link>
+                )}
+                {dashboardData.wellness.streakDays > 0 && (
+                  <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
+                    🔥 {dashboardData.wellness.streakDays} dagars streak
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
       <HelpButton content={helpContent.dashboard} />
     </div>
   )
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+function getGreeting() {
+  const hour = new Date().getHours()
+  if (hour < 10) return 'God morgon'
+  if (hour < 12) return 'God förmiddag'
+  if (hour < 18) return 'God eftermiddag'
+  return 'God kväll'
+}
+
+function getMoodEmoji(mood: number | string) {
+  const moodMap: Record<string, string> = {
+    '1': '😢',
+    '2': '😕',
+    '3': '😐',
+    '4': '🙂',
+    '5': '😊',
+    'terrible': '😢',
+    'bad': '😕',
+    'okay': '😐',
+    'good': '🙂',
+    'great': '😊',
+  }
+  return moodMap[String(mood)] || '😐'
 }
