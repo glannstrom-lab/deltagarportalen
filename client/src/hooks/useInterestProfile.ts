@@ -4,7 +4,7 @@
  */
 
 import { useQuery } from '@tanstack/react-query'
-import { interestApi } from '@/services/supabaseApi'
+import { interestGuideApi } from '@/services/cloudStorage'
 
 // ============================================
 // TYPES
@@ -205,9 +205,11 @@ export function useInterestProfile() {
     queryKey: ['interestProfile'],
     queryFn: async (): Promise<InterestProfile> => {
       try {
-        const result = await interestApi.getResult()
+        // Check progress first to see if completed
+        const progress = await interestGuideApi.getProgress()
 
-        if (!result) {
+        // If not completed, return early
+        if (!progress?.is_completed) {
           return {
             hasResult: false,
             riasecScores: null,
@@ -217,44 +219,45 @@ export function useInterestProfile() {
           }
         }
 
-        // Extract RIASEC scores from result
-        let riasecScores: RiasecScores | null = null
+        // Get the latest history entry with RIASEC scores
+        const history = await interestGuideApi.getHistory(1)
+        const latestResult = history?.[0]
 
-        // Check nested format first (riasec_profile.scores)
-        if (result.riasec_profile?.scores) {
-          riasecScores = result.riasec_profile.scores as RiasecScores
-        }
-        // Check for direct columns format (database schema)
-        else if (typeof result.realistic === 'number' || typeof result.investigative === 'number') {
-          riasecScores = {
-            realistic: result.realistic || 0,
-            investigative: result.investigative || 0,
-            artistic: result.artistic || 0,
-            social: result.social || 0,
-            enterprising: result.enterprising || 0,
-            conventional: result.conventional || 0
+        if (!latestResult) {
+          // Completed but no history - check if progress has answers we can use
+          return {
+            hasResult: true,
+            riasecScores: null,
+            dominantTypes: [],
+            recommendedOccupations: [],
+            completedAt: progress.updated_at || null
           }
         }
-        // Fallback if only answers exist
-        else if (result.answers) {
+
+        // Extract RIASEC scores from history entry
+        let riasecScores: RiasecScores | null = null
+
+        // Check riasec_profile object format
+        if (latestResult.riasec_profile) {
+          const rp = latestResult.riasec_profile as Record<string, number>
           riasecScores = {
-            realistic: 0,
-            investigative: 0,
-            artistic: 0,
-            social: 0,
-            enterprising: 0,
-            conventional: 0
+            realistic: rp.realistic || rp.R || 0,
+            investigative: rp.investigative || rp.I || 0,
+            artistic: rp.artistic || rp.A || 0,
+            social: rp.social || rp.S || 0,
+            enterprising: rp.enterprising || rp.E || 0,
+            conventional: rp.conventional || rp.C || 0
           }
         }
 
         const dominantTypes = riasecScores ? getDominantTypes(riasecScores) : []
 
         // Extract recommended occupations
-        const recommendedOccupations = (result.recommended_occupations || result.recommended_jobs || [])
+        const recommendedOccupations = (latestResult.top_occupations || [])
           .slice(0, 10)
-          .map((occ: { name?: string; title?: string; match_percentage?: number; match?: number }) => ({
+          .map((occ: { name?: string; title?: string; matchPercentage?: number; match_percentage?: number }) => ({
             name: occ.name || occ.title || '',
-            matchPercentage: occ.match_percentage || occ.match || 0
+            matchPercentage: occ.matchPercentage || occ.match_percentage || 0
           }))
 
         return {
@@ -262,7 +265,7 @@ export function useInterestProfile() {
           riasecScores,
           dominantTypes,
           recommendedOccupations,
-          completedAt: result.created_at || null
+          completedAt: latestResult.completed_at || null
         }
       } catch (error) {
         console.error('Error fetching interest profile:', error)
