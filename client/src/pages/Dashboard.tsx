@@ -391,6 +391,24 @@ export default function DashboardPage() {
                 </div>
               </div>
               <RiasecVisual scores={interestProfile.riasecScores} />
+
+              {/* Recommended occupations */}
+              {interestProfile.recommendedOccupations && interestProfile.recommendedOccupations.length > 0 && (
+                <div className="mt-5 pt-5 border-t border-stone-100 dark:border-stone-700">
+                  <p className="text-xs font-medium text-stone-500 dark:text-stone-400 mb-3">Rekommenderade yrken</p>
+                  <div className="space-y-2">
+                    {interestProfile.recommendedOccupations.slice(0, 3).map((occ, i) => (
+                      <div key={i} className="flex items-center justify-between">
+                        <span className="text-sm text-stone-700 dark:text-stone-300">{occ.name}</span>
+                        <span className="text-xs px-2 py-0.5 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 rounded-full">
+                          {occ.matchPercentage}% match
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <Link
                 to="/interest-guide"
                 className="flex items-center justify-center gap-1 mt-5 text-sm text-violet-600 dark:text-violet-400 hover:underline font-medium"
@@ -487,6 +505,71 @@ export default function DashboardPage() {
             </div>
           )}
         </div>
+
+        {/* SAVED JOBS & COVER LETTERS */}
+        {((dashboardData?.jobs?.recentSavedJobs && dashboardData.jobs.recentSavedJobs.length > 0) ||
+          (dashboardData?.coverLetters?.recentLetters && dashboardData.coverLetters.recentLetters.length > 0)) && (
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            {/* Saved Jobs */}
+            {dashboardData?.jobs?.recentSavedJobs && dashboardData.jobs.recentSavedJobs.length > 0 && (
+              <div className="bg-white dark:bg-stone-800 rounded-3xl p-6 border border-stone-200 dark:border-stone-700 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center shadow-lg shadow-sky-500/20">
+                      <Briefcase className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-stone-800 dark:text-stone-200">Sparade jobb</h3>
+                  </div>
+                  <Link to="/job-search" className="text-sm text-sky-600 dark:text-sky-400 hover:underline">
+                    Visa alla ({dashboardData.jobs.savedCount})
+                  </Link>
+                </div>
+                <div className="space-y-3">
+                  {dashboardData.jobs.recentSavedJobs.slice(0, 3).map((job) => (
+                    <div key={job.id} className="p-3 rounded-xl bg-stone-50 dark:bg-stone-900/50 hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors">
+                      <p className="font-medium text-stone-800 dark:text-stone-200 truncate">{job.title}</p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 truncate">{job.company}</p>
+                      {job.deadline && (
+                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">
+                          Sista ansökningsdag: {new Date(job.deadline).toLocaleDateString('sv-SE')}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Cover Letters */}
+            {dashboardData?.coverLetters?.recentLetters && dashboardData.coverLetters.recentLetters.length > 0 && (
+              <div className="bg-white dark:bg-stone-800 rounded-3xl p-6 border border-stone-200 dark:border-stone-700 shadow-sm">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-lg shadow-violet-500/20">
+                      <Mail className="w-5 h-5 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-stone-800 dark:text-stone-200">Personliga brev</h3>
+                  </div>
+                  <Link to="/cover-letter" className="text-sm text-violet-600 dark:text-violet-400 hover:underline">
+                    Visa alla ({dashboardData.coverLetters.count})
+                  </Link>
+                </div>
+                <div className="space-y-3">
+                  {dashboardData.coverLetters.recentLetters.slice(0, 3).map((letter) => (
+                    <Link
+                      key={letter.id}
+                      to={`/cover-letter/${letter.id}`}
+                      className="block p-3 rounded-xl bg-stone-50 dark:bg-stone-900/50 hover:bg-stone-100 dark:hover:bg-stone-900 transition-colors"
+                    >
+                      <p className="font-medium text-stone-800 dark:text-stone-200 truncate">{letter.title}</p>
+                      <p className="text-sm text-stone-500 dark:text-stone-400 truncate">{letter.company || 'Inget företag'}</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* FEATURE CARDS */}
         <h2 className="text-xl font-bold text-stone-800 dark:text-stone-200 mb-5">Utforska fler verktyg</h2>
