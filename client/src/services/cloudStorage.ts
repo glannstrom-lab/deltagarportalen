@@ -113,7 +113,7 @@ interface PlatsbankenJob {
 
 interface MoodLogData {
   mood_level: number
-  notes?: string
+  note?: string
   log_date: string
 }
 
@@ -1517,7 +1517,7 @@ export const moodApi = {
     const today = new Date().toISOString().split('T')[0]
     const { data, error } = await supabase
       .from('mood_logs')
-      .select('mood_level, notes')
+      .select('mood_level, note')
       .eq('user_id', user.id)
       .eq('log_date', today)
       .maybeSingle()
@@ -1529,7 +1529,7 @@ export const moodApi = {
     if (!data) return null
     return {
       mood: moodLevelToType(data.mood_level),
-      note: data.notes
+      note: data.note
     }
   },
 
@@ -1546,7 +1546,7 @@ export const moodApi = {
       .upsert({
         user_id: user.id,
         mood_level: moodTypeToLevel(mood),
-        notes: note,
+        note: note,
         log_date: today
       }, {
         onConflict: 'user_id,log_date'
@@ -1565,7 +1565,7 @@ export const moodApi = {
 
     const { data, error } = await supabase
       .from('mood_logs')
-      .select('mood_level, notes, log_date')
+      .select('mood_level, note, log_date')
       .eq('user_id', user.id)
       .order('log_date', { ascending: false })
       .limit(days)
@@ -1576,7 +1576,7 @@ export const moodApi = {
     }
     return (data || []).map((d: MoodLogData) => ({
       mood: moodLevelToType(d.mood_level),
-      note: d.notes,
+      note: d.note,
       logged_at: d.log_date
     }))
   },

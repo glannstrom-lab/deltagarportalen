@@ -5,6 +5,7 @@
 
 import { useQuery } from '@tanstack/react-query'
 import { interestGuideApi } from '@/services/cloudStorage'
+import { calculateUserProfile } from '@/services/interestGuideData'
 
 // ============================================
 // TYPES
@@ -228,7 +229,40 @@ export function useInterestProfile() {
         console.log('[useInterestProfile] Latest result:', latestResult)
 
         if (!latestResult) {
-          // Completed but no history - check if progress has answers we can use
+          // Completed but no history - calculate RIASEC directly from progress.answers
+          console.log('[useInterestProfile] No history, calculating from answers:', progress.answers)
+
+          if (progress.answers && Object.keys(progress.answers).length > 0) {
+            try {
+              const calculated = calculateUserProfile(progress.answers as Record<string, number>)
+              console.log('[useInterestProfile] Calculated profile:', calculated)
+
+              if (calculated.riasec) {
+                const riasecScores: RiasecScores = {
+                  realistic: calculated.riasec.R ?? 0,
+                  investigative: calculated.riasec.I ?? 0,
+                  artistic: calculated.riasec.A ?? 0,
+                  social: calculated.riasec.S ?? 0,
+                  enterprising: calculated.riasec.E ?? 0,
+                  conventional: calculated.riasec.C ?? 0
+                }
+                console.log('[useInterestProfile] Calculated riasecScores:', riasecScores)
+
+                const dominantTypes = getDominantTypes(riasecScores)
+
+                return {
+                  hasResult: true,
+                  riasecScores,
+                  dominantTypes,
+                  recommendedOccupations: [],
+                  completedAt: progress.updated_at || null
+                }
+              }
+            } catch (calcError) {
+              console.error('[useInterestProfile] Error calculating profile:', calcError)
+            }
+          }
+
           return {
             hasResult: true,
             riasecScores: null,
