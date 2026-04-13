@@ -238,13 +238,14 @@ export function useInterestProfile() {
               console.log('[useInterestProfile] Calculated profile:', calculated)
 
               if (calculated.riasec) {
+                // Scale from 0-5 to 0-100 (multiply by 20)
                 const riasecScores: RiasecScores = {
-                  realistic: calculated.riasec.R ?? 0,
-                  investigative: calculated.riasec.I ?? 0,
-                  artistic: calculated.riasec.A ?? 0,
-                  social: calculated.riasec.S ?? 0,
-                  enterprising: calculated.riasec.E ?? 0,
-                  conventional: calculated.riasec.C ?? 0
+                  realistic: Math.round((calculated.riasec.R ?? 0) * 20),
+                  investigative: Math.round((calculated.riasec.I ?? 0) * 20),
+                  artistic: Math.round((calculated.riasec.A ?? 0) * 20),
+                  social: Math.round((calculated.riasec.S ?? 0) * 20),
+                  enterprising: Math.round((calculated.riasec.E ?? 0) * 20),
+                  conventional: Math.round((calculated.riasec.C ?? 0) * 20)
                 }
                 console.log('[useInterestProfile] Calculated riasecScores:', riasecScores)
 
