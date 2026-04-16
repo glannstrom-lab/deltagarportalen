@@ -63,6 +63,7 @@ export const navGroups: NavGroup[] = [
       { path: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard },
       { path: '/profile', labelKey: 'nav.profile', icon: Users },
       { path: '/my-consultant', labelKey: 'nav.myConsultant', icon: UserCheck },
+      { path: '/ai-team', labelKey: 'nav.aiTeam', icon: Bot, isNew: true },
       { path: '/calendar', labelKey: 'nav.calendar', icon: Calendar },
       // { path: '/journey', labelKey: 'nav.journey', icon: Map, isNew: true }, // Disabled
     ],
@@ -82,7 +83,6 @@ export const navGroups: NavGroup[] = [
     id: 'development',
     labelKey: 'nav.groups.development',
     items: [
-      { path: '/ai-team', labelKey: 'nav.aiTeam', icon: Bot, isNew: true },
       { path: '/career', labelKey: 'nav.career', icon: Target },
       { path: '/education', labelKey: 'nav.education', icon: GraduationCap },
       { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
