@@ -318,7 +318,7 @@ export default function Exercises() {
     return (
       <PageLayout
         title={t('exercises.title')}
-        description={t('exercises.description')}
+        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
       >
         <div className="flex items-center justify-center h-64">
@@ -337,23 +337,14 @@ export default function Exercises() {
     return (
       <PageLayout
         title={t('exercises.title')}
-        description={t('exercises.description')}
+        description="Praktiska övningar för att utveckla dina jobbsökar-skills"
         showTabs={false}
       >
       <div className="space-y-6">
-        {/* Header */}
-        <div className="text-center space-y-2">
-          <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-emerald-100 dark:bg-emerald-900/30 mb-2">
-            <BookOpen className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />
-          </div>
-          <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{t('exercises.title')}</h1>
-          <p className="text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
-            Arbeta dig igenom praktiska övningar för att utveckla dina jobbsökar-skills.
-            Dina svar sparas automatiskt i molnet så du kan fortsätta från vilken enhet som helst.
-          </p>
-
+        {/* Status indicators */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Cloud sync indicator */}
-          <div className="flex items-center justify-center gap-2 text-sm">
+          <div className="flex items-center gap-2 text-sm bg-white/60 dark:bg-stone-800/60 rounded-full px-3 py-1.5 border border-teal-200 dark:border-teal-800">
             <Cloud className={`w-4 h-4 ${saving ? 'text-amber-500 dark:text-amber-400 animate-pulse' : 'text-emerald-500 dark:text-emerald-400'}`} />
             <span className={saving ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}>
               {saving ? t('exercises.saving') : t('exercises.cloudSynced')}
@@ -361,21 +352,21 @@ export default function Exercises() {
           </div>
 
           {error && (
-            <div className="flex items-center justify-center gap-2 text-red-600 dark:text-red-400 text-sm">
+            <div className="flex items-center gap-2 text-red-600 dark:text-red-400 text-sm bg-red-50 dark:bg-red-900/20 rounded-full px-3 py-1.5">
               <AlertCircle className="w-4 h-4" />
               <span>{error}</span>
             </div>
           )}
-
-          {!user && (
-            <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mt-4">
-              <p className="text-amber-800 dark:text-amber-300 text-sm">
-                <strong>Obs!</strong> Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren.
-                <a href="/login" className="underline ml-1">Logga in</a> för att spara permanent i molnet.
-              </p>
-            </div>
-          )}
         </div>
+
+        {!user && (
+          <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4">
+            <p className="text-amber-800 dark:text-amber-300 text-sm">
+              <strong>Obs!</strong> Du är inte inloggad. Dina svar sparas endast tillfälligt i webbläsaren.
+              <a href="/login" className="underline ml-1">Logga in</a> för att spara permanent i molnet.
+            </p>
+          </div>
+        )}
 
         {/* Stats */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
