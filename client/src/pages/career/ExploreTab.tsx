@@ -97,9 +97,12 @@ export default function ExploreTab() {
     setShowOnboarding(false)
 
     // Save to cloud via unifiedProfileApi
+    // Only set employmentStatus if it's a valid non-empty value
     try {
       await unifiedProfileApi.updateCareer({
-        employmentStatus: preferences.currentSituation as EmploymentStatus,
+        employmentStatus: preferences.currentSituation
+          ? (preferences.currentSituation as EmploymentStatus)
+          : ('other' as EmploymentStatus),
         targetIndustries: preferences.interests,
         careerGoals: {
           shortTerm: preferences.goals[0] || '',

@@ -254,14 +254,29 @@ export const unifiedProfileApi = {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Inte inloggad')
 
+      // Valid employment status values
+      const validStatuses = [
+        'unemployed', 'employed', 'student', 'career-change',
+        'rehabilitation', 'parental-leave', 'sick-leave',
+        'new-to-country', 'self-employed', 'retired', 'other'
+      ]
+
       // Build the update object
       const updateData: Record<string, unknown> = {
         updated_at: new Date().toISOString()
       }
 
-      // Update employment status if provided
+      // Update employment status if provided and valid
       if (data.employmentStatus !== undefined) {
-        updateData.employment_status = data.employmentStatus
+        // Convert empty string or invalid values to null
+        if (data.employmentStatus === null || data.employmentStatus === '') {
+          updateData.employment_status = null
+        } else if (validStatuses.includes(data.employmentStatus)) {
+          updateData.employment_status = data.employmentStatus
+        } else {
+          console.warn('Invalid employment status:', data.employmentStatus)
+          updateData.employment_status = 'other'
+        }
       }
 
       // Update career goals if any career goal fields provided
