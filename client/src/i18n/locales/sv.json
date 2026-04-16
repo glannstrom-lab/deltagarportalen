@@ -2369,6 +2369,75 @@
       "goToSettings": "Gå till inställningar",
       "canWithdraw": "Du kan återkalla samtycket när som helst.",
       "privacyPolicy": "Läs vår integritetspolicy"
+    },
+    "assistant": {
+      "title": "Din AI-assistent",
+      "analyzedActivity": "Jag har analyserat din aktivitet",
+      "greeting": {
+        "morning": "God morgon",
+        "afternoon": "God eftermiddag",
+        "evening": "God kväll"
+      },
+      "tabs": {
+        "overview": "Översikt",
+        "insights": "Insikter",
+        "recommendations": "Rekommendationer"
+      },
+      "days": {
+        "tuesday": "Tisdag"
+      },
+      "overview": {
+        "yourForecast": "Din prognos",
+        "basedOnActivity": "Baserat på din aktivitet",
+        "interviewChance": "chans till intervju",
+        "basedOnPace": "Baserat på din takt",
+        "interviewWithin": "Intervju inom {{days}} dagar"
+      },
+      "patterns": {
+        "bestTime": "Bästa tiden",
+        "mostProductive": "Du är mest produktiv då",
+        "optimalEnergy": "Optimal energi",
+        "medium": "Medel",
+        "forBestResults": "För bästa resultat",
+        "trend": "Trend",
+        "trendUp": "↗️ Uppåt",
+        "trendDown": "↘️ Neråt",
+        "trendStable": "→ Stabil",
+        "last14Days": "Senaste 14 dagarna",
+        "completionRate": "Completion rate",
+        "ofStartedTasks": "Av påbörjade uppgifter"
+      },
+      "streakRisk": {
+        "title": "Streak-risk upptäckt!",
+        "message": "Din streak håller på att brytas. Logga in idag för att behålla den!"
+      },
+      "insightsTab": {
+        "title": "AI-genererade insikter"
+      },
+      "actionsTab": {
+        "title": "Rekommenderade åtgärder"
+      },
+      "actions": {
+        "searchJobs": "Sök 2 jobb idag",
+        "searchJobsReason": "Din chans till intervju är {{chance}}% - varje ansökan ökar oddsen!",
+        "searchJobsImpact": "+5% chans till intervju",
+        "logMood": "Logga ditt humör",
+        "logMoodReason": "Du är mest aktiv på tisdagar 10-11. Perfekt tid för reflektion!",
+        "logMoodImpact": "Bättre självkännedom",
+        "updateCV": "Uppdatera CV-mallen",
+        "updateCVReason": "ATS-analysen visar att din mall kan förbättras",
+        "updateCVImpact": "+10% ATS-score"
+      },
+      "insights": {
+        "activityTrend": "Du är {{trend}} aktiv än förra månaden",
+        "moreActive": "40% mer",
+        "lessActive": "20% mindre",
+        "equalActive": "lika",
+        "tuesdayApplications": "Dina ansökningar på tisdagar får 3x fler svar",
+        "wellnessBoost": "När du loggar välmående ökar din aktivitet med 25%",
+        "interviewPrediction": "Baserat på din takt: Intervju inom {{days}} dagar (konfidens: {{confidence}}%)",
+        "increaseRate": "Öka takten: Användare som söker 5+ jobb har 78% chans till intervju inom 30 dagar"
+      }
     }
   },
   "errors": {

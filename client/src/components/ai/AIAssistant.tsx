@@ -3,6 +3,7 @@
  * Analyserar beteende, ger prediktioner och personliga insikter
  */
 import { useState, useEffect, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Sparkles, 
@@ -60,12 +61,12 @@ interface Activity {
   type: string;
 }
 
-function analyzeBehavior(userData: UserData | undefined, activities: Activity[]): BehaviorAnalysis {
-  // Simulerad analys baserat på data
+function analyzeBehavior(userData: UserData | undefined, activities: Activity[], t: (key: string, options?: Record<string, unknown>) => string): BehaviorAnalysis {
+  // Simulated analysis based on data
   const now = new Date()
   const hour = now.getHours()
-  
-  // Beräkna trend
+
+  // Calculate trend
   const recentActivities = activities.filter((a) => {
     const activityDate = new Date(a.created_at)
     const daysDiff = (now.getTime() - activityDate.getTime()) / (1000 * 60 * 60 * 24)
@@ -77,31 +78,31 @@ function analyzeBehavior(userData: UserData | undefined, activities: Activity[])
     const daysDiff = (now.getTime() - activityDate.getTime()) / (1000 * 60 * 60 * 24)
     return daysDiff > 14 && daysDiff <= 28
   })
-  
-  const trendDirection = recentActivities.length > olderActivities.length * 1.2 
-    ? 'up' 
-    : recentActivities.length < olderActivities.length * 0.8 
-      ? 'down' 
+
+  const trendDirection = recentActivities.length > olderActivities.length * 1.2
+    ? 'up'
+    : recentActivities.length < olderActivities.length * 0.8
+      ? 'down'
       : 'stable'
-  
-  // Beräkna intervjuchans (mock-algoritm)
+
+  // Calculate interview chance (mock algorithm)
   const cvScore = userData?.cv?.progress || 0
   const applicationsCount = userData?.applications?.total || 0
   const wellnessScore = userData?.wellness?.streakDays || 0
-  
+
   const interviewChance = Math.min(95, Math.round(
-    (cvScore * 0.4) + 
-    (Math.min(applicationsCount * 5, 30)) + 
+    (cvScore * 0.4) +
+    (Math.min(applicationsCount * 5, 30)) +
     (wellnessScore * 2)
   ))
-  
-  // Förutsäg dagar till intervju
-  const daysToInterview = applicationsCount > 0 && interviewChance > 50 
-    ? Math.round(14 - (interviewChance / 100) * 10) 
+
+  // Predict days to interview
+  const daysToInterview = applicationsCount > 0 && interviewChance > 50
+    ? Math.round(14 - (interviewChance / 100) * 10)
     : null
 
   return {
-    mostActiveDay: 'Tisdag',
+    mostActiveDay: t('ai.assistant.days.tuesday'),
     mostActiveHour: 10,
     optimalEnergyLevel: 'medium',
     completionRate: Math.round((userData?.cv?.progress || 0) / 100 * 100),
@@ -112,64 +113,67 @@ function analyzeBehavior(userData: UserData | undefined, activities: Activity[])
     recommendedActions: [
       {
         id: '1',
-        action: 'Sök 2 jobb idag',
-        reason: `Din chans till intervju är ${interviewChance}% - varje ansökan ökar oddsen!`,
-        expectedImpact: '+5% chans till intervju',
+        action: t('ai.assistant.actions.searchJobs'),
+        reason: t('ai.assistant.actions.searchJobsReason', { chance: interviewChance }),
+        expectedImpact: t('ai.assistant.actions.searchJobsImpact'),
         priority: 'high',
         timeEstimate: '20 min'
       },
       {
         id: '2',
-        action: 'Logga ditt humör',
-        reason: 'Du är mest aktiv på tisdagar 10-11. Perfekt tid för reflektion!',
-        expectedImpact: 'Bättre självkännedom',
+        action: t('ai.assistant.actions.logMood'),
+        reason: t('ai.assistant.actions.logMoodReason'),
+        expectedImpact: t('ai.assistant.actions.logMoodImpact'),
         priority: 'medium',
         timeEstimate: '1 min'
       },
       {
         id: '3',
-        action: 'Uppdatera CV-mallen',
-        reason: 'ATS-analysen visar att din mall kan förbättras',
-        expectedImpact: '+10% ATS-score',
+        action: t('ai.assistant.actions.updateCV'),
+        reason: t('ai.assistant.actions.updateCVReason'),
+        expectedImpact: t('ai.assistant.actions.updateCVImpact'),
         priority: 'medium',
         timeEstimate: '10 min'
       }
     ],
     insights: [
-      `Du är ${trendDirection === 'up' ? '40% mer' : trendDirection === 'down' ? '20% mindre' : 'lika'} aktiv än förra månaden`,
-      'Dina ansökningar på tisdagar får 3x fler svar',
-      'När du loggar välmående ökar din aktivitet med 25%',
-      applicationsCount > 5 
-        ? `Baserat på din takt: Intervju inom ${daysToInterview || 14} dagar (konfidens: ${interviewChance}%)`
-        : 'Öka takten: Användare som söker 5+ jobb har 78% chans till intervju inom 30 dagar'
+      t('ai.assistant.insights.activityTrend', {
+        trend: trendDirection === 'up' ? t('ai.assistant.insights.moreActive') : trendDirection === 'down' ? t('ai.assistant.insights.lessActive') : t('ai.assistant.insights.equalActive')
+      }),
+      t('ai.assistant.insights.tuesdayApplications'),
+      t('ai.assistant.insights.wellnessBoost'),
+      applicationsCount > 5
+        ? t('ai.assistant.insights.interviewPrediction', { days: daysToInterview || 14, confidence: interviewChance })
+        : t('ai.assistant.insights.increaseRate')
     ]
   }
 }
 
 export function AIAssistant() {
+  const { t } = useTranslation()
   const [isOpen, setIsOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<'overview' | 'insights' | 'actions'>('overview')
   const { data } = useDashboardData()
   const { user } = useAuthStore()
-  
-  // Simulerad aktivitetsdata - i produktion från API
+
+  // Simulated activity data - in production from API
   const mockActivities = useMemo(() => [
     { created_at: new Date(Date.now() - 86400000).toISOString(), type: 'login' },
     { created_at: new Date(Date.now() - 172800000).toISOString(), type: 'cv_update' },
     { created_at: new Date(Date.now() - 259200000).toISOString(), type: 'job_search' },
   ], [])
-  
-  const analysis = useMemo(() => 
-    analyzeBehavior(data, mockActivities),
-    [data, mockActivities]
+
+  const analysis = useMemo(() =>
+    analyzeBehavior(data, mockActivities, t),
+    [data, mockActivities, t]
   )
 
-  // Hälsning baserat på tid
+  // Greeting based on time of day
   const getGreeting = () => {
     const hour = new Date().getHours()
-    if (hour < 12) return 'God morgon'
-    if (hour < 17) return 'God eftermiddag'
-    return 'God kväll'
+    if (hour < 12) return t('ai.assistant.greeting.morning')
+    if (hour < 17) return t('ai.assistant.greeting.afternoon')
+    return t('ai.assistant.greeting.evening')
   }
 
   return (
@@ -186,7 +190,7 @@ export function AIAssistant() {
         )}
       >
         <Brain size={20} />
-        <span className="hidden sm:inline">Din AI-assistent</span>
+        <span className="hidden sm:inline">{t('ai.assistant.title')}</span>
       </motion.button>
 
       {/* AI Modal */}
@@ -219,7 +223,7 @@ export function AIAssistant() {
                         {getGreeting()}, {user?.firstName || 'där'}!
                       </h2>
                       <p className="text-white/90 text-sm">
-                        Jag har analyserat din aktivitet
+                        {t('ai.assistant.analyzedActivity')}
                       </p>
                     </div>
                   </div>
@@ -244,9 +248,9 @@ export function AIAssistant() {
                           : 'bg-white/20 text-white hover:bg-white/30'
                       )}
                     >
-                      {tab === 'overview' && 'Översikt'}
-                      {tab === 'insights' && 'Insikter'}
-                      {tab === 'actions' && 'Rekommendationer'}
+                      {tab === 'overview' && t('ai.assistant.tabs.overview')}
+                      {tab === 'insights' && t('ai.assistant.tabs.insights')}
+                      {tab === 'actions' && t('ai.assistant.tabs.recommendations')}
                     </button>
                   ))}
                 </div>
@@ -255,13 +259,13 @@ export function AIAssistant() {
               {/* Content */}
               <div className="p-6 overflow-y-auto max-h-[60vh]">
                 {activeTab === 'overview' && (
-                  <OverviewTab analysis={analysis} />
+                  <OverviewTab analysis={analysis} t={t} />
                 )}
                 {activeTab === 'insights' && (
-                  <InsightsTab analysis={analysis} />
+                  <InsightsTab analysis={analysis} t={t} />
                 )}
                 {activeTab === 'actions' && (
-                  <ActionsTab analysis={analysis} onClose={() => setIsOpen(false)} />
+                  <ActionsTab analysis={analysis} onClose={() => setIsOpen(false)} t={t} />
                 )}
               </div>
             </motion.div>
@@ -272,7 +276,7 @@ export function AIAssistant() {
   )
 }
 
-function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
+function OverviewTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: string, options?: Record<string, unknown>) => string }) {
   return (
     <div className="space-y-6">
       {/* Prediction Card */}
@@ -282,21 +286,21 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
             <Target size={20} className="text-teal-600 dark:text-teal-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Din prognos</h3>
-            <p className="text-sm text-slate-700 dark:text-stone-300">Baserat på din aktivitet</p>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('ai.assistant.overview.yourForecast')}</h3>
+            <p className="text-sm text-slate-700 dark:text-stone-300">{t('ai.assistant.overview.basedOnActivity')}</p>
           </div>
         </div>
-        
+
         <div className="flex items-end gap-2 mb-2">
           <span className="text-4xl font-bold text-teal-600 dark:text-teal-400">
             {analysis.predictedInterviewChance}%
           </span>
-          <span className="text-slate-600 dark:text-stone-400 mb-1">chans till intervju</span>
+          <span className="text-slate-600 dark:text-stone-400 mb-1">{t('ai.assistant.overview.interviewChance')}</span>
         </div>
 
         {analysis.daysToInterview && (
           <p className="text-sm text-slate-600 dark:text-stone-400">
-            Baserat på din takt: <span className="font-semibold">Intervju inom {analysis.daysToInterview} dagar</span>
+            {t('ai.assistant.overview.basedOnPace')}: <span className="font-semibold">{t('ai.assistant.overview.interviewWithin', { days: analysis.daysToInterview })}</span>
           </p>
         )}
         
@@ -314,27 +318,27 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
       <div className="grid grid-cols-2 gap-4">
         <PatternCard
           icon={<Clock size={18} />}
-          label="Bästa tiden"
+          label={t('ai.assistant.patterns.bestTime')}
           value={`${analysis.mostActiveDay} ${analysis.mostActiveHour}:00`}
-          subtext="Du är mest produktiv då"
+          subtext={t('ai.assistant.patterns.mostProductive')}
         />
         <PatternCard
           icon={<Heart size={18} />}
-          label="Optimal energi"
-          value={analysis.optimalEnergyLevel === 'medium' ? 'Medel' : analysis.optimalEnergyLevel}
-          subtext="För bästa resultat"
+          label={t('ai.assistant.patterns.optimalEnergy')}
+          value={analysis.optimalEnergyLevel === 'medium' ? t('ai.assistant.patterns.medium') : analysis.optimalEnergyLevel}
+          subtext={t('ai.assistant.patterns.forBestResults')}
         />
         <PatternCard
           icon={<TrendingUp size={18} />}
-          label="Trend"
-          value={analysis.trendDirection === 'up' ? '↗️ Uppåt' : analysis.trendDirection === 'down' ? '↘️ Neråt' : '→ Stabil'}
-          subtext="Senaste 14 dagarna"
+          label={t('ai.assistant.patterns.trend')}
+          value={analysis.trendDirection === 'up' ? t('ai.assistant.patterns.trendUp') : analysis.trendDirection === 'down' ? t('ai.assistant.patterns.trendDown') : t('ai.assistant.patterns.trendStable')}
+          subtext={t('ai.assistant.patterns.last14Days')}
         />
         <PatternCard
           icon={<BarChart3 size={18} />}
-          label="Completion rate"
+          label={t('ai.assistant.patterns.completionRate')}
           value={`${analysis.completionRate}%`}
-          subtext="Av påbörjade uppgifter"
+          subtext={t('ai.assistant.patterns.ofStartedTasks')}
         />
       </div>
 
@@ -343,9 +347,9 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
         <div className="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-xl border border-amber-200 dark:border-amber-800 flex items-start gap-3">
           <AlertTriangle size={20} className="text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
           <div>
-            <h4 className="font-semibold text-amber-800 dark:text-amber-200">Streak-risk upptäckt!</h4>
+            <h4 className="font-semibold text-amber-800 dark:text-amber-200">{t('ai.assistant.streakRisk.title')}</h4>
             <p className="text-sm text-amber-700 dark:text-amber-300">
-              Din streak håller på att brytas. Logga in idag för att behålla den!
+              {t('ai.assistant.streakRisk.message')}
             </p>
           </div>
         </div>
@@ -354,12 +358,12 @@ function OverviewTab({ analysis }: { analysis: BehaviorAnalysis }) {
   )
 }
 
-function InsightsTab({ analysis }: { analysis: BehaviorAnalysis }) {
+function InsightsTab({ analysis, t }: { analysis: BehaviorAnalysis; t: (key: string) => string }) {
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
         <Lightbulb size={18} className="text-amber-500" />
-        AI-genererade insikter
+        {t('ai.assistant.insightsTab.title')}
       </h3>
 
       {analysis.insights.map((insight, index) => (
@@ -380,12 +384,12 @@ function InsightsTab({ analysis }: { analysis: BehaviorAnalysis }) {
   )
 }
 
-function ActionsTab({ analysis, onClose }: { analysis: BehaviorAnalysis; onClose: () => void }) {
+function ActionsTab({ analysis, onClose, t }: { analysis: BehaviorAnalysis; onClose: () => void; t: (key: string) => string }) {
   return (
     <div className="space-y-4">
       <h3 className="font-semibold text-slate-800 dark:text-stone-100 flex items-center gap-2">
         <Target size={18} className="text-teal-500" />
-        Rekommenderade åtgärder
+        {t('ai.assistant.actionsTab.title')}
       </h3>
 
       {analysis.recommendedActions.map((action, index) => (

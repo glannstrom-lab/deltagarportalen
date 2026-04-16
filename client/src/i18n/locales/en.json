@@ -2329,6 +2329,75 @@
       "goToSettings": "Go to settings",
       "canWithdraw": "You can withdraw consent at any time.",
       "privacyPolicy": "Read our privacy policy"
+    },
+    "assistant": {
+      "title": "Your AI assistant",
+      "analyzedActivity": "I've analyzed your activity",
+      "greeting": {
+        "morning": "Good morning",
+        "afternoon": "Good afternoon",
+        "evening": "Good evening"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "insights": "Insights",
+        "recommendations": "Recommendations"
+      },
+      "days": {
+        "tuesday": "Tuesday"
+      },
+      "overview": {
+        "yourForecast": "Your forecast",
+        "basedOnActivity": "Based on your activity",
+        "interviewChance": "chance of interview",
+        "basedOnPace": "Based on your pace",
+        "interviewWithin": "Interview within {{days}} days"
+      },
+      "patterns": {
+        "bestTime": "Best time",
+        "mostProductive": "You're most productive then",
+        "optimalEnergy": "Optimal energy",
+        "medium": "Medium",
+        "forBestResults": "For best results",
+        "trend": "Trend",
+        "trendUp": "↗️ Up",
+        "trendDown": "↘️ Down",
+        "trendStable": "→ Stable",
+        "last14Days": "Last 14 days",
+        "completionRate": "Completion rate",
+        "ofStartedTasks": "Of started tasks"
+      },
+      "streakRisk": {
+        "title": "Streak risk detected!",
+        "message": "Your streak is about to break. Log in today to keep it!"
+      },
+      "insightsTab": {
+        "title": "AI-generated insights"
+      },
+      "actionsTab": {
+        "title": "Recommended actions"
+      },
+      "actions": {
+        "searchJobs": "Search 2 jobs today",
+        "searchJobsReason": "Your interview chance is {{chance}}% - every application increases the odds!",
+        "searchJobsImpact": "+5% chance of interview",
+        "logMood": "Log your mood",
+        "logMoodReason": "You're most active on Tuesdays 10-11. Perfect time for reflection!",
+        "logMoodImpact": "Better self-awareness",
+        "updateCV": "Update CV template",
+        "updateCVReason": "ATS analysis shows your template can be improved",
+        "updateCVImpact": "+10% ATS score"
+      },
+      "insights": {
+        "activityTrend": "You are {{trend}} active than last month",
+        "moreActive": "40% more",
+        "lessActive": "20% less",
+        "equalActive": "equally",
+        "tuesdayApplications": "Your Tuesday applications get 3x more responses",
+        "wellnessBoost": "When you log wellness, your activity increases by 25%",
+        "interviewPrediction": "Based on your pace: Interview within {{days}} days (confidence: {{confidence}}%)",
+        "increaseRate": "Increase pace: Users who apply to 5+ jobs have 78% chance of interview within 30 days"
+      }
     }
   },
   "errors": {
