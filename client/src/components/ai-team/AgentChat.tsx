@@ -192,7 +192,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           )}
 
           {isLoading && (
-            <div className={cn('flex items-start gap-3')}>
+            <div className={cn('flex items-start gap-3 animate-pulse')}>
               <AgentAvatar agentId={selectedAgent} color={agent.color} size="sm" />
               <div className={cn(
                 'px-4 py-3 rounded-xl',
@@ -200,8 +200,13 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
                 colors.border,
                 'border'
               )}>
-                <div className="flex items-center gap-2">
-                  <RefreshCw className={cn('w-4 h-4 animate-spin', colors.text)} />
+                <div className="flex items-center gap-3">
+                  {/* Typing dots animation */}
+                  <div className="flex items-center gap-1">
+                    <span className={cn('w-2 h-2 rounded-full animate-bounce', colors.bg)} style={{ animationDelay: '0ms' }} />
+                    <span className={cn('w-2 h-2 rounded-full animate-bounce', colors.bg)} style={{ animationDelay: '150ms' }} />
+                    <span className={cn('w-2 h-2 rounded-full animate-bounce', colors.bg)} style={{ animationDelay: '300ms' }} />
+                  </div>
                   <span className={cn('text-sm', colors.text)}>
                     {t('aiTeam.thinking')}
                   </span>
