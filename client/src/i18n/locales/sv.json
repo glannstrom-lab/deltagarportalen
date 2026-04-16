@@ -1351,7 +1351,90 @@
       "demand": "Efterfrågan",
       "readMore": "Läs mer",
       "noOccupationsFound": "Inga yrken hittades",
-      "tryDifferentSearch": "Prova att ändra din sökning eller filter"
+      "tryDifferentSearch": "Prova att ändra din sökning eller filter",
+      "welcomeBack": "Välkommen tillbaka!",
+      "basedOnInterests": "Vi visar yrken baserat på dina intressen: {{interests}}",
+      "retakeQuiz": "Gör om testet"
+    },
+    "onboarding": {
+      "step": "Steg {{current}} av {{total}}",
+      "skip": "Hoppa över",
+      "showResults": "Visa resultat",
+      "welcome": "Välkommen till Karriär!",
+      "welcomeDesc": "Låt oss hjälpa dig hitta rätt karriärväg. Svara på några frågor så anpassar vi innehållet efter dig.",
+      "loadingProfile": "Hämtar din profil...",
+      "welcomeBackUser": "Hej {{name}}!",
+      "welcomeBackGeneric": "Välkommen tillbaka!",
+      "foundExistingData": "Vi har redan lite information om dig från din profil.",
+      "hasInterestProfile": "Dina intressen från Intresseguiden",
+      "topTypes": "Du är {{types}}",
+      "hasWorkHistory": "Din arbetslivserfarenhet",
+      "jobCount": "{{count}} tidigare anställningar i ditt CV",
+      "hasLocation": "Din plats",
+      "customizeAnswers": "Anpassa svaren",
+      "continueWithData": "Fortsätt med min data",
+      "skipForNow": "Hoppa över för nu",
+      "situationQuestion": "Var befinner du dig just nu?",
+      "situations": {
+        "unemployed": "Arbetssökande",
+        "employed": "Har jobb, vill byta",
+        "student": "Studerar",
+        "career-change": "Vill byta karriär"
+      },
+      "interestsTitle": "Vad intresserar dig?",
+      "interestsDesc": "Välj de områden som du tycker är mest spännande",
+      "selectMultiple": "Du kan välja flera alternativ",
+      "interests": {
+        "tech": "Teknik & IT",
+        "healthcare": "Vård & Omsorg",
+        "education": "Utbildning",
+        "creative": "Kreativt",
+        "business": "Ekonomi & Affär",
+        "trades": "Hantverk",
+        "service": "Service",
+        "outdoors": "Utomhus"
+      },
+      "goalsTitle": "Vad är ditt mål?",
+      "goalsDesc": "Vad vill du uppnå med din karriär just nu?",
+      "goals": {
+        "find-job": "Hitta ett jobb",
+        "career-change": "Byta karriär",
+        "advance": "Avancera i karriären",
+        "explore": "Utforska möjligheter"
+      },
+      "goalsDesc": {
+        "find-job": "Jag söker aktivt efter jobb",
+        "career-change": "Jag vill prova något helt nytt",
+        "advance": "Jag vill ta nästa steg",
+        "explore": "Jag är nyfiken på alternativen"
+      },
+      "experienceTitle": "Hur mycket erfarenhet har du?",
+      "experienceDesc": "Välj det som bäst beskriver din arbetslivserfarenhet",
+      "experience": {
+        "entry": "Nybörjare",
+        "mid": "Erfaren",
+        "senior": "Senior",
+        "expert": "Expert"
+      }
+    },
+    "industryRadar": {
+      "title": "Branschradar",
+      "subtitle": "AI-drivna marknadsinsikter",
+      "personalized": "Personaliserade trender baserat på din profil",
+      "loading": "Hämtar marknadstrender...",
+      "trendingIndustries": "Trendande branscher",
+      "emergingSkills": "Kompetenser på uppgång",
+      "marketInsights": "Marknadsinsikter",
+      "recommendations": "Rekommendationer för dig",
+      "salaryTrend": "Lönetrend",
+      "learningTime": "Lärtid",
+      "impact": "Påverkan",
+      "lastUpdated": "Senast uppdaterad",
+      "demand": {
+        "high": "Hög efterfrågan",
+        "medium": "Medel efterfrågan",
+        "low": "Låg efterfrågan"
+      }
     },
     "network": {
       "contacts": "Kontakter",

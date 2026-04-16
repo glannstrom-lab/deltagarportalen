@@ -1322,7 +1322,90 @@
       "demand": "Demand",
       "readMore": "Read more",
       "noOccupationsFound": "No occupations found",
-      "tryDifferentSearch": "Try changing your search or filters"
+      "tryDifferentSearch": "Try changing your search or filters",
+      "welcomeBack": "Welcome back!",
+      "basedOnInterests": "We're showing occupations based on your interests: {{interests}}",
+      "retakeQuiz": "Retake quiz"
+    },
+    "onboarding": {
+      "step": "Step {{current}} of {{total}}",
+      "skip": "Skip",
+      "showResults": "Show results",
+      "welcome": "Welcome to Career!",
+      "welcomeDesc": "Let us help you find the right career path. Answer a few questions and we'll customize the content for you.",
+      "loadingProfile": "Loading your profile...",
+      "welcomeBackUser": "Hi {{name}}!",
+      "welcomeBackGeneric": "Welcome back!",
+      "foundExistingData": "We already have some information about you from your profile.",
+      "hasInterestProfile": "Your interests from the Interest Guide",
+      "topTypes": "You are {{types}}",
+      "hasWorkHistory": "Your work experience",
+      "jobCount": "{{count}} previous jobs in your CV",
+      "hasLocation": "Your location",
+      "customizeAnswers": "Customize answers",
+      "continueWithData": "Continue with my data",
+      "skipForNow": "Skip for now",
+      "situationQuestion": "Where are you right now?",
+      "situations": {
+        "unemployed": "Job seeking",
+        "employed": "Employed, want to switch",
+        "student": "Studying",
+        "career-change": "Want to change career"
+      },
+      "interestsTitle": "What interests you?",
+      "interestsDesc": "Select the areas you find most exciting",
+      "selectMultiple": "You can select multiple options",
+      "interests": {
+        "tech": "Tech & IT",
+        "healthcare": "Healthcare",
+        "education": "Education",
+        "creative": "Creative",
+        "business": "Business & Finance",
+        "trades": "Trades",
+        "service": "Service",
+        "outdoors": "Outdoors"
+      },
+      "goalsTitle": "What's your goal?",
+      "goalsDesc": "What do you want to achieve with your career right now?",
+      "goals": {
+        "find-job": "Find a job",
+        "career-change": "Change career",
+        "advance": "Advance in career",
+        "explore": "Explore opportunities"
+      },
+      "goalsDesc": {
+        "find-job": "I'm actively looking for a job",
+        "career-change": "I want to try something completely new",
+        "advance": "I want to take the next step",
+        "explore": "I'm curious about options"
+      },
+      "experienceTitle": "How much experience do you have?",
+      "experienceDesc": "Select what best describes your work experience",
+      "experience": {
+        "entry": "Beginner",
+        "mid": "Experienced",
+        "senior": "Senior",
+        "expert": "Expert"
+      }
+    },
+    "industryRadar": {
+      "title": "Industry Radar",
+      "subtitle": "AI-powered market insights",
+      "personalized": "Personalized trends based on your profile",
+      "loading": "Fetching market trends...",
+      "trendingIndustries": "Trending Industries",
+      "emergingSkills": "Emerging Skills",
+      "marketInsights": "Market Insights",
+      "recommendations": "Recommendations for you",
+      "salaryTrend": "Salary trend",
+      "learningTime": "Learning time",
+      "impact": "Impact",
+      "lastUpdated": "Last updated",
+      "demand": {
+        "high": "High demand",
+        "medium": "Medium demand",
+        "low": "Low demand"
+      }
     },
     "network": {
       "contacts": "Contacts",

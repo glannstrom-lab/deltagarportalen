@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/icons'
 import { Card, Button, Input } from '@/components/ui'
 import { IndustryRadarSection, EducationPathPanel } from '@/components/ai'
+import { CareerOnboarding, type CareerPreferences } from '@/components/career'
 import { cn } from '@/lib/utils'
 import { favoriteOccupationsApi, type FavoriteOccupation } from '@/services/careerApi'
 import { taxonomyApi, POPULAR_OCCUPATIONS, type Occupation as TaxonomyOccupation } from '@/services/afTaxonomyApi'
@@ -67,6 +68,13 @@ const salaryRanges = [
 
 export default function ExploreTab() {
   const { t, i18n } = useTranslation()
+
+  // Onboarding state
+  const [showOnboarding, setShowOnboarding] = useState(() => {
+    return !localStorage.getItem('career-onboarding-completed')
+  })
+  const [careerPreferences, setCareerPreferences] = useState<CareerPreferences | null>(null)
+
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
   const [selectedSalaryRange, setSelectedSalaryRange] = useState('all')
@@ -82,6 +90,47 @@ export default function ExploreTab() {
   const [occupations, setOccupations] = useState<DisplayOccupation[]>([])
   const [isLoadingOccupations, setIsLoadingOccupations] = useState(true)
   const [isSearching, setIsSearching] = useState(false)
+
+  // Handle onboarding completion
+  const handleOnboardingComplete = (preferences: CareerPreferences) => {
+    setCareerPreferences(preferences)
+    setShowOnboarding(false)
+    localStorage.setItem('career-onboarding-completed', 'true')
+    localStorage.setItem('career-preferences', JSON.stringify(preferences))
+
+    // Pre-select category based on interests
+    if (preferences.interests.length > 0) {
+      const interestToCategory: Record<string, string> = {
+        'tech': 'it',
+        'healthcare': 'healthcare',
+        'education': 'education',
+        'business': 'economy',
+        'trades': 'construction',
+        'service': 'service',
+      }
+      const firstInterest = preferences.interests[0]
+      if (interestToCategory[firstInterest]) {
+        setSelectedCategory(interestToCategory[firstInterest])
+      }
+    }
+  }
+
+  const handleSkipOnboarding = () => {
+    setShowOnboarding(false)
+    localStorage.setItem('career-onboarding-completed', 'true')
+  }
+
+  // Load saved preferences
+  useEffect(() => {
+    const saved = localStorage.getItem('career-preferences')
+    if (saved) {
+      try {
+        setCareerPreferences(JSON.parse(saved))
+      } catch {
+        // Invalid JSON, ignore
+      }
+    }
+  }, [])
 
   // Load occupations from API
   useEffect(() => {
@@ -290,8 +339,49 @@ export default function ExploreTab() {
     return occupations.find(o => o.id === firstFavoriteId)
   }, [favorites, occupations])
 
+  // Show onboarding for first-time users
+  if (showOnboarding) {
+    return (
+      <CareerOnboarding
+        onComplete={handleOnboardingComplete}
+        onSkip={handleSkipOnboarding}
+      />
+    )
+  }
+
   return (
     <div className="space-y-6">
+      {/* Welcome back message with personalized recommendations */}
+      {careerPreferences && (
+        <Card className="p-6 bg-gradient-to-r from-teal-500 to-sky-500 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold mb-1">
+                {t('career.explore.welcomeBack')}
+              </h2>
+              <p className="text-teal-100 text-sm">
+                {t('career.explore.basedOnInterests', {
+                  interests: careerPreferences.interests.map(i => t(`career.onboarding.interests.${i}`)).join(', ')
+                })}
+              </p>
+            </div>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                localStorage.removeItem('career-onboarding-completed')
+                localStorage.removeItem('career-preferences')
+                setShowOnboarding(true)
+                setCareerPreferences(null)
+              }}
+              className="text-white/80 hover:text-white hover:bg-white/10"
+            >
+              {t('career.explore.retakeQuiz')}
+            </Button>
+          </div>
+        </Card>
+      )}
+
       {/* Industry Radar */}
       <IndustryRadarSection />
 
