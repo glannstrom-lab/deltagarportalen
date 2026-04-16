@@ -3,9 +3,35 @@ import { useTranslation } from 'react-i18next'
 import { Check } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
+// SVG Flag components for consistent rendering
+function SwedishFlag({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 12" className={className} aria-hidden="true">
+      <rect width="16" height="12" fill="#006AA7" />
+      <rect x="5" width="2" height="12" fill="#FECC00" />
+      <rect y="5" width="16" height="2" fill="#FECC00" />
+    </svg>
+  )
+}
+
+function BritishFlag({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 60 30" className={className} aria-hidden="true">
+      <clipPath id="t">
+        <path d="M30,15 h30 v15 z v15 h-30 z h-30 v-15 z v-15 h30 z" />
+      </clipPath>
+      <path d="M0,0 v30 h60 v-30 z" fill="#00247d" />
+      <path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" strokeWidth="6" />
+      <path d="M0,0 L60,30 M60,0 L0,30" clipPath="url(#t)" stroke="#cf142b" strokeWidth="4" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#fff" strokeWidth="10" />
+      <path d="M30,0 v30 M0,15 h60" stroke="#cf142b" strokeWidth="6" />
+    </svg>
+  )
+}
+
 const languages = [
-  { code: 'sv', name: 'Svenska', flag: '🇸🇪' },
-  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'sv', name: 'Svenska', Flag: SwedishFlag },
+  { code: 'en', name: 'English', Flag: BritishFlag },
 ]
 
 export function LanguageSwitcher() {
@@ -38,6 +64,8 @@ export function LanguageSwitcher() {
     return () => document.removeEventListener('keydown', handleEscape)
   }, [isOpen])
 
+  const CurrentFlag = currentLanguage.Flag
+
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -54,9 +82,7 @@ export function LanguageSwitcher() {
         aria-haspopup="listbox"
         title={t('language.select', 'Välj språk')}
       >
-        <span className="text-xl leading-none" role="img" aria-label={currentLanguage.name}>
-          {currentLanguage.flag}
-        </span>
+        <CurrentFlag className="w-6 h-4 rounded-sm shadow-sm" />
       </button>
 
       {isOpen && (
@@ -75,39 +101,40 @@ export function LanguageSwitcher() {
             </div>
 
             <div className="p-1.5">
-              {languages.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code)}
-                  className={cn(
-                    'w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors',
-                    lang.code === currentLanguage.code
-                      ? 'bg-sky-50 dark:bg-sky-900/30'
-                      : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
-                  )}
-                  role="option"
-                  aria-selected={lang.code === currentLanguage.code}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl leading-none" role="img" aria-hidden="true">
-                      {lang.flag}
-                    </span>
-                    <span
-                      className={cn(
-                        'text-sm font-medium',
-                        lang.code === currentLanguage.code
-                          ? 'text-sky-700 dark:text-sky-300'
-                          : 'text-stone-700 dark:text-stone-200'
-                      )}
-                    >
-                      {lang.name}
-                    </span>
-                  </div>
-                  {lang.code === currentLanguage.code && (
-                    <Check size={16} className="text-sky-500" />
-                  )}
-                </button>
-              ))}
+              {languages.map((lang) => {
+                const LangFlag = lang.Flag
+                return (
+                  <button
+                    key={lang.code}
+                    onClick={() => changeLanguage(lang.code)}
+                    className={cn(
+                      'w-full flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors',
+                      lang.code === currentLanguage.code
+                        ? 'bg-sky-50 dark:bg-sky-900/30'
+                        : 'hover:bg-stone-50 dark:hover:bg-stone-700/50'
+                    )}
+                    role="option"
+                    aria-selected={lang.code === currentLanguage.code}
+                  >
+                    <div className="flex items-center gap-3">
+                      <LangFlag className="w-7 h-5 rounded-sm shadow-sm" />
+                      <span
+                        className={cn(
+                          'text-sm font-medium',
+                          lang.code === currentLanguage.code
+                            ? 'text-sky-700 dark:text-sky-300'
+                            : 'text-stone-700 dark:text-stone-200'
+                        )}
+                      >
+                        {lang.name}
+                      </span>
+                    </div>
+                    {lang.code === currentLanguage.code && (
+                      <Check size={16} className="text-sky-500" />
+                    )}
+                  </button>
+                )
+              })}
             </div>
           </div>
         </>
