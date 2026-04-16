@@ -1141,6 +1141,76 @@ export interface UserCredential {
   updated_at: string;
 }
 
+// ===== User Adaptations (Workplace Accommodations) =====
+
+export interface UserAdaptations {
+  id: string;
+  user_id: string;
+  physical_adaptations: string[];
+  cognitive_adaptations: string[];
+  organizational_adaptations: string[];
+  social_adaptations: string[];
+  notes?: string;
+  summary?: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export const adaptationsApi = {
+  async get(): Promise<UserAdaptations | null> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { data, error } = await supabase
+      .from('user_adaptations')
+      .select('*')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (error) handleError(error, 'Failed to fetch adaptations');
+    return data;
+  },
+
+  async save(adaptations: {
+    physical_adaptations: string[];
+    cognitive_adaptations: string[];
+    organizational_adaptations: string[];
+    social_adaptations: string[];
+    notes?: string;
+    summary?: string;
+  }): Promise<UserAdaptations> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { data, error } = await supabase
+      .from('user_adaptations')
+      .upsert({
+        user_id: user.id,
+        ...adaptations,
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'user_id'
+      })
+      .select()
+      .single();
+
+    if (error) handleError(error, 'Failed to save adaptations');
+    return data;
+  },
+
+  async delete(): Promise<void> {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new APIError('Inte inloggad', 'UNAUTHORIZED', 401);
+
+    const { error } = await supabase
+      .from('user_adaptations')
+      .delete()
+      .eq('user_id', user.id);
+
+    if (error) handleError(error, 'Failed to delete adaptations');
+  }
+};
+
 export const credentialsApi = {
   async getAll(): Promise<UserCredential[]> {
     const { data: { user } } = await supabase.auth.getUser();
@@ -1219,5 +1289,6 @@ export default {
   events: networkingEventsApi,
   skillsAnalysis: skillsAnalysisApi,
   favoriteOccupations: favoriteOccupationsApi,
-  credentials: credentialsApi
+  credentials: credentialsApi,
+  adaptations: adaptationsApi
 };

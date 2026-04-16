@@ -184,59 +184,65 @@ export default function ExploreTab() {
 
   const loadInitialOccupations = async () => {
     setIsLoadingOccupations(true)
+
+    // Helper to create occupation from POPULAR_OCCUPATIONS
+    const createFallbackOccupation = (pop: typeof POPULAR_OCCUPATIONS[0], index: number): DisplayOccupation => {
+      const cat = getCategoryFromTitle(pop.label)
+      // Use a consistent match score based on position (not random)
+      const matchScores = [88, 85, 82, 80, 78, 76, 75, 73, 72, 70]
+      return {
+        id: pop.id,
+        title: pop.label,
+        category: cat,
+        categoryLabel: t(`career.explore.categories.${cat}`),
+        salary: i18n.language === 'en' ? 'Varies' : 'Varierar',
+        demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+        education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+        match: matchScores[index % matchScores.length],
+        description: ''
+      }
+    }
+
+    // Always start with fallback data immediately (so UI is never empty)
+    const fallbackOccupations = POPULAR_OCCUPATIONS.map((pop, i) => createFallbackOccupation(pop, i))
+    setOccupations(fallbackOccupations)
+    setIsLoadingOccupations(false)
+
+    // Then try to enrich with API data in background
     try {
-      // Load popular occupations with their details
-      const popularOccupations = await Promise.all(
-        POPULAR_OCCUPATIONS.slice(0, 20).map(async (pop) => {
+      const enrichedOccupations = await Promise.all(
+        POPULAR_OCCUPATIONS.slice(0, 10).map(async (pop, index) => {
           try {
             const results = await taxonomyApi.searchOccupations(pop.label, 1)
             if (results.length > 0) {
-              return transformOccupation(results[0], pop.category)
+              const occ = results[0]
+              const cat = getCategoryFromTitle(occ.preferred_label)
+              return {
+                id: occ.id,
+                title: occ.preferred_label,
+                category: cat,
+                categoryLabel: t(`career.explore.categories.${cat}`),
+                salary: i18n.language === 'en' ? 'Varies' : 'Varierar',
+                demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+                education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+                match: [88, 85, 82, 80, 78, 76, 75, 73, 72, 70][index % 10],
+                description: occ.definition || ''
+              }
             }
-            // Fallback if API doesn't return result
-            return {
-              id: pop.id,
-              title: pop.label,
-              category: getCategoryFromTitle(pop.label),
-              categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(pop.label)}`),
-              salary: 'Varierar',
-              demand: i18n.language === 'en' ? 'Medium' : 'Medel',
-              education: i18n.language === 'en' ? 'Varies' : 'Varierar',
-              match: Math.floor(Math.random() * 30) + 60,
-              description: ''
-            }
+            return createFallbackOccupation(pop, index)
           } catch {
-            return {
-              id: pop.id,
-              title: pop.label,
-              category: getCategoryFromTitle(pop.label),
-              categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(pop.label)}`),
-              salary: 'Varierar',
-              demand: i18n.language === 'en' ? 'Medium' : 'Medel',
-              education: i18n.language === 'en' ? 'Varies' : 'Varierar',
-              match: Math.floor(Math.random() * 30) + 60,
-              description: ''
-            }
+            return createFallbackOccupation(pop, index)
           }
         })
       )
-      setOccupations(popularOccupations.filter(Boolean))
+
+      // Only update if we got valid results
+      if (enrichedOccupations.length > 0) {
+        setOccupations(enrichedOccupations)
+      }
     } catch (err) {
-      console.error('Failed to load occupations:', err)
-      // Fallback to basic data
-      setOccupations(POPULAR_OCCUPATIONS.map(pop => ({
-        id: pop.id,
-        title: pop.label,
-        category: getCategoryFromTitle(pop.label),
-        categoryLabel: pop.category,
-        salary: 'Varierar',
-        demand: i18n.language === 'en' ? 'Medium' : 'Medel',
-        education: i18n.language === 'en' ? 'Varies' : 'Varierar',
-        match: Math.floor(Math.random() * 30) + 60,
-        description: ''
-      })))
-    } finally {
-      setIsLoadingOccupations(false)
+      console.error('Failed to enrich occupations from API:', err)
+      // Keep fallback data - already set above
     }
   }
 
@@ -270,11 +276,52 @@ export default function ExploreTab() {
       try {
         const results = await taxonomyApi.searchOccupations(searchQuery, 20)
         if (results.length > 0) {
-          const transformed = results.map(r => transformOccupation(r))
+          const transformed = results.map((r, index) => ({
+            id: r.id,
+            title: r.preferred_label,
+            category: getCategoryFromTitle(r.preferred_label),
+            categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(r.preferred_label)}`),
+            salary: i18n.language === 'en' ? 'Varies' : 'Varierar',
+            demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+            education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+            match: Math.max(60, 95 - index * 3), // Higher match for top results
+            description: r.definition || ''
+          }))
           setOccupations(transformed)
+        } else {
+          // No results from API - filter POPULAR_OCCUPATIONS locally
+          const filtered = POPULAR_OCCUPATIONS.filter(p =>
+            p.label.toLowerCase().includes(searchQuery.toLowerCase())
+          ).map((pop, i) => ({
+            id: pop.id,
+            title: pop.label,
+            category: getCategoryFromTitle(pop.label),
+            categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(pop.label)}`),
+            salary: i18n.language === 'en' ? 'Varies' : 'Varierar',
+            demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+            education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+            match: 80 - i * 2,
+            description: ''
+          }))
+          setOccupations(filtered)
         }
       } catch (err) {
         console.error('Search failed:', err)
+        // Fallback to local filtering
+        const filtered = POPULAR_OCCUPATIONS.filter(p =>
+          p.label.toLowerCase().includes(searchQuery.toLowerCase())
+        ).map((pop, i) => ({
+          id: pop.id,
+          title: pop.label,
+          category: getCategoryFromTitle(pop.label),
+          categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(pop.label)}`),
+          salary: i18n.language === 'en' ? 'Varies' : 'Varierar',
+          demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+          education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+          match: 80 - i * 2,
+          description: ''
+        }))
+        setOccupations(filtered)
       } finally {
         setIsSearching(false)
       }
@@ -282,14 +329,28 @@ export default function ExploreTab() {
 
     const debounce = setTimeout(searchOccupations, 300)
     return () => clearTimeout(debounce)
-  }, [searchQuery])
+  }, [searchQuery, t, i18n.language])
 
   // Reset to popular occupations when search is cleared
   useEffect(() => {
-    if (!searchQuery.trim()) {
+    if (!searchQuery.trim() && occupations.length === 0) {
       loadInitialOccupations()
+    } else if (!searchQuery.trim() && isSearching === false) {
+      // Reset to initial occupations when search is cleared
+      const fallbackOccupations = POPULAR_OCCUPATIONS.map((pop, i) => ({
+        id: pop.id,
+        title: pop.label,
+        category: getCategoryFromTitle(pop.label),
+        categoryLabel: t(`career.explore.categories.${getCategoryFromTitle(pop.label)}`),
+        salary: i18n.language === 'en' ? 'Varies' : 'Varierar',
+        demand: i18n.language === 'en' ? 'Medium' : 'Medel',
+        education: i18n.language === 'en' ? 'Varies' : 'Varierar',
+        match: [88, 85, 82, 80, 78, 76, 75, 73, 72, 70][i % 10],
+        description: ''
+      }))
+      setOccupations(fallbackOccupations)
     }
-  }, [searchQuery])
+  }, [searchQuery, t, i18n.language])
 
   // Load favorites from cloud on mount
   useEffect(() => {

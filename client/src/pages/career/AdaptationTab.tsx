@@ -1,15 +1,18 @@
 /**
  * Adaptation Tab - Workplace adaptation and support
+ * Now with cloud storage for persistent data
  */
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo, useCallback } from 'react'
 import { useTranslation } from 'react-i18next'
 import {
   Accessibility, FileText, Building2, User, CheckCircle2,
   ChevronRight, Download, AlertCircle, HelpCircle, X, Info,
-  Zap, Users, Clock, Layout
+  Zap, Users, Clock, Layout, Loader2, Save, Cloud, CloudOff
 } from '@/components/ui/icons'
 import { Card, Button, Checkbox } from '@/components/ui'
 import { cn } from '@/lib/utils'
+import { adaptationsApi, type UserAdaptations } from '@/services/careerApi'
+import { showToast } from '@/components/Toast'
 
 // Category definitions with option keys
 const categoryDefs = [
@@ -44,7 +47,7 @@ const categoryDefs = [
 ]
 
 export default function AdaptationTab() {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
 
   // Build translated categories
   const adaptationCategories = useMemo(() => categoryDefs.map(cat => ({
@@ -59,9 +62,82 @@ export default function AdaptationTab() {
   })), [t])
 
   const [selectedNeeds, setSelectedNeeds] = useState<Record<string, string[]>>({})
-  const [showResults, setShowResults] = useState(false)
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null)
   const [showTooltip, setShowTooltip] = useState<string | null>(null)
+
+  // Cloud storage state
+  const [isLoading, setIsLoading] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
+  const [lastSaved, setLastSaved] = useState<Date | null>(null)
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false)
+
+  // Load adaptations from cloud on mount
+  useEffect(() => {
+    const loadAdaptations = async () => {
+      try {
+        const data = await adaptationsApi.get()
+        if (data) {
+          setSelectedNeeds({
+            physical: data.physical_adaptations || [],
+            cognitive: data.cognitive_adaptations || [],
+            organizational: data.organizational_adaptations || [],
+            social: data.social_adaptations || []
+          })
+          setLastSaved(new Date(data.updated_at))
+        }
+      } catch (err) {
+        console.error('Failed to load adaptations:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    loadAdaptations()
+  }, [])
+
+  // Auto-save when changes are made (debounced)
+  useEffect(() => {
+    if (!hasUnsavedChanges || isLoading) return
+
+    const saveTimeout = setTimeout(async () => {
+      await saveToCloud()
+    }, 2000) // Auto-save after 2 seconds of no changes
+
+    return () => clearTimeout(saveTimeout)
+  }, [selectedNeeds, hasUnsavedChanges, isLoading])
+
+  const saveToCloud = useCallback(async () => {
+    if (isSaving) return
+
+    setIsSaving(true)
+    try {
+      const summary = generateSummaryText()
+      await adaptationsApi.save({
+        physical_adaptations: selectedNeeds.physical || [],
+        cognitive_adaptations: selectedNeeds.cognitive || [],
+        organizational_adaptations: selectedNeeds.organizational || [],
+        social_adaptations: selectedNeeds.social || [],
+        summary
+      })
+      setLastSaved(new Date())
+      setHasUnsavedChanges(false)
+    } catch (err) {
+      console.error('Failed to save adaptations:', err)
+      showToast.error(i18n.language === 'en' ? 'Failed to save' : 'Kunde inte spara')
+    } finally {
+      setIsSaving(false)
+    }
+  }, [selectedNeeds, isSaving, i18n.language])
+
+  const generateSummaryText = useCallback(() => {
+    const parts: string[] = []
+    Object.entries(selectedNeeds).forEach(([catId, options]) => {
+      const cat = adaptationCategories.find(c => c.id === catId)
+      if (cat && options.length > 0) {
+        parts.push(`${cat.title}: ${options.map(o => cat.options.find(opt => opt.key === o)?.label).filter(Boolean).join(', ')}`)
+      }
+    })
+    return parts.join('\n')
+  }, [selectedNeeds, adaptationCategories])
 
   const toggleOption = (categoryId: string, optionKey: string) => {
     setSelectedNeeds(prev => {
@@ -71,31 +147,104 @@ export default function AdaptationTab() {
         : [...current, optionKey]
       return { ...prev, [categoryId]: updated }
     })
+    setHasUnsavedChanges(true)
   }
 
   const generateDocument = () => {
-    // Generate PDF with selected adaptations
-    alert(t('career.adaptation.createDocument') + '...')
+    // Generate a text document with selected adaptations
+    const summary = generateSummaryText()
+    if (!summary) {
+      showToast.error(i18n.language === 'en' ? 'Select at least one adaptation first' : 'Välj minst en anpassning först')
+      return
+    }
+
+    const header = i18n.language === 'en'
+      ? 'WORKPLACE ADAPTATIONS - PERSONAL SUMMARY'
+      : 'ARBETSPLATSANPASSNINGAR - PERSONLIG SAMMANFATTNING'
+
+    const date = new Date().toLocaleDateString(i18n.language === 'en' ? 'en-SE' : 'sv-SE')
+
+    const document = `${header}
+================================
+${i18n.language === 'en' ? 'Date' : 'Datum'}: ${date}
+
+${summary}
+
+================================
+${i18n.language === 'en' ? 'Generated from Deltagarportalen' : 'Genererat från Deltagarportalen'}
+`
+
+    // Create and download text file
+    const blob = new Blob([document], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `anpassningar-${date}.txt`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+
+    showToast.success(i18n.language === 'en' ? 'Document downloaded!' : 'Dokument nedladdat!')
   }
 
   const generateSummary = () => {
-    const parts: string[] = []
-    Object.entries(selectedNeeds).forEach(([catId, options]) => {
-      const cat = adaptationCategories.find(c => c.id === catId)
-      if (cat && options.length > 0) {
-        parts.push(`${cat.title}: ${options.map(o => cat.options.find(opt => opt.key === o)?.label).filter(Boolean).join(', ')}`)
-      }
-    })
-    return parts.join('\n')
+    return generateSummaryText()
+  }
+
+  const clearAll = async () => {
+    setSelectedNeeds({})
+    setHasUnsavedChanges(true)
+    // Also delete from cloud
+    try {
+      await adaptationsApi.delete()
+      setLastSaved(null)
+      setHasUnsavedChanges(false)
+      showToast.success(i18n.language === 'en' ? 'All cleared' : 'Allt rensat')
+    } catch (err) {
+      console.error('Failed to clear adaptations:', err)
+    }
   }
 
   const totalSelected = Object.values(selectedNeeds).flat().length
-  const completionPercentage = Math.round((Object.keys(adaptationCategories).filter(
+  const completionPercentage = Math.round((Object.keys(selectedNeeds).filter(
     id => selectedNeeds[id]?.length > 0
   ).length / adaptationCategories.length) * 100)
 
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-16" role="status" aria-live="polite">
+        <Loader2 className="w-8 h-8 animate-spin text-teal-600 mr-3" aria-hidden="true" />
+        <span className="text-gray-600 dark:text-gray-400">
+          {i18n.language === 'en' ? 'Loading your adaptations...' : 'Laddar dina anpassningar...'}
+        </span>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
+      {/* Save Status Indicator */}
+      <div className="flex items-center justify-end gap-2 text-sm">
+        {isSaving ? (
+          <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+            <Loader2 className="w-4 h-4 animate-spin" />
+            {i18n.language === 'en' ? 'Saving...' : 'Sparar...'}
+          </span>
+        ) : hasUnsavedChanges ? (
+          <span className="flex items-center gap-1 text-amber-600 dark:text-amber-400">
+            <CloudOff className="w-4 h-4" />
+            {i18n.language === 'en' ? 'Unsaved changes' : 'Osparade ändringar'}
+          </span>
+        ) : lastSaved ? (
+          <span className="flex items-center gap-1 text-green-600 dark:text-green-400">
+            <Cloud className="w-4 h-4" />
+            {i18n.language === 'en' ? 'Saved to cloud' : 'Sparat i molnet'}
+          </span>
+        ) : null}
+      </div>
+
       {/* Introduction */}
       <Card className="p-6 bg-white dark:bg-stone-800 border-stone-200 dark:border-stone-700">
         <div className="flex items-start gap-4">
@@ -115,8 +264,12 @@ export default function AdaptationTab() {
       {totalSelected > 0 && (
         <Card className="p-4 bg-gradient-to-r from-teal-50 to-violet-50 dark:from-teal-900/20 dark:to-violet-900/20 border border-teal-200 dark:border-teal-700">
           <div className="flex items-center justify-between mb-3">
-            <h4 className="font-semibold text-gray-800 dark:text-gray-100">Dina adaptationer</h4>
-            <span className="text-sm font-bold text-teal-600 dark:text-teal-400">{totalSelected} valda</span>
+            <h4 className="font-semibold text-gray-800 dark:text-gray-100">
+              {i18n.language === 'en' ? 'Your adaptations' : 'Dina anpassningar'}
+            </h4>
+            <span className="text-sm font-bold text-teal-600 dark:text-teal-400">
+              {totalSelected} {i18n.language === 'en' ? 'selected' : 'valda'}
+            </span>
           </div>
           <div className="h-2 bg-stone-200 dark:bg-stone-700 rounded-full overflow-hidden mb-2">
             <div
@@ -125,9 +278,9 @@ export default function AdaptationTab() {
             />
           </div>
           <p className="text-xs text-gray-600 dark:text-gray-400">
-            {completionPercentage}% av kategorierna - {Object.keys(adaptationCategories).filter(
+            {completionPercentage}% {i18n.language === 'en' ? 'of categories' : 'av kategorierna'} - {Object.keys(selectedNeeds).filter(
               id => selectedNeeds[id]?.length > 0
-            ).length}/{adaptationCategories.length} kategorier ifyllda
+            ).length}/{adaptationCategories.length} {i18n.language === 'en' ? 'categories filled' : 'kategorier ifyllda'}
           </p>
         </Card>
       )}
@@ -216,7 +369,9 @@ export default function AdaptationTab() {
         {totalSelected > 0 && (
           <div className="mt-6 space-y-4">
             <div className="p-4 bg-stone-50 dark:bg-stone-700 rounded-xl border border-stone-200 dark:border-stone-600">
-              <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">Sammanfattning</h4>
+              <h4 className="font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                {i18n.language === 'en' ? 'Summary' : 'Sammanfattning'}
+              </h4>
               <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-wrap">{generateSummary()}</p>
             </div>
 
@@ -226,15 +381,24 @@ export default function AdaptationTab() {
                 className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 dark:bg-teal-600 dark:hover:bg-teal-700"
               >
                 <Download className="w-4 h-4" />
-                Skapa dokument
+                {i18n.language === 'en' ? 'Download document' : 'Ladda ner dokument'}
               </Button>
               <Button
                 variant="outline"
-                onClick={() => setSelectedNeeds({})}
+                onClick={saveToCloud}
+                disabled={isSaving || !hasUnsavedChanges}
                 className="flex items-center gap-2"
               >
+                {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                {i18n.language === 'en' ? 'Save now' : 'Spara nu'}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={clearAll}
+                className="flex items-center gap-2 text-red-600 hover:text-red-700 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20"
+              >
                 <X className="w-4 h-4" />
-                Rensa alla
+                {i18n.language === 'en' ? 'Clear all' : 'Rensa alla'}
               </Button>
             </div>
           </div>

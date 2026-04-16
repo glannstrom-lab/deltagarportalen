@@ -22,7 +22,7 @@ import { Card } from '@/components/ui/Card'
 import { AiConsentGate } from './AiConsentGate'
 import { AILoadingIndicator } from './AIResultCard'
 import type { IndustryRadarResult } from '@/services/aiCareerAssistantApi'
-import { trendsApi, type MarketStats, type TrendingSkill, type PopularSearch } from '@/services/afTrendsApi'
+import { trendsApi, type MarketStats, type TrendingSkill, type PopularSearch, type DataWithSource } from '@/services/afTrendsApi'
 import { AI_FEATURES } from '@/config/features'
 import { cn } from '@/lib/utils'
 
@@ -43,6 +43,7 @@ export function IndustryRadarSection({
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<IndustryRadarResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [dataSource, setDataSource] = useState<'api' | 'cache' | 'demo'>('api')
 
   if (!AI_FEATURES.INDUSTRY_RADAR) {
     return null
@@ -53,12 +54,22 @@ export function IndustryRadarSection({
     setError(null)
 
     try {
-      // Fetch real data from Arbetsförmedlingen APIs in parallel
-      const [marketStats, trendingSkills, popularOccupations] = await Promise.all([
-        trendsApi.getMarketStats(),
-        trendsApi.getTrendingSkills(10),
-        trendsApi.getPopularSearches('occupations', 6)
+      // Fetch data from Arbetsförmedlingen APIs with robust fallback
+      const [marketStatsResult, trendingSkillsResult, popularOccupationsResult] = await Promise.all([
+        trendsApi.getMarketStatsWithFallback(),
+        trendsApi.getTrendingSkillsWithFallback(10),
+        trendsApi.getPopularSearchesWithFallback('occupations', 6)
       ])
+
+      // Extract data and track source
+      const marketStats = marketStatsResult.data
+      const trendingSkills = trendingSkillsResult.data
+      const popularOccupations = popularOccupationsResult.data
+
+      // Determine overall data source (demo if any source is demo)
+      const sources = [marketStatsResult.source, trendingSkillsResult.source, popularOccupationsResult.source]
+      const overallSource = sources.includes('demo') ? 'demo' : sources.includes('cache') ? 'cache' : 'api'
+      setDataSource(overallSource)
 
       // Transform data to IndustryRadarResult format
       const transformedResult: IndustryRadarResult = {
@@ -393,12 +404,22 @@ export function IndustryRadarSection({
                   </div>
                 )}
 
-                {/* Last Updated */}
-                {result.lastUpdated && (
-                  <p className="text-xs text-stone-500 dark:text-stone-400 text-center">
-                    {t('career.industryRadar.lastUpdated')}: {result.lastUpdated}
-                  </p>
-                )}
+                {/* Last Updated & Data Source */}
+                <div className="flex items-center justify-center gap-3 text-xs text-stone-500 dark:text-stone-400">
+                  {result.lastUpdated && (
+                    <span>{t('career.industryRadar.lastUpdated')}: {result.lastUpdated}</span>
+                  )}
+                  {dataSource === 'demo' && (
+                    <span className="px-2 py-0.5 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 rounded-full">
+                      {i18n.language === 'en' ? 'Demo data' : 'Demodata'}
+                    </span>
+                  )}
+                  {dataSource === 'api' && (
+                    <span className="px-2 py-0.5 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300 rounded-full">
+                      {i18n.language === 'en' ? 'Live data' : 'Realtidsdata'}
+                    </span>
+                  )}
+                </div>
               </div>
             )}
           </div>

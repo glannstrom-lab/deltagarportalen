@@ -295,13 +295,110 @@ function getMockSalaryStats(occupation: string): SalaryStats {
   };
 }
 
+// ============== ROBUST API WITH FALLBACK ==============
+
+/**
+ * Wrapper functions that try API first, then fall back to mock data
+ * Returns data with source indicator
+ */
+
+interface DataWithSource<T> {
+  data: T;
+  source: 'api' | 'cache' | 'demo';
+  timestamp: string;
+}
+
+async function getPopularSearchesWithFallback(
+  category: 'occupations' | 'skills' | 'locations' | 'employers' = 'occupations',
+  limit: number = 10
+): Promise<DataWithSource<PopularSearch[]>> {
+  try {
+    const result = await getPopularSearches(category, limit);
+    if (result && result.length > 0) {
+      return { data: result, source: 'api', timestamp: new Date().toISOString() };
+    }
+  } catch (error) {
+    jobLogger.debug('Popular searches API failed, using demo data:', error);
+  }
+
+  // Fallback to mock data
+  return {
+    data: getMockPopularSearches(category),
+    source: 'demo',
+    timestamp: new Date().toISOString()
+  };
+}
+
+async function getTrendingSkillsWithFallback(limit: number = 20): Promise<DataWithSource<TrendingSkill[]>> {
+  try {
+    const result = await getTrendingSkills(limit);
+    if (result && result.length > 0) {
+      return { data: result, source: 'api', timestamp: new Date().toISOString() };
+    }
+  } catch (error) {
+    jobLogger.debug('Trending skills API failed, using demo data:', error);
+  }
+
+  // Fallback to mock data
+  return {
+    data: getMockTrendingSkills().slice(0, limit),
+    source: 'demo',
+    timestamp: new Date().toISOString()
+  };
+}
+
+async function getMarketStatsWithFallback(): Promise<DataWithSource<MarketStats>> {
+  try {
+    const result = await getMarketStats();
+    if (result && result.total_jobs > 0) {
+      return { data: result, source: 'api', timestamp: new Date().toISOString() };
+    }
+  } catch (error) {
+    jobLogger.debug('Market stats API failed, using demo data:', error);
+  }
+
+  // Fallback to mock data
+  return {
+    data: getMockMarketStats(),
+    source: 'demo',
+    timestamp: new Date().toISOString()
+  };
+}
+
+async function getSalaryStatsWithFallback(occupation: string): Promise<DataWithSource<SalaryStats | null>> {
+  try {
+    const result = await getSalaryStats(occupation);
+    if (result) {
+      return { data: result, source: 'api', timestamp: new Date().toISOString() };
+    }
+  } catch (error) {
+    jobLogger.debug('Salary stats API failed, using demo data:', error);
+  }
+
+  // Fallback to mock data
+  return {
+    data: getMockSalaryStats(occupation),
+    source: 'demo',
+    timestamp: new Date().toISOString()
+  };
+}
+
 // ============== EXPORT ==============
 
 export const trendsApi = {
+  // Original functions (may fail)
   getPopularSearches,
   getTrendingSkills,
   getMarketStats,
   getSalaryStats,
+
+  // Robust functions with fallback (recommended)
+  getPopularSearchesWithFallback,
+  getTrendingSkillsWithFallback,
+  getMarketStatsWithFallback,
+  getSalaryStatsWithFallback,
 };
+
+export type { DataWithSource };
 
 export default trendsApi;
