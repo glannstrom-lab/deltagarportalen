@@ -8,7 +8,8 @@ import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Compass, Briefcase, GraduationCap, TrendingUp, Target,
-  Heart, Sparkles, CheckCircle, ArrowRight, Rocket, Lightbulb, Loader2, User
+  Heart, Sparkles, CheckCircle, ArrowRight, Rocket, Lightbulb, Loader2, User,
+  HeartPulse, Baby, Globe, Building2, Clock
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -44,11 +45,22 @@ const RIASEC_TO_INTERESTS: Record<keyof RiasecScores, string[]> = {
   conventional: ['business'],
 }
 
+// Comprehensive list covering all user types:
+// - Long-term unemployed with health challenges
+// - Executives wanting career change
+// - Students entering workforce
+// - Parents returning to work
+// - Newcomers to Sweden
+// - People in rehabilitation
 const SITUATIONS = [
-  { id: 'unemployed', icon: Compass, color: 'teal' },
-  { id: 'employed', icon: Briefcase, color: 'blue' },
-  { id: 'student', icon: GraduationCap, color: 'violet' },
-  { id: 'career-change', icon: TrendingUp, color: 'amber' },
+  { id: 'unemployed', icon: Compass, color: 'teal' },           // Aktivt arbetssökande
+  { id: 'employed', icon: Briefcase, color: 'blue' },           // Har jobb men vill byta
+  { id: 'rehabilitation', icon: HeartPulse, color: 'rose' },    // Rehabilitering/återgång
+  { id: 'student', icon: GraduationCap, color: 'violet' },      // Studerar
+  { id: 'career-change', icon: TrendingUp, color: 'amber' },    // Karriärbyte
+  { id: 'parental-leave', icon: Baby, color: 'pink' },          // Föräldraledig
+  { id: 'new-to-country', icon: Globe, color: 'sky' },          // Ny i Sverige
+  { id: 'self-employed', icon: Building2, color: 'emerald' },   // Egen företagare
 ]
 
 const INTERESTS = [
@@ -62,11 +74,14 @@ const INTERESTS = [
   { id: 'outdoors', icon: '🌿' },
 ]
 
+// Goals that resonate with diverse users
 const GOALS = [
-  { id: 'find-job', icon: Target },
-  { id: 'career-change', icon: Rocket },
-  { id: 'advance', icon: TrendingUp },
-  { id: 'explore', icon: Lightbulb },
+  { id: 'find-job', icon: Target },           // Hitta ett jobb
+  { id: 'return-to-work', icon: HeartPulse }, // Återgå till arbete (efter sjukdom/ledighet)
+  { id: 'career-change', icon: Rocket },      // Byta karriär helt
+  { id: 'advance', icon: TrendingUp },        // Ta nästa steg i karriären
+  { id: 'find-direction', icon: Compass },    // Hitta min riktning (utforska)
+  { id: 'start-fresh', icon: Sparkles },      // Börja om (ny i landet/efter paus)
 ]
 
 const EXPERIENCE_LEVELS = [
@@ -477,26 +492,29 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
               <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-200 mb-4">
                 {t('career.onboarding.situationQuestion')}
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 {SITUATIONS.map(situation => (
                   <button
                     key={situation.id}
                     onClick={() => setPreferences(prev => ({ ...prev, currentSituation: situation.id }))}
                     className={cn(
-                      'p-4 rounded-xl border-2 transition-all text-left',
+                      'p-3 rounded-xl border-2 transition-all text-left',
                       preferences.currentSituation === situation.id
                         ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/30'
                         : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
                     )}
                   >
                     <situation.icon className={cn(
-                      'w-6 h-6 mb-2',
+                      'w-5 h-5 mb-1.5',
                       preferences.currentSituation === situation.id
                         ? 'text-teal-600 dark:text-teal-400'
                         : 'text-stone-500 dark:text-stone-400'
                     )} />
-                    <p className="font-medium text-stone-900 dark:text-stone-100">
+                    <p className="font-medium text-sm text-stone-900 dark:text-stone-100">
                       {t(`career.onboarding.situations.${situation.id}`)}
+                    </p>
+                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                      {t(`career.onboarding.situationDesc.${situation.id}`)}
                     </p>
                   </button>
                 ))}
@@ -555,33 +573,36 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
                 {t('career.onboarding.goalsDesc')}
               </p>
 
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 {GOALS.map(goal => (
                   <button
                     key={goal.id}
                     onClick={() => toggleGoal(goal.id)}
                     className={cn(
-                      'p-4 rounded-xl border-2 transition-all text-left',
+                      'p-3 rounded-xl border-2 transition-all text-left',
                       preferences.goals.includes(goal.id)
                         ? 'border-amber-500 bg-amber-50 dark:bg-amber-900/30'
                         : 'border-stone-200 dark:border-stone-700 hover:border-stone-300 dark:hover:border-stone-600'
                     )}
                   >
                     <goal.icon className={cn(
-                      'w-6 h-6 mb-2',
+                      'w-5 h-5 mb-1.5',
                       preferences.goals.includes(goal.id)
                         ? 'text-amber-600 dark:text-amber-400'
                         : 'text-stone-500 dark:text-stone-400'
                     )} />
-                    <p className="font-medium text-stone-900 dark:text-stone-100">
+                    <p className="font-medium text-sm text-stone-900 dark:text-stone-100">
                       {t(`career.onboarding.goals.${goal.id}`)}
                     </p>
-                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-1">
-                      {t(`career.onboarding.goalsDesc.${goal.id}`)}
+                    <p className="text-xs text-stone-500 dark:text-stone-400 mt-0.5">
+                      {t(`career.onboarding.goalsDescription.${goal.id}`)}
                     </p>
                   </button>
                 ))}
               </div>
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-4">
+                {t('career.onboarding.selectMultiple')}
+              </p>
             </Card>
           )}
 

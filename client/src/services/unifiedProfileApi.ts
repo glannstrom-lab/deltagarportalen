@@ -49,10 +49,13 @@ export interface ProfessionalProfile {
 export type EmploymentStatus =
   | 'unemployed'
   | 'employed'
+  | 'rehabilitation'
   | 'student'
   | 'career-change'
   | 'parental-leave'
   | 'sick-leave'
+  | 'new-to-country'
+  | 'self-employed'
   | 'retired'
   | 'other'
 

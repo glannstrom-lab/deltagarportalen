@@ -1379,12 +1379,28 @@
       "situations": {
         "unemployed": "Arbetssökande",
         "employed": "Har jobb, vill byta",
+        "rehabilitation": "Återgår till arbete",
         "student": "Studerar",
         "career-change": "Vill byta karriär",
         "parental-leave": "Föräldraledig",
         "sick-leave": "Sjukskriven",
+        "new-to-country": "Ny i Sverige",
+        "self-employed": "Egen företagare",
         "retired": "Pensionär",
         "other": "Annat"
+      },
+      "situationDesc": {
+        "unemployed": "Söker aktivt jobb",
+        "employed": "Vill hitta nya möjligheter",
+        "rehabilitation": "Efter sjukskrivning eller paus",
+        "student": "Utbildar mig just nu",
+        "career-change": "Vill prova något helt nytt",
+        "parental-leave": "Ska snart tillbaka",
+        "sick-leave": "Planerar återgång",
+        "new-to-country": "Vill in på arbetsmarknaden",
+        "self-employed": "Söker anställning",
+        "retired": "Vill jobba igen",
+        "other": "Min situation är unik"
       },
       "interestsTitle": "Vad intresserar dig?",
       "interestsDesc": "Välj de områden som du tycker är mest spännande",
@@ -1400,18 +1416,22 @@
         "outdoors": "Utomhus"
       },
       "goalsTitle": "Vad är ditt mål?",
-      "goalsDesc": "Vad vill du uppnå med din karriär just nu?",
+      "goalsDesc": "Vad vill du uppnå just nu?",
       "goals": {
         "find-job": "Hitta ett jobb",
+        "return-to-work": "Återgå till arbete",
         "career-change": "Byta karriär",
-        "advance": "Avancera i karriären",
-        "explore": "Utforska möjligheter"
+        "advance": "Avancera",
+        "find-direction": "Hitta min riktning",
+        "start-fresh": "Börja om"
       },
-      "goalsDesc": {
-        "find-job": "Jag söker aktivt efter jobb",
-        "career-change": "Jag vill prova något helt nytt",
-        "advance": "Jag vill ta nästa steg",
-        "explore": "Jag är nyfiken på alternativen"
+      "goalsDescription": {
+        "find-job": "Jag vill hitta en anställning",
+        "return-to-work": "Komma tillbaka efter paus eller sjukdom",
+        "career-change": "Prova något helt nytt",
+        "advance": "Ta nästa steg i min karriär",
+        "find-direction": "Utforska vad som passar mig",
+        "start-fresh": "Ny start i livet eller landet"
       },
       "experienceTitle": "Hur mycket erfarenhet har du?",
       "experienceDesc": "Välj det som bäst beskriver din arbetslivserfarenhet",

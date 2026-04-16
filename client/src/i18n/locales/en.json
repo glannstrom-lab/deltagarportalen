@@ -1349,13 +1349,29 @@
       "situationQuestion": "Where are you right now?",
       "situations": {
         "unemployed": "Job seeking",
-        "employed": "Employed, want to switch",
+        "employed": "Employed, exploring options",
+        "rehabilitation": "Returning to work",
         "student": "Studying",
-        "career-change": "Want to change career",
+        "career-change": "Changing career",
         "parental-leave": "Parental leave",
         "sick-leave": "On sick leave",
+        "new-to-country": "New to the country",
+        "self-employed": "Self-employed",
         "retired": "Retired",
         "other": "Other"
+      },
+      "situationDesc": {
+        "unemployed": "Actively looking for work",
+        "employed": "Looking for new opportunities",
+        "rehabilitation": "After illness or break",
+        "student": "Currently in education",
+        "career-change": "Ready to try something new",
+        "parental-leave": "Returning soon",
+        "sick-leave": "Planning my return",
+        "new-to-country": "Entering the job market",
+        "self-employed": "Looking for employment",
+        "retired": "Want to work again",
+        "other": "My situation is unique"
       },
       "interestsTitle": "What interests you?",
       "interestsDesc": "Select the areas you find most exciting",
@@ -1371,18 +1387,22 @@
         "outdoors": "Outdoors"
       },
       "goalsTitle": "What's your goal?",
-      "goalsDesc": "What do you want to achieve with your career right now?",
+      "goalsDesc": "What do you want to achieve right now?",
       "goals": {
         "find-job": "Find a job",
+        "return-to-work": "Return to work",
         "career-change": "Change career",
-        "advance": "Advance in career",
-        "explore": "Explore opportunities"
+        "advance": "Advance",
+        "find-direction": "Find my direction",
+        "start-fresh": "Start fresh"
       },
-      "goalsDesc": {
-        "find-job": "I'm actively looking for a job",
-        "career-change": "I want to try something completely new",
-        "advance": "I want to take the next step",
-        "explore": "I'm curious about options"
+      "goalsDescription": {
+        "find-job": "I want to find employment",
+        "return-to-work": "Come back after a break or illness",
+        "career-change": "Try something completely new",
+        "advance": "Take the next step in my career",
+        "find-direction": "Explore what suits me",
+        "start-fresh": "New start in life or country"
       },
       "experienceTitle": "How much experience do you have?",
       "experienceDesc": "Select what best describes your work experience",
