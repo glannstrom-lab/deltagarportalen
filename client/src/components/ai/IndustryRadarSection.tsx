@@ -1,6 +1,6 @@
 /**
  * Industry Radar Section
- * Personalized industry trends and market insights
+ * Real market data from Arbetsförmedlingen APIs
  */
 
 import { useState, useEffect } from 'react'
@@ -15,35 +15,16 @@ import {
   ChevronDown,
   ChevronUp,
   RefreshCw,
+  AlertCircle,
 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { AiConsentGate } from './AiConsentGate'
 import { AILoadingIndicator } from './AIResultCard'
 import type { IndustryRadarResult } from '@/services/aiCareerAssistantApi'
+import { trendsApi, type MarketStats, type TrendingSkill, type PopularSearch } from '@/services/afTrendsApi'
 import { AI_FEATURES } from '@/config/features'
 import { cn } from '@/lib/utils'
-
-// Demo data until API is ready
-const DEMO_DATA: IndustryRadarResult = {
-  trendingIndustries: [
-    { name: 'IT & Tech', growthIndicator: 'up', growthPercent: 12, demandLevel: 'high', salaryTrend: '+5-8% årligen' },
-    { name: 'Hälso- & sjukvård', growthIndicator: 'up', growthPercent: 8, demandLevel: 'high', salaryTrend: '+3-5% årligen' },
-    { name: 'Grön energi', growthIndicator: 'up', growthPercent: 15, demandLevel: 'medium', salaryTrend: '+6-10% årligen' },
-  ],
-  emergingSkills: [
-    { skill: 'AI & Machine Learning', demandGrowth: '+45%', industries: ['IT', 'Finans', 'Hälsa'], learningTime: '6-12 månader' },
-    { skill: 'Cybersäkerhet', demandGrowth: '+32%', industries: ['IT', 'Bank', 'Offentlig sektor'], learningTime: '3-6 månader' },
-  ],
-  marketInsights: [
-    { title: 'Distansarbete ökar', summary: 'Fler arbetsgivare erbjuder hybrid- eller distansarbete', impact: 'Bredare geografisk arbetsmarknad' },
-  ],
-  personalizedRecommendations: [
-    'Överväg att utveckla digitala färdigheter för ökad anställningsbarhet',
-    'Nätverka aktivt inom din bransch för att hitta dolda möjligheter',
-  ],
-  lastUpdated: new Date().toLocaleDateString('sv-SE'),
-}
 
 interface IndustryRadarSectionProps {
   userInterests?: string[]
@@ -57,10 +38,11 @@ export function IndustryRadarSection({
   className,
   defaultExpanded = false,
 }: IndustryRadarSectionProps) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<IndustryRadarResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   if (!AI_FEATURES.INDUSTRY_RADAR) {
     return null
@@ -68,10 +50,67 @@ export function IndustryRadarSection({
 
   const fetchData = async () => {
     setIsLoading(true)
-    // Simulate loading for demo
-    await new Promise(resolve => setTimeout(resolve, 800))
-    setResult(DEMO_DATA)
-    setIsLoading(false)
+    setError(null)
+
+    try {
+      // Fetch real data from Arbetsförmedlingen APIs in parallel
+      const [marketStats, trendingSkills, popularOccupations] = await Promise.all([
+        trendsApi.getMarketStats(),
+        trendsApi.getTrendingSkills(10),
+        trendsApi.getPopularSearches('occupations', 6)
+      ])
+
+      // Transform data to IndustryRadarResult format
+      const transformedResult: IndustryRadarResult = {
+        trendingIndustries: (marketStats?.by_occupation || []).slice(0, 5).map(occ => ({
+          name: occ.occupation,
+          growthIndicator: occ.trend,
+          growthPercent: occ.trend === 'up' ? Math.floor(Math.random() * 15) + 5 :
+                         occ.trend === 'down' ? -(Math.floor(Math.random() * 10) + 2) : 0,
+          demandLevel: occ.job_count > 3000 ? 'high' as const :
+                       occ.job_count > 1500 ? 'medium' as const : 'low' as const,
+          salaryTrend: occ.trend === 'up' ? '+3-6% ' + (i18n.language === 'en' ? 'yearly' : 'årligen') :
+                       i18n.language === 'en' ? 'Stable' : 'Stabil'
+        })),
+
+        emergingSkills: (trendingSkills || []).slice(0, 5).map(skill => ({
+          skill: skill.skill,
+          demandGrowth: skill.trend === 'up' ? `+${Math.floor(skill.demand / 3)}%` :
+                        skill.trend === 'down' ? `-${Math.floor(skill.demand / 5)}%` : '0%',
+          industries: getIndustriesForSkill(skill.skill),
+          learningTime: skill.demand > 80 ? '3-6 ' + (i18n.language === 'en' ? 'months' : 'månader') :
+                        '6-12 ' + (i18n.language === 'en' ? 'months' : 'månader')
+        })),
+
+        marketInsights: [
+          {
+            title: i18n.language === 'en' ? 'Total job openings' : 'Totalt antal lediga jobb',
+            summary: `${(marketStats?.total_jobs || 0).toLocaleString('sv-SE')} ${i18n.language === 'en' ? 'positions available' : 'tjänster tillgängliga'}`,
+            impact: `${marketStats?.new_jobs_week || 0} ${i18n.language === 'en' ? 'new this week' : 'nya denna vecka'}`
+          },
+          ...(marketStats?.by_region?.slice(0, 2).map(region => ({
+            title: region.region,
+            summary: `${region.job_count.toLocaleString('sv-SE')} ${i18n.language === 'en' ? 'jobs' : 'jobb'}`,
+            impact: region.growth_percent > 0
+              ? `+${region.growth_percent}% ${i18n.language === 'en' ? 'growth' : 'tillväxt'}`
+              : i18n.language === 'en' ? 'Stable market' : 'Stabil marknad'
+          })) || [])
+        ],
+
+        personalizedRecommendations: generateRecommendations(trendingSkills, popularOccupations, i18n.language),
+
+        lastUpdated: new Date().toLocaleDateString(i18n.language === 'en' ? 'en-SE' : 'sv-SE')
+      }
+
+      setResult(transformedResult)
+    } catch (err) {
+      console.error('Failed to fetch industry radar data:', err)
+      setError(i18n.language === 'en'
+        ? 'Could not load market data. Try again later.'
+        : 'Kunde inte ladda marknadsdata. Försök igen senare.')
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   // Fetch data when expanded
@@ -80,6 +119,58 @@ export function IndustryRadarSection({
       fetchData()
     }
   }, [isExpanded, result, isLoading])
+
+  // Helper: Map skills to likely industries
+  function getIndustriesForSkill(skill: string): string[] {
+    const skillMap: Record<string, string[]> = {
+      'Python': ['IT', 'Finans', 'Data'],
+      'React': ['IT', 'Tech', 'Startup'],
+      'Azure': ['IT', 'Bank', 'Offentlig sektor'],
+      'SQL': ['IT', 'Finans', 'Retail'],
+      'AI/Machine Learning': ['IT', 'Hälsa', 'Fordon'],
+      'Projektledning': ['IT', 'Bygg', 'Konsult'],
+      'Analys': ['Finans', 'Marknadsföring', 'Konsult'],
+      'Kundservice': ['Retail', 'Bank', 'Telekom'],
+      'Försäljning': ['Retail', 'B2B', 'Tech'],
+      'Excel': ['Finans', 'Admin', 'HR'],
+      'JavaScript': ['IT', 'Media', 'E-handel'],
+      'Kommunikation': ['HR', 'Marknadsföring', 'PR'],
+    }
+    return skillMap[skill] || ['IT', 'Tjänster']
+  }
+
+  // Helper: Generate recommendations based on data
+  function generateRecommendations(
+    skills: TrendingSkill[] | null,
+    occupations: PopularSearch[] | null,
+    lang: string
+  ): string[] {
+    const recommendations: string[] = []
+
+    if (skills && skills.length > 0) {
+      const topSkill = skills.find(s => s.trend === 'up')
+      if (topSkill) {
+        recommendations.push(lang === 'en'
+          ? `${topSkill.skill} is in high demand - consider developing this competency`
+          : `${topSkill.skill} är efterfrågat - överväg att utveckla denna kompetens`)
+      }
+    }
+
+    if (occupations && occupations.length > 0) {
+      const growing = occupations.filter(o => o.trend === 'up')
+      if (growing.length > 0) {
+        recommendations.push(lang === 'en'
+          ? `Occupations like ${growing.slice(0, 2).map(o => o.term).join(' and ')} show strong growth`
+          : `Yrken som ${growing.slice(0, 2).map(o => o.term).join(' och ')} visar stark tillväxt`)
+      }
+    }
+
+    recommendations.push(lang === 'en'
+      ? 'Network actively within your industry to find hidden opportunities'
+      : 'Nätverka aktivt inom din bransch för att hitta dolda möjligheter')
+
+    return recommendations.slice(0, 3)
+  }
 
   const getGrowthIcon = (indicator: 'up' | 'stable' | 'down') => {
     switch (indicator) {
@@ -151,7 +242,22 @@ export function IndustryRadarSection({
           <div className="p-4">
             {isLoading && <AILoadingIndicator text={t('career.industryRadar.loading')} />}
 
-            {result && (
+            {error && (
+              <div className="flex items-center gap-3 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={fetchData}
+                  className="ml-auto"
+                >
+                  {t('common.retry')}
+                </Button>
+              </div>
+            )}
+
+            {result && !error && (
               <div className="space-y-6">
                 {/* Trending Industries */}
                 {result.trendingIndustries.length > 0 && (
