@@ -23,21 +23,31 @@ interface StatusColumn {
   icon: React.ElementType
 }
 
-const COLUMNS: StatusColumn[] = [
-  { status: 'applied', title: 'Ansökt', color: 'text-blue-600', bgColor: 'bg-blue-50 border-blue-200', icon: Send },
-  { status: 'interview', title: 'Intervju', color: 'text-amber-600', bgColor: 'bg-amber-50 border-amber-200', icon: Calendar },
-  { status: 'offer', title: 'Erbjudande', color: 'text-green-600', bgColor: 'bg-green-50 border-green-200', icon: CheckCircle },
-  { status: 'rejected', title: 'Avslag', color: 'text-slate-700', bgColor: 'bg-slate-50 border-slate-200', icon: XCircle }
+const getColumns = (t: (key: string) => string): StatusColumn[] => [
+  { status: 'applied', title: t('jobs.applications.status.applied'), color: 'text-blue-600', bgColor: 'bg-blue-50 border-blue-200', icon: Send },
+  { status: 'interview', title: t('jobs.applications.status.interview'), color: 'text-amber-600', bgColor: 'bg-amber-50 border-amber-200', icon: Calendar },
+  { status: 'offer', title: t('jobs.applications.status.offer'), color: 'text-green-600', bgColor: 'bg-green-50 border-green-200', icon: CheckCircle },
+  { status: 'rejected', title: t('jobs.applications.status.rejected'), color: 'text-slate-700', bgColor: 'bg-slate-50 border-slate-200', icon: XCircle }
 ]
 
 function ApplicationCard({
   job,
   onStatusChange,
-  onDelete
+  onDelete,
+  columns,
+  labels
 }: {
   job: SavedJob
   onStatusChange: (jobId: string, status: SavedJob['status']) => void
   onDelete: (jobId: string) => void
+  columns: StatusColumn[]
+  labels: {
+    unknownPosition: string
+    unknownCompany: string
+    changeStatus: string
+    delete: string
+    view: string
+  }
 }) {
   const [showMenu, setShowMenu] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
@@ -51,11 +61,11 @@ function ApplicationCard({
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex-1 min-w-0">
           <h4 className="font-semibold text-slate-900 dark:text-stone-100 text-sm line-clamp-2">
-            {jobData?.headline || 'Okänd tjänst'}
+            {jobData?.headline || labels.unknownPosition}
           </h4>
           <p className="text-xs text-slate-700 dark:text-stone-300 mt-0.5 flex items-center gap-1">
             <Briefcase className="w-3 h-3" />
-            {jobData?.employer?.name || 'Okänt företag'}
+            {jobData?.employer?.name || labels.unknownCompany}
           </p>
         </div>
 
@@ -72,8 +82,8 @@ function ApplicationCard({
             <>
               <div className="fixed inset-0 z-10" onClick={() => setShowMenu(false)} />
               <div className="absolute right-0 top-8 z-20 bg-white dark:bg-stone-900 rounded-lg shadow-lg border border-slate-200 dark:border-stone-700 py-1 min-w-[160px]">
-                <div className="px-2 py-1 text-xs font-medium text-slate-600 dark:text-stone-400 uppercase">Ändra status</div>
-                {COLUMNS.map(col => (
+                <div className="px-2 py-1 text-xs font-medium text-slate-600 dark:text-stone-400 uppercase">{labels.changeStatus}</div>
+                {columns.map(col => (
                   <button
                     key={col.status}
                     onClick={() => {
@@ -98,7 +108,7 @@ function ApplicationCard({
                   className="w-full px-3 py-2 text-left text-sm flex items-center gap-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20"
                 >
                   <Trash2 className="w-4 h-4" />
-                  Ta bort
+                  {labels.delete}
                 </button>
               </div>
             </>
@@ -144,7 +154,7 @@ function ApplicationCard({
             className="flex items-center gap-1 text-indigo-600 hover:text-indigo-700"
           >
             <ExternalLink className="w-3 h-3" />
-            Visa
+            {labels.view}
           </a>
         )}
       </div>
@@ -152,7 +162,16 @@ function ApplicationCard({
   )
 }
 
-function StatsHeader({ jobs }: { jobs: SavedJob[] }) {
+function StatsHeader({ jobs, labels }: {
+  jobs: SavedJob[]
+  labels: {
+    total: string
+    applied: string
+    interview: string
+    offer: string
+    response: string
+  }
+}) {
   const stats = useMemo(() => ({
     total: jobs.length,
     applied: jobs.filter(j => j.status === 'applied').length,
@@ -169,25 +188,25 @@ function StatsHeader({ jobs }: { jobs: SavedJob[] }) {
     <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-3 mb-4 sm:mb-6">
       <div className="bg-white dark:bg-stone-900 rounded-xl border border-slate-200 dark:border-stone-700 p-2 sm:p-4 text-center">
         <div className="text-lg sm:text-2xl font-bold text-slate-900 dark:text-stone-100">{stats.total}</div>
-        <div className="text-[10px] sm:text-xs text-slate-700 dark:text-stone-300">Totalt</div>
+        <div className="text-[10px] sm:text-xs text-slate-700 dark:text-stone-300">{labels.total}</div>
       </div>
       <div className="bg-blue-50 rounded-xl border border-blue-200 p-2 sm:p-4 text-center">
         <div className="text-lg sm:text-2xl font-bold text-blue-600">{stats.applied}</div>
-        <div className="text-[10px] sm:text-xs text-blue-600">Ansökt</div>
+        <div className="text-[10px] sm:text-xs text-blue-600">{labels.applied}</div>
       </div>
       <div className="bg-amber-50 rounded-xl border border-amber-200 p-2 sm:p-4 text-center">
         <div className="text-lg sm:text-2xl font-bold text-amber-600">{stats.interview}</div>
-        <div className="text-[10px] sm:text-xs text-amber-600">Intervju</div>
+        <div className="text-[10px] sm:text-xs text-amber-600">{labels.interview}</div>
       </div>
       <div className="bg-green-50 rounded-xl border border-green-200 p-2 sm:p-4 text-center hidden sm:block">
         <div className="text-lg sm:text-2xl font-bold text-green-600">{stats.offer}</div>
-        <div className="text-[10px] sm:text-xs text-green-600">Erbjudande</div>
+        <div className="text-[10px] sm:text-xs text-green-600">{labels.offer}</div>
       </div>
       <div className="bg-indigo-50 rounded-xl border border-indigo-200 p-2 sm:p-4 text-center hidden sm:block">
         <div className="text-lg sm:text-2xl font-bold text-indigo-600">{responseRate}%</div>
         <div className="text-[10px] sm:text-xs text-indigo-600 flex items-center justify-center gap-1">
           <TrendingUp className="w-3 h-3" />
-          Svar
+          {labels.response}
         </div>
       </div>
     </div>
@@ -197,6 +216,8 @@ function StatsHeader({ jobs }: { jobs: SavedJob[] }) {
 export function ApplicationsTab() {
   const { t } = useTranslation()
   const { savedJobs, updateJobStatus, removeJob, isLoaded } = useSavedJobs()
+
+  const columns = useMemo(() => getColumns(t), [t])
 
   // Filter to only show applications (not saved)
   const applications = useMemo(() =>
@@ -209,9 +230,25 @@ export function ApplicationsTab() {
   }
 
   const handleDelete = async (jobId: string) => {
-    if (confirm('Är du säker på att du vill ta bort denna ansökan?')) {
+    if (confirm(t('jobs.applications.confirmDelete'))) {
       await removeJob(jobId)
     }
+  }
+
+  const cardLabels = {
+    unknownPosition: t('jobs.applications.unknownPosition'),
+    unknownCompany: t('common.employerNotSpecified'),
+    changeStatus: t('jobs.applications.changeStatus'),
+    delete: t('common.delete'),
+    view: t('common.view')
+  }
+
+  const statsLabels = {
+    total: t('jobs.applications.stats.total'),
+    applied: t('jobs.applications.status.applied'),
+    interview: t('jobs.applications.status.interview'),
+    offer: t('jobs.applications.status.offer'),
+    response: t('jobs.applications.stats.response')
   }
 
   if (!isLoaded) {
@@ -229,16 +266,15 @@ export function ApplicationsTab() {
           <Send className="w-8 h-8 text-slate-600 dark:text-stone-400" />
         </div>
         <h3 className="text-xl font-semibold text-slate-700 dark:text-stone-300 mb-2">
-          Inga ansökningar än
+          {t('jobs.applications.empty.title')}
         </h3>
         <p className="text-slate-700 dark:text-stone-300 mb-6 max-w-md mx-auto">
-          När du sparar ett jobb och ändrar status till "Ansökt" kommer det visas här.
-          Spåra dina ansökningar och håll koll på din jobbsökning.
+          {t('jobs.applications.empty.description')}
         </p>
         <Link to="/job-search">
           <Button>
             <Briefcase className="w-4 h-4 mr-2" />
-            Sök jobb
+            {t('jobs.applications.searchJobs')}
           </Button>
         </Link>
       </Card>
@@ -248,11 +284,11 @@ export function ApplicationsTab() {
   return (
     <div>
       {/* Stats */}
-      <StatsHeader jobs={applications} />
+      <StatsHeader jobs={applications} labels={statsLabels} />
 
       {/* Kanban Board */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {COLUMNS.map(column => {
+        {columns.map(column => {
           const columnJobs = applications.filter(j => j.status === column.status)
 
           return (
@@ -277,7 +313,7 @@ export function ApplicationsTab() {
               <div className="space-y-3">
                 {columnJobs.length === 0 ? (
                   <div className="text-center py-8 text-sm text-slate-600 dark:text-stone-400">
-                    Inga jobb här
+                    {t('jobs.applications.noJobsHere')}
                   </div>
                 ) : (
                   columnJobs.map(job => (
@@ -286,6 +322,8 @@ export function ApplicationsTab() {
                       job={job}
                       onStatusChange={handleStatusChange}
                       onDelete={handleDelete}
+                      columns={columns}
+                      labels={cardLabels}
                     />
                   ))
                 )}

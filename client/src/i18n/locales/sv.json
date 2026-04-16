@@ -973,6 +973,80 @@
       "minMatch": "Minst {{percent}}% match",
       "noMin": "Ingen min",
       "perfectMatch": "Perfekt match"
+    },
+    "modal": {
+      "closeDialog": "Stäng dialog",
+      "match": "match",
+      "matchingSkills": "Matchar",
+      "missingSkills": "Saknas",
+      "suggestionsForBetterMatch": "Förslag för bättre match",
+      "aboutPosition": "Om tjänsten",
+      "requirements": "Krav",
+      "published": "Publicerad",
+      "applicationDeadline": "Sista ansökningsdag",
+      "saved": "Sparad",
+      "save": "Spara",
+      "share": "Dela",
+      "createAIApplication": "Skapa AI-ansökan",
+      "apply": "Ansök"
+    },
+    "matches": {
+      "title": "Jobbmatchningar",
+      "subtitle": "Välj källa för att se matchande jobb",
+      "searching": "Söker efter matchande jobb...",
+      "errorLoading": "Kunde inte ladda matchningar",
+      "missing": "Saknas",
+      "allLocations": "Alla orter",
+      "location": "ort",
+      "locations": "orter",
+      "searchLocation": "Sök ort...",
+      "noResults": "Inga träffar",
+      "clearAll": "Rensa alla",
+      "locationsLabel": "Orter",
+      "match": "match",
+      "showMatchDetails": "Visa matchningsdetaljer",
+      "matchesOn": "Matchar på",
+      "refresh": "Uppdatera",
+      "createProfileFirst": "Skapa din profil först",
+      "createProfileDesc": "För att hitta matchningar behöver du skapa ditt CV, ta intresseguiden eller sätta karriärmål.",
+      "createCV": "Skapa CV",
+      "takeInterestGuide": "Ta intresseguiden",
+      "setCareerGoals": "Sätt karriärmål",
+      "noJobsFound": "Inga jobb hittades. Prova att välja en annan källa eller ändra ortsfilter.",
+      "sources": {
+        "myCV": "Mitt CV",
+        "cv": "CV",
+        "interestGuide": "Intresseguiden",
+        "interest": "Intressen",
+        "careerGoals": "Karriärmål",
+        "career": "Karriärmål"
+      },
+      "stats": {
+        "goodMatch": "Bra match",
+        "possible": "Möjliga",
+        "total": "Totalt"
+      }
+    },
+    "applications": {
+      "status": {
+        "applied": "Ansökt",
+        "interview": "Intervju",
+        "offer": "Erbjudande",
+        "rejected": "Avslag"
+      },
+      "unknownPosition": "Okänd tjänst",
+      "changeStatus": "Ändra status",
+      "confirmDelete": "Är du säker på att du vill ta bort denna ansökan?",
+      "searchJobs": "Sök jobb",
+      "noJobsHere": "Inga jobb här",
+      "stats": {
+        "total": "Totalt",
+        "response": "Svar"
+      },
+      "empty": {
+        "title": "Inga ansökningar än",
+        "description": "När du sparar ett jobb och ändrar status till \"Ansökt\" kommer det visas här. Spåra dina ansökningar och håll koll på din jobbsökning."
+      }
     }
   },
   "applications": {

@@ -64,6 +64,7 @@ function SourceToggle({
   active,
   available,
   count,
+  missingLabel,
   onToggle
 }: {
   source: MatchSource
@@ -72,6 +73,7 @@ function SourceToggle({
   active: boolean
   available: boolean
   count: number
+  missingLabel: string
   onToggle: () => void
 }) {
   const colors = {
@@ -103,7 +105,7 @@ function SourceToggle({
       )}
       {!available && (
         <span className="text-xs bg-slate-200 dark:bg-stone-700 px-2 py-0.5 rounded-full ml-1">
-          Saknas
+          {missingLabel}
         </span>
       )}
     </button>
@@ -112,10 +114,19 @@ function SourceToggle({
 
 function LocationSelector({
   selected,
-  onChange
+  onChange,
+  labels
 }: {
   selected: string[]
   onChange: (locations: string[]) => void
+  labels: {
+    allLocations: string
+    location: string
+    locations: string
+    searchLocation: string
+    noResults: string
+    clearAll: string
+  }
 }) {
   const [isOpen, setIsOpen] = useState(false)
   const [search, setSearch] = useState('')
@@ -144,8 +155,8 @@ function LocationSelector({
         <MapPin className="w-4 h-4 text-slate-700 dark:text-stone-300" />
         <span className="font-medium text-sm text-slate-700 dark:text-stone-300">
           {selected.length === 0
-            ? 'Alla orter'
-            : `${selected.length} ${selected.length === 1 ? 'ort' : 'orter'}`
+            ? labels.allLocations
+            : `${selected.length} ${selected.length === 1 ? labels.location : labels.locations}`
           }
         </span>
         <ChevronDown className={cn("w-4 h-4 text-slate-600 dark:text-stone-400 transition-transform", isOpen && "rotate-180")} />
@@ -158,7 +169,7 @@ function LocationSelector({
             <div className="p-3 border-b border-slate-100 dark:border-stone-700">
               <input
                 type="text"
-                placeholder="Sök ort..."
+                placeholder={labels.searchLocation}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
@@ -184,7 +195,7 @@ function LocationSelector({
 
             <div className="max-h-60 overflow-y-auto p-2">
               {filteredMunicipalities.length === 0 ? (
-                <p className="text-sm text-slate-700 dark:text-stone-300 text-center py-4">Inga träffar</p>
+                <p className="text-sm text-slate-700 dark:text-stone-300 text-center py-4">{labels.noResults}</p>
               ) : (
                 filteredMunicipalities.map(m => (
                   <button
@@ -209,7 +220,7 @@ function LocationSelector({
                   onClick={() => onChange([])}
                   className="w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
                 >
-                  Rensa alla
+                  {labels.clearAll}
                 </button>
               </div>
             )}
@@ -224,11 +235,22 @@ function LocationSelector({
 const MatchCard = memo(function MatchCard({
   matchedJob,
   onSave,
-  isSaved
+  isSaved,
+  labels
 }: {
   matchedJob: MatchedJob
   onSave: (job: PlatsbankenJob) => void
   isSaved: boolean
+  labels: {
+    match: string
+    cv: string
+    interest: string
+    career: string
+    unknownCompany: string
+    showMatchDetails: string
+    matchesOn: string
+    apply: string
+  }
 }) {
   const { job, score, source, matchDetails } = matchedJob
   const [showDetails, setShowDetails] = useState(false)
@@ -240,9 +262,9 @@ const MatchCard = memo(function MatchCard({
       : 'text-slate-600 bg-slate-100 border-slate-200'
 
   const sourceConfig = {
-    cv: { color: 'bg-teal-100 text-teal-700', label: 'CV', icon: FileText },
-    interest: { color: 'bg-amber-100 text-amber-700', label: 'Intressen', icon: Compass },
-    career: { color: 'bg-teal-100 text-teal-700', label: 'Karriärmål', icon: Target }
+    cv: { color: 'bg-teal-100 text-teal-700', label: labels.cv, icon: FileText },
+    interest: { color: 'bg-amber-100 text-amber-700', label: labels.interest, icon: Compass },
+    career: { color: 'bg-teal-100 text-teal-700', label: labels.career, icon: Target }
   }
 
   const config = sourceConfig[source]
@@ -255,7 +277,7 @@ const MatchCard = memo(function MatchCard({
           scoreColor
         )}>
           <span className="text-lg font-bold">{score}%</span>
-          <span className="text-[10px] font-medium">match</span>
+          <span className="text-[10px] font-medium">{labels.match}</span>
         </div>
 
         <div className="flex-1 min-w-0">
@@ -269,7 +291,7 @@ const MatchCard = memo(function MatchCard({
           </h3>
           <p className="text-sm text-slate-600 dark:text-stone-400 flex items-center gap-1">
             <Briefcase className="w-3.5 h-3.5" />
-            {job.employer?.name || 'Okänt företag'}
+            {job.employer?.name || labels.unknownCompany}
           </p>
           {job.workplace_address?.municipality && (
             <p className="text-sm text-slate-700 dark:text-stone-300 flex items-center gap-1 mt-0.5">
@@ -300,7 +322,7 @@ const MatchCard = memo(function MatchCard({
             className="flex items-center gap-2 text-xs text-slate-700 dark:text-stone-300 hover:text-slate-700 dark:hover:text-stone-200"
           >
             <Settings2 className="w-3 h-3" />
-            Visa matchningsdetaljer
+            {labels.showMatchDetails}
             <ChevronDown className={cn("w-3 h-3 transition-transform", showDetails && "rotate-180")} />
           </button>
         </div>
@@ -310,7 +332,7 @@ const MatchCard = memo(function MatchCard({
         <div className="px-5 pb-4">
           <p className="text-xs font-medium text-slate-600 dark:text-stone-400 mb-1.5 flex items-center gap-1">
             <CheckCircle className="w-3 h-3 text-green-600" />
-            Matchar på
+            {labels.matchesOn}
           </p>
           <div className="flex flex-wrap gap-1">
             {matchDetails.slice(0, 6).map((detail, i) => (
@@ -339,7 +361,7 @@ const MatchCard = memo(function MatchCard({
             className="flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-sky-600 hover:bg-sky-50 rounded-lg transition-colors"
           >
             <ExternalLink className="w-3 h-3" />
-            Ansök
+            {labels.apply}
           </a>
         )}
       </div>
@@ -347,7 +369,17 @@ const MatchCard = memo(function MatchCard({
   )
 })
 
-function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
+function EmptyState({ type, labels }: {
+  type: 'no-data' | 'no-results'
+  labels: {
+    createProfileFirst: string
+    createProfileDesc: string
+    createCV: string
+    takeInterestGuide: string
+    setCareerGoals: string
+    noJobsFound: string
+  }
+}) {
   if (type === 'no-data') {
     return (
       <Card className="p-12 text-center">
@@ -355,28 +387,28 @@ function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
           <FileText className="w-10 h-10 text-teal-600" />
         </div>
         <h3 className="text-2xl font-bold text-slate-800 dark:text-stone-100 mb-3">
-          Skapa din profil först
+          {labels.createProfileFirst}
         </h3>
         <p className="text-slate-700 dark:text-stone-300 mb-8 max-w-md mx-auto">
-          För att hitta matchningar behöver du skapa ditt CV, ta intresseguiden eller sätta karriärmål.
+          {labels.createProfileDesc}
         </p>
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link to="/cv">
             <Button size="lg">
               <FileText className="w-5 h-5 mr-2" />
-              Skapa CV
+              {labels.createCV}
             </Button>
           </Link>
           <Link to="/interest-guide">
             <Button variant="outline" size="lg">
               <Compass className="w-5 h-5 mr-2" />
-              Ta intresseguiden
+              {labels.takeInterestGuide}
             </Button>
           </Link>
           <Link to="/profile">
             <Button variant="outline" size="lg">
               <Target className="w-5 h-5 mr-2" />
-              Sätt karriärmål
+              {labels.setCareerGoals}
             </Button>
           </Link>
         </div>
@@ -388,7 +420,7 @@ function EmptyState({ type }: { type: 'no-data' | 'no-results' }) {
     <Card className="p-8 text-center">
       <Sparkles className="w-12 h-12 text-slate-300 dark:text-stone-600 mx-auto mb-4" />
       <p className="text-slate-700 dark:text-stone-300">
-        Inga jobb hittades. Prova att välja en annan källa eller ändra ortsfilter.
+        {labels.noJobsFound}
       </p>
     </Card>
   )
@@ -744,7 +776,7 @@ export function MatchesTab() {
       setCareerJobs(careerResults)
     } catch (err) {
       console.error('Error loading matches:', err)
-      setError('Kunde inte ladda matchningar')
+      setError(t('jobs.matches.errorLoading'))
     } finally {
       setIsLoading(false)
     }
@@ -787,29 +819,58 @@ export function MatchesTab() {
     return (
       <div className="flex flex-col items-center justify-center py-16">
         <Loader2 className="w-10 h-10 text-sky-600 animate-spin mb-4" />
-        <p className="text-slate-600 dark:text-stone-400">Söker efter matchande jobb...</p>
+        <p className="text-slate-600 dark:text-stone-400">{t('jobs.matches.searching')}</p>
       </div>
     )
   }
 
   const hasAnyData = sourceData && (sourceData.cv.available || sourceData.interest.available || sourceData.career.available)
 
+  const emptyStateLabels = {
+    createProfileFirst: t('jobs.matches.createProfileFirst'),
+    createProfileDesc: t('jobs.matches.createProfileDesc'),
+    createCV: t('jobs.matches.createCV'),
+    takeInterestGuide: t('jobs.matches.takeInterestGuide'),
+    setCareerGoals: t('jobs.matches.setCareerGoals'),
+    noJobsFound: t('jobs.matches.noJobsFound')
+  }
+
   if (!hasAnyData) {
-    return <EmptyState type="no-data" />
+    return <EmptyState type="no-data" labels={emptyStateLabels} />
   }
 
   if (error) {
     return (
       <Card className="p-12 text-center">
         <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-        <h3 className="text-lg font-semibold text-slate-700 dark:text-stone-300 mb-2">Något gick fel</h3>
+        <h3 className="text-lg font-semibold text-slate-700 dark:text-stone-300 mb-2">{t('common.error')}</h3>
         <p className="text-slate-700 dark:text-stone-300 mb-4">{error}</p>
         <Button onClick={loadData}>
           <RefreshCw className="w-4 h-4 mr-2" />
-          Försök igen
+          {t('common.tryAgain')}
         </Button>
       </Card>
     )
+  }
+
+  const locationLabels = {
+    allLocations: t('jobs.matches.allLocations'),
+    location: t('jobs.matches.location'),
+    locations: t('jobs.matches.locations'),
+    searchLocation: t('jobs.matches.searchLocation'),
+    noResults: t('jobs.matches.noResults'),
+    clearAll: t('jobs.matches.clearAll')
+  }
+
+  const matchCardLabels = {
+    match: t('jobs.matches.match'),
+    cv: t('jobs.matches.sources.cv'),
+    interest: t('jobs.matches.sources.interest'),
+    career: t('jobs.matches.sources.career'),
+    unknownCompany: t('common.employerNotSpecified'),
+    showMatchDetails: t('jobs.matches.showMatchDetails'),
+    matchesOn: t('jobs.matches.matchesOn'),
+    apply: t('jobs.card.apply')
   }
 
   return (
@@ -820,10 +881,10 @@ export function MatchesTab() {
           <div>
             <h2 className="text-lg font-semibold text-slate-900 dark:text-stone-100 flex items-center gap-2 mb-2">
               <Sparkles className="w-5 h-5 text-amber-500" />
-              Jobbmatchningar
+              {t('jobs.matches.title')}
             </h2>
             <p className="text-sm text-slate-700 dark:text-stone-300">
-              Välj källa för att se matchande jobb
+              {t('jobs.matches.subtitle')}
             </p>
           </div>
 
@@ -831,39 +892,43 @@ export function MatchesTab() {
           <div className="flex flex-wrap gap-2">
             <SourceToggle
               source="cv"
-              label="Mitt CV"
+              label={t('jobs.matches.sources.myCV')}
               icon={FileText}
               active={activeSource === 'cv'}
               available={sourceData?.cv.available || false}
               count={cvJobs.length}
+              missingLabel={t('jobs.matches.missing')}
               onToggle={() => setActiveSource('cv')}
             />
             <SourceToggle
               source="interest"
-              label="Intresseguiden"
+              label={t('jobs.matches.sources.interestGuide')}
               icon={Compass}
               active={activeSource === 'interest'}
               available={sourceData?.interest.available || false}
               count={interestJobs.length}
+              missingLabel={t('jobs.matches.missing')}
               onToggle={() => setActiveSource('interest')}
             />
             <SourceToggle
               source="career"
-              label="Karriärmål"
+              label={t('jobs.matches.sources.careerGoals')}
               icon={Target}
               active={activeSource === 'career'}
               available={sourceData?.career.available || false}
               count={careerJobs.length}
+              missingLabel={t('jobs.matches.missing')}
               onToggle={() => setActiveSource('career')}
             />
           </div>
 
           {/* Location filter */}
           <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-slate-100 dark:border-stone-700">
-            <span className="text-sm text-slate-600 dark:text-stone-400">Orter:</span>
+            <span className="text-sm text-slate-600 dark:text-stone-400">{t('jobs.matches.locationsLabel')}:</span>
             <LocationSelector
               selected={municipalities}
               onChange={setMunicipalities}
+              labels={locationLabels}
             />
           </div>
         </div>
@@ -874,21 +939,21 @@ export function MatchesTab() {
         <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 border border-green-100">
           <div className="flex items-center gap-2 mb-1">
             <Award className="w-4 h-4 text-green-600" />
-            <span className="text-sm font-medium text-green-700">Bra match</span>
+            <span className="text-sm font-medium text-green-700">{t('jobs.matches.stats.goodMatch')}</span>
           </div>
           <p className="text-2xl font-bold text-green-700">{stats.high}</p>
         </div>
         <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-4 border border-amber-100">
           <div className="flex items-center gap-2 mb-1">
             <TrendingUp className="w-4 h-4 text-amber-600" />
-            <span className="text-sm font-medium text-amber-700">Möjliga</span>
+            <span className="text-sm font-medium text-amber-700">{t('jobs.matches.stats.possible')}</span>
           </div>
           <p className="text-2xl font-bold text-amber-700">{stats.medium}</p>
         </div>
         <div className="bg-gradient-to-br from-slate-50 to-gray-50 dark:from-stone-800 dark:to-stone-800 rounded-xl p-4 border border-slate-100 dark:border-stone-700">
           <div className="flex items-center gap-2 mb-1">
             <Briefcase className="w-4 h-4 text-slate-600 dark:text-stone-400" />
-            <span className="text-sm font-medium text-slate-700 dark:text-stone-300">Totalt</span>
+            <span className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('jobs.matches.stats.total')}</span>
           </div>
           <p className="text-2xl font-bold text-slate-700 dark:text-stone-200">{stats.total}</p>
         </div>
@@ -898,13 +963,13 @@ export function MatchesTab() {
       <div className="flex justify-end">
         <Button variant="outline" size="sm" onClick={loadData}>
           <RefreshCw className="w-4 h-4 mr-1" />
-          Uppdatera
+          {t('jobs.matches.refresh')}
         </Button>
       </div>
 
       {/* Jobs Grid */}
       {currentJobs.length === 0 ? (
-        <EmptyState type="no-results" />
+        <EmptyState type="no-results" labels={emptyStateLabels} />
       ) : (
         <div className="grid gap-4 md:grid-cols-2">
           {currentJobs.map(matchedJob => (
@@ -913,6 +978,7 @@ export function MatchesTab() {
               matchedJob={matchedJob}
               onSave={handleSave}
               isSaved={isSaved(matchedJob.job.id)}
+              labels={matchCardLabels}
             />
           ))}
         </div>

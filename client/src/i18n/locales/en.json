@@ -948,6 +948,80 @@
       "minMatch": "At least {{percent}}% match",
       "noMin": "No minimum",
       "perfectMatch": "Perfect match"
+    },
+    "modal": {
+      "closeDialog": "Close dialog",
+      "match": "match",
+      "matchingSkills": "Matches",
+      "missingSkills": "Missing",
+      "suggestionsForBetterMatch": "Suggestions for better match",
+      "aboutPosition": "About the position",
+      "requirements": "Requirements",
+      "published": "Published",
+      "applicationDeadline": "Application deadline",
+      "saved": "Saved",
+      "save": "Save",
+      "share": "Share",
+      "createAIApplication": "Create AI application",
+      "apply": "Apply"
+    },
+    "matches": {
+      "title": "Job Matches",
+      "subtitle": "Select a source to see matching jobs",
+      "searching": "Searching for matching jobs...",
+      "errorLoading": "Could not load matches",
+      "missing": "Missing",
+      "allLocations": "All locations",
+      "location": "location",
+      "locations": "locations",
+      "searchLocation": "Search location...",
+      "noResults": "No results",
+      "clearAll": "Clear all",
+      "locationsLabel": "Locations",
+      "match": "match",
+      "showMatchDetails": "Show match details",
+      "matchesOn": "Matches on",
+      "refresh": "Refresh",
+      "createProfileFirst": "Create your profile first",
+      "createProfileDesc": "To find matches you need to create your CV, take the interest guide, or set career goals.",
+      "createCV": "Create CV",
+      "takeInterestGuide": "Take interest guide",
+      "setCareerGoals": "Set career goals",
+      "noJobsFound": "No jobs found. Try selecting a different source or changing the location filter.",
+      "sources": {
+        "myCV": "My CV",
+        "cv": "CV",
+        "interestGuide": "Interest Guide",
+        "interest": "Interests",
+        "careerGoals": "Career Goals",
+        "career": "Career Goals"
+      },
+      "stats": {
+        "goodMatch": "Good match",
+        "possible": "Possible",
+        "total": "Total"
+      }
+    },
+    "applications": {
+      "status": {
+        "applied": "Applied",
+        "interview": "Interview",
+        "offer": "Offer",
+        "rejected": "Rejected"
+      },
+      "unknownPosition": "Unknown position",
+      "changeStatus": "Change status",
+      "confirmDelete": "Are you sure you want to delete this application?",
+      "searchJobs": "Search jobs",
+      "noJobsHere": "No jobs here",
+      "stats": {
+        "total": "Total",
+        "response": "Response"
+      },
+      "empty": {
+        "title": "No applications yet",
+        "description": "When you save a job and change status to \"Applied\" it will appear here. Track your applications and keep track of your job search."
+      }
     }
   },
   "applications": {

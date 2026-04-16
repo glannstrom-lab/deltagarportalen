@@ -1,4 +1,5 @@
 import { useEffect, useState, useCallback, useId } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, MapPin, Briefcase, Clock, DollarSign, Calendar, Heart, Sparkles, Send, Building, Share2, FileDown } from '@/components/ui/icons'
 import type { Job } from '@/services/mockApi'
 import type { CVData } from '@/services/supabaseApi'
@@ -24,6 +25,7 @@ interface MatchResult {
 }
 
 export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, onApply }: JobDetailModalProps) {
+  const { t } = useTranslation()
   const [matchResult, setMatchResult] = useState<MatchResult | null>(null)
   const [_loading, setLoading] = useState(false)
   const [showShareDialog, setShowShareDialog] = useState(false)
@@ -90,7 +92,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           <button
             onClick={onClose}
             className="p-2 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-full transition-colors"
-            aria-label="Stäng dialog"
+            aria-label={t('jobs.modal.closeDialog')}
           >
             <X size={20} className="text-slate-700 dark:text-stone-300" aria-hidden="true" />
           </button>
@@ -103,24 +105,24 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
               <div className="flex items-center gap-4">
                 <div className="text-center">
                   <div className="text-3xl font-bold text-[#4f46e5]">{matchResult.matchPercentage}%</div>
-                  <div className="text-xs text-slate-600">match</div>
+                  <div className="text-xs text-slate-600">{t('jobs.modal.match')}</div>
                 </div>
                 <div className="flex-1">
                   {matchResult.matchingSkills.length > 0 && (
                     <p className="text-sm text-green-700 dark:text-green-400 mb-1">
-                      ✅ Matchar: {matchResult.matchingSkills.join(', ')}
+                      ✅ {t('jobs.modal.matchingSkills')}: {matchResult.matchingSkills.join(', ')}
                     </p>
                   )}
                   {matchResult.missingSkills.length > 0 && (
                     <p className="text-sm text-orange-600 dark:text-orange-400">
-                      ⚠️ Saknas: {matchResult.missingSkills.join(', ')}
+                      ⚠️ {t('jobs.modal.missingSkills')}: {matchResult.missingSkills.join(', ')}
                     </p>
                   )}
                 </div>
               </div>
               {matchResult.suggestions.length > 0 && (
                 <div className="mt-3 pt-3 border-t border-[#4f46e5]/20">
-                  <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">Förslag för bättre match:</p>
+                  <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-1">{t('jobs.modal.suggestionsForBetterMatch')}:</p>
                   <ul className="text-sm text-slate-600 dark:text-stone-400 space-y-1">
                     {matchResult.suggestions.map((suggestion, index) => (
                       <li key={index}>• {suggestion}</li>
@@ -155,13 +157,13 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
 
           {/* Description */}
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">Om tjänsten</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">{t('jobs.modal.aboutPosition')}</h3>
             <p className="text-slate-600 dark:text-stone-400 leading-relaxed">{job.description}</p>
           </div>
 
           {/* Requirements */}
           <div className="mb-6">
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">Krav</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100 mb-2">{t('jobs.modal.requirements')}</h3>
             <div className="flex flex-wrap gap-2">
               {job.requirements.map((req, index) => (
                 <span
@@ -178,12 +180,12 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
           <div className="flex items-center gap-4 text-sm text-slate-700 dark:text-stone-300 mb-6">
             <div className="flex items-center gap-1">
               <Calendar size={14} />
-              Publicerad: {new Date(job.publishedDate || job.publishedAt || Date.now()).toLocaleDateString('sv-SE')}
+              {t('jobs.modal.published')}: {new Date(job.publishedDate || job.publishedAt || Date.now()).toLocaleDateString('sv-SE')}
             </div>
             {job.deadline && (
               <div className="flex items-center gap-1 text-red-500">
                 <Calendar size={14} />
-                Sista ansökningsdag: {new Date(job.deadline).toLocaleDateString('sv-SE')}
+                {t('jobs.modal.applicationDeadline')}: {new Date(job.deadline).toLocaleDateString('sv-SE')}
               </div>
             )}
           </div>
@@ -200,7 +202,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             }`}
           >
             <Heart size={18} fill={isSaved ? 'currentColor' : 'none'} />
-            {isSaved ? 'Sparad' : 'Spara'}
+            {isSaved ? t('jobs.modal.saved') : t('jobs.modal.save')}
           </button>
           
           {/* Dela med konsulent */}
@@ -209,7 +211,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             className="flex items-center gap-2 px-4 py-3 border-2 border-teal-200 text-teal-700 rounded-xl hover:bg-teal-50 transition-colors"
           >
             <Share2 size={18} />
-            Dela
+            {t('jobs.modal.share')}
           </button>
           
           {/* PDF Export */}
@@ -240,7 +242,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             className="flex-1 flex items-center justify-center gap-2 px-4 py-3 bg-[#4f46e5] text-white rounded-xl hover:bg-[#4338ca] transition-colors"
           >
             <Sparkles size={18} />
-            Skapa AI-ansökan
+            {t('jobs.modal.createAIApplication')}
           </button>
           
           <a
@@ -250,7 +252,7 @@ export function JobDetailModal({ job, cvData, isOpen, onClose, isSaved, onSave, 
             className="flex items-center gap-2 px-4 py-3 border border-slate-200 dark:border-stone-700 text-slate-700 dark:text-stone-300 rounded-xl hover:bg-slate-50 dark:hover:bg-stone-800 transition-colors"
           >
             <Send size={18} />
-            Ansök
+            {t('jobs.modal.apply')}
           </a>
         </div>
       </div>
