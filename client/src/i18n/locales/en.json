@@ -865,6 +865,91 @@
     "writePersonalLetter": "Write personal letter",
     "somethingWentWrong": "Something went wrong"
   },
+  "jobs": {
+    "card": {
+      "jobPosting": "Job posting",
+      "notSpecified": "Not specified",
+      "dateNotSpecified": "Date not specified",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "daysAgo": "{{days}} days ago",
+      "matchesYourCV": "Matches your CV:",
+      "missingFromCV": "Missing from your CV:",
+      "removeFromSaved": "Remove from saved",
+      "saveJob": "Save job",
+      "analyzeMatchWithAI": "Analyze match with AI",
+      "analyze": "Analyze",
+      "applyAtAF": "Apply at arbetsformedlingen.se",
+      "apply": "Apply",
+      "applyBy": "Apply by {{date}}",
+      "viaAF": "Via the Employment Agency",
+      "readMore": "Read more"
+    },
+    "filters": {
+      "title": "Filter",
+      "filterJobs": "Filter jobs",
+      "clearAll": "Clear all",
+      "clear": "Clear",
+      "showing": "Showing {{count}} jobs",
+      "ofTotal": "of {{total}} total",
+      "showJobs": "Show {{count}} jobs",
+      "search": "Keywords",
+      "searchPlaceholder": "Job title, company, keywords...",
+      "location": "Location",
+      "locationPlaceholder": "Enter city or municipality...",
+      "distance": "Distance: {{km}} km",
+      "allRegions": "All regions",
+      "published": "Published",
+      "publishedOptions": {
+        "anytime": "Anytime",
+        "today": "Today",
+        "lastWeek": "Last week",
+        "lastMonth": "Last month"
+      },
+      "workplace": "Workplace",
+      "workArrangements": {
+        "remote": "Remote",
+        "remoteDesc": "Work from home",
+        "hybrid": "Hybrid",
+        "hybridDesc": "Mixed mode",
+        "onsite": "On-site",
+        "onsiteDesc": "At the office"
+      },
+      "employmentType": "Employment type",
+      "employmentTypes": {
+        "fullTime": "Full-time",
+        "partTime": "Part-time",
+        "permanent": "Permanent",
+        "project": "Project / Fixed-term",
+        "summer": "Summer job",
+        "internship": "Internship"
+      },
+      "experienceLevel": "Experience level",
+      "experienceLevels": {
+        "none": "No experience required",
+        "experienced": "Experience (1-3 years)",
+        "senior": "Senior (5+ years)"
+      },
+      "salary": "Salary",
+      "salaryMin": "Min",
+      "salaryMax": "Max",
+      "salaryHint": "Enter desired monthly salary in SEK",
+      "language": "Language",
+      "languages": {
+        "swedish": "Swedish",
+        "english": "English",
+        "norwegian": "Norwegian",
+        "danish": "Danish"
+      },
+      "other": "Other",
+      "drivingLicenseRequired": "Driving license required",
+      "drivingLicenseHint": "Only show jobs that require driving license",
+      "cvMatch": "CV match",
+      "minMatch": "At least {{percent}}% match",
+      "noMin": "No minimum",
+      "perfectMatch": "Perfect match"
+    }
+  },
   "applications": {
     "title": "My Applications",
     "subtitle": "Track your job applications through the entire process",

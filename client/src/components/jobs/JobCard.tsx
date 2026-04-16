@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MapPin, Briefcase, Clock, Heart, ChevronRight, CheckCircle, XCircle, Bot, ExternalLink } from '@/components/ui/icons'
 import type { Job } from '@/services/mockApi'
 import type { JobAd } from '@/services/arbetsformedlingenApi'
@@ -58,6 +59,7 @@ export function JobCard({
   showMatch = true,
   showApplyButton = true
 }: JobCardProps) {
+  const { t } = useTranslation()
   const [isHovered, setIsHovered] = useState(false)
 
   // Konvertera JobAd till JobCardJob
@@ -105,39 +107,39 @@ export function JobCard({
   const normalizedJob = normalizeJob(job)
 
   const getDisplayTitle = () => {
-    return normalizedJob.headline || normalizedJob.title || 'Jobbannons'
+    return normalizedJob.headline || normalizedJob.title || t('jobs.card.jobPosting')
   }
 
   const getDisplayCompany = () => {
-    return normalizedJob.employer?.name || normalizedJob.company || 'Arbetsgivare ej angiven'
+    return normalizedJob.employer?.name || normalizedJob.company || t('common.employerNotSpecified')
   }
 
   const getDisplayLocation = () => {
-    return normalizedJob.workplace_address?.municipality || 
-           normalizedJob.workplace_address?.city || 
-           normalizedJob.location || 
-           'Ort ej angiven'
+    return normalizedJob.workplace_address?.municipality ||
+           normalizedJob.workplace_address?.city ||
+           normalizedJob.location ||
+           t('common.locationNotSpecified')
   }
 
   const getDisplayEmploymentType = () => {
-    return normalizedJob.employment_type?.label || 
-           normalizedJob.employmentType || 
-           'Ej angiven'
+    return normalizedJob.employment_type?.label ||
+           normalizedJob.employmentType ||
+           t('jobs.card.notSpecified')
   }
 
   const getDisplayDate = () => {
-    const dateString = normalizedJob.publication_date || 
-                      normalizedJob.publishedAt || 
+    const dateString = normalizedJob.publication_date ||
+                      normalizedJob.publishedAt ||
                       normalizedJob.publishedDate
-    if (!dateString) return 'Datum ej angivet'
-    
+    if (!dateString) return t('jobs.card.dateNotSpecified')
+
     const date = new Date(dateString)
     const now = new Date()
     const diffDays = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24))
-    
-    if (diffDays === 0) return 'Idag'
-    if (diffDays === 1) return 'Igår'
-    if (diffDays < 7) return `${diffDays} dagar sedan`
+
+    if (diffDays === 0) return t('jobs.card.today')
+    if (diffDays === 1) return t('jobs.card.yesterday')
+    if (diffDays < 7) return t('jobs.card.daysAgo', { days: diffDays })
     return date.toLocaleDateString('sv-SE', { day: 'numeric', month: 'short' })
   }
 
@@ -267,7 +269,7 @@ export function JobCard({
           {/* Matching skills */}
           {showMatch && matchingSkills.length > 0 && (
             <div className="mt-3">
-              <p className="text-xs text-slate-700 dark:text-stone-300 mb-1">Matchar ditt CV:</p>
+              <p className="text-xs text-slate-700 dark:text-stone-300 mb-1">{t('jobs.card.matchesYourCV')}</p>
               <div className="flex flex-wrap gap-1">
                 {matchingSkills.slice(0, 3).map((skill, index) => (
                   <span 
@@ -290,7 +292,7 @@ export function JobCard({
           {/* Missing skills */}
           {showMatch && missingSkills.length > 0 && (
             <div className="mt-2">
-              <p className="text-xs text-slate-700 dark:text-stone-300 mb-1">Saknas i ditt CV:</p>
+              <p className="text-xs text-slate-700 dark:text-stone-300 mb-1">{t('jobs.card.missingFromCV')}</p>
               <div className="flex flex-wrap gap-1">
                 {missingSkills.slice(0, 2).map((skill, index) => (
                   <span 
@@ -315,30 +317,30 @@ export function JobCard({
                 ? 'bg-red-50 text-red-500'
                 : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
             }`}
-            title={isSaved ? 'Ta bort från sparade' : 'Spara jobb'}
+            title={isSaved ? t('jobs.card.removeFromSaved') : t('jobs.card.saveJob')}
           >
             <Heart size={18} fill={isSaved ? 'currentColor' : 'none'} />
           </button>
-          
+
           {onAnalyze && (
             <button
               onClick={handleAnalyze}
               className="flex items-center gap-1 px-3 py-1.5 bg-indigo-100 text-indigo-700 text-sm rounded-lg hover:bg-indigo-200 transition-colors"
-              title="Analysera matchning med AI"
+              title={t('jobs.card.analyzeMatchWithAI')}
             >
               <Bot size={14} />
-              Analysera
+              {t('jobs.card.analyze')}
             </button>
           )}
-          
+
           {showApplyButton && isHovered && (
             <button
               onClick={handleApply}
               className="flex items-center gap-1 px-3 py-1.5 bg-[#4f46e5] text-white text-sm rounded-lg hover:bg-[#4338ca] transition-colors"
-              title="Ansök på arbetsformedlingen.se"
+              title={t('jobs.card.applyAtAF')}
             >
               <ExternalLink size={14} />
-              Ansök
+              {t('jobs.card.apply')}
             </button>
           )}
         </div>
@@ -350,18 +352,18 @@ export function JobCard({
           {salary && <span>💰 {salary}</span>}
           {deadline && (
             <span className="text-red-500">
-              ⏰ Ansök senast {deadline}
+              ⏰ {t('jobs.card.applyBy', { date: deadline })}
             </span>
           )}
           {normalizedJob.application_details?.via_af && (
             <span className="text-teal-600 flex items-center gap-1">
-              🏛️ Via Arbetsförmedlingen
+              🏛️ {t('jobs.card.viaAF')}
             </span>
           )}
         </div>
-        
+
         <div className="flex items-center gap-1 text-[#4f46e5] text-sm font-medium">
-          Läs mer
+          {t('jobs.card.readMore')}
           <ChevronRight size={16} />
         </div>
       </div>

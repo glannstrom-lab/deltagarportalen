@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
-import { 
-  Search, MapPin, Sliders, X, Building2, Briefcase, 
+import { useTranslation } from 'react-i18next'
+import {
+  Search, MapPin, Sliders, X, Building2, Briefcase,
   Clock, GraduationCap, Wallet, Car, Home, Filter,
   ChevronDown, ChevronUp, RotateCcw, MapPinned
 } from '@/components/ui/icons'
@@ -29,46 +30,52 @@ interface JobFiltersProps {
   totalJobs?: number
 }
 
-const employmentTypes = [
-  { id: 'Heltid', label: 'Heltid', icon: Clock },
-  { id: 'Deltid', label: 'Deltit', icon: Clock },
-  { id: 'Tillsvidare', label: 'Tillsvidare', icon: Building2 },
-  { id: 'Projekt', label: 'Projekt / Visstid', icon: Briefcase },
-  { id: 'Sommarjobb', label: 'Sommarjobb', icon: Briefcase },
-  { id: 'Praktik', label: 'Praktik', icon: GraduationCap },
-]
-
-const experienceLevels = [
-  { id: 'Ingen erfarenhet', label: 'Ingen erfarenhet krävs', color: 'green' },
-  { id: 'Erfaren', label: 'Erfarenhet (1-3 år)', color: 'yellow' },
-  { id: 'Mycket erfaren', label: 'Senior (5+ år)', color: 'orange' },
-]
-
-const workArrangements = [
-  { id: 'remote', label: 'Distans', icon: Home, description: 'Jobba hemifrån' },
-  { id: 'hybrid', label: 'Hybrid', icon: Building2, description: 'Blandat läge' },
-  { id: 'onsite', label: 'På plats', icon: MapPin, description: 'På kontoret' },
-]
-
+// Swedish regions don't need translation - they're proper nouns
 const swedishRegions = [
   'Stockholms län', 'Uppsala län', 'Södermanlands län', 'Östergötlands län',
   'Jönköpings län', 'Kronobergs län', 'Kalmar län', 'Gotlands län',
   'Blekinge län', 'Skåne län', 'Hallands län', 'Västra Götalands län',
   'Värmlands län', 'Örebro län', 'Västmanlands län', 'Dalarnas län',
-  'Gävleborgs län', 'Västernorrlands län', 'Jämtlands län', 
+  'Gävleborgs län', 'Västernorrlands län', 'Jämtlands län',
   'Västerbottens län', 'Norrbottens län'
 ]
 
-const languages = [
-  { id: 'svenska', label: 'Svenska' },
-  { id: 'engelska', label: 'Engelska' },
-  { id: 'norska', label: 'Norska' },
-  { id: 'danska', label: 'Danska' },
-]
-
 export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: JobFiltersProps) {
+  const { t } = useTranslation()
   const [expandedSections, setExpandedSections] = useState<string[]>(['basic'])
   const [showMobileFilters, setShowMobileFilters] = useState(false)
+
+  // Translated employment types
+  const employmentTypes = [
+    { id: 'Heltid', labelKey: 'jobs.filters.employmentTypes.fullTime', icon: Clock },
+    { id: 'Deltid', labelKey: 'jobs.filters.employmentTypes.partTime', icon: Clock },
+    { id: 'Tillsvidare', labelKey: 'jobs.filters.employmentTypes.permanent', icon: Building2 },
+    { id: 'Projekt', labelKey: 'jobs.filters.employmentTypes.project', icon: Briefcase },
+    { id: 'Sommarjobb', labelKey: 'jobs.filters.employmentTypes.summer', icon: Briefcase },
+    { id: 'Praktik', labelKey: 'jobs.filters.employmentTypes.internship', icon: GraduationCap },
+  ]
+
+  // Translated experience levels
+  const experienceLevels = [
+    { id: 'Ingen erfarenhet', labelKey: 'jobs.filters.experienceLevels.none', color: 'green' },
+    { id: 'Erfaren', labelKey: 'jobs.filters.experienceLevels.experienced', color: 'yellow' },
+    { id: 'Mycket erfaren', labelKey: 'jobs.filters.experienceLevels.senior', color: 'orange' },
+  ]
+
+  // Translated work arrangements
+  const workArrangements = [
+    { id: 'remote', labelKey: 'jobs.filters.workArrangements.remote', icon: Home, descKey: 'jobs.filters.workArrangements.remoteDesc' },
+    { id: 'hybrid', labelKey: 'jobs.filters.workArrangements.hybrid', icon: Building2, descKey: 'jobs.filters.workArrangements.hybridDesc' },
+    { id: 'onsite', labelKey: 'jobs.filters.workArrangements.onsite', icon: MapPin, descKey: 'jobs.filters.workArrangements.onsiteDesc' },
+  ]
+
+  // Translated languages
+  const languages = [
+    { id: 'svenska', labelKey: 'jobs.filters.languages.swedish' },
+    { id: 'engelska', labelKey: 'jobs.filters.languages.english' },
+    { id: 'norska', labelKey: 'jobs.filters.languages.norwegian' },
+    { id: 'danska', labelKey: 'jobs.filters.languages.danish' },
+  ]
 
   const updateFilter = <K extends keyof JobFilterState>(key: K, value: JobFilterState[K]) => {
     onChange({ ...filters, [key]: value })
@@ -170,12 +177,12 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
   const FilterContent = () => (
     <>
       {/* Search */}
-      <FilterSection title="Sökord" section="search" icon={Search}>
+      <FilterSection title={t('jobs.filters.search')} section="search" icon={Search}>
         <div className="relative">
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-stone-400" />
           <input
             type="text"
-            placeholder="Yrke, företag, nyckelord..."
+            placeholder={t('jobs.filters.searchPlaceholder')}
             value={filters.search}
             onChange={(e) => updateFilter('search', e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent text-sm"
@@ -184,14 +191,14 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       </FilterSection>
 
       {/* Location */}
-      <FilterSection title="Plats" section="location" icon={MapPinned}>
+      <FilterSection title={t('jobs.filters.location')} section="location" icon={MapPinned}>
         <div className="space-y-3">
           {/* Kommun/Ort */}
           <div className="relative">
             <MapPin size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-600 dark:text-stone-400" />
             <input
               type="text"
-              placeholder="Skriv ort eller kommun..."
+              placeholder={t('jobs.filters.locationPlaceholder')}
               value={filters.location}
               onChange={(e) => updateFilter('location', e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm"
@@ -202,7 +209,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           {filters.location && (
             <div className="bg-teal-50 p-3 rounded-xl">
               <label className="text-sm font-medium text-teal-900 mb-2 block">
-                Avstånd: {filters.distanceKm} km
+                {t('jobs.filters.distance', { km: filters.distanceKm })}
               </label>
               <input
                 type="range"
@@ -227,7 +234,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             onChange={(e) => updateFilter('region', e.target.value)}
             className="w-full px-4 py-2.5 border border-slate-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 text-sm bg-white dark:bg-stone-800 dark:text-stone-100"
           >
-            <option value="">Alla län</option>
+            <option value="">{t('jobs.filters.allRegions')}</option>
             {swedishRegions.map(region => (
               <option key={region} value={region}>{region}</option>
             ))}
@@ -236,13 +243,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       </FilterSection>
 
       {/* Published date */}
-      <FilterSection title="Publicerad" section="date" icon={Clock}>
+      <FilterSection title={t('jobs.filters.published')} section="date" icon={Clock}>
         <div className="grid grid-cols-2 gap-2">
           {[
-            { value: 'all', label: 'När som helst' },
-            { value: 'today', label: 'Idag' },
-            { value: 'week', label: 'Senaste veckan' },
-            { value: 'month', label: 'Senaste månaden' },
+            { value: 'all', labelKey: 'jobs.filters.publishedOptions.anytime' },
+            { value: 'today', labelKey: 'jobs.filters.publishedOptions.today' },
+            { value: 'week', labelKey: 'jobs.filters.publishedOptions.lastWeek' },
+            { value: 'month', labelKey: 'jobs.filters.publishedOptions.lastMonth' },
           ].map((option) => (
             <button
               key={option.value}
@@ -253,14 +260,14 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                   : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
               }`}
             >
-              {option.label}
+              {t(option.labelKey)}
             </button>
           ))}
         </div>
       </FilterSection>
 
       {/* Work Arrangement */}
-      <FilterSection title="Arbetsplats" section="arrangement" icon={Home}>
+      <FilterSection title={t('jobs.filters.workplace')} section="arrangement" icon={Home}>
         <div className="space-y-2">
           {workArrangements.map((type) => (
             <button
@@ -274,8 +281,8 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             >
               <type.icon size={18} />
               <div>
-                <div className="font-medium text-sm">{type.label}</div>
-                <div className="text-xs opacity-70">{type.description}</div>
+                <div className="font-medium text-sm">{t(type.labelKey)}</div>
+                <div className="text-xs opacity-70">{t(type.descKey)}</div>
               </div>
             </button>
           ))}
@@ -283,7 +290,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       </FilterSection>
 
       {/* Employment type */}
-      <FilterSection title="Anställningsform" section="employment" icon={Briefcase}>
+      <FilterSection title={t('jobs.filters.employmentType')} section="employment" icon={Briefcase}>
         <div className="flex flex-wrap gap-2">
           {employmentTypes.map((type) => (
             <button
@@ -296,14 +303,14 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               }`}
             >
               <type.icon size={14} />
-              {type.label}
+              {t(type.labelKey)}
             </button>
           ))}
         </div>
       </FilterSection>
 
       {/* Experience level */}
-      <FilterSection title="Erfarenhetsnivå" section="experience" icon={GraduationCap}>
+      <FilterSection title={t('jobs.filters.experienceLevel')} section="experience" icon={GraduationCap}>
         <div className="space-y-2">
           {experienceLevels.map((level) => (
             <button
@@ -315,7 +322,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                   : 'bg-slate-50 dark:bg-stone-800 text-slate-600 dark:text-stone-400 border-2 border-transparent hover:bg-slate-100 dark:hover:bg-stone-700'
               }`}
             >
-              <span className="font-medium text-sm">{level.label}</span>
+              <span className="font-medium text-sm">{t(level.labelKey)}</span>
               {filters.experienceLevel.includes(level.id) && (
                 <div className={`w-2 h-2 rounded-full bg-${level.color}-500`} />
               )}
@@ -325,12 +332,12 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
       </FilterSection>
 
       {/* Salary */}
-      <FilterSection title="Lön" section="salary" icon={Wallet}>
+      <FilterSection title={t('jobs.filters.salary')} section="salary" icon={Wallet}>
         <div className="space-y-4">
           <div className="flex items-center gap-2">
             <input
               type="number"
-              placeholder="Min"
+              placeholder={t('jobs.filters.salaryMin')}
               value={filters.salaryMin || ''}
               onChange={(e) => updateFilter('salaryMin', parseInt(e.target.value) || 0)}
               className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
@@ -338,18 +345,18 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             <span className="text-slate-600 dark:text-stone-400">-</span>
             <input
               type="number"
-              placeholder="Max"
+              placeholder={t('jobs.filters.salaryMax')}
               value={filters.salaryMax || ''}
               onChange={(e) => updateFilter('salaryMax', parseInt(e.target.value) || 0)}
               className="w-full px-3 py-2 border border-slate-200 dark:border-stone-700 dark:bg-stone-800 dark:text-stone-100 rounded-xl text-sm"
             />
           </div>
-          <p className="text-xs text-slate-700 dark:text-stone-300">Ange önskad månadslön i kr</p>
+          <p className="text-xs text-slate-700 dark:text-stone-300">{t('jobs.filters.salaryHint')}</p>
         </div>
       </FilterSection>
 
       {/* Language */}
-      <FilterSection title="Språk" section="language" icon={Sliders}>
+      <FilterSection title={t('jobs.filters.language')} section="language" icon={Sliders}>
         <div className="flex flex-wrap gap-2">
           {languages.map((lang) => (
             <button
@@ -361,14 +368,14 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                   : 'bg-slate-100 dark:bg-stone-800 text-slate-600 dark:text-stone-400 hover:bg-slate-200 dark:hover:bg-stone-700'
               }`}
             >
-              {lang.label}
+              {t(lang.labelKey)}
             </button>
           ))}
         </div>
       </FilterSection>
 
       {/* Driving License */}
-      <FilterSection title="Övrigt" section="other" icon={Car}>
+      <FilterSection title={t('jobs.filters.other')} section="other" icon={Car}>
         <label className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-stone-800 cursor-pointer hover:bg-slate-100 dark:hover:bg-stone-700 transition-colors">
           <input
             type="checkbox"
@@ -377,17 +384,17 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             className="w-5 h-5 rounded border-slate-300 dark:border-stone-600 text-teal-600 focus:ring-teal-500"
           />
           <div>
-            <div className="font-medium text-sm text-slate-700 dark:text-stone-300">Körkort krävs</div>
-            <div className="text-xs text-slate-700 dark:text-stone-400">Visa endast jobb som kräver körkort</div>
+            <div className="font-medium text-sm text-slate-700 dark:text-stone-300">{t('jobs.filters.drivingLicenseRequired')}</div>
+            <div className="text-xs text-slate-700 dark:text-stone-400">{t('jobs.filters.drivingLicenseHint')}</div>
           </div>
         </label>
       </FilterSection>
 
       {/* Match percentage */}
-      <FilterSection title="Match med CV" section="match" icon={Sliders}>
+      <FilterSection title={t('jobs.filters.cvMatch')} section="match" icon={Sliders}>
         <div className="bg-gradient-to-r from-teal-50 to-sky-50 p-4 rounded-xl">
           <label className="text-sm font-medium text-teal-900 mb-3 block">
-            Minst {filters.minMatchPercentage}% match
+            {t('jobs.filters.minMatch', { percent: filters.minMatchPercentage })}
           </label>
           <input
             type="range"
@@ -399,9 +406,9 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
             className="w-full accent-teal-600"
           />
           <div className="flex justify-between text-xs text-teal-600 mt-2">
-            <span>Ingen min</span>
+            <span>{t('jobs.filters.noMin')}</span>
             <span>50%</span>
-            <span>Perfekt match</span>
+            <span>{t('jobs.filters.perfectMatch')}</span>
           </div>
         </div>
       </FilterSection>
@@ -416,7 +423,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700">
           <div className="flex items-center gap-2">
             <Filter size={20} className="text-teal-600" />
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Filtrera</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('jobs.filters.title')}</h3>
           </div>
           {hasActiveFilters && (
             <button
@@ -424,7 +431,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
               className="text-xs text-red-500 hover:text-red-700 flex items-center gap-1 font-medium"
             >
               <RotateCcw size={12} />
-              Rensa alla
+              {t('jobs.filters.clearAll')}
             </button>
           )}
         </div>
@@ -438,11 +445,11 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         <div className="p-4 border-t border-slate-100 dark:border-stone-700 bg-slate-50 dark:bg-stone-800">
           <div className="flex items-center justify-between">
             <span className="text-sm text-slate-600 dark:text-stone-400">
-              Visar <strong className="text-slate-900 dark:text-stone-100">{jobCount}</strong> jobb
+              {t('jobs.filters.showing', { count: jobCount })}
             </span>
             {totalJobs > jobCount && (
               <span className="text-xs text-slate-700 dark:text-stone-300">
-                av {totalJobs} totala
+                {t('jobs.filters.ofTotal', { total: totalJobs })}
               </span>
             )}
           </div>
@@ -456,7 +463,7 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
           className="flex items-center gap-2 px-4 py-2.5 bg-white dark:bg-stone-900 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium shadow-sm"
         >
           <Filter size={18} />
-          Filter
+          {t('jobs.filters.title')}
           {activeFilterCount > 0 && (
             <span className="ml-1 px-2 py-0.5 bg-teal-600 text-white text-xs rounded-full">
               {activeFilterCount}
@@ -467,14 +474,14 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
         {/* Mobile filter modal */}
         {showMobileFilters && (
           <div className="fixed inset-0 z-50">
-            <div 
+            <div
               className="absolute inset-0 bg-black/50"
               onClick={() => setShowMobileFilters(false)}
             />
             <div className="absolute right-0 top-0 bottom-0 w-full max-w-sm bg-white dark:bg-stone-900 shadow-xl overflow-hidden flex flex-col">
               {/* Mobile header */}
               <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-stone-700 bg-white dark:bg-stone-900">
-                <h3 className="font-semibold text-slate-800 dark:text-stone-100">Filtrera jobb</h3>
+                <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('jobs.filters.filterJobs')}</h3>
                 <button
                   onClick={() => setShowMobileFilters(false)}
                   className="p-2 hover:bg-slate-100 dark:hover:bg-stone-800 rounded-lg"
@@ -494,13 +501,13 @@ export function JobFilters({ filters, onChange, jobCount = 0, totalJobs = 0 }: J
                   onClick={clearAllFilters}
                   className="flex-1 px-4 py-3 border border-slate-200 dark:border-stone-700 rounded-xl text-slate-700 dark:text-stone-300 font-medium"
                 >
-                  Rensa
+                  {t('jobs.filters.clear')}
                 </button>
                 <button
                   onClick={() => setShowMobileFilters(false)}
                   className="flex-1 px-4 py-3 bg-teal-600 text-white rounded-xl font-medium"
                 >
-                  Visa {jobCount} jobb
+                  {t('jobs.filters.showJobs', { count: jobCount })}
                 </button>
               </div>
             </div>

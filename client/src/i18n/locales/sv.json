@@ -890,6 +890,91 @@
     "writePersonalLetter": "Skriv personligt brev",
     "somethingWentWrong": "Något gick fel"
   },
+  "jobs": {
+    "card": {
+      "jobPosting": "Jobbannons",
+      "notSpecified": "Ej angiven",
+      "dateNotSpecified": "Datum ej angivet",
+      "today": "Idag",
+      "yesterday": "Igår",
+      "daysAgo": "{{days}} dagar sedan",
+      "matchesYourCV": "Matchar ditt CV:",
+      "missingFromCV": "Saknas i ditt CV:",
+      "removeFromSaved": "Ta bort från sparade",
+      "saveJob": "Spara jobb",
+      "analyzeMatchWithAI": "Analysera matchning med AI",
+      "analyze": "Analysera",
+      "applyAtAF": "Ansök på arbetsformedlingen.se",
+      "apply": "Ansök",
+      "applyBy": "Ansök senast {{date}}",
+      "viaAF": "Via Arbetsförmedlingen",
+      "readMore": "Läs mer"
+    },
+    "filters": {
+      "title": "Filtrera",
+      "filterJobs": "Filtrera jobb",
+      "clearAll": "Rensa alla",
+      "clear": "Rensa",
+      "showing": "Visar {{count}} jobb",
+      "ofTotal": "av {{total}} totala",
+      "showJobs": "Visa {{count}} jobb",
+      "search": "Sökord",
+      "searchPlaceholder": "Yrke, företag, nyckelord...",
+      "location": "Plats",
+      "locationPlaceholder": "Skriv ort eller kommun...",
+      "distance": "Avstånd: {{km}} km",
+      "allRegions": "Alla län",
+      "published": "Publicerad",
+      "publishedOptions": {
+        "anytime": "När som helst",
+        "today": "Idag",
+        "lastWeek": "Senaste veckan",
+        "lastMonth": "Senaste månaden"
+      },
+      "workplace": "Arbetsplats",
+      "workArrangements": {
+        "remote": "Distans",
+        "remoteDesc": "Jobba hemifrån",
+        "hybrid": "Hybrid",
+        "hybridDesc": "Blandat läge",
+        "onsite": "På plats",
+        "onsiteDesc": "På kontoret"
+      },
+      "employmentType": "Anställningsform",
+      "employmentTypes": {
+        "fullTime": "Heltid",
+        "partTime": "Deltid",
+        "permanent": "Tillsvidare",
+        "project": "Projekt / Visstid",
+        "summer": "Sommarjobb",
+        "internship": "Praktik"
+      },
+      "experienceLevel": "Erfarenhetsnivå",
+      "experienceLevels": {
+        "none": "Ingen erfarenhet krävs",
+        "experienced": "Erfarenhet (1-3 år)",
+        "senior": "Senior (5+ år)"
+      },
+      "salary": "Lön",
+      "salaryMin": "Min",
+      "salaryMax": "Max",
+      "salaryHint": "Ange önskad månadslön i kr",
+      "language": "Språk",
+      "languages": {
+        "swedish": "Svenska",
+        "english": "Engelska",
+        "norwegian": "Norska",
+        "danish": "Danska"
+      },
+      "other": "Övrigt",
+      "drivingLicenseRequired": "Körkort krävs",
+      "drivingLicenseHint": "Visa endast jobb som kräver körkort",
+      "cvMatch": "Match med CV",
+      "minMatch": "Minst {{percent}}% match",
+      "noMin": "Ingen min",
+      "perfectMatch": "Perfekt match"
+    }
+  },
   "applications": {
     "title": "Mina Ansökningar",
     "subtitle": "Följ dina jobbansökningar genom hela processen",
