@@ -183,9 +183,12 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
   )
 
   // Variant: Glass - Soft pastel style matching Dashboard/Profile
+  // Compact mode for many tabs (>5)
+  const isCompact = tabs.length > 5
   const GlassTabs = () => (
     <div className={cn(
       'hidden md:flex items-center gap-1 overflow-x-auto scrollbar-hide',
+      'pb-1', // Space for shadow
       className
     )}>
       {tabs.map((tab) => {
@@ -196,17 +199,21 @@ export function PageTabs({ tabs, className, collapsible = true, variant = 'minim
           <Link
             key={tab.id}
             to={tab.path}
+            title={tab.label}
             className={cn(
-              'flex items-center gap-2 px-4 py-2 rounded-xl',
+              'flex items-center gap-1.5 rounded-xl',
               'text-sm font-medium transition-all duration-200 ease-out whitespace-nowrap',
-              'min-h-[44px]',
+              isCompact ? 'px-2.5 py-1.5 min-h-[36px]' : 'px-4 py-2 min-h-[44px]',
               isActive
                 ? 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 shadow-sm'
                 : 'text-stone-600 dark:text-stone-400 hover:bg-teal-50 dark:hover:bg-stone-700'
             )}
           >
             {Icon && <Icon className={cn('w-4 h-4 flex-shrink-0', isActive ? 'text-teal-600 dark:text-teal-400' : '')} />}
-            <span>{tab.label}</span>
+            {/* Hide label on compact mode for inactive tabs on smaller screens */}
+            <span className={cn(isCompact && !isActive && 'hidden lg:inline')}>
+              {tab.label}
+            </span>
             {tab.badge !== undefined && tab.badge > 0 && (
               <span className={cn(
                 'px-1.5 py-0.5 text-xs rounded-full font-bold',
