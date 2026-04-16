@@ -182,6 +182,7 @@
     "linkedinOptimizer": "LinkedIn Optimizer",
     "skillsGap": "Skills Analysis",
     "interviewSimulator": "Interview Practice",
+    "aiTeam": "My AI Team",
     "profile": "My Profile",
     "help": "Help",
     "groups": {
@@ -4927,6 +4928,113 @@
     "pageHeader": {
       "myInsights": "My insights",
       "insights": "Insights"
+    }
+  },
+  "aiTeam": {
+    "title": "My AI Team",
+    "description": "Your personal support team for job searching. Choose an agent and start chatting!",
+    "selectAgent": "Choose your agent",
+    "personality": "Personality",
+    "selectPersonality": "Select personality",
+    "clearChat": "Clear chat",
+    "thinking": "Thinking...",
+    "send": "Send",
+    "inputPlaceholder": "Write a message...",
+    "inputHint": "Press Enter to send, Shift+Enter for new line",
+    "startChatHint": "Select a quick action or write a message to begin",
+    "agents": {
+      "arbetskonsulent": {
+        "name": "Employment Consultant",
+        "description": "Expert on job searching, CVs and applications",
+        "systemPrompt": "You are an experienced employment consultant helping job seekers. You give concrete advice about CVs, cover letters, job searching and the job market. Be supportive but professional."
+      },
+      "arbetsterapeut": {
+        "name": "Occupational Therapist",
+        "description": "Specialist in work ability and accommodations",
+        "systemPrompt": "You are an occupational therapist helping people with disabilities and health challenges. You give advice about workplace accommodations, energy management and finding the right work-life balance."
+      },
+      "studievagledare": {
+        "name": "Career Counselor",
+        "description": "Guide for education and career paths",
+        "systemPrompt": "You are a career counselor helping with education choices and career planning. You know a lot about skill validation, further education and how to build on competencies."
+      },
+      "motivationscoach": {
+        "name": "Motivation Coach",
+        "description": "Support for motivation and self-confidence",
+        "systemPrompt": "You are a motivation coach helping people find their inner drive. You provide support during setbacks, help with goal setting and celebrate progress together with the user."
+      },
+      "digitalcoach": {
+        "name": "Digital Coach",
+        "description": "Expert on LinkedIn and digital tools",
+        "systemPrompt": "You are a digital coach helping with online presence and digital tools for job searching. You give advice about LinkedIn optimization, digital portfolios and professional networking online."
+      }
+    },
+    "personalities": {
+      "professional": {
+        "name": "Professional",
+        "description": "Factual and structured"
+      },
+      "empathetic": {
+        "name": "Empathetic",
+        "description": "Warm and supportive"
+      },
+      "direct": {
+        "name": "Direct",
+        "description": "Straight to the point, efficient"
+      },
+      "arnold": {
+        "name": "Arnold Schwarzenegger",
+        "description": "\"I'll be back... with a great CV!\""
+      },
+      "mormor": {
+        "name": "Swedish Grandma",
+        "description": "Caring with coffee breaks"
+      },
+      "pirate": {
+        "name": "Pirate",
+        "description": "\"Ahoy! Let's find ye treasure job!\""
+      },
+      "sportscaster": {
+        "name": "Sports Commentator",
+        "description": "Energetic play-by-play style"
+      }
+    },
+    "personalityCategories": {
+      "serious": "Serious",
+      "fun": "Fun"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "reviewCV": "Review my CV",
+      "findJobs": "Find jobs",
+      "coverLetter": "Cover letter",
+      "analyzeJob": "Analyze job posting",
+      "workAbility": "My work ability",
+      "suggestAdaptations": "Suggest accommodations",
+      "planWorkday": "Plan workday",
+      "handleStress": "Handle stress",
+      "findEducation": "Find education",
+      "validateSkills": "Validate skills",
+      "careerPaths": "Career paths",
+      "compareEducation": "Compare education",
+      "setGoals": "Set goals",
+      "overcomeSetbacks": "Overcome setbacks",
+      "buildConfidence": "Build confidence",
+      "celebrateProgress": "Celebrate progress",
+      "optimizeLinkedIn": "Optimize LinkedIn",
+      "createPortfolio": "Create portfolio",
+      "networkOnline": "Network online",
+      "digitalTools": "Digital tools"
+    },
+    "tips": {
+      "title": "Tips",
+      "tip1": "Be specific with your questions for better answers",
+      "tip2": "Try different personalities for variety",
+      "tip3": "Use quick actions for common tasks"
+    },
+    "error": {
+      "generic": "Something went wrong. Please try again.",
+      "noResponse": "No response from AI service."
     }
   }
 }

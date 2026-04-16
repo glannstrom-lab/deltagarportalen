@@ -182,6 +182,7 @@
     "linkedinOptimizer": "LinkedIn-optimering",
     "skillsGap": "Kompetensanalys",
     "interviewSimulator": "Intervjuträning",
+    "aiTeam": "Mitt AI Team",
     "profile": "Min profil",
     "help": "Hjälp",
     "groups": {
@@ -5126,6 +5127,113 @@
     "pageHeader": {
       "myInsights": "Mina insikter",
       "insights": "Insikter"
+    }
+  },
+  "aiTeam": {
+    "title": "Mitt AI Team",
+    "description": "Ditt personliga supportteam för jobbsökning. Välj en agent och börja chatta!",
+    "selectAgent": "Välj din agent",
+    "personality": "Personlighet",
+    "selectPersonality": "Välj personlighet",
+    "clearChat": "Rensa chatt",
+    "thinking": "Tänker...",
+    "send": "Skicka",
+    "inputPlaceholder": "Skriv ett meddelande...",
+    "inputHint": "Tryck Enter för att skicka, Shift+Enter för ny rad",
+    "startChatHint": "Välj en snabbfunktion eller skriv ett meddelande för att börja",
+    "agents": {
+      "arbetskonsulent": {
+        "name": "Arbetskonsulent",
+        "description": "Expert på jobbsökning, CV och ansökningar",
+        "systemPrompt": "Du är en erfaren arbetskonsulent som hjälper arbetssökande. Du ger konkreta råd om CV, personliga brev, jobbsökning och arbetsmarknaden. Var stöttande men professionell."
+      },
+      "arbetsterapeut": {
+        "name": "Arbetsterapeut",
+        "description": "Specialist på arbetsförmåga och anpassningar",
+        "systemPrompt": "Du är en arbetsterapeut som hjälper personer med funktionsvariationer och hälsoutmaningar. Du ger råd om arbetsanpassningar, energihantering och att hitta rätt balans i arbetslivet."
+      },
+      "studievagledare": {
+        "name": "Studievägledare",
+        "description": "Guide för utbildning och karriärvägar",
+        "systemPrompt": "Du är en studievägledare som hjälper till med utbildningsval och karriärplanering. Du vet mycket om validering, vidareutbildning och hur man bygger på sin kompetens."
+      },
+      "motivationscoach": {
+        "name": "Motivationscoach",
+        "description": "Stöd för motivation och självförtroende",
+        "systemPrompt": "Du är en motivationscoach som hjälper människor att hitta sin inre drivkraft. Du ger stöd vid motgångar, hjälper med målsättning och firar framsteg tillsammans med användaren."
+      },
+      "digitalcoach": {
+        "name": "Digital Coach",
+        "description": "Expert på LinkedIn och digitala verktyg",
+        "systemPrompt": "Du är en digital coach som hjälper med online-närvaro och digitala verktyg för jobbsökning. Du ger råd om LinkedIn-optimering, digitala portfolios och professionellt nätverkande online."
+      }
+    },
+    "personalities": {
+      "professional": {
+        "name": "Professionell",
+        "description": "Saklig och strukturerad"
+      },
+      "empathetic": {
+        "name": "Empatisk",
+        "description": "Varm och stöttande"
+      },
+      "direct": {
+        "name": "Direkt",
+        "description": "Rakt på sak, effektiv"
+      },
+      "arnold": {
+        "name": "Arnold Schwarzenegger",
+        "description": "\"I'll be back... with a great CV!\""
+      },
+      "mormor": {
+        "name": "Svensk Mormor",
+        "description": "Omtänksam med kaffepauser"
+      },
+      "pirate": {
+        "name": "Pirat",
+        "description": "\"Ahoy! Let's find ye treasure job!\""
+      },
+      "sportscaster": {
+        "name": "Sportkommentator",
+        "description": "Energisk play-by-play stil"
+      }
+    },
+    "personalityCategories": {
+      "serious": "Seriösa",
+      "fun": "Roliga"
+    },
+    "quickActions": {
+      "title": "Snabbfunktioner",
+      "reviewCV": "Granska mitt CV",
+      "findJobs": "Hitta jobb",
+      "coverLetter": "Personligt brev",
+      "analyzeJob": "Analysera jobbannons",
+      "workAbility": "Min arbetsförmåga",
+      "suggestAdaptations": "Föreslå anpassningar",
+      "planWorkday": "Planera arbetsdag",
+      "handleStress": "Hantera stress",
+      "findEducation": "Hitta utbildningar",
+      "validateSkills": "Validera kunskaper",
+      "careerPaths": "Karriärvägar",
+      "compareEducation": "Jämför utbildningar",
+      "setGoals": "Sätt upp mål",
+      "overcomeSetbacks": "Övervinn motgångar",
+      "buildConfidence": "Bygg självförtroende",
+      "celebrateProgress": "Fira framsteg",
+      "optimizeLinkedIn": "Optimera LinkedIn",
+      "createPortfolio": "Skapa portfolio",
+      "networkOnline": "Nätverka online",
+      "digitalTools": "Digitala verktyg"
+    },
+    "tips": {
+      "title": "Tips",
+      "tip1": "Var specifik med dina frågor för bättre svar",
+      "tip2": "Prova olika personligheter för variation",
+      "tip3": "Använd snabbfunktionerna för vanliga uppgifter"
+    },
+    "error": {
+      "generic": "Något gick fel. Försök igen.",
+      "noResponse": "Inget svar från AI-tjänsten."
     }
   }
 }

@@ -28,6 +28,7 @@ import {
   Mic,
   Building2,
   UserCheck,
+  Bot,
 } from '@/components/ui/icons'
 
 // ============================================
@@ -51,7 +52,7 @@ export interface NavGroup {
 
 // Smart badge system: Only show badge for most recent unvisited feature
 // This is tracked via localStorage in the component
-export const NEWEST_FEATURE = '/spontanansökan' // Change this when launching new features
+export const NEWEST_FEATURE = '/ai-team' // Change this when launching new features
 
 // Grouped navigation for reduced cognitive load
 export const navGroups: NavGroup[] = [
@@ -81,8 +82,9 @@ export const navGroups: NavGroup[] = [
     id: 'development',
     labelKey: 'nav.groups.development',
     items: [
+      { path: '/ai-team', labelKey: 'nav.aiTeam', icon: Bot, isNew: true },
       { path: '/career', labelKey: 'nav.career', icon: Target },
-      { path: '/education', labelKey: 'nav.education', icon: GraduationCap, isNew: true },
+      { path: '/education', labelKey: 'nav.education', icon: GraduationCap },
       { path: '/interest-guide', labelKey: 'nav.interestGuide', icon: Compass },
       { path: '/personal-brand', labelKey: 'nav.personalBrand', icon: Star },
       { path: '/linkedin-optimizer', labelKey: 'nav.linkedinOptimizer', icon: Linkedin },

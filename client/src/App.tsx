@@ -68,6 +68,7 @@ const Spontaneous = lazy(() => import('./pages/Spontaneous'))
 const LinkedInCallback = lazy(() => import('./pages/LinkedInCallback'))
 const GoogleCalendarCallback = lazy(() => import('./pages/GoogleCalendarCallback'))
 const MyConsultant = lazy(() => import('./pages/MyConsultant'))
+const AITeam = lazy(() => import('./pages/AITeam'))
 
 /**
  * Lazy route wrapper with error boundary
@@ -242,6 +243,7 @@ function App() {
           <Route path="linkedin-optimizer" element={<LazyRoute><RouteErrorBoundary><LinkedInOptimizer /></RouteErrorBoundary></LazyRoute>} />
           <Route path="skills-gap-analysis" element={<LazyRoute><RouteErrorBoundary><SkillsGapAnalysis /></RouteErrorBoundary></LazyRoute>} />
           <Route path="interview-simulator" element={<LazyRoute><RouteErrorBoundary><InterviewSimulator /></RouteErrorBoundary></LazyRoute>} />
+          <Route path="ai-team" element={<LazyRoute><RouteErrorBoundary><AITeam /></RouteErrorBoundary></LazyRoute>} />
           <Route path="exercises" element={<LazyRoute><RouteErrorBoundary><Exercises /></RouteErrorBoundary></LazyRoute>} />
           <Route path="international/*" element={<LazyRoute><RouteErrorBoundary><International /></RouteErrorBoundary></LazyRoute>} />
           <Route path="consultant/*" element={

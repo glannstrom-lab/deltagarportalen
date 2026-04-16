@@ -129,6 +129,24 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
       maxTokens: 800,
       responseKey: 'svar'
     };
+  },
+  'ai-team-chat': (data) => {
+    const historik = data?.historik || [];
+    const agentTyp = data?.agentTyp || 'arbetskonsulent';
+    const systemKontext = data?.systemKontext || 'Du är en hjälpsam AI-assistent för jobbsökande.';
+
+    // Build conversation history
+    let conversation = '';
+    if (historik.length > 0) {
+      conversation = historik.map(h => `${h.roll === 'användare' ? 'Användare' : 'Assistent'}: ${h.innehall}`).join('\n\n') + '\n\n';
+    }
+
+    return {
+      system: `${systemKontext}\n\nViktig: Svara alltid på svenska. Var hjälpsam, konkret och uppmuntrande. Anpassa dina svar efter din roll som ${agentTyp}.`,
+      user: conversation + 'Användare: ' + (data?.meddelande || 'Hej!'),
+      maxTokens: 1000,
+      responseKey: 'svar'
+    };
   }
 };
 
