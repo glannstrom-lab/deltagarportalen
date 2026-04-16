@@ -507,6 +507,273 @@
         "title": "💡 Tip: Customize CV for different jobs",
         "description": "Create different versions of your CV for different types of jobs. A CV for retail should highlight customer service, while one for warehouse should focus on logistics and work pace. Mark the CV you use most as \"Default\" to quickly find it."
       }
+    },
+    "ats": {
+      "loadingCV": "Loading CV data...",
+      "analysisTitle": "ATS Analysis of Your CV",
+      "analysisDescription": "See how well your current CV passes automatic screening in recruitment systems",
+      "noCVFound": "No CV Found",
+      "noCVDescription": "You need to create a CV before you can do an ATS analysis.",
+      "createCV": "Create CV",
+      "scoreLabel": "ATS Score",
+      "analyzing": "Analyzing...",
+      "runAnalysis": "Run new analysis",
+      "seeImprovements": "See improvement suggestions",
+      "passed": "Passed",
+      "warnings": "Warnings",
+      "detailedAnalysis": "Detailed Analysis",
+      "showTips": "Show tips",
+      "hideTips": "Hide tips",
+      "score": {
+        "excellent": "Excellent",
+        "good": "Good",
+        "needsImprovement": "Needs improvement",
+        "critical": "Critical - take action immediately"
+      },
+      "scoreInfo": {
+        "good": "Your CV will perform well in most recruitment systems (ATS).",
+        "poor": "Your CV will struggle in most recruitment systems (ATS).",
+        "roomForImprovement": "However, there is room for improvement."
+      },
+      "categories": {
+        "content": "Content",
+        "format": "Format & Design",
+        "keywords": "Keywords",
+        "technical": "Technical"
+      },
+      "checks": {
+        "contact": {
+          "title": "Contact Information",
+          "description": "Have you filled in name, email, and phone?",
+          "tip1": "Make sure your email is professional",
+          "tip2": "Double-check that the phone number is correct"
+        },
+        "summary": {
+          "title": "Summary/Profile",
+          "description": "A short summary significantly increases your chances",
+          "tip1": "Write 2-3 sentences about who you are",
+          "tip2": "Mention what type of role you're looking for"
+        },
+        "experience": {
+          "title": "Work Experience",
+          "description": "Have you listed your previous jobs?",
+          "tip1": "Start with your most recent job",
+          "tip2": "Use bullet points for job duties"
+        },
+        "education": {
+          "title": "Education",
+          "description": "Have you included your education?",
+          "tip1": "Also list ongoing education",
+          "tip2": "Include relevant courses"
+        },
+        "keywords": {
+          "title": "Keywords from the job ad",
+          "description": "Does your CV match the job ad keywords?",
+          "tip1": "Read the job ad carefully",
+          "tip2": "Include important skills they're looking for"
+        },
+        "skills": {
+          "title": "Skills",
+          "description": "Have you listed your skills?",
+          "tip1": "Add both technical and soft skills",
+          "tip2": "Include skills requested in job ads"
+        },
+        "fileFormat": {
+          "title": "File Format",
+          "description": "Is your CV saved in the right format?",
+          "tip1": "PDF is safest for formatting",
+          "tip2": "Word (.docx) also works well"
+        },
+        "typography": {
+          "title": "Fonts and Design",
+          "description": "Are you using readable fonts?",
+          "tip1": "Avoid unusual fonts",
+          "tip2": "Have enough whitespace"
+        },
+        "graphics": {
+          "title": "Images and Graphics",
+          "description": "ATS systems can struggle with images",
+          "tip1": "Avoid too much graphics",
+          "tip2": "Make sure the text is well-structured"
+        },
+        "headings": {
+          "title": "Headings and Sections",
+          "description": "Clear headings help ATS parse the content",
+          "tip1": "Use standard headings",
+          "tip2": "Avoid creative headings the system won't understand"
+        },
+        "profileImage": {
+          "title": "Profile Picture",
+          "description": "A professional picture increases your chances",
+          "tip1": "Use a professional picture",
+          "tip2": "Make sure the background is neutral"
+        },
+        "template": {
+          "title": "Template Selected",
+          "description": "Are you using a modern CV template?",
+          "tip1": "Choose a template that fits your industry",
+          "tip2": "Avoid overly creative templates for traditional jobs"
+        },
+        "languages": {
+          "title": "Language Skills",
+          "description": "Have you specified your language skills?",
+          "tip1": "Specify proficiency level for each language",
+          "tip2": "Swedish and English are often required"
+        },
+        "certifications": {
+          "title": "Certifications",
+          "description": "Certifications strengthen your profile",
+          "tip1": "Add relevant certifications",
+          "tip2": "Driver's license counts too!"
+        }
+      },
+      "whatIsAts": {
+        "title": "What is ATS?",
+        "description": "ATS (Applicant Tracking System) is software used by employers to manage job applications. The system automatically scans CVs looking for keywords and qualifications that match the job ad.",
+        "whyImportant": "Why is it important?",
+        "importance": "An estimated 75% of all major companies use ATS. If your CV isn't optimized, it may be filtered out before a human even sees it."
+      },
+      "cta": {
+        "title": "Want to improve your CV?",
+        "description": "Go back to the CV builder and make adjustments",
+        "button": "Improve my CV"
+      }
+    },
+    "tips": {
+      "title": "CV Tips & Guide",
+      "description": "Learn how to write a CV that actually gets results. Follow our tips to increase your chances of being called for an interview.",
+      "doThis": "Do this",
+      "avoidThis": "Avoid this",
+      "quick": {
+        "short": {
+          "title": "Keep it short",
+          "content": "Max 2 pages. Recruiters spend an average of 6 seconds on the first screening."
+        },
+        "customize": {
+          "title": "Customize every time",
+          "content": "Read the job posting and customize your CV for each application. It takes time but pays off."
+        },
+        "feedback": {
+          "title": "Ask for feedback",
+          "content": "Let someone you trust read through your CV. Fresh eyes see things you missed."
+        },
+        "pdf": {
+          "title": "PDF is safest",
+          "content": "Always save as PDF when submitting. This preserves the formatting."
+        }
+      },
+      "sections": {
+        "structure": {
+          "title": "Structure & Layout",
+          "description": "A clear structure makes it easy for recruiters to find information",
+          "do1": "Use clear headings for each section",
+          "do2": "Have consistent formatting throughout the CV",
+          "do3": "Use bullet points to list job duties",
+          "do4": "Put the most important information first",
+          "do5": "Have enough whitespace for readability",
+          "dont1": "Use too many different fonts",
+          "dont2": "Make the CV too long (max 2 pages)",
+          "dont3": "Use complex design that disrupts readability",
+          "dont4": "Have too small margins",
+          "dont5": "Use too many colors"
+        },
+        "content": {
+          "title": "Content & Wording",
+          "description": "What you write is more important than how it looks",
+          "do1": "Customize the CV for each job you apply for",
+          "do2": "Use concrete numbers and results (\"Increased sales by 20%\")",
+          "do3": "Start each point with an active verb",
+          "do4": "Focus on results, not just job duties",
+          "do5": "Include keywords from the job posting",
+          "dont1": "Use generic phrases like \"team player\"",
+          "dont2": "Write too long texts - be concise",
+          "dont3": "Include irrelevant information",
+          "dont4": "Use jargon only your current workplace understands",
+          "dont5": "Lie or exaggerate your qualifications"
+        },
+        "important": {
+          "title": "Important Sections",
+          "description": "What should you include and in what order?",
+          "do1": "Start with contact information at the top",
+          "do2": "Have a short summary (2-3 sentences)",
+          "do3": "List work experience in reverse chronological order",
+          "do4": "Include education and certifications",
+          "do5": "Add relevant skills and languages",
+          "dont1": "Include personal ID number (security risk)",
+          "dont2": "Write \"CV\" or \"Curriculum Vitae\" as heading",
+          "dont3": "Add references (\"Available upon request\")",
+          "dont4": "Include hobbies that aren't relevant",
+          "dont5": "Write out the full address (city is enough)"
+        },
+        "ats": {
+          "title": "ATS & Recruitment Systems",
+          "description": "How to pass the automatic screening",
+          "do1": "Use standard headings like \"Work Experience\"",
+          "do2": "Save as PDF or Word (.docx)",
+          "do3": "Use common fonts like Arial or Calibri",
+          "do4": "Include keywords from the job posting",
+          "do5": "Make sure the text is selectable (not images)",
+          "dont1": "Use tables or complex layouts",
+          "dont2": "Save as image (JPG/PNG)",
+          "dont3": "Use creative headings like \"My Journey\"",
+          "dont4": "Put important information in headers/footers",
+          "dont5": "Use special characters that may cause issues"
+        },
+        "adjustments": {
+          "title": "Adjusting for Long-term Unemployment",
+          "description": "Special tips for those who have been out of the job market",
+          "do1": "Focus on transferable skills",
+          "do2": "Include volunteer work or internships",
+          "do3": "Mention courses or education you've done during the gap",
+          "do4": "Be honest but positive about gaps",
+          "do5": "Use functional CV format if changing industries",
+          "dont1": "Feel ashamed about CV gaps",
+          "dont2": "Leave completely empty periods without explanation",
+          "dont3": "Focus too much on dates",
+          "dont4": "Write negatively about previous experiences",
+          "dont5": "Give up - your experience is valuable!"
+        }
+      },
+      "mistakes": {
+        "title": "Common mistakes to avoid",
+        "spelling": {
+          "title": "Spelling and grammar",
+          "desc": "Read through multiple times or ask someone else to check"
+        },
+        "generic": {
+          "title": "Too generic",
+          "desc": "\"I'm a positive person\" says nothing. Give examples!"
+        },
+        "long": {
+          "title": "Too long",
+          "desc": "No one has time to read 4 pages. Prioritize the most important."
+        },
+        "email": {
+          "title": "Unprofessional email",
+          "desc": "Get a new email if yours is \"partyqueen95\""
+        },
+        "keywords": {
+          "title": "Missing keywords",
+          "desc": "Read the job posting and use the same words they use"
+        }
+      },
+      "cta": {
+        "title": "Ready to create your CV?",
+        "description": "Use our CV builder with built-in tips",
+        "button": "Create CV now"
+      },
+      "resources": {
+        "video": {
+          "title": "Video guides",
+          "description": "Watch our video tutorials on how to write a winning CV",
+          "comingSoon": "Coming soon →"
+        },
+        "ats": {
+          "title": "ATS Optimization",
+          "description": "Test how well your CV passes recruitment systems",
+          "link": "Go to ATS analysis →"
+        }
+      }
     }
   },
   "coverLetter": {

@@ -4,11 +4,12 @@
  */
 
 import { useState, useEffect } from 'react'
-import { 
-  Target, 
-  Check, 
-  AlertCircle, 
-  X, 
+import { useTranslation } from 'react-i18next'
+import {
+  Target,
+  Check,
+  AlertCircle,
+  X,
   RefreshCw,
   FileText,
   Sparkles,
@@ -32,98 +33,109 @@ interface ATSCheck {
   tips: string[]
 }
 
-const defaultChecks: ATSCheck[] = [
-  {
-    id: '1',
-    category: 'content',
-    title: 'Kontaktinformation',
-    description: 'Har du fyllt i namn, e-post och telefon?',
-    status: 'pass',
-    score: 10,
-    tips: ['Se till att din e-post är professionell', 'Dubbelkolla att telefonnumret är korrekt']
-  },
-  {
-    id: '2',
-    category: 'content',
-    title: 'Sammanfattning/Profil',
-    description: 'En kort sammanfattning ökar chanserna avsevärt',
-    status: 'pass',
-    score: 15,
-    tips: ['Skriv 2-3 meningar om vem du är', 'Nämn vad du söker för typ av roll']
-  },
-  {
-    id: '3',
-    category: 'content',
-    title: 'Arbetslivserfarenhet',
-    description: 'Har du listat dina tidigare jobb?',
-    status: 'pass',
-    score: 20,
-    tips: ['Börja med det senaste jobbet', 'Använd bullet points för arbetsuppgifter']
-  },
-  {
-    id: '4',
-    category: 'content',
-    title: 'Utbildning',
-    description: 'Har du med din utbildning?',
-    status: 'warning',
-    score: 10,
-    tips: ['Lista även pågående utbildningar', 'Inkludera relevanta kurser']
-  },
-  {
-    id: '5',
-    category: 'keywords',
-    title: 'Nyckelord från annonsen',
-    description: 'Matchar ditt CV jobbannonsens nyckelord?',
-    status: 'warning',
-    score: 15,
-    tips: ['Läs jobbannonsen noggrant', 'Inkludera viktiga kompetenser de efterfrågar']
-  },
-  {
-    id: '6',
-    category: 'format',
-    title: 'Filformat',
-    description: 'Är ditt CV sparat i rätt format?',
-    status: 'pass',
-    score: 10,
-    tips: ['PDF är säkrast för formatering', 'Word (.docx) fungerar också bra']
-  },
-  {
-    id: '7',
-    category: 'format',
-    title: 'Typsnitt och design',
-    description: 'Använder du läsbara typsnitt?',
-    status: 'pass',
-    score: 10,
-    tips: ['Undvik konstiga typsnitt', 'Ha tillräckligt med whitespace']
-  },
-  {
-    id: '8',
-    category: 'technical',
-    title: 'Bilder och grafik',
-    description: 'ATS-system kan ha svårt med bilder',
-    status: 'neutral',
-    score: 5,
-    tips: ['Undvik för mycket grafik', 'Se till att texten är välstrukturerad']
-  },
-  {
-    id: '9',
-    category: 'technical',
-    title: 'Rubriker och sektioner',
-    description: 'Tydliga rubriker hjälper ATS att parsa innehållet',
-    status: 'pass',
-    score: 5,
-    tips: ['Använd standardrubriker', 'Undvik kreativa rubriker som systemet inte förstår']
-  }
-]
+// Default checks will be generated with translations inside the component
 
 export function ATSAnalysis() {
-  const [checks, setChecks] = useState<ATSCheck[]>(defaultChecks)
+  const { t } = useTranslation()
+  const [checks, setChecks] = useState<ATSCheck[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [showDetails, setShowDetails] = useState<string | null>(null)
   const [cvData, setCvData] = useState<CVData | null>(null)
   const [loadingCV, setLoadingCV] = useState(true)
 
-  // Hämta användarens CV-data
+  // Generate default checks with translations
+  const getDefaultChecks = (): ATSCheck[] => [
+    {
+      id: '1',
+      category: 'content',
+      title: t('cv.ats.checks.contact.title'),
+      description: t('cv.ats.checks.contact.description'),
+      status: 'pass',
+      score: 10,
+      tips: [t('cv.ats.checks.contact.tip1'), t('cv.ats.checks.contact.tip2')]
+    },
+    {
+      id: '2',
+      category: 'content',
+      title: t('cv.ats.checks.summary.title'),
+      description: t('cv.ats.checks.summary.description'),
+      status: 'pass',
+      score: 15,
+      tips: [t('cv.ats.checks.summary.tip1'), t('cv.ats.checks.summary.tip2')]
+    },
+    {
+      id: '3',
+      category: 'content',
+      title: t('cv.ats.checks.experience.title'),
+      description: t('cv.ats.checks.experience.description'),
+      status: 'pass',
+      score: 20,
+      tips: [t('cv.ats.checks.experience.tip1'), t('cv.ats.checks.experience.tip2')]
+    },
+    {
+      id: '4',
+      category: 'content',
+      title: t('cv.ats.checks.education.title'),
+      description: t('cv.ats.checks.education.description'),
+      status: 'warning',
+      score: 10,
+      tips: [t('cv.ats.checks.education.tip1'), t('cv.ats.checks.education.tip2')]
+    },
+    {
+      id: '5',
+      category: 'keywords',
+      title: t('cv.ats.checks.keywords.title'),
+      description: t('cv.ats.checks.keywords.description'),
+      status: 'warning',
+      score: 15,
+      tips: [t('cv.ats.checks.keywords.tip1'), t('cv.ats.checks.keywords.tip2')]
+    },
+    {
+      id: '6',
+      category: 'format',
+      title: t('cv.ats.checks.fileFormat.title'),
+      description: t('cv.ats.checks.fileFormat.description'),
+      status: 'pass',
+      score: 10,
+      tips: [t('cv.ats.checks.fileFormat.tip1'), t('cv.ats.checks.fileFormat.tip2')]
+    },
+    {
+      id: '7',
+      category: 'format',
+      title: t('cv.ats.checks.typography.title'),
+      description: t('cv.ats.checks.typography.description'),
+      status: 'pass',
+      score: 10,
+      tips: [t('cv.ats.checks.typography.tip1'), t('cv.ats.checks.typography.tip2')]
+    },
+    {
+      id: '8',
+      category: 'technical',
+      title: t('cv.ats.checks.graphics.title'),
+      description: t('cv.ats.checks.graphics.description'),
+      status: 'neutral',
+      score: 5,
+      tips: [t('cv.ats.checks.graphics.tip1'), t('cv.ats.checks.graphics.tip2')]
+    },
+    {
+      id: '9',
+      category: 'technical',
+      title: t('cv.ats.checks.headings.title'),
+      description: t('cv.ats.checks.headings.description'),
+      status: 'pass',
+      score: 5,
+      tips: [t('cv.ats.checks.headings.tip1'), t('cv.ats.checks.headings.tip2')]
+    }
+  ]
+
+  // Initialize checks with translations
+  useEffect(() => {
+    if (checks.length === 0) {
+      setChecks(getDefaultChecks())
+    }
+  }, [t])
+
+  // Load CV data
   useEffect(() => {
     const loadCV = async () => {
       try {
@@ -132,7 +144,7 @@ export function ATSAnalysis() {
           setCvData(cv)
         }
       } catch (e) {
-        console.error('Kunde inte ladda CV:', e)
+        console.error('Could not load CV:', e)
       } finally {
         setLoadingCV(false)
       }
@@ -142,93 +154,93 @@ export function ATSAnalysis() {
 
   // Calculate actual ATS score based on CV data
   const calculateChecks = (cv: CVData | null): ATSCheck[] => {
-    if (!cv) return defaultChecks
+    if (!cv) return getDefaultChecks()
 
     return [
       {
         id: '1',
         category: 'content',
-        title: 'Kontaktinformation',
-        description: 'Har du fyllt i namn, e-post och telefon?',
+        title: t('cv.ats.checks.contact.title'),
+        description: t('cv.ats.checks.contact.description'),
         status: (cv.firstName && cv.lastName && cv.email && cv.phone) ? 'pass' :
                 (cv.firstName || cv.email) ? 'warning' : 'fail',
         score: (cv.firstName && cv.lastName ? 5 : 0) + (cv.email ? 3 : 0) + (cv.phone ? 2 : 0),
-        tips: ['Se till att din e-post är professionell', 'Dubbelkolla att telefonnumret är korrekt']
+        tips: [t('cv.ats.checks.contact.tip1'), t('cv.ats.checks.contact.tip2')]
       },
       {
         id: '2',
         category: 'content',
-        title: 'Sammanfattning/Profil',
-        description: 'En kort sammanfattning ökar chanserna avsevärt',
+        title: t('cv.ats.checks.summary.title'),
+        description: t('cv.ats.checks.summary.description'),
         status: cv.summary && cv.summary.length > 100 ? 'pass' :
                 cv.summary && cv.summary.length > 30 ? 'warning' : 'fail',
         score: cv.summary ? Math.min(15, Math.floor(cv.summary.length / 20)) : 0,
-        tips: ['Skriv 2-3 meningar om vem du är', 'Nämn vad du söker för typ av roll']
+        tips: [t('cv.ats.checks.summary.tip1'), t('cv.ats.checks.summary.tip2')]
       },
       {
         id: '3',
         category: 'content',
-        title: 'Arbetslivserfarenhet',
-        description: 'Har du listat dina tidigare jobb?',
+        title: t('cv.ats.checks.experience.title'),
+        description: t('cv.ats.checks.experience.description'),
         status: cv.workExperience && cv.workExperience.length >= 2 ? 'pass' :
                 cv.workExperience && cv.workExperience.length === 1 ? 'warning' : 'fail',
         score: cv.workExperience ? Math.min(25, cv.workExperience.length * 10) : 0,
-        tips: ['Börja med det senaste jobbet', 'Använd bullet points för arbetsuppgifter']
+        tips: [t('cv.ats.checks.experience.tip1'), t('cv.ats.checks.experience.tip2')]
       },
       {
         id: '4',
         category: 'content',
-        title: 'Utbildning',
-        description: 'Har du med din utbildning?',
+        title: t('cv.ats.checks.education.title'),
+        description: t('cv.ats.checks.education.description'),
         status: cv.education && cv.education.length > 0 ? 'pass' : 'warning',
         score: cv.education ? Math.min(15, cv.education.length * 7) : 0,
-        tips: ['Lista även pågående utbildningar', 'Inkludera relevanta kurser']
+        tips: [t('cv.ats.checks.education.tip1'), t('cv.ats.checks.education.tip2')]
       },
       {
         id: '5',
         category: 'keywords',
-        title: 'Kompetenser',
-        description: 'Har du listat dina kompetenser?',
+        title: t('cv.ats.checks.skills.title'),
+        description: t('cv.ats.checks.skills.description'),
         status: cv.skills && cv.skills.length >= 5 ? 'pass' :
                 cv.skills && cv.skills.length > 0 ? 'warning' : 'fail',
         score: cv.skills ? Math.min(15, cv.skills.length * 3) : 0,
-        tips: ['Lägg till både tekniska och mjuka kompetenser', 'Inkludera kompetenser som efterfrågas i annonser']
+        tips: [t('cv.ats.checks.skills.tip1'), t('cv.ats.checks.skills.tip2')]
       },
       {
         id: '6',
         category: 'format',
-        title: 'Profilbild',
-        description: 'En professionell bild ökar chanserna',
+        title: t('cv.ats.checks.profileImage.title'),
+        description: t('cv.ats.checks.profileImage.description'),
         status: cv.profileImage ? 'pass' : 'neutral',
         score: cv.profileImage ? 5 : 0,
-        tips: ['Använd en professionell bild', 'Se till att bakgrunden är neutral']
+        tips: [t('cv.ats.checks.profileImage.tip1'), t('cv.ats.checks.profileImage.tip2')]
       },
       {
         id: '7',
         category: 'format',
-        title: 'Mall vald',
-        description: 'Använder du en modern CV-mall?',
+        title: t('cv.ats.checks.template.title'),
+        description: t('cv.ats.checks.template.description'),
         status: cv.template ? 'pass' : 'warning',
         score: cv.template ? 10 : 5,
-        tips: ['Välj en mall som passar din bransch', 'Undvik för kreativa mallar för traditionella jobb']
+        tips: [t('cv.ats.checks.template.tip1'), t('cv.ats.checks.template.tip2')]
       },
       {
         id: '8',
         category: 'technical',
-        title: 'Språkkunskaper',
-        description: 'Har du angett dina språkkunskaper?',
+        title: t('cv.ats.checks.languages.title'),
+        description: t('cv.ats.checks.languages.description'),
         status: cv.languages && cv.languages.length > 0 ? 'pass' : 'neutral',
         score: cv.languages ? Math.min(10, cv.languages.length * 5) : 0,
-        tips: ['Ange språknivå för varje språk', 'Svenska och engelska är ofta krav']
+        tips: [t('cv.ats.checks.languages.tip1'), t('cv.ats.checks.languages.tip2')]
       },
       {
         id: '9',
         category: 'technical',
-        title: 'Certifieringar',
-        description: 'Certifieringar stärker din profil',
+        title: t('cv.ats.checks.certifications.title'),
+        description: t('cv.ats.checks.certifications.description'),
         status: cv.certificates && cv.certificates.length > 0 ? 'pass' : 'neutral',
         score: cv.certificates ? Math.min(5, cv.certificates.length * 2) : 0,
-        tips: ['Lägg till relevanta certifikat', 'Körkort räknas också!']
+        tips: [t('cv.ats.checks.certifications.tip1'), t('cv.ats.checks.certifications.tip2')]
       }
     ]
   }
@@ -267,17 +279,17 @@ export function ATSAnalysis() {
   }
 
   const getScoreText = (score: number) => {
-    if (score >= 80) return 'Utmärkt'
-    if (score >= 60) return 'Godkänd'
-    if (score >= 40) return 'Behöver förbättras'
-    return 'Kritisk - åtgärda omgående'
+    if (score >= 80) return t('cv.ats.score.excellent')
+    if (score >= 60) return t('cv.ats.score.good')
+    if (score >= 40) return t('cv.ats.score.needsImprovement')
+    return t('cv.ats.score.critical')
   }
 
   const categoryLabels: Record<string, string> = {
-    content: 'Innehåll',
-    format: 'Format & Design',
-    keywords: 'Nyckelord',
-    technical: 'Tekniskt'
+    content: t('cv.ats.categories.content'),
+    format: t('cv.ats.categories.format'),
+    keywords: t('cv.ats.categories.keywords'),
+    technical: t('cv.ats.categories.technical')
   }
 
   return (
@@ -287,7 +299,7 @@ export function ATSAnalysis() {
         <div className="bg-white dark:bg-stone-900 rounded-2xl border border-stone-200 dark:border-stone-700 p-6">
           <div className="flex items-center justify-center gap-3 py-8">
             <Loader2 className="w-6 h-6 animate-spin text-teal-600 dark:text-teal-400" />
-            <span className="text-stone-600 dark:text-stone-400">Laddar CV-data...</span>
+            <span className="text-stone-600 dark:text-stone-400">{t('cv.ats.loadingCV')}</span>
           </div>
         </div>
       ) : cvData ? (
@@ -296,10 +308,10 @@ export function ATSAnalysis() {
             <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
               <Target className="w-4 h-4 text-white" />
             </div>
-            <h3 className="font-semibold text-stone-800 dark:text-stone-100">ATS-analys av ditt CV</h3>
+            <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.ats.analysisTitle')}</h3>
           </div>
           <p className="text-sm text-stone-700 dark:text-stone-300 mb-4">
-            Se hur väl ditt nuvarande CV klarar automatisk screening i rekryteringssystem
+            {t('cv.ats.analysisDescription')}
           </p>
           <ATSAnalyzer cvData={cvData} />
         </div>
@@ -310,15 +322,15 @@ export function ATSAnalysis() {
               <FileText className="w-6 h-6 text-amber-600 dark:text-amber-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">Inget CV hittades</h3>
+              <h3 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">{t('cv.ats.noCVFound')}</h3>
               <p className="text-amber-800 dark:text-amber-300 text-sm mb-3">
-                Du behöver skapa ett CV innan du kan göra en ATS-analys.
+                {t('cv.ats.noCVDescription')}
               </p>
               <a
                 href="/cv"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 text-white rounded-lg font-medium hover:bg-amber-700 transition-colors"
               >
-                Skapa CV
+                {t('cv.ats.createCV')}
               </a>
             </div>
           </div>
@@ -344,7 +356,7 @@ export function ATSAnalysis() {
               )}>
                 {percentage}%
               </span>
-              <span className="text-xs text-stone-700 dark:text-stone-300 mt-1">ATS-score</span>
+              <span className="text-xs text-stone-700 dark:text-stone-300 mt-1">{t('cv.ats.scoreLabel')}</span>
             </div>
           </div>
 
@@ -354,8 +366,8 @@ export function ATSAnalysis() {
               {getScoreText(percentage)}
             </h2>
             <p className="text-stone-600 dark:text-stone-400 mb-4">
-              Ditt CV kommer att klara sig {percentage >= 60 ? 'bra' : 'svårt'} i de flesta 
-              rekryteringssystem (ATS). {percentage < 80 && 'Det finns dock utrymme för förbättring.'}
+              {percentage >= 60 ? t('cv.ats.scoreInfo.good') : t('cv.ats.scoreInfo.poor')}
+              {percentage < 80 && ` ${t('cv.ats.scoreInfo.roomForImprovement')}`}
             </p>
             
             <div className="flex flex-wrap gap-3">
@@ -365,13 +377,13 @@ export function ATSAnalysis() {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors disabled:opacity-50"
               >
                 <RefreshCw className={cn('w-4 h-4', isAnalyzing && 'animate-spin')} />
-                {isAnalyzing ? 'Analyserar...' : 'Kör ny analys'}
+                {isAnalyzing ? t('cv.ats.analyzing') : t('cv.ats.runAnalysis')}
               </button>
-              
+
               {percentage < 80 && (
                 <button className="inline-flex items-center gap-2 px-4 py-2 bg-amber-100 text-amber-700 rounded-xl font-medium hover:bg-amber-200 transition-colors">
                   <Lightbulb className="w-4 h-4" />
-                  Se förbättringsförslag
+                  {t('cv.ats.seeImprovements')}
                 </button>
               )}
             </div>
@@ -383,13 +395,13 @@ export function ATSAnalysis() {
               <div className="text-2xl font-bold text-green-600 dark:text-green-400">
                 {checks.filter(c => c.status === 'pass').length}
               </div>
-              <div className="text-xs text-green-700 dark:text-green-400">Godkända</div>
+              <div className="text-xs text-green-700 dark:text-green-400">{t('cv.ats.passed')}</div>
             </div>
             <div className="text-center p-3 bg-amber-50 dark:bg-amber-900/30 rounded-xl">
               <div className="text-2xl font-bold text-amber-600 dark:text-amber-400">
                 {checks.filter(c => c.status === 'warning').length}
               </div>
-              <div className="text-xs text-amber-700 dark:text-amber-400">Varningar</div>
+              <div className="text-xs text-amber-700 dark:text-amber-400">{t('cv.ats.warnings')}</div>
             </div>
           </div>
         </div>
@@ -397,7 +409,7 @@ export function ATSAnalysis() {
 
       {/* Detailed Checks */}
       <div className="space-y-4">
-        <h3 className="font-semibold text-stone-800 dark:text-stone-100">Detaljerad analys</h3>
+        <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.ats.detailedAnalysis')}</h3>
 
         {Object.entries(categoryLabels).map(([category, label]) => {
           const categoryChecks = checks.filter(c => c.category === category)
@@ -447,7 +459,7 @@ export function ATSAnalysis() {
                             onClick={() => setShowDetails(showDetails === check.id ? null : check.id)}
                             className="text-sm text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium flex items-center gap-1"
                           >
-                            {showDetails === check.id ? 'Dölj tips' : 'Visa tips'}
+                            {showDetails === check.id ? t('cv.ats.hideTips') : t('cv.ats.showTips')}
                             <ArrowRight className={cn('w-4 h-4 transition-transform', showDetails === check.id && 'rotate-90')} />
                           </button>
 
@@ -481,16 +493,12 @@ export function ATSAnalysis() {
             <FileText className="w-6 h-6 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">Vad är ATS?</h3>
+            <h3 className="font-semibold text-blue-900 dark:text-blue-200 mb-2">{t('cv.ats.whatIsAts.title')}</h3>
             <p className="text-blue-800 dark:text-blue-300 text-sm mb-3">
-              ATS (Applicant Tracking System) är programvara som används av arbetsgivare för att
-              hantera jobbansökningar. Systemet scannar CV:n automatiskt och letar efter nyckelord
-              och kvalifikationer som matchar jobbannonsen.
+              {t('cv.ats.whatIsAts.description')}
             </p>
             <p className="text-blue-800 dark:text-blue-300 text-sm">
-              <strong>Varför är det viktigt?</strong> Uppskattningsvis 75% av alla större företag
-              använder ATS. Om ditt CV inte är optimerat kan det bli bortfiltrerat innan en människa
-              ens ser det.
+              <strong>{t('cv.ats.whatIsAts.whyImportant')}</strong> {t('cv.ats.whatIsAts.importance')}
             </p>
           </div>
         </div>
@@ -499,15 +507,15 @@ export function ATSAnalysis() {
       {/* CTA */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-6 bg-gradient-to-r from-teal-50 to-sky-50 dark:from-teal-900/20 dark:to-sky-900/20 rounded-2xl">
         <div>
-          <h3 className="font-semibold text-stone-800 dark:text-stone-100">Vill du förbättra ditt CV?</h3>
-          <p className="text-stone-600 dark:text-stone-400 text-sm">Gå tillbaka till CV-byggaren och gör justeringar</p>
+          <h3 className="font-semibold text-stone-800 dark:text-stone-100">{t('cv.ats.cta.title')}</h3>
+          <p className="text-stone-600 dark:text-stone-400 text-sm">{t('cv.ats.cta.description')}</p>
         </div>
         <a
           href="/cv"
           className="inline-flex items-center gap-2 px-6 py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
         >
           <Award className="w-5 h-5" />
-          Förbättra mitt CV
+          {t('cv.ats.cta.button')}
         </a>
       </div>
     </div>

@@ -507,6 +507,273 @@
         "title": "💡 Tips: Anpassa CV för olika jobb",
         "description": "Skapa olika versioner av ditt CV för olika typer av jobb. Ett CV för butiksjobb bör framhäva kundservice, medan ett för lager bör fokusera på logistik och arbets tempo. Markera det CV du använder mest som \"Standard\" så du snabbt hittar det."
       }
+    },
+    "ats": {
+      "loadingCV": "Laddar CV-data...",
+      "analysisTitle": "ATS-analys av ditt CV",
+      "analysisDescription": "Se hur väl ditt nuvarande CV klarar automatisk screening i rekryteringssystem",
+      "noCVFound": "Inget CV hittades",
+      "noCVDescription": "Du behöver skapa ett CV innan du kan göra en ATS-analys.",
+      "createCV": "Skapa CV",
+      "scoreLabel": "ATS-score",
+      "analyzing": "Analyserar...",
+      "runAnalysis": "Kör ny analys",
+      "seeImprovements": "Se förbättringsförslag",
+      "passed": "Godkända",
+      "warnings": "Varningar",
+      "detailedAnalysis": "Detaljerad analys",
+      "showTips": "Visa tips",
+      "hideTips": "Dölj tips",
+      "score": {
+        "excellent": "Utmärkt",
+        "good": "Godkänd",
+        "needsImprovement": "Behöver förbättras",
+        "critical": "Kritisk - åtgärda omgående"
+      },
+      "scoreInfo": {
+        "good": "Ditt CV kommer att klara sig bra i de flesta rekryteringssystem (ATS).",
+        "poor": "Ditt CV kommer att ha svårt i de flesta rekryteringssystem (ATS).",
+        "roomForImprovement": "Det finns dock utrymme för förbättring."
+      },
+      "categories": {
+        "content": "Innehåll",
+        "format": "Format & Design",
+        "keywords": "Nyckelord",
+        "technical": "Tekniskt"
+      },
+      "checks": {
+        "contact": {
+          "title": "Kontaktinformation",
+          "description": "Har du fyllt i namn, e-post och telefon?",
+          "tip1": "Se till att din e-post är professionell",
+          "tip2": "Dubbelkolla att telefonnumret är korrekt"
+        },
+        "summary": {
+          "title": "Sammanfattning/Profil",
+          "description": "En kort sammanfattning ökar chanserna avsevärt",
+          "tip1": "Skriv 2-3 meningar om vem du är",
+          "tip2": "Nämn vad du söker för typ av roll"
+        },
+        "experience": {
+          "title": "Arbetslivserfarenhet",
+          "description": "Har du listat dina tidigare jobb?",
+          "tip1": "Börja med det senaste jobbet",
+          "tip2": "Använd bullet points för arbetsuppgifter"
+        },
+        "education": {
+          "title": "Utbildning",
+          "description": "Har du med din utbildning?",
+          "tip1": "Lista även pågående utbildningar",
+          "tip2": "Inkludera relevanta kurser"
+        },
+        "keywords": {
+          "title": "Nyckelord från annonsen",
+          "description": "Matchar ditt CV jobbannonsens nyckelord?",
+          "tip1": "Läs jobbannonsen noggrant",
+          "tip2": "Inkludera viktiga kompetenser de efterfrågar"
+        },
+        "skills": {
+          "title": "Kompetenser",
+          "description": "Har du listat dina kompetenser?",
+          "tip1": "Lägg till både tekniska och mjuka kompetenser",
+          "tip2": "Inkludera kompetenser som efterfrågas i annonser"
+        },
+        "fileFormat": {
+          "title": "Filformat",
+          "description": "Är ditt CV sparat i rätt format?",
+          "tip1": "PDF är säkrast för formatering",
+          "tip2": "Word (.docx) fungerar också bra"
+        },
+        "typography": {
+          "title": "Typsnitt och design",
+          "description": "Använder du läsbara typsnitt?",
+          "tip1": "Undvik konstiga typsnitt",
+          "tip2": "Ha tillräckligt med whitespace"
+        },
+        "graphics": {
+          "title": "Bilder och grafik",
+          "description": "ATS-system kan ha svårt med bilder",
+          "tip1": "Undvik för mycket grafik",
+          "tip2": "Se till att texten är välstrukturerad"
+        },
+        "headings": {
+          "title": "Rubriker och sektioner",
+          "description": "Tydliga rubriker hjälper ATS att parsa innehållet",
+          "tip1": "Använd standardrubriker",
+          "tip2": "Undvik kreativa rubriker som systemet inte förstår"
+        },
+        "profileImage": {
+          "title": "Profilbild",
+          "description": "En professionell bild ökar chanserna",
+          "tip1": "Använd en professionell bild",
+          "tip2": "Se till att bakgrunden är neutral"
+        },
+        "template": {
+          "title": "Mall vald",
+          "description": "Använder du en modern CV-mall?",
+          "tip1": "Välj en mall som passar din bransch",
+          "tip2": "Undvik för kreativa mallar för traditionella jobb"
+        },
+        "languages": {
+          "title": "Språkkunskaper",
+          "description": "Har du angett dina språkkunskaper?",
+          "tip1": "Ange språknivå för varje språk",
+          "tip2": "Svenska och engelska är ofta krav"
+        },
+        "certifications": {
+          "title": "Certifieringar",
+          "description": "Certifieringar stärker din profil",
+          "tip1": "Lägg till relevanta certifikat",
+          "tip2": "Körkort räknas också!"
+        }
+      },
+      "whatIsAts": {
+        "title": "Vad är ATS?",
+        "description": "ATS (Applicant Tracking System) är programvara som används av arbetsgivare för att hantera jobbansökningar. Systemet scannar CV:n automatiskt och letar efter nyckelord och kvalifikationer som matchar jobbannonsen.",
+        "whyImportant": "Varför är det viktigt?",
+        "importance": "Uppskattningsvis 75% av alla större företag använder ATS. Om ditt CV inte är optimerat kan det bli bortfiltrerat innan en människa ens ser det."
+      },
+      "cta": {
+        "title": "Vill du förbättra ditt CV?",
+        "description": "Gå tillbaka till CV-byggaren och gör justeringar",
+        "button": "Förbättra mitt CV"
+      }
+    },
+    "tips": {
+      "title": "CV-tips & Guide",
+      "description": "Lär dig skriva ett CV som faktiskt ger resultat. Följ våra tips för att öka dina chanser att bli kallad till intervju.",
+      "doThis": "Gör så här",
+      "avoidThis": "Undvik detta",
+      "quick": {
+        "short": {
+          "title": "Håll det kort",
+          "content": "Max 2 sidor. Rekryterare spenderar i genomsnitt 6 sekunder på första screeningen."
+        },
+        "customize": {
+          "title": "Anpassa varje gång",
+          "content": "Läs jobbannonsen och anpassa ditt CV för varje ansökan. Det tar tid men lönar sig."
+        },
+        "feedback": {
+          "title": "Be om feedback",
+          "content": "Låt någon du litar på läsa igenom ditt CV. Nya ögon ser saker du missat."
+        },
+        "pdf": {
+          "title": "PDF är säkrast",
+          "content": "Spara alltid som PDF när du skickar in. Då behålls formateringen."
+        }
+      },
+      "sections": {
+        "structure": {
+          "title": "Struktur & Layout",
+          "description": "En tydlig struktur gör det lätt för rekryteraren att hitta information",
+          "do1": "Använd tydliga rubriker för varje sektion",
+          "do2": "Ha konsekvent formatering genom hela CV:t",
+          "do3": "Använd punktlistor för att lista arbetsuppgifter",
+          "do4": "Låt det viktigaste informationen komma först",
+          "do5": "Ha tillräckligt med whitespace för läsbarhet",
+          "dont1": "Använd för många olika typsnitt",
+          "dont2": "Gör CV:t för långt (max 2 sidor)",
+          "dont3": "Använd för komplex design som stör läsbarheten",
+          "dont4": "Ha för små marginaler",
+          "dont5": "Använd för många färger"
+        },
+        "content": {
+          "title": "Innehåll & Formuleringar",
+          "description": "Vad du skriver är viktigare än hur det ser ut",
+          "do1": "Anpassa CV:t för varje jobb du söker",
+          "do2": "Använd konkreta siffror och resultat (\"Ökade försäljningen med 20%\")",
+          "do3": "Börja varje punkt med ett aktivt verb",
+          "do4": "Fokusera på resultat, inte bara arbetsuppgifter",
+          "do5": "Inkludera nyckelord från jobbannonsen",
+          "dont1": "Använd generiska formuleringar som \"teamplayer\"",
+          "dont2": "Skriv för långa texter - var koncis",
+          "dont3": "Inkludera irrelevant information",
+          "dont4": "Använd jargong som bara din nuvarande arbetsplats förstår",
+          "dont5": "Ljuga eller överdriva dina meriter"
+        },
+        "important": {
+          "title": "Viktiga Sektioner",
+          "description": "Vad ska du inkludera och i vilken ordning?",
+          "do1": "Börja med kontaktinformation överst",
+          "do2": "Ha en kort sammanfattning (2-3 meningar)",
+          "do3": "Lista arbetslivserfarenhet i omvänd kronologisk ordning",
+          "do4": "Inkludera utbildning och certifikat",
+          "do5": "Lägg till relevanta kompetenser och språk",
+          "dont1": "Inkludera personnummer (säkerhetsrisk)",
+          "dont2": "Skriv \"CV\" eller \"Curriculum Vitae\" som rubrik",
+          "dont3": "Lägg till referenser (\"Finns på begäran\")",
+          "dont4": "Inkludera hobbyer som inte är relevanta",
+          "dont5": "Skriv ut hela adressen (stad räcker)"
+        },
+        "ats": {
+          "title": "ATS & Rekryteringssystem",
+          "description": "Så här klarar du den automatiska screeningen",
+          "do1": "Använd standardrubriker som \"Arbetslivserfarenhet\"",
+          "do2": "Spara som PDF eller Word (.docx)",
+          "do3": "Använd vanliga typsnitt som Arial eller Calibri",
+          "do4": "Inkludera nyckelord från jobbannonsen",
+          "do5": "Se till att texten är markerbar (inte bilder)",
+          "dont1": "Använd tabeller eller komplex layout",
+          "dont2": "Spara som bild (JPG/PNG)",
+          "dont3": "Använd kreativa rubriker som \"Min resa\"",
+          "dont4": "Ha viktig information i sidhuvud/sidfot",
+          "dont5": "Använd specialtecken som kan krångla"
+        },
+        "adjustments": {
+          "title": "Anpassa för Långtidsarbetslöshet",
+          "description": "Särskilda tips för dig som varit borta från arbetsmarknaden",
+          "do1": "Fokusera på överförbara färdigheter",
+          "do2": "Inkludera frivilligarbete eller praktik",
+          "do3": "Nämn kurser eller utbildning du gjort under tiden",
+          "do4": "Var ärlig men positiv om luckor",
+          "do5": "Använd funktionell CV-format om du byter bransch",
+          "dont1": "Känn skam över luckor i CV:t",
+          "dont2": "Lämna helt tomma perioder utan förklaring",
+          "dont3": "Fokusera för mycket på datum",
+          "dont4": "Skriv negativt om tidigare erfarenheter",
+          "dont5": "Ge upp - din erfarenhet är värdefull!"
+        }
+      },
+      "mistakes": {
+        "title": "Vanliga misstag att undvika",
+        "spelling": {
+          "title": "Stavfel och grammatik",
+          "desc": "Läs igenom flera gånger eller be någon annan kolla"
+        },
+        "generic": {
+          "title": "För generiskt",
+          "desc": "\"Jag är en positiv person\" säger ingenting. Ge exempel!"
+        },
+        "long": {
+          "title": "För långt",
+          "desc": "Ingen orkar läsa 4 sidor. Prioritera det viktigaste."
+        },
+        "email": {
+          "title": "Oprofessionell e-post",
+          "desc": "Skaffa en ny e-post om din nuvarande är \"partyqueen95\""
+        },
+        "keywords": {
+          "title": "Saknar nyckelord",
+          "desc": "Läs jobbannonsen och använd samma ord de använder"
+        }
+      },
+      "cta": {
+        "title": "Redo att skapa ditt CV?",
+        "description": "Använd vår CV-byggare med inbyggda tips",
+        "button": "Skapa CV nu"
+      },
+      "resources": {
+        "video": {
+          "title": "Video-guider",
+          "description": "Se våra video-tutorials om hur du skriver ett vinnande CV",
+          "comingSoon": "Kommer snart →"
+        },
+        "ats": {
+          "title": "ATS-optimering",
+          "description": "Testa hur väl ditt CV klarar rekryteringssystem",
+          "link": "Gå till ATS-analys →"
+        }
+      }
     }
   },
   "coverLetter": {
