@@ -13,7 +13,7 @@ import { useDashboardData } from '@/hooks/useDashboardData'
 import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, Building2, ClipboardList,
-  ChevronRight, Loader2, Target, GraduationCap, Star,
+  ChevronRight, Target, GraduationCap, Star,
   TrendingUp, Linkedin, BookOpen, Dumbbell, Calendar, NotebookPen,
   Smile, Globe, Bookmark, Briefcase, Heart, Sparkles, FileUser,
   UserCheck, Flame, Zap, ArrowRight
@@ -25,6 +25,7 @@ import { KpiCard } from '@/components/dashboard/KpiCard'
 import { OnboardingStep } from '@/components/dashboard/OnboardingStep'
 import { QuickActionButton } from '@/components/dashboard/QuickActionButton'
 import { DashboardSection } from '@/components/dashboard/DashboardSection'
+import { DashboardSkeleton } from '@/components/dashboard/DashboardSkeleton'
 
 
 // ============================================
@@ -89,14 +90,7 @@ export default function DashboardPage() {
   )
 
   if (dashboardLoading || interestLoading) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <div className="text-center">
-          <Loader2 className="w-8 h-8 text-teal-500 dark:text-teal-400 animate-spin mx-auto mb-3" />
-          <p className="text-stone-600 dark:text-stone-400">Laddar översikt...</p>
-        </div>
-      </div>
-    )
+    return <DashboardSkeleton />
   }
 
   const firstName = authProfile?.first_name || 'Välkommen'
