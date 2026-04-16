@@ -134,6 +134,7 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
     const historik = data?.historik || [];
     const agentTyp = data?.agentTyp || 'arbetskonsulent';
     const systemKontext = data?.systemKontext || 'Du är en hjälpsam AI-assistent för jobbsökande.';
+    const responsLage = data?.responsLage || 'medium';
 
     // Build conversation history
     let conversation = '';
@@ -141,10 +142,20 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
       conversation = historik.map(h => `${h.roll === 'användare' ? 'Användare' : 'Assistent'}: ${h.innehall}`).join('\n\n') + '\n\n';
     }
 
+    // Response length instructions based on mode
+    const responsLengthInstructions = {
+      short: '- Svara MYCKET KORTFATTAT (max 2-3 meningar)\n- Ge endast det viktigaste\n- Inga långa förklaringar',
+      medium: '- Svara KORTFATTAT (max 3-4 meningar för enkla frågor, max 6-8 för komplexa)\n- Balanserad detalj och korthet',
+      detailed: '- Ge UTFÖRLIGA svar med förklaringar\n- Inkludera exempel och bakgrund\n- Förklara resonemang steg för steg'
+    };
+
+    const lengthInstruction = responsLengthInstructions[responsLage] || responsLengthInstructions.medium;
+    const maxTokensForMode = responsLage === 'short' ? 400 : responsLage === 'detailed' ? 1500 : 900;
+
     return {
-      system: `${systemKontext}\n\nVIKTIGT - Svarsformat:\n- Svara KORTFATTAT (max 3-4 meningar för enkla frågor, max 6-8 för komplexa)\n- Använd punktlistor med TYDLIGA RUBRIKER i fetstil\n- Lägg till EN BLANK RAD mellan varje punkt för läsbarhet\n- Formatera så här:\n\n**Rubrik 1**\nKort förklaring här.\n\n**Rubrik 2**\nKort förklaring här.\n\n- Gå rakt på sak - skippa inledande fraser\n- Svara på svenska\n- Var konkret och handlingsinriktad`,
+      system: `${systemKontext}\n\nVIKTIGT - Svarsformat:\n${lengthInstruction}\n- Använd punktlistor med TYDLIGA RUBRIKER i fetstil\n- Lägg till EN BLANK RAD mellan varje punkt för läsbarhet\n- Formatera så här:\n\n**Rubrik 1**\nKort förklaring här.\n\n**Rubrik 2**\nKort förklaring här.\n\n- Gå rakt på sak - skippa inledande fraser\n- Svara på svenska\n- Var konkret och handlingsinriktad`,
       user: conversation + 'Användare: ' + (data?.meddelande || 'Hej!'),
-      maxTokens: 900,
+      maxTokens: maxTokensForMode,
       responseKey: 'svar'
     };
   }
@@ -213,6 +224,7 @@ module.exports = async (req, res) => {
       const reader = aiResponse.body.getReader();
       const decoder = new TextDecoder();
       let buffer = '';
+      let fullResponse = '';
 
       try {
         while (true) {
@@ -227,13 +239,13 @@ module.exports = async (req, res) => {
             if (line.startsWith('data: ')) {
               const jsonStr = line.slice(6).trim();
               if (jsonStr === '[DONE]') {
-                res.write('data: [DONE]\n\n');
                 continue;
               }
               try {
                 const parsed = JSON.parse(jsonStr);
                 const token = parsed.choices?.[0]?.delta?.content;
                 if (token) {
+                  fullResponse += token;
                   res.write(`data: ${JSON.stringify({ token })}\n\n`);
                 }
               } catch (e) {
@@ -244,6 +256,43 @@ module.exports = async (req, res) => {
         }
       } catch (streamError) {
         console.error('Stream error:', streamError);
+      }
+
+      // Generate follow-up suggestions
+      try {
+        const suggestionsResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://jobin.se',
+            'X-Title': 'Jobin'
+          },
+          body: JSON.stringify({
+            model: 'anthropic/claude-3-haiku-20240307',
+            messages: [
+              { role: 'system', content: 'Du genererar korta, relevanta följdfrågor baserat på en konversation. Svara ENDAST med en JSON-array med exakt 3 korta frågor (max 8 ord var). Exempel: ["Hur skriver jag ett bra CV?", "Vilka jobb passar mig?", "Tips för intervjuer?"]' },
+              { role: 'user', content: `Användaren frågade: "${data?.meddelande}"\n\nAssistenten svarade: "${fullResponse.substring(0, 500)}"\n\nGenerera 3 naturliga följdfrågor på svenska:` }
+            ],
+            max_tokens: 150,
+            temperature: 0.8
+          })
+        });
+
+        if (suggestionsResponse.ok) {
+          const suggestionsData = await suggestionsResponse.json();
+          const suggestionsText = suggestionsData.choices?.[0]?.message?.content || '[]';
+          try {
+            const suggestions = JSON.parse(suggestionsText);
+            if (Array.isArray(suggestions) && suggestions.length > 0) {
+              res.write(`data: ${JSON.stringify({ suggestions: suggestions.slice(0, 3) })}\n\n`);
+            }
+          } catch (e) {
+            // Couldn't parse suggestions, skip
+          }
+        }
+      } catch (suggestError) {
+        // Suggestions failed, continue without them
       }
 
       res.write('data: [DONE]\n\n');

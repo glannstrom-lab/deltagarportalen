@@ -24,6 +24,9 @@ export interface Agent {
 
 export type AgentColor = 'teal' | 'rose' | 'violet' | 'amber' | 'sky'
 
+// Response mode types
+export type ResponseMode = 'short' | 'medium' | 'detailed'
+
 // Personality types
 export type PersonalityId =
   | 'professional'
@@ -49,6 +52,8 @@ export interface QuickAction {
   id: string
   labelKey: string
   prompt: string
+  linkTo?: string // Optional link to another page for the feature
+  linkLabelKey?: string // Label for the link button
 }
 
 // Chat messages
@@ -59,12 +64,14 @@ export interface ChatMessage {
   timestamp: Date
   agentId: AgentId
   personalityId: PersonalityId
+  suggestions?: string[] // Follow-up question suggestions
 }
 
 // Store state
 export interface AITeamState {
   selectedAgent: AgentId
   selectedPersonality: PersonalityId
+  responseMode: ResponseMode
   messages: ChatMessage[]
   isLoading: boolean
   error: string | null
@@ -72,6 +79,7 @@ export interface AITeamState {
   // Actions
   setAgent: (agentId: AgentId) => void
   setPersonality: (personalityId: PersonalityId) => void
+  setResponseMode: (mode: ResponseMode) => void
   addMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void
   setMessages: (messages: ChatMessage[]) => void
   clearMessages: () => void

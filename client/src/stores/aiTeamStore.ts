@@ -5,7 +5,7 @@
 
 import { create } from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
-import type { AITeamState, AgentId, PersonalityId, ChatMessage } from '@/components/ai-team/types'
+import type { AITeamState, AgentId, PersonalityId, ResponseMode, ChatMessage } from '@/components/ai-team/types'
 
 export const useAITeamStore = create<AITeamState>()(
   devtools(
@@ -14,6 +14,7 @@ export const useAITeamStore = create<AITeamState>()(
         // Initial state
         selectedAgent: 'arbetskonsulent',
         selectedPersonality: 'professional',
+        responseMode: 'medium',
         messages: [],
         isLoading: false,
         error: null,
@@ -30,6 +31,10 @@ export const useAITeamStore = create<AITeamState>()(
 
         setPersonality: (personalityId: PersonalityId) => {
           set({ selectedPersonality: personalityId })
+        },
+
+        setResponseMode: (mode: ResponseMode) => {
+          set({ responseMode: mode })
         },
 
         addMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => {
@@ -74,6 +79,7 @@ export const useAITeamStore = create<AITeamState>()(
         partialize: (state) => ({
           selectedAgent: state.selectedAgent,
           selectedPersonality: state.selectedPersonality,
+          responseMode: state.responseMode,
           // Don't persist messages - start fresh each session
         }),
       }

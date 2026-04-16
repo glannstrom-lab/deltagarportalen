@@ -13,6 +13,7 @@ import { PersonalityDropdown } from '@/components/ai-team/PersonalityDropdown'
 import { QuickActions } from '@/components/ai-team/QuickActions'
 import { AgentChat, type AgentChatHandle } from '@/components/ai-team/AgentChat'
 import { OnboardingModal } from '@/components/ai-team/OnboardingModal'
+import { ResponseModeSelector } from '@/components/ai-team/ResponseModeSelector'
 import { useAITeamStore } from '@/stores/aiTeamStore'
 import { getAgentById } from '@/components/ai-team/AgentSelector'
 import { agentColorClasses } from '@/components/ai-team/types'
@@ -74,6 +75,9 @@ export default function AITeam() {
           <div className="lg:col-span-1 space-y-4">
             <Card className="p-4">
               <PersonalityDropdown />
+            </Card>
+            <Card className="p-4">
+              <ResponseModeSelector />
             </Card>
             <Card className="p-4">
               <QuickActions onActionClick={handleQuickAction} />

@@ -20,10 +20,11 @@ export const agents: Agent[] = [
     icon: Briefcase,
     color: 'teal',
     quickActions: [
-      { id: 'review-cv', labelKey: 'aiTeam.quickActions.reviewCV', prompt: 'Granska mitt CV som finns i min profil. Ge konkret feedback baserat på min faktiska erfarenhet, utbildning och kompetenser som du kan se. Fokusera på förbättringar som är relevanta för min bakgrund.' },
-      { id: 'find-jobs', labelKey: 'aiTeam.quickActions.findJobs', prompt: 'Baserat på mitt CV och min profil - vilka typer av jobb passar mig? Ge konkreta förslag utifrån mina faktiska kompetenser och erfarenheter.' },
-      { id: 'cover-letter', labelKey: 'aiTeam.quickActions.coverLetter', prompt: 'Hjälp mig skriva ett personligt brev som matchar min faktiska bakgrund och kompetenser från mitt CV.' },
-      { id: 'action-plan', labelKey: 'aiTeam.quickActions.actionPlan', prompt: 'Skapa en konkret handlingsplan för min jobbsökning de närmaste 2 veckorna. Basera planen på min faktiska situation, kompetenser och mål från min profil. Inkludera specifika aktiviteter, deadlines och mätbara delmål.' },
+      { id: 'cv-tips', labelKey: 'aiTeam.quickActions.cvTips', prompt: 'Ge mig tips för att förbättra mitt CV baserat på min profil. Vad bör jag lyfta fram och vad kan förbättras?', linkTo: '/cv', linkLabelKey: 'aiTeam.quickActions.goToCV' },
+      { id: 'job-strategy', labelKey: 'aiTeam.quickActions.jobStrategy', prompt: 'Baserat på min bakgrund, vilken jobbsökningsstrategi passar mig bäst? Var bör jag fokusera mina ansträngningar?', linkTo: '/job-search', linkLabelKey: 'aiTeam.quickActions.goToJobSearch' },
+      { id: 'action-plan', labelKey: 'aiTeam.quickActions.actionPlan', prompt: 'Skapa en konkret handlingsplan för min jobbsökning de närmaste 2 veckorna. Inkludera specifika aktiviteter och delmål.' },
+      { id: 'reference-letter', labelKey: 'aiTeam.quickActions.referenceLetter', prompt: 'Hjälp mig skriva ett utkast till referensbrev som jag kan ge till en tidigare chef eller kollega.' },
+      { id: 'interview-tips', labelKey: 'aiTeam.quickActions.interviewTips', prompt: 'Ge mig tips för att förbereda mig inför jobbintervjuer. Vilka frågor bör jag vara beredd på?', linkTo: '/interview-simulator', linkLabelKey: 'aiTeam.quickActions.goToInterview' },
     ],
   },
   {
@@ -33,10 +34,10 @@ export const agents: Agent[] = [
     icon: Heart,
     color: 'rose',
     quickActions: [
-      { id: 'work-ability', labelKey: 'aiTeam.quickActions.workAbility', prompt: 'Hjälp mig utvärdera min arbetsförmåga' },
-      { id: 'suggest-adaptations', labelKey: 'aiTeam.quickActions.suggestAdaptations', prompt: 'Föreslå anpassningar för min arbetssituation' },
-      { id: 'plan-workday', labelKey: 'aiTeam.quickActions.planWorkday', prompt: 'Hjälp mig planera min arbetsdag med hänsyn till min energi' },
-      { id: 'handle-stress', labelKey: 'aiTeam.quickActions.handleStress', prompt: 'Ge mig tips för att hantera stress på jobbet' },
+      { id: 'work-ability', labelKey: 'aiTeam.quickActions.workAbility', prompt: 'Hjälp mig reflektera över min arbetsförmåga och vad jag behöver tänka på.' },
+      { id: 'energy-planning', labelKey: 'aiTeam.quickActions.energyPlanning', prompt: 'Hur kan jag planera min dag för att hushålla med energin? Ge konkreta tips.', linkTo: '/wellness', linkLabelKey: 'aiTeam.quickActions.goToWellness' },
+      { id: 'adaptations', labelKey: 'aiTeam.quickActions.suggestAdaptations', prompt: 'Vilka arbetsanpassningar kan vara relevanta för mig att diskutera med en arbetsgivare?' },
+      { id: 'stress-coping', labelKey: 'aiTeam.quickActions.handleStress', prompt: 'Ge mig strategier för att hantera stress i jobbsökandet.', linkTo: '/diary', linkLabelKey: 'aiTeam.quickActions.goToDiary' },
     ],
   },
   {
@@ -46,10 +47,10 @@ export const agents: Agent[] = [
     icon: GraduationCap,
     color: 'violet',
     quickActions: [
-      { id: 'find-education', labelKey: 'aiTeam.quickActions.findEducation', prompt: 'Hjälp mig hitta utbildningar som passar mina mål' },
-      { id: 'validate-skills', labelKey: 'aiTeam.quickActions.validateSkills', prompt: 'Hur kan jag validera mina kunskaper och erfarenheter?' },
-      { id: 'career-paths', labelKey: 'aiTeam.quickActions.careerPaths', prompt: 'Vilka karriärvägar finns för mig?' },
-      { id: 'compare-education', labelKey: 'aiTeam.quickActions.compareEducation', prompt: 'Hjälp mig jämföra olika utbildningsalternativ' },
+      { id: 'career-paths', labelKey: 'aiTeam.quickActions.careerPaths', prompt: 'Baserat på min bakgrund, vilka karriärvägar och utvecklingsmöjligheter finns för mig?', linkTo: '/career', linkLabelKey: 'aiTeam.quickActions.goToCareer' },
+      { id: 'skill-gaps', labelKey: 'aiTeam.quickActions.skillGaps', prompt: 'Vilka kompetenser bör jag utveckla för att nå mina karriärmål?', linkTo: '/skills-gap-analysis', linkLabelKey: 'aiTeam.quickActions.goToSkillsGap' },
+      { id: 'education-advice', labelKey: 'aiTeam.quickActions.findEducation', prompt: 'Vilka utbildningar eller kurser kan vara relevanta för mig att överväga?' },
+      { id: 'validate-skills', labelKey: 'aiTeam.quickActions.validateSkills', prompt: 'Hur kan jag validera och dokumentera mina befintliga kunskaper och erfarenheter?' },
     ],
   },
   {
@@ -59,10 +60,10 @@ export const agents: Agent[] = [
     icon: Sparkles,
     color: 'amber',
     quickActions: [
-      { id: 'set-goals', labelKey: 'aiTeam.quickActions.setGoals', prompt: 'Hjälp mig sätta upp realistiska mål för min jobbsökning' },
-      { id: 'overcome-setbacks', labelKey: 'aiTeam.quickActions.overcomeSetbacks', prompt: 'Hur kan jag övervinna motgångar i jobbsökandet?' },
-      { id: 'build-confidence', labelKey: 'aiTeam.quickActions.buildConfidence', prompt: 'Ge mig tips för att bygga mitt självförtroende' },
-      { id: 'celebrate-progress', labelKey: 'aiTeam.quickActions.celebrateProgress', prompt: 'Hjälp mig fira mina framsteg' },
+      { id: 'set-goals', labelKey: 'aiTeam.quickActions.setGoals', prompt: 'Hjälp mig sätta upp realistiska och motiverande mål för min jobbsökning.' },
+      { id: 'overcome-setbacks', labelKey: 'aiTeam.quickActions.overcomeSetbacks', prompt: 'Hur kan jag hantera motgångar och behålla motivationen i jobbsökandet?' },
+      { id: 'build-confidence', labelKey: 'aiTeam.quickActions.buildConfidence', prompt: 'Ge mig konkreta övningar för att stärka mitt självförtroende.' },
+      { id: 'celebrate-progress', labelKey: 'aiTeam.quickActions.celebrateProgress', prompt: 'Hjälp mig se och fira mina framsteg, även de små.', linkTo: '/diary', linkLabelKey: 'aiTeam.quickActions.goToDiary' },
     ],
   },
   {
@@ -72,10 +73,10 @@ export const agents: Agent[] = [
     icon: Monitor,
     color: 'sky',
     quickActions: [
-      { id: 'optimize-linkedin', labelKey: 'aiTeam.quickActions.optimizeLinkedIn', prompt: 'Hjälp mig optimera min LinkedIn-profil' },
-      { id: 'create-portfolio', labelKey: 'aiTeam.quickActions.createPortfolio', prompt: 'Ge mig tips för att skapa en digital portfolio' },
-      { id: 'network-online', labelKey: 'aiTeam.quickActions.networkOnline', prompt: 'Hur kan jag nätverka online effektivt?' },
-      { id: 'digital-tools', labelKey: 'aiTeam.quickActions.digitalTools', prompt: 'Vilka digitala verktyg kan hjälpa mig i jobbsökandet?' },
+      { id: 'linkedin-tips', labelKey: 'aiTeam.quickActions.linkedinTips', prompt: 'Ge mig tips för att förbättra min LinkedIn-profil och synas bättre för rekryterare.', linkTo: '/linkedin-optimizer', linkLabelKey: 'aiTeam.quickActions.goToLinkedIn' },
+      { id: 'online-presence', labelKey: 'aiTeam.quickActions.onlinePresence', prompt: 'Hur kan jag bygga en professionell online-närvaro utöver LinkedIn?' },
+      { id: 'network-online', labelKey: 'aiTeam.quickActions.networkOnline', prompt: 'Ge mig praktiska tips för att nätverka online och hitta dolda jobb.' },
+      { id: 'digital-tools', labelKey: 'aiTeam.quickActions.digitalTools', prompt: 'Vilka digitala verktyg och appar kan hjälpa mig effektivisera min jobbsökning?' },
     ],
   },
 ]

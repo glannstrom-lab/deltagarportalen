@@ -49,6 +49,7 @@ export {
   Calculator,
   Calendar,
   CalendarDays,
+  CalendarPlus,
   Camera,
   Car,
   Check,

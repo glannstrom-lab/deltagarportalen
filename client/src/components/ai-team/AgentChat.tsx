@@ -14,9 +14,11 @@ import { agentColorClasses } from './types'
 import { useAITeamContext, formatAITeamContext } from '@/hooks/useAITeamContext'
 import { useAuthStore } from '@/stores/authStore'
 import { supabase } from '@/lib/supabase'
-import { Send, RefreshCw, User, Trash2, Copy, Check } from '@/components/ui/icons'
+import { Send, RefreshCw, User, Trash2, Copy, Check, BookOpen, Share2, Mic, MicOff, Volume2, Download, CalendarPlus } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
+import { diaryEntriesApi } from '@/services/diaryApi'
+import type { ResponseMode } from './types'
 
 export interface AgentChatHandle {
   sendMessage: (message: string) => Promise<void>
@@ -33,6 +35,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const {
       selectedAgent,
       selectedPersonality,
+      responseMode,
       messages,
       isLoading,
       error,
@@ -46,6 +49,14 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const [inputValue, setInputValue] = useState('')
     const [streamingContent, setStreamingContent] = useState('')
     const [isStreaming, setIsStreaming] = useState(false)
+    const [suggestions, setSuggestions] = useState<string[]>([])
+    const [shareSuccess, setShareSuccess] = useState(false)
+    const [diarySuccess, setDiarySuccess] = useState<string | null>(null)
+    const [taskSuccess, setTaskSuccess] = useState<string | null>(null)
+    const [isRecording, setIsRecording] = useState(false)
+    const [isSpeaking, setIsSpeaking] = useState(false)
+    const [isExporting, setIsExporting] = useState(false)
+    const recognitionRef = useRef<SpeechRecognition | null>(null)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLTextAreaElement>(null)
     const abortControllerRef = useRef<AbortController | null>(null)
@@ -174,6 +185,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
               meddelande: text,
               agentTyp: selectedAgent,
               personlighet: selectedPersonality,
+              responsLage: responseMode,
               systemKontext: `${agentContext}\n\nPersonlighet: ${personalityContext}${userDataContext}`,
               historik: messages.slice(-10).map((m) => ({
                 roll: m.role === 'user' ? 'användare' : 'assistent',
@@ -215,6 +227,9 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
                   fullContent += parsed.token
                   setStreamingContent(fullContent)
                 }
+                if (parsed.suggestions && Array.isArray(parsed.suggestions)) {
+                  setSuggestions(parsed.suggestions)
+                }
                 if (parsed.error) {
                   throw new Error(parsed.error)
                 }
@@ -252,6 +267,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       isStreaming,
       selectedAgent,
       selectedPersonality,
+      responseMode,
       messages,
       personality.systemPrompt,
       userContext,
@@ -268,6 +284,233 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         sendMessage()
       }
     }, [sendMessage])
+
+    // Save message to diary
+    const handleSaveToDiary = useCallback(async (content: string) => {
+      try {
+        const entry = await diaryEntriesApi.create({
+          title: `${t(agent.nameKey)} - AI Team`,
+          content: content,
+          mood: null,
+          energy_level: null,
+          tags: ['ai-team', selectedAgent],
+          word_count: content.split(/\s+/).filter(w => w).length,
+          entry_date: new Date().toISOString().split('T')[0],
+          entry_type: 'reflection',
+          is_favorite: false,
+        })
+        if (entry) {
+          setDiarySuccess(entry.id)
+          setTimeout(() => setDiarySuccess(null), 3000)
+        }
+      } catch (err) {
+        console.error('Failed to save to diary:', err)
+      }
+    }, [t, agent.nameKey, selectedAgent])
+
+    // Share conversation with consultant
+    const handleShareWithConsultant = useCallback(async () => {
+      if (messages.length === 0) return
+
+      try {
+        // Create a summary of the conversation
+        const conversationSummary = messages.map(m =>
+          `${m.role === 'user' ? 'Deltagare' : t(agent.nameKey)}: ${m.content}`
+        ).join('\n\n---\n\n')
+
+        // Save as a shared note/resource
+        const { error } = await supabase
+          .from('shared_resources')
+          .insert({
+            user_id: user?.id,
+            resource_type: 'ai_conversation',
+            title: `AI Team: ${t(agent.nameKey)} - ${new Date().toLocaleDateString('sv-SE')}`,
+            content: conversationSummary,
+            metadata: {
+              agent: selectedAgent,
+              personality: selectedPersonality,
+              messageCount: messages.length,
+            },
+          })
+
+        if (!error) {
+          setShareSuccess(true)
+          setTimeout(() => setShareSuccess(false), 3000)
+        }
+      } catch (err) {
+        console.error('Failed to share:', err)
+      }
+    }, [messages, t, agent.nameKey, user?.id, selectedAgent, selectedPersonality])
+
+    // Handle suggestion click
+    const handleSuggestionClick = useCallback((suggestion: string) => {
+      setSuggestions([])
+      sendMessage(suggestion)
+    }, [sendMessage])
+
+    // Voice input - Start/stop recording
+    const toggleRecording = useCallback(() => {
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        setError(t('aiTeam.voice.notSupported'))
+        return
+      }
+
+      if (isRecording) {
+        recognitionRef.current?.stop()
+        setIsRecording(false)
+        return
+      }
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+      const recognition = new SpeechRecognition()
+      recognition.lang = 'sv-SE'
+      recognition.continuous = false
+      recognition.interimResults = true
+
+      recognition.onresult = (event: SpeechRecognitionEvent) => {
+        const transcript = Array.from(event.results)
+          .map(result => result[0].transcript)
+          .join('')
+        setInputValue(transcript)
+        if (inputRef.current) {
+          inputRef.current.style.height = 'auto'
+          inputRef.current.style.height = Math.min(inputRef.current.scrollHeight, 150) + 'px'
+        }
+      }
+
+      recognition.onend = () => {
+        setIsRecording(false)
+      }
+
+      recognition.onerror = () => {
+        setIsRecording(false)
+      }
+
+      recognitionRef.current = recognition
+      recognition.start()
+      setIsRecording(true)
+    }, [isRecording, t, setError])
+
+    // Voice output - Text-to-speech
+    const speakMessage = useCallback((text: string) => {
+      if (!('speechSynthesis' in window)) {
+        setError(t('aiTeam.voice.notSupported'))
+        return
+      }
+
+      if (isSpeaking) {
+        window.speechSynthesis.cancel()
+        setIsSpeaking(false)
+        return
+      }
+
+      const utterance = new SpeechSynthesisUtterance(text)
+      utterance.lang = 'sv-SE'
+      utterance.rate = 1.0
+      utterance.pitch = 1.0
+
+      // Try to find a Swedish voice
+      const voices = window.speechSynthesis.getVoices()
+      const svVoice = voices.find(v => v.lang.startsWith('sv'))
+      if (svVoice) utterance.voice = svVoice
+
+      utterance.onend = () => setIsSpeaking(false)
+      utterance.onerror = () => setIsSpeaking(false)
+
+      setIsSpeaking(true)
+      window.speechSynthesis.speak(utterance)
+    }, [isSpeaking, t, setError])
+
+    // Create calendar task from message
+    const handleCreateTask = useCallback(async (content: string) => {
+      try {
+        // Extract a task title from the first line or first 50 chars
+        const title = content.split('\n')[0].slice(0, 50) + (content.length > 50 ? '...' : '')
+
+        const { error } = await supabase
+          .from('calendar_events')
+          .insert({
+            user_id: user?.id,
+            title: `AI Team: ${title}`,
+            description: content,
+            event_type: 'task',
+            start_time: new Date().toISOString(),
+            end_time: new Date(Date.now() + 3600000).toISOString(), // 1 hour from now
+            status: 'pending',
+            is_all_day: false,
+            metadata: {
+              source: 'ai-team',
+              agent: selectedAgent,
+            },
+          })
+
+        if (!error) {
+          setTaskSuccess(content.slice(0, 20))
+          setTimeout(() => setTaskSuccess(null), 3000)
+        }
+      } catch (err) {
+        console.error('Failed to create task:', err)
+      }
+    }, [user?.id, selectedAgent])
+
+    // Export conversation to PDF
+    const handleExportPDF = useCallback(async () => {
+      if (messages.length === 0) return
+      setIsExporting(true)
+
+      try {
+        // Dynamic import for PDF generation
+        const { jsPDF } = await import('jspdf')
+        const doc = new jsPDF()
+
+        const title = `${t(agent.nameKey)} - ${new Date().toLocaleDateString('sv-SE')}`
+        doc.setFontSize(18)
+        doc.text(title, 20, 20)
+
+        doc.setFontSize(12)
+        let yPos = 35
+        const pageHeight = doc.internal.pageSize.height
+        const margin = 20
+        const lineHeight = 7
+        const maxWidth = 170
+
+        for (const msg of messages) {
+          const role = msg.role === 'user' ? t('aiTeam.you') : t(agent.nameKey)
+          const prefix = `${role}:`
+
+          // Add new page if needed
+          if (yPos > pageHeight - 30) {
+            doc.addPage()
+            yPos = 20
+          }
+
+          // Role label
+          doc.setFont('helvetica', 'bold')
+          doc.text(prefix, margin, yPos)
+          yPos += lineHeight
+
+          // Message content
+          doc.setFont('helvetica', 'normal')
+          const lines = doc.splitTextToSize(msg.content, maxWidth)
+          for (const line of lines) {
+            if (yPos > pageHeight - 20) {
+              doc.addPage()
+              yPos = 20
+            }
+            doc.text(line, margin, yPos)
+            yPos += lineHeight
+          }
+          yPos += 5 // Space between messages
+        }
+
+        doc.save(`ai-team-${selectedAgent}-${Date.now()}.pdf`)
+      } catch (err) {
+        console.error('Failed to export PDF:', err)
+        setError(t('aiTeam.export.failed'))
+      } finally {
+        setIsExporting(false)
+      }
+    }, [messages, t, agent.nameKey, selectedAgent])
 
     // Expose sendMessage to parent via ref
     useImperativeHandle(ref, () => ({
@@ -295,15 +538,38 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
             </div>
           </div>
           {messages.length > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={clearMessages}
-              leftIcon={<Trash2 className="w-4 h-4" />}
-              aria-label={t('aiTeam.clearChat')}
-            >
-              <span className="hidden sm:inline">{t('aiTeam.clearChat')}</span>
-            </Button>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleExportPDF}
+                disabled={isExporting}
+                leftIcon={isExporting ? <RefreshCw className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+                aria-label={t('aiTeam.export.toPdf')}
+              >
+                <span className="hidden sm:inline">PDF</span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleShareWithConsultant}
+                leftIcon={shareSuccess ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4" />}
+                aria-label={t('aiTeam.shareWithConsultant')}
+              >
+                <span className="hidden sm:inline">
+                  {shareSuccess ? t('aiTeam.shared') : t('aiTeam.share')}
+                </span>
+              </Button>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={clearMessages}
+                leftIcon={<Trash2 className="w-4 h-4" />}
+                aria-label={t('aiTeam.clearChat')}
+              >
+                <span className="hidden sm:inline">{t('aiTeam.clearChat')}</span>
+              </Button>
+            </div>
           )}
         </div>
 
@@ -322,6 +588,12 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
                 key={message.id}
                 message={message}
                 agentColor={agent.color}
+                onSaveToDiary={handleSaveToDiary}
+                diarySaved={diarySuccess === message.id}
+                onSpeak={speakMessage}
+                isSpeaking={isSpeaking}
+                onCreateTask={handleCreateTask}
+                taskCreated={taskSuccess === message.content.slice(0, 20)}
               />
             ))
           )}
@@ -383,6 +655,31 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
             </Card>
           )}
 
+          {/* Suggested follow-up questions */}
+          {suggestions.length > 0 && !isLoading && (
+            <div className="flex flex-wrap gap-2 pt-2">
+              <span className="text-xs text-stone-500 dark:text-stone-400 w-full mb-1">
+                {t('aiTeam.suggestedQuestions')}
+              </span>
+              {suggestions.map((suggestion, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className={cn(
+                    'px-3 py-1.5 rounded-full text-xs',
+                    'bg-stone-100 dark:bg-stone-800',
+                    'border border-stone-200 dark:border-stone-700',
+                    'text-stone-700 dark:text-stone-300',
+                    'hover:bg-stone-200 dark:hover:bg-stone-700',
+                    'transition-colors'
+                  )}
+                >
+                  {suggestion}
+                </button>
+              ))}
+            </div>
+          )}
+
           <div ref={messagesEndRef} />
         </div>
 
@@ -391,7 +688,24 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           'p-4 border-t border-stone-200 dark:border-stone-700',
           'bg-white dark:bg-stone-900'
         )}>
-          <div className="flex items-end gap-3">
+          <div className="flex items-end gap-2 sm:gap-3">
+            <button
+              onClick={toggleRecording}
+              disabled={isLoading}
+              className={cn(
+                'flex-shrink-0 p-3 rounded-xl',
+                'transition-all duration-200',
+                isRecording
+                  ? 'bg-red-500 text-white animate-pulse'
+                  : 'bg-stone-100 dark:bg-stone-800 text-stone-600 dark:text-stone-400',
+                'hover:bg-stone-200 dark:hover:bg-stone-700',
+                'disabled:opacity-50 disabled:cursor-not-allowed'
+              )}
+              aria-label={isRecording ? t('aiTeam.voice.stopRecording') : t('aiTeam.voice.startRecording')}
+              title={isRecording ? t('aiTeam.voice.stopRecording') : t('aiTeam.voice.startRecording')}
+            >
+              {isRecording ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+            </button>
             <textarea
               ref={inputRef}
               value={inputValue}
@@ -465,9 +779,15 @@ interface MessageBubbleProps {
     content: string
   }
   agentColor: string
+  onSaveToDiary?: (content: string) => void
+  diarySaved?: boolean
+  onSpeak?: (content: string) => void
+  isSpeaking?: boolean
+  onCreateTask?: (content: string) => void
+  taskCreated?: boolean
 }
 
-function MessageBubble({ message, agentColor }: MessageBubbleProps) {
+function MessageBubble({ message, agentColor, onSaveToDiary, diarySaved, onSpeak, isSpeaking, onCreateTask, taskCreated }: MessageBubbleProps) {
   const { t } = useTranslation()
   const [copied, setCopied] = useState(false)
   const isUser = message.role === 'user'
@@ -514,37 +834,93 @@ function MessageBubble({ message, agentColor }: MessageBubbleProps) {
         >
           <p className="text-sm whitespace-pre-wrap">{message.content}</p>
         </div>
-        {/* Copy button - shows on hover for assistant messages */}
+        {/* Action buttons - shows on hover for assistant messages */}
         {!isUser && (
-          <button
-            onClick={handleCopy}
-            className={cn(
-              'absolute -bottom-2 right-2',
-              'opacity-0 group-hover:opacity-100',
-              'transition-opacity duration-200',
-              'px-2 py-1 rounded-lg',
-              'bg-white dark:bg-stone-700',
-              'border border-stone-200 dark:border-stone-600',
-              'text-xs text-stone-600 dark:text-stone-400',
-              'hover:text-stone-900 dark:hover:text-stone-200',
-              'shadow-sm hover:shadow',
-              'flex items-center gap-1',
-              copied && 'opacity-100'
-            )}
-            aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
-          >
-            {copied ? (
-              <>
+          <div className={cn(
+            'absolute -bottom-2 right-2',
+            'opacity-0 group-hover:opacity-100',
+            'transition-opacity duration-200',
+            'flex items-center gap-1',
+            (copied || diarySaved || taskCreated || isSpeaking) && 'opacity-100'
+          )}>
+            {/* Speak button */}
+            <button
+              onClick={() => onSpeak?.(message.content)}
+              className={cn(
+                'px-2 py-1 rounded-lg',
+                'bg-white dark:bg-stone-700',
+                'border border-stone-200 dark:border-stone-600',
+                'text-xs text-stone-600 dark:text-stone-400',
+                'hover:text-stone-900 dark:hover:text-stone-200',
+                'shadow-sm hover:shadow',
+                'flex items-center gap-1',
+                isSpeaking && 'bg-teal-50 dark:bg-teal-900/30 border-teal-300 dark:border-teal-700'
+              )}
+              aria-label={isSpeaking ? t('aiTeam.voice.stopSpeaking') : t('aiTeam.voice.speak')}
+            >
+              <Volume2 className={cn('w-3 h-3', isSpeaking && 'text-teal-500 animate-pulse')} />
+            </button>
+            {/* Create task button */}
+            <button
+              onClick={() => onCreateTask?.(message.content)}
+              className={cn(
+                'px-2 py-1 rounded-lg',
+                'bg-white dark:bg-stone-700',
+                'border border-stone-200 dark:border-stone-600',
+                'text-xs text-stone-600 dark:text-stone-400',
+                'hover:text-stone-900 dark:hover:text-stone-200',
+                'shadow-sm hover:shadow',
+                'flex items-center gap-1'
+              )}
+              aria-label={taskCreated ? t('aiTeam.calendar.taskCreated') : t('aiTeam.calendar.createTask')}
+            >
+              {taskCreated ? (
                 <Check className="w-3 h-3 text-green-500" />
-                <span className="text-green-600 dark:text-green-400">{t('aiTeam.messageCopied')}</span>
-              </>
-            ) : (
-              <>
+              ) : (
+                <CalendarPlus className="w-3 h-3" />
+              )}
+            </button>
+            {/* Save to diary button */}
+            <button
+              onClick={() => onSaveToDiary?.(message.content)}
+              className={cn(
+                'px-2 py-1 rounded-lg',
+                'bg-white dark:bg-stone-700',
+                'border border-stone-200 dark:border-stone-600',
+                'text-xs text-stone-600 dark:text-stone-400',
+                'hover:text-stone-900 dark:hover:text-stone-200',
+                'shadow-sm hover:shadow',
+                'flex items-center gap-1'
+              )}
+              aria-label={diarySaved ? t('aiTeam.savedToDiary') : t('aiTeam.saveToDiary')}
+            >
+              {diarySaved ? (
+                <Check className="w-3 h-3 text-green-500" />
+              ) : (
+                <BookOpen className="w-3 h-3" />
+              )}
+            </button>
+            {/* Copy button */}
+            <button
+              onClick={handleCopy}
+              className={cn(
+                'px-2 py-1 rounded-lg',
+                'bg-white dark:bg-stone-700',
+                'border border-stone-200 dark:border-stone-600',
+                'text-xs text-stone-600 dark:text-stone-400',
+                'hover:text-stone-900 dark:hover:text-stone-200',
+                'shadow-sm hover:shadow',
+                'flex items-center gap-1'
+              )}
+              aria-label={copied ? t('aiTeam.messageCopied') : t('aiTeam.copyMessage')}
+            >
+              {copied ? (
+                <Check className="w-3 h-3 text-green-500" />
+              ) : (
                 <Copy className="w-3 h-3" />
-                <span>{t('aiTeam.copyMessage')}</span>
-              </>
-            )}
-          </button>
+              )}
+            </button>
+          </div>
         )}
       </div>
     </div>
