@@ -12,6 +12,7 @@ import { getAgentById } from './AgentSelector'
 import { getPersonalityById } from './PersonalityDropdown'
 import { agentColorClasses } from './types'
 import { callAI } from '@/services/aiApi'
+import { useAITeamContext, formatAITeamContext } from '@/hooks/useAITeamContext'
 import { Send, RefreshCw, User, Trash2 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -47,6 +48,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
     const agent = getAgentById(selectedAgent)
     const personality = getPersonalityById(selectedPersonality)
     const colors = agentColorClasses[agent.color]
+    const { context: userContext } = useAITeamContext()
 
     // Scroll to bottom when new messages arrive
     useEffect(() => {
@@ -87,15 +89,16 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       setError(null)
 
       try {
-        // Build context message with agent role and personality
+        // Build context message with agent role, personality, and user data
         const agentContext = t(`aiTeam.agents.${selectedAgent}.systemPrompt`)
         const personalityContext = personality.systemPrompt
+        const userDataContext = formatAITeamContext(userContext, selectedAgent)
 
         const result = await callAI<{ svar?: string }>('ai-team-chat', {
           meddelande: text,
           agentTyp: selectedAgent,
           personlighet: selectedPersonality,
-          systemKontext: `${agentContext}\n\nPersonlighet: ${personalityContext}`,
+          systemKontext: `${agentContext}\n\nPersonlighet: ${personalityContext}${userDataContext}`,
           historik: messages.slice(-10).map((m) => ({
             roll: m.role === 'user' ? 'användare' : 'assistent',
             innehall: m.content,
@@ -121,6 +124,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       selectedPersonality,
       messages,
       personality.systemPrompt,
+      userContext,
       t,
       addMessage,
       onSendMessage,
