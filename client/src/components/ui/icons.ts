@@ -28,6 +28,7 @@ export {
   ArrowUpDown,
   ArrowUpRight,
   Award,
+  Baby,
   BarChart3,
   Battery,
   BatteryFull,
