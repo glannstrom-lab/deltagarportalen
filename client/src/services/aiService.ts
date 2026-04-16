@@ -4,11 +4,12 @@
  * Denna service anropar Vercel Serverless Functions för alla AI-operationer.
  * Ersätter den tidigare lokala servern (localhost:3002).
  *
- * Inkluderar retry-logik för förbättrad tillförlitlighet.
+ * Inkluderar retry-logik och automatisk kontextinjektion för personalisering.
  */
 
 import { withRetry } from './retryService';
 import { supabase } from '@/lib/supabase';
+import { getStaticAIContext, type AIUserContext } from '@/hooks/useAIContext';
 
 const API_BASE = '/api';
 
@@ -115,9 +116,16 @@ const AI_RETRY_CONFIG = {
 };
 
 /**
- * Generisk funktion för att anropa AI-endpoints med retry-logik
+ * Generisk funktion för att anropa AI-endpoints med retry-logik och kontextinjektion
+ *
+ * User context is automatically collected and sent with every AI request to enable
+ * personalized responses based on experience level, interests, energy level, etc.
  */
-async function callAI(functionName: string, data: Record<string, unknown>): Promise<AIResponse> {
+async function callAI(
+  functionName: string,
+  data: Record<string, unknown>,
+  options?: { skipContext?: boolean }
+): Promise<AIResponse> {
   return withRetry(
     async () => {
       const controller = new AbortController();
@@ -131,6 +139,16 @@ async function callAI(functionName: string, data: Record<string, unknown>): Prom
         throw new Error('Inte inloggad. Logga in för att använda AI-funktioner.');
       }
 
+      // Collect user context for personalization (unless explicitly skipped)
+      let userContext: AIUserContext | undefined;
+      if (!options?.skipContext) {
+        try {
+          userContext = getStaticAIContext();
+        } catch (e) {
+          console.warn('Failed to get AI context:', e);
+        }
+      }
+
       try {
         const response = await fetch(`${API_BASE}/ai`, {
           method: 'POST',
@@ -138,7 +156,12 @@ async function callAI(functionName: string, data: Record<string, unknown>): Prom
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ function: functionName, data }),
+          body: JSON.stringify({
+            function: functionName,
+            data,
+            // Include user context for personalization
+            userContext
+          }),
           signal: controller.signal,
         });
 

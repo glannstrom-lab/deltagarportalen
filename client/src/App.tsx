@@ -25,6 +25,7 @@ import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import AiPolicy from './pages/AiPolicy'
 import CookieConsent from './components/CookieConsent'
+import { EnergySaveMode } from './components/EnergySaveMode'
 import StorageTest from './pages/StorageTest'
 
 // Lazy-loaded sidor
@@ -282,6 +283,7 @@ function App() {
         {/* Catch-all */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+      <EnergySaveMode />
       <CookieConsent />
     </>
   )

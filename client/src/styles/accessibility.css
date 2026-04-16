@@ -308,8 +308,131 @@ legend {
   [role="button"] {
     display: none !important;
   }
-  
+
   *:focus {
     outline: none !important;
   }
+}
+
+/* ============================================
+   CALM MODE / ENERGY SAVE MODE
+   For users with low energy or who need reduced stimulation
+   ============================================ */
+
+/* Calm Mode: Reduce animations and visual complexity */
+.calm-mode {
+  /* Reduce all animations */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.1ms !important;
+  }
+}
+
+/* Calm Mode: Reduce shadows and visual noise */
+.calm-mode .shadow-lg,
+.calm-mode .shadow-xl,
+.calm-mode .shadow-2xl {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Calm Mode: Reduce hover effects */
+.calm-mode *:hover {
+  transform: none !important;
+}
+
+/* Calm Mode: Muted colors */
+.calm-mode .bg-gradient-to-r,
+.calm-mode .bg-gradient-to-br,
+.calm-mode .bg-gradient-to-b {
+  background: inherit;
+}
+
+/* Large Text Mode: Increase base font size */
+.large-text {
+  font-size: 18px;
+
+  h1 { font-size: 2rem; }
+  h2 { font-size: 1.75rem; }
+  h3 { font-size: 1.5rem; }
+  p, li, span, a { font-size: 1.125rem; }
+
+  /* Larger touch targets */
+  button,
+  [role="button"],
+  a {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px 16px;
+  }
+
+  /* Larger form inputs */
+  input,
+  textarea,
+  select {
+    min-height: 48px;
+    font-size: 1.125rem;
+    padding: 12px;
+  }
+}
+
+/* High Contrast Mode: Enhanced visual contrast */
+.high-contrast {
+  /* Stronger text colors */
+  color: #000 !important;
+
+  --text-primary: #000000;
+  --text-secondary: #1a1a1a;
+  --bg-card: #ffffff;
+  --border-color: #000000;
+}
+
+.high-contrast button,
+.high-contrast a {
+  border: 2px solid currentColor !important;
+}
+
+.high-contrast input,
+.high-contrast textarea,
+.high-contrast select {
+  border: 2px solid #000 !important;
+  background: #fff !important;
+}
+
+/* Low Energy Mode: Maximum simplification */
+.low-energy {
+  /* Hide decorative elements */
+  .decorative,
+  [aria-hidden="true"]:not(.icon) {
+    opacity: 0.5;
+  }
+
+  /* Simplify badges and counters */
+  .badge,
+  .counter {
+    font-size: 1rem;
+    padding: 4px 8px;
+  }
+}
+
+/* Low Energy Mode: Supportive messaging */
+.low-energy .progress-indicator::after {
+  content: " - Ta det lugnt, du gör bra ifrån dig!";
+  font-size: 0.875rem;
+  color: #059669;
+  margin-left: 0.5rem;
+}
+
+/* Dark mode adjustments for calm mode */
+.dark.calm-mode {
+  --bg-page: #1c1917;
+  --bg-card: #292524;
+}
+
+.dark.high-contrast {
+  --text-primary: #ffffff;
+  --text-secondary: #f5f5f4;
+  --bg-card: #000000;
 }
