@@ -2,7 +2,6 @@
  * Dashboard Page - Visual overview with real data
  * Features: Hero, KPIs, RIASEC chart, compact onboarding, quick actions
  */
-import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { ConsultantRequestBanner } from '@/components/consultant/ConsultantRequestBanner'
@@ -11,368 +10,22 @@ import { helpContent } from '@/data/helpContent'
 import { useAuthStore } from '@/stores/authStore'
 import { cn } from '@/lib/utils'
 import { useDashboardData } from '@/hooks/useDashboardData'
-import { useInterestProfile, RIASEC_TYPES, type RiasecScores } from '@/hooks/useInterestProfile'
+import { useInterestProfile, RIASEC_TYPES } from '@/hooks/useInterestProfile'
 import {
   User, Compass, FileText, Search, Mail, Building2, ClipboardList,
-  Check, ChevronDown, ChevronRight, Loader2, Target, GraduationCap, Star,
+  ChevronRight, Loader2, Target, GraduationCap, Star,
   TrendingUp, Linkedin, BookOpen, Dumbbell, Calendar, NotebookPen,
   Smile, Globe, Bookmark, Briefcase, Heart, Sparkles, FileUser,
-  UserCheck, Award, Flame, Zap, Clock, ArrowRight
+  UserCheck, Flame, Zap, ArrowRight
 } from '@/components/ui/icons'
 
-// ============================================
-// RIASEC RADAR CHART COMPONENT (inline for dashboard)
-// ============================================
-function DashboardRiasecChart({ scores, size = 200 }: { scores: RiasecScores; size?: number }) {
-  const center = size / 2
-  const radius = (size / 2) - 30
-  const keys: (keyof RiasecScores)[] = ['realistic', 'investigative', 'artistic', 'social', 'enterprising', 'conventional']
-  const shortKeys = ['R', 'I', 'A', 'S', 'E', 'C']
+// Extracted dashboard components
+import { DashboardRiasecChart } from '@/components/dashboard/DashboardRiasecChart'
+import { KpiCard } from '@/components/dashboard/KpiCard'
+import { OnboardingStep } from '@/components/dashboard/OnboardingStep'
+import { QuickActionButton } from '@/components/dashboard/QuickActionButton'
+import { DashboardSection } from '@/components/dashboard/DashboardSection'
 
-  // Find max score to normalize
-  const maxScore = Math.max(...keys.map(k => scores[k]), 1)
-
-  const getPoint = (index: number, value: number) => {
-    const angle = (Math.PI * 2 * index) / 6 - Math.PI / 2
-    const r = (value / maxScore) * radius
-    return {
-      x: center + r * Math.cos(angle),
-      y: center + r * Math.sin(angle),
-    }
-  }
-
-  const polygonPoints = keys.map((key, i) => {
-    const point = getPoint(i, scores[key])
-    return `${point.x},${point.y}`
-  }).join(' ')
-
-  const levelCircles = [0.25, 0.5, 0.75, 1].map((level, i) => (
-    <circle
-      key={i}
-      cx={center}
-      cy={center}
-      r={level * radius}
-      fill="none"
-      className="stroke-stone-200 dark:stroke-stone-700"
-      strokeWidth="1"
-      strokeDasharray="3 3"
-    />
-  ))
-
-  const axes = keys.map((_, i) => {
-    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
-    const endX = center + radius * Math.cos(angle)
-    const endY = center + radius * Math.sin(angle)
-    return (
-      <line
-        key={i}
-        x1={center}
-        y1={center}
-        x2={endX}
-        y2={endY}
-        className="stroke-stone-200 dark:stroke-stone-700"
-        strokeWidth="1"
-      />
-    )
-  })
-
-  const colors: Record<keyof RiasecScores, string> = {
-    realistic: '#f59e0b',
-    investigative: '#3b82f6',
-    artistic: '#8b5cf6',
-    social: '#10b981',
-    enterprising: '#ef4444',
-    conventional: '#6366f1'
-  }
-
-  const labels = keys.map((key, i) => {
-    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2
-    const labelRadius = radius + 18
-    const x = center + labelRadius * Math.cos(angle)
-    const y = center + labelRadius * Math.sin(angle)
-
-    return (
-      <g key={key}>
-        <circle
-          cx={x}
-          cy={y}
-          r="12"
-          fill={colors[key]}
-        />
-        <text
-          x={x}
-          y={y}
-          textAnchor="middle"
-          dominantBaseline="central"
-          className="fill-white text-[10px] font-bold"
-        >
-          {shortKeys[i]}
-        </text>
-      </g>
-    )
-  })
-
-  return (
-    <svg width={size} height={size} className="mx-auto">
-      <defs>
-        <linearGradient id="riasecGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#14b8a6" stopOpacity="0.4" />
-          <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.4" />
-        </linearGradient>
-      </defs>
-      {levelCircles}
-      {axes}
-      <polygon
-        points={polygonPoints}
-        fill="url(#riasecGrad)"
-        stroke="#14b8a6"
-        strokeWidth="2"
-      />
-      {keys.map((key, i) => {
-        const point = getPoint(i, scores[key])
-        return (
-          <circle
-            key={key}
-            cx={point.x}
-            cy={point.y}
-            r="4"
-            fill="white"
-            stroke={colors[key]}
-            strokeWidth="2"
-          />
-        )
-      })}
-      {labels}
-    </svg>
-  )
-}
-
-// ============================================
-// KPI CARD COMPONENT
-// ============================================
-function KpiCard({
-  icon: Icon,
-  label,
-  value,
-  subtext,
-  color = 'teal',
-  to
-}: {
-  icon: React.ElementType
-  label: string
-  value: string | number
-  subtext?: string
-  color?: 'teal' | 'sky' | 'amber' | 'emerald' | 'rose'
-  to?: string
-}) {
-  const colorClasses = {
-    teal: 'from-teal-500 to-teal-600 dark:from-teal-600 dark:to-teal-700',
-    sky: 'from-sky-500 to-sky-600 dark:from-sky-600 dark:to-sky-700',
-    amber: 'from-amber-500 to-amber-600 dark:from-amber-600 dark:to-amber-700',
-    emerald: 'from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-700',
-    rose: 'from-rose-500 to-rose-600 dark:from-rose-600 dark:to-rose-700',
-  }
-
-  const content = (
-    <div className={cn(
-      'relative overflow-hidden rounded-xl p-3 sm:p-4 bg-gradient-to-br text-white shadow-lg',
-      colorClasses[color],
-      to && 'hover:scale-[1.02] transition-transform cursor-pointer'
-    )}>
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 flex-1">
-          <p className="text-white/80 text-[10px] sm:text-xs font-medium mb-0.5 sm:mb-1 truncate">{label}</p>
-          <p className="text-xl sm:text-2xl font-bold">{value}</p>
-          {subtext && <p className="text-white/70 text-[10px] sm:text-xs mt-0.5 sm:mt-1 truncate">{subtext}</p>}
-        </div>
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-white/20 flex items-center justify-center shrink-0">
-          <Icon className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-        </div>
-      </div>
-    </div>
-  )
-
-  return to ? <Link to={to}>{content}</Link> : content
-}
-
-// ============================================
-// ONBOARDING STEP COMPONENT (compact)
-// ============================================
-function OnboardingStep({
-  step,
-  title,
-  description,
-  icon: Icon,
-  isComplete,
-  isCurrent,
-  to
-}: {
-  step: number
-  title: string
-  description: string
-  icon: React.ElementType
-  isComplete: boolean
-  isCurrent: boolean
-  to: string
-}) {
-  return (
-    <Link
-      to={to}
-      className={cn(
-        'flex items-center gap-2 sm:gap-3 p-2.5 sm:p-3 rounded-xl border transition-all group',
-        isComplete
-          ? 'bg-emerald-50 dark:bg-emerald-900/20 border-emerald-200 dark:border-emerald-800/50'
-          : isCurrent
-          ? 'bg-teal-50 dark:bg-teal-900/20 border-teal-300 dark:border-teal-700 ring-2 ring-teal-400/30'
-          : 'bg-white dark:bg-stone-800/50 border-stone-200 dark:border-stone-700 hover:border-teal-300 dark:hover:border-teal-700'
-      )}
-    >
-      <div className={cn(
-        'w-7 h-7 sm:w-8 sm:h-8 rounded-lg flex items-center justify-center shrink-0',
-        isComplete
-          ? 'bg-emerald-500 text-white'
-          : isCurrent
-          ? 'bg-teal-500 text-white'
-          : 'bg-stone-100 dark:bg-stone-700 text-stone-500 dark:text-stone-400'
-      )}>
-        {isComplete ? (
-          <Check className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        ) : (
-          <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-        )}
-      </div>
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <span className="text-[10px] sm:text-xs text-stone-400 dark:text-stone-500">Steg {step}</span>
-          {isCurrent && !isComplete && (
-            <span className="text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.5 bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 rounded-full font-medium">
-              Nu
-            </span>
-          )}
-        </div>
-        <p className={cn(
-          'text-xs sm:text-sm font-medium truncate',
-          isComplete ? 'text-emerald-700 dark:text-emerald-400' : 'text-stone-800 dark:text-stone-200'
-        )}>
-          {title}
-        </p>
-      </div>
-      <ChevronRight className={cn(
-        'w-4 h-4 shrink-0 transition-transform',
-        isComplete ? 'text-emerald-400 dark:text-emerald-500' : 'text-stone-300 dark:text-stone-600 group-hover:translate-x-1'
-      )} />
-    </Link>
-  )
-}
-
-// ============================================
-// QUICK ACTION BUTTON
-// ============================================
-function QuickAction({
-  icon: Icon,
-  label,
-  to,
-  color = 'teal'
-}: {
-  icon: React.ElementType
-  label: string
-  to: string
-  color?: 'teal' | 'sky' | 'amber'
-}) {
-  const colorClasses = {
-    teal: 'bg-teal-100 dark:bg-teal-900/40 text-teal-700 dark:text-teal-300 hover:bg-teal-200 dark:hover:bg-teal-900/60',
-    sky: 'bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-300 hover:bg-sky-200 dark:hover:bg-sky-900/60',
-    amber: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 hover:bg-amber-200 dark:hover:bg-amber-900/60',
-  }
-
-  return (
-    <Link
-      to={to}
-      className={cn(
-        'flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors',
-        colorClasses[color]
-      )}
-    >
-      <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-      {label}
-    </Link>
-  )
-}
-
-// ============================================
-// COLLAPSIBLE SECTION
-// ============================================
-function CollapsibleSection({
-  title,
-  icon: Icon,
-  children,
-  defaultExpanded = true,
-  badge,
-  colorScheme = 'teal'
-}: {
-  title: string
-  icon: React.ElementType
-  children: React.ReactNode
-  defaultExpanded?: boolean
-  badge?: string
-  colorScheme?: 'teal' | 'sky' | 'amber'
-}) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-  const sectionId = `section-${title.toLowerCase().replace(/\s+/g, '-').replace(/[åäö]/g, 'a')}`
-
-  const colors = {
-    teal: {
-      header: 'bg-teal-50 dark:bg-teal-900/20',
-      headerText: 'text-teal-800 dark:text-teal-300',
-      headerIcon: 'text-teal-600 dark:text-teal-400',
-      border: 'border-teal-200 dark:border-teal-800/50',
-    },
-    sky: {
-      header: 'bg-sky-50 dark:bg-sky-900/20',
-      headerText: 'text-sky-800 dark:text-sky-300',
-      headerIcon: 'text-sky-600 dark:text-sky-400',
-      border: 'border-sky-200 dark:border-sky-800/50',
-    },
-    amber: {
-      header: 'bg-amber-50 dark:bg-amber-900/20',
-      headerText: 'text-amber-800 dark:text-amber-300',
-      headerIcon: 'text-amber-600 dark:text-amber-400',
-      border: 'border-amber-200 dark:border-amber-800/50',
-    }
-  }
-
-  const c = colors[colorScheme]
-
-  return (
-    <div className={cn('rounded-2xl border overflow-hidden', c.border)}>
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        aria-expanded={isExpanded}
-        aria-controls={`${sectionId}-content`}
-        className={cn('w-full flex items-center justify-between px-3 sm:px-4 py-2.5 sm:py-3', c.header)}
-      >
-        <div className="flex items-center gap-2">
-          <Icon className={cn('w-4 h-4 sm:w-5 sm:h-5', c.headerIcon)} />
-          <span className={cn('text-sm sm:text-base font-semibold', c.headerText)}>{title}</span>
-          {badge && (
-            <span className="px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs font-medium rounded-full bg-white/60 dark:bg-stone-800/60 text-stone-600 dark:text-stone-300">
-              {badge}
-            </span>
-          )}
-        </div>
-        <ChevronDown
-          className={cn('w-4 h-4 sm:w-5 sm:h-5 transition-transform', c.headerIcon, !isExpanded && '-rotate-90')}
-          aria-hidden="true"
-        />
-      </button>
-      {isExpanded && (
-        <div id={`${sectionId}-content`} className="p-3 sm:p-4 bg-white dark:bg-stone-900/50">
-          {children}
-        </div>
-      )}
-    </div>
-  )
-}
 
 // ============================================
 // ONBOARDING STEPS DATA
@@ -544,7 +197,7 @@ export default function DashboardPage() {
           {/* Main content - 2/3 width */}
           <div className="lg:col-span-2 space-y-3 sm:space-y-4">
             {/* Onboarding Section */}
-            <CollapsibleSection
+            <DashboardSection
               title="Kom igång"
               icon={Zap}
               badge={`${onboardingProgress.completed}/${onboardingProgress.total}`}
@@ -565,27 +218,27 @@ export default function DashboardPage() {
                   />
                 ))}
               </div>
-            </CollapsibleSection>
+            </DashboardSection>
 
             {/* Quick Actions */}
-            <CollapsibleSection
+            <DashboardSection
               title="Snabbåtgärder"
               icon={Sparkles}
               colorScheme="sky"
               defaultExpanded={true}
             >
               <div className="flex flex-wrap gap-2">
-                <QuickAction icon={Search} label="Sök jobb" to="/job-search" color="teal" />
-                <QuickAction icon={FileUser} label="Redigera CV" to="/cv" color="teal" />
-                <QuickAction icon={Mail} label="Nytt brev" to="/cover-letter" color="sky" />
-                <QuickAction icon={Building2} label="Spontanansökan" to="/spontanansökan" color="sky" />
-                <QuickAction icon={NotebookPen} label="Dagbok" to="/diary" color="amber" />
-                <QuickAction icon={Smile} label="Logga mående" to="/wellness" color="amber" />
+                <QuickActionButton icon={Search} label="Sök jobb" to="/job-search" color="teal" />
+                <QuickActionButton icon={FileUser} label="Redigera CV" to="/cv" color="teal" />
+                <QuickActionButton icon={Mail} label="Nytt brev" to="/cover-letter" color="sky" />
+                <QuickActionButton icon={Building2} label="Spontanansökan" to="/spontanansökan" color="sky" />
+                <QuickActionButton icon={NotebookPen} label="Dagbok" to="/diary" color="amber" />
+                <QuickActionButton icon={Smile} label="Logga mående" to="/wellness" color="amber" />
               </div>
-            </CollapsibleSection>
+            </DashboardSection>
 
             {/* Skills & Development */}
-            <CollapsibleSection
+            <DashboardSection
               title="Utveckling"
               icon={TrendingUp}
               colorScheme="amber"
@@ -610,10 +263,10 @@ export default function DashboardPage() {
                   </Link>
                 ))}
               </div>
-            </CollapsibleSection>
+            </DashboardSection>
 
             {/* Wellness & Planning */}
-            <CollapsibleSection
+            <DashboardSection
               title="Välmående & Planering"
               icon={Heart}
               colorScheme="sky"
@@ -638,7 +291,7 @@ export default function DashboardPage() {
                   </Link>
                 ))}
               </div>
-            </CollapsibleSection>
+            </DashboardSection>
           </div>
 
           {/* Sidebar - 1/3 width */}
