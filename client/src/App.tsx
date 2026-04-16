@@ -2,6 +2,7 @@ import { useEffect, lazy, Suspense } from 'react'
 import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useAuthStore } from './stores/authStore'
 import { ErrorBoundary } from './components/ErrorBoundary'
+import { RouteErrorBoundary, RouteLoadingFallback } from './components/RouteErrorBoundary'
 import { swLogger } from './lib/logger'
 import { Loader2 } from '@/components/ui/icons'
 
@@ -68,38 +69,17 @@ const LinkedInCallback = lazy(() => import('./pages/LinkedInCallback'))
 const GoogleCalendarCallback = lazy(() => import('./pages/GoogleCalendarCallback'))
 const MyConsultant = lazy(() => import('./pages/MyConsultant'))
 
-// Loading fallback
-function PageLoader() {
-  return (
-    <div
-      className="min-h-[60vh] flex items-center justify-center"
-      role="status"
-      aria-live="polite"
-      aria-busy="true"
-    >
-      <div className="text-center">
-        <Loader2 className="animate-spin text-teal-500 mx-auto mb-3" size={32} aria-hidden="true" />
-        <p className="text-sm text-slate-700">Laddar sida...</p>
-      </div>
-    </div>
-  )
-}
-
-// Error Boundary wrapper
-function RouteErrorBoundary({ children }: { children: React.ReactNode }) {
-  return (
-    <ErrorBoundary>
-      {children}
-    </ErrorBoundary>
-  )
-}
-
-// Suspense wrapper
+/**
+ * Lazy route wrapper with error boundary
+ * Handles chunk loading failures with retry and user-friendly error messages
+ */
 function LazyRoute({ children }: { children: React.ReactNode }) {
   return (
-    <Suspense fallback={<PageLoader />}>
-      {children}
-    </Suspense>
+    <RouteErrorBoundary>
+      <Suspense fallback={<RouteLoadingFallback />}>
+        {children}
+      </Suspense>
+    </RouteErrorBoundary>
   )
 }
 
