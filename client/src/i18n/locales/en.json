@@ -9,6 +9,7 @@
     "add": "Add",
     "search": "Search",
     "loading": "Loading...",
+    "loadingPage": "Loading page...",
     "error": "Something went wrong",
     "success": "Done!",
     "confirm": "Confirm",
@@ -1711,7 +1712,8 @@
     "notFound": "Page not found.",
     "somethingWentWrong": "Something went wrong",
     "couldNotLoad": "Could not load",
-    "couldNotSave": "Could not save"
+    "couldNotSave": "Could not save",
+    "loadFailed": "Could not load data. Please try again."
   },
   "empty": {
     "noJobs": "No jobs found right now. New opportunities are coming!",

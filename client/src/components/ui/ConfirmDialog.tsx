@@ -4,6 +4,7 @@
  */
 
 import { useState, useCallback, createContext, useContext, ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { X, AlertTriangle, Info, CheckCircle, AlertCircle } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
@@ -51,6 +52,7 @@ interface ConfirmDialogProviderProps {
 }
 
 export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) {
+  const { t } = useTranslation()
   const [state, setState] = useState<ConfirmDialogState>(initialState)
 
   const confirm = useCallback((options: ConfirmDialogOptions): Promise<boolean> => {
@@ -59,13 +61,13 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
         isOpen: true,
         title: options.title,
         message: options.message,
-        confirmText: options.confirmText || 'Bekräfta',
-        cancelText: options.cancelText || 'Avbryt',
+        confirmText: options.confirmText || t('common.confirm'),
+        cancelText: options.cancelText || t('common.cancel'),
         variant: options.variant || 'default',
         resolve,
       })
     })
-  }, [])
+  }, [t])
 
   const handleConfirm = useCallback(() => {
     state.resolve?.(true)
@@ -138,7 +140,7 @@ export function ConfirmDialogProvider({ children }: ConfirmDialogProviderProps) 
             <button
               onClick={handleCancel}
               className="absolute top-4 right-4 p-1 text-slate-600 dark:text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 rounded-lg hover:bg-slate-100 dark:hover:bg-stone-800 transition-colors"
-              aria-label="Stäng"
+              aria-label={t('common.close')}
             >
               <X className="w-5 h-5" />
             </button>

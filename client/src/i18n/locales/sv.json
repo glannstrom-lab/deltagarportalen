@@ -9,6 +9,7 @@
     "add": "Lägg till",
     "search": "Sök",
     "loading": "Laddar...",
+    "loadingPage": "Laddar sidan...",
     "error": "Något gick fel",
     "success": "Klart!",
     "confirm": "Bekräfta",
@@ -1751,7 +1752,8 @@
     "notFound": "Sidan kunde inte hittas.",
     "somethingWentWrong": "Något gick fel",
     "couldNotLoad": "Kunde inte ladda",
-    "couldNotSave": "Kunde inte spara"
+    "couldNotSave": "Kunde inte spara",
+    "loadFailed": "Kunde inte ladda data. Försök igen."
   },
   "empty": {
     "noJobs": "Inga jobb hittades just nu. Nya möjligheter kommer!",

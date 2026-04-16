@@ -3,6 +3,7 @@
  * Standardiserade loading states för olika scenarier
  */
 
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { Card } from './Card'
 import { Loader2, RefreshCw } from '@/components/ui/icons'
@@ -49,11 +50,14 @@ interface LoadingStateProps {
 
 export function LoadingState({
   title,
-  message = 'Laddar...',
+  message,
   size = 'md',
   fullHeight = false,
   className
 }: LoadingStateProps) {
+  const { t } = useTranslation()
+  const displayMessage = message ?? t('common.loading')
+
   return (
     <div
       className={cn(
@@ -74,7 +78,7 @@ export function LoadingState({
         'text-slate-700',
         title ? 'mt-1' : 'mt-4'
       )}>
-        {message}
+        {displayMessage}
       </p>
     </div>
   )
@@ -224,12 +228,16 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({
-  title = 'Något gick fel',
-  message = 'Kunde inte ladda data. Försök igen.',
+  title,
+  message,
   onRetry,
   icon,
   className
 }: ErrorStateProps) {
+  const { t } = useTranslation()
+  const displayTitle = title ?? t('common.error')
+  const displayMessage = message ?? t('errors.loadFailed')
+
   return (
     <div
       className={cn(
@@ -249,15 +257,15 @@ export function ErrorState({
           <RefreshCw className="w-8 h-8 text-red-600" />
         </div>
       )}
-      <h3 className="text-lg font-semibold text-slate-800 mb-2">{title}</h3>
-      <p className="text-slate-700 mb-6 max-w-sm">{message}</p>
+      <h3 className="text-lg font-semibold text-slate-800 mb-2">{displayTitle}</h3>
+      <p className="text-slate-700 mb-6 max-w-sm">{displayMessage}</p>
       {onRetry && (
         <Button
           variant="secondary"
           leftIcon={<RefreshCw className="w-4 h-4" />}
           onClick={onRetry}
         >
-          Försök igen
+          {t('common.tryAgain')}
         </Button>
       )}
     </div>
@@ -272,15 +280,17 @@ interface PageLoadingProps {
   message?: string
 }
 
-export function PageLoading({ 
+export function PageLoading({
   title,
-  message = 'Laddar sidan...'
+  message
 }: PageLoadingProps) {
+  const { t } = useTranslation()
+
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
-      <LoadingState 
+      <LoadingState
         title={title}
-        message={message}
+        message={message ?? t('common.loadingPage')}
         size="lg"
       />
     </div>
@@ -296,9 +306,12 @@ interface InlineLoadingProps {
 }
 
 export function InlineLoading({
-  text = 'Laddar...',
+  text,
   size = 'sm'
 }: InlineLoadingProps) {
+  const { t } = useTranslation()
+  const displayText = text ?? t('common.loading')
+
   return (
     <span
       className="inline-flex items-center gap-2 text-slate-700"
@@ -306,7 +319,7 @@ export function InlineLoading({
       aria-live="polite"
     >
       <Spinner size={size} />
-      {text && <span className="text-sm">{text}</span>}
+      {displayText && <span className="text-sm">{displayText}</span>}
     </span>
   )
 }
