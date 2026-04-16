@@ -144,7 +144,7 @@ Kategorier: teknisk, ledarskap, dom, annan. Nivåer: beginnare, intermediate, ex
     return {
       system: `${systemKontext}\n\nVIKTIGT - Svarsformat:\n- Svara KORTFATTAT (max 3-4 meningar för enkla frågor, max 6-8 för komplexa)\n- Använd punktlistor med TYDLIGA RUBRIKER i fetstil\n- Lägg till EN BLANK RAD mellan varje punkt för läsbarhet\n- Formatera så här:\n\n**Rubrik 1**\nKort förklaring här.\n\n**Rubrik 2**\nKort förklaring här.\n\n- Gå rakt på sak - skippa inledande fraser\n- Svara på svenska\n- Var konkret och handlingsinriktad`,
       user: conversation + 'Användare: ' + (data?.meddelande || 'Hej!'),
-      maxTokens: 650,
+      maxTokens: 900,
       responseKey: 'svar'
     };
   }
