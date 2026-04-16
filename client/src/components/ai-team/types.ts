@@ -73,6 +73,7 @@ export interface AITeamState {
   setAgent: (agentId: AgentId) => void
   setPersonality: (personalityId: PersonalityId) => void
   addMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void
+  setMessages: (messages: ChatMessage[]) => void
   clearMessages: () => void
   setLoading: (loading: boolean) => void
   setError: (error: string | null) => void

@@ -49,6 +49,10 @@ export const useAITeamStore = create<AITeamState>()(
           set({ messages: [], error: null })
         },
 
+        setMessages: (messages: ChatMessage[]) => {
+          set({ messages, error: null })
+        },
+
         setLoading: (loading: boolean) => {
           set({ isLoading: loading })
         },

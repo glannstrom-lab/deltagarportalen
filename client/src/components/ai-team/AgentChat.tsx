@@ -11,8 +11,9 @@ import { AgentAvatar } from './AgentAvatar'
 import { getAgentById } from './AgentSelector'
 import { getPersonalityById } from './PersonalityDropdown'
 import { agentColorClasses } from './types'
-import { callAI } from '@/services/aiApi'
 import { useAITeamContext, formatAITeamContext } from '@/hooks/useAITeamContext'
+import { useAuthStore } from '@/stores/authStore'
+import { supabase } from '@/lib/supabase'
 import { Send, RefreshCw, User, Trash2 } from '@/components/ui/icons'
 import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
@@ -39,21 +40,76 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       clearMessages,
       setLoading,
       setError,
+      setMessages,
     } = useAITeamStore()
 
     const [inputValue, setInputValue] = useState('')
+    const [streamingContent, setStreamingContent] = useState('')
+    const [isStreaming, setIsStreaming] = useState(false)
     const messagesEndRef = useRef<HTMLDivElement>(null)
     const inputRef = useRef<HTMLTextAreaElement>(null)
+    const abortControllerRef = useRef<AbortController | null>(null)
 
     const agent = getAgentById(selectedAgent)
     const personality = getPersonalityById(selectedPersonality)
     const colors = agentColorClasses[agent.color]
     const { context: userContext } = useAITeamContext()
+    const { user } = useAuthStore()
 
-    // Scroll to bottom when new messages arrive
+    // Load session memory on mount and agent change
+    useEffect(() => {
+      if (!user?.id) return
+
+      const loadSessionMemory = async () => {
+        try {
+          const { data } = await supabase
+            .from('ai_team_sessions')
+            .select('messages')
+            .eq('user_id', user.id)
+            .eq('agent_id', selectedAgent)
+            .single()
+
+          if (data?.messages && Array.isArray(data.messages)) {
+            setMessages(data.messages)
+          }
+        } catch {
+          // No saved session, start fresh
+        }
+      }
+
+      loadSessionMemory()
+    }, [user?.id, selectedAgent, setMessages])
+
+    // Save session memory when messages change
+    useEffect(() => {
+      if (!user?.id || messages.length === 0) return
+
+      const saveSessionMemory = async () => {
+        try {
+          await supabase
+            .from('ai_team_sessions')
+            .upsert({
+              user_id: user.id,
+              agent_id: selectedAgent,
+              messages: messages.slice(-30), // Keep last 30 messages
+              updated_at: new Date().toISOString(),
+            }, {
+              onConflict: 'user_id,agent_id'
+            })
+        } catch (err) {
+          console.error('Failed to save session:', err)
+        }
+      }
+
+      // Debounce save
+      const timeout = setTimeout(saveSessionMemory, 1000)
+      return () => clearTimeout(timeout)
+    }, [user?.id, selectedAgent, messages])
+
+    // Scroll to bottom when new messages arrive or streaming updates
     useEffect(() => {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-    }, [messages])
+    }, [messages, streamingContent])
 
     // Auto-resize textarea
     const handleInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -65,7 +121,7 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
 
     const sendMessage = useCallback(async (messageText?: string) => {
       const text = messageText || inputValue.trim()
-      if (!text || isLoading) return
+      if (!text || isLoading || isStreaming) return
 
       // Clear input
       setInputValue('')
@@ -84,8 +140,10 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
       // Notify parent if callback provided
       onSendMessage?.(text)
 
-      // Send to AI
+      // Send to AI with streaming
       setLoading(true)
+      setIsStreaming(true)
+      setStreamingContent('')
       setError(null)
 
       try {
@@ -94,32 +152,104 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         const personalityContext = personality.systemPrompt
         const userDataContext = formatAITeamContext(userContext, selectedAgent)
 
-        const result = await callAI<{ svar?: string }>('ai-team-chat', {
-          meddelande: text,
-          agentTyp: selectedAgent,
-          personlighet: selectedPersonality,
-          systemKontext: `${agentContext}\n\nPersonlighet: ${personalityContext}${userDataContext}`,
-          historik: messages.slice(-10).map((m) => ({
-            roll: m.role === 'user' ? 'användare' : 'assistent',
-            innehall: m.content,
-          })),
+        // Get auth token
+        const { data: { session } } = await supabase.auth.getSession()
+        if (!session?.access_token) {
+          throw new Error('Not authenticated')
+        }
+
+        // Create abort controller for cancellation
+        abortControllerRef.current = new AbortController()
+
+        const response = await fetch('/api/ai', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            function: 'ai-team-chat',
+            stream: true,
+            data: {
+              meddelande: text,
+              agentTyp: selectedAgent,
+              personlighet: selectedPersonality,
+              systemKontext: `${agentContext}\n\nPersonlighet: ${personalityContext}${userDataContext}`,
+              historik: messages.slice(-10).map((m) => ({
+                roll: m.role === 'user' ? 'användare' : 'assistent',
+                innehall: m.content,
+              })),
+            },
+          }),
+          signal: abortControllerRef.current.signal,
         })
 
-        // Add assistant message
-        addMessage({
-          role: 'assistant',
-          content: result.svar || t('aiTeam.error.noResponse'),
-          agentId: selectedAgent,
-          personalityId: selectedPersonality,
-        })
+        if (!response.ok) {
+          throw new Error('Failed to get response')
+        }
+
+        // Read streaming response
+        const reader = response.body?.getReader()
+        if (!reader) throw new Error('No response body')
+
+        const decoder = new TextDecoder()
+        let fullContent = ''
+        let buffer = ''
+
+        while (true) {
+          const { done, value } = await reader.read()
+          if (done) break
+
+          buffer += decoder.decode(value, { stream: true })
+          const lines = buffer.split('\n')
+          buffer = lines.pop() || ''
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const data = line.slice(6).trim()
+              if (data === '[DONE]') continue
+
+              try {
+                const parsed = JSON.parse(data)
+                if (parsed.token) {
+                  fullContent += parsed.token
+                  setStreamingContent(fullContent)
+                }
+                if (parsed.error) {
+                  throw new Error(parsed.error)
+                }
+              } catch {
+                // Skip malformed JSON
+              }
+            }
+          }
+        }
+
+        // Add final message
+        if (fullContent) {
+          addMessage({
+            role: 'assistant',
+            content: fullContent,
+            agentId: selectedAgent,
+            personalityId: selectedPersonality,
+          })
+        } else {
+          setError(t('aiTeam.error.noResponse'))
+        }
       } catch (err) {
-        setError(err instanceof Error ? err.message : t('aiTeam.error.generic'))
+        if ((err as Error).name !== 'AbortError') {
+          setError(err instanceof Error ? err.message : t('aiTeam.error.generic'))
+        }
       } finally {
         setLoading(false)
+        setIsStreaming(false)
+        setStreamingContent('')
+        abortControllerRef.current = null
       }
     }, [
       inputValue,
       isLoading,
+      isStreaming,
       selectedAgent,
       selectedPersonality,
       messages,
@@ -196,7 +326,30 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
             ))
           )}
 
-          {isLoading && (
+          {/* Streaming response */}
+          {isStreaming && streamingContent && (
+            <div className="flex items-start gap-3">
+              <div className={cn(
+                'w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0',
+                colors.bgLight
+              )}>
+                <span className={cn('text-sm', colors.text)} aria-hidden="true">AI</span>
+              </div>
+              <div className={cn(
+                'max-w-[80%] px-4 py-3 rounded-xl',
+                'bg-stone-100 dark:bg-stone-800',
+                'text-stone-900 dark:text-stone-100'
+              )}>
+                <p className="text-sm whitespace-pre-wrap">
+                  {streamingContent}
+                  <span className="inline-block w-2 h-4 ml-1 bg-current animate-pulse" />
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* Loading indicator (before streaming starts) */}
+          {isLoading && !streamingContent && (
             <div
               className={cn('flex items-start gap-3 animate-pulse')}
               role="status"

@@ -172,11 +172,85 @@ module.exports = async (req, res) => {
 
     const fn = req.body.function;
     const data = req.body.data || req.body;
+    const stream = req.body.stream === true;
 
     if (!fn || !PROMPTS[fn]) return res.status(400).json({ error: 'Invalid function: ' + fn });
 
     const prompt = PROMPTS[fn](data);
 
+    // Streaming mode for ai-team-chat
+    if (stream && fn === 'ai-team-chat') {
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+
+      const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://jobin.se',
+          'X-Title': 'Jobin'
+        },
+        body: JSON.stringify({
+          model: process.env.AI_MODEL || 'anthropic/claude-3.5-sonnet',
+          messages: [
+            { role: 'system', content: prompt.system },
+            { role: 'user', content: prompt.user }
+          ],
+          max_tokens: prompt.maxTokens,
+          temperature: 0.7,
+          stream: true
+        })
+      });
+
+      if (!aiResponse.ok) {
+        res.write(`data: ${JSON.stringify({ error: 'AI request failed' })}\n\n`);
+        return res.end();
+      }
+
+      // Stream the response
+      const reader = aiResponse.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split('\n');
+          buffer = lines.pop() || '';
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              const jsonStr = line.slice(6).trim();
+              if (jsonStr === '[DONE]') {
+                res.write('data: [DONE]\n\n');
+                continue;
+              }
+              try {
+                const parsed = JSON.parse(jsonStr);
+                const token = parsed.choices?.[0]?.delta?.content;
+                if (token) {
+                  res.write(`data: ${JSON.stringify({ token })}\n\n`);
+                }
+              } catch (e) {
+                // Skip malformed JSON
+              }
+            }
+          }
+        }
+      } catch (streamError) {
+        console.error('Stream error:', streamError);
+      }
+
+      res.write('data: [DONE]\n\n');
+      return res.end();
+    }
+
+    // Non-streaming mode (original behavior)
     const aiResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
