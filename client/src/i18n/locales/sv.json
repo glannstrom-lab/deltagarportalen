@@ -1374,12 +1374,17 @@
       "customizeAnswers": "Anpassa svaren",
       "continueWithData": "Fortsätt med min data",
       "skipForNow": "Hoppa över för nu",
+      "hasEmploymentStatus": "Din nuvarande situation",
       "situationQuestion": "Var befinner du dig just nu?",
       "situations": {
         "unemployed": "Arbetssökande",
         "employed": "Har jobb, vill byta",
         "student": "Studerar",
-        "career-change": "Vill byta karriär"
+        "career-change": "Vill byta karriär",
+        "parental-leave": "Föräldraledig",
+        "sick-leave": "Sjukskriven",
+        "retired": "Pensionär",
+        "other": "Annat"
       },
       "interestsTitle": "Vad intresserar dig?",
       "interestsDesc": "Välj de områden som du tycker är mest spännande",

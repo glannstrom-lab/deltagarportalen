@@ -14,7 +14,7 @@ import { Button } from '@/components/ui/Button'
 import { Card } from '@/components/ui/Card'
 import { cn } from '@/lib/utils'
 import { useInterestProfile, RIASEC_TYPES, type RiasecScores } from '@/hooks/useInterestProfile'
-import { unifiedProfileApi, type UnifiedProfileData } from '@/services/unifiedProfileApi'
+import { unifiedProfileApi, type UnifiedProfileData, type EmploymentStatus } from '@/services/unifiedProfileApi'
 
 interface CareerOnboardingProps {
   onComplete: (preferences: CareerPreferences) => void
@@ -162,6 +162,11 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
       experience: 'manual',
     }
 
+    // Pre-fill employment status from profile
+    if (unifiedProfile?.career?.employmentStatus) {
+      newPreferences.currentSituation = unifiedProfile.career.employmentStatus
+    }
+
     // Pre-fill interests from RIASEC profile
     if (interestProfile.hasResult && interestProfile.dominantTypes.length > 0) {
       const derivedInterests = getInterestsFromRiasec(interestProfile.dominantTypes)
@@ -187,7 +192,8 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
     setPreferences(newPreferences)
 
     // If we have significant existing data, show summary first
-    const hasExistingData = dataSource.interests === 'profile' || dataSource.experience === 'profile'
+    const hasEmploymentStatus = !!unifiedProfile?.career?.employmentStatus
+    const hasExistingData = hasEmploymentStatus || dataSource.interests === 'profile' || dataSource.experience === 'profile'
     setShowProfileSummary(hasExistingData)
 
   }, [loadingInterests, isLoadingProfile, interestProfile, unifiedProfile])
@@ -196,8 +202,10 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
   const steps = useMemo(() => {
     const stepsToShow: Array<'situation' | 'interests' | 'goals' | 'experience'> = []
 
-    // Always show situation - it's contextual to NOW
-    stepsToShow.push('situation')
+    // Only show situation if not already in profile
+    if (!unifiedProfile?.career?.employmentStatus) {
+      stepsToShow.push('situation')
+    }
 
     // Only show interests if we don't have RIASEC data
     if (!interestProfile.hasResult || interestProfile.dominantTypes.length === 0) {
@@ -218,10 +226,20 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
   const totalSteps = steps.length
   const currentStepType = steps[step]
 
-  const handleNext = () => {
+  const handleNext = async () => {
     if (step < totalSteps - 1) {
       setStep(step + 1)
     } else {
+      // Save employment status to profile if it was set
+      if (preferences.currentSituation) {
+        try {
+          await unifiedProfileApi.updateCareer({
+            employmentStatus: preferences.currentSituation as EmploymentStatus
+          })
+        } catch (error) {
+          console.error('Failed to save employment status:', error)
+        }
+      }
       onComplete(preferences)
     }
   }
@@ -296,6 +314,7 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
     const userName = unifiedProfile?.core?.firstName || ''
     const hasRiasec = interestProfile.hasResult && interestProfile.dominantTypes.length > 0
     const hasExperience = unifiedProfile?.professional?.workExperience?.length || 0
+    const hasEmploymentStatus = unifiedProfile?.career?.employmentStatus
 
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center p-4">
@@ -321,6 +340,20 @@ export function CareerOnboarding({ onComplete, onSkip }: CareerOnboardingProps) 
 
             {/* What we know */}
             <div className="text-left space-y-4 mb-8">
+              {hasEmploymentStatus && (
+                <div className="flex items-start gap-3 p-4 bg-teal-50 dark:bg-teal-900/20 rounded-xl">
+                  <CheckCircle className="w-5 h-5 text-teal-600 dark:text-teal-400 mt-0.5 flex-shrink-0" />
+                  <div>
+                    <p className="font-medium text-stone-900 dark:text-stone-100">
+                      {t('career.onboarding.hasEmploymentStatus')}
+                    </p>
+                    <p className="text-sm text-stone-600 dark:text-stone-400">
+                      {t(`career.onboarding.situations.${hasEmploymentStatus}`)}
+                    </p>
+                  </div>
+                </div>
+              )}
+
               {hasRiasec && (
                 <div className="flex items-start gap-3 p-4 bg-violet-50 dark:bg-violet-900/20 rounded-xl">
                   <CheckCircle className="w-5 h-5 text-violet-600 dark:text-violet-400 mt-0.5 flex-shrink-0" />

@@ -46,7 +46,18 @@ export interface ProfessionalProfile {
   }>
 }
 
+export type EmploymentStatus =
+  | 'unemployed'
+  | 'employed'
+  | 'student'
+  | 'career-change'
+  | 'parental-leave'
+  | 'sick-leave'
+  | 'retired'
+  | 'other'
+
 export interface CareerProfile {
+  employmentStatus?: EmploymentStatus
   riasecScores?: {
     realistic: number
     investigative: number
@@ -61,6 +72,7 @@ export interface CareerProfile {
     longTerm: string
   }
   preferredRoles: string[]
+  targetIndustries?: string[]
 }
 
 export interface UnifiedProfileData {
@@ -100,7 +112,7 @@ export const unifiedProfileApi = {
         // 1. Grundprofil från profiles
         supabase
           .from('profiles')
-          .select('first_name, last_name, email, phone, location, avatar_url')
+          .select('first_name, last_name, email, phone, location, avatar_url, employment_status, career_goals')
           .eq('id', user.id)
           .single(),
         
@@ -158,10 +170,12 @@ export const unifiedProfileApi = {
           education: cv?.education || []
         },
         career: {
+          employmentStatus: profile?.employment_status || undefined,
           riasecScores: interestResult?.riasec_scores || undefined,
           topOccupations: interestResult?.top_occupations || [],
-          careerGoals: unifiedProfile?.career_goals || { shortTerm: '', longTerm: '' },
-          preferredRoles: unifiedProfile?.preferred_roles || []
+          careerGoals: profile?.career_goals || unifiedProfile?.career_goals || { shortTerm: '', longTerm: '' },
+          preferredRoles: profile?.career_goals?.preferredRoles || unifiedProfile?.preferred_roles || [],
+          targetIndustries: profile?.career_goals?.targetIndustries || []
         },
         usage: {
           cvLastUpdated: cv?.updated_at,
@@ -230,24 +244,62 @@ export const unifiedProfileApi = {
 
   /**
    * Uppdatera career profile
+   * Sparar till profiles-tabellen (primary source of truth)
    */
   async updateCareer(data: Partial<CareerProfile>): Promise<void> {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) throw new Error('Inte inloggad')
 
+      // Build the update object
+      const updateData: Record<string, unknown> = {
+        updated_at: new Date().toISOString()
+      }
+
+      // Update employment status if provided
+      if (data.employmentStatus !== undefined) {
+        updateData.employment_status = data.employmentStatus
+      }
+
+      // Update career goals if any career goal fields provided
+      if (data.careerGoals || data.preferredRoles || data.targetIndustries) {
+        // First get existing career_goals to merge
+        const { data: existing } = await supabase
+          .from('profiles')
+          .select('career_goals')
+          .eq('id', user.id)
+          .single()
+
+        updateData.career_goals = {
+          ...(existing?.career_goals || {}),
+          ...(data.careerGoals || {}),
+          preferredRoles: data.preferredRoles || existing?.career_goals?.preferredRoles || [],
+          targetIndustries: data.targetIndustries || existing?.career_goals?.targetIndustries || [],
+          updatedAt: new Date().toISOString()
+        }
+      }
+
+      // Update profiles table (primary)
       const { error } = await supabase
-        .from('unified_profiles')
-        .upsert({
-          user_id: user.id,
-          career_goals: data.careerGoals,
-          preferred_roles: data.preferredRoles,
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id'
-        })
+        .from('profiles')
+        .update(updateData)
+        .eq('id', user.id)
 
       if (error) throw error
+
+      // Also update unified_profiles for backwards compatibility
+      if (data.careerGoals || data.preferredRoles) {
+        await supabase
+          .from('unified_profiles')
+          .upsert({
+            user_id: user.id,
+            career_goals: data.careerGoals,
+            preferred_roles: data.preferredRoles,
+            updated_at: new Date().toISOString()
+          }, {
+            onConflict: 'user_id'
+          })
+      }
 
       showToast.success('Karriärprofilen sparad')
     } catch (error) {

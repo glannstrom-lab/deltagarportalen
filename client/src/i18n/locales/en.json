@@ -1345,12 +1345,17 @@
       "customizeAnswers": "Customize answers",
       "continueWithData": "Continue with my data",
       "skipForNow": "Skip for now",
+      "hasEmploymentStatus": "Your current situation",
       "situationQuestion": "Where are you right now?",
       "situations": {
         "unemployed": "Job seeking",
         "employed": "Employed, want to switch",
         "student": "Studying",
-        "career-change": "Want to change career"
+        "career-change": "Want to change career",
+        "parental-leave": "Parental leave",
+        "sick-leave": "On sick leave",
+        "retired": "Retired",
+        "other": "Other"
       },
       "interestsTitle": "What interests you?",
       "interestsDesc": "Select the areas you find most exciting",
