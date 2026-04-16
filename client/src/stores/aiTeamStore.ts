@@ -23,6 +23,7 @@ export const useAITeamStore = create<AITeamState>()(
           set({
             selectedAgent: agentId,
             messages: [], // Clear messages when switching agents
+            isLoading: false, // Reset loading state
             error: null,
           })
         },
@@ -38,7 +39,8 @@ export const useAITeamStore = create<AITeamState>()(
             timestamp: new Date(),
           }
           set((state) => ({
-            messages: [...state.messages, newMessage],
+            // Keep last 50 messages for performance
+            messages: [...state.messages, newMessage].slice(-50),
             error: null,
           }))
         },

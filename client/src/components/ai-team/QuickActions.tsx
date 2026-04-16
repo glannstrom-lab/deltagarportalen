@@ -35,6 +35,7 @@ export function QuickActions({ onActionClick, className }: QuickActionsProps) {
             key={action.id}
             onClick={() => onActionClick(action.prompt)}
             disabled={isLoading}
+            aria-label={t(action.labelKey)}
             className={cn(
               'px-3 py-1.5 rounded-full',
               'text-xs sm:text-sm font-medium',

@@ -178,7 +178,12 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
         </div>
 
         {/* Messages */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div
+          className="flex-1 overflow-y-auto p-4 space-y-4"
+          role="log"
+          aria-live="polite"
+          aria-label={t('aiTeam.chatHistory')}
+        >
           {messages.length === 0 ? (
             <EmptyState agent={agent} />
           ) : (
@@ -192,7 +197,11 @@ export const AgentChat = forwardRef<AgentChatHandle, AgentChatProps>(
           )}
 
           {isLoading && (
-            <div className={cn('flex items-start gap-3 animate-pulse')}>
+            <div
+              className={cn('flex items-start gap-3 animate-pulse')}
+              role="status"
+              aria-label={t('aiTeam.thinking')}
+            >
               <AgentAvatar agentId={selectedAgent} color={agent.color} size="sm" />
               <div className={cn(
                 'px-4 py-3 rounded-xl',
