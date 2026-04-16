@@ -37,6 +37,8 @@
     "seeAll": "Se alla",
     "showMore": "Visa mer",
     "showLess": "Visa mindre",
+    "show": "Visa",
+    "hide": "Dölj",
     "selected": "Vald",
     "activate": "Aktivera",
     "deactivate": "Inaktivera",
@@ -275,6 +277,148 @@
       "profile": "Min profil",
       "settings": "Inställningar",
       "help": "Hjälp"
+    },
+    "weeklySummary": {
+      "yourWeek": "Din vecka",
+      "activeTime": "aktiv tid",
+      "cvProgress": "CV-progress",
+      "jobsSaved": "Jobb sparade",
+      "applications": "Ansökningar",
+      "wellnessDays": "Välmåendedagar",
+      "questsCompleted": "Quests klara",
+      "weekGoals": "Veckans mål",
+      "goalsProgress": "{{completed}} av {{total}} klara",
+      "weekBadge": "Veckan: {{progress}}%",
+      "goals": {
+        "logWellness": "Logga mående 3 dagar",
+        "completeCV": "Fyll i CV till 80%",
+        "saveJobs": "Spara 3 jobb"
+      },
+      "motivation": {
+        "getStarted": {
+          "title": "Kom igång denna veckan!",
+          "message": "Börja med att skapa ditt CV - det är första steget mot nya möjligheter!"
+        },
+        "onTrack": {
+          "title": "Du är på gång!",
+          "message": "Fantastiskt jobbat! Du har ett komplett CV och har skickat ansökningar. Fortsätt så!"
+        },
+        "cvComplete": {
+          "title": "CV:t är klart!",
+          "message": "Bra jobbat! Nu är det dags att börja söka jobb. Du kan det här!"
+        },
+        "greatWeek": {
+          "title": "Vilken vecka!",
+          "message": "Du har ökat ditt CV med {{progress}}% denna veckan. Imponerande!"
+        },
+        "selfCare": {
+          "title": "Du tar hand om dig!",
+          "message": "{{days}} dagar med välmående denna veckan. Så viktigt!"
+        },
+        "keepGoing": {
+          "title": "Bra fortsättning!",
+          "message": "Varje litet steg räknas. Du är på rätt väg!"
+        }
+      }
+    },
+    "compact": {
+      "todaysOverview": "Här är din översikt för idag.",
+      "noModules": "Inga moduler synliga",
+      "selectModules": "Klicka på \"Moduler\" ovan för att välja vad du vill se",
+      "stats": {
+        "cvProfile": "CV-profil",
+        "atsScore": "ATS-score",
+        "applications": "Ansökningar",
+        "savedJobs": "Sparade jobb"
+      },
+      "cv": {
+        "title": "Ditt CV",
+        "ready": "Profilen är redo för jobbsökning!",
+        "inProgress": "{{progress}}% klart - fortsätt bygga din profil",
+        "createProfile": "Skapa din profil för att komma igång"
+      },
+      "coverLetter": {
+        "title": "Personligt brev",
+        "savedCount": "{{count}} sparade brev",
+        "create": "Skapa ett personligt brev för dina ansökningar"
+      },
+      "jobSearch": {
+        "title": "Sök jobb",
+        "savedCount": "{{count}} sparade jobb att söka",
+        "findJobs": "Hitta och spara intressanta jobb"
+      },
+      "career": {
+        "title": "Karriärvägar",
+        "explore": "Utforska olika karriärmöjligheter"
+      },
+      "interests": {
+        "title": "Intresseguiden",
+        "seeResults": "Se dina rekommendationer",
+        "takeTest": "Ta testet för att hitta din väg"
+      },
+      "exercises": {
+        "title": "Övningar",
+        "prepare": "Förbered dig inför intervjuer"
+      },
+      "diary": {
+        "title": "Dagbok",
+        "personal": "Din personliga jobbsökningsdagbok"
+      },
+      "knowledge": {
+        "title": "Kunskapsbank",
+        "articles": "Artiklar, tips och guider"
+      }
+    },
+    "mobile": {
+      "whatToDo": "Vad vill du göra idag?",
+      "noModules": "Inga moduler synliga",
+      "openFilter": "Öppna filtret ovan för att välja moduler",
+      "yourOverview": "Din översikt",
+      "stats": {
+        "applications": "Ansökningar",
+        "saved": "Sparade"
+      },
+      "cv": {
+        "title": "Ditt CV",
+        "ready": "Profilen är redo!",
+        "inProgress": "{{progress}}% klart - fortsätt bygga",
+        "create": "Skapa din profil"
+      },
+      "coverLetter": {
+        "title": "Personligt brev",
+        "savedCount": "{{count}} sparade brev",
+        "create": "Skapa ett personligt brev"
+      },
+      "jobSearch": {
+        "title": "Sök jobb",
+        "savedCount": "{{count}} sparade jobb",
+        "find": "Hitta ditt nästa jobb"
+      },
+      "career": {
+        "title": "Karriär",
+        "explore": "Utforska karriärvägar"
+      },
+      "interests": {
+        "title": "Intresseguiden",
+        "seeResults": "Se dina rekommendationer",
+        "takeTest": "Ta testet och hitta din väg"
+      },
+      "exercises": {
+        "title": "Övningar",
+        "practice": "Träna inför intervjuer"
+      },
+      "diary": {
+        "title": "Dagbok",
+        "yourDiary": "Din jobbsökningsdagbok"
+      },
+      "wellness": {
+        "title": "Hälsa",
+        "yourWellness": "Ditt välmående"
+      },
+      "knowledge": {
+        "title": "Kunskapsbank",
+        "tipsGuides": "Tips och guider"
+      }
     }
   },
   "cv": {
@@ -3124,6 +3268,23 @@
       "laborMarket": "Arbetsmarknadsstatus",
       "workPreferences": "Arbetspreferenser",
       "physical": "Fysiska förutsättningar"
+    },
+    "status": {
+      "complete": "Komplett",
+      "needsUpdate": "Uppdatera",
+      "missing": "Saknas",
+      "energy": "Ork",
+      "hoursPerDay": "{{hours}}h/dag",
+      "shortTermGoal": "Korttidsmål",
+      "activity": "Aktivitet",
+      "activitySummary": "{{apps}} ans, {{interviews}} int",
+      "toDo": "Att göra",
+      "remaining": "{{count}} kvar",
+      "namedProfile": "{{name}}s profil",
+      "yourProfile": "Din profil",
+      "myProfile": "Min profil",
+      "nextSteps": "Nästa steg",
+      "goalProgress": "Mål: {{progress}}%"
     },
     "availability": {
       "currentStatus": "Nuvarande status",

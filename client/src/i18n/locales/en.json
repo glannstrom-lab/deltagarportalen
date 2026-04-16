@@ -37,6 +37,8 @@
     "seeAll": "See all",
     "showMore": "Show more",
     "showLess": "Show less",
+    "show": "Show",
+    "hide": "Hide",
     "selected": "Selected",
     "activate": "Activate",
     "deactivate": "Deactivate",
@@ -275,6 +277,148 @@
       "profile": "My profile",
       "settings": "Settings",
       "help": "Help"
+    },
+    "weeklySummary": {
+      "yourWeek": "Your week",
+      "activeTime": "active time",
+      "cvProgress": "CV progress",
+      "jobsSaved": "Jobs saved",
+      "applications": "Applications",
+      "wellnessDays": "Wellness days",
+      "questsCompleted": "Quests completed",
+      "weekGoals": "Weekly goals",
+      "goalsProgress": "{{completed}} of {{total}} done",
+      "weekBadge": "Week: {{progress}}%",
+      "goals": {
+        "logWellness": "Log wellness 3 days",
+        "completeCV": "Complete CV to 80%",
+        "saveJobs": "Save 3 jobs"
+      },
+      "motivation": {
+        "getStarted": {
+          "title": "Get started this week!",
+          "message": "Start by creating your CV - it's the first step towards new opportunities!"
+        },
+        "onTrack": {
+          "title": "You're on track!",
+          "message": "Fantastic work! You have a complete CV and have sent applications. Keep it up!"
+        },
+        "cvComplete": {
+          "title": "CV is complete!",
+          "message": "Great job! Now it's time to start applying for jobs. You've got this!"
+        },
+        "greatWeek": {
+          "title": "What a week!",
+          "message": "You've increased your CV by {{progress}}% this week. Impressive!"
+        },
+        "selfCare": {
+          "title": "You're taking care of yourself!",
+          "message": "{{days}} days of wellness this week. So important!"
+        },
+        "keepGoing": {
+          "title": "Keep going!",
+          "message": "Every small step counts. You're on the right track!"
+        }
+      }
+    },
+    "compact": {
+      "todaysOverview": "Here's your overview for today.",
+      "noModules": "No modules visible",
+      "selectModules": "Click \"Modules\" above to choose what you want to see",
+      "stats": {
+        "cvProfile": "CV profile",
+        "atsScore": "ATS score",
+        "applications": "Applications",
+        "savedJobs": "Saved jobs"
+      },
+      "cv": {
+        "title": "Your CV",
+        "ready": "Profile is ready for job searching!",
+        "inProgress": "{{progress}}% complete - keep building your profile",
+        "createProfile": "Create your profile to get started"
+      },
+      "coverLetter": {
+        "title": "Cover letter",
+        "savedCount": "{{count}} saved letters",
+        "create": "Create a cover letter for your applications"
+      },
+      "jobSearch": {
+        "title": "Job search",
+        "savedCount": "{{count}} saved jobs to apply for",
+        "findJobs": "Find and save interesting jobs"
+      },
+      "career": {
+        "title": "Career paths",
+        "explore": "Explore different career opportunities"
+      },
+      "interests": {
+        "title": "Interest guide",
+        "seeResults": "See your recommendations",
+        "takeTest": "Take the test to find your path"
+      },
+      "exercises": {
+        "title": "Exercises",
+        "prepare": "Prepare for interviews"
+      },
+      "diary": {
+        "title": "Diary",
+        "personal": "Your personal job search diary"
+      },
+      "knowledge": {
+        "title": "Knowledge base",
+        "articles": "Articles, tips and guides"
+      }
+    },
+    "mobile": {
+      "whatToDo": "What would you like to do today?",
+      "noModules": "No modules visible",
+      "openFilter": "Open the filter above to select modules",
+      "yourOverview": "Your overview",
+      "stats": {
+        "applications": "Applications",
+        "saved": "Saved"
+      },
+      "cv": {
+        "title": "Your CV",
+        "ready": "Profile is ready!",
+        "inProgress": "{{progress}}% complete - keep building",
+        "create": "Create your profile"
+      },
+      "coverLetter": {
+        "title": "Cover letter",
+        "savedCount": "{{count}} saved letters",
+        "create": "Create a cover letter"
+      },
+      "jobSearch": {
+        "title": "Job search",
+        "savedCount": "{{count}} saved jobs",
+        "find": "Find your next job"
+      },
+      "career": {
+        "title": "Career",
+        "explore": "Explore career paths"
+      },
+      "interests": {
+        "title": "Interest guide",
+        "seeResults": "See your recommendations",
+        "takeTest": "Take the test and find your path"
+      },
+      "exercises": {
+        "title": "Exercises",
+        "practice": "Practice for interviews"
+      },
+      "diary": {
+        "title": "Diary",
+        "yourDiary": "Your job search diary"
+      },
+      "wellness": {
+        "title": "Health",
+        "yourWellness": "Your wellness"
+      },
+      "knowledge": {
+        "title": "Knowledge base",
+        "tipsGuides": "Tips and guides"
+      }
     }
   },
   "cv": {
@@ -3084,6 +3228,23 @@
       "laborMarket": "Labor market status",
       "workPreferences": "Work preferences",
       "physical": "Physical requirements"
+    },
+    "status": {
+      "complete": "Complete",
+      "needsUpdate": "Update",
+      "missing": "Missing",
+      "energy": "Energy",
+      "hoursPerDay": "{{hours}}h/day",
+      "shortTermGoal": "Short-term goal",
+      "activity": "Activity",
+      "activitySummary": "{{apps}} app, {{interviews}} int",
+      "toDo": "To do",
+      "remaining": "{{count}} left",
+      "namedProfile": "{{name}}'s profile",
+      "yourProfile": "Your profile",
+      "myProfile": "My profile",
+      "nextSteps": "Next steps",
+      "goalProgress": "Goal: {{progress}}%"
     },
     "availability": {
       "currentStatus": "Current status",

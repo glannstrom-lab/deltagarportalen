@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import {
   User, Target, Zap, FileText, ChevronRight,
@@ -21,6 +22,7 @@ interface StatusItem {
 }
 
 export function ProfileStatusWidget() {
+  const { t } = useTranslation()
   const { profile } = useAuthStore()
   const [prefs, setPrefs] = useState<ProfilePreferences | null>(null)
   const [loading, setLoading] = useState(true)
@@ -59,7 +61,7 @@ export function ProfileStatusWidget() {
   const cvStatus = prefs?.consultant_data?.cvStatus
   statusItems.push({
     label: 'CV',
-    value: cvStatus === 'complete' ? 'Komplett' : cvStatus === 'needs_update' ? 'Uppdatera' : 'Saknas',
+    value: cvStatus === 'complete' ? t('profile.status.complete') : cvStatus === 'needs_update' ? t('profile.status.needsUpdate') : t('profile.status.missing'),
     status: cvStatus === 'complete' ? 'good' : cvStatus === 'needs_update' ? 'warning' : 'missing',
     icon: <FileText className="w-4 h-4" />
   })
@@ -68,8 +70,8 @@ export function ProfileStatusWidget() {
   const hours = prefs?.therapist_data?.energyLevel?.sustainableHoursPerDay
   if (hours) {
     statusItems.push({
-      label: 'Ork',
-      value: `${hours}h/dag`,
+      label: t('profile.status.energy'),
+      value: t('profile.status.hoursPerDay', { hours }),
       status: hours >= 6 ? 'good' : hours >= 4 ? 'warning' : 'missing',
       icon: <Zap className="w-4 h-4" />
     })
@@ -80,7 +82,7 @@ export function ProfileStatusWidget() {
   const shortTermProgress = prefs?.support_goals?.shortTerm?.progress || 0
   if (shortTermGoal) {
     statusItems.push({
-      label: 'Korttidsmål',
+      label: t('profile.status.shortTermGoal'),
       value: `${shortTermProgress}%`,
       status: shortTermProgress >= 75 ? 'good' : shortTermProgress >= 25 ? 'warning' : 'missing',
       icon: <Target className="w-4 h-4" />
@@ -91,8 +93,8 @@ export function ProfileStatusWidget() {
   const apps = prefs?.consultant_data?.activityLevel?.applicationsSent || 0
   const interviews = prefs?.consultant_data?.activityLevel?.interviews || 0
   statusItems.push({
-    label: 'Aktivitet',
-    value: `${apps} ans, ${interviews} int`,
+    label: t('profile.status.activity'),
+    value: t('profile.status.activitySummary', { apps, interviews }),
     status: apps > 5 ? 'good' : apps > 0 ? 'warning' : 'missing',
     icon: <Briefcase className="w-4 h-4" />
   })
@@ -102,8 +104,8 @@ export function ProfileStatusWidget() {
   const pendingSteps = nextSteps.filter(s => !s.completed).length
   if (nextSteps.length > 0) {
     statusItems.push({
-      label: 'Att göra',
-      value: `${pendingSteps} kvar`,
+      label: t('profile.status.toDo'),
+      value: t('profile.status.remaining', { count: pendingSteps }),
       status: pendingSteps === 0 ? 'good' : pendingSteps <= 2 ? 'warning' : 'missing',
       icon: <Clock className="w-4 h-4" />
     })
@@ -136,7 +138,7 @@ export function ProfileStatusWidget() {
             </div>
             <div>
               <h3 className="font-semibold text-slate-800 dark:text-stone-100 text-sm">
-                {profile?.first_name ? `${profile.first_name}s profil` : 'Din profil'}
+                {profile?.first_name ? t('profile.status.namedProfile', { name: profile.first_name }) : t('profile.status.yourProfile')}
               </h3>
             </div>
           </div>
@@ -144,7 +146,7 @@ export function ProfileStatusWidget() {
             to="/profile"
             className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 font-medium flex items-center gap-0.5"
           >
-            Visa <ChevronRight className="w-3 h-3" />
+            {t('common.show')} <ChevronRight className="w-3 h-3" />
           </Link>
         </div>
       </div>
@@ -171,7 +173,7 @@ export function ProfileStatusWidget() {
         {/* Quick actions */}
         {(prefs?.consultant_data?.nextSteps?.length || 0) > 0 && (
           <div className="mt-3 pt-3 border-t border-slate-100 dark:border-stone-700">
-            <p className="text-xs font-medium text-slate-500 dark:text-stone-400 mb-2">Nästa steg</p>
+            <p className="text-xs font-medium text-slate-500 dark:text-stone-400 mb-2">{t('profile.status.nextSteps')}</p>
             <div className="space-y-1">
               {(prefs?.consultant_data?.nextSteps || [])
                 .filter(s => !s.completed)
@@ -195,6 +197,7 @@ export function ProfileStatusWidget() {
  * Compact version for sidebars or smaller spaces
  */
 export function ProfileStatusCompact() {
+  const { t } = useTranslation()
   const [prefs, setPrefs] = useState<ProfilePreferences | null>(null)
 
   useEffect(() => {
@@ -214,7 +217,7 @@ export function ProfileStatusCompact() {
         <User className="w-5 h-5 text-white" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-slate-800 dark:text-stone-100">Min profil</p>
+        <p className="text-sm font-medium text-slate-800 dark:text-stone-100">{t('profile.status.myProfile')}</p>
         <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-stone-400">
           {cvStatus && (
             <span className={cn(
@@ -226,8 +229,8 @@ export function ProfileStatusCompact() {
               CV: {cvStatus === 'complete' ? 'OK' : cvStatus === 'needs_update' ? '!' : '?'}
             </span>
           )}
-          {hours && <span>{hours}h/dag</span>}
-          {shortTermProgress > 0 && <span>Mål: {shortTermProgress}%</span>}
+          {hours && <span>{t('profile.status.hoursPerDay', { hours })}</span>}
+          {shortTermProgress > 0 && <span>{t('profile.status.goalProgress', { progress: shortTermProgress })}</span>}
         </div>
       </div>
       <ChevronRight className="w-4 h-4 text-slate-400 dark:text-stone-500" />

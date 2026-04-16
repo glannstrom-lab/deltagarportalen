@@ -1,58 +1,17 @@
 import React, { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { Clock, ArrowRight, Zap, Coffee, Target } from '@/components/ui/icons'
 import { cn } from '@/lib/utils'
 
 interface QuickAction {
   duration: number
-  label: string
-  description: string
+  labelKey: string
+  descriptionKey: string
   icon: React.ReactNode
   color: string
-  suggestions: { label: string; link: string }[]
+  suggestions: { labelKey: string; link: string }[]
 }
-
-const quickActions: QuickAction[] = [
-  {
-    duration: 5,
-    label: '5 minuter',
-    description: 'Snabb aktivitet',
-    icon: <Coffee size={20} />,
-    color: 'emerald',
-    suggestions: [
-      { label: 'Logga ditt humör', link: '/wellness' },
-      { label: 'Uppdatera en CV-rad', link: '/cv' },
-      { label: 'Spara ett intressant jobb', link: '/job-search' },
-      { label: 'Markera en quest klar', link: '/quests' }
-    ]
-  },
-  {
-    duration: 15,
-    label: '15 minuter',
-    description: 'Fokuserad stund',
-    icon: <Zap size={20} />,
-    color: 'teal',
-    suggestions: [
-      { label: 'Skriv en ansökan', link: '/job-search' },
-      { label: 'Uppdatera CV-sektion', link: '/cv' },
-      { label: 'Gör en övning', link: '/exercises' },
-      { label: 'Läs en artikel', link: '/knowledge-base' }
-    ]
-  },
-  {
-    duration: 30,
-    label: '30 minuter',
-    description: 'Djuparbete',
-    icon: <Target size={20} />,
-    color: 'blue',
-    suggestions: [
-      { label: 'Färdigställ ansökan', link: '/job-search' },
-      { label: 'Gör intresseguiden', link: '/interest-guide' },
-      { label: 'Skriv personligt brev', link: '/cover-letter' },
-      { label: 'Planera veckan', link: '/diary' }
-    ]
-  }
-]
 
 const colorClasses: Record<string, { 
   bg: string
@@ -85,9 +44,52 @@ const colorClasses: Record<string, {
 }
 
 export function QuickActions() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [selectedDuration, setSelectedDuration] = useState<number | null>(null)
   const [hoveredAction, setHoveredAction] = useState<number | null>(null)
+
+  const quickActions: QuickAction[] = [
+    {
+      duration: 5,
+      labelKey: 'dashboard.quickActions.fiveMin',
+      descriptionKey: 'dashboard.quickActions.quickActivity',
+      icon: <Coffee size={20} />,
+      color: 'emerald',
+      suggestions: [
+        { labelKey: 'dashboard.quickActions.logMood', link: '/wellness' },
+        { labelKey: 'dashboard.quickActions.updateCVLine', link: '/cv' },
+        { labelKey: 'dashboard.quickActions.saveJob', link: '/job-search' },
+        { labelKey: 'dashboard.quickActions.markQuestDone', link: '/quests' }
+      ]
+    },
+    {
+      duration: 15,
+      labelKey: 'dashboard.quickActions.fifteenMin',
+      descriptionKey: 'dashboard.quickActions.focusedTime',
+      icon: <Zap size={20} />,
+      color: 'teal',
+      suggestions: [
+        { labelKey: 'dashboard.quickActions.writeApplication', link: '/job-search' },
+        { labelKey: 'dashboard.quickActions.updateCVSection', link: '/cv' },
+        { labelKey: 'dashboard.quickActions.doExercise', link: '/exercises' },
+        { labelKey: 'dashboard.quickActions.readArticle', link: '/knowledge-base' }
+      ]
+    },
+    {
+      duration: 30,
+      labelKey: 'dashboard.quickActions.thirtyMin',
+      descriptionKey: 'dashboard.quickActions.deepWork',
+      icon: <Target size={20} />,
+      color: 'blue',
+      suggestions: [
+        { labelKey: 'dashboard.quickActions.completeApplication', link: '/job-search' },
+        { labelKey: 'dashboard.quickActions.doInterestGuide', link: '/interest-guide' },
+        { labelKey: 'dashboard.quickActions.writeCoverLetter', link: '/cover-letter' },
+        { labelKey: 'dashboard.quickActions.planWeek', link: '/diary' }
+      ]
+    }
+  ]
 
   const handleSuggestionClick = (link: string) => {
     navigate(link)
@@ -99,7 +101,7 @@ export function QuickActions() {
       <div className="flex items-center gap-2">
         <Clock size={18} className="text-slate-700 dark:text-stone-300" />
         <h3 className="text-sm font-semibold text-slate-700 dark:text-stone-300">
-          Vad vill du göra?
+          {t('dashboard.quickActions.title')}
         </h3>
       </div>
 
@@ -138,7 +140,7 @@ export function QuickActions() {
                 colors.text
               )}>
                 {action.icon}
-                {action.label}
+                {t(action.labelKey)}
               </div>
 
               {/* Description - only show on hover or selected */}
@@ -146,7 +148,7 @@ export function QuickActions() {
                 "text-xs text-slate-600 dark:text-stone-400 transition-all duration-300",
                 isHovered || isSelected ? "opacity-100 max-h-10" : "opacity-70 max-h-6 overflow-hidden"
               )}>
-                {action.description}
+                {t(action.descriptionKey)}
               </p>
 
               {/* Arrow indicator */}
@@ -170,7 +172,7 @@ export function QuickActions() {
           style={{ animationDelay: '0ms' }}
         >
           <p className="text-sm font-medium text-slate-700 dark:text-stone-300 mb-3">
-            Förslag för {selectedDuration} minuter:
+            {t('dashboard.quickActions.suggestionsFor', { minutes: selectedDuration })}
           </p>
           <div className="grid grid-cols-2 gap-2">
             {quickActions
@@ -189,7 +191,7 @@ export function QuickActions() {
                   )}
                   style={{ animationDelay: `${idx * 50}ms` }}
                 >
-                  {suggestion.label}
+                  {t(suggestion.labelKey)}
                 </button>
               ))}
           </div>

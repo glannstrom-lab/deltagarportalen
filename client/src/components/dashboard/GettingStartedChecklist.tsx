@@ -3,6 +3,7 @@
  * Ger en tydlig väg till "first 5 minutes win"
  */
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   CheckCircle2, 
@@ -42,6 +43,7 @@ interface GettingStartedChecklistProps {
 }
 
 export function GettingStartedChecklist({ onClose, compact = false }: GettingStartedChecklistProps) {
+  const { t } = useTranslation()
   const { data, isLoading } = useDashboardDataQuery()
   const [showCelebration, setShowCelebration] = useState(false)
   const [dismissed, setDismissed] = useState(false)
@@ -73,8 +75,8 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
   const items: ChecklistItem[] = [
     {
       id: 'interest-guide',
-      title: 'Upptäck dina intressen',
-      description: 'Ta reda på vilka yrken som passar dig bäst',
+      title: t('dashboard.checklist.discoverInterests'),
+      description: t('dashboard.checklist.discoverInterestsDesc'),
       icon: <Compass size={20} />,
       link: '/interest-guide',
       estimatedTime: '5 min',
@@ -84,8 +86,8 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
     },
     {
       id: 'save-job',
-      title: 'Spara ditt första jobb',
-      description: 'Hitta och spara ett jobb som verkar intressant',
+      title: t('dashboard.checklist.saveFirstJob'),
+      description: t('dashboard.checklist.saveFirstJobDesc'),
       icon: <Briefcase size={20} />,
       link: '/job-search',
       estimatedTime: '2 min',
@@ -95,8 +97,8 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
     },
     {
       id: 'create-cv',
-      title: 'Skapa ditt CV',
-      description: 'Bygg ett professionellt CV för dina ansökningar',
+      title: t('dashboard.checklist.createCV'),
+      description: t('dashboard.checklist.createCVDesc'),
       icon: <FileText size={20} />,
       link: '/cv',
       estimatedTime: '15 min',
@@ -106,8 +108,8 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
     },
     {
       id: 'create-cover-letter',
-      title: 'Skapa ett personligt brev',
-      description: 'Skriv ett brev som kompletterar ditt CV',
+      title: t('dashboard.checklist.createCoverLetter'),
+      description: t('dashboard.checklist.createCoverLetterDesc'),
       icon: <Mail size={20} />,
       link: '/cover-letter',
       estimatedTime: '10 min',
@@ -149,7 +151,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
             <Trophy size={18} className="text-teal-600 dark:text-teal-400" />
-            <span className="font-semibold text-slate-800 dark:text-stone-100">Kom igång</span>
+            <span className="font-semibold text-slate-800 dark:text-stone-100">{t('dashboard.checklist.getStarted')}</span>
           </div>
           <span className="text-xs text-teal-600 dark:text-teal-400 font-medium">
             {completedCount}/{items.length}
@@ -183,7 +185,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               onClick={handleReopen}
               className="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-700 dark:hover:text-teal-300 font-medium"
             >
-              Se alla {items.length} steg →
+              {t('dashboard.checklist.seeAllSteps', { count: items.length })}
             </button>
           )}
         </div>
@@ -208,11 +210,10 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
           <Sparkles size={32} className="text-white" />
         </motion.div>
         <h3 className="text-lg font-bold text-sky-800 dark:text-sky-300 mb-2">
-          Snabbstart klar! 🚀
+          {t('dashboard.checklist.quickStartComplete')}
         </h3>
         <p className="text-sky-700 dark:text-sky-400 mb-4 text-sm">
-          Du vet nu vilka yrken som passar dig och har sparat ditt första jobb.
-          Fortsätt med CV:t för att kunna söka!
+          {t('dashboard.checklist.quickStartCompleteDesc')}
         </p>
         <div className="flex gap-3 justify-center flex-wrap">
           <Button
@@ -224,11 +225,11 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
             }}
             className="border-sky-300 dark:border-sky-700 text-sky-700 dark:text-sky-400 hover:bg-sky-50 dark:hover:bg-sky-900/30"
           >
-            Visa fler steg
+            {t('dashboard.checklist.showMoreSteps')}
           </Button>
           <Link to="/cv">
             <Button size="sm" className="bg-teal-600 hover:bg-teal-700">
-              Skapa CV nu
+              {t('dashboard.checklist.createCVNow')}
             </Button>
           </Link>
         </div>
@@ -253,10 +254,10 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
           <Trophy size={40} className="text-white" />
         </motion.div>
         <h3 className="text-xl font-bold text-emerald-800 dark:text-emerald-300 mb-2">
-          Grattis! 🎉
+          {t('dashboard.checklist.congratulations')}
         </h3>
         <p className="text-emerald-700 dark:text-emerald-400 mb-4">
-          Du har klarat alla steg! Du är nu redo att söka jobb på riktigt.
+          {t('dashboard.checklist.allStepsComplete')}
         </p>
         <div className="flex gap-3 justify-center">
           <Button
@@ -264,11 +265,11 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
             onClick={handleDismiss}
             className="border-emerald-300 dark:border-emerald-700 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-900/30"
           >
-            Stäng
+            {t('common.close')}
           </Button>
           <Link to="/job-search">
             <Button className="bg-emerald-600 hover:bg-emerald-700">
-              Sök jobb nu
+              {t('dashboard.checklist.searchJobsNow')}
             </Button>
           </Link>
         </div>
@@ -291,9 +292,9 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
               <Sparkles size={24} />
             </div>
             <div>
-              <h2 className="text-xl font-bold">Välkommen! 👋</h2>
+              <h2 className="text-xl font-bold">{t('dashboard.checklist.welcome')}</h2>
               <p className="text-white/90 text-sm">
-                Följ dessa steg för att komma igång
+                {t('dashboard.checklist.followSteps')}
               </p>
             </div>
           </div>
@@ -301,7 +302,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
             <button
               onClick={handleDismiss}
               className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"
-              aria-label="Stäng välkomstguiden"
+              aria-label={t('dashboard.checklist.closeWelcome')}
             >
               <X size={18} aria-hidden="true" />
             </button>
@@ -311,8 +312,8 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
         {/* Progress */}
         <div className="mt-6">
           <div className="flex items-center justify-between text-sm mb-2">
-            <span>Din progress</span>
-            <span className="font-semibold">{completedCount} av {items.length} klara</span>
+            <span>{t('dashboard.checklist.yourProgress')}</span>
+            <span className="font-semibold">{t('dashboard.checklist.completedOf', { completed: completedCount, total: items.length })}</span>
           </div>
           <div className="h-2 bg-white/20 rounded-full overflow-hidden">
             <motion.div
@@ -344,11 +345,11 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
                     <div className="flex items-center gap-2">
                       <h3 className="font-semibold text-slate-700 dark:text-stone-300">{item.title}</h3>
                       <span className="text-xs bg-slate-200 dark:bg-stone-700 text-slate-700 dark:text-stone-400 px-2 py-0.5 rounded-full">
-                        Låst
+                        {t('dashboard.checklist.locked')}
                       </span>
                     </div>
                     <p className="text-sm text-slate-600 dark:text-stone-400">
-                      Avsluta föregående steg först
+                      {t('dashboard.checklist.completePreviousFirst')}
                     </p>
                   </div>
                 </div>
@@ -366,7 +367,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
                     </p>
                   </div>
                   <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium bg-emerald-100 dark:bg-emerald-900/50 px-2 py-1 rounded-full">
-                    Klart!
+                    {t('dashboard.checklist.done')}
                   </span>
                 </div>
               ) : (
@@ -402,13 +403,11 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
           <p className="text-sm text-amber-800 dark:text-amber-300">
             {completedCount < 2 ? (
               <>
-                <strong>Tips:</strong> De första två stegen tar bara ~7 minuter!
-                Börja där för att snabbt se vilka jobb som passar dig.
+                <strong>{t('dashboard.checklist.tip')}</strong> {t('dashboard.checklist.tipQuickStart')}
               </>
             ) : (
               <>
-                <strong>Tips:</strong> Du kan pausa och fortsätta senare.
-                Dina ändringar sparas automatiskt.
+                <strong>{t('dashboard.checklist.tip')}</strong> {t('dashboard.checklist.tipPause')}
               </>
             )}
           </p>
@@ -420,6 +419,7 @@ export function GettingStartedChecklist({ onClose, compact = false }: GettingSta
 
 // Button to reopen checklist if dismissed
 export function ReopenChecklistButton({ onClick }: { onClick: () => void }) {
+  const { t } = useTranslation()
   return (
     <button
       onClick={onClick}
@@ -429,7 +429,7 @@ export function ReopenChecklistButton({ onClick }: { onClick: () => void }) {
       )}
     >
       <Trophy size={16} />
-      Visa checklista
+      {t('dashboard.checklist.showChecklist')}
     </button>
   )
 }

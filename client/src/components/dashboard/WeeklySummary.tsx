@@ -3,9 +3,10 @@
  * Visar framsteg och motiverar fortsatt användning
  */
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { motion } from 'framer-motion'
-import { 
-  TrendingUp, 
+import {
+  TrendingUp,
   Calendar,
   Target,
   ChevronDown,
@@ -34,6 +35,7 @@ interface WeeklySummaryProps {
 }
 
 export function WeeklySummary({ className }: WeeklySummaryProps) {
+  const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const { data, loading } = useDashboardData()
 
@@ -59,7 +61,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
   const summaryItems = [
     {
       icon: <FileText size={18} />,
-      label: 'CV-progress',
+      label: t('dashboard.weeklySummary.cvProgress'),
       value: `${stats.cvProgress}%`,
       change: stats.cvProgressChange > 0 ? `+${stats.cvProgressChange}%` : null,
       changeType: 'positive' as const,
@@ -67,7 +69,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
     },
     {
       icon: <Briefcase size={18} />,
-      label: 'Jobb sparade',
+      label: t('dashboard.weeklySummary.jobsSaved'),
       value: stats.jobsSaved,
       change: null,
       changeType: 'neutral' as const,
@@ -75,7 +77,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
     },
     {
       icon: <Target size={18} />,
-      label: 'Ansökningar',
+      label: t('dashboard.weeklySummary.applications'),
       value: stats.applicationsSent,
       change: null,
       changeType: 'neutral' as const,
@@ -83,7 +85,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
     },
     {
       icon: <Heart size={18} />,
-      label: 'Välmåendedagar',
+      label: t('dashboard.weeklySummary.wellnessDays'),
       value: `${stats.wellnessDays}/7`,
       change: null,
       changeType: 'neutral' as const,
@@ -91,7 +93,7 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
     },
     {
       icon: <Zap size={18} />,
-      label: 'Quests klara',
+      label: t('dashboard.weeklySummary.questsCompleted'),
       value: stats.questsCompleted,
       change: null,
       changeType: 'neutral' as const,
@@ -103,37 +105,37 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
   const getMotivationalMessage = () => {
     if (stats.cvProgress === 0) {
       return {
-        title: 'Kom igång denna veckan!',
-        message: 'Börja med att skapa ditt CV - det är första steget mot nya möjligheter!'
+        title: t('dashboard.weeklySummary.motivation.getStarted.title'),
+        message: t('dashboard.weeklySummary.motivation.getStarted.message')
       }
     }
     if (stats.cvProgress >= 100 && stats.applicationsSent > 0) {
       return {
-        title: 'Du är på gång! 🌟',
-        message: 'Fantastiskt jobbat! Du har ett komplett CV och har skickat ansökningar. Fortsätt så!'
+        title: t('dashboard.weeklySummary.motivation.onTrack.title'),
+        message: t('dashboard.weeklySummary.motivation.onTrack.message')
       }
     }
     if (stats.cvProgress >= 100) {
       return {
-        title: 'CV:t är klart! 🎉',
-        message: 'Bra jobbat! Nu är det dags att börja söka jobb. Du kan det här!'
+        title: t('dashboard.weeklySummary.motivation.cvComplete.title'),
+        message: t('dashboard.weeklySummary.motivation.cvComplete.message')
       }
     }
     if (stats.cvProgressChange > 10) {
       return {
-        title: 'Vilken vecka! 🚀',
-        message: `Du har ökat ditt CV med ${stats.cvProgressChange}% denna veckan. Imponerande!`
+        title: t('dashboard.weeklySummary.motivation.greatWeek.title'),
+        message: t('dashboard.weeklySummary.motivation.greatWeek.message', { progress: stats.cvProgressChange })
       }
     }
     if (stats.wellnessDays >= 5) {
       return {
-        title: 'Du tar hand om dig! 💚',
-        message: `${stats.wellnessDays} dagar med välmående denna veckan. Så viktigt!`
+        title: t('dashboard.weeklySummary.motivation.selfCare.title'),
+        message: t('dashboard.weeklySummary.motivation.selfCare.message', { days: stats.wellnessDays })
       }
     }
     return {
-      title: 'Bra fortsättning!',
-      message: 'Varje litet steg räknas. Du är på rätt väg!'
+      title: t('dashboard.weeklySummary.motivation.keepGoing.title'),
+      message: t('dashboard.weeklySummary.motivation.keepGoing.message')
     }
   }
 
@@ -158,15 +160,15 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
             <Calendar size={20} className="text-sky-600 dark:text-sky-400" />
           </div>
           <div className="text-left">
-            <h3 className="font-semibold text-slate-800 dark:text-stone-100">Din vecka</h3>
+            <h3 className="font-semibold text-slate-800 dark:text-stone-100">{t('dashboard.weeklySummary.yourWeek')}</h3>
             <p className="text-xs text-slate-700 dark:text-stone-300">
-              {formatTime(stats.totalTimeSpent)} aktiv tid
+              {formatTime(stats.totalTimeSpent)} {t('dashboard.weeklySummary.activeTime')}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <span className="text-sm text-slate-700 dark:text-stone-300">
-            {isExpanded ? 'Dölj' : 'Visa'}
+            {isExpanded ? t('common.hide') : t('common.show')}
           </span>
           {isExpanded ? (
             <ChevronUp size={18} className="text-slate-600 dark:text-stone-400" />
@@ -230,8 +232,8 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
           <div className="px-4 pb-4">
             <div className="p-3 bg-white dark:bg-stone-800 rounded-xl border border-slate-200 dark:border-stone-700">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium text-slate-700 dark:text-stone-300">Veckans mål</span>
-                <span className="text-xs text-slate-700 dark:text-stone-300">2 av 3 klara</span>
+                <span className="text-sm font-medium text-slate-700 dark:text-stone-300">{t('dashboard.weeklySummary.weekGoals')}</span>
+                <span className="text-xs text-slate-700 dark:text-stone-300">{t('dashboard.weeklySummary.goalsProgress', { completed: 2, total: 3 })}</span>
               </div>
               <div className="w-full h-2 bg-slate-100 dark:bg-stone-700 rounded-full overflow-hidden">
                 <motion.div
@@ -246,19 +248,19 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
                   <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
                     <TrendingUp size={12} className="text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <span className="text-slate-600 dark:text-stone-400 line-through">Logga mående 3 dagar</span>
+                  <span className="text-slate-600 dark:text-stone-400 line-through">{t('dashboard.weeklySummary.goals.logWellness')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-5 h-5 rounded-full bg-emerald-100 dark:bg-emerald-900/50 flex items-center justify-center">
                     <TrendingUp size={12} className="text-emerald-600 dark:text-emerald-400" />
                   </div>
-                  <span className="text-slate-600 dark:text-stone-400 line-through">Fyll i CV till 80%</span>
+                  <span className="text-slate-600 dark:text-stone-400 line-through">{t('dashboard.weeklySummary.goals.completeCV')}</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="w-5 h-5 rounded-full bg-slate-100 dark:bg-stone-700 flex items-center justify-center">
                     <div className="w-2 h-2 rounded-full bg-slate-300 dark:bg-stone-500" />
                   </div>
-                  <span className="text-slate-700 dark:text-stone-300">Spara 3 jobb</span>
+                  <span className="text-slate-700 dark:text-stone-300">{t('dashboard.weeklySummary.goals.saveJobs')}</span>
                 </div>
               </div>
             </div>
@@ -271,15 +273,16 @@ export function WeeklySummary({ className }: WeeklySummaryProps) {
 
 // Compact inline version
 export function WeeklySummaryBadge() {
+  const { t } = useTranslation()
   const { data } = useDashboardData()
-  
+
   // Mock: calculate weekly progress
   const weeklyProgress = 66
-  
+
   return (
     <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-gradient-to-r from-teal-100 to-sky-100 text-teal-700 text-xs font-medium">
       <TrendingUp size={14} />
-      <span>Veckan: {weeklyProgress}%</span>
+      <span>{t('dashboard.weeklySummary.weekBadge', { progress: weeklyProgress })}</span>
     </div>
   )
 }

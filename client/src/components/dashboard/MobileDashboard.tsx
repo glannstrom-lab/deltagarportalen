@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
 import { MobileWidgetFilter, type WidgetType } from './MobileWidgetFilter'
@@ -91,6 +92,7 @@ const defaultVisibleWidgets: WidgetType[] = [
 const STORAGE_KEY_VISIBLE = 'dashboard_visible_widgets'
 
 export function MobileDashboard() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
@@ -162,12 +164,12 @@ export function MobileDashboard() {
       id: 'cv' as WidgetType,
       to: '/cv',
       icon: <FileText size={20} />,
-      title: 'Ditt CV',
+      title: t('dashboard.mobile.cv.title'),
       subtitle: data?.cv.hasCV
         ? data.cv.progress >= 80
-          ? 'Profilen är redo!'
-          : `${data.cv.progress}% klart - fortsätt bygga`
-        : 'Skapa din profil',
+          ? t('dashboard.mobile.cv.ready')
+          : t('dashboard.mobile.cv.inProgress', { progress: data.cv.progress })
+        : t('dashboard.mobile.cv.create'),
       color: 'teal',
       progress: data?.cv.progress,
       badge: data?.cv.atsScore ? `ATS ${data.cv.atsScore}` : undefined,
@@ -177,70 +179,70 @@ export function MobileDashboard() {
       id: 'coverLetter' as WidgetType,
       to: '/cover-letter',
       icon: <Mail size={20} />,
-      title: 'Personligt brev',
+      title: t('dashboard.mobile.coverLetter.title'),
       subtitle: data?.coverLetters.count
-        ? `${data.coverLetters.count} sparade brev`
-        : 'Skapa ett personligt brev',
+        ? t('dashboard.mobile.coverLetter.savedCount', { count: data.coverLetters.count })
+        : t('dashboard.mobile.coverLetter.create'),
       color: 'rose',
     },
     {
       id: 'jobSearch' as WidgetType,
       to: '/job-search',
       icon: <Briefcase size={20} />,
-      title: 'Sök jobb',
+      title: t('dashboard.mobile.jobSearch.title'),
       subtitle: data?.jobs.savedCount
-        ? `${data.jobs.savedCount} sparade jobb`
-        : 'Hitta ditt nästa jobb',
+        ? t('dashboard.mobile.jobSearch.savedCount', { count: data.jobs.savedCount })
+        : t('dashboard.mobile.jobSearch.find'),
       color: 'blue',
     },
     {
       id: 'career' as WidgetType,
       to: '/career',
       icon: <Target size={20} />,
-      title: 'Karriär',
-      subtitle: 'Utforska karriärvägar',
+      title: t('dashboard.mobile.career.title'),
+      subtitle: t('dashboard.mobile.career.explore'),
       color: 'sky',
     },
     {
       id: 'interests' as WidgetType,
       to: '/interest-guide',
       icon: <Compass size={20} />,
-      title: 'Intresseguiden',
+      title: t('dashboard.mobile.interests.title'),
       subtitle: data?.interest.hasResult
-        ? 'Se dina rekommendationer'
-        : 'Ta testet och hitta din väg',
+        ? t('dashboard.mobile.interests.seeResults')
+        : t('dashboard.mobile.interests.takeTest'),
       color: 'teal',
     },
     {
       id: 'exercises' as WidgetType,
       to: '/exercises',
       icon: <Dumbbell size={20} />,
-      title: 'Övningar',
-      subtitle: 'Träna inför intervjuer',
+      title: t('dashboard.mobile.exercises.title'),
+      subtitle: t('dashboard.mobile.exercises.practice'),
       color: 'emerald',
     },
     {
       id: 'diary' as WidgetType,
       to: '/diary',
       icon: <BookHeart size={20} />,
-      title: 'Dagbok',
-      subtitle: 'Din jobbsökningsdagbok',
+      title: t('dashboard.mobile.diary.title'),
+      subtitle: t('dashboard.mobile.diary.yourDiary'),
       color: 'rose',
     },
     {
       id: 'wellness' as WidgetType,
       to: '/wellness',
       icon: <Sparkles size={20} />,
-      title: 'Hälsa',
-      subtitle: 'Ditt välmående',
+      title: t('dashboard.mobile.wellness.title'),
+      subtitle: t('dashboard.mobile.wellness.yourWellness'),
       color: 'emerald',
     },
     {
       id: 'knowledge' as WidgetType,
       to: '/knowledge-base',
       icon: <BookOpen size={20} />,
-      title: 'Kunskapsbank',
-      subtitle: 'Tips och guider',
+      title: t('dashboard.mobile.knowledge.title'),
+      subtitle: t('dashboard.mobile.knowledge.tipsGuides'),
       color: 'amber',
     },
   ]
@@ -252,9 +254,9 @@ export function MobileDashboard() {
       {/* Compact Welcome */}
       <div className="px-1">
         <h1 className="text-lg font-semibold text-slate-800 dark:text-stone-100">
-          Hej{user?.firstName ? `, ${user.firstName}` : ''}!
+          {t('dashboard.greeting', { name: user?.firstName || t('dashboard.greetingDefault') })}
         </h1>
-        <p className="text-sm text-slate-700 dark:text-stone-300">Vad vill du göra idag?</p>
+        <p className="text-sm text-slate-700 dark:text-stone-300">{t('dashboard.mobile.whatToDo')}</p>
       </div>
 
       {/* Collapsible Filter */}
@@ -275,9 +277,9 @@ export function MobileDashboard() {
       {/* Empty state */}
       {visibleWidgetItems.length === 0 && (
         <div className="text-center py-8 bg-slate-50 dark:bg-stone-800 rounded-xl border border-dashed border-slate-200 dark:border-stone-700">
-          <p className="text-slate-700 dark:text-stone-300 text-sm mb-1">Inga moduler synliga</p>
+          <p className="text-slate-700 dark:text-stone-300 text-sm mb-1">{t('dashboard.mobile.noModules')}</p>
           <p className="text-xs text-slate-600 dark:text-stone-400">
-            Öppna filtret ovan för att välja moduler
+            {t('dashboard.mobile.openFilter')}
           </p>
         </div>
       )}
@@ -286,7 +288,7 @@ export function MobileDashboard() {
       {data && (
         <div className="mt-4 p-3 bg-sky-50 dark:bg-sky-900/30 rounded-xl border border-sky-100 dark:border-sky-800">
           <h3 className="text-xs font-medium text-sky-700 dark:text-sky-400 mb-2 uppercase tracking-wide">
-            Din oversikt
+            {t('dashboard.mobile.yourOverview')}
           </h3>
           <div className="flex items-center justify-around">
             <div className="text-center">
@@ -307,11 +309,11 @@ export function MobileDashboard() {
             )}
             <div className="text-center">
               <span className="font-semibold text-sky-700 dark:text-sky-400">{data.applications.total}</span>
-              <span className="text-xs text-sky-600 dark:text-sky-500 block">Ansokningar</span>
+              <span className="text-xs text-sky-600 dark:text-sky-500 block">{t('dashboard.mobile.stats.applications')}</span>
             </div>
             <div className="text-center">
               <span className="font-semibold text-sky-700 dark:text-sky-400">{data.jobs.savedCount}</span>
-              <span className="text-xs text-sky-600 dark:text-sky-500 block">Sparade</span>
+              <span className="text-xs text-sky-600 dark:text-sky-500 block">{t('dashboard.mobile.stats.saved')}</span>
             </div>
           </div>
         </div>

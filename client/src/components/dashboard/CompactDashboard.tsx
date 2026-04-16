@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect, memo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { useAuthStore } from '@/stores/authStore'
 import { useDashboardData } from '@/hooks/useDashboardData'
@@ -139,6 +140,7 @@ const CompactWidgetRow = memo(function CompactWidgetRow({
 })
 
 export function CompactDashboard() {
+  const { t } = useTranslation()
   const { user } = useAuthStore()
   const { data, loading, error, refetch } = useDashboardData()
   const [visibleWidgets, setVisibleWidgets] = useState<WidgetType[]>(defaultVisibleWidgets)
@@ -215,12 +217,12 @@ export function CompactDashboard() {
       id: 'cv' as WidgetType,
       to: '/cv',
       icon: <FileText size={22} />,
-      title: 'Ditt CV',
+      title: t('dashboard.compact.cv.title'),
       subtitle: data?.cv.hasCV
         ? data.cv.progress >= 80
-          ? 'Profilen är redo för jobbsökning!'
-          : `${data.cv.progress}% klart - fortsätt bygga din profil`
-        : 'Skapa din profil för att komma igång',
+          ? t('dashboard.compact.cv.ready')
+          : t('dashboard.compact.cv.inProgress', { progress: data.cv.progress })
+        : t('dashboard.compact.cv.createProfile'),
       color: 'teal',
       progress: data?.cv.progress,
       trend: data?.cv.progress ? `+${data.cv.progress}%` : undefined,
@@ -231,62 +233,62 @@ export function CompactDashboard() {
       id: 'coverLetter' as WidgetType,
       to: '/cover-letter',
       icon: <Mail size={22} />,
-      title: 'Personligt brev',
+      title: t('dashboard.compact.coverLetter.title'),
       subtitle: data?.coverLetters.count
-        ? `${data.coverLetters.count} sparade brev`
-        : 'Skapa ett personligt brev för dina ansökningar',
+        ? t('dashboard.compact.coverLetter.savedCount', { count: data.coverLetters.count })
+        : t('dashboard.compact.coverLetter.create'),
       color: 'rose',
     },
     {
       id: 'jobSearch' as WidgetType,
       to: '/job-search',
       icon: <Briefcase size={22} />,
-      title: 'Sök jobb',
+      title: t('dashboard.compact.jobSearch.title'),
       subtitle: data?.jobs.savedCount
-        ? `${data.jobs.savedCount} sparade jobb att söka`
-        : 'Hitta och spara intressanta jobb',
+        ? t('dashboard.compact.jobSearch.savedCount', { count: data.jobs.savedCount })
+        : t('dashboard.compact.jobSearch.findJobs'),
       color: 'blue',
     },
     {
       id: 'career' as WidgetType,
       to: '/career',
       icon: <Target size={22} />,
-      title: 'Karriärvägar',
-      subtitle: 'Utforska olika karriärmöjligheter',
+      title: t('dashboard.compact.career.title'),
+      subtitle: t('dashboard.compact.career.explore'),
       color: 'sky',
     },
     {
       id: 'interests' as WidgetType,
       to: '/interest-guide',
       icon: <Compass size={22} />,
-      title: 'Intresseguiden',
+      title: t('dashboard.compact.interests.title'),
       subtitle: data?.interest.hasResult
-        ? 'Se dina rekommendationer'
-        : 'Ta testet för att hitta din väg',
+        ? t('dashboard.compact.interests.seeResults')
+        : t('dashboard.compact.interests.takeTest'),
       color: 'teal',
     },
     {
       id: 'exercises' as WidgetType,
       to: '/exercises',
       icon: <Dumbbell size={22} />,
-      title: 'Övningar',
-      subtitle: 'Förbered dig inför intervjuer',
+      title: t('dashboard.compact.exercises.title'),
+      subtitle: t('dashboard.compact.exercises.prepare'),
       color: 'emerald',
     },
     {
       id: 'diary' as WidgetType,
       to: '/diary',
       icon: <BookHeart size={22} />,
-      title: 'Dagbok',
-      subtitle: 'Din personliga jobbsökningsdagbok',
+      title: t('dashboard.compact.diary.title'),
+      subtitle: t('dashboard.compact.diary.personal'),
       color: 'rose',
     },
     {
       id: 'knowledge' as WidgetType,
       to: '/knowledge-base',
       icon: <BookOpen size={22} />,
-      title: 'Kunskapsbank',
-      subtitle: 'Artiklar, tips och guider',
+      title: t('dashboard.compact.knowledge.title'),
+      subtitle: t('dashboard.compact.knowledge.articles'),
       color: 'amber',
     },
   ]
@@ -299,9 +301,9 @@ export function CompactDashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-slate-800 dark:text-stone-100">
-            Hej{user?.firstName ? `, ${user.firstName}` : ''}! 👋
+            {t('dashboard.greeting', { name: user?.firstName || t('dashboard.greetingDefault') })}
           </h1>
-          <p className="text-sm text-slate-700 dark:text-stone-300">Här är din översikt för idag.</p>
+          <p className="text-sm text-slate-700 dark:text-stone-300">{t('dashboard.compact.todaysOverview')}</p>
         </div>
       </div>
 
@@ -309,27 +311,27 @@ export function CompactDashboard() {
       {data && (
         <div className="grid grid-cols-4 gap-3">
           <StatCard
-            label="CV-profil"
+            label={t('dashboard.compact.stats.cvProfile')}
             value={`${data.cv.progress}%`}
             icon={<TrendingUp size={18} />}
             color="teal"
           />
           {data.cv.atsScore > 0 && (
             <StatCard
-              label="ATS-score"
+              label={t('dashboard.compact.stats.atsScore')}
               value={data.cv.atsScore}
               icon={<Award size={18} />}
               color="amber"
             />
           )}
           <StatCard
-            label="Ansökningar"
+            label={t('dashboard.compact.stats.applications')}
             value={data.applications.total}
             icon={<Briefcase size={18} />}
             color="blue"
           />
           <StatCard
-            label="Sparade jobb"
+            label={t('dashboard.compact.stats.savedJobs')}
             value={data.jobs.savedCount}
             icon={<Target size={18} />}
             color="emerald"
@@ -355,9 +357,9 @@ export function CompactDashboard() {
       {/* Empty state */}
       {visibleWidgetItems.length === 0 && (
         <div className="text-center py-10 bg-slate-50 dark:bg-stone-800 rounded-xl border border-dashed border-slate-200 dark:border-stone-700">
-          <p className="text-slate-700 dark:text-stone-300 mb-1">Inga moduler synliga</p>
+          <p className="text-slate-700 dark:text-stone-300 mb-1">{t('dashboard.compact.noModules')}</p>
           <p className="text-sm text-slate-600 dark:text-stone-400">
-            Klicka på "Moduler" ovan för att välja vad du vill se
+            {t('dashboard.compact.selectModules')}
           </p>
         </div>
       )}

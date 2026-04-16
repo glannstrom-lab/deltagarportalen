@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { 
   ArrowRight, 
@@ -60,9 +61,10 @@ const colorSchemes = {
 }
 
 export function NextStepCard({ data }: NextStepCardProps) {
+  const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  
+
   if (!data) return null
 
   // Bestäm nästa steg baserat på användarens progress
@@ -71,9 +73,9 @@ export function NextStepCard({ data }: NextStepCardProps) {
     // 1. Interest Guide first - quick win, helps discover matching jobs
     if (!data.interest?.hasResult) {
       return {
-        title: 'Upptäck dina intressen',
-        description: 'Ta reda på vilka yrken som passar dig bäst',
-        action: 'Starta',
+        title: t('nextStepWidget.discoverInterests'),
+        description: t('nextStepWidget.discoverInterestsDesc'),
+        action: t('common.start'),
         link: '/interest-guide',
         icon: <Compass size={24} />,
         time: '5 min',
@@ -85,9 +87,9 @@ export function NextStepCard({ data }: NextStepCardProps) {
     // 2. Save a job - quick win, immediate engagement
     if (data.jobs?.savedCount === 0) {
       return {
-        title: 'Spara ditt första jobb',
-        description: 'Hitta ett jobb som matchar dina intressen',
-        action: 'Hitta jobb',
+        title: t('nextStepWidget.saveFirstJob'),
+        description: t('nextStepWidget.saveFirstJobDesc'),
+        action: t('nextStepWidget.findJobs'),
         link: '/job-search',
         icon: <Briefcase size={24} />,
         time: '2 min',
@@ -99,9 +101,9 @@ export function NextStepCard({ data }: NextStepCardProps) {
     // 3. Create CV - deeper engagement, but not blocking
     if (!data.cv?.hasCV) {
       return {
-        title: 'Skapa ditt CV',
-        description: 'Bygg ett professionellt CV för dina ansökningar',
-        action: 'Starta nu',
+        title: t('nextStepWidget.createCV'),
+        description: t('nextStepWidget.createCVDesc'),
+        action: t('nextStepWidget.startNow'),
         link: '/cv',
         icon: <FileText size={24} />,
         time: '15 min',
@@ -113,9 +115,9 @@ export function NextStepCard({ data }: NextStepCardProps) {
     // 4. Complete CV if started but not finished
     if (data.cv?.progress < 100) {
       return {
-        title: 'Färdigställ ditt CV',
-        description: `Du har ${data.cv.progress}% klart. Lägg till mer information.`,
-        action: 'Fortsätt',
+        title: t('nextStepWidget.completeCV'),
+        description: t('nextStepWidget.completeCVDesc', { progress: data.cv.progress }),
+        action: t('common.continue'),
         link: '/cv',
         icon: <FileText size={24} />,
         time: '10 min',
@@ -127,9 +129,9 @@ export function NextStepCard({ data }: NextStepCardProps) {
     // 5. Create cover letter - requires CV
     if (data.coverLetters?.count === 0) {
       return {
-        title: 'Skapa personligt brev',
-        description: 'Skriv ett brev som kompletterar ditt CV',
-        action: 'Skriv brev',
+        title: t('nextStepWidget.createCoverLetter'),
+        description: t('nextStepWidget.createCoverLetterDesc'),
+        action: t('nextStepWidget.writeLetter'),
         link: '/cover-letter',
         icon: <Mail size={24} />,
         time: '10 min',
@@ -140,9 +142,9 @@ export function NextStepCard({ data }: NextStepCardProps) {
 
     // 6. All basics done - encourage applying!
     return {
-      title: 'Skicka en ansökan',
-      description: `Du har ${data.jobs?.savedCount} sparade jobb att söka!`,
-      action: 'Ansök nu',
+      title: t('nextStepWidget.sendApplication'),
+      description: t('nextStepWidget.sendApplicationDesc', { count: data.jobs?.savedCount }),
+      action: t('nextStepWidget.applyNow'),
       link: '/job-search',
       icon: <Target size={24} />,
       time: '20 min',
@@ -178,7 +180,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles size={14} className="text-amber-500" />
                 <span className="text-xs font-bold text-slate-700 dark:text-stone-300 uppercase tracking-wider">
-                  Rekommenderat nästa steg
+                  {t('nextStepWidget.recommendedNextStep')}
                 </span>
               </div>
               <h3 className="text-lg font-bold text-slate-900 dark:text-stone-100">{step.title}</h3>
@@ -242,7 +244,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
             <div className="flex items-center justify-between mb-5">
               <span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/20 backdrop-blur-sm text-white text-xs font-bold">
                 <Sparkles size={14} />
-                Rekommenderat nästa steg
+                {t('nextStepWidget.recommendedNextStep')}
               </span>
               
               <div className="flex items-center gap-3">
@@ -261,7 +263,7 @@ export function NextStepCard({ data }: NextStepCardProps) {
                     "hover:bg-white/20 hover:text-white",
                     "focus:outline-none focus:ring-2 focus:ring-white/50"
                   )}
-                  aria-label="Minimera"
+                  aria-label={t('common.minimize')}
                 >
                   <ChevronUp size={18} />
                 </button>
