@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Sparkles, Wand2, MessageSquare, Lightbulb, X, ChevronDown, ChevronUp } from '@/components/ui/icons'
 import { AIAssistant } from './AIAssistant'
 import { Card } from '@/components/ui/Card'
@@ -13,44 +14,23 @@ interface AIToolsPanelProps {
   onApplyToSummary?: (text: string) => void
 }
 
-const tools = [
-  {
-    id: 'cv-generate',
-    mode: 'cv-generate' as const,
-    icon: Wand2,
-    title: 'Generera CV-sammanfattning',
-    description: 'Låt AI skriva en professionell sammanfattning',
-    compact: true
-  },
-  {
-    id: 'cv-optimization',
-    mode: 'cv-optimization' as const,
-    icon: Sparkles,
-    title: 'Analysera CV',
-    description: 'Få feedback och förbättringsförslag',
-    compact: true
-  },
-  {
-    id: 'cover-letter',
-    mode: 'cover-letter' as const,
-    icon: MessageSquare,
-    title: 'Skriv personligt brev',
-    description: 'Generera personligt brev från jobbannons',
-    compact: true
-  },
-  {
-    id: 'interview-prep',
-    mode: 'interview-prep' as const,
-    icon: Lightbulb,
-    title: 'Förbered intervju',
-    description: 'Få hjälp inför anställningsintervjun',
-    compact: true
-  }
+const toolConfigs = [
+  { id: 'cv-generate', mode: 'cv-generate' as const, icon: Wand2, titleKey: 'ai.tools.cvGenerate.title', descKey: 'ai.tools.cvGenerate.description', compact: true },
+  { id: 'cv-optimization', mode: 'cv-optimization' as const, icon: Sparkles, titleKey: 'ai.tools.cvOptimization.title', descKey: 'ai.tools.cvOptimization.description', compact: true },
+  { id: 'cover-letter', mode: 'cover-letter' as const, icon: MessageSquare, titleKey: 'ai.tools.coverLetter.title', descKey: 'ai.tools.coverLetter.description', compact: true },
+  { id: 'interview-prep', mode: 'interview-prep' as const, icon: Lightbulb, titleKey: 'ai.tools.interviewPrep.title', descKey: 'ai.tools.interviewPrep.description', compact: true }
 ]
 
 export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
+  const { t } = useTranslation()
   const [isExpanded, setIsExpanded] = useState(false)
   const [activeTool, setActiveTool] = useState<string | null>(null)
+
+  const tools = useMemo(() => toolConfigs.map(tool => ({
+    ...tool,
+    title: t(tool.titleKey),
+    description: t(tool.descKey)
+  })), [t])
 
   const activeToolConfig = tools.find(t => t.id === activeTool)
 
@@ -67,8 +47,8 @@ export function AIToolsPanel({ cvData, onApplyToSummary }: AIToolsPanelProps) {
               <Sparkles className="w-5 h-5 text-teal-600 dark:text-teal-400" />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 dark:text-stone-100">AI-verktyg</h3>
-              <p className="text-sm text-gray-500 dark:text-stone-400">Fa hjalp med CV, brev och intervjuer</p>
+              <h3 className="font-semibold text-gray-900 dark:text-stone-100">{t('ai.tools.title')}</h3>
+              <p className="text-sm text-gray-500 dark:text-stone-400">{t('ai.tools.subtitle')}</p>
             </div>
           </div>
           {isExpanded ? (

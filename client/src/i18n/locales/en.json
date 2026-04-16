@@ -2336,6 +2336,26 @@
       "copy": "Copy",
       "sources": "Sources"
     },
+    "tools": {
+      "title": "AI Tools",
+      "subtitle": "Get help with CV, cover letter, and interviews",
+      "cvGenerate": {
+        "title": "Generate CV summary",
+        "description": "Let AI write a professional summary"
+      },
+      "cvOptimization": {
+        "title": "Analyze CV",
+        "description": "Get feedback and improvement suggestions"
+      },
+      "coverLetter": {
+        "title": "Write cover letter",
+        "description": "Generate cover letter from job ad"
+      },
+      "interviewPrep": {
+        "title": "Prepare for interview",
+        "description": "Get help preparing for your job interview"
+      }
+    },
     "assistant": {
       "title": "Your AI assistant",
       "analyzedActivity": "I've analyzed your activity",

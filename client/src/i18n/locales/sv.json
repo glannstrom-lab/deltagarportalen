@@ -2376,6 +2376,26 @@
       "copy": "Kopiera",
       "sources": "Källor"
     },
+    "tools": {
+      "title": "AI-verktyg",
+      "subtitle": "Få hjälp med CV, brev och intervjuer",
+      "cvGenerate": {
+        "title": "Generera CV-sammanfattning",
+        "description": "Låt AI skriva en professionell sammanfattning"
+      },
+      "cvOptimization": {
+        "title": "Analysera CV",
+        "description": "Få feedback och förbättringsförslag"
+      },
+      "coverLetter": {
+        "title": "Skriv personligt brev",
+        "description": "Generera personligt brev från jobbannons"
+      },
+      "interviewPrep": {
+        "title": "Förbered intervju",
+        "description": "Få hjälp inför anställningsintervjun"
+      }
+    },
     "assistant": {
       "title": "Din AI-assistent",
       "analyzedActivity": "Jag har analyserat din aktivitet",
