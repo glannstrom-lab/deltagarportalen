@@ -50,7 +50,9 @@
     "page": "Page",
     "employerNotSpecified": "Employer not specified",
     "locationNotSpecified": "Location not specified",
-    "new": "New!"
+    "new": "New!",
+    "unknown": "unknown",
+    "preview": "Preview"
   },
   "pageTabs": {
     "cv": {
@@ -451,6 +453,60 @@
       "templates": "Templates",
       "ats": "ATS Analysis",
       "tips": "CV Tips"
+    },
+    "myCvs": {
+      "title": "My saved CVs",
+      "loading": "Loading your CVs...",
+      "savedCount": "You have {{count}} CVs saved",
+      "createNew": "Create new CV",
+      "createFirstCV": "Create your first CV",
+      "copy": "(copy)",
+      "duplicated": "CV duplicated",
+      "deleted": "CV deleted",
+      "setAsDefault": "Set as default CV",
+      "default": "Default",
+      "searchPlaceholder": "Search your CVs...",
+      "filterByTemplate": "Filter by template",
+      "experiences": "{{count}} experiences",
+      "educations": "{{count}} educations",
+      "skills": "{{count}} skills",
+      "stats": {
+        "totalSaved": "Total saved",
+        "atsApproved": "ATS approved",
+        "lastSaved": "Last saved"
+      },
+      "filters": {
+        "all": "All templates",
+        "sidebar": "Sidebar",
+        "centered": "Centered",
+        "minimal": "Minimal",
+        "creative": "Creative",
+        "executive": "Executive",
+        "nordic": "Nordic"
+      },
+      "empty": {
+        "noCVs": "No CVs found",
+        "noSearchResults": "No CVs matched your search",
+        "createFirst": "Create your first CV to get started. You can save multiple versions for different types of jobs.",
+        "tryOtherSearch": "Try searching for something else or change the category"
+      },
+      "errors": {
+        "loadFailed": "Could not load your CVs",
+        "duplicateFailed": "Could not duplicate CV",
+        "deleteFailed": "Could not delete CV"
+      },
+      "actions": {
+        "duplicate": "Duplicate",
+        "setDefault": "Set as default"
+      },
+      "deleteConfirm": {
+        "title": "Delete CV",
+        "message": "Are you sure you want to delete this CV? This cannot be undone."
+      },
+      "tips": {
+        "title": "💡 Tip: Customize CV for different jobs",
+        "description": "Create different versions of your CV for different types of jobs. A CV for retail should highlight customer service, while one for warehouse should focus on logistics and work pace. Mark the CV you use most as \"Default\" to quickly find it."
+      }
     }
   },
   "coverLetter": {

@@ -4,6 +4,7 @@
  */
 
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import { 
   FileText, 
@@ -50,16 +51,17 @@ interface CVVersion {
 
 // Filter by CV template design instead of non-existent categories
 const templateFilters = [
-  { id: 'all', label: 'Alla mallar', color: 'bg-stone-100 text-stone-700' },
-  { id: 'sidebar', label: 'Sidokolumn', color: 'bg-blue-100 text-blue-700' },
-  { id: 'centered', label: 'Centrerad', color: 'bg-purple-100 text-purple-700' },
-  { id: 'minimal', label: 'Minimal', color: 'bg-gray-100 text-gray-700' },
-  { id: 'creative', label: 'Kreativ', color: 'bg-pink-100 text-pink-700' },
-  { id: 'executive', label: 'Executive', color: 'bg-amber-100 text-amber-700' },
-  { id: 'nordic', label: 'Nordisk', color: 'bg-cyan-100 text-cyan-700' },
+  { id: 'all', labelKey: 'cv.myCvs.filters.all', color: 'bg-stone-100 text-stone-700' },
+  { id: 'sidebar', labelKey: 'cv.myCvs.filters.sidebar', color: 'bg-blue-100 text-blue-700' },
+  { id: 'centered', labelKey: 'cv.myCvs.filters.centered', color: 'bg-purple-100 text-purple-700' },
+  { id: 'minimal', labelKey: 'cv.myCvs.filters.minimal', color: 'bg-gray-100 text-gray-700' },
+  { id: 'creative', labelKey: 'cv.myCvs.filters.creative', color: 'bg-pink-100 text-pink-700' },
+  { id: 'executive', labelKey: 'cv.myCvs.filters.executive', color: 'bg-amber-100 text-amber-700' },
+  { id: 'nordic', labelKey: 'cv.myCvs.filters.nordic', color: 'bg-cyan-100 text-cyan-700' },
 ]
 
 export function MyCVs() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { confirm } = useConfirmDialog()
   const [cvs, setCvs] = useState<CVVersion[]>([])
@@ -102,7 +104,7 @@ export function MyCVs() {
       setCvs(versionsWithScores)
     } catch (error) {
       console.error('Fel vid laddning av CV:n:', error)
-      showToast.error('Kunde inte ladda dina CV:n')
+      showToast.error(t('cv.myCvs.errors.loadFailed'))
     } finally {
       setLoading(false)
     }
@@ -145,13 +147,13 @@ export function MyCVs() {
   const handleDuplicate = async (cv: CVVersion) => {
     try {
       setDuplicatingId(cv.id)
-      const newName = `${cv.name} (kopia)`
+      const newName = `${cv.name} ${t('cv.myCvs.copy')}`
       await cvApi.saveVersion(newName, cv.data)
-      await loadCVs() // Ladda om listan
-      showToast.success('CV duplicerat')
+      await loadCVs()
+      showToast.success(t('cv.myCvs.duplicated'))
     } catch (error) {
       console.error('Fel vid duplicering:', error)
-      showToast.error('Kunde inte duplicera CV:t')
+      showToast.error(t('cv.myCvs.errors.duplicateFailed'))
     } finally {
       setDuplicatingId(null)
       setActionMenuOpen(null)
@@ -162,10 +164,10 @@ export function MyCVs() {
     setActionMenuOpen(null)
 
     const confirmed = await confirm({
-      title: 'Ta bort CV',
-      message: 'Är du säker på att du vill ta bort detta CV? Detta kan inte ångras.',
-      confirmText: 'Ta bort',
-      cancelText: 'Avbryt',
+      title: t('cv.myCvs.deleteConfirm.title'),
+      message: t('cv.myCvs.deleteConfirm.message'),
+      confirmText: t('common.delete'),
+      cancelText: t('common.cancel'),
       variant: 'danger'
     })
 
@@ -175,10 +177,10 @@ export function MyCVs() {
       setDeletingId(id)
       await cvApi.deleteVersion(id)
       setCvs(cvs.filter(cv => cv.id !== id))
-      showToast.success('CV borttaget')
+      showToast.success(t('cv.myCvs.deleted'))
     } catch (error) {
       console.error('Fel vid borttagning:', error)
-      showToast.error('Kunde inte ta bort CV:t')
+      showToast.error(t('cv.myCvs.errors.deleteFailed'))
     } finally {
       setDeletingId(null)
     }
@@ -196,12 +198,12 @@ export function MyCVs() {
       await userPreferencesApi.update({ default_cv_id: id })
       localStorage.setItem('default_cv_id', id)
 
-      showToast.success('Satt som standard-CV')
+      showToast.success(t('cv.myCvs.setAsDefault'))
     } catch (error) {
       console.error('Fel vid sparning av standard-CV:', error)
       // Fallback till localStorage om cloud storage misslyckas
       localStorage.setItem('default_cv_id', id)
-      showToast.success('Satt som standard-CV')
+      showToast.success(t('cv.myCvs.setAsDefault'))
     } finally {
       setActionMenuOpen(null)
     }
@@ -249,7 +251,7 @@ export function MyCVs() {
     return (
       <div className="flex flex-col items-center justify-center h-96">
         <Loader2 className="w-12 h-12 animate-spin text-teal-600 mb-4" />
-        <p className="text-stone-600">Laddar dina CV:n...</p>
+        <p className="text-stone-600">{t('cv.myCvs.loading')}</p>
       </div>
     )
   }
@@ -260,9 +262,9 @@ export function MyCVs() {
       <div className="bg-gradient-to-r from-teal-50 via-white to-sky-50 dark:from-teal-900/20 dark:via-stone-800 dark:to-sky-900/20 rounded-2xl border border-teal-200 dark:border-teal-800/50 p-6">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 className="text-2xl font-bold text-teal-800 dark:text-teal-300 mb-1">Mina sparade CV</h2>
+            <h2 className="text-2xl font-bold text-teal-800 dark:text-teal-300 mb-1">{t('cv.myCvs.title')}</h2>
             <p className="text-teal-600 dark:text-teal-400">
-              Du har {cvs.length} {cvs.length === 1 ? 'CV' : 'CV:n'} sparade
+              {t('cv.myCvs.savedCount', { count: cvs.length })}
             </p>
           </div>
           <Link
@@ -270,7 +272,7 @@ export function MyCVs() {
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 dark:bg-teal-500 text-white rounded-xl font-medium hover:bg-teal-700 dark:hover:bg-teal-600 transition-colors shadow-lg"
           >
             <Plus className="w-5 h-5" />
-            Skapa nytt CV
+            {t('cv.myCvs.createNew')}
           </Link>
         </div>
 
@@ -279,19 +281,19 @@ export function MyCVs() {
           <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-teal-200 dark:border-teal-800/50">
             <div className="text-center">
               <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">{cvs.length}</div>
-              <div className="text-xs text-teal-600 dark:text-teal-400">Totalt sparade</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.totalSaved')}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
                 {cvs.filter(c => (c.atsScore || 0) >= 70).length}
               </div>
-              <div className="text-xs text-teal-600 dark:text-teal-400">Godkänd ATS</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.atsApproved')}</div>
             </div>
             <div className="text-center">
               <div className="text-2xl font-bold text-teal-800 dark:text-teal-300">
                 {formatDate(cvs[0]?.created_at || new Date().toISOString())}
               </div>
-              <div className="text-xs text-teal-600 dark:text-teal-400">Senast sparat</div>
+              <div className="text-xs text-teal-600 dark:text-teal-400">{t('cv.myCvs.stats.lastSaved')}</div>
             </div>
           </div>
         )}
@@ -304,7 +306,7 @@ export function MyCVs() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-stone-600 dark:text-stone-400" />
           <input
             type="text"
-            placeholder="Sök bland dina CV..."
+            placeholder={t('cv.myCvs.searchPlaceholder')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full pl-10 pr-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-900 dark:text-stone-100"
@@ -316,10 +318,10 @@ export function MyCVs() {
           value={selectedTemplate}
           onChange={(e) => setSelectedTemplate(e.target.value)}
           className="px-4 py-2.5 border border-stone-200 dark:border-stone-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500 bg-white dark:bg-stone-900 dark:text-stone-100"
-          aria-label="Filtrera efter mall"
+          aria-label={t('cv.myCvs.filterByTemplate')}
         >
           {templateFilters.map(tpl => (
-            <option key={tpl.id} value={tpl.id}>{tpl.label}</option>
+            <option key={tpl.id} value={tpl.id}>{t(tpl.labelKey)}</option>
           ))}
         </select>
       </div>
@@ -331,19 +333,19 @@ export function MyCVs() {
             <Folder className="w-10 h-10 text-stone-600 dark:text-stone-400" />
           </div>
           <h3 className="text-lg font-semibold text-stone-800 dark:text-stone-100 mb-2">
-            {searchQuery ? 'Inga CV matchade sökningen' : 'Inga CV hittades'}
+            {searchQuery ? t('cv.myCvs.empty.noSearchResults') : t('cv.myCvs.empty.noCVs')}
           </h3>
           <p className="text-stone-600 dark:text-stone-400 mb-6 max-w-md mx-auto">
-            {searchQuery 
-              ? 'Prova att söka efter något annat eller ändra kategori'
-              : 'Skapa ditt första CV för att komma igång. Du kan spara flera versioner för olika typer av jobb.'}
+            {searchQuery
+              ? t('cv.myCvs.empty.tryOtherSearch')
+              : t('cv.myCvs.empty.createFirst')}
           </p>
           <Link
             to="/cv"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
           >
             <Plus className="w-5 h-5" />
-            Skapa ditt första CV
+            {t('cv.myCvs.createFirstCV')}
           </Link>
         </div>
       ) : (
@@ -372,7 +374,7 @@ export function MyCVs() {
                       {cv.isDefault && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-teal-100 text-teal-700 text-xs font-medium rounded-full">
                           <Star className="w-3 h-3 fill-current" />
-                          Standard
+                          {t('cv.myCvs.default')}
                         </span>
                       )}
                     </div>
@@ -391,21 +393,21 @@ export function MyCVs() {
                       {cv.data?.workExperience && cv.data.workExperience.length > 0 && (
                         <span className="flex items-center gap-1 text-stone-700 dark:text-stone-300">
                           <Briefcase className="w-4 h-4" />
-                          {cv.data.workExperience.length} erfarenheter
+                          {t('cv.myCvs.experiences', { count: cv.data.workExperience.length })}
                         </span>
                       )}
 
                       {cv.data?.education && cv.data.education.length > 0 && (
                         <span className="flex items-center gap-1 text-stone-700 dark:text-stone-300">
                           <GraduationCap className="w-4 h-4" />
-                          {cv.data.education.length} utbildningar
+                          {t('cv.myCvs.educations', { count: cv.data.education.length })}
                         </span>
                       )}
 
                       {cv.data?.skills && cv.data.skills.length > 0 && (
                         <span className="flex items-center gap-1 text-stone-700 dark:text-stone-300">
                           <Award className="w-4 h-4" />
-                          {cv.data.skills.length} kompetenser
+                          {t('cv.myCvs.skills', { count: cv.data.skills.length })}
                         </span>
                       )}
                     </div>
@@ -431,7 +433,7 @@ export function MyCVs() {
                   <button
                     onClick={() => setPreviewCV(cv)}
                     className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
-                    title="Förhandsgranska"
+                    title={t('common.preview')}
                   >
                     <Eye className="w-5 h-5" />
                   </button>
@@ -440,7 +442,7 @@ export function MyCVs() {
                   <button
                     onClick={() => handleEdit(cv)}
                     className="p-2 text-stone-600 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
-                    title="Redigera"
+                    title={t('common.edit')}
                   >
                     <Edit2 className="w-5 h-5" />
                   </button>
@@ -450,7 +452,7 @@ export function MyCVs() {
                     <PDFExportButton
                       type="cv"
                       data={cv.data}
-                      filename={`CV_${cv.data?.firstName || 'okänd'}_${cv.data?.lastName || ''}.pdf`}
+                      filename={`CV_${cv.data?.firstName || t('common.unknown')}_${cv.data?.lastName || ''}.pdf`}
                       variant="light"
                       size="sm"
                       showPreview={false}
@@ -483,7 +485,7 @@ export function MyCVs() {
                             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700"
                           >
                             <Copy className="w-4 h-4" />
-                            Duplicera
+                            {t('cv.myCvs.actions.duplicate')}
                           </button>
                           {!cv.isDefault && (
                             <button
@@ -491,7 +493,7 @@ export function MyCVs() {
                               className="w-full flex items-center gap-2 px-4 py-2 text-sm text-stone-700 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-stone-700"
                             >
                               <Star className="w-4 h-4" />
-                              Sätt som standard
+                              {t('cv.myCvs.actions.setDefault')}
                             </button>
                           )}
                           <div className="border-t border-stone-100 dark:border-stone-700 my-1" />
@@ -500,7 +502,7 @@ export function MyCVs() {
                             className="w-full flex items-center gap-2 px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30"
                           >
                             <Trash2 className="w-4 h-4" />
-                            Ta bort
+                            {t('common.delete')}
                           </button>
                         </div>
                       </>
@@ -521,12 +523,10 @@ export function MyCVs() {
           </div>
           <div>
             <h3 className="font-semibold text-amber-900 dark:text-amber-200 mb-2">
-              💡 Tips: Anpassa CV för olika jobb
+              {t('cv.myCvs.tips.title')}
             </h3>
             <p className="text-amber-800 dark:text-amber-300 text-sm leading-relaxed">
-              Skapa olika versioner av ditt CV för olika typer av jobb. Ett CV för butiksjobb bör framhäva
-              kundservice, medan ett för lager bör fokusera på logistik och arbets tempo.
-              Markera det CV du använder mest som "Standard" så du snabbt hittar det.
+              {t('cv.myCvs.tips.description')}
             </p>
           </div>
         </div>
@@ -540,7 +540,7 @@ export function MyCVs() {
             <div className="flex items-center justify-between p-4 border-b dark:border-stone-700">
               <div>
                 <h3 className="font-semibold text-stone-800 dark:text-stone-100">{previewCV.name}</h3>
-                <p className="text-sm text-stone-700 dark:text-stone-300">Förhandsgranskning</p>
+                <p className="text-sm text-stone-700 dark:text-stone-300">{t('common.preview')}</p>
               </div>
               <div className="flex items-center gap-2">
                 <PDFExportButton

@@ -50,7 +50,9 @@
     "page": "Sida",
     "employerNotSpecified": "Arbetsgivare ej angiven",
     "locationNotSpecified": "Ort ej angiven",
-    "new": "Ny!"
+    "new": "Ny!",
+    "unknown": "okänd",
+    "preview": "Förhandsgranska"
   },
   "pageTabs": {
     "cv": {
@@ -451,6 +453,60 @@
       "templates": "Mallar",
       "ats": "ATS-analys",
       "tips": "CV-tips"
+    },
+    "myCvs": {
+      "title": "Mina sparade CV",
+      "loading": "Laddar dina CV:n...",
+      "savedCount": "Du har {{count}} CV sparade",
+      "createNew": "Skapa nytt CV",
+      "createFirstCV": "Skapa ditt första CV",
+      "copy": "(kopia)",
+      "duplicated": "CV duplicerat",
+      "deleted": "CV borttaget",
+      "setAsDefault": "Satt som standard-CV",
+      "default": "Standard",
+      "searchPlaceholder": "Sök bland dina CV...",
+      "filterByTemplate": "Filtrera efter mall",
+      "experiences": "{{count}} erfarenheter",
+      "educations": "{{count}} utbildningar",
+      "skills": "{{count}} kompetenser",
+      "stats": {
+        "totalSaved": "Totalt sparade",
+        "atsApproved": "Godkänd ATS",
+        "lastSaved": "Senast sparat"
+      },
+      "filters": {
+        "all": "Alla mallar",
+        "sidebar": "Sidokolumn",
+        "centered": "Centrerad",
+        "minimal": "Minimal",
+        "creative": "Kreativ",
+        "executive": "Executive",
+        "nordic": "Nordisk"
+      },
+      "empty": {
+        "noCVs": "Inga CV hittades",
+        "noSearchResults": "Inga CV matchade sökningen",
+        "createFirst": "Skapa ditt första CV för att komma igång. Du kan spara flera versioner för olika typer av jobb.",
+        "tryOtherSearch": "Prova att söka efter något annat eller ändra kategori"
+      },
+      "errors": {
+        "loadFailed": "Kunde inte ladda dina CV:n",
+        "duplicateFailed": "Kunde inte duplicera CV:t",
+        "deleteFailed": "Kunde inte ta bort CV:t"
+      },
+      "actions": {
+        "duplicate": "Duplicera",
+        "setDefault": "Sätt som standard"
+      },
+      "deleteConfirm": {
+        "title": "Ta bort CV",
+        "message": "Är du säker på att du vill ta bort detta CV? Detta kan inte ångras."
+      },
+      "tips": {
+        "title": "💡 Tips: Anpassa CV för olika jobb",
+        "description": "Skapa olika versioner av ditt CV för olika typer av jobb. Ett CV för butiksjobb bör framhäva kundservice, medan ett för lager bör fokusera på logistik och arbets tempo. Markera det CV du använder mest som \"Standard\" så du snabbt hittar det."
+      }
     }
   },
   "coverLetter": {
